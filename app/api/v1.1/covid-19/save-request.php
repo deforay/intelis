@@ -1,12 +1,15 @@
 <?php
 
-use App\Exceptions\SystemException;
+use JsonMachine\Items;
 use App\Services\ApiService;
-use App\Services\Covid19Service;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Services\Covid19Service;
+use App\Exceptions\SystemException;
+use App\Registries\ContainerRegistry;
+use JsonMachine\JsonDecoder\ExtJsonDecoder;
+use JsonMachine\Exception\PathNotFoundException;
 
 session_unset(); // no need of session in json response
 ini_set('memory_limit', -1);
@@ -16,8 +19,30 @@ try {
     /** @var Slim\Psr7\Request $request */
     $request = $GLOBALS['request'];
 
-    //$origJson = (string) $request->getBody();
-    $input = $request->getParsedBody();
+    $appVersion = null;
+    try {
+        $appVersion = Items::fromString($origJson, [
+            'pointer' => '/appVersion',
+            'decoder' => new ExtJsonDecoder(true)
+        ]);
+        $appVersion = iterator_to_array($appVersion)['appVersion'];
+    } catch (PathNotFoundException $ex) {
+        // handle error, perhaps log it, or set a default value
+        error_log("The path '/appVersion' was not found in the JSON data.");
+    }
+
+    try {
+
+        $input = Items::fromString($origJson, [
+            'pointer' => '/data',
+            'decoder' => new ExtJsonDecoder(true)
+        ]);
+        if (empty($input)) {
+            throw new PathNotFoundException();
+        }
+    } catch (PathNotFoundException $ex) {
+        throw new SystemException("Invalid request");
+    }
 
 
     /** @var MysqliDb $db */
@@ -34,18 +59,15 @@ try {
 
     /** @var Covid19Service $covid19Service */
     $covid19Service = ContainerRegistry::get(Covid19Service::class);
-    
+
     $tableName = "form_covid19";
     $tableName1 = "activity_log";
-    $testTableName = 'covid19_tests';    
+    $testTableName = 'covid19_tests';
     $transactionId = $general->generateUUID();
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
     $user = null;
 
-    if (empty($input) || empty($input['data'])) {
-        throw new SystemException("Invalid request");
-    }
 
     /* For API Tracking params */
     $requestUrl = $_SERVER['HTTP_HOST'];
@@ -62,7 +84,7 @@ try {
     $deviceId = $general->getHeader('deviceId');
 
     $responseData = [];
-    foreach ($input['data'] as $rootKey => $data) {
+    foreach ($input as $rootKey => $data) {
 
 
         $mandatoryFields = ['sampleCollectionDate', 'facilityId', 'appSampleCode'];
@@ -167,7 +189,7 @@ try {
         $formAttributes = array(
             'applicationVersion'    => $version,
             'apiTransactionId'      => $transactionId,
-            'mobileAppVersion'      => $input['appVersion'],
+            'mobileAppVersion'      => $appVersion,
             'deviceId'              => $deviceId
         );
         $formAttributes = json_encode($formAttributes);
@@ -187,12 +209,12 @@ try {
 
             $data['covid19SampleId'] = $covid19Service->insertSampleCode($params);
         }
-        
+
         $status = 6;
         if ($roleUser['access_type'] != 'testing-lab') {
             $status = 9;
         }
-        
+
         if (!empty($data['arrivalDateTime']) && trim($data['arrivalDateTime']) != "") {
             $data['arrivalDateTime'] = DateUtility::isoDateFormat($data['arrivalDateTime'], true);
         } else {
@@ -473,7 +495,7 @@ try {
     ];
 } catch (SystemException $exc) {
 
-    http_response_code(400);
+    http_response_code(500);
     $payload = [
         'status' => 'failed',
         'timestamp' => time(),
@@ -486,6 +508,6 @@ try {
 
 
 $payload = json_encode($payload);
-$general->addApiTracking($transactionId, $user['user_id'], count($input['data']), 'save-request', 'covid19', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], iterator_count($input), 'save-request', 'covid19', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 
 echo $payload;

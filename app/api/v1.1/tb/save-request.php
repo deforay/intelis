@@ -1,12 +1,15 @@
 <?php
 
-use App\Exceptions\SystemException;
-use App\Services\ApiService;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
+use JsonMachine\Items;
 use App\Services\TbService;
+use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Exceptions\SystemException;
+use App\Registries\ContainerRegistry;
+use JsonMachine\JsonDecoder\ExtJsonDecoder;
+use JsonMachine\Exception\PathNotFoundException;
 
 session_unset(); // no need of session in json response
 
@@ -17,8 +20,33 @@ try {
     /** @var Slim\Psr7\Request $request */
     $request = $GLOBALS['request'];
 
-    $origJson = (string) $request->getBody();
-    $input = $request->getParsedBody();
+    $origJson = $request->getBody()->getContents();
+
+
+    $appVersion = null;
+    try {
+        $appVersion = Items::fromString($origJson, [
+            'pointer' => '/appVersion',
+            'decoder' => new ExtJsonDecoder(true)
+        ]);
+        $appVersion = iterator_to_array($appVersion)['appVersion'];
+    } catch (PathNotFoundException $ex) {
+        // handle error, perhaps log it, or set a default value
+        error_log("The path '/appVersion' was not found in the JSON data.");
+    }
+
+    try {
+
+        $input = Items::fromString($origJson, [
+            'pointer' => '/data',
+            'decoder' => new ExtJsonDecoder(true)
+        ]);
+        if (empty($input)) {
+            throw new PathNotFoundException();
+        }
+    } catch (PathNotFoundException $ex) {
+        throw new SystemException("Invalid request");
+    }
 
     /** @var MysqliDb $db */
     $db = ContainerRegistry::get('db');
@@ -58,7 +86,7 @@ try {
     $version = $general->getSystemConfig('sc_version');
     $deviceId = $general->getHeader('deviceId');
 
-    foreach ($input['data'] as $rootKey => $data) {
+    foreach ($input as $rootKey => $data) {
 
         $mandatoryFields = ['sampleCollectionDate', 'facilityId', 'appSampleCode'];
 
@@ -150,7 +178,7 @@ try {
         $formAttributes = array(
             'applicationVersion'    => $version,
             'apiTransactionId'      => $transactionId,
-            'mobileAppVersion'      => $input['appVersion'],
+            'mobileAppVersion'      => $appVersion,
             'deviceId'              => $deviceId
         );
         $formAttributes = json_encode($formAttributes);
@@ -175,7 +203,7 @@ try {
         if ($roleUser['access_type'] != 'testing-lab') {
             $status = 9;
         }
-        
+
         if (!empty($data['arrivalDateTime']) && trim($data['arrivalDateTime']) != "") {
             $arrivalDate = explode(" ", $data['arrivalDateTime']);
             $data['arrivalDateTime'] = DateUtility::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
@@ -387,8 +415,8 @@ try {
     ];
     http_response_code(200);
 } catch (SystemException $exc) {
-    
-    http_response_code(400);
+
+    http_response_code(500);
     $payload = [
         'status' => 'failed',
         'timestamp' => time(),
@@ -399,5 +427,5 @@ try {
     error_log($exc->getTraceAsString());
 }
 $payload = json_encode($payload);
-$general->addApiTracking($transactionId, $user['user_id'], count($input['data']), 'save-request', 'tb', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], iterator_count($input), 'save-request', 'tb', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 echo $payload;

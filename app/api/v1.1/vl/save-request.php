@@ -1,5 +1,7 @@
 <?php
 
+
+use JsonMachine\Items;
 use App\Services\VlService;
 use App\Services\ApiService;
 use App\Services\UsersService;
@@ -7,17 +9,44 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use JsonMachine\JsonDecoder\ExtJsonDecoder;
+use JsonMachine\Exception\PathNotFoundException;
+
 
 ini_set('memory_limit', -1);
-
 
 try {
 
     /** @var Slim\Psr7\Request $request */
     $request = $GLOBALS['request'];
 
-    $origJson = (string) $request->getBody();
-    $input = $request->getParsedBody();
+    $origJson = $request->getBody()->getContents();
+
+    $appVersion = null;
+    try {
+        $appVersion = Items::fromString($origJson, [
+            'pointer' => '/appVersion',
+            'decoder' => new ExtJsonDecoder(true)
+        ]);
+        $appVersion = iterator_to_array($appVersion)['appVersion'];
+    } catch (PathNotFoundException $ex) {
+        // handle error, perhaps log it, or set a default value
+        error_log("The path '/appVersion' was not found in the JSON data.");
+    }
+
+    try {
+
+        $input = Items::fromString($origJson, [
+            'pointer' => '/data',
+            'decoder' => new ExtJsonDecoder(true)
+        ]);
+        if (empty($input)) {
+            throw new PathNotFoundException();
+        }
+    } catch (PathNotFoundException $ex) {
+        throw new SystemException("Invalid request");
+    }
+
 
 
     /** @var MysqliDb $db */
@@ -45,9 +74,6 @@ try {
     $txtVal = null;
     $finalResult = null;
 
-    if (empty($input) || empty($input['data'])) {
-        throw new SystemException("Invalid request");
-    }
 
     $db->startTransaction();
 
@@ -65,7 +91,7 @@ try {
     $deviceId = $general->getHeader('deviceId');
 
 
-    foreach ($input['data'] as $rootKey => $data) {
+    foreach ($input as $rootKey => $data) {
 
         $mandatoryFields = [
             'sampleCollectionDate',
@@ -156,7 +182,7 @@ try {
         $formAttributes = array(
             'applicationVersion'    => $version,
             'apiTransactionId'      => $transactionId,
-            'mobileAppVersion'      => $input['appVersion'],
+            'mobileAppVersion'      => $appVersion,
             'deviceId'              => $deviceId
         );
         $formAttributes = json_encode($formAttributes);
@@ -442,7 +468,6 @@ try {
         if (!empty($data['vlSampleId'])) {
             $db = $db->where('vl_sample_id', $data['vlSampleId']);
             $id = $db->update('form_vl', $vlFulldata);
-            error_log($db->getLastQuery());
             error_log($db->getLastError());
         }
         // echo "<pre>";print_r($data);die;
@@ -483,7 +508,7 @@ try {
     http_response_code(200);
 } catch (SystemException $exc) {
 
-    http_response_code(400);
+    http_response_code(500);
     $payload = [
         'status' => 'failed',
         'timestamp' => time(),
@@ -491,11 +516,12 @@ try {
         'data' => []
     ];
     $db->rollback();
+    error_log($db->getLastError());
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
 }
 
 
 $payload = json_encode($payload);
-$general->addApiTracking($transactionId, $user['user_id'], count($input['data']), 'save-request', 'vl', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], iterator_count($input), 'save-request', 'vl', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 echo $payload;
