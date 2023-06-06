@@ -9,6 +9,7 @@ use App\Services\Covid19Service;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
+use JsonMachine\Exception\PathNotFoundException;
 
 session_unset(); // no need of session in json response
 ini_set('memory_limit', -1);
@@ -18,16 +19,30 @@ try {
     /** @var Slim\Psr7\Request $request */
     $request = $GLOBALS['request'];
 
-    $appVersion = Items::fromString($origJson, [
-        'pointer' => '/appVersion',
-        'decoder' => new ExtJsonDecoder(true)
-    ]);
-    $appVersion = iterator_to_array($appVersion)['appVersion'];
+    $appVersion = null;
+    try {
+        $appVersion = Items::fromString($origJson, [
+            'pointer' => '/appVersion',
+            'decoder' => new ExtJsonDecoder(true)
+        ]);
+        $appVersion = iterator_to_array($appVersion)['appVersion'];
+    } catch (PathNotFoundException $ex) {
+        // handle error, perhaps log it, or set a default value
+        error_log("The path '/appVersion' was not found in the JSON data.");
+    }
 
-    $input = Items::fromString($origJson, [
-        'pointer' => '/data',
-        'decoder' => new ExtJsonDecoder(true)
-    ]);
+    try {
+
+        $input = Items::fromString($origJson, [
+            'pointer' => '/data',
+            'decoder' => new ExtJsonDecoder(true)
+        ]);
+        if (empty($input)) {
+            throw new PathNotFoundException();
+        }
+    } catch (PathNotFoundException $ex) {
+        throw new SystemException("Invalid request");
+    }
 
 
     /** @var MysqliDb $db */
@@ -53,9 +68,6 @@ try {
     $vlsmSystemConfig = $general->getSystemConfig();
     $user = null;
 
-    if (empty($input) || empty($input['data'])) {
-        throw new SystemException("Invalid request");
-    }
 
     /* For API Tracking params */
     $requestUrl = $_SERVER['HTTP_HOST'];
@@ -72,7 +84,7 @@ try {
     $deviceId = $general->getHeader('deviceId');
 
     $responseData = [];
-    foreach ($input['data'] as $rootKey => $data) {
+    foreach ($input as $rootKey => $data) {
 
 
         $mandatoryFields = ['sampleCollectionDate', 'facilityId', 'appSampleCode'];
@@ -483,7 +495,7 @@ try {
     ];
 } catch (SystemException $exc) {
 
-    http_response_code(400);
+    http_response_code(500);
     $payload = [
         'status' => 'failed',
         'timestamp' => time(),
@@ -496,6 +508,6 @@ try {
 
 
 $payload = json_encode($payload);
-$general->addApiTracking($transactionId, $user['user_id'], iterator_count($input), 'save-request', 'covid19', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], iterator_count($input), 'save-request', 'covid19', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 
 echo $payload;

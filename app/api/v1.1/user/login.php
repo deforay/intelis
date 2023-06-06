@@ -89,7 +89,7 @@ try {
         throw new SystemException('Login failed. Please contact system administrator.');
     }
 } catch (SystemException $exc) {
-    http_response_code(400);
+    http_response_code(500);
     $payload = array(
         'status' => 2,
         'message' => 'Login failed. Please contact system administrator.',

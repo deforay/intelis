@@ -9,6 +9,7 @@ use App\Services\CommonService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
+use JsonMachine\Exception\PathNotFoundException;
 
 session_unset(); // no need of session in json response
 ini_set('memory_limit', -1);
@@ -20,16 +21,30 @@ try {
 
     $origJson = $request->getBody()->getContents();
 
-    $appVersion = Items::fromString($origJson, [
-        'pointer' => '/appVersion',
-        'decoder' => new ExtJsonDecoder(true)
-    ]);
-    $appVersion = iterator_to_array($appVersion)['appVersion'];
+    $appVersion = null;
+    try {
+        $appVersion = Items::fromString($origJson, [
+            'pointer' => '/appVersion',
+            'decoder' => new ExtJsonDecoder(true)
+        ]);
+        $appVersion = iterator_to_array($appVersion)['appVersion'];
+    } catch (PathNotFoundException $ex) {
+        // handle error, perhaps log it, or set a default value
+        error_log("The path '/appVersion' was not found in the JSON data.");
+    }
 
-    $input = Items::fromString($origJson, [
-        'pointer' => '/data',
-        'decoder' => new ExtJsonDecoder(true)
-    ]);
+    try {
+
+        $input = Items::fromString($origJson, [
+            'pointer' => '/data',
+            'decoder' => new ExtJsonDecoder(true)
+        ]);
+        if (empty($input)) {
+            throw new PathNotFoundException();
+        }
+    } catch (PathNotFoundException $ex) {
+        throw new SystemException("Invalid request");
+    }
 
     /** @var MysqliDb $db */
     $db = ContainerRegistry::get('db');
@@ -403,7 +418,7 @@ try {
     ];
 } catch (SystemException $exc) {
 
-    http_response_code(400);
+    http_response_code(500);
     $payload = [
         'status' => 'failed',
         'timestamp' => time(),
