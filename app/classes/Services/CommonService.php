@@ -866,8 +866,6 @@ class CommonService
             }
         }
 
-        error_log('JSON_SET(COALESCE(' . $column . ', "{}")' . $setString . ')');
-
         return 'JSON_SET(COALESCE(' . $column . ', "{}")' . $setString . ')';
     }
 

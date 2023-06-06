@@ -10,7 +10,7 @@ use App\Services\UsersService;
 /** @var Slim\Psr7\Request $request */
 $request = $GLOBALS['request'];
 
-//$origJson = (string) $request->getBody();
+//$origJson = $request->getBody()->getContents();
 $input = $request->getParsedBody();
 
 /** @var MysqliDb $db */

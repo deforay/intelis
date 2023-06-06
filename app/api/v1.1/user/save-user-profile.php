@@ -12,7 +12,7 @@ use App\Utilities\ImageResizeUtility;
 /** @var Slim\Psr7\Request $request */
 $request = $GLOBALS['request'];
 
-$origJson = (string) $request->getBody();
+$origJson = $request->getBody()->getContents();
 
 
 

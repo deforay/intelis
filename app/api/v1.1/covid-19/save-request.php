@@ -1,12 +1,14 @@
 <?php
 
-use App\Exceptions\SystemException;
+use JsonMachine\Items;
 use App\Services\ApiService;
-use App\Services\Covid19Service;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Services\Covid19Service;
+use App\Exceptions\SystemException;
+use App\Registries\ContainerRegistry;
+use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
 session_unset(); // no need of session in json response
 ini_set('memory_limit', -1);
@@ -16,8 +18,16 @@ try {
     /** @var Slim\Psr7\Request $request */
     $request = $GLOBALS['request'];
 
-    //$origJson = (string) $request->getBody();
-    $input = $request->getParsedBody();
+    $appVersion = Items::fromString($origJson, [
+        'pointer' => '/appVersion',
+        'decoder' => new ExtJsonDecoder(true)
+    ]);
+    $appVersion = iterator_to_array($appVersion)['appVersion'];
+
+    $input = Items::fromString($origJson, [
+        'pointer' => '/data',
+        'decoder' => new ExtJsonDecoder(true)
+    ]);
 
 
     /** @var MysqliDb $db */
@@ -34,10 +44,10 @@ try {
 
     /** @var Covid19Service $covid19Service */
     $covid19Service = ContainerRegistry::get(Covid19Service::class);
-    
+
     $tableName = "form_covid19";
     $tableName1 = "activity_log";
-    $testTableName = 'covid19_tests';    
+    $testTableName = 'covid19_tests';
     $transactionId = $general->generateUUID();
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
@@ -167,7 +177,7 @@ try {
         $formAttributes = array(
             'applicationVersion'    => $version,
             'apiTransactionId'      => $transactionId,
-            'mobileAppVersion'      => $input['appVersion'],
+            'mobileAppVersion'      => $appVersion,
             'deviceId'              => $deviceId
         );
         $formAttributes = json_encode($formAttributes);
@@ -187,12 +197,12 @@ try {
 
             $data['covid19SampleId'] = $covid19Service->insertSampleCode($params);
         }
-        
+
         $status = 6;
         if ($roleUser['access_type'] != 'testing-lab') {
             $status = 9;
         }
-        
+
         if (!empty($data['arrivalDateTime']) && trim($data['arrivalDateTime']) != "") {
             $data['arrivalDateTime'] = DateUtility::isoDateFormat($data['arrivalDateTime'], true);
         } else {
@@ -486,6 +496,6 @@ try {
 
 
 $payload = json_encode($payload);
-$general->addApiTracking($transactionId, $user['user_id'], count($input['data']), 'save-request', 'covid19', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], iterator_count($input), 'save-request', 'covid19', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
 
 echo $payload;

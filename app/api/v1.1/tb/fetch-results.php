@@ -15,7 +15,7 @@ ini_set('memory_limit', -1);
 /** @var Slim\Psr7\Request $request */
 $request = $GLOBALS['request'];
 
-$origJson = (string) $request->getBody();
+$origJson = $request->getBody()->getContents();
 $input = $request->getParsedBody();
 
 
