@@ -10,7 +10,7 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
-
+ 
 /**
  * Generic tests functions
  *
@@ -499,5 +499,29 @@ class GenericTestsService
     {
         // echo "<pre>";print_r(array_combine($fields, $values));die;
         return $this->db->insert($table, array_combine($fields, $values));
+    }
+
+    public function getSampleType($testTypeId)
+    {
+        $sampleTypeQry = "SELECT * FROM r_generic_sample_types as st INNER JOIN generic_test_sample_type_map as map ON map.sample_type_id=st.sample_type_id WHERE map.test_type_id=$testTypeId AND st.sample_type_status='active'";
+        return $this->db->query($sampleTypeQry);
+    }
+
+    public function getTestReason($testTypeId)
+    {
+        $testReasonQry = "SELECT * FROM r_generic_test_reasons as tr INNER JOIN generic_test_reason_map as map ON map.test_reason_id=tr.test_reason_id WHERE map.test_type_id=$testTypeId AND tr.test_reason_status='active'";
+        return $this->db->query($testReasonQry);
+    }
+
+    public function getTestMethod($testTypeId)
+    {
+        $testMethodQry = "SELECT * FROM r_generic_test_methods as tm INNER JOIN generic_test_methods_map as map ON map.test_method_id=tm.test_method_id WHERE map.test_type_id=$testTypeId AND tm.test_method_status='active'";
+        return $this->db->query($testMethodQry);
+    }
+
+    public function getTestResultUnit($testTypeId)
+    {
+        $testResultUnitQry = "SELECT * FROM r_generic_test_result_units as tu INNER JOIN generic_test_result_units_map as map ON map.unit_id=tu.unit_id WHERE map.test_type_id=$testTypeId AND tu.unit_status='active'";
+        return $this->db->query($testResultUnitQry);
     }
 }

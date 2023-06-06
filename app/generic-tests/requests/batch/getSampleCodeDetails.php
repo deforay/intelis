@@ -82,15 +82,15 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 
 if (isset($_POST['sampleReceivedAtLab']) && trim($_POST['sampleReceivedAtLab']) != '') {
 	if (trim($sampleReceivedStartDate) == trim($sampleReceivedEndDate)) {
-		$query = $query . ' AND DATE(sample_received_at_vl_lab_datetime) = "' . $sampleReceivedStartDate . '"';
+		$query = $query . ' AND DATE(sample_received_at_testing_lab_datetime) = "' . $sampleReceivedStartDate . '"';
 	} else {
-		$query = $query . ' AND DATE(sample_received_at_vl_lab_datetime) >= "' . $sampleReceivedStartDate . '" AND DATE(sample_received_at_vl_lab_datetime) <= "' . $sampleReceivedEndDate . '"';
+		$query = $query . ' AND DATE(sample_received_at_testing_lab_datetime) >= "' . $sampleReceivedStartDate . '" AND DATE(sample_received_at_testing_lab_datetime) <= "' . $sampleReceivedEndDate . '"';
 	}
 }
 //$query = $query." ORDER BY f.facility_name ASC";
 //$query = $query . " ORDER BY vl.last_modified_datetime ASC";
 $query = $query . " ORDER BY vl.sample_code ASC";
-// echo $query;die;
+
 $result = $db->rawQuery($query);
 ?>
 <script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
