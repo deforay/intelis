@@ -362,14 +362,7 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 										<label for="resultUnit" class="col-lg-4 control-label"><?php echo _("Test Result Unit"); ?> </label>
 										<div class="col-lg-7">
 											<select class="form-control quantitativeResult" id="testResultUnit" name="resultConfig[test_result_unit][]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>' multiple>
-												<option value="">--Select--</option>
-												<?php
-												foreach ($testResultUnits as $key=>$unit) {
-												?>
-													<option value="<?php echo $key; ?>"><?php echo $unit; ?></option>
-												<?php
-												}
-												?>
+											<?= $general->generateSelectOptions($testResultUnits, null, '-- Select --') ?>
 											</select>
 										</div>
 									</div>
