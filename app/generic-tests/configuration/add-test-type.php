@@ -253,7 +253,7 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 												<option value="labSection"><?php echo _("Lab"); ?></option>
 												<option value="otherSection"><?php echo _("Other"); ?></option>
 											</select>
-											<input type="text" name="sectionOther[]" id="sectionOther1" class="form-control" placeholder='<?php echo _("Section Other"); ?>' title='<?php echo _("Please enter section other"); ?>' style="display:none;" />
+											<input type="text" name="sectionOther[]" id="sectionOther1" class="form-control auto-complete-tbx" onchange="addNewSection(this.value)" placeholder='<?php echo _("Section Other"); ?>' title='<?php echo _("Please enter section other"); ?>' style="display:none;" />
 										</td>
 										<td align="center" style="vertical-align:middle;">
 											<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
@@ -362,14 +362,7 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 										<label for="resultUnit" class="col-lg-4 control-label"><?php echo _("Test Result Unit"); ?> </label>
 										<div class="col-lg-7">
 											<select class="form-control quantitativeResult" id="testResultUnit" name="resultConfig[test_result_unit][]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>' multiple>
-												<option value="">--Select--</option>
-												<?php
-												foreach ($testResultUnits as $key=>$unit) {
-												?>
-													<option value="<?php echo $key; ?>"><?php echo $unit; ?></option>
-												<?php
-												}
-												?>
+											<?= $general->generateSelectOptions($testResultUnits, null, '-- Select --') ?>
 											</select>
 										</div>
 									</div>
@@ -408,7 +401,6 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 
 		</div>
 		<!-- /.box -->
-
 	</section>
 	<!-- /.content -->
 </div>
@@ -417,8 +409,18 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 	tableRowId = 2;
 	testQualCounter = 1;
 	testQuanCounter = 1;
-
+	var otherSectionNames = [];
+	
+	function addNewSection(section)
+	{
+		if(section!="" && ($.inArray(section, otherSectionNames) == -1))
+			otherSectionNames.push(section);
+	}
 	$(document).ready(function() {
+		$( ".auto-complete-tbx" ).autocomplete({
+      source: otherSectionNames
+    });
+		
 		$('input').tooltip();
 		generateRandomString('1');
 		$("#sampleType").select2({
@@ -601,9 +603,14 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 						<option value="labSection"><?php echo _("Lab"); ?></option>\
 						<option value="otherSection"><?php echo _("Other"); ?></option>\
                     </select>\
-                    <input type="text" name="sectionOther[]" id="sectionOther' + tableRowId + '" class="form-control" placeholder="<?php echo _("Section Other"); ?>" title="<?php echo _("Please enter section other"); ?>" style="display:none;"/>';
+                    <input type="text" name="sectionOther[]" onchange="addNewSection(this.value)" id="sectionOther' + tableRowId + '" class="form-control auto-complete-tbx" placeholder="<?php echo _("Section Other"); ?>" title="<?php echo _("Please enter section other"); ?>" style="display:none;"/>';
 		f.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
 		$(a).fadeIn(800);
+
+		$( ".auto-complete-tbx" ).autocomplete({
+      source: otherSectionNames
+    });
+
 		generateRandomString(tableRowId);
 		tableRowId++;
 	}
