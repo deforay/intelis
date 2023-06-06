@@ -23,15 +23,6 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
 
 $testPlatformResult = $general->getTestingPlatforms('vl');
 
-//global config
-// $configQuery = "SELECT `value` FROM global_config WHERE name ='vl_form'";
-// $configResult = $db->query($configQuery);
-// $showUrgency = ($configResult[0]['value'] == 1 || $configResult[0]['value'] == 2) ? true : false;
-//Get active machines
-
-//$query = "SELECT vl.sample_code,vl.vl_sample_id,vl.facility_id,f.facility_name,f.facility_code FROM form_vl as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id where sample_batch_id is NULL OR sample_batch_id='' ORDER BY f.facility_name ASC";
-//$result = $db->rawQuery($query);
-
 $sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
 
@@ -41,15 +32,17 @@ $maxId = $general->createBatchCode();
 //Set last machine label order
 $machinesLabelOrder = [];
 foreach ($testPlatformResult as $machine) {
-	$lastOrderQuery = "SELECT label_order from batch_details WHERE machine ='" . $machine['config_id'] . "' ORDER BY request_created_datetime DESC";
-	$lastOrderInfo = $db->query($lastOrderQuery);
+	$lastOrderQuery = "SELECT label_order
+						FROM batch_details
+						WHERE machine =?
+						ORDER BY request_created_datetime DESC";
+	$lastOrderInfo = $db->rawQuery($lastOrderQuery, [$machine['config_id']]);
 	if (isset($lastOrderInfo[0]['label_order']) && trim($lastOrderInfo[0]['label_order']) != '') {
 		$machinesLabelOrder[$machine['config_id']] = implode(",", json_decode($lastOrderInfo[0]['label_order'], true));
 	} else {
 		$machinesLabelOrder[$machine['config_id']] = '';
 	}
 }
-//print_r($machinesLabelOrder);
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
 <style>
@@ -259,7 +252,23 @@ foreach ($testPlatformResult as $machine) {
 				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
 			},
 			fireSearch: function(value) {
-				return value.length > 3;
+				return value.length > 2;
+			},
+			afterMoveToRight: function($left, $right, $options) {
+				const count = $right.find('option').length;
+				if (count > 0) {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				} else {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				}
+			},
+			afterMoveToLeft: function($left, $right, $options) {
+				const count = $right.find('option').length;
+				if (count > 0) {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				} else {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				}
 			}
 		});
 
@@ -308,11 +317,11 @@ foreach ($testPlatformResult as $machine) {
 		var selected = $("#machine").find('option:selected');
 		noOfSamples = selected.data('no-of-samples');
 		if (noOfSamples < selVal.length) {
-			alert("You have selected maximum number of samples");
+			alert("<?= _("You have selected more than allowed number of samples"); ?>");
 			return false;
 		}
 		if (selVal == "") {
-			alert("Please select sample code");
+			alert("<?= _("Please select one or more samples"); ?>");
 			return false;
 		}
 
@@ -325,9 +334,6 @@ foreach ($testPlatformResult as $machine) {
 			document.getElementById('addBatchForm').submit();
 		}
 	}
-
-	//$("#auditRndNo").multiselect({height: 100,minWidth: 150});
-
 
 	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
 		var removeDots = obj.value.replace(/\./g, "");
@@ -420,27 +426,6 @@ foreach ($testPlatformResult as $machine) {
 			$('#alertText').html('');
 		}
 	});
-
-	$(document.body).on("change", "#search, #search_to", function() {
-		countOff().then(function(count) {
-			// use the result here
-			if (count > 0) {
-				$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
-			} else {
-				$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
-			}
-		});
-	});
-
-	function countOff() {
-		return new Promise(function(resolve, reject) {
-			setTimeout(function() {
-				resolve();
-			}, 300);
-		}).then(function() {
-			return $("#search_to option").length;
-		});
-	}
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';

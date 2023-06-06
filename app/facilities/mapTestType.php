@@ -89,7 +89,7 @@ require_once APPLICATION_PATH . '/header.php';
 													<div class="col-md-12">
 														<div class="row">
 															<div class="col-md-12" style="text-align:justify;">
-																<code>If any of the selected fields are incomplete, the Result PDF appears with a <strong>DRAFT</strong> watermark. Leave right block blank (Deselect All) to disable this.</code> 
+																<code>If any of the selected fields are incomplete, the Result PDF appears with a <strong>DRAFT</strong> watermark. Leave right block blank (Deselect All) to disable this.</code>
 															</div>
 														</div>
 														<div style="width:100%;margin:10px auto;clear:both;">
@@ -159,7 +159,7 @@ require_once APPLICATION_PATH . '/header.php';
 				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
 			},
 			fireSearch: function(value) {
-				return value.length > 3;
+				return value.length > 2;
 			}
 		});
 
@@ -169,7 +169,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 		let mappedFacilities = JSON.stringify($("#search").val());
 		$("#mappedFacilities").val(mappedFacilities);
-		$("#search").val(""); // THIS IS IMPORTANT. TO REDUCE NUMBER OF PHP VARIABLES		
+		$("#search").val(""); // THIS IS IMPORTANT. TO REDUCE NUMBER OF PHP VARIABLES
 		var selVal = [];
 		$('#search_to option').each(function(i, selected) {
 			selVal[i] = $(selected).val();

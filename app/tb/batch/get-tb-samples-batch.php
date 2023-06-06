@@ -109,7 +109,7 @@ $result = $db->rawQuery($query);
                 right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
             },
             fireSearch: function(value) {
-                return value.length > 3;
+                return value.length > 2;
             }
         });
     });

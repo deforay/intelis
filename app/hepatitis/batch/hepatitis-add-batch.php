@@ -203,7 +203,7 @@ foreach ($testPlatformResult as $machine) {
                 right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
             },
             fireSearch: function(value) {
-                return value.length > 3;
+                return value.length > 2;
             }
         });
         $("#facilityName").select2({
@@ -246,11 +246,11 @@ foreach ($testPlatformResult as $machine) {
         var selected = $("#machine").find('option:selected');
         noOfSamples = selected.data('no-of-samples');
         if (noOfSamples < selVal.length) {
-            alert("You have selected maximum number of samples");
+            alert("<?= _("You have selected more than allowed number of samples"); ?>");
             return false;
         }
         if (selVal == "") {
-            alert("Please select sample code");
+            alert("<?= _("Please select one or more samples"); ?>");
             return false;
         }
 

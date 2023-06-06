@@ -643,7 +643,9 @@ class CommonService
 
     public function createBatchCode()
     {
-        $batchQuery = 'SELECT MAX(batch_code_key) FROM batch_details as bd WHERE DATE(bd.request_created_datetime) = CURRENT_DATE';
+        $batchQuery = 'SELECT MAX(batch_code_key)
+                        FROM batch_details as bd
+                        WHERE DATE(bd.request_created_datetime) = CURRENT_DATE';
         $batchResult = $this->db->query($batchQuery);
 
         if ($batchResult[0]['MAX(batch_code_key)'] != '' && $batchResult[0]['MAX(batch_code_key)'] != null) {
@@ -651,7 +653,7 @@ class CommonService
             $length = strlen($code);
             if ($length == 1) {
                 $code = "00" . $code;
-            } else if ($length == 2) {
+            } elseif ($length == 2) {
                 $code = "0" . $code;
             }
         } else {

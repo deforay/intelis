@@ -54,7 +54,7 @@ $uResult = $db->rawQuery($uQuery);
                 right: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
             },
             fireSearch: function(value) {
-                return value.length > 3;
+                return value.length > 2;
             }
         });
         setTimeout(function() {
