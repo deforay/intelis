@@ -298,7 +298,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 														<option value="labSection" <?php echo ($testAttribute['section'][$i] == 'labSection') ? "selected='selected'" : "" ?>><?php echo _("Lab"); ?></option>
 														<option value="otherSection" <?php echo ($testAttribute['section'][$i] == 'otherSection') ? "selected='selected'" : "" ?>><?php echo _("Other"); ?></option>
 													</select>
-													<input type="text" name="sectionOther[]" id="sectionOther<?php echo $i ?>" class="form-control" placeholder='<?php echo _("Section Other"); ?>' title='<?php echo _("Please enter section other"); ?>' style="<?php echo ($testAttribute['section'][$i] == 'otherSection') ? "" : "display:none;" ?>" value="<?php echo ($testAttribute['section'][$i] == 'otherSection') ? $testAttribute['section_other'][$i] : "" ?>" />
+													<input type="text" name="sectionOther[]" id="sectionOther<?php echo $i ?>" onchange="addNewSection(this.value)" class="form-control auto-complete-tbx" placeholder='<?php echo _("Section Other"); ?>' title='<?php echo _("Please enter section other"); ?>' style="<?php echo ($testAttribute['section'][$i] == 'otherSection') ? "" : "display:none;" ?>" value="<?php echo ($testAttribute['section'][$i] == 'otherSection') ? $testAttribute['section_other'][$i] : "" ?>" />
 												</td>
 												<td align="center" style="vertical-align:middle;">
 													<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
@@ -344,7 +344,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 												<option value="labSection"><?php echo _("Lab"); ?></option>
 												<option value="otherSection"><?php echo _("Other"); ?></option>
 											</select>
-											<input type="text" name="sectionOther[]" id="sectionOther1" class="form-control" placeholder='<?php echo _("Section Other"); ?>' title='<?php echo _("Please enter section other"); ?>' style="display:none;" />
+											<input type="text" name="sectionOther[]" id="sectionOther1" class="form-control auto-complete-tbx" onchange="addNewSection(this.value)" placeholder='<?php echo _("Section Other"); ?>' title='<?php echo _("Please enter section other"); ?>' style="display:none;" />
 										</td>
 										<td align="center" style="vertical-align:middle;">
 											<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
@@ -546,9 +546,27 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 	tableRowId = <?php echo $n + 1; ?>;
 	testQualCounter = <?php echo count($testResultAttribute['result']);?>;
 	testQuanCounter = <?php echo count($testResultAttribute['quantitative_result']);?>;
+	var otherSectionNames = [];
 
+	function addNewSection(section,rowId)
+	{
+		if(section!="" && ($.inArray(section, otherSectionNames) == -1))
+			otherSectionNames.push(section);
+	}
 
 	$(document).ready(function() {
+		addOtherSection();
+		function addOtherSection(){
+			$(".auto-complete-tbx").each(function(){
+				if($(this).val()!="" && ($.inArray($(this).val(), otherSectionNames) == -1))
+					otherSectionNames.push($(this).val());
+			});
+		}
+
+		$( ".auto-complete-tbx" ).autocomplete({
+      source: otherSectionNames
+    });
+	
 		$('input').tooltip();
 		checkResultType();
 		$("#sampleType").select2({
@@ -712,9 +730,14 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 						<option value="labSection"><?php echo _("Lab"); ?></option>\
 						<option value="otherSection"><?php echo _("Other"); ?></option>\
 					</select>\
-					<input type="text" name="sectionOther[]" id="sectionOther' + tableRowId + '" class="form-control" placeholder="<?php echo _("Section Other"); ?>" title="<?php echo _("Please enter section other"); ?>" style="display:none;"/>';
+					<input type="text" name="sectionOther[]" id="sectionOther' + tableRowId + '" class="form-control auto-complete-tbx" onchange="addNewSection(this.value)" placeholder="<?php echo _("Section Other"); ?>" title="<?php echo _("Please enter section other"); ?>" style="display:none;"/>';
 		f.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
 		$(a).fadeIn(800);
+
+		$( ".auto-complete-tbx" ).autocomplete({
+      source: otherSectionNames
+    });
+
 		generateRandomString(tableRowId);
 		tableRowId++;
 	}
@@ -774,6 +797,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 			$("#sectionOther" + rowId).hide();
 			$("#sectionOther" + rowId).removeClass("isRequired");
 			$("#sectionOther" + rowId).val('');
+			addOtherSection();
 		}
 	}
 
