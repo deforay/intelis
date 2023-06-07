@@ -163,31 +163,11 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 							<div class="col-md-6"><a href="eid-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><em class="fa-solid fa-arrow-down-1-9"></em> Edit Position</a></div>
 						</div>
 						<div class="row" id="sampleDetails">
-							<!--<div class="col-md-8">
-								<div class="form-group">
-									<div class="col-md-12">
-										<div class="col-md-12">
-											<div style="width:60%;margin:0 auto;clear:both;">
-												<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
-											</div><br /><br />
-											<select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search">
-
-											</select>
-										</div>
-									</div>
-								</div>
-							</div>-->
-							<h4> <?php echo _("Sample Code"); ?></h4>
 							<div class="col-md-5">
-								<!-- <div class="col-lg-5"> -->
 								<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
-									<?php
-									foreach ($result as $key => $sample) {
-									?>
+									<?php foreach ($result as $key => $sample) { ?>
 										<option value="<?php echo $sample['eid_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
-									<?php
-									}
-									?>
+									<?php } ?>
 								</select>
 							</div>
 
@@ -287,7 +267,6 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 				}
 			}
 		});
-		
 		setTimeout(function() {
 			$("#search_rightSelected").trigger('click');
 		}, 10);
@@ -341,8 +320,6 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 			}
 	});
 
-	
-
 	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
 		var removeDots = obj.value.replace(/\./g, "");
 		var removeDots = removeDots.replace(/\,/g, "");
@@ -372,6 +349,7 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 		$.post("/eid/batch/get-eid-samples-batch.php", {
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
 				sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
+				batchId: $("#batchId").val(),
 				fName: fName
 			},
 			function(data) {

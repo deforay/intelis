@@ -158,7 +158,6 @@ $testPlatformResult = $general->getTestingPlatforms('hepatitis');
 						</div>
 						<div class="row" id="sampleDetails">
 							<div class="col-md-5">
-								<!-- <div class="col-lg-5"> -->
 								<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
 									<?php
 									foreach ($result as $key => $sample) {
@@ -330,6 +329,7 @@ $testPlatformResult = $general->getTestingPlatforms('hepatitis');
 		$.post("/hepatitis/batch/get-hepatitis-samples-batch.php", {
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
 				sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
+				batchId: $("#batchId").val(),
 				fName: fName
 			},
 			function(data) {

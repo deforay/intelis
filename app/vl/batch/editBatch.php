@@ -196,30 +196,8 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 							</div>
 							<div class="col-md-6"><a href="editBatchControlsPosition.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><em class="fa-solid fa-arrow-down-1-9"></em> Edit Position</a></div>
 						</div>
-						<div class="row" style="margin: 15px;">
-							<!--<div class="col-md-8">
-								<div class="form-group">
-									<div class="col-md-12">
-										<div class="col-md-12">
-											<div style="width:60%;margin:0 auto;clear:both;">
-												<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
-											</div><br /><br />
-											<select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search">
-												<?php
-												foreach ($result as $key => $sample) {
-												?>
-													<option value="<?php echo $sample['vl_sample_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
-												<?php
-												}
-												?>
-											</select>
-										</div>
-									</div>
-								</div>
-							</div>-->
-							<h4> <?php echo _("Sample Code"); ?></h4>
-							<div class="col-md-5" id="sampleDetails">
-								<!-- <div class="col-lg-5"> -->
+						<div class="row" style="margin: 15px;" id="sampleDetails">
+							<div class="col-md-5">
 								<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
 									<?php
 									foreach ($result as $key => $sample) {
@@ -304,7 +282,6 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 	}
 	//$("#auditRndNo").multiselect({height: 100,minWidth: 150});
 	$(document).ready(function() {
-
 		$('#search').multiselect({
 			search: {
 				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
@@ -391,7 +368,13 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 
 	function getSampleCodeDetails() {
 		$.blockUI();
-
+		var urgent = null;
+		var machine = $("#machine").val();
+		if (machine == null || machine == '') {
+			$.unblockUI();
+			alert('<?php echo _("You have to choose a testing platform to proceed"); ?>');
+			return false;
+		}
 		var fName = $("#facilityName").val();
 		var sName = $("#sampleType").val();
 		var gender = $("#gender").val();
@@ -407,12 +390,16 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 		} else {
 			breastfeeding = $('input[name=breastfeeding]:checked').val();
 		}
-		$.post("/vl/batch/getSelectedSampleCodeDetails.php", {
+		$.blockUI();
+		$.post("/vl/batch/getSampleCodeDetails.php", {
+				urgent: urgent,
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
+				sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
 				fName: fName,
 				sName: sName,
 				gender: gender,
 				pregnant: pregnant,
+				batchId: $("#batchId").val(),
 				breastfeeding: breastfeeding
 			},
 			function(data) {

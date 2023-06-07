@@ -204,30 +204,8 @@ $testPlatformResult = $general->getTestingPlatforms('generic-tests');
 							</div>
 							<div class="col-md-6"><a href="editBatchControlsPosition.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><em class="fa-solid fa-arrow-down-1-9"></em> Edit Position</a></div>
 						</div>
-						<div class="row" id="sampleDetails">
-							<!--<div class="col-md-8">
-                                <div class="form-group">
-                                    <div class="col-md-12">
-                                        <div class="col-md-12">
-                                            <div style="width:60%;margin:0 auto;clear:both;">
-                                                <a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
-                                            </div><br /><br />
-                                            <select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search">
-                                                <?php
-												foreach ($result as $key => $sample) {
-												?>
-                                                    <option value="<?php echo $sample['sample_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
-                                                <?php
-												}
-												?>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>-->
-							<h4> <?php echo _("Sample Code"); ?></h4>
+						<div class="row" style="margin: 15px;" id="sampleDetails">
 							<div class="col-md-5">
-								<!-- <div class="col-lg-5"> -->
 								<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
 									<?php
 									foreach ($result as $key => $sample) {
@@ -312,7 +290,6 @@ $testPlatformResult = $general->getTestingPlatforms('generic-tests');
 	}
 	//$("#auditRndNo").multiselect({height: 100,minWidth: 150});
 	$(document).ready(function() {
-		getSampleCodeDetails();
 		$('#search').multiselect({
 			search: {
 				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
@@ -397,7 +374,6 @@ $testPlatformResult = $general->getTestingPlatforms('generic-tests');
             $('#alertText').html('You have picked ' + $("#machine option:selected").text() + ' and it has limit of maximum ' + noOfSamples + ' samples to make it a batch');
         }*/
 	});
-
 	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
 		var removeDots = obj.value.replace(/\./g, "");
 		var removeDots = removeDots.replace(/\,/g, "");
@@ -438,17 +414,19 @@ $testPlatformResult = $general->getTestingPlatforms('generic-tests');
 		} else {
 			breastfeeding = $('input[name=breastfeeding]:checked').val();
 		}
-		$.post("/generic-tests/batch/getSampleCodeDetails.php", {
+		$.post("/generic-tests/requests/batch/getSampleCodeDetails.php", {
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
 				fName: fName,
 				sName: sName,
 				gender: gender,
 				pregnant: pregnant,
+				batchId: $("#batchId").val(),
 				breastfeeding: breastfeeding
 			},
 			function(data) {
 				if (data != "") {
 					$("#sampleDetails").html(data);
+					
 				}
 			});
 		$.unblockUI();

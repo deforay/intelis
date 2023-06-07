@@ -164,9 +164,7 @@ foreach ($testPlatformResult as $machine) {
 							<div class="col-md-6"><a href="hepatitis-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><em class="fa-solid fa-arrow-down-1-9"></em> Edit Position</a></div>
 						</div>
 						<div class="row" id="sampleDetails">
-							<h4> <?php echo _("Sample Code"); ?></h4>
 							<div class="col-md-5">
-								<!-- <div class="col-lg-5"> -->
 								<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
 									<?php
 									foreach ($result as $key => $sample) {
