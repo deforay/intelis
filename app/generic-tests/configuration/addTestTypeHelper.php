@@ -43,6 +43,30 @@ try {
         $testAttribute['mandatory_field'] = $_POST['mandatoryField'];
         $testAttribute['section'] = $_POST['section'];
         $testAttribute['section_other'] = $_POST['sectionOther'];
+        $testAttribute['field_order'] = $_POST['fieldOrder'];
+        $cnt = count($testAttribute['field_id']);
+        $fieldName=$fieldId=$fieldType=$dropDown=$mandatoryField=$section=$sectionOther=$fieldOrder=[];
+        for($i=1;$i<=$cnt;$i++)
+        {
+            $index = array_search($i,$testAttribute['field_order']);
+            array_push($fieldId,$testAttribute['field_id'][$index]);
+            array_push($fieldName,$testAttribute['field_name'][$index]);
+            array_push($fieldType,$testAttribute['field_type'][$index]);
+            array_push($dropDown,$testAttribute['drop_down'][$index]);
+            array_push($mandatoryField,$testAttribute['mandatory_field'][$index]);
+            array_push($section,$testAttribute['section'][$index]);
+            array_push($sectionOther,$testAttribute['section_other'][$index]);
+            array_push($fieldOrder,$testAttribute['field_order'][$index]);
+        }
+        $testAttribute['field_name'] = $fieldName;
+        $testAttribute['field_id'] = $fieldId;
+        $testAttribute['field_name'] = $fieldName;
+        $testAttribute['field_type'] = $fieldType;
+        $testAttribute['drop_down'] = $dropDown;
+        $testAttribute['mandatory_field'] = $mandatoryField;
+        $testAttribute['section'] = $section;
+        $testAttribute['section_other'] = $sectionOther;
+        $testAttribute['field_order'] = $fieldOrder;
         if(!is_numeric($_POST['testCategory'])){
             $_POST['testCategory'] = $generic->quickInsert('r_generic_test_categories', array('test_category_name', 'test_category_status'), array($_POST['testCategory'], 'active'));
         }

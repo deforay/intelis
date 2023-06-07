@@ -1560,6 +1560,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          testType: testType,
                     },
                     function(data) {
+                       //  console.log(data);
                          data = JSON.parse(data);
                          if (typeof(data.facilitySection) != "undefined" && data.facilitySection !== null && data.facilitySection.length > 0) {
                               $("#facilitySection").html(data.facilitySection);

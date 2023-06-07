@@ -239,15 +239,17 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 							<table aria-describedby="table" border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
 								<thead>
 									<tr>
-										<th style="text-align:center;width:25%;"><?php echo _("Field Name"); ?> <span class="mandatory">*</span></th>
-										<th style="text-align:center;width:30%;"><?php echo _("Field Type"); ?> <span class="mandatory">*</span></th>
+									<th style="text-align:center;width:25%;"><?php echo _("Field Name"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:20%;"><?php echo _("Field Type"); ?> <span class="mandatory">*</span></th>
 										<th style="text-align:center;width:10%;"><?php echo _("Is it Mandatory?"); ?> <span class="mandatory">*</span></th>
 										<th style="text-align:center;width:25%;"><?php echo _("Section"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:10%;"><?php echo _("Field Order"); ?> </th>
 										<th style="text-align:center;width:10%;"><?php echo _("Action"); ?></th>
 									</tr>
 								</thead>
 								<tbody id="attributeTable">
 									<?php
+							
 									$n = count($testAttribute['field_name']);
 									if ($n > 0) {
 										for ($i = 0; $i < $n; $i++) {
@@ -300,6 +302,9 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 													</select>
 													<input type="text" name="sectionOther[]" id="sectionOther<?php echo $i ?>" onchange="addNewSection(this.value)" class="form-control auto-complete-tbx" placeholder='<?php echo _("Section Other"); ?>' title='<?php echo _("Please enter section other"); ?>' style="<?php echo ($testAttribute['section'][$i] == 'otherSection') ? "" : "display:none;" ?>" value="<?php echo ($testAttribute['section'][$i] == 'otherSection') ? $testAttribute['section_other'][$i] : "" ?>" />
 												</td>
+												<td>
+													<input type="text" name="fieldOrder[]" id="fieldOrder1" class="form-control forceNumeric" placeholder="<?php echo _("Field Order"); ?>" title="<?php echo _("Please enter field order"); ?>" value="<?php echo $testAttribute['field_order'][$i]; ?>"/>
+												</td>
 												<td align="center" style="vertical-align:middle;">
 													<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
 												</td>
@@ -345,6 +350,9 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 												<option value="otherSection"><?php echo _("Other"); ?></option>
 											</select>
 											<input type="text" name="sectionOther[]" id="sectionOther1" class="form-control auto-complete-tbx" onchange="addNewSection(this.value)" placeholder='<?php echo _("Section Other"); ?>' title='<?php echo _("Please enter section other"); ?>' style="display:none;" />
+										</td>
+										<td>
+											<input type="text" name="fieldOrder[]" id="fieldOrder1" class="form-control forceNumeric" placeholder="<?php echo _("Field Order"); ?>" title="<?php echo _("Please enter field order"); ?>" />
 										</td>
 										<td align="center" style="vertical-align:middle;">
 											<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
@@ -694,9 +702,10 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 		var d = a.insertCell(2);
 		var e = a.insertCell(3);
 		var f = a.insertCell(4);
+		var g = a.insertCell(5);
 
-		f.setAttribute("align", "center");
-		f.setAttribute("style", "vertical-align:middle");
+		g.setAttribute("align", "center");
+		g.setAttribute("style", "vertical-align:middle");
 
 		b.innerHTML = '<input type="text" name="fieldName[]" id="fieldName' + tableRowId + '" class="isRequired fieldName form-control" placeholder="<?php echo _('Field Name'); ?>" title="<?php echo _('Please enter field name'); ?>" onblur="checkDublicateName(this, \'fieldName\');"/ ><input type="hidden" name="fieldId[]" id="fieldId' + tableRowId + '" class="form-control isRequired" />';
 		c.innerHTML = '<select class="form-control isRequired" name="fieldType[]" id="fieldType' + tableRowId + '" title="<?php echo _('Please select the field type'); ?>" onchange="changeField(this, ' + tableRowId + ')">\
@@ -724,7 +733,8 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 						<option value="otherSection"><?php echo _("Other"); ?></option>\
 					</select>\
 					<input type="text" name="sectionOther[]" id="sectionOther' + tableRowId + '" class="form-control auto-complete-tbx" onchange="addNewSection(this.value)" placeholder="<?php echo _("Section Other"); ?>" title="<?php echo _("Please enter section other"); ?>" style="display:none;"/>';
-		f.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
+		f.innerHTML = '<input type="text" name="fieldOrder[]" id="fieldOrder' + tableRowId + '" class="form-control forceNumeric" placeholder="<?php echo _("Field Order"); ?>" title="<?php echo _("Please enter field order"); ?>" />';
+		g.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
 		$(a).fadeIn(800);
 
 		$( ".auto-complete-tbx" ).autocomplete({
