@@ -44,7 +44,7 @@ if (isset($_POST['sampleReceivedAtLab']) && trim($_POST['sampleReceivedAtLab']) 
     }
 }
 
-$query = "SELECT vl.sample_code,vl.hepatitis_id,vl.facility_id,vl.result_status,f.facility_name,f.facility_code FROM form_hepatitis as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND ((vl.hcv_vl_result IS NULL OR vl.hcv_vl_result = '') OR (vl.hbv_vl_result IS NULL OR vl.hbv_vl_result = '')) AND vlsm_country_id = $country  AND vl.sample_code!=''";
+$query = "SELECT vl.sample_code,vl.hepatitis_id,vl.facility_id,vl.result_status,vl.sample_batch_id,f.facility_name,f.facility_code FROM form_hepatitis as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND ((vl.hcv_vl_result IS NULL OR vl.hcv_vl_result = '') OR (vl.hbv_vl_result IS NULL OR vl.hbv_vl_result = '')) AND vlsm_country_id = $country  AND vl.sample_code!=''";
 if (isset($_POST['batchId'])) {
     $query = $query . " AND (sample_batch_id = '" . $_POST['batchId'] . "' OR sample_batch_id IS NULL OR sample_batch_id = '')";
 } else {

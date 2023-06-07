@@ -39,7 +39,7 @@ if (isset($_POST['sampleReceivedAtLab']) && trim($_POST['sampleReceivedAtLab']) 
 	}
 }
 
-$query = "SELECT vl.sample_code,vl.eid_id,vl.facility_id,vl.result_status,f.facility_name,f.facility_code
+$query = "SELECT vl.sample_code,vl.eid_id,vl.facility_id,vl.result_status,vl.sample_batch_id,f.facility_name,f.facility_code
             FROM form_eid as vl
             INNER JOIN facility_details as f ON vl.facility_id=f.facility_id
             WHERE (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no')
