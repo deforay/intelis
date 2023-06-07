@@ -585,7 +585,7 @@ $sFormat = '';
                                                                  <div class="col-md-6 vlResult">
                                                                       <label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) </label>
                                                                       <div class="col-lg-7 resultInputContainer">
-                                                                           <input list="possibleVlResults" autocomplete="off" class="form-control" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this)" disabled/>
+                                                                           <input list="possibleVlResults" autocomplete="off" class="form-control" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this)" disabled />
                                                                            <datalist id="possibleVlResults">
 
                                                                            </datalist>
@@ -769,7 +769,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                if ($(this).val() != '') {
                     if ($(this).val() != $(this).val().replace(/[^\d\.]/g, "")) {
                          $(this).val('');
-                         alert('Please enter only numeric values for Viral Load Result')
+                         alert('Please enter only numeric values for Viral Load Log Result')
                     }
                }
           });
@@ -794,9 +794,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           ?>
           // BARCODESTUFF END
      });
-     
+
      function hivDetectionChange() {
-          
+
           var text = $('#testingPlatform').val();
           if (!text) {
                $("#vlResult").attr("disabled", true);
