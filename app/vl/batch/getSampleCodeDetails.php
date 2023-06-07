@@ -101,33 +101,3 @@ $result = $db->rawQuery($query);
 	}
 	?>
 </select>
-
-<script>
-	$(document).ready(function() {
-		$('#search').multiselect({
-			search: {
-				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-			},
-			fireSearch: function(value) {
-				return value.length > 2;
-			},
-			afterMoveToRight: function($left, $right, $options) {
-				const count = $right.find('option').length;
-				if (count > 0) {
-					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
-				} else {
-					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
-				}
-			},
-			afterMoveToLeft: function($left, $right, $options) {
-				const count = $right.find('option').length;
-				if (count > 0) {
-					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
-				} else {
-					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
-				}
-			}
-		});
-	});
-</script>
