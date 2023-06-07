@@ -58,7 +58,7 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 	}
 
 	#ms-sampleCode {
-		width: 110%;
+		width: 100%;
 	}
 
 	.showFemaleSection {
@@ -100,31 +100,27 @@ $testPlatformResult = $general->getTestingPlatforms('vl');
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
 			</div>
-			<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 80%;">
+			<table aria-describedby="table" class="table" aria-hidden="true" style="margin-top:20px;width: 100%;">
 
 				<tr>
-					<td>&nbsp;<strong>Sample Collection Date&nbsp;:</strong></td>
-					<td>
-						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:275px;background:#fff;" />
+					<td style="width: 20%;">&nbsp;<strong>Sample Collection Date&nbsp;:</strong></td>
+					<td style="width: 30%;">
+						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:100%;background:#fff;" />
 					</td>
-					<td>&nbsp;<strong>Sample Type&nbsp;:</strong></td>
-					<td>
+					<td style="width: 20%;">&nbsp;<strong>Sample Type&nbsp;:</strong></td>
+					<td style="width: 30%;">
 						<select class="form-control" id="sampleType" name="sampleType" title="Please select sample type">
 							<option value=""> -- Select -- </option>
-							<?php
-							foreach ($sResult as $type) {
-							?>
+							<?php foreach ($sResult as $type) { ?>
 								<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
-							<?php
-							}
-							?>
+							<?php } ?>
 						</select>
 					</td>
 				</tr>
 				<tr>
 					<td>&nbsp;<strong>Facility Name & Code&nbsp;:</strong></td>
 					<td>
-						<select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple">
+						<select style="width: 100%;" class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple">
 							<?= $facilitiesDropdown; ?>
 						</select>
 					</td>
