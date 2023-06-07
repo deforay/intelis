@@ -22,7 +22,7 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
 	$maxLength = '';
 	if ($arr['max_length'] != '' && $arr['sample_code'] == 'alphanumeric') {
 		$maxLength = $arr['max_length'];
-		$maxLength = "maxlength=" . $maxLength; 
+		$maxLength = "maxlength=" . $maxLength;
 	}
 } else {
 	$sampleClass = '';
@@ -191,7 +191,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 		<h1><em class="fa-solid fa-pen-to-square"></em> VIRAL LOAD LABORATORY REQUEST FORM </h1>
 		<ol class="breadcrumb">
 			<li><a href="/dashboard/index.php"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
-			<li class="active">Edit Vl Request</li>
+			<li class="active">Edit HIV VL Test Request</li>
 		</ol>
 	</section>
 	<?php
@@ -1032,21 +1032,18 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 			}
 		});
 
-		$('#activeTB').on('change',function(){
-          if($(this).val()=='yes')
-          {
-               $('.tbPhaseBox').show();
-               $('#tbPhase').addClass('isRequired');
+		$('#activeTB').on('change', function() {
+			if ($(this).val() == 'yes') {
+				$('.tbPhaseBox').show();
+				$('#tbPhase').addClass('isRequired');
 
-          }
-         else
-          	{
+			} else {
 				$('#tbPhase').val("");
-                $('.tbPhaseBox').hide();
-                $('#tbPhase').removeClass('isRequired');
-            }
-               
-         });
+				$('.tbPhaseBox').hide();
+				$('#tbPhase').removeClass('isRequired');
+			}
+
+		});
 
 
 		$('#activeTB').trigger('change');
