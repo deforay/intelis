@@ -472,13 +472,15 @@ class Covid19Service
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
             ];
 
+            $accessType = $_SESSION['accessType'] ?? $params['accessType'] ?? null;
+
             if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
                 $tesRequestData['remote_sample_code'] = $sampleData['sampleCode'];
                 $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
                 $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
                 $tesRequestData['remote_sample'] = 'yes';
                 $tesRequestData['result_status'] = 9;
-                if ($_SESSION['accessType'] === 'testing-lab') {
+                if ($accessType === 'testing-lab') {
                     $tesRequestData['sample_code'] = $sampleData['sampleCode'];
                     $tesRequestData['result_status'] = 6;
                 }
@@ -541,7 +543,8 @@ class Covid19Service
                     'ip_address'    => $this->commonService->getClientIpAddress()
                 ];
                 $tesRequestData['form_attributes'] = json_encode($formAttributes);
-                $id = $this->db->insert("form_covid19", $tesRequestData);
+                $this->db->insert("form_covid19", $tesRequestData);
+                $id = $this->db->getInsertId();
                 if ($this->db->getLastErrno() > 0) {
                     error_log($this->db->getLastError());
                 }

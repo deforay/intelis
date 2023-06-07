@@ -9,10 +9,14 @@ $db = ContainerRegistry::get('db');
 
 
 //Funding source list
-$fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
+$fundingSourceQry = "SELECT * FROM r_funding_sources
+						WHERE funding_source_status='active'
+						ORDER BY funding_source_name ASC";
 $fundingSourceList = $db->query($fundingSourceQry);
 //Implementing partner list
-$implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
+$implementingPartnerQry = "SELECT * FROM r_implementation_partners
+								WHERE i_partner_status='active'
+								ORDER BY i_partner_name ASC";
 $implementingPartnerList = $db->query($implementingPartnerQry);
 
 $lResult = $facilitiesService->getTestingLabs('vl', true, true);
@@ -48,10 +52,15 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 $chkUserFcMapQry = "SELECT user_id FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
 $chkUserFcMapResult = $db->query($chkUserFcMapQry);
 if ($chkUserFcMapResult) {
-	$pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id WHERE gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
+	$pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code
+					FROM geographical_divisions as gd
+					JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id
+					JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id
+					WHERE gd.geo_parent = 0 AND gd.geo_status='active'
+					AND vlfm.user_id= ?";
 }
 
-$pdResult = $db->query($pdQuery);
+$pdResult = $db->rawQuery($pdQuery, [$_SESSION['userId']]);
 $province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
 	$province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_id'] . "'>" . ($provinceName['geo_name']) . "</option>";
@@ -66,27 +75,17 @@ $aQuery = "SELECT * from r_vl_art_regimen where art_status ='active'";
 $aResult = $db->query($aQuery);
 //facility details
 if (isset($vlQueryInfo['facility_id']) && $vlQueryInfo['facility_id'] > 0) {
-	$facilityQuery = "SELECT * FROM facility_details where facility_id= ? AND status='active'";
-	$facilityResult = $db->rawQuery($facilityQuery, array($vlQueryInfo['facility_id']));
+	$facilityQuery = "SELECT * FROM facility_details WHERE facility_id= ? AND status='active'";
+	$facilityResult = $db->rawQuery($facilityQuery, [$vlQueryInfo['facility_id']]);
 }
-if (!isset($facilityResult[0]['facility_code'])) {
-	$facilityResult[0]['facility_code'] = '';
-}
-if (!isset($facilityResult[0]['facility_mobile_numbers'])) {
-	$facilityResult[0]['facility_mobile_numbers'] = '';
-}
-if (!isset($facilityResult[0]['contact_person'])) {
-	$facilityResult[0]['contact_person'] = '';
-}
-if (!isset($facilityResult[0]['facility_emails'])) {
-	$facilityResult[0]['facility_emails'] = '';
-}
-if (!isset($facilityResult[0]['facility_state'])) {
-	$facilityResult[0]['facility_state'] = '';
-}
-if (!isset($facilityResult[0]['facility_district'])) {
-	$facilityResult[0]['facility_district'] = '';
-}
+
+$facilityCode = $facilityResult[0]['facility_code'] ?? '';
+$facilityMobileNumbers = $facilityResult[0]['facility_mobile_numbers'] ?? '';
+$contactPerson = $facilityResult[0]['contact_person'] ?? '';
+$facilityEmails = $facilityResult[0]['facility_emails'] ?? '';
+$facilityState = $facilityResult[0]['facility_state'] ?? '';
+$facilityDistrict = $facilityResult[0]['facility_district'] ?? '';
+
 //set reason for changes history
 $rch = '';
 $allChange = [];
@@ -99,14 +98,13 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 		$rch .= '<tbody>';
 		$allChange = array_reverse($allChange);
 		foreach ($allChange as $change) {
-			$usrQuery = "SELECT user_name FROM user_details where user_id='" . $change['usr'] . "'";
-			$usrResult = $db->rawQuery($usrQuery);
+			$usrQuery = "SELECT user_name FROM user_details WHERE user_id=?";
+			$usrResult = $db->rawQuery($usrQuery, [$change['usr']]);
 			$name = '';
 			if (isset($usrResult[0]['user_name'])) {
 				$name = ($usrResult[0]['user_name']);
 			}
-			$expStr = explode(" ", $change['dtime']);
-			$changedDate = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+			$changedDate = DateUtility::humanReadableDateFormat($change['dtime'] ?? '', true);
 			$rch .= '<tr><td>' . $name . '</td><td>' . ($change['msg']) . '</td><td style="text-align:center;">' . $changedDate . '</td></tr>';
 		}
 		$rch .= '</tbody>';
@@ -119,7 +117,7 @@ $isGeneXpert = !empty($vlQueryInfo['vl_test_platform']) && (strcasecmp($vlQueryI
 
 if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty($vlQueryInfo['result'])) {
 	$vlQueryInfo['result'] = trim(str_ireplace($vlQueryInfo['result_value_hiv_detection'], "", $vlQueryInfo['result']));
-} else if ($isGeneXpert === true && !empty($vlQueryInfo['result'])) {
+} elseif ($isGeneXpert === true && !empty($vlQueryInfo['result'])) {
 
 	$vlQueryInfo['result_value_hiv_detection'] = null;
 
@@ -186,7 +184,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		<h1><em class="fa-solid fa-pen-to-square"></em> VIRAL LOAD LABORATORY REQUEST FORM </h1>
 		<ol class="breadcrumb">
 			<li><a href="/dashboard/index.php"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
-			<li class="active">Edit Vl Request</li>
+			<li class="active">Edit HIV VL Test Request</li>
 		</ol>
 	</section>
 	<?php
@@ -776,7 +774,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													<div class="col-lg-7 resultInputContainer">
 														<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= ($vlQueryInfo['result']); ?>" onchange="calculateLogValue(this)">
 														<datalist id="possibleVlResults" title="Please enter viral load result">
-	
+
 														</datalist>
 													</div>
 												</div>

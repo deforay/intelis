@@ -19,9 +19,6 @@ $_POST = $request->getParsedBody();
 $start_date = '';
 $end_date = '';
 $country = $general->getGlobalConfig('vl_form');
-if (isset($_POST['batchId']) && trim($_POST['batchId']) != '') {
-    $batchId = $_POST['batchId'];
-}
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
@@ -70,47 +67,62 @@ if (isset($_POST['sampleReceivedAtLab']) && trim($_POST['sampleReceivedAtLab']) 
     }
 }
 $query = $query . " ORDER BY vl.sample_code ASC";
-
 $result = $db->rawQuery($query);
 ?>
 <script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
-<div class="row" style="margin: 15px;">
-    <h4> <?php echo _("Sample Code"); ?></h4>
-    <div class="col-md-5">
-        <!-- <div class="col-lg-5"> -->
-        <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
-            <?php
-            foreach ($result as $sample) {
-            ?>
-                <option value="<?php echo $sample['tb_id']; ?>"><?php echo ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
-            <?php
-            }
-            ?>
-        </select>
-    </div>
+<div class="col-md-5">
+    <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
+        <?php foreach ($result as $sample) { 
+            if(isset($_POST['batchId']) && $_POST['batchId'] != $sample['sample_batch_id']){ ?>
+            <option value="<?php echo $sample['tb_id']; ?>"><?php echo ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
+        <?php } 
+    } ?>
+    </select>
+</div>
 
-    <div class="col-md-2">
-        <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
-        <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
-        <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
-        <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
-    </div>
+<div class="col-md-2">
+    <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
+    <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
+    <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
+    <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
+</div>
 
-    <div class="col-md-5">
-        <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
-    </div>
+<div class="col-md-5">
+    <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
+        <?php foreach ($result as $sample) {
+            if(isset($_POST['batchId']) && $_POST['batchId'] == $sample['sample_batch_id']){ ?>
+            <option value="<?php echo $sample['tb_id']; ?>"><?php echo ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
+        <?php }
+        } ?>
+    </select>
 </div>
 <script>
-    $(document).ready(function() {
-        $('#search').multiselect({
-            search: {
-                left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-                right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-            },
-            fireSearch: function(value) {
-                return value.length > 3;
-            }
-        });
-    });
+	$(document).ready(function() {
+		$('#search').multiselect({
+			search: {
+				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+			},
+			fireSearch: function(value) {
+				return value.length > 2;
+			},
+			afterMoveToRight: function($left, $right, $options) {
+				const count = $right.find('option').length;
+				if (count > 0) {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				} else {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				}
+			},
+			afterMoveToLeft: function($left, $right, $options) {
+				const count = $right.find('option').length;
+				if (count > 0) {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				} else {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				}
+			}
+		});
+	});
 </script>

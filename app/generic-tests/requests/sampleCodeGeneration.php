@@ -31,4 +31,4 @@ if (!empty($_POST['testType'])) {
 
 $sampleFrom = $_POST['sampleFrom'] ?? '';
 
-echo $genericTestsService->generateGenericSampleID($province, $sampleCollectionDate, $sampleFrom, '', null, null, $testType);
+echo $genericTestsService->generateGenericTestSampleCode($province, $sampleCollectionDate, $sampleFrom, '', null, null, $testType);

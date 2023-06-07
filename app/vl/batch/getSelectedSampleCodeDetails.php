@@ -103,16 +103,3 @@ $result = $db->rawQuery($query);
 	}
 	?>
 </select>
-<script>
-	$(document).ready(function() {
-		$('#search').multiselect({
-			search: {
-				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-			},
-			fireSearch: function(value) {
-				return value.length > 3;
-			}
-		});
-
-	});
-</script>

@@ -1,9 +1,4 @@
 <?php
-
-  
-
-// 
-require_once APPLICATION_PATH . '/header.php';
 $tableName = "batch_details";
 try {
     $labelOrder = '';

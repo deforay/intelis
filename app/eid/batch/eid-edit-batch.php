@@ -53,7 +53,7 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 	}
 
 	#ms-sampleCode {
-		width: 110%;
+		width: 100%;
 	}
 
 	.showFemaleSection {
@@ -95,39 +95,33 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
 			</div>
-			<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 100%;">
+			<table aria-describedby="table" class="table" aria-hidden="true" style="margin-top:20px;width: 100%;">
 				<tr>
 
-					<th scope="col">Facility</th>
-					<td>
-						<select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple">
+					<th style="width: 20%;" scope="col">Facility</th>
+					<td style="width: 30%;">
+						<select style="width: 100%;" class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple">
 							<?= $facilitiesDropdown; ?>
 							?>
 						</select>
 					</td>
-					<th scope="col"></th>
-					<td></td>
-				</tr>
-				<tr>
-					<th scope="col">Sample Collection Date</th>
-					<td>
-						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="Select Collection Date" readonly style="width:275px;background:#fff;" />
-					</td>
-					<th scope="col">Date Sample Receieved at Lab</th>
-					<td>
-						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="Select Received at Lab Date" readonly style="width:275px;background:#fff;" />
+					<th style="width: 20%;" scope="col">Sample Collection Date</th>
+					<td style="width: 30%;">
+						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="Select Collection Date" readonly style="width:100%;background:#fff;" />
 					</td>
 				</tr>
 				<tr>
-					<th scope="col"><?php echo _("Positions"); ?></th>
-					<td>
+					<th style="width: 20%;" scope="col">Date Sample Receieved at Lab</th>
+					<td style="width: 30%;">
+						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="Select Received at Lab Date" readonly style="width:100%;background:#fff;" />
+					</td>
+					<th style="width: 20%;" scope="col"><?php echo _("Positions"); ?></th>
+					<td style="width: 30%;">
 						<select id="positions-type" class="form-control" title="Please select the postion">
 							<option value="numeric" <?php echo ($batchInfo[0]['position_type'] == "numeric") ? 'selected="selected"' : ''; ?>><?php echo _("Numeric"); ?></option>
 							<option value="alpha-numeric" <?php echo ($batchInfo[0]['position_type'] == "alpha-numeric") ? 'selected="selected"' : ''; ?>><?php echo _("Alpha Numeric"); ?></option>
 						</select>
 					</td>
-					<th scope="col"></th>
-					<td></td>
 				</tr>
 				<tr>
 					<td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="Filter Samples" class="btn btn-success btn-sm">
@@ -145,7 +139,7 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 								<div class="form-group">
 									<label for="batchCode" class="col-lg-4 control-label">Batch Code <span class="mandatory">*</span></label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<input type="text" class="form-control isRequired" id="batchCode" name="batchCode" placeholder="Batch Code" title="Please enter batch code" value="<?php echo $batchInfo[0]['batch_code']; ?>" onblur="checkNameValidation('batch_details','batch_code',this,'<?php echo "batch_id##" . $id; ?>','This batch code already exists.Try another code',null)" />
+										<input type="text" class="form-control isRequired" id="batchCode" name="batchCode" placeholder="Batch Code" title="Please enter batch code" value="<?php echo $batchInfo[0]['batch_code']; ?>" onblur="checkNameValidation('batch_details','batch_code',this,'<?php echo "batch_id##" . $id; ?>','This batch code already exists.Try another code',null)" style="width: 100%;"/>
 									</div>
 								</div>
 							</div>
@@ -169,31 +163,11 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 							<div class="col-md-6"><a href="eid-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="Edit Position"><em class="fa-solid fa-arrow-down-1-9"></em> Edit Position</a></div>
 						</div>
 						<div class="row" id="sampleDetails">
-							<!--<div class="col-md-8">
-								<div class="form-group">
-									<div class="col-md-12">
-										<div class="col-md-12">
-											<div style="width:60%;margin:0 auto;clear:both;">
-												<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
-											</div><br /><br />
-											<select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search">
-
-											</select>
-										</div>
-									</div>
-								</div>
-							</div>-->
-							<h4> <?php echo _("Sample Code"); ?></h4>
 							<div class="col-md-5">
-								<!-- <div class="col-lg-5"> -->
 								<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
-									<?php
-									foreach ($result as $key => $sample) {
-									?>
+									<?php foreach ($result as $key => $sample) { ?>
 										<option value="<?php echo $sample['eid_id']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
-									<?php
-									}
-									?>
+									<?php } ?>
 								</select>
 							</div>
 
@@ -247,12 +221,12 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 		var selected = $("#machine").find('option:selected');
 		noOfSamples = selected.data('no-of-samples');
 		if (noOfSamples < selVal.length) {
-			alert("You have selected maximum number of samples");
+			alert("<?= _("You have selected more than allowed number of samples"); ?>");
 			return false;
 		}
 		$("#selectedSample").val(selVal);
 		if (selVal == "") {
-			alert("Please select sample code");
+			alert("<?= _("Please select one or more samples"); ?>");
 			return false;
 		}
 
@@ -274,7 +248,23 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
 			},
 			fireSearch: function(value) {
-				return value.length > 3;
+				return value.length > 2;
+			},
+			afterMoveToRight: function($left, $right, $options) {
+				const count = $right.find('option').length;
+				if (count > 0) {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				} else {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				}
+			},
+			afterMoveToLeft: function($left, $right, $options) {
+				const count = $right.find('option').length;
+				if (count > 0) {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				} else {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				}
 			}
 		});
 		setTimeout(function() {
@@ -309,94 +299,6 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 			});
 		$('#sampleCollectionDate').val("");
 		var unSelectedLength = $('.search > option').length - $(".search :selected").length;
-		/*	$('.search').multiSelect({
-				selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
-				selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
-				selectableFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='unselectableCount'>Available samples(" + unSelectedLength + ")</div>",
-				selectionFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='selectableCount'>Selected samples(" + $(".search :selected").length + ")</div>",
-				afterInit: function(ms) {
-					var that = this,
-						$selectableSearch = that.$selectableUl.prev(),
-						$selectionSearch = that.$selectionUl.prev(),
-						selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
-						selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
-
-					that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-						.on('keydown', function(e) {
-							if (e.which === 40) {
-								that.$selectableUl.focus();
-								return false;
-							}
-						});
-
-					that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-						.on('keydown', function(e) {
-							if (e.which == 40) {
-								that.$selectionUl.focus();
-								return false;
-							}
-						});
-				},
-				afterSelect: function() {
-					//button disabled/enabled
-					if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-						alert("You have selected maximum number of samples - " + this.qs2.cache().matchedResultsCount);
-						$("#batchSubmit").attr("disabled", false);
-						$("#batchSubmit").css("pointer-events", "auto");
-					} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
-						$("#batchSubmit").attr("disabled", false);
-						$("#batchSubmit").css("pointer-events", "auto");
-					} else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
-						alert("You have already selected Maximum no. of sample " + noOfSamples);
-						$("#batchSubmit").attr("disabled", true);
-						$("#batchSubmit").css("pointer-events", "none");
-					}
-					this.qs1.cache();
-					this.qs2.cache();
-					$("#unselectableCount").html("Available samples(" + this.qs1.cache().matchedResultsCount + ")");
-					$("#selectableCount").html("Selected samples(" + this.qs2.cache().matchedResultsCount + ")");
-				},
-				afterDeselect: function() {
-					//button disabled/enabled
-					if (this.qs2.cache().matchedResultsCount == 0) {
-						$("#batchSubmit").attr("disabled", true);
-						$("#batchSubmit").css("pointer-events", "none");
-					} else if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-						alert("You have selected maximum number of samples - " + this.qs2.cache().matchedResultsCount);
-						$("#batchSubmit").attr("disabled", false);
-						$("#batchSubmit").css("pointer-events", "auto");
-					} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
-						$("#batchSubmit").attr("disabled", false);
-						$("#batchSubmit").css("pointer-events", "auto");
-					} else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
-						$("#batchSubmit").attr("disabled", true);
-						$("#batchSubmit").css("pointer-events", "none");
-					}
-					this.qs1.cache();
-					this.qs2.cache();
-					$("#unselectableCount").html("Available samples(" + this.qs1.cache().matchedResultsCount + ")");
-					$("#selectableCount").html("Selected samples(" + this.qs2.cache().matchedResultsCount + ")");
-				}
-			});
-			$('#select-all-samplecode').click(function() {
-				$('#sampleCode').multiSelect('select_all');
-				return false;
-			});
-			$('#deselect-all-samplecode').click(function() {
-				$('#sampleCode').multiSelect('deselect_all');
-				$("#batchSubmit").attr("disabled", true);
-				$("#batchSubmit").css("pointer-events", "none");
-				return false;
-			});
-
-			if (noOfSamples == 0) {
-				$("#batchSubmit").attr("disabled", true);
-				$("#batchSubmit").css("pointer-events", "none");
-			} else if ($("#sampleCode :selected").length > noOfSamples) {
-				$("#batchSubmit").attr("disabled", true);
-				$("#batchSubmit").css("pointer-events", "none");
-			}
-
 			<?php
 			$r = 1;
 			foreach ($result as $sample) {
@@ -415,7 +317,7 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 			$("#resultSample").val(resultSampleArray);
 			if ($("#machine option:selected").text() != ' -- Select -- ') {
 				$('#alertText').html('You have picked ' + $("#machine option:selected").text() + ' and it has limit of maximum ' + noOfSamples + ' samples to make it a batch');
-			}*/
+			}
 	});
 
 	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
@@ -447,13 +349,12 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 		$.post("/eid/batch/get-eid-samples-batch.php", {
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
 				sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
+				batchId: $("#batchId").val(),
 				fName: fName
 			},
 			function(data) {
 				if (data != "") {
-					$("#sampleDetails").html(data);
-					//$("#batchSubmit").attr("disabled", true);
-					//$("#batchSubmit").css("pointer-events", "none");
+					$("#sampleDetails").html(data); 
 				}
 			});
 		$.unblockUI();
@@ -482,27 +383,6 @@ $testPlatformResult = $general->getTestingPlatforms('eid');
 			$('#alertText').html('');
 		}
 	});
-
-	$(document.body).on("change", "#search, #search_to", function() {
-		countOff().then(function(count) {
-			// use the result here
-			if (count > 0) {
-				$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
-			} else {
-				$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
-			}
-		});
-	});
-
-	function countOff() {
-		return new Promise(function(resolve, reject) {
-			setTimeout(function() {
-				resolve();
-			}, 300);
-		}).then(function() {
-			return $("#search_to option").length;
-		});
-	}
 </script>
 
 <?php

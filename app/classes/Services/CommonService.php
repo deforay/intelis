@@ -630,9 +630,9 @@ class CommonService
         if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser') {
             $dateTime = $this->db->rawQueryOne("SELECT MAX(`requested_on`) AS `dateTime` FROM `track_api_requests`");
         } else {
-            $dateTime = $this->db->rawQueryOne("SELECT GREATEST(COALESCE(last_remote_requests_sync, 0), COALESCE(last_remote_results_sync, 0), COALESCE(last_remote_reference_data_sync, 0)) AS dateTime FROM s_vlsm_instance");
+            $dateTime = $this->db->rawQueryOne("SELECT GREATEST(COALESCE(last_remote_requests_sync, 0), COALESCE(last_remote_results_sync, 0), COALESCE(last_remote_reference_data_sync, 0)) AS `dateTime` FROM s_vlsm_instance");
         }
-        return (isset($dateTime['dateTime']) && $dateTime['dateTime'] != "") ? date('d-M-Y h:i:s a', strtotime($dateTime['dateTime'])) : null;
+        return (isset($dateTime['dateTime']) && $dateTime['dateTime'] != "") ? DateUtility::humanReadableDateFormat($dateTime['dateTime'], false, 'd-M-Y h:i:s a') : null;
     }
 
     public function existBatchCode($code)
@@ -643,7 +643,9 @@ class CommonService
 
     public function createBatchCode()
     {
-        $batchQuery = 'SELECT MAX(batch_code_key) FROM batch_details as bd WHERE DATE(bd.request_created_datetime) = CURRENT_DATE';
+        $batchQuery = 'SELECT MAX(batch_code_key)
+                        FROM batch_details as bd
+                        WHERE DATE(bd.request_created_datetime) = CURRENT_DATE';
         $batchResult = $this->db->query($batchQuery);
 
         if ($batchResult[0]['MAX(batch_code_key)'] != '' && $batchResult[0]['MAX(batch_code_key)'] != null) {
@@ -651,7 +653,7 @@ class CommonService
             $length = strlen($code);
             if ($length == 1) {
                 $code = "00" . $code;
-            } else if ($length == 2) {
+            } elseif ($length == 2) {
                 $code = "0" . $code;
             }
         } else {

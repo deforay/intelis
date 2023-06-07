@@ -56,7 +56,7 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 	}
 
 	#ms-sampleCode {
-		width: 110%;
+		width: 100%;
 	}
 
 	.showFemaleSection {
@@ -97,38 +97,31 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
 			</div>
-			<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 100%;">
+			<table aria-describedby="table" class="table" aria-hidden="true" style="margin-top:20px;width: 100%;">
 				<tr>
-
-					<th scope="col"><?php echo _("Facility"); ?></th>
-					<td>
-						<select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple">
+					<th style="width: 20%;" scope="col"><?php echo _("Facility"); ?></th>
+					<td style="width: 30%;">
+						<select style="width: 100%;" class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple">
 							<?= $facilitiesDropdown; ?>
 						</select>
 					</td>
-					<th scope="col"></th>
-					<td></td>
-				</tr>
-				<tr>
-					<th scope="col"><?php echo _("Sample Collection Date"); ?></th>
-					<td>
-						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:275px;background:#fff;" />
-					</td>
-					<th scope="col">Date Sample Receieved at Lab</th>
-					<td>
-						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="<?php echo _('Select Received at Lab Date'); ?>" readonly style="width:275px;background:#fff;" />
+					<th style="width: 20%;" scope="col"><?php echo _("Sample Collection Date"); ?></th>
+					<td style="width: 30%;">
+						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:100%;background:#fff;" />
 					</td>
 				</tr>
 				<tr>
-					<th scope="col"><?php echo _("Positions"); ?></th>
-					<td>
+					<th style="width: 20%;" scope="col">Date Sample Receieved at Lab</th>
+					<td style="width: 30%;">
+						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="<?php echo _('Select Received at Lab Date'); ?>" readonly style="width:100%;background:#fff;" />
+					</td>
+					<th style="width: 20%;" scope="col"><?php echo _("Positions"); ?></th>
+					<td style="width: 30%;">
 						<select id="positions-type" class="form-control" title="<?php echo _('Please select the postion'); ?>">
 							<option value="numeric" <?php echo ($batchInfo[0]['position_type'] == "numeric") ? 'selected="selected"' : ''; ?>><?php echo _("Numeric"); ?></option>
 							<option value="alpha-numeric" <?php echo ($batchInfo[0]['position_type'] == "alpha-numeric") ? 'selected="selected"' : ''; ?>><?php echo _("Alpha Numeric"); ?></option>
 						</select>
 					</td>
-					<th scope="col"></th>
-					<td></td>
 				</tr>
 				<tr>
 					<td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _('Filter Samples'); ?>" class="btn btn-success btn-sm">
@@ -170,9 +163,7 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 							<div class="col-md-6"><a href="covid-19-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="<?php echo _('Edit Position'); ?>"><em class="fa-solid fa-arrow-down-1-9"></em> <?php echo _("Edit Position"); ?></a></div>
 						</div>
 						<div class="row" id="sampleDetails">
-
 							<div class="col-md-5">
-								<!-- <div class="col-lg-5"> -->
 								<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
 									<?php
 									foreach ($result as $key => $sample) {
@@ -239,12 +230,12 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 		var selected = $("#machine").find('option:selected');
 		noOfSamples = selected.data('no-of-samples');
 		if (noOfSamples < selVal.length) {
-			alert("You have selected maximum number of samples");
+			alert("<?= _("You have selected more than allowed number of samples"); ?>");
 			return false;
 		}
 
 		if (selVal == "") {
-			alert("Please select sample code");
+			alert("<?= _("Please select one or more samples"); ?>");
 			return false;
 		}
 
@@ -265,7 +256,23 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
 			},
 			fireSearch: function(value) {
-				return value.length > 3;
+				return value.length > 2;
+			},
+			afterMoveToRight: function($left, $right, $options) {
+				const count = $right.find('option').length;
+				if (count > 0) {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				} else {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				}
+			},
+			afterMoveToLeft: function($left, $right, $options) {
+				const count = $right.find('option').length;
+				if (count > 0) {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				} else {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				}
 			}
 		});
 		$("#facilityName").select2({
@@ -347,13 +354,12 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 		$.post("/covid-19/batch/get-covid-19-samples-batch.php", {
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
 				sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
+				batchId: $("#batchId").val(),
 				fName: fName
 			},
 			function(data) {
 				if (data != "") {
 					$("#sampleDetails").html(data);
-					//$("#batchSubmit").attr("disabled", true);
-					//$("#batchSubmit").css("pointer-events", "none");
 				}
 			});
 		$.unblockUI();

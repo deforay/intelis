@@ -22,11 +22,7 @@ $healthFacilites = $facilitiesService->getHealthFacilities('hepatitis');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
 
-//Get active machines
 $testPlatformResult = $general->getTestingPlatforms('hepatitis');
-// $query = "SELECT vl.sample_code,vl.hepatitis_id,vl.facility_id,f.facility_name,f.facility_code FROM form_hepatitis as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id where sample_batch_id is NULL OR sample_batch_id='' ORDER BY f.facility_name ASC";
-// $result = $db->rawQuery($query);
-
 $start_date = date('Y-m-d');
 $end_date = date('Y-m-d');
 $maxId = $general->createBatchCode();
@@ -50,7 +46,7 @@ foreach ($testPlatformResult as $machine) {
     }
 
     #ms-sampleCode {
-        width: 110%;
+        width: 100%;
     }
 
     .showFemaleSection {
@@ -91,10 +87,10 @@ foreach ($testPlatformResult as $machine) {
             <div class="box-header with-border">
                 <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
             </div>
-            <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 100%;">
+            <table aria-describedby="table" class="table" aria-hidden="true" style="margin-top:20px;width: 100%;">
                 <tr>
-                    <th scope="col"><?php echo _("Testing Platform"); ?>&nbsp;<span class="mandatory">*</span> </th>
-                    <td>
+                    <th style="width: 20%;" scope="col"><?php echo _("Testing Platform"); ?>&nbsp;<span class="mandatory">*</span> </th>
+                    <td style="width: 30%;">
                         <select name="machine" id="machine" class="form-control isRequired" title="<?php echo _('Please choose machine'); ?>" style="width:280px;">
                             <option value=""> <?php echo _("-- Select --"); ?> </option>
                             <?php
@@ -105,25 +101,23 @@ foreach ($testPlatformResult as $machine) {
                             <?php } ?>
                         </select>
                     </td>
-                    <th scope="col"><?php echo _("Facility"); ?></th>
-                    <td>
+                    <th style="width: 20%;" scope="col"><?php echo _("Facility"); ?></th>
+                    <td style="width: 30%;">
                         <select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple">
                             <?= $facilitiesDropdown; ?>
                         </select>
                     </td>
                 </tr>
                 <tr>
-                    <th scope="col"><?php echo _("Sample Collection Date"); ?></th>
-                    <td>
+                    <th style="width: 20%;" scope="col"><?php echo _("Sample Collection Date"); ?></th>
+                    <td style="width: 30%;">
                         <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:275px;background:#fff;" />
                     </td>
-                    <th scope="col"><?php echo _("Date Sample Receieved at Lab"); ?></th>
-                    <td>
+                    <th style="width: 20%;" scope="col"><?php echo _("Date Sample Receieved at Lab"); ?></th>
+                    <td style="width: 30%;">
                         <input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="<?php echo _('Select Received at Lab Date'); ?>" readonly style="width:275px;background:#fff;" />
                     </td>
-
                 </tr>
-
                 <tr>
                     <td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _('Filter Samples'); ?>" class="btn btn-success btn-sm">
                         &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset Filters"); ?></span></button>
@@ -149,9 +143,7 @@ foreach ($testPlatformResult as $machine) {
                         </div>
 
                         <div class="row" id="sampleDetails">
-                            <h4> <?php echo _("Sample Code"); ?></h4>
                             <div class="col-md-5">
-                                <!-- <div class="col-lg-5"> -->
                                 <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
 
                                 </select>
@@ -198,14 +190,30 @@ foreach ($testPlatformResult as $machine) {
     sortedTitle = [];
     $(document).ready(function() {
         $('#search').multiselect({
-            search: {
-                left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-                right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-            },
-            fireSearch: function(value) {
-                return value.length > 3;
-            }
-        });
+			search: {
+				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+			},
+			fireSearch: function(value) {
+				return value.length > 2;
+			},
+			afterMoveToRight: function($left, $right, $options) {
+				const count = $right.find('option').length;
+				if (count > 0) {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				} else {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				}
+			},
+			afterMoveToLeft: function($left, $right, $options) {
+				const count = $right.find('option').length;
+				if (count > 0) {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				} else {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				}
+			}
+		});
         $("#facilityName").select2({
             placeholder: "<?php echo _("Select Facilities"); ?>"
         });
@@ -246,11 +254,11 @@ foreach ($testPlatformResult as $machine) {
         var selected = $("#machine").find('option:selected');
         noOfSamples = selected.data('no-of-samples');
         if (noOfSamples < selVal.length) {
-            alert("You have selected maximum number of samples");
+            alert("<?= _("You have selected more than allowed number of samples"); ?>");
             return false;
         }
         if (selVal == "") {
-            alert("Please select sample code");
+            alert("<?= _("Please select one or more samples"); ?>");
             return false;
         }
 
@@ -307,8 +315,6 @@ foreach ($testPlatformResult as $machine) {
             function(data) {
                 if (data != "") {
                     $("#sampleDetails").html(data);
-                    // $("#batchSubmit").attr("disabled", true);
-                    // $("#batchSubmit").css("pointer-events", "none");
                 }
             });
         $.unblockUI();

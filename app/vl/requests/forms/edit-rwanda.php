@@ -63,24 +63,14 @@ if (isset($vlQueryInfo['facility_id']) && $vlQueryInfo['facility_id'] > 0) {
      $facilityQuery = "SELECT * FROM facility_details WHERE facility_id= ? AND status='active'";
      $facilityResult = $db->rawQuery($facilityQuery, array($vlQueryInfo['facility_id']));
 }
-if (!isset($facilityResult[0]['facility_code'])) {
-     $facilityResult[0]['facility_code'] = '';
-}
-if (!isset($facilityResult[0]['facility_mobile_numbers'])) {
-     $facilityResult[0]['facility_mobile_numbers'] = '';
-}
-if (!isset($facilityResult[0]['contact_person'])) {
-     $facilityResult[0]['contact_person'] = '';
-}
-if (!isset($facilityResult[0]['facility_emails'])) {
-     $facilityResult[0]['facility_emails'] = '';
-}
-if (!isset($facilityResult[0]['facility_state'])) {
-     $facilityResult[0]['facility_state'] = '';
-}
-if (!isset($facilityResult[0]['facility_district'])) {
-     $facilityResult[0]['facility_district'] = '';
-}
+
+$facilityCode = $facilityResult[0]['facility_code'] ?? '';
+$facilityMobileNumbers = $facilityResult[0]['facility_mobile_numbers'] ?? '';
+$contactPerson = $facilityResult[0]['contact_person'] ?? '';
+$facilityEmails = $facilityResult[0]['facility_emails'] ?? '';
+$facilityState = $facilityResult[0]['facility_state'] ?? '';
+$facilityDistrict = $facilityResult[0]['facility_district'] ?? '';
+
 if (trim($facilityResult[0]['facility_state']) != '') {
      $stateQuery = "SELECT * FROM geographical_divisions where geo_name='" . $facilityResult[0]['facility_state'] . "'";
      $stateResult = $db->query($stateQuery);
@@ -91,8 +81,9 @@ if (!isset($stateResult[0]['geo_code'])) {
 //district details
 $districtResult = [];
 if (trim($facilityResult[0]['facility_state']) != '') {
-     $districtQuery = "SELECT DISTINCT facility_district from facility_details where facility_state='" . $facilityResult[0]['facility_state'] . "' AND status='active'";
-     $districtResult = $db->query($districtQuery);
+     $districtQuery = "SELECT DISTINCT facility_district from facility_details
+                         WHERE facility_state=? AND status='active'";
+     $districtResult = $db->rawQuery($districtQuery, [$facilityResult[0]['facility_state']]);
 }
 
 
@@ -141,7 +132,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
           <h1><em class="fa-solid fa-pen-to-square"></em> VIRAL LOAD LABORATORY REQUEST FORM </h1>
           <ol class="breadcrumb">
                <li><a href="/dashboard/index.php"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
-               <li class="active">Edit Vl Request</li>
+               <li class="active">Edit HIV VL Test Request</li>
           </ol>
      </section>
      <!-- Main content -->
@@ -819,7 +810,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                if ($(this).val() != '') {
                     if ($(this).val() != $(this).val().replace(/[^\d\.]/g, "")) {
                          $(this).val('');
-                         alert('Please enter only numeric values for Viral Load Result')
+                         alert('Please enter only numeric values for Viral Load Log Result')
                     }
                }
           });
@@ -827,7 +818,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
      });
 
      function hivDetectionChange() {
-          
+
           var text = $('#testingPlatform').val();
           if (!text) {
                $("#vlResult").attr("disabled", true);

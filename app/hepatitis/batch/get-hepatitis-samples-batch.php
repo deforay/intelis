@@ -22,7 +22,7 @@ $end_date = '';
 //global config
 $configQuery = "SELECT `value` FROM global_config WHERE name ='vl_form'";
 $configResult = $db->query($configQuery);
-$country = $configResult[0]['value'];
+$country = 7;
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
@@ -44,7 +44,7 @@ if (isset($_POST['sampleReceivedAtLab']) && trim($_POST['sampleReceivedAtLab']) 
     }
 }
 
-$query = "SELECT vl.sample_code,vl.hepatitis_id,vl.facility_id,vl.result_status,f.facility_name,f.facility_code FROM form_hepatitis as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND ((vl.hcv_vl_result IS NULL OR vl.hcv_vl_result = '') OR (vl.hbv_vl_result IS NULL OR vl.hbv_vl_result = '')) AND vlsm_country_id = $country  AND vl.sample_code!=''";
+$query = "SELECT vl.sample_code,vl.hepatitis_id,vl.facility_id,vl.result_status,vl.sample_batch_id,f.facility_name,f.facility_code FROM form_hepatitis as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND ((vl.hcv_vl_result IS NULL OR vl.hcv_vl_result = '') OR (vl.hbv_vl_result IS NULL OR vl.hbv_vl_result = '')) AND vlsm_country_id = $country  AND vl.sample_code!=''";
 if (isset($_POST['batchId'])) {
     $query = $query . " AND (sample_batch_id = '" . $_POST['batchId'] . "' OR sample_batch_id IS NULL OR sample_batch_id = '')";
 } else {
@@ -70,50 +70,64 @@ if (isset($_POST['sampleReceivedAtLab']) && trim($_POST['sampleReceivedAtLab']) 
         $query = $query . ' AND DATE(sample_received_at_vl_lab_datetime) >= "' . $sampleReceivedStartDate . '" AND DATE(sample_received_at_vl_lab_datetime) <= "' . $sampleReceivedEndDate . '"';
     }
 }
-//$query = $query." ORDER BY f.facility_name ASC";
-//$query = $query . " ORDER BY vl.last_modified_datetime ASC";
 $query = $query . " ORDER BY vl.sample_code ASC";
-// echo $query;die;
+// die($query);
 $result = $db->rawQuery($query);
 ?>
 <script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
-<div class="row" style="margin: 15px;">
-    <h4> <?php echo _("Sample Code"); ?></h4>
-    <div class="col-md-5">
-        <!-- <div class="col-lg-5"> -->
-        <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
-            <?php
-            foreach ($result as $sample) {
-            ?>
-                <option value="<?php echo $sample['hepatitis_id']; ?>"><?php echo ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
-            <?php
-            }
-            ?>
-        </select>
-    </div>
+<div class="col-md-5">
+    <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
+        <?php foreach ($result as $sample) { 
+            if(isset($_POST['batchId']) && $_POST['batchId'] != $sample['sample_batch_id']){ ?>
+            <option value="<?php echo $sample['hepatitis_id']; ?>"><?php echo ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
+        <?php }
+        } ?>
+    </select>
+</div>
 
-    <div class="col-md-2">
-        <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
-        <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
-        <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
-        <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
-    </div>
+<div class="col-md-2">
+    <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
+    <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
+    <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
+    <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
+</div>
 
-    <div class="col-md-5">
-        <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
-    </div>
+<div class="col-md-5">
+    <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
+        <?php foreach ($result as $sample) { 
+            if(isset($_POST['batchId']) && $_POST['batchId'] == $sample['sample_batch_id']){ ?>
+            <option value="<?php echo $sample['hepatitis_id']; ?>"><?php echo ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
+        <?php }
+        } ?>
+    </select>
 </div>
 <script>
-    $(document).ready(function() {
-        $('#search').multiselect({
-            search: {
-                left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-                right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-            },
-            fireSearch: function(value) {
-                return value.length > 3;
-            }
-        });
-    });
+	$(document).ready(function() {
+		$('#search').multiselect({
+			search: {
+				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+			},
+			fireSearch: function(value) {
+				return value.length > 2;
+			},
+			afterMoveToRight: function($left, $right, $options) {
+				const count = $right.find('option').length;
+				if (count > 0) {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				} else {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				}
+			},
+			afterMoveToLeft: function($left, $right, $options) {
+				const count = $right.find('option').length;
+				if (count > 0) {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				} else {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				}
+			}
+		});
+	});
 </script>

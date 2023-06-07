@@ -101,10 +101,15 @@ class TbService
 
         $maxId = sprintf("%04d", (int) $maxId);
 
-        //error_log($maxCodeKeyVal);
-
-        $sampleCodeGenerator = (array('maxId' => $maxId, 'mnthYr' => $mnthYr, 'auto' => $autoFormatedString));
-
+        $sampleCodeGenerator = [
+            'sampleCode' => '',
+            'sampleCodeInText' => '',
+            'sampleCodeFormat' => '',
+            'sampleCodeKey' => '',
+            'maxId' => $maxId,
+            'mnthYr' => $mnthYr,
+            'auto' => $autoFormatedString
+        ];
 
 
         if ($globalConfig['vl_form'] == 5) {
@@ -278,7 +283,7 @@ class TbService
             $sampleData = json_decode($sampleJson, true);
             $sampleCollectionDate = DateUtility::isoDateFormat($sampleCollectionDate, true);
 
-            $tbData = [
+            $tesRequestData = [
                 'vlsm_country_id' => $globalConfig['vl_form'],
                 'sample_collection_date' => $sampleCollectionDate,
                 'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
@@ -294,27 +299,27 @@ class TbService
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
             ];
 
-            $oldSampleCodeKey = null;
+            $accessType = $_SESSION['accessType'] ?? $params['accessType'] ?? null;
 
             if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
-                $tbData['remote_sample_code'] = $sampleData['sampleCode'];
-                $tbData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
-                $tbData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
-                $tbData['remote_sample'] = 'yes';
-                $tbData['result_status'] = 9;
-                if ($_SESSION['accessType'] === 'testing-lab') {
-                    $tbData['sample_code'] = $sampleData['sampleCode'];
-                    $tbData['result_status'] = 6;
+                $tesRequestData['remote_sample_code'] = $sampleData['sampleCode'];
+                $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
+                $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
+                $tesRequestData['remote_sample'] = 'yes';
+                $tesRequestData['result_status'] = 9;
+                if ($accessType === 'testing-lab') {
+                    $tesRequestData['sample_code'] = $sampleData['sampleCode'];
+                    $tesRequestData['result_status'] = 6;
                 }
             } else {
-                $tbData['sample_code'] = $sampleData['sampleCode'];
-                $tbData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-                $tbData['sample_code_key'] = $sampleData['sampleCodeKey'];
-                $tbData['remote_sample'] = 'no';
-                $tbData['result_status'] = 6;
+                $tesRequestData['sample_code'] = $sampleData['sampleCode'];
+                $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
+                $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
+                $tesRequestData['remote_sample'] = 'no';
+                $tesRequestData['result_status'] = 6;
             }
             // echo "<pre>";
-            // print_r($tbData);die;
+            // print_r($tesRequestData);die;
 
             $sQuery = "SELECT tb_id, sample_code, sample_code_format, sample_code_key, remote_sample_code, remote_sample_code_format, remote_sample_code_key FROM form_tb ";
             if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
@@ -330,23 +335,24 @@ class TbService
                 'applicationVersion'  => $version,
                 'ip_address'    => $ipaddress
             ];
-            $tbData['form_attributes'] = json_encode($formAttributes);
+            $tesRequestData['form_attributes'] = json_encode($formAttributes);
 
             $id = 0;
-
-            if (!empty($rowData)) {
-                // $this->db = $this->db->where('tb_id', $rowData['tb_id']);
-                // $id = $this->db->update("form_tb", $tbData);
-
-                // If this sample code exists, let us regenerate
+            if (empty($rowData) && !empty($sampleData['sampleCode'])) {
+                $formAttributes = [
+                    'applicationVersion'  => $this->commonService->getSystemConfig('sc_version'),
+                    'ip_address'    => $this->commonService->getClientIpAddress()
+                ];
+                $tesRequestData['form_attributes'] = json_encode($formAttributes);
+                $this->db->insert("form_tb", $tesRequestData);
+                $id = $this->db->getInsertId();
+                if ($this->db->getLastErrno() > 0) {
+                    error_log($this->db->getLastError());
+                }
+            } else {
+                // If this sample code exists, let us regenerate the sample code and insert
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSampleCode($params);
-            } else {
-                if (isset($sampleData['sampleCode']) && $sampleData['sampleCode'] != '' && $params['sampleCollectionDate'] != null && $params['sampleCollectionDate'] != '') {
-                    $tbData['unique_id'] = $this->commonService->generateUUID();
-                    $id = $this->db->insert("form_tb", $tbData);
-                    //error_log($this->db->getLastError()); die;
-                }
             }
         } catch (Exception $e) {
             error_log('Insert TB Sample : ' . $this->db->getLastError());

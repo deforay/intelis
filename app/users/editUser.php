@@ -395,7 +395,7 @@ $ftResult = $db->rawQuery($fQuery);
                     right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
                },
                fireSearch: function(value) {
-                    return value.length > 3;
+                    return value.length > 2;
                }
           });
           $("#showFilter").click(function() {

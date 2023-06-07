@@ -23,7 +23,7 @@ try {
         );
         $db = $db->where('batch_id', $id);
         $db->update($tableName1, $data);
-        if ($id === true) {
+        if ($id > 0) {
             $value = array('sample_batch_id' => null);
             $db = $db->where('sample_batch_id', $id);
             $db->update($tableName2, $value);

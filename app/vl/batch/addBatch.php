@@ -23,15 +23,6 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
 
 $testPlatformResult = $general->getTestingPlatforms('vl');
 
-//global config
-// $configQuery = "SELECT `value` FROM global_config WHERE name ='vl_form'";
-// $configResult = $db->query($configQuery);
-// $showUrgency = ($configResult[0]['value'] == 1 || $configResult[0]['value'] == 2) ? true : false;
-//Get active machines
-
-//$query = "SELECT vl.sample_code,vl.vl_sample_id,vl.facility_id,f.facility_name,f.facility_code FROM form_vl as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id where sample_batch_id is NULL OR sample_batch_id='' ORDER BY f.facility_name ASC";
-//$result = $db->rawQuery($query);
-
 $sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
 
@@ -41,15 +32,17 @@ $maxId = $general->createBatchCode();
 //Set last machine label order
 $machinesLabelOrder = [];
 foreach ($testPlatformResult as $machine) {
-	$lastOrderQuery = "SELECT label_order from batch_details WHERE machine ='" . $machine['config_id'] . "' ORDER BY request_created_datetime DESC";
-	$lastOrderInfo = $db->query($lastOrderQuery);
+	$lastOrderQuery = "SELECT label_order
+						FROM batch_details
+						WHERE machine =?
+						ORDER BY request_created_datetime DESC";
+	$lastOrderInfo = $db->rawQuery($lastOrderQuery, [$machine['config_id']]);
 	if (isset($lastOrderInfo[0]['label_order']) && trim($lastOrderInfo[0]['label_order']) != '') {
 		$machinesLabelOrder[$machine['config_id']] = implode(",", json_decode($lastOrderInfo[0]['label_order'], true));
 	} else {
 		$machinesLabelOrder[$machine['config_id']] = '';
 	}
 }
-//print_r($machinesLabelOrder);
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
 <style>
@@ -58,7 +51,7 @@ foreach ($testPlatformResult as $machine) {
 	}
 
 	#ms-sampleCode {
-		width: 110%;
+		width: 100%;
 	}
 
 	.showFemaleSection {
@@ -100,54 +93,48 @@ foreach ($testPlatformResult as $machine) {
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
 			</div>
-			<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 100%;">
+			<table aria-describedby="table" class="table" aria-hidden="true" style="margin-top:20px;width: 100%;">
 				<tr>
-					<th scope="col"><?php echo _("Testing Platform"); ?>&nbsp;<span class="mandatory">*</span> </th>
-					<td>
-						<select name="machine" id="machine" class="form-control isRequired" title="<?php echo _('Please choose machine'); ?>" style="width:280px;">
+					<th style="width: 20%;" scope="col"><?php echo _("Testing Platform"); ?>&nbsp;<span class="mandatory">*</span> </th>
+					<td style="width: 30%;">
+						<select name="machine" id="machine" class="form-control isRequired" title="<?php echo _('Please choose machine'); ?>" style="width:100%;">
 							<option value=""> <?php echo _("-- Select --"); ?> </option>
-							<?php
-							foreach ($testPlatformResult as $machine) {
-								$labelOrder = $machinesLabelOrder[$machine['config_id']];
-							?>
+							<?php foreach ($testPlatformResult as $machine) {
+								$labelOrder = $machinesLabelOrder[$machine['config_id']]; ?>
 								<option value="<?php echo $machine['config_id']; ?>" data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>"><?= $machine['machine_name']; ?></option>
 							<?php } ?>
 						</select>
 					</td>
-					<th scope="col"><?php echo _("Sample Type"); ?></th>
-					<td>
-						<select class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>" style="width:150px;">
+					<th style="width: 20%;" scope="col"><?php echo _("Sample Type"); ?></th>
+					<td style="width: 30%;">
+						<select class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>" style="width:100%;">
 							<option value=""> <?php echo _("-- Select --"); ?> </option>
-							<?php
-							foreach ($sResult as $type) {
-							?>
+							<?php foreach ($sResult as $type) { ?>
 								<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
-							<?php
-							}
-							?>
+							<?php } ?>
 						</select>
 					</td>
 				</tr>
 				<tr>
-					<th scope="col"><?php echo _("Sample Collection Date"); ?></th>
-					<td>
-						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:275px;background:#fff;" />
+					<th style="width: 20%;" scope="col"><?php echo _("Sample Collection Date"); ?></th>
+					<td style="width: 30%;">
+						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:100%;background:#fff;" />
 					</td>
-					<th scope="col"><?php echo _("Facility"); ?></th>
-					<td>
-						<select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple">
+					<th style="width: 20%;" scope="col"><?php echo _("Facility"); ?></th>
+					<td style="width: 30%;">
+						<select style="width: 100%;" class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple">
 							<?= $facilitiesDropdown; ?>
 						</select>
 					</td>
 				</tr>
 				<tr>
-					<th scope="col"><?php echo _("Date Sample Receieved at Lab"); ?></th>
-					<td>
-						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="<?php echo _('Select Received at Lab Date'); ?>" readonly style="width:275px;background:#fff;" />
+					<th style="width: 20%;" scope="col"><?php echo _("Date Sample Receieved at Lab"); ?></th>
+					<td style="width: 30%;">
+						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="<?php echo _('Select Received at Lab Date'); ?>" readonly style="width:100%;background:#fff;" />
 					</td>
-					<th scope="col"><?php echo _("Patient Gender"); ?></th>
-					<td>
-						<select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender'); ?>" onchange="enableFemaleSection(this);" style="width:150px;">
+					<th style="width: 20%;" scope="col"><?php echo _("Patient Gender"); ?></th>
+					<td style="width: 30%;">
+						<select name="gender" id="gender" class="form-control" title="<?php echo _('Please choose gender'); ?>" onchange="enableFemaleSection(this);" style="width:100%;">
 							<option value=""> <?php echo _("-- Select --"); ?> </option>
 							<option value="male"><?php echo _("Male"); ?></option>
 							<option value="female"><?php echo _("Female"); ?></option>
@@ -156,8 +143,8 @@ foreach ($testPlatformResult as $machine) {
 					</td>
 				</tr>
 				<tr>
-					<th scope="col"><?php echo _("Positions"); ?></th>
-					<td>
+					<th style="width: 20%;" scope="col"><?php echo _("Positions"); ?></th>
+					<td style="width: 30%;">
 						<select id="positions-type" class="form-control" title="<?php echo _('Please select the postion'); ?>">
 							<option value="numeric"><?php echo _("Numeric"); ?></option>
 							<option value="alpha-numeric"><?php echo _("Alpha Numeric"); ?></option>
@@ -203,10 +190,8 @@ foreach ($testPlatformResult as $machine) {
 							</div>
 						</div>
 
-						<div class="row" style="margin: 15px;">
-							<h4> <?php echo _("Sample Code"); ?></h4>
-							<div class="col-md-5" id="sampleDetails">
-								<!-- <div class="col-lg-5"> -->
+						<div class="row" style="margin: 15px;" id="sampleDetails">
+							<div class="col-md-5">
 								<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
 
 								</select>
@@ -253,16 +238,32 @@ foreach ($testPlatformResult as $machine) {
 	noOfSamples = 0;
 	sortedTitle = [];
 	$(document).ready(function() {
+
 		$('#search').multiselect({
 			search: {
 				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
 				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
 			},
 			fireSearch: function(value) {
-				return value.length > 3;
+				return value.length > 2;
+			},
+			afterMoveToRight: function($left, $right, $options) {
+				const count = $right.find('option').length;
+				if (count > 0) {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				} else {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				}
+			},
+			afterMoveToLeft: function($left, $right, $options) {
+				const count = $right.find('option').length;
+				if (count > 0) {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				} else {
+					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+				}
 			}
 		});
-
 		$("#facilityName").select2({
 			placeholder: "<?php echo _("Select Facilities"); ?>"
 		});
@@ -308,11 +309,11 @@ foreach ($testPlatformResult as $machine) {
 		var selected = $("#machine").find('option:selected');
 		noOfSamples = selected.data('no-of-samples');
 		if (noOfSamples < selVal.length) {
-			alert("You have selected maximum number of samples");
+			alert("<?= _("You have selected more than allowed number of samples"); ?>");
 			return false;
 		}
 		if (selVal == "") {
-			alert("Please select sample code");
+			alert("<?= _("Please select one or more samples"); ?>");
 			return false;
 		}
 
@@ -325,9 +326,6 @@ foreach ($testPlatformResult as $machine) {
 			document.getElementById('addBatchForm').submit();
 		}
 	}
-
-	//$("#auditRndNo").multiselect({height: 100,minWidth: 150});
-
 
 	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
 		var removeDots = obj.value.replace(/\./g, "");
@@ -389,8 +387,6 @@ foreach ($testPlatformResult as $machine) {
 			function(data) {
 				if (data != "") {
 					$("#sampleDetails").html(data);
-					//$("#batchSubmit").attr("disabled", true);
-					//$("#batchSubmit").css("pointer-events", "none");
 				}
 			});
 		$.unblockUI();
@@ -420,27 +416,6 @@ foreach ($testPlatformResult as $machine) {
 			$('#alertText').html('');
 		}
 	});
-
-	$(document.body).on("change", "#search, #search_to", function() {
-		countOff().then(function(count) {
-			// use the result here
-			if (count > 0) {
-				$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
-			} else {
-				$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
-			}
-		});
-	});
-
-	function countOff() {
-		return new Promise(function(resolve, reject) {
-			setTimeout(function() {
-				resolve();
-			}, 300);
-		}).then(function() {
-			return $("#search_to option").length;
-		});
-	}
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';

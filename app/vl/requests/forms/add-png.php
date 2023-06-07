@@ -845,29 +845,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 		$.blockUI();
 		$('#reqClinicianPhoneNumber').val($("#fName").find(":selected").attr("data-mobile-nos"));
 		$.unblockUI();
-		//check facility name
-		//    var cName = $("#fName").val();
-		//    var pName = $("#province").val();
-		//    if(cName!='' && provinceName && facilityName){
-		//      provinceName = false;
-		//    }
-		//
-		//    if(cName!='' && facilityName){
-		//      $.post("/includes/siteInformationDropdownOptions.php", { cName : cName,testType: 'vl'},
-		//      function(data){
-		//	  if(data != ""){
-		//            details = data.split("###");
-		//            $("#province").html(details[0]);
-		//            $("#district").html(details[1]);
-		//            $("#clinicianName").val(details[2]);
-		//	  }
-		//      });
-		//    }else if(pName=='' && cName==''){
-		//      provinceName = true;
-		//      facilityName = true;
-		//      $("#province").html("< ?php echo $province;?>");
-		//      $("#fName").html("< ?php echo $facility;?>");
-		//    }
 	}
 
 	function checkValue() {
