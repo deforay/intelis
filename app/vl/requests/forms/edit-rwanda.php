@@ -819,7 +819,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                if ($(this).val() != '') {
                     if ($(this).val() != $(this).val().replace(/[^\d\.]/g, "")) {
                          $(this).val('');
-                         alert('Please enter only numeric values for Viral Load Result')
+                         alert('Please enter only numeric values for Viral Load Log Result')
                     }
                }
           });
@@ -827,7 +827,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
      });
 
      function hivDetectionChange() {
-          
+
           var text = $('#testingPlatform').val();
           if (!text) {
                $("#vlResult").attr("disabled", true);
