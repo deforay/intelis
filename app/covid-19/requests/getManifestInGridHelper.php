@@ -128,7 +128,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
 * Get data to display
 */
 $aWhere = '';
-$sQuery = "SELECT * FROM form_covid19 as vl
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM form_covid19 as vl
                     LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
                     INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
@@ -144,23 +144,8 @@ if (isset($sWhere) && !empty($sWhere)) {
           $sWhere = $sWhere . ' vl.sample_package_code LIKE "%' . $_POST['samplePackageCode'] . '%" OR remote_sample_code LIKE "' . $_POST['samplePackageCode'] . '"';
      }
 }
-/* if ($sWhere != '') {
-     $sWhere = $sWhere . ' AND '. 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
-} else {
-     $sWhere = $sWhere . ' where '. 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
-} */
 $sFilter = '';
-/* if ($_SESSION['instanceType'] == 'remoteuser') {
-     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
-     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-          $sWhere = $sWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
-          $sFilter = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
-     }
-} else {
-     $sWhere = $sWhere . ' AND vl.result_status!=9';
-     $sFilter = ' AND result_status!=9';
-} */
+
 $sQuery = $sQuery . ' ' . $sWhere;
 if (isset($sOrder) && !empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
@@ -170,13 +155,10 @@ if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
 $rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering */
-$aResultFilterTotal = $db->rawQuery("SELECT vl.covid19_id,vl.facility_id,vl.patient_name,vl.result,f.facility_name,f.facility_code,vl.patient_id,vl.patient_name, vl.patient_surname,b.batch_code,vl.sample_batch_id,ts.status_name FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_covid19_sample_type as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere");
-$iFilteredTotal = count($aResultFilterTotal);
 
-/* Total data set length */
-$aResultTotal =  $db->rawQuery("select COUNT(covid19_id) as total FROM form_covid19 as vl where vlsm_country_id='" . $gconfig['vl_form'] . "'" . $sFilter);
-$iTotal = $aResultTotal[0]['total'];
+/* Data set length after filtering */
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 /*
 * Output

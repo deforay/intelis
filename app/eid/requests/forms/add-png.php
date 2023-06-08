@@ -426,6 +426,30 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 </select>
                                             </td>
                                         </tr>
+                                        <tr>
+                                            <th scope="row">Second DBS Requested</th>
+                                            <td>
+                                                <select class="form-control" name="secondDBSRequested" onchange="showDBSRequestedReason(this.value);" id="secondDBSRequested">
+                                                        <option value=''> -- Select -- </option>
+                                                        <option value="yes"> Yes </option>
+                                                        <option value="no"> No </option>
+                                                </select>   
+                                            </td>
+                                            <th scope="row" class="DBSRequestedReason" style="display: none;">If Yes, Why?</th>
+                                            <td class="DBSRequestedReason" style="display: none;">
+                                                <select class="form-control" name="secondDBSRequestedReason" id="secondDBSRequestedReason">
+                                                    <option value=''> -- Select -- </option>
+                                                    <option value="1st Test Positive"> 1st Test Positive </option>
+                                                    <option value="DBS Invalid"> DBS Invalid </option>
+                                                    <option value="Indeterminate"> Indeterminate </option>
+                                                    <option value="Infant < 2 months post-exposure to delivery"> Infant < 2 months post-exposure to delivery </option>
+                                                    <option value="Infant still breastfeeding"> Infant still breastfeeding </option>
+                                                    <option value="Infant < 2 months post breastfeeding"> Infant < 2 months post breastfeeding </option>
+                                                    <option value="Infant less than 6 weeks"> Infant less than 6 weeks </option>
+                                                    <option value="Inadequate feeding history"> Inadequate feeding history </option>
+                                                </select>   
+                                            </td>
+                                        </tr>
                                     </table>
                                 </div>
                             </div>
@@ -638,6 +662,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         if (motherVlText != '') {
             $("#motherViralLoadCopiesPerMl").val('');
         }
+    }
+
+    function showDBSRequestedReason(requested)
+    {
+        if(requested=="yes")
+            $(".DBSRequestedReason").show();
+                else
+            $(".DBSRequestedReason").hide();
     }
 
     $(document).ready(function() {
