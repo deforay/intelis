@@ -110,7 +110,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
 * Get data to display
 */
 $aWhere = '';
-$sQuery = "SELECT *, ts.status_name FROM form_vl as vl
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS *, ts.status_name FROM form_vl as vl
                     LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
                     LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
                     INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
@@ -130,11 +130,7 @@ if (isset($sWhere) && !empty($sWhere)) {
           $sWhere = $sWhere . ' vl.sample_package_code LIKE "%' . $_POST['samplePackageCode'] . '%" OR remote_sample_code LIKE "' . $_POST['samplePackageCode'] . '"';
      }
 }
-/* if ($sWhere != '') {
-     $sWhere = $sWhere . ' AND '. 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
-} else {
-     $sWhere = $sWhere . ' where '. 'vl.vlsm_country_id="' . $gconfig['vl_form'] . '"';
-} */
+
 $sFilter = '';
 $sQuery = $sQuery . ' ' . $sWhere;
 if (isset($sOrder) && !empty($sOrder)) {
@@ -146,13 +142,10 @@ if (isset($sLimit) && isset($sOffset)) {
 }
 // die($sQuery);
 $rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering */
-$aResultFilterTotal = $db->rawQuery("SELECT vl.vl_sample_id,vl.facility_id,vl.patient_first_name,vl.result,f.facility_name,f.facility_code,vl.patient_art_no,s.sample_name,b.batch_code,vl.sample_batch_id,ts.status_name FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere");
-$iFilteredTotal = count($aResultFilterTotal);
 
-/* Total data set length */
-$aResultTotal =  $db->rawQuery("select COUNT(vl_sample_id) as total FROM form_vl as vl where vlsm_country_id='" . $gconfig['vl_form'] . "'" . $sFilter);
-$iTotal = $aResultTotal[0]['total'];
+/* Data set length after filtering */
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 /*
 * Output

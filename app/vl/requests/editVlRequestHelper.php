@@ -208,14 +208,14 @@ try {
 
      $vlData = array(
           'vlsm_instance_id'                      => $instanceId,
-          'vlsm_country_id'                       => $formId ?? 1,
+          'vlsm_country_id'                       => $formId,
           'sample_reordered'                      => $_POST['sampleReordered'] ?? 'no',
           'external_sample_code'                  => $_POST['serialNo'] ?? null,
           'facility_id'                           => $_POST['fName'] ?? null,
-          'sample_collection_date'                => DateUtility::isoDateFormat($_POST['sampleCollectionDate'], true),
-          'sample_dispatched_datetime'            => DateUtility::isoDateFormat($_POST['sampleDispatchedDate'], true),
+          'sample_collection_date'                => DateUtility::isoDateFormat($_POST['sampleCollectionDate'] ?? '', true),
+          'sample_dispatched_datetime'            => DateUtility::isoDateFormat($_POST['sampleDispatchedDate'] ?? '', true),
           'patient_gender'                        => $_POST['gender'] ?? null,
-          'patient_dob'                           => DateUtility::isoDateFormat($_POST['dob']),
+          'patient_dob'                           => DateUtility::isoDateFormat($_POST['dob'] ?? ''),
           'patient_age_in_years'                  => $_POST['ageInYears'] ?? null,
           'patient_age_in_months'                 => $_POST['ageInMonths'] ?? null,
           'is_patient_pregnant'                   => $_POST['patientPregnant'] ?? null,
@@ -227,23 +227,23 @@ try {
           'is_patient_new'                        => $_POST['isPatientNew'] ?? null,
           'treatment_duration'                    => $_POST['treatmentDuration'] ?? null,
           'treatment_indication'                  => $_POST['treatmentIndication'] ?? null,
-          'treatment_initiated_date'              => DateUtility::isoDateFormat($_POST['dateOfArtInitiation']),
+          'treatment_initiated_date'              => DateUtility::isoDateFormat($_POST['dateOfArtInitiation'] ?? ''),
           'current_regimen'                       => $_POST['artRegimen'] ?? null,
           'has_patient_changed_regimen'           => $_POST['hasChangedRegimen'] ?? null,
           'reason_for_regimen_change'             => $_POST['reasonForArvRegimenChange'] ?? null,
-          'regimen_change_date'                   => DateUtility::isoDateFormat($_POST['dateOfArvRegimenChange']),
+          'regimen_change_date'                   => DateUtility::isoDateFormat($_POST['dateOfArvRegimenChange'] ?? ''),
           'line_of_treatment'                     => $_POST['lineOfTreatment'] ?? null,
           'line_of_treatment_failure_assessed'    => $_POST['lineOfTreatmentFailureAssessed'] ?? null,
-          'date_of_initiation_of_current_regimen' => DateUtility::isoDateFormat($_POST['regimenInitiatedOn']),
+          'date_of_initiation_of_current_regimen' => DateUtility::isoDateFormat($_POST['regimenInitiatedOn'] ?? ''),
           'patient_mobile_number'                 => $_POST['patientPhoneNumber'] ?? null,
-          'consent_to_receive_sms'                => $_POST['receiveSms'] ?? null,
+          'consent_to_receive_sms'                => $_POST['receiveSms'] ?? 'no',
           'sample_type'                           => $_POST['specimenType'] ?? null,
           'plasma_conservation_temperature'       => $_POST['conservationTemperature'] ?? null,
           'plasma_conservation_duration'          => $_POST['durationOfConservation'] ?? null,
           'arv_adherance_percentage'              => $_POST['arvAdherence'] ?? null,
           'reason_for_vl_testing'                 => $_POST['reasonForVLTesting'] ?? null,
           'last_viral_load_result'                => $_POST['lastViralLoadResult'] ?? null,
-          'last_viral_load_date'                  => DateUtility::isoDateFormat($_POST['lastViralLoadTestDate']),
+          'last_viral_load_date'                  => DateUtility::isoDateFormat($_POST['lastViralLoadTestDate'] ?? ''),
           'community_sample'                      => $_POST['communitySample'] ?? null,
           'last_vl_date_routine'                  => $_POST['rmTestingLastVLDate'] ?? null,
           'last_vl_result_routine'                => $_POST['rmTestingVlValue'] ?? null,
@@ -251,7 +251,7 @@ try {
           'last_vl_date_failure_ac'               => $_POST['repeatTestingLastVLDate'] ?? null,
           'last_vl_result_failure_ac'             => $_POST['repeatTestingVlValue'] ?? null,
           'last_vl_sample_type_failure_ac'        => $_POST['repeatLastVLTestSampleType'] ?? null,
-          'last_vl_date_failure'                  => DateUtility::isoDateFormat($_POST['suspendTreatmentLastVLDate']),
+          'last_vl_date_failure'                  => DateUtility::isoDateFormat($_POST['suspendTreatmentLastVLDate'] ?? ''),
           'last_vl_result_failure'                => $_POST['suspendTreatmentVlValue'] ?? null,
           'last_vl_sample_type_failure'           => $_POST['suspendLastVLTestSampleType'] ?? null,
           'request_clinician_name'                => $_POST['reqClinician'] ?? null,
@@ -261,26 +261,26 @@ try {
           'vl_focal_person_phone_number'          => $_POST['vlFocalPersonPhoneNumber'] ?? null,
           'lab_id'                                => $_POST['labId'] ?? null,
           'vl_test_platform'                      => $testingPlatform ?? null,
-          'sample_received_at_hub_datetime'       => DateUtility::isoDateFormat($_POST['sampleReceivedAtHubOn'], true),
-          'sample_received_at_vl_lab_datetime'    => DateUtility::isoDateFormat($_POST['sampleReceivedDate'], true),
-          'sample_tested_datetime'                => DateUtility::isoDateFormat($_POST['sampleTestingDateAtLab'], true),
-          'result_dispatched_datetime'            => DateUtility::isoDateFormat($_POST['resultDispatchedOn'], true),
+          'sample_received_at_hub_datetime'       => DateUtility::isoDateFormat($_POST['sampleReceivedAtHubOn'] ?? '', true),
+          'sample_received_at_vl_lab_datetime'    => DateUtility::isoDateFormat($_POST['sampleReceivedDate'] ?? '', true),
+          'sample_tested_datetime'                => DateUtility::isoDateFormat($_POST['sampleTestingDateAtLab'] ?? '', true),
+          'result_dispatched_datetime'            => DateUtility::isoDateFormat($_POST['resultDispatchedOn'] ?? '', true),
           'result_value_hiv_detection'            => $_POST['hivDetection'] ?? null,
           'reason_for_failure'                    => $_POST['reasonForFailure'] ?? null,
           'is_sample_rejected'                    => $_POST['noResult'] ?? null,
           'reason_for_sample_rejection'           => $_POST['rejectionReason'] ?? null,
-          'rejection_on'                          => DateUtility::isoDateFormat($_POST['rejectionDate']),
+          'rejection_on'                          => DateUtility::isoDateFormat($_POST['rejectionDate'] ?? ''),
           'result_value_absolute'                 => $absVal ?? null,
           'result_value_absolute_decimal'         => $absDecimalVal ?? null,
           'result_value_text'                     => $txtVal ?? null,
           'result'                                => $finalResult ?? null,
           'result_value_log'                      => $logVal ?? null,
           'result_reviewed_by'                    => $_POST['reviewedBy'] ?? null,
-          'result_reviewed_datetime'              => DateUtility::isoDateFormat($_POST['reviewedOn'], true),
+          'result_reviewed_datetime'              => DateUtility::isoDateFormat($_POST['reviewedOn'] ?? '', true),
           'tested_by'                             => $_POST['testedBy'] ?? null,
           'result_approved_by'                    => $_POST['approvedBy'] ?? null,
-          'result_approved_datetime'              => DateUtility::isoDateFormat($_POST['approvedOnDateTime'], true),
-          'date_test_ordered_by_physician'        => DateUtility::isoDateFormat($_POST['dateOfDemand']),
+          'result_approved_datetime'              => DateUtility::isoDateFormat($_POST['approvedOnDateTime'] ?? '', true),
+          'date_test_ordered_by_physician'        => DateUtility::isoDateFormat($_POST['dateOfDemand'] ?? ''),
           'lab_tech_comments'                     => $_POST['labComments'] ?? null,
           'funding_source'                        => (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') ? base64_decode($_POST['fundingSource']) : null,
           'implementing_partner'                  => (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') ? base64_decode($_POST['implementingPartner']) : null,
@@ -320,7 +320,7 @@ try {
 
 
           $pngSpecificFields['art_cd_cells'] = $_POST['cdCells'];
-          $pngSpecificFields['art_cd_date'] = DateUtility::isoDateFormat($_POST['cdDate']);
+          $pngSpecificFields['art_cd_date'] = DateUtility::isoDateFormat($_POST['cdDate'] ?? '');
           $pngSpecificFields['who_clinical_stage'] = $_POST['clinicalStage'];
           $pngSpecificFields['sample_to_transport'] = $_POST['typeOfSample'] ?? null;
           $pngSpecificFields['whole_blood_ml'] = $_POST['wholeBloodOne'] ?? null;
@@ -335,7 +335,7 @@ try {
           $pngSpecificFields['batch_quality'] = $_POST['batchQuality'] ?? null;
           $pngSpecificFields['sample_test_quality'] = $_POST['testQuality'] ?? null;
           $pngSpecificFields['sample_batch_id'] = $_POST['batchNo'] ?? null;
-          $pngSpecificFields['failed_test_date'] = DateUtility::isoDateFormat($_POST['failedTestDate'], true);
+          $pngSpecificFields['failed_test_date'] = DateUtility::isoDateFormat($_POST['failedTestDate'] ?? '', true);
           $pngSpecificFields['failed_test_tech'] = $_POST['failedTestingTech'] ?? null;
           $pngSpecificFields['failed_vl_result'] = $_POST['failedvlResult'] ?? null;
           $pngSpecificFields['failed_batch_quality'] = $_POST['failedbatchQuality'] ?? null;
@@ -343,8 +343,8 @@ try {
           $pngSpecificFields['failed_batch_id'] = $_POST['failedbatchNo'] ?? null;
           $pngSpecificFields['qc_tech_name'] = $_POST['qcTechName'] ?? null;
           $pngSpecificFields['qc_tech_sign'] = $_POST['qcTechSign'] ?? null;
-          $pngSpecificFields['qc_date'] = DateUtility::isoDateFormat($_POST['qcDate']);
-          $pngSpecificFields['report_date'] = DateUtility::isoDateFormat($_POST['reportDate']);
+          $pngSpecificFields['qc_date'] = DateUtility::isoDateFormat($_POST['qcDate'] ?? '');
+          $pngSpecificFields['report_date'] = DateUtility::isoDateFormat($_POST['reportDate'] ?? '');
      }
      $vlData = array_merge($vlData, $pngSpecificFields);
 
