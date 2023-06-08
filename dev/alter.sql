@@ -4113,3 +4113,13 @@ UPDATE `system_config` SET `value` = '5.1.6' WHERE `system_config`.`name` = 'sc_
 
 ALTER TABLE `generic_test_results` ADD `result_unit` INT NULL DEFAULT NULL AFTER `result`;
 ALTER TABLE `form_generic` ADD `result_unit` INT NULL DEFAULT NULL AFTER `result`;
+
+-- Thana 08-Jun-2023
+INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('sample-batch', 'common', 'Manage Batch Details');
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES 
+(NULL, 'sample-batch', 'add-batch.php', 'Add New Batch'),
+(NULL, 'sample-batch', 'edit-batch.php', 'Edit Batch'),
+(NULL, 'sample-batch', 'delete-batch-code.php', 'Delete Batch'),
+(NULL, 'sample-batch', 'add-batch-position.php', 'Add Batch Position'),
+(NULL, 'sample-batch', 'edit-batch-position.php', 'Edit Batch Position'),
+(NULL, 'sample-batch', 'generate-barcode.php', 'Generate Batch Bar Code');
