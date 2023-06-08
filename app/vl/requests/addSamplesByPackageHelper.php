@@ -19,13 +19,18 @@ $vlObj = ContainerRegistry::get(VlService::class);
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
+$queryParams = explode(',', $_POST['sampleId']);
+$placeholders = implode(', ', array_fill(0, count($queryParams), '?'));
+
+
 $sampleQuery = "SELECT vl_sample_id,
                 sample_collection_date,
                 sample_package_code,
                 province_id,
                 sample_code
-                FROM form_vl where vl_sample_id IN (?)";
-$sampleResult = $db->rawQuery($sampleQuery, [$_POST['sampleId']]);
+                FROM form_vl WHERE vl_sample_id IN ($placeholders)";
+$sampleResult = $db->rawQuery($sampleQuery, $queryParams);
+
 $status = 0;
 foreach ($sampleResult as $sampleRow) {
 
