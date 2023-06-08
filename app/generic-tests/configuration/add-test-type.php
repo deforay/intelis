@@ -159,9 +159,9 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testFailureReason" class="col-lg-4 control-label"><?php echo _("Test Failure Reasons"); ?> </label>
+									<label for="testFailureReason" class="col-lg-4 control-label"><?php echo _("Test Failure Reasons"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<select class="form-control" name='testFailureReason[]' id='testFailureReason' title="<?php echo _('Please select the test failure reason'); ?>" multiple>
+										<select class="form-control isRequired" name='testFailureReason[]' id='testFailureReason' title="<?php echo _('Please select the test failure reason'); ?>" multiple>
 											
 										</select>
 									</div>
@@ -529,11 +529,9 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 				//obj.removeClass('isRequired');
 
 			}
-
 		}
 		for (let i = 0; i < options.length; i++) {
 			$('#fdropDown' + cls).val($('#fdropDown' + cls).val() + options[i] + ',');
-
 		}
 	}
 

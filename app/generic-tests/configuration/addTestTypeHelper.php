@@ -36,37 +36,49 @@ foreach($_POST['fdropDown'] as $val)
 try {
    // echo '<pre>'; print_r($_POST['resultConfig']['test_result_unit']); die;
     if (!empty($_POST['testStandardName'])) {
-        $testAttribute['field_id'] = $_POST['fieldId'];
-        $testAttribute['field_name'] = $_POST['fieldName'];
-        $testAttribute['field_type'] = $_POST['fieldType'];
-        $testAttribute['drop_down'] = $_POST['fdropDown'];
-        $testAttribute['mandatory_field'] = $_POST['mandatoryField'];
-        $testAttribute['section'] = $_POST['section'];
-        $testAttribute['section_other'] = $_POST['sectionOther'];
-        $testAttribute['field_order'] = $_POST['fieldOrder'];
-        $cnt = count($testAttribute['field_id']);
+        $cnt = count($_POST['fieldId']);
+        $sortFieldOrder=$_POST['fieldOrder'];
+        sort($sortFieldOrder);
         $fieldName=$fieldId=$fieldType=$dropDown=$mandatoryField=$section=$sectionOther=$fieldOrder=[];
-        for($i=1;$i<=$cnt;$i++)
+        for($i=0;$i<$cnt;$i++)
         {
-            $index = array_search($i,$testAttribute['field_order']);
-            array_push($fieldId,$testAttribute['field_id'][$index]);
-            array_push($fieldName,$testAttribute['field_name'][$index]);
-            array_push($fieldType,$testAttribute['field_type'][$index]);
-            array_push($dropDown,$testAttribute['drop_down'][$index]);
-            array_push($mandatoryField,$testAttribute['mandatory_field'][$index]);
-            array_push($section,$testAttribute['section'][$index]);
-            array_push($sectionOther,$testAttribute['section_other'][$index]);
-            array_push($fieldOrder,$testAttribute['field_order'][$index]);
+            $index = array_search($sortFieldOrder[$i],$_POST['fieldOrder']);
+            array_push($fieldId,$_POST['fieldId'][$index]);
+            array_push($fieldName,$_POST['fieldName'][$index]);
+            array_push($fieldType,$_POST['fieldType'][$index]);
+            array_push($dropDown,$_POST['fdropDown'][$index]);
+            array_push($mandatoryField,$_POST['mandatoryField'][$index]);
+            array_push($section,$_POST['section'][$index]);
+            array_push($sectionOther,$_POST['sectionOther'][$index]);
+            array_push($fieldOrder,$_POST['fieldOrder'][$index]);
         }
-        $testAttribute['field_name'] = $fieldName;
-        $testAttribute['field_id'] = $fieldId;
-        $testAttribute['field_name'] = $fieldName;
-        $testAttribute['field_type'] = $fieldType;
-        $testAttribute['drop_down'] = $dropDown;
-        $testAttribute['mandatory_field'] = $mandatoryField;
-        $testAttribute['section'] = $section;
-        $testAttribute['section_other'] = $sectionOther;
-        $testAttribute['field_order'] = $fieldOrder;
+
+        for($i=0;$i<$cnt;$i++)
+        {
+            if($section[$i]=='otherSection'){
+                $sectionOther[$i]=trim($sectionOther[$i]);
+                $testAttribute[$section[$i]][$sectionOther[$i]][$fieldId[$i]]['field_name']=$fieldName[$i];
+                $testAttribute[$section[$i]][$sectionOther[$i]][$fieldId[$i]]['field_type']=$fieldType[$i];
+                $testAttribute[$section[$i]][$sectionOther[$i]][$fieldId[$i]]['mandatory_field']=$mandatoryField[$i];
+                $testAttribute[$section[$i]][$sectionOther[$i]][$fieldId[$i]]['section']=$section[$i];
+                $testAttribute[$section[$i]][$sectionOther[$i]][$fieldId[$i]]['section_name']=trim($sectionOther[$i]);
+                $testAttribute[$section[$i]][$sectionOther[$i]][$fieldId[$i]]['field_order']=$fieldOrder[$i];
+                if($fieldType[$i]=='dropdown' || $fieldType[$i]=='multiple'){
+                    $testAttribute[$section[$i]][$sectionOther[$i]][$fieldId[$i]]['dropdown_options']=$dropDown[$i];
+                }
+            }else{
+                $testAttribute[$section[$i]][$fieldId[$i]]['field_name']=$fieldName[$i];
+                $testAttribute[$section[$i]][$fieldId[$i]]['field_type']=$fieldType[$i];
+                $testAttribute[$section[$i]][$fieldId[$i]]['mandatory_field']=$mandatoryField[$i];
+                $testAttribute[$section[$i]][$fieldId[$i]]['section']=$section[$i];
+                //$testAttr[$_POST['section'][$i]][$_POST['fieldId'][$i]]['section_other']=$_POST['sectionOther'][$i];
+                $testAttribute[$section[$i]][$fieldId[$i]]['field_order']=$fieldOrder[$i];
+                if($fieldType[$i]=='dropdown' || $fieldType[$i]=='multiple'){
+                    $testAttribute[$section[$i]][$fieldId[$i]]['dropdown_options']=$dropDown[$i];
+                }
+            }
+        }
+        //print_r(json_encode($testAttribute));die;
         if(!is_numeric($_POST['testCategory'])){
             $_POST['testCategory'] = $generic->quickInsert('r_generic_test_categories', array('test_category_name', 'test_category_status'), array($_POST['testCategory'], 'active'));
         }
