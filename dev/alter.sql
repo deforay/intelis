@@ -4116,7 +4116,7 @@ ALTER TABLE `form_generic` ADD `result_unit` INT NULL DEFAULT NULL AFTER `result
 
 -- Thana 08-Jun-2023
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('sample-batch', 'common', 'Manage Batch Details');
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES 
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES
 (NULL, 'sample-batch', 'add-batch.php', 'Add New Batch'),
 (NULL, 'sample-batch', 'edit-batch.php', 'Edit Batch'),
 (NULL, 'sample-batch', 'delete-batch-code.php', 'Delete Batch'),
@@ -4124,6 +4124,9 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 (NULL, 'sample-batch', 'edit-batch-position.php', 'Edit Batch Position'),
 (NULL, 'sample-batch', 'generate-barcode.php', 'Generate Batch Bar Code');
 
+
+-- Amit 8-Jun-2023 version 5.1.7
+UPDATE `system_config` SET `value` = '5.1.7' WHERE `system_config`.`name` = 'sc_version';
 
 -- Jeyabanu 08-06-2023
 ALTER TABLE `form_eid` ADD `second_DBS_requested` VARCHAR(100) NULL DEFAULT NULL AFTER `result_approved_by`, ADD `second_DBS_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_DBS_requested`;
