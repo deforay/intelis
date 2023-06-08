@@ -4,6 +4,11 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
+
 if (isset($_GET['type']) && $_GET['type'] == 'vl') {
 	$title = "Viral Load";
 } elseif (isset($_GET['type']) && $_GET['type'] == 'eid') {
@@ -12,10 +17,8 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
 	$title = "Covid-19";
 } elseif (isset($_GET['type']) && $_GET['type'] == 'hepatitis') {
 	$title = "Hepatitis";
-    $showPatientName = true;
 } elseif (isset($_GET['type']) && $_GET['type'] == 'tb') {
 	$title = "TB";
-    $showPatientName = true;
 } elseif (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
 	$title = "Lab Tests";
 }
@@ -106,7 +109,7 @@ foreach ($testPlatformResult as $machine) {
                 <tr>
                     <th style="width: 20%;" scope="col"><?php echo _("Testing Platform"); ?>&nbsp;<span class="mandatory">*</span> </th>
                     <td style="width: 30%;">
-                        <select name="machine" id="machine" class="form-control isRequired" title="<?php echo _('Please choose machine'); ?>" style="width:280px;">
+                        <select name="machine" id="machine" class="form-control isRequired" title="<?php echo _('Please choose machine'); ?>">
                             <option value=""> <?php echo _("-- Select --"); ?> </option>
                             <?php foreach ($testPlatformResult as $machine) {
                                 $labelOrder = $machinesLabelOrder[$machine['config_id']]; ?>
@@ -190,8 +193,9 @@ foreach ($testPlatformResult as $machine) {
                     <!-- /.box-body -->
                     <div class="box-footer">
                         <input type="hidden" name="selectedSample" id="selectedSample" />
+                        <input type="hidden" name="type" id="type" value="<?php echo $_GET['type'];?>" />
                         <a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" title="<?php echo _('Please select machine'); ?>" onclick="validateNow();return false;"><?php echo _("Save and Next"); ?></a>
-                        <a href="covid-19-batches.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
+                        <a href="batches.php?type=<?php echo $_GET['type'];?>" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
                     </div>
                     <!-- /.box-footer -->
                 </form>
@@ -333,7 +337,7 @@ foreach ($testPlatformResult as $machine) {
         $.post("get-samples-batch.php", {
                 sampleCollectionDate: $("#sampleCollectionDate").val(),
                 sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
-                type : $_GET['type'],
+                type : '<?php echo $_GET['type'];?>',
                 fName: fName
             },
             function(data) {

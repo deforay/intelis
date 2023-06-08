@@ -1,7 +1,10 @@
 <?php
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
@@ -32,7 +35,7 @@ try {
         $db->update($tableName, $data);
         $_SESSION['alertMsg'] = "Batch position saved";
     }
-    header("Location:batches.php");
+    header("Location:batches.php?type=".$_POST['type']);
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

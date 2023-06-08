@@ -4,6 +4,11 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Utilities\DateUtility;
 
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
+
 $tableName = "batch_details";
 $primaryKey = "batch_id";
 
@@ -152,21 +157,34 @@ $output = array(
     "iTotalDisplayRecords" => $iFilteredTotal,
     "aaData" => array()
 );
-$batch = false;
+$batch = $delete = $pdf = false;
 if (isset($_SESSION['privileges']) && (in_array('edit-batch.php', $_SESSION['privileges']))) {
     $batch = true;
+}
+if (isset($_SESSION['privileges']) && (in_array('delete-batch-code.php', $_SESSION['privileges']))) {
+    $delete = true;
+}
+if (isset($_SESSION['privileges']) && (in_array('generate-batch-pdf.php', $_SESSION['privileges']))) {
+    $pdf = true;
+}
+if (isset($_SESSION['privileges']) && (in_array('edit-batch-position.php', $_SESSION['privileges']))) {
+    $editPosition = true;
 }
 
 foreach ($rResult as $aRow) {
     $createdDate = "";
     $deleteBatch = '';
-    $printBarcode = '<a href="generate-barcode.php?id=' . base64_encode($aRow['batch_id']) . '&type=' . $_POST['type'] . '" target="_blank"  rel="noopener" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _("Print bar code") . '"><em class="fa-solid fa-barcode"></em> ' . _("Print Batch PDF") . '</a>';
-    $editPosition = '<a href="edit-batch-position.php?id=' . base64_encode($aRow['batch_id']) . '&type=' . $_POST['type'] . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _("Edit Position") . '"><em class="fa-solid fa-arrow-down-1-9"></em> ' . _("Edit Position") . '</a>';
+    if($editPosition){
+        $editPosition = '<a href="edit-batch-position.php?id=' . base64_encode($aRow['batch_id']) . '&type=' . $_POST['type'] . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _("Edit Position") . '"><em class="fa-solid fa-arrow-down-1-9"></em> ' . _("Edit Position") . '</a>';
+    }
+    if($pdf){
+        $printBarcode = '<a href="generate-batch-pdf.php?id=' . base64_encode($aRow['batch_id']) . '&type=' . $_POST['type'] . '" target="_blank"  rel="noopener" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _("Print bar code") . '"><em class="fa-solid fa-barcode"></em> ' . _("Print Batch PDF") . '</a>';
+    }
     if (trim($aRow['request_created_datetime']) != "" && $aRow['request_created_datetime'] != '0000-00-00 00:00:00') {
         $createdDate =  date("d-M-Y H:i:s", strtotime($aRow['request_created_datetime']));
     }
 
-    if ($aRow['total_samples'] == 0 || $aRow['testcount'] == 0) {
+    if (($aRow['total_samples'] == 0 || $aRow['testcount'] == 0) && $delete) {
         $deleteBatch = '<a href="javascript:void(0);" class="btn btn-danger btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _("Delete") . '" onclick="deleteBatchCode(\'' . base64_encode($aRow['batch_id']) . '\',\'' . $aRow['batch_code'] . '\');"><em class="fa-solid fa-xmark"></em> ' . _("Delete") . '</a>';
     }
 

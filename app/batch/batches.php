@@ -1,4 +1,10 @@
 <?php
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
+
+
 $showPatientName = false;
 if (isset($_GET['type']) && $_GET['type'] == 'vl') {
 	$title = "Viral Load";
@@ -76,7 +82,7 @@ require_once APPLICATION_PATH . '/header.php';
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if (isset($_SESSION['privileges']) && in_array("add-batch.php", $_SESSION['privileges'])) { ?>
-							<a href="add-batch.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Create New Batch"); ?></a>
+							<a href="add-batch.php?type=<?php echo $_GET['type'];?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Create New Batch"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->

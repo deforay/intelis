@@ -4,6 +4,14 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
+
+$title = "Viral Load";
+$refTable = "form_vl";
+$refPrimaryColumn = "vl_sample_id";
 if (isset($_GET['type']) && $_GET['type'] == 'vl') {
 	$title = "Viral Load";
     $refTable = "form_vl";
@@ -14,8 +22,8 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
     $refPrimaryColumn = "eid_id";
 } elseif (isset($_GET['type']) && $_GET['type'] == 'covid19') {
 	$title = "Covid-19";
-    $refTable = "$refTable";
-    $refPrimaryColumn = "$refPrimaryColumn";
+    $refTable = "form_covid19";
+    $refPrimaryColumn = "covid19_id";
 } elseif (isset($_GET['type']) && $_GET['type'] == 'hepatitis') {
 	$title = "Hepatitis";
     $refTable = "form_hepatitis";
@@ -29,7 +37,6 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
     $refTable = "form_generic";
     $refPrimaryColumn = "sample_id";
 }
-
 $title = _($title . " | Edit Batch");
 require_once APPLICATION_PATH . '/header.php';
 
@@ -40,7 +47,7 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$healthFacilites = $facilitiesService->getHealthFacilities('covid19');
+$healthFacilites = $facilitiesService->getHealthFacilities($_GET['type']);
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
 // Sanitized values from $request object
@@ -53,16 +60,16 @@ $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
 $batchQuery = "SELECT * from batch_details as b_d LEFT JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id=?";
 $batchInfo = $db->rawQuery($batchQuery, array($id));
-$bQuery = "SELECT vl.sample_code,vl.sample_batch_id,vl.$refPrimaryColumn,vl.facility_id,vl.result,vl.result_status,f.facility_name,f.facility_code FROM $refTable as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE  (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND vl.sample_code!='' AND vl.sample_batch_id = ? ORDER BY vl.last_modified_datetime ASC";
+$bQuery = "SELECT vl.sample_code,vl.sample_batch_id,vl." . $refPrimaryColumn . ",vl.facility_id,vl.result,vl.result_status,f.facility_name,f.facility_code FROM " . $refTable . " as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE  (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND vl.sample_code!='' AND vl.sample_batch_id = ? ORDER BY vl.last_modified_datetime ASC";
 $batchResultresult = $db->rawQuery($bQuery, array($id));
 
-$query = "SELECT vl.sample_code,vl.sample_batch_id,vl.$refPrimaryColumn,vl.facility_id,vl.result,vl.result_status,f.facility_name,f.facility_code FROM $refTable as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE (vl.sample_batch_id IS NULL OR vl.sample_batch_id = '') AND (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.result is NULL or vl.result = '') AND vl.sample_code!='' ORDER BY vl.last_modified_datetime ASC";
+$query = "SELECT vl.sample_code,vl.sample_batch_id,vl." . $refPrimaryColumn . ",vl.facility_id,vl.result,vl.result_status,f.facility_name,f.facility_code FROM " . $refTable . " as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE (vl.sample_batch_id IS NULL OR vl.sample_batch_id = '') AND (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.result is NULL or vl.result = '') AND vl.sample_code!='' ORDER BY vl.last_modified_datetime ASC";
 $result = $db->rawQuery($query, array($arr['vl_form']));
 $result = array_merge($batchResultresult, $result);
 
 //Get active machines
 
-$testPlatformResult = $general->getTestingPlatforms('covid19');
+$testPlatformResult = $general->getTestingPlatforms($_GET['type']);
 // $machinesLabelOrder = [];
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
@@ -167,27 +174,21 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 									<div class="col-lg-7" style="margin-left:3%;">
 										<select name="machine" id="machine" class="form-control isRequired" title="<?php echo _('Please choose machine'); ?>">
 											<option value=""> <?php echo _("-- Select --"); ?> </option>
-											<?php
-											foreach ($testPlatformResult as $machine) {
-											?>
+											<?php foreach ($testPlatformResult as $machine) { ?>
 												<option value="<?php echo $machine['config_id']; ?>" <?php if ($batchInfo[0]['machine'] == $machine['config_id']) echo "selected='selected'"; ?> data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>" <?php echo ($batchInfo[0]['machine'] == $machine['config_id']) ? 'selected="selected"' : ''; ?>><?= $machine['machine_name']; ?></option>
 											<?php } ?>
 										</select>
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6"><a href="covid-19-edit-batch-position.php?id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="<?php echo _('Edit Position'); ?>"><em class="fa-solid fa-arrow-down-1-9"></em> <?php echo _("Edit Position"); ?></a></div>
+							<div class="col-md-6"><a href="edit-batch-position.php?type=<?php echo $_GET['type'];?>&id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="<?php echo _('Edit Position'); ?>"><em class="fa-solid fa-arrow-down-1-9"></em> <?php echo _("Edit Position"); ?></a></div>
 						</div>
 						<div class="row" id="sampleDetails">
 							<div class="col-md-5">
 								<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
-									<?php
-									foreach ($result as $key => $sample) {
-									?>
-										<option value="<?php echo $sample['$refPrimaryColumn']; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
-									<?php
-									}
-									?>
+									<?php foreach ($result as $key => $sample) { ?>
+										<option value="<?php echo $sample[$refPrimaryColumn]; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
+									<?php } ?>
 								</select>
 							</div>
 
@@ -211,11 +212,12 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">
+						<input type="hidden" name="type" id="type" value="<?php echo $_GET['type']; ?>" />
 						<input type="hidden" name="batchId" id="batchId" value="<?php echo $batchInfo[0]['batch_id']; ?>" />
 						<input type="hidden" name="selectedSample" id="selectedSample" />
 						<input type="hidden" name="positions" id="positions" value="<?php echo $batchInfo[0]['position_type']; ?>" />
 						<a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
-						<a href="covid-19-batches.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
+						<a href="batches.php?type=<?php echo $_GET['type'];?>" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
 					</div>
 					<!-- /.box-footer -->
 				</form>
@@ -370,7 +372,7 @@ $testPlatformResult = $general->getTestingPlatforms('covid19');
 		$.post("get-samples-batch.php", {
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
 				sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
-				type : $_GET['type'],
+				type : '<?php echo $_GET['type'];?>',
 				batchId: $("#batchId").val(),
 				fName: fName
 			},
