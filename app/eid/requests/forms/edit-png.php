@@ -496,6 +496,30 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             <th scope="row"></th>
                                             <td></td>
                                         </tr>
+                                        <tr>
+                                            <th scope="row">Second DBS Requested</th>
+                                            <td>
+                                                <select class="form-control" name="secondDBSRequested" onchange="showDBSRequestedReason(this.value);" id="secondDBSRequested">
+                                                        <option value=''> -- Select -- </option>
+                                                        <option value="yes" <?php echo ($eidInfo['second_DBS_requested'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
+                                                        <option value="no" <?php echo ($eidInfo['second_DBS_requested'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
+                                                </select>   
+                                            </td>
+                                            <th scope="row" class="DBSRequestedReason" style="display: none;">If Yes, Why?</th>
+                                            <td class="DBSRequestedReason" style="display: none;">
+                                                <select class="form-control" name="secondDBSRequestedReason" id="secondDBSRequestedReason">
+                                                    <option value=''> -- Select -- </option>
+                                                    <option value="1st Test Positive" <?php echo ($eidInfo['second_DBS_requested_reason'] == '1st Test Positive') ? "selected='selected'" : ""; ?>> 1st Test Positive </option>
+                                                    <option value="DBS Invalid" <?php echo ($eidInfo['second_DBS_requested_reason'] == 'DBS Invalid') ? "selected='selected'" : ""; ?>> DBS Invalid </option>
+                                                    <option value="Indeterminate" <?php echo ($eidInfo['second_DBS_requested_reason'] == 'Indeterminate') ? "selected='selected'" : ""; ?>> Indeterminate </option>
+                                                    <option value="Infant < 2 months post-exposure to delivery" <?php echo ($eidInfo['second_DBS_requested_reason'] == 'Infant < 2 months post-exposure to delivery') ? "selected='selected'" : ""; ?>> Infant < 2 months post-exposure to delivery </option>
+                                                    <option value="Infant still breastfeeding" <?php echo ($eidInfo['second_DBS_requested_reason'] == 'Infant still breastfeeding') ? "selected='selected'" : ""; ?>> Infant still breastfeeding </option>
+                                                    <option value="Infant < 2 months post breastfeeding" <?php echo ($eidInfo['second_DBS_requested_reason'] == 'Infant < 2 months post breastfeeding') ? "selected='selected'" : ""; ?>> Infant < 2 months post breastfeeding </option>
+                                                    <option value="Infant less than 6 weeks" <?php echo ($eidInfo['second_DBS_requested_reason'] == 'Infant less than 6 weeks') ? "selected='selected'" : ""; ?>> Infant less than 6 weeks </option>
+                                                    <option value="Inadequate feeding history" <?php echo ($eidInfo['second_DBS_requested_reason'] == 'Inadequate feeding history') ? "selected='selected'" : ""; ?>> Inadequate feeding history </option>
+                                                </select>   
+                                            </td>
+                                        </tr>
                                     </table>
                                 </div>
                             </div>
@@ -667,6 +691,14 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
         }
     }
 
+    function showDBSRequestedReason(requested)
+    {
+        if(requested=="yes")
+            $(".DBSRequestedReason").show();
+                else
+            $(".DBSRequestedReason").hide();
+    }
+
     $(document).ready(function() {
 
         $('#facilityId').select2({
@@ -714,7 +746,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
-
+        showDBSRequestedReason($("#secondDBSRequested").val());
 
     });
 </script>
