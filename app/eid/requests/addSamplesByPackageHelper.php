@@ -20,8 +20,17 @@ $eidObj = ContainerRegistry::get(EidService::class);
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
-$sampleQuery = "SELECT eid_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_eid where eid_id IN (?) ORDER BY eid_id";
-$sampleResult = $db->rawQuery($sampleQuery, [$_POST['sampleId']]);
+$queryParams = explode(',', $_POST['sampleId']);
+$placeholders = implode(', ', array_fill(0, count($queryParams), '?'));
+
+$sampleQuery = "SELECT eid_id,
+                sample_collection_date,
+                sample_package_code,
+                province_id,
+                sample_code
+                FROM form_eid WHERE eid_id IN ($placeholders)";
+$sampleResult = $db->rawQuery($sampleQuery, $queryParams);
+
 $status = 0;
 foreach ($sampleResult as $sampleRow) {
 
