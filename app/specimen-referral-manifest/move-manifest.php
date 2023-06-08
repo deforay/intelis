@@ -1,14 +1,14 @@
 <?php
 
-use App\Services\Covid19Service;
+use App\Services\TbService;
+use App\Services\VlService;
 use App\Services\EidService;
+use App\Services\UsersService;
+use App\Services\CommonService;
+use App\Services\Covid19Service;
+use App\Services\HepatitisService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\HepatitisService;
-use App\Services\TbService;
-use App\Services\UsersService;
-use App\Services\VlService;
 
 $title = "Move Manifest";
 
@@ -44,21 +44,26 @@ foreach ($users as $u) {
 $facilities = $facilitiesService->getHealthFacilities($module);
 $shortCode = strtoupper($module);
 if ($module == 'vl') {
-    $vlService = new VlService($db);
+    /** @var VlService $vlService */
+    $vlService = ContainerRegistry::get(VlService::class);
     $sampleTypes = $vlService->getVlSampleTypes();
 } else if ($module == 'eid') {
-    $eidService = new EidService($db);
+    /** @var EidService $eidService */
+    $eidService = ContainerRegistry::get(EidService::class);
     $sampleTypes = $eidService->getEidSampleTypes();
 } else if ($module == 'covid19') {
     $shortCode = 'C19';
-    $covid19Service = new Covid19Service($db);
+    /** @var Covid19Service $covid19Service */
+    $covid19Service = ContainerRegistry::get(Covid19Service::class);
     $sampleTypes = $covid19Service->getCovid19SampleTypes();
 } else if ($module == 'hepatitis') {
     $shortCode = 'HEP';
-    $hepDb = new HepatitisService($db);
+    /** @var HepatitisService $hepDb */
+    $hepDb = ContainerRegistry::get(HepatitisService::class);
     $sampleTypes = $hepDb->getHepatitisSampleTypes();
 } else if ($module == 'tb') {
-    $tbService = new TbService($db);
+    /** @var TbService $tbService */
+    $tbService = ContainerRegistry::get(TbService::class);
     $sampleTypes = $tbService->getTbSampleTypes();
 }
 

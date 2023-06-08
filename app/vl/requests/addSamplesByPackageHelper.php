@@ -24,7 +24,7 @@ $sampleQuery = "SELECT vl_sample_id,
                 sample_package_code,
                 province_id,
                 sample_code
-                FROM form_vl where vl_sample_id IN (?)";
+                FROM form_vl WHERE vl_sample_id IN (?)";
 $sampleResult = $db->rawQuery($sampleQuery, [$_POST['sampleId']]);
 $status = 0;
 foreach ($sampleResult as $sampleRow) {

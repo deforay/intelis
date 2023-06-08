@@ -39,7 +39,7 @@ require_once APPLICATION_PATH . '/header.php';
 						</tr>
 						<tr class="activateSample" style="display:none;">
 							<th scope="row" style="width:50%;vertical-align:middle;"><?php echo _("Sample Received at Testing Lab"); ?> :</th>
-							<td style="width:50%;vertical-align:middle;"><input type="text" name="testDate" id="testDate" class="form-control dateTime" placeholder="Sample Received at Testing Lab" title="Please select datetime for Sample Received at Testing Lab" readonly /></td>
+							<td style="width:50%;vertical-align:middle;"><input type="text" name="testDate" id="testDate" class="form-control dateTime" placeholder="Sample Received at Testing Lab" title="Please select when the samples were received at the Testing Lab" readonly /></td>
 
 							<td style="width:100%;" colspan="3">
 								<a class="btn btn-success btn-sm pull-right activateSample" style="display:none;margin-right:5px;" href="javascript:void(0);" onclick="activeSampleCode();"><em class="fa-solid fa-square-check"></em> <?php echo _("Activate Samples"); ?></a>
@@ -244,7 +244,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 	function activeSampleCode() {
 		if ($("#testDate").val() == "") {
-			alert("Please select datetime for Sample Received at Testing Lab");
+			alert("<?= _("Please select when the samples were received at the Testing Lab"); ?>");
 			return false;
 		}
 		$.blockUI();

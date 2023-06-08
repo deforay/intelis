@@ -48,7 +48,7 @@ $batResult = $db->rawQuery($batQuery);
 						</tr>
 						<tr class="activateSample" style="display:none;">
 							<th scope="row" style="width:20%;vertical-align:middle;"><?php echo _("Sample Received at Testing Lab"); ?> :</th>
-							<td style="width:70%;vertical-align:middle;"><input type="text" name="testDate" id="testDate" class="form-control dateTime" placeholder="Sample Received at Testing Lab" title="Please select datetime for Sample Received at Testing Lab" readonly /></td>
+							<td style="width:70%;vertical-align:middle;"><input type="text" name="testDate" id="testDate" class="form-control dateTime" placeholder="Sample Received at Testing Lab" title="Please select when the samples were received at the Testing Lab" readonly /></td>
 
 							<td style="width:10%;">
 								<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="activeSampleCode();"><em class="fa-solid fa-square-check"></em> Activate Samples</a>
@@ -260,7 +260,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 	function activeSampleCode() {
 		if ($("#testDate").val() == "") {
-			alert("Please select datetime for Sample Received at Testing Lab");
+			alert("<?= _("Please select when the samples were received at the Testing Lab"); ?>");
 			return false;
 		}
 		$.blockUI();
