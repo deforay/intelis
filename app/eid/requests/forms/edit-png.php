@@ -256,7 +256,26 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="Caretaker Address" title="Caretaker Address" style="width:100%;" onchange=""><?= htmlspecialchars($eidInfo['caretaker_address']); ?></textarea></td>
 
                                     </tr>
-
+                                    <tr>
+                                    <th scope="row">Provide Recent previous Lab Number</th>
+                                        <td>
+                                        <input type="text" class="form-control" value="<?php echo ($eidInfo['previous_sample_code']); ?>" id="previousSampleCode" name="previousSampleCode" placeholder="Recent previous Lab Number" title="Recent previous Lab Number" style="width:100%;" onchange="" />
+                                        </td>
+                                        <th scope="row">Clinical Assessment</th>
+                                        <td>
+                                            <select class="form-control " name="clinicalAssessment" id="clinicalAssessment">
+                                                <option value=''> -- Select -- </option>
+                                                <option value='symptomatic' <?php echo ($eidInfo['clinical_assessment'] == 'symptomatic') ? "selected='selected'" : ""; ?>> Symptomatic </option>
+                                                <option value='non-symptomatic' <?php echo ($eidInfo['clinical_assessment'] == 'non-symptomatic') ? "selected='selected'" : ""; ?>> Non-Symptomatic </option>
+                                            </select>    
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <th scope="row">Name of EID Personnel Collecting DBS</th>
+                                            <td>
+                                                 <input type="text" class="form-control" value="<?php echo ($eidInfo['clinician_name']); ?>" id="clinicianName" name="clinicianName" placeholder="Name of EID Personnel Collecting DBS" title="Name of EID Personnel Collecting DBS" style="width:100%;" onchange="" />
+                                            </td>
+                                    </tr>
 
                                 </table>
 
@@ -290,7 +309,20 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             <input type="checkbox" name="motherTreatment[]" value="Unknown" <?php echo in_array('Unknown', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?>> Unknown
                                         </td>
                                     </tr>
-
+                                    <tr>
+                                        <th scope="row" style="width:15% !important">Mode of Delivery:</th>
+                                        <td style="width:35% !important">
+                                            <select class="form-control" name="modeOfDelivery" id="modeOfDelivery" onchange="showOtherOption(this.value)">
+                                                <option value=''> -- Select -- </option>
+                                                <option value="Supervised Vaginal" <?php echo ($eidInfo['mode_of_delivery'] == 'Supervised Vaginal') ? "selected='selected'" : ""; ?>> Supervised Vaginal </option>
+                                                <option value="Unsupervised Vaginal" <?php echo ($eidInfo['mode_of_delivery'] == 'Unsupervised Vaginal') ? "selected='selected'" : ""; ?>> Unsupervised Vaginal </option>
+                                                <option value="Caesarean Section" <?php echo ($eidInfo['mode_of_delivery'] == 'Caesarean Section') ? "selected='selected'" : ""; ?>> Caesarean Section </option>
+                                                <option value="Unknown" <?php echo ($eidInfo['mode_of_delivery'] == 'Unknown') ? "selected='selected'" : ""; ?>> Unknown </option>
+                                                <option value="Other" <?php echo ($eidInfo['mode_of_delivery'] == 'Other') ? "selected='selected'" : ""; ?>> Other </option>
+                                            </select>
+                                            <input type="text" class="form-control" value="<?php echo ($eidInfo['mode_of_delivery_other']); ?>" name="modeOfDeliveryOther" id="modeOfDeliveryOther" title="Enter Other mode of Delivery" placeholder="Enter Other mode of Delivery" style="display:none;" /> 
+                                        </td>
+                                    <tr>
                                     <tr>
                                         <th scope="row">Infant Rapid HIV Test Done</th>
                                         <td>
@@ -501,22 +533,22 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             <td>
                                                 <select class="form-control" name="secondDBSRequested" onchange="showDBSRequestedReason(this.value);" id="secondDBSRequested">
                                                         <option value=''> -- Select -- </option>
-                                                        <option value="yes" <?php echo ($eidInfo['second_DBS_requested'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
-                                                        <option value="no" <?php echo ($eidInfo['second_DBS_requested'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
+                                                        <option value="yes" <?php echo ($eidInfo['second_dbs_requested'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
+                                                        <option value="no" <?php echo ($eidInfo['second_dbs_requested'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
                                                 </select>   
                                             </td>
                                             <th scope="row" class="DBSRequestedReason" style="display: none;">If Yes, Why?</th>
                                             <td class="DBSRequestedReason" style="display: none;">
                                                 <select class="form-control" name="secondDBSRequestedReason" id="secondDBSRequestedReason">
                                                     <option value=''> -- Select -- </option>
-                                                    <option value="1st Test Positive" <?php echo ($eidInfo['second_DBS_requested_reason'] == '1st Test Positive') ? "selected='selected'" : ""; ?>> 1st Test Positive </option>
-                                                    <option value="DBS Invalid" <?php echo ($eidInfo['second_DBS_requested_reason'] == 'DBS Invalid') ? "selected='selected'" : ""; ?>> DBS Invalid </option>
-                                                    <option value="Indeterminate" <?php echo ($eidInfo['second_DBS_requested_reason'] == 'Indeterminate') ? "selected='selected'" : ""; ?>> Indeterminate </option>
-                                                    <option value="Infant < 2 months post-exposure to delivery" <?php echo ($eidInfo['second_DBS_requested_reason'] == 'Infant < 2 months post-exposure to delivery') ? "selected='selected'" : ""; ?>> Infant < 2 months post-exposure to delivery </option>
-                                                    <option value="Infant still breastfeeding" <?php echo ($eidInfo['second_DBS_requested_reason'] == 'Infant still breastfeeding') ? "selected='selected'" : ""; ?>> Infant still breastfeeding </option>
-                                                    <option value="Infant < 2 months post breastfeeding" <?php echo ($eidInfo['second_DBS_requested_reason'] == 'Infant < 2 months post breastfeeding') ? "selected='selected'" : ""; ?>> Infant < 2 months post breastfeeding </option>
-                                                    <option value="Infant less than 6 weeks" <?php echo ($eidInfo['second_DBS_requested_reason'] == 'Infant less than 6 weeks') ? "selected='selected'" : ""; ?>> Infant less than 6 weeks </option>
-                                                    <option value="Inadequate feeding history" <?php echo ($eidInfo['second_DBS_requested_reason'] == 'Inadequate feeding history') ? "selected='selected'" : ""; ?>> Inadequate feeding history </option>
+                                                    <option value="1st Test Positive" <?php echo ($eidInfo['second_dbs_requested_reason'] == '1st Test Positive') ? "selected='selected'" : ""; ?>> 1st Test Positive </option>
+                                                    <option value="DBS Invalid" <?php echo ($eidInfo['second_dbs_requested_reason'] == 'DBS Invalid') ? "selected='selected'" : ""; ?>> DBS Invalid </option>
+                                                    <option value="Indeterminate" <?php echo ($eidInfo['second_dbs_requested_reason'] == 'Indeterminate') ? "selected='selected'" : ""; ?>> Indeterminate </option>
+                                                    <option value="Infant < 2 months post-exposure to delivery" <?php echo ($eidInfo['second_dbs_requested_reason'] == 'Infant < 2 months post-exposure to delivery') ? "selected='selected'" : ""; ?>> Infant < 2 months post-exposure to delivery </option>
+                                                    <option value="Infant still breastfeeding" <?php echo ($eidInfo['second_dbs_requested_reason'] == 'Infant still breastfeeding') ? "selected='selected'" : ""; ?>> Infant still breastfeeding </option>
+                                                    <option value="Infant < 2 months post breastfeeding" <?php echo ($eidInfo['second_dbs_requested_reason'] == 'Infant < 2 months post breastfeeding') ? "selected='selected'" : ""; ?>> Infant < 2 months post breastfeeding </option>
+                                                    <option value="Infant less than 6 weeks" <?php echo ($eidInfo['second_dbs_requested_reason'] == 'Infant less than 6 weeks') ? "selected='selected'" : ""; ?>> Infant less than 6 weeks </option>
+                                                    <option value="Inadequate feeding history" <?php echo ($eidInfo['second_dbs_requested_reason'] == 'Inadequate feeding history') ? "selected='selected'" : ""; ?>> Inadequate feeding history </option>
                                                 </select>   
                                             </td>
                                         </tr>
@@ -659,7 +691,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                         details = data.split("###");
                         $("#province").html(details[0]);
                         $("#district").html(details[1]);
-                        $("#clinicianName").val(details[2]);
+                      //  $("#clinicianName").val(details[2]);
                     }
                 });
         } else if (pName == '' && cName == '') {
@@ -697,6 +729,14 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
             $(".DBSRequestedReason").show();
                 else
             $(".DBSRequestedReason").hide();
+    }
+
+    function showOtherOption(modeOfdelivery)
+    {
+        if(modeOfdelivery=="Other")
+            $("#modeOfDeliveryOther").show();
+                else
+            $("#modeOfDeliveryOther").hide();
     }
 
     $(document).ready(function() {
@@ -747,6 +787,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
             $('.ui-datepicker-calendar').show();
         });
         showDBSRequestedReason($("#secondDBSRequested").val());
+        showOtherOption($("#modeOfDelivery").val());
 
     });
 </script>

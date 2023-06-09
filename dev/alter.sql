@@ -4132,3 +4132,9 @@ UPDATE `system_config` SET `value` = '5.1.7' WHERE `system_config`.`name` = 'sc_
 -- Jeyabanu 08-06-2023
 ALTER TABLE `form_eid` ADD `second_DBS_requested` VARCHAR(100) NULL DEFAULT NULL AFTER `result_approved_by`, ADD `second_DBS_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_DBS_requested`;
 ALTER TABLE `audit_form_eid` ADD `second_DBS_requested` VARCHAR(100) NULL DEFAULT NULL AFTER `result_approved_by`, ADD `second_DBS_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_DBS_requested`;
+
+ALTER TABLE `form_eid` ADD `previous_sample_code` VARCHAR(256) NULL DEFAULT NULL AFTER `caretaker_address`, ADD `clinical_assessment` VARCHAR(256) NULL DEFAULT NULL AFTER `previous_sample_code`, ADD `clinician_name` VARCHAR(256) NULL DEFAULT NULL AFTER `clinical_assessment`;
+ALTER TABLE `audit_form_eid` ADD `previous_sample_code` VARCHAR(256) NULL DEFAULT NULL AFTER `caretaker_address`, ADD `clinical_assessment` VARCHAR(256) NULL DEFAULT NULL AFTER `previous_sample_code`, ADD `clinician_name` VARCHAR(256) NULL DEFAULT NULL AFTER `clinical_assessment`;
+
+ALTER TABLE `form_eid` ADD `mode_of_delivery_other` VARCHAR(256) NULL DEFAULT NULL AFTER `mode_of_delivery`;
+ALTER TABLE `audit_form_eid` ADD `mode_of_delivery_other` VARCHAR(256) NULL DEFAULT NULL AFTER `mode_of_delivery`;
