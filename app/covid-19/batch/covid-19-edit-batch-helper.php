@@ -36,7 +36,7 @@ try {
 			}
 			$sample = [];
 			//Mergeing disabled samples into existing samples
-			if (isset($_POST['sampleCode']) && !empty($_POST['sampleCode'])) {
+			if (!empty($_POST['sampleCode'])) {
 				if (count($xplodResultSample) > 0) {
 					$sample = array_unique(array_merge($_POST['sampleCode'], $xplodResultSample));
 				} else {
@@ -55,7 +55,7 @@ try {
 			$displaySampleOrderArray = [];
 			$batchQuery = "SELECT * from batch_details as b_d INNER JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id=$id";
 			$batchInfo = $db->query($batchQuery);
-			if (isset($batchInfo) && !empty($batchInfo)) {
+			if (!empty($batchInfo)) {
 
 				if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
 					foreach ($general->excelColumnRange('A', 'H') as $value) {

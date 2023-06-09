@@ -182,8 +182,12 @@ try {
         );
         $formAttributes = json_encode($formAttributes);
 
+        $currentSampleData = [];
         if (!empty($rowData)) {
             $data['eidSampleId'] = $rowData['eid_id'];
+            $currentSampleData['sampleCode'] = $rowData['sample_code'] ?? null;
+            $currentSampleData['remoteSampleCode'] = $rowData['remote_sample_code'] ?? null;
+            $currentSampleData['action'] = 'updated';
         } else {
             $params['appSampleCode'] = $data['appSampleCode'] ?? null;
             $params['provinceCode'] = $provinceCode;
@@ -195,7 +199,18 @@ try {
             $params['facilityId'] = $data['facilityId'] ?? null;
             $params['labId'] = $data['labId'] ?? null;
 
-            $data['eidSampleId'] = $eidService->insertSampleCode($params);
+            $currentSampleData = $eidService->insertSampleCode($params, true);
+            $currentSampleData['action'] = 'inserted';
+            $data['eidSampleId'] = intval($currentSampleData['id']);
+            if ($data['eidSampleId'] == 0) {
+                $responseData[$rootKey] = array(
+                    'transactionId' => $transactionId,
+                    'appSampleCode' => $data['appSampleCode'] ?? null,
+                    'status' => 'failed',
+                    'error' => _("Failed to insert sample")
+                );
+                continue;
+            }
         }
 
         $status = 6;
@@ -382,21 +397,14 @@ try {
         if (!empty($data['eidSampleId'])) {
             $db = $db->where('eid_id', $data['eidSampleId']);
             $id = $db->update('form_eid', $eidData);
-            error_log($db->getLastError());
+            //error_log($db->getLastError());
         }
 
         if ($id === true) {
-            $sQuery = "SELECT sample_code,
-                            remote_sample_code
-                            FROM form_eid
-                            WHERE eid_id = ?";
-            $sampleRow = $db->rawQueryOne($sQuery, [$data['eidSampleId']]);
-
-            $eidSampleCode = $sampleRow['sample_code'] ?? $sampleRow['remote_sample_code'] ?? null;
-
             $responseData[$rootKey] = [
                 'status' => 'success',
-                'sampleCode' => $eidSampleCode,
+                'action' => $currentSampleData['action'] ?? null,
+                'sampleCode' => $currentSampleData['remoteSampleCode'] ?? $currentSampleData['sampleCode'] ?? null,
                 'transactionId' => $transactionId,
                 'uniqueId' => $uniqueId,
                 'appSampleCode' => $data['appSampleCode'] ?? null,

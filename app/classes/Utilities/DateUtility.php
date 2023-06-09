@@ -91,15 +91,17 @@ class DateUtility
     // Returns the given date in Y-m-d format
     public static function isoDateFormat($date, $includeTime = false)
     {
-        if (false === self::verifyIfDateValid($date)) {
-            return null;
-        } else {
-            $format = "Y-m-d";
-            if ($includeTime === true) {
-                $format = $format . " H:i:s";
+        return once(function () use ($date, $includeTime) {
+            if (false === self::verifyIfDateValid($date)) {
+                return null;
+            } else {
+                $format = "Y-m-d";
+                if ($includeTime === true) {
+                    $format = $format . " H:i:s";
+                }
+                return (new DateTimeImmutable($date))->format($format);
             }
-            return (new DateTimeImmutable($date))->format($format);
-        }
+        });
     }
 
     // returns age array in year, months, days

@@ -20,14 +20,14 @@ $value = trim($_POST['value']);
 $fnct = $_POST['fnct'];
 $data = 0; $multiple = array();
 if ($value != '') {
-    if(isset($_POST['type']) && !empty($_POST['type']) && $_POST['type'] == "multiple"){
+    if(!empty($_POST['type']) && $_POST['type'] == "multiple"){
         foreach(explode(",", $value) as $row){
             $multiple[] = "'".trim($row)."'";
         }
         $value = implode(",", $multiple);
     }
     if ($fnct == '' || $fnct == 'null') {
-        if(isset($_POST['type']) && !empty($_POST['type']) && $_POST['type'] == "multiple"){
+        if(!empty($_POST['type']) && $_POST['type'] == "multiple"){
             $sQuery = "SELECT * from $tableName where $fieldName IN($value)";
             $result = $db->rawQuery($sQuery);
         }else{
@@ -41,7 +41,7 @@ if ($value != '') {
         // first trying $table[1] without quotes. If this does not work, then in catch we try with single quotes
         try {
             //$sql = $db->select()->from($tableName)->where($fieldName . "=" . "'$value'")->where($table[0] . "!=" . $table[1])->where("company_id=" . $this->_session->company_id);
-            if(isset($_POST['type']) && !empty($_POST['type']) && $_POST['type'] == "multiple"){
+            if(!empty($_POST['type']) && $_POST['type'] == "multiple"){
                 $sQuery = "SELECT * from $tableName where $fieldName IN($value) and $table[0]!= ?";
                 $result = $db->rawQuery($sQuery, array($table[1]));
             }else{

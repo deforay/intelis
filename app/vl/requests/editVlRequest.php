@@ -129,7 +129,7 @@ if ($vlQueryInfo['patient_last_name'] != '') {
 } else {
      $patientLastName = '';
 }
-$patientFullName = trim($patientFirstName ?? '' . ' ' . $patientMiddleName ?? '' . ' ' . $patientLastName ?? '');
+$patientFullName = trim($patientFirstName ?? ' ' . $patientMiddleName ?? ' ' . $patientLastName ?? '');
 
 ?>
 <style>

@@ -200,7 +200,7 @@ try {
     /* if(isset($_POST['resultType']) && isset($_POST['testType']) && !empty($_POST['resultType']) && !empty($_POST['testType'])){
         $interpretationResult = $genericTestsService->getInterpretationResults($_POST['testType'], $_POST['result']);
     } */
-    if (isset($_POST['resultInterpretation']) && !empty($_POST['resultInterpretation'])) {
+    if (!empty($_POST['resultInterpretation'])) {
         $interpretationResult = $_POST['resultInterpretation'];
     }
 
