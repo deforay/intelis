@@ -100,6 +100,8 @@ class UsersService
                 $sharedVLPrivileges = array(
                     'delete-batch-code.php?type=vl'         => '/batch/edit-batch.php?type=vl',
                     'generate-batch-pdf.php?type=vl'        => '/batch/edit-batch.php?type=vl',
+                    'add-batch-position.php?type=vl'        => '/batch/edit-batch.php?type=vl',
+                    'edit-batch-position.php'               => '/batch/edit-batch.php?type=vl',
                     'updateVlTestResult.php'                => 'vlTestResult.php',
                     'vl-failed-results.php'                 => 'vlTestResult.php',
                     'add-vl-art-code-details.php'           => 'vl-art-code-details.php',
@@ -130,8 +132,8 @@ class UsersService
                 $this->applicationConfig['modules']['eid'] === true
             ) {
                 $sharedEIDPrivileges = array(
-                    'add-batch-position.php?type=eid'       => '/batch/add-batch.php?type=eid',
-                    'edit-batch-position.php?type=eid'      => '/batch/edit-batch.php?type=eid',
+                    'add-batch-position.php'       => '/batch/add-batch.php?type=eid',
+                    'edit-batch-position.php'      => '/batch/edit-batch.php?type=eid',
                     'delete-batch-code.php?type=eid'        => '/batch/edit-batch.php?type=eid',
                     'generate-batch-pdf.php?type=eid'       => '/batch/edit-batch.php?type=eid',
                     'eid-update-result.php'                 => 'eid-manual-results.php',
@@ -159,8 +161,8 @@ class UsersService
                 $this->applicationConfig['modules']['covid19'] === true
             ) {
                 $sharedCovid19Privileges = array(
-                    'add-batch-position.php?type=covid19'       => '/batch/add-batch.php?type=covid19',
-                    'edit-batch-position.php?type=covid19'      => '/batch/edit-batch.php?type=covid19',
+                    'add-batch-position.php'       => '/batch/add-batch.php?type=covid19',
+                    'edit-batch-position.php'      => '/batch/edit-batch.php?type=covid19',
                     'delete-batch-code.php?type=covid19'        => '/batch/edit-batch.php?type=covid19',
                     'generate-batch-pdf.php?type=covid19'       => '/batch/edit-batch.php?type=covid19',
                     'mail-covid-19-results.php'                 => 'covid-19-print-results.php',
@@ -204,8 +206,8 @@ class UsersService
                 $this->applicationConfig['modules']['hepatitis'] === true
             ) {
                 $sharedHepPrivileges = array(
-                    'add-batch-position.php?type=hepatitis'         => '/batch/add-batch.php?type=hepatitis',
-                    'edit-batch-position.php?type=hepatitis'        => '/batch/edit-batch.php?type=hepatitis',
+                    'add-batch-position.php'         => '/batch/add-batch.php?type=hepatitis',
+                    'edit-batch-position.php'        => '/batch/edit-batch.php?type=hepatitis',
                     'delete-batch-code.php?type=hepatitis'          => '/batch/edit-batch.php?type=hepatitis',
                     'generate-batch-pdf.php?type=hepatitis'         => '/batch/edit-batch.php?type=hepatitis',
                     'hepatitis-update-result.php'                   => 'hepatitis-manual-results.php',
@@ -241,8 +243,8 @@ class UsersService
                 $this->applicationConfig['modules']['tb'] === true
             ) {
                 $sharedHepPrivileges = array(
-                    'add-batch-position.php?type=tb'        => '/batch/add-batch.php?type=tb',
-                    'edit-batch-position.php?type=tb'       => '/batch/edit-batch.php?type=tb',
+                    'add-batch-position.php'        => '/batch/add-batch.php?type=tb',
+                    'edit-batch-position.php'       => '/batch/edit-batch.php?type=tb',
                     'delete-batch-code.php?type=tb'         => '/batch/edit-batch.php?type=tb',
                     'generate-batch-pdf.php?type=tb'        => '/batch/edit-batch.php?type=tb',
                     'tb-update-result.php'                  => 'tb-manual-results.php',
