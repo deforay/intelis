@@ -158,16 +158,16 @@ $output = array(
     "aaData" => array()
 );
 $batch = $delete = $pdf = false;
-if (isset($_SESSION['privileges']) && (in_array('edit-batch.php', $_SESSION['privileges']))) {
+if (isset($_SESSION['privileges']) && (in_array('/batch/edit-batch.php?type='.$_POST['type'], $_SESSION['privileges']))) {
     $batch = true;
 }
-if (isset($_SESSION['privileges']) && (in_array('delete-batch-code.php', $_SESSION['privileges']))) {
+if (isset($_SESSION['privileges']) && (in_array('/batch/edit-batch.php?type='.$_POST['type'], $_SESSION['privileges']))) {
     $delete = true;
 }
-if (isset($_SESSION['privileges']) && (in_array('generate-batch-pdf.php', $_SESSION['privileges']))) {
+if (isset($_SESSION['privileges']) && (in_array('/batch/edit-batch.php?type='.$_POST['type'], $_SESSION['privileges']))) {
     $pdf = true;
 }
-if (isset($_SESSION['privileges']) && (in_array('edit-batch-position.php', $_SESSION['privileges']))) {
+if (isset($_SESSION['privileges']) && (in_array('/batch/edit-batch.php?type='.$_POST['type'], $_SESSION['privileges']))) {
     $editPosition = true;
 }
 
@@ -175,12 +175,12 @@ foreach ($rResult as $aRow) {
     $createdDate = "";
     $deleteBatch = '';
     $edit = '';
-    // $edit = '<a href="edit-batch.php?id=' . base64_encode($aRow['batch_id']) . '&type=' . $_POST['type'] . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>&nbsp;';
+    // $edit = '<a href="edit-batch.php?&type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>&nbsp;';
     if($editPosition){
-        $editPosition = '<a href="edit-batch-position.php?id=' . base64_encode($aRow['batch_id']) . '&type=' . $_POST['type'] . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _("Edit Position") . '"><em class="fa-solid fa-arrow-down-1-9"></em> ' . _("Edit Position") . '</a>';
+        $editPosition = '<a href="edit-batch-position.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _("Edit Position") . '"><em class="fa-solid fa-arrow-down-1-9"></em> ' . _("Edit Position") . '</a>';
     }
     if($pdf){
-        $printBarcode = '<a href="generate-batch-pdf.php?id=' . base64_encode($aRow['batch_id']) . '&type=' . $_POST['type'] . '" target="_blank"  rel="noopener" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _("Print bar code") . '"><em class="fa-solid fa-barcode"></em> ' . _("Print Batch PDF") . '</a>';
+        $printBarcode = '<a href="generate-batch-pdf.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" target="_blank"  rel="noopener" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _("Print bar code") . '"><em class="fa-solid fa-barcode"></em> ' . _("Print Batch PDF") . '</a>';
     }
     if (trim($aRow['request_created_datetime']) != "" && $aRow['request_created_datetime'] != '0000-00-00 00:00:00') {
         $createdDate =  date("d-M-Y H:i:s", strtotime($aRow['request_created_datetime']));
