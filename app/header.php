@@ -63,7 +63,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 } else {
 	$allAdminMenuAccess = false;
 }
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array('vlRequest.php', 'addVlRequest.php', 'addSamplesFromManifest.php', 'batchcode.php', 'specimenReferralManifestList.php'))) {
+if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array('vlRequest.php', 'addVlRequest.php', 'addSamplesFromManifest.php', '/batch/batches.php?type=vl', 'specimenReferralManifestList.php'))) {
 	$vlRequestMenuAccess = true;
 } else {
 	$vlRequestMenuAccess = false;
@@ -80,7 +80,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 }
 
 // EID MENUS
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array('eid-requests.php', 'eid-add-request.php', 'addSamplesFromManifest.php', 'eid-batches.php', 'specimenReferralManifestList.php'))) {
+if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array('eid-requests.php', 'eid-add-request.php', 'addSamplesFromManifest.php', '/batch/batches.php?type=eid', 'specimenReferralManifestList.php'))) {
 	$eidTestRequestMenuAccess = true;
 } else {
 	$eidTestRequestMenuAccess = false;
@@ -105,7 +105,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 }
 
 // COVID-19 Menu start
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array("covid-19-requests.php", "covid-19-add-request.php", "covid-19-edit-request.php", "addSamplesFromManifest.php", "covid-19-batches.php", "specimenReferralManifestList.php"))) {
+if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array("covid-19-requests.php", "covid-19-add-request.php", "covid-19-edit-request.php", "addSamplesFromManifest.php", "/batch/batches.php?type=covid19", "specimenReferralManifestList.php"))) {
 	$covid19TestRequestMenuAccess = true;
 } else {
 	$covid19TestRequestMenuAccess = false;
@@ -704,7 +704,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/generic-tests/requests/add-samples-from-manifest.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Add Samples from Manifest"); ?></a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("batches.php", $_SESSION['privileges'])) { ?>
+									if (isset($_SESSION['privileges']) && in_array("/batch/batches.php?type=generic-tests", $_SESSION['privileges'])) { ?>
 										<li class="allMenu batchGenericCodeMenu">
 											<a href="/batch/batches.php?type=generic-tests" data-inner-pages="<?= base64_encode('/batch/add-batch.php?type=generic-tests') . ';' . base64_encode('/batch/edit-batch.php?type=generic-tests') . ';' . base64_encode('/batch/add-batch-position.php?type=generic-tests') . ';' . base64_encode('/batch/edit-batch-position.php?type=generic-tests'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Batch"); ?></a>
 										</li>
@@ -797,7 +797,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/vl/requests/addSamplesFromManifest.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Add Samples from Manifest"); ?></a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("batches.php", $_SESSION['privileges'])) { ?>
+									if (isset($_SESSION['privileges']) && in_array("/batch/batches.php?type=vl", $_SESSION['privileges'])) { ?>
 										<li class="allMenu batchCodeMenu">
 											<a href="/batch/batches.php?type=vl" data-inner-pages="<?= base64_encode('/batch/add-batch.php?type=vl') . ';' . base64_encode('/batch/edit-batch.php?type=vl') . ';' . base64_encode('/batch/add-batch-position.php?type=vl') . ';' . base64_encode('/batch/edit-batch-position.php?type=vl'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Batch"); ?></a>
 										</li>
@@ -918,7 +918,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/eid/requests/addSamplesFromManifest.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Add Samples from Manifest"); ?></a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("batches.php", $_SESSION['privileges'])) { ?>
+									if (isset($_SESSION['privileges']) && in_array("/batch/batches.php?type=eid", $_SESSION['privileges'])) { ?>
 										<li class="allMenu eidBatchCodeMenu">
 											<a href="/batch/batches.php?type=eid" data-inner-pages="<?= base64_encode('/batch/add-batch.php?type=eid') . ';' . base64_encode('/batch/edit-batch.php?type=eid') . ';' . base64_encode('/batch/add-batch-position.php?type=eid') . ';' . base64_encode('/batch/edit-batch-position.php?type=eid'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Batch"); ?></a>
 										</li>
@@ -1015,7 +1015,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/covid-19/requests/addSamplesFromManifest.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Add Samples from Manifest"); ?></a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("batches.php", $_SESSION['privileges'])) { ?>
+									if (isset($_SESSION['privileges']) && in_array("/batch/batches.php?type=covid19", $_SESSION['privileges'])) { ?>
 										<li class="allMenu covid19BatchCodeMenu">
 											<a href="/batch/batches.php?type=covid19" data-inner-pages="<?= base64_encode('/batch/add-batch.php?type=covid19') . ';' . base64_encode('/batch/edit-batch.php?type=covid19') . ';' . base64_encode('/batch/add-batch-position.php?type=covid19') . ';' . base64_encode('/batch/edit-batch-position.php?	type=covid19'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Batch"); ?></a>
 										</li>
@@ -1127,7 +1127,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/hepatitis/requests/add-samples-from-manifest.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Add Samples from Manifest"); ?></a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("batches.php", $_SESSION['privileges'])) { ?>
+									if (isset($_SESSION['privileges']) && in_array("/batch/batches.php?type=hepatitis", $_SESSION['privileges'])) { ?>
 										<li class="allMenu hepatitisBatchCodeMenu">
 											<a href="/batch/batches.php?type=hepatitis" data-inner-pages="<?= base64_encode('/batch/add-batch.php?type=hepatitis') . ';' . base64_encode('/batch/edit-batch.php?type=hepatitis') . ';' . base64_encode('/batch/add-batch-position.php?type=hepatitis') . ';' . base64_encode('/batch/edit-batch-position.php?type=hepatitis'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Batch"); ?></a>
 										</li>
@@ -1231,7 +1231,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/tb/requests/addSamplesFromManifest.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Add Samples from Manifest"); ?></a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("batches.php", $_SESSION['privileges'])) { ?>
+									if (isset($_SESSION['privileges']) && in_array("/batch/batches.php?type=tb", $_SESSION['privileges'])) { ?>
 										<li class="allMenu tbBatchCodeMenu">
 											<a href="/batch/batches.php?type=tb" data-inner-pages="<?= base64_encode('/batch/add-batch.php?type=tb') . ';' . base64_encode('/batch/edit-batch.php?type=tb') . ';' . base64_encode('/batch/add-batch-position.php?type=tb') . ';' . base64_encode('/batch/edit-batch-position.php?type=tb'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Batch"); ?></a>
 										</li>

@@ -4132,3 +4132,32 @@ UPDATE `system_config` SET `value` = '5.1.7' WHERE `system_config`.`name` = 'sc_
 -- Jeyabanu 08-06-2023
 ALTER TABLE `form_eid` ADD `second_DBS_requested` VARCHAR(100) NULL DEFAULT NULL AFTER `result_approved_by`, ADD `second_DBS_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_DBS_requested`;
 ALTER TABLE `audit_form_eid` ADD `second_DBS_requested` VARCHAR(100) NULL DEFAULT NULL AFTER `result_approved_by`, ADD `second_DBS_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_DBS_requested`;
+
+-- Thana 09-Jun-2023
+DELETE FROM `privileges` WHERE `resource_id` = 'sample-batch';
+DELETE FROM `resources` WHERE `resource_id` = 'sample-batch';
+
+UPDATE `privileges` SET `privilege_name` = '/batch/batches.php?type=generic-tests' WHERE `privileges`.`privilege_name` = 'batch-code.php';
+UPDATE `privileges` SET `display_name` = 'Manage Batch Code' WHERE `privileges`.`resource_id` = '/batch/batches.php?type=generic-tests';
+
+UPDATE `privileges` SET `privilege_name` = '/batch/batches.php?type=vl' WHERE `privileges`.`privilege_name` = 'batchcode.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/add-batch.php?type=vl' WHERE `privileges`.`privilege_name` = 'addBatch.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/edit-batch.php?type=vl' WHERE `privileges`.`privilege_name` = 'editBatch.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/add-batch-position.php?type=vl' WHERE `privileges`.`privilege_name` = 'addBatchControlsPosition.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/edit-batch-position.php?type=vl' WHERE `privileges`.`privilege_name` = 'editBatchControlsPosition.php';
+
+UPDATE `privileges` SET `privilege_name` = '/batch/batches.php?type=eid' WHERE `privileges`.`privilege_name` = 'eid-batches.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/add-batch.php?type=eid' WHERE `privileges`.`privilege_name` = 'eid-add-batch.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/edit-batch.php?type=eid' WHERE `privileges`.`privilege_name` = 'eid-edit-batch.php';
+
+UPDATE `privileges` SET `privilege_name` = '/batch/batches.php?type=covid19' WHERE `privileges`.`privilege_name` = 'covid-19-batches.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/add-batch.php?type=covid19' WHERE `privileges`.`privilege_name` = 'covid-19-add-batch.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/edit-batch.php?type=covid19' WHERE `privileges`.`privilege_name` = 'covid-19-edit-batch.php';
+
+UPDATE `privileges` SET `privilege_name` = '/batch/batches.php?type=hepatitis' WHERE `privileges`.`privilege_name` = 'hepatitis-batches.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/add-batch.php?type=hepatitis' WHERE `privileges`.`privilege_name` = 'hepatitis-add-batch.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/edit-batch.php?type=hepatitis' WHERE `privileges`.`privilege_name` = 'hepatitis-edit-batch.php';
+
+UPDATE `privileges` SET `privilege_name` = '/batch/batches.php?type=tb' WHERE `privileges`.`privilege_name` = 'tb-batches.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/add-batch.php?type=tb' WHERE `privileges`.`privilege_name` = 'tb-add-batch.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/edit-batch.php?type=tb' WHERE `privileges`.`privilege_name` = 'tb-edit-batch.php';

@@ -99,6 +99,8 @@ class UsersService
                 $this->applicationConfig['modules']['vl'] === true
             ) {
                 $sharedVLPrivileges = array(
+                    'delete-batch-code.php?type=vl'         => '/batch/edit-batch.php?type=vl',
+                    'generate-batch-pdf.php?type=vl'        => '/batch/edit-batch.php?type=vl',
                     'updateVlTestResult.php'                => 'vlTestResult.php',
                     'vl-failed-results.php'                 => 'vlTestResult.php',
                     'add-vl-art-code-details.php'           => 'vl-art-code-details.php',
@@ -129,8 +131,10 @@ class UsersService
                 $this->applicationConfig['modules']['eid'] === true
             ) {
                 $sharedEIDPrivileges = array(
-                    'eid-add-batch-position.php'            => 'eid-add-batch.php',
-                    'eid-edit-batch-position.php'           => 'eid-edit-batch.php',
+                    'add-batch-position.php?type=eid'       => '/batch/add-batch.php?type=eid',
+                    'edit-batch-position.php?type=eid'      => '/batch/edit-batch.php?type=eid',
+                    'delete-batch-code.php?type=eid'        => '/batch/edit-batch.php?type=eid',
+                    'generate-batch-pdf.php?type=eid'       => '/batch/edit-batch.php?type=eid',
                     'eid-update-result.php'                 => 'eid-manual-results.php',
                     'eid-failed-results.php'                => 'eid-manual-results.php',
                     'eid-bulk-import-request.php'           => 'eid-add-request.php',
@@ -156,10 +160,12 @@ class UsersService
                 $this->applicationConfig['modules']['covid19'] === true
             ) {
                 $sharedCovid19Privileges = array(
-                    'covid-19-add-batch-position.php'           => 'covid-19-add-batch.php',
+                    'add-batch-position.php?type=covid19'       => '/batch/add-batch.php?type=covid19',
+                    'edit-batch-position.php?type=covid19'      => '/batch/edit-batch.php?type=covid19',
+                    'delete-batch-code.php?type=covid19'        => '/batch/edit-batch.php?type=covid19',
+                    'generate-batch-pdf.php?type=covid19'       => '/batch/edit-batch.php?type=covid19',
                     'mail-covid-19-results.php'                 => 'covid-19-print-results.php',
                     'covid-19-result-mail-confirm.php'          => 'covid-19-print-results.php',
-                    'covid-19-edit-batch-position.php'          => 'covid-19-edit-batch.php',
                     'covid-19-update-result.php'                => 'covid-19-manual-results.php',
                     'covid-19-failed-results.php'               => 'covid-19-manual-results.php',
                     'covid-19-bulk-import-request.php'          => 'covid-19-add-request.php',
@@ -199,6 +205,10 @@ class UsersService
                 $this->applicationConfig['modules']['hepatitis'] === true
             ) {
                 $sharedHepPrivileges = array(
+                    'add-batch-position.php?type=hepatitis'         => '/batch/add-batch.php?type=hepatitis',
+                    'edit-batch-position.php?type=hepatitis'        => '/batch/edit-batch.php?type=hepatitis',
+                    'delete-batch-code.php?type=hepatitis'          => '/batch/edit-batch.php?type=hepatitis',
+                    'generate-batch-pdf.php?type=hepatitis'         => '/batch/edit-batch.php?type=hepatitis',
                     'hepatitis-update-result.php'                   => 'hepatitis-manual-results.php',
                     'hepatitis-failed-results.php'                  => 'hepatitis-manual-results.php',
                     'mail-hepatitis-results.php'                    => 'hepatitis-print-results.php',
@@ -232,19 +242,23 @@ class UsersService
                 $this->applicationConfig['modules']['tb'] === true
             ) {
                 $sharedHepPrivileges = array(
-                    'tb-update-result.php' => 'tb-manual-results.php',
-                    'tb-failed-results.php' => 'tb-manual-results.php',
-                    'add-tb-sample-type.php'           => 'tb-sample-type.php',
-                    'edit-tb-sample-type.php'          => 'tb-sample-type.php',
-                    'tb-sample-rejection-reasons.php'  => 'tb-sample-type.php',
-                    'add-tb-sample-rejection-reason.php'  => 'tb-sample-type.php',
-                    'edit-tb-sample-rejection-reason.php'  => 'tb-sample-type.php',
-                    'tb-test-reasons.php'  => 'tb-sample-type.php',
-                    'add-tb-test-reasons.php'  => 'tb-sample-type.php',
-                    'edit-tb-test-reasons.php'  => 'tb-sample-type.php',
-                    'tb-results.php'  => 'tb-sample-type.php',
-                    'add-tb-results.php'  => 'tb-sample-type.php',
-                    'edit-tb-results.php'  => 'tb-sample-type.php',
+                    'add-batch-position.php?type=tb'        => '/batch/add-batch.php?type=tb',
+                    'edit-batch-position.php?type=tb'       => '/batch/edit-batch.php?type=tb',
+                    'delete-batch-code.php?type=tb'         => '/batch/edit-batch.php?type=tb',
+                    'generate-batch-pdf.php?type=tb'        => '/batch/edit-batch.php?type=tb',
+                    'tb-update-result.php'                  => 'tb-manual-results.php',
+                    'tb-failed-results.php'                 => 'tb-manual-results.php',
+                    'add-tb-sample-type.php'                => 'tb-sample-type.php',
+                    'edit-tb-sample-type.php'               => 'tb-sample-type.php',
+                    'tb-sample-rejection-reasons.php'       => 'tb-sample-type.php',
+                    'add-tb-sample-rejection-reason.php'    => 'tb-sample-type.php',
+                    'edit-tb-sample-rejection-reason.php'   => 'tb-sample-type.php',
+                    'tb-test-reasons.php'                   => 'tb-sample-type.php',
+                    'add-tb-test-reasons.php'               => 'tb-sample-type.php',
+                    'edit-tb-test-reasons.php'              => 'tb-sample-type.php',
+                    'tb-results.php'                        => 'tb-sample-type.php',
+                    'add-tb-results.php'                    => 'tb-sample-type.php',
+                    'edit-tb-results.php'                   => 'tb-sample-type.php',
                 );
                 $sharedPrivileges = array_merge($sharedPrivileges, $sharedHepPrivileges);
             }
