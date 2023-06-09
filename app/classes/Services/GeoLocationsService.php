@@ -50,7 +50,7 @@ class GeoLocationsService
         } else {
             $this->db->where('geo_parent', 0);
         }
-        if (isset($_SESSION['mappedProvinces']) && !empty($_SESSION['mappedProvinces'])) {
+        if (!empty($_SESSION['mappedProvinces'])) {
             $this->db->where('geo_id', $_SESSION['mappedProvinces']);
         }
 

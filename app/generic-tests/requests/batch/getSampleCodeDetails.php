@@ -20,13 +20,10 @@ $end_date = '';
 $urgent = $_POST['urgent'] ?? null;
 $fName = $_POST['fName'] ?? null;
 $sample = $_POST['sName'] ?? null;
-$gender = $_POST['gender'];
-$pregnant = $_POST['pregnant'];
-$breastfeeding = $_POST['breastfeeding'];
-//global config
-$configQuery = "SELECT `value` FROM `global_config` WHERE `name` ='vl_form'";
-$configResult = $db->query($configQuery);
-$country = $configResult[0]['value'];
+$gender = $_POST['gender'] ?? null;
+$pregnant = $_POST['pregnant'] ?? null;
+$breastfeeding = $_POST['breastfeeding'] ?? null;
+
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
 	$s_c_date = explode("to", $_POST['sampleCollectionDate']);
 	//print_r($s_c_date);die;
@@ -95,7 +92,7 @@ $result = $db->rawQuery($query);
 <div class="col-md-5">
 	<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
 		<?php if ($result > 0) {
-			foreach ($result as $sample) { 
+			foreach ($result as $sample) {
 				if(isset($_POST['batchId']) && $_POST['batchId'] != $sample['sample_batch_id']){ ?>
 				<option value="<?php echo $sample['sample_id']; ?>"><?php echo ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
 		<?php }

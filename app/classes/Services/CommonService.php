@@ -10,6 +10,7 @@ namespace App\Services;
 
 use MysqliDb;
 use Exception;
+use Generator;
 use ZipArchive;
 use TCPDFBarcode;
 use Ramsey\Uuid\Uuid;
@@ -262,12 +263,12 @@ class CommonService
 
     public function crypto($action, $inputString, $key)
     {
-        if (empty($inputString) || $action === 'doNothing') {
-            return $inputString;
-        } elseif ($action === 'encrypt') {
+        if (!empty($inputString) && $action === 'encrypt') {
             return self::encrypt($inputString, $key);
-        } elseif ($action === 'decrypt') {
+        } elseif (!empty($inputString) && $action === 'decrypt') {
             return self::decrypt($inputString, $key);
+        } else {
+            return $inputString;
         }
     }
 
@@ -662,7 +663,7 @@ class CommonService
         return $code;
     }
 
-    public function excelColumnRange($lower, $upper): \Generator
+    public function excelColumnRange($lower, $upper): Generator
     {
         ++$upper;
         for ($i = $lower; $i !== $upper; ++$i) {

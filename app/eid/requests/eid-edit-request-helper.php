@@ -205,7 +205,7 @@ try {
 		'mother_cd4'	 									=> $_POST['mothercd4'] ?? null,
 		'mother_vl_result' 									=> $motherVlResult,
 		'mother_hiv_status' 								=> $_POST['mothersHIVStatus'] ?? null,
-		'pcr_test_performed_before' 						=> isset($_POST['pcrTestPerformedBefore']) ? $_POST['pcrTestPerformedBefore'] : null,
+		'pcr_test_performed_before' 						=> $_POST['pcrTestPerformedBefore'] ?? null,
 		'pcr_test_number' 									=> $_POST['pcrTestNumber'] ?? null,
 		'previous_pcr_result' 								=> $_POST['prePcrTestResult'] ?? null,
 		'last_pcr_date' 									=> isset($_POST['previousPCRTestDate']) ? DateUtility::isoDateFormat($_POST['previousPCRTestDate']) : null,

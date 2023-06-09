@@ -97,7 +97,7 @@ class VlService
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    /** @var GeoLocations $geoLocations */
+                    /** @var GeoLocationsService $geoLocations */
                     $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
                     $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
                 }
@@ -108,7 +108,7 @@ class VlService
             }
 
             $this->db->where('YEAR(sample_collection_date) = ?', array($dateObj->format('Y')));
-            $maxCodeKeyVal = $this->db->getValue($this->table, "MAX($sampleCodeKeyCol)");
+            $maxCodeKeyVal = $this->db->setQueryOption('FOR UPDATE')->getValue($this->table, "MAX($sampleCodeKeyCol)");
         }
 
 
@@ -151,8 +151,10 @@ class VlService
             $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'];
             $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
         }
-        $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " WHERE $sampleCodeCol='" . $sampleCodeGenerator['sampleCode'] . "'";
-        $checkResult = $this->db->rawQueryOne($checkQuery);
+        $checkQuery = "SELECT $sampleCodeCol,
+                        $sampleCodeKeyCol FROM $this->table
+                        WHERE $sampleCodeCol= ?";
+        $checkResult = $this->db->rawQueryOne($checkQuery, [$sampleCodeGenerator['sampleCode']]);
         if (!empty($checkResult)) {
             error_log("DUP::: Sample Code ====== " . $sampleCodeGenerator['sampleCode']);
             error_log("DUP::: Sample Key Code ====== " . $maxId);
@@ -246,22 +248,24 @@ class VlService
 
     public function interpretViralLoadResult($result, $unit = null, $defaultLowVlResultText = null): ?array
     {
-        $finalResult = $vlResult = trim(htmlspecialchars_decode($result));
-        $vlResult = strtolower($vlResult);
-        $vlResult = str_replace(['c/ml', 'cp/ml', 'copies/ml', 'cop/ml', 'copies'], '', $vlResult);
-        $vlResult = str_replace('-', '', $vlResult);
-        $vlResult = trim(str_replace(['hiv1 detected', 'hiv1 notdetected'], '', $vlResult));
+        return once(function () use ($result, $unit, $defaultLowVlResultText) {
+            $finalResult = $vlResult = trim(htmlspecialchars_decode($result));
+            $vlResult = strtolower($vlResult);
+            $vlResult = str_replace(['c/ml', 'cp/ml', 'copies/ml', 'cop/ml', 'copies'], '', $vlResult);
+            $vlResult = str_replace('-', '', $vlResult);
+            $vlResult = trim(str_replace(['hiv1 detected', 'hiv1 notdetected'], '', $vlResult));
 
-        if ($vlResult == "-1.00") {
-            $vlResult = "Not Detected";
-        }
-        if (is_numeric($vlResult)) {
-            //passing only number
-            return $this->interpretViralLoadNumericResult($vlResult, $unit);
-        } else {
-            //Passing orginal result value for text results
-            return $this->interpretViralLoadTextResult($finalResult, $unit, $defaultLowVlResultText);
-        }
+            if ($vlResult == "-1.00") {
+                $vlResult = "Not Detected";
+            }
+            if (is_numeric($vlResult)) {
+                //passing only number
+                return $this->interpretViralLoadNumericResult($vlResult, $unit);
+            } else {
+                //Passing orginal result value for text results
+                return $this->interpretViralLoadTextResult($finalResult, $unit, $defaultLowVlResultText);
+            }
+        });
     }
 
     public function interpretViralLoadTextResult($result, $unit = null, $defaultLowVlResultText = null): ?array
@@ -428,18 +432,17 @@ class VlService
         return $this->db->getValue('instruments', 'low_vl_result_text', null);
     }
 
-    public function insertSampleCode($params)
+    public function insertSampleCode($params, $returnSampleData = false)
     {
         try {
 
-            $globalConfig = $this->commonService->getGlobalConfig();
-            $vlsmSystemConfig = $this->commonService->getSystemConfig();
+            $formId = $this->commonService->getGlobalConfig('vl_form');
 
             $provinceCode = $params['provinceCode'] ?? null;
             $provinceId = $params['provinceId'] ?? null;
             $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
 
-            if (empty($sampleCollectionDate) || ($globalConfig['vl_form'] == 5 && empty($provinceId))) {
+            if (empty($sampleCollectionDate) || ($formId == 5 && empty($provinceId))) {
                 return 0;
             }
 
@@ -447,43 +450,6 @@ class VlService
 
             $sampleJson = $this->generateVLSampleID($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
-            $sampleCollectionDate = DateUtility::isoDateFormat($sampleCollectionDate, true);
-
-            $tesRequestData = [
-                'vlsm_country_id' => $globalConfig['vl_form'],
-                'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
-                'facility_id' => $params['facilityId'] ?? null,
-                'lab_id' => $params['labId'] ?? null,
-                'app_sample_code' => $params['appSampleCode'] ?? null,
-                'sample_collection_date' => $sampleCollectionDate,
-                'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
-                'province_id' => $provinceId,
-                'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
-                'form_attributes' => $params['formAttributes'] ?? "{}",
-                'request_created_datetime' => DateUtility::getCurrentDateTime(),
-                'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
-                'last_modified_datetime' => DateUtility::getCurrentDateTime()
-            ];
-
-            $accessType = $_SESSION['accessType'] ?? $params['accessType'] ?? null;
-
-            if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
-                $tesRequestData['remote_sample_code'] = $sampleData['sampleCode'];
-                $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
-                $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
-                $tesRequestData['remote_sample'] = 'yes';
-                $tesRequestData['result_status'] = 9;
-                if ($accessType === 'testing-lab') {
-                    $tesRequestData['sample_code'] = $sampleData['sampleCode'];
-                    $tesRequestData['result_status'] = 6;
-                }
-            } else {
-                $tesRequestData['sample_code'] = $sampleData['sampleCode'];
-                $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-                $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
-                $tesRequestData['remote_sample'] = 'no';
-                $tesRequestData['result_status'] = 6;
-            }
 
             $sQuery = "SELECT vl_sample_id,
                         sample_code,
@@ -501,6 +467,44 @@ class VlService
 
             $id = 0;
             if (empty($rowData) && !empty($sampleData['sampleCode'])) {
+
+                $tesRequestData = [
+                    'vlsm_country_id' => $formId,
+                    'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
+                    'facility_id' => $params['facilityId'] ?? null,
+                    'lab_id' => $params['labId'] ?? null,
+                    'app_sample_code' => $params['appSampleCode'] ?? null,
+                    'sample_collection_date' => DateUtility::isoDateFormat($sampleCollectionDate, true),
+                    'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
+                    'province_id' => $provinceId,
+                    'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
+                    'form_attributes' => $params['formAttributes'] ?? "{}",
+                    'request_created_datetime' => DateUtility::getCurrentDateTime(),
+                    'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
+                    'last_modified_datetime' => DateUtility::getCurrentDateTime()
+                ];
+
+                $accessType = $_SESSION['accessType'] ?? $params['accessType'] ?? null;
+                $instanceType = $_SESSION['instanceType'] ?? $params['instanceType'] ?? null;
+
+                if ($instanceType === 'remoteuser') {
+                    $tesRequestData['remote_sample_code'] = $sampleData['sampleCode'];
+                    $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
+                    $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
+                    $tesRequestData['remote_sample'] = 'yes';
+                    $tesRequestData['result_status'] = 9;
+                    if ($accessType === 'testing-lab') {
+                        $tesRequestData['sample_code'] = $sampleData['sampleCode'];
+                        $tesRequestData['result_status'] = 6;
+                    }
+                } else {
+                    $tesRequestData['sample_code'] = $sampleData['sampleCode'];
+                    $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
+                    $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
+                    $tesRequestData['remote_sample'] = 'no';
+                    $tesRequestData['result_status'] = 6;
+                }
+
                 $formAttributes = [
                     'applicationVersion'  => $this->commonService->getSystemConfig('sc_version'),
                     'ip_address'    => $this->commonService->getClientIpAddress()
@@ -523,7 +527,15 @@ class VlService
             error_log('Insert VL Sample : ' . $e->getMessage());
             $id = 0;
         }
-        return $id > 0 ? $id : 0;
+        if ($returnSampleData === true) {
+            return [
+                'id' => max($id, 0),
+                'sampleCode' => $tesRequestData['sample_code'] ?? null,
+                'remoteSampleCode' => $tesRequestData['remote_sample_code'] ?? null
+            ];
+        } else {
+            return max($id, 0);
+        }
     }
 
     public function getReasonForFailure($option = true, $updatedDateTime = null)

@@ -72,7 +72,7 @@ class EidService
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    /** @var GeoLocations $geoLocations */
+                    /** @var GeoLocationsService $geoLocations */
                     $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
                     $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
                 }
@@ -172,7 +172,7 @@ class EidService
         return $response;
     }
 
-    public function insertSampleCode($params)
+    public function insertSampleCode($params, $returnSampleData = false)
     {
         try {
             $globalConfig = $this->commonService->getGlobalConfig();
@@ -235,7 +235,7 @@ class EidService
                             remote_sample_code_format,
                             remote_sample_code_key
                             FROM form_eid ";
-            if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
+            if (!empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
             }
             $sQuery .= " LIMIT 1";
@@ -267,6 +267,14 @@ class EidService
             error_log('Insert EID Sample : ' . $e->getMessage());
             $id =  0;
         }
-        return $id > 0 ? $id : 0;
+        if ($returnSampleData === true) {
+            return [
+                'id' => max($id, 0),
+                'sampleCode' => $tesRequestData['sample_code'] ?? null,
+                'remoteSampleCode' => $tesRequestData['remote_sample_code'] ?? null
+            ];
+        } else {
+            return max($id, 0);
+        }
     }
 }

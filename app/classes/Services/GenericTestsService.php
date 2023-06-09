@@ -58,7 +58,7 @@ class GenericTestsService
         // Checking if sample code format is empty then we set by default 'MMYY'
         $sampleCodeFormat = $globalConfig['sample_code'] ?? 'MMYY';
         $prefixFromConfig = $globalConfig['sample_code_prefix'] ?? '';
-        if (isset($testType) && !empty($testType)) {
+        if (!empty($testType)) {
             $prefixFromConfig = $testType;
         }
         if ($sampleCodeFormat == 'MMYY') {
@@ -75,7 +75,7 @@ class GenericTestsService
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    /** @var GeoLocations $geoLocations */
+                    /** @var GeoLocationsService $geoLocations */
                     $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
                     $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
                 }
@@ -113,7 +113,7 @@ class GenericTestsService
             $remotePrefix = $remotePrefix . "R";
         }
         if ($sampleCodeFormat == 'auto') {
-            if (isset($testType) && !empty($testType)) {
+            if (!empty($testType)) {
                 $remotePrefix = $remotePrefix . $testType;
             }
             $sampleCodeGenerator['sampleCode'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
@@ -121,7 +121,7 @@ class GenericTestsService
             $sampleCodeGenerator['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
             $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
         } elseif ($sampleCodeFormat == 'auto2') {
-            if (isset($testType) && !empty($testType)) {
+            if (!empty($testType)) {
                 $remotePrefix = $remotePrefix . $testType;
             }
             $sampleCodeGenerator['sampleCode'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sampleCodeGenerator['maxId'];
@@ -182,7 +182,7 @@ class GenericTestsService
         );
     }
 
-    public function insertSampleCode($params)
+    public function insertSampleCode($params, $returnSampleData = false)
     {
         try {
 
@@ -251,7 +251,7 @@ class GenericTestsService
                             remote_sample_code_format,
                             remote_sample_code_key
                             FROM form_generic ";
-            if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
+            if (!empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
             }
             $sQuery .= " LIMIT 1";
@@ -273,13 +273,22 @@ class GenericTestsService
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSampleCode($params);
             }
-            return $id > 0 ? $id : 0;
         } catch (Exception $e) {
             error_log('Insert lab tests Sample : ' . $this->db->getLastErrno());
             error_log('Insert lab tests Sample : ' . $this->db->getLastError());
             error_log('Insert lab tests Sample : ' . $this->db->getLastQuery());
             error_log('Insert lab tests Sample : ' . $e->getMessage());
-            return 0;
+            $id = 0;
+        }
+
+        if ($returnSampleData === true) {
+            return [
+                'id' => max($id, 0),
+                'sampleCode' => $tesRequestData['sample_code'] ?? null,
+                'remoteSampleCode' => $tesRequestData['remote_sample_code'] ?? null
+            ];
+        } else {
+            return max($id, 0);
         }
     }
 
@@ -325,35 +334,34 @@ class GenericTestsService
 
     public function getInterpretationResults($testType, $result)
     {
-        if (!isset($result) || empty($result)) {
-            return null;
-        }
-        if (!isset($testType) || empty($testType)) {
+        if (empty($result) || empty($testType)) {
             return null;
         }
         $this->db->where('test_type_id', $testType);
         $testTypeResult = $this->db->getOne('r_test_types');
-        if (isset($testTypeResult['test_results_config']) && !empty($testTypeResult['test_results_config'])) {
+        if (!empty($testTypeResult['test_results_config'])) {
             $resultConfig = json_decode($testTypeResult['test_results_config'], true);
             if (isset($resultConfig['result_type']) && $resultConfig['result_type'] == 'quantitative') {
                 if (is_numeric($result)) {
                     if ($result >= $resultConfig['high_value']) {
-                        return ucwords($resultConfig['above_threshold']);
+                        return ($resultConfig['above_threshold']);
                     }
                     if ($result == $resultConfig['threshold_value']) {
-                        return ucwords($resultConfig['at_threshold']);
+                        return ($resultConfig['at_threshold']);
                     }
                     if ($result < $resultConfig['low_value']) {
-                        return ucwords($resultConfig['below_threshold']);
+                        return ($resultConfig['below_threshold']);
                     }
                 } else {
                     $resultIndex =  (isset($result) && isset($resultConfig['quantitative_result']) && in_array($result, $resultConfig['quantitative_result'])) ? array_search(strtolower($result), array_map('strtolower', $resultConfig['quantitative_result'])) : '';
-                    return ucwords($resultConfig['quantitative_result_interpretation'][$resultIndex]);
+                    return ($resultConfig['quantitative_result_interpretation'][$resultIndex]);
                 }
             } else if (isset($resultConfig['result_type']) && $resultConfig['result_type'] == 'qualitative') {
                 $resultIndex =  (isset($result) && isset($resultConfig['result']) && in_array($result, $resultConfig['result'])) ? array_search(strtolower($result), array_map('strtolower', $resultConfig['result'])) : '';
-                return ucwords($resultConfig['result_interpretation'][$resultIndex]);
+                return ($resultConfig['result_interpretation'][$resultIndex]);
             }
+        } else {
+            return null;
         }
     }
 

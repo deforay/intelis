@@ -97,7 +97,7 @@ class HepatitisService
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    /** @var GeoLocations $geoLocations */
+                    /** @var GeoLocationsService $geoLocations */
                     $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
                     $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
                 }
@@ -283,7 +283,7 @@ class HepatitisService
         return $riskFactorsData;
     }
 
-    public function insertSampleCode($params)
+    public function insertSampleCode($params, $returnSampleData = false)
     {
         $globalConfig = $this->commonService->getGlobalConfig();
         $vlsmSystemConfig = $this->commonService->getSystemConfig();
@@ -388,6 +388,14 @@ class HepatitisService
             error_log('Insert Hepatitis Sample : ' . $e->getMessage());
             $id = 0;
         }
-        return $id > 0 ? $id : 0;
+        if ($returnSampleData === true) {
+            return [
+                'id' => max($id, 0),
+                'sampleCode' => $tesRequestData['sample_code'] ?? null,
+                'remoteSampleCode' => $tesRequestData['remote_sample_code'] ?? null
+            ];
+        } else {
+            return max($id, 0);
+        }
     }
 }

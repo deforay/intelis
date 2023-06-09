@@ -10,7 +10,7 @@ class ContainerRegistry
     /**
      * @var ContainerInterface|null
      */
-    private static $container;
+    private static ?ContainerInterface $container;
 
     /**
      * Set the container instance.

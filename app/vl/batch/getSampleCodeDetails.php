@@ -114,7 +114,7 @@ $result = $db->rawQuery($query);
 	<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
 		<?php foreach ($result as $sample) {
 			if (isset($_POST['batchId']) && $_POST['batchId'] == $sample['sample_batch_id']) { ?>
-			<option value="<?php echo $sample['vl_sample_id']; ?>"><?php echo ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
+				<option value="<?php echo $sample['vl_sample_id']; ?>"><?php echo ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
 		<?php }
 		} ?>
 	</select>

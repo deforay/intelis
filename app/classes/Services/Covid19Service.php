@@ -74,7 +74,7 @@ class Covid19Service
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    /** @var GeoLocations $geoLocations */
+                    /** @var GeoLocationsService $geoLocations */
                     $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
                     $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
                 }
@@ -429,7 +429,7 @@ class Covid19Service
         return $this->db->rawQueryOne($sQuery);
     }
 
-    public function insertSampleCode($params)
+    public function insertSampleCode($params, $returnSampleData = false)
     {
         try {
             $patientsService = ContainerRegistry::get(PatientsService::class);
@@ -560,7 +560,15 @@ class Covid19Service
             error_log('Insert Covid-19 Sample : ' . $e->getMessage());
             $id =  0;
         }
-        return $id > 0 ? $id : 0;
+        if ($returnSampleData === true) {
+            return [
+                'id' => max($id, 0),
+                'sampleCode' => $tesRequestData['sample_code'] ?? null,
+                'remoteSampleCode' => $tesRequestData['remote_sample_code'] ?? null
+            ];
+        } else {
+            return max($id, 0);
+        }
     }
 
     public function getCovid19TestsByC19Id($c19Id)
