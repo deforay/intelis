@@ -1,11 +1,11 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\ApiService;
-use App\Services\FacilitiesService;
-use App\Utilities\DateUtility;
-
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
+
+use App\Utilities\DateUtility;
+use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
+
 header('Content-Type: application/json');
 
 $origData = $jsonData = file_get_contents('php://input');
@@ -19,12 +19,7 @@ $labId = $data['labName'] ?? $data['labId'] ?? null;
 if (empty($labId)) {
     exit(0);
 }
-$dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
-$dataSyncInterval = (isset($dataSyncInterval) && !empty($dataSyncInterval)) ? $dataSyncInterval : 30;
-
-// /** @var ApiService $app */
-// $app = \App\Registries\ContainerRegistry::get(ApiService::class);
-
+$dataSyncInterval = $general->getGlobalConfig('data_sync_interval') ?? 30;
 
 $transactionId = $general->generateUUID();
 
@@ -41,7 +36,7 @@ if (!empty($fMapResult)) {
 $tbQuery = "SELECT * FROM form_tb WHERE $condition ";
 
 if (!empty($data['manifestCode'])) {
-    $tbQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "%'";
+    $tbQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
 } else {
     $tbQuery .= " AND data_sync=0 AND last_modified_datetime > SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
 }

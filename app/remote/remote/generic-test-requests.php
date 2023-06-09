@@ -87,8 +87,7 @@ $vlQuery = "SELECT * FROM form_generic
                     WHERE $condition ";
 
 if (!empty($data['manifestCode'])) {
-  //$vlQuery .= " AND data_sync=0 AND sample_package_code like '" . $data['manifestCode'] . "%'";
-  $vlQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "%'";
+  $vlQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
 } else {
   $vlQuery .= " AND data_sync=0 AND last_modified_datetime >= SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
 }
@@ -111,11 +110,10 @@ if ($db->count > 0) {
   /** @var GenericTestsService $general */
   $generic = ContainerRegistry::get(GenericTestsService::class);
   $testResults = $generic->getGenericTestsByFormId($sampleIds);
-  
+
   $data = [];
   $data['result'] = $genericRemoteResult;
   $data['testResults'] = $testResults;
-
 }
 $payload = json_encode($data);
 

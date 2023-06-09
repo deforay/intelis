@@ -1,11 +1,7 @@
 <?php
 $title = _("Covid-19 Test Reasons");
- 
 require_once APPLICATION_PATH . '/header.php';
 
-// if($sarr['sc_user_type']=='vluser'){
-//   include('../remote/pullDataFromRemote.php');
-// }
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -31,7 +27,7 @@ require_once APPLICATION_PATH . '/header.php';
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="testReasonDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table aria-describedby="table" id="testReasonDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th scope="row"><?php echo _("Test Reason"); ?></th>

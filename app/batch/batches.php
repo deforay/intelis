@@ -7,7 +7,7 @@ $_GET = $request->getQueryParams();
 
 $showPatientName = false;
 if (isset($_GET['type']) && $_GET['type'] == 'vl') {
-	$title = "Viral Load";
+	$_title = "Viral Load";
     $refTable = "form_vl";
     $refPrimaryColumn = "vl_sample_id";
     $patientIdColumn = 'patient_art_no';
@@ -15,7 +15,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
     $patientLastName = 'patient_last_name';
     $worksheetName = 'Viral Load Test Worksheet';
 } elseif (isset($_GET['type']) && $_GET['type'] == 'eid') {
-	$title = "Early Infant Diagnosis";
+	$_title = "Early Infant Diagnosis";
     $refTable = "form_eid";
     $refPrimaryColumn = "eid_id";
     $patientIdColumn = 'child_id';
@@ -23,7 +23,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
     $patientLastName = 'child_surname';
     $worksheetName = 'EID Test Worksheet';
 } elseif (isset($_GET['type']) && $_GET['type'] == 'covid19') {
-	$title = "Covid-19";
+	$_title = "Covid-19";
     $refTable = "form_covid19";
     $refPrimaryColumn = "covid19_id";
     $patientIdColumn = 'patient_id';
@@ -31,7 +31,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
     $patientLastName = 'patient_surname';
     $worksheetName = 'Covid-19 Test Worksheet';
 } elseif (isset($_GET['type']) && $_GET['type'] == 'hepatitis') {
-	$title = "Hepatitis";
+	$_title = "Hepatitis";
     $refTable = "form_hepatitis";
     $refPrimaryColumn = "hepatitis_id";
     $patientIdColumn = 'patient_id';
@@ -40,7 +40,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
     $worksheetName = 'Hepatitis Test Worksheet';
     $showPatientName = true;
 } elseif (isset($_GET['type']) && $_GET['type'] == 'tb') {
-	$title = "TB";
+	$_title = "TB";
     $refTable = "form_tb";
     $refPrimaryColumn = "tb_id";
     $patientIdColumn = 'patient_id';
@@ -49,7 +49,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
     $worksheetName = 'TB Test Worksheet';
     $showPatientName = true;
 } elseif (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
-	$title = "Lab Tests";
+	$_title = "Lab Tests";
     $refTable = "form_generic";
     $refPrimaryColumn = "sample_id";
     $patientIdColumn = 'patient_id';
@@ -58,7 +58,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
     $worksheetName = 'Lab Test Worksheet';
     $showPatientName = true;
 }
-$title = _( $title . " | Batches");
+$title = _( $_title . " | Batches");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -69,7 +69,7 @@ require_once APPLICATION_PATH . '/header.php';
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("Manage Batches"); ?></h1>
+		<h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("Manage ".$_title." Batches"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Manage Batches"); ?></li>
@@ -81,7 +81,7 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (isset($_SESSION['privileges']) && in_array("add-batch.php", $_SESSION['privileges'])) { ?>
+						<?php if (isset($_SESSION['privileges']) && in_array("/batch/add-batch.php?type=".$_GET['type'], $_SESSION['privileges'])) { ?>
 							<a href="add-batch.php?type=<?php echo $_GET['type'];?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Create New Batch"); ?></a>
 						<?php } ?>
 					</div>
@@ -95,7 +95,7 @@ require_once APPLICATION_PATH . '/header.php';
 									<th scope="col"><?php echo _("No. of Samples Tested"); ?></th>
 									<th scope="col"><?php echo _("Last Tested Date"); ?></th>
 									<th scope="col"><?php echo _("Created On"); ?></th>
-									<?php if (isset($_SESSION['privileges']) && in_array("edit-batch.php", $_SESSION['privileges'])) { ?>
+									<?php if (isset($_SESSION['privileges']) && in_array("/batch/edit-batch.php?type=".$_GET['type'], $_SESSION['privileges'])) { ?>
 										<th scope="col"><?php echo _("Action"); ?></th>
 									<?php } ?>
 								</tr>
@@ -149,7 +149,7 @@ require_once APPLICATION_PATH . '/header.php';
 				{
 					"sClass": "center"
 				},
-				<?php if (isset($_SESSION['privileges']) && in_array("edit-batch.php", $_SESSION['privileges'])) { ?> {
+				<?php if (isset($_SESSION['privileges']) && in_array("/batch/edit-batch.php?type=".$_GET['type'], $_SESSION['privileges'])) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					},

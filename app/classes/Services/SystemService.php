@@ -14,8 +14,8 @@ class SystemService
 {
 
     protected ?MysqliDb $db = null;
-    protected $applicationConfig = null;
-    protected $commonService = null;
+    protected ?array $applicationConfig = null;
+    protected ?CommonService $commonService;
 
     public function __construct(
         ?MysqliDb $db = null,

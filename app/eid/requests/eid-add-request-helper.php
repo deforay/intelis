@@ -198,7 +198,7 @@ try {
 		'mother_hiv_status' 								=> $_POST['mothersHIVStatus'] ?? null,
 		'mode_of_delivery' 									=> $_POST['modeOfDelivery'] ?? null,
 		'mode_of_delivery_other' 							=> $_POST['modeOfDeliveryOther'] ?? null,
-		'pcr_test_performed_before' 						=> isset($_POST['pcrTestPerformedBefore']) ? $_POST['pcrTestPerformedBefore'] : null,
+		'pcr_test_performed_before' 						=> $_POST['pcrTestPerformedBefore'] ?? null,
 		'pcr_test_number' 									=> $_POST['pcrTestNumber'] ?? null,
 		'previous_pcr_result' 								=> $_POST['prePcrTestResult'] ?? null,
 		'last_pcr_date' 									=> $_POST['previousPCRTestDate'] ?? null,
