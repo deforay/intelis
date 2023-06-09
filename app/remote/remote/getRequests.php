@@ -86,8 +86,7 @@ $vlQuery = "SELECT * FROM form_vl
                     WHERE $condition ";
 
 if (!empty($data['manifestCode'])) {
-  //$vlQuery .= " AND data_sync=0 AND sample_package_code like '" . $data['manifestCode'] . "%'";
-  $vlQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "%'";
+  $vlQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
 } else {
   $vlQuery .= " AND data_sync=0 AND last_modified_datetime >= SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
 }

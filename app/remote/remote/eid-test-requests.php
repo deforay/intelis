@@ -1,6 +1,5 @@
 <?php
 
-use App\Services\ApiService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
@@ -29,11 +28,7 @@ if (empty($labId)) {
 
 $transactionId = $general->generateUUID();
 
-$dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
-$dataSyncInterval = (isset($dataSyncInterval) && !empty($dataSyncInterval)) ? $dataSyncInterval : 30;
-
-// /** @var ApiService $app */
-// $app = \App\Registries\ContainerRegistry::get(ApiService::class);
+$dataSyncInterval = $general->getGlobalConfig('data_sync_interval') ?? 30;
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -50,8 +45,7 @@ $eidQuery = "SELECT * FROM form_eid
                     WHERE $condition ";
 
 if (!empty($data['manifestCode'])) {
-  //$eidQuery .= " AND data_sync=0 AND sample_package_code like '" . $data['manifestCode'] . "%'";
-  $eidQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "%'";
+  $eidQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
 } else {
   $eidQuery .= " AND data_sync=0 AND last_modified_datetime > SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
 }

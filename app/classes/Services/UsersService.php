@@ -6,6 +6,7 @@ use DateTime;
 use MysqliDb;
 use App\Utilities\DateUtility;
 use App\Registries\ContainerRegistry;
+use Laminas\Diactoros\ServerRequest;
 
 /**
  * General functions
@@ -28,25 +29,39 @@ class UsersService
         $this->commonService = $commonService;
     }
 
-    public function isAllowed($currentFileName): bool
+    public function isAllowed($currentRequest): bool
     {
-
-
-
-        $skippedPrivileges = $this->getSkippedPrivileges();
-        $sharedPrivileges = $this->getSharedPrivileges();
-
-        // Does the current file share privileges with another privilege ?
-        $currentFileName = $sharedPrivileges[$currentFileName] ?? $currentFileName;
-
-
-        if (!in_array($currentFileName, $skippedPrivileges)) {
-            if (isset($_SESSION['privileges']) && !in_array($currentFileName, $_SESSION['privileges'])) {
+        return once(function () use ($currentRequest) {
+            if (empty($_SESSION['privileges']) || empty($currentRequest)) {
                 return false;
             }
-        }
 
-        return true;
+            if ($currentRequest instanceof ServerRequest) {
+
+                $uri = $currentRequest->getUri();
+                $path = $uri->getPath();
+                $query = $uri->getQuery();
+                $fragment = $uri->getFragment();
+                // Clean up the URI Path for double slashes or dots
+                $path = preg_replace('/([\/.])\1+/', '$1', $path);
+                $currentRequest = $path . ($query ? '?' . $query : '') . ($fragment ? '#' . $fragment : '');
+                $baseFileName = basename($path);
+            } else {
+                $baseFileName = basename($currentRequest);
+            }
+
+            $skippedPrivileges = $this->getSkippedPrivileges();
+            $sharedPrivileges = $this->getSharedPrivileges();
+
+            // Does the current file share privileges with another privilege ?
+            $currentRequest = $sharedPrivileges[$currentRequest] ??
+                $sharedPrivileges[$baseFileName] ?? $currentRequest;
+
+            $privileges = array_merge($skippedPrivileges, $_SESSION['privileges']);
+            $matches = array_intersect([$currentRequest, $baseFileName], $privileges);
+
+            return !empty($matches) ? true : false;
+        });
     }
 
     public function getSharedPrivileges()
