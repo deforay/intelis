@@ -157,17 +157,11 @@ $output = array(
     "iTotalDisplayRecords" => $iFilteredTotal,
     "aaData" => array()
 );
-$batch = $delete = $pdf = false;
+$editBatch = $delete = $pdf = $editPosition =  false;
 if (isset($_SESSION['privileges']) && (in_array('/batch/edit-batch.php?type='.$_POST['type'], $_SESSION['privileges']))) {
-    $batch = true;
-}
-if (isset($_SESSION['privileges']) && (in_array('/batch/edit-batch.php?type='.$_POST['type'], $_SESSION['privileges']))) {
+    $editBatch = true;
     $delete = true;
-}
-if (isset($_SESSION['privileges']) && (in_array('/batch/edit-batch.php?type='.$_POST['type'], $_SESSION['privileges']))) {
     $pdf = true;
-}
-if (isset($_SESSION['privileges']) && (in_array('/batch/edit-batch.php?type='.$_POST['type'], $_SESSION['privileges']))) {
     $editPosition = true;
 }
 
@@ -175,7 +169,9 @@ foreach ($rResult as $aRow) {
     $createdDate = "";
     $deleteBatch = '';
     $edit = '';
-    // $edit = '<a href="edit-batch.php?&type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>&nbsp;';
+    if ($editBatch) {
+        $edit = '<a href="edit-batch.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>&nbsp;';
+    }
     if($editPosition){
         $editPosition = '<a href="edit-batch-position.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _("Edit Position") . '"><em class="fa-solid fa-arrow-down-1-9"></em> ' . _("Edit Position") . '</a>';
     }
@@ -208,8 +204,8 @@ foreach ($rResult as $aRow) {
     //		    <option value="completed" ' . ($aRow['batch_status'] == "completed" ? "selected=selected" : "") . '>Completed</option>
     //	    </select>';
 
-    if ($batch) {
-        $row[] = $edit . $printBarcode . '&nbsp;' . $editPosition . '&nbsp;' . $deleteBatch;
+    if ($editBatch || $editPosition || $pdf || (($aRow['total_samples'] == 0 || $aRow['testcount'] == 0) && $delete)) {
+        $row[] = $edit . '&nbsp;' . $printBarcode . '&nbsp;' . $editPosition . '&nbsp;' . $deleteBatch;
     }
 
     $output['aaData'][] = $row;

@@ -74,85 +74,9 @@ try {
                     $db = $db->where($refPrimaryColumn, $sample[$j]);
                     $db->update($refTable, $value);
                 }
-                //Update batch controls position, If samples has changed
-                $displaySampleOrderArray = [];
-                $batchQuery = "SELECT * from batch_details as b_d INNER JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id=".$id;
-                $batchInfo = $db->query($batchQuery);
-                if (isset($batchInfo) && !empty($batchInfo)) {
-                    
-                    if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
-                        foreach ($general->excelColumnRange('A', 'H') as $value) {
-                            foreach (range(1, 12) as $no) {
-                                $alphaNumeric[] = $value . $no;
-                            }
-                        }
-                    }
-                    if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) != '') {
-                        //Get display sample only
-                        $samplesQuery = "SELECT " . $refPrimaryColumn . ",sample_code from " . $refTable . " where sample_batch_id=".$id." ORDER BY sample_code ASC";
-                        $samplesInfo = $db->query($samplesQuery);
-                        foreach ($samplesInfo as $sample) {
-                            $displaySampleOrderArray[] = $sample[$refPrimaryColumn];
-                        }
-                        //Set label order
-                        $jsonToArray = json_decode($batchInfo[0]['label_order'], true);
-                        $displaySampleArray = [];
-                        if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
-                            $displayOrder = [];
-                            for ($j = 0; $j < count($jsonToArray); $j++) {
-                                $xplodJsonToArray = explode("_", $jsonToArray[$alphaNumeric[$j]]);
-                                if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
-                                    if (in_array($xplodJsonToArray[1], $displaySampleOrderArray)) {
-                                        $displayOrder[] = $jsonToArray[$alphaNumeric[$j]];
-                                        $displaySampleArray[] = $xplodJsonToArray[1];
-                                    }
-                                } else {
-                                    $displayOrder[] = $jsonToArray[$alphaNumeric[$j]];
-                                }
-                            }
-                            
-                        } else {
-                            $displayOrder = [];
-                            for ($j = 0; $j < count($jsonToArray); $j++) {
-                                $xplodJsonToArray = explode("_", $jsonToArray[$j]);
-                                if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
-                                    if (in_array($xplodJsonToArray[1], $displaySampleOrderArray)) {
-                                        $displayOrder[] = $jsonToArray[$j];
-                                        $displaySampleArray[] = $xplodJsonToArray[1];
-                                    }
-                                } else {
-                                    $displayOrder[] = $jsonToArray[$j];
-                                }
-                            }
-                        }
-                        $remainSampleNewArray = array_values(array_diff($displaySampleOrderArray, $displaySampleArray));
-                        //For new samples
-                        // $displayOrder = [];
-                        for ($ns = 0; $ns < count($remainSampleNewArray); $ns++) {
-                            $displayOrder[] = 's_' . $remainSampleNewArray[$ns];
-                        }
-                        $orderArray = [];
-                        if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
-                            for ($o = 0; $o < count($displayOrder); $o++) {
-                                if (isset($displayOrder[$o]) && $displayOrder[$o] != "") {
-                                    $orderArray[$alphaNumeric[$o]] = $displayOrder[$o];
-                                }
-                            }
-                        } else {
-                            for ($o = 0; $o < count($displayOrder); $o++) {
-                                $orderArray[$o] = $displayOrder[$o];
-                            }
-                        }
-                        // echo "<pre>";print_r($orderArray);die;
-                        $labelOrder = json_encode($orderArray, JSON_FORCE_OBJECT);
-                        //Update label order
-                        $data = array('label_order' => $labelOrder);
-                        $db = $db->where('batch_id', $id);
-                        $db->update($tableName1, $data);
-                    }
-                }
-                $_SESSION['alertMsg'] = "Batch updated successfully";
-                header("Location:batches.php?type=" . $_POST['type']);
+                header("Location:edit-batch-position.php?type=" . $_POST['type'] . "&id=" . base64_encode($lastId) . "&position=" . $_POST['positions']);
+            }else{
+                header("Location:batches.php?type=" . $_POST['type']); 
             }
         } else {
             $exist = $general->existBatchCode($_POST['batchCode']);
@@ -190,9 +114,8 @@ try {
                 }
             }
         }
-    } else {
-        header("Location:batches.php?type=" . $_POST['type']);
     }
+    header("Location:batches.php?type=" . $_POST['type']);
 } catch (Exception $exc) {
     echo ($exc->getMessage());
     error_log($exc->getMessage());
