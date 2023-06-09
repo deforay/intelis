@@ -24,8 +24,7 @@ if (empty($labId)) {
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
-$dataSyncInterval = (isset($dataSyncInterval) && !empty($dataSyncInterval)) ? $dataSyncInterval : 30;
+$dataSyncInterval = $general->getGlobalConfig('data_sync_interval') ?? 30;
 $transactionId = $general->generateUUID();
 
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -41,8 +40,7 @@ $hepatitisQuery = "SELECT * FROM form_hepatitis
                     WHERE $condition ";
 
 if (!empty($data['manifestCode'])) {
-    //$hepatitisQuery .= " AND data_sync=0 AND sample_package_code like '" . $data['manifestCode'] . "%'";
-    $hepatitisQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "%'";
+    $hepatitisQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
 } else {
     $hepatitisQuery .= " AND data_sync=0 AND last_modified_datetime > SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
 }

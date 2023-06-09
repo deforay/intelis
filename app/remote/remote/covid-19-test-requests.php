@@ -28,11 +28,9 @@ if (empty($labId)) {
   exit(0);
 }
 
-
 $transactionId = $general->generateUUID();
 
-$dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
-$dataSyncInterval = (isset($dataSyncInterval) && !empty($dataSyncInterval)) ? $dataSyncInterval : 30;
+$dataSyncInterval = $general->getGlobalConfig('data_sync_interval') ?? 30;
 
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $fMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
@@ -47,8 +45,7 @@ $covid19Query = "SELECT * FROM form_covid19
                     WHERE $condition ";
 
 if (!empty($data['manifestCode'])) {
-  //$covid19Query .= " AND data_sync=0 AND sample_package_code like '" . $data['manifestCode'] . "%'";
-  $covid19Query .= " AND sample_package_code like '" . $data['manifestCode'] . "%'";
+  $covid19Query .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
 } else {
   $covid19Query .= " AND data_sync=0 AND last_modified_datetime > SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
 }
