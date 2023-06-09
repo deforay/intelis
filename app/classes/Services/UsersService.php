@@ -37,7 +37,6 @@ class UsersService
             }
 
             if ($currentRequest instanceof ServerRequest) {
-
                 $uri = $currentRequest->getUri();
                 $path = $uri->getPath();
                 $query = $uri->getQuery();
@@ -57,12 +56,30 @@ class UsersService
             $currentRequest = $sharedPrivileges[$currentRequest] ??
                 $sharedPrivileges[$baseFileName] ?? $currentRequest;
 
-            $privileges = array_merge($skippedPrivileges, $_SESSION['privileges']);
-            $matches = array_intersect([$currentRequest, $baseFileName], $privileges);
+            $privileges = array_flip(array_merge($skippedPrivileges, $_SESSION['privileges']));
 
-            return !empty($matches) ? true : false;
+            $requests = [$currentRequest, $baseFileName];
+
+            foreach ($requests as $request) {
+                $parts = explode('&', $request);
+                $substring = $parts[0];
+
+                for ($i = 1; $i < count($parts); $i++) {
+                    if (isset($privileges[$substring])) {
+                        return true;
+                    }
+                    $substring .= '&' . $parts[$i];
+                }
+                if (isset($privileges[$substring])) {
+                    return true;
+                }
+            }
+
+            return false;
         });
     }
+
+
 
     public function getSharedPrivileges()
     {
@@ -243,7 +260,7 @@ class UsersService
                 isset($this->applicationConfig['modules']['tb']) &&
                 $this->applicationConfig['modules']['tb'] === true
             ) {
-                $sharedHepPrivileges = array(
+                $sharedTbPrivileges = array(
                     'add-batch-position.php'        => '/batch/add-batch.php?type=tb',
                     'edit-batch-position.php'       => '/batch/edit-batch.php?type=tb',
                     'delete-batch-code.php?type=tb'         => '/batch/edit-batch.php?type=tb',
@@ -262,7 +279,7 @@ class UsersService
                     'add-tb-results.php'                    => 'tb-sample-type.php',
                     'edit-tb-results.php'                   => 'tb-sample-type.php',
                 );
-                $sharedPrivileges = array_merge($sharedPrivileges, $sharedHepPrivileges);
+                $sharedPrivileges = array_merge($sharedPrivileges, $sharedTbPrivileges);
             }
 
             return $sharedPrivileges;
@@ -272,12 +289,12 @@ class UsersService
     // These files don't need privileges check
     public function getSkippedPrivileges(): array
     {
-        return array(
+        return [
             '401.php',
             '404.php',
             'error.php',
             'editProfile.php'
-        );
+        ];
     }
 
     public function getUserInfo($userId, $columns = '*')
