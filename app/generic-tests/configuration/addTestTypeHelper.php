@@ -43,38 +43,27 @@ try {
         for($i=0;$i<$cnt;$i++)
         {
             $index = array_search($sortFieldOrder[$i],$_POST['fieldOrder']);
-            array_push($fieldId,$_POST['fieldId'][$index]);
-            array_push($fieldName,$_POST['fieldName'][$index]);
-            array_push($fieldType,$_POST['fieldType'][$index]);
-            array_push($dropDown,$_POST['fdropDown'][$index]);
-            array_push($mandatoryField,$_POST['mandatoryField'][$index]);
-            array_push($section,$_POST['section'][$index]);
-            array_push($sectionOther,$_POST['sectionOther'][$index]);
-            array_push($fieldOrder,$_POST['fieldOrder'][$index]);
-        }
-
-        for($i=0;$i<$cnt;$i++)
-        {
-            if($section[$i]=='otherSection'){
-                $sectionOther[$i]=trim($sectionOther[$i]);
-                $testAttribute[$section[$i]][$sectionOther[$i]][$fieldId[$i]]['field_name']=$fieldName[$i];
-                $testAttribute[$section[$i]][$sectionOther[$i]][$fieldId[$i]]['field_type']=$fieldType[$i];
-                $testAttribute[$section[$i]][$sectionOther[$i]][$fieldId[$i]]['mandatory_field']=$mandatoryField[$i];
-                $testAttribute[$section[$i]][$sectionOther[$i]][$fieldId[$i]]['section']=$section[$i];
-                $testAttribute[$section[$i]][$sectionOther[$i]][$fieldId[$i]]['section_name']=trim($sectionOther[$i]);
-                $testAttribute[$section[$i]][$sectionOther[$i]][$fieldId[$i]]['field_order']=$fieldOrder[$i];
-                if($fieldType[$i]=='dropdown' || $fieldType[$i]=='multiple'){
-                    $testAttribute[$section[$i]][$sectionOther[$i]][$fieldId[$i]]['dropdown_options']=$dropDown[$i];
+            
+            if($_POST['section'][$index]=='otherSection'){
+                $_POST['sectionOther'][$index]=trim($_POST['sectionOther'][$index]);
+                $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['field_name']=$_POST['fieldName'][$index];
+                $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['field_type']=$_POST['fieldType'][$index];
+                $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['mandatory_field']=$_POST['mandatoryField'][$index];
+                $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['section']=$_POST['section'][$index];
+                $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['section_name']=trim($_POST['sectionOther'][$index]);
+                $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['field_order']=$_POST['fieldOrder'][$index];
+                if($_POST['fieldType'][$index]=='dropdown' || $_POST['fieldType'][$index]=='multiple'){
+                    $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['dropdown_options']=$_POST['fdropDown'][$index];
                 }
             }else{
-                $testAttribute[$section[$i]][$fieldId[$i]]['field_name']=$fieldName[$i];
-                $testAttribute[$section[$i]][$fieldId[$i]]['field_type']=$fieldType[$i];
-                $testAttribute[$section[$i]][$fieldId[$i]]['mandatory_field']=$mandatoryField[$i];
-                $testAttribute[$section[$i]][$fieldId[$i]]['section']=$section[$i];
+                $testAttribute[$_POST['section'][$index]][$_POST['fieldId'][$index]]['field_name']=$_POST['fieldName'][$index];
+                $testAttribute[$_POST['section'][$index]][$_POST['fieldId'][$index]]['field_type']=$_POST['fieldType'][$index];
+                $testAttribute[$_POST['section'][$index]][$_POST['fieldId'][$index]]['mandatory_field']=$_POST['mandatoryField'][$index];
+                $testAttribute[$_POST['section'][$index]][$_POST['fieldId'][$index]]['section']=$_POST['section'][$index];
                 //$testAttr[$_POST['section'][$i]][$_POST['fieldId'][$i]]['section_other']=$_POST['sectionOther'][$i];
-                $testAttribute[$section[$i]][$fieldId[$i]]['field_order']=$fieldOrder[$i];
-                if($fieldType[$i]=='dropdown' || $fieldType[$i]=='multiple'){
-                    $testAttribute[$section[$i]][$fieldId[$i]]['dropdown_options']=$dropDown[$i];
+                $testAttribute[$_POST['section'][$index]][$_POST['fieldId'][$index]]['field_order']=$_POST['fieldOrder'][$index];
+                if($_POST['fieldType'][$index]=='dropdown' || $_POST['fieldType'][$index]=='multiple'){
+                    $testAttribute[$_POST['section'][$index]][$_POST['fieldId'][$index]]['dropdown_options']=$_POST['fdropDown'][$index];
                 }
             }
         }
