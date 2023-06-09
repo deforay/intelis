@@ -4,6 +4,10 @@
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
@@ -11,7 +15,6 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 
 $tableName1 = "batch_details";
-$tableName2 = "form_generic";
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */

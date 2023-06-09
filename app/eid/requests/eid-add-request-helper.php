@@ -228,6 +228,8 @@ try {
 		'result_approved_by' 								=> (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  null,
 		'result_approved_datetime' 							=> $_POST['approvedOnDateTime'] ?? null,
 		'result_status' 									=> $status,
+		'second_DBS_requested' 								=> (isset($_POST['secondDBSRequested']) && $_POST['secondDBSRequested'] != '') ? $_POST['secondDBSRequested'] :  null,
+		'second_DBS_requested_reason' 						=> (isset($_POST['secondDBSRequestedReason']) && $_POST['secondDBSRequestedReason'] != '') ? $_POST['secondDBSRequestedReason'] :  null,
 		'data_sync' 										=> 0,
 		'reason_for_sample_rejection' 						=> $_POST['sampleRejectionReason'] ?? null,
 		'rejection_on' 						                => isset($_POST['rejectionDate']) ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,

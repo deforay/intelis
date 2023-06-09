@@ -5,6 +5,10 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Utilities\DateUtility;
 
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
@@ -61,9 +65,9 @@ if (isset($_POST['sampleReceivedAtLab']) && trim($_POST['sampleReceivedAtLab']) 
     }
 }
 
-$query = "SELECT vl.sample_code,vl.$refPrimaryColumn,vl.facility_id,vl.result_status,vl.sample_batch_id,f.facility_name,f.facility_code FROM $refTable as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.result is NULL or vl.result = '') AND vl.sample_code!=''";
+$query = "SELECT vl.sample_code,vl.$refPrimaryColumn,vl.facility_id,vl.result_status,vl.sample_batch_id,f.facility_name,f.facility_code FROM $refTable as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id ";
+$where [] = " (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.result is NULL or vl.result = '') AND vl.sample_code!=''";
 
-$where = array();
 if (isset($_POST['batchId'])) {
     $where[] = " (sample_batch_id = '" . $_POST['batchId'] . "' OR sample_batch_id IS NULL OR sample_batch_id = '')";
 } else {
@@ -93,6 +97,7 @@ if (!empty($where)) {
     $query = $query . ' WHERE ' . implode(" AND ", $where);
 }
 $query = $query . " ORDER BY vl.sample_code ASC";
+// die($query);
 $result = $db->rawQuery($query);
 ?>
 
@@ -101,7 +106,7 @@ $result = $db->rawQuery($query);
 <div class="col-md-5">
     <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
         <?php foreach ($result as $sample) { 
-            if(isset($_POST['batchId']) && $_POST['batchId'] != $sample['sample_batch_id']){ ?>
+            if(!isset($_POST['batchId']) || $_POST['batchId'] != $sample['sample_batch_id']){ ?>
             <option value="<?php echo $sample[$refPrimaryColumn]; ?>"  <?php echo (isset($_POST['batchId']) && $_POST['batchId'] == $sample['sample_batch_id'])?"selected='selected'":"";?>><?php echo ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
         <?php }
     } ?>
