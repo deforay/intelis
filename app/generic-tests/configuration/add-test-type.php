@@ -159,9 +159,9 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testFailureReason" class="col-lg-4 control-label"><?php echo _("Test Failure Reasons"); ?> </label>
+									<label for="testFailureReason" class="col-lg-4 control-label"><?php echo _("Test Failure Reasons"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<select class="form-control" name='testFailureReason[]' id='testFailureReason' title="<?php echo _('Please select the test failure reason'); ?>" multiple>
+										<select class="form-control isRequired" name='testFailureReason[]' id='testFailureReason' title="<?php echo _('Please select the test failure reason'); ?>" multiple>
 											
 										</select>
 									</div>
@@ -292,9 +292,9 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 											<tr>
 												<td class="text-center">1</td>
 												<th scope="row">Result<span class="mandatory">*</span></th>
-												<td><input type="text" name="resultConfig[result][]" id="result1" class="form-control" placeholder="Result" title="Please enter the result 1" /></td>
+												<td><input type="text" name="resultConfig[result][]" id="result1" class="form-control qualitativeResult" placeholder="Result" title="Please enter the result 1" /></td>
 												<th scope="row">Result Interpretation<span class="mandatory">*</span></th>
-												<td><input type="text" id="resultInterpretation1" name="resultConfig[result_interpretation][]" class="form-control" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
+												<td><input type="text" id="resultInterpretation1" name="resultConfig[result_interpretation][]" class="form-control qualitativeResult" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
 												<td style="vertical-align:middle;text-align: center;width:100px;">
 													<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addResultRow('qualitativeTable');"><em class="fa-solid fa-plus"></em></a>&nbsp;
 													<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeResultRow(this.parentNode.parentNode, 'qualitativeTable');"><em class="fa-solid fa-minus"></em></a>
@@ -380,9 +380,9 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 											<tr>
 												<td class="text-center">1</td>
 												<th scope="row">Result<span class="mandatory">*</span></th>
-												<td><input type="text" name="resultConfig[quantitative_result][]" id="quantitativeResult1" class="form-control" placeholder="Result" title="Please enter the result" /></td>
+												<td><input type="text" name="resultConfig[quantitative_result][]" id="quantitativeResult1" class="form-control quantitativeResult" placeholder="Result" title="Please enter the result" /></td>
 												<th scope="row">Result Interpretation<span class="mandatory">*</span></th>
-												<td><input type="text" id="quantitativeResultInterpretation1" name="resultConfig[quantitative_result_interpretation][]" class="form-control" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
+												<td><input type="text" id="quantitativeResultInterpretation1" name="resultConfig[quantitative_result_interpretation][]" class="form-control quantitativeResult" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
 												<td style="vertical-align:middle;text-align: center;width:100px;">
 													<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addResultRow('quantitativeTable');"><em class="fa-solid fa-plus"></em></a>&nbsp;
 													<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeResultRow(this.parentNode.parentNode, 'quantitativeTable');"><em class="fa-solid fa-minus"></em></a>
@@ -529,11 +529,9 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 				//obj.removeClass('isRequired');
 
 			}
-
 		}
 		for (let i = 0; i < options.length; i++) {
 			$('#fdropDown' + cls).val($('#fdropDown' + cls).val() + options[i] + ',');
-
 		}
 	}
 
@@ -699,9 +697,9 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 			rowString = `<tr>
 				<td class="text-center">` + testQualCounter + `</td>
 				<th scope="row">Result<span class="mandatory">*</span></th>
-				<td><input type="text" name="resultConfig[result][]" id="result` + testQualCounter + `" class="form-control" placeholder="Result" title="Please enter the result" /></td>
+				<td><input type="text" name="resultConfig[result][]" id="result` + testQualCounter + `" class="form-control qualitativeResult isRequired" placeholder="Result" title="Please enter the result" /></td>
 				<th scope="row">Result Interpretation<span class="mandatory">*</span></th>
-				<td><input type="text" id="resultInterpretation` + testQualCounter + `" name="resultConfig[result_interpretation][]" class="form-control" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
+				<td><input type="text" id="resultInterpretation` + testQualCounter + `" name="resultConfig[result_interpretation][]" class="form-control qualitativeResult isRequired" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
 				<td style="vertical-align:middle;text-align: center;width:100px;">
 					<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addResultRow('qualitativeTable');"><em class="fa-solid fa-plus"></em></a>&nbsp;
 					<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeResultRow(this.parentNode.parentNode, 'qualitativeTable');"><em class="fa-solid fa-minus"></em></a>
@@ -712,9 +710,9 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 			rowString = `<tr>
 				<td class="text-center">` + testQuanCounter + `</td>
 				<th scope="row">Result<span class="mandatory">*</span></th>
-				<td><input type="text" name="resultConfig[quantitative_result][]" id="quantitativeResult` + testQuanCounter + `" class="form-control" placeholder="Result" title="Please enter the result" /></td>
+				<td><input type="text" name="resultConfig[quantitative_result][]" id="quantitativeResult` + testQuanCounter + `" class="form-control quantitativeResult isRequired" placeholder="Result" title="Please enter the result" /></td>
 				<th scope="row">Result Interpretation<span class="mandatory">*</span></th>
-				<td><input type="text" id="quantitativeResultInterpretation` + testQuanCounter + `" name="resultConfig[quantitative_result_interpretation][]" class="form-control" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
+				<td><input type="text" id="quantitativeResultInterpretation` + testQuanCounter + `" name="resultConfig[quantitative_result_interpretation][]" class="form-control quantitativeResult isRequired" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
 				<td style="vertical-align:middle;text-align: center;width:100px;">
 					<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addResultRow('quantitativeTable');"><em class="fa-solid fa-plus"></em></a>&nbsp;
 					<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeResultRow(this.parentNode.parentNode, 'quantitativeTable');"><em class="fa-solid fa-minus"></em></a>
