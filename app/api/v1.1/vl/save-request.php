@@ -85,9 +85,9 @@ try {
     $roleUser = $usersService->getUserRole($user['user_id']);
     $responseData = [];
     $instanceId = $general->getInstanceId();
-    $formId = $general->getGlobalConfig('vl_form');
+    $formId = $globalConfig['vl_form'];
 
-    $version = $general->getSystemConfig('sc_version');
+    $version = $vlsmSystemConfig['sc_version'];
     $deviceId = $general->getHeader('deviceId');
 
 
@@ -134,11 +134,7 @@ try {
             $sQuery = "SELECT vl_sample_id,
                             unique_id,
                             sample_code,
-                            sample_code_format,
-                            sample_code_key,
                             remote_sample_code,
-                            remote_sample_code_format,
-                            remote_sample_code_key,
                             result_status,
                             locked
                         FROM form_vl ";
@@ -188,8 +184,12 @@ try {
         $formAttributes = json_encode($formAttributes);
 
 
+        $currentSampleData = [];
         if (!empty($rowData)) {
             $data['vlSampleId'] = $rowData['vl_sample_id'];
+            $currentSampleData['sampleCode'] = $rowData['sample_code'] ?? null;
+            $currentSampleData['remoteSampleCode'] = $rowData['remote_sample_code'] ?? null;
+            $currentSampleData['action'] = 'updated';
         } else {
             $params['appSampleCode'] = $data['appSampleCode'] ?? null;
             $params['provinceCode'] = $provinceCode;
@@ -198,10 +198,22 @@ try {
             $params['sampleCollectionDate'] = $sampleCollectionDate;
             $params['userId'] = $user['user_id'];
             $params['accessType'] = $user['access_type'];
+            $params['instanceType'] = $vlsmSystemConfig['sc_user_type'];
             $params['facilityId'] = $data['facilityId'] ?? null;
             $params['labId'] = $data['labId'] ?? null;
 
-            $data['vlSampleId'] = $vlService->insertSampleCode($params);
+            $currentSampleData = $vlService->insertSampleCode($params, true);
+            $currentSampleData['action'] = 'inserted';
+            $data['vlSampleId'] = intval($currentSampleData['id']);
+            if ($data['vlSampleId'] == 0) {
+                $responseData[$rootKey] = array(
+                    'transactionId' => $transactionId,
+                    'appSampleCode' => $data['appSampleCode'] ?? null,
+                    'status' => 'failed',
+                    'error' => _("Failed to insert sample")
+                );
+                continue;
+            }
         }
 
         $status = 6;
@@ -389,22 +401,14 @@ try {
         if (!empty($data['vlSampleId'])) {
             $db = $db->where('vl_sample_id', $data['vlSampleId']);
             $id = $db->update('form_vl', $vlFulldata);
-            error_log($db->getLastError());
+            //error_log($db->getLastError());
         }
-        // echo "<pre>";print_r($data);die;
+
         if ($id === true) {
-
-            $sQuery = "SELECT sample_code,
-                            remote_sample_code
-                            FROM form_vl
-                            WHERE vl_sample_id = ?";
-            $sampleRow = $db->rawQueryOne($sQuery, [$data['vlSampleId']]);
-
-            $vlSampleCode = $sampleRow['sample_code'] ?? $sampleRow['remote_sample_code'] ?? null;
-
             $responseData[$rootKey] = [
                 'status' => 'success',
-                'sampleCode' => $vlSampleCode,
+                'action' => $currentSampleData['action'] ?? null,
+                'sampleCode' => $currentSampleData['remoteSampleCode'] ?? $currentSampleData['sampleCode'] ?? null,
                 'transactionId' => $transactionId,
                 'uniqueId' => $uniqueId,
                 'appSampleCode' => $data['appSampleCode'] ?? null,

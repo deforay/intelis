@@ -19,8 +19,17 @@ $covid19Service = ContainerRegistry::get(Covid19Service::class);
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
-$sampleQuery = "SELECT covid19_id, sample_collection_date, sample_package_code, province_id, sample_code FROM form_covid19 where covid19_id IN (" . $_POST['sampleId'] . ") ORDER BY covid19_id";
-$sampleResult = $db->query($sampleQuery);
+$queryParams = explode(',', $_POST['sampleId']);
+$placeholders = implode(', ', array_fill(0, count($queryParams), '?'));
+
+$sampleQuery = "SELECT covid19_id,
+                sample_collection_date,
+                sample_package_code,
+                province_id,
+                sample_code
+                FROM form_covid19 WHERE covid19_id IN ($placeholders)";
+$sampleResult = $db->rawQuery($sampleQuery, $queryParams);
+
 $status = 0;
 foreach ($sampleResult as $sampleRow) {
 

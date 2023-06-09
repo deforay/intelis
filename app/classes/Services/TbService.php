@@ -78,7 +78,7 @@ class TbService
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    /** @var GeoLocations $geoLocations */
+                    /** @var GeoLocationsService $geoLocations */
                     $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
                     $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
                 }
@@ -265,7 +265,7 @@ class TbService
         return $this->db->rawQueryOne($sQuery);
     }
 
-    public function insertSampleCode($params)
+    public function insertSampleCode($params, $returnSampleData = false)
     {
         try {
             $globalConfig = $this->commonService->getGlobalConfig();
@@ -359,6 +359,14 @@ class TbService
             error_log('Insert TB Sample : ' . $e->getMessage());
             $id = 0;
         }
-        return $id > 0 ? $id : 0;
+        if ($returnSampleData === true) {
+            return [
+                'id' => max($id, 0),
+                'sampleCode' => $tesRequestData['sample_code'] ?? null,
+                'remoteSampleCode' => $tesRequestData['remote_sample_code'] ?? null
+            ];
+        } else {
+            return max($id, 0);
+        }
     }
 }

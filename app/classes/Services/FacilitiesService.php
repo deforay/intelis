@@ -10,7 +10,7 @@ class FacilitiesService
 {
 
     protected ?MysqliDb $db = null;
-    protected $table = 'facility_details';
+    protected string $table = 'facility_details';
 
     public function __construct($db = null)
     {
