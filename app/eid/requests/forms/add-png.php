@@ -200,8 +200,26 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="Caretaker Address" title="Caretaker Address" style="width:100%;" onchange=""></textarea></td>
 
                                     </tr>
-
-
+                                    <tr>
+                                    <th scope="row">Provide Recent previous Lab Number</th>
+                                        <td>
+                                        <input type="text" class="form-control " id="previousSampleCode" name="previousSampleCode" placeholder="Recent previous Lab Number" title="Recent previous Lab Number" style="width:100%;" onchange="" />
+                                        </td>
+                                        <th scope="row">Clinical Assessment</th>
+                                        <td>
+                                            <select class="form-control " name="clinicalAssessment" id="clinicalAssessment">
+                                                <option value=''> -- Select -- </option>
+                                                <option value='symptomatic'> Symptomatic </option>
+                                                <option value='non-symptomatic'> Non-Symptomatic </option>
+                                            </select>    
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <th scope="row">Name of EID Personnel Collecting DBS</th>
+                                            <td>
+                                                 <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Name of EID Personnel Collecting DBS" title="Name of EID Personnel Collecting DBS" style="width:100%;" onchange="" />
+                                            </td>
+                                    </tr>
                                 </table>
 
 
@@ -234,7 +252,19 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <input type="checkbox" name="motherTreatment[]" value="Unknown" /> Unknown
                                         </td>
                                     </tr>
-
+                                    <tr>
+                                        <th scope="row" style="width:15% !important">Mode of Delivery:</th>
+                                        <td style="width:35% !important">
+                                            <select class="form-control" name="modeOfDelivery" id="modeOfDelivery" onchange="showOtherOption(this.value)">
+                                                <option value=''> -- Select -- </option>
+                                                <option value="Supervised Vaginal"> Supervised Vaginal </option>
+                                                <option value="Unsupervised Vaginal"> Unsupervised Vaginal </option>
+                                                <option value="Caesarean Section"> Caesarean Section </option>
+                                                <option value="Unknown"> Unknown </option>
+                                                <option value="Other"> Other </option>
+                                            </select>
+                                            <input type="text" class="form-control" name="modeOfDeliveryOther" id="modeOfDeliveryOther" title="Enter Other mode of Delivery" placeholder="Enter Other mode of Delivery" style="display:none;" /> 
+                                        </td>
                                     <tr>
                                         <th scope="row">Infant Rapid HIV Test Done</th>
                                         <td>
@@ -670,6 +700,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             $(".DBSRequestedReason").show();
                 else
             $(".DBSRequestedReason").hide();
+    }
+
+    function showOtherOption(modeOfdelivery)
+    {
+        if(modeOfdelivery=="Other")
+            $("#modeOfDeliveryOther").show();
+                else
+            $("#modeOfDeliveryOther").hide();
     }
 
     $(document).ready(function() {

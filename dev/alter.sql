@@ -4119,8 +4119,8 @@ ALTER TABLE `form_generic` ADD `result_unit` INT NULL DEFAULT NULL AFTER `result
 UPDATE `system_config` SET `value` = '5.1.7' WHERE `system_config`.`name` = 'sc_version';
 
 -- Jeyabanu 08-06-2023
-ALTER TABLE `form_eid` ADD `second_DBS_requested` VARCHAR(100) NULL DEFAULT NULL AFTER `result_approved_by`, ADD `second_DBS_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_DBS_requested`;
-ALTER TABLE `audit_form_eid` ADD `second_DBS_requested` VARCHAR(100) NULL DEFAULT NULL AFTER `result_approved_by`, ADD `second_DBS_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_DBS_requested`;
+ALTER TABLE `form_eid` ADD `second_dbs_requested` VARCHAR(100) NULL DEFAULT NULL AFTER `result_approved_by`, ADD `second_DBS_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_DBS_requested`;
+ALTER TABLE `audit_form_eid` ADD `second_dbs_requested` VARCHAR(100) NULL DEFAULT NULL AFTER `result_approved_by`, ADD `second_DBS_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_DBS_requested`;
 
 -- Thana 09-Jun-2023
 
@@ -4148,3 +4148,11 @@ UPDATE `privileges` SET `privilege_name` = '/batch/edit-batch.php?type=hepatitis
 UPDATE `privileges` SET `privilege_name` = '/batch/batches.php?type=tb' WHERE `privileges`.`privilege_name` = 'tb-batches.php';
 UPDATE `privileges` SET `privilege_name` = '/batch/add-batch.php?type=tb' WHERE `privileges`.`privilege_name` = 'tb-add-batch.php';
 UPDATE `privileges` SET `privilege_name` = '/batch/edit-batch.php?type=tb' WHERE `privileges`.`privilege_name` = 'tb-edit-batch.php';
+
+-- Jeyabanu 09-06-2023
+ALTER TABLE `form_eid` ADD `previous_sample_code` VARCHAR(256) NULL DEFAULT NULL AFTER `caretaker_address`, ADD `clinical_assessment` VARCHAR(256) NULL DEFAULT NULL AFTER `previous_sample_code`, ADD `clinician_name` VARCHAR(256) NULL DEFAULT NULL AFTER `clinical_assessment`;
+ALTER TABLE `audit_form_eid` ADD `previous_sample_code` VARCHAR(256) NULL DEFAULT NULL AFTER `caretaker_address`, ADD `clinical_assessment` VARCHAR(256) NULL DEFAULT NULL AFTER `previous_sample_code`, ADD `clinician_name` VARCHAR(256) NULL DEFAULT NULL AFTER `clinical_assessment`;
+
+ALTER TABLE `form_eid` ADD `mode_of_delivery_other` VARCHAR(256) NULL DEFAULT NULL AFTER `mode_of_delivery`;
+ALTER TABLE `audit_form_eid` ADD `mode_of_delivery_other` VARCHAR(256) NULL DEFAULT NULL AFTER `mode_of_delivery`;
+
