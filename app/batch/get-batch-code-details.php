@@ -174,6 +174,8 @@ if (isset($_SESSION['privileges']) && (in_array('edit-batch-position.php', $_SES
 foreach ($rResult as $aRow) {
     $createdDate = "";
     $deleteBatch = '';
+    $edit = '';
+    // $edit = '<a href="edit-batch.php?id=' . base64_encode($aRow['batch_id']) . '&type=' . $_POST['type'] . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>&nbsp;';
     if($editPosition){
         $editPosition = '<a href="edit-batch-position.php?id=' . base64_encode($aRow['batch_id']) . '&type=' . $_POST['type'] . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _("Edit Position") . '"><em class="fa-solid fa-arrow-down-1-9"></em> ' . _("Edit Position") . '</a>';
     }
@@ -207,7 +209,7 @@ foreach ($rResult as $aRow) {
     //	    </select>';
 
     if ($batch) {
-        $row[] = '<a href="edit-batch.php?id=' . base64_encode($aRow['batch_id']) . '&type=' . $_POST['type'] . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>&nbsp;' . $printBarcode . '&nbsp;' . $editPosition . '&nbsp;' . $deleteBatch;
+        $row[] = $edit . $printBarcode . '&nbsp;' . $editPosition . '&nbsp;' . $deleteBatch;
     }
 
     $output['aaData'][] = $row;
