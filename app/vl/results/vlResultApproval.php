@@ -195,9 +195,6 @@ foreach ($rejectionTypeResult as $type) {
                   <th><?php echo _("Result"); ?></th>
                   <th><?php echo _("Last Modified on"); ?></th>
                   <th>Status</th>
-                  <?php if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges']))) { ?>
-                    <!--<th>Action</th>-->
-                  <?php } ?>
                 </tr>
               </thead>
               <tbody>

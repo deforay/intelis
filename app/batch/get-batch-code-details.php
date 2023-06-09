@@ -158,16 +158,16 @@ $output = array(
     "aaData" => array()
 );
 $batch = $delete = $pdf = false;
-if (isset($_SESSION['privileges']) && (in_array('/batch/edit-batch.php?type='.$_POST['type'], $_SESSION['privileges']))) {
+if (isset($_SESSION['privileges']) && (in_array('/batch/edit-batch.php?type=' . $_POST['type'], $_SESSION['privileges']))) {
     $batch = true;
 }
-if (isset($_SESSION['privileges']) && (in_array('/batch/edit-batch.php?type='.$_POST['type'], $_SESSION['privileges']))) {
+if (isset($_SESSION['privileges']) && (in_array('/batch/edit-batch.php?type=' . $_POST['type'], $_SESSION['privileges']))) {
     $delete = true;
 }
-if (isset($_SESSION['privileges']) && (in_array('/batch/edit-batch.php?type='.$_POST['type'], $_SESSION['privileges']))) {
+if (isset($_SESSION['privileges']) && (in_array('/batch/edit-batch.php?type=' . $_POST['type'], $_SESSION['privileges']))) {
     $pdf = true;
 }
-if (isset($_SESSION['privileges']) && (in_array('/batch/edit-batch.php?type='.$_POST['type'], $_SESSION['privileges']))) {
+if (isset($_SESSION['privileges']) && (in_array('/batch/edit-batch.php?type=' . $_POST['type'], $_SESSION['privileges']))) {
     $editPosition = true;
 }
 
@@ -176,10 +176,10 @@ foreach ($rResult as $aRow) {
     $deleteBatch = '';
     $edit = '';
     // $edit = '<a href="edit-batch.php?&type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>&nbsp;';
-    if($editPosition){
+    if ($editPosition) {
         $editPosition = '<a href="edit-batch-position.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _("Edit Position") . '"><em class="fa-solid fa-arrow-down-1-9"></em> ' . _("Edit Position") . '</a>';
     }
-    if($pdf){
+    if ($pdf) {
         $printBarcode = '<a href="generate-batch-pdf.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" target="_blank"  rel="noopener" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _("Print bar code") . '"><em class="fa-solid fa-barcode"></em> ' . _("Print Batch PDF") . '</a>';
     }
     if (trim($aRow['request_created_datetime']) != "" && $aRow['request_created_datetime'] != '0000-00-00 00:00:00') {
@@ -196,7 +196,7 @@ foreach ($rResult as $aRow) {
         $exp = explode(" ", $aRow['last_tested_date']);
         $lastDate = DateUtility::humanReadableDateFormat($exp[0]);
     }
-    
+
     $row = [];
     $row[] = ($aRow['batch_code']);
     $row[] = $aRow['total_samples'];
