@@ -96,12 +96,12 @@ try {
         }
 
         if ($app->checkIfNullOrEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
-            $responseData[$rootKey] = array(
+            $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
                 'status' => 'failed',
                 'message' => _("Missing required fields")
-            );
+            ];
             continue;
         }
 
@@ -171,12 +171,12 @@ try {
 
             if (!empty($rowData)) {
                 if ($rowData['result_status'] == 7 || $rowData['locked'] == 'yes') {
-                    $responseData[$rootKey] = array(
+                    $responseData[$rootKey] = [
                         'transactionId' => $transactionId,
                         'appSampleCode' => $data['appSampleCode'] ?? null,
                         'status' => 'failed',
                         'error' => _("Sample Locked or Finalized")
-                    );
+                    ];
                     continue;
                 }
                 $update = "yes";
@@ -188,17 +188,12 @@ try {
             $uniqueId = $general->generateUUID();
         }
 
-        $formAttributes = array(
-            'applicationVersion'    => $version,
-            'apiTransactionId'      => $transactionId,
-            'mobileAppVersion'      => $appVersion,
-            'deviceId'              => $deviceId
-        );
-        $formAttributes = json_encode($formAttributes);
-
-
+        $currentSampleData = [];
         if (!empty($rowData)) {
             $data['covid19SampleId'] = $rowData['covid19_id'];
+            $currentSampleData['sampleCode'] = $rowData['sample_code'] ?? null;
+            $currentSampleData['remoteSampleCode'] = $rowData['remote_sample_code'] ?? null;
+            $currentSampleData['action'] = 'updated';
         } else {
             $params['appSampleCode'] = $data['appSampleCode'] ?? null;
             $params['provinceCode'] = $provinceCode;
@@ -211,7 +206,18 @@ try {
             $params['facilityId'] = $data['facilityId'] ?? null;
             $params['labId'] = $data['labId'] ?? null;
 
-            $data['covid19SampleId'] = $covid19Service->insertSampleCode($params);
+            $currentSampleData = $covid19Service->insertSampleCode($params, true);
+            $currentSampleData['action'] = 'inserted';
+            $data['covid19SampleId'] = intval($currentSampleData['id']);
+            if ($data['covid19SampleId'] == 0) {
+                $responseData[$rootKey] = [
+                    'transactionId' => $transactionId,
+                    'appSampleCode' => $data['appSampleCode'] ?? null,
+                    'status' => 'failed',
+                    'error' => _("Failed to insert sample")
+                ];
+                continue;
+            }
         }
 
         $status = 6;
@@ -280,10 +286,17 @@ try {
             $data['reviewedOn'] = null;
         }
 
-        $covid19Data = array(
+        $formAttributes = [
+            'applicationVersion'    => $version,
+            'apiTransactionId'      => $transactionId,
+            'mobileAppVersion'      => $appVersion,
+            'deviceId'              => $deviceId
+        ];
+        $formAttributes = json_encode($formAttributes);
+
+
+        $covid19Data = [
             'vlsm_instance_id'                    => $data['instanceId'],
-            'vlsm_country_id'                     => $data['formId'],
-            'unique_id'                           => $uniqueId,
             'app_sample_code'                     => !empty($data['appSampleCode']) ? $data['appSampleCode'] : null,
             'external_sample_code'                => !empty($data['externalSampleCode']) ? $data['externalSampleCode'] : null,
             'facility_id'                         => !empty($data['facilityId']) ? $data['facilityId'] : null,
@@ -376,7 +389,7 @@ try {
             'reason_for_sample_rejection'         => (isset($data['sampleRejectionReason']) && $data['isSampleRejected'] == 'yes') ? $data['sampleRejectionReason'] : null,
             'source_of_request'                   => $data['sourceOfRequest'] ?? "API",
             'form_attributes'                       => $db->func($general->jsonToSetString($formAttributes, 'form_attributes')),
-        );
+        ];
         if (!empty($rowData)) {
             $covid19Data['last_modified_datetime']  = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
             $covid19Data['last_modified_by']  = $user['user_id'];
@@ -440,7 +453,7 @@ try {
                         } else {
                             $test['testDate'] = null;
                         }
-                        $covid19TestData = array(
+                        $covid19TestData = [
                             'covid19_id'             => $data['covid19SampleId'],
                             'test_name'              => ($test['testName'] == 'other') ? $test['testNameOther'] : $test['testName'],
                             'facility_id'            => $data['labId'] ?? null,
@@ -449,7 +462,7 @@ try {
                             'kit_lot_no'             => (strpos($test['testName'], 'RDT') !== false) ? $test['kitLotNo'] : null,
                             'kit_expiry_date'        => (strpos($test['testName'], 'RDT') !== false) ? DateUtility::isoDateFormat($test['kitExpiryDate']) : null,
                             'result'                 => $test['testResult'],
-                        );
+                        ];
                         $db->insert($testTableName, $covid19TestData);
                         error_log($db->getLastError());
                         $covid19Data['sample_tested_datetime'] = date('Y-m-d H:i:s', strtotime($test['testDate']));
@@ -467,21 +480,14 @@ try {
             $id = $db->update($tableName, $covid19Data);
         }
         if ($id === true) {
-            $sQuery = "SELECT sample_code,
-                        remote_sample_code
-                        FROM form_covid19
-                        WHERE covid19_id = ?";
-            $sampleRow = $db->rawQueryOne($sQuery, [$data['covid19SampleId']]);
-
-            $c19SampleCode = $sampleRow['sample_code'] ?? $sampleRow['remote_sample_code'] ?? null;
-            $responseData[$rootKey] = array(
+            $responseData[$rootKey] = [
                 'status' => 'success',
-                'sampleCode' => $c19SampleCode,
+                'action' => $currentSampleData['action'] ?? null,
+                'sampleCode' => $currentSampleData['remoteSampleCode'] ?? $currentSampleData['sampleCode'] ?? null,
                 'transactionId' => $transactionId,
-                'uniqueId' => $uniqueId,
+                'uniqueId' => $uniqueId ?? $currentSampleData['uniqueId'] ?? null,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
-            );
-            http_response_code(200);
+            ];
         } else {
             $responseData[$rootKey] = [
                 'transactionId' => $transactionId,

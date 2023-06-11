@@ -94,12 +94,12 @@ try {
         }
 
         if ($app->checkIfNullOrEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
-            $responseData[$rootKey] = array(
+            $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
                 'status' => 'failed',
                 'message' => _("Missing required fields")
-            );
+            ];
             continue;
         }
 
@@ -158,12 +158,12 @@ try {
             $rowData = $db->rawQueryOne($sQuery);
             if (!empty($rowData)) {
                 if ($rowData['result_status'] == 7 || $rowData['locked'] == 'yes') {
-                    $responseData[$rootKey] = array(
+                    $responseData[$rootKey] = [
                         'transactionId' => $transactionId,
                         'appSampleCode' => $data['appSampleCode'] ?? null,
                         'status' => 'failed',
                         'error' => _("Sample Locked or Finalized")
-                    );
+                    ];
                     continue;
                 }
                 $update = "yes";
@@ -174,13 +174,6 @@ try {
         if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
             $uniqueId = $data['uniqueId'] = $general->generateUUID();
         }
-        $formAttributes = array(
-            'applicationVersion'    => $version,
-            'apiTransactionId'      => $transactionId,
-            'mobileAppVersion'      => $appVersion,
-            'deviceId'              => $deviceId
-        );
-        $formAttributes = json_encode($formAttributes);
 
         $currentSampleData = [];
         if (!empty($rowData)) {
@@ -204,12 +197,12 @@ try {
             $currentSampleData['action'] = 'inserted';
             $data['eidSampleId'] = intval($currentSampleData['id']);
             if ($data['eidSampleId'] == 0) {
-                $responseData[$rootKey] = array(
+                $responseData[$rootKey] = [
                     'transactionId' => $transactionId,
                     'appSampleCode' => $data['appSampleCode'] ?? null,
                     'status' => 'failed',
                     'error' => _("Failed to insert sample")
-                );
+                ];
                 continue;
             }
         }
@@ -222,14 +215,14 @@ try {
         if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
             $data['result'] = null;
             $status = 4;
-        } else if (
+        } elseif (
             isset($globalConfig['eid_auto_approve_api_results']) &&
             $globalConfig['eid_auto_approve_api_results'] == "yes" &&
             (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") &&
             (!empty($data['result']))
         ) {
             $status = 7;
-        } else if ((isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") && (!empty($data['result']))) {
+        } elseif ((isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") && (!empty($data['result']))) {
             $status = 8;
         }
 
@@ -284,7 +277,7 @@ try {
 
         if (isset($data['motherViralLoadCopiesPerMl']) && $data['motherViralLoadCopiesPerMl'] != "") {
             $motherVlResult = $data['motherViralLoadCopiesPerMl'];
-        } else if (isset($data['motherViralLoadText']) && $data['motherViralLoadText'] != "") {
+        } elseif (isset($data['motherViralLoadText']) && $data['motherViralLoadText'] != "") {
             $motherVlResult = $data['motherViralLoadText'];
         } else {
             $motherVlResult = null;
@@ -313,10 +306,17 @@ try {
             $data['revisedOn'] = null;
         }
 
-        $eidData = array(
+
+        $formAttributes = [
+            'applicationVersion'    => $version,
+            'apiTransactionId'      => $transactionId,
+            'mobileAppVersion'      => $appVersion,
+            'deviceId'              => $deviceId
+        ];
+        $formAttributes = json_encode($formAttributes);
+
+        $eidData = [
             'vlsm_instance_id'                                  => $instanceId,
-            'vlsm_country_id'                                   => $formId,
-            'unique_id'                                         => $uniqueId,
             'app_sample_code'                                   => $data['appSampleCode'] ?? null,
             'facility_id'                                       => $data['facilityId'] ?? null,
             'province_id'                                       => $data['provinceId'] ?? null,
@@ -383,7 +383,7 @@ try {
             'rejection_on'                                      => (isset($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($data['rejectionDate']) : null,
             'source_of_request'                                 => $data['sourceOfRequest'] ?? "API",
             'form_attributes'                                   => $db->func($general->jsonToSetString($formAttributes, 'form_attributes'))
-        );
+        ];
 
         if (!empty($rowData)) {
             $eidData['last_modified_datetime']  = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();

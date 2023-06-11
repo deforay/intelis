@@ -104,12 +104,12 @@ try {
         }
 
         if ($app->checkIfNullOrEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
-            $responseData[$rootKey] = array(
+            $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
                 'status' => 'failed',
                 'message' => _("Missing required fields")
-            );
+            ];
             continue;
         }
 
@@ -155,13 +155,13 @@ try {
             $rowData = $db->rawQueryOne($sQuery);
             if (!empty($rowData)) {
                 if ($rowData['result_status'] == 7 || $rowData['locked'] == 'yes') {
-                    $responseData[$rootKey] = array(
+                    $responseData[$rootKey] = [
                         'transactionId' => $transactionId,
                         'appSampleCode' => $data['appSampleCode'] ?? null,
                         'status' => 'failed',
                         'error' => _("Sample Locked or Finalized")
 
-                    );
+                    ];
                     continue;
                 }
                 $update = "yes";
@@ -195,12 +195,12 @@ try {
             $currentSampleData['action'] = 'inserted';
             $data['vlSampleId'] = intval($currentSampleData['id']);
             if ($data['vlSampleId'] == 0) {
-                $responseData[$rootKey] = array(
+                $responseData[$rootKey] = [
                     'transactionId' => $transactionId,
                     'appSampleCode' => $data['appSampleCode'] ?? null,
                     'status' => 'failed',
                     'error' => _("Failed to insert sample")
-                );
+                ];
                 continue;
             }
         }
@@ -253,16 +253,16 @@ try {
 
 
 
-        $formAttributes = array(
+        $formAttributes = [
             'applicationVersion'    => $version,
             'apiTransactionId'      => $transactionId,
             'mobileAppVersion'      => $appVersion,
             'deviceId'              => $deviceId
-        );
+        ];
         $formAttributes = json_encode($formAttributes);
 
 
-        $vlFulldata = array(
+        $vlFulldata = [
             'vlsm_instance_id'                      => $instanceId,
             'sample_collection_date'                => $sampleCollectionDate,
             'app_sample_code'                       => $data['appSampleCode'] ?? null,
@@ -339,7 +339,7 @@ try {
             'result_reviewed_datetime'              => DateUtility::isoDateFormat($data['reviewedOn'] ?? '', true),
             'source_of_request'                     => $data['sourceOfRequest'] ?? "API",
             'form_attributes'                       => $db->func($general->jsonToSetString($formAttributes, 'form_attributes'))
-        );
+        ];
 
 
 
@@ -353,8 +353,6 @@ try {
             $vlFulldata['patient_last_name'] = $general->crypto('doNothing', $data['patientLastName'], $vlFulldata['patient_art_no']);
         }
 
-        // South Sudan specific
-        //if ($formId === 1) {
 
         $patientFullName = [];
         if (!empty(trim($vlFulldata['patient_first_name']))) {
@@ -375,7 +373,6 @@ try {
         $vlFulldata['patient_first_name'] = $patientFullName;
         $vlFulldata['patient_middle_name'] = null;
         $vlFulldata['patient_last_name'] = null;
-        //}
 
         if (!empty($rowData)) {
             $vlFulldata['last_modified_datetime']  = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
@@ -408,7 +405,7 @@ try {
                 'action' => $currentSampleData['action'] ?? null,
                 'sampleCode' => $currentSampleData['remoteSampleCode'] ?? $currentSampleData['sampleCode'] ?? null,
                 'transactionId' => $transactionId,
-                'uniqueId' => $uniqueId,
+                'uniqueId' => $uniqueId ?? $currentSampleData['uniqueId'] ?? null,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
             ];
         } else {

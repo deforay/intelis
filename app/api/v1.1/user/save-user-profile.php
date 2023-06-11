@@ -1,11 +1,11 @@
 <?php
 
-use App\Exceptions\SystemException;
 use App\Services\ApiService;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Services\UsersService;
+use App\Services\CommonService;
+use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Utilities\ImageResizeUtility;
 
 
@@ -13,8 +13,6 @@ use App\Utilities\ImageResizeUtility;
 $request = $GLOBALS['request'];
 
 $origJson = $request->getBody()->getContents();
-
-
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -43,13 +41,11 @@ try {
         $input = $_REQUEST;
         $input['post'] = json_decode($input['post'], true);
     } else {
-        //$general->elog($input);
         throw new SystemException("2 Invalid request. Please check your request parameters.");
     }
     $apiKey = !empty($input['x-api-key']) ? $input['x-api-key'] : null;
 
     if ((empty($input['post']) || $input['post'] === false) && empty($user)) {
-        //$general->elog($input);
         throw new SystemException("3 Invalid request. Please check your request parameters.");
     } else {
         $input = array_map('htmlspecialchars', $input);
@@ -68,7 +64,7 @@ try {
 
     if (!isset($user)) {
         if (!$apiKey) {
-            throw new SystemException("Invalid API Key. Please check your request parameters.");
+            throw new SystemException(_("Please check your request parameters."));
         }
         $userId = !empty($post['userId']) ? base64_decode($db->escape($post['userId'])) : null;
     } else {
@@ -79,18 +75,18 @@ try {
     if (!empty($userId) || !empty($post['email'])) {
         if (!empty($post['email'])) {
             $db->where("email", $db->escape($post['email']));
-        } else if (!empty($userId)) {
+        } elseif (!empty($userId)) {
             $db->where("user_id", $userId);
         }
         $aRow = $db->getOne("user_details");
     }
-    $data = array(
+    $data = [
         'user_id' => (!empty($userId) && $userId != "") ? $userId : $general->generateUUID(),
         'user_name' => $db->escape($post['userName']),
         'email' => $db->escape($post['email']),
         'interface_user_name' => json_encode(array_map('trim', explode(",", $db->escape($post['interfaceUserName'])))),
         'phone_number' => $db->escape($post['phoneNo'])
-    );
+    ];
 
     if (!empty($post['status'])) {
         $data['status'] = $post['status'];
@@ -141,43 +137,40 @@ try {
         $id = $db->insert("user_details", $data);
     }
 
-    if ($id === true) {
-        if (trim($post['selectedFacility']) != '') {
-            $db = $db->where('user_id', $data['user_id']);
-            $delId = $db->delete("user_facility_map");
-            $selectedFacility = explode(",", $post['selectedFacility']);
-            $uniqueFacilityId = array_unique($selectedFacility);
-            for ($j = 0; $j <= count($selectedFacility); $j++) {
-                if (isset($uniqueFacilityId[$j])) {
-                    $insertData = array(
-                        'facility_id' => $selectedFacility[$j],
-                        'user_id' => $data['user_id'],
-                    );
-                    $db->insert("user_facility_map", $insertData);
-                }
+    if ($id === true && trim($post['selectedFacility']) != '') {
+        $db = $db->where('user_id', $data['user_id']);
+        $delId = $db->delete("user_facility_map");
+        $selectedFacility = explode(",", $post['selectedFacility']);
+        $uniqueFacilityId = array_unique($selectedFacility);
+        for ($j = 0; $j <= count($selectedFacility); $j++) {
+            if (isset($uniqueFacilityId[$j])) {
+                $insertData = [
+                    'facility_id' => $selectedFacility[$j],
+                    'user_id' => $data['user_id'],
+                ];
+                $db->insert("user_facility_map", $insertData);
             }
         }
-    }
-    if ($id === true) {
-        $payload = array(
+
+        $payload = [
             'status' => 'success',
             'timestamp' => time(),
-        );
+        ];
     } else {
-        $payload = array(
+        $payload = [
             'status' => 'failed',
-            'message' => 'Something went wrong!',
+            'message' => _("Something went wrong. Please try again later."),
             'timestamp' => time(),
-        );
+        ];
     }
 
     $payload = json_encode($payload);
 } catch (SystemException $exc) {
-    $payload = array(
+    $payload = [
         'status' => 'failed',
         'error' => $exc->getMessage(),
         'timestamp' => time(),
-    );
+    ];
 
     $payload = json_encode($payload);
     error_log(print_r($data['post'], true));
