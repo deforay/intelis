@@ -107,7 +107,7 @@ class VlService
                 }
             }
 
-            $this->db->where('YEAR(sample_collection_date) = ?', array($dateObj->format('Y')));
+            $this->db->where('YEAR(sample_collection_date) = ?', [$dateObj->format('Y')]);
             $maxCodeKeyVal = $this->db->setQueryOption('FOR UPDATE')->getValue($this->table, "MAX($sampleCodeKeyCol)");
         }
 
@@ -213,7 +213,7 @@ class VlService
             $vlResultCategory = null;
         } elseif (in_array($finalResult, ['fail', 'failed', 'failure', 'error', 'err'])) {
             $vlResultCategory = 'failed';
-        } elseif (in_array($resultStatus, array(1, 2, 3, 10))) {
+        } elseif (in_array($resultStatus, [1, 2, 3, 10])) {
             $vlResultCategory = null;
         } elseif ($resultStatus == 4) {
             $vlResultCategory = 'rejected';
@@ -345,14 +345,14 @@ class VlService
             $originalResultValue = $vlResult;
         }
 
-        return array(
+        return [
             'logVal' => $logVal,
             'result' => $originalResultValue,
             'absDecimalVal' => $absDecimalVal,
             'absVal' => $absVal,
             'txtVal' => $txtVal,
             'resultStatus' => $resultStatus,
-        );
+        ];
     }
 
     public function interpretViralLoadNumericResult(string $result, ?string $unit = null): ?array
@@ -406,14 +406,14 @@ class VlService
             }
         }
 
-        return array(
+        return [
             'logVal' => $logVal,
             'result' => $originalResultValue,
             'absDecimalVal' => $absDecimalVal,
             'absVal' => $absVal,
             'txtVal' => $txtVal,
             'resultStatus' => $resultStatus
-        );
+        ];
     }
 
 
@@ -442,6 +442,9 @@ class VlService
             $provinceId = $params['provinceId'] ?? null;
             $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
 
+
+            // PNG FORM (formId = 5) CANNOT HAVE PROVINCE EMPTY
+            // Sample Collection Date Cannot be Empty
             if (empty($sampleCollectionDate) || ($formId == 5 && empty($provinceId))) {
                 return 0;
             }
@@ -451,14 +454,7 @@ class VlService
             $sampleJson = $this->generateVLSampleID($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
 
-            $sQuery = "SELECT vl_sample_id,
-                        sample_code,
-                        sample_code_format,
-                        sample_code_key,
-                        remote_sample_code,
-                        remote_sample_code_format,
-                        remote_sample_code_key
-                        FROM form_vl ";
+            $sQuery = "SELECT vl_sample_id FROM form_vl ";
             if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
             }
@@ -530,6 +526,7 @@ class VlService
         if ($returnSampleData === true) {
             return [
                 'id' => max($id, 0),
+                'uniqueId' => $tesRequestData['unique_id'] ?? null,
                 'sampleCode' => $tesRequestData['sample_code'] ?? null,
                 'remoteSampleCode' => $tesRequestData['remote_sample_code'] ?? null
             ];

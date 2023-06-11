@@ -128,8 +128,8 @@ try {
 
         $update = "no";
         $rowData = null;
-        $uniqueId = null;
-        if (!empty($data['uniqueId']) || !empty($data['appSampleCode'])) {
+        $uniqueId = $data['uniqueId'] ?? null;
+        if (!empty($uniqueId) || !empty($data['appSampleCode'])) {
 
             $sQuery = "SELECT vl_sample_id,
                             unique_id,
@@ -141,9 +141,8 @@ try {
 
             $sQueryWhere = [];
 
-            if (!empty($data['uniqueId'])) {
-                $uniqueId = $data['uniqueId'];
-                $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
+            if (!empty($uniqueId)) {
+                $sQueryWhere[] = " unique_id like '$uniqueId'";
             }
             if (!empty($data['appSampleCode'])) {
                 $sQueryWhere[] = " app_sample_code like '" . $data['appSampleCode'] . "'";
@@ -173,16 +172,6 @@ try {
         if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
             $uniqueId = $general->generateUUID();
         }
-
-
-        $formAttributes = array(
-            'applicationVersion'    => $version,
-            'apiTransactionId'      => $transactionId,
-            'mobileAppVersion'      => $appVersion,
-            'deviceId'              => $deviceId
-        );
-        $formAttributes = json_encode($formAttributes);
-
 
         $currentSampleData = [];
         if (!empty($rowData)) {
@@ -262,10 +251,19 @@ try {
             }
         }
 
+
+
+        $formAttributes = array(
+            'applicationVersion'    => $version,
+            'apiTransactionId'      => $transactionId,
+            'mobileAppVersion'      => $appVersion,
+            'deviceId'              => $deviceId
+        );
+        $formAttributes = json_encode($formAttributes);
+
+
         $vlFulldata = array(
             'vlsm_instance_id'                      => $instanceId,
-            'vlsm_country_id'                       => $formId,
-            'unique_id'                             => $uniqueId,
             'sample_collection_date'                => $sampleCollectionDate,
             'app_sample_code'                       => $data['appSampleCode'] ?? null,
             'sample_reordered'                      => $data['sampleReordered'] ?? 'no',

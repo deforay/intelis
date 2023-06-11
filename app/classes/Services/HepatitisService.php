@@ -285,8 +285,7 @@ class HepatitisService
 
     public function insertSampleCode($params, $returnSampleData = false)
     {
-        $globalConfig = $this->commonService->getGlobalConfig();
-        $vlsmSystemConfig = $this->commonService->getSystemConfig();
+        $formId = $this->commonService->getGlobalConfig('vl_form');
 
         try {
 
@@ -295,7 +294,9 @@ class HepatitisService
             $provinceId = $params['provinceId'] ?? null;
             $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
 
-            if (empty($sampleCollectionDate) || ($globalConfig['vl_form'] == 5 && empty($provinceId))) {
+            // PNG FORM (formId = 5) CANNOT HAVE PROVINCE EMPTY
+            // Sample Collection Date Cannot be Empty
+            if (empty($sampleCollectionDate) || ($formId == 5 && empty($provinceId))) {
                 return 0;
             }
 
@@ -305,66 +306,57 @@ class HepatitisService
 
             $sampleCollectionDate = DateUtility::isoDateFormat($sampleCollectionDate, true);
 
-            $tesRequestData = [
-                'vlsm_country_id' => $globalConfig['vl_form'],
-                'sample_collection_date' => $sampleCollectionDate,
-                'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
-                'facility_id' => $params['facilityId'] ?? null,
-                'lab_id' => $params['labId'] ?? null,
-                'app_sample_code' => $params['appSampleCode'] ?? null,
-                'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
-                'province_id' => $provinceId,
-                'hepatitis_test_type' => $prefix,
-                'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
-                'form_attributes' => $params['formAttributes'] ?? "{}",
-                'request_created_datetime' => DateUtility::getCurrentDateTime(),
-                'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
-                'last_modified_datetime' => DateUtility::getCurrentDateTime()
-            ];
 
-            $accessType = $_SESSION['accessType'] ?? $params['accessType'] ?? null;
-            if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
-                $tesRequestData['remote_sample_code'] = $sampleData['sampleCode'];
-                $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
-                $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
-                $tesRequestData['remote_sample'] = 'yes';
-                $tesRequestData['result_status'] = 9;
-                if ($accessType === 'testing-lab') {
-                    $tesRequestData['sample_code'] = $sampleData['sampleCode'];
-                    $tesRequestData['result_status'] = 6;
-                }
-            } else {
-                $tesRequestData['sample_code'] = $sampleData['sampleCode'];
-                $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-                $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
-                $tesRequestData['remote_sample'] = 'no';
-                $tesRequestData['result_status'] = 6;
-            }
-            $sQuery = "SELECT hepatitis_id,
-                            sample_code,
-                            sample_code_format,
-                            sample_code_key,
-                            remote_sample_code,
-                            remote_sample_code_format,
-                            remote_sample_code_key
-                            FROM form_hepatitis ";
+            $sQuery = "SELECT hepatitis_id FROM form_hepatitis ";
             if (!empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
             }
             $sQuery .= " LIMIT 1";
             $rowData = $this->db->rawQueryOne($sQuery);
 
-            /* Update version in form attributes */
-            $version = $this->commonService->getSystemConfig('sc_version');
-            $ipaddress = $this->commonService->getClientIpAddress();
-            $formAttributes = [
-                'applicationVersion'  => $version,
-                'ip_address'    => $ipaddress
-            ];
-            $tesRequestData['form_attributes'] = json_encode($formAttributes);
+
 
             $id = 0;
             if (empty($rowData) && !empty($sampleData['sampleCode'])) {
+
+                $tesRequestData = [
+                    'vlsm_country_id' => $formId,
+                    'sample_collection_date' => DateUtility::isoDateFormat($sampleCollectionDate, true),
+                    'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
+                    'facility_id' => $params['facilityId'] ?? null,
+                    'lab_id' => $params['labId'] ?? null,
+                    'app_sample_code' => $params['appSampleCode'] ?? null,
+                    'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
+                    'province_id' => $provinceId,
+                    'hepatitis_test_type' => $prefix,
+                    'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
+                    'form_attributes' => $params['formAttributes'] ?? "{}",
+                    'request_created_datetime' => DateUtility::getCurrentDateTime(),
+                    'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
+                    'last_modified_datetime' => DateUtility::getCurrentDateTime()
+                ];
+
+                $accessType = $_SESSION['accessType'] ?? $params['accessType'] ?? null;
+                $instanceType = $_SESSION['instanceType'] ?? $params['instanceType'] ?? null;
+
+                if ($instanceType === 'remoteuser') {
+                    $tesRequestData['remote_sample_code'] = $sampleData['sampleCode'];
+                    $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
+                    $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
+                    $tesRequestData['remote_sample'] = 'yes';
+                    $tesRequestData['result_status'] = 9;
+                    if ($accessType === 'testing-lab') {
+                        $tesRequestData['sample_code'] = $sampleData['sampleCode'];
+                        $tesRequestData['result_status'] = 6;
+                    }
+                } else {
+                    $tesRequestData['sample_code'] = $sampleData['sampleCode'];
+                    $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
+                    $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
+                    $tesRequestData['remote_sample'] = 'no';
+                    $tesRequestData['result_status'] = 6;
+                }
+
                 $formAttributes = [
                     'applicationVersion'  => $this->commonService->getSystemConfig('sc_version'),
                     'ip_address'    => $this->commonService->getClientIpAddress()
@@ -391,6 +383,7 @@ class HepatitisService
         if ($returnSampleData === true) {
             return [
                 'id' => max($id, 0),
+                'uniqueId' => $tesRequestData['unique_id'] ?? null,
                 'sampleCode' => $tesRequestData['sample_code'] ?? null,
                 'remoteSampleCode' => $tesRequestData['remote_sample_code'] ?? null
             ];

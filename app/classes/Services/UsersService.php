@@ -49,14 +49,13 @@ class UsersService
                 $baseFileName = basename($currentRequest);
             }
 
-            $skippedPrivileges = $this->getSkippedPrivileges();
             $sharedPrivileges = $this->getSharedPrivileges();
 
             // Does the current file share privileges with another privilege ?
             $currentRequest = $sharedPrivileges[$currentRequest] ??
                 $sharedPrivileges[$baseFileName] ?? $currentRequest;
 
-            $privileges = array_flip(array_merge($skippedPrivileges, $_SESSION['privileges']));
+            $privileges = $this->getAllPrivileges();
 
             $requests = [$currentRequest, $baseFileName];
 
@@ -79,14 +78,19 @@ class UsersService
         });
     }
 
+    public function getAllPrivileges(): array
+    {
+        return once(function () {
+            return array_flip(array_merge($this->getSkippedPrivileges(), $_SESSION['privileges']));
+        });
+    }
 
-
-    public function getSharedPrivileges()
+    public function getSharedPrivileges(): array
     {
         return once(function () {
             // on the left put intermediate/inner file, on the right put the file
             // which has entry in privileges table.
-            $sharedPrivileges = array(
+            $sharedPrivileges = [
                 'imported-results.php'              => 'addImportResult.php',
                 'importedStatistics.php'            => 'addImportResult.php',
                 'mapTestType.php'                   => 'addFacility.php',
@@ -98,15 +102,15 @@ class UsersService
                 'funding-sources.php'               => 'province-details.php',
                 'add-funding-sources.php'           => 'province-details.php',
                 'edit-funding-sources.php'          => 'province-details.php'
-            );
+            ];
 
             if (
                 isset($this->applicationConfig['modules']['genericTests']) &&
                 $this->applicationConfig['modules']['genericTests'] === true
             ) {
-                $sharedGenericPrivileges = array(
+                $sharedGenericPrivileges = [
                     'update-generic-test-result.php' => 'generic-test-results.php'
-                );
+                ];
 
                 $sharedPrivileges = array_merge($sharedPrivileges, $sharedGenericPrivileges);
             }
@@ -115,7 +119,7 @@ class UsersService
                 isset($this->applicationConfig['modules']['vl']) &&
                 $this->applicationConfig['modules']['vl'] === true
             ) {
-                $sharedVLPrivileges = array(
+                $sharedVLPrivileges = [
                     'delete-batch-code.php?type=vl'         => '/batch/edit-batch.php?type=vl',
                     'generate-batch-pdf.php?type=vl'        => '/batch/edit-batch.php?type=vl',
                     'add-batch-position.php?type=vl'        => '/batch/edit-batch.php?type=vl',
@@ -140,7 +144,7 @@ class UsersService
                     'edit-vl-test-failure-reason.php'       => 'vl-art-code-details.php',
                     'vlTestingTargetReport.php'             => 'vlMonthlyThresholdReport.php',
                     'vlSuppressedTargetReport.php'          => 'vlMonthlyThresholdReport.php'
-                );
+                ];
 
                 $sharedPrivileges = array_merge($sharedPrivileges, $sharedVLPrivileges);
             }
@@ -149,7 +153,7 @@ class UsersService
                 isset($this->applicationConfig['modules']['eid']) &&
                 $this->applicationConfig['modules']['eid'] === true
             ) {
-                $sharedEIDPrivileges = array(
+                $sharedEIDPrivileges = [
                     'add-batch-position.php'       => '/batch/add-batch.php?type=eid',
                     'edit-batch-position.php'      => '/batch/edit-batch.php?type=eid',
                     'delete-batch-code.php?type=eid'        => '/batch/edit-batch.php?type=eid',
@@ -170,7 +174,7 @@ class UsersService
                     'edit-eid-results.php'                  => 'eid-sample-type.php',
                     'eidTestingTargetReport.php'            => 'eidMonthlyThresholdReport.php',
                     'eidSuppressedTargetReport.php'         => 'eidMonthlyThresholdReport.php'
-                );
+                ];
                 $sharedPrivileges = array_merge($sharedPrivileges, $sharedEIDPrivileges);
             }
 
@@ -178,7 +182,7 @@ class UsersService
                 isset($this->applicationConfig['modules']['covid19']) &&
                 $this->applicationConfig['modules']['covid19'] === true
             ) {
-                $sharedCovid19Privileges = array(
+                $sharedCovid19Privileges = [
                     'add-batch-position.php'       => '/batch/add-batch.php?type=covid19',
                     'edit-batch-position.php'      => '/batch/edit-batch.php?type=covid19',
                     'delete-batch-code.php?type=covid19'        => '/batch/edit-batch.php?type=covid19',
@@ -215,7 +219,7 @@ class UsersService
                     'covid19-qc-test-kits.php'                          => 'covid19-sample-type.php',
                     'add-covid19-qc-test-kit.php'               => 'covid19-sample-type.php',
                     'edit-covid19-qc-test-kit.php'              => 'covid19-sample-type.php'
-                );
+                ];
                 $sharedPrivileges = array_merge($sharedPrivileges, $sharedCovid19Privileges);
             }
 
@@ -223,7 +227,7 @@ class UsersService
                 isset($this->applicationConfig['modules']['hepatitis']) &&
                 $this->applicationConfig['modules']['hepatitis'] === true
             ) {
-                $sharedHepPrivileges = array(
+                $sharedHepPrivileges = [
                     'add-batch-position.php'         => '/batch/add-batch.php?type=hepatitis',
                     'edit-batch-position.php'        => '/batch/edit-batch.php?type=hepatitis',
                     'delete-batch-code.php?type=hepatitis'          => '/batch/edit-batch.php?type=hepatitis',
@@ -252,7 +256,7 @@ class UsersService
                     'hepatitis-init.php'                            => 'hepatitis-dhis2.php',
                     'hepatitis-send.php'                            => 'hepatitis-dhis2.php',
                     'hepatitis-receive.php'                         => 'hepatitis-dhis2.php'
-                );
+                ];
                 $sharedPrivileges = array_merge($sharedPrivileges, $sharedHepPrivileges);
             }
 
@@ -260,7 +264,7 @@ class UsersService
                 isset($this->applicationConfig['modules']['tb']) &&
                 $this->applicationConfig['modules']['tb'] === true
             ) {
-                $sharedTbPrivileges = array(
+                $sharedTbPrivileges = [
                     'add-batch-position.php'        => '/batch/add-batch.php?type=tb',
                     'edit-batch-position.php'       => '/batch/edit-batch.php?type=tb',
                     'delete-batch-code.php?type=tb'         => '/batch/edit-batch.php?type=tb',
@@ -278,7 +282,7 @@ class UsersService
                     'tb-results.php'                        => 'tb-sample-type.php',
                     'add-tb-results.php'                    => 'tb-sample-type.php',
                     'edit-tb-results.php'                   => 'tb-sample-type.php',
-                );
+                ];
                 $sharedPrivileges = array_merge($sharedPrivileges, $sharedTbPrivileges);
             }
 
@@ -303,7 +307,7 @@ class UsersService
             $columns = implode(",", $columns);
         }
         $uQuery = "SELECT $columns FROM " . $this->table . " where user_id= ?";
-        return $this->db->rawQueryOne($uQuery, array($userId));
+        return $this->db->rawQueryOne($uQuery, [$userId]);
     }
 
     public function getAllUsers($facilityMap = null, $status = null, $type = null, $updatedDateTime = null)
@@ -346,21 +350,21 @@ class UsersService
     public function addUserIfNotExists($name, $status = 'inactive', $role = 4)
     {
         $uQuery = "SELECT `user_id`
-        FROM $this->table
-        WHERE (`user_name` LIKE ?)
-        OR (JSON_CONTAINS(LOWER(interface_user_name), JSON_QUOTE(LOWER(?)), '$'))";
+                    FROM $this->table
+                    WHERE (`user_name` LIKE ?)
+                    OR (JSON_CONTAINS(LOWER(interface_user_name), JSON_QUOTE(LOWER(?)), '$'))";
 
         $result = $this->db->rawQueryOne($uQuery, [$name, $name]);
         if ($result == null) {
 
             $userId = $this->commonService->generateUUID();
-            $userData = array(
+            $userData = [
                 'user_id' => $userId,
                 'user_name' => $name,
                 'interface_user_name' => $name,
                 'role_id' => $role,
                 'status' => $status
-            );
+            ];
             $this->db->insert($this->table, $userData);
         } else {
             $userId = $result['user_id'];
@@ -412,7 +416,7 @@ class UsersService
             if (!empty($token)) {
                 $this->db->where('api_token', $token);
                 $this->db->where('status', 'active');
-                $result = $this->db->getOne($this->table, array('user_id'));
+                $result = $this->db->getOne($this->table, ['user_id']);
             }
             return !empty($result);
         });
@@ -455,7 +459,7 @@ class UsersService
                     FROM roles as r
                     INNER JOIN user_details as u ON u.role_id=r.role_id
                     WHERE u.user_id = ?";
-        return $this->db->rawQueryOne($query, array($userId));
+        return $this->db->rawQueryOne($query, [$userId]);
     }
 
     public function getUserRolePrivileges(string $userId): array
@@ -477,7 +481,7 @@ class UsersService
                     INNER JOIN user_details as u ON u.role_id=r.role_id
                     WHERE u.user_id = ?
                     ORDER by res.module, p.resource_id, p.display_name";
-        $resultSet = $this->db->rawQuery($query, array($userId));
+        $resultSet = $this->db->rawQuery($query, [$userId]);
         foreach ($resultSet as $row) {
 
             $response['role']['name'] = $row['role_name'];
@@ -498,7 +502,7 @@ class UsersService
         $os = PHP_OS;
         $ipaddress = $this->commonService->getClientIpAddress();
 
-        $data = array(
+        $data = [
             'login_id' => $loginId,
             'user_id' => $userId,
             'login_attempted_datetime' => DateUtility::getCurrentDateTime(),
@@ -506,7 +510,7 @@ class UsersService
             'ip_address' => $ipaddress,
             'browser'    => $browserAgent,
             'operating_system' => $os
-        );
+        ];
         $this->db->insert('user_login_history', $data);
     }
 

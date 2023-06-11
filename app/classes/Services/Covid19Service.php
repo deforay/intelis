@@ -84,8 +84,8 @@ class Covid19Service
                 }
             }
 
-            $this->db->where('YEAR(sample_collection_date) = ?', array($dateObj->format('Y')));
-            $maxCodeKeyVal = $this->db->getValue($this->table, "MAX($sampleCodeKeyCol)");
+            $this->db->where('YEAR(sample_collection_date) = ?', [$dateObj->format('Y')]);
+            $maxCodeKeyVal = $this->db->setQueryOption('FOR UPDATE')->getValue($this->table, "MAX($sampleCodeKeyCol)");
         }
 
 
@@ -432,20 +432,15 @@ class Covid19Service
     public function insertSampleCode($params, $returnSampleData = false)
     {
         try {
-            $patientsService = ContainerRegistry::get(PatientsService::class);
-            $globalConfig = $this->commonService->getGlobalConfig();
-            $vlsmSystemConfig = $this->commonService->getSystemConfig();
-            $patientCodePrefix = 'P';
+            $formId = $this->commonService->getGlobalConfig('vl_form');
             $provinceCode = (!empty($params['provinceCode'])) ? $params['provinceCode'] : null;
             $provinceId = (!empty($params['provinceId'])) ? $params['provinceId'] : null;
             $sampleCollectionDate = (!empty($params['sampleCollectionDate'])) ? $params['sampleCollectionDate'] : null;
 
-            if (empty($sampleCollectionDate)) {
-                return 0;
-            }
 
             // PNG FORM CANNOT HAVE PROVINCE EMPTY
-            if ($globalConfig['vl_form'] == 5 && empty($provinceId)) {
+            // Sample Collection Date Cannot be Empty
+            if (empty($sampleCollectionDate) || ($formId == 5 && empty($provinceId))) {
                 return 0;
             }
 
@@ -454,82 +449,7 @@ class Covid19Service
             $sampleJson = $this->generateCovid19SampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
             $sampleData = json_decode($sampleJson, true);
 
-            $sampleCollectionDate = DateUtility::isoDateFormat($sampleCollectionDate, true);
-
-            $tesRequestData = [
-                'vlsm_country_id' => $globalConfig['vl_form'],
-                'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
-                'facility_id' => $params['facilityId'] ?? null,
-                'lab_id' => $params['labId'] ?? null,
-                'app_sample_code' => $params['appSampleCode'] ?? null,
-                'sample_collection_date' => $sampleCollectionDate,
-                'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
-                'province_id' => $provinceId,
-                'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
-                'form_attributes' => $params['formAttributes'] ?? "{}",
-                'request_created_datetime' => DateUtility::getCurrentDateTime(),
-                'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
-                'last_modified_datetime' => DateUtility::getCurrentDateTime()
-            ];
-
-            $accessType = $_SESSION['accessType'] ?? $params['accessType'] ?? null;
-
-            if ($vlsmSystemConfig['sc_user_type'] === 'remoteuser') {
-                $tesRequestData['remote_sample_code'] = $sampleData['sampleCode'];
-                $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
-                $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
-                $tesRequestData['remote_sample'] = 'yes';
-                $tesRequestData['result_status'] = 9;
-                if ($accessType === 'testing-lab') {
-                    $tesRequestData['sample_code'] = $sampleData['sampleCode'];
-                    $tesRequestData['result_status'] = 6;
-                }
-            } else {
-                $tesRequestData['sample_code'] = $sampleData['sampleCode'];
-                $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-                $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
-                $tesRequestData['remote_sample'] = 'no';
-                $tesRequestData['result_status'] = 6;
-            }
-
-
-            $generateAutomatedPatientCode = $this->commonService->getGlobalConfig('covid19_generate_patient_code');
-            if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'yes') {
-                $patientCodePrefix = $this->commonService->getGlobalConfig('covid19_patient_code_prefix');
-                if (empty($patientCodePrefix)) {
-                    $patientCodePrefix = 'P';
-                }
-                $generateAutomatedPatientCode = true;
-                $patientCodeJson = $patientsService->generatePatientId($patientCodePrefix);
-                $patientCodeArray = json_decode($patientCodeJson, true);
-            } else {
-                $generateAutomatedPatientCode = false;
-            }
-
-            $patientCode = $params['patientId'];
-            //saving this patient into patients table
-            if (!empty($patientCodeArray['patientCodeKey'])) {
-                $patientData['patientCodePrefix'] = $patientCodePrefix;
-                $patientData['patientCodeKey'] = $patientCodeArray['patientCodeKey'];
-                $patientCode = $patientCodeArray['patientCode'];
-            }
-            $patientData['patientId'] = $patientCode;
-            $patientData['patientFirstName'] = $params['firstName'];
-            $patientData['patientLastName'] = $params['lastName'];
-            $patientData['patientGender'] = $params['patientGender'];
-            $patientData['registeredBy'] = $_SESSION['userId'];
-            $patientsService->savePatient($patientData);
-
-
-            $tesRequestData['patient_id'] = $patientCode;
-            $sQuery = "SELECT covid19_id,
-                                sample_code,
-                                sample_code_format,
-                                sample_code_key,
-                                remote_sample_code,
-                                remote_sample_code_format,
-                                remote_sample_code_key
-                        FROM form_covid19 ";
+            $sQuery = "SELECT covid19_id FROM form_covid19 ";
             if (!empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
             }
@@ -538,6 +458,45 @@ class Covid19Service
 
             $id = 0;
             if (empty($rowData) && !empty($sampleData['sampleCode'])) {
+
+                $tesRequestData = [
+                    'vlsm_country_id' => $formId,
+                    'unique_id' => $params['uniqueId'] ?? $this->commonService->generateUUID(),
+                    'facility_id' => $params['facilityId'] ?? null,
+                    'lab_id' => $params['labId'] ?? null,
+                    'app_sample_code' => $params['appSampleCode'] ?? null,
+                    'sample_collection_date' => DateUtility::isoDateFormat($sampleCollectionDate, true),
+                    'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
+                    'province_id' => $provinceId,
+                    'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
+                    'form_attributes' => $params['formAttributes'] ?? "{}",
+                    'request_created_datetime' => DateUtility::getCurrentDateTime(),
+                    'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
+                    'last_modified_datetime' => DateUtility::getCurrentDateTime()
+                ];
+
+                $accessType = $_SESSION['accessType'] ?? $params['accessType'] ?? null;
+                $instanceType = $_SESSION['instanceType'] ?? $params['instanceType'] ?? null;
+
+                if ($instanceType === 'remoteuser') {
+                    $tesRequestData['remote_sample_code'] = $sampleData['sampleCode'];
+                    $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
+                    $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
+                    $tesRequestData['remote_sample'] = 'yes';
+                    $tesRequestData['result_status'] = 9;
+                    if ($accessType === 'testing-lab') {
+                        $tesRequestData['sample_code'] = $sampleData['sampleCode'];
+                        $tesRequestData['result_status'] = 6;
+                    }
+                } else {
+                    $tesRequestData['sample_code'] = $sampleData['sampleCode'];
+                    $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
+                    $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
+                    $tesRequestData['remote_sample'] = 'no';
+                    $tesRequestData['result_status'] = 6;
+                }
+
+
                 $formAttributes = [
                     'applicationVersion'  => $this->commonService->getSystemConfig('sc_version'),
                     'ip_address'    => $this->commonService->getClientIpAddress()
@@ -563,6 +522,7 @@ class Covid19Service
         if ($returnSampleData === true) {
             return [
                 'id' => max($id, 0),
+                'uniqueId' => $tesRequestData['unique_id'] ?? null,
                 'sampleCode' => $tesRequestData['sample_code'] ?? null,
                 'remoteSampleCode' => $tesRequestData['remote_sample_code'] ?? null
             ];
@@ -588,6 +548,6 @@ class Covid19Service
             $number = ($exist['qc_code_key'] + 1);
         }
         $sampleCodeGenerator = "C19QC" . substr(date("Y"), -2) . date("md") . substr(str_repeat(0, 3) . $number, -3);
-        return array("code" => $sampleCodeGenerator, "key" => substr(str_repeat(0, 3) . $number, -3));
+        return ["code" => $sampleCodeGenerator, "key" => substr(str_repeat(0, 3) . $number, -3)];
     }
 }
