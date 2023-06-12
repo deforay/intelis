@@ -1,9 +1,4 @@
 <?php
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
-
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
@@ -37,8 +32,10 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
     $refPrimaryColumn = "sample_id";
 }
 $_GET['type'] = ($_GET['type'] == 'covid19')?'covid-19':$_GET['type'];
-$title = _($title . " | Edit Batch Position");
+
+$title = _($title . " | Add Batch Position");
 require_once APPLICATION_PATH . '/header.php';
+
 
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
@@ -46,6 +43,7 @@ if (!isset($id) || trim($id) == '') {
 	header("Location:batches.php?type=".$_GET['type']);
 }
 $content = '';
+$newContent = '';
 $displayOrder = [];
 $batchQuery = "SELECT * from batch_details as b_d INNER JOIN instruments as i_c ON i_c.config_id=b_d.machine where batch_id= ? ";
 $batchInfo = $db->rawQuery($batchQuery, [$id]);
@@ -59,36 +57,93 @@ foreach ($configControlInfo as $info) {
 	$configControl[$info['test_type']]['noCalibrators'] = $info['number_of_calibrators'];
 }
 
-if (!isset($batchInfo) || empty($batchInfo)) {
+if (empty($batchInfo)) {
 	header("Location:batches.php?type=".$_GET['type']);
 }
-if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) != '') {
-	if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
-		foreach ($general->excelColumnRange('A', 'H') as $value) {
-			foreach (range(1, 12) as $no) {
-				$alphaNumeric[] = $value . $no;
+//Get batch controls order
+$newJsonToArray = [];
+if (isset($configControl[$_GET['type']]['noHouseCtrl']) && trim($configControl[$_GET['type']]['noHouseCtrl']) != '' && $configControl[$_GET['type']]['noHouseCtrl'] > 0) {
+	foreach (range(1, $configControl[$_GET['type']]['noHouseCtrl']) as $h) {
+		$newJsonToArray[] = "no_of_in_house_controls_" . $h;
+	}
+}
+if (isset($configControl[$_GET['type']]['noManufacturerCtrl']) && trim($configControl[$_GET['type']]['noManufacturerCtrl']) != '' && $configControl[$_GET['type']]['noManufacturerCtrl'] > 0) {
+	foreach (range(1, $configControl[$_GET['type']]['noManufacturerCtrl']) as $m) {
+		$newJsonToArray[] = "no_of_manufacturer_controls_" . $m;
+	}
+}
+if (isset($configControl[$_GET['type']]['noCalibrators']) && trim($configControl[$_GET['type']]['noCalibrators']) != '' && $configControl[$_GET['type']]['noCalibrators'] > 0) {
+	foreach (range(1, $configControl[$_GET['type']]['noCalibrators']) as $c) {
+		$newJsonToArray[] = "no_of_calibrators_" . $c;
+	}
+}
+//Get machine's prev. label order
+$machine = intval($batchInfo[0]['machine']);
+$prevLabelQuery = "SELECT label_order from batch_details as b_d WHERE b_d.machine = $machine AND b_d.batch_id!= $id ORDER BY b_d.request_created_datetime DESC LIMIT 0,1";
+$prevlabelInfo = $db->query($prevLabelQuery);
+if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_order']) != '') {
+	$jsonToArray = json_decode($prevlabelInfo[0]['label_order'], true);
+	$prevDisplaySampleArray = [];
+	for ($j = 0; $j < count($jsonToArray); $j++) {
+		$xplodJsonToArray = explode("_", $jsonToArray[$j]);
+		if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
+			$prevDisplaySampleArray[] = $xplodJsonToArray[1];
+		}
+	}
+	//Get display sample only
+	$displaySampleOrderArray = [];
+	$samplesQuery = "SELECT ".$refPrimaryColumn.",sample_code from ".$refTable." where sample_batch_id=$id ORDER BY sample_code ASC";
+	$samplesInfo = $db->query($samplesQuery);
+	foreach ($samplesInfo as $sample) {
+		$displaySampleOrderArray[] = $sample[$refPrimaryColumn];
+	}
+	//Set content
+	$sCount = 0;
+	$displayNonSampleArray = [];
+	$displaySampleArray = [];
+	for ($j = 0; $j < count($jsonToArray); $j++) {
+		$xplodJsonToArray = explode("_", $jsonToArray[$j]);
+		if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
+			if (isset($displaySampleOrderArray[$sCount]) && $displaySampleOrderArray[$sCount] > 0) {
+				if ($sCount <= $prevDisplaySampleArray) {
+					$displayOrder[] = 's_' . $displaySampleOrderArray[$sCount];
+					$displaySampleArray[] = $displaySampleOrderArray[$sCount];
+					$sampleQuery = "SELECT sample_code from ".$refTable." where ".$refPrimaryColumn."=$displaySampleOrderArray[$sCount]";
+					$sampleResult = $db->query($sampleQuery);
+					$label = $sampleResult[0]['sample_code'];
+					$content .= '<li class="ui-state-default" id="s_' . $displaySampleOrderArray[$sCount] . '">' . $label . '</li>';
+					$sCount++;
+				}
+			}
+		} else {
+			if (in_array($jsonToArray[$j], $newJsonToArray)) {
+				$displayOrder[] = $jsonToArray[$j];
+				$displayNonSampleArray[] = $jsonToArray[$j];
+				$label = str_replace("_", " ", $jsonToArray[$j]);
+				$label = str_replace("in house", "In-House", $label);
+				$label = (str_replace("no of ", " ", $label));
+				$content .= '<li class="ui-state-default" id="' . $jsonToArray[$j] . '">' . $label . '</li>';
 			}
 		}
 	}
-	$jsonToArray = json_decode($batchInfo[0]['label_order'], true);
-	for ($j = 0; $j < count($jsonToArray); $j++) {
-		if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
-			$index = $alphaNumeric[$j];
-		}else{
-			$index = $j;
-		}
-		$displayOrder[] = $jsonToArray[$index];
-		$xplodJsonToArray = explode("_", $jsonToArray[$index]);
-		if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
-			$sampleQuery = "SELECT sample_code from ".$refTable." where ".$refPrimaryColumn."=$xplodJsonToArray[1]";
-			$sampleResult = $db->query($sampleQuery);
-			$label = $sampleResult[0]['sample_code'];
-		} else {
-			$label = str_replace("_", " ", $jsonToArray[$index]);
-			$label = str_replace("in house", "In-House", $label);
-			$label = (str_replace("no of ", " ", $label));
-		}
-		$content .= '<li class="ui-state-default" id="' . $jsonToArray[$index] . '">' . $label . '</li>';
+	//Add new content
+	$remainNewArray = array_values(array_diff($newJsonToArray, $displayNonSampleArray));
+	$remainSampleNewArray = array_values(array_diff($displaySampleOrderArray, $displaySampleArray));
+	//For new controls
+	for ($n = 0; $n < count($remainNewArray); $n++) {
+		$displayOrder[] = $remainNewArray[$n];
+		$label = str_replace("_", " ", $remainNewArray[$n]);
+		$label = str_replace("in house", "In-House", $label);
+		$label = (str_replace("no of ", " ", $label));
+		$newContent .= '<li class="ui-state-default" id="' . $remainNewArray[$n] . '">' . $label . '</li>';
+	}
+	//For new samples
+	for ($ns = 0; $ns < count($remainSampleNewArray); $ns++) {
+		$displayOrder[] = 's_' . $remainSampleNewArray[$ns];
+		$sampleQuery = "SELECT sample_code from ".$refTable." where ".$refPrimaryColumn."=$remainSampleNewArray[$ns]";
+		$sampleResult = $db->query($sampleQuery);
+		$label = $sampleResult[0]['sample_code'];
+		$newContent .= '<li class="ui-state-default" id="s_' . $remainSampleNewArray[$ns] . '">' . $label . '</li>';
 	}
 } else {
 	if (isset($configControl[$_GET['type']]['noHouseCtrl']) && trim($configControl[$_GET['type']]['noHouseCtrl']) != '' && $configControl[$_GET['type']]['noHouseCtrl'] > 0) {
@@ -137,7 +192,7 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-pen-to-square"></em> Edit Batch Controls Position</h1>
+		<h1><em class="fa-solid fa-pen-to-square"></em> Add Batch Controls Position</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
 			<li class="active">Batch</li>
@@ -148,19 +203,19 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 	<section class="content">
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<h4><strong>Batch Code : <?php echo (isset($batchInfo[0]['batch_code'])) ? $batchInfo[0]['batch_code'] : ''; ?></strong></h4>
+				<h4><strong>Batch Code : <?php echo $batchInfo[0]['batch_code']; ?></strong></h4>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- <pre><?php print_r($configControl); ?></pre> -->
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='editBatchControlsPosition' id='editBatchControlsPosition' autocomplete="off" action="save-batch-position-helper.php">
+				<form class="form-horizontal" method='post' name='addBatchControlsPosition' id='addBatchControlsPosition' autocomplete="off" action="save-batch-position-helper.php">
 					<div class="box-body">
 						<div class="row" id="displayOrderDetails">
 							<div class="col-md-8">
 								<ul id="sortableRow">
 									<?php
-									echo $content;
+									echo $content . $newContent;
 									?>
 								</ul>
 							</div>
@@ -171,7 +226,8 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 						<input type="hidden" name="type" id="type" value="<?php echo $_GET['type']; ?>" />
 						<input type="hidden" name="sortOrders" id="sortOrders" value="<?php echo implode(",", $displayOrder); ?>" />
 						<input type="hidden" name="batchId" id="batchId" value="<?php echo htmlspecialchars($id); ?>" />
-						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
+						<input type="hidden" name="positions" id="positions" value="<?php echo htmlspecialchars($_GET['position']); ?>" />
+						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<a href="batches.php?type=<?php echo $_GET['type']; ?>" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->
@@ -211,12 +267,12 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 
 	function validateNow() {
 		flag = deforayValidator.init({
-			formId: 'editBatchControlsPosition'
+			formId: 'addBatchControlsPosition'
 		});
 
 		if (flag) {
 			$.blockUI();
-			document.getElementById('editBatchControlsPosition').submit();
+			document.getElementById('addBatchControlsPosition').submit();
 		}
 	}
 </script>

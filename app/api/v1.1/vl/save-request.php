@@ -104,12 +104,12 @@ try {
         }
 
         if ($app->checkIfNullOrEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
-            $responseData[$rootKey] = array(
+            $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
                 'status' => 'failed',
                 'message' => _("Missing required fields")
-            );
+            ];
             continue;
         }
 
@@ -128,8 +128,8 @@ try {
 
         $update = "no";
         $rowData = null;
-        $uniqueId = null;
-        if (!empty($data['uniqueId']) || !empty($data['appSampleCode'])) {
+        $uniqueId = $data['uniqueId'] ?? null;
+        if (!empty($uniqueId) || !empty($data['appSampleCode'])) {
 
             $sQuery = "SELECT vl_sample_id,
                             unique_id,
@@ -141,9 +141,8 @@ try {
 
             $sQueryWhere = [];
 
-            if (!empty($data['uniqueId'])) {
-                $uniqueId = $data['uniqueId'];
-                $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
+            if (!empty($uniqueId)) {
+                $sQueryWhere[] = " unique_id like '$uniqueId'";
             }
             if (!empty($data['appSampleCode'])) {
                 $sQueryWhere[] = " app_sample_code like '" . $data['appSampleCode'] . "'";
@@ -156,13 +155,13 @@ try {
             $rowData = $db->rawQueryOne($sQuery);
             if (!empty($rowData)) {
                 if ($rowData['result_status'] == 7 || $rowData['locked'] == 'yes') {
-                    $responseData[$rootKey] = array(
+                    $responseData[$rootKey] = [
                         'transactionId' => $transactionId,
                         'appSampleCode' => $data['appSampleCode'] ?? null,
                         'status' => 'failed',
                         'error' => _("Sample Locked or Finalized")
 
-                    );
+                    ];
                     continue;
                 }
                 $update = "yes";
@@ -173,16 +172,6 @@ try {
         if (empty($uniqueId) || $uniqueId === 'undefined' || $uniqueId === 'null') {
             $uniqueId = $general->generateUUID();
         }
-
-
-        $formAttributes = array(
-            'applicationVersion'    => $version,
-            'apiTransactionId'      => $transactionId,
-            'mobileAppVersion'      => $appVersion,
-            'deviceId'              => $deviceId
-        );
-        $formAttributes = json_encode($formAttributes);
-
 
         $currentSampleData = [];
         if (!empty($rowData)) {
@@ -206,12 +195,12 @@ try {
             $currentSampleData['action'] = 'inserted';
             $data['vlSampleId'] = intval($currentSampleData['id']);
             if ($data['vlSampleId'] == 0) {
-                $responseData[$rootKey] = array(
+                $responseData[$rootKey] = [
                     'transactionId' => $transactionId,
                     'appSampleCode' => $data['appSampleCode'] ?? null,
                     'status' => 'failed',
                     'error' => _("Failed to insert sample")
-                );
+                ];
                 continue;
             }
         }
@@ -262,10 +251,19 @@ try {
             }
         }
 
-        $vlFulldata = array(
+
+
+        $formAttributes = [
+            'applicationVersion'    => $version,
+            'apiTransactionId'      => $transactionId,
+            'mobileAppVersion'      => $appVersion,
+            'deviceId'              => $deviceId
+        ];
+        $formAttributes = json_encode($formAttributes);
+
+
+        $vlFulldata = [
             'vlsm_instance_id'                      => $instanceId,
-            'vlsm_country_id'                       => $formId,
-            'unique_id'                             => $uniqueId,
             'sample_collection_date'                => $sampleCollectionDate,
             'app_sample_code'                       => $data['appSampleCode'] ?? null,
             'sample_reordered'                      => $data['sampleReordered'] ?? 'no',
@@ -341,7 +339,7 @@ try {
             'result_reviewed_datetime'              => DateUtility::isoDateFormat($data['reviewedOn'] ?? '', true),
             'source_of_request'                     => $data['sourceOfRequest'] ?? "API",
             'form_attributes'                       => $db->func($general->jsonToSetString($formAttributes, 'form_attributes'))
-        );
+        ];
 
 
 
@@ -355,8 +353,6 @@ try {
             $vlFulldata['patient_last_name'] = $general->crypto('doNothing', $data['patientLastName'], $vlFulldata['patient_art_no']);
         }
 
-        // South Sudan specific
-        //if ($formId === 1) {
 
         $patientFullName = [];
         if (!empty(trim($vlFulldata['patient_first_name']))) {
@@ -377,7 +373,6 @@ try {
         $vlFulldata['patient_first_name'] = $patientFullName;
         $vlFulldata['patient_middle_name'] = null;
         $vlFulldata['patient_last_name'] = null;
-        //}
 
         if (!empty($rowData)) {
             $vlFulldata['last_modified_datetime']  = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
@@ -410,7 +405,7 @@ try {
                 'action' => $currentSampleData['action'] ?? null,
                 'sampleCode' => $currentSampleData['remoteSampleCode'] ?? $currentSampleData['sampleCode'] ?? null,
                 'transactionId' => $transactionId,
-                'uniqueId' => $uniqueId,
+                'uniqueId' => $uniqueId ?? $currentSampleData['uniqueId'] ?? null,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
             ];
         } else {

@@ -95,12 +95,12 @@ try {
         }
 
         if ($app->checkIfNullOrEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
-            $responseData[$rootKey] = array(
+            $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
                 'status' => 'failed',
                 'message' => _("Missing required fields")
-            );
+            ];
             continue;
         }
 
@@ -157,13 +157,13 @@ try {
 
             if (!empty($rowData)) {
                 if ($rowData['result_status'] == 7 || $rowData['locked'] == 'yes') {
-                    $responseData[$rootKey] = array(
+                    $responseData[$rootKey] = [
                         'transactionId' => $transactionId,
                         'appSampleCode' => $data['appSampleCode'] ?? null,
                         'status' => 'failed',
                         'error' => _("Sample Locked or Finalized")
 
-                    );
+                    ];
                     continue;
                 }
                 $update = "yes";
@@ -175,17 +175,13 @@ try {
             $uniqueId = $data['uniqueId'] = $general->generateUUID();
         }
 
-        $formAttributes = array(
-            'applicationVersion'    => $version,
-            'apiTransactionId'      => $transactionId,
-            'mobileAppVersion'      => $appVersion,
-            'deviceId'              => $deviceId
-        );
-        $formAttributes = json_encode($formAttributes);
 
-
+        $currentSampleData = [];
         if (!empty($rowData)) {
             $data['tbSampleId'] = $rowData['tb_id'];
+            $currentSampleData['sampleCode'] = $rowData['sample_code'] ?? null;
+            $currentSampleData['remoteSampleCode'] = $rowData['remote_sample_code'] ?? null;
+            $currentSampleData['action'] = 'updated';
         } else {
             $params['appSampleCode'] = $data['appSampleCode'] ?? null;
             $params['provinceCode'] = $provinceCode;
@@ -194,10 +190,22 @@ try {
             $params['sampleCollectionDate'] = $sampleCollectionDate;
             $params['userId'] = $user['user_id'];
             $params['accessType'] = $user['access_type'];
+            $params['instanceType'] = $vlsmSystemConfig['sc_user_type'];
             $params['facilityId'] = $data['facilityId'] ?? null;
             $params['labId'] = $data['labId'] ?? null;
 
-            $data['tbSampleId'] = $tbService->insertSampleCode($params);
+            $currentSampleData = $covid19Service->insertSampleCode($params, true);
+            $currentSampleData['action'] = 'inserted';
+            $data['tbSampleId'] = intval($currentSampleData['id']);
+            if ($data['tbSampleId'] == 0) {
+                $responseData[$rootKey] = [
+                    'transactionId' => $transactionId,
+                    'appSampleCode' => $data['appSampleCode'] ?? null,
+                    'status' => 'failed',
+                    'error' => _("Failed to insert sample")
+                ];
+                continue;
+            }
         }
 
         $status = 6;
@@ -288,7 +296,15 @@ try {
             $data['sampleDispatchedDate'] = null;
         }
 
-        $tbData = array(
+        $formAttributes = [
+            'applicationVersion'    => $version,
+            'apiTransactionId'      => $transactionId,
+            'mobileAppVersion'      => $appVersion,
+            'deviceId'              => $deviceId
+        ];
+        $formAttributes = json_encode($formAttributes);
+
+        $tbData = [
             'vlsm_instance_id'                    => $data['instanceId'],
             'vlsm_country_id'                     => $formId,
             'unique_id'                           => $uniqueId,
@@ -344,7 +360,7 @@ try {
             'reason_for_sample_rejection'         => (isset($data['sampleRejectionReason']) && $data['isSampleRejected'] == 'yes') ? $data['sampleRejectionReason'] : null,
             'source_of_request'                   => $data['sourceOfRequest'] ?? "API",
             'form_attributes'                       => $db->func($general->jsonToSetString($formAttributes, 'form_attributes'))
-        );
+        ];
         if (!empty($rowData)) {
             $tbData['last_modified_datetime']  = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
             $tbData['last_modified_by']  = $user['user_id'];
@@ -364,12 +380,12 @@ try {
 
                 foreach ($data['testResult'] as $testKey => $testResult) {
                     if (!empty($testResult) && trim($testResult) != "") {
-                        $db->insert($testTableName, array(
+                        $db->insert($testTableName, [
                             'tb_id'             => $data['tbSampleId'],
                             'actual_no'         => $data['actualNo'][$testKey] ?? null,
                             'test_result'       => $testResult,
                             'updated_datetime'  => DateUtility::getCurrentDateTime()
-                        ));
+                        ]);
                     }
                 }
             }
@@ -383,21 +399,14 @@ try {
             $id = $db->update($tableName, $tbData);
         }
         if ($id === true) {
-            $sQuery = "SELECT sample_code,
-                        remote_sample_code
-                        FROM form_tb
-                        WHERE tb_id = ?";
-            $sampleRow = $db->rawQueryOne($sQuery, [$data['tbSampleId']]);
-
-            $tbSampleCode = $sampleRow['sample_code'] ?? $sampleRow['remote_sample_code'] ?? null;
             $responseData[$rootKey] = [
                 'status' => 'success',
-                'sampleCode' => $tbSampleCode,
+                'action' => $currentSampleData['action'] ?? null,
+                'sampleCode' => $currentSampleData['remoteSampleCode'] ?? $currentSampleData['sampleCode'] ?? null,
                 'transactionId' => $transactionId,
-                'uniqueId' => $uniqueId,
+                'uniqueId' => $uniqueId ?? $currentSampleData['uniqueId'] ?? null,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
             ];
-            http_response_code(200);
         } else {
             $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
