@@ -214,7 +214,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="col-md-6"><a href="edit-batch-position.php?type=<?php echo $_GET['type']; ?>&id=<?php echo base64_encode($batchInfo[0]['batch_id']); ?>" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="<?php echo _('Edit Position'); ?>"><em class="fa-solid fa-arrow-down-1-9"></em> <?php echo _("Edit Position"); ?></a></div>
+								<div class="col-md-6"></div>
 							</div>
 							<div class="row" id="sampleDetails">
 								<div class="col-md-5">

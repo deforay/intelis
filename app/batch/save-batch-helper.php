@@ -45,7 +45,9 @@ try {
             $data = array(
                 'batch_code' => $_POST['batchCode'],
                 'position_type' => $_POST['positions'],
-                'machine' => $_POST['machine']
+                'machine' => $_POST['machine'],
+                'last_modified_by' => $_SESSION['userId'],
+                'last_modified_datetime' => DateUtility::getCurrentDateTime()
             );
             $db = $db->where('batch_id', $id);
             $db->update($tableName1, $data);
@@ -74,7 +76,7 @@ try {
                     $db = $db->where($refPrimaryColumn, $sample[$j]);
                     $db->update($refTable, $value);
                 }
-                header("Location:edit-batch-position.php?type=" . $_POST['type'] . "&id=" . base64_encode($id) . "&position=" . $_POST['positions']);
+                header("Location:add-batch-position.php?type=" . $_POST['type'] . "&id=" . base64_encode($id) . "&position=" . $_POST['positions']);
             }else{
                 // header("Location:batches.php?type=" . $_POST['type']); 
             }
