@@ -66,6 +66,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 $m = $module = isset($_GET['t']) ? base64_decode($_GET['t']) : 'vl';
+
 if ($module == 'vl') {
 	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.vl_sample_id,vl.sample_package_id FROM form_vl as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') ";
 	$m = ($module == 'vl') ? 'vl' : $module;
@@ -283,6 +284,8 @@ $global = $general->getGlobalConfig();
 													$sampleId  = $sample['hepatitis_id'];
 												} else if ($module == 'tb') {
 													$sampleId  = $sample['tb_id'];
+												}else if ($module == 'generic-tests') {
+													$sampleId  = $sample['sample_id'];
 												}
 										?>
 												<option value="<?php echo $sampleId; ?>" <?php echo ($sample['sample_package_id'] == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample[$sCode]; ?></option>

@@ -45,7 +45,9 @@ try {
             $data = array(
                 'batch_code' => $_POST['batchCode'],
                 'position_type' => $_POST['positions'],
-                'machine' => $_POST['machine']
+                'machine' => $_POST['machine'],
+                'last_modified_by' => $_SESSION['userId'],
+                'last_modified_datetime' => DateUtility::getCurrentDateTime()
             );
             $db = $db->where('batch_id', $id);
             $db->update($tableName1, $data);

@@ -4156,3 +4156,8 @@ ALTER TABLE `audit_form_eid` ADD `previous_sample_code` VARCHAR(256) NULL DEFAUL
 ALTER TABLE `form_eid` ADD `mode_of_delivery_other` VARCHAR(256) NULL DEFAULT NULL AFTER `mode_of_delivery`;
 ALTER TABLE `audit_form_eid` ADD `mode_of_delivery_other` VARCHAR(256) NULL DEFAULT NULL AFTER `mode_of_delivery`;
 
+-- Thana 12-Jun-2023
+ALTER TABLE `batch_details` ADD `last_modified_by` DATETIME NULL DEFAULT CURRENT_TIMESTAMP AFTER `request_created_datetime`, ADD `last_modified_datetime` DATETIME NULL DEFAULT CURRENT_TIMESTAMP AFTER `last_modified_by`;
+
+UPDATE `batch_details` SET `last_modified_by` = `created_by` WHERE `last_modified_by` IS NULL;
+UPDATE `batch_details` SET `last_modified_datetime` = `request_created_datetime` WHERE `last_modified_datetime` IS NULL;

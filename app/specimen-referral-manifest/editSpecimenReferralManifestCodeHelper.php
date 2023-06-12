@@ -18,6 +18,7 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 $packageTable = "package_details";
 try {
+    //echo '<pre>'; print_r($_POST); die;
     if (isset($_POST['packageCode']) && trim($_POST['packageCode']) != "" && !empty($_POST['sampleCode'])) {
         $lastId = $_POST['packageId'];
         $db->where('package_id', $lastId);
@@ -41,16 +42,16 @@ try {
                 $db = $db->where('sample_package_id', $lastId);
                 $db->update('form_eid', $value);
             } else if ($_POST['module'] == 'covid19') {
-                $db = $db->where('covid19_id', $_POST['sampleCode'][$j]);
+                $db = $db->where('sample_package_id', $lastId);
                 $db->update('form_covid19', $value);
             } else if ($_POST['module'] == 'hepatitis') {
-                $db = $db->where('hepatitis_id', $_POST['sampleCode'][$j]);
+                $db = $db->where('sample_package_id', $lastId);
                 $db->update('form_hepatitis', $value);
             } else if ($_POST['module'] == 'tb') {
-                $db = $db->where('tb_id', $_POST['sampleCode'][$j]);
+                $db = $db->where('sample_package_id', $lastId);
                 $db->update('form_tb', $value);
             } else if ($_POST['module'] == 'generic-tests') {
-                $db = $db->where('sample_id', $_POST['sampleCode'][$j]);
+                $db = $db->where('sample_package_id', $lastId);
                 $db->update('form_generic', $value);
             }
 
