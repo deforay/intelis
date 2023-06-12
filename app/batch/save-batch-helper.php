@@ -74,9 +74,9 @@ try {
                     $db = $db->where($refPrimaryColumn, $sample[$j]);
                     $db->update($refTable, $value);
                 }
-                header("Location:edit-batch-position.php?type=" . $_POST['type'] . "&id=" . base64_encode($lastId) . "&position=" . $_POST['positions']);
+                header("Location:edit-batch-position.php?type=" . $_POST['type'] . "&id=" . base64_encode($id) . "&position=" . $_POST['positions']);
             }else{
-                header("Location:batches.php?type=" . $_POST['type']); 
+                // header("Location:batches.php?type=" . $_POST['type']); 
             }
         } else {
             $exist = $general->existBatchCode($_POST['batchCode']);
@@ -115,7 +115,7 @@ try {
             }
         }
     }
-    header("Location:batches.php?type=" . $_POST['type']);
+    // header("Location:batches.php?type=" . $_POST['type']);
 } catch (Exception $exc) {
     echo ($exc->getMessage());
     error_log($exc->getMessage());
