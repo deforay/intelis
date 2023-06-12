@@ -83,25 +83,22 @@
 					UNION
 
 					(SELECT vl.sample_code,vl.sample_batch_id,
-				vl.$refPrimaryColumn,vl.facility_id,
-				vl.result,vl.result_status,
-				f.facility_name,f.facility_code
-				FROM $refTable as vl
-				INNER JOIN facility_details as f ON vl.facility_id=f.facility_id
-				WHERE (vl.sample_batch_id IS NULL OR vl.sample_batch_id = '')
-				AND (vl.is_sample_rejected IS NULL
-							OR vl.is_sample_rejected like ''
-							OR vl.is_sample_rejected like 'no')
-				AND (vl.reason_for_sample_rejection IS NULL
-						OR vl.reason_for_sample_rejection like ''
-						OR vl.reason_for_sample_rejection = 0)
-				AND (vl.result is NULL or vl.result = '')
-				AND vl.sample_code!=''
-				ORDER BY vl.last_modified_datetime ASC)";
-
+						vl.$refPrimaryColumn,vl.facility_id,
+						vl.result,vl.result_status,
+						f.facility_name,f.facility_code
+						FROM $refTable as vl
+						INNER JOIN facility_details as f ON vl.facility_id=f.facility_id
+						WHERE (vl.sample_batch_id IS NULL OR vl.sample_batch_id = '')
+						AND (vl.is_sample_rejected IS NULL
+									OR vl.is_sample_rejected like ''
+									OR vl.is_sample_rejected like 'no')
+						AND (vl.reason_for_sample_rejection IS NULL
+								OR vl.reason_for_sample_rejection like ''
+								OR vl.reason_for_sample_rejection = 0)
+						AND (vl.result is NULL or vl.result = '')
+						AND vl.sample_code!=''
+						ORDER BY vl.last_modified_datetime ASC)";
 	$result = $db->rawQuery($bQuery, [$id]);
-
-
 	$testPlatformResult = $general->getTestingPlatforms($_GET['type']);
 
 	?>
@@ -219,9 +216,7 @@
 							<div class="row" id="sampleDetails">
 								<div class="col-md-5">
 									<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
-										<?php foreach ($result as $key => $sample) { ?>
-											<option value="<?php echo $sample[$refPrimaryColumn]; ?>" <?php echo (trim($sample['sample_batch_id']) == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
-										<?php } ?>
+										
 									</select>
 								</div>
 
@@ -234,12 +229,13 @@
 
 								<div class="col-md-5">
 									<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
-
+										<?php foreach ($result as $key => $sample) {
+											if(trim($sample['sample_batch_id']) == $id){ ?>
+											<option value="<?php echo $sample[$refPrimaryColumn]; ?>"><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
+											<?php }
+										} ?>
 									</select>
 								</div>
-
-
-
 							</div>
 							<div class="row" id="alertText" style="font-size:18px;"></div>
 						</div>
@@ -374,6 +370,7 @@
 				}
 			}
 			?>
+			getSampleCodeDetails();
 		});
 
 		function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
@@ -411,7 +408,12 @@
 				},
 				function(data) {
 					if (data != "") {
-						$("#sampleDetails").html(data);
+						console.log($("#batchId").val());
+						if($("#batchId").val() > 0){
+							$("#search").html(data);
+						}else{
+							// $("#sampleDetails").html(data);
+						}
 					}
 				});
 			$.unblockUI();
@@ -440,26 +442,6 @@
 				$('#alertText').html('');
 			}
 		});
-		$(document.body).on("change", "#search, #search_to", function() {
-			countOff().then(function(count) {
-				// use the result here
-				if (count > 0) {
-					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
-				} else {
-					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
-				}
-			});
-		});
-
-		function countOff() {
-			return new Promise(function(resolve, reject) {
-				setTimeout(function() {
-					resolve();
-				}, 300);
-			}).then(function() {
-				return $("#search_to option").length;
-			});
-		}
 	</script>
 
 	<?php
