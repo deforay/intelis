@@ -46,7 +46,7 @@ if ($n > 0) {
     $arraySection=['facilitySection','patientSection','specimenSection','labSection'];
     foreach($testAttr as $key=>$testAttributeDetails) {
         if(in_array($key,$arraySection)){
-            foreach($testAttributeDetails as $fieldId=>$testAttribute) {
+            foreach($testAttributeDetails as $testAttributeId=>$testAttribute) {
                 $isRequired = "";
                 $mandatory = "";
                 $fieldType = "";
@@ -57,8 +57,8 @@ if ($n > 0) {
                 }
 
                 $value = "";
-                if (isset($testTypeForm[$fieldId]) && !empty($testTypeForm[$fieldId])) {
-                    $value = $testTypeForm[$fieldId];
+                if (isset($testTypeForm[$testAttributeId]) && !empty($testTypeForm[$testAttributeId])) {
+                    $value = $testTypeForm[$testAttributeId];
                 }
                 if ($testAttribute['field_type'] == 'number') {
                     $fieldType = " forceNumeric";
@@ -79,15 +79,15 @@ if ($n > 0) {
                 }
 
                 if ($testAttribute['field_type'] == 'dropdown' || $testAttribute['field_type'] == 'multiple') {
-                    $dropDownName = 'dynamicFields[' . $fieldId . ']';
+                    $dropDownName = 'dynamicFields[' . $testAttributeId . ']';
                     if ($testAttribute['field_type'] == 'multiple') {
-                        $dropDownName = 'dynamicFields[' .$fieldId.'][]';
+                        $dropDownName = 'dynamicFields[' .$testAttributeId.'][]';
                     }
-                    $dropDownField = '<select name="' . $dropDownName . '" id="' . $fieldId . '" class="form-control ' . $inputClass . $isRequired . $fieldType . $disabled . '" title="Please select the option" ' . $testAttribute['field_type'] . ' style="width:' . $inputWidth . ';">';
+                    $dropDownField = '<select name="' . $dropDownName . '" id="' . $testAttributeId . '" class="form-control ' . $inputClass . $isRequired . $fieldType . $disabled . '" title="Please select the option" ' . $testAttribute['field_type'] . ' style="width:' . $inputWidth . ';">';
                     $dropDownField .= '<option value="">-- Select --</option>';
                     foreach (explode(',', $testAttribute['dropdown_options']) as $option) {
                         if ($testAttribute['field_type'] == 'multiple') {
-                            $selected = (isset($value) && !empty($value) && in_array(trim($option), $testTypeForm[$fieldId])) ? "selected" : "";
+                            $selected = (isset($value) && !empty($value) && in_array(trim($option), $testTypeForm[$testAttributeId])) ? "selected" : "";
                         } else {
                             $selected = (isset($value) && !empty($value) && $value == $option) ? "selected" : "";
                         }
@@ -115,9 +115,9 @@ if ($n > 0) {
                 if ($testAttribute['field_type'] == 'dropdown' || $testAttribute['field_type'] == 'multiple') {
                     $assign .= $dropDownField;
                 } else {
-                    $assign .= '<input type="text" class="form-control ' . $isRequired . $fieldType . $disabled . '" placeholder="' . $testAttribute['field_name'] . '" id="' . $fieldId . '" name="dynamicFields[' .$fieldId. ']" value="' . $value . '" ' . $disabled . ' style="width:' . $inputWidth . ';">';
+                    $assign .= '<input type="text" class="form-control ' . $isRequired . $fieldType . $disabled . '" placeholder="' . $testAttribute['field_name'] . '" id="' . $testAttributeId . '" name="dynamicFields[' .$testAttributeId. ']" value="' . $value . '" ' . $disabled . ' style="width:' . $inputWidth . ';">';
                 }
-                $assign .= '<input type="hidden" class="form-control" name="testTypeId[]" value="' . $fieldId . '">';
+                $assign .= '<input type="hidden" class="form-control" name="testTypeId[]" value="' . $testAttributeId . '">';
                 $assign .= '</div></div>';
 
                 $result[$testAttribute['section']][] = $assign;
@@ -125,8 +125,8 @@ if ($n > 0) {
             }
         }else{
             //Othersection code
-            foreach($testAttributeDetails as $key=>$otherAttributeDetails) {
-                foreach($otherAttributeDetails as $fieldId=>$testAttribute) {
+            foreach($testAttributeDetails as $testAttributeKey=>$otherAttributeDetails) {
+                foreach($otherAttributeDetails as $otherAttributeId=>$testAttribute) {
                     $isRequired = "";
                     $mandatory = "";
                     $fieldType = "";
@@ -137,8 +137,8 @@ if ($n > 0) {
                     }
 
                     $value = "";
-                    if (isset($testTypeForm[$fieldId]) && !empty($testTypeForm[$fieldId])) {
-                        $value = $testTypeForm[$fieldId];
+                    if (isset($testTypeForm[$otherAttributeId]) && !empty($testTypeForm[$otherAttributeId])) {
+                        $value = $testTypeForm[$otherAttributeId];
                     }
                     if ($testAttribute['field_type'] == 'number') {
                         $fieldType = " forceNumeric";
@@ -154,15 +154,15 @@ if ($n > 0) {
                     $inputWidth = "100%;";
 
                     if ($testAttribute['field_type'] == 'dropdown' || $testAttribute['field_type'] == 'multiple') {
-                        $dropDownName = 'dynamicFields[' . $fieldId . ']';
+                        $dropDownName = 'dynamicFields[' . $otherAttributeId . ']';
                         if ($testAttribute['field_type'] == 'multiple') {
-                            $dropDownName = 'dynamicFields[' .$fieldId.'][]';
+                            $dropDownName = 'dynamicFields[' .$otherAttributeId.'][]';
                         }
-                        $dropDownField = '<select name="' . $dropDownName . '" id="' . $fieldId . '" class="form-control ' . $inputClass . $isRequired . $fieldType . $disabled . '" title="Please select the option" ' . $testAttribute['field_type'] . ' style="width:' . $inputWidth . ';">';
+                        $dropDownField = '<select name="' . $dropDownName . '" id="' . $otherAttributeId . '" class="form-control ' . $inputClass . $isRequired . $fieldType . $disabled . '" title="Please select the option" ' . $testAttribute['field_type'] . ' style="width:' . $inputWidth . ';">';
                         $dropDownField .= '<option value="">-- Select --</option>';
                         foreach (explode(',', $testAttribute['dropdown_options']) as $option) {
                             if ($testAttribute['field_type'] == 'multiple') {
-                                $selected = (isset($value) && !empty($value) && in_array(trim($option), $testTypeForm[$fieldId])) ? "selected" : "";
+                                $selected = (isset($value) && !empty($value) && in_array(trim($option), $testTypeForm[$otherAttributeId])) ? "selected" : "";
                             } else {
                                 $selected = (isset($value) && !empty($value) && $value == $option) ? "selected" : "";
                             }
@@ -187,9 +187,9 @@ if ($n > 0) {
                         if ($testAttribute['field_type'] == 'dropdown' || $testAttribute['field_type'] == 'multiple') {
                             $content[trim(strtolower($testAttribute['section_name']))] .= $dropDownField;
                         } else {
-                            $content[trim(strtolower($testAttribute['section_name']))] .= '<input type="text" class="form-control ' . $isRequired . $fieldType . $disabled . '" placeholder="' . $testAttribute['field_name'] . '" id="' . $fieldId . '" name="dynamicFields[' . $fieldId . ']" value="' . $value . '" ' . $disabled . '>';
+                            $content[trim(strtolower($testAttribute['section_name']))] .= '<input type="text" class="form-control ' . $isRequired . $fieldType . $disabled . '" placeholder="' . $testAttribute['field_name'] . '" id="' . $otherAttributeId . '" name="dynamicFields[' . $otherAttributeId . ']" value="' . $value . '" ' . $disabled . '>';
                         }
-                        $content[trim(strtolower($testAttribute['section_name']))] .='<input type="hidden" class="form-control" name="testTypeId[]" value="' . $fieldId . '">';
+                        $content[trim(strtolower($testAttribute['section_name']))] .='<input type="hidden" class="form-control" name="testTypeId[]" value="' . $otherAttributeId . '">';
                         $content[trim(strtolower($testAttribute['section_name']))] .= '</div></div>';
             
                         $others[$s[trim(strtolower($testAttribute['section_name']))]] = $title . '<div class="box-body"><div class="row">' . $content[trim(strtolower($testAttribute['section_name']))] . '</div></div>';

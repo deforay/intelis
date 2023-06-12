@@ -208,6 +208,7 @@ class GenericTestsService
 
             $sampleJson = $this->generateGenericTestSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey, null, $testType);
             $sampleData = json_decode($sampleJson, true);
+            
             $sQuery = "SELECT sample_id FROM form_generic ";
             if (!empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
@@ -215,6 +216,7 @@ class GenericTestsService
             $sQuery .= " LIMIT 1";
             $rowData = $this->db->rawQueryOne($sQuery);
             $id = 0;
+            
             if (empty($rowData) && !empty($sampleData['sampleCode'])) {
 
                 $tesRequestData = [
@@ -264,6 +266,7 @@ class GenericTestsService
                 $id = $this->db->getInsertId();
                 if ($this->db->getLastErrno() > 0) {
                     error_log($this->db->getLastError());
+                    error_log($this->db->getLastQuery());
                 }
             } else {
                 // If this sample code exists, let us regenerate the sample code and insert
