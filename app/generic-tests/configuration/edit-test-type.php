@@ -253,14 +253,14 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 									$eCount = count($testAttr);
 									if ($eCount > 0) {
 										$i=1;
-										foreach($testAttr as $key=>$testAttributeDetails) {
-											if(in_array($key,$arraySection)){
-												foreach($testAttributeDetails as $fieldId=>$testAttribute) {
+										foreach($testAttr as $testAttrkey=>$testAttributeDetails) {
+											if(in_array($testAttrkey,$arraySection)){
+												foreach($testAttributeDetails as $testAttributeId=>$testAttribute) {
 									?>
 											<tr>
 												<td align="center" style="vertical-align:middle;">
 													<input type="text" name="fieldName[]" id="fieldName<?php echo $i ?>" class="form-control fieldName isRequired" placeholder='<?php echo _("Field Name"); ?>' title='<?php echo _("Please enter field name"); ?>' onblur="checkDublicateName(this, 'fieldName');" value="<?php echo $testAttribute['field_name']; ?>" />
-													<input type="hidden" name="fieldId[]" id="fieldId<?php echo $i ?>" class="form-control isRequired" value="<?php echo $fieldId; ?>" />
+													<input type="hidden" name="fieldId[]" id="fieldId<?php echo $i ?>" class="form-control isRequired" value="<?php echo $testAttributeId; ?>" />
 												</td>
 
 												<td align="center" style="vertical-align:middle;padding-top: 20px;">
@@ -318,12 +318,12 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 												}
 											}else{
 												foreach($testAttributeDetails as $key=>$otherAttributeDetails) {
-													foreach($otherAttributeDetails as $fieldId=>$testAttribute) {
+													foreach($otherAttributeDetails as $otherAttributeId=>$testAttribute) {
 										?>
 											<tr>
 												<td align="center" style="vertical-align:middle;">
 													<input type="text" name="fieldName[]" id="fieldName<?php echo $i ?>" class="form-control fieldName isRequired" placeholder='<?php echo _("Field Name"); ?>' title='<?php echo _("Please enter field name"); ?>' onblur="checkDublicateName(this, 'fieldName');" value="<?php echo $testAttribute['field_name']; ?>" />
-													<input type="hidden" name="fieldId[]" id="fieldId<?php echo $i ?>" class="form-control isRequired" value="<?php echo $fieldId; ?>" />
+													<input type="hidden" name="fieldId[]" id="fieldId<?php echo $i ?>" class="form-control isRequired" value="<?php echo $otherAttributeId; ?>" />
 												</td>
 												<td align="center" style="vertical-align:middle;padding-top: 20px;">
 													<select class="form-control isRequired" name="fieldType[]" id="fieldType<?php echo $i ?>" title="<?php echo _('Please select the field type'); ?>" onchange="changeField(this, <?php echo $i ?>)">
