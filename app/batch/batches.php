@@ -102,7 +102,7 @@ require_once APPLICATION_PATH . '/header.php';
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+									<td colspan="5" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 						</table>
