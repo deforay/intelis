@@ -160,7 +160,7 @@ require_once APPLICATION_PATH . '/header.php';
 			],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "get-batch-code-details.php",
+			"sAjaxSource": "get-batches.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "type",
@@ -184,7 +184,7 @@ require_once APPLICATION_PATH . '/header.php';
 	function deleteBatchCode(bId, batchCode) {
 		var conf = confirm("<?php echo _("Are you sure you want to delete Batch"); ?> : " + batchCode + "?\n<?php echo _("This action cannot be undone."); ?>");
 		if (conf) {
-			$.post("delete-batch-code.php", {
+			$.post("delete-batch.php", {
 					id: bId,
 					type: '<?php echo $_GET['type'];?>'
 				},

@@ -120,7 +120,7 @@ class UsersService
                 $this->applicationConfig['modules']['vl'] === true
             ) {
                 $sharedVLPrivileges = [
-                    'delete-batch-code.php?type=vl'         => '/batch/edit-batch.php?type=vl',
+                    'delete-batch.php?type=vl'         => '/batch/edit-batch.php?type=vl',
                     'generate-batch-pdf.php?type=vl'        => '/batch/edit-batch.php?type=vl',
                     'add-batch-position.php?type=vl'        => '/batch/edit-batch.php?type=vl',
                     'edit-batch-position.php'               => '/batch/edit-batch.php?type=vl',
@@ -156,7 +156,7 @@ class UsersService
                 $sharedEIDPrivileges = [
                     'add-batch-position.php'       => '/batch/add-batch.php?type=eid',
                     'edit-batch-position.php'      => '/batch/edit-batch.php?type=eid',
-                    'delete-batch-code.php?type=eid'        => '/batch/edit-batch.php?type=eid',
+                    'delete-batch.php?type=eid'        => '/batch/edit-batch.php?type=eid',
                     'generate-batch-pdf.php?type=eid'       => '/batch/edit-batch.php?type=eid',
                     'eid-update-result.php'                 => 'eid-manual-results.php',
                     'eid-failed-results.php'                => 'eid-manual-results.php',
@@ -185,7 +185,7 @@ class UsersService
                 $sharedCovid19Privileges = [
                     'add-batch-position.php'       => '/batch/add-batch.php?type=covid19',
                     'edit-batch-position.php'      => '/batch/edit-batch.php?type=covid19',
-                    'delete-batch-code.php?type=covid19'        => '/batch/edit-batch.php?type=covid19',
+                    'delete-batch.php?type=covid19'        => '/batch/edit-batch.php?type=covid19',
                     'generate-batch-pdf.php?type=covid19'       => '/batch/edit-batch.php?type=covid19',
                     'mail-covid-19-results.php'                 => 'covid-19-print-results.php',
                     'covid-19-result-mail-confirm.php'          => 'covid-19-print-results.php',
@@ -230,7 +230,7 @@ class UsersService
                 $sharedHepPrivileges = [
                     'add-batch-position.php'         => '/batch/add-batch.php?type=hepatitis',
                     'edit-batch-position.php'        => '/batch/edit-batch.php?type=hepatitis',
-                    'delete-batch-code.php?type=hepatitis'          => '/batch/edit-batch.php?type=hepatitis',
+                    'delete-batch.php?type=hepatitis'          => '/batch/edit-batch.php?type=hepatitis',
                     'generate-batch-pdf.php?type=hepatitis'         => '/batch/edit-batch.php?type=hepatitis',
                     'hepatitis-update-result.php'                   => 'hepatitis-manual-results.php',
                     'hepatitis-failed-results.php'                  => 'hepatitis-manual-results.php',
@@ -267,7 +267,7 @@ class UsersService
                 $sharedTbPrivileges = [
                     'add-batch-position.php'        => '/batch/add-batch.php?type=tb',
                     'edit-batch-position.php'       => '/batch/edit-batch.php?type=tb',
-                    'delete-batch-code.php?type=tb'         => '/batch/edit-batch.php?type=tb',
+                    'delete-batch.php?type=tb'         => '/batch/edit-batch.php?type=tb',
                     'generate-batch-pdf.php?type=tb'        => '/batch/edit-batch.php?type=tb',
                     'tb-update-result.php'                  => 'tb-manual-results.php',
                     'tb-failed-results.php'                 => 'tb-manual-results.php',
