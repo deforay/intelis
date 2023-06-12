@@ -98,8 +98,8 @@ if (trim($id) != '') {
                         patient_first_name,
                         patient_middle_name,
                         patient_last_name,
-                        patient_dob,
-                        patient_age_in_years,
+                        vl.patient_dob,
+                        vl.patient_age_in_years,
                         sample_name,
                         sample_collection_date,
                         patient_gender,
@@ -119,7 +119,6 @@ if (trim($id) != '') {
 
     $result = $db->query($sQuery);
 
-
     $labname = $result[0]['lab_name'] ?? "";
 
     if (!file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests") && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests")) {
@@ -137,7 +136,6 @@ if (trim($id) != '') {
     //echo $bQuery;die;
     $bResult = $db->query($bQuery);
     if (!empty($bResult)) {
-
 
         // create new PDF document
         $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);

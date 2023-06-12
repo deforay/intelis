@@ -80,7 +80,7 @@ if (isset($_POST['operator']) && !empty($_POST['operator'])) {
 	$where[] = " (request_created_by like '" . $_POST['operator'] . "'  OR (request_created_by like '' OR request_created_by is null OR request_created_by = 0))";
 }
 
-if (isset($_POST['sampleType']) && !empty($_POST['sampleType']) && $module == 'vl') {
+if (isset($_POST['sampleType']) && !empty($_POST['sampleType']) && ($module == 'vl' || $module == 'generic-tests')) {
 	$where[] = " (sample_type IN(" . $_POST['sampleType'] . ")  OR (sample_type like '' OR sample_type is null OR sample_type = 0))";
 } else if (isset($_POST['sampleType']) && $_POST['sampleType'] != "" && $module != 'vl') {
 	$where[] = " (specimen_type IN(" . $_POST['sampleType'] . ")  OR (specimen_type like '' OR specimen_type is null OR specimen_type = 0))";

@@ -709,7 +709,7 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 											<a href="/batch/batches.php?type=generic-tests" data-inner-pages="<?= base64_encode('/batch/add-batch.php?type=generic-tests') . ';' . base64_encode('/batch/edit-batch.php?type=generic-tests') . ';' . base64_encode('/batch/add-batch-position.php?type=generic-tests') . ';' . base64_encode('/batch/edit-batch-position.php?type=generic-tests'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Batch"); ?></a>
 										</li>
 									<?php }
-									if (isset($_SESSION['privileges']) && in_array("specimen-referral-manifest-list.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser')) { ?>
+									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser')) { ?>
 										<li class="allMenu specimenGenericReferralManifestListMenu">
 											<a href="/specimen-referral-manifest/specimenReferralManifestList.php?t=<?php echo base64_encode('generic-tests'); ?>" data-inner-pages="<?= base64_encode('/specimen-referral-manifest/addSpecimenReferralManifest.php?t=' . base64_encode('generic-tests')) . ';' . base64_encode('/specimen-referral-manifest/editSpecimenReferralManifest.php?t=' . base64_encode('generic-tests')) . ';' . base64_encode('/specimen-referral-manifest/move-manifest.php?t=' . base64_encode('generic-tests')); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Specimen Manifest"); ?></a>
 										</li>

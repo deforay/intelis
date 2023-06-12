@@ -94,7 +94,7 @@ class MYPDF extends TCPDF
 
 if (trim($id) != '') {
 
-    $sQuery = "SELECT remote_sample_code,pd.number_of_samples,fd.facility_name as clinic_name,fd.facility_district,child_name,child_dob,child_age,mother_name,sample_collection_date,child_gender,child_id,pd.package_code, l.facility_name as lab_name, u_d.user_name as releaser_name,
+    $sQuery = "SELECT remote_sample_code,pd.number_of_samples,fd.facility_name as clinic_name,fd.facility_district,child_name,vl.child_dob,vl.child_age,vl.mother_name,sample_collection_date,child_gender,child_id,pd.package_code, l.facility_name as lab_name, u_d.user_name as releaser_name,
                 u_d.phone_number as phone,u_d.email as email,DATE_FORMAT(pd.request_created_datetime,'%d-%b-%Y') as created_date
                 from package_details as pd Join form_eid as vl ON vl.sample_package_id=pd.package_id
                 Join facility_details as fd ON fd.facility_id=vl.facility_id
