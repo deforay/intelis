@@ -110,8 +110,8 @@ $pResult = $db->rawQuery($pQuery);
 											<td><?php echo ($patient['child_name']) . " " . $patient['child_surname']; ?></td>
 											<td><?php echo $patient['child_age']; ?></td>
 											<td><?php echo (str_replace("_", " ", $patient['child_gender'])); ?></td>
-											<td><?php echo ($patient['facility_name']); ?></td>
-											<td><?php echo date("d-M-Y h:i:s a", strtotime($patient['request_created_datetime'])); ?></td>
+											<td><?= $patient['facility_name']; ?></td>
+											<td><?php echo DateUtility::humanReadableDateFormat($patient['request_created_datetime']); ?></td>
 										</tr>
 								<?php
 									}
