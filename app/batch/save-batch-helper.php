@@ -74,7 +74,7 @@ try {
                     $db = $db->where($refPrimaryColumn, $sample[$j]);
                     $db->update($refTable, $value);
                 }
-                header("Location:edit-batch-position.php?type=" . $_POST['type'] . "&id=" . base64_encode($id) . "&position=" . $_POST['positions']);
+                header("Location:add-batch-position.php?type=" . $_POST['type'] . "&id=" . base64_encode($id) . "&position=" . $_POST['positions']);
             }else{
                 // header("Location:batches.php?type=" . $_POST['type']); 
             }
