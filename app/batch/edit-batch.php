@@ -370,79 +370,80 @@
 				}
 			}
 			?>
-    		getSampleCodeDetails();
-    	});
+			getSampleCodeDetails();
+		});
 
-    	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
-    		var removeDots = obj.value.replace(/\./g, "");
-    		var removeDots = removeDots.replace(/\,/g, "");
-    		//str=obj.value;
-    		removeDots = removeDots.replace(/\s{2,}/g, ' ');
+		function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
+			var removeDots = obj.value.replace(/\./g, "");
+			var removeDots = removeDots.replace(/\,/g, "");
+			//str=obj.value;
+			removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
-    		$.post("/includes/checkDuplicate.php", {
-    				tableName: tableName,
-    				fieldName: fieldName,
-    				value: removeDots.trim(),
-    				fnct: fnct,
-    				format: "html"
-    			},
-    			function(data) {
-    				if (data === '1') {
-    					alert(alrt);
-    					duplicateName = false;
-    					document.getElementById(obj.id).value = "";
-    				}
-    			});
-    	}
+			$.post("/includes/checkDuplicate.php", {
+					tableName: tableName,
+					fieldName: fieldName,
+					value: removeDots.trim(),
+					fnct: fnct,
+					format: "html"
+				},
+				function(data) {
+					if (data === '1') {
+						alert(alrt);
+						duplicateName = false;
+						document.getElementById(obj.id).value = "";
+					}
+				});
+		}
 
-    	function getSampleCodeDetails() {
-    		$.blockUI();
-    		var fName = $("#facilityName").val();
+		function getSampleCodeDetails() {
+			$.blockUI();
+			var fName = $("#facilityName").val();
 
-    		$.post("get-samples-batch.php", {
-    				sampleCollectionDate: $("#sampleCollectionDate").val(),
-    				sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
-    				type: '<?php echo $_GET['type']; ?>',
-    				batchId: $("#batchId").val(),
-    				fName: fName
-    			},
-    			function(data) {
-    				if (data != "") {
-    					console.log($("#batchId").val());
-    					if ($("#batchId").val() > 0) {
-    						$("#search").html(data);
-    					} else {
-    						// $("#sampleDetails").html(data);
-    					}
-    				}
-    			});
-    		$.unblockUI();
-    	}
+			$.post("get-samples-batch.php", {
+					sampleCollectionDate: $("#sampleCollectionDate").val(),
+					sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
+					type: '<?php echo $_GET['type']; ?>',
+					batchId: $("#batchId").val(),
+					testType : '<?php echo base64_decode($_GET['testType']); ?>',
+					fName: fName
+				},
+				function(data) {
+					if (data != "") {
+						console.log($("#batchId").val());
+						if($("#batchId").val() > 0){
+							$("#search").html(data);
+						}else{
+							// $("#sampleDetails").html(data);
+						}
+					}
+				});
+			$.unblockUI();
+		}
 
-    	function enableFemaleSection(obj) {
-    		if (obj.value == "female") {
-    			$(".showFemaleSection").show();
-    			$(".pregnant,.breastfeeding").prop("disabled", false);
-    		} else {
-    			$(".showFemaleSection").hide();
-    			$(".pregnant,.breastfeeding").prop("checked", false);
-    			$(".pregnant,.breastfeeding").attr("disabled", true);
-    		}
-    	}
+		function enableFemaleSection(obj) {
+			if (obj.value == "female") {
+				$(".showFemaleSection").show();
+				$(".pregnant,.breastfeeding").prop("disabled", false);
+			} else {
+				$(".showFemaleSection").hide();
+				$(".pregnant,.breastfeeding").prop("checked", false);
+				$(".pregnant,.breastfeeding").attr("disabled", true);
+			}
+		}
 
-    	$("#machine").change(function() {
-    		var self = this.value;
-    		if (self != '') {
-    			getSampleCodeDetails();
-    			var selected = $(this).find('option:selected');
-    			noOfSamples = selected.data('no-of-samples');
-    			$('#alertText').html('You have picked ' + $("#machine option:selected").text() + ' and it has limit of maximum ' + noOfSamples + ' samples to make it a batch');
-    		} else {
-    			$('.ms-list').html('');
-    			$('#alertText').html('');
-    		}
-    	});
-    </script>
+		$("#machine").change(function() {
+			var self = this.value;
+			if (self != '') {
+				getSampleCodeDetails();
+				var selected = $(this).find('option:selected');
+				noOfSamples = selected.data('no-of-samples');
+				$('#alertText').html('You have picked ' + $("#machine option:selected").text() + ' and it has limit of maximum ' + noOfSamples + ' samples to make it a batch');
+			} else {
+				$('.ms-list').html('');
+				$('#alertText').html('');
+			}
+		});
+	</script>
 
-    <?php
+	<?php
 	require_once APPLICATION_PATH . '/footer.php';
