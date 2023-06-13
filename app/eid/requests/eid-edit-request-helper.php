@@ -142,7 +142,7 @@ try {
 		$status = 9;
 	}
 
-	if (isset($_POST['oldStatus']) && !empty($_POST['oldStatus'])) {
+	if (!empty($_POST['oldStatus'])) {
 		$status = $_POST['oldStatus'];
 	}
 
@@ -246,7 +246,7 @@ try {
 		'result_approved_datetime' 							=> $_POST['approvedOnDateTime'] ?? null,
 		'revised_by' 										=> (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : null,
 		'revised_on' 										=> (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
-		'reason_for_changing'				  				=> (isset($_POST['reasonForChanging']) && !empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
+		'reason_for_changing'				  				=> (!empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
 		'result_status' 									=> $status,
 		'second_dbs_requested' 								=> (isset($_POST['secondDBSRequested']) && $_POST['secondDBSRequested'] != '') ? $_POST['secondDBSRequested'] :  null,
 		'second_dbs_requested_reason' 						=> (isset($_POST['secondDBSRequestedReason']) && $_POST['secondDBSRequestedReason'] != '') ? $_POST['secondDBSRequestedReason'] :  null,

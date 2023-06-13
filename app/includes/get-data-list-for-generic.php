@@ -19,18 +19,18 @@ $text = '';
 $fieldId = $_GET['fieldId'];
 $field = $_GET['fieldName'];
 $table = $_GET['tableName'];
-$returnField = (isset($_GET['returnField']) && !empty($_GET['returnField'])) ? $_GET['returnField'] : null;
-$limit = (isset($_GET['limit']) && !empty($_GET['limit'])) ? $_GET['limit'] : null;
-$text = (isset($_GET['q']) && !empty($_GET['q'])) ? $_GET['q'] : null;
+$returnField = (!empty($_GET['returnField'])) ? $_GET['returnField'] : null;
+$limit = (!empty($_GET['limit'])) ? $_GET['limit'] : null;
+$text = (!empty($_GET['q'])) ? $_GET['q'] : null;
 
 // Set value as id
 $selectField = $field;
-$fieldId = (isset($fieldId) && !empty($fieldId))?$fieldId:$field;
-if(isset($fieldId) && !empty($fieldId)){
+$fieldId = (!empty($fieldId))?$fieldId:$field;
+if(!empty($fieldId)){
     $selectField = $field . ', '. $fieldId;
 }
 
-if (isset($text) && !empty($text) && $text != "") {
+if (!empty($text) && $text != "") {
     if (isset($returnField) && $returnField != "") {
         $cQuery = "SELECT DISTINCT $returnField FROM $table WHERE $field like '%" . $text . "%' AND $field is not null";
     } else {
@@ -43,10 +43,10 @@ if (isset($text) && !empty($text) && $text != "") {
         $cQuery = "SELECT DISTINCT $selectField FROM $table WHERE $field is not null";
     }
 }
-if(isset($_GET['status']) && !empty($_GET['status'])){
+if(!empty($_GET['status'])){
     $cQuery .= " AND " . $_GET['status'] . " like 'active' ";
 }
-if (isset($limit) && !empty($limit) && $limit > 0) {
+if (!empty($limit) && $limit > 0) {
     $cQuery .= " limit " . $limit;
 }
 $cResult = $db->rawQuery($cQuery);

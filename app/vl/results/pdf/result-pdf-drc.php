@@ -376,7 +376,7 @@ if (!empty($requestResult)) {
 			$html .= '<td colspan="3" style="line-height:16px;"></td>';
 			$html .= '</tr>';
 		}
-		if (!isset($signResults) || empty($signResults)) {
+		if (empty($signResults)) {
 
 			if (!empty($userSignaturePath) && $pdf->imageExists($userSignaturePath) && !empty($resultApprovedBy)) {
 				$html .= '<tr>';
@@ -422,7 +422,7 @@ if (!empty($requestResult)) {
 		$html .= '<tr>';
 		$html .= '<tr>';
 		$html .= '<td colspan="3">';
-		if (isset($signResults) && !empty($signResults)) {
+		if (!empty($signResults)) {
 			$html .= '<table style="width:100%;padding:3px;border:1px solid gray;">';
 			$html .= '<tr>';
 			$html .= '<td style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-bottom:1px solid gray;">AUTORISÉ PAR</td>';

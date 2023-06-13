@@ -23,7 +23,7 @@ $table = "form_vl";
 $primaryKey = "vl_sample_id";
 
 $testType = 'vl';
-if (isset($_POST['testType']) && !empty($_POST['testType'])) {
+if (!empty($_POST['testType'])) {
     $testType = $_POST['testType'];
 }
 

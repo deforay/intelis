@@ -56,7 +56,7 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 		}
 	}
 	/* Assign the dynamic labels to the heading */
-	if (isset($labels) && !empty($labels)) {
+	if (!empty($labels)) {
 		$headings = array_merge($headings, $labels);
 	}
 
@@ -253,9 +253,9 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 		$row[] = $requestCreatedDatetime;
 
 		/* To assign the dynamic fields values */
-		if (isset($labels) && !empty($labels)) {
+		if (!empty($labels)) {
 			foreach ($labels as $id => $le) {
-				if (isset($testType[$key]['dynamicValue'][$id]) && !empty($testType[$key]['dynamicValue'][$id])) {
+				if (!empty($testType[$key]['dynamicValue'][$id])) {
 					$row[] = $testType[$key]['dynamicValue'][$id];
 				} else {
 					$row[] = "";

@@ -24,11 +24,11 @@ $sQuery = "select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_
                         AND vl.result is not null
                         AND vl.result != '' ";
 
-if (isset($_SESSION['eidTatData']['sWhere']) && !empty($_SESSION['eidTatData']['sWhere'])) {
+if (!empty($_SESSION['eidTatData']['sWhere'])) {
 	$sQuery = $sQuery . " AND " . $_SESSION['eidTatData']['sWhere'];
 }
 
-if (isset($_SESSION['eidTatData']['sOrder']) && !empty($_SESSION['eidTatData']['sOrder'])) {
+if (!empty($_SESSION['eidTatData']['sOrder'])) {
 	$sQuery = $sQuery . " ORDER BY " . $_SESSION['eidTatData']['sOrder'];
 }
 $rResult = $db->rawQuery($sQuery);

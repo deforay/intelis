@@ -77,7 +77,7 @@ try {
 		'revised_on'                           => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
 		'result_reviewed_by'                   => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
 		'result_reviewed_datetime'               => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
-		'reason_for_changing'                  => (isset($_POST['reasonForChanging']) && !empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
+		'reason_for_changing'                  => (!empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
 		'rejection_on'                           => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
 		'result_status'                       => 8,
 		'data_sync'                           => 0,
@@ -107,7 +107,7 @@ try {
 	}
 	// echo "<pre>";print_r($_POST);die;
 	if (isset($_POST['covid19SampleId']) && $_POST['covid19SampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
-		if (isset($_POST['testName']) && !empty($_POST['testName'])) {
+		if (!empty($_POST['testName'])) {
 			foreach ($_POST['testName'] as $testKey => $testName) {
 				if (trim($_POST['testName'][$testKey]) != "") {
 					$covid19TestData = array(

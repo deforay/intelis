@@ -186,7 +186,7 @@ if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
 if (!empty($sWhere)) {
 	$sQuery = $sQuery . ' AND ' . implode(' AND ', $sWhere);
 }
-if (isset($seWhere) && !empty($seWhere)) {
+if (!empty($seWhere)) {
 	$sQuery = $sQuery . ' AND ' . implode(' AND ', $seWhere);
 }
 $_SESSION['covid19TATQuery'] = $sQuery;

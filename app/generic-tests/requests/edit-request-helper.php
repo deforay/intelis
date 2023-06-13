@@ -52,7 +52,7 @@ try {
      if (isset($splitProvince[0]) && trim($splitProvince[0]) != '') {
           $provinceQuery = "SELECT * from geographical_divisions where geo_name='" . $splitProvince[0] . "'";
           $provinceInfo = $db->query($provinceQuery);
-          if (!isset($provinceInfo) || empty($provinceInfo)) {
+          if (empty($provinceInfo)) {
                $db->insert('geographical_divisions', array('geo_name' => $splitProvince[0], 'geo_code' => $splitProvince[1]));
           }
      }
@@ -196,7 +196,7 @@ try {
      /* if(isset($_POST['resultType']) && isset($_POST['testType']) && !empty($_POST['resultType']) && !empty($_POST['testType'])){
           $interpretationResult = $genericTestsService->getInterpretationResults($_POST['testType'], $_POST['result']);
      } */
-     if (isset($_POST['resultInterpretation']) && !empty($_POST['resultInterpretation'])) {
+     if (!empty($_POST['resultInterpretation'])) {
           $interpretationResult = $_POST['resultInterpretation'];
      }
 
@@ -272,11 +272,11 @@ try {
 
 
      if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['noResult'] == 'no' || $_POST['noResult'] == '')) {
-          if (isset($_POST['testName']) && !empty($_POST['testName'])) {
+          if (!empty($_POST['testName'])) {
                $db = $db->where('generic_id', $_POST['vlSampleId']);
                $db->delete('generic_test_results');
                foreach ($_POST['testName'] as $testKey => $testKitName) {
-                    if (isset($testKitName) && !empty($testKitName)) {
+                    if (!empty($testKitName)) {
                          $covid19TestData = array(
                               'generic_id'                   => $_POST['vlSampleId'],
                               'test_name'                    => ($testKitName == 'other') ? $_POST['testNameOther'][$testKey] : $testKitName,

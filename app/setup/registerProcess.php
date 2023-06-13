@@ -28,7 +28,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 
 
 try {
-    if (isset($userName) && !empty($userName) && isset($password) && !empty($password)) {
+    if (!empty($userName) && !empty($password)) {
 
         $userPassword = $usersService->passwordHash($password);
         $userId = $general->generateUUID();

@@ -45,11 +45,11 @@ AND DATE(vl.sample_collection_date) > '1970-01-01') AND (vl.sample_tested_dateti
 AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01'
 AND DATE(vl.sample_tested_datetime) NOT LIKE '0000-00-00') AND vl.result is not null AND vl.result != ''";
 
-if (isset($_SESSION['vlTatData']['sWhere']) && !empty($_SESSION['vlTatData']['sWhere'])) {
+if (!empty($_SESSION['vlTatData']['sWhere'])) {
 	$sQuery = $sQuery . $_SESSION['vlTatData']['sWhere'];
 }
 
-if (isset($_SESSION['vlTatData']['sOrder']) && !empty($_SESSION['vlTatData']['sOrder'])) {
+if (!empty($_SESSION['vlTatData']['sOrder'])) {
 	$sQuery = $sQuery . " ORDER BY " . $_SESSION['vlTatData']['sOrder'];
 }
 $rResult = $db->rawQuery($sQuery);

@@ -766,7 +766,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 		?>
 
 		<?php
-		if (isset($eidInfo['mother_vl_result']) && !empty($eidInfo['mother_vl_result'])) {
+		if (!empty($eidInfo['mother_vl_result'])) {
 		?>
 			updateMotherViralLoad();
 		<?php

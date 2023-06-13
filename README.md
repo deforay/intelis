@@ -1,6 +1,8 @@
-# Viral Load Sample Management System #
+# VLSM #
 
-A simple, open source Sample Management System for Viral Load, EID, Covid-19 and Hepatitis testing.
+### Lab Information System and Sample Tracking System
+
+VLSM is a simple, open source Sample Management System for tracking samples for HIV Viral Load, EID, Covid-19, TB, Hepatitis and others.
 
 #### Pre-requisites
 * Apache 2.x  (Make sure apache rewrite and headers modules are enabled)

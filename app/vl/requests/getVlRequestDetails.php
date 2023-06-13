@@ -299,7 +299,7 @@ if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
 if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
      $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
 }
-if (!isset($_POST['recencySamples']) || empty($_POST['recencySamples']) || $_POST['recencySamples'] === 'no') {
+if (empty($_POST['recencySamples']) || $_POST['recencySamples'] === 'no') {
      $sWhere[] = " IFNULL(reason_for_vl_testing, 0)  != 9999 ";
 }
 if (isset($_POST['rejectedSamples']) && $_POST['rejectedSamples'] != "") {

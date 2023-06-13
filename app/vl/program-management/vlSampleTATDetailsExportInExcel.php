@@ -30,11 +30,11 @@ $sQuery = "SELECT vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_
                         AND vl.result is not null
                         AND vl.result != ''";
 
-if (isset($_SESSION['vlTatData']['sWhere']) && !empty($_SESSION['vlTatData']['sWhere'])) {
+if (!empty($_SESSION['vlTatData']['sWhere'])) {
 	$sQuery = $sQuery . $_SESSION['vlTatData']['sWhere'];
 }
 
-if (isset($_SESSION['vlTatData']['sOrder']) && !empty($_SESSION['vlTatData']['sOrder'])) {
+if (!empty($_SESSION['vlTatData']['sOrder'])) {
 	$sQuery = $sQuery . " ORDER BY " . $_SESSION['vlTatData']['sOrder'];
 }
 $rResult = $db->rawQuery($sQuery);

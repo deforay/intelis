@@ -105,7 +105,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
     <!-- Main content -->
     <section class="content">
         <div class="box box-default">
-             <?php if(isset($_GET['type']) && !empty($_GET['type']) && $_GET['type'] == 'generic-tests') { ?>
+             <?php if(!empty($_GET['type']) && $_GET['type'] == 'generic-tests') { ?>
                 <div class="box-header with-border">
                     <div class="row">
                         <div class="col-xs-6 col-md-6">

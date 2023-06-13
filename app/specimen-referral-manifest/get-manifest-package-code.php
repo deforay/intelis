@@ -32,7 +32,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sCode = 'sample_code';
 }
 
-$module = (isset($_POST['testType']) && !empty($_POST['testType'])) ? $_POST['testType'] : $_POST['module'];
+$module = (!empty($_POST['testType'])) ? $_POST['testType'] : $_POST['module'];
 $query = "";
 if ($module == 'vl') {
 	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.vl_sample_id FROM package_details as p INNER JOIN form_vl as vl ON vl.sample_package_code = p.package_code ";
@@ -62,15 +62,15 @@ if (!empty($_SESSION['facilityMap'])) {
 	$where[] = " facility_id IN(" . $_SESSION['facilityMap'] . ")";
 }
 
-if (isset($_POST['testingLab']) && !empty($_POST['testingLab'])) {
+if (!empty($_POST['testingLab'])) {
 	$where[] = " (p.lab_id IN(" . $_POST['testingLab'] . ") OR (p.lab_id like '' OR p.lab_id is null OR p.lab_id = 0))";
 }
 
-if (isset($_POST['facility']) && !empty($_POST['facility'])) {
+if (!empty($_POST['facility'])) {
 	$where[] = " (facility_id IN(" . $_POST['facility'] . ")  OR (facility_id like '' OR facility_id is null OR facility_id = 0))";
 }
 
-if (isset($where) && !empty($where)) {
+if (!empty($where)) {
 	$query .= " where " . implode(" AND ", $where);
 }
 $query .= " GROUP BY p.package_code ORDER BY vl.request_created_datetime ASC";

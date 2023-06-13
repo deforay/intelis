@@ -24,7 +24,7 @@ try {
     $key = file_get_contents(APPLICATION_PATH . "/system-admin/secretKey.txt");
 
     if ($secretKey == trim($key)) {
-        if (isset($_POST['username']) && !empty($_POST['username']) && isset($_POST['password']) && !empty($_POST['password'])) {
+        if (!empty($_POST['username']) && !empty($_POST['password'])) {
             $insertData = array(
                 'system_admin_name'     => $userName,
                 'system_admin_email'    => $emailId,

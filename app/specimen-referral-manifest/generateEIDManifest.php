@@ -235,7 +235,7 @@ if (trim($id) != '') {
         $tbl .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($result[0]['package_code']) . '">';
         $tbl .=  '</span><br>';
 
-        if (isset($result) && !empty($result) && sizeof($result) > 0) {
+        if (!empty($result) && sizeof($result) > 0) {
             $tbl .= '<table style="width:100%;border:1px solid #333;">';
             if ($showPatientName == "yes") {
                 $tbl .= '<tr nobr="true">

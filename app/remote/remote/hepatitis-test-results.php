@@ -106,7 +106,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
                 $sQuery = "SELECT hepatitis_id,sample_code,remote_sample_code,remote_sample_code_key
                             FROM form_hepatitis WHERE remote_sample_code=?";
                 $sResult = $db->rawQuery($sQuery, [$lab['remote_sample_code']]);
-            } elseif (isset($lab['sample_code']) && !empty($lab['sample_code']) && !empty($lab['facility_id']) && !empty($lab['lab_id'])) {
+            } elseif (!empty($lab['sample_code']) && !empty($lab['facility_id']) && !empty($lab['lab_id'])) {
                 $sQuery = "SELECT hepatitis_id,sample_code,remote_sample_code,remote_sample_code_key
                             FROM form_hepatitis WHERE sample_code=? AND facility_id = ?";
                 $sResult = $db->rawQuery($sQuery, [$lab['sample_code'], $lab['facility_id']]);

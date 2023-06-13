@@ -257,7 +257,7 @@ foreach ($rResult as $aRow) {
     if (isset($aRow['sample_code']) && trim($aRow['sample_code']) != '') {
         $batchCodeQuery = "SELECT batch_code from batch_details as b_d INNER JOIN $mainTableName as vl ON vl.sample_batch_id = b_d.batch_id WHERE vl.sample_code = ?";
         $batchCodeResult = $db->rawQuery($batchCodeQuery, array($aRow['sample_code']));
-        if (isset($batchCodeResult) && !empty($batchCodeResult)) {
+        if (!empty($batchCodeResult)) {
             $batchCode = "'" . $batchCodeResult[0]['batch_code'] . "'";
             $aRow['batch_code'] = $batchCodeResult[0]['batch_code'];
         }
@@ -308,7 +308,7 @@ foreach ($rResult as $aRow) {
 
     foreach ($scResult as $control) {
         if (trim($control['r_sample_control_name']) != '') {
-            $controlName .= '<option value="' . $control['r_sample_control_name'] . '" ' . ($aRow['sample_type'] == $control['r_sample_control_name'] || $aRow['sample_type'] == ($control['r_sample_control_name']) ? "selected=selected" : "") . '>' . ($control['r_sample_control_name']) . '</option>';
+            $controlName .= '<option value="' . $control['r_sample_control_name'] . '" ' . ($aRow['sample_type'] == ($control['r_sample_control_name']) ? "selected=selected" : "") . '>' . ($control['r_sample_control_name']) . '</option>';
         }
     }
     $controlName .= '</select><br><br>';

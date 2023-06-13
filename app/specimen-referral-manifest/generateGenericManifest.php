@@ -107,7 +107,7 @@ if (trim($id) != '') {
     for ($i = 0; $i < sizeof($configResult); $i++) {
         $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
     }
-    $showPatientName = (isset($arr['generic_show_participant_name_in_manifest']) && !empty($arr['generic_show_participant_name_in_manifest'])) ? $arr['generic_show_participant_name_in_manifest'] : 'no';
+    $showPatientName = (!empty($arr['generic_show_participant_name_in_manifest'])) ? $arr['generic_show_participant_name_in_manifest'] : 'no';
     $bQuery = "SELECT * from package_details as pd where package_id IN($id)";
     //echo $bQuery;die;
     $bResult = $db->query($bQuery);
@@ -158,7 +158,7 @@ if (trim($id) != '') {
         $tbl .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($result[0]['package_code']) . '">';
         $tbl .=  '</span><br>';
 
-        if (isset($result) && !empty($result) && sizeof($result) > 0) {
+        if (!empty($result) && sizeof($result) > 0) {
             $tbl .= '<table style="width:100%;border:1px solid #333;">
 
                     <tr nobr="true">';

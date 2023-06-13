@@ -435,7 +435,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                     </tr>
                                                 </thead>
                                                 <tbody id="testKitNameTable">
-                                                    <?php if (isset($covid19TestInfo) && !empty($covid19TestInfo)) {
+                                                    <?php if (!empty($covid19TestInfo)) {
                                                         foreach ($covid19TestInfo as $indexKey => $rows) { ?>
                                                             <tr>
                                                                 <td class="text-center"><?= ($indexKey + 1); ?><input type="hidden" name="testId[]" value="<?php echo base64_encode($rows['test_id']); ?>">
@@ -587,7 +587,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     provinceName = true;
     facilityName = true;
     machineName = true;
-    tableRowId = <?php echo (isset($covid19TestInfo) && !empty($covid19TestInfo)) ? (count($covid19TestInfo) + 1) : 2; ?>;
+    tableRowId = <?php echo (!empty($covid19TestInfo)) ? (count($covid19TestInfo) + 1) : 2; ?>;
     deletedRow = [];
 
     function getfacilityDetails(obj) {

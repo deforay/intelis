@@ -7,10 +7,17 @@ use App\Services\CommonService;
 
 require_once APPLICATION_PATH . '/header.php';
 
+/** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var GenericTestsService $generic */
 $generic = ContainerRegistry::get(GenericTestsService::class);
+
+/** @var \MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var \Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
@@ -274,10 +281,10 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 													</select><br>
 													<div class="tag-input dropDown<?php echo $i ?>" style="<?php echo ($testAttribute['field_type'] == 'multiple' || $testAttribute['field_type'] == 'dropdown') ? "" : "display:none;" ?>">
 													<input type="text" name="dropDown[]" id="dropDown<?php echo $i ?>" onkeyup="showTags(event,this,'<?php echo $i ?>')" class="tag-input-field form-control" placeholder="Enter options..." />
-													<input type="hidden" value="<?php echo (isset($testAttribute['dropdown_options']) && !empty($testAttribute['dropdown_options'])) ? $testAttribute['dropdown_options'].',' : "" ?>" id="fdropDown<?php echo $i ?>" name="fdropDown[]" class="fdropDown"/>
+													<input type="hidden" value="<?php echo (!empty($testAttribute['dropdown_options'])) ? $testAttribute['dropdown_options'].',' : "" ?>" id="fdropDown<?php echo $i ?>" name="fdropDown[]" class="fdropDown"/>
 													<div class="tag-container container<?php echo $i ?>">
 													<?php  
-													if(isset($testAttribute['dropdown_options']) && !empty($testAttribute['dropdown_options'])){
+													if(!empty($testAttribute['dropdown_options'])){
 													$val = explode(",",$testAttribute['dropdown_options']);
 													foreach($val as $v)
 													{
@@ -336,10 +343,10 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 													</select><br>
 													<div class="tag-input dropDown<?php echo $i ?>" style="<?php echo ($testAttribute['field_type'] == 'multiple' || $testAttribute['field_type'] == 'dropdown') ? "" : "display:none;" ?>">
 													<input type="text" name="dropDown[]" id="dropDown<?php echo $i ?>" onkeyup="showTags(event,this,'<?php echo $i ?>')" class="tag-input-field form-control" placeholder="Enter options..." />
-													<input type="hidden" value="<?php echo (isset($testAttribute['dropdown_options']) && !empty($testAttribute['dropdown_options'])) ? $testAttribute['dropdown_options'].',' : "" ?>" id="fdropDown<?php echo $i ?>" name="fdropDown[]" class="fdropDown"/>
+													<input type="hidden" value="<?php echo (!empty($testAttribute['dropdown_options'])) ? $testAttribute['dropdown_options'].',' : "" ?>" id="fdropDown<?php echo $i ?>" name="fdropDown[]" class="fdropDown"/>
 													<div class="tag-container container<?php echo $i ?>">
 													<?php  
-													if(isset($testAttribute['dropdown_options']) && !empty($testAttribute['dropdown_options'])){
+													if(!empty($testAttribute['dropdown_options'])){
 													$val = explode(",",$testAttribute['dropdown_options']);
 													foreach($val as $v)
 													{
@@ -453,7 +460,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 									<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
 										<tbody id="qualitativeTable">
 											<?php
-											if (isset($testResultAttribute['result']) && !empty($testResultAttribute['result']) && count($testResultAttribute['result']) > 0) {
+											if (!empty($testResultAttribute['result']) && count($testResultAttribute['result']) > 0) {
 												foreach ($testResultAttribute['result'] as $qualKey => $row) { ?>
 													<tr>
 														<td class="text-center"><?php echo ($qualKey + 1); ?></td>
@@ -558,7 +565,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 									<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
 										<tbody id="quantitativeTable">
 											<?php
-											if (isset($testResultAttribute['quantitative_result']) && !empty($testResultAttribute['quantitative_result']) && count($testResultAttribute['quantitative_result']) > 0) {
+											if (!empty($testResultAttribute['quantitative_result']) && count($testResultAttribute['quantitative_result']) > 0) {
 												foreach ($testResultAttribute['quantitative_result'] as $quanKey => $quanRow) { ?>
 													<tr>
 														<td class="text-center"><?php echo ($quanKey + 1); ?></td>

@@ -14,7 +14,7 @@ $dateRange = $labName = $srcOfReq = $srcStatus = null;
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 
-if (isset($_GET['id']) && !empty($_GET['id'])) {
+if (!empty($_GET['id'])) {
 	$params = explode("##", base64_decode($_GET['id']));
 	$dateRange = $params[0];
 	$labName = $params[1];
@@ -82,7 +82,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 		color: black !important;
 	}
 
-	<?php if (isset($_GET['id']) && !empty($_GET['id'])) { ?>header {
+	<?php if (!empty($_GET['id'])) { ?>header {
 		display: none;
 	}
 
@@ -276,7 +276,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
-		<?php if ((isset($_GET['daterange']) && !empty($_GET['daterange']) && isset($_GET['type']) && $_GET['type'] == 'rejection')) { ?>
+		<?php if ((!empty($_GET['daterange']) && isset($_GET['type']) && $_GET['type'] == 'rejection')) { ?>
 			$('#sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').val("");
 			$('#sampleCollectionDate').val('<?php echo $_GET['daterange']; ?>');
 		<?php } else { ?>

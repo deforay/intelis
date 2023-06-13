@@ -33,7 +33,7 @@ $configControlInfo = $db->rawQuery($configControlQuery, [$configId]);
 try {
     if (trim($_POST['configurationName']) != "") {
 
-        if (isset($_POST['supportedTests']) && !empty($_POST['supportedTests'])) {
+        if (!empty($_POST['supportedTests'])) {
             foreach ($_POST['supportedTests'] as $test) {
                 $configDir = __DIR__;
                 if (!file_exists($configDir)) {
@@ -93,7 +93,7 @@ try {
             }
         }
 
-        if ($configId > 0 && isset($_POST['testType']) && !empty($_POST['testType'])) {
+        if ($configId > 0 && !empty($_POST['testType'])) {
             if (count($configControlInfo) > 0) {
                 foreach ($_POST['testType'] as $key => $val) {
                     $cQuery = "SELECT * FROM instrument_controls WHERE config_id= " . $configId . " AND test_type like '" . $val . "'";

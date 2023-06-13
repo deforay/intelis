@@ -229,7 +229,7 @@ if (!empty($requestResult)) {
         }
 
         $testedBy = '';
-        if (isset($result['tested_by']) && !empty($result['tested_by'])) {
+        if (!empty($result['tested_by'])) {
             $testedByRes = $usersService->getUserInfo($result['tested_by'], array('user_signature', 'user_name'));
             if ($testedByRes) {
                 $testedBy = $testedByRes['user_name'];
@@ -401,7 +401,7 @@ if (!empty($requestResult)) {
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $result['sample_tested_datetime'] . '</td>';
         $html .= '</tr>';
 
-        if (isset($tbTestInfo) && !empty($tbTestInfo)) {
+        if (!empty($tbTestInfo)) {
             /* Test Result Section */
             $html .= '<tr>';
             $html .= '<td colspan="4" style="border:1px solid #67b3ff;" >';
@@ -486,7 +486,7 @@ if (!empty($requestResult)) {
             $remoteUrl = rtrim(SYSTEM_CONFIG['remoteURL'], "/");
             if (isset($arr['tb_report_qr_code']) && $arr['tb_report_qr_code'] == 'yes') {
                 $h = 175;
-                if (isset($signResults) && !empty($signResults)) {
+                if (!empty($signResults)) {
                     if (isset($facilityInfo['address']) && $facilityInfo['address'] != "") {
                         $h = 185;
                     }

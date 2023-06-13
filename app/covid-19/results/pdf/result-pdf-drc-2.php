@@ -26,7 +26,7 @@ class DRC_PDF extends MYPDF
                     $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
                 }
             }
-            if (isset($this->facilityInfo) && !empty($this->facilityInfo) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
+            if (!empty($this->facilityInfo) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
                 $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
                 $this->Image($imageFilePath, 175, 5, 25, '', '', '', 'T');
             }
@@ -315,7 +315,7 @@ $html .= '<td width="40%" style="line-height:14px;font-size:15px;text-align:left
 $html .= '<td width="5%" style="line-height:14px;font-size:15px;text-align:center;">:</td>';
 $html .= '<td width="55%" style="line-height:14px;font-size:15px;text-align:left;">' . $covid19Results[$result['result']] . '</td>';
 $html .= '</tr>';
-if (isset($covid19TestInfo) && !empty($covid19TestInfo) && $arr['covid19_tests_table_in_results_pdf'] == 'yes') {
+if (!empty($covid19TestInfo) && $arr['covid19_tests_table_in_results_pdf'] == 'yes') {
     $html .= '<tr>';
     $html .= '<td style="line-height:14px;font-size:12px;text-align:left;" colspan="3"><strong>Tests de Controle :</strong></td>';
     $html .= '</tr>';

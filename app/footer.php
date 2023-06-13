@@ -169,7 +169,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 			}
 		}
 	<?php } ?>
-	let syncInterval = 60 * 60 * 1000 * 2 // 2 hours in ms
+
 	$(document).ready(function() {
 
 		$(".allMenu").removeClass('active');

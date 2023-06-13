@@ -40,7 +40,7 @@ try {
 
 
     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != "") {
-        if (isset($_POST['batchId']) && !empty($_POST['batchId'])) {
+        if (!empty($_POST['batchId'])) {
             $id = intval($_POST['batchId']);
             $data = array(
                 'batch_code' => $_POST['batchCode'],
@@ -61,7 +61,7 @@ try {
                 }
                 $sample = [];
                 //Mergeing disabled samples into existing samples
-                if (isset($_POST['sampleCode']) && !empty($_POST['sampleCode'])) {
+                if (!empty($_POST['sampleCode'])) {
                     if (count($xplodResultSample) > 0) {
                         $sample = array_unique(array_merge($_POST['sampleCode'], $xplodResultSample));
                     } else {

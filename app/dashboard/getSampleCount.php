@@ -236,7 +236,7 @@ $tableResult = $db->rawQuery($sQuery);
                 </thead>
                 <tbody>
                     <?php
-                    if (isset($tableResult) && !empty($tableResult)) {
+                    if (!empty($tableResult)) {
                         foreach ($tableResult as $tableRow) { ?>
                             <tr>
                                 <td><?= ($tableRow['facility_name']); ?></td>

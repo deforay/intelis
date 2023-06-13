@@ -26,7 +26,7 @@ if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEP
 $query = "SELECT * FROM track_api_requests WHERE (request_data is not null OR response_data is not null) AND transaction_id IS NOT NULL ORDER BY requested_on";
 $jsonResult = $db->rawQuery($query);
 foreach ($jsonResult as $row) {
-    if (isset($row['request_data']) && !empty($row['request_data']) && $row['request_data'] != 'x' && $row['request_data'] != '[]') {
+    if (!empty($row['request_data']) && $row['request_data'] != 'x' && $row['request_data'] != '[]') {
         $output = stripslashes($row['request_data']);
         $pathname = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR;
         // Save in json file
@@ -38,7 +38,7 @@ foreach ($jsonResult as $row) {
         }
         //error_log('REQUEST - ' . $row['transaction_id']);
     }
-    if (isset($row['response_data']) && !empty($row['response_data']) && $row['response_data'] != 'x' && $row['response_data'] != '[]') {
+    if (!empty($row['response_data']) && $row['response_data'] != 'x' && $row['response_data'] != '[]') {
         $output = stripslashes($row['response_data']);
         $pathname = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR;
         // Save in json file

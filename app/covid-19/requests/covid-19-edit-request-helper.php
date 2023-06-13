@@ -98,7 +98,7 @@ try {
 		$status = 9;
 	}
 
-	if (isset($_POST['oldStatus']) && !empty($_POST['oldStatus'])) {
+	if (!empty($_POST['oldStatus'])) {
 		$status = $_POST['oldStatus'];
 	}
 
@@ -236,7 +236,7 @@ try {
 		'revised_by'                           => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
 		'revised_on'                           => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
 		'rejection_on'                           => (!empty($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
-		'reason_for_changing'                  => (isset($_POST['reasonForChanging']) && !empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
+		'reason_for_changing'                  => (!empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
 		'result_status'                       => $status,
 		'data_sync'                           => 0,
 		'reason_for_sample_rejection'         => (!empty($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
@@ -277,13 +277,13 @@ try {
 	$db = $db->where('covid19_id', $_POST['covid19SampleId']);
 	$sid = $db->delete("covid19_patient_symptoms");
 	if (isset($_POST['asymptomatic']) && $_POST['asymptomatic'] != "yes") {
-		if (isset($_POST['symptomDetected']) && !empty($_POST['symptomDetected']) || (isset($_POST['symptom']) && !empty($_POST['symptom']))) {
+		if (!empty($_POST['symptomDetected']) || (!empty($_POST['symptom']))) {
 			for ($i = 0; $i < count($_POST['symptomDetected']); $i++) {
 				$symptomData = [];
 				$symptomData["covid19_id"] = $_POST['covid19SampleId'];
 				$symptomData["symptom_id"] = $_POST['symptomId'][$i];
 				$symptomData["symptom_detected"] = $_POST['symptomDetected'][$i];
-				$symptomData["symptom_details"]     = (isset($_POST['symptomDetails'][$_POST['symptomId'][$i]]) && !empty($_POST['symptomDetails'][$_POST['symptomId'][$i]])) ? json_encode($_POST['symptomDetails'][$_POST['symptomId'][$i]]) : null;
+				$symptomData["symptom_details"]     = (!empty($_POST['symptomDetails'][$_POST['symptomId'][$i]])) ? json_encode($_POST['symptomDetails'][$_POST['symptomId'][$i]]) : null;
 				//var_dump($symptomData);
 				$db->insert("covid19_patient_symptoms", $symptomData);
 			}
@@ -303,7 +303,7 @@ try {
 
 	$db = $db->where('covid19_id', $_POST['covid19SampleId']);
 	$pid = $db->delete("covid19_patient_comorbidities");
-	if (isset($_POST['comorbidityDetected']) && !empty($_POST['comorbidityDetected'])) {
+	if (!empty($_POST['comorbidityDetected'])) {
 
 		for ($i = 0; $i < count($_POST['comorbidityDetected']); $i++) {
 			$comorbidityData = [];
@@ -317,7 +317,7 @@ try {
 
 	if (isset($_POST['covid19SampleId']) && $_POST['covid19SampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
 
-		if (isset($_POST['testName']) && !empty($_POST['testName'])) {
+		if (!empty($_POST['testName'])) {
 			foreach ($_POST['testName'] as $testKey => $testName) {
 				if (trim($_POST['testName'][$testKey]) != "") {
 					$covid19TestData = array(

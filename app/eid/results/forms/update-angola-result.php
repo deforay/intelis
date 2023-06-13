@@ -564,7 +564,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
             $('#motherTreatmentOther').prop('disabled', false);
         <?php } ?>
 
-        <?php if (isset($eidInfo['mother_vl_result']) && !empty($eidInfo['mother_vl_result'])) { ?>
+        <?php if (!empty($eidInfo['mother_vl_result'])) { ?>
             updateMotherViralLoad();
         <?php } ?>
 

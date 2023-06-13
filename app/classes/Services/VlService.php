@@ -209,7 +209,7 @@ class VlService
         ];
         $finalResult = str_ireplace($find, '', $finalResult);
 
-        if (!isset($finalResult) || empty($finalResult)) {
+        if (empty($finalResult)) {
             $vlResultCategory = null;
         } elseif (in_array($finalResult, ['fail', 'failed', 'failure', 'error', 'err'])) {
             $vlResultCategory = 'failed';
@@ -455,7 +455,7 @@ class VlService
             $sampleData = json_decode($sampleJson, true);
 
             $sQuery = "SELECT vl_sample_id FROM form_vl ";
-            if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
+            if (!empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
             }
             $sQuery .= " LIMIT 1";

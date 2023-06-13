@@ -502,7 +502,7 @@ $patientProvince = $patientProvinceInfo[0];
                                                     </thead>
                                                     <tbody id="testKitNameTable">
                                                         <?php $span = 4;
-                                                        if (isset($covid19TestInfo) && !empty($covid19TestInfo)) {
+                                                        if (!empty($covid19TestInfo)) {
                                                             $kitShow = false;
                                                             foreach ($covid19TestInfo as $indexKey => $rows) { ?>
                                                                 <tr>
@@ -664,7 +664,7 @@ $patientProvince = $patientProvinceInfo[0];
     provinceName = true;
     facilityName = true;
     machineName = true;
-    let testCounter = <?php echo (isset($covid19TestInfo) && !empty($covid19TestInfo)) ? (count($covid19TestInfo)) : 0; ?>;
+    let testCounter = <?php echo (!empty($covid19TestInfo)) ? (count($covid19TestInfo)) : 0; ?>;
     deletedRow = [];
 
     function getfacilityDetails(obj) {

@@ -84,7 +84,7 @@ $subResult = json_decode($resultInfo['labels_and_expected_results'], true);
                         </thead>
                         <tbody id="qcTestTable">
                             <?php
-                            if (isset($resultInfo['labels_and_expected_results']) && !empty($resultInfo['labels_and_expected_results'])) {
+                            if (!empty($resultInfo['labels_and_expected_results'])) {
                                 foreach ($subResult['label'] as $key => $row) { ?>
                                     <tr>
                                         <td>

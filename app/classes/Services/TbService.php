@@ -241,7 +241,7 @@ class TbService
         $response = [];
 
         // Using this in sync requests/results
-        if (isset($tbId) && is_array($tbId) && !empty($tbId)) {
+        if (is_array($tbId) && !empty($tbId)) {
             $results = $this->db->rawQuery("SELECT * FROM tb_tests WHERE `tb_id` IN (" . implode(",", $tbId) . ") ORDER BY tb_test_id ASC");
 
             foreach ($results as $row) {
@@ -288,7 +288,7 @@ class TbService
             // print_r($tesRequestData);die;
 
             $sQuery = "SELECT tb_id FROM form_tb ";
-            if (isset($sampleData['sampleCode']) && !empty($sampleData['sampleCode'])) {
+            if (!empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
             }
             $sQuery .= " LIMIT 1";

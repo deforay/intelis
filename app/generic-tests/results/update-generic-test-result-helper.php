@@ -119,7 +119,7 @@ try {
     /* if(isset($_POST['resultType']) && isset($_POST['testType']) && !empty($_POST['resultType']) && !empty($_POST['testType'])){
         $interpretationResult = $genericTestsService->getInterpretationResults($_POST['testType'], $_POST['result']);
     } */
-    if (isset($_POST['resultInterpretation']) && !empty($_POST['resultInterpretation'])) {
+    if (!empty($_POST['resultInterpretation'])) {
         $interpretationResult = $_POST['resultInterpretation'];
     }
 
@@ -162,11 +162,11 @@ try {
     }
 
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['noResult'] == 'no' || $_POST['noResult'] == '')) {
-        if (isset($_POST['testName']) && !empty($_POST['testName'])) {
+        if (!empty($_POST['testName'])) {
             $db = $db->where('generic_id', $_POST['vlSampleId']);
             $db->delete($testTableName);
             foreach ($_POST['testName'] as $testKey => $testKitName) {
-                if (isset($testKitName) && !empty($testKitName)) {
+                if (!empty($testKitName)) {
                     if (isset($_POST['testDate'][$testKey]) && trim($_POST['testDate'][$testKey]) != "") {
                         $testedDateTime = explode(" ", $_POST['testDate'][$testKey]);
                         $_POST['testDate'][$testKey] = DateUtility::isoDateFormat($testedDateTime[0]) . " " . $testedDateTime[1];

@@ -21,7 +21,7 @@ $_POST = $request->getParsedBody();
 $systemType = $general->getSystemConfig('sc_user_type');
 
 $whereCondition = '';
-if ($systemType == 'remoteuser' && (isset($_SESSION['facilityMap']) && !empty($_SESSION['facilityMap']))) {
+if ($systemType == 'remoteuser' && (!empty($_SESSION['facilityMap']))) {
     $whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 }
 
@@ -289,7 +289,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
 </div>
 <script>
     <?php
-    if (isset($tResult) && !empty($tResult)) {
+    if (!empty($tResult)) {
     ?>
         $('#hepatitisSampleStatusOverviewContainer').highcharts({
             chart: {
@@ -467,7 +467,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
         });
     <?php
     }
-    if (isset($result) && !empty($result)) {
+    if (!empty($result)) {
     ?>
         $('#hepatitisLabAverageTat').highcharts({
             chart: {
@@ -489,7 +489,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
             xAxis: {
                 //categories: ["21 Mar", "22 Mar", "23 Mar", "24 Mar", "25 Mar", "26 Mar", "27 Mar"]
                 categories: [<?php
-                                if (isset($result['date']) && !empty($result['date'])) {
+                                if (!empty($result['date'])) {
                                     foreach ($result['date'] as $date) {
                                         echo "'" . $date . "',";
                                     }
@@ -598,7 +598,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
             ],
         });
     <?php }
-    if (isset($testReasonResult) && !empty($testReasonResult)) { ?>
+    if (!empty($testReasonResult)) { ?>
         $('#hepatitisTestReasonContainer').highcharts({
             chart: {
                 plotBackgroundColor: null,

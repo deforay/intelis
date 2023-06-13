@@ -206,12 +206,12 @@ try {
     $id = 0;
 
     if (isset($_POST['tbSampleId']) && $_POST['tbSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
-        if (isset($_POST['testResult']) && !empty($_POST['testResult'])) {
+        if (!empty($_POST['testResult'])) {
             $db = $db->where('tb_id', $_POST['tbSampleId']);
             $db->delete($testTableName);
 
             foreach ($_POST['testResult'] as $testKey => $testResult) {
-                if (isset($testResult) && !empty($testResult) && trim($testResult) != "") {
+                if (!empty($testResult) && trim($testResult) != "") {
                     $db->insert($testTableName, array(
                         'tb_id'             => $_POST['tbSampleId'],
                         'actual_no'         => $_POST['actualNo'][$testKey] ?? null,

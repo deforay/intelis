@@ -194,7 +194,7 @@ try {
             $vlResult = $db->rawQuery($query);
 
             if ($vlResult && $sampleCode != '') {
-                if ($vlResult[0]['result'] != null && !empty($vlResult[0]['result'])) {
+                if (!empty($vlResult[0]['result'])) {
                     $data['sample_details'] = 'Result already exists';
                 } else {
                     $data['result_status'] = '7';

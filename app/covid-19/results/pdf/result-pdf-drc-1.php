@@ -364,7 +364,7 @@ $html .= '</tr>';
 if (empty($result['lab_manager'])) {
     $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
     $labDetails = $facilitiesService->getFacilityById($result['lab_id']);
-    if (isset($labDetails['contact_person']) && !empty($labDetails['contact_person'])) {
+    if (!empty($labDetails['contact_person'])) {
         $result['lab_manager'] = $labDetails['contact_person'];
     }
 }

@@ -16,7 +16,7 @@ $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 
 $hidesrcofreq = false;
-if (isset($_GET['id']) && !empty($_GET['id'])) {
+if (!empty($_GET['id'])) {
 	$params = explode("##", base64_decode($_GET['id']));
 	$dateRange = $params[0];
 	$labName = $params[1];
@@ -77,7 +77,7 @@ foreach ($srcResults as $list) {
 		color: black !important;
 	}
 
-	<?php if (isset($_GET['id']) && !empty($_GET['id'])) { ?>header {
+	<?php if (!empty($_GET['id'])) { ?>header {
 		display: none;
 	}
 
