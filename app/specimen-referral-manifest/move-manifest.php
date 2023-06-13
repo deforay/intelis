@@ -152,11 +152,11 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 					<div class="row">
 						<div class="col-xs-4 col-md-4">
 							<div class="form-group" style="margin-left:30px; margin-top:30px;">
-								<label for="GenericTestType">Test Type</label>
-								<select class="form-control" name="GenericTestType" id="GenericTestType" title="Please choose test type" style="width:100%;" onchange="getManifestCodeForm(this.value)">
+								<label for="genericTestType">Test Type</label>
+								<select class="form-control" name="genericTestType" id="genericTestType" title="Please choose test type" style="width:100%;" onchange="getManifestCodeForm(this.value)">
 									<option value=""> -- Select -- </option>
 									<?php foreach ($testTypeResult as $testType) { ?>
-										<option value="<?php echo $testType['test_short_code']; ?>"><?php echo $testType['test_standard_name'] ?></option>
+										<option value="<?php echo $testType['test_type_id']; ?>"><?php echo $testType['test_standard_name'] ?></option>
 									<?php } ?>
 								</select>
 							</div>
@@ -405,6 +405,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                     daterange: $('#daterange').val(),
                     assignLab: $('#assignLab').val(),
                     testType: $('#testType').val(),
+                    genericTestType:$('#genericTestType').val(),
                 },
                 function(data) {
                     if (data != "") {

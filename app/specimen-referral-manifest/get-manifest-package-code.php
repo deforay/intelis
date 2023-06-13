@@ -72,6 +72,11 @@ if (isset($_POST['facility']) && !empty($_POST['facility'])) {
 	$where[] = " (facility_id IN(" . $_POST['facility'] . ")  OR (facility_id like '' OR facility_id is null OR facility_id = 0))";
 }
 
+if (isset($_POST['genericTestType']) && !empty($_POST['genericTestType'])) {
+	$where[] = " vl.test_type =" . $_POST['genericTestType'];
+}
+
+
 if (isset($where) && !empty($where)) {
 	$query .= " where " . implode(" AND ", $where);
 }
