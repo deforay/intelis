@@ -64,23 +64,7 @@ if (isset($_POST['sampleReceivedAtLab']) && trim($_POST['sampleReceivedAtLab']) 
         $sampleReceivedEndDate = DateUtility::isoDateFormat(trim($s_c_date[1]));
     }
 }
-
-/* $query = "SELECT vl.sample_code,vl.sample_batch_id,
-vl.$refPrimaryColumn,vl.facility_id,
-vl.result,vl.result_status,
-f.facility_name,f.facility_code
-FROM $refTable as vl
-INNER JOIN facility_details as f ON vl.facility_id=f.facility_id
-WHERE (vl.is_sample_rejected IS NULL
-            OR vl.is_sample_rejected = ''
-            OR vl.is_sample_rejected = 'no')
-AND (vl.reason_for_sample_rejection IS NULL
-            OR vl.reason_for_sample_rejection =''
-            OR vl.reason_for_sample_rejection = 0)
-AND vl.sample_code NOT LIKE ''
-AND vl.sample_batch_id = ?";
- */
-$query = "SELECT vl.sample_code,vl.$refPrimaryColumn,vl.facility_id,vl.result_status,vl.sample_batch_id,f.facility_name,f.facility_code FROM $refTable as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id ";
+$query = "(SELECT vl.sample_code,vl.$refPrimaryColumn,vl.facility_id,vl.result_status,vl.sample_batch_id,f.facility_name,f.facility_code FROM $refTable as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id ";
 
 $where [] = " (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.result is NULL or vl.result = '') AND vl.sample_code!=''";
 
@@ -91,48 +75,51 @@ if (isset($_POST['batchId'])) {
 }
 
 if (isset($_POST['fName']) && is_array($_POST['fName']) && !empty($_POST['fName'])) {
-    $where[] = " vl.facility_id IN (" . implode(',', $_POST['fName']) . ")";
+    $swhere[] = $where[] = " vl.facility_id IN (" . implode(',', $_POST['fName']) . ")";
 }
 
 if (isset($_POST['testType']) && $_POST['testType'] != "") {
-    $where[] = " vl.test_type = '" . $_POST['testType'] . "'";
+    $swhere[] = $where[] = " vl.test_type = '" . $_POST['testType'] . "'";
 }
 
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
     if (trim($start_date) == trim($end_date)) {
-        $where[] = ' DATE(sample_collection_date) = "' . $start_date . '"';
+        $swhere[] = $where[] = ' DATE(sample_collection_date) = "' . $start_date . '"';
     } else {
-        $where[] = ' DATE(sample_collection_date) >= "' . $start_date . '" AND DATE(sample_collection_date) <= "' . $end_date . '"';
+        $swhere[] = $where[] = ' DATE(sample_collection_date) >= "' . $start_date . '" AND DATE(sample_collection_date) <= "' . $end_date . '"';
     }
 }
 
 if (isset($_POST['sampleReceivedAtLab']) && trim($_POST['sampleReceivedAtLab']) != '') {
     if (trim($sampleReceivedStartDate) == trim($sampleReceivedEndDate)) {
-        $where[] = ' DATE(sample_received_at_vl_lab_datetime) = "' . $sampleReceivedStartDate . '"';
+        $swhere[] = $where[] = ' DATE(sample_received_at_vl_lab_datetime) = "' . $sampleReceivedStartDate . '"';
     } else {
-        $where[] = ' DATE(sample_received_at_vl_lab_datetime) >= "' . $sampleReceivedStartDate . '" AND DATE(sample_received_at_vl_lab_datetime) <= "' . $sampleReceivedEndDate . '"';
+        $swhere[] = $where[] = ' DATE(sample_received_at_vl_lab_datetime) >= "' . $sampleReceivedStartDate . '" AND DATE(sample_received_at_vl_lab_datetime) <= "' . $sampleReceivedEndDate . '"';
     }
 }
 if (!empty($where)) {
     $query = $query . ' WHERE ' . implode(" AND ", $where);
 }
+$query .= ")";
 // $query = $query . " ORDER BY vl.sample_code ASC";
 if (isset($_POST['batchId'])) {
-$query .= " UNION
-
-(SELECT vl.sample_code,vl.$refPrimaryColumn,vl.facility_id,vl.result_status,vl.sample_batch_id,f.facility_name,f.facility_code
-    FROM $refTable as vl
-    INNER JOIN facility_details as f ON vl.facility_id=f.facility_id
-    WHERE (vl.sample_batch_id IS NULL OR vl.sample_batch_id = '')
-    AND (vl.is_sample_rejected IS NULL
-                OR vl.is_sample_rejected like ''
-                OR vl.is_sample_rejected like 'no')
-    AND (vl.reason_for_sample_rejection IS NULL
-            OR vl.reason_for_sample_rejection like ''
-            OR vl.reason_for_sample_rejection = 0)
-    AND (vl.result is NULL or vl.result = '')
-    AND vl.sample_code!=''
-    ORDER BY vl.last_modified_datetime ASC) ";
+    $squery .= " UNION
+        (SELECT vl.sample_code,vl.$refPrimaryColumn,vl.facility_id,vl.result_status,vl.sample_batch_id,f.facility_name,f.facility_code
+        FROM $refTable as vl
+    INNER JOIN facility_details as f ON vl.facility_id=f.facility_id ";
+        $swhere [] = " (vl.sample_batch_id IS NULL OR vl.sample_batch_id = '')
+        AND (vl.is_sample_rejected IS NULL
+        OR vl.is_sample_rejected like ''
+        OR vl.is_sample_rejected like 'no')
+        AND (vl.reason_for_sample_rejection IS NULL
+        OR vl.reason_for_sample_rejection like ''
+        OR vl.reason_for_sample_rejection = 0)
+        AND (vl.result is NULL or vl.result = '')
+        AND vl.sample_code!=''";
+    if (!empty($swhere)) {
+        $squery = $squery . ' WHERE ' . implode(" AND ", $swhere);
+    }
+    $query .= $squery . " ORDER BY vl.last_modified_datetime ASC)";
 }
 // die($query);
 $result = $db->rawQuery($query);

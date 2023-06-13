@@ -409,7 +409,6 @@
 				},
 				function(data) {
 					if (data != "") {
-						console.log($("#batchId").val());
 						if($("#batchId").val() > 0){
 							$("#search").html(data);
 						}else{
