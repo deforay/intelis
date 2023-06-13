@@ -114,8 +114,7 @@ try {
                     'lab_technician'                        => $labTechnician ?? null,
                 );
 
-                // echo "<pre>";print_r($data);die;
-                if (!$sampleCode) {
+                if (empty($sampleCode)) {
                     $lastId = $db->insert($tableName, $data);
                 } else {
                     $lastId = $sampleCode['covid19_id'];
@@ -137,22 +136,16 @@ try {
                     $db->delete($testTableName);
 
                     foreach ($testData as $testKitName) {
-                        if (trim($testKitName['testDate']) != '') {
-                            $testDate = date('Y-m-d H:i', strtotime($testKitName['testDate']));
-                        } else {
-                            $testDate = null;
-                        }
-
                         $covid19TestData = array(
                             'covid19_id'            => $lastId,
                             'test_name'             => $testKitName['testRequest'],
                             'facility_id'           => $labName['facility_id'] ?? null,
                             'testing_platform'      => $testKitName['testingPlatform'],
-                            'sample_tested_datetime' => date('Y-m-d H:i:s', strtotime($testDate)),
+                            'sample_tested_datetime' => DateUtility::isoDateFormat($testKitName['testDate'] ?? '', true),
                             'result'                => strtolower($testKitName['testResult']),
                         );
                         $db->insert($testTableName, $covid19TestData);
-                        $covid19Data['sample_tested_datetime'] = date('Y-m-d H:i:s', strtotime($testDate));
+                        $covid19Data['sample_tested_datetime'] = DateUtility::isoDateFormat($testKitName['testDate'] ?? '', true);
                     }
                 }
                 $db = $db->where('covid19_id', $lastId);
