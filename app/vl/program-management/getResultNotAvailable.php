@@ -17,7 +17,7 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
-//config  query 
+//config  query
 $configQuery = "SELECT * FROM global_config";
 $configResult = $db->query($configQuery);
 $arr = [];
@@ -173,12 +173,12 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
         //$dWhere = $dWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
     }
 }
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $sWhere = implode(" AND ", $sWhere);
 }
 $sQuery = $sQuery . ' AND ' . $sWhere;
 $sQuery = $sQuery . ' group by vl.vl_sample_id';
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }

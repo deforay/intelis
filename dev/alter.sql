@@ -4119,8 +4119,8 @@ ALTER TABLE `form_generic` ADD `result_unit` INT NULL DEFAULT NULL AFTER `result
 UPDATE `system_config` SET `value` = '5.1.7' WHERE `system_config`.`name` = 'sc_version';
 
 -- Jeyabanu 08-06-2023
-ALTER TABLE `form_eid` ADD `second_dbs_requested` VARCHAR(100) NULL DEFAULT NULL AFTER `result_approved_by`, ADD `second_DBS_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_DBS_requested`;
-ALTER TABLE `audit_form_eid` ADD `second_dbs_requested` VARCHAR(100) NULL DEFAULT NULL AFTER `result_approved_by`, ADD `second_DBS_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_DBS_requested`;
+ALTER TABLE `form_eid` ADD `second_dbs_requested` VARCHAR(256) NULL DEFAULT NULL AFTER `result_approved_by`, ADD `second_DBS_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_DBS_requested`;
+ALTER TABLE `audit_form_eid` ADD `second_dbs_requested` VARCHAR(256) NULL DEFAULT NULL AFTER `result_approved_by`, ADD `second_DBS_requested_reason` VARCHAR(256) NULL DEFAULT NULL AFTER `second_DBS_requested`;
 
 -- Thana 09-Jun-2023
 
@@ -4161,3 +4161,11 @@ ALTER TABLE `batch_details` ADD `last_modified_by` DATETIME NULL DEFAULT CURRENT
 
 UPDATE `batch_details` SET `last_modified_by` = `created_by` WHERE `last_modified_by` IS NULL;
 UPDATE `batch_details` SET `last_modified_datetime` = `request_created_datetime` WHERE `last_modified_datetime` IS NULL;
+
+-- Thana 13-Jun-2023
+INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('generic-tests-batches', 'generic-test', 'Lab Tests Batch Management');
+UPDATE `privileges` SET `resource_id` = 'generic-test-batches' WHERE `privileges`.`resource_id` = 'generic-requests' AND `privileges`.`privilege_name` = '/batch/batches.php?type=generic-tests';
+
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES 
+(NULL, 'generic-test-batches', '/batch/add-batch.php?type=generic-tests', 'Add New Batch'), 
+(NULL, 'generic-test-batches', '/batch/edit-batch.php?type=generic-tests', 'Edit Batch');

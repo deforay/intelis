@@ -183,14 +183,14 @@ if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
 }
 
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
 	$sQuery = $sQuery . ' AND ' . implode(' AND ', $sWhere);
 }
 if (isset($seWhere) && !empty($seWhere)) {
 	$sQuery = $sQuery . ' AND ' . implode(' AND ', $seWhere);
 }
 $_SESSION['covid19TATQuery'] = $sQuery;
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
 	$sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
 	$sQuery = $sQuery . " order by " . $sOrder;
 }

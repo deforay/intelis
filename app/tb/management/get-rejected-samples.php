@@ -61,7 +61,7 @@ if (!empty($_SESSION['facilityMap'])) {
     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 }
 
-if (isset($swhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $sWhere = " where " . implode(' AND ', $sWhere);
 } else {
     $sWhere = "";

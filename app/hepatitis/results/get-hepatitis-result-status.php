@@ -185,7 +185,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 }
 $sWhere[] = ' (vl.hcv_vl_count !="" OR vl.hbv_vl_count !="") ';
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $sWhere =  implode(' AND ', $sWhere);
 } else {
     $sWhere = "";
@@ -193,7 +193,7 @@ if (isset($sWhere) && !empty($sWhere)) {
 
 $sQuery = $sQuery . ' WHERE ' . $sWhere;
 //echo $sQuery;
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }

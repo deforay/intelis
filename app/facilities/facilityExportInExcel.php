@@ -50,12 +50,12 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS f_d.*, f_t.*,p.geo_name as province ,d.geo
             LEFT JOIN geographical_divisions as p ON f_d.facility_state_id = p.geo_id
             LEFT JOIN geographical_divisions as d ON f_d.facility_district_id = d.geo_id $qry ";
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
 	$sWhere = ' where ' . implode(' AND ', $sWhere);
 	$sQuery = $sQuery . ' ' . $sWhere;
 }
 
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
 	$sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
 	$sQuery = $sQuery . ' order by ' . $sOrder;
 }

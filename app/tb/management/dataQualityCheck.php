@@ -159,7 +159,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
           // $dWhere = $dWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
      }
 }
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
      $sWhere = ' where' . implode(" AND ", $sWhere);
 } else {
      $sWhere = "";
@@ -167,7 +167,7 @@ if (isset($sWhere) && !empty($sWhere)) {
 $sQuery = $sQuery . ' ' . $sWhere;
 // echo $sQuery;die;
 $_SESSION['vlIncompleteForm'] = $sQuery;
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . ' order by ' . $sOrder;
 }

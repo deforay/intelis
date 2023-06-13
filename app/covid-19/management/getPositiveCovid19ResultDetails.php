@@ -183,13 +183,13 @@ if (!empty($_SESSION['facilityMap'])) {
 
 
 //$sQuery = $sQuery . ' ' . $sWhere;
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $sWhere = ' AND ' . implode(' AND ', $sWhere);
     $sQuery = $sQuery . ' ' . $sWhere;
 }
 $sQuery = $sQuery . ' group by vl.covid19_id';
 //echo $sQuery; die();
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }

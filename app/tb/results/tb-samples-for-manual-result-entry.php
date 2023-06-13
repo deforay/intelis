@@ -212,7 +212,7 @@ $sQuery = $sQuery . $sWhere;
 //echo $sQuery;
 $_SESSION['tbResultQuery'] = $sQuery;
 
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }

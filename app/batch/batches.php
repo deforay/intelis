@@ -57,11 +57,13 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
     $patientLastName = 'patient_last_name';
     $worksheetName = 'Lab Test Worksheet';
     $showPatientName = true;
+	$genericHide = "style='display:none;'";
 }
 $title = _( $_title . " | Batches");
 
 require_once APPLICATION_PATH . '/header.php';
-
+$testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
+$testTypeResult = $db->rawQuery($testTypeQuery);
 ?>
 
 
@@ -80,13 +82,39 @@ require_once APPLICATION_PATH . '/header.php';
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<div class="box-header with-border">
-						<?php if (isset($_SESSION['privileges']) && in_array("/batch/add-batch.php?type=".$_GET['type'], $_SESSION['privileges'])) { ?>
-							<a href="add-batch.php?type=<?php echo $_GET['type'];?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Create New Batch"); ?></a>
-						<?php } ?>
-					</div>
+					<?php if(!empty($_GET['type']) && $_GET['type'] == 'generic-tests') { ?>
+						<div class="box-header with-border">
+							<div class="row">
+								<div class="col-xs-6 col-md-6">
+									<div class="form-group" style="margin-left:30px; margin-top:30px;">
+										<label for="testType">Test Type</label>
+										<select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getBatchForm(this)">
+											<option value=""> -- Select -- </option>
+											<?php foreach ($testTypeResult as $testType) { ?>
+												<option value="<?php echo $testType['test_type_id']; ?>"><?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?></option>
+											<?php } ?>
+										</select>
+										<span class="batchAlert" style="font-size:1.1em;color: red;">Choose test type to see relavent sample bacthes</span>
+									</div>
+								</div>
+								<div class="col-xs-6 col-md-6">
+									<div class="box-header with-border batchDiv" <?php echo $genericHide;?>>
+										<?php if (isset($_SESSION['privileges']) && in_array("/batch/add-batch.php?type=".$_GET['type'], $_SESSION['privileges'])) { ?>
+											<a href="add-batch.php?type=<?php echo $_GET['type'];?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Create New Batch"); ?></a>
+										<?php } ?>
+									</div>
+								</div>
+							</div>
+						</div>
+					<?php }else{ ?>
+						<div class="box-header with-border batchDiv" <?php echo $genericHide;?>>
+							<?php if (isset($_SESSION['privileges']) && in_array("/batch/add-batch.php?type=".$_GET['type'], $_SESSION['privileges'])) { ?>
+								<a href="add-batch.php?type=<?php echo $_GET['type'];?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Create New Batch"); ?></a>
+							<?php } ?>
+						</div>
+					<?php } ?>
 					<!-- /.box-header -->
-					<div class="box-body">
+					<div class="box-body batchDiv" <?php echo $genericHide;?>>
 						<table aria-describedby="table" id="batchCodeDataTable" class="table table-bordered table-striped" aria-hidden="true" >
 							<thead>
 								<tr>
@@ -166,6 +194,10 @@ require_once APPLICATION_PATH . '/header.php';
 					"name": "type",
 					"value": "<?php echo $_GET['type'];?>"
 				});
+				aoData.push({
+					"name": "testType",
+					"value": $('#testType').val()
+				});
 				$.ajax({
 					"dataType": 'json',
 					"type": "POST",
@@ -196,6 +228,17 @@ require_once APPLICATION_PATH . '/header.php';
 					}
 					oTable.fnDraw();
 				});
+		}
+	}
+
+	function getBatchForm(obj) {
+		if(obj.value != ""){
+			$(".batchDiv").show();
+			oTable.fnDraw();
+			$('.batchAlert').hide();
+		}else{
+			$(".batchDiv").hide();
+			$('.batchAlert').show();
 		}
 	}
 </script>

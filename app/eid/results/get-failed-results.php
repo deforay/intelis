@@ -195,7 +195,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 
 //    $sWhere[] = ' (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $sWhere = ' where ' . implode(' AND ', $sWhere);
 } else {
     $sWhere = "";
@@ -203,7 +203,7 @@ if (isset($sWhere) && !empty($sWhere)) {
 
 
 $sQuery = $sQuery . ' ' . $sWhere;
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }

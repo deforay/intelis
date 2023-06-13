@@ -119,7 +119,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS *, ts.status_name FROM form_vl as vl
                     LEFT JOIN r_vl_test_reasons as tr ON tr.test_reason_id=vl.reason_for_vl_testing
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
      $sWhere = ' where ' . $sWhere;
      if (isset($_POST['samplePackageCode']) && $_POST['samplePackageCode'] != '') {
           $sWhere = $sWhere . ' AND vl.sample_package_code LIKE "%' . $_POST['samplePackageCode'] . '%" OR remote_sample_code LIKE "' . $_POST['samplePackageCode'] . '"';
@@ -133,7 +133,7 @@ if (isset($sWhere) && !empty($sWhere)) {
 
 $sFilter = '';
 $sQuery = $sQuery . ' ' . $sWhere;
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }

@@ -89,7 +89,6 @@ $pResult = $db->rawQuery($pQuery);
 									$value = $patient['patient_art_no'] . strtolower($patient['patient_first_name']) . strtolower($patient['patient_last_name']) . $patient['patient_age_in_years'] . strtolower($patient['patient_gender']) . strtolower($patient['facility_name']);
 									if (!in_array($value, $artNoList)) {
 										$artNoList[] = $value;
-										//$patientDetails = $patient['patient_first_name'] . "##" . $patient['patient_last_name'] . "##" . $patient['patient_gender'] . "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['patient_dob']) . "##" . $patient['patient_age_in_years'] . "##" . $patient['patient_age_in_months'] . "##" . $patient['is_patient_pregnant'] . "##" . $patient['is_patient_breastfeeding'] . "##" . $patient['patient_mobile_number'] . "##" . $patient['consent_to_receive_sms'] . "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['treatment_initiated_date']) . "##" . $patient['current_regimen'] . "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['last_viral_load_date']) . "##" . $patient['last_viral_load_result'] . "##" . $patient['number_of_enhanced_sessions'] . "##" . $patient['patient_art_no'] . "##" . $patient['is_patient_new'] . "##" .$patient['sample_tested_datetime'];
 										$patientDetails = json_encode(array(
 											"name" => $patient['patient_first_name'] . " " . $patient['patient_last_name'],
 											"gender" => $patient['patient_gender'],
@@ -118,10 +117,10 @@ $pResult = $db->rawQuery($pQuery);
 											<td><?php echo $patient['patient_art_no']; ?></td>
 											<td><?php echo ($patient['patient_first_name']) . " " . $patient['patient_last_name']; ?></td>
 											<td><?php echo $patient['patient_age_in_years']; ?></td>
-											<td><?php echo (str_replace("_", " ", $patient['patient_gender'])); ?></td>
-											<td><?php echo ($patient['facility_name']); ?></td>
-											<td><?php echo date("d-M-Y h:i:s a", strtotime($patient['request_created_datetime'])); ?></td>
-											<td><?php echo date("d-M-Y h:i:s a", strtotime($patient['sample_tested_datetime'])); ?></td>
+											<td><?= str_replace("_", " ", $patient['patient_gender']); ?></td>
+											<td><?= $patient['facility_name']; ?></td>
+											<td><?= DateUtility::humanReadableDateFormat($patient['request_created_datetime'], true); ?></td>
+											<td><?php echo DateUtility::humanReadableDateFormat($patient['sample_tested_datetime']); ?></td>
 											<td><?php echo $patient['result']; ?></td>
 										</tr>
 								<?php
@@ -153,7 +152,10 @@ $pResult = $db->rawQuery($pQuery);
 <script>
 	$(document).ready(function() {
 		$('#patientModalDataTable').DataTable({
-			"aaSorting": [1, 'asc']
+			"aaSorting": [
+				[1, 'asc'],
+				[6, 'desc']
+			]
 		});
 
 	});

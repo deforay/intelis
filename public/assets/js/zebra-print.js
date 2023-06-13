@@ -1,6 +1,6 @@
-String.prototype.replaceAll = function(search, replacement) {
-    var target = this;
-    return target.split(search).join(replacement);
+String.prototype.replaceAll = function (search, replacement) {
+	var target = this;
+	return target.split(search).join(replacement);
 };
 
 var available_printers = null;
@@ -32,8 +32,7 @@ var default_mode = true;
 
 function urldecode(str) { if (typeof str != "string") { return str; } return decodeURIComponent(str.replace(/\+/g, ' ')); }
 
-function setup_web_print()
-{
+function setup_web_print() {
 	$('#printer_select').on('change', onPrinterSelected);
 	//showLoading("Loading Printer Information...");
 	default_mode = true;
@@ -41,169 +40,145 @@ function setup_web_print()
 	available_printers = null;
 	selected_category = null;
 	default_printer = null;
-	
-	BrowserPrint.getDefaultDevice('printer', function(printer)
-	{
+
+	BrowserPrint.getDefaultDevice('printer', function (printer) {
 		default_printer = printer
-		if((printer != null) && (printer.connection != undefined))
-		{
+		if ((printer != null) && (printer.connection != undefined)) {
 			selected_printer = printer;
 			var printer_details = $('#printer_details');
 			var selected_printer_div = $('#selected_printer');
-			
+
 			selected_printer_div.text("Using Default Printer: " + printer.name);
 			hideLoading();
 			printer_details.show();
 			$('#print_form').show();
 
 		}
-		BrowserPrint.getLocalDevices(function(printers)
-			{
-				available_printers = printers;
-				var sel = document.getElementById("printers");
-				var printers_available = false;
-				sel.innerHTML = "";
-				if (printers != undefined)
-				{
-					for(var i = 0; i < printers.length; i++)
-					{
-						if (printers[i].connection == 'usb')
-						{
-							var opt = document.createElement("option");
-							opt.innerHTML = printers[i].connection + ": " + printers[i].uid;
-							opt.value = printers[i].uid;
-							sel.appendChild(opt);
-							printers_available = true;
-						}
+		BrowserPrint.getLocalDevices(function (printers) {
+			available_printers = printers;
+			var sel = document.getElementById("printers");
+			var printers_available = false;
+			sel.innerHTML = "";
+			if (printers != undefined) {
+				for (var i = 0; i < printers.length; i++) {
+					if (printers[i].connection == 'usb') {
+						var opt = document.createElement("option");
+						opt.innerHTML = printers[i].connection + ": " + printers[i].uid;
+						opt.value = printers[i].uid;
+						sel.appendChild(opt);
+						printers_available = true;
 					}
 				}
-				
-				if(!printers_available)
-				{
-					showErrorMessage("No Zebra Printers could be found!");
-					hideLoading();
-					$('#print_form').hide();
+			}
 
-				}
-				else if(selected_printer == null)
-				{
-					default_mode = false;
-					changePrinter();
-					$('#print_form').show();
-					hideLoading();
-				}
-			}, undefined, 'printer');
-	}, 
-	function(error_response)
-	{
-		showBrowserPrintNotFound();
-	});
+			if (!printers_available) {
+				showErrorMessage("No Zebra Printers could be found!");
+				hideLoading();
+				$('#print_form').hide();
+
+			}
+			else if (selected_printer == null) {
+				default_mode = false;
+				changePrinter();
+				$('#print_form').show();
+				hideLoading();
+			}
+		}, undefined, 'printer');
+	},
+		function (error_response) {
+			showBrowserPrintNotFound();
+		});
 }
-function showBrowserPrintNotFound()
-{
+function showBrowserPrintNotFound() {
 	showErrorMessage("An error occured while attempting to connect to your Zebra Printer. You may not have Zebra Browser Print installed, or it may not be running. Install Zebra Browser Print, or start the Zebra Browser Print Service, and try again.");
 
 }
-function printBarcodeLabel(bcode,facility)
-{
+function printBarcodeLabel(bcode, facility) {
 	//showLoading("Printing...");
 	facility = urldecode(facility);
-	checkPrinterStatus( function (text){
-		if (text == "Ready to Print")
-		{
+	checkPrinterStatus(function (text) {
+		if (text == "Ready to Print") {
 			//selected_printer.send(format_start + bcode + format_end, printComplete, printerError);
-			var strToPrint = zebraFormat.replaceAll("1234567",bcode);
-			strToPrint = strToPrint.replaceAll("FACILITY",facility);
+			var strToPrint = zebraFormat.replaceAll("1234567", bcode);
+			strToPrint = strToPrint.replaceAll("FACILITY", facility);
 			selected_printer.send(strToPrint, printComplete, printerError);
 		}
-		else
-		{
+		else {
 			printerError(text);
 		}
 	});
 }
-function checkPrinterStatus(finishedFunction)
-{
-	selected_printer.sendThenRead("~HQES", 
-				function(text){
-						var that = this;
-						var statuses = [];
-						var ok = false;
-						var is_error = text.charAt(70);
-						var media = text.charAt(88);
-						var head = text.charAt(87);
-						var pause = text.charAt(84);
-						// check each flag that prevents printing
-						if (is_error == '0')
-						{
-							ok = true;
-							statuses.push("Ready to Print");
-						}
-						if (media == '1')
-							statuses.push("Paper out");
-						if (media == '2')
-							statuses.push("Ribbon Out");
-						if (media == '4')
-							statuses.push("Media Door Open");
-						if (media == '8')
-							statuses.push("Cutter Fault");
-						if (head == '1')
-							statuses.push("Printhead Overheating");
-						if (head == '2')
-							statuses.push("Motor Overheating");
-						if (head == '4')
-							statuses.push("Printhead Fault");
-						if (head == '8')
-							statuses.push("Incorrect Printhead");
-						if (pause == '1')
-							statuses.push("Printer Paused");
-						if ((!ok) && (statuses.Count == 0))
-							statuses.push("Error: Unknown Error");
-						finishedFunction(statuses.join());
-			}, printerError);
+function checkPrinterStatus(finishedFunction) {
+	selected_printer.sendThenRead("~HQES",
+		function (text) {
+			var that = this;
+			var statuses = [];
+			var ok = false;
+			var is_error = text.charAt(70);
+			var media = text.charAt(88);
+			var head = text.charAt(87);
+			var pause = text.charAt(84);
+			// check each flag that prevents printing
+			if (is_error == '0') {
+				ok = true;
+				statuses.push("Ready to Print");
+			}
+			if (media == '1')
+				statuses.push("Paper out");
+			if (media == '2')
+				statuses.push("Ribbon Out");
+			if (media == '4')
+				statuses.push("Media Door Open");
+			if (media == '8')
+				statuses.push("Cutter Fault");
+			if (head == '1')
+				statuses.push("Printhead Overheating");
+			if (head == '2')
+				statuses.push("Motor Overheating");
+			if (head == '4')
+				statuses.push("Printhead Fault");
+			if (head == '8')
+				statuses.push("Incorrect Printhead");
+			if (pause == '1')
+				statuses.push("Printer Paused");
+			if ((!ok) && (statuses.Count == 0))
+				statuses.push("Error: Unknown Error");
+			finishedFunction(statuses.join());
+		}, printerError);
 }
-function hidePrintForm()
-{
+function hidePrintForm() {
 	$('#print_form').hide();
 }
-function showPrintForm()
-{
+function showPrintForm() {
 	$('#print_form').show();
 }
-function showLoading(text)
-{
+function showLoading(text) {
 	$('#loading_message').text(text);
 	$('#printer_data_loading').show();
 	hidePrintForm();
 	$('#printer_details').hide();
 	$('#printer_select').hide();
 }
-function printComplete()
-{
+function printComplete() {
 	hideLoading();
-	alert ("Printing complete");
+	alert("Printing complete");
 }
-function hideLoading()
-{
+function hideLoading() {
 	$('#printer_data_loading').hide();
-	if(default_mode == true)
-	{
+	if (default_mode == true) {
 		showPrintForm();
 		$('#printer_details').show();
 	}
-	else
-	{
+	else {
 		$('#printer_select').show();
 		showPrintForm();
 	}
 }
-function changePrinter()
-{
+function changePrinter() {
 	default_mode = false;
 	selected_printer = null;
 	$('#printer_details').hide();
-	if(available_printers == null)
-	{
+	if (available_printers == null) {
 		showLoading("Searching for Compatible Zebra Printers...Please wait");
 		$('#print_form').hide();
 		setTimeout(changePrinter, 200);
@@ -211,24 +186,20 @@ function changePrinter()
 	}
 	$('#printer_select').show();
 	onPrinterSelected();
-	
+
 }
-function onPrinterSelected()
-{
+function onPrinterSelected() {
 	selected_printer = available_printers[$('#printers')[0].selectedIndex];
 }
-function showErrorMessage(text)
-{
+function showErrorMessage(text) {
 	$('#main').hide();
 	$('#error_div').show();
 	$('#error_message').html(text);
 }
-function printerError(text)
-{
+function printerError(text) {
 	showErrorMessage("An error occurred while printing. Please try again." + text);
 }
-function trySetupAgain()
-{
+function trySetupAgain() {
 	$('#main').show();
 	$('#error_div').hide();
 	setup_web_print();
@@ -236,6 +207,6 @@ function trySetupAgain()
 }
 
 
-$(document).ready(function() {
+$(document).ready(function () {
 	setup_web_print();
 });

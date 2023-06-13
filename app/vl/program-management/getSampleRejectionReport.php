@@ -180,7 +180,7 @@ if (!empty($_SESSION['facilityMap'])) {
 }
 
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $sWhere = implode(" AND ", $sWhere);
     $sQuery = $sQuery . ' AND ' . $sWhere;
 }
@@ -188,7 +188,7 @@ if (isset($sWhere) && !empty($sWhere)) {
 
 $sQuery = $sQuery . ' group by vl.vl_sample_id';
 //echo $sQuery; die;
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }

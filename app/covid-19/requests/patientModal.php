@@ -115,12 +115,14 @@ $pResult = $db->rawQuery($pQuery);
 
 										<tr>
 											<td><input type="radio" id="patient<?php echo $patient['covid19_id']; ?>" name="patient" value='<?php echo $patientDetails; ?>' onclick="getPatientDetails(this.value);"></td>
-											<td><?php echo $patient['patient_id']; ?></td>
-											<td><?php echo ($patient['patient_name']) . " " . $patient['patient_surname']; ?></td>
-											<td><?php echo $patient['patient_age']; ?></td>
-											<td><?php echo (str_replace("_", " ", $patient['patient_gender'])); ?></td>
-											<td><?php echo ($patient['facility_name']); ?></td>
-											<td><?php echo date("d-M-Y h:i:s a", strtotime($patient['request_created_datetime'])); ?></td>
+											<td><?= $patient['patient_id']; ?></td>
+											<td><?= ($patient['patient_name']) . " " . $patient['patient_surname']; ?></td>
+											<td><?= $patient['patient_age']; ?></td>
+											<td><?= str_replace("_", " ", $patient['patient_gender']); ?></td>
+											<td><?= $patient['facility_name']; ?></td>
+											<td><?= DateUtility::humanReadableDateFormat($patient['request_created_datetime'], true); ?></td>
+
+
 										</tr>
 								<?php
 									}
@@ -153,7 +155,10 @@ $pResult = $db->rawQuery($pQuery);
 <script>
 	$(document).ready(function() {
 		$('#patientModalDataTable').DataTable({
-			"aaSorting": [1, 'asc']
+			"aaSorting": [
+				[1, 'asc'],
+				[6, 'desc']
+			]
 		});
 	});
 

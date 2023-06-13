@@ -159,8 +159,7 @@ try {
                     'last_modified_datetime'                            => DateUtility::getCurrentDateTime()
                 );
 
-                // echo "<pre>";print_r($sampleCode);die;
-                if (!$sampleCode) {
+                if (empty($sampleCode)) {
                     $lastId = $db->insert($tableName, $eidData);
                 } else {
                     $lastId = $sampleCode['eid_id'];

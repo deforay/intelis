@@ -370,7 +370,7 @@ class VlService
 
             $interpretAndConvertResult = $this->commonService->getGlobalConfig('vl_interpret_and_convert_results');
 
-            $interpretAndConvertResult = (!empty($interpretAndConvertResult) && $interpretAndConvertResult === 'yes') ? true : false;
+            $interpretAndConvertResult = !empty($interpretAndConvertResult) && $interpretAndConvertResult === 'yes';
 
             if (!empty($unit) && strpos($unit, 'Log') !== false && is_numeric($result)) {
                 $logVal = (float) $result;

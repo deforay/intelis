@@ -129,7 +129,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
 if (isset($_POST['testType']) && $_POST['testType'] != "") {
      $sQuery = $sQuery . " WHERE vl.test_type like " . $_POST['testType'];
 }
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
      $_SESSION['vlRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }

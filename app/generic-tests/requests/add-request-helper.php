@@ -311,8 +311,7 @@ try {
             foreach ($_POST['testName'] as $testKey => $testKitName) {
                 if (!empty($testKitName)) {
                     if (isset($_POST['testDate'][$testKey]) && trim($_POST['testDate'][$testKey]) != "") {
-                        $testedDateTime = explode(" ", $_POST['testDate'][$testKey]);
-                        $_POST['testDate'][$testKey] = DateUtility::isoDateFormat($testedDateTime[0]) . " " . $testedDateTime[1];
+                        $_POST['testDate'][$testKey] = DateUtility::isoDateFormat($_POST['testDate'][$testKey] ?? '', true);
                     } else {
                         $_POST['testDate'][$testKey] = null;
                     }
@@ -320,7 +319,7 @@ try {
                         'generic_id'                => $_POST['vlSampleId'],
                         'test_name'                 => ($testKitName == 'other') ? $_POST['testNameOther'][$testKey] : $testKitName,
                         'facility_id'               => $_POST['labId'] ?? null,
-                        'sample_tested_datetime'    => date('Y-m-d H:i:s', strtotime($_POST['testDate'][$testKey])),
+                        'sample_tested_datetime'    => DateUtility::isoDateFormat($_POST['testDate'][$testKey] ?? '', true),
                         'testing_platform'          => $_POST['testingPlatform'][$testKey] ?? null,
                         'kit_lot_no'                => (strpos($testKitName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
                         'kit_expiry_date'           => (strpos($testKitName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
