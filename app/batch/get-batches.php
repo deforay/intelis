@@ -115,7 +115,9 @@ for ($i = 0; $i < count($aColumns); $i++) {
         $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
     }
 }
-
+if (isset($_POST['testType']) && ($_POST['testType'] != "")) {
+    $sWhere[] = " vl.test_type = '" . $_POST['testType'] . "'";
+}
 /*
 * SQL queries
 * Get data to display
@@ -170,7 +172,11 @@ foreach ($rResult as $aRow) {
     $deleteBatch = '';
     $edit = '';
     if ($editBatch) {
-        $edit = '<a href="edit-batch.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>&nbsp;';
+        if(isset($_POST['type']) && !empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
+            $edit = '<a href="edit-batch.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '&testType='.base64_encode($_POST['testType']).'" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>&nbsp;';
+        }else{
+            $edit = '<a href="edit-batch.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>&nbsp;';
+        }
     }
     if($editPosition){
         $editPosition = '<a href="edit-batch-position.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _("Edit Position") . '"><em class="fa-solid fa-arrow-down-1-9"></em> ' . _("Edit Position") . '</a>';

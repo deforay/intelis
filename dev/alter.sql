@@ -4161,3 +4161,11 @@ ALTER TABLE `batch_details` ADD `last_modified_by` DATETIME NULL DEFAULT CURRENT
 
 UPDATE `batch_details` SET `last_modified_by` = `created_by` WHERE `last_modified_by` IS NULL;
 UPDATE `batch_details` SET `last_modified_datetime` = `request_created_datetime` WHERE `last_modified_datetime` IS NULL;
+
+-- Thana 13-Jun-2023
+INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('generic-tests-batches', 'generic-test', 'Lab Tests Batch Management');
+UPDATE `privileges` SET `resource_id` = 'generic-test-batches' WHERE `privileges`.`resource_id` = 'generic-requests' AND `privileges`.`privilege_name` = '/batch/batches.php?type=generic-tests';
+
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES 
+(NULL, 'generic-test-batches', '/batch/add-batch.php?type=generic-tests', 'Add New Batch'), 
+(NULL, 'generic-test-batches', '/batch/edit-batch.php?type=generic-tests', 'Edit Batch');

@@ -21,6 +21,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
 	$title = "TB";
 } elseif (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
 	$title = "Lab Tests";
+    $genericHide = "display:none;";
 }
 
 $title = _($title . " | Add Batch");
@@ -55,6 +56,8 @@ foreach ($testPlatformResult as $machine) {
         $machinesLabelOrder[$machine['config_id']] = '';
     }
 }
+$testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
+$testTypeResult = $db->rawQuery($testTypeQuery);
 //print_r($machinesLabelOrder);
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
@@ -102,10 +105,34 @@ foreach ($testPlatformResult as $machine) {
     <!-- Main content -->
     <section class="content">
         <div class="box box-default">
+             <?php if(isset($_GET['type']) && !empty($_GET['type']) && $_GET['type'] == 'generic-tests') { ?>
+                <div class="box-header with-border">
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6">
+                            <div class="form-group" style="margin-left:30px; margin-top:30px;">
+                                <label for="testType">Test Type</label>
+                                <select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getBatchForm(this)">
+                                    <option value=""> -- Select -- </option>
+                                    <?php foreach ($testTypeResult as $testType) { ?>
+                                        <option value="<?php echo $testType['test_type_id']; ?>"><?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?></option>
+                                    <?php } ?>
+                                </select>
+                                <span class="batchAlert" style="font-size:1.1em;color: red;">Choose test type to add relavent sample bacth code</span>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-md-6">
+                            <div class="box-header with-border">
+                                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php }else{ ?>
             <div class="box-header with-border">
                 <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
             </div>
-            <table aria-describedby="table" class="table" aria-hidden="true" style="margin-top:20px;width: 100%;">
+            <?php } ?>
+            <table aria-describedby="table" class="table batchDiv" aria-hidden="true" style="margin-top:20px;width: 100%;<?php echo $genericHide;?>">
                 <tr>
                     <th style="width: 20%;" scope="col"><?php echo _("Testing Platform"); ?>&nbsp;<span class="mandatory">*</span> </th>
                     <td style="width: 30%;">
@@ -152,7 +179,7 @@ foreach ($testPlatformResult as $machine) {
                 </tr>
             </table>
             <!-- /.box-header -->
-            <div class="box-body">
+            <div class="box-body batchDiv" style="<?php echo $genericHide;?>">
                 <!-- form start -->
                 <form class="form-horizontal" method="post" name="addBatchForm" id="addBatchForm" autocomplete="off" action="save-batch-helper.php">
                     <div class="box-body">
@@ -338,6 +365,7 @@ foreach ($testPlatformResult as $machine) {
                 sampleCollectionDate: $("#sampleCollectionDate").val(),
                 sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
                 type : '<?php echo $_GET['type'];?>',
+                testType : $('#testType').val(),
                 fName: fName
             },
             function(data) {
@@ -361,5 +389,18 @@ foreach ($testPlatformResult as $machine) {
             $('#alertText').html('');
         }
     });
+
+    function getBatchForm(obj) {
+		if(obj.value != ""){
+			$(".batchDiv").show();
+			$('.batchAlert').hide();
+            if($('#machine').val() != ''){
+                getSampleCodeDetails();
+            }
+		}else{
+			$(".batchDiv").hide();
+			$('.batchAlert').show();
+		}
+	}
 </script>
 <?php require_once APPLICATION_PATH . '/footer.php';

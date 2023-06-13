@@ -94,6 +94,10 @@ if (isset($_POST['fName']) && is_array($_POST['fName']) && !empty($_POST['fName'
     $where[] = " vl.facility_id IN (" . implode(',', $_POST['fName']) . ")";
 }
 
+if (isset($_POST['testType']) && $_POST['testType'] != "") {
+    $where[] = " vl.test_type = '" . $_POST['testType'] . "'";
+}
+
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
     if (trim($start_date) == trim($end_date)) {
         $where[] = ' DATE(sample_collection_date) = "' . $start_date . '"';

@@ -404,6 +404,7 @@
 					sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
 					type: '<?php echo $_GET['type']; ?>',
 					batchId: $("#batchId").val(),
+					testType : '<?php echo base64_decode($_GET['testType']); ?>',
 					fName: fName
 				},
 				function(data) {
