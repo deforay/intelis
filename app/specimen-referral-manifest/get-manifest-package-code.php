@@ -44,6 +44,8 @@ if ($module == 'vl') {
 	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.hepatitis_id FROM package_details as p INNER JOIN form_hepatitis as vl ON vl.sample_package_code = p.package_code ";
 } elseif ($module == 'tb') {
 	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.tb_id FROM package_details as p INNER JOIN form_tb as vl ON vl.sample_package_code = p.package_code ";
+}elseif ($module == 'generic-tests') {
+	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.sample_id FROM package_details as p INNER JOIN form_generic as vl ON vl.sample_package_code = p.package_code ";
 }
 $where = [];
 $where[] = " (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is not null OR vl.sample_package_id !='') AND (remote_sample = 'yes') ";
@@ -70,11 +72,16 @@ if (!empty($_POST['facility'])) {
 	$where[] = " (facility_id IN(" . $_POST['facility'] . ")  OR (facility_id like '' OR facility_id is null OR facility_id = 0))";
 }
 
+if (isset($_POST['genericTestType']) && !empty($_POST['genericTestType'])) {
+	$where[] = " vl.test_type =" . $_POST['genericTestType'];
+}
+
+
 if (!empty($where)) {
 	$query .= " where " . implode(" AND ", $where);
 }
 $query .= " GROUP BY p.package_code ORDER BY vl.request_created_datetime ASC";
-// die($query);
+ //die($query);
 $result = $db->rawQuery($query);
 
 ?>

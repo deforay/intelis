@@ -115,25 +115,30 @@ $commonDataToSync = array(
 $url = $remoteUrl . '/remote/remote/commonData.php';
 
 if (isset($systemConfig['modules']['genericTests']) && $systemConfig['modules']['genericTests'] === true) {
-    $payload['genericSampleTypesLastModified'] = $general->getLastModifiedDateTime('r_generic_sample_types');
-    $payload['genericRejectionReasonsLastModified'] = $general->getLastModifiedDateTime('r_generic_sample_rejection_reasons');
-    $payload['genericFailureReasonsLastModified'] = $general->getLastModifiedDateTime('r_generic_test_failure_reasons');
-
-    // This array is used to sync data that we will later receive from the API call
-    $genericDataToSync = array(
-        'genericSampleTypes' => array(
-            'primaryKey' => 'sample_type_id',
-            'tableName' => 'r_generic_sample_types',
-        ),
-        'genericRejectionReasons' => array(
-            'primaryKey' => 'rejection_reason_id',
-            'tableName' => 'r_generic_sample_rejection_reasons',
-        ),
-        'genericFailureReasons' => array(
-            'primaryKey' => 'test_failure_reason_id',
-            'tableName' => 'r_generic_test_failure_reasons',
-        )
+    $toSyncTables = array(
+        "r_test_types",
+        "r_generic_test_methods",
+        "r_generic_test_categories",
+        "r_generic_sample_types",
+        "r_generic_test_reasons",
+        "r_generic_test_result_units",
+        "r_generic_test_failure_reasons",
+        "r_generic_sample_rejection_reasons",
+        "r_generic_symptoms",
+        "generic_test_methods_map",
+        "generic_test_sample_type_map",
+        "generic_test_reason_map",
+        "generic_test_failure_reason_map",
+        "generic_sample_rejection_reason_map",
+        "generic_test_symptoms_map",
+        "generic_test_result_units_map"
     );
+    foreach($toSyncTables as $table){
+        $payload[$general->stringToCamelCase($table).'LastModified'] = $general->getLastModifiedDateTime('r_generic_sample_types');
+
+        $genericDataToSync[$general->stringToCamelCase($table)] = array("primaryKey" => $general->getPrimaryKeyField($table), "tableName" => $table);
+
+    }
 }
 if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
     $payload['vlArtCodesLastModified'] = $general->getLastModifiedDateTime('r_vl_art_regimen');
@@ -141,9 +146,6 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
     $payload['vlSampleTypesLastModified'] = $general->getLastModifiedDateTime('r_vl_sample_type');
     $payload['vlFailureReasonsLastModified'] = $general->getLastModifiedDateTime('r_vl_test_failure_reasons');
     $payload['vlResultsLastModified'] = $general->getLastModifiedDateTime('r_vl_results');
-
-
-
 
     // This array is used to sync data that we will later receive from the API call
     $vlDataToSync = array(
