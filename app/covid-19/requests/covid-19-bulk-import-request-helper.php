@@ -65,13 +65,13 @@ try {
                 $instanceId = $general->getInstanceId();
 
                 if (trim($rowData['AU']) != '') {
-                    $sampleCollectionDate = date('Y-m-d H:i:s', strtotime($rowData['AU']));
+                    $sampleCollectionDate = DateUtility::isoDateFormat($rowData['AU'] ?? '', true);
                 } else {
                     $sampleCollectionDate = null;
                 }
 
                 if (trim($rowData['AX']) != '') {
-                    $sampleReceivedDate = date('Y-m-d H:i:s', strtotime($rowData['AX']));
+                    $sampleReceivedDate = DateUtility::isoDateFormat($rowData['AX'] ?? '', true);
                 } else {
                     $sampleReceivedDate = null;
                 }
@@ -89,7 +89,7 @@ try {
                     'patient_name'                          => $rowData['G'],
                     'patient_id'                            => $rowData['H'],
                     'external_sample_code'                  => $rowData['I'],
-                    'patient_dob'                           => date('Y-m-d', strtotime($rowData['J'])),
+                    'patient_dob'                           => DateUtility::isoDateFormat($rowData['J'] ?? ''),
                     'patient_age'                           => $rowData['K'],
                     'patient_gender'                        => strtolower($rowData['L']),
                     'patient_phone_number'                  => $rowData['M'],
@@ -145,8 +145,7 @@ try {
                     'lab_technician'                        => $labTechnician ?? null,
                 );
 
-                // echo "<pre>";print_r($data);die;
-                if (!$sampleCode) {
+                if (empty($sampleCode)) {
                     $lastId = $db->insert($tableName, $data);
                 } else {
                     $lastId = $sampleCode['covid19_id'];
@@ -162,28 +161,22 @@ try {
                 $testData[1]['testDate']        = $rowData['AF'];
                 $testData[1]['testingPlatform'] = $rowData['AG'];
                 $testData[1]['testResult']      = $rowData['AH'];
-                if (count($testData) > 0) {
+                if (!empty($testData)) {
                     /* Delete if already exist */
                     $db = $db->where('covid19_id', $lastId);
                     $db->delete($testTableName);
 
                     foreach ($testData as $testKitName) {
-                        if (trim($testKitName['testDate']) != '') {
-                            $testDate = date('Y-m-d H:i', strtotime($testKitName['testDate']));
-                        } else {
-                            $testDate = null;
-                        }
-
                         $covid19TestData = array(
                             'covid19_id'            => $lastId,
                             'test_name'             => $testKitName['testRequest'],
                             'facility_id'           => $labName['facility_id'] ?? null,
                             'testing_platform'      => $testKitName['testingPlatform'],
-                            'sample_tested_datetime' => date('Y-m-d H:i:s', strtotime($testDate)),
+                            'sample_tested_datetime' => DateUtility::isoDateFormat($testKitName['testDate'] ?? '', true),
                             'result'                => strtolower($testKitName['testResult']),
                         );
                         $db->insert($testTableName, $covid19TestData);
-                        $covid19Data['sample_tested_datetime'] = date('Y-m-d H:i:s', strtotime($testDate));
+                        $covid19Data['sample_tested_datetime'] = DateUtility::isoDateFormat($testKitName['testDate'] ?? '', true);
                     }
                 }
                 $db = $db->where('covid19_id', $lastId);
@@ -192,7 +185,6 @@ try {
         }
         $_SESSION['alertMsg'] = "Data imported successfully";
     }
-    // echo "<pre>";print_r($returnArray);die;
     header("Location:/covid-19/requests/covid-19-requests.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());

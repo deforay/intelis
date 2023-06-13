@@ -6,6 +6,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UsersService;
+use App\Utilities\DateUtility;
 
 ini_set('memory_limit', -1);
 
@@ -175,7 +176,7 @@ try {
     }
 
     if (!empty($input['lastModifiedDateTime'])) {
-        $where[] = " DATE(vl.request_created_datetime) >= '" . date('Y-m-d', strtotime($input['lastModifiedDateTime'])) . "'";
+        $where[] = " DATE(vl.request_created_datetime) >= '" . DateUtility::isoDateFormat($input['lastModifiedDateTime']) . "'";
     }
     $facilityId = $input['facility'] ?? [];
     if (!empty($facilityId)) {

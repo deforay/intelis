@@ -154,7 +154,7 @@ foreach ($rResult as $key => $aRow) {
      $row[] = str_replace("-", " ", ($aRow['request_type']));
      $row[] = strtoupper($aRow['test_type']);
      $row[] = $aRow['api_url'];
-     $row[] = date("d-M-Y h:i:s", strtotime($aRow['requested_on']));
+     $row[] = DateUtility::humanReadableDateFormat($aRow['requested_on'], true);
      $row[] = '<a href="javascript:void(0);" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result" onclick="showModal(\'show-params.php?id=' . base64_encode($aRow[$primaryKey]) . '\',1200,720);"> Show Params</a>';
      $output['aaData'][] = $row;
 }

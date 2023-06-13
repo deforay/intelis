@@ -7,11 +7,11 @@ if (php_sapi_name() !== 'cli') {
 
 require_once(__DIR__ . "/../../bootstrap.php");
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\UsersService;
 use App\Services\VlService;
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 if (
     !isset(SYSTEM_CONFIG['interfacing']['enabled']) ||
@@ -222,7 +222,7 @@ if (!empty($interfaceData)) {
                 if ($mysqlConnected) {
                     $interfaceData = array(
                         'lims_sync_status' => 1,
-                        'lims_sync_date_time' => date('Y-m-d H:i:s'),
+                        'lims_sync_date_time' => DateUtility::getCurrentDateTime(),
                     );
                     $db->connection('interface')->where('test_id', $result['test_id']);
                     $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
@@ -234,7 +234,7 @@ if (!empty($interfaceData)) {
 
                     // Bind the values to the placeholders in the prepared statement
                     $stmt->bindValue(':lims_sync_status', 1, PDO::PARAM_INT);
-                    $stmt->bindValue(':lims_sync_date_time', date('Y-m-d H:i:s'));
+                    $stmt->bindValue(':lims_sync_date_time', DateUtility::getCurrentDateTime());
                     $stmt->bindValue(':test_id', $result['test_id'], PDO::PARAM_INT);
 
                     // Execute the prepared statement
@@ -283,7 +283,7 @@ if (!empty($interfaceData)) {
                 if ($mysqlConnected) {
                     $interfaceData = array(
                         'lims_sync_status' => 1,
-                        'lims_sync_date_time' => date('Y-m-d H:i:s'),
+                        'lims_sync_date_time' => DateUtility::getCurrentDateTime(),
                     );
                     $db->connection('interface')->where('test_id', $result['test_id']);
                     $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
@@ -294,7 +294,7 @@ if (!empty($interfaceData)) {
 
                     // Bind the values to the placeholders in the prepared statement
                     $stmt->bindValue(':lims_sync_status', 1, PDO::PARAM_INT);
-                    $stmt->bindValue(':lims_sync_date_time', date('Y-m-d H:i:s'));
+                    $stmt->bindValue(':lims_sync_date_time', DateUtility::getCurrentDateTime());
                     $stmt->bindValue(':test_id', $result['test_id'], PDO::PARAM_INT);
 
                     // Execute the prepared statement
@@ -365,7 +365,7 @@ if (!empty($interfaceData)) {
                 if ($mysqlConnected) {
                     $interfaceData = array(
                         'lims_sync_status' => 1,
-                        'lims_sync_date_time' => date('Y-m-d H:i:s'),
+                        'lims_sync_date_time' => DateUtility::getCurrentDateTime(),
                     );
                     $db->connection('interface')->where('test_id', $result['test_id']);
                     $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
@@ -376,7 +376,7 @@ if (!empty($interfaceData)) {
 
                     // Bind the values to the placeholders in the prepared statement
                     $stmt->bindValue(':lims_sync_status', 1, PDO::PARAM_INT);
-                    $stmt->bindValue(':lims_sync_date_time', date('Y-m-d H:i:s'));
+                    $stmt->bindValue(':lims_sync_date_time', DateUtility::getCurrentDateTime());
                     $stmt->bindValue(':test_id', $result['test_id'], PDO::PARAM_INT);
 
                     // Execute the prepared statement
@@ -387,7 +387,7 @@ if (!empty($interfaceData)) {
             if ($mysqlConnected) {
                 $interfaceData = array(
                     'lims_sync_status' => 2,
-                    'lims_sync_date_time' => date('Y-m-d H:i:s'),
+                    'lims_sync_date_time' => DateUtility::getCurrentDateTime(),
                 );
                 $db->connection('interface')->where('test_id', $result['test_id']);
                 $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
@@ -398,7 +398,7 @@ if (!empty($interfaceData)) {
 
                 // Bind the values to the placeholders in the prepared statement
                 $stmt->bindValue(':lims_sync_status', 2, PDO::PARAM_INT);
-                $stmt->bindValue(':lims_sync_date_time', date('Y-m-d H:i:s'));
+                $stmt->bindValue(':lims_sync_date_time', DateUtility::getCurrentDateTime());
                 $stmt->bindValue(':test_id', $result['test_id'], PDO::PARAM_INT);
 
                 // Execute the prepared statement

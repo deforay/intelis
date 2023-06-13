@@ -112,12 +112,12 @@ $pResult = $db->rawQuery($pQuery);
 
 										<tr>
 											<td><input type="radio" id="patient<?php echo $patient['vl_sample_id']; ?>" name="patient" value='<?php echo $patientDetails; ?>' onclick="getPatientDetails(this.value);"></td>
-											<td><?php echo $patient['patient_id']; ?></td>
+											<td><?= $patient['patient_id']; ?></td>
 											<td><?php echo ($patient['patient_first_name']) . " " . $patient['patient_last_name']; ?></td>
 											<td><?php echo $patient['patient_age_in_years']; ?></td>
-											<td><?php echo (str_replace("_", " ", $patient['patient_gender'])); ?></td>
+											<td><?= str_replace("_", " ", $patient['patient_gender']); ?></td>
 											<td><?= $patient['facility_name']; ?></td>
-											<td><?php echo DateUtility::humanReadableDateFormat($patient['request_created_datetime']); ?></td>
+											<td><?= DateUtility::humanReadableDateFormat($patient['request_created_datetime'], true); ?></td>
 											<td><?php echo DateUtility::humanReadableDateFormat($patient['sample_tested_datetime']); ?></td>
 											<td><?php echo $patient['result']; ?></td>
 										</tr>
@@ -150,7 +150,10 @@ $pResult = $db->rawQuery($pQuery);
 <script>
 	$(document).ready(function() {
 		$('#patientModalDataTable').DataTable({
-			"aaSorting": [1, 'asc']
+			"aaSorting": [
+				[1, 'asc'],
+				[6, 'desc']
+			]
 		});
 
 	});
