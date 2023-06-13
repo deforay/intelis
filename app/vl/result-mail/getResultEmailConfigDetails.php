@@ -87,7 +87,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
 
 $sQuery = "SELECT * FROM other_config";
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $sWhere = ' WHERE ' . $sWhere;
     $sWhere = $sWhere . ' AND type = "result"';
     $sQuery = $sQuery . ' ' . $sWhere;
@@ -96,7 +96,7 @@ if (isset($sWhere) && !empty($sWhere)) {
     $sQuery = $sQuery . ' ' . $sWhere;
 }
 
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }

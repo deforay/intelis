@@ -169,7 +169,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      }
 }
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
      //$sWhere = ' where ' . $sWhere;
      if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
@@ -262,7 +262,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      }
 }
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
      $sWhere = implode(' AND ', $sWhere);
 }
 
@@ -270,7 +270,7 @@ $sQuery = $sQuery . ' WHERE ' . $sWhere;
 $_SESSION['vlResultQuery'] = $sQuery;
 //echo $_SESSION['vlResultQuery'];die;
 
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }

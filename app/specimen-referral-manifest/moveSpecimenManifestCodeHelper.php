@@ -10,6 +10,10 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 $table = 'form_vl';
+if(isset($_POST['testType']) && $_POST['testType']=="")
+{
+    $_POST['testType'] = "generic-tests";
+}
 if ($_POST['testType'] == 'vl') {
     $table = 'form_vl';
 } else if ($_POST['testType'] == 'eid') {
@@ -20,8 +24,10 @@ if ($_POST['testType'] == 'vl') {
     $table = 'form_hepatitis';
 } else if ($_POST['testType'] == 'tb') {
     $table = 'form_tb';
+} else if ($_POST['testType'] == 'generic-tests') {
+    $table = 'form_generic';
 }
-
+//echo $table; die;
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 

@@ -243,10 +243,10 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
         $sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")";
     }
 }
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $sQuery = $sQuery . ' WHERE' . implode(" AND ", $sWhere);
 }
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }

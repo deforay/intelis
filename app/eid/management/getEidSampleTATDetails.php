@@ -199,7 +199,7 @@ if (!empty($sWhere)) {
 	$sQuery = $sQuery . ' AND ' . $sWhere;
 }
 
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
 	$_SESSION['eidTatData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
 	$sQuery = $sQuery . " ORDER BY " . $sOrder;
 }

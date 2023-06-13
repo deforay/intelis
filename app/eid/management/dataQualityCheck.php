@@ -153,7 +153,7 @@ if (!empty($_SESSION['facilityMap'])) {
      $dWhere = $dWhere . " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
      $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
 } else {
      $sWhere = "";
@@ -162,7 +162,7 @@ if (isset($sWhere) && !empty($sWhere)) {
 $sQuery = $sQuery . ' ' . $sWhere;
 //echo $sQuery;die;
 $_SESSION['vlIncompleteForm'] = $sQuery;
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . ' order by ' . $sOrder;
 }

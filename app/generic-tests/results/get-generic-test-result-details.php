@@ -271,7 +271,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
           $sWhere[] = " vl.facility_id IN (" . $facilityMap . ")";
      }
 }
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
      $sQuery = $sQuery . ' WHERE' . implode(" AND ", $sWhere);
 }
 $_SESSION['vlResultQuery'] = $sQuery;

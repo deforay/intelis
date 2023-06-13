@@ -92,7 +92,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM global_config";
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $sWhere = "WHERE status = 'active' AND " . $sWhere;
     $sQuery = $sQuery . ' ' . $sWhere;
 } else {
@@ -103,7 +103,7 @@ if (isset($_POST['category']) && $_POST['category']) {
     $sQuery = $sQuery . 'AND category like "' . $_POST['category'] . '"';
 }
 
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }

@@ -94,12 +94,12 @@ for ($i = 0; $i < count($aColumns); $i++) {
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM $tableName";
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $sWhere = ' where ' . implode(' AND ', $sWhere);
     $sQuery = $sQuery . ' ' . $sWhere;
 }
 
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }
@@ -112,12 +112,12 @@ if (isset($sLimit) && isset($sOffset)) {
 //echo $sQuery;
 $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
-/* Data set length after filtering 
+/* Data set length after filtering
 
 $aResultFilterTotal = $db->rawQuery("SELECT * FROM $tableName $sWhere order by $sOrder");
 $iFilteredTotal = count($aResultFilterTotal);
 
-/* Total data set length 
+/* Total data set length
 $aResultTotal =  $db->rawQuery("select COUNT($primaryKey) as total FROM $tableName");
 // $aResultTotal = $countResult->fetch_row();
 //print_r($aResultTotal);

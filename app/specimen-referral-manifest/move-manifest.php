@@ -1,5 +1,5 @@
 <?php
-
+use App\Services\GenericTestsService;
 use App\Services\TbService;
 use App\Services\VlService;
 use App\Services\EidService;
@@ -66,14 +66,21 @@ if ($module == 'vl') {
     $tbService = ContainerRegistry::get(TbService::class);
     $sampleTypes = $tbService->getTbSampleTypes();
 }
+else if ($module == 'generic-tests') {
+    /** @var GenericTestsService $genericService */
+    $genericService = ContainerRegistry::get(GenericTestsService::class);
+    $sampleTypes = $genericService->getGenericSampleTypes();
+}
 
 $testTypes = array(
     "vl" => "Viral Load",
     "eid" => "Early Infant Diagnosis",
     "covid19" => "Covid-19",
     "hepatitis" => "Hepatitis",
-    "tb" => "TB"
+    "tb" => "TB",
+    "genericTests" => "Generic Tests"
 );
+
 if (!empty(SYSTEM_CONFIG['modules'])) {
     foreach (SYSTEM_CONFIG['modules'] as $type => $status) {
         if ($status) {
@@ -82,7 +89,8 @@ if (!empty(SYSTEM_CONFIG['modules'])) {
     }
 }
 $packageNo = strtoupper($shortCode . date('ymd') . $general->generateRandomString(6));
-
+$testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
+$testTypeResult = $db->rawQuery($testTypeQuery);
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
 <style>
@@ -138,8 +146,25 @@ $packageNo = strtoupper($shortCode . date('ymd') . $general->generateRandomStrin
             <br><br><br><br>
             <!-- /.box-header -->
             <div class="box-body">
+            <?php $hide = "";
+				if ($module == 'generic-tests') {
+					$hide = "hide " ?>
+					<div class="row">
+						<div class="col-xs-4 col-md-4">
+							<div class="form-group" style="margin-left:30px; margin-top:30px;">
+								<label for="genericTestType">Test Type</label>
+								<select class="form-control" name="genericTestType" id="genericTestType" title="Please choose test type" style="width:100%;" onchange="getManifestCodeForm(this.value)">
+									<option value=""> -- Select -- </option>
+									<?php foreach ($testTypeResult as $testType) { ?>
+										<option value="<?php echo $testType['test_type_id']; ?>"><?php echo $testType['test_standard_name'] ?></option>
+									<?php } ?>
+								</select>
+							</div>
+						</div>
+					</div>
+				<?php } ?>
                 <!-- form start -->
-                <form class="form-horizontal" method="post" name="moveSpecimenReferralManifestForm" id="moveSpecimenReferralManifestForm" autocomplete="off" action="moveSpecimenManifestCodeHelper.php">
+                <form class="<?php echo $hide; ?> form-horizontal" method="post" name="moveSpecimenReferralManifestForm" id="moveSpecimenReferralManifestForm" autocomplete="off" action="moveSpecimenManifestCodeHelper.php">
                     <div class="box-body">
                         <div class="row">
                             <div class="col-md-6">
@@ -180,6 +205,7 @@ $packageNo = strtoupper($shortCode . date('ymd') . $general->generateRandomStrin
                                         <select class="form-control select2" id="testType" name="testType" title="Choose Test Type">
                                             <?= $general->generateSelectOptions($testTypesNames, $module, '-- Select --'); ?>
                                         </select>
+                                        <input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title="" readonly value="<?= htmlspecialchars($module); ?>" />
                                     </div>
                                 </div>
                             </div>
@@ -378,7 +404,8 @@ $packageNo = strtoupper($shortCode . date('ymd') . $general->generateRandomStrin
                     facility: $('#facility').val(),
                     daterange: $('#daterange').val(),
                     assignLab: $('#assignLab').val(),
-                    testType: $('#testType').val()
+                    testType: $('#testType').val(),
+                    genericTestType:$('#genericTestType').val(),
                 },
                 function(data) {
                     if (data != "") {
@@ -392,6 +419,15 @@ $packageNo = strtoupper($shortCode . date('ymd') . $general->generateRandomStrin
             alert('Please select the testing lab');
         }
     }
+
+    function getManifestCodeForm(value) {
+		if (value != "") {
+			//var code = value.toUpperCase() + '<?php echo strtoupper(date('ymd') .  $general->generateRandomString(6)); ?>';
+			//$('#packageCode').val(code);
+			$("#moveSpecimenReferralManifestForm").removeClass("hide");
+		}
+       
+	}
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';

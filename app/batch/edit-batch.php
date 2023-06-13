@@ -1,71 +1,71 @@
-    <?php
+<?php
 
-	use App\Services\FacilitiesService;
-	use App\Registries\ContainerRegistry;
-	use App\Services\CommonService;
+use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
 
-	$title = _($title . " | Edit Batch");
+$title = _($title . " | Edit Batch");
 
-	require_once APPLICATION_PATH . '/header.php';
+require_once APPLICATION_PATH . '/header.php';
 
-	// Sanitized values from $request object
-	/** @var Laminas\Diactoros\ServerRequest $request */
-	$request = $GLOBALS['request'];
-	$_GET = $request->getQueryParams();
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
 
+$title = "Viral Load";
+$refTable = "form_vl";
+$refPrimaryColumn = "vl_sample_id";
+if (isset($_GET['type']) && $_GET['type'] == 'vl') {
 	$title = "Viral Load";
 	$refTable = "form_vl";
 	$refPrimaryColumn = "vl_sample_id";
-	if (isset($_GET['type']) && $_GET['type'] == 'vl') {
-		$title = "Viral Load";
-		$refTable = "form_vl";
-		$refPrimaryColumn = "vl_sample_id";
-	} elseif (isset($_GET['type']) && $_GET['type'] == 'eid') {
-		$title = "Early Infant Diagnosis";
-		$refTable = "form_eid";
-		$refPrimaryColumn = "eid_id";
-	} elseif (isset($_GET['type']) && $_GET['type'] == 'covid19') {
-		$title = "Covid-19";
-		$refTable = "form_covid19";
-		$refPrimaryColumn = "covid19_id";
-	} elseif (isset($_GET['type']) && $_GET['type'] == 'hepatitis') {
-		$title = "Hepatitis";
-		$refTable = "form_hepatitis";
-		$refPrimaryColumn = "hepatitis_id";
-	} elseif (isset($_GET['type']) && $_GET['type'] == 'tb') {
-		$title = "TB";
-		$refTable = "form_tb";
-		$refPrimaryColumn = "tb_id";
-	} elseif (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
-		$title = "Lab Tests";
-		$refTable = "form_generic";
-		$refPrimaryColumn = "sample_id";
-	}
+} elseif (isset($_GET['type']) && $_GET['type'] == 'eid') {
+	$title = "Early Infant Diagnosis";
+	$refTable = "form_eid";
+	$refPrimaryColumn = "eid_id";
+} elseif (isset($_GET['type']) && $_GET['type'] == 'covid19') {
+	$title = "Covid-19";
+	$refTable = "form_covid19";
+	$refPrimaryColumn = "covid19_id";
+} elseif (isset($_GET['type']) && $_GET['type'] == 'hepatitis') {
+	$title = "Hepatitis";
+	$refTable = "form_hepatitis";
+	$refPrimaryColumn = "hepatitis_id";
+} elseif (isset($_GET['type']) && $_GET['type'] == 'tb') {
+	$title = "TB";
+	$refTable = "form_tb";
+	$refPrimaryColumn = "tb_id";
+} elseif (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
+	$title = "Lab Tests";
+	$refTable = "form_generic";
+	$refPrimaryColumn = "sample_id";
+}
 
 
 
-	/** @var MysqliDb $db */
-	$db = ContainerRegistry::get('db');
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
 
-	/** @var CommonService $general */
-	$general = ContainerRegistry::get(CommonService::class);
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
-	/** @var FacilitiesService $facilitiesService */
-	$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-	$healthFacilites = $facilitiesService->getHealthFacilities($_GET['type']);
-	$facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+$healthFacilites = $facilitiesService->getHealthFacilities($_GET['type']);
+$facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
-	// Sanitized values from $request object
-	/** @var Laminas\Diactoros\ServerRequest $request */
-	$request = $GLOBALS['request'];
-	$_GET = $request->getQueryParams();
-	$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
-	$batchQuery = "SELECT * from batch_details as b_d
+$batchQuery = "SELECT * from batch_details as b_d
                     LEFT JOIN instruments as i_c ON i_c.config_id=b_d.machine
                     WHERE batch_id=?";
-	$batchInfo = $db->rawQuery($batchQuery, [$id]);
-	$bQuery = "SELECT vl.sample_code,vl.sample_batch_id,
+$batchInfo = $db->rawQuery($batchQuery, [$id]);
+$bQuery = "SELECT vl.sample_code,vl.sample_batch_id,
                     vl.$refPrimaryColumn,vl.facility_id,
                     vl.result,vl.result_status,
                     f.facility_name,f.facility_code

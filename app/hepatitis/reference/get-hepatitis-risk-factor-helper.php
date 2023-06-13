@@ -94,12 +94,12 @@ for ($i = 0; $i < count($aColumns); $i++) {
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM r_hepatitis_risk_factors";
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $sWhere = ' where ' . implode(' AND ', $sWhere);
     $sQuery = $sQuery . ' ' . $sWhere;
 }
 $sQuery = $sQuery . ' GROUP BY riskfactor_name';
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }

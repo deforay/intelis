@@ -90,17 +90,17 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS ud.user_id,
                             ud.interface_user_name,
                             ud.email,
                             ud.status,
-                            r.role_name 
-                            FROM user_details as ud 
+                            r.role_name
+                            FROM user_details as ud
                             LEFT JOIN roles as r ON ud.role_id=r.role_id ";
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $sWhere = ' where ' . implode(' AND ', $sWhere);
 } else {
     $sWhere = "";
 }
 $sQuery = $sQuery . ' ' . $sWhere;
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }

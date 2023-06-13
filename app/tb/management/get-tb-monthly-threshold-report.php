@@ -132,7 +132,7 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      }
 }
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
      $sWhere = ' where ' . $sWhere;
 
      if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {

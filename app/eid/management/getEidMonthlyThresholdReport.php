@@ -182,7 +182,7 @@ $sWhere[] =  ' vl.result!="" AND vl.result_status!=9';
 
 $sWhere[] = "  tl.test_type = 'eid'";
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
      $sWhere = ' where ' . implode(' AND ', $sWhere);
 }
 

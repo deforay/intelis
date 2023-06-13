@@ -92,12 +92,12 @@ for ($i = 0; $i < count($aColumns); $i++) {
 
 $sQuery = "SELECT * FROM r_generic_test_methods";
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $sWhere = ' where ' . $sWhere;
     $sQuery = $sQuery . ' ' . $sWhere;
 }
 
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }
@@ -111,8 +111,7 @@ $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
 /* Data set length after filtering */
 $order = "";
-if(!empty($sOrder))
-{
+if (!empty($sOrder)) {
     $order = " order by $sOrder";
 }
 $aResultFilterTotal = $db->rawQuery("SELECT * FROM r_generic_test_methods $sWhere $order");

@@ -266,14 +266,14 @@ if (!empty($_SESSION['facilityMap'])) {
 
 $sWhere[] = " result_status is NOT NULL";
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
      $sWhere = ' where ' . implode(" AND ", $sWhere);
 }
 $sQuery = $sQuery . ' ' . $sWhere;
 //echo $sQuery;die;
 
 
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . ' order by ' . $sOrder;
 }

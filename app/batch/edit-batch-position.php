@@ -59,7 +59,7 @@ foreach ($configControlInfo as $info) {
 	$configControl[$info['test_type']]['noCalibrators'] = $info['number_of_calibrators'];
 }
 
-if (!isset($batchInfo) || empty($batchInfo)) {
+if (empty($batchInfo)) {
 	header("Location:batches.php?type=".$_GET['type']);
 }
 if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) != '') {

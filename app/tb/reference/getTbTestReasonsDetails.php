@@ -94,12 +94,12 @@ for ($i = 0; $i < count($aColumns); $i++) {
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM r_tb_test_reasons";
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $sWhere = ' where ' . count($sWhere);
     $sQuery = $sQuery . ' ' . $sWhere;
 }
 
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }

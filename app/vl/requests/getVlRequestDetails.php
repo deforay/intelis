@@ -340,12 +340,12 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      $sWhere[] = ' vl.result_status!=9';
 }
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
      $_SESSION['vlRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
      $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }
 
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
      $_SESSION['vlRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
