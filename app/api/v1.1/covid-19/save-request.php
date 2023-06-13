@@ -457,15 +457,14 @@ try {
                             'covid19_id'             => $data['covid19SampleId'],
                             'test_name'              => ($test['testName'] == 'other') ? $test['testNameOther'] : $test['testName'],
                             'facility_id'            => $data['labId'] ?? null,
-                            'sample_tested_datetime' => date('Y-m-d H:i:s', strtotime($test['testDate'])),
+                            'sample_tested_datetime' => DateUtility::isoDateFormat($test['testDate'], true),
                             'testing_platform'       => $test['testingPlatform'] ?? null,
                             'kit_lot_no'             => (strpos($test['testName'], 'RDT') !== false) ? $test['kitLotNo'] : null,
                             'kit_expiry_date'        => (strpos($test['testName'], 'RDT') !== false) ? DateUtility::isoDateFormat($test['kitExpiryDate']) : null,
                             'result'                 => $test['testResult'],
                         ];
                         $db->insert($testTableName, $covid19TestData);
-                        error_log($db->getLastError());
-                        $covid19Data['sample_tested_datetime'] = date('Y-m-d H:i:s', strtotime($test['testDate']));
+                        $covid19Data['sample_tested_datetime'] = DateUtility::isoDateFormat($test['testDate'], true);
                     }
                 }
             }

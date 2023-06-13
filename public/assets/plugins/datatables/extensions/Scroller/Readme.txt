@@ -22,9 +22,9 @@ Scroller is initialised by simply including the letter `dt-string S` in the `dt-
 
 ```js
 $(document).ready( function () {
-	$('#example').DataTable( {
-		dom: 'lfrtipS'
-	} );
+    $('#example').DataTable( {
+        dom: 'lfrtipS'
+    } );
 } );
 ```
 

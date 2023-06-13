@@ -18,7 +18,7 @@ $_GET = $request->getQueryParams();
 
 $artNo = $_GET['artNo'];
 
-$pQuery = "SELECT * FROM form_eid as vl inner join facility_details as fd ON fd.facility_id=vl.facility_id  Left JOIN geographical_divisions as gd ON fd.facility_state_id=gd.geo_id where (child_id like '%" . $artNo . "%' OR child_name like '%" . $artNo . "%' OR child_surname like '%" . $artNo . "%' OR 	caretaker_phone_number like '%" . $artNo . "%') ORDER BY sample_tested_datetime DESC, sample_collection_date DESC LIMIT 25";
+$pQuery = "SELECT * FROM form_eid as vl inner join facility_details as fd ON fd.facility_id=vl.facility_id  Left JOIN geographical_divisions as gd ON fd.facility_state_id=gd.geo_id where (child_id like '%" . $artNo . "%' OR child_name like '%" . $artNo . "%' OR child_surname like '%" . $artNo . "%' OR     caretaker_phone_number like '%" . $artNo . "%') ORDER BY sample_tested_datetime DESC, sample_collection_date DESC LIMIT 25";
 $pResult = $db->rawQuery($pQuery);
 
 ?>
@@ -111,7 +111,7 @@ $pResult = $db->rawQuery($pQuery);
 											<td><?php echo $patient['child_age']; ?></td>
 											<td><?php echo (str_replace("_", " ", $patient['child_gender'])); ?></td>
 											<td><?= $patient['facility_name']; ?></td>
-											<td><?php echo DateUtility::humanReadableDateFormat($patient['request_created_datetime']); ?></td>
+											<td><?= DateUtility::humanReadableDateFormat($patient['request_created_datetime'], true); ?></td>
 										</tr>
 								<?php
 									}
@@ -142,7 +142,10 @@ $pResult = $db->rawQuery($pQuery);
 <script>
 	$(document).ready(function() {
 		$('#patientModalDataTable').DataTable({
-			"aaSorting": [1, 'asc']
+			"aaSorting": [
+				[1, 'asc'],
+				[6, 'desc']
+			]
 		});
 	});
 

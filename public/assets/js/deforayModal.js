@@ -17,55 +17,55 @@ function getEl(x) {
 
 
 var timer = null;
-function goingDown(elm,toTop){
- var top  = parseInt(elm.offsetTop);
- var change = toTop-top;
-   if(change<=0) {
-   clearTimeout(timer);
-  return;
- }
- var total=top+Math.ceil((change/12));
- elm.style.top=total+'px';
- function c() {
-       goingDown(elm,toTop);
- }
- timer=setTimeout(c,10);
+function goingDown(elm, toTop) {
+    var top = parseInt(elm.offsetTop);
+    var change = toTop - top;
+    if (change <= 0) {
+        clearTimeout(timer);
+        return;
+    }
+    var total = top + Math.ceil((change / 12));
+    elm.style.top = total + 'px';
+    function c() {
+        goingDown(elm, toTop);
+    }
+    timer = setTimeout(c, 10);
 }
 
 
 
-function goingUp(elm,toTop){
- var top  = parseInt(elm.offsetTop);
- var change = top-toTop;
-  if(change<=0) {
-   clearTimeout(timer);
-  return;
- }
- var total=top-Math.ceil((change/12));
- elm.style.top=total+'px';
- function c() {
-       goingUp(elm,toTop);
- }
- timer=setTimeout(c,10);
+function goingUp(elm, toTop) {
+    var top = parseInt(elm.offsetTop);
+    var change = top - toTop;
+    if (change <= 0) {
+        clearTimeout(timer);
+        return;
+    }
+    var total = top - Math.ceil((change / 12));
+    elm.style.top = total + 'px';
+    function c() {
+        goingUp(elm, toTop);
+    }
+    timer = setTimeout(c, 10);
 }
 
 
 function scrollFix() {
-	var obbx = getEl('mbox');
-	var olay = getEl('ol');
-	if(obbx.style.display != 'none'){	
-	clearTimeout(timer);
-    var tp = posTop() + ((pageHeight() - hit) / 2) - 12;
-    var lt = posLeft() + ((pageWidth() - wid) / 2) - 12;
-	tp = (tp < 0 ? 0 : tp);
-	if(obbx.offsetTop < tp){
-		goingDown(obbx,tp);
-	}
-	else{
-		goingUp(obbx,tp);		
-	}
-    obbx.style.left = (lt < 0 ? 0 : lt) + 'px';
-	}
+    var obbx = getEl('mbox');
+    var olay = getEl('ol');
+    if (obbx.style.display != 'none') {
+        clearTimeout(timer);
+        var tp = posTop() + ((pageHeight() - hit) / 2) - 12;
+        var lt = posLeft() + ((pageWidth() - wid) / 2) - 12;
+        tp = (tp < 0 ? 0 : tp);
+        if (obbx.offsetTop < tp) {
+            goingDown(obbx, tp);
+        }
+        else {
+            goingUp(obbx, tp);
+        }
+        obbx.style.left = (lt < 0 ? 0 : lt) + 'px';
+    }
 }
 function sizeFix() {
     var obol = getEl('ol');
@@ -82,20 +82,20 @@ var wid = 0;
 var hit = 0;
 
 function showdefModal(obl, wd, ht) {
-    wid=wd;
-    hit=ht;
+    wid = wd;
+    hit = ht;
     var h = 'hidden';
     var b = 'block';
     var p = 'px';
-	
-    if(!getEl('ol') || !getEl('mbd')){
-            initmb();
+
+    if (!getEl('ol') || !getEl('mbd')) {
+        initmb();
     }
-	
+
     var obol = getEl('ol');
     var obbxd = getEl('mbd');
     obbxd.innerHTML = getEl(obl).innerHTML;
-    obol.style.height =  jQuery(document).height() + p;
+    obol.style.height = jQuery(document).height() + p;
     obol.style.width = document.body.offsetWidth + p;
     //obol.style.top = posTop() + p;
     //obol.style.left = posLeft() + p;
@@ -118,8 +118,8 @@ function hidedefModal() {
     document.onkeypress = ''
 }
 function initmb() {
-    
-    if(jQuery("#ol").length > 0 && jQuery("#mbox").length > 0){
+
+    if (jQuery("#ol").length > 0 && jQuery("#mbox").length > 0) {
         return false;
     }
     var ab = 'absolute';
@@ -149,7 +149,7 @@ function initmb() {
     obl.appendChild(obbxd);
     frag.insertBefore(obbx, obol.nextSibling);
     obody.insertBefore(frag, obody.firstChild);
-	
+
     window.onscroll = scrollFix;
     window.onresize = sizeFix;
 }
