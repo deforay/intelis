@@ -37,6 +37,7 @@ if ($data['Key'] == 'vlsm-get-remote') {
     if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true) {
 
         $toSyncTables = array(
+            "r_test_types",
             "r_generic_test_methods",
             "r_generic_test_categories",
             "r_generic_sample_types",

@@ -116,6 +116,7 @@ $url = $remoteUrl . '/remote/remote/commonData.php';
 
 if (isset($systemConfig['modules']['genericTests']) && $systemConfig['modules']['genericTests'] === true) {
     $toSyncTables = array(
+        "r_test_types",
         "r_generic_test_methods",
         "r_generic_test_categories",
         "r_generic_sample_types",
