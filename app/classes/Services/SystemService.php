@@ -40,9 +40,9 @@ class SystemService
     public function setupTranslation($domain = "messages"): void
     {
 
-        $locale = $_SESSION['APP_LOCALE'] ?? $this->commonService->getGlobalConfig('app_locale') ?? 'en_US';
+        $_SESSION['APP_LOCALE'] = $_SESSION['APP_LOCALE'] ?? $this->commonService->getGlobalConfig('app_locale') ?? 'en_US';
 
-        setlocale(LC_ALL, $locale);
+        setlocale(LC_ALL, $_SESSION['APP_LOCALE']);
         bindtextdomain($domain, APPLICATION_PATH . DIRECTORY_SEPARATOR . 'locales');
         bind_textdomain_codeset($domain, 'UTF-8');
         textdomain($domain);

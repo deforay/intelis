@@ -54,14 +54,14 @@ try {
         $data = array(
             'machine_name' => $_POST['configurationName'],
             'lab_id' => $_POST['testingLab'],
-            'supported_tests' => $_POST['supportedTests'],
+            'supported_tests' => $_POST['supportedTests'] ?? null,
             'import_machine_file_name' => $_POST['configurationFile'],
-            'lower_limit' => !empty($_POST['lowerLimit']) ? $_POST['lowerLimit'] : null,
-            'higher_limit' => !empty($_POST['higherLimit']) ? $_POST['higherLimit'] : null,
-            'max_no_of_samples_in_a_batch' => !empty($_POST['maxNOfSamplesInBatch']) ? $_POST['maxNOfSamplesInBatch'] : null,
-            'low_vl_result_text' => !empty($_POST['lowVlResultText']) ? $_POST['lowVlResultText'] : null,
-            'reviewed_by' => !empty($_POST['reviewedBy']) ? $_POST['reviewedBy'] : null,
-            'approved_by' => !empty($_POST['approvedBy']) ? $_POST['approvedBy'] : null,
+            'lower_limit' => $_POST['lowerLimit'] ?? 0,
+            'higher_limit' => $_POST['higherLimit'] ?? null,
+            'max_no_of_samples_in_a_batch' => $_POST['maxNOfSamplesInBatch'] ?? null,
+            'low_vl_result_text' => $_POST['lowVlResultText'] ?? null,
+            'reviewed_by' => $_POST['reviewedBy'] ?? null,
+            'approved_by' => $_POST['approvedBy'] ?? null,
             'status' => 'active'
         );
         $id = $db->insert($tableName, $data);

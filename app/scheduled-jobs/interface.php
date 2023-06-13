@@ -29,7 +29,7 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$vlService = ContainerRegistry::get(VlService::class);
+
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 
@@ -132,6 +132,9 @@ if (!empty($interfaceData)) {
         $reviewed = !empty($instrumentDetails['reviewed_by']) ? json_decode($instrumentDetails['reviewed_by'], true) : [];
 
         if (isset($tableInfo['vl_sample_id'])) {
+
+            /** @var VlService $vlService */
+            $vlService = ContainerRegistry::get(VlService::class);
             $absDecimalVal = null;
             $absVal = null;
             $logVal = null;
@@ -153,14 +156,8 @@ if (!empty($interfaceData)) {
                 $txtVal = null;
                 $interpretedResults = [];
 
-                if (isset($vlResult)) {
-                    if (in_array(strtolower($vlResult), ['fail', 'failed', 'failure', 'error', 'err'])) {
-                        // Do nothing, variables are already set to null
-                    } elseif (!is_numeric($vlResult)) {
-                        $interpretedResults = $vlService->interpretViralLoadTextResult($vlResult, $unit, $instrumentDetails['low_vl_result_text']);
-                    } else {
-                        $interpretedResults = $vlService->interpretViralLoadNumericResult($vlResult, $unit);
-                    }
+                if (!empty($vlResult) && !in_array(strtolower($vlResult), ['fail', 'failed', 'failure', 'error', 'err'])) {
+                    $interpretedResults = $vlService->interpretViralLoadResult($vlResult, $unit, $instrumentDetails['low_vl_result_text']);
 
                     if (!empty($interpretedResults)) {
                         $logVal = $interpretedResults['logVal'];
@@ -307,6 +304,8 @@ if (!empty($interfaceData)) {
 
         } elseif (isset($tableInfo['hepatitis_id'])) {
 
+            /** @var VlService $vlService */
+            $vlService = ContainerRegistry::get(VlService::class);
 
             $absDecimalVal = null;
             $absVal = null;
@@ -328,12 +327,7 @@ if (!empty($interfaceData)) {
 
                 $hepatitisResult = trim($result['results']);
                 $unit = trim($result['test_unit']);
-
-                if (!is_numeric($hepatitisResult)) {
-                    $interpretedResults = $vlService->interpretViralLoadTextResult($hepatitisResult, $unit);
-                } else {
-                    $interpretedResults = $vlService->interpretViralLoadNumericResult($hepatitisResult, $unit);
-                }
+                $interpretedResults = $vlService->interpretViralLoadResult($hepatitisResult, $unit, $instrumentDetails['low_vl_result_text']);
                 $hepatitisResult = $interpretedResults['result'];
             }
 
