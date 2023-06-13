@@ -4169,3 +4169,14 @@ UPDATE `privileges` SET `resource_id` = 'generic-test-batches' WHERE `privileges
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES 
 (NULL, 'generic-test-batches', '/batch/add-batch.php?type=generic-tests', 'Add New Batch'), 
 (NULL, 'generic-test-batches', '/batch/edit-batch.php?type=generic-tests', 'Edit Batch');
+
+ALTER TABLE `generic_sample_rejection_reason_map` ADD PRIMARY KEY(`map_id`);
+ALTER TABLE `generic_sample_rejection_reason_map` CHANGE `map_id` `map_id` INT NOT NULL AUTO_INCREMENT;
+ALTER TABLE `generic_test_methods_map` ADD `updated_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `test_type_id`;
+ALTER TABLE `generic_test_sample_type_map` ADD `updated_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `test_type_id`;
+ALTER TABLE `generic_test_reason_map` ADD `updated_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `test_type_id`;
+ALTER TABLE `generic_test_failure_reason_map` ADD `updated_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `test_type_id`;
+ALTER TABLE `generic_sample_rejection_reason_map` ADD `updated_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `test_type_id`;
+ALTER TABLE `generic_test_symptoms_map` ADD `updated_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `test_type_id`;
+ALTER TABLE `generic_test_result_units_map` ADD `updated_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `test_type_id`;
+

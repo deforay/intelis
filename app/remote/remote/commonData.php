@@ -36,25 +36,31 @@ if ($data['Key'] == 'vlsm-get-remote') {
 
     if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true) {
 
-        $condition = null;
-        if (!empty($data['genericSampleTypesLastModified'])) {
-            $condition = "updated_datetime > '" . $data['genericSampleTypesLastModified'] . "'";
+        $toSyncTables = array(
+            "r_generic_test_methods",
+            "r_generic_test_categories",
+            "r_generic_sample_types",
+            "r_generic_test_reasons",
+            "r_generic_test_result_units",
+            "r_generic_test_failure_reasons",
+            "r_generic_sample_rejection_reasons",
+            "r_generic_symptoms",
+            "generic_test_methods_map",
+            "generic_test_sample_type_map",
+            "generic_test_reason_map",
+            "generic_test_failure_reason_map",
+            "generic_sample_rejection_reason_map",
+            "generic_test_symptoms_map",
+            "generic_test_result_units_map"
+        );
+        foreach($toSyncTables as $table){
+            $condition = null;
+            if (!empty($data[$general->stringToCamelCase($table).'LastModified'])) {
+                $condition = "updated_datetime > '" . $data[$general->stringToCamelCase($table).'LastModified'] . "'";
+            }
+            $response[$general->stringToCamelCase($table)] = $general->fetchDataFromTable($table, $condition);
+            $counter += count($response[$general->stringToCamelCase($table)]);
         }
-        $response['genericSampleTypes'] = $general->fetchDataFromTable('r_generic_sample_types', $condition);
-
-        $condition = null;
-        if (!empty($data['genericRejectionReasonsLastModified'])) {
-            $condition = "updated_datetime > '" . $data['genericRejectionReasonsLastModified'] . "'";
-        }
-        $response['genericRejectionReasons'] = $general->fetchDataFromTable('r_generic_sample_rejection_reasons', $condition);
-
-        $condition = null;
-        if (!empty($data['genericFailureReasonsLastModified'])) {
-            $condition = "updated_datetime > '" . $data['genericFailureReasonsLastModified'] . "'";
-        }
-        $response['genericFailureReasons'] = $general->fetchDataFromTable('r_generic_test_failure_reasons', $condition);
-
-        $counter += (count($response['genericSampleTypes']) + count($response['genericRejectionReasons']) + count($response['genericFailureReasons']));
     }
 
     if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {

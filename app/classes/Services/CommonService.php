@@ -866,4 +866,17 @@ class CommonService
         }
         return $response;
     }
+
+    function stringToCamelCase($string, $character = "_", $capitalizeFirstCharacter = false) {
+        $str = str_replace($character, '', ucwords($string, $character));
+        $str = (!$capitalizeFirstCharacter)?lcfirst($str):null;
+        return $str;
+    }
+
+    function getPrimaryKeyField($table) {
+        if(!$table)
+            return null;
+        $response =  $this->db->rawQueryOne("SHOW KEYS FROM " . $table . " WHERE Key_name = 'PRIMARY';");
+        return $response['Column_name'] ?? null;
+    }
 }
