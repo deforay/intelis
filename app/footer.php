@@ -173,20 +173,36 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 	$(document).ready(function() {
 
 		$(".allMenu").removeClass('active');
+
+		function splitPath(path) {
+			let parts = path.split('?');
+			let paths = [parts[0]];
+			if (parts.length > 1) {
+				let queryParams = parts[1].split('&');
+				for (let i = 0; i < queryParams.length; i++) {
+					paths.push(parts[0] + '?' + queryParams.slice(0, i + 1).join('&'));
+				}
+			}
+			return paths;
+		}
+
 		let url = window.location.pathname + window.location.search;
 		let currentMenuItem = $('a[href="' + url + '"]');
-		if ($(currentMenuItem).length == 0) {
+		if (currentMenuItem.length == 0) {
+			let currentPaths = splitPath(url).map(path => btoa(path));
+
 			currentMenuItem = $('a[data-inner-pages]').filter(function() {
-				let innerPages = $(this).data('inner-pages');
-				return innerPages.indexOf(btoa(url)) > -1 ||
-					innerPages.indexOf(btoa(window.location.pathname)) > -1;
+				let innerPages = $(this).data('inner-pages').split(';');
+				return currentPaths.some(path => innerPages.includes(path));
 			});
 		}
 
-		if ($(currentMenuItem).length != 0) {
-			$(currentMenuItem).parent().addClass('active');
-			$(currentMenuItem).parents('li.treeview').addClass('active');
+		if (currentMenuItem.length > 0) {
+			currentMenuItem.parent().addClass('active');
+			currentMenuItem.parents('li.treeview').addClass('active');
 		}
+
+
 
 
 		<?php if ($_SESSION['instanceType'] == 'vluser' && !empty(SYSTEM_CONFIG['remoteURL'])) { ?>
