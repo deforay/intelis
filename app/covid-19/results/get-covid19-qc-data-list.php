@@ -91,16 +91,16 @@ for ($i = 0; $i < count($aColumns); $i++) {
     * SQL queries
     * Get data to display
 */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS qc.*, kit.testkit_name, l_f.facility_name, u_d.user_name FROM $tableName as qc 
-            INNER JOIN r_covid19_qc_testkits as kit ON kit.testkit_id=qc.testkit 
-            LEFT JOIN user_details as u_d ON u_d.user_id=qc.tested_by 
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS qc.*, kit.testkit_name, l_f.facility_name, u_d.user_name FROM $tableName as qc
+            INNER JOIN r_covid19_qc_testkits as kit ON kit.testkit_id=qc.testkit
+            LEFT JOIN user_details as u_d ON u_d.user_id=qc.tested_by
             LEFT JOIN facility_details as l_f ON qc.lab_id=l_f.facility_id";
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $sQuery = $sQuery . ' where ' . implode(' AND ', $sWhere);
 }
 
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }

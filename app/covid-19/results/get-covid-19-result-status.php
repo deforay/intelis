@@ -180,13 +180,13 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     }
 }
 $sWhere[] =  ' vl.result not like "" AND vl.result is not null ';
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
 }
 
 $sQuery = $sQuery . ' ' . $sWhere;
 
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }

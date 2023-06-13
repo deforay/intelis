@@ -82,7 +82,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<?php if(isset($_GET['type']) && !empty($_GET['type']) && $_GET['type'] == 'generic-tests') { ?>
+					<?php if(!empty($_GET['type']) && $_GET['type'] == 'generic-tests') { ?>
 						<div class="box-header with-border">
 							<div class="row">
 								<div class="col-xs-6 col-md-6">

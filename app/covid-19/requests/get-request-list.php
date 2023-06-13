@@ -299,11 +299,11 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 }
 
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
      $_SESSION['covid19RequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
      $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
      $_SESSION['covid19RequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }

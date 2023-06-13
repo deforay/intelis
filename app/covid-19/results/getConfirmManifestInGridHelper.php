@@ -102,7 +102,7 @@ $primaryKey = "covid19_id";
 $sQuery = "select p.request_created_datetime, p.manifest_code, p.manifest_status, p.module, p.manifest_id,count(vl." . $sCode . ") as sample_code from form_covid19 vl right join covid19_positive_confirmation_manifest p on vl.positive_test_manifest_id = p.manifest_id";
 
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $sWhere = ' WHERE ' . $sWhere;
 }
 if (isset($vlfmResult[0]['facilityId'])) {
@@ -111,7 +111,7 @@ if (isset($vlfmResult[0]['facilityId'])) {
 }
 $sQuery = $sQuery . ' ' . $sWhere;
 $sQuery = $sQuery . ' GROUP BY p.manifest_code';
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }

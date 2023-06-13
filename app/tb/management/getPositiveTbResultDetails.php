@@ -187,14 +187,14 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     }
 }
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $sWhere = ' AND' . implode(" AND ", $sWhere);
 } else {
     $sWhere = "";
 }
 $sQuery = $sQuery  . $sWhere;
 $sQuery = $sQuery . ' group by vl.tb_id';
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }

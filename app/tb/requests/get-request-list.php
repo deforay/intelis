@@ -263,12 +263,12 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 } else if (!$_POST['hidesrcofreq']) {
      $sWhere[] = 'vl.result_status!=9 ';
 }
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
      $_SESSION['tbRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
      $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }
 // die($sQuery);
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
      $_SESSION['tbRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }

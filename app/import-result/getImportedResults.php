@@ -214,13 +214,13 @@ $sQuery = "$dtsQuery";
 $sOrder = 'temp_sample_id ASC';
 //echo $sQuery;die;
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $sWhere = "WHERE temp_sample_status=0 AND imported_by ='" . $importedBy . "' AND $sWhere";
 } else {
     $sWhere = "WHERE temp_sample_status=0 AND imported_by ='" . $importedBy . "' ";
 }
 $sQuery = $sQuery . ' ' . $sWhere;
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 } else {

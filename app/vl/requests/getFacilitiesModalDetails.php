@@ -88,7 +88,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
 
 $sQuery = "SELECT * FROM facility_details as f_d LEFT JOIN facility_type as f_t ON f_t.facility_type_id=f_d.facility_type";
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $sWhere = ' where ' . $sWhere;
     $sWhere = $sWhere . ' AND status = "active"';
     if (isset($_POST['hub']) && trim($_POST['hub']) != '') {
@@ -121,7 +121,7 @@ if (isset($sWhere) && !empty($sWhere)) {
     $sQuery = $sQuery . ' ' . $sWhere;
 }
 
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }

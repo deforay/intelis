@@ -168,14 +168,14 @@ if ($sarr['sc_user_type'] == 'remoteuser') {
         //$dWhere = $dWhere." AND vl.facility_id IN (".$userfacilityMapresult[0]['facility_id'].") ";
     }
 }
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $sWhere = ' AND ' . implode(" AND ", $sWhere);
 } else {
     $sWhere = "";
 }
 $sQuery = $sQuery . $sWhere;
 $sQuery = $sQuery . ' group by vl.tb_id';
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }

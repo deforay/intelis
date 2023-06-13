@@ -139,7 +139,7 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      }
 }
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
      if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
           if (trim($sTestDate) == trim($eTestDate)) {
                $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
@@ -182,7 +182,7 @@ $sWhere[] = ' vl.result!="" AND vl.result_status!=9';
 
 $sWhere[] = " tl.test_type = 'covid19'";
 
-if (isset($swhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
      $sWhere = ' where ' . implode(' AND ', $sWhere);
 } else {
      $sWhere = "";

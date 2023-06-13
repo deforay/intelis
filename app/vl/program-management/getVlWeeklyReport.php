@@ -195,7 +195,7 @@ if (!empty($_SESSION['facilityMap'])) {
   $sWhere[] =  " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 }
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
   $sWhere = implode(" AND ", $sWhere);
 }
 
@@ -204,7 +204,7 @@ $sQuery = $sQuery . ' WHERE ' . $sWhere;
 $sQuery = $sQuery . ' GROUP BY vl.lab_id, vl.facility_id';
 
 
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
   $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
   $sQuery = $sQuery . ' order by ' . $sOrder;
 }

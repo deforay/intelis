@@ -335,7 +335,7 @@ if (isset($_POST['requestCreatedDatetime']) && trim($_POST['requestCreatedDateti
 if (!empty($_SESSION['facilityMap'])) {
      $sWhere[] =  "  vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
      $sWhere = implode(" AND ", $sWhere);
 }
 

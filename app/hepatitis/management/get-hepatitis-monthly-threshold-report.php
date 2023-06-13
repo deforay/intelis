@@ -153,7 +153,7 @@ if (!empty($_SESSION['facilityMap'])) {
      $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
 $sWhere[] = " hf.test_type = 'hepatitis'";
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
      $sWhere = ' where ' . implode(' AND ', $sWhere);
 } else {
      $sWhere = "";

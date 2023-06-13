@@ -91,12 +91,12 @@ for ($i = 0; $i < count($aColumns); $i++) {
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS api.api_track_id,api.requested_by,api.requested_on,api.number_of_records,api.request_type,api.test_type,api.api_url,api.api_params,api.facility_id,api.data_format FROM track_api_requests as api";
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
     $sWhere = ' where ' . $sWhere;
     $sQuery = $sQuery . ' ' . $sWhere;
 }
 
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }

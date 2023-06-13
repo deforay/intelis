@@ -15,7 +15,7 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$gconfig = $general->getGlobalConfig(); 
+$gconfig = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 
 $tableName = "form_vl";
@@ -164,14 +164,14 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      }
 }
 
-if (isset($sWhere) && !empty($sWhere)) {
+if (!empty($sWhere)) {
      $sWhere = ' where ' . implode(" AND ", $sWhere);
 }
 
 $sQuery = $sQuery . ' ' . $sWhere;
 
 $_SESSION['vlIncompleteForm'] = $sQuery;
-if (isset($sOrder) && !empty($sOrder)) {
+if (!empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . ' order by ' . $sOrder;
 }
