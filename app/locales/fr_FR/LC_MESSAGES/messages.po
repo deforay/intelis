@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-06-13 18:40+0530\n"
-"PO-Revision-Date: 2023-06-13 18:40+0530\n"
+"POT-Creation-Date: 2023-06-14 20:02+0530\n"
+"PO-Revision-Date: 2023-06-14 20:02+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -164,7 +164,7 @@ msgstr "Bienvenue sur la page d’administration"
 #: tb/results/forms/update-southsudan.php:105
 #: tb/results/tb-failed-results.php:53 tb/results/tb-manual-results.php:75
 #: tb/results/tb-print-results.php:42 tb/results/tb-result-status.php:65
-#: users/addUser.php:55 users/editProfile.php:40 users/editUser.php:98
+#: users/addUser.php:55 users/editProfile.php:42 users/editUser.php:98
 #: users/users.php:13 vl/program-management/highViralLoad.php:54
 #: vl/program-management/sampleRejectionReport.php:47
 #: vl/program-management/vl-sample-status.php:54
@@ -209,8 +209,8 @@ msgstr "Piste d’audit"
 #: admin/monitoring/sources-of-requests.php:62 dashboard/index.php:106
 #: dashboard/index.php:146 dashboard/index.php:185 dashboard/index.php:225
 #: dashboard/index.php:266 dashboard/index.php:307
-#: specimen-referral-manifest/move-manifest.php:147
-#: specimen-referral-manifest/move-manifest.php:149
+#: specimen-referral-manifest/move-manifest.php:172
+#: specimen-referral-manifest/move-manifest.php:174
 msgid "Date Range"
 msgstr "Plage de dates"
 
@@ -221,7 +221,7 @@ msgid "Enter date range"
 msgstr "Saisissez une plage de dates"
 
 #: admin/monitoring/activity-log.php:59 header.php:379 users/addUser.php:56
-#: users/editProfile.php:41 users/editUser.php:99 users/users.php:2
+#: users/editProfile.php:43 users/editUser.php:99 users/users.php:2
 #: users/users.php:11 users/users.php:14
 msgid "Users"
 msgstr "Utilisateurs"
@@ -374,7 +374,7 @@ msgstr "Rechercher"
 #: move-samples/select-samples-to-move.php:232
 #: specimen-referral-manifest/addSpecimenReferralManifest.php:275
 #: specimen-referral-manifest/editSpecimenReferralManifest.php:340
-#: specimen-referral-manifest/move-manifest.php:267
+#: specimen-referral-manifest/move-manifest.php:293
 #: system-admin/user-login-history/userLoginIndex.php:165
 #: tb/management/tb-clinic-report.php:490 tb/management/tb-export-data.php:335
 #: tb/management/tb-sample-rejection-report.php:105
@@ -536,7 +536,7 @@ msgstr "Historique de l’API"
 #: import-configs/addImportConfig.php:264
 #: import-configs/editImportConfig.php:219
 #: import-configs/editImportConfig.php:322
-#: specimen-referral-manifest/move-manifest.php:178
+#: specimen-referral-manifest/move-manifest.php:203
 #: specimen-referral-manifest/specimenReferralManifestList.php:41
 msgid "Test Type"
 msgstr "Type de test"
@@ -1145,7 +1145,7 @@ msgstr "Code d'échantillon"
 #: tb/reference/add-tb-sample-type.php:56
 #: tb/reference/add-tb-test-reasons.php:75
 #: tb/requests/addSamplesFromManifest.php:37 users/addUser.php:258
-#: users/editProfile.php:111 users/editUser.php:334
+#: users/editProfile.php:130 users/editUser.php:334
 #: vl/reference/add-vl-art-code-details.php:92
 #: vl/reference/add-vl-results.php:95
 #: vl/reference/add-vl-sample-rejection-reasons.php:76
@@ -1617,7 +1617,7 @@ msgstr "Veuillez sélectionner la province ou l'État"
 #: hepatitis/results/hepatitis-print-results.php:322
 #: hepatitis/results/hepatitis-print-results.php:359
 #: hepatitis/results/hepatitis-result-status.php:170 mail/vlResultMail.php:141
-#: specimen-referral-manifest/move-manifest.php:155
+#: specimen-referral-manifest/move-manifest.php:180
 #: tb/management/get-rejected-samples.php:100
 #: tb/management/tb-clinic-report.php:185
 #: tb/management/tb-clinic-report.php:289
@@ -1884,8 +1884,8 @@ msgstr "État de la synchronisation du laboratoire"
 #: global-config/editGlobalConfig.php:1144
 #: global-config/editGlobalConfig.php:1249
 #: global-config/editGlobalConfig.php:1263 users/addUser.php:104
-#: users/addUser.php:138 users/editUser.php:149 users/editUser.php:186
-#: vl/reference/add-vl-art-code-details.php:69
+#: users/addUser.php:138 users/editProfile.php:76 users/editUser.php:149
+#: users/editUser.php:186 vl/reference/add-vl-art-code-details.php:69
 #: vl/reference/add-vl-art-code-details.php:80
 #: vl/reference/add-vl-test-failure-reason.php:44
 #: vl/reference/edit-vl-test-failure-reason.php:51
@@ -1948,9 +1948,8 @@ msgid " | Add Batch Position"
 msgstr "TB | Ajouter un lot"
 
 #: batch/add-batch.php:27
-#, fuzzy
 msgid " | Add Batch"
-msgstr "TB | Ajouter un lot"
+msgstr " | Ajouter un lot"
 
 #: batch/add-batch.php:98
 msgid "Create Batch"
@@ -2487,7 +2486,7 @@ msgstr "Sauvegarder et Suivant"
 #: tb/reference/add-tb-sample-rejection-reason.php:77
 #: tb/reference/add-tb-sample-type.php:57
 #: tb/reference/add-tb-test-reasons.php:76 users/addUser.php:259
-#: users/editProfile.php:112 users/editUser.php:335
+#: users/editProfile.php:131 users/editUser.php:335
 #: vl/reference/add-vl-art-code-details.php:93
 #: vl/reference/add-vl-results.php:96
 #: vl/reference/add-vl-sample-rejection-reasons.php:77
@@ -2776,7 +2775,7 @@ msgstr ""
 msgid "Unauthorized Access. Please contact your system administrator."
 msgstr "Accès non autorisé. Veuillez contacter votre administrateur système."
 
-#: classes/Middlewares/App/AppAuthMiddleware.php:41 login/loginProcess.php:186
+#: classes/Middlewares/App/AppAuthMiddleware.php:41 login/loginProcess.php:188
 #, fuzzy
 msgid "Please change your password to proceed."
 msgstr "Veuillez modifier votre mot de passe pour continuer."
@@ -4233,7 +4232,7 @@ msgstr "Date de test de l'échantillon"
 #: hepatitis/results/hepatitis-manual-results.php:104
 #: import-configs/addImportConfig.php:77
 #: import-configs/editImportConfig.php:106 roles/addRole.php:203
-#: roles/editRole.php:195 specimen-referral-manifest/move-manifest.php:168
+#: roles/editRole.php:195 specimen-referral-manifest/move-manifest.php:193
 #: specimen-referral-manifest/specimenReferralManifestList.php:42
 #: tb/management/tb-clinic-report.php:190 tb/management/tb-export-data.php:112
 #: tb/management/tb-sample-status.php:75 tb/requests/tb-requests.php:239
@@ -6838,12 +6837,12 @@ msgstr "Nombre d'échantillons reçus au laboratoire d'essai"
 msgid "Samples from this Manifest have been activated"
 msgstr "Des échantillons de ce manifeste ont été activés"
 
-#: covid-19/requests/covid-19-add-request-helper.php:336
+#: covid-19/requests/covid-19-add-request-helper.php:330
 #, fuzzy
 msgid "Covid-19 test request added successfully"
 msgstr "Demande de test Covid-19 ajoutée avec succès"
 
-#: covid-19/requests/covid-19-add-request-helper.php:344
+#: covid-19/requests/covid-19-add-request-helper.php:338
 #, fuzzy
 msgid "Unable to add this Covid-19 sample. Please try again later"
 msgstr ""
@@ -6865,9 +6864,9 @@ msgstr "La demande de Covid-19 a été mise à jour avec succès"
 #: covid-19/results/covid-19-update-result-helper.php:147
 #: eid/requests/eid-add-request-helper.php:273
 #: eid/requests/eid-edit-request-helper.php:281
-#: generic-tests/requests/add-request-helper.php:398
+#: generic-tests/requests/add-request-helper.php:393
 #: generic-tests/requests/edit-request-helper.php:315
-#: generic-tests/results/update-generic-test-result-helper.php:202
+#: generic-tests/results/update-generic-test-result-helper.php:196
 #: hepatitis/requests/hepatitis-edit-request-helper.php:236
 #: hepatitis/results/hepatitis-update-result-helper.php:96
 #: vl/requests/addVlRequestHelper.php:394
@@ -8703,8 +8702,8 @@ msgstr "Veuillez choisir le responsable du laboratoire"
 
 #: facilities/addFacility.php:192 facilities/addFacility.php:194
 #: facilities/editFacility.php:248 facilities/editFacility.php:250
-#: users/addUser.php:93 users/addUser.php:95 users/editProfile.php:79
-#: users/editProfile.php:81 users/editUser.php:137 users/editUser.php:139
+#: users/addUser.php:93 users/addUser.php:95 users/editProfile.php:98
+#: users/editProfile.php:100 users/editUser.php:137 users/editUser.php:139
 msgid "Phone Number"
 msgstr "Numéro de téléphone"
 
@@ -10489,12 +10488,12 @@ msgstr ""
 "Veuillez remplir tous les champs obligatoires pour enregistrer la demande de "
 "test"
 
-#: generic-tests/requests/add-request-helper.php:356
+#: generic-tests/requests/add-request-helper.php:351
 #, fuzzy
 msgid "Please check your sample ID"
 msgstr "Veuillez vérifier l'ID de votre échantillon"
 
-#: generic-tests/requests/add-request-helper.php:374
+#: generic-tests/requests/add-request-helper.php:369
 #: vl/requests/addVlRequestHelper.php:372
 msgid "VL request added successfully"
 msgstr "Mis à jour avec succés"
@@ -10639,7 +10638,7 @@ msgstr "Saisir le résultat VL"
 msgid "Enter Lab Tests Result"
 msgstr "Saisir le résultat des tests de laboratoire"
 
-#: generic-tests/results/update-generic-test-result-helper.php:200
+#: generic-tests/results/update-generic-test-result-helper.php:194
 #, fuzzy
 msgid "Lab Tests results updated successfully"
 msgstr "Les résultats des tests de laboratoire ont été mis à jour avec succès"
@@ -11673,7 +11672,7 @@ msgid "Unauthorized access. You do not have permission to access this page."
 msgstr ""
 "Accès non autorisé. Vous n'avez pas l'autorisation d'accéder à cette page."
 
-#: header.php:307 users/editProfile.php:38
+#: header.php:307 users/editProfile.php:40
 msgid "Edit Profile"
 msgstr "Modifier le profil"
 
@@ -13080,8 +13079,8 @@ msgstr "Veuillez entrer votre nom d’utilisateur"
 #: system-admin/edit-config/resetPassword.php:40
 #: system-admin/edit-config/resetPassword.php:42
 #: system-admin/login/login.php:65 system-admin/setup/index.php:89
-#: users/addUser.php:184 users/addUser.php:186 users/editProfile.php:90
-#: users/editProfile.php:92 users/editUser.php:244 users/editUser.php:246
+#: users/addUser.php:184 users/addUser.php:186 users/editProfile.php:109
+#: users/editProfile.php:111 users/editUser.php:244 users/editUser.php:246
 #: vl/result-mail/editTestResultEmailConfig.php:65
 #: vl/result-mail/editTestResultEmailConfig.php:67
 msgid "Password"
@@ -13127,7 +13126,7 @@ msgstr ""
 "réessayer après un certain temps."
 
 #: login/loginProcess.php:113 login/loginProcess.php:117
-#: login/loginProcess.php:192 login/loginProcess.php:195
+#: login/loginProcess.php:194 login/loginProcess.php:197
 #: system-admin/login/adminLoginProcess.php:41
 msgid "Please check your login credentials"
 msgstr "Veuillez vérifier vos identifiants de connexion"
@@ -13481,7 +13480,7 @@ msgstr "Identifiant de connexion"
 #: setup/index.php:112 system-admin/edit-config/resetPassword.php:49
 #: system-admin/edit-config/resetPassword.php:51
 #: system-admin/setup/index.php:93 users/addUser.php:194 users/addUser.php:196
-#: users/editProfile.php:100 users/editProfile.php:102 users/editUser.php:254
+#: users/editProfile.php:119 users/editProfile.php:121 users/editUser.php:254
 #: users/editUser.php:256
 msgid "Confirm Password"
 msgstr "Confirmer le mot de passe"
@@ -13521,7 +13520,7 @@ msgstr "Point de prélèvement de l'échantillon"
 msgid "Sample Collection Date Range"
 msgstr "Date de prélèvement de l'échantillon"
 
-#: specimen-referral-manifest/move-manifest.php:196
+#: specimen-referral-manifest/move-manifest.php:222
 #, fuzzy
 msgid "Assign Manifests to Testing Lab"
 msgstr "Affectation des manifestes au laboratoire de test"
@@ -13669,7 +13668,7 @@ msgstr "Gérer le mot de passe"
 
 #: system-admin/edit-config/resetPassword.php:42
 #: system-admin/login/login.php:65 system-admin/setup/index.php:89
-#: users/addUser.php:186 users/editProfile.php:92 users/editUser.php:246
+#: users/addUser.php:186 users/editProfile.php:111 users/editUser.php:246
 msgid "Please enter the password"
 msgstr "Veuillez saisir votre mot de passe actuel"
 
@@ -14057,7 +14056,7 @@ msgstr "Test Las"
 msgid "Add User"
 msgstr "Ajouter un utilisateur"
 
-#: users/addUser.php:77 users/editProfile.php:62 users/editUser.php:120
+#: users/addUser.php:77 users/editProfile.php:64 users/editUser.php:120
 #, fuzzy
 msgid "Please enter user name"
 msgstr "Veuillez saisir votre nom d'utilisateur"
@@ -14068,19 +14067,19 @@ msgstr "Veuillez saisir votre nom d'utilisateur"
 msgid "Email"
 msgstr "E-mail"
 
-#: users/addUser.php:85 users/editProfile.php:73 users/editUser.php:129
+#: users/addUser.php:85 users/editProfile.php:92 users/editUser.php:129
 #: vl/result-mail/editTestResultEmailConfig.php:57
 msgid "Please enter email"
 msgstr "Veuillez entrer votre email"
 
-#: users/addUser.php:85 users/editProfile.php:73 users/editUser.php:129
+#: users/addUser.php:85 users/editProfile.php:92 users/editUser.php:129
 #, fuzzy
 msgid "This email id that you entered already exists.Try another email id"
 msgstr ""
 "L'adresse électronique que vous avez saisie existe déjà. Essayez une autre "
 "adresse électronique"
 
-#: users/addUser.php:95 users/editProfile.php:81 users/editUser.php:139
+#: users/addUser.php:95 users/editProfile.php:100 users/editUser.php:139
 msgid "Please enter phone number"
 msgstr "Veuillez saisir votre numéro de téléphone"
 
@@ -14169,8 +14168,8 @@ msgid "This login id that you entered already exists.Try another login id"
 msgstr ""
 "L'identifiant que vous avez saisi existe déjà. Essayez un autre identifiant"
 
-#: users/addUser.php:188 users/addUser.php:399 users/editProfile.php:94
-#: users/editProfile.php:229 users/editUser.php:248 users/editUser.php:484
+#: users/addUser.php:188 users/addUser.php:399 users/editProfile.php:113
+#: users/editProfile.php:248 users/editUser.php:248 users/editUser.php:484
 #, fuzzy
 msgid ""
 "Password must be at least 12 characters long and must include AT LEAST one "
@@ -14213,15 +14212,24 @@ msgstr ""
 msgid "User saved successfully!"
 msgstr "L'utilisateur a été enregistré avec succès !"
 
-#: users/editProfile.php:60 users/editProfile.php:62
+#: users/editProfile.php:62 users/editProfile.php:64
 msgid "Your Full Name"
 msgstr "Votre nom complet"
 
-#: users/editProfile.php:71 users/editProfile.php:73
+#: users/editProfile.php:73
+msgid "Preferred Language"
+msgstr "Préférence linguistique"
+
+#: users/editProfile.php:75
+#, fuzzy
+msgid "Please select your Locale"
+msgstr "Veuillez sélectionner le lieu du VLSM"
+
+#: users/editProfile.php:90 users/editProfile.php:92
 msgid "Official Email"
 msgstr "Email officiel"
 
-#: users/editProfileHelper.php:63
+#: users/editProfileHelper.php:64
 #, fuzzy
 msgid ""
 "Your new password cannot be same as the current password. Please try another "
@@ -14230,7 +14238,7 @@ msgstr ""
 "Votre nouveau mot de passe ne peut pas être identique au mot de passe "
 "actuel. Veuillez essayer un autre mot de passe."
 
-#: users/editProfileHelper.php:106
+#: users/editProfileHelper.php:107
 #, fuzzy
 msgid ""
 "Your profile changes have been saved. You can continue using the application."
@@ -14982,7 +14990,7 @@ msgstr "Valeur logarithmique"
 
 #: vl/result-mail/editTestResultEmailConfig.php:112
 msgid "Is Sample Rejected"
-msgstr "L'échantillon est-il rejeté ?"
+msgstr "L'échantillon est-il rejeté"
 
 #: vl/result-mail/editTestResultEmailConfig.php:116
 msgid "Lab Tech. Comments"

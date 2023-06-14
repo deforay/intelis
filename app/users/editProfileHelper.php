@@ -51,9 +51,11 @@ try {
             $data['password'] = $decryptedPassword;
             $db->where('user_name', $data['user_name']);
         } else {
+            $_SESSION['userLocale'] = $_POST['userLocale'] ?? 'en_US';
             $data = array(
                 'user_name' => $_POST['userName'],
                 'email' => $_POST['email'],
+                'user_locale' => $_SESSION['userLocale'],
                 'phone_number' => $_POST['phoneNo'],
             );
 

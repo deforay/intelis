@@ -4166,8 +4166,8 @@ UPDATE `batch_details` SET `last_modified_datetime` = `request_created_datetime`
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('generic-tests-batches', 'generic-test', 'Lab Tests Batch Management');
 UPDATE `privileges` SET `resource_id` = 'generic-test-batches' WHERE `privileges`.`resource_id` = 'generic-requests' AND `privileges`.`privilege_name` = '/batch/batches.php?type=generic-tests';
 
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES 
-(NULL, 'generic-test-batches', '/batch/add-batch.php?type=generic-tests', 'Add New Batch'), 
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES
+(NULL, 'generic-test-batches', '/batch/add-batch.php?type=generic-tests', 'Add New Batch'),
 (NULL, 'generic-test-batches', '/batch/edit-batch.php?type=generic-tests', 'Edit Batch');
 
 ALTER TABLE `generic_sample_rejection_reason_map` ADD PRIMARY KEY(`map_id`);
@@ -4180,3 +4180,6 @@ ALTER TABLE `generic_sample_rejection_reason_map` ADD `updated_datetime` DATETIM
 ALTER TABLE `generic_test_symptoms_map` ADD `updated_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `test_type_id`;
 ALTER TABLE `generic_test_result_units_map` ADD `updated_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `test_type_id`;
 
+
+-- Amit 14-Jun-2023
+ALTER TABLE `user_details` ADD `user_locale` VARCHAR(256) NULL DEFAULT NULL AFTER `role_id`;
