@@ -57,6 +57,8 @@ class VlService
     public function generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
     {
 
+        error_log($provinceCode);
+
         $globalConfig = $this->commonService->getGlobalConfig();
         $vlsmSystemConfig = $this->commonService->getSystemConfig();
 
@@ -97,7 +99,7 @@ class VlService
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    /** @var GeoLocationsService $geoLocations */
+                    /** @var GeoLocationsService $geoLocationsService */
                     $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
                     $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
                 }
@@ -109,6 +111,7 @@ class VlService
 
             $this->db->where('YEAR(sample_collection_date) = ?', [$dateObj->format('Y')]);
             $maxCodeKeyVal = $this->db->setQueryOption('FOR UPDATE')->getValue($this->table, "MAX($sampleCodeKeyCol)");
+            error_log($this->db->getLastQuery());
         }
 
 
@@ -248,22 +251,24 @@ class VlService
 
     public function interpretViralLoadResult($result, $unit = null, $defaultLowVlResultText = null): ?array
     {
-        $finalResult = $vlResult = trim(htmlspecialchars_decode($result));
-        //$vlResult = strtolower($vlResult);
-        $vlResult = str_ireplace(['c/ml', 'cp/ml', 'copies/ml', 'cop/ml', 'copies'], '', $vlResult);
-        $vlResult = str_ireplace('-', '', $vlResult);
-        $vlResult = trim(str_ireplace(['hiv1 detected', 'hiv1 notdetected'], '', $vlResult));
+        return once(function () use ($result, $unit, $defaultLowVlResultText) {
+            $finalResult = $vlResult = trim(htmlspecialchars_decode($result));
+            //$vlResult = strtolower($vlResult);
+            $vlResult = str_ireplace(['c/ml', 'cp/ml', 'copies/ml', 'cop/ml', 'copies'], '', $vlResult);
+            $vlResult = str_ireplace('-', '', $vlResult);
+            $vlResult = trim(str_ireplace(['hiv1 detected', 'hiv1 notdetected'], '', $vlResult));
 
-        if ($vlResult == "-1.00") {
-            $vlResult = "Not Detected";
-        }
-        if (is_numeric($vlResult)) {
-            //passing only number
-            return $this->interpretViralLoadNumericResult($vlResult, $unit);
-        } else {
-            //Passing orginal result value for text results
-            return $this->interpretViralLoadTextResult($finalResult, $unit, $defaultLowVlResultText);
-        }
+            if ($vlResult == "-1.00") {
+                $finalResult = $vlResult = "Not Detected";
+            }
+            if (is_numeric($vlResult)) {
+                //passing only number
+                return $this->interpretViralLoadNumericResult($vlResult, $unit);
+            } else {
+                //Passing orginal result value for text results
+                return $this->interpretViralLoadTextResult($finalResult, $unit, $defaultLowVlResultText);
+            }
+        });
     }
 
     public function interpretViralLoadTextResult($result, $unit = null, $defaultLowVlResultText = null): ?array

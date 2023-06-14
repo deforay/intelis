@@ -75,7 +75,7 @@ class GenericTestsService
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    /** @var GeoLocationsService $geoLocations */
+                    /** @var GeoLocationsService $geoLocationsService */
                     $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
                     $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
                 }
@@ -421,5 +421,4 @@ class GenericTestsService
         $testResultUnitQry = "SELECT * FROM r_generic_test_result_units as tu INNER JOIN generic_test_result_units_map as map ON map.unit_id=tu.unit_id WHERE map.test_type_id=$testTypeId AND tu.unit_status='active'";
         return $this->db->query($testResultUnitQry);
     }
-
 }

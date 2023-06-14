@@ -97,7 +97,7 @@ class HepatitisService
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    /** @var GeoLocationsService $geoLocations */
+                    /** @var GeoLocationsService $geoLocationsService */
                     $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
                     $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
                 }

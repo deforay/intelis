@@ -16,9 +16,9 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 		$pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
 	}
 }
-$bQuery = "SELECT * FROM batch_details";
+$bQuery = "SELECT * FROM batch_details WHERE test_type like 'vl' or test_type is NULL ORDER BY last_modified_datetime DESC";
 $bResult = $db->rawQuery($bQuery);
-$aQuery = "SELECT * from r_vl_art_regimen";
+$aQuery = "SELECT * from r_vl_art_regimen WHERE art_status like 'active' ORDER by parent_art ASC, art_code ASC";
 $aResult = $db->query($aQuery);
 
 $pdResult = $db->query($pdQuery);
@@ -462,7 +462,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 										<tr>
 											<td class="labels"><label for="batchNo">Batch</label></td>
 											<td>
-												<select name="batchNo" id="batchNo" class="form-control" title="Please choose batch number" style="width:100%">
+												<select name="batchNo" id="batchNo" class="form-control batchSelect2" title="Please choose batch number" style="width:100%">
 													<option value="">-- Select --</option>
 													<?php foreach ($bResult as $bName) { ?>
 														<option value="<?php echo $bName['batch_id']; ?>"><?php echo $bName['batch_code']; ?></option>
@@ -516,7 +516,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											</td>
 											<td class="labels"><label for="failedbatchNo">Batch</label></td>
 											<td>
-												<select name="failedbatchNo" id="failedbatchNo" class="form-control" title="Please choose batch number" style="width: 100%">
+												<select name="failedbatchNo" id="failedbatchNo" class="form-control batchSelect2" title="Please choose batch number" style="width: 100%">
 													<option value="">-- Select --</option>
 													<?php foreach ($bResult as $bName) { ?>
 														<option value="<?php echo $bName['batch_id']; ?>"><?php echo $bName['batch_code']; ?></option>
@@ -704,6 +704,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 		$('#labId').select2({
 			placeholder: "Select Laboratory Name"
+		});
+
+		$('#artRegimen').select2({
+			placeholder: "Select ART Regimen"
+		});
+
+		$('.batchSelect2').select2({
+			placeholder: "Select Batch"
 		});
 
 

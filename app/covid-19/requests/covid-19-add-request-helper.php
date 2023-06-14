@@ -297,12 +297,6 @@ try {
 		if (!empty($_POST['testName'])) {
 			foreach ($_POST['testName'] as $testKey => $testKitName) {
 				if (!empty($testKitName)) {
-					if (isset($_POST['testDate'][$testKey]) && trim($_POST['testDate'][$testKey]) != "") {
-						$testedDateTime = explode(" ", $_POST['testDate'][$testKey]);
-						$_POST['testDate'][$testKey] = DateUtility::isoDateFormat($testedDateTime[0]) . " " . $testedDateTime[1];
-					} else {
-						$_POST['testDate'][$testKey] = null;
-					}
 					$covid19TestData = array(
 						'covid19_id'                => $_POST['covid19SampleId'],
 						'test_name'                    => ($testKitName == 'other') ? $_POST['testNameOther'][$testKey] : $testKitName,

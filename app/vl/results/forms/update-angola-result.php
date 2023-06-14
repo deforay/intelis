@@ -36,7 +36,7 @@ if (!isset($provinceResult[0]['geo_code']) || $provinceResult[0]['geo_code'] == 
 }
 
 //get ART list
-$aQuery = "SELECT * FROM r_vl_art_regimen";
+$aQuery = "SELECT * from r_vl_art_regimen WHERE art_status like 'active' ORDER by parent_art ASC, art_code ASC";
 $aResult = $db->query($aQuery);
 
 //Set Dispatched From Clinic To Lab Date
