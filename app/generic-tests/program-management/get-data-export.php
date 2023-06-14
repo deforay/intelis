@@ -246,9 +246,6 @@ if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
      }
 }
 
-if (isset($_POST['communitySample']) && trim($_POST['communitySample']) != '') {
-     $sWhere[] =  ' (vl.community_sample IS NOT NULL AND vl.community_sample ="' . $_POST['communitySample'] . '") ';
-}
 /* Sample status filter */
 if (isset($_POST['status']) && trim($_POST['status']) != '') {
      $sWhere[] = '  (vl.result_status IS NOT NULL AND vl.result_status =' . $_POST['status'] . ')';

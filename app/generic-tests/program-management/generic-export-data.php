@@ -646,7 +646,6 @@ $state = $geolocationService->getProvinces("yes");
 				Print_Date: $("#printDate").val(),
 				Gender: $("#gender  option:selected").text(),
 				patientInfo: $("#patientInfo  option:selected").val(),
-				Community_Sample: $("#communitySample  option:selected").text(),
 				Status: $("#status  option:selected").text(),
 				Show_Reorder_Sample: $("#showReordSample option:selected").text(),
 				withAlphaNum: withAlphaNum
