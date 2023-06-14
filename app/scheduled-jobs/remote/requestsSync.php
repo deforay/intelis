@@ -84,7 +84,7 @@ if (isset($systemConfig['modules']['genericTests']) && $systemConfig['modules'][
     );
     
     $jsonResponse = $response->getBody()->getContents();
-    
+    // die($jsonResponse);
     if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
         $options = [
@@ -92,7 +92,6 @@ if (isset($systemConfig['modules']['genericTests']) && $systemConfig['modules'][
             'decoder' => new ExtJsonDecoder(true)
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
-
         $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
                             WHERE TABLE_SCHEMA = ? AND table_name='form_generic'";
         $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db']]);
@@ -164,31 +163,48 @@ if (isset($systemConfig['modules']['genericTests']) && $systemConfig['modules'][
                 );
 
                 $request = array_diff_key($request, array_flip($removeMoreKeys));
+                
+                $testTypeForm = $general->jsonToSetString(
+                    $exsvlResult[0]['test_type_form'],
+                    'test_type_form',
+                    $request['test_type_form'],
+                );
+                $request['test_type_form'] = $db->func($testTypeForm);
 
                 $formAttributes = $general->jsonToSetString(
-                    $request['form_attributes'],
+                    $exsvlResult[0]['form_attributes'],
                     'form_attributes',
-                    ['syncTransactionId' => $transactionId]
+                    $request['form_attributes'],
+                    // ['syncTransactionId' => $transactionId]
                 );
                 $request['form_attributes'] = $db->func($formAttributes);
-                
+                echo "<pre>";
+                print_r($request);die;
                 $db = $db->where('sample_id', $exsvlResult[0]['sample_id']);
                 $id = $db->update('form_generic', $request);
             } else {
                 $request['source_of_request'] = 'vlsts';
-                
                 if (!empty($request['sample_collection_date'])) {
                     
-                    $request['source_of_request'] = "vlsts";
+                    $testTypeForm = $general->jsonToSetString(
+                        $request['test_type_form'],
+                        'test_type_form'
+                    );
+                    $request['test_type_form'] = $db->func($testTypeForm);
+    
                     $formAttributes = $general->jsonToSetString(
                         $request['form_attributes'],
                         'form_attributes',
                         ['syncTransactionId' => $transactionId]
                     );
                     $request['form_attributes'] = $db->func($formAttributes);
+
+                    $request['source_of_request'] = "vlsts";
                     //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['data_sync'] = 0;
+                    // print_r($request);die;
                     $id = $db->insert('form_generic', $request);
+                    // error_log($db->getLastQuery());
                 }
             }
         }
