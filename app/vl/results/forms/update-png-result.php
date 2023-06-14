@@ -53,7 +53,7 @@ $importQuery = "SELECT * FROM instruments WHERE status = 'active'";
 $importResult = $db->query($importQuery);
 
 
-$aQuery = "SELECT * from r_vl_art_regimen";
+$aQuery = "SELECT * from r_vl_art_regimen WHERE art_status like 'active' ORDER by parent_art ASC, art_code ASC";
 $aResult = $db->query($aQuery);
 
 $sQuery = "SELECT * from r_vl_sample_type where status='active'";

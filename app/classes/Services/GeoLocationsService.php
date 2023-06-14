@@ -84,7 +84,7 @@ class GeoLocationsService
             return false;
         }
 
-        $pQuery = "SELECT * FROM geographical_divisions WHERE (geo_parent = 0) AND (geo_code like ?)";
+        $pQuery = "SELECT geo_id FROM geographical_divisions WHERE (geo_parent = 0) AND (geo_code like ?)";
         $pResult = $this->db->rawQueryOne($pQuery, array($code));
 
         if ($pResult) {
