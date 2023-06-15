@@ -78,7 +78,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                         <div class="box box-default">
                             <div class="box-body">
                                 <div class="box-header with-border">
-                                    <h3 class="box-title">A. CHILD and MOTHER INFORMATION</h3>
+                                    <h3 class="box-title">Section 1: Clinic Information</h3>
                                 </div>
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
@@ -157,10 +157,49 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <!-- </tr> -->
                                         <?php } ?>
                                     </tr>
+                                    <tr>
+                                        <th scope="row">Requesting Officer</th>
+                                        <td>
+                                            <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Requesting Officer" />
+                                        </td>
+                                        <th scope="row">Sample Requestor Phone</th>
+                                        <td>
+                                            <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" />
+                                        </td>
+                                    </tr>
                                 </table>
                                 <br><br>
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Section 2: Mother/Guardian Information</h3>
+                                </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
+                                <tr>
+                                        <th scope="row" style="width:15% !important"><label for="mothersName">Mother's Name </label></th>
+                                        <td style="width:35% !important">
+                                                <input type="text" class="form-control " id="mothersName" name="mothersName" placeholder="Mother name" title="Please enter Mother Name" style="width:100%;" onchange="" />
+                                        </td>
+                                        <th scope="row" style="width:15% !important"><label for="mothersSurname">Mother's Surname </label></th>
+                                        <td style="width:35% !important">
+                                                <input type="text" class="form-control " id="mothersSurname" name="mothersSurname" placeholder="Mother Surname" title="Please enter Mother Surname" style="width:100%;" onchange="" />
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <th scope="row">Caretaker phone number</th>
+                                        <td><input type="text" class="form-control " id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="Caretaker Phone Number" title="Caretaker Phone Number" style="width:100%;" onchange="" /></td>
 
+                                        <th scope="row">Infant caretaker address</th>
+                                        <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="Caretaker Address" title="Caretaker Address" style="width:100%;" onchange=""></textarea></td>
+
+                                    </tr>
+                                        </table>
+                                    <br><br>
+                                        
+
+                                        <div class="box-header with-border">
+                                    <h3 class="box-title">Section 3: Infant Information</h3>
+                                </div>
+
+                                    <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="childId">Exposed Infant Identification <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
@@ -189,17 +228,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr>
                                         <th scope="row">Infant Age (months)</th>
                                         <td><input type="number" max=9 maxlength="1" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="" /></td>
-                                        <th scope="row">Mother ART Number</th>
-                                        <td><input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" onchange="" /></td>
+                                       
                                     </tr>
-                                    <tr>
-                                        <th scope="row">Caretaker phone number</th>
-                                        <td><input type="text" class="form-control " id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="Caretaker Phone Number" title="Caretaker Phone Number" style="width:100%;" onchange="" /></td>
-
-                                        <th scope="row">Infant caretaker address</th>
-                                        <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="Caretaker Address" title="Caretaker Address" style="width:100%;" onchange=""></textarea></td>
-
-                                    </tr>
+                                        </table>
+                                        <br><br>
+                                        <div class="box-header with-border">
+                                    <h3 class="box-title">Section 4: Reason For Test</h3>
+                                </div>`
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                     <th scope="row">Provide Recent previous Lab Number</th>
                                         <td>
@@ -219,19 +255,23 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <td>
                                                  <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Name of EID Personnel Collecting DBS" title="Name of EID Personnel Collecting DBS" style="width:100%;" onchange="" />
                                             </td>
+                                            <th scope="row" style="width:15% !important">Sample Collection Date <span class="mandatory">*</span> </th>
+                                        <td style="width:35% !important;">
+                                            <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="sampleCodeGeneration();" />
+                                        </td>
                                     </tr>
+                                  
                                 </table>
 
 
 
                                 <br><br>
+                                <div class="box-header with-border">
+                                    <h3 class="box-title"> Section 5: Mother PPTCT Information</h3>
+                                </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                    <tr>
-                                        <th scope="row" colspan=4>
-                                            <h4>Infant and Mother's Health Information</h4>
-                                        </th>
-                                    </tr>
-                                    <tr>
+
+                                <tr>
                                         <th scope="row" style="width:15% !important">Mother's HIV Status:</th>
                                         <td style="width:35% !important">
                                             <select class="form-control" name="mothersHIVStatus" id="mothersHIVStatus">
@@ -241,8 +281,12 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value="unknown"> Unknown </option>
                                             </select>
                                         </td>
-
-                                        <th scope="row" style="width:15% !important">ART given to the Mother during:</th>
+                                        <th scope="row">Mother ART Number</th>
+                                        <td><input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" onchange="" /></td>
+                                        
+                                    </tr>
+                                    <tr>
+                                    <th scope="row" style="width:15% !important">ART given to the Mother during:</th>
                                         <td style="width:35% !important">
                                             <input type="checkbox" name="motherTreatment[]" value="No ART given" /> No ART given <br>
                                             <input type="checkbox" name="motherTreatment[]" value="Pregnancy" /> Pregnancy <br>
@@ -251,8 +295,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <!-- <input type="checkbox" name="motherTreatment[]" value="Other" onclick="$('#motherTreatmentOther').prop('disabled', function(i, v) { return !v; });" /> Other (Please specify): <input class="form-control" style="max-width:200px;display:inline;" disabled="disabled" placeholder="Other" type="text" name="motherTreatmentOther" id="motherTreatmentOther" /> <br> -->
                                             <input type="checkbox" name="motherTreatment[]" value="Unknown" /> Unknown
                                         </td>
-                                    </tr>
-                                    <tr>
                                         <th scope="row" style="width:15% !important">Mode of Delivery:</th>
                                         <td style="width:35% !important">
                                             <select class="form-control" name="modeOfDelivery" id="modeOfDelivery" onchange="showOtherOption(this.value)">
@@ -265,6 +307,45 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </select>
                                             <input type="text" class="form-control" name="modeOfDeliveryOther" id="modeOfDeliveryOther" title="Enter Other mode of Delivery" placeholder="Enter Other mode of Delivery" style="display:none;" /> 
                                         </td>
+                                    <tr>
+
+                                        </table>
+
+                                        <br><br>
+                              
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
+                                    <tr>
+                                        <th scope="row" colspan=4>
+                                            <h4>Section 6: Infant PPTCT Information</h4>
+                                        </th>
+                                    </tr>
+                                   
+                                    <tr>
+                                       
+                                        <th scope="row">Infant stopped breastfeeding ?</th>
+                                        <td>
+                                            <select class="form-control" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
+                                                <option value=''> -- Select -- </option>
+                                                <option value="yes"> Yes </option>
+                                                <option value="no"> No </option>
+                                                <option value="unknown"> Unknown </option>
+                                            </select>
+                                        </td>
+                                        <th scope="row">Age (months) breastfeeding stopped :</th>
+                                        <td>
+                                            <input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="Age (months) breastfeeding stopped" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" />
+                                        </td>
+
+                                    </tr>
+                                
+                                    </table>
+                                    <br><br>
+                                    <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
+                                    <tr>
+                                        <th scope="row" colspan=4>
+                                            <h4>Section 7: Infant Testing History (Provide information for MOST recent test)</h4>
+                                        </th>
+                                    </tr>
                                     <tr>
                                         <th scope="row">Infant Rapid HIV Test Done</th>
                                         <td>
@@ -291,23 +372,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                                             </select>
                                         </td>
-
-                                        <th scope="row">Infant stopped breastfeeding ?</th>
-                                        <td>
-                                            <select class="form-control" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
-                                                <option value=''> -- Select -- </option>
-                                                <option value="yes"> Yes </option>
-                                                <option value="no"> No </option>
-                                                <option value="unknown"> Unknown </option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Age (months) breastfeeding stopped :</th>
-                                        <td>
-                                            <input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="Age (months) breastfeeding stopped" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" />
-                                        </td>
-
                                         <th scope="row">PCR test performed on child before :</th>
                                         <td>
                                             <select class="form-control" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore">
@@ -316,14 +380,16 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value="no"> No </option>
                                             </select>
                                         </td>
+                                       
+                                       
                                     </tr>
                                     <tr>
-                                        <th scope="row">Previous PCR test date :</th>
+                                    <th scope="row">Previous PCR test date :</th>
                                         <td>
                                             <input class="form-control date" type="text" name="previousPCRTestDate" id="previousPCRTestDate" placeholder="if yes, test date" />
                                         </td>
 
-                                        <th scope="row">Reason for 2nd PCR :</th>
+                                    <th scope="row">Reason for 2nd PCR :</th>
                                         <td>
                                             <select class="form-control" name="pcrTestReason" id="pcrTestReason">
                                                 <option value=''> -- Select -- </option>
@@ -341,38 +407,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value="Other"> Other </option>
                                             </select>
                                         </td>
-                                    </tr>
-
-
-                                </table>
-
-                                <br><br>
-                                <table aria-describedby="table" class="table" aria-hidden="true">
-                                    <tr>
-                                        <th scope="row" colspan=4>
-                                            <h4>Sample Information</h4>
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row" style="width:15% !important">Sample Collection Date <span class="mandatory">*</span> </th>
-                                        <td style="width:35% !important;">
-                                            <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="sampleCodeGeneration();" />
-                                        </td>
-                                        <th style="width:15% !important;"></th>
-                                        <td style="width:35% !important;"></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Requesting Officer</th>
-                                        <td>
-                                            <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Requesting Officer" />
-                                        </td>
-                                        <th scope="row">Sample Requestor Phone</th>
-                                        <td>
-                                            <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" />
-                                        </td>
-                                    </tr>
+                                                </tr>
 
                                 </table>
+
 
 
                             </div>
@@ -381,7 +419,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
-                                        <h3 class="box-title">B. Reserved for Laboratory Use </h3>
+                                        <h3 class="box-title"> Reserved for Laboratory Use </h3>
                                     </div>
                                     <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>

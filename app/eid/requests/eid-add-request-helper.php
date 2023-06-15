@@ -180,6 +180,7 @@ try {
 		'clinical_assessment' 								=> $_POST['clinicalAssessment'] ?? null,
 		'clinician_name' 								    => $_POST['clinicianName'] ?? null,
 		'mother_name'	 									=> $_POST['mothersName'] ?? null,
+		'mother_surname' 									=> $_POST['mothersSurname'] ?? null,
 		'mother_dob' 										=> $_POST['mothersDob'] ?? null,
 		'mother_marital_status' 							=> $_POST['mothersMaritalStatus'] ?? null,
 		'mother_treatment' 									=> is_array($_POST['motherTreatment']) ? implode(",", $_POST['motherTreatment']) : $_POST['motherTreatment'] ?? null,

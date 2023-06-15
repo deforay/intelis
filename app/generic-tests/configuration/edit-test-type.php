@@ -40,7 +40,6 @@ $testFailureReasonInfo = $general->getDataByTableAndFields("r_generic_test_failu
 $sampleRejectionReasonInfo = $general->getDataByTableAndFields("r_generic_sample_rejection_reasons", array("rejection_reason_id", "rejection_reason_name"), true, "rejection_reason_status='active'");
 $symptomInfo = $general->getDataByTableAndFields("r_generic_symptoms", array("symptom_id", "symptom_name"), true, "symptom_status='active'");
 $testSampleId = $general->getDataByTableAndFields("generic_test_sample_type_map", array("sample_type_id", "sample_type_id"), true, "test_type_id=$id");
-
 $testReasonId = $general->getDataByTableAndFields("generic_test_reason_map", array("test_reason_id", "test_reason_id"), true, "test_type_id=$id");
 
 $testFailureReasonId = $general->getDataByTableAndFields("generic_test_failure_reason_map", array("test_failure_reason_id", "test_failure_reason_id"), true, "test_type_id=$id");
