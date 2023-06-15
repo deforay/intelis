@@ -20,7 +20,7 @@ if (isset($_POST['testTypeId'])) {
     if (!empty($testReasonList)) { ?>
         <option value=""><?php echo _("-- Select--"); ?></option>
         <?php foreach ($testReasonList as $reason) { ?>
-            <option value="<?php echo $reason['test_reason_id']; ?>" <?php echo (isset($_POST['testReasonId']) && !empty($_POST['testReasonId']) && $_POST['testReasonId'] == $reason['test_reason_id']) ? "selected='selected'" : ""; ?>><?php echo $reason['test_reason']; ?></option>
+            <option value="<?php echo $reason['test_reason_id']; ?>" <?php echo (!empty($_POST['testReasonId']) && $_POST['testReasonId'] == $reason['test_reason_id']) ? "selected='selected'" : ""; ?>><?php echo $reason['test_reason']; ?></option>
         <?php }
     } else { ?>
         <option value=""><?php echo _("-- Select--"); ?></option>

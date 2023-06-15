@@ -75,7 +75,7 @@ class GenericTestsService
             if ($globalConfig['vl_form'] == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    /** @var GeoLocationsService $geoLocations */
+                    /** @var GeoLocationsService $geoLocationsService */
                     $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
                     $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
                 }
@@ -208,7 +208,7 @@ class GenericTestsService
 
             $sampleJson = $this->generateGenericTestSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey, null, $testType);
             $sampleData = json_decode($sampleJson, true);
-            
+
             $sQuery = "SELECT sample_id FROM form_generic ";
             if (!empty($sampleData['sampleCode'])) {
                 $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
@@ -216,7 +216,7 @@ class GenericTestsService
             $sQuery .= " LIMIT 1";
             $rowData = $this->db->rawQueryOne($sQuery);
             $id = 0;
-            
+
             if (empty($rowData) && !empty($sampleData['sampleCode'])) {
 
                 $tesRequestData = [
@@ -338,32 +338,37 @@ class GenericTestsService
         if (empty($result) || empty($testType)) {
             return null;
         }
+
         $this->db->where('test_type_id', $testType);
         $testTypeResult = $this->db->getOne('r_test_types');
-        if (!empty($testTypeResult['test_results_config'])) {
-            $resultConfig = json_decode($testTypeResult['test_results_config'], true);
-            if (isset($resultConfig['result_type']) && $resultConfig['result_type'] == 'quantitative') {
-                if (is_numeric($result)) {
-                    if ($result >= $resultConfig['high_value']) {
-                        return ($resultConfig['above_threshold']);
-                    }
-                    if ($result == $resultConfig['threshold_value']) {
-                        return ($resultConfig['at_threshold']);
-                    }
-                    if ($result < $resultConfig['low_value']) {
-                        return ($resultConfig['below_threshold']);
-                    }
-                } else {
-                    $resultIndex =  (isset($result) && isset($resultConfig['quantitative_result']) && in_array($result, $resultConfig['quantitative_result'])) ? array_search(strtolower($result), array_map('strtolower', $resultConfig['quantitative_result'])) : '';
-                    return ($resultConfig['quantitative_result_interpretation'][$resultIndex]);
-                }
-            } else if (isset($resultConfig['result_type']) && $resultConfig['result_type'] == 'qualitative') {
-                $resultIndex =  (isset($result) && isset($resultConfig['result']) && in_array($result, $resultConfig['result'])) ? array_search(strtolower($result), array_map('strtolower', $resultConfig['result'])) : '';
-                return ($resultConfig['result_interpretation'][$resultIndex]);
-            }
-        } else {
+
+        if (empty($testTypeResult['test_results_config'])) {
             return null;
         }
+
+        $resultConfig = json_decode($testTypeResult['test_results_config'], true);
+        $return = null;
+        if (isset($resultConfig['result_type']) && $resultConfig['result_type'] == 'quantitative') {
+            if (is_numeric($result)) {
+                if ($result >= $resultConfig['high_value']) {
+                    $return = $resultConfig['above_threshold'];
+                }
+                if ($result == $resultConfig['threshold_value']) {
+                    $return = $resultConfig['at_threshold'];
+                }
+                if ($result < $resultConfig['low_value']) {
+                    $return = $resultConfig['below_threshold'];
+                }
+            } else {
+                $resultIndex =  (isset($result) && isset($resultConfig['quantitative_result']) && in_array($result, $resultConfig['quantitative_result'])) ? array_search(strtolower($result), array_map('strtolower', $resultConfig['quantitative_result'])) : '';
+                $return = $resultConfig['quantitative_result_interpretation'][$resultIndex];
+            }
+        } elseif (isset($resultConfig['result_type']) && $resultConfig['result_type'] == 'qualitative') {
+            $resultIndex =  (isset($result) && isset($resultConfig['result']) && in_array($result, $resultConfig['result'])) ? array_search(strtolower($result), array_map('strtolower', $resultConfig['result'])) : '';
+            $return = $resultConfig['result_interpretation'][$resultIndex];
+        }
+
+        return $return;
     }
 
     public function getGenericTestsByFormId($genId = ""): array
@@ -416,5 +421,4 @@ class GenericTestsService
         $testResultUnitQry = "SELECT * FROM r_generic_test_result_units as tu INNER JOIN generic_test_result_units_map as map ON map.unit_id=tu.unit_id WHERE map.test_type_id=$testTypeId AND tu.unit_status='active'";
         return $this->db->query($testResultUnitQry);
     }
-
 }

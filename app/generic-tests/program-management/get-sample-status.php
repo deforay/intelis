@@ -21,7 +21,7 @@ $_POST = $request->getParsedBody();
 
 $whereCondition = '';
 
-if (isset($_SESSION['facilityMap']) && !empty($_SESSION['facilityMap'])) {
+if (!empty($_SESSION['facilityMap'])) {
     $whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 }
 

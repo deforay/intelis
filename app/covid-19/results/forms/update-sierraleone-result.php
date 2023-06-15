@@ -427,7 +427,7 @@ $sampleSuggestionDisplay = 'display:none;';
                                                     </thead>
                                                     <tbody id="testKitNameTable">
                                                         <?php $span = 4;
-                                                        if (isset($covid19TestInfo) && !empty($covid19TestInfo)) {
+                                                        if (!empty($covid19TestInfo)) {
                                                             $kitShow = false;
                                                             foreach ($covid19TestInfo as $indexKey => $rows) { ?>
                                                                 <tr>
@@ -584,7 +584,7 @@ $sampleSuggestionDisplay = 'display:none;';
     provinceName = true;
     facilityName = true;
     machineName = true;
-    let testCounter = <?php echo (isset($covid19TestInfo) && !empty($covid19TestInfo)) ? (count($covid19TestInfo)) : 0; ?>;
+    let testCounter = <?php echo (!empty($covid19TestInfo)) ? (count($covid19TestInfo)) : 0; ?>;
     deletedRow = [];
 
     function getTestingPoints() {
@@ -701,7 +701,7 @@ $sampleSuggestionDisplay = 'display:none;';
             placeholder: "Select Nationality"
         });
 
-        <?php if (isset($covid19TestInfo) && !empty($covid19TestInfo)) { ?>
+        <?php if (!empty($covid19TestInfo)) { ?>
             $('.result-focus').change(function(e) {
                 var status = false;
                 $(".result-focus").each(function(index) {

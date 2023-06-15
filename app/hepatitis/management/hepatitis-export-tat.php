@@ -23,11 +23,11 @@ $sQuery = "select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_
                         AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' AND DATE(vl.sample_tested_datetime) !='0000-00-00')
                         AND vl.hcv_vl_result is not null
                         AND vl.hcv_vl_result != '' ";
-if (isset($_SESSION['hepatitisTatData']['sWhere']) && !empty($_SESSION['hepatitisTatData']['sWhere'])) {
+if (!empty($_SESSION['hepatitisTatData']['sWhere'])) {
 	$sQuery = $sQuery . $_SESSION['hepatitisTatData']['sWhere'];
 }
 
-if (isset($_SESSION['hepatitisTatData']['sOrder']) && !empty($_SESSION['hepatitisTatData']['sOrder'])) {
+if (!empty($_SESSION['hepatitisTatData']['sOrder'])) {
 	$sQuery = $sQuery . " ORDER BY " . $_SESSION['hepatitisTatData']['sOrder'];
 }
 $rResult = $db->rawQuery($sQuery);

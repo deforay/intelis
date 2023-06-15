@@ -9,11 +9,11 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 $testTypeForm = [];
-if (isset($_POST['testTypeForm']) && !empty($_POST['testTypeForm'])) {
+if (!empty($_POST['testTypeForm'])) {
     $testTypeForm = json_decode(base64_decode($_POST['testTypeForm']), true);
 }
 $disabled = "";
-if (isset($_POST['formType']) && !empty($_POST['formType']) && $_POST['formType'] == 'update-form') {
+if (!empty($_POST['formType']) && $_POST['formType'] == 'update-form') {
     $disabled = ' disabled ';
 }
 $resultInterpretation = "";
@@ -57,7 +57,7 @@ if ($n > 0) {
                 }
 
                 $value = "";
-                if (isset($testTypeForm[$testAttributeId]) && !empty($testTypeForm[$testAttributeId])) {
+                if (!empty($testTypeForm[$testAttributeId])) {
                     $value = $testTypeForm[$testAttributeId];
                 }
                 if ($testAttribute['field_type'] == 'number') {
@@ -66,7 +66,7 @@ if ($n > 0) {
                     $fieldType = " dateTime";
                 }
 
-                if (isset($_POST['formType']) && !empty($_POST['formType']) && $_POST['formType'] == 'update-form' && $testAttribute['section'] != 'labSection') {
+                if (!empty($_POST['formType']) && $_POST['formType'] == 'update-form' && $testAttribute['section'] != 'labSection') {
                     $isRequired = "";
                 }
 
@@ -87,9 +87,9 @@ if ($n > 0) {
                     $dropDownField .= '<option value="">-- Select --</option>';
                     foreach (explode(',', $testAttribute['dropdown_options']) as $option) {
                         if ($testAttribute['field_type'] == 'multiple') {
-                            $selected = (isset($value) && !empty($value) && in_array(trim($option), $testTypeForm[$testAttributeId])) ? "selected" : "";
+                            $selected = (!empty($value) && in_array(trim($option), $testTypeForm[$testAttributeId])) ? "selected" : "";
                         } else {
-                            $selected = (isset($value) && !empty($value) && $value == $option) ? "selected" : "";
+                            $selected = (!empty($value) && $value == $option) ? "selected" : "";
                         }
                         $dropDownField .= '<option value="' . trim($option) . '" ' . $selected . '>' . ucwords($option) . '</option>';
                     }
@@ -137,7 +137,7 @@ if ($n > 0) {
                     }
 
                     $value = "";
-                    if (isset($testTypeForm[$otherAttributeId]) && !empty($testTypeForm[$otherAttributeId])) {
+                    if (!empty($testTypeForm[$otherAttributeId])) {
                         $value = $testTypeForm[$otherAttributeId];
                     }
                     if ($testAttribute['field_type'] == 'number') {
@@ -146,7 +146,7 @@ if ($n > 0) {
                         $fieldType = " dateTime";
                     }
 
-                    if (isset($_POST['formType']) && !empty($_POST['formType']) && $_POST['formType'] == 'update-form' && $testAttribute['section'] != 'labSection') {
+                    if (!empty($_POST['formType']) && $_POST['formType'] == 'update-form' && $testAttribute['section'] != 'labSection') {
                         $isRequired = "";
                     }
 
@@ -162,9 +162,9 @@ if ($n > 0) {
                         $dropDownField .= '<option value="">-- Select --</option>';
                         foreach (explode(',', $testAttribute['dropdown_options']) as $option) {
                             if ($testAttribute['field_type'] == 'multiple') {
-                                $selected = (isset($value) && !empty($value) && in_array(trim($option), $testTypeForm[$otherAttributeId])) ? "selected" : "";
+                                $selected = (!empty($value) && in_array(trim($option), $testTypeForm[$otherAttributeId])) ? "selected" : "";
                             } else {
-                                $selected = (isset($value) && !empty($value) && $value == $option) ? "selected" : "";
+                                $selected = (!empty($value) && $value == $option) ? "selected" : "";
                             }
                             $dropDownField .= '<option value="' . trim($option) . '" ' . $selected . '>' . ucwords($option) . '</option>';
                         }
@@ -208,11 +208,11 @@ if ($n > 0) {
 }
 // echo "<pre>";
 //print_r($testAttr);die;
-if (isset($testResultsAttribute) && !empty($testResultsAttribute)) {
+if (!empty($testResultsAttribute)) {
     if ($testResultsAttribute['result_type'] == 'qualitative') {
         $resultSection = '<select class="form-control result-select" name="result" id="result" onchange="updateInterpretationResult(this);">>';
         $resultSection .= '<option value="">-- Select --</option>';
-        if (isset($testResultsAttribute['result']) && !empty($testResultsAttribute['result'])) {
+        if (!empty($testResultsAttribute['result'])) {
             foreach ($testResultsAttribute['result'] as $row) {
                 $selected = (isset($_POST['result']) && $_POST['result'] != "" && $_POST['result'] == trim($row)) ? "selected" : "";
                 $resultSection .= '<option value="' . trim($row) . '" ' . $selected . '>' . ucwords($row) . '</option>';
@@ -221,9 +221,9 @@ if (isset($testResultsAttribute) && !empty($testResultsAttribute)) {
         $resultSection .= '</select>';
     } else {
         $resultSection = '<input type="text" list="resultList" id="result" name="result" class="form-control result-text" value="' . $_POST['result'] . '" placeholder="Enter final result" title="Please enter final results" onchange="updateInterpretationResult(this);">';
-        if (isset($testResultsAttribute['quantitative_result']) && !empty($testResultsAttribute['quantitative_result'])) {
+        if (!empty($testResultsAttribute['quantitative_result'])) {
             $resultSection .= '<datalist id="resultList">';
-            if (isset($testResultsAttribute['quantitative_result']) && !empty($testResultsAttribute['quantitative_result'])) {
+            if (!empty($testResultsAttribute['quantitative_result'])) {
                 foreach ($testResultsAttribute['quantitative_result'] as $key => $row) {
                     $selected = (isset($_POST['result']) && $_POST['result'] != "" && $_POST['result'] == trim($row)) ? "selected" : "";
                     $resultSection .= '<option value="'.trim($row).'" '.$selected.' data-interpretation="'.$testResultsAttribute['quantitative_result_interpretation'][$key].'"> '.ucwords($row).' </option>';

@@ -116,7 +116,7 @@ try {
 		);
 
 		//$facilityAttributes = [];
-		if (isset($_POST['allowResultUpload']) && !empty($_POST['allowResultUpload'])) {
+		if (!empty($_POST['allowResultUpload'])) {
 			$facilityAttributes['allow_results_file_upload'] = $_POST['allowResultUpload'];
 		}
 		if (!empty($_POST['sampleType'])) {
@@ -165,7 +165,7 @@ try {
 				);
 				$db->insert($testingLabsTable, $dataTest);
 			}
-			if (isset($_POST['testType']) && !empty($_POST['testType'])) {
+			if (!empty($_POST['testType'])) {
 
 				if (isset($_POST['facilityType']) && $_POST['facilityType'] == 1) {
 					$db = $db->where('facility_id', $facilityId);
@@ -192,10 +192,10 @@ try {
 							'facility_id' => $facilityId,
 							'updated_datetime' => DateUtility::getCurrentDateTime()
 						);
-						if (isset($_POST['availablePlatforms']) && !empty($_POST['availablePlatforms'])) {
+						if (!empty($_POST['availablePlatforms'])) {
 							$attributes['platforms'] = $_POST['availablePlatforms'];
 						}
-						if (isset($attributes) && !empty($attributes)) {
+						if (!empty($attributes)) {
 							$data['attributes'] = json_encode($attributes, true);
 						}
 						$tid = $db->insert($testingLabsTable, $data);
@@ -239,7 +239,7 @@ try {
 			}
 		}
 		// Uploading signatories
-		if (isset($_FILES['signature']['name']) && $_FILES['signature']['name'] != ""  && !empty($_FILES['signature']['name']) && isset($_POST['signName']) && $_POST['signName'] != "" && !empty($_POST['signName'])) {
+		if ($_FILES['signature']['name'] != "" && !empty($_FILES['signature']['name']) && $_POST['signName'] != "" && !empty($_POST['signName'])) {
 			$deletedRow = explode(",", $_POST['deletedRow']);
 			foreach ($deletedRow as $delete) {
 				$db = $db->where('signatory_id', $delete);
@@ -267,7 +267,7 @@ try {
 						$db->insert($signTableName, $signData);
 						$lastSignId = $db->getInsertId();
 					}
-					if (isset($_FILES["signature"]["tmp_name"][$key]) && !empty($_FILES["signature"]["tmp_name"][$key])) {
+					if (!empty($_FILES["signature"]["tmp_name"][$key])) {
 						if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . 'signatures') && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs")) {
 							mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs", 0777, true);
 						}

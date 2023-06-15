@@ -27,14 +27,14 @@ if (!empty($requestResult)) {
           $currentTime = DateUtility::getCurrentDateTime();
 
           $testedBy = '';
-          if (isset($result['tested_by']) && !empty($result['tested_by'])) {
+          if (!empty($result['tested_by'])) {
                $testedByRes = $usersService->getUserInfo($result['tested_by'], array('user_name', 'user_signature'));
                if ($testedByRes) {
                     $testedBy = $testedByRes['user_name'];
                }
           }
           $reviewedBy = '';
-          if (isset($result['result_reviewed_by']) && !empty($result['result_reviewed_by'])) {
+          if (!empty($result['result_reviewed_by'])) {
                $reviewedByRes = $usersService->getUserInfo($result['result_reviewed_by'], array('user_name', 'user_signature'));
                if ($reviewedByRes) {
                     $reviewedBy = $reviewedByRes['user_name'];
@@ -43,7 +43,7 @@ if (!empty($requestResult)) {
 
           $revisedBy = '';
           $revisedByRes = [];
-          if (isset($result['revised_by']) && !empty($result['revised_by'])) {
+          if (!empty($result['revised_by'])) {
                $revisedByRes = $usersService->getUserInfo($result['revised_by'], array('user_name', 'user_signature'));
                if ($revisedByRes) {
                     $revisedBy = $revisedByRes['user_name'];
@@ -63,7 +63,7 @@ if (!empty($requestResult)) {
 
           $resultApprovedBy = '';
           $userSignaturePath = null;
-          if (isset($result['result_approved_by']) && !empty($result['result_approved_by'])) {
+          if (!empty($result['result_approved_by'])) {
                $resultApprovedByRes = $usersService->getUserInfo($result['result_approved_by'], array('user_name', 'user_signature'));
                if ($resultApprovedByRes) {
                     $resultApprovedBy = $resultApprovedByRes['result_approved_by'] ?? null;
@@ -547,7 +547,7 @@ if (!empty($requestResult)) {
           // }
 
 
-          if (isset($result['lab_tech_comments']) && !empty($result['lab_tech_comments'])) {
+          if (!empty($result['lab_tech_comments'])) {
 
                $html .= '<tr>';
                $html .= '<td colspan="3" style="line-height:20px;"></td>';

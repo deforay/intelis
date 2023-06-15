@@ -92,7 +92,7 @@ if ($systemType != 'remoteuser') {
     $whereCondition = " result_status!=9  AND ";
 } else {
     $whereCondition = "";
-    if (isset($_SESSION['facilityMap']) && !empty($_SESSION['facilityMap'])) {
+    if (!empty($_SESSION['facilityMap'])) {
         if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
             $whereCondition = " eid.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
         } else if (isset($_POST['type']) && trim($_POST['type']) == 'covid19') {
@@ -629,7 +629,7 @@ if ($table == "form_covid19") {
     //}
     ?>
 
-    <?php if (isset($aggregateResult) && !empty($aggregateResult)) { ?>
+    <?php if (!empty($aggregateResult)) { ?>
         $('#<?php echo $samplesOverviewChart; ?>').highcharts({
             chart: {
                 type: 'column'

@@ -877,7 +877,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 														</select>
 													</div>
 												</div>
-												<?php if (!isset($vlQueryInfo['is_sample_rejected']) || empty($vlQueryInfo['is_sample_rejected']) || $vlQueryInfo['is_sample_rejected'] != 'yes') { ?>
+												<?php if (empty($vlQueryInfo['is_sample_rejected']) || $vlQueryInfo['is_sample_rejected'] != 'yes') { ?>
 											</div>
 											<div class="row">
 											<?php } ?>

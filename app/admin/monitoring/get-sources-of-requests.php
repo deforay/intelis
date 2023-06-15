@@ -26,7 +26,7 @@ $sources = array(
     'dhis2' => 'DHIS2'
 );
 $sampleReceivedfield = "sample_received_at_vl_lab_datetime";
-if (isset($_POST['testType']) && !empty($_POST['testType'])) {
+if (!empty($_POST['testType'])) {
     $testType = $_POST['testType'];
 }
 

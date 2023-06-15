@@ -544,7 +544,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								</tr>
 							</thead>
 							<tbody id="signDetails">
-								<?php if (isset($signResults) && !empty($signResults)) {
+								<?php if (!empty($signResults)) {
 									foreach ($signResults as $key => $row) { ?>
 										<tr>
 											<td style="width:14%;"><input type="hidden" name="signId[]" id="signId<?php echo ($key + 1); ?>" value="<?php echo $row['signatory_id'] ?>" /><input value="<?php echo $row['name_of_signatory'] ?>" type="text" class="form-control" name="signName[]" id="signName<?php echo ($key + 1); ?>" placeholder="<?php echo _('Name'); ?>" title="<?php echo _('Please enter the name'); ?>"></td>

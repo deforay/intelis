@@ -74,7 +74,7 @@ try {
     'result_reviewed_by'                => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
     'result_reviewed_datetime'          => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
     'result_dispatched_datetime'        => (isset($_POST['resultDispatchedOn']) && $_POST['resultDispatchedOn'] != "") ? $_POST['resultDispatchedOn'] : null,
-    'reason_for_changing'               => (isset($_POST['reasonForChanging']) && !empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
+    'reason_for_changing'               => (!empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
     'result_status'                     => 8,
     'data_sync'                         => 0,
     'reason_for_sample_rejection'       => $_POST['sampleRejectionReason'] ?? null,

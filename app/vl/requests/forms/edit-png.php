@@ -60,13 +60,13 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 $rejectionQuery = "SELECT * FROM r_vl_sample_rejection_reasons";
 $rejectionResult = $db->rawQuery($rejectionQuery);
 
-$bQuery = "SELECT * FROM batch_details";
+$bQuery = "SELECT * FROM batch_details WHERE test_type like 'vl' or test_type is NULL ORDER BY last_modified_datetime DESC";
 $bResult = $db->rawQuery($bQuery);
 //get import config
 $importQuery = "SELECT * FROM instruments WHERE status = 'active'";
 $importResult = $db->query($importQuery);
 
-$aQuery = "SELECT * FROM r_vl_art_regimen";
+$aQuery = "SELECT * from r_vl_art_regimen WHERE art_status like 'active' ORDER by parent_art ASC, art_code ASC";
 $aResult = $db->query($aQuery);
 
 $sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
@@ -633,7 +633,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 									<tr>
 										<td class="labels"><label for="batchNo">Batch</label></td>
 										<td>
-											<select name="batchNo" id="batchNo" class="form-control" title="Please choose batch number" style="width:100%;">
+											<select name="batchNo" id="batchNo" class="form-control batchSelect2" title="Please choose batch number" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($bResult as $bName) { ?>
 													<option value="<?php echo $bName['batch_id']; ?>" <?php echo ($vlQueryInfo['sample_batch_id'] == $bName['batch_id']) ? "selected='selected'" : "" ?>><?php echo $bName['batch_code']; ?></option>
@@ -689,7 +689,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 										</td>
 										<td class="labels"><label for="failedbatchNo">Batch</label></td>
 										<td>
-											<select name="failedbatchNo" id="failedbatchNo" class="form-control" title="Please choose batch number" style="width:100%;">
+											<select name="failedbatchNo" id="failedbatchNo" class="form-control batchSelect2" title="Please choose batch number" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($bResult as $bName) { ?>
 													<option value="<?php echo $bName['batch_id']; ?>" <?php echo ($vlQueryInfo['failed_batch_id'] == $bName['batch_id']) ? "selected='selected'" : "" ?>><?php echo $bName['batch_code']; ?></option>
@@ -871,6 +871,14 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 		});
 		$('#approvedBy').select2({
 			placeholder: "Select Approved By"
+		});
+
+		$('#artRegimen').select2({
+			placeholder: "Select ART Regimen"
+		});
+
+		$('.batchSelect2').select2({
+			placeholder: "Select Batch"
 		});
 
 		$('#labId').select2({

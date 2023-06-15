@@ -33,7 +33,7 @@ $configControlInfo = $db->rawQuery($configControlQuery, [$configId]);
 try {
     if (trim($_POST['configurationName']) != "") {
 
-        if (isset($_POST['supportedTests']) && !empty($_POST['supportedTests'])) {
+        if (!empty($_POST['supportedTests'])) {
             foreach ($_POST['supportedTests'] as $test) {
                 $configDir = __DIR__;
                 if (!file_exists($configDir)) {
@@ -61,12 +61,12 @@ try {
         $importConfigData = array(
             'machine_name' => $_POST['configurationName'],
             'lab_id' => $_POST['testingLab'],
-            'supported_tests' => $_POST['supportedTests'],
-            'import_machine_file_name' => $_POST['configurationFile'],
-            'lower_limit' => $_POST['lowerLimit'],
-            'higher_limit' => $_POST['higherLimit'],
-            'max_no_of_samples_in_a_batch' => $_POST['maxNOfSamplesInBatch'],
-            'low_vl_result_text' => $_POST['lowVlResultText'],
+            'supported_tests' => $_POST['supportedTests'] ?? null,
+            'import_machine_file_name' => $_POST['configurationFile'] ?? null,
+            'lower_limit' => $_POST['lowerLimit'] ?? 0,
+            'higher_limit' => $_POST['higherLimit'] ?? null,
+            'max_no_of_samples_in_a_batch' => $_POST['maxNOfSamplesInBatch'] ?? null,
+            'low_vl_result_text' => $_POST['lowVlResultText'] ?? null,
             'reviewed_by' => !empty($_POST['reviewedBy']) ? $_POST['reviewedBy'] : null,
             'approved_by' => !empty($_POST['approvedBy']) ? $_POST['approvedBy'] : null,
             'status' => $_POST['status']
@@ -93,7 +93,7 @@ try {
             }
         }
 
-        if ($configId > 0 && isset($_POST['testType']) && !empty($_POST['testType'])) {
+        if ($configId > 0 && !empty($_POST['testType'])) {
             if (count($configControlInfo) > 0) {
                 foreach ($_POST['testType'] as $key => $val) {
                     $cQuery = "SELECT * FROM instrument_controls WHERE config_id= " . $configId . " AND test_type like '" . $val . "'";

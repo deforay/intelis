@@ -54,7 +54,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 
 
 //set province
-if (isset($eidInfo['province_id']) && !empty($eidInfo['province_id'])) {
+if (!empty($eidInfo['province_id'])) {
     $stateQuery = "SELECT * from geographical_divisions where geo_id= " . $eidInfo['province_id'];
     $stateResult = $db->query($stateQuery);
 }

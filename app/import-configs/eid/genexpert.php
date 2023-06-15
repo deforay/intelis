@@ -22,7 +22,7 @@ $_POST = $request->getParsedBody();
 
 try {
 
-    $dateFormat = (isset($_POST['dateFormat']) && !empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'm/d/Y H:i';
+    $dateFormat = (!empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'm/d/Y H:i';
     $db = $db->where('imported_by', $_SESSION['userId']);
     $db->delete('temp_sample_import');
     //set session for controller track id in hold_sample_record table
@@ -184,7 +184,7 @@ try {
             $vlResult = $db->rawQuery($query, array($sampleCode));
 
             if (!empty($vlResult) && !empty($sampleCode)) {
-                if ($vlResult[0]['result'] != null && !empty($vlResult[0]['result'])) {
+                if (!empty($vlResult[0]['result'])) {
                     $data['sample_details'] = 'Result already exists';
                 } else {
                     $data['result_status'] = '7';

@@ -42,7 +42,7 @@ foreach ($pdResult as $provinceName) {
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélectionner --');
 
 //get ART list
-$aQuery = "SELECT * from r_vl_art_regimen";
+$aQuery = "SELECT * from r_vl_art_regimen WHERE art_status like 'active' ORDER by parent_art ASC, art_code ASC";
 $aResult = $db->query($aQuery);
 
 $sKey = '';

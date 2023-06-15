@@ -25,7 +25,7 @@ $response = "";
 $testingPoints = $facilitiesService->getTestingPoints($labId);
 /* Set index as value for testing point JSON */
 $testingPointsList = [];
-if (isset($testingPoints) && !empty($testingPoints)) {
+if (!empty($testingPoints)) {
   foreach ($testingPoints as $val) {
     $testingPointsList[$val] = $val;
   }

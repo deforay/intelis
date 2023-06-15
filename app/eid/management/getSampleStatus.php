@@ -256,7 +256,7 @@ foreach ($tatResult as $sRow) {
 </div>
 <script>
 	<?php
-	if (isset($tResult) && !empty($tResult)) {
+	if (!empty($tResult)) {
 	?>
 		$('#eidSampleStatusOverviewContainer').highcharts({
 			chart: {
@@ -378,7 +378,7 @@ foreach ($tatResult as $sRow) {
 		});
 	<?php
 	}
-	if (isset($result) && !empty($result)) {
+	if (!empty($result)) {
 	?>
 		$('#eidLabAverageTat').highcharts({
 			chart: {
@@ -400,7 +400,7 @@ foreach ($tatResult as $sRow) {
 			xAxis: {
 				//categories: ["21 Mar", "22 Mar", "23 Mar", "24 Mar", "25 Mar", "26 Mar", "27 Mar"]
 				categories: [<?php
-								if (isset($result['date']) && !empty($result['date'])) {
+								if (!empty($result['date'])) {
 									foreach ($result['date'] as $date) {
 										echo "'" . $date . "',";
 									}

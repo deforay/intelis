@@ -310,11 +310,6 @@ try {
         if (!empty($_POST['testName'])) {
             foreach ($_POST['testName'] as $testKey => $testKitName) {
                 if (!empty($testKitName)) {
-                    if (isset($_POST['testDate'][$testKey]) && trim($_POST['testDate'][$testKey]) != "") {
-                        $_POST['testDate'][$testKey] = DateUtility::isoDateFormat($_POST['testDate'][$testKey] ?? '', true);
-                    } else {
-                        $_POST['testDate'][$testKey] = null;
-                    }
                     $covid19TestData = array(
                         'generic_id'                => $_POST['vlSampleId'],
                         'test_name'                 => ($testKitName == 'other') ? $_POST['testNameOther'][$testKey] : $testKitName,

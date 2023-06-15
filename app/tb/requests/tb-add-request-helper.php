@@ -219,9 +219,9 @@ try {
     }
 
     if (isset($_POST['tbSampleId']) && $_POST['tbSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
-        if (isset($_POST['testResult']) && !empty($_POST['testResult'])) {
+        if (!empty($_POST['testResult'])) {
             foreach ($_POST['testResult'] as $testKey => $testResult) {
-                if (isset($testResult) && !empty($testResult)) {
+                if (!empty($testResult)) {
                     $db->insert($testTableName, array(
                         'tb_id'             => $_POST['tbSampleId'],
                         'test_result'       => $testResult,

@@ -222,7 +222,7 @@ if (!empty($requestResult)) {
         }
 
         $testedBy = '';
-        if (isset($result['tested_by']) && !empty($result['tested_by'])) {
+        if (!empty($result['tested_by'])) {
             $testedByRes = $usersService->getUserInfo($result['tested_by'], 'user_name');
             if ($testedByRes) {
                 $testedBy = $testedByRes['user_name'];
@@ -435,7 +435,7 @@ if (!empty($requestResult)) {
         $html .= '</tr>';
         $html .= '</table>';
 
-        if (isset($signResults) && !empty($signResults)) {
+        if (!empty($signResults)) {
             $lh = 20;
             $html .= '<table align="center" style="min-height:120px">';
             $html .= '<tr>';
@@ -531,7 +531,7 @@ if (!empty($requestResult)) {
             $remoteUrl = rtrim(SYSTEM_CONFIG['remoteURL'], "/");
             if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes') {
                 $h = 175;
-                if (isset($signResults) && !empty($signResults)) {
+                if (!empty($signResults)) {
                     if (isset($facilityInfo['address']) && $facilityInfo['address'] != "") {
                         $h = 185;
                     }

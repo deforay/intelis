@@ -144,7 +144,9 @@ try {
             $_SESSION['email'] = $userRow['email'];
             $_SESSION['forcePasswordReset'] = $userRow['force_password_reset'];
             $_SESSION['facilityMap'] = $facilitiesService->getUserFacilityMap($userRow['user_id']);
+            $_SESSION['userLocale'] = $userRow['user_locale'] ?? null;
             $_SESSION['mappedProvinces'] = null;
+
             if (!empty($_SESSION['facilityMap'])) {
                 $provinceResult = $db->rawQuery("SELECT DISTINCT f.facility_state_id
                                                     FROM facility_details as f

@@ -853,7 +853,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                                 </thead>
                                                 <tbody id="testKitNameTable">
                                                     <?php
-                                                    if (isset($genericTestInfo) && !empty($genericTestInfo)) {
+                                                    if (!empty($genericTestInfo)) {
                                                         $kitShow = false;
                                                         foreach ($genericTestInfo as $indexKey => $rows) { ?>
                                                             <tr>
@@ -1060,7 +1060,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 <script>
     let provinceName = true;
     let facilityName = true;
-    let testCounter = <?php echo (isset($genericTestInfo) && !empty($genericTestInfo)) ? (count($genericTestInfo)) : 0; ?>;
+    let testCounter = <?php echo (!empty($genericTestInfo)) ? (count($genericTestInfo)) : 0; ?>;
     let __clone = null;
     let reason = null;
     let resultValue = null;

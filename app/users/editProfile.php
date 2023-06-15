@@ -14,6 +14,8 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+$localeLists = $general->getLocaleLists();
+
 $db->where("user_id", $_SESSION['userId']);
 $userInfo = $db->getOne("user_details");
 
@@ -63,6 +65,23 @@ $data = $db->get("user_login_history", 25);
                     <input type="hidden" name="userId" id="userId" value="<?php echo base64_encode($userInfo['user_id']); ?>" />
                   </div>
                 </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="locale" class="col-lg-4 control-label"><?php echo _("Preferred Language"); ?> <span class="mandatory">*</span> </label>
+                  <div class="col-lg-8">
+                    <select class="form-control isRequired" name="userLocale" id="userLocale" title="<?php echo _('Please select your Locale'); ?>">
+                      <option value=""><?= _("--Select--"); ?></option>
+                      <?php foreach ($localeLists as $locale) { ?>
+                        <option value="<?php echo $locale; ?>" <?php echo ($userInfo['user_locale'] == $locale) ? 'selected="selected"' : ''; ?>><?php echo $locale; ?></option>
+                      <?php } ?>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
               </div>
             </div>
             <div class="row">

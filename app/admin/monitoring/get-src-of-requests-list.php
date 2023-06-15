@@ -22,7 +22,7 @@ $sources = array(
 $table = "form_vl";
 $testType = 'vl';
 
-if (isset($_POST['testType']) && !empty($_POST['testType'])) {
+if (!empty($_POST['testType'])) {
     $testType = $_POST['testType'];
 }
 

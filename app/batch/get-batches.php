@@ -172,7 +172,7 @@ foreach ($rResult as $aRow) {
     $deleteBatch = '';
     $edit = '';
     if ($editBatch) {
-        if(isset($_POST['type']) && !empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
+        if(!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
             $edit = '<a href="edit-batch.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '&testType='.base64_encode($_POST['testType']).'" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>&nbsp;';
         }else{
             $edit = '<a href="edit-batch.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>&nbsp;';

@@ -98,7 +98,7 @@ try {
 
         if ($testTypeId != 0) {
 
-            if (isset($_POST['sampleType']) && !empty($_POST['sampleType'])) {
+            if (!empty($_POST['sampleType'])) {
                 $db = $db->where('test_type_id', $testTypeId);
                 $db->delete($tableName2);
                 foreach ($_POST['sampleType'] as $val) {
@@ -107,7 +107,7 @@ try {
                 }
             }
 
-            if (isset($_POST['testingReason']) && !empty($_POST['testingReason'])) {
+            if (!empty($_POST['testingReason'])) {
                 $db = $db->where('test_type_id', $testTypeId);
                 $db->delete($tableName3);
                 foreach ($_POST['testingReason'] as $val) {
@@ -118,7 +118,7 @@ try {
                     $db->insert($tableName3, $value);
                 }
             }
-            if (isset($_POST['symptoms']) && !empty($_POST['symptoms'])) {
+            if (!empty($_POST['symptoms'])) {
                 $db = $db->where('test_type_id', $testTypeId);
                 $db->delete($tableName4);
                 foreach ($_POST['symptoms'] as $val) {
@@ -127,7 +127,7 @@ try {
                 }
             }
             
-            if (isset($_POST['testFailureReason']) && !empty($_POST['testFailureReason'])) {
+            if (!empty($_POST['testFailureReason'])) {
                 $db = $db->where('test_type_id', $testTypeId);
                 $db->delete($tableName5);
                 foreach ($_POST['testFailureReason'] as $val) {
@@ -139,7 +139,7 @@ try {
                 }
             }
 
-            if (isset($_POST['rejectionReason']) && !empty($_POST['rejectionReason'])) {
+            if (!empty($_POST['rejectionReason'])) {
                 $db = $db->where('test_type_id', $testTypeId);
                 $db->delete($tableName6);
                 foreach ($_POST['rejectionReason'] as $val) {

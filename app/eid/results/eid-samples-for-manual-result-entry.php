@@ -95,7 +95,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
           $colSize = count($aColumns);
 
           for ($i = 0; $i < $colSize; $i++) {
-               if (isset($aColumns[$i]) && !empty($aColumns[$i])) {
+               if (!empty($aColumns[$i])) {
                     if ($i < $colSize - 1) {
                          $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
                     } else {

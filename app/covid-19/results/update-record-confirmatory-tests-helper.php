@@ -27,7 +27,7 @@ try {
 		'is_result_authorised'                => $_POST['isResultAuthorized'] ?? null,
 		'authorized_by'                       => $_POST['authorizedBy'] ?? null,
 		'authorized_on'                       => isset($_POST['authorizedOn']) ? DateUtility::isoDateFormat($_POST['authorizedOn']) : null,
-		'reason_for_changing'                  => (isset($_POST['reasonForChanging']) && !empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
+		'reason_for_changing'                  => (!empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
 		'rejection_on'                           => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
 		'result_status'                       => 6,
 		'data_sync'                           => 0,
@@ -49,7 +49,7 @@ try {
 		}
 	}
 	if (isset($_POST['covid19SampleId']) && $_POST['covid19SampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
-		if (isset($_POST['testName']) && !empty($_POST['testName'])) {
+		if (!empty($_POST['testName'])) {
 			foreach ($_POST['testName'] as $testKey => $testerName) {
 				$covid19TestData = array(
 					'covid19_id'             => $_POST['covid19SampleId'],

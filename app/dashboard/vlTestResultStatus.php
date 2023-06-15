@@ -197,7 +197,7 @@
 					startDate = start.format('YYYY-MM-DD');
 					endDate = end.format('YYYY-MM-DD');
 				});
-			<?php if (isset($date) && !empty($date)) { ?>
+			<?php if (!empty($date)) { ?>
 				$('#sampleCollectionDate').val('<?php echo $date; ?>');
 			<?php } else { ?>
 				$('#sampleCollectionDate').val("");

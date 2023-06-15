@@ -494,7 +494,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                         </tr>
                                                     </thead>
                                                     <tbody id="testKitNameTable">
-                                                        <?php if (isset($covid19TestInfo) && !empty($covid19TestInfo)) {
+                                                        <?php if (!empty($covid19TestInfo)) {
                                                             foreach ($covid19TestInfo as $indexKey => $rows) { ?>
                                                                 <tr>
                                                                     <td class="text-center"><?= ($indexKey + 1); ?><input type="hidden" name="testId[]" value="<?php echo base64_encode($rows['test_id']); ?>"></td>
@@ -638,7 +638,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     provinceName = true;
     facilityName = true;
     machineName = true;
-    tableRowId = <?php echo (isset($covid19TestInfo) && !empty($covid19TestInfo)) ? (count($covid19TestInfo) + 1) : 2; ?>;
+    tableRowId = <?php echo (!empty($covid19TestInfo)) ? (count($covid19TestInfo) + 1) : 2; ?>;
     deletedRow = [];
 
     function getfacilityDetails(obj) {
@@ -797,7 +797,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         <?php if (isset($covid19Info['mother_treatment']) && in_array('Other', $covid19Info['mother_treatment'])) { ?> $('#motherTreatmentOther').prop('disabled', false);
         <?php } ?>
 
-        <?php if (isset($covid19Info['mother_vl_result']) && !empty($covid19Info['mother_vl_result'])) { ?> updateMotherViralLoad();
+        <?php if (!empty($covid19Info['mother_vl_result'])) { ?> updateMotherViralLoad();
         <?php } ?>
 
         $("#motherViralLoadCopiesPerMl").on("change keyup paste", function() {

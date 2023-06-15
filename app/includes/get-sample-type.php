@@ -21,7 +21,7 @@ $_POST = $request->getParsedBody();
     if (!empty($_POST['testType'])) {
         $table = 'r_' . $_POST['testType'] . '_sample_type';
     }
-    if (isset($facilityAttributes['sampleType']) && !empty($facilityAttributes['sampleType'])) {
+    if (!empty($facilityAttributes['sampleType'])) {
         $db->where("sample_id IN(" . $facilityAttributes['sampleType'][$_POST['testType']] . ")");
     }
     $db->where("status = 'active'");
@@ -30,7 +30,7 @@ $_POST = $request->getParsedBody();
     <?php if (!empty($sampleTypes)) { ?>
         <option value=""><?php echo _("-- Select--"); ?></option>
         <?php foreach ($sampleTypes as $sample) { ?>
-            <option value="<?php echo $sample['sample_id']; ?>" <?php echo (isset($_POST['sampleId']) && !empty($_POST['sampleId']) && $_POST['sampleId'] == $sample['sample_id']) ? "selected='selected'" : ""; ?>><?php echo $sample['sample_name']; ?></option>
+            <option value="<?php echo $sample['sample_id']; ?>" <?php echo (!empty($_POST['sampleId']) && $_POST['sampleId'] == $sample['sample_id']) ? "selected='selected'" : ""; ?>><?php echo $sample['sample_name']; ?></option>
         <?php } ?>
     <?php } else { ?>
         <option value=""><?php echo _("-- Select--"); ?></option>

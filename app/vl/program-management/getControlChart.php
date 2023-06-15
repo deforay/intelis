@@ -60,12 +60,12 @@ $sQuery = "SELECT SUM(CASE WHEN (result_value_absolute != '' AND result_value_ab
 $sQuery = $sQuery . ' where ' . $sWhere . "  group by control_id";
 $controlResult = $db->rawQuery($sQuery);
 $array = array_map('current', $controlResult);
-$mean = (isset($array) && !empty($array)) ?  (array_sum($array) / count($array)) : 0;
+$mean = (!empty($array)) ?  (array_sum($array) / count($array)) : 0;
 function sd_square($x, $mean)
 {
     return pow($x - $mean, 2);
 }
-$sd = (isset($array) && !empty($array)) ?  (sqrt(array_sum(array_map("sd_square", $array, array_fill(0, count($array), (array_sum($array) / count($array))))) / (count($array) - 1))) : 0;
+$sd = (!empty($array)) ?  (sqrt(array_sum(array_map("sd_square", $array, array_fill(0, count($array), (array_sum($array) / count($array))))) / (count($array) - 1))) : 0;
 ?>
 <div id="container" style="height: 400px"></div>
 <script>

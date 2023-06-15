@@ -136,7 +136,7 @@ if (!empty($requestResult)) {
             $sampleDispatchTime = $expStr[1];
         }
         $testedBy = '';
-        if (isset($result['tested_by']) && !empty($result['tested_by'])) {
+        if (!empty($result['tested_by'])) {
             $testedByRes = $usersService->getUserInfo($result['tested_by'], array('user_name', 'user_signature'));
             if ($testedByRes) {
                 $testedBy = $testedByRes['user_name'];
@@ -154,7 +154,7 @@ if (!empty($requestResult)) {
         }
 
         $reviewedBy = '';
-        if (isset($result['reviewedBy']) && !empty($result['reviewedBy'])) {
+        if (!empty($result['reviewedBy'])) {
             $reviewedBy = $result['reviewedBy'];
         } else {
             $reviewedBy = $resultApprovedBy;
@@ -164,7 +164,7 @@ if (!empty($requestResult)) {
 
         $revisedBy = '';
         $revisedByRes = [];
-        if (isset($result['revised_by']) && !empty($result['revised_by'])) {
+        if (!empty($result['revised_by'])) {
             $revisedByRes = $usersService->getUserInfo($result['revised_by'], array('user_name', 'user_signature'));
             if ($revisedByRes) {
                 $revisedBy = $revisedByRes['user_name'];
@@ -506,7 +506,7 @@ if (!empty($requestResult)) {
         }
 
 
-        if (isset($result['lab_tech_comments']) && !empty($result['lab_tech_comments'])) {
+        if (!empty($result['lab_tech_comments'])) {
 
             $html .= '<tr>';
             $html .= '<td colspan="3" style="line-height:20px;"></td>';

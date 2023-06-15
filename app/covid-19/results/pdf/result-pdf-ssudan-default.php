@@ -156,7 +156,7 @@ if (isset($result['result_printed_datetime']) && trim($result['result_printed_da
 }
 
 $testedBy = '';
-if (isset($result['tested_by']) && !empty($result['tested_by'])) {
+if (!empty($result['tested_by'])) {
     $testedByRes = $usersService->getUserInfo($result['tested_by'], 'user_name');
     if ($testedByRes) {
         $testedBy = $testedByRes['user_name'];
@@ -369,7 +369,7 @@ $html .= '<td colspan="2" style="line-height:20px;"></td>';
 $html .= '</tr>';
 $html .= '</table>';
 
-if (isset($signResults) && !empty($signResults)) {
+if (!empty($signResults)) {
     $html .= '<table align="center" style="min-height:120px">';
     $html .= '<tr>';
     $html .= '<td  colspan="4" style="text-align:center;" align="center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';

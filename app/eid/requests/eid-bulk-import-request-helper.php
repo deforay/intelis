@@ -58,7 +58,7 @@ try {
         // echo "<pre>";print_r($resultArray);die;
 
         foreach ($resultArray as $rowIndex => $rowData) {
-            if (isset($rowData['B']) && !empty($rowData['B'])) {
+            if (!empty($rowData['B'])) {
                 $sampleCode = $general->getDuplicateDataFromField('form_eid', 'sample_code', $rowData['B']);
 
 

@@ -29,7 +29,7 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$vlService = ContainerRegistry::get(VlService::class);
+
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 
@@ -111,27 +111,30 @@ if (!empty($interfaceData)) {
 
         $tableInfo = [];
         foreach ($availableModules as $individualIdColumn => $individualTableName) {
-            $tableQuery = "SELECT * FROM $individualTableName WHERE sample_code = '" . $result['test_id'] . "'";
-            $tableInfo = $db->rawQueryOne($tableQuery);
+            $tableQuery = "SELECT * FROM $individualTableName WHERE sample_code = ?";
+            $tableInfo = $db->rawQueryOne($tableQuery, [$result['test_id']]);
             if (!empty($tableInfo[$individualIdColumn])) {
                 break;
             }
         }
 
         //Getting Approved By and Reviewed By from Instruments table
-        $instrumentDetails = $db->rawQueryOne("SELECT * FROM instruments WHERE machine_name like ?", array($result['machine_used']));
+        $instrumentDetails = $db->rawQueryOne("SELECT * FROM instruments WHERE machine_name like ?", [$result['machine_used']]);
 
         if (empty($instrumentDetails)) {
             $sql = "SELECT * FROM instruments
                     INNER JOIN instrument_machines ON instruments.config_id = instrument_machines.config_machine_id
                     WHERE instrument_machines.config_machine_name LIKE ?";
-            $instrumentDetails = $db->rawQueryOne($sql, array($result['machine_used']));
+            $instrumentDetails = $db->rawQueryOne($sql, [$result['machine_used']]);
         }
 
         $approved = !empty($instrumentDetails['approved_by']) ? json_decode($instrumentDetails['approved_by'], true) : [];
         $reviewed = !empty($instrumentDetails['reviewed_by']) ? json_decode($instrumentDetails['reviewed_by'], true) : [];
 
         if (isset($tableInfo['vl_sample_id'])) {
+
+            /** @var VlService $vlService */
+            $vlService = ContainerRegistry::get(VlService::class);
             $absDecimalVal = null;
             $absVal = null;
             $logVal = null;
@@ -139,7 +142,7 @@ if (!empty($interfaceData)) {
             //set result in result fields
             if (trim($result['results']) != "") {
 
-                $vlResult = trim(str_ireplace(['cp/mL', 'cp/ml', 'copies/mL', 'copies/ml'], '', $result['results']));
+                $vlResult = trim(str_ireplace(['cp/ml', 'copies/ml'], '', $result['results']));
 
                 $unit = trim($result['test_unit']);
 
@@ -153,14 +156,8 @@ if (!empty($interfaceData)) {
                 $txtVal = null;
                 $interpretedResults = [];
 
-                if (isset($vlResult)) {
-                    if (in_array(strtolower($vlResult), ['fail', 'failed', 'failure', 'error', 'err'])) {
-                        // Do nothing, variables are already set to null
-                    } elseif (!is_numeric($vlResult)) {
-                        $interpretedResults = $vlService->interpretViralLoadTextResult($vlResult, $unit, $instrumentDetails['low_vl_result_text']);
-                    } else {
-                        $interpretedResults = $vlService->interpretViralLoadNumericResult($vlResult, $unit);
-                    }
+                if (!empty($vlResult) && !in_array(strtolower($vlResult), ['fail', 'failed', 'failure', 'error', 'err'])) {
+                    $interpretedResults = $vlService->interpretViralLoadResult($vlResult, $unit, $instrumentDetails['low_vl_result_text']);
 
                     if (!empty($interpretedResults)) {
                         $logVal = $interpretedResults['logVal'];
@@ -182,7 +179,7 @@ if (!empty($interfaceData)) {
                 $testedByUserId = $usersService->addUserIfNotExists($result['tested_by']);
             }
 
-            $data = array(
+            $data = [
                 'lab_id' => $labId,
                 'tested_by' => $testedByUserId,
                 'result_approved_by' => (isset($approved['vl']) && $approved['vl'] != "") ? $approved['vl'] : null,
@@ -202,7 +199,7 @@ if (!empty($interfaceData)) {
                 'result_dispatched_datetime' => null,
                 'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                 'data_sync' => 0
-            );
+            ];
 
             if (strtolower($vlResult) == 'failed' || strtolower($vlResult) == 'fail' || strtolower($vlResult) == 'invalid' || strtolower($vlResult) == 'inconclusive') {
                 $data['result_status'] = 5; // Invalid
@@ -220,10 +217,10 @@ if (!empty($interfaceData)) {
             $processedResults[] = $result['test_id'];
             if ($vlUpdateId) {
                 if ($mysqlConnected) {
-                    $interfaceData = array(
+                    $interfaceData = [
                         'lims_sync_status' => 1,
                         'lims_sync_date_time' => DateUtility::getCurrentDateTime(),
-                    );
+                    ];
                     $db->connection('interface')->where('test_id', $result['test_id']);
                     $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
                 }
@@ -259,7 +256,7 @@ if (!empty($interfaceData)) {
                 }
             }
 
-            $data = array(
+            $data = [
                 'tested_by' => $result['tested_by'],
                 'result_approved_datetime' => $result['authorised_date_time'],
                 'sample_tested_datetime' => $result['result_accepted_date_time'],
@@ -273,7 +270,7 @@ if (!empty($interfaceData)) {
                 'result_dispatched_datetime' => null,
                 'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                 'data_sync' => 0
-            );
+            ];
 
             $db = $db->where('eid_id', $tableInfo['eid_id']);
             $eidUpdateId = $db->update('form_eid', $data);
@@ -281,10 +278,10 @@ if (!empty($interfaceData)) {
             $processedResults[] = $result['test_id'];
             if ($eidUpdateId) {
                 if ($mysqlConnected) {
-                    $interfaceData = array(
+                    $interfaceData = [
                         'lims_sync_status' => 1,
                         'lims_sync_date_time' => DateUtility::getCurrentDateTime(),
-                    );
+                    ];
                     $db->connection('interface')->where('test_id', $result['test_id']);
                     $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
                 }
@@ -307,6 +304,8 @@ if (!empty($interfaceData)) {
 
         } elseif (isset($tableInfo['hepatitis_id'])) {
 
+            /** @var VlService $vlService */
+            $vlService = ContainerRegistry::get(VlService::class);
 
             $absDecimalVal = null;
             $absVal = null;
@@ -328,34 +327,29 @@ if (!empty($interfaceData)) {
 
                 $hepatitisResult = trim($result['results']);
                 $unit = trim($result['test_unit']);
-
-                if (!is_numeric($hepatitisResult)) {
-                    $interpretedResults = $vlService->interpretViralLoadTextResult($hepatitisResult, $unit);
-                } else {
-                    $interpretedResults = $vlService->interpretViralLoadNumericResult($hepatitisResult, $unit);
-                }
+                $interpretedResults = $vlService->interpretViralLoadResult($hepatitisResult, $unit, $instrumentDetails['low_vl_result_text']);
                 $hepatitisResult = $interpretedResults['result'];
             }
 
             $userId = $usersService->addUserIfNotExists($result['tested_by']);
 
-            $data = array(
+            $data = [
                 'lab_id' => $labId,
                 'tested_by' => $userId,
                 'result_approved_datetime' => $result['authorised_date_time'],
                 'sample_tested_datetime' => $result['result_accepted_date_time'],
-                $resultField => $hepatitisResult,
-                $otherField => $otherFieldResult,
+                $resultField => $hepatitisResult ?? null,
+                $otherField => $otherFieldResult ?? null,
                 'hepatitis_test_platform' => $result['machine_used'],
                 'result_status' => 7,
                 'manual_result_entry' => 'no',
-                'result_approved_by' => (isset($approved['hepatitis']) && $approved['hepatitis'] != "") ? $approved['hepatitis'] : null,
-                'result_reviewed_by' => (isset($reviewed['hepatitis']) && $reviewed['hepatitis'] != "") ? $reviewed['hepatitis'] : null,
+                'result_approved_by' => $approved['hepatitis'] ?? null,
+                'result_reviewed_by' => $reviewed['hepatitis'] ?? null,
                 'result_printed_datetime' => null,
                 'result_dispatched_datetime' => null,
                 'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                 'data_sync' => 0
-            );
+            ];
 
             $db = $db->where('hepatitis_id', $tableInfo['hepatitis_id']);
             $vlUpdateId = $db->update('form_hepatitis', $data);
@@ -363,10 +357,10 @@ if (!empty($interfaceData)) {
             $processedResults[] = $result['test_id'];
             if ($vlUpdateId) {
                 if ($mysqlConnected) {
-                    $interfaceData = array(
+                    $interfaceData = [
                         'lims_sync_status' => 1,
                         'lims_sync_date_time' => DateUtility::getCurrentDateTime(),
-                    );
+                    ];
                     $db->connection('interface')->where('test_id', $result['test_id']);
                     $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
                 }
@@ -385,10 +379,10 @@ if (!empty($interfaceData)) {
             }
         } else {
             if ($mysqlConnected) {
-                $interfaceData = array(
+                $interfaceData = [
                     'lims_sync_status' => 2,
                     'lims_sync_date_time' => DateUtility::getCurrentDateTime(),
-                );
+                ];
                 $db->connection('interface')->where('test_id', $result['test_id']);
                 $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
             }

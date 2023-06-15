@@ -14,7 +14,7 @@ $dateRange = $labName = $srcOfReq = $srcStatus = null;
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 
-if (isset($_GET['id']) && !empty($_GET['id'])) {
+if (!empty($_GET['id'])) {
 	$params = explode("##", base64_decode($_GET['id']));
 	$dateRange = $params[0];
 	$labName = $params[1];
@@ -81,7 +81,7 @@ foreach ($srcResults as $list) {
 		color: black !important;
 	}
 
-	<?php if (isset($_GET['id']) && !empty($_GET['id'])) { ?>header {
+	<?php if (!empty($_GET['id'])) { ?>header {
 		display: none;
 	}
 
@@ -117,7 +117,7 @@ foreach ($srcResults as $list) {
 						<tr>
 							<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
 							<td>
-								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="background:#fff;" value="<?php echo (isset($_GET['daterange']) && !empty($_GET['daterange'])) ? $_GET['daterange'] : ""; ?>" />
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="background:#fff;" value="<?php echo (!empty($_GET['daterange'])) ? $_GET['daterange'] : ""; ?>" />
 							</td>
 							<td><strong><?php echo _("Sample Received at Lab Date"); ?>&nbsp;:</strong></td>
 							<td>
@@ -381,7 +381,7 @@ foreach ($srcResults as $list) {
 									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingVlRequest();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;<?php echo _("Export Excel"); ?></a>
 								<?php } ?>
 
-								<?php if (isset($interopConfig['FHIR']['url']) && !empty($interopConfig['FHIR']['url'])) { ?>
+								<?php if (!empty($interopConfig['FHIR']['url'])) { ?>
 									&nbsp;<a class="btn btn-warning btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="sendEMRDataToFHIR();"><em class="fa-solid fa-paper-plane"></em> <?php echo _("EMR/FHIR - SEND RESULTS"); ?></a>
 									&nbsp;<a class="btn btn-warning btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="receiveEMRDataFromFHIR();"><em class="fa-solid fa-download"></em> <?php echo _("EMR/FHIR - GET TESTS"); ?></a>
 								<?php } ?>
@@ -580,7 +580,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
-		<?php if ((isset($_GET['daterange']) && !empty($_GET['daterange']) && isset($_GET['type']) && $_GET['type'] == 'rejection')) { ?>
+		<?php if ((!empty($_GET['daterange']) && isset($_GET['type']) && $_GET['type'] == 'rejection')) { ?>
 			$('#sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').val("");
 			$('#sampleCollectionDate').val('<?php echo $_GET['daterange']; ?>');
 		<?php } else { ?>

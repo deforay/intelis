@@ -20,7 +20,7 @@ $formId = $general->getGlobalConfig('vl_form');
 if (!is_array($_POST['facility']) || empty($_POST['facility'])) {
   $_POST['facility'] = [];
 }
-if (empty($_POST['batch']) || !is_array($_POST['batch']) || empty($_POST['batch'])) {
+if (!is_array($_POST['batch']) || empty($_POST['batch'])) {
   $_POST['batch'] = [];
 }
 $facility = $_POST['facility'];

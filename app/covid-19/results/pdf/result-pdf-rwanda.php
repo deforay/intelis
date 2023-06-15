@@ -301,7 +301,7 @@ if (!empty($requestResult)) {
         // $html .= '<tr style="background-color:#dbdbdb;">
         $html .= '<tr>';
         $html .= '<td colspan="3" style="line-height:40px;font-size:12px;font-weight:normal;">';
-        if (isset($covid19TestInfo) && !empty($covid19TestInfo) && $arr['covid19_tests_table_in_results_pdf'] == 'yes') {
+        if (!empty($covid19TestInfo) && $arr['covid19_tests_table_in_results_pdf'] == 'yes') {
             /* Test Result Section */
             $html .= '<table border="1">
                                         <tr>

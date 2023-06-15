@@ -167,7 +167,7 @@ try {
 
 		$db = $db->where('hepatitis_id', $_POST['hepatitisSampleId']);
 		$db->delete("hepatitis_patient_comorbidities");
-		if (isset($_POST['comorbidity']) && !empty($_POST['comorbidity'])) {
+		if (!empty($_POST['comorbidity'])) {
 
 			foreach ($_POST['comorbidity'] as $id => $value) {
 				$comorbidityData = [];
@@ -180,7 +180,7 @@ try {
 		// For Save Risk factors
 		$db = $db->where('hepatitis_id', $_POST['hepatitisSampleId']);
 		$db->delete("hepatitis_risk_factors");
-		if (isset($_POST['riskFactors']) && !empty($_POST['riskFactors'])) {
+		if (!empty($_POST['riskFactors'])) {
 
 			foreach ($_POST['riskFactors'] as $id => $value) {
 				$riskFactorsData = [];

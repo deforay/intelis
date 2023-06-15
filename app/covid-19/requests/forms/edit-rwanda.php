@@ -509,7 +509,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                                         </tr>
                                                     </thead>
                                                     <tbody id="testKitNameTable">
-                                                        <?php if (isset($covid19TestInfo) && !empty($covid19TestInfo)) {
+                                                        <?php if (!empty($covid19TestInfo)) {
                                                             foreach ($covid19TestInfo as $indexKey => $rows) { ?>
                                                                 <tr>
                                                                     <td class="text-center"><?= ($indexKey + 1); ?><input type="hidden" name="testId[]" value="<?php echo base64_encode($rows['test_id']); ?>"></td>
@@ -671,7 +671,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
     provinceName = true;
     facilityName = true;
     machineName = true;
-    tableRowId = <?php echo (isset($covid19TestInfo) && !empty($covid19TestInfo)) ? (count($covid19TestInfo) + 1) : 2; ?>;
+    tableRowId = <?php echo (!empty($covid19TestInfo)) ? (count($covid19TestInfo) + 1) : 2; ?>;
     deletedRow = [];
 
     function getfacilityDetails(obj) {
@@ -826,7 +826,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
             $('#motherTreatmentOther').prop('disabled', false);
         <?php } ?>
 
-        <?php if (isset($covid19Info['mother_vl_result']) && !empty($covid19Info['mother_vl_result'])) { ?>
+        <?php if (!empty($covid19Info['mother_vl_result'])) { ?>
             updateMotherViralLoad();
         <?php } ?>
 

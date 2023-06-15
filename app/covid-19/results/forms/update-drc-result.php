@@ -809,7 +809,7 @@ $patienZones["other"] = "Other";
                                                     </tr>
                                                 </thead>
                                                 <tbody id="testKitNameTable">
-                                                    <?php if (isset($covid19TestInfo) && !empty($covid19TestInfo)) {
+                                                    <?php if (!empty($covid19TestInfo)) {
                                                         $testMethod = array("PCR/RT-PCR", "RdRp-SARS Cov-2", "GeneXpert", "Rapid Antigen Test", "other");
                                                         foreach ($covid19TestInfo as $indexKey => $rows) { ?>
                                                             <tr>
@@ -986,7 +986,7 @@ $patienZones["other"] = "Other";
     provinceName = true;
     facilityName = true;
     machineName = true;
-    tableRowId = <?php echo (isset($covid19TestInfo) && !empty($covid19TestInfo)) ? (count($covid19TestInfo) + 1) : 2; ?>;
+    tableRowId = <?php echo (!empty($covid19TestInfo)) ? (count($covid19TestInfo) + 1) : 2; ?>;
     deletedRow = [];
 
     function getfacilityDetails(obj) {
@@ -1167,7 +1167,7 @@ $patienZones["other"] = "Other";
             $('#motherTreatmentOther').prop('disabled', false);
         <?php } ?>
 
-        <?php if (isset($covid19Info['mother_vl_result']) && !empty($covid19Info['mother_vl_result'])) { ?>
+        <?php if (!empty($covid19Info['mother_vl_result'])) { ?>
             updateMotherViralLoad();
         <?php } ?>
         $('#medicalHistory').change(function(e) {
@@ -1211,7 +1211,7 @@ $patienZones["other"] = "Other";
             $('#isResultAuthorized').val('yes');
         }
         <?php $index = 0;
-        if (isset($covid19Symptoms) && !empty($covid19Symptoms)) {
+        if (!empty($covid19Symptoms)) {
             foreach ($covid19Symptoms as $symptomId => $symptomName) {
                 if ($covid19SelectedSymptoms[$symptomId] == "yes") { ?>
                     checkSubSymptoms($('#symptom<?php echo $symptomId; ?>').val(), <?php echo $symptomId; ?>, <?php echo $index; ?>);
@@ -1221,7 +1221,7 @@ $patienZones["other"] = "Other";
         } ?>
 
         <?php $index = 0;
-        if (isset($covid19ReasonsForTesting) && !empty($covid19ReasonsForTesting)) {
+        if (!empty($covid19ReasonsForTesting)) {
             foreach ($covid19ReasonsForTesting as $reasonId => $responseName) { ?>
                 checkSubResponse($('#symptomDetected<?php echo $reasonId; ?>').val(), <?php echo $reasonId; ?>, <?php echo $index; ?>);
         <?php $index++;

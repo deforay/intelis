@@ -28,7 +28,7 @@ if (isset($_POST['testTypeId'])) {
         if (!empty($sampleTypeList)) { 
             foreach ($sampleTypeList as $sample) {
                 $selected='';
-                if(isset($_POST['sampleTypeId']) && !empty($_POST['sampleTypeId']) && $_POST['sampleTypeId'] == $sample['sample_type_id'])
+                if(!empty($_POST['sampleTypeId']) && $_POST['sampleTypeId'] == $sample['sample_type_id'])
                     $selected = "selected='selected'";
                     $sampleTypeOptions .= '<option value="'.$sample['sample_type_id'].'"  '.$selected.'>'.$sample['sample_type_name'].'</option>';
                 }
@@ -42,7 +42,7 @@ if (isset($_POST['testTypeId'])) {
         if (!empty($testReasonList)) { 
             foreach ($testReasonList as $reason) {
                 $selected='';
-                if(isset($_POST['testReasonId']) && !empty($_POST['testReasonId']) && $_POST['testReasonId'] == $reason['test_reason_id'])
+                if(!empty($_POST['testReasonId']) && $_POST['testReasonId'] == $reason['test_reason_id'])
                     $selected = "selected='selected'";
                         $testReasonOptions .= '<option value="'.$reason['test_reason_id'].'"  '.$selected.'>'.$reason['test_reason'].'</option>';
                 }
@@ -56,7 +56,7 @@ if (isset($_POST['testTypeId'])) {
         if (!empty($testMethodList)) { 
             foreach ($testMethodList as $method) {
                 $selected='';
-                if(isset($_POST['testMethodId']) && !empty($_POST['testMethodId']) && $_POST['testMethodId'] == $method['test_method_id'])
+                if(!empty($_POST['testMethodId']) && $_POST['testMethodId'] == $method['test_method_id'])
                     $selected = "selected='selected'";
                         $testMethodOptions .= '<option value="'.$method['test_method_id'].'"  '.$selected.'>'.$method['test_method_name'].'</option>';
                 }
@@ -70,7 +70,7 @@ if (isset($_POST['testTypeId'])) {
         if (!empty($testResultUnitList)) { 
             foreach ($testResultUnitList as $reason) {
                 $selected='';
-                if(isset($_POST['testResultUnitId']) && !empty($_POST['testResultUnitId']) && $_POST['testResultUnitId'] == $reason['unit_id'])
+                if(!empty($_POST['testResultUnitId']) && $_POST['testResultUnitId'] == $reason['unit_id'])
                     $selected = "selected='selected'";
                         $testResultUnitOptions .= '<option value="'.$reason['unit_id'].'"  '.$selected.'>'.$reason['unit_name'].'</option>';
                 }
