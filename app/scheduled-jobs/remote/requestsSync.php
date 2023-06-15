@@ -5,11 +5,11 @@ if (php_sapi_name() == 'cli') {
     require_once(__DIR__ . "/../../../bootstrap.php");
 }
 
-use App\Services\ApiService;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Utilities\DateUtility;
 use JsonMachine\Items;
+use App\Services\ApiService;
+use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
 /** @var MysqliDb $db */
@@ -17,6 +17,9 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
 
 
 $transactionId = $general->generateUUID();
@@ -58,12 +61,12 @@ if (!empty($forceSyncModule)) {
 
 /*
  ****************************************************************
- * VIRAL LOAD TEST REQUESTS
+ * GENERIC TEST REQUESTS
  ****************************************************************
  */
 $request = [];
 if (isset($systemConfig['modules']['genericTests']) && $systemConfig['modules']['genericTests'] === true) {
-    
+
     $url = $remoteUrl . '/remote/remote/generic-test-requests.php';
     $payload = array(
         'labId' => $labId,
@@ -73,18 +76,12 @@ if (isset($systemConfig['modules']['genericTests']) && $systemConfig['modules'][
     if (!empty($forceSyncModule) && trim($forceSyncModule) == "generic-tests" && !empty($manifestCode) && trim($manifestCode) != "") {
         $payload['manifestCode'] = $manifestCode;
     }
+
+    $response = $apiService->post($url, $payload);
+    $jsonResponse = $response->getBody()->getContents();
+
     $columnList = [];
 
-    $client = new GuzzleHttp\Client();
-    $response = $client->post(
-    $url,
-        [
-            GuzzleHttp\RequestOptions::JSON => $payload
-        ]
-    );
-    
-    $jsonResponse = $response->getBody()->getContents();
-    // die($jsonResponse);
     if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
         $options = [
@@ -122,9 +119,9 @@ if (isset($systemConfig['modules']['genericTests']) && $systemConfig['modules'][
                     $request[$colName] = null;
                 }
             }
-            
+
             $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
-            
+
             $exsvlQuery = "SELECT sample_id, sample_code
                             FROM form_generic AS vl WHERE remote_sample_code=?";
             $exsvlResult = $db->rawQuery($exsvlQuery, [$request['remote_sample_code']]);
@@ -163,7 +160,7 @@ if (isset($systemConfig['modules']['genericTests']) && $systemConfig['modules'][
                 );
 
                 $request = array_diff_key($request, array_flip($removeMoreKeys));
-                
+
                 $testTypeForm = $general->jsonToSetString(
                     $exsvlResult[0]['test_type_form'],
                     'test_type_form',
@@ -175,23 +172,20 @@ if (isset($systemConfig['modules']['genericTests']) && $systemConfig['modules'][
                     $exsvlResult[0]['form_attributes'],
                     'form_attributes',
                     $request['form_attributes'],
-                    // ['syncTransactionId' => $transactionId]
                 );
                 $request['form_attributes'] = $db->func($formAttributes);
-                echo "<pre>";
-                print_r($request);die;
                 $db = $db->where('sample_id', $exsvlResult[0]['sample_id']);
                 $id = $db->update('form_generic', $request);
             } else {
                 $request['source_of_request'] = 'vlsts';
                 if (!empty($request['sample_collection_date'])) {
-                    
+
                     $testTypeForm = $general->jsonToSetString(
                         $request['test_type_form'],
                         'test_type_form'
                     );
                     $request['test_type_form'] = $db->func($testTypeForm);
-    
+
                     $formAttributes = $general->jsonToSetString(
                         $request['form_attributes'],
                         'form_attributes',
@@ -202,9 +196,7 @@ if (isset($systemConfig['modules']['genericTests']) && $systemConfig['modules'][
                     $request['source_of_request'] = "vlsts";
                     //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['data_sync'] = 0;
-                    // print_r($request);die;
                     $id = $db->insert('form_generic', $request);
-                    // error_log($db->getLastQuery());
                 }
             }
         }
@@ -228,9 +220,17 @@ if (isset($systemConfig['modules']['genericTests']) && $systemConfig['modules'][
     }
 }
 
+
+
+/*
+ ****************************************************************
+ * HIV VL TEST REQUESTS
+ ****************************************************************
+ */
+
+
 $request = [];
 if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
-    //$remoteSampleCodeList = [];
 
     $url = $remoteUrl . '/remote/remote/getRequests.php';
     $payload = array(
@@ -243,14 +243,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
     }
     $columnList = [];
 
-    $client = new GuzzleHttp\Client();
-    $response = $client->post(
-        $url,
-        [
-            GuzzleHttp\RequestOptions::JSON => $payload
-        ]
-    );
-
+    $response = $apiService->post($url, $payload);
     $jsonResponse = $response->getBody()->getContents();
 
     if (!empty($jsonResponse) && $jsonResponse != '[]') {
@@ -390,31 +383,18 @@ $request = [];
 //$remoteSampleCodeList = [];
 if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] === true) {
     $url = $remoteUrl . '/remote/remote/eid-test-requests.php';
-    $data = array(
+
+    $payload = array(
         'labId' => $labId,
         'module' => 'eid',
         "Key" => "vlsm-lab-data--",
     );
-    if (isset($forceSyncModule) && trim($forceSyncModule) == "eid" && isset($manifestCode) && trim($manifestCode) != "") {
-        $data['manifestCode'] = $manifestCode;
+    if (!empty($forceSyncModule) && trim($forceSyncModule) == "eid" && !empty($manifestCode) && trim($manifestCode) != "") {
+        $payload['manifestCode'] = $manifestCode;
     }
-    //open connection
-    $ch = curl_init($url);
-    $json_data = json_encode($data);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt(
-        $ch,
-        CURLOPT_HTTPHEADER,
-        array(
-            'Content-Type: application/json',
-            'Content-Length: ' . strlen($json_data)
-        )
-    );
 
-    $jsonResponse = curl_exec($ch);
-    curl_close($ch);
+    $response = $apiService->post($url, $payload);
+    $jsonResponse = $response->getBody()->getContents();
 
     if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
@@ -440,9 +420,6 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
             'reason_for_sample_rejection',
             'result_approved_by',
             'result_approved_datetime',
-            //'request_created_by',
-            //'last_modified_by',
-            //'request_created_datetime',
             'data_sync'
         );
 
@@ -541,31 +518,17 @@ $request = [];
 //$remoteSampleCodeList = [];
 if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] === true) {
     $url = $remoteUrl . '/remote/remote/covid-19-test-requests.php';
-    $data = array(
+    $payload = array(
         'labId' => $labId,
         'module' => 'covid19',
         "Key" => "vlsm-lab-data--",
     );
     if (isset($forceSyncModule) && trim($forceSyncModule) == "covid19" && isset($manifestCode) && trim($manifestCode) != "") {
-        $data['manifestCode'] = $manifestCode;
+        $payload['manifestCode'] = $manifestCode;
     }
-    //open connection
-    $ch = curl_init($url);
-    $json_data = json_encode($data);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt(
-        $ch,
-        CURLOPT_HTTPHEADER,
-        array(
-            'Content-Type: application/json',
-            'Content-Length: ' . strlen($json_data)
-        )
-    );
 
-    $jsonResponse = curl_exec($ch);
-    curl_close($ch);
+    $response = $apiService->post($url, $payload);
+    $jsonResponse = $response->getBody()->getContents();
 
     if (!empty($jsonResponse) && $jsonResponse != '[]') {
         $removeKeys = array(
@@ -751,31 +714,17 @@ $request = [];
 //$remoteSampleCodeList = [];
 if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] === true) {
     $url = $remoteUrl . '/remote/remote/hepatitis-test-requests.php';
-    $data = array(
+    $payload = array(
         'labId' => $labId,
         'module' => 'hepatitis',
         "Key" => "vlsm-lab-data--",
     );
     if (isset($forceSyncModule) && trim($forceSyncModule) == "hepatitis" && isset($manifestCode) && trim($manifestCode) != "") {
-        $data['manifestCode'] = $manifestCode;
+        $payload['manifestCode'] = $manifestCode;
     }
-    //open connection
-    $ch = curl_init($url);
-    $json_data = json_encode($data);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt(
-        $ch,
-        CURLOPT_HTTPHEADER,
-        array(
-            'Content-Type: application/json',
-            'Content-Length: ' . strlen($json_data)
-        )
-    );
 
-    $jsonResponse = curl_exec($ch);
-    curl_close($ch);
+    $response = $apiService->post($url, $payload);
+    $jsonResponse = $response->getBody()->getContents();
 
     if (!empty($jsonResponse) && $jsonResponse != '[]') {
         $removeKeys = array(
@@ -962,31 +911,18 @@ $request = [];
 //$remoteSampleCodeList = [];
 if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === true) {
     $url = $remoteUrl . '/remote/remote/tb-test-requests.php';
-    $data = array(
+    $payload = array(
         'labId' => $labId,
         'module' => 'tb',
         "Key" => "vlsm-lab-data--",
     );
     if (isset($forceSyncModule) && trim($forceSyncModule) == "tb" && isset($manifestCode) && trim($manifestCode) != "") {
-        $data['manifestCode'] = $manifestCode;
+        $payload['manifestCode'] = $manifestCode;
     }
-    //open connection
-    $ch = curl_init($url);
-    $json_data = json_encode($data);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt(
-        $ch,
-        CURLOPT_HTTPHEADER,
-        array(
-            'Content-Type: application/json',
-            'Content-Length: ' . strlen($json_data)
-        )
-    );
 
-    $jsonResponse = curl_exec($ch);
-    curl_close($ch);
+    $response = $apiService->post($url, $payload);
+    $jsonResponse = $response->getBody()->getContents();
+
     if (!empty($jsonResponse) && $jsonResponse != '[]') {
         $removeKeys = array(
             'tb_id',

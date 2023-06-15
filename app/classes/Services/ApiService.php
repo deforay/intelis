@@ -9,7 +9,9 @@
 namespace App\Services;
 
 use MysqliDb;
+use GuzzleHttp\Client;
 use App\Utilities\DateUtility;
+use GuzzleHttp\RequestOptions;
 use App\Registries\ContainerRegistry;
 
 class ApiService
@@ -22,12 +24,65 @@ class ApiService
         $this->db = $db ?? ContainerRegistry::get('db');
     }
 
+    public function post($url, $payload, $gzip = true)
+    {
+        $client = new Client(['http_version' => 2.0]);
+
+        $options = [
+            RequestOptions::JSON => $payload,
+            RequestOptions::HEADERS => [
+                'Content-Type' => 'application/json'
+            ]
+        ];
+
+        if ($gzip) {
+            $compressedPayload = gzencode(json_encode($payload));
+            $options[RequestOptions::BODY] = $compressedPayload;
+            $options[RequestOptions::HEADERS]['Content-Encoding'] = 'gzip';
+        }
+
+        return $client->post($url, $options);
+    }
+
+    public function postFile($url, $fileName, $jsonFilePath, $params = [], $gzip = true)
+    {
+        $client = new Client(['http_version' => 2.0]);
+
+        $options = [
+            RequestOptions::MULTIPART => [
+                [
+                    'name' => $fileName,
+                    'contents' => fopen($jsonFilePath, 'r'),
+                    'filename' => basename($jsonFilePath)
+                ]
+            ],
+            RequestOptions::HEADERS => [
+                'Content-Type' => 'multipart/form-data'
+            ]
+        ];
+
+        foreach ($params as $key => $value) {
+            $options[RequestOptions::MULTIPART][] = [
+                'name' => $key,
+                'contents' => $value
+            ];
+        }
+
+        if ($gzip) {
+            $compressedPayload = gzencode(file_get_contents($jsonFilePath));
+            $options[RequestOptions::BODY] = $compressedPayload;
+            $options[RequestOptions::HEADERS]['Content-Encoding'] = 'gzip';
+        }
+
+        return $client->post($url, $options);
+    }
+
     public function returnNullIfEmpty($value)
     {
         return (empty($value) || strlen(trim($value)) === 0) ? null : $value;
     }
 
-    function checkIfNullOrEmpty($array)
+    public function checkIfNullOrEmpty($array)
     {
         foreach ($array as $value) {
             if ($value === null || $value === "") {

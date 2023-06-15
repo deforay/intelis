@@ -60,12 +60,7 @@ try {
     $vldashboardUrl = $general->getGlobalConfig('vldashboard_url');
     $vldashboardUrl = rtrim($vldashboardUrl, "/");
 
-
-    //$vldashboardUrl = "http://vldashboard";
-
     $apiUrl = $vldashboardUrl . "/api/vlsm-covid19";
-    //error_log($apiUrl);
-    //$apiUrl.="?key_identity=XXX&key_credential=YYY";
 
 
     $data = [];
@@ -86,7 +81,6 @@ try {
     $result = curl_exec($ch);
     curl_close($ch);
 
-    // echo "<pre>";print_r($result);die;
     $deResult = json_decode($result, true);
 
     if (isset($deResult['status']) && trim($deResult['status']) == 'success') {
