@@ -367,6 +367,44 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             <input type="text" class="form-control" value="<?php echo ($eidInfo['mode_of_delivery_other']); ?>" name="modeOfDeliveryOther" id="modeOfDeliveryOther" title="Enter Other mode of Delivery" placeholder="Enter Other mode of Delivery" style="display:none;" /> 
                                         </td>
                                     <tr>
+                                    <tr>
+                                        <th scope="row"> ART Status </th>
+                                        <td>
+                                                <select class="form-control" name="motherArtStatus" id="motherArtStatus">
+                                                    <option value="">--Select--</option>
+                                                    <option value="PLWHIV on ART" <?php echo ($eidInfo['mother_art_status'] == 'PLWHIV on ART') ? "selected='selected'" : ""; ?>>PLWHIV on ART </option>
+                                                    <option value="ART during pregnancy" <?php echo ($eidInfo['mother_art_status'] == 'ART during pregnancy') ? "selected='selected'" : ""; ?>> ART during pregnancy</option>
+                                                    <option value="Yes" <?php echo ($eidInfo['mother_art_status'] == 'Yes') ? "selected='selected'" : ""; ?>>Yes</option>
+                                                    <option value="No" <?php echo ($eidInfo['mother_art_status'] == 'No') ? "selected='selected'" : ""; ?>>No</option>
+                                                    <option value="Booked" <?php echo ($eidInfo['mother_art_status'] == 'Booked') ? "selected='selected'" : ""; ?>>Booked</option>
+                                                    <option value="Unbooked" <?php echo ($eidInfo['mother_art_status'] == 'Unbooked') ? "selected='selected'" : ""; ?>>Unbooked</option>
+                                                </select>
+                                        </td>
+                                        <th scope="row"> ART Regimen </th>
+                                        <td>
+                                            <input type="text" class="form-control" name="motherRegimen" id="motherRegimen" title="Enter ART Regimen" placeholder="Enter ART Regimen" value="<?php echo ($eidInfo['mother_regimen']); ?>" /> 
+                                        </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Date started ART</th>
+                                           <td> <input type="text" class="form-control date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['started_art_date']); ?>" name="startedArtDate" id="startedArtDate" title="Enter ART Started Date" placeholder="Enter ART Started Date" /> 
+                                            </td>
+                                            <th>MTCT Risk</th>
+                                            <td>  
+                                                <select  class="form-control" name="motherMtctRisk" id="motherMtctRisk" >
+                                                    <option value="">--Select--</option>
+                                                    <optgroup label="High Risk">
+                                                        <option value="< 4weeks on ART prior to delivery" <?php echo ($eidInfo['mother_mtct_risk'] == '< 4weeks on ART prior to delivery') ? "selected='selected'" : ""; ?>> < 4weeks on ART prior to delivery </option>
+                                                        <option value="VL > 1000 4 weeks prior to delivery" <?php echo ($eidInfo['mother_mtct_risk'] == 'VL > 1000 4 weeks prior to delivery') ? "selected='selected'" : ""; ?>> VL > 1000 4 weeks prior to delivery </option>
+                                                    </optgroup>
+                                                    <optgroup label="Low Risk">
+                                                    <option value="> 4weeks on ART prior to delivery" <?php echo ($eidInfo['mother_mtct_risk'] == '> 4weeks on ART prior to delivery') ? "selected='selected'" : ""; ?>> < 4weeks on ART prior to delivery </option>
+                                                    <option value="VL < 1000 4 weeks prior to delivery" <?php echo ($eidInfo['mother_mtct_risk'] == 'VL < 1000 4 weeks prior to delivery') ? "selected='selected'" : ""; ?>> VL > 1000 4 weeks prior to delivery </option>
+                                                    </optgroup>
+                                                </select>
+                                            </td>
+                                       
+                                        </tr>
                                     </table>
 
                                     <br><br>
@@ -394,6 +432,23 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         </td>
                                     </tr>
                                     <tr>
+                                    <th scope="row">ART Status</th>
+                                        <td>
+                                            <select  class="form-control" name="infantArtStatus" id="infantArtStatus" onchange="showOtherArt(this.value);">
+                                            <option value="">--Select--</option>
+    
+                                            <optgroup label="High Risk of MTCT">
+                                                    <option value="AZT + NVP first 6 weeks of life" <?php echo ($eidInfo['infant_art_status'] == 'AZT + NVP first 6 weeks of life') ? "selected='selected'" : ""; ?>>AZT + NVP first 6 weeks of life</option>
+                                                    <option value="NVP only - additional 6 weeks (Total 12 weeks)" <?php echo ($eidInfo['infant_art_status'] == 'NVP only - additional 6 weeks (Total 12 weeks)') ? "selected='selected'" : ""; ?>>NVP only - additional 6 weeks (Total 12 weeks)</option>
+                                                </optgroup>
+                                                <optgroup label="Low Risk">
+                                                    <option value="NVP only for the first 6 weeks of life" <?php echo ($eidInfo['infant_art_status'] == 'NVP only for the first 6 weeks of life') ? "selected='selected'" : ""; ?>>NVP only for the first 6 weeks of life</option>
+                                                </optgroup>
+                                                <option value="Other ART" <?php echo ($eidInfo['infant_art_status'] == 'Other ART') ? "selected='selected'" : ""; ?>>Other ART</option>
+                                            </select>
+                                            <input type="text" name="infantArtStatusOther" id="infantArtStatusOther" placeholder="Enter Other ART Regimen" value="<?php echo ($eidInfo['infant_art_status_other']); ?>" class="form-control" style="display:none;"/>
+                                        </td>
+                                   </tr>
                                         </table>
                                         <br><br>
                                     <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
@@ -490,8 +545,8 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">
                                                     <option value=''> -- Select -- </option>
-                                                    <option value="yes"> Yes </option>
-                                                    <option value="no"> No </option>
+                                                    <option value="yes" <?php echo ($eidInfo['is_sample_rejected'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
+                                                    <option value="no" <?php echo ($eidInfo['is_sample_rejected'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
                                                 </select>
                                             </td>
 
@@ -512,8 +567,9 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                                 </select>
                                             </td>
                                         </tr>
+                                       
                                         <tr class="show-rejection rejected" style="display:none;">
-                                            <td>Rejection Date<span class="mandatory">*</span></td>
+                                            <th>Rejection Date<span class="mandatory">*</span></th>
                                             <td><input value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
                                             <td></td>
                                             <td></td>
@@ -535,7 +591,115 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                                 </select>
                                             </td>
                                         </tr>
+                                     </table>
+
+
+                                        <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
+                                    
+                                    <tr>
+                                        <th scope="row" colspan=4>
+                                            <h5> First Test Information</h5>
+                                        </th>
+                                    </tr>
                                         <tr>
+                                            <th style="width:25%;"><label for=""> Test Date </label></th>
+                                            <td style="width:25%;">
+                                                <input type="text" class="form-control date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['test_1_date']); ?>" id="test1Date" name="test1Date" placeholder="<?= _("Please enter test date"); ?>" title="Test Date" onchange="" style="width:100%;" />
+                                            </td>
+
+
+                                            <th scope="row">Batch</th>
+                                            <td>
+                                            <input type="text" class="form-control" id="test1Batch" name="test1Batch" value="<?php echo ($eidInfo['test_1_batch']); ?>" placeholder="<?= _("Please enter Batch"); ?>" title="Batch" onchange="" style="width:100%;" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th style="width:25%;"><label for=""> Assay </label></th>
+                                            <td style="width:25%;">
+                                                <input type="text" class="form-control" id="test1Assay" name="test1Assay" value="<?php echo ($eidInfo['test_1_assay']); ?>" placeholder="<?= _("Please enter test date"); ?>" title="Test Date" onchange="" style="width:100%;" />
+                                            </td>
+
+
+                                            <th scope="row">CT/QS value</th>
+                                            <td>
+                                            <input type="text" class="form-control" id="test1CtQs" name="test1CtQs" value="<?php echo ($eidInfo['test_1_ct_qs']); ?>" placeholder="<?= _("Please enter Batch"); ?>" title="Batch" onchange="" style="width:100%;" />
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <th style="width:25%;"><label for=""> Result </label></th>
+                                            <td style="width:25%;">
+                                                <select class="form-control" name="test1Result" id="test1Result">
+                                                    <option value=''> -- Select -- </option>
+                                                    <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
+                                                        <option value="<?php echo $eidResultKey; ?>" <?php echo ($eidInfo['test_1_result'] == $eidResultKey) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?> </option>
+                                                    <?php } ?>
+                                                </select>
+                                            </td>
+                                                    
+                                            <th scope="row">Repeat Test?</th>
+                                            <td>
+                                            <select class="form-control" name="test1Repeated" id="test1Repeated" onchange="showRepeatedReason(this.value)">
+                                                    <option value=''> -- Select -- </option>
+                                                    <option value="yes" <?php echo ($eidInfo['test_1_repeated'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
+                                                    <option value="no" <?php echo ($eidInfo['test_1_repeated'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
+                                                </select>
+                                                <span class="test1RepeatReason" style="display:none;"> 
+                                           Why? <input type="text" value="<?php echo ($eidInfo['test_1_repeat_reason']); ?>" class="form-control" id="test1RepeatReason" name="test1RepeatReason" placeholder="<?= _("Reason for Repeating Test"); ?>" title="Reason for Repeating Test" onchange="" style="width:100%;" /></span>
+                                            </td>
+                                        </tr>
+
+
+                                        <tr>
+                                        <th scope="row" colspan=4>
+                                            <h5> Second Test Information</h5>
+                                        </th>
+                                    </tr>
+                                        <tr>
+                                            <th style="width:25%;"><label for=""> Test Date </label></th>
+                                            <td style="width:25%;">
+                                                <input type="text" class="form-control date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['test_2_date']); ?>" id="test2Date" name="test2Date" placeholder="<?= _("Please enter test date"); ?>" title="Test Date" onchange="" style="width:100%;" />
+                                            </td>
+
+
+                                            <th scope="row">Batch</th>
+                                            <td>
+                                            <input type="text" class="form-control" id="test2Batch" name="test2Batch" value="<?php echo ($eidInfo['test_2_batch']); ?>" placeholder="<?= _("Please enter Batch"); ?>" title="Batch" onchange="" style="width:100%;" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th style="width:25%;"><label for=""> Assay </label></th>
+                                            <td style="width:25%;">
+                                                <input type="text" class="form-control" id="test2Assay" name="test2Assay" value="<?php echo ($eidInfo['test_2_assay']); ?>" placeholder="<?= _("Please enter test date"); ?>" title="Test Date" onchange="" style="width:100%;" />
+                                            </td>
+
+
+                                            <th scope="row">CT/QS value</th>
+                                            <td>
+                                            <input type="text" class="form-control" id="test2CtQs" name="test2CtQs" value="<?php echo ($eidInfo['test_2_ctqs']); ?>" placeholder="<?= _("Please enter Batch"); ?>" title="Batch" onchange="" style="width:100%;" />
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <th style="width:25%;"><label for=""> Result </label></th>
+                                            <td style="width:25%;">
+                                                <select class="form-control" name="test2Result" id="test2Result">
+                                                    <option value=''> -- Select -- </option>
+                                                    <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
+                                                        <option value="<?php echo $eidResultKey; ?>" <?php echo ($eidInfo['test_2_result'] == $eidResultKey) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?> </option>
+                                                    <?php } ?>
+                                                </select>
+                                            </td>
+                                                    </tr>
+
+
+                                        </table>
+
+                                        <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
+
+
+                                        <tr>
+                                            
                                             <th scope="row">Reviewed On</th>
                                             <td><input type="text" value="<?php echo $eidInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
                                             <th scope="row">Reviewed By</th>
@@ -772,6 +936,28 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
             $("#modeOfDeliveryOther").hide();
     }
 
+    function showOtherArt(infantArt)
+    {
+        if(infantArt=="Other ART")
+        {
+            $("#infantArtStatusOther").show();
+        }
+        else
+        {
+            $("#infantArtStatusOther").val("");
+            $("#infantArtStatusOther").hide();
+        }
+    }
+
+    function showRepeatedReason(repeated)
+    {
+        if(repeated=="yes")
+            $(".test1RepeatReason").show();
+                else
+            $(".test1RepeatReason").hide();
+
+    }
+
     $(document).ready(function() {
 
         $('#facilityId').select2({
@@ -821,6 +1007,6 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
         });
         showDBSRequestedReason($("#secondDBSRequested").val());
         showOtherOption($("#modeOfDelivery").val());
-
+        showOtherArt($("#infantArtStatus").val());
     });
 </script>

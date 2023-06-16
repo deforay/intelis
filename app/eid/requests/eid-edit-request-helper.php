@@ -82,6 +82,27 @@ try {
 		$_POST['rapidtestDate'] = null;
 	}
 
+	if (isset($_POST['startedArtDate']) && trim($_POST['startedArtDate']) != "") {
+		$startedArtDate = explode(" ", $_POST['startedArtDate']);
+		$_POST['startedArtDate'] = DateUtility::isoDateFormat($startedArtDate[0]) . " " . $startedArtDate[1];
+	} else {
+		$_POST['startedArtDate'] = null;
+	}
+
+	if (isset($_POST['test1Date']) && trim($_POST['test1Date']) != "") {
+		$test1Date = explode(" ", $_POST['test1Date']);
+		$_POST['test1Date'] = DateUtility::isoDateFormat($test1Date[0]) . " " . $test1Date[1];
+	} else {
+		$_POST['test1Date'] = null;
+	}
+
+	if (isset($_POST['test2Date']) && trim($_POST['test2Date']) != "") {
+		$test2Date = explode(" ", $_POST['test2Date']);
+		$_POST['test2Date'] = DateUtility::isoDateFormat($test2Date[0]) . " " . $test2Date[1];
+	} else {
+		$_POST['test2Date'] = null;
+	}
+
 	if (isset($_POST['childDob']) && trim($_POST['childDob']) != "") {
 		$childDob = explode(" ", $_POST['childDob']);
 		$_POST['childDob'] = DateUtility::isoDateFormat($childDob[0]) . " " . $childDob[1];
@@ -211,6 +232,9 @@ try {
 		'mother_hiv_status' 								=> $_POST['mothersHIVStatus'] ?? null,
 		'mode_of_delivery' 									=> $_POST['modeOfDelivery'] ?? null,
 		'mode_of_delivery_other' 							=> $_POST['modeOfDeliveryOther'] ?? null,
+		'mother_art_status' 								=> $_POST['motherArtStatus'] ?? null,
+		'mother_mtct_risk' 									=> $_POST['motherMtctRisk'] ?? null,
+		'started_art_date' 									=> $_POST['startedArtDate'] ?? null,
 		'pcr_test_performed_before' 						=> $_POST['pcrTestPerformedBefore'] ?? null,
 		'pcr_test_number' 									=> $_POST['pcrTestNumber'] ?? null,
 		'previous_pcr_result' 								=> $_POST['prePcrTestResult'] ?? null,
@@ -223,6 +247,8 @@ try {
 		'infant_on_pmtct_prophylaxis' 						=> $_POST['infantOnPMTCTProphylaxis'] ?? null,
 		'infant_on_ctx_prophylaxis'							=> $_POST['infantOnCTXProphylaxis'] ?? null,
 		'age_breastfeeding_stopped_in_months' 				=> $_POST['ageBreastfeedingStopped'] ?? null,
+		'infant_art_status' 								=> $_POST['infantArtStatus'] ?? null,
+		'infant_art_status_other' 							=> $_POST['infantArtStatusOther'] ?? null,
 		'choice_of_feeding' 								=> $_POST['choiceOfFeeding'] ?? null,
 		'is_cotrimoxazole_being_administered_to_the_infant'	=> $_POST['isCotrimoxazoleBeingAdministered'] ?? null,
 		'specimen_type' 									=> $_POST['specimenType'] ?? null,
@@ -238,6 +264,17 @@ try {
 		'sample_tested_datetime' 							=> $_POST['sampleTestedDateTime'] ?? null,
 		'is_sample_rejected' 								=> $_POST['isSampleRejected'] ?? null,
 		'result' 											=> $_POST['result'] ?? null,
+		'test_1_date' 										=> $_POST['test1Date'] ?? null,
+		'test_1_batch' 										=> $_POST['test1Batch'] ?? null,
+		'test_1_assay' 										=> $_POST['test1Assay'] ?? null,
+		'test_1_ct_qs' 										=> $_POST['test1CtQs'] ?? null,
+		'test_1_result' 									=> $_POST['test1Result'] ?? null,
+		'test_1_repeated' 									=> $_POST['test1Repeated'] ?? null,
+		'test_1_repeat_reason' 								=> $_POST['test1RepeatReason'] ?? null,
+		'test_2_date' 										=> $_POST['test2Date'] ?? null,
+		'test_2_batch' 										=> $_POST['test2Batch'] ?? null,
+		'test_2_assay' 										=> $_POST['test2Assay'] ?? null,
+		'test_2_ct_qs' 										=> $_POST['test2CtQs'] ?? null,
 		'result_reviewed_by'                				=> (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
 		'result_reviewed_datetime'          				=> (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
 		'result_dispatched_datetime'          				=> (isset($_POST['resultDispatchedOn']) && $_POST['resultDispatchedOn'] != "") ? $_POST['resultDispatchedOn'] : null,

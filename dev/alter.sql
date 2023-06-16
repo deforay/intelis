@@ -4186,3 +4186,20 @@ ALTER TABLE `form_generic` DROP `community_sample`;
 
 -- Amit 14-Jun-2023
 ALTER TABLE `user_details` ADD `user_locale` VARCHAR(256) NULL DEFAULT NULL AFTER `role_id`;
+
+
+-- Jeyabanu 15-06-2023
+ALTER TABLE `form_eid` ADD `mother_art_status` VARCHAR(256) NULL DEFAULT NULL AFTER `mode_of_delivery_other`;
+ALTER TABLE `audit_form_eid` ADD `mother_art_status` VARCHAR(256) NULL DEFAULT NULL AFTER `mode_of_delivery_other`;
+
+ALTER TABLE `form_eid` ADD `infant_art_status` VARCHAR(256) NULL DEFAULT NULL AFTER `age_breastfeeding_stopped_in_months`, ADD `infant_art_status_other` VARCHAR(256) NULL DEFAULT NULL AFTER `infant_art_status`;
+ALTER TABLE `audit_form_eid` ADD `infant_art_status` VARCHAR(256) NULL DEFAULT NULL AFTER `age_breastfeeding_stopped_in_months`, ADD `infant_art_status_other` VARCHAR(256) NULL DEFAULT NULL AFTER `infant_art_status`;
+
+ALTER TABLE `form_eid` ADD `started_art_date` DATE NULL DEFAULT NULL AFTER `mother_regimen`, ADD `mother_mtct_risk` VARCHAR(256) NULL DEFAULT NULL AFTER `started_art_date`;
+ALTER TABLE `audit_form_eid` ADD `started_art_date` DATE NULL DEFAULT NULL AFTER `mother_regimen`, ADD `mother_mtct_risk` VARCHAR(256) NULL DEFAULT NULL AFTER `started_art_date`;
+
+ALTER TABLE `form_eid` ADD `test_1_date` DATE NULL DEFAULT NULL AFTER `is_sample_rejected`, ADD `test_1_batch` INT NULL DEFAULT NULL AFTER `test_1_date`, ADD `test_1_assay` TEXT NULL DEFAULT NULL AFTER `test_1_batch`, ADD `test_1_ct_qs` INT NULL DEFAULT NULL AFTER `test_1_assay`, ADD `test_1_result` TEXT NULL DEFAULT NULL AFTER `test_1_ct_qs`, ADD `test_1_repeated` TEXT NULL DEFAULT NULL AFTER `test_1_result`, ADD `test_1_repeat_reason` TEXT NULL DEFAULT NULL AFTER `test_1_repeated`;
+ALTER TABLE `audit_form_eid` ADD `test_1_date` DATE NULL DEFAULT NULL AFTER `is_sample_rejected`, ADD `test_1_batch` INT NULL DEFAULT NULL AFTER `test_1_date`, ADD `test_1_assay` TEXT NULL DEFAULT NULL AFTER `test_1_batch`, ADD `test_1_ct_qs` INT NULL DEFAULT NULL AFTER `test_1_assay`, ADD `test_1_result` TEXT NULL DEFAULT NULL AFTER `test_1_ct_qs`, ADD `test_1_repeated` TEXT NULL DEFAULT NULL AFTER `test_1_result`, ADD `test_1_repeat_reason` TEXT NULL DEFAULT NULL AFTER `test_1_repeated`;
+
+ALTER TABLE `form_eid` ADD `test_2_date` DATE NULL DEFAULT NULL AFTER `test_1_repeat_reason`, ADD `test_2_batch` INT NULL DEFAULT NULL AFTER `test_2_date`, ADD `test_2_assay` TEXT NULL DEFAULT NULL AFTER `test_2_batch`, ADD `test_2_ct_qs` INT NULL DEFAULT NULL AFTER `test_2_assay`, ADD `test_2_result` TEXT NULL DEFAULT NULL AFTER `test_2_ct_qs`;
+ALTER TABLE `audit_form_eid` ADD `test_2_date` DATE NULL DEFAULT NULL AFTER `test_1_repeat_reason`, ADD `test_2_batch` INT NULL DEFAULT NULL AFTER `test_2_date`, ADD `test_2_assay` TEXT NULL DEFAULT NULL AFTER `test_2_batch`, ADD `test_2_ct_qs` INT NULL DEFAULT NULL AFTER `test_2_assay`, ADD `test_2_result` TEXT NULL DEFAULT NULL AFTER `test_2_ct_qs`;

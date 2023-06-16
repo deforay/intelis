@@ -236,6 +236,7 @@ require($fileArray[$arr['vl_form']]);
                 provinceId: provinceId
             },
             function(data) {
+                console.log(data);
                 if (data > 0) {
                     $.unblockUI();
                     document.getElementById("eidSampleId").value = data;
