@@ -7,11 +7,11 @@ if (php_sapi_name() == 'cli') {
 //this file gets the data from the local database and updates the remote database
 
 use App\Services\ApiService;
-use App\Services\Covid19Service;
-use App\Services\GenericTestsService;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Services\Covid19Service;
+use App\Registries\ContainerRegistry;
+use App\Services\GenericTestsService;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -19,8 +19,8 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-// /** @var ApiService $app */
-// $app = \App\Registries\ContainerRegistry::get(ApiService::class);
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 $version = VERSION;
@@ -74,37 +74,20 @@ try {
         /** @var GenericTestsService $genericService */
         $genericService = ContainerRegistry::get(GenericTestsService::class);
         $testResults = $genericService->getGenericTestsByFormId($forms);
-        // echo "<pre>";print_r($testResults);die;
         $url = $remoteUrl . '/remote/remote/generic-test-results.php';
-        $data = array(
+        $payload = [
             "labId" => $labId,
             "result" => $genericLabResult,
             "testResults" => $testResults,
             "Key" => "vlsm-lab-data--",
-        );
-        //open connection
-        $ch = curl_init($url);
-        $json_data = json_encode($data);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt(
-            $ch,
-            CURLOPT_HTTPHEADER,
-            array(
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($json_data)
-            )
-        );
-        // execute post
-        $curl_response = curl_exec($ch);
-        //close connection
-        curl_close($ch);
-        $result = json_decode($curl_response, true);
+        ];
+
+        $jsonResponse = $apiService->post($url, $payload);
+        $result = json_decode($jsonResponse, true);
 
         if (!empty($result)) {
             $db = $db->where('sample_code', $result, 'IN');
-            $id = $db->update('form_generic',  array('data_sync' => 1, 'result_sent_to_source' => 'sent'));
+            $id = $db->update('form_generic', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
         }
 
         $general->addApiTracking($transactionId, 'vlsm-system', count($genericLabResult), 'send-results', 'generic', $url, $json_data, $result, 'json', $labId);
@@ -129,39 +112,22 @@ try {
 
         $url = $remoteUrl . '/remote/remote/testResults.php';
 
-        $data = array(
+        $payload = [
             "labId" => $labId,
             "result" => $vlLabResult,
             "Key" => "vlsm-lab-data--",
-        );
+        ];
 
-        //open connection
-        $ch = curl_init($url);
-        $json_data = json_encode($data);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt(
-            $ch,
-            CURLOPT_HTTPHEADER,
-            array(
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($json_data)
-            )
-        );
-        // execute post
-        $curl_response = curl_exec($ch);
-        //close connection
-        $result = json_decode($curl_response, true);
+        $jsonResponse = $apiService->post($url, $payload);
+        $result = json_decode($jsonResponse, true);
 
         if (!empty($result)) {
             $db = $db->where('sample_code', $result, 'IN');
-            $id = $db->update('form_vl', array('data_sync' => 1, 'result_sent_to_source' => 'sent'));
+            $id = $db->update('form_vl', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
         }
 
         $general->addApiTracking($transactionId, 'vlsm-system', count($vlLabResult), 'send-results', 'vl', $url, $json_data, $result, 'json', $labId);
     }
-
 
     // EID TEST RESULTS
     if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] === true) {
@@ -179,40 +145,22 @@ try {
         $eidLabResult = $db->rawQuery($eidQuery);
 
         $url = $remoteUrl . '/remote/remote/eid-test-results.php';
-        $data = array(
+        $payload = [
             "labId" => $labId,
             "result" => $eidLabResult,
             "Key" => "vlsm-lab-data--",
-        );
-        //open connection
-        $ch = curl_init($url);
-        $json_data = json_encode($data);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt(
-            $ch,
-            CURLOPT_HTTPHEADER,
-            array(
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($json_data)
-            )
-        );
-        // execute post
-        $curl_response = curl_exec($ch);
-        //close connection
-        curl_close($ch);
-        $result = json_decode($curl_response, true);
+        ];
+
+        $jsonResponse = $apiService->post($url, $payload);
+        $result = json_decode($jsonResponse, true);
 
         if (!empty($result)) {
             $db = $db->where('sample_code', $result, 'IN');
-            $id = $db->update('form_eid', array('data_sync' => 1, 'result_sent_to_source' => 'sent'));
+            $id = $db->update('form_eid', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
         }
 
         $general->addApiTracking($transactionId, 'vlsm-system', count($eidLabResult), 'send-results', 'eid', $url, $json_data, $result, 'json', $labId);
     }
-
-
 
     // COVID-19 TEST RESULTS
     if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] === true) {
@@ -240,37 +188,20 @@ try {
         $testResults = $covid19Service->getCovid19TestsByFormId($forms);
 
         $url = $remoteUrl . '/remote/remote/covid-19-test-results.php';
-        $data = array(
+        $payload = [
             "labId" => $labId,
             "result" => $c19LabResult,
             "testResults" => $testResults,
             "symptoms" => $symptoms,
             "comorbidities" => $comorbidities,
             "Key" => "vlsm-lab-data--",
-        );
-        //open connection
-        $ch = curl_init($url);
-        $json_data = json_encode($data);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt(
-            $ch,
-            CURLOPT_HTTPHEADER,
-            array(
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($json_data)
-            )
-        );
-        // execute post
-        $curl_response = curl_exec($ch);
-        //close connection
-        curl_close($ch);
-        $result = json_decode($curl_response, true);
+        ];
+        $jsonResponse = $apiService->post($url, $payload);
+        $result = json_decode($jsonResponse, true);
 
         if (!empty($result)) {
             $db = $db->where('sample_code', $result, 'IN');
-            $id = $db->update('form_covid19',  array('data_sync' => 1, 'result_sent_to_source' => 'sent'));
+            $id = $db->update('form_covid19',  ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
         }
 
         $general->addApiTracking($transactionId, 'vlsm-system', count($c19LabResult), 'send-results', 'covid19', $url, $json_data, $result, 'json', $labId);
@@ -292,42 +223,19 @@ try {
         }
         $hepLabResult = $db->rawQuery($hepQuery);
 
-        // $forms = array_column($hepLabResult, 'hepatitis_id');
-
-        // $hepatitisService = new \App\Services\Hepatitis();
-        // $risks = $hepatitisService->getRiskFactorsByHepatitisId($forms);
-        // $comorbidities = $hepatitisService->getComorbidityByHepatitisId($forms);
-
         $url = $remoteUrl . '/remote/remote/hepatitis-test-results.php';
-        $data = array(
+        $payload = [
             "labId" => $labId,
             "result" => $hepLabResult,
-            "Key" => "vlsm-lab-data--",
-        );
+            "Key" => "vlsm-lab-data--"
+        ];
 
-        //open connection
-        $ch = curl_init($url);
-        $json_data = json_encode($data);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt(
-            $ch,
-            CURLOPT_HTTPHEADER,
-            array(
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($json_data)
-            )
-        );
-        // execute post
-        $curl_response = curl_exec($ch);
-        //close connection
-        curl_close($ch);
-        $result = json_decode($curl_response, true);
+        $jsonResponse = $apiService->post($url, $payload);
+        $result = json_decode($jsonResponse, true);
 
         if (!empty($result)) {
             $db = $db->where('sample_code', $result, 'IN');
-            $id = $db->update('form_hepatitis',  array('data_sync' => 1, 'result_sent_to_source' => 'sent'));
+            $id = $db->update('form_hepatitis', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
         }
 
         $general->addApiTracking($transactionId, 'vlsm-system', count($hepLabResult), 'send-results', 'hepatitis', $url, $json_data, $result, 'json', $labId);
@@ -337,7 +245,7 @@ try {
 
     /* Update last_remote_results_sync in s_vlsm_instance */
     $db = $db->where('vlsm_instance_id', $instanceResult['vlsm_instance_id']);
-    $id = $db->update('s_vlsm_instance', array('last_remote_results_sync' => DateUtility::getCurrentDateTime()));
+    $id = $db->update('s_vlsm_instance', ['last_remote_results_sync' => DateUtility::getCurrentDateTime()]);
 } catch (Exception $exc) {
     error_log($db->getLastError());
     error_log($exc->getMessage());

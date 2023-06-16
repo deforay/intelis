@@ -4,9 +4,10 @@ if (php_sapi_name() == 'cli') {
     require_once(__DIR__ . "/../../../bootstrap.php");
 }
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
+use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 ini_set('memory_limit', -1);
 
@@ -15,6 +16,10 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
+
 $lastUpdate = null;
 $output = [];
 
@@ -58,30 +63,25 @@ try {
 
 
     $vldashboardUrl = $general->getGlobalConfig('vldashboard_url');
-    $vldashboardUrl = rtrim($vldashboardUrl, "/");
+    $url = rtrim($vldashboardUrl, "/") . "/api/vlsm-covid19";
 
-    $apiUrl = $vldashboardUrl . "/api/vlsm-covid19";
-
-
-    $data = [];
-    $data['api-version'] = 'v2';
-    $data['source'] = ($general->getSystemConfig('sc_user_type') == 'remoteuser') ? 'STS' : 'LIS';
-    $data['labId'] =  ($data['source'] == 'LIS') ? $general->getGlobalConfig('sc_testing_lab_id') : null;
-    $data['covid19File'] = new CURLFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename, 'application/json', $filename);
-
-    $options = [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POSTFIELDS => $data,
-        CURLOPT_CUSTOMREQUEST => "POST",
-        CURLOPT_HTTPHEADER => ['Content-Type: multipart/form-data']
+    $params = [
+        [
+            'name' => 'api-version',
+            'contents' => 'v2'
+        ],
+        [
+            'name' => 'source',
+            'contents' => ($general->getSystemConfig('sc_user_type') == 'remoteuser') ? 'STS' : 'LIS'
+        ],
+        [
+            'name' => 'labId',
+            'contents' => $general->getSystemConfig('sc_testing_lab_id') ?? null
+        ]
     ];
 
-    $ch = curl_init($apiUrl);
-    curl_setopt_array($ch, $options);
-    $result = curl_exec($ch);
-    curl_close($ch);
-
-    $deResult = json_decode($result, true);
+    $response  = $apiService->postFile($url, 'covid19File', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params);
+    $deResult = json_decode($response, true);
 
     if (isset($deResult['status']) && trim($deResult['status']) == 'success') {
         $data = array(

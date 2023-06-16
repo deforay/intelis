@@ -1,6 +1,7 @@
 <?php
 //get data from remote db send to lab db
 use App\Registries\ContainerRegistry;
+use App\Services\ApiService;
 use App\Services\CommonService;
 use App\Utilities\DateUtility;
 
@@ -15,6 +16,9 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
 
 $payload = [];
 
@@ -54,10 +58,10 @@ if ($data['Key'] == 'vlsm-get-remote') {
             "generic_test_symptoms_map",
             "generic_test_result_units_map"
         );
-        foreach($toSyncTables as $table){
+        foreach ($toSyncTables as $table) {
             $condition = null;
-            if (!empty($data[$general->stringToCamelCase($table).'LastModified'])) {
-                $condition = "updated_datetime > '" . $data[$general->stringToCamelCase($table).'LastModified'] . "'";
+            if (!empty($data[$general->stringToCamelCase($table) . 'LastModified'])) {
+                $condition = "updated_datetime > '" . $data[$general->stringToCamelCase($table) . 'LastModified'] . "'";
             }
             $response[$general->stringToCamelCase($table)] = $general->fetchDataFromTable($table, $condition);
             $counter += count($response[$general->stringToCamelCase($table)]);
@@ -321,13 +325,17 @@ if ($data['Key'] == 'vlsm-get-remote') {
     } else {
         $payload = json_encode([]);
     }
-
-    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'common-data-sync', 'common', $_SERVER['REQUEST_URI'], $origData, $payload, 'json', $labId);
-
-    $sql = 'UPDATE facility_details SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastHeartBeat", ?) WHERE facility_id = ?';
-    $db->rawQuery($sql, array(DateUtility::getCurrentDateTime(), $labId));
-
-    echo $payload;
 } else {
-    echo json_encode(array('status' => 'error', 'message' => 'Invalid request'));
+    $payload =  json_encode(array('status' => 'error', 'message' => 'Invalid request'));
 }
+
+$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'common-data-sync', 'common', $_SERVER['REQUEST_URI'], $origData, $payload, 'json', $labId);
+
+$sql = 'UPDATE facility_details
+            SET facility_attributes
+                = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastHeartBeat", ?)
+            WHERE facility_id = ?';
+$db->rawQuery($sql, array(DateUtility::getCurrentDateTime(), $labId));
+
+
+echo $payload;

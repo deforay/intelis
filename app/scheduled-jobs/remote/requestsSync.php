@@ -77,8 +77,7 @@ if (isset($systemConfig['modules']['genericTests']) && $systemConfig['modules'][
         $payload['manifestCode'] = $manifestCode;
     }
 
-    $response = $apiService->post($url, $payload);
-    $jsonResponse = $response->getBody()->getContents();
+    $jsonResponse = $apiService->post($url, $payload);
 
     $columnList = [];
 
@@ -243,8 +242,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
     }
     $columnList = [];
 
-    $response = $apiService->post($url, $payload);
-    $jsonResponse = $response->getBody()->getContents();
+    $jsonResponse = $apiService->post($url, $payload);
 
     if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
@@ -393,8 +391,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
         $payload['manifestCode'] = $manifestCode;
     }
 
-    $response = $apiService->post($url, $payload);
-    $jsonResponse = $response->getBody()->getContents();
+    $jsonResponse = $apiService->post($url, $payload);
 
     if (!empty($jsonResponse) && $jsonResponse != '[]') {
 
@@ -527,8 +524,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         $payload['manifestCode'] = $manifestCode;
     }
 
-    $response = $apiService->post($url, $payload);
-    $jsonResponse = $response->getBody()->getContents();
+    $jsonResponse = $apiService->post($url, $payload);
 
     if (!empty($jsonResponse) && $jsonResponse != '[]') {
         $removeKeys = array(
@@ -723,8 +719,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
         $payload['manifestCode'] = $manifestCode;
     }
 
-    $response = $apiService->post($url, $payload);
-    $jsonResponse = $response->getBody()->getContents();
+    $jsonResponse = $apiService->post($url, $payload);
 
     if (!empty($jsonResponse) && $jsonResponse != '[]') {
         $removeKeys = array(
@@ -920,8 +915,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
         $payload['manifestCode'] = $manifestCode;
     }
 
-    $response = $apiService->post($url, $payload);
-    $jsonResponse = $response->getBody()->getContents();
+    $jsonResponse = $apiService->post($url, $payload);
 
     if (!empty($jsonResponse) && $jsonResponse != '[]') {
         $removeKeys = array(

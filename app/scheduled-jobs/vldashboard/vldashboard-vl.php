@@ -74,9 +74,7 @@ try {
         exit(0);
     }
 
-    $vldashboardUrl = rtrim($vldashboardUrl, "/");
-
-    $url = $vldashboardUrl . "/api/vlsm";
+    $url = rtrim($vldashboardUrl, "/") . "/api/vlsm";
 
     $params = [
         [
@@ -93,10 +91,9 @@ try {
         ]
     ];
 
-    $response  = $apiService->postFile($url, $filename, TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params);
+    $response  = $apiService->postFile($url, 'vlFile', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params);
 
-
-    $deResult = json_decode($response->getBody(), true);
+    $deResult = json_decode($response, true);
 
     if (isset($deResult['status']) && trim($deResult['status']) == 'success') {
         $data = array(

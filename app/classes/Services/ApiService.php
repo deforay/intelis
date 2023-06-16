@@ -31,7 +31,8 @@ class ApiService
         $options = [
             RequestOptions::JSON => $payload,
             RequestOptions::HEADERS => [
-                'Content-Type' => 'application/json'
+                'Content-Type' => 'application/json',
+                'Accept-Encoding' => 'gzip, deflate',
             ]
         ];
 
@@ -41,7 +42,9 @@ class ApiService
             $options[RequestOptions::HEADERS]['Content-Encoding'] = 'gzip';
         }
 
-        return $client->post($url, $options);
+        $response = $client->post($url, $options);
+
+        return $response->getBody()->getContents();
     }
 
     public function postFile($url, $fileName, $jsonFilePath, $params = [], $gzip = true)
@@ -57,7 +60,8 @@ class ApiService
                 ]
             ],
             RequestOptions::HEADERS => [
-                'Content-Type' => 'multipart/form-data'
+                'Content-Type' => 'multipart/form-data',
+                'Accept-Encoding' => 'gzip, deflate',
             ]
         ];
 
@@ -74,18 +78,15 @@ class ApiService
             $options[RequestOptions::HEADERS]['Content-Encoding'] = 'gzip';
         }
 
-        return $client->post($url, $options);
-    }
+        $response = $client->post($url, $options);
 
-    public function returnNullIfEmpty($value)
-    {
-        return (empty($value) || strlen(trim($value)) === 0) ? null : $value;
+        return $response->getBody()->getContents();
     }
 
     public function checkIfNullOrEmpty($array)
     {
         foreach ($array as $value) {
-            if ($value === null || $value === "") {
+            if ($value === null || trim($value) === "") {
                 return true;
             }
         }
