@@ -5,10 +5,6 @@ Options -Indexes -MultiViews +FollowSymLinks
 #Header set X-Content-Type-Options "nosniff"
 #Header set Access-Control-Allow-Origin "*"
 
-php_flag session.use_strict_mode on
-php_flag session.cookie_httponly on
-php_value session.cookie_samesite Lax
-
 <FilesMatch ".(perl|py|htaccess|htpasswd|ini|psd|log|sh|lock|phar|yml|md|sql|zip|hgignore|hg|hgtags|DS_Store)$">
   Order Allow,Deny
   Deny from all
@@ -63,11 +59,11 @@ RewriteCond %{REQUEST_FILENAME} -s [OR]
 RewriteCond %{REQUEST_FILENAME} -l [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^.*$ - [NC,L]
-# The following rewrites all other queries to index.php. The 
+# The following rewrites all other queries to index.php. The
 # condition ensures that if you are using Apache aliases to do
-# mass virtual hosting, the base path will be prepended to 
+# mass virtual hosting, the base path will be prepended to
 # allow proper resolution of the index.php file; it will work
-# in non-aliased environments as well, providing a safe, one-size 
+# in non-aliased environments as well, providing a safe, one-size
 # fits all solution.
 RewriteCond %{REQUEST_URI}::$1 ^(/.+)(.+)::\2$
 RewriteRule ^(.*) - [E=BASE:%1]

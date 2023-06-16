@@ -5,9 +5,10 @@ if (php_sapi_name() == 'cli') {
     require_once(__DIR__ . "/../../../bootstrap.php");
 }
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
+use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 ini_set('memory_limit', -1);
 
@@ -17,67 +18,68 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
+
 $data = [];
 
 // if forceSync is set as true, we will drop and create tables on VL Dashboard DB
 $data['forceSync'] = false;
 
 
-$referenceTables = array(
+$referenceTables = [
     'facility_details',
     'geographical_divisions',
     'instrument_machines',
-    'instruments',
-);
+    'instruments'
+];
 
 if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
-    $vlTables = array(
+    $vlTables = [
         'r_vl_sample_type',
         'r_vl_test_reasons',
         'r_vl_art_regimen',
-        'r_vl_sample_rejection_reasons',
-    );
+        'r_vl_sample_rejection_reasons'
+    ];
 
     $referenceTables = array_merge($referenceTables, $vlTables);
 }
 
 
 if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
-    $eidTables = array(
+    $eidTables = [
         //'r_eid_results',
         'r_eid_sample_rejection_reasons',
         'r_eid_sample_type',
         //'r_eid_test_reasons',
-    );
+    ];
     $referenceTables = array_merge($referenceTables, $eidTables);
 }
 
 
 if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
-    $covid19Tables = array(
-        //'r_covid19_results',
+    $covid19Tables = [
         'r_covid19_comorbidities',
         'r_covid19_sample_rejection_reasons',
         'r_covid19_sample_type',
         'r_covid19_symptoms',
         'r_covid19_test_reasons',
-    );
+    ];
     $referenceTables = array_merge($referenceTables, $covid19Tables);
 }
 
 if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
-    $hepatitisTables = array(
+    $hepatitisTables = [
         //'r_covid19_results',
         'r_hepatitis_sample_rejection_reasons',
         'r_hepatitis_sample_type',
         'r_hepatitis_results',
         'r_hepatitis_risk_factors',
         'r_hepatitis_test_reasons',
-    );
+    ];
     $referenceTables = array_merge($referenceTables, $hepatitisTables);
 }
-
-// print_r($referenceTables);die;
 
 try {
 
@@ -106,37 +108,25 @@ try {
     fclose($fp);
 
 
-    // print_r($data);die;
-
     $vldashboardUrl = $general->getGlobalConfig('vldashboard_url');
-    $vldashboardUrl = rtrim($vldashboardUrl, "/");
-    // $vldashboardUrl = "http://vldashboard";
+    $url = rtrim($vldashboardUrl, "/") . "/api/vlsm-covid19";
 
-    $apiUrl = $vldashboardUrl . "/api/vlsm-reference-tables";
-
-
-    $data = [];
-    $data['api-version'] = 'v2';
-    $data['source'] = ($general->getSystemConfig('sc_user_type') == 'remoteuser') ? 'STS' : 'LIS';
-    $data['labId'] =  ($data['source'] == 'LIS') ? $general->getGlobalConfig('sc_testing_lab_id') : null;
-    $data['referenceFile'] = new CURLFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename, 'application/json', $filename);
-    // echo "<pre>";print_r($data);die;
-    $options = [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POSTFIELDS => $data,
-        CURLOPT_CUSTOMREQUEST => "POST",
-        CURLOPT_HTTPHEADER => ['Content-Type: multipart/form-data']
+    $params = [
+        [
+            'name' => 'api-version',
+            'contents' => 'v2'
+        ],
+        [
+            'name' => 'source',
+            'contents' => ($general->getSystemConfig('sc_user_type') == 'remoteuser') ? 'STS' : 'LIS'
+        ],
+        [
+            'name' => 'labId',
+            'contents' => $general->getSystemConfig('sc_testing_lab_id') ?? null
+        ]
     ];
 
-    $ch = curl_init($apiUrl);
-    curl_setopt_array($ch, $options);
-    $result = curl_exec($ch);
-    curl_close($ch);
-
-    /* echo "<pre>";
-    print_r($result);
-    die; */
-    $response = json_decode($result, true);
+    $response  = $apiService->postFile($url, 'referenceFile', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params);
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

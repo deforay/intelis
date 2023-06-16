@@ -9,7 +9,9 @@
 namespace App\Services;
 
 use MysqliDb;
+use GuzzleHttp\Client;
 use App\Utilities\DateUtility;
+use GuzzleHttp\RequestOptions;
 use App\Registries\ContainerRegistry;
 
 class ApiService
@@ -22,15 +24,69 @@ class ApiService
         $this->db = $db ?? ContainerRegistry::get('db');
     }
 
-    public function returnNullIfEmpty($value)
+    public function post($url, $payload, $gzip = true)
     {
-        return (empty($value) || strlen(trim($value)) === 0) ? null : $value;
+        $client = new Client(['http_version' => 2.0]);
+
+        $options = [
+            RequestOptions::JSON => $payload,
+            RequestOptions::HEADERS => [
+                'Content-Type' => 'application/json',
+                'Accept-Encoding' => 'gzip, deflate',
+            ]
+        ];
+
+        if ($gzip) {
+            $compressedPayload = gzencode(json_encode($payload));
+            $options[RequestOptions::BODY] = $compressedPayload;
+            $options[RequestOptions::HEADERS]['Content-Encoding'] = 'gzip';
+        }
+
+        $response = $client->post($url, $options);
+
+        return $response->getBody()->getContents();
     }
 
-    function checkIfNullOrEmpty($array)
+    public function postFile($url, $fileName, $jsonFilePath, $params = [], $gzip = true)
+    {
+        $client = new Client(['http_version' => 2.0]);
+
+        $options = [
+            RequestOptions::MULTIPART => [
+                [
+                    'name' => $fileName,
+                    'contents' => fopen($jsonFilePath, 'r'),
+                    'filename' => basename($jsonFilePath)
+                ]
+            ],
+            RequestOptions::HEADERS => [
+                'Content-Type' => 'multipart/form-data',
+                'Accept-Encoding' => 'gzip, deflate',
+            ]
+        ];
+
+        foreach ($params as $key => $value) {
+            $options[RequestOptions::MULTIPART][] = [
+                'name' => $key,
+                'contents' => $value
+            ];
+        }
+
+        if ($gzip) {
+            $compressedPayload = gzencode(file_get_contents($jsonFilePath));
+            $options[RequestOptions::BODY] = $compressedPayload;
+            $options[RequestOptions::HEADERS]['Content-Encoding'] = 'gzip';
+        }
+
+        $response = $client->post($url, $options);
+
+        return $response->getBody()->getContents();
+    }
+
+    public function checkIfNullOrEmpty($array)
     {
         foreach ($array as $value) {
-            if ($value === null || $value === "") {
+            if ($value === null || trim($value) === "") {
                 return true;
             }
         }

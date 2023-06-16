@@ -35,7 +35,10 @@ if (isset($_POST['testType'])) {
 
 function getColumns($db, $tableName)
 {
-	$columnsSql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND table_name=? order by ordinal_position";
+	$columnsSql = "SELECT COLUMN_NAME
+					FROM INFORMATION_SCHEMA.COLUMNS
+					WHERE TABLE_SCHEMA = ? AND table_name=?
+					ORDER BY ordinal_position";
 	return $db->rawQuery($columnsSql, array(SYSTEM_CONFIG['database']['db'], $tableName));
 }
 

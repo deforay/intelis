@@ -4,11 +4,11 @@ if (php_sapi_name() == 'cli') {
     require_once(__DIR__ . "/../../../bootstrap.php");
 }
 
-use App\Services\ApiService;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Utilities\DateUtility;
 use JsonMachine\Items;
+use App\Services\ApiService;
+use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
 
@@ -29,8 +29,8 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 
 
-// /** @var ApiService $app */
-// $app = \App\Registries\ContainerRegistry::get(ApiService::class);
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
 
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
@@ -133,11 +133,10 @@ if (isset($systemConfig['modules']['genericTests']) && $systemConfig['modules'][
         "generic_test_symptoms_map",
         "generic_test_result_units_map"
     );
-    foreach($toSyncTables as $table){
-        $payload[$general->stringToCamelCase($table).'LastModified'] = $general->getLastModifiedDateTime('r_generic_sample_types');
+    foreach ($toSyncTables as $table) {
+        $payload[$general->stringToCamelCase($table) . 'LastModified'] = $general->getLastModifiedDateTime('r_generic_sample_types');
 
         $genericDataToSync[$general->stringToCamelCase($table)] = array("primaryKey" => $general->getPrimaryKeyField($table), "tableName" => $table);
-
     }
 }
 if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
@@ -319,17 +318,8 @@ $dataToSync = array_merge(
 $payload['labId'] = $labId;
 
 
-$client = new GuzzleHttp\Client();
+$jsonResponse = $apiService->post($url, $payload);
 
-$response = $client->post(
-    $url,
-    [
-        GuzzleHttp\RequestOptions::JSON => $payload
-    ]
-);
-
-$jsonResponse = $response->getBody()->getContents();
-// $general->errorLog($jsonResponse);
 if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
     $options = [
