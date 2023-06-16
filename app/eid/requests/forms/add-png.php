@@ -540,25 +540,25 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <tr>
                                             <th style="width:25%;"><label for=""> Test Date </label></th>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control dateTime" id="test1Date" name="test1Date" placeholder="<?= _("Please enter 1st test date"); ?>" title="1st Test Date" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control date" id="test1Date" name="test1Date" placeholder="<?= _("Please enter test date"); ?>" title="Test Date" onchange="" style="width:100%;" />
                                             </td>
 
 
                                             <th scope="row">Batch</th>
                                             <td>
-                                            <input type="text" class="form-control" id="test1Batch" name="test1Batch" placeholder="<?= _("Please enter Batch"); ?>" title="Batch" onchange="" style="width:100%;" />
+                                            <input type="text" class="form-control" id="test1Batch" name="test1Batch" placeholder="<?= _("Please enter Batch"); ?>" title="Batch"  style="width:100%;" />
                                             </td>
                                         </tr>
                                         <tr>
                                             <th style="width:25%;"><label for=""> Assay </label></th>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control" id="test1Assay" name="test1Assay" placeholder="<?= _("Please enter 1st test date"); ?>" title="1st Test Date" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="test1Assay" name="test1Assay" placeholder="<?= _("Please enter assay"); ?>" title="Assay" style="width:100%;" />
                                             </td>
 
 
                                             <th scope="row">CT/QS value</th>
                                             <td>
-                                            <input type="text" class="form-control" id="test1CtQs" name="test1CtQs" placeholder="<?= _("Please enter Batch"); ?>" title="Batch" onchange="" style="width:100%;" />
+                                            <input type="text" class="form-control" id="test1CtQs" name="test1CtQs" placeholder="<?= _("Please enter CT/QS value"); ?>" title="CT/QS Value" onchange="" style="width:100%;" />
                                             </td>
                                         </tr>
 
@@ -594,7 +594,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <tr>
                                             <th style="width:25%;"><label for=""> Test Date </label></th>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control dateTime" id="test2Date" name="test2Date" placeholder="<?= _("Please enter test date"); ?>" title="Test Date" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control date" id="test2Date" name="test2Date" placeholder="<?= _("Please enter test date"); ?>" title="Test Date" onchange="" style="width:100%;" />
                                             </td>
 
 
@@ -606,13 +606,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <tr>
                                             <th style="width:25%;"><label for=""> Assay </label></th>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control" id="test2Assay" name="test2Assay" placeholder="<?= _("Please enter test date"); ?>" title="Test Date" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="test2Assay" name="test2Assay" placeholder="<?= _("Please enter assay"); ?>" title="Assay" onchange="" style="width:100%;" />
                                             </td>
 
 
                                             <th scope="row">CT/QS value</th>
                                             <td>
-                                            <input type="text" class="form-control" id="test2CtQs" name="test2CtQs" placeholder="<?= _("Please enter Batch"); ?>" title="Batch" onchange="" style="width:100%;" />
+                                            <input type="text" class="form-control" id="test2CtQs" name="test2CtQs" placeholder="<?= _("Please enter CT/QS value"); ?>" title="CT/QS value" onchange="" style="width:100%;" />
                                             </td>
                                         </tr>
 
@@ -626,8 +626,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <?php } ?>
                                                 </select>
                                             </td>
-                                                    </tr>
-
+                                        </tr>
 
                                         </table>
                                         <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">

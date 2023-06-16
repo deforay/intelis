@@ -616,13 +616,13 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         <tr>
                                             <th style="width:25%;"><label for=""> Assay </label></th>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control" id="test1Assay" name="test1Assay" value="<?php echo ($eidInfo['test_1_assay']); ?>" placeholder="<?= _("Please enter test date"); ?>" title="Test Date" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="test1Assay" name="test1Assay" value="<?php echo ($eidInfo['test_1_assay']); ?>" placeholder="<?= _("Please enter Assay"); ?>" title="Assay" onchange="" style="width:100%;" />
                                             </td>
 
 
                                             <th scope="row">CT/QS value</th>
                                             <td>
-                                            <input type="text" class="form-control" id="test1CtQs" name="test1CtQs" value="<?php echo ($eidInfo['test_1_ct_qs']); ?>" placeholder="<?= _("Please enter Batch"); ?>" title="Batch" onchange="" style="width:100%;" />
+                                            <input type="text" class="form-control" id="test1CtQs" name="test1CtQs" value="<?php echo ($eidInfo['test_1_ct_qs']); ?>" placeholder="<?= _("Please enter CT/QS value"); ?>" title="CT/QS value" onchange="" style="width:100%;" />
                                             </td>
                                         </tr>
 
@@ -670,13 +670,13 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         <tr>
                                             <th style="width:25%;"><label for=""> Assay </label></th>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control" id="test2Assay" name="test2Assay" value="<?php echo ($eidInfo['test_2_assay']); ?>" placeholder="<?= _("Please enter test date"); ?>" title="Test Date" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="test2Assay" name="test2Assay" value="<?php echo ($eidInfo['test_2_assay']); ?>" placeholder="<?= _("Please enter assay"); ?>" title="Assay" onchange="" style="width:100%;" />
                                             </td>
 
 
                                             <th scope="row">CT/QS value</th>
                                             <td>
-                                            <input type="text" class="form-control" id="test2CtQs" name="test2CtQs" value="<?php echo ($eidInfo['test_2_ctqs']); ?>" placeholder="<?= _("Please enter Batch"); ?>" title="Batch" onchange="" style="width:100%;" />
+                                            <input type="text" class="form-control" id="test2CtQs" name="test2CtQs" value="<?php echo ($eidInfo['test_2_ctqs']); ?>" placeholder="<?= _("Please enter CT/QS value"); ?>" title="CT/QS value" onchange="" style="width:100%;" />
                                             </td>
                                         </tr>
 
