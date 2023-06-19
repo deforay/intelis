@@ -576,7 +576,7 @@ if (!empty($patientData)) {
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="sampleCollectionDate">Date de prélèvement de l'échantillon <span class="mandatory">*</span></label></th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control isRequired" value="<?php echo date('d-M-Y H:i:s', strtotime($covid19Info['sample_collection_date'])); ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Date de prélèvement de l'échantillon" title="Date de prélèvement de l'échantillon" onchange="sampleCodeGeneration();" />
+                                            <input class="form-control isRequired" value="<?php echo date('d-M-Y H:i:s', strtotime($covid19Info['sample_collection_date'])); ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Date de prélèvement de l'échantillon" title="Date de prélèvement de l'échantillon" onchange="generateSampleCode();" />
                                         </td>
                                         <th scope="row" style="width:15% !important">Échantillon expédié le <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
@@ -1277,7 +1277,7 @@ if (!empty($patientData)) {
                     }
                 });
             //}
-            sampleCodeGeneration();
+            generateSampleCode();
         } else if (pName == '') {
             provinceName = true;
             facilityName = true;
@@ -1310,7 +1310,7 @@ if (!empty($patientData)) {
         }, 3000);
     }
 
-    function sampleCodeGeneration() {
+    function generateSampleCode() {
         var pName = $("#province").val();
         var sDate = $("#sampleCollectionDate").val();
         if (pName != '' && sDate != '') {

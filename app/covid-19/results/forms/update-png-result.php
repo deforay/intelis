@@ -487,7 +487,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                                     </td>
                                     <th scope="row" style="width:15% !important"><label for="sampleCollectionDate">Sample Collection Date<span class="mandatory">*</span></label></th>
                                     <td style="width:35% !important;">
-                                        <input class="form-control isRequired" value="<?php echo ($covid19Info['sample_collection_date']); ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select the sample collection date" onchange="sampleCodeGeneration();" />
+                                        <input class="form-control isRequired" value="<?php echo ($covid19Info['sample_collection_date']); ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select the sample collection date" onchange="generateSampleCode();" />
                                     </td>
                                 </tr>
                             </table>
@@ -761,7 +761,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
                     }
                 });
             //}
-            sampleCodeGeneration();
+            generateSampleCode();
         } else if (pName == '') {
             provinceName = true;
             facilityName = true;
@@ -773,7 +773,7 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
         $.unblockUI();
     }
 
-    function sampleCodeGeneration() {
+    function generateSampleCode() {
         var pName = $("#province").val();
         var sDate = $("#sampleCollectionDate").val();
         if (pName != '' && sDate != '') {

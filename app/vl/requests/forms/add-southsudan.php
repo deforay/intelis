@@ -298,7 +298,7 @@ $sFormat = '';
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
                                                             <label for="">Date of Sample Collection <span class="mandatory">*</span></label>
-                                                            <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" onchange="checkSampleReceviedDate();checkSampleTestingDate();sampleCodeGeneration();setSampleDispatchDate();">
+                                                            <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" onchange="checkSampleReceviedDate();checkSampleTestingDate();generateSampleCode();setSampleDispatchDate();">
                                                        </div>
                                                   </div>
                                                   <div class="col-xs-3 col-md-3">
@@ -1086,7 +1086,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               }
                          });
                }
-               sampleCodeGeneration();
+               generateSampleCode();
           } else if (pName == '' && cName == '') {
                provinceName = true;
                facilityName = true;
@@ -1096,12 +1096,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $.unblockUI();
      }
 
-     function sampleCodeGeneration() {
+     function generateSampleCode() {
           var pName = $("#province").val();
           var sDate = $("#sampleCollectionDate").val();
           $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
           if (pName != '' && sDate != '') {
-               $.post("/vl/requests/sampleCodeGeneration.php", {
+               $.post("/vl/requests/generateSampleCode.php", {
                          sDate: sDate
                     },
                     function(data) {

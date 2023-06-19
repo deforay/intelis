@@ -440,7 +440,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
                                                             <label for="">Date of Sample Collection <span class="mandatory">*</span></label>
-                                                            <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" onchange="checkSampleReceviedDate();checkSampleTestingDate();sampleCodeGeneration();setSampleDispatchDate();">
+                                                            <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" onchange="checkSampleReceviedDate();checkSampleTestingDate();generateSampleCode();setSampleDispatchDate();">
                                                        </div>
                                                   </div>
                                                   <div class="col-xs-3 col-md-3">
@@ -632,8 +632,8 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                            <td>
                                                                                 <select class="form-control resultUnit" id="testResultUnit1" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
                                                                                      <option value="">--Select--</option>
-                                                                                     <?php foreach ($testResultUnits as $key=>$unit) { ?>
-                                                                                     <option value="<?php echo $key; ?>"><?php echo $unit; ?></option>
+                                                                                     <?php foreach ($testResultUnits as $key => $unit) { ?>
+                                                                                          <option value="<?php echo $key; ?>"><?php echo $unit; ?></option>
                                                                                      <?php } ?>
                                                                                 </select>
                                                                            </td>
@@ -853,9 +853,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                width: '285px',
                placeholder: "Funding Source"
           });
-        
 
-          
+
+
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
@@ -1005,7 +1005,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               }
                          });
                }
-               sampleCodeGeneration();
+               generateSampleCode();
           } else if (pName == '' && cName == '') {
                provinceName = true;
                facilityName = true;
@@ -1015,13 +1015,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $.unblockUI();
      }
 
-     function sampleCodeGeneration() {
+     function generateSampleCode() {
           var testType = $("#testType").val();
           var pName = $("#province").val();
           var sDate = $("#sampleCollectionDate").val();
           $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
           if (pName != '' && sDate != '' && testType != '') {
-               $.post("sampleCodeGeneration.php", {
+               $.post("/generic-tests/requests/generateSampleCode.php", {
                          sDate: sDate,
                          testType: $('#testType').find(':selected').data('short')
                     },
@@ -1467,7 +1467,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     },
                     function(data) {
                          if (data != 0) {
-                              sampleCodeGeneration();
+                              generateSampleCode();
                          }
                     });
                $.unblockUI();
@@ -1495,7 +1495,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     } else {
                          $.unblockUI();
                          $("#sampleCollectionDate").val('');
-                         sampleCodeGeneration();
+                         generateSampleCode();
                          alert("<?= _("Could not save this form. Please try again."); ?>");
                     }
                });
@@ -1560,7 +1560,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          testType: testType,
                     },
                     function(data) {
-                       //  console.log(data);
+                         //  console.log(data);
                          data = JSON.parse(data);
                          if (typeof(data.facilitySection) != "undefined" && data.facilitySection !== null && data.facilitySection.length > 0) {
                               $("#facilitySection").html(data.facilitySection);
@@ -1637,8 +1637,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function getTestTypeConfigList(testTypeId) {
-         
-               $.post("/includes/get-test-type-config.php", {
+
+          $.post("/includes/get-test-type-config.php", {
                     testTypeId: testTypeId
                },
                function(data) {
@@ -1649,7 +1649,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          $("#testName1").html(Obj['testMethods']);
                          $("#testResultUnit1").html(Obj['testResultUnits']);
                          $("#finalTestResultUnit").html(Obj['testResultUnits']);
-                         
+
                     }
                });
      }
@@ -1676,12 +1676,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
             <select class="form-control resultUnit" id="testResultUnit${testCounter}" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
 					<option value="">--Select--</option>
 					<?php
-						foreach ($testResultUnits as $key=>$unit) {
-						?>
+                         foreach ($testResultUnits as $key => $unit) {
+                         ?>
 					<option value="<?php echo $key; ?>"><?php echo $unit; ?></option>
 					<?php
-						}
-					?>
+                         }
+                         ?>
 			</select>
             </td>
             <td style="vertical-align:middle;text-align: center;width:100px;">

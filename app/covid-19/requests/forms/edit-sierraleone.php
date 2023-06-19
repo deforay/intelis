@@ -90,7 +90,7 @@ foreach ($pdResult as $provinceName) {
 }
 
 $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['facility_id'], '-- Select --');
-$patientProvinceInfo = explode('##',$covid19Info['patient_province']);
+$patientProvinceInfo = explode('##', $covid19Info['patient_province']);
 $patientProvince = $patientProvinceInfo[0];
 ?>
 
@@ -689,7 +689,7 @@ $patientProvince = $patientProvinceInfo[0];
                     }
                 });
             //}
-            sampleCodeGeneration();
+            generateSampleCode();
         } else if (pName == '') {
             provinceName = true;
             facilityName = true;
@@ -749,7 +749,7 @@ $patientProvince = $patientProvinceInfo[0];
         $.unblockUI();
     }
 
-    function sampleCodeGeneration() {
+    function generateSampleCode() {
         var pName = $("#province").val();
         var sDate = $("#sampleCollectionDate").val();
         if (pName != '' && sDate != '') {

@@ -250,7 +250,7 @@ require($fileArray[$arr['vl_form']]);
                 },
                 function(data) {
                     if (data != 0) {
-                        sampleCodeGeneration();
+                        generateSampleCode();
                     }
                 });
             $.unblockUI();
@@ -277,7 +277,7 @@ require($fileArray[$arr['vl_form']]);
                 } else {
                     $.unblockUI();
                     //$("#sampleCollectionDate").val('');
-                    sampleCodeGeneration();
+                    generateSampleCode();
                     alert("We could not save this form. Please try saving again.");
                 }
             });

@@ -141,9 +141,9 @@ class GenericTestsService
                             WHERE $sampleCodeCol=?";
         $checkResult = $this->db->rawQueryOne($checkQuery, [$sampleCodeGenerator['sampleCode']]);
         if (!empty($checkResult)) {
-            error_log("DUP::: Sample Code ====== " . $sampleCodeGenerator['sampleCode']);
-            error_log("DUP::: Sample Key Code ====== " . $maxId);
-            error_log('DUP::: ' . $this->db->getLastQuery());
+            // error_log("DUP::: Sample Code ====== " . $sampleCodeGenerator['sampleCode']);
+            // error_log("DUP::: Sample Key Code ====== " . $maxId);
+            // error_log('DUP::: ' . $this->db->getLastQuery());
             return $this->generateGenericTestSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $maxId, $user);
         }
         return json_encode($sampleCodeGenerator);

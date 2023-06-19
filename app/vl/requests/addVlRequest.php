@@ -136,7 +136,7 @@ require_once APPLICATION_PATH . "/vl/vl.js.php";
                 } else {
                     $.unblockUI();
                     //$("#sampleCollectionDate").val('');
-                    sampleCodeGeneration();
+                    generateSampleCode();
                     alert("<?= _("Could not save this form. Please try again."); ?>");
                 }
             });

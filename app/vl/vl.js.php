@@ -181,7 +181,7 @@
                 },
                 function(data) {
                     if (data != 0) {
-                        sampleCodeGeneration();
+                        generateSampleCode();
                     }
                 });
             //$.unblockUI();

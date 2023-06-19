@@ -651,7 +651,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                     }
                 });
             //}
-            sampleCodeGeneration();
+            generateSampleCode();
         } else if (pName == '') {
             provinceName = true;
             facilityName = true;
@@ -711,7 +711,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         $.unblockUI();
     }
 
-    function sampleCodeGeneration() {
+    function generateSampleCode() {
         var pName = $("#province").val();
         var sDate = $("#sampleCollectionDate").val();
         if (pName != '' && sDate != '') {

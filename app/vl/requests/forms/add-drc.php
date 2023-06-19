@@ -389,7 +389,7 @@ $sFormat = '';
 									<tr>
 										<td><label for="">Date du prélèvement <span class="mandatory">*</span></label></td>
 										<td>
-											<input type="text" class="form-control dateTime isRequired" id="sampleCollectionDate" name="sampleCollectionDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date du prélèvement" onchange="checkSampleReceviedDate();checkSampleTestingDate();sampleCodeGeneration();" style="width:100%;" />
+											<input type="text" class="form-control dateTime isRequired" id="sampleCollectionDate" name="sampleCollectionDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date du prélèvement" onchange="checkSampleReceviedDate();checkSampleTestingDate();generateSampleCode();" style="width:100%;" />
 										</td>
 										<td></td>
 										<td></td>
@@ -605,7 +605,7 @@ $sFormat = '';
 					}
 				});
 			//}
-			sampleCodeGeneration();
+			generateSampleCode();
 		} else if (pName == '') {
 			provinceName = true;
 			facilityName = true;
@@ -617,12 +617,12 @@ $sFormat = '';
 		$.unblockUI();
 	}
 
-	function sampleCodeGeneration() {
+	function generateSampleCode() {
 		var pName = $("#province").val();
 		$("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
 		var sDate = $("#sampleCollectionDate").val();
 		if (pName != '' && sDate != '') {
-			$.post("/vl/requests/sampleCodeGeneration.php", {
+			$.post("/vl/requests/generateSampleCode.php", {
 					sDate: sDate,
 					pName: pName
 				},

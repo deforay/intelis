@@ -19,7 +19,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 // Getting the list of Provinces, Districts and Facilities
 
-$eidObj = ContainerRegistry::get(EidService::class); 
+$eidObj = ContainerRegistry::get(EidService::class);
 $eidResults = $eidObj->getEidResults();
 
 $specimenTypeResult = $eidObj->getEidSampleTypes();
@@ -390,7 +390,7 @@ $aResult = $db->query($aQuery);
                                     <tr>
                                         <th scope="row" style="width:15% !important" class="labels">Sample Collection Date <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="sampleCodeGeneration();" />
+                                            <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="generateSampleCode();" />
                                         </td>
                                         <th scope="row" style="width:15% !important" class="labels">Sample Dispatched On <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
@@ -607,7 +607,7 @@ $aResult = $db->query($aQuery);
                     }
                 });
             //}
-            sampleCodeGeneration();
+            generateSampleCode();
         } else if (pName == '') {
             provinceName = true;
             facilityName = true;
@@ -635,7 +635,7 @@ $aResult = $db->query($aQuery);
          }, 3000);*/
     }
 
-    function sampleCodeGeneration() {
+    function generateSampleCode() {
         var pName = $("#province").val();
         var sDate = $("#sampleCollectionDate").val();
         if (pName != '' && sDate != '') {
@@ -749,8 +749,8 @@ $aResult = $db->query($aQuery);
         }
     }
     $(document).ready(function() {
-        $('#rapidTestPerformed').on('change', function(){
-            if($(this).val()=='yes')
+        $('#rapidTestPerformed').on('change', function() {
+            if ($(this).val() == 'yes')
                 $('#rapidtestDate').addClass('isRequired');
             else
                 $('#rapidtestDate').removeClass('isRequired');
@@ -798,15 +798,12 @@ $aResult = $db->query($aQuery);
         });
 
         $("#pcrTestNumber").on("change", function() {
-            if ($(this).val() == 1)
-            {
+            if ($(this).val() == 1) {
                 $("#prePcrTestResult").addClass("isRequired");
-            $("#previousPCRTestDate").addClass("isRequired");
-            $("#pcrTestReason").addClass("isRequired");
+                $("#previousPCRTestDate").addClass("isRequired");
+                $("#pcrTestReason").addClass("isRequired");
                 $('.pcrBox').hide();
-            }
-            else
-            {
+            } else {
                 $('.pcrBox').show();
             }
         });

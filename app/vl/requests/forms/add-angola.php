@@ -373,7 +373,7 @@ $sFormat = '';
 											</td>
 											<td style="width:14%;"><label for="sampleCollectionDate"> Data Hora de colheita <span class="mandatory">*</span></label></td>
 											<td style="width:14%;">
-												<input type="text" class="form-control dateTime isRequired" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Data Hora de colheita" title="Please enter Data Hora de colheita" style="width:100%;" onchange="sampleCodeGeneration();" />
+												<input type="text" class="form-control dateTime isRequired" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Data Hora de colheita" title="Please enter Data Hora de colheita" style="width:100%;" onchange="generateSampleCode();" />
 											</td>
 										</tr>
 										<tr>
@@ -588,7 +588,7 @@ $sFormat = '';
 						}
 					});
 			}
-			sampleCodeGeneration();
+			generateSampleCode();
 		} else if (pName == '' && cName == '') {
 			provinceName = true;
 			facilityName = true;
@@ -600,11 +600,11 @@ $sFormat = '';
 		$.unblockUI();
 	}
 
-	function sampleCodeGeneration() {
+	function generateSampleCode() {
 		var pName = $("#province").val();
 		var sDate = $("#sampleCollectionDate").val();
 		if (pName != '' && sDate != '') {
-			$.post("/vl/requests/sampleCodeGeneration.php", {
+			$.post("/vl/requests/generateSampleCode.php", {
 					sDate: sDate
 				},
 				function(data) {
