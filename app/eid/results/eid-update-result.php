@@ -145,11 +145,10 @@ $fileArray = array(
 	1 => 'forms/update-southsudan-result.php',
 	2 => 'forms/update-sierraleone-result.php',
 	3 => 'forms/update-drc-result.php',
-	4 => 'forms/update-zambia-result.php',
+	4 => 'forms/update-cameroon-result.php',
 	5 => 'forms/update-png-result.php',
 	6 => 'forms/update-who-result.php',
-	7 => 'forms/update-rwanda-result.php',
-	8 => 'forms/update-angola-result.php',
+	7 => 'forms/update-rwanda-result.php'
 );
 
 require($fileArray[$arr['vl_form']]);

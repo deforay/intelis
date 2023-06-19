@@ -82,13 +82,13 @@ $_SESSION['aliasPage'] = 1;
 //header and footer
 class MYPDF extends TCPDF
 {
-    public $logo = '';
-    public $text = '';
-    public $lab = '';
-    public $htitle = '';
-    public $labFacilityId = '';
-    public $formId = '';
-    public $mFieldArray = [];
+	public $logo = '';
+	public $text = '';
+	public $lab = '';
+	public $htitle = '';
+	public $labFacilityId = '';
+	public $formId = '';
+	public $mFieldArray = [];
 
 	//Page header
 	public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $formId = null)
@@ -102,7 +102,7 @@ class MYPDF extends TCPDF
 	}
 
 	public function imageExists($filePath): bool
-    {
+	{
 		return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
 	}
 
@@ -198,13 +198,11 @@ if ($arr['vl_form'] == 1) {
 } else if ($arr['vl_form'] == 3) {
 	include('pdf/result-pdf-drc.php');
 } else if ($arr['vl_form'] == 4) {
-	// include('pdf/result-pdf-zam.php');
+	include('pdf/result-pdf-cameroon.php');
 } else if ($arr['vl_form'] == 5) {
 	include('pdf/result-pdf-png.php');
 } else if ($arr['vl_form'] == 6) {
 	// include('pdf/result-pdf-who.php');
 } else if ($arr['vl_form'] == 7) {
 	include('pdf/result-pdf-rwanda.php');
-} else if ($arr['vl_form'] == 8) {
-	include('pdf/result-pdf-angola.php');
 }

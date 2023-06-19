@@ -7179,7 +7179,7 @@ msgstr "Ville/village du patient"
 #: covid-19/results/forms/update-southsudan-result.php:344
 #: covid-19/results/forms/update-who-result.php:378
 #: covid-19/results/forms/update-who-result.php:535
-#: eid/requests/forms/add-angola.php:351 eid/requests/forms/add-angola.php:379
+#: eid/requests/forms/add-cameroon.php:351 eid/requests/forms/add-cameroon.php:379
 #: eid/requests/forms/add-drc.php:459 eid/requests/forms/add-drc.php:504
 #: eid/requests/forms/add-png.php:390 eid/requests/forms/add-png.php:425
 #: eid/requests/forms/add-rwanda.php:358 eid/requests/forms/add-rwanda.php:393
@@ -7190,8 +7190,8 @@ msgstr "Ville/village du patient"
 #: eid/requests/forms/add-southsudan.php:415
 #: eid/requests/forms/add-southsudan.php:458 eid/requests/forms/add-who.php:361
 #: eid/requests/forms/add-who.php:414 eid/requests/forms/add-who.php:457
-#: eid/requests/forms/edit-angola.php:337
-#: eid/requests/forms/edit-angola.php:374 eid/requests/forms/edit-drc.php:492
+#: eid/requests/forms/edit-cameroon.php:337
+#: eid/requests/forms/edit-cameroon.php:374 eid/requests/forms/edit-drc.php:492
 #: eid/requests/forms/edit-drc.php:537 eid/requests/forms/edit-png.php:447
 #: eid/requests/forms/edit-png.php:491 eid/requests/forms/edit-rwanda.php:402
 #: eid/requests/forms/edit-rwanda.php:446
@@ -7203,8 +7203,8 @@ msgstr "Ville/village du patient"
 #: eid/requests/forms/edit-southsudan.php:497
 #: eid/requests/forms/edit-who.php:386 eid/requests/forms/edit-who.php:451
 #: eid/requests/forms/edit-who.php:495
-#: eid/results/forms/update-angola-result.php:334
-#: eid/results/forms/update-angola-result.php:377
+#: eid/results/forms/update-cameroon-result.php:334
+#: eid/results/forms/update-cameroon-result.php:377
 #: eid/results/forms/update-drc-result.php:462
 #: eid/results/forms/update-drc-result.php:506
 #: eid/results/forms/update-png-result.php:405
@@ -7250,16 +7250,16 @@ msgstr "Ville/village du patient"
 #: tb/results/forms/update-southsudan.php:315
 #: tb/results/forms/update-southsudan.php:379
 #: tb/results/forms/update-southsudan.php:385
-#: vl/requests/forms/add-angola.php:202 vl/requests/forms/add-angola.php:300
-#: vl/requests/forms/add-angola.php:349 vl/requests/forms/add-drc.php:155
+#: vl/requests/forms/add-cameroon.php:202 vl/requests/forms/add-cameroon.php:300
+#: vl/requests/forms/add-cameroon.php:349 vl/requests/forms/add-drc.php:155
 #: vl/requests/forms/add-drc.php:201 vl/requests/forms/add-drc.php:241
 #: vl/requests/forms/add-drc.php:287 vl/requests/forms/add-drc.php:374
 #: vl/requests/forms/add-drc.php:392 vl/requests/forms/add-drc.php:425
 #: vl/requests/forms/add-drc.php:446 vl/requests/forms/add-drc.php:458
 #: vl/requests/forms/add-sierraleone.php:808
 #: vl/requests/forms/add-southsudan.php:716 vl/requests/forms/add-who.php:708
-#: vl/requests/forms/edit-angola.php:310 vl/requests/forms/edit-angola.php:408
-#: vl/requests/forms/edit-angola.php:461 vl/requests/forms/edit-drc.php:154
+#: vl/requests/forms/edit-cameroon.php:310 vl/requests/forms/edit-cameroon.php:408
+#: vl/requests/forms/edit-cameroon.php:461 vl/requests/forms/edit-drc.php:154
 #: vl/requests/forms/edit-drc.php:210 vl/requests/forms/edit-drc.php:254
 #: vl/requests/forms/edit-drc.php:293 vl/requests/forms/edit-drc.php:339
 #: vl/requests/forms/edit-drc.php:424 vl/requests/forms/edit-drc.php:442
@@ -7267,9 +7267,9 @@ msgstr "Ville/village du patient"
 #: vl/requests/forms/edit-drc.php:508
 #: vl/requests/forms/edit-sierraleone.php:962
 #: vl/requests/forms/edit-southsudan.php:854 vl/requests/forms/edit-who.php:852
-#: vl/results/forms/update-angola-result.php:295
-#: vl/results/forms/update-angola-result.php:394
-#: vl/results/forms/update-angola-result.php:443
+#: vl/results/forms/update-cameroon-result.php:295
+#: vl/results/forms/update-cameroon-result.php:394
+#: vl/results/forms/update-cameroon-result.php:443
 #: vl/results/forms/update-drc-result.php:177
 #: vl/results/forms/update-drc-result.php:210
 #: vl/results/forms/update-drc-result.php:250

@@ -74,11 +74,10 @@ $fileArray = array(
     1 => 'forms/quick-add-southsudan.php',
     2 => 'forms/quick-add-sierraleone.php',
     3 => 'forms/quick-add-drc.php',
-    4 => 'forms/quick-add-zambia.php',
+    4 => 'forms/quick-add-cameroon.php',
     5 => 'forms/quick-add-png.php',
     6 => 'forms/quick-add-who.php',
-    7 => 'forms/quick-add-rwanda.php',
-    8 => 'forms/quick-add-angola.php',
+    7 => 'forms/quick-add-rwanda.php'
 );
 
 require($fileArray[$arr['vl_form']]);

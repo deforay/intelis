@@ -247,11 +247,10 @@ $fileArray = array(
 	1 => 'pdf/result-pdf-ssudan.php',
 	2 => 'pdf/result-pdf-sierraleone.php',
 	3 => 'pdf/result-pdf-drc.php',
-	4 => 'pdf/result-pdf-zam.php',
+	4 => 'pdf/result-pdf-cameroon.php',
 	5 => 'pdf/result-pdf-png.php',
 	6 => 'pdf/result-pdf-who.php',
 	7 => 'pdf/result-pdf-rwanda.php',
-	8 => 'pdf/result-pdf-angola.php',
 );
 
 $resultFilename = '';

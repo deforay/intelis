@@ -4203,3 +4203,9 @@ ALTER TABLE `audit_form_eid` ADD `test_1_date` DATE NULL DEFAULT NULL AFTER `is_
 
 ALTER TABLE `form_eid` ADD `test_2_date` DATE NULL DEFAULT NULL AFTER `test_1_repeat_reason`, ADD `test_2_batch` INT NULL DEFAULT NULL AFTER `test_2_date`, ADD `test_2_assay` TEXT NULL DEFAULT NULL AFTER `test_2_batch`, ADD `test_2_ct_qs` INT NULL DEFAULT NULL AFTER `test_2_assay`, ADD `test_2_result` TEXT NULL DEFAULT NULL AFTER `test_2_ct_qs`;
 ALTER TABLE `audit_form_eid` ADD `test_2_date` DATE NULL DEFAULT NULL AFTER `test_1_repeat_reason`, ADD `test_2_batch` INT NULL DEFAULT NULL AFTER `test_2_date`, ADD `test_2_assay` TEXT NULL DEFAULT NULL AFTER `test_2_batch`, ADD `test_2_ct_qs` INT NULL DEFAULT NULL AFTER `test_2_assay`, ADD `test_2_result` TEXT NULL DEFAULT NULL AFTER `test_2_ct_qs`;
+
+
+-- Amit 19-Jun-2023
+DELETE FROM s_available_country_forms WHERE `vlsm_country_id` = 8;
+UPDATE `s_available_country_forms` SET `form_name` = 'Republic of Cameroon', `short_name` = 'cameroon' WHERE `s_available_country_forms`.`vlsm_country_id` = 4;
+
