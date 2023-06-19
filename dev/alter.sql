@@ -4181,7 +4181,7 @@ ALTER TABLE `generic_test_symptoms_map` ADD `updated_datetime` DATETIME NOT NULL
 ALTER TABLE `generic_test_result_units_map` ADD `updated_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `test_type_id`;
 
 -- Thana 14-Jun-2023
-ALTER TABLE `form_generic` DROP `community_sample`;
+--ALTER TABLE `form_generic` DROP `community_sample`;
 
 
 -- Amit 14-Jun-2023
@@ -4189,14 +4189,14 @@ ALTER TABLE `user_details` ADD `user_locale` VARCHAR(256) NULL DEFAULT NULL AFTE
 
 
 -- Jeyabanu 15-06-2023
-ALTER TABLE `form_eid` ADD `mother_art_status` VARCHAR(256) NULL DEFAULT NULL AFTER `mode_of_delivery_other`;
-ALTER TABLE `audit_form_eid` ADD `mother_art_status` VARCHAR(256) NULL DEFAULT NULL AFTER `mode_of_delivery_other`;
+ALTER TABLE `form_eid` ADD `mother_art_status` VARCHAR(32) NULL DEFAULT NULL AFTER `mode_of_delivery_other`;
+ALTER TABLE `audit_form_eid` ADD `mother_art_status` VARCHAR(32) NULL DEFAULT NULL AFTER `mode_of_delivery_other`;
 
-ALTER TABLE `form_eid` ADD `infant_art_status` VARCHAR(256) NULL DEFAULT NULL AFTER `age_breastfeeding_stopped_in_months`, ADD `infant_art_status_other` VARCHAR(256) NULL DEFAULT NULL AFTER `infant_art_status`;
-ALTER TABLE `audit_form_eid` ADD `infant_art_status` VARCHAR(256) NULL DEFAULT NULL AFTER `age_breastfeeding_stopped_in_months`, ADD `infant_art_status_other` VARCHAR(256) NULL DEFAULT NULL AFTER `infant_art_status`;
+ALTER TABLE `form_eid` ADD `infant_art_status` VARCHAR(32) NULL DEFAULT NULL AFTER `age_breastfeeding_stopped_in_months`, ADD `infant_art_status_other` VARCHAR(32) NULL DEFAULT NULL AFTER `infant_art_status`;
+ALTER TABLE `audit_form_eid` ADD `infant_art_status` VARCHAR(32) NULL DEFAULT NULL AFTER `age_breastfeeding_stopped_in_months`, ADD `infant_art_status_other` VARCHAR(32) NULL DEFAULT NULL AFTER `infant_art_status`;
 
-ALTER TABLE `form_eid` ADD `started_art_date` DATE NULL DEFAULT NULL AFTER `mother_regimen`, ADD `mother_mtct_risk` VARCHAR(256) NULL DEFAULT NULL AFTER `started_art_date`;
-ALTER TABLE `audit_form_eid` ADD `started_art_date` DATE NULL DEFAULT NULL AFTER `mother_regimen`, ADD `mother_mtct_risk` VARCHAR(256) NULL DEFAULT NULL AFTER `started_art_date`;
+ALTER TABLE `form_eid` ADD `started_art_date` DATE NULL DEFAULT NULL AFTER `mother_regimen`, ADD `mother_mtct_risk` VARCHAR(32) NULL DEFAULT NULL AFTER `started_art_date`;
+ALTER TABLE `audit_form_eid` ADD `started_art_date` DATE NULL DEFAULT NULL AFTER `mother_regimen`, ADD `mother_mtct_risk` VARCHAR(32) NULL DEFAULT NULL AFTER `started_art_date`;
 
 ALTER TABLE `form_eid` ADD `test_1_date` DATE NULL DEFAULT NULL AFTER `is_sample_rejected`, ADD `test_1_batch` INT NULL DEFAULT NULL AFTER `test_1_date`, ADD `test_1_assay` TEXT NULL DEFAULT NULL AFTER `test_1_batch`, ADD `test_1_ct_qs` INT NULL DEFAULT NULL AFTER `test_1_assay`, ADD `test_1_result` TEXT NULL DEFAULT NULL AFTER `test_1_ct_qs`, ADD `test_1_repeated` TEXT NULL DEFAULT NULL AFTER `test_1_result`, ADD `test_1_repeat_reason` TEXT NULL DEFAULT NULL AFTER `test_1_repeated`;
 ALTER TABLE `audit_form_eid` ADD `test_1_date` DATE NULL DEFAULT NULL AFTER `is_sample_rejected`, ADD `test_1_batch` INT NULL DEFAULT NULL AFTER `test_1_date`, ADD `test_1_assay` TEXT NULL DEFAULT NULL AFTER `test_1_batch`, ADD `test_1_ct_qs` INT NULL DEFAULT NULL AFTER `test_1_assay`, ADD `test_1_result` TEXT NULL DEFAULT NULL AFTER `test_1_ct_qs`, ADD `test_1_repeated` TEXT NULL DEFAULT NULL AFTER `test_1_result`, ADD `test_1_repeat_reason` TEXT NULL DEFAULT NULL AFTER `test_1_repeated`;
@@ -4206,6 +4206,14 @@ ALTER TABLE `audit_form_eid` ADD `test_2_date` DATE NULL DEFAULT NULL AFTER `tes
 
 
 -- Amit 19-Jun-2023
+ALTER TABLE `form_eid` CHANGE `previous_sample_code` `previous_sample_code` VARCHAR(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `clinician_name` `clinician_name` VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `mother_age_in_years` `mother_age_in_years` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `mother_marital_status` `mother_marital_status` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `child_id` `child_id` VARCHAR(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `child_name` `child_name` VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `child_surname` `child_surname` VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `child_age` `child_age` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `child_gender` `child_gender` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `mother_hiv_status` `mother_hiv_status` VARCHAR(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `sample_requestor_phone` `sample_requestor_phone` VARCHAR(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `pcr_test_performed_before` `pcr_test_performed_before` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `last_pcr_id` `last_pcr_id` VARCHAR(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `previous_pcr_result` `previous_pcr_result` VARCHAR(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `rapid_test_result` `rapid_test_result` VARCHAR(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `eid_test_platform` `eid_test_platform` VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `locked` `locked` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
 DELETE FROM s_available_country_forms WHERE `vlsm_country_id` = 8;
 UPDATE `s_available_country_forms` SET `form_name` = 'Republic of Cameroon', `short_name` = 'cameroon' WHERE `s_available_country_forms`.`vlsm_country_id` = 4;
 
+ALTER TABLE `form_vl` CHANGE `sample_package_id` `sample_package_id` INT NULL DEFAULT NULL;
+ALTER TABLE `form_eid` CHANGE `sample_package_id` `sample_package_id` INT NULL DEFAULT NULL;
+ALTER TABLE `form_covid19` CHANGE `sample_package_id` `sample_package_id` INT NULL DEFAULT NULL;
+ALTER TABLE `form_hepatitis` CHANGE `sample_package_id` `sample_package_id` INT NULL DEFAULT NULL;
+ALTER TABLE `form_tb` CHANGE `sample_package_id` `sample_package_id` INT NULL DEFAULT NULL;
+ALTER TABLE `form_generic` CHANGE `sample_package_id` `sample_package_id` INT NULL DEFAULT NULL;

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Jun 03, 2023 at 11:33 AM
+-- Generation Time: Jun 19, 2023 at 07:07 PM
 -- Server version: 5.7.39
 -- PHP Version: 7.4.33
 
@@ -221,6 +221,18 @@ CREATE TABLE `audit_form_eid` (
   `funding_source` int(11) DEFAULT NULL,
   `implementing_partner` int(11) DEFAULT NULL,
   `is_sample_rejected` varchar(255) DEFAULT NULL,
+  `test_1_date` date DEFAULT NULL,
+  `test_1_batch` int(11) DEFAULT NULL,
+  `test_1_assay` text,
+  `test_1_ct_qs` int(11) DEFAULT NULL,
+  `test_1_result` text,
+  `test_1_repeated` text,
+  `test_1_repeat_reason` text,
+  `test_2_date` date DEFAULT NULL,
+  `test_2_batch` int(11) DEFAULT NULL,
+  `test_2_assay` text,
+  `test_2_ct_qs` int(11) DEFAULT NULL,
+  `test_2_result` text,
   `reason_for_sample_rejection` varchar(500) DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
   `facility_id` int(11) DEFAULT NULL,
@@ -231,6 +243,9 @@ CREATE TABLE `audit_form_eid` (
   `caretaker_contact_consent` text,
   `caretaker_phone_number` text,
   `caretaker_address` text,
+  `previous_sample_code` varchar(256) DEFAULT NULL,
+  `clinical_assessment` varchar(256) DEFAULT NULL,
+  `clinician_name` varchar(256) DEFAULT NULL,
   `mother_dob` date DEFAULT NULL,
   `mother_age_in_years` varchar(255) DEFAULT NULL,
   `mother_marital_status` varchar(255) DEFAULT NULL,
@@ -242,8 +257,12 @@ CREATE TABLE `audit_form_eid` (
   `child_gender` varchar(255) DEFAULT NULL,
   `mother_hiv_status` varchar(255) DEFAULT NULL,
   `mode_of_delivery` varchar(255) DEFAULT NULL,
+  `mode_of_delivery_other` varchar(256) DEFAULT NULL,
+  `mother_art_status` varchar(256) DEFAULT NULL,
   `mother_treatment` varchar(255) DEFAULT NULL,
   `mother_regimen` text,
+  `started_art_date` date DEFAULT NULL,
+  `mother_mtct_risk` varchar(32) DEFAULT NULL,
   `mother_treatment_other` varchar(1000) DEFAULT NULL,
   `mother_treatment_initiation_date` date DEFAULT NULL,
   `mother_cd4` varchar(255) DEFAULT NULL,
@@ -257,6 +276,8 @@ CREATE TABLE `audit_form_eid` (
   `infant_on_pmtct_prophylaxis` text,
   `infant_on_ctx_prophylaxis` text,
   `age_breastfeeding_stopped_in_months` varchar(255) DEFAULT NULL,
+  `infant_art_status` varchar(256) DEFAULT NULL,
+  `infant_art_status_other` varchar(256) DEFAULT NULL,
   `choice_of_feeding` varchar(255) DEFAULT NULL,
   `is_cotrimoxazole_being_administered_to_the_infant` varchar(255) DEFAULT NULL,
   `sample_requestor_name` text,
@@ -293,6 +314,8 @@ CREATE TABLE `audit_form_eid` (
   `revised_by` text,
   `revised_on` datetime DEFAULT NULL,
   `result_approved_by` text,
+  `second_dbs_requested` varchar(256) DEFAULT NULL,
+  `second_DBS_requested_reason` varchar(256) DEFAULT NULL,
   `approver_comments` text,
   `result_dispatched_datetime` datetime DEFAULT NULL,
   `result_mail_datetime` datetime DEFAULT NULL,
@@ -949,7 +972,9 @@ CREATE TABLE `batch_details` (
   `position_type` varchar(256) DEFAULT NULL,
   `label_order` mediumtext,
   `created_by` varchar(256) DEFAULT NULL,
-  `request_created_datetime` datetime NOT NULL
+  `request_created_datetime` datetime NOT NULL,
+  `last_modified_by` datetime DEFAULT CURRENT_TIMESTAMP,
+  `last_modified_datetime` datetime DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -1299,7 +1324,7 @@ CREATE TABLE `form_covid19` (
   `request_created_by` text,
   `sample_registered_at_lab` datetime DEFAULT NULL,
   `sample_batch_id` int(11) DEFAULT NULL,
-  `sample_package_id` varchar(256) DEFAULT NULL,
+  `sample_package_id` int(11) DEFAULT NULL,
   `sample_package_code` mediumtext,
   `positive_test_manifest_id` int(11) DEFAULT NULL,
   `positive_test_manifest_code` varchar(255) DEFAULT NULL,
@@ -1362,6 +1387,18 @@ CREATE TABLE `form_eid` (
   `funding_source` int(11) DEFAULT NULL,
   `implementing_partner` int(11) DEFAULT NULL,
   `is_sample_rejected` varchar(255) DEFAULT NULL,
+  `test_1_date` date DEFAULT NULL,
+  `test_1_batch` int(11) DEFAULT NULL,
+  `test_1_assay` text,
+  `test_1_ct_qs` int(11) DEFAULT NULL,
+  `test_1_result` text,
+  `test_1_repeated` text,
+  `test_1_repeat_reason` text,
+  `test_2_date` date DEFAULT NULL,
+  `test_2_batch` int(11) DEFAULT NULL,
+  `test_2_assay` text,
+  `test_2_ct_qs` int(11) DEFAULT NULL,
+  `test_2_result` text,
   `reason_for_sample_rejection` varchar(500) DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
   `facility_id` int(11) DEFAULT NULL,
@@ -1372,19 +1409,26 @@ CREATE TABLE `form_eid` (
   `caretaker_contact_consent` text,
   `caretaker_phone_number` text,
   `caretaker_address` text,
+  `previous_sample_code` varchar(32) DEFAULT NULL,
+  `clinical_assessment` varchar(256) DEFAULT NULL,
+  `clinician_name` varchar(64) DEFAULT NULL,
   `mother_dob` date DEFAULT NULL,
-  `mother_age_in_years` varchar(255) DEFAULT NULL,
-  `mother_marital_status` varchar(255) DEFAULT NULL,
-  `child_id` text,
-  `child_name` text,
-  `child_surname` text,
+  `mother_age_in_years` varchar(3) DEFAULT NULL,
+  `mother_marital_status` varchar(10) DEFAULT NULL,
+  `child_id` varchar(32) DEFAULT NULL,
+  `child_name` varchar(64) DEFAULT NULL,
+  `child_surname` varchar(64) DEFAULT NULL,
   `child_dob` date DEFAULT NULL,
-  `child_age` varchar(255) DEFAULT NULL,
-  `child_gender` varchar(255) DEFAULT NULL,
-  `mother_hiv_status` varchar(255) DEFAULT NULL,
+  `child_age` varchar(3) DEFAULT NULL,
+  `child_gender` varchar(10) DEFAULT NULL,
+  `mother_hiv_status` varchar(16) DEFAULT NULL,
   `mode_of_delivery` varchar(255) DEFAULT NULL,
+  `mode_of_delivery_other` varchar(32) DEFAULT NULL,
+  `mother_art_status` varchar(32) DEFAULT NULL,
   `mother_treatment` varchar(255) DEFAULT NULL,
   `mother_regimen` text,
+  `started_art_date` date DEFAULT NULL,
+  `mother_mtct_risk` varchar(256) DEFAULT NULL,
   `mother_treatment_other` varchar(1000) DEFAULT NULL,
   `mother_treatment_initiation_date` date DEFAULT NULL,
   `mother_cd4` varchar(255) DEFAULT NULL,
@@ -1398,32 +1442,34 @@ CREATE TABLE `form_eid` (
   `infant_on_pmtct_prophylaxis` text,
   `infant_on_ctx_prophylaxis` text,
   `age_breastfeeding_stopped_in_months` varchar(255) DEFAULT NULL,
+  `infant_art_status` varchar(32) DEFAULT NULL,
+  `infant_art_status_other` varchar(32) DEFAULT NULL,
   `choice_of_feeding` varchar(255) DEFAULT NULL,
   `is_cotrimoxazole_being_administered_to_the_infant` varchar(255) DEFAULT NULL,
   `sample_requestor_name` text,
-  `sample_requestor_phone` varchar(255) DEFAULT NULL,
+  `sample_requestor_phone` varchar(16) DEFAULT NULL,
   `specimen_quality` varchar(255) DEFAULT NULL,
   `specimen_type` varchar(255) DEFAULT NULL,
   `reason_for_eid_test` int(11) DEFAULT NULL,
-  `pcr_test_performed_before` varchar(255) DEFAULT NULL,
+  `pcr_test_performed_before` varchar(10) DEFAULT NULL,
   `pcr_test_number` int(11) DEFAULT NULL,
-  `last_pcr_id` varchar(255) DEFAULT NULL,
-  `previous_pcr_result` varchar(255) DEFAULT NULL,
+  `last_pcr_id` varchar(32) DEFAULT NULL,
+  `previous_pcr_result` varchar(16) DEFAULT NULL,
   `last_pcr_date` date DEFAULT NULL,
   `reason_for_pcr` varchar(500) DEFAULT NULL,
   `reason_for_repeat_pcr_other` text,
   `rapid_test_performed` varchar(255) DEFAULT NULL,
   `rapid_test_date` date DEFAULT NULL,
-  `rapid_test_result` varchar(255) DEFAULT NULL,
+  `rapid_test_result` varchar(32) DEFAULT NULL,
   `lab_id` int(11) DEFAULT NULL,
   `lab_testing_point` text,
   `samples_referred_datetime` datetime DEFAULT NULL,
   `referring_lab_id` int(11) DEFAULT NULL,
   `lab_technician` text,
   `lab_reception_person` text,
-  `eid_test_platform` varchar(255) DEFAULT NULL,
+  `eid_test_platform` varchar(64) DEFAULT NULL,
   `result_status` int(11) DEFAULT NULL,
-  `locked` varchar(256) DEFAULT 'no',
+  `locked` varchar(10) DEFAULT 'no',
   `result` varchar(255) DEFAULT NULL,
   `reason_for_changing` varchar(256) DEFAULT NULL,
   `tested_by` text,
@@ -1434,6 +1480,7 @@ CREATE TABLE `form_eid` (
   `revised_by` text,
   `revised_on` datetime DEFAULT NULL,
   `result_approved_by` text,
+  `second_dbs_requested` varchar(256) DEFAULT NULL,
   `approver_comments` text,
   `result_dispatched_datetime` datetime DEFAULT NULL,
   `result_mail_datetime` datetime DEFAULT NULL,
@@ -1448,7 +1495,7 @@ CREATE TABLE `form_eid` (
   `last_modified_datetime` datetime DEFAULT NULL,
   `last_modified_by` text,
   `sample_batch_id` int(11) DEFAULT NULL,
-  `sample_package_id` varchar(255) DEFAULT NULL,
+  `sample_package_id` int(11) DEFAULT NULL,
   `sample_package_code` text,
   `lot_number` text,
   `source_of_request` text,
@@ -1504,7 +1551,7 @@ CREATE TABLE `form_generic` (
   `province_id` varchar(255) DEFAULT NULL,
   `facility_sample_id` varchar(255) DEFAULT NULL,
   `sample_batch_id` varchar(11) DEFAULT NULL,
-  `sample_package_id` varchar(11) DEFAULT NULL,
+  `sample_package_id` int(11) DEFAULT NULL,
   `sample_package_code` text,
   `sample_reordered` varchar(45) NOT NULL DEFAULT 'no',
   `test_urgency` varchar(255) DEFAULT NULL,
@@ -1566,6 +1613,7 @@ CREATE TABLE `form_generic` (
   `sample_registered_at_lab` datetime DEFAULT NULL,
   `sample_tested_datetime` datetime DEFAULT NULL,
   `result` text,
+  `result_unit` int(11) DEFAULT NULL,
   `final_result_interpretation` text,
   `approver_comments` mediumtext,
   `reason_for_test_result_changes` mediumtext,
@@ -1751,7 +1799,7 @@ CREATE TABLE `form_hepatitis` (
   `request_created_by` text,
   `sample_registered_at_lab` datetime DEFAULT NULL,
   `sample_batch_id` int(11) DEFAULT NULL,
-  `sample_package_id` varchar(255) DEFAULT NULL,
+  `sample_package_id` int(11) DEFAULT NULL,
   `sample_package_code` text,
   `positive_test_manifest_id` int(11) DEFAULT NULL,
   `positive_test_manifest_code` varchar(255) DEFAULT NULL,
@@ -1917,7 +1965,7 @@ CREATE TABLE `form_vl` (
   `province_id` varchar(255) DEFAULT NULL,
   `facility_sample_id` varchar(255) DEFAULT NULL,
   `sample_batch_id` varchar(11) DEFAULT NULL,
-  `sample_package_id` varchar(11) DEFAULT NULL,
+  `sample_package_id` int(11) DEFAULT NULL,
   `sample_package_code` text,
   `sample_reordered` varchar(45) NOT NULL DEFAULT 'no',
   `remote_sample_code_key` int(11) DEFAULT NULL,
@@ -2165,7 +2213,8 @@ DELIMITER ;
 CREATE TABLE `generic_sample_rejection_reason_map` (
   `map_id` int(11) NOT NULL,
   `rejection_reason_id` int(11) NOT NULL,
-  `test_type_id` int(11) NOT NULL
+  `test_type_id` int(11) NOT NULL,
+  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -2177,7 +2226,8 @@ CREATE TABLE `generic_sample_rejection_reason_map` (
 CREATE TABLE `generic_test_failure_reason_map` (
   `map_id` int(11) NOT NULL,
   `test_failure_reason_id` int(11) NOT NULL,
-  `test_type_id` int(11) NOT NULL
+  `test_type_id` int(11) NOT NULL,
+  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -2189,7 +2239,8 @@ CREATE TABLE `generic_test_failure_reason_map` (
 CREATE TABLE `generic_test_methods_map` (
   `map_id` int(11) NOT NULL,
   `test_method_id` int(11) NOT NULL,
-  `test_type_id` int(11) NOT NULL
+  `test_type_id` int(11) NOT NULL,
+  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -2201,7 +2252,8 @@ CREATE TABLE `generic_test_methods_map` (
 CREATE TABLE `generic_test_reason_map` (
   `map_id` int(11) NOT NULL,
   `test_reason_id` int(11) NOT NULL,
-  `test_type_id` int(11) NOT NULL
+  `test_type_id` int(11) NOT NULL,
+  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -2221,6 +2273,7 @@ CREATE TABLE `generic_test_results` (
   `kit_lot_no` varchar(256) DEFAULT NULL,
   `kit_expiry_date` date DEFAULT NULL,
   `result` varchar(500) NOT NULL,
+  `result_unit` int(11) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -2233,7 +2286,8 @@ CREATE TABLE `generic_test_results` (
 CREATE TABLE `generic_test_result_units_map` (
   `map_id` int(11) NOT NULL,
   `unit_id` int(11) NOT NULL,
-  `test_type_id` int(11) NOT NULL
+  `test_type_id` int(11) NOT NULL,
+  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -2245,7 +2299,8 @@ CREATE TABLE `generic_test_result_units_map` (
 CREATE TABLE `generic_test_sample_type_map` (
   `map_id` int(11) NOT NULL,
   `sample_type_id` int(11) NOT NULL,
-  `test_type_id` int(11) NOT NULL
+  `test_type_id` int(11) NOT NULL,
+  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -2257,7 +2312,8 @@ CREATE TABLE `generic_test_sample_type_map` (
 CREATE TABLE `generic_test_symptoms_map` (
   `map_id` int(11) NOT NULL,
   `symptom_id` int(11) NOT NULL,
-  `test_type_id` int(11) NOT NULL
+  `test_type_id` int(11) NOT NULL,
+  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -2711,9 +2767,9 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 (12, 'vl-requests', 'vlRequest.php', 'View'),
 (13, 'vl-requests', 'addVlRequest.php', 'Add'),
 (14, 'vl-requests', 'editVlRequest.php', 'Edit'),
-(16, 'vl-batch', 'batchcode.php', 'Access'),
-(17, 'vl-batch', 'addBatch.php', 'Add'),
-(18, 'vl-batch', 'editBatch.php', 'Edit'),
+(16, 'vl-batch', '/batch/batches.php?type=vl', 'Access'),
+(17, 'vl-batch', '/batch/add-batch.php?type=vl', 'Add'),
+(18, 'vl-batch', '/batch/edit-batch.php?type=vl', 'Edit'),
 (19, 'import-results', 'addImportResult.php', 'Import Results from File'),
 (20, 'vl-results', 'vlPrintResult.php', 'Print Result PDF'),
 (21, 'vl-results', 'vlTestResult.php', 'Enter Result Manually'),
@@ -2733,8 +2789,8 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 (41, 'vl-requests', 'patientList.php', 'Export Patient List'),
 (43, 'test-request-email-config', 'editTestRequestEmailConfig.php', 'Edit'),
 (45, 'vl-requests', 'vlResultMail.php', 'Email Test Result'),
-(46, 'vl-batch', 'editBatchControlsPosition.php', 'Edit Controls Position'),
-(47, 'vl-batch', 'addBatchControlsPosition.php', 'Add Controls Position'),
+(46, 'vl-batch', '/batch/edit-batch-position.php?type=vl', 'Edit Controls Position'),
+(47, 'vl-batch', '/batch/add-batch-position.php?type=vl', 'Add Controls Position'),
 (48, 'test-result-email-config', 'testResultEmailConfig.php', 'Access'),
 (49, 'test-result-email-config', 'editTestResultEmailConfig.php', 'Edit'),
 (50, 'vl-requests', 'vlRequestMailConfirm.php', 'Email Test Request Confirm'),
@@ -2754,9 +2810,9 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 (74, 'eid-requests', 'eid-add-request.php', 'Add'),
 (75, 'eid-requests', 'eid-edit-request.php', 'Edit'),
 (76, 'eid-requests', 'eid-requests.php', 'View'),
-(77, 'eid-batches', 'eid-batches.php', 'View Batches'),
-(78, 'eid-batches', 'eid-add-batch.php', 'Add Batch'),
-(79, 'eid-batches', 'eid-edit-batch.php', 'Edit Batch'),
+(77, 'eid-batches', '/batch/batches.php?type=eid', 'View Batches'),
+(78, 'eid-batches', '/batch/add-batch.php?type=eid', 'Add Batch'),
+(79, 'eid-batches', '/batch/edit-batch.php?type=eid', 'Edit Batch'),
 (80, 'eid-results', 'eid-manual-results.php', 'Enter Result Manually'),
 (81, 'eid-results', 'eid-import-result.php', 'Import Result File'),
 (84, 'eid-results', 'eid-result-status.php', 'Manage Result Status'),
@@ -2771,9 +2827,9 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 (97, 'covid-19-requests', 'covid-19-requests.php', 'View'),
 (98, 'covid-19-results', 'covid-19-result-status.php', 'Manage Result Status'),
 (99, 'covid-19-results', 'covid-19-print-results.php', 'Print Results'),
-(100, 'covid-19-batches', 'covid-19-batches.php', 'View Batches'),
-(101, 'covid-19-batches', 'covid-19-add-batch.php', 'Add Batch'),
-(102, 'covid-19-batches', 'covid-19-edit-batch.php', 'Edit Batch'),
+(100, 'covid-19-batches', '/batch/batches.php?type=covid19', 'View Batches'),
+(101, 'covid-19-batches', '/batch/add-batch.php?type=covid19', 'Add Batch'),
+(102, 'covid-19-batches', '/batch/edit-batch.php?type=covid19', 'Edit Batch'),
 (103, 'covid-19-results', 'covid-19-manual-results.php', 'Enter Result Manually'),
 (104, 'covid-19-results', 'covid-19-import-result.php', 'Import Result File'),
 (105, 'covid-19-management', 'covid-19-export-data.php', 'Export Data'),
@@ -2812,9 +2868,9 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 (166, 'hepatitis-requests', 'hepatitis-result-status.php', 'Manage Result Status'),
 (167, 'hepatitis-reference', 'hepatitis-sample-type.php', 'Manage Hepatitis Reference'),
 (168, 'vl-reports', 'vlSuppressedTargetReport.php', 'Suppressed Target report'),
-(169, 'hepatitis-batches', 'hepatitis-batches.php', 'View Batches'),
-(170, 'hepatitis-batches', 'hepatitis-add-batch.php', 'Add Batch'),
-(171, 'hepatitis-batches', 'hepatitis-edit-batch.php', 'Edit Batch'),
+(169, 'hepatitis-batches', '/batch/batches.php?type=hepatitis', 'View Batches'),
+(170, 'hepatitis-batches', '/batch/add-batch.php?type=hepatitis', 'Add Batch'),
+(171, 'hepatitis-batches', '/batch/edit-batch.php?type=hepatitis', 'Edit Batch'),
 (172, 'hepatitis-batches', 'hepatitis-add-batch-position.php', 'Add Batch Position'),
 (173, 'hepatitis-batches', 'hepatitis-edit-batch-position.php', 'Edit Batch Position'),
 (174, 'hepatitis-requests', 'add-samples-from-manifest.php', 'Add Samples from Manifest'),
@@ -2841,9 +2897,9 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 (196, 'tb-results', 'tb-result-status.php', 'Manage Result Status'),
 (197, 'tb-management', 'tb-sample-type.php', 'Manage Reference'),
 (198, 'tb-results', 'tb-export-data.php', 'Export Data'),
-(199, 'tb-management', 'tb-batches.php', 'View Batches'),
-(200, 'tb-management', 'tb-add-batch.php', 'Add Batch'),
-(201, 'tb-management', 'tb-edit-batch.php', 'Edit Batch'),
+(199, 'tb-management', '/batch/batches.php?type=tb', 'View Batches'),
+(200, 'tb-management', '/batch/add-batch.php?type=tb', 'Add Batch'),
+(201, 'tb-management', '/batch/edit-batch.php?type=tb', 'Edit Batch'),
 (202, 'tb-batches', 'tb-add-batch-position.php', 'Add Batch Position'),
 (203, 'tb-batches', 'tb-edit-batch-position.php', 'Edit Batch Position'),
 (204, 'tb-requests', 'addSamplesFromManifest.php', 'Add Samples from Manifest'),
@@ -2880,7 +2936,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 (245, 'generic-requests', 'view-requests.php', 'View Generic Tests'),
 (246, 'generic-requests', 'add-request.php', 'Add Generic Tests'),
 (247, 'generic-requests', 'add-samples-from-manifest.php', 'Add Samples From Manifest'),
-(248, 'generic-requests', 'batch-code.php', 'Add Batch Code'),
+(248, 'generic-test-batches', '/batch/batches.php?type=generic-tests', 'Add Batch Code'),
 (249, 'generic-test-reference', 'test-type.php', 'Test Type Configuration'),
 (250, 'generic-test-reference', 'add-test-type.php', 'Add New Test Type'),
 (251, 'generic-test-reference', 'edit-test-type.php', 'Edit Test Type'),
@@ -2918,7 +2974,9 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `disp
 (307, 'generic-test-reference', 'generic-edit-test-categories.php', 'Edit Test Category'),
 (308, 'generic-test-reference', 'generic-test-result-units.php', 'Manage Test Result Units'),
 (309, 'generic-test-reference', 'generic-add-test-result-units.php', 'Add Test Result Units'),
-(310, 'generic-test-reference', 'generic-edit-test-result-units.php', 'Edit Test Result Units');
+(310, 'generic-test-reference', 'generic-edit-test-result-units.php', 'Edit Test Result Units'),
+(314, 'generic-test-batches', '/batch/add-batch.php?type=generic-tests', 'Add New Batch'),
+(315, 'generic-test-batches', '/batch/edit-batch.php?type=generic-tests', 'Edit Batch');
 
 -- --------------------------------------------------------
 
@@ -3033,6 +3091,7 @@ INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES
 ('generic-requests', 'generic-tests', 'Lab Tests Request Management'),
 ('generic-results', 'generic-tests', 'Lab Tests Result Management'),
 ('generic-test-reference', 'generic-tests', 'Lab Tests Reference Management'),
+('generic-tests-batches', 'generic-test', 'Lab Tests Batch Management'),
 ('global-config', 'admin', 'Manage General Config'),
 ('hepatitis-batches', 'hepatitis', 'Hepatitis Batch Management'),
 ('hepatitis-management', 'hepatitis', 'Hepatitis Reports'),
@@ -4650,7 +4709,7 @@ CREATE TABLE `system_config` (
 INSERT INTO `system_config` (`display_name`, `name`, `value`) VALUES
 ('Testing Lab ID', 'sc_testing_lab_id', ''),
 ('User Type', 'sc_user_type', 'vluser'),
-('Version', 'sc_version', '5.1.6'),
+('Version', 'sc_version', '5.1.7'),
 ('Email Id', 'sup_email', NULL),
 ('Password', 'sup_password', NULL);
 
@@ -4674,11 +4733,10 @@ INSERT INTO `s_available_country_forms` (`vlsm_country_id`, `form_name`, `short_
 (1, 'South Sudan ', 'ssudan'),
 (2, 'Sierra Leone', 'sierra-leone'),
 (3, 'Democratic Republic of the Congo', 'drc'),
-(4, 'Zambia ', 'zambia'),
+(4, 'Republic of Cameroon', 'cameroon'),
 (5, 'Papua New Guinea', 'png'),
 (6, 'WHO ', 'who'),
-(7, 'Rwanda ', 'rwanda'),
-(8, 'Angola ', 'angola');
+(7, 'Rwanda ', 'rwanda');
 
 -- --------------------------------------------------------
 
@@ -4848,6 +4906,7 @@ CREATE TABLE `user_details` (
   `login_id` varchar(255) DEFAULT NULL,
   `password` varchar(500) DEFAULT NULL,
   `role_id` int(11) DEFAULT NULL,
+  `user_locale` varchar(256) DEFAULT NULL,
   `user_signature` mediumtext,
   `api_token` mediumtext,
   `api_token_generated_datetime` datetime DEFAULT NULL,
@@ -5144,6 +5203,12 @@ ALTER TABLE `form_vl`
   ADD KEY `result_approved_by_2` (`result_approved_by`),
   ADD KEY `result_reviewed_by_2` (`result_reviewed_by`),
   ADD KEY `sample_package_id` (`sample_package_id`);
+
+--
+-- Indexes for table `generic_sample_rejection_reason_map`
+--
+ALTER TABLE `generic_sample_rejection_reason_map`
+  ADD PRIMARY KEY (`map_id`);
 
 --
 -- Indexes for table `generic_test_failure_reason_map`
@@ -5856,6 +5921,12 @@ ALTER TABLE `form_vl`
   MODIFY `vl_sample_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `generic_sample_rejection_reason_map`
+--
+ALTER TABLE `generic_sample_rejection_reason_map`
+  MODIFY `map_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `generic_test_failure_reason_map`
 --
 ALTER TABLE `generic_test_failure_reason_map`
@@ -5961,7 +6032,7 @@ ALTER TABLE `patients`
 -- AUTO_INCREMENT for table `privileges`
 --
 ALTER TABLE `privileges`
-  MODIFY `privilege_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=312;
+  MODIFY `privilege_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=316;
 
 --
 -- AUTO_INCREMENT for table `province_details`
