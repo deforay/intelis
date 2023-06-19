@@ -6,7 +6,7 @@ use MysqliDb;
 use Exception;
 use DateTimeImmutable;
 use App\Utilities\DateUtility;
-use App\Interfaces\TestInterface;
+use App\Interfaces\TestServiceInterface;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
@@ -16,7 +16,7 @@ use App\Services\GeoLocationsService;
  * @author Amit
  */
 
-class EidService implements TestInterface
+class EidService implements TestServiceInterface
 {
 
     protected ?MysqliDb $db = null;

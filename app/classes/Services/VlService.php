@@ -7,7 +7,7 @@ use Exception;
 use DateTimeImmutable;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
-use App\Interfaces\TestInterface;
+use App\Interfaces\TestServiceInterface;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
@@ -17,7 +17,7 @@ use App\Services\GeoLocationsService;
  * @author Amit
  */
 
-class VlService implements TestInterface
+class VlService implements TestServiceInterface
 {
 
     protected ?MysqliDb $db = null;
@@ -459,13 +459,12 @@ class VlService implements TestInterface
                 return 0;
             }
 
-            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
 
             $sampleCodeParams = [];
-            $sampleCodeParams['sampleCollectionDate'] = $params['sampleCollectionDate'] ?? null;
+            $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
             $sampleCodeParams['provinceCode'] = $params['provinceCode'] ?? null;
-            $sampleCodeParams['provinceId'] = $params['provinceId'] ?? null;
-            $sampleCodeParams['maxCodeKeyVal'] = $oldSampleCodeKey ?? null;
+            $sampleCodeParams['provinceId'] = $provinceId;
+            $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey']  ?? null;
 
 
             $sampleJson = $this->generateSampleCode($sampleCodeParams);

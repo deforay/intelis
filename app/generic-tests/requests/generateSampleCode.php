@@ -11,24 +11,13 @@ $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
-$sampleCollectionDate = $province = $testType = '';
+$provinceCode = $_POST['pName'] ?? $_POST['provinceCode'] ?? null;
+$sampleCollectionDate = $_POST['sampleCollectionDate'] ?? $_POST['sDate'] ?? null;
+$testType = $_POST['testType'] ?? null;
 
-if (isset($_POST['provinceCode'])) {
-  $province = $_POST['provinceCode'];
-} elseif (isset($_POST['pName'])) {
-  $province = $_POST['pName'];
-}
+$sampleCodeParams = [];
+$sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
+$sampleCodeParams['provinceCode'] = $provinceCode;
+$sampleCodeParams['testType'] = $testType;
 
-if (isset($_POST['sampleCollectionDate'])) {
-  $sampleCollectionDate = $_POST['sampleCollectionDate'];
-} elseif (isset($_POST['sDate'])) {
-  $sampleCollectionDate = $_POST['sDate'];
-}
-if (!empty($_POST['testType'])) {
-  $testType = $_POST['testType'];
-}
-
-
-$sampleFrom = $_POST['sampleFrom'] ?? '';
-
-echo $genericTestsService->generateGenericTestSampleCode($province, $sampleCollectionDate, $sampleFrom, '', null, null, $testType);
+echo $genericTestsService->generateSampleCode($sampleCodeParams);

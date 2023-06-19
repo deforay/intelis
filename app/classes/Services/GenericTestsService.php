@@ -2,22 +2,17 @@
 
 namespace App\Services;
 
-
 use MysqliDb;
 use Exception;
 use DateTimeImmutable;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Interfaces\TestServiceInterface;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
-/**
- * Generic tests functions
- *
- * @author Amit
- */
 
-class GenericTestsService
+class GenericTestsService implements TestServiceInterface
 {
 
     protected ?MysqliDb $db = null;
@@ -31,12 +26,18 @@ class GenericTestsService
         $this->commonService = $commonService;
     }
 
-    public function generateGenericTestSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null, $testType = null)
+    public function generateSampleCode($params)
     {
         $globalConfig = $this->commonService->getGlobalConfig();
         $vlsmSystemConfig = $this->commonService->getSystemConfig();
 
-        if (DateUtility::verifyIfDateValid($sampleCollectionDate) === false) {
+        $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
+        $provinceCode = $params['provinceCode'] ?? null;
+        $provinceId = $params['provinceId'] ?? null;
+        $testType = $params['testType'] ?? null;
+        $maxCodeKeyVal = $params['maxCodeKeyVal'] ?? null;
+
+        if (empty($sampleCollectionDate) || DateUtility::verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
         $dateObj = new DateTimeImmutable($sampleCollectionDate);
@@ -77,7 +78,7 @@ class GenericTestsService
                 if (empty($provinceId) && !empty($provinceCode)) {
                     /** @var GeoLocationsService $geoLocationsService */
                     $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
-                    $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
+                    $params['provinceId'] = $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
                 }
 
                 if (!empty($provinceId)) {
@@ -144,7 +145,8 @@ class GenericTestsService
             // error_log("DUP::: Sample Code ====== " . $sampleCodeGenerator['sampleCode']);
             // error_log("DUP::: Sample Key Code ====== " . $maxId);
             // error_log('DUP::: ' . $this->db->getLastQuery());
-            return $this->generateGenericTestSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $maxId, $user);
+            $params['maxCodeKeyVal'] = $maxId;
+            return $this->generateSampleCode($params);
         }
         return json_encode($sampleCodeGenerator);
     }
@@ -182,14 +184,13 @@ class GenericTestsService
         );
     }
 
-    public function insertSampleCode($params, $returnSampleData = false)
+    public function insertSample($params, $returnSampleData = false)
     {
         try {
 
             $formId = $this->commonService->getGlobalConfig('vl_form');
 
             $testType = $params['testType'] ?? null;
-            $provinceCode = $params['provinceCode'] ?? null;
             $provinceId = $params['provinceId'] ?? null;
             $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
 
@@ -204,9 +205,14 @@ class GenericTestsService
                 return 0;
             }
 
-            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
+            $sampleCodeParams = [];
+            $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
+            $sampleCodeParams['provinceCode'] = $params['provinceCode'] ?? null;
+            $sampleCodeParams['provinceId'] = $provinceId;
+            $sampleCodeParams['testType'] = $testType;
+            $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey']  ?? null;
 
-            $sampleJson = $this->generateGenericTestSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey, null, $testType);
+            $sampleJson = $this->generateSampleCode($sampleCodeParams);
             $sampleData = json_decode($sampleJson, true);
 
             $sQuery = "SELECT sample_id FROM form_generic ";
@@ -271,7 +277,7 @@ class GenericTestsService
             } else {
                 // If this sample code exists, let us regenerate the sample code and insert
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
-                return $this->insertSampleCode($params);
+                return $this->insertSample($params);
             }
         } catch (Exception $e) {
             error_log('Insert lab tests Sample : ' . $this->db->getLastErrno());
