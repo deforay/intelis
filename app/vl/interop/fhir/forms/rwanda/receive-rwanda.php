@@ -304,7 +304,10 @@ foreach ($formData as $serviceRequest => $data) {
         continue;
     }
 
-    $sampleJson = $vlService->generateVLSampleID(null, ($data['sample_collection_date']));
+    $sampleCodeParams = [];
+    $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate ?? null;
+
+    $sampleJson = $vlService->generateSampleCode($sampleCodeParams);
 
     $sampleData = json_decode($sampleJson, true);
     if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {

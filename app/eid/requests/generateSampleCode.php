@@ -35,5 +35,9 @@ if (isset($_POST['sampleCollectionDate'])) {
 
 $sampleFrom = $_POST['sampleFrom'] ?? '';
 
+$sampleCodeParams = [];
+$sampleCodeParams['sampleCollectionDate'] = $params['sampleCollectionDate'] ?? null;
+$sampleCodeParams['provinceCode'] = $province ?? null;
+$sampleCodeParams['provinceId'] = null;
 
-echo $eidService->generateEIDSampleCode($province, $sampleCollectionDate, $sampleFrom);
+echo $eidService->generateSampleCode($sampleCodeParams);

@@ -191,7 +191,7 @@ try {
             $params['facilityId'] = $data['facilityId'] ?? null;
             $params['labId'] = $data['labId'] ?? null;
 
-            $currentSampleData = $vlService->insertSampleCode($params, true);
+            $currentSampleData = $vlService->insertSample($params, true);
             $currentSampleData['action'] = 'inserted';
             $data['vlSampleId'] = intval($currentSampleData['id']);
             if ($data['vlSampleId'] == 0) {

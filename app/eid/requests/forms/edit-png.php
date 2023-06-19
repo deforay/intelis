@@ -69,19 +69,6 @@ if (!isset($stateResult[0]['geo_code'])) {
     $provinceCode = $stateResult[0]['geo_code'];
 }
 
-//suggest sample id when lab user add request sample
-$sampleSuggestion = '';
-$sampleSuggestionDisplay = 'display:none;';
-$sCode = $_GET['c'];
-if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
-    $vlObj = ContainerRegistry::get(EidService::class);
-    $sampleCollectionDate = explode(" ", $sampleCollectionDate);
-    $sampleCollectionDate = DateUtility::humanReadableDateFormat($sampleCollectionDate[0]);
-    $sampleSuggestionJson = $vlObj->generateEIDSampleCode($provinceCode, $sampleCollectionDate, 'png');
-    $sampleCodeKeys = json_decode($sampleSuggestionJson, true);
-    $sampleSuggestion = $sampleCodeKeys['sampleCode'];
-    $sampleSuggestionDisplay = 'display:block;';
-}
 
 $pdResult = $db->query($pdQuery);
 $province = "<option value=''> -- Select -- </option>";
@@ -126,19 +113,6 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
 
-                                <div class="col-xs-12 col-md-12 col-lg-12" style="<?php echo $sampleSuggestionDisplay; ?>">
-                                    <?php
-                                    if ($eidInfo['sample_code'] != '') {
-                                    ?>
-                                        <label for="sampleSuggest" class="text-danger">Please note that this Remote Sample has already been imported with VLSM Sample ID <?= htmlspecialchars($eidInfo['sample_code']); ?></label>
-                                    <?php
-                                    } else {
-                                    ?>
-                                        <label for="sampleSuggest">Sample ID (might change while submitting the form) - </label>
-                                        <?php echo $sampleSuggestion; ?>
-                                    <?php } ?>
-                                    <br><br>
-                                </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
@@ -229,17 +203,17 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     <h3 class="box-title">Section 2: Mother/Guardian Information</h3>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                <tr>
+                                    <tr>
                                         <th scope="row" style="width:15% !important"><label for="mothersName">Mother's Name </label></th>
                                         <td style="width:35% !important">
-                                                <input type="text" class="form-control " id="mothersName" name="mothersName" placeholder="Mother name" title="Please enter Mother Name" style="width:100%;" value="<?php echo $eidInfo['mother_name'] ?>" />
+                                            <input type="text" class="form-control " id="mothersName" name="mothersName" placeholder="Mother name" title="Please enter Mother Name" style="width:100%;" value="<?php echo $eidInfo['mother_name'] ?>" />
                                         </td>
                                         <th scope="row" style="width:15% !important"><label for="mothersSurname">Mother's Surname </label></th>
                                         <td style="width:35% !important">
-                                                <input type="text" class="form-control " id="mothersSurname" name="mothersSurname" placeholder="Mother Surname" title="Please enter Mother Surname" style="width:100%;" value="<?php echo $eidInfo['mother_surname'] ?>" />
+                                            <input type="text" class="form-control " id="mothersSurname" name="mothersSurname" placeholder="Mother Surname" title="Please enter Mother Surname" style="width:100%;" value="<?php echo $eidInfo['mother_surname'] ?>" />
                                         </td>
-                                </tr>
-                                <tr>
+                                    </tr>
+                                    <tr>
                                         <th scope="row">Caretaker phone number</th>
                                         <td><input type="text" class="form-control " value="<?= htmlspecialchars($eidInfo['caretaker_phone_number']); ?>" id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="Caretaker Phone Number" title="Caretaker Phone Number" style="width:100%;" onchange="" /></td>
 
@@ -247,15 +221,15 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="Caretaker Address" title="Caretaker Address" style="width:100%;" onchange=""><?= htmlspecialchars($eidInfo['caretaker_address']); ?></textarea></td>
 
                                     </tr>
-                                        </table>
-                                        <br><br>
+                                </table>
+                                <br><br>
 
-                                        <div class="box-header with-border">
+                                <div class="box-header with-border">
                                     <h3 class="box-title">Section 3: Infant Information</h3>
                                 </div>
 
 
-                                    <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="childId">Exposed Infant Identification <span class="mandatory">*</span> </label></th>
@@ -285,20 +259,20 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     <tr>
                                         <th scope="row">Infant Age (months)</th>
                                         <td><input type="number" max=9 maxlength="1" value="<?= htmlspecialchars($eidInfo['child_age']); ?>" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="$('#childDob').val('')" /></td>
-                                        
-                                    </tr>
-                                        </table>
 
-                                        <br><br>
-                                        <div class="box-header with-border">
+                                    </tr>
+                                </table>
+
+                                <br><br>
+                                <div class="box-header with-border">
                                     <h3 class="box-title"> Section 4: Reason For Test</h3>
                                 </div>`
 
-                                    <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
-                                    <th scope="row">Provide Recent previous Lab Number</th>
+                                        <th scope="row">Provide Recent previous Lab Number</th>
                                         <td>
-                                        <input type="text" class="form-control" value="<?php echo ($eidInfo['previous_sample_code']); ?>" id="previousSampleCode" name="previousSampleCode" placeholder="Recent previous Lab Number" title="Recent previous Lab Number" style="width:100%;" onchange="" />
+                                            <input type="text" class="form-control" value="<?php echo ($eidInfo['previous_sample_code']); ?>" id="previousSampleCode" name="previousSampleCode" placeholder="Recent previous Lab Number" title="Recent previous Lab Number" style="width:100%;" onchange="" />
                                         </td>
                                         <th scope="row">Clinical Assessment</th>
                                         <td>
@@ -306,15 +280,15 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                                 <option value=''> -- Select -- </option>
                                                 <option value='symptomatic' <?php echo ($eidInfo['clinical_assessment'] == 'symptomatic') ? "selected='selected'" : ""; ?>> Symptomatic </option>
                                                 <option value='non-symptomatic' <?php echo ($eidInfo['clinical_assessment'] == 'non-symptomatic') ? "selected='selected'" : ""; ?>> Non-Symptomatic </option>
-                                            </select>    
-                                    </td>
+                                            </select>
+                                        </td>
                                     </tr>
                                     <tr>
-                                    <th scope="row">Name of EID Personnel Collecting DBS</th>
-                                            <td>
-                                                 <input type="text" class="form-control" value="<?php echo ($eidInfo['clinician_name']); ?>" id="clinicianName" name="clinicianName" placeholder="Name of EID Personnel Collecting DBS" title="Name of EID Personnel Collecting DBS" style="width:100%;" onchange="" />
-                                            </td>
-                                            <th scope="row" style="width:15% !important">Sample Collection Date <span class="mandatory">*</span> </th>
+                                        <th scope="row">Name of EID Personnel Collecting DBS</th>
+                                        <td>
+                                            <input type="text" class="form-control" value="<?php echo ($eidInfo['clinician_name']); ?>" id="clinicianName" name="clinicianName" placeholder="Name of EID Personnel Collecting DBS" title="Name of EID Personnel Collecting DBS" style="width:100%;" onchange="" />
+                                        </td>
+                                        <th scope="row" style="width:15% !important">Sample Collection Date <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
                                             <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo ($eidInfo['sample_collection_date']); ?>" />
                                         </td>
@@ -324,12 +298,12 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                 </table>
 
                                 <br><br>
-                               
+
                                 <div class="box-header with-border">
                                     <h3 class="box-title">Section 5: Mother PPTCT Information</h3>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                  
+
                                     <tr>
                                         <th scope="row" style="width:15% !important">Mother's HIV Status:</th>
                                         <td style="width:35% !important">
@@ -342,10 +316,10 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         </td>
                                         <th scope="row">Mother ART Number</th>
                                         <td><input type="text" class="form-control " value="<?= htmlspecialchars($eidInfo['mother_id']); ?>" id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" onchange="" /></td>
-                                       
+
                                     </tr>
                                     <tr>
-                                    <th scope="row" style="width:15% !important">ART given to the Mother during:</th>
+                                        <th scope="row" style="width:15% !important">ART given to the Mother during:</th>
                                         <td style="width:35% !important">
                                             <input type="checkbox" name="motherTreatment[]" value="No ART given" <?php echo in_array('No ART given', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?>> No ART given <br>
                                             <input type="checkbox" name="motherTreatment[]" value="Pregnancy" <?php echo in_array('Pregnancy', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?>> Pregnancy <br>
@@ -364,21 +338,21 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                                 <option value="Unknown" <?php echo ($eidInfo['mode_of_delivery'] == 'Unknown') ? "selected='selected'" : ""; ?>> Unknown </option>
                                                 <option value="Other" <?php echo ($eidInfo['mode_of_delivery'] == 'Other') ? "selected='selected'" : ""; ?>> Other </option>
                                             </select>
-                                            <input type="text" class="form-control" value="<?php echo ($eidInfo['mode_of_delivery_other']); ?>" name="modeOfDeliveryOther" id="modeOfDeliveryOther" title="Enter Other mode of Delivery" placeholder="Enter Other mode of Delivery" style="display:none;" /> 
+                                            <input type="text" class="form-control" value="<?php echo ($eidInfo['mode_of_delivery_other']); ?>" name="modeOfDeliveryOther" id="modeOfDeliveryOther" title="Enter Other mode of Delivery" placeholder="Enter Other mode of Delivery" style="display:none;" />
                                         </td>
                                     <tr>
-                                    </table>
+                                </table>
 
-                                    <br><br>
+                                <br><br>
 
-                                    <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
-                                    <th scope="row" colspan=4>
-                                        <h4>Section 6: Infant PPTCT Information</h4>
-                                    </th>
+                                        <th scope="row" colspan=4>
+                                            <h4>Section 6: Infant PPTCT Information</h4>
+                                        </th>
                                     </tr>
                                     <tr>
-                                    <th scope="row">Infant stopped breastfeeding ?</th>
+                                        <th scope="row">Infant stopped breastfeeding ?</th>
                                         <td>
                                             <select class="form-control" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
                                                 <option value=''> -- Select -- </option>
@@ -387,16 +361,16 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                                 <option value="unknown" <?php echo ($eidInfo['has_infant_stopped_breastfeeding'] == 'unknown') ? "selected='selected'" : ""; ?>> Unknown </option>
                                             </select>
                                         </td>
-                                  
+
                                         <th scope="row">Age (months) breastfeeding stopped :</th>
                                         <td>
                                             <input type="number" class="form-control" value="<?php echo $eidInfo['age_breastfeeding_stopped_in_months'] ?>" style="max-width:200px;display:inline;" placeholder="Age (months) breastfeeding stopped" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        </table>
-                                        <br><br>
-                                    <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
+                                </table>
+                                <br><br>
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <th scope="row" colspan=4>
                                             <h4>Section 7: Infant Testing History (Provide information for MOST recent test)</h4>
@@ -565,10 +539,10 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             <th scope="row">Second DBS Requested</th>
                                             <td>
                                                 <select class="form-control" name="secondDBSRequested" onchange="showDBSRequestedReason(this.value);" id="secondDBSRequested">
-                                                        <option value=''> -- Select -- </option>
-                                                        <option value="yes" <?php echo ($eidInfo['second_dbs_requested'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
-                                                        <option value="no" <?php echo ($eidInfo['second_dbs_requested'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
-                                                </select>   
+                                                    <option value=''> -- Select -- </option>
+                                                    <option value="yes" <?php echo ($eidInfo['second_dbs_requested'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
+                                                    <option value="no" <?php echo ($eidInfo['second_dbs_requested'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
+                                                </select>
                                             </td>
                                             <th scope="row" class="DBSRequestedReason" style="display: none;">If Yes, Why?</th>
                                             <td class="DBSRequestedReason" style="display: none;">
@@ -582,7 +556,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                                     <option value="Infant < 2 months post breastfeeding" <?php echo ($eidInfo['second_dbs_requested_reason'] == 'Infant < 2 months post breastfeeding') ? "selected='selected'" : ""; ?>> Infant < 2 months post breastfeeding </option>
                                                     <option value="Infant less than 6 weeks" <?php echo ($eidInfo['second_dbs_requested_reason'] == 'Infant less than 6 weeks') ? "selected='selected'" : ""; ?>> Infant less than 6 weeks </option>
                                                     <option value="Inadequate feeding history" <?php echo ($eidInfo['second_dbs_requested_reason'] == 'Inadequate feeding history') ? "selected='selected'" : ""; ?>> Inadequate feeding history </option>
-                                                </select>   
+                                                </select>
                                             </td>
                                         </tr>
                                     </table>
@@ -724,7 +698,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                         details = data.split("###");
                         $("#province").html(details[0]);
                         $("#district").html(details[1]);
-                      //  $("#clinicianName").val(details[2]);
+                        //  $("#clinicianName").val(details[2]);
                     }
                 });
         } else if (pName == '' && cName == '') {
@@ -756,19 +730,17 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
         }
     }
 
-    function showDBSRequestedReason(requested)
-    {
-        if(requested=="yes")
+    function showDBSRequestedReason(requested) {
+        if (requested == "yes")
             $(".DBSRequestedReason").show();
-                else
+        else
             $(".DBSRequestedReason").hide();
     }
 
-    function showOtherOption(modeOfdelivery)
-    {
-        if(modeOfdelivery=="Other")
+    function showOtherOption(modeOfdelivery) {
+        if (modeOfdelivery == "Other")
             $("#modeOfDeliveryOther").show();
-                else
+        else
             $("#modeOfDeliveryOther").hide();
     }
 

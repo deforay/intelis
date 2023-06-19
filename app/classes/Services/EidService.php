@@ -6,6 +6,7 @@ use MysqliDb;
 use Exception;
 use DateTimeImmutable;
 use App\Utilities\DateUtility;
+use App\Interfaces\TestInterface;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
@@ -15,7 +16,7 @@ use App\Services\GeoLocationsService;
  * @author Amit
  */
 
-class EidService
+class EidService implements TestInterface
 {
 
     protected ?MysqliDb $db = null;
@@ -29,15 +30,21 @@ class EidService
         $this->commonService = $commonService;
     }
 
-    public function generateEIDSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
+    public function generateSampleCode($params)
     {
 
         $globalConfig = $this->commonService->getGlobalConfig();
         $vlsmSystemConfig = $this->commonService->getSystemConfig();
 
-        if (DateUtility::verifyIfDateValid($sampleCollectionDate) === false) {
+        $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
+        $provinceCode = $params['provinceCode'] ?? null;
+        $provinceId = $params['provinceId'] ?? null;
+        $maxCodeKeyVal = $params['maxCodeKeyVal'] ?? null;
+
+        if (empty($sampleCollectionDate) || DateUtility::verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
+
         $dateObj = new DateTimeImmutable($sampleCollectionDate);
 
         $year = $dateObj->format('y');
@@ -74,7 +81,7 @@ class EidService
                 if (empty($provinceId) && !empty($provinceCode)) {
                     /** @var GeoLocationsService $geoLocationsService */
                     $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
-                    $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
+                    $params['provinceId'] = $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
                 }
 
                 if (!empty($provinceId)) {
@@ -134,10 +141,11 @@ class EidService
                                 WHERE $sampleCodeCol=?";
         $checkResult = $this->db->rawQueryOne($checkQuery, [$sampleCodeGenerator['sampleCode']]);
         if (!empty($checkResult)) {
-            error_log("DUP::: Sample Code ====== " . $sampleCodeGenerator['sampleCode']);
-            error_log("DUP::: Sample Key Code ====== " . $maxId);
-            error_log('DUP::: ' . $this->db->getLastQuery());
-            return $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $maxId, $user);
+            // error_log("DUP::: Sample Code ====== " . $sampleCodeGenerator['sampleCode']);
+            // error_log("DUP::: Sample Key Code ====== " . $maxId);
+            // error_log('DUP::: ' . $this->db->getLastQuery());
+            $params['maxCodeKeyVal'] = $maxId;
+            return $this->generateSampleCode($params);
         }
         return json_encode($sampleCodeGenerator);
     }
@@ -172,7 +180,7 @@ class EidService
         return $response;
     }
 
-    public function insertSampleCode($params, $returnSampleData = false)
+    public function insertSample($params, $returnSampleData = false)
     {
         try {
             $formId = $this->commonService->getGlobalConfig('vl_form');
@@ -187,8 +195,13 @@ class EidService
                 return 0;
             }
 
-            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
-            $sampleJson = $this->generateEIDSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
+            $sampleCodeParams = [];
+            $sampleCodeParams['sampleCollectionDate'] = $params['sampleCollectionDate'] ?? null;
+            $sampleCodeParams['provinceCode'] = $params['provinceCode'] ?? null;
+            $sampleCodeParams['provinceId'] = $params['provinceId'] ?? null;
+            $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey'] ?? null;
+
+            $sampleJson = $this->generateSampleCode($sampleCodeParams);
             $sampleData = json_decode($sampleJson, true);
 
             $sQuery = "SELECT eid_id FROM form_eid ";
@@ -253,7 +266,7 @@ class EidService
             } else {
                 // If this sample code exists, let us regenerate the sample code and insert
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
-                return $this->insertSampleCode($params);
+                return $this->insertSample($params);
             }
         } catch (Exception $e) {
             error_log('Insert EID Sample : ' . $this->db->getLastErrno());

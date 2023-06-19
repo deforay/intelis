@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-
 use MysqliDb;
 use Exception;
 use DateTimeImmutable;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Interfaces\TestInterface;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
@@ -17,7 +17,7 @@ use App\Services\GeoLocationsService;
  * @author Amit
  */
 
-class VlService
+class VlService implements TestInterface
 {
 
     protected ?MysqliDb $db = null;
@@ -54,15 +54,17 @@ class VlService
         $this->commonService = $commonService;
     }
 
-    public function generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
+    public function generateSampleCode($params)
     {
-
-        error_log($provinceCode);
-
         $globalConfig = $this->commonService->getGlobalConfig();
         $vlsmSystemConfig = $this->commonService->getSystemConfig();
 
-        if (DateUtility::verifyIfDateValid($sampleCollectionDate) === false) {
+        $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
+        $provinceCode = $params['provinceCode'] ?? null;
+        $provinceId = $params['provinceId'] ?? null;
+        $maxCodeKeyVal = $params['maxCodeKeyVal'] ?? null;
+
+        if (empty($sampleCollectionDate) || DateUtility::verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
         $dateObj = new DateTimeImmutable($sampleCollectionDate);
@@ -101,7 +103,7 @@ class VlService
                 if (empty($provinceId) && !empty($provinceCode)) {
                     /** @var GeoLocationsService $geoLocationsService */
                     $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
-                    $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
+                    $params['provinceId'] = $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
                 }
 
                 if (!empty($provinceId)) {
@@ -111,7 +113,7 @@ class VlService
 
             $this->db->where('YEAR(sample_collection_date) = ?', [$dateObj->format('Y')]);
             $maxCodeKeyVal = $this->db->setQueryOption('FOR UPDATE')->getValue($this->table, "MAX($sampleCodeKeyCol)");
-            error_log($this->db->getLastQuery());
+            //error_log($this->db->getLastQuery());
         }
 
 
@@ -142,7 +144,7 @@ class VlService
             $sampleCodeGenerator['sampleCode'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
             $sampleCodeGenerator['sampleCodeInText'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
             $sampleCodeGenerator['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
-            $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
+            $sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
         } elseif ($sampleCodeFormat == 'auto2') {
             $sampleCodeGenerator['sampleCode'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sampleCodeGenerator['maxId'];
             $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $year . $provinceCode . $this->shortCode . $sampleCodeGenerator['maxId'];
@@ -152,17 +154,17 @@ class VlService
             $sampleCodeGenerator['sampleCode'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
             $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
             $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'];
-            $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
+            $sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
         }
         $checkQuery = "SELECT $sampleCodeCol,
                         $sampleCodeKeyCol FROM $this->table
                         WHERE $sampleCodeCol= ?";
         $checkResult = $this->db->rawQueryOne($checkQuery, [$sampleCodeGenerator['sampleCode']]);
         if (!empty($checkResult)) {
-            error_log("DUP::: Sample Code ====== " . $sampleCodeGenerator['sampleCode']);
-            error_log("DUP::: Sample Key Code ====== " . $maxId);
-            error_log('DUP::: ' . $this->db->getLastQuery());
-            return $this->generateVLSampleID($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $maxId, $user);
+            // error_log("DUP::: Sample Code ====== " . $sampleCodeGenerator['sampleCode']);
+            // error_log("DUP::: Sample Key Code ====== " . $maxId);
+            $params['maxCodeKeyVal'] = $maxId;
+            return $this->generateSampleCode($params);
         }
         return json_encode($sampleCodeGenerator);
     }
@@ -173,7 +175,7 @@ class VlService
         if (!empty($name)) {
             $where = " AND sample_name LIKE '$name%'";
         }
-        $query = "SELECT * FROM r_vl_sample_type where status='active' $where";
+        $query = "SELECT * FROM r_vl_sample_type WHERE `status` like 'active' $where";
         return $this->db->rawQuery($query);
     }
 
@@ -441,13 +443,12 @@ class VlService
         return $this->db->getValue('instruments', 'low_vl_result_text', null);
     }
 
-    public function insertSampleCode($params, $returnSampleData = false)
+    public function insertSample($params, $returnSampleData = false)
     {
         try {
 
             $formId = $this->commonService->getGlobalConfig('vl_form');
 
-            $provinceCode = $params['provinceCode'] ?? null;
             $provinceId = $params['provinceId'] ?? null;
             $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
 
@@ -460,7 +461,14 @@ class VlService
 
             $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
 
-            $sampleJson = $this->generateVLSampleID($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
+            $sampleCodeParams = [];
+            $sampleCodeParams['sampleCollectionDate'] = $params['sampleCollectionDate'] ?? null;
+            $sampleCodeParams['provinceCode'] = $params['provinceCode'] ?? null;
+            $sampleCodeParams['provinceId'] = $params['provinceId'] ?? null;
+            $sampleCodeParams['maxCodeKeyVal'] = $oldSampleCodeKey ?? null;
+
+
+            $sampleJson = $this->generateSampleCode($sampleCodeParams);
             $sampleData = json_decode($sampleJson, true);
 
             $sQuery = "SELECT vl_sample_id FROM form_vl ";
@@ -523,7 +531,7 @@ class VlService
             } else {
                 // If this sample code exists, let us regenerate the sample code and insert
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
-                return $this->insertSampleCode($params);
+                return $this->insertSample($params);
             }
         } catch (Exception $e) {
             error_log('Insert VL Sample : ' . $this->db->getLastErrno());

@@ -10,4 +10,4 @@ if (session_status() == PHP_SESSION_NONE) {
 
 /** @var EidService $eidService */
 $eidService = ContainerRegistry::get(EidService::class);
-echo $eidService->insertSampleCode($_POST);
+echo $eidService->insertSample($_POST);

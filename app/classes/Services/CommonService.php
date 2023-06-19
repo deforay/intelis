@@ -41,16 +41,6 @@ class CommonService
         return $randomString;
     }
 
-    public function escape($inputArray, $db = null): array
-    {
-        $db = !empty($db) ? $db : $this->db;
-        $escapedArray = [];
-        foreach ($inputArray as $key => $value) {
-            $escapedArray[$key] = $db->escape($value);
-        }
-        return $escapedArray;
-    }
-
     // Returns a UUID format string
     public function generateUUID($attachExtraString = true): string
     {
@@ -64,23 +54,25 @@ class CommonService
 
     public function getClientIpAddress()
     {
-        $ipAddress = '';
+        return once(function () {
+            $ipAddress = null;
 
-        if (isset($_SERVER['HTTP_CLIENT_IP'])) {
-            $ipAddress = $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ipAddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
-            $ipAddress = $_SERVER['HTTP_X_FORWARDED'];
-        } elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
-            $ipAddress = $_SERVER['HTTP_FORWARDED_FOR'];
-        } elseif (isset($_SERVER['HTTP_FORWARDED'])) {
-            $ipAddress = $_SERVER['HTTP_FORWARDED'];
-        } elseif (isset($_SERVER['REMOTE_ADDR'])) {
-            $ipAddress = $_SERVER['REMOTE_ADDR'];
-        }
+            if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+                $ipAddress = $_SERVER['HTTP_CLIENT_IP'];
+            } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                $ipAddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            } elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
+                $ipAddress = $_SERVER['HTTP_X_FORWARDED'];
+            } elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+                $ipAddress = $_SERVER['HTTP_FORWARDED_FOR'];
+            } elseif (isset($_SERVER['HTTP_FORWARDED'])) {
+                $ipAddress = $_SERVER['HTTP_FORWARDED'];
+            } elseif (isset($_SERVER['REMOTE_ADDR'])) {
+                $ipAddress = $_SERVER['REMOTE_ADDR'];
+            }
 
-        return $ipAddress;
+            return $ipAddress;
+        });
     }
 
 
@@ -97,35 +89,6 @@ class CommonService
         } catch (Exception $e) {
             throw new SystemException($e->getMessage(), $e->getCode(), $e);
         }
-    }
-
-    public function removeDirectory($dirname): bool
-    {
-        // Sanity check
-        if (!file_exists($dirname)) {
-            return false;
-        }
-
-        // Simple delete for a file
-        if (is_file($dirname) || is_link($dirname)) {
-            return unlink($dirname);
-        }
-
-        // Loop through the folder
-        $dir = dir($dirname);
-        while (false !== ($entry = $dir->read())) {
-            // Skip pointers
-            if ($entry == '.' || $entry == '..') {
-                continue;
-            }
-
-            // Recurse
-            $this->removeDirectory($dirname . DIRECTORY_SEPARATOR . $entry);
-        }
-
-        // Clean up
-        $dir->close();
-        return rmdir($dirname);
     }
 
     // get data from the system_config table from database
@@ -275,7 +238,7 @@ class CommonService
     public function activityLog($eventType, $action, $resource)
     {
 
-        $ipaddress = $this->getIPAddress();
+        $ipaddress = $this->getClientIpAddress();
 
         $data = array(
             'event_type' => $eventType,
@@ -301,25 +264,6 @@ class CommonService
 
         $this->db->insert('result_import_stats', $data);
     }
-
-
-    // public function getFacilitiesByUser($userId = null)
-    // {
-
-    //     $fQuery = "SELECT * FROM facility_details where status='active'";
-
-    //     $facilityWhereCondition = '';
-
-    //     if (!empty($userId)) {
-    //         $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT `facility_id` SEPARATOR ',') as `facility_id` FROM user_facility_map WHERE user_id='" . $userId . "'";
-    //         $userfacilityMapresult = $this->db->rawQuery($userfacilityMapQuery);
-    //         if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-    //             $facilityWhereCondition = " AND facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
-    //         }
-    //     }
-
-    //     return $this->db->rawQuery($fQuery . $facilityWhereCondition . " ORDER BY facility_name ASC");
-    // }
 
     public function startsWith($string, $startString): bool
     {
@@ -359,7 +303,12 @@ class CommonService
 
         $result = $this->db->rawQueryOne($query);
 
-        if (isset($result[$modifiedDateTimeColName]) && $result[$modifiedDateTimeColName] != '' && $result[$modifiedDateTimeColName] != null && !$this->startsWith($result[$modifiedDateTimeColName], '0000-00-00')) {
+        if (
+            isset($result[$modifiedDateTimeColName]) &&
+            $result[$modifiedDateTimeColName] != '' &&
+            $result[$modifiedDateTimeColName] != null &&
+            !$this->startsWith($result[$modifiedDateTimeColName], '0000-00-00')
+        ) {
             return $result[$modifiedDateTimeColName];
         } else {
             return null;
@@ -508,7 +457,6 @@ class CommonService
 
     public function getCountryShortCode()
     {
-
         if ($this->db == null) {
             return false;
         }
@@ -518,7 +466,7 @@ class CommonService
         });
     }
 
-    public function trackQrViewPage($type, $typeId, $sampleCode)
+    public function trackQRPageViews($type, $typeId, $sampleCode)
     {
         $userAgent = $_SERVER['HTTP_USER_AGENT'];
 
@@ -529,95 +477,98 @@ class CommonService
             'browser' => $this->getBrowser($userAgent),
             'operating_system' => $this->getOperatingSystem($userAgent),
             'date_time' => DateUtility::getCurrentDateTime(),
-            'ip_address' => $this->getIPAddress(),
+            'ip_address' => $this->getClientIpAddress(),
         );
 
         $this->db->insert('track_qr_code_page', $data);
     }
 
-    public function getIPAddress()
+    public function getOperatingSystem($userAgent = null): string
     {
-        return once(function () {
-            if (getenv('HTTP_CLIENT_IP')) {
-                $ipaddress = getenv('HTTP_CLIENT_IP');
-            } elseif (getenv('HTTP_X_FORWARDED_FOR')) {
-                $ipaddress = getenv('HTTP_X_FORWARDED_FOR');
-            } elseif (getenv('HTTP_X_FORWARDED')) {
-                $ipaddress = getenv('HTTP_X_FORWARDED');
-            } elseif (getenv('HTTP_FORWARDED_FOR')) {
-                $ipaddress = getenv('HTTP_FORWARDED_FOR');
-            } elseif (getenv('HTTP_FORWARDED')) {
-                $ipaddress = getenv('HTTP_FORWARDED');
-            } elseif (getenv('REMOTE_ADDR')) {
-                $ipaddress = getenv('REMOTE_ADDR');
-            } else {
-                $ipaddress = 'UNKNOWN';
+
+        return once(function () use ($userAgent) {
+            if ($userAgent === null) {
+                return "Unknown OS";
             }
-            return $ipaddress;
+
+            $osArray = array(
+                '/windows nt 10/i'     =>  'Windows 10',
+                '/windows nt 6.3/i'    =>  'Windows 8.1',
+                '/windows nt 6.2/i'    =>  'Windows 8',
+                '/windows nt 6.1/i'    =>  'Windows 7',
+                '/windows nt 6.0/i'    =>  'Windows Vista',
+                '/windows nt 5.2/i'    =>  'Windows Server 2003/XP x64',
+                '/windows nt 5.1/i'    =>  'Windows XP',
+                '/windows xp/i'        =>  'Windows XP',
+                '/windows nt 5.0/i'    =>  'Windows 2000',
+                '/windows me/i'        =>  'Windows ME',
+                '/win98/i'             =>  'Windows 98',
+                '/win95/i'             =>  'Windows 95',
+                '/win16/i'             =>  'Windows 3.11',
+                '/macintosh|mac os x/i' =>  'Mac OS X',
+                '/mac_powerpc/i'       =>  'Mac OS 9',
+                '/linux/i'             =>  'Linux',
+                '/ubuntu/i'            =>  'Ubuntu',
+                '/iphone/i'            =>  'iPhone',
+                '/ipod/i'              =>  'iPod',
+                '/ipad/i'              =>  'iPad',
+                '/android/i'           =>  'Android',
+                '/blackberry/i'        =>  'BlackBerry',
+                '/webos/i'             =>  'Mobile',
+                '/fedora/i'            =>  'Fedora',
+                '/debian/i'            =>  'Debian',
+                '/freebsd/i'           =>  'FreeBSD',
+                '/openbsd/i'           =>  'OpenBSD',
+                '/netbsd/i'            =>  'NetBSD',
+                '/sunos/i'             =>  'SunOS',
+                '/solaris/i'           =>  'Solaris',
+                '/aix/i'               =>  'AIX'
+            );
+
+            foreach ($osArray as $regex => $value) {
+                if (preg_match($regex, $userAgent)) {
+                    return $value;
+                }
+            }
+
+            return "Unknown OS - " . $userAgent;
         });
     }
 
-    public function getOperatingSystem($userAgent = null): string
-    {
-        $osPlatform = "Unknown OS - " . $userAgent;
-
-        $osArray =  array(
-            '/windows nt 6.3/i'     =>  'Windows 8.1',
-            '/windows nt 6.2/i'     =>  'Windows 8',
-            '/windows nt 6.1/i'     =>  'Windows 7',
-            '/windows nt 6.0/i'     =>  'Windows Vista',
-            '/windows nt 5.2/i'     =>  'Windows Server 2003/XP x64',
-            '/windows nt 5.1/i'     =>  'Windows XP',
-            '/windows xp/i'         =>  'Windows XP',
-            '/windows nt 5.0/i'     =>  'Windows 2000',
-            '/windows me/i'         =>  'Windows ME',
-            '/win98/i'              =>  'Windows 98',
-            '/win95/i'              =>  'Windows 95',
-            '/win16/i'              =>  'Windows 3.11',
-            '/macintosh|mac os x/i' =>  'Mac OS X',
-            '/mac_powerpc/i'        =>  'Mac OS 9',
-            '/linux/i'              =>  'Linux',
-            '/ubuntu/i'             =>  'Ubuntu',
-            '/iphone/i'             =>  'iPhone',
-            '/ipod/i'               =>  'iPod',
-            '/ipad/i'               =>  'iPad',
-            '/android/i'            =>  'Android',
-            '/blackberry/i'         =>  'BlackBerry',
-            '/webos/i'              =>  'Mobile'
-        );
-
-        foreach ($osArray as $regex => $value) {
-            if (preg_match($regex, $userAgent)) {
-                $osPlatform    =   $value;
-            }
-        }
-        return $osPlatform;
-    }
 
     public function getBrowser($userAgent = null): string
     {
-        $browser        =   "Unknown Browser - " . $userAgent;
-        $browserArray  =   array(
-            '/msie/i'       =>  'Internet Explorer',
-            '/firefox/i'    =>  'Firefox',
-            '/safari/i'     =>  'Safari',
-            '/chrome/i'     =>  'Chrome',
-            '/opera/i'      =>  'Opera',
-            '/netscape/i'   =>  'Netscape',
-            '/maxthon/i'    =>  'Maxthon',
-            '/konqueror/i'  =>  'Konqueror',
-            '/mobile/i'     =>  'Handheld Browser'
-        );
-
-        foreach ($browserArray as $regex => $value) {
-
-            if (preg_match($regex, $userAgent)) {
-                $browser    =   $value;
+        return once(function () use ($userAgent) {
+            if ($userAgent === null) {
+                return "Unknown Browser";
             }
-        }
 
-        return $browser;
+            $browserArray = array(
+                '/msie/i'       =>  'Internet Explorer',
+                '/trident/i'    =>  'Internet Explorer',
+                '/firefox/i'    =>  'Firefox',
+                '/safari/i'     =>  'Safari',
+                '/chrome/i'     =>  'Chrome',
+                '/edge/i'       =>  'Edge',
+                '/opera/i'      =>  'Opera',
+                '/netscape/i'   =>  'Netscape',
+                '/maxthon/i'    =>  'Maxthon',
+                '/konqueror/i'  =>  'Konqueror',
+                '/mobile/i'     =>  'Mobile Browser',
+                '/applewebkit/i' =>  'Webkit Browser',
+                '/brave/i'      =>  'Brave'
+            );
+
+            foreach ($browserArray as $regex => $value) {
+                if (preg_match($regex, $userAgent)) {
+                    return $value;
+                }
+            }
+
+            return "Unknown Browser - " . $userAgent;
+        });
     }
+
 
     // Returns the current Instance ID
     public function getInstanceId(): ?string
@@ -636,7 +587,7 @@ class CommonService
         return (isset($dateTime['dateTime']) && $dateTime['dateTime'] != "") ? DateUtility::humanReadableDateFormat($dateTime['dateTime'], false, 'd-M-Y h:i:s a') : null;
     }
 
-    public function existBatchCode($code)
+    public function doesBatchCodeExist($code)
     {
         $this->db->where("batch_code", $code);
         return $this->db->getOne("batch_details");
@@ -649,7 +600,7 @@ class CommonService
                         WHERE DATE(bd.request_created_datetime) = CURRENT_DATE';
         $batchResult = $this->db->query($batchQuery);
 
-        if ($batchResult[0]['MAX(batch_code_key)'] != '' && $batchResult[0]['MAX(batch_code_key)'] != null) {
+        if (!empty($batchResult[0]['MAX(batch_code_key)'])) {
             $code = $batchResult[0]['MAX(batch_code_key)'] + 1;
             $length = strlen($code);
             if ($length == 1) {
@@ -673,12 +624,19 @@ class CommonService
 
     public function fileExists($filePath): bool
     {
-        return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0);
+        return (!empty($filePath) &&
+            file_exists($filePath) &&
+            !is_dir($filePath) &&
+            filesize($filePath) > 0);
     }
 
     public function imageExists($filePath): bool
     {
-        return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
+        return (!empty($filePath) &&
+            file_exists($filePath) &&
+            !is_dir($filePath) &&
+            filesize($filePath) > 0 &&
+            false !== getimagesize($filePath));
     }
 
 
@@ -692,14 +650,6 @@ class CommonService
             $inputString = mb_convert_encoding($inputString, 'UTF-8');
         }
         return $inputString;
-    }
-
-    //dump the contents of a variable to the error log in a readable format
-    public static function errorLog($object = null): void
-    {
-        ob_start();
-        var_dump($object);
-        error_log(ob_get_clean());
     }
 
     // Returns false if string not matched, and returns string if matched
@@ -772,7 +722,6 @@ class CommonService
                     . 'responses'
                     . DIRECTORY_SEPARATOR
                     . $transactionId . '.json';
-                //file_put_contents($path, $responseData);
 
                 $zip = new ZipArchive();
                 if ($zip->open($path . '.zip', ZIPARCHIVE::CREATE) === true) {
@@ -867,14 +816,16 @@ class CommonService
         return $response;
     }
 
-    function stringToCamelCase($string, $character = "_", $capitalizeFirstCharacter = false) {
+    public function stringToCamelCase($string, $character = "_", $capitalizeFirstCharacter = false)
+    {
         $str = str_replace($character, '', ucwords($string, $character));
-        $str = (!$capitalizeFirstCharacter)?lcfirst($str):null;
+        $str = (!$capitalizeFirstCharacter) ? lcfirst($str) : null;
         return $str;
     }
 
-    function getPrimaryKeyField($table) {
-        if(!$table)
+    public function getPrimaryKeyField($table)
+    {
+        if (!$table)
             return null;
         $response =  $this->db->rawQueryOne("SHOW KEYS FROM " . $table . " WHERE Key_name = 'PRIMARY';");
         return $response['Column_name'] ?? null;

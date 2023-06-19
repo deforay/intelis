@@ -7,6 +7,7 @@ if (php_sapi_name() == 'cli') {
 
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
@@ -19,6 +20,8 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+/** @var MiscUtility $miscUtil */
+$miscUtil = ContainerRegistry::get(MiscUtility::class);
 
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
@@ -102,7 +105,7 @@ try {
 
         $db->update('s_vlsm_instance', $data);
     }
-    $general->removeDirectory(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+    $miscUtil->removeDirectory(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
     exit(0);
 } catch (Exception $exc) {
     error_log($exc->getMessage());

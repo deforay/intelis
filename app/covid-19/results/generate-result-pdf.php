@@ -4,12 +4,13 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-use App\Helpers\PdfConcatenateHelper;
-use App\Services\Covid19Service;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Services\CommonService;
+use App\Services\Covid19Service;
+use App\Helpers\PdfConcatenateHelper;
+use App\Registries\ContainerRegistry;
 
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);
@@ -21,6 +22,9 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var MiscUtility $miscUtil */
+$miscUtil = ContainerRegistry::get(MiscUtility::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
@@ -91,7 +95,7 @@ $requestResult = $db->query($searchQuery);
 /* Test Results */
 if (isset($_POST['type']) && $_POST['type'] == "qr") {
 	try {
-		$general->trackQrViewPage('covid19', $requestResult[0]['covid19_id'], $requestResult[0]['sample_code']);
+		$general->trackQRPageViews('covid19', $requestResult[0]['covid19_id'], $requestResult[0]['sample_code']);
 	} catch (Exception $exc) {
 		error_log($exc->getMessage());
 		error_log($exc->getTraceAsString());
@@ -131,7 +135,7 @@ class MYPDF extends TCPDF
 		$this->dataSync = $dataSync;
 	}
 	public function imageExists($filePath): bool
-    {
+	{
 		return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
 	}
 	//Page header
@@ -323,7 +327,7 @@ if (!empty($requestResult)) {
 		$resultPdf->concat();
 		$resultFilename = 'COVID-19-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
 		$resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
-		$general->removeDirectory($pathFront);
+		$miscUtil->removeDirectory($pathFront);
 		unset($_SESSION['rVal']);
 	}
 }

@@ -193,7 +193,7 @@ try {
             $params['facilityId'] = $data['facilityId'] ?? null;
             $params['labId'] = $data['labId'] ?? null;
 
-            $currentSampleData = $eidService->insertSampleCode($params, true);
+            $currentSampleData = $eidService->insertSample($params, true);
             $currentSampleData['action'] = 'inserted';
             $data['eidSampleId'] = intval($currentSampleData['id']);
             if ($data['eidSampleId'] == 0) {

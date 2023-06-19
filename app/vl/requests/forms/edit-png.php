@@ -134,10 +134,15 @@ if (isset($vlQueryInfo['clinic_date']) && trim($vlQueryInfo['clinic_date']) != '
 $sampleSuggestion = '';
 $sampleSuggestionDisplay = 'display:none;';
 if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
-	$vlObj = ContainerRegistry::get(VlService::class);
+	/** @var VlService $vlService */
+	$vlService = ContainerRegistry::get(VlService::class);
 	$sampleCollectionDate = explode(" ", $sampleCollectionDate);
 	$sampleCollectionDate = DateUtility::humanReadableDateFormat($sampleCollectionDate[0]);
-	$sampleSuggestionJson = $vlObj->generateVLSampleID($stateResult[0]['geo_code'], $sampleCollectionDate, 'png');
+
+	$sampleCodeParams = [];
+	$sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate ?? null;
+	$sampleCodeParams['provinceCode'] = $stateResult[0]['geo_code'] ?? null;
+	$sampleSuggestionJson = $vlService->generateSampleCode($sampleCodeParams);
 	$sampleCodeKeys = json_decode($sampleSuggestionJson, true);
 	$sampleSuggestion = $sampleCodeKeys['sampleCode'];
 	$sampleSuggestionDisplay = 'display:block;';

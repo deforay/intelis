@@ -12,7 +12,7 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$ipAddress = $general->getIpAddress();
+$ipAddress = $general->getClientIpAddress();
 $data = 0;
 $ipdata = 0;
 if (!empty($loginId)) {

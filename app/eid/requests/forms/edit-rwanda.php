@@ -64,20 +64,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
 
 $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", $eidInfo['mother_treatment']) : [];
 
-//suggest sample id when lab user add request sample
-$sampleSuggestion = '';
-$sampleSuggestionDisplay = 'display:none;';
-$sCode = $_GET['c'] ?? null;
-if ($sarr['sc_user_type'] == 'vluser' && !empty($sCode)) {
-    $vlObj = ContainerRegistry::get(EidService::class);
-    $sampleCollectionDate = explode(" ", $sampleCollectionDate);
-    $sampleCollectionDate = DateUtility::humanReadableDateFormat($sampleCollectionDate[0]);
-    $sampleSuggestionJson = $vlObj->generateEIDSampleCode($stateResult[0]['province_code'], $sampleCollectionDate, 'png');
-    $sampleCodeKeys = json_decode($sampleSuggestionJson, true);
-    $sampleSuggestion = $sampleCodeKeys['sampleCode'];
-    $sampleSuggestionDisplay = 'display:block;';
-}
-
 ?>
 
 

@@ -51,9 +51,12 @@ foreach ($sampleResult as $sampleRow) {
     // ONLY IF SAMPLE CODE IS NOT ALREADY GENERATED
     if ($sampleRow['sample_code'] == null || $sampleRow['sample_code'] == '' || $sampleRow['sample_code'] == 'null') {
 
-        $sampleJson = $vlObj->generateVLSampleID($provinceCode, DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date']));
+        $sampleCodeParams = [];
+        $sampleCodeParams['sampleCollectionDate'] = DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date'] ?? '');
+        $sampleCodeParams['provinceCode'] = $provinceCode ?? null;
+
+        $sampleJson = $vlObj->generateSampleCode($sampleCodeParams);
         $sampleData = json_decode($sampleJson, true);
-        //$vldata['sample_code'] = $sampleData['sampleCode'];
         $vldata['sample_code'] = $sampleData['sampleCode'];
         $vldata['sample_code_format'] = $sampleData['sampleCodeFormat'];
         $vldata['sample_code_key'] = $sampleData['sampleCodeKey'];
