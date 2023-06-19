@@ -144,8 +144,7 @@ try {
     }
     if (isset($_POST['province']) && $_POST['province'] != "") {
         $province = explode("##", $_POST['province']);
-        $provinceDetails = $geolocationService->getByName($province[0]);
-        $_POST['provinceId'] = $provinceDetails['geo_id'];
+        $_POST['provinceId'] = $geolocationService->getProvinceIdByName($province[0]);
     }
     $reason = $_POST['reasonForTbTest'];
     $reason['reason'] = array($reason['reason'] => 'yes');

@@ -59,17 +59,17 @@ try {
 
         foreach ($resultArray as $rowIndex => $rowData) {
             if (!empty($rowData['B'])) {
-                $sampleCode = $general->getDuplicateDataFromField('form_eid', 'sample_code', $rowData['B']);
+                $sampleCode = $general->getDataFromOneFieldAndValue('form_eid', 'sample_code', $rowData['B']);
 
 
-                $sampleType = $general->getDuplicateDataFromField('r_eid_sample_type', 'sample_name', $rowData['AF']);
+                $sampleType = $general->getDataFromOneFieldAndValue('r_eid_sample_type', 'sample_name', $rowData['AF']);
                 // ADDED
-                $facility = $general->getDuplicateDataFromField('facility_details', 'facility_name', $rowData['E']);
-                $state = $general->getDuplicateDataFromField('geographical_divisions', 'geo_name', $rowData['C']);
-                $labName = $general->getDuplicateDataFromField('facility_details', 'facility_name', $rowData['AA'], 'facility_type');
-                $rejectionReason = $general->getDuplicateDataFromField('r_eid_sample_rejection_reasons', 'rejection_reason_name', $rowData['AC']);
-                $result = $general->getDuplicateDataFromField('r_eid_results', 'result', $rowData['AE']);
-                $resultStatus = $general->getDuplicateDataFromField('r_sample_status', 'status_name', $rowData['AK']);
+                $facility = $general->getDataFromOneFieldAndValue('facility_details', 'facility_name', $rowData['E']);
+                $state = $general->getDataFromOneFieldAndValue('geographical_divisions', 'geo_name', $rowData['C']);
+                $labName = $general->getDataFromOneFieldAndValue('facility_details', 'facility_name', $rowData['AA'], 'facility_type = 2');
+                $rejectionReason = $general->getDataFromOneFieldAndValue('r_eid_sample_rejection_reasons', 'rejection_reason_name', $rowData['AC']);
+                $result = $general->getDataFromOneFieldAndValue('r_eid_results', 'result', $rowData['AE']);
+                $resultStatus = $general->getDataFromOneFieldAndValue('r_sample_status', 'status_name', $rowData['AK']);
 
                 if (trim($rowData['W']) != '') {
                     $sampleCollectionDate = date('Y-m-d H:i:s', strtotime($rowData['W']));

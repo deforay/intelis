@@ -118,7 +118,7 @@ try {
             if (!empty($province)) {
                 $data['provinceId'] = $province[0];
             }
-            $data['provinceId'] = $general->getValueByName($data['provinceId'], 'geo_name', 'geographical_divisions', 'geo_id', true);
+            $data['provinceId'] = $general->getValueByName($data['provinceId'], 'geo_name', 'geographical_divisions', 'geo_id');
         }
 
         $data['api'] = "yes";

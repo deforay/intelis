@@ -94,7 +94,7 @@ class GeoLocationsService
         }
     }
 
-    function addGeoLocation($geoName, $parent = 0)
+    public function addGeoLocation($geoName, $parent = 0)
     {
 
         $data = array(
@@ -123,16 +123,10 @@ class GeoLocationsService
         return $this->db->getInsertId();
     }
 
-    public function getByName($geoName)
+    public function getProvinceIdByName($geoName)
     {
         $this->db->where("geo_name", $geoName);
-        return $this->db->getOne('geographical_divisions', array("geo_id", "geo_name"));
-    }
-
-    public function getById($geoId)
-    {
-        $this->db->where("geo_id", $geoId);
-        return $this->db->getOne('geographical_divisions', array("geo_id", "geo_name"));
+        return $this->db->getValue('geographical_divisions', "geo_id");
     }
 
     public function getByProvinceId($provinceId, $districts = true, $facilities = false, $labs = false): array

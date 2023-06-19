@@ -14,7 +14,7 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$localeLists = $general->getLocaleLists();
+$localeLists = $general->getLocaleList();
 
 $db->where("user_id", $_SESSION['userId']);
 $userInfo = $db->getOne("user_details");

@@ -3,15 +3,6 @@
 // this file is included in /vl/interop/fhir/vl-receive.php
 header('Content-Type: application/json');
 
-function prettyJson($json): string
-{
-    if (is_array($json)) {
-        return stripslashes(json_encode($json, JSON_PRETTY_PRINT));
-    } else {
-        return stripslashes(json_encode(json_decode($json), JSON_PRETTY_PRINT));
-    }
-}
-
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
@@ -52,20 +43,20 @@ $data[] = "status=requested";
 $data[] = "_count=200";
 
 $json = $fhir->get('/Task', $data);
-//echo prettyJson($json);
+//echo $general->prettyJson($json);
 
 // echo "\n\n\n\n\n\n";
 // $json = $fhir->get('/ServiceRequest/107150');
-// echo prettyJson($json);
+// echo $general->prettyJson($json);
 // echo "\n\n\n\n\n\n";
 // $json = $fhir->get('/Patient/107164');
-// echo prettyJson($json);
+// echo $general->prettyJson($json);
 // echo "\n\n\n\n\n\n";
 // $json = $fhir->get('/Specimen/107169');
-// echo prettyJson($json);
+// echo $general->prettyJson($json);
 // echo "\n\n\n\n\n\n";
 // $json = $fhir->get('/Practitioner/107167');
-// echo prettyJson($json);
+// echo $general->prettyJson($json);
 
 
 //die;
@@ -365,4 +356,4 @@ if (!empty($errors)) {
 
 $trackId = $general->addApiTracking($transactionId, 'vlsm-system', $processedCounter, 'FHIR-VL-Receive', 'vl', $fhir->getRequestUrl(), $json, null, 'json');
 
-echo prettyJson($response);
+echo $general->prettyJson($response);

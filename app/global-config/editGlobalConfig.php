@@ -14,7 +14,7 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 // Get locale directory list
-$localeLists = $general->getLocaleLists();
+$localeLists = $general->getLocaleList();
 $instanceQuery = "SELECT * from s_vlsm_instance where vlsm_instance_id='" . $_SESSION['instanceId'] . "'";
 $instanceResult = $db->query($instanceQuery);
 // $fType = "SELECT * FROM facility_type";

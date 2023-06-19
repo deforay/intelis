@@ -50,16 +50,16 @@ try {
         foreach ($resultArray as $rowIndex => $rowData) {
             // echo "<pre>";print_r($rowData);die;
             if (!empty($rowData['A'])) {
-                $sampleCode = $general->getDuplicateDataFromField('form_covid19', 'sample_code', $rowData['A']);
+                $sampleCode = $general->getDataFromOneFieldAndValue('form_covid19', 'sample_code', $rowData['A']);
 
-                $facility = $general->getDuplicateDataFromField('facility_details', 'facility_name', $rowData['D']);
-                $testReason = $general->getDuplicateDataFromField('r_covid19_test_reasons', 'test_reason_name', $rowData['R']);
-                $sampleType = $general->getDuplicateDataFromField('r_covid19_sample_type', 'sample_name', $rowData['T']);
-                $labName = $general->getDuplicateDataFromField('facility_details', 'facility_name', $rowData['W'], 'facility_type');
-                $rejectionReason = $general->getDuplicateDataFromField('r_covid19_sample_rejection_reasons', 'rejection_reason_name', $rowData['Y']);
+                $facility = $general->getDataFromOneFieldAndValue('facility_details', 'facility_name', $rowData['D']);
+                $testReason = $general->getDataFromOneFieldAndValue('r_covid19_test_reasons', 'test_reason_name', $rowData['R']);
+                $sampleType = $general->getDataFromOneFieldAndValue('r_covid19_sample_type', 'sample_name', $rowData['T']);
+                $labName = $general->getDataFromOneFieldAndValue('facility_details', 'facility_name', $rowData['W'], 'facility_type = 2');
+                $rejectionReason = $general->getDataFromOneFieldAndValue('r_covid19_sample_rejection_reasons', 'rejection_reason_name', $rowData['Y']);
 
-                $result = $general->getDuplicateDataFromField('r_covid19_results', 'result', $rowData['AI']);
-                $resultStatus = $general->getDuplicateDataFromField('r_sample_status', 'status_name', $rowData['AM']);
+                $result = $general->getDataFromOneFieldAndValue('r_covid19_results', 'result', $rowData['AI']);
+                $resultStatus = $general->getDataFromOneFieldAndValue('r_sample_status', 'status_name', $rowData['AM']);
                 $labTechnician = $usersService->addUserIfNotExists($rowData['AP']);
 
                 if (trim($rowData['S']) != '') {

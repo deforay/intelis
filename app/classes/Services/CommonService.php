@@ -25,7 +25,7 @@ class CommonService
     protected ?MysqliDb $db = null;
 
 
-    public function __construct($db = null)
+    public function __construct(?MysqliDb $db = null)
     {
         $this->db = $db ?? ContainerRegistry::get('db');
     }
@@ -94,9 +94,6 @@ class CommonService
     // get data from the system_config table from database
     public function getSystemConfig($name = null)
     {
-        if ($this->db == null) {
-            return false;
-        }
 
         return once(function () use ($name) {
             if (!empty($name)) {
@@ -122,10 +119,6 @@ class CommonService
     // get data from the global_config table from database
     public function getGlobalConfig($name = null)
     {
-
-        if ($this->db == null) {
-            return false;
-        }
         return once(function () use ($name) {
 
             if (!empty($name)) {
@@ -273,10 +266,10 @@ class CommonService
 
     public function generateSelectOptions($optionList, $selectedOptions = [], $emptySelectText = false)
     {
-        if (empty($optionList)) {
-            return '';
-        }
         return once(function () use ($optionList, $selectedOptions, $emptySelectText) {
+            if (empty($optionList)) {
+                return '';
+            }
             $response = '';
             if ($emptySelectText !== false) {
                 $response .= "<option value=''>$emptySelectText</option>";
@@ -360,7 +353,6 @@ class CommonService
 
     public function getTestingPlatforms($testType = null)
     {
-
         if (!empty($testType)) {
             $this->db->where("(JSON_SEARCH(supported_tests, 'all', '$testType') IS NOT NULL) OR (supported_tests IS NULL)");
         }
@@ -369,14 +361,15 @@ class CommonService
         return $this->db->get('instruments');
     }
 
-    public function getDuplicateDataFromField($tablename, $fieldname, $fieldValue, $lab = "")
+    public function getDataFromOneFieldAndValue($tablename, $fieldname, $fieldValue, $condition = null)
     {
-        $query = 'SELECT * FROM ' . $tablename . ' WHERE ' . $fieldname . ' =  "' . $fieldValue . '"';
-        if ($lab != "") {
-            $query .= " AND $lab like 2";
-        }
-        $query .= " LIMIT 1";
-        return $this->db->rawQueryOne($query);
+        return once(function () use ($tablename, $fieldname, $fieldValue, $condition) {
+            $query = "SELECT * FROM $tablename WHERE $fieldname = ?";
+            if (!empty($condition) && $condition != '') {
+                $query .= " AND $condition";
+            }
+            return $this->db->rawQueryOne($query, [$fieldValue]);
+        });
     }
 
     public function getRejectionReasons($testType): array
@@ -406,24 +399,19 @@ class CommonService
         return $rejReaons;
     }
 
-    public function getValueByName($name = null, $condtionField = null, $tableName = null, $id = null, $exact = false)
+    public function getValueByName($fieldValue = null, $fieldName = null, $tableName = null, $returnFieldName = null)
     {
-        if (empty($name)) {
-            return null;
-        }
+        return once(function () use ($fieldValue, $fieldName, $tableName, $returnFieldName) {
+            if (empty($fieldValue) || empty($fieldName) || empty($tableName) || empty($returnFieldName)) {
+                return null;
+            }
 
-        if ($exact) {
-            $where = $condtionField . " LIKE '%$name%'";
-        } else {
-            $where = $condtionField . " LIKE '$name%'";
-        }
-
-        $query = "SELECT " . $id . " FROM " . $tableName . " where " . $where;
-        $result =  $this->db->rawQuery($query);
-        return $result[0][$id];
+            $this->db->where($fieldName, $fieldValue);
+            return $this->db->getValue($tableName, $returnFieldName);
+        });
     }
 
-    public function getLocaleLists()
+    public function getLocaleList()
     {
         $path = APPLICATION_PATH . DIRECTORY_SEPARATOR . 'locales';
         $localeLists = scandir($path);
@@ -435,31 +423,28 @@ class CommonService
         return $localeLists;
     }
 
-    public function activeReportFormats($module, $countryShortCode): array
+    public function activeReportFormats($module): array
     {
+        $activeReportFormats = [];
+        $countryShortCode = $this->getCountryShortCode();
+        $pdfFormatPaths = glob(APPLICATION_PATH . "/$module/results/pdf/result-pdf-$countryShortCode*.{php}", GLOB_BRACE);
 
-        $list = [];
-
-        $pdfFormat = glob(APPLICATION_PATH . "/$module/results/pdf/result-pdf-$countryShortCode*.{php}", GLOB_BRACE);
-
-        if (!empty($pdfFormat)) {
-            foreach ($pdfFormat as $formatPath) {
+        if (!empty($pdfFormatPaths)) {
+            $activeReportFormats = array_map(function ($formatPath) {
                 $baseName = basename($formatPath);
-                $value = str_replace(array('.php', 'result-pdf-'), '', $baseName);
-                $list["pdf/$baseName"] = strtoupper($value);
-            }
+                $formatName = str_replace(['.php', 'result-pdf-'], '', $baseName);
+                return ["pdf/$baseName" => strtoupper($formatName)];
+            }, $pdfFormatPaths);
         }
 
-        $list["pdf/result-pdf-$countryShortCode.php"] = "Default";
+        $activeReportFormats["pdf/result-pdf-$countryShortCode.php"] = "Default";
 
-        return $list;
+        return $activeReportFormats;
     }
+
 
     public function getCountryShortCode()
     {
-        if ($this->db == null) {
-            return false;
-        }
         return once(function () {
             $this->db->where("vlsm_country_id", $this->getGlobalConfig('vl_form'));
             return $this->db->getValue("s_available_country_forms", "short_name");
@@ -804,7 +789,7 @@ class CommonService
         if ($condition) {
             $query .= " WHERE " . $condition;
         }
-        // die($query);
+
         $results = $this->db->rawQuery($query);
         if ($option) {
             foreach ($results as $row) {
@@ -819,14 +804,14 @@ class CommonService
     public function stringToCamelCase($string, $character = "_", $capitalizeFirstCharacter = false)
     {
         $str = str_replace($character, '', ucwords($string, $character));
-        $str = (!$capitalizeFirstCharacter) ? lcfirst($str) : null;
-        return $str;
+        return (!$capitalizeFirstCharacter) ? lcfirst($str) : null;
     }
 
     public function getPrimaryKeyField($table)
     {
-        if (!$table)
+        if (!$table) {
             return null;
+        }
         $response =  $this->db->rawQueryOne("SHOW KEYS FROM " . $table . " WHERE Key_name = 'PRIMARY';");
         return $response['Column_name'] ?? null;
     }

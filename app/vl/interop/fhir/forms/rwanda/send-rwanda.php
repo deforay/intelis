@@ -3,16 +3,6 @@
 // this file is included in /vl/interop/fhir/vl-receive.php
 header('Content-Type: application/json');
 
-function prettyJson($json): string
-{
-    if (is_array($json)) {
-        return stripslashes(json_encode($json, JSON_PRETTY_PRINT));
-    } else {
-        return stripslashes(json_encode(json_decode($json), JSON_PRETTY_PRINT));
-    }
-}
-
-
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
@@ -106,12 +96,12 @@ foreach ($formResults as $row) {
 
 
     // echo "\n\n\n";
-    // echo prettyJson($json);
+    // echo $general->prettyJson($json);
     // continue;
 
     $resp = $fhir->post("/", $json);
 
-    //echo prettyJson($resp);
+    //echo $general->prettyJson($resp);
 
 
     $updateData = array('result_sent_to_source' => 'sent');
@@ -125,4 +115,4 @@ $response = json_encode(array('timestamp' => time(), 'processed' => $counter, 'r
 
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'FHIR-VL-Send', 'vl', $fhir->getRequestUrl(), $json, null, 'json');
 
-echo prettyJson($response);
+echo $general->prettyJson($response);

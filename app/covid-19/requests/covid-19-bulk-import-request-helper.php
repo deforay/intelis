@@ -51,15 +51,15 @@ try {
         foreach ($resultArray as $rowIndex => $rowData) {
             // echo "<pre>";print_r($rowData);die;
             if (!empty($rowData['A'])) {
-                $sampleCode         = $general->getDuplicateDataFromField('form_covid19', 'sample_code', $rowData['A']);
-                $provinceId         = $general->getDuplicateDataFromField('geographical_divisions', 'geo_name', $rowData['D']);
-                $facility           = $general->getDuplicateDataFromField('facility_details', 'facility_name', $rowData['F']);
-                $testReason         = $general->getDuplicateDataFromField('r_covid19_test_reasons', 'test_reason_name', $rowData['AT']);
-                $sampleType         = $general->getDuplicateDataFromField('r_covid19_sample_type', 'sample_name', $rowData['AV']);
-                $labName            = $general->getDuplicateDataFromField('facility_details', 'facility_name', $rowData['AY'], 'facility_type');
-                $rejectionReason    = $general->getDuplicateDataFromField('r_covid19_sample_rejection_reasons', 'rejection_reason_name', $rowData['BA']);
-                $result             = $general->getDuplicateDataFromField('r_covid19_results', 'result', $rowData['BK']);
-                $resultStatus       = $general->getDuplicateDataFromField('r_sample_status', 'status_name', $rowData['BO']);
+                $sampleCode         = $general->getDataFromOneFieldAndValue('form_covid19', 'sample_code', $rowData['A']);
+                $provinceId         = $general->getDataFromOneFieldAndValue('geographical_divisions', 'geo_name', $rowData['D']);
+                $facility           = $general->getDataFromOneFieldAndValue('facility_details', 'facility_name', $rowData['F']);
+                $testReason         = $general->getDataFromOneFieldAndValue('r_covid19_test_reasons', 'test_reason_name', $rowData['AT']);
+                $sampleType         = $general->getDataFromOneFieldAndValue('r_covid19_sample_type', 'sample_name', $rowData['AV']);
+                $labName            = $general->getDataFromOneFieldAndValue('facility_details', 'facility_name', $rowData['AY'], 'facility_type = 2');
+                $rejectionReason    = $general->getDataFromOneFieldAndValue('r_covid19_sample_rejection_reasons', 'rejection_reason_name', $rowData['BA']);
+                $result             = $general->getDataFromOneFieldAndValue('r_covid19_results', 'result', $rowData['BK']);
+                $resultStatus       = $general->getDataFromOneFieldAndValue('r_sample_status', 'status_name', $rowData['BO']);
                 $labTechnician      = $usersService->addUserIfNotExists($rowData['BR']);
 
                 $instanceId = $general->getInstanceId();

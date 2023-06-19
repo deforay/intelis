@@ -20,7 +20,7 @@ use App\Services\GeoLocationsService;
 class VlService implements TestServiceInterface
 {
 
-    protected ?MysqliDb $db = null;
+    protected MysqliDb $db;
     protected string $table = 'form_vl';
     protected string $shortCode = 'VL';
     protected CommonService $commonService;
@@ -48,7 +48,7 @@ class VlService implements TestServiceInterface
 
     protected int $suppressionLimit = 1000;
 
-    public function __construct($db = null, $commonService = null)
+    public function __construct(?MysqliDb $db, CommonService $commonService)
     {
         $this->db = $db ?? ContainerRegistry::get('db');
         $this->commonService = $commonService;

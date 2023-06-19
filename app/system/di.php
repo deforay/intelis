@@ -49,12 +49,17 @@ try {
 }
 
 $builder = new ContainerBuilder();
+$builder->useAutowiring(true);
 
 // Enable compilation for better performance in production
-if (!empty($systemConfig) && isset($systemConfig['cache_di']) && $systemConfig['cache_di']) {
-    $builder->enableCompilation(ROOT_PATH . '/cache');
-}
+if (!empty($systemConfig['system']['cache_di']) && true === $systemConfig['system']['cache_di']) {
 
+    if (!is_dir(ROOT_PATH . '/cache')) {
+        mkdir(ROOT_PATH . '/cache', 0777, true);
+    }
+    $builder->enableCompilation(ROOT_PATH . '/cache');
+    $builder->enableDefinitionCache(ROOT_PATH . '/cache');
+}
 
 // Configuration and DB
 $builder->addDefinitions([
