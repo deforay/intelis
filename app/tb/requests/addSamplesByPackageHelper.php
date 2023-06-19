@@ -52,7 +52,11 @@ foreach ($sampleResult as $sampleRow) {
     // ONLY IF SAMPLE CODE IS NOT ALREADY GENERATED
     if ($sampleRow['sample_code'] == null || $sampleRow['sample_code'] == '' || $sampleRow['sample_code'] == 'null') {
 
-        $sampleJson = $tbService->generatetbSampleCode($provinceCode, DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date']));
+        $sampleCodeParams = [];
+        $sampleCodeParams['sampleCollectionDate'] = DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date'] ?? '');
+        $sampleCodeParams['provinceCode'] = $provinceCode;
+
+        $sampleJson = $tbService->generateSampleCode($sampleCodeParams);
         $sampleData = json_decode($sampleJson, true);
         $tbData = [];
         $tbData['sample_code'] = $sampleData['sampleCode'];

@@ -49,7 +49,11 @@ foreach ($sampleResult as $sampleRow) {
     // ONLY IF SAMPLE CODE IS NOT ALREADY GENERATED
     if ($sampleRow['sample_code'] == null || $sampleRow['sample_code'] == '' || $sampleRow['sample_code'] == 'null') {
 
-        $sampleJson = $covid19Service->generateCovid19SampleCode($provinceCode, DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date']));
+        $sampleCodeParams = [];
+        $sampleCodeParams['sampleCollectionDate'] = DateUtility::humanReadableDateFormat($formData['sample_collection_date'] ?? '');
+        $sampleCodeParams['provinceCode'] = $provinceCode;
+
+        $sampleJson =  $covid19Service->generateSampleCode($sampleCodeParams);
         $sampleData = json_decode($sampleJson, true);
         $covid19Data = [];
         $covid19Data['sample_code'] = $sampleData['sampleCode'];

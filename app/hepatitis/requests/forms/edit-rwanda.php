@@ -95,21 +95,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                    <?php if ($hepatitisInfo['remote_sample'] == 'yes') { ?>
-                                        <tr>
-                                            <?php
-                                            if ($hepatitisInfo['sample_code'] != '') {
-                                            ?>
-                                                <td colspan="4"> <label for="sampleSuggest" class="text-danger">&nbsp;&nbsp;&nbsp;Please note that this Remote Sample has already been imported with VLSM Sample ID </td>
-                                                <td colspan="2" align="left"> <?php echo $hepatitisInfo['sample_code']; ?></label> </td>
-                                            <?php
-                                            } else {
-                                            ?>
-                                                <td colspan="4"> <label for="sampleSuggest">Sample ID (might change while submitting the form)</label></td>
-                                                <td colspan="2" align="left"> <?php echo $sampleSuggestion; ?></td>
-                                            <?php } ?>
-                                        </tr>
-                                    <?php } ?>
                                     <tr>
                                         <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode">Sample ID </label> </td>

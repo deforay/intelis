@@ -9,14 +9,9 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
+use App\Interfaces\TestServiceInterface;
 
-/**
- * TB Service
- *
- * @author Amit
- */
-
-class TbService
+class TbService implements TestServiceInterface
 {
 
     protected ?MysqliDb $db = null;
@@ -30,13 +25,18 @@ class TbService
         $this->commonService = $commonService;
     }
 
-    public function generateTbSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
+    public function generateSampleCode($params)
     {
 
         $globalConfig = $this->commonService->getGlobalConfig();
         $vlsmSystemConfig = $this->commonService->getSystemConfig();
 
-        if (DateUtility::verifyIfDateValid($sampleCollectionDate) === false) {
+        $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
+        $provinceCode = $params['provinceCode'] ?? null;
+        $provinceId = $params['provinceId'] ?? null;
+        $maxCodeKeyVal = $params['maxCodeKeyVal'] ?? null;
+
+        if (empty($sampleCollectionDate) || DateUtility::verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
         $dateObj = new DateTimeImmutable($sampleCollectionDate);
@@ -53,11 +53,6 @@ class TbService
             $sampleCodeKeyCol = 'remote_sample_code_key';
             $sampleCodeCol = 'remote_sample_code';
         }
-        // if (isset($user['access_type']) && !empty($user['access_type']) && $user['access_type'] != 'testing-lab') {
-        //     $remotePrefix = 'R';
-        //     $sampleCodeKeyCol = 'remote_sample_code_key';
-        //     $sampleCodeCol = 'remote_sample_code';
-        // }
 
         $mnthYr = $month . $year;
         // Checking if sample code format is empty then we set by default 'MMYY'
@@ -80,7 +75,7 @@ class TbService
                 if (empty($provinceId) && !empty($provinceCode)) {
                     /** @var GeoLocationsService $geoLocationsService */
                     $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
-                    $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
+                    $params['provinceId'] = $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
                 }
 
                 if (!empty($provinceId)) {
@@ -123,12 +118,12 @@ class TbService
             $sampleCodeGenerator['sampleCodeInText'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
             $sampleCodeGenerator['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
             $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
-        } else if ($sampleCodeFormat == 'auto2') {
+        } elseif ($sampleCodeFormat == 'auto2') {
             $sampleCodeGenerator['sampleCode'] = $remotePrefix . date('y', strtotime($sampleCollectionDate)) . $provinceCode . $this->shortCode . $sampleCodeGenerator['maxId'];
             $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . date('y', strtotime($sampleCollectionDate)) . $provinceCode . $this->shortCode . $sampleCodeGenerator['maxId'];
             $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
             $sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
-        } else if ($sampleCodeFormat == 'YY' || $sampleCodeFormat == 'MMYY') {
+        } elseif ($sampleCodeFormat == 'YY' || $sampleCodeFormat == 'MMYY') {
             $sampleCodeGenerator['sampleCode'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
             $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
             $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'];
@@ -138,7 +133,10 @@ class TbService
         $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sampleCodeGenerator['sampleCode'] . "'";
         $checkResult = $this->db->rawQueryOne($checkQuery);
         if (!empty($checkResult)) {
-            return $this->generateTbSampleCode($provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $maxId, $user);
+            error_log("DUP::: Sample Code ====== " . $sampleCodeGenerator['sampleCode']);
+            error_log("DUP::: Sample Key Code ====== " . $maxId);
+            $params['maxCodeKeyVal'] = $maxId;
+            return $this->generateSampleCode($params);
         }
 
         return json_encode($sampleCodeGenerator);
@@ -265,7 +263,7 @@ class TbService
         return $this->db->rawQueryOne($sQuery);
     }
 
-    public function insertSampleCode($params, $returnSampleData = false)
+    public function insertSample($params, $returnSampleData = false)
     {
         try {
             $formId = $this->commonService->getGlobalConfig('vl_form');
@@ -279,13 +277,15 @@ class TbService
                 return 0;
             }
 
-            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
-            $sampleJson = $this->generateTbSampleCode($provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
+            $sampleCodeParams = [];
+            $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
+            $sampleCodeParams['provinceCode'] = $provinceCode;
+            $sampleCodeParams['provinceId'] = $provinceId;
+            $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey'] ?? null;
+
+            $sampleJson = $this->generateSampleCode($sampleCodeParams);
             $sampleData = json_decode($sampleJson, true);
 
-
-            // echo "<pre>";
-            // print_r($tesRequestData);die;
 
             $sQuery = "SELECT tb_id FROM form_tb ";
             if (!empty($sampleData['sampleCode'])) {
@@ -345,7 +345,7 @@ class TbService
             } else {
                 // If this sample code exists, let us regenerate the sample code and insert
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
-                return $this->insertSampleCode($params);
+                return $this->insertSample($params);
             }
         } catch (Exception $e) {
             error_log('Insert TB Sample : ' . $this->db->getLastError());

@@ -49,11 +49,6 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 	$rKey = '';
 }
 
-//suggest sample id when lab user add request sample
-$sampleSuggestion = '';
-$sampleSuggestionDisplay = 'display:none;';
-
-
 $pdResult = $db->query($pdQuery);
 $province = "<option value=''> -- Sélectionner -- </option>";
 foreach ($pdResult as $provinceName) {
@@ -97,19 +92,6 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 									<h3 class="box-title">Information sur la structure de soins</h3>
 								</div>
 
-								<div class="" style="<?php echo $sampleSuggestionDisplay; ?>">
-									<?php
-									if ($eidInfo['sample_code'] != '') {
-									?>
-										<label for="sampleSuggest" class="text-danger">&nbsp;&nbsp;&nbsp;Please note that this Remote Sample has already been imported with VLSM Sample ID <?= htmlspecialchars($eidInfo['sample_code']); ?></label>
-									<?php
-									} else {
-									?>
-										<label for="sampleSuggest">&nbsp;&nbsp;&nbsp;Échantillon ID (peut changer en soumettant le formulaire) - </label>
-										<?php echo $sampleSuggestion; ?>
-									<?php } ?>
-
-								</div>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
 
@@ -122,7 +104,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 										<?php } else { ?>
 											<td><label for="sampleCode">Échantillon ID <span class="mandatory">*</span></label></td>
 											<td>
-												<input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" value="<?php echo ($sCode != '') ? $sCode : htmlspecialchars($eidInfo[$sampleCode]); ?>" style="width:100%;" readonly="readonly" onchange="checkSampleNameValidation('form_eid','<?php echo $sampleCode; ?>',this.id,'<?php echo "eid_id##" . $eidInfo["eid_id"]; ?>','This sample number already exists.Try another number',null)" />
+												<input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" value="<?php echo $eidInfo[$sampleCode]; ?>" style="width:100%;" readonly="readonly" onchange="checkSampleNameValidation('form_eid','<?php echo $sampleCode; ?>',this.id,'<?php echo "eid_id##" . $eidInfo["eid_id"]; ?>','This sample number already exists.Try another number',null)" />
 												<input type="hidden" name="sampleCodeCol" value="<?= htmlspecialchars($eidInfo['sample_code']); ?>" />
 											</td>
 										<?php } ?>

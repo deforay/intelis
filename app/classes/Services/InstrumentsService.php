@@ -5,11 +5,7 @@ namespace App\Services;
 use App\Registries\ContainerRegistry;
 use MysqliDb;
 
-/**
- * General functions
- *
- * @author Amit
- */
+
 
 class InstrumentsService
 {

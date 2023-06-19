@@ -92,19 +92,6 @@ foreach ($pdResult as $provinceName) {
 $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['facility_id'], '-- Sélectionner --');
 
 
-//suggest N°EPID when lab user add request sample
-$sampleSuggestion = '';
-$sampleSuggestionDisplay = 'display:none;';
-$sCode = (isset($_GET['c']) && $_GET['c'] != '') ? $_GET['c'] : '';
-if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
-    $vlObj = new Covid19Service();
-    $sampleCollectionDate = DateUtility::humanReadableDateFormat($sampleCollectionDate);
-    $sampleSuggestionJson = $vlObj->generateCovid19SampleCode($stateResult[0]['province_code'], $sampleCollectionDate);
-    $sampleCodeKeys = json_decode($sampleSuggestionJson, true);
-    $sampleSuggestion = $sampleCodeKeys['sampleCode'];
-    $sampleSuggestionDisplay = 'display:block;';
-}
-
 $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 
 // Province
@@ -185,32 +172,18 @@ if (!empty($patientData)) {
                                     <h3 class="box-title" style="font-size:1em;">À remplir par le clinicien / infirmier demandeur</h3>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                    <?php if ($covid19Info['remote_sample'] == 'yes') { ?>
-                                        <tr>
-                                            <?php
-                                            if ($covid19Info['sample_code'] != '') {
-                                            ?>
-                                                <td colspan="4"> <label for="sampleSuggest" class="text-danger">&nbsp;&nbsp;&nbsp;Veuillez noter que cet exemple distant a déjà été importé avec VLSM Échantillon ID </td>
-                                                <td colspan="4" align="left"> <label><?php echo $covid19Info['sample_code']; ?></label> </td>
-                                            <?php
-                                            } else {
-                                            ?>
-                                                <td colspan="4"> <label for="sampleSuggest">Échantillon ID (peut changer lors de la soumission du formulaire)</label></td>
-                                                <td colspan="4" align="left"> <?php echo $sampleSuggestion; ?></td>
-                                            <?php } ?>
-                                        </tr>
-                                    <?php } ?>
+
                                     <tr>
                                         <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode">Échantillon ID </label> </td>
                                             <td>
-                                                <span id="sampleCodeInText" style="width:30%;border-bottom:1px solid #333;"><?php echo ($sCode != '') ? $sCode : htmlspecialchars($covid19Info[$sampleCode]); ?></span>
-                                                <input type="hidden" class="<?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" value="<?php echo ($sCode != '') ? $sCode : htmlspecialchars($covid19Info[$sampleCode]); ?>" />
+                                                <span id="sampleCodeInText" style="width:30%;border-bottom:1px solid #333;"><?php echo $covid19Info[$sampleCode]; ?></span>
+                                                <input type="hidden" class="<?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" value="<?php echo $covid19Info[$sampleCode]; ?>" />
                                             </td>
                                         <?php } else { ?>
                                             <td><label for="sampleCode">Échantillon ID </label><span class="mandatory">*</span> </td>
                                             <td>
-                                                <input type="text" readonly value="<?php echo ($sCode != '') ? $sCode : htmlspecialchars($covid19Info[$sampleCode]); ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Échantillon ID" style="width:100%;" onchange="" />
+                                                <input type="text" readonly value="<?php echo $covid19Info[$sampleCode]; ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Échantillon ID" style="width:100%;" onchange="" />
                                             </td>
                                         <?php } ?>
                                         <th scope="row"><label for="testNumber">Prélévement</label></th>

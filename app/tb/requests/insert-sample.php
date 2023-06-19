@@ -10,4 +10,4 @@ if (session_status() == PHP_SESSION_NONE) {
 
 /** @var TbService $tbService */
 $tbService = ContainerRegistry::get(TbService::class);
-echo $tbService->insertSampleCode($_POST);
+echo $tbService->insertSample($_POST);

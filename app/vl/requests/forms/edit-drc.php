@@ -58,12 +58,6 @@ if (!isset($provinceResult[0]['geo_code']) || $provinceResult[0]['geo_code'] == 
 $aQuery = "SELECT * from r_vl_art_regimen WHERE art_status like 'active' ORDER by parent_art ASC, art_code ASC";
 $aResult = $db->query($aQuery);
 
-
-//suggest sample id when lab user add request sample
-$sampleSuggestion = '';
-$sampleSuggestionDisplay = 'display:none;';
-
-
 ?>
 
 <style>
@@ -114,20 +108,6 @@ $sampleSuggestionDisplay = 'display:none;';
 								<div class="box-header with-border">
 									<h3 class="box-title">Information sur la structure de soins</h3>
 								</div>
-
-								<div class="" style="<?php echo $sampleSuggestionDisplay; ?>">
-									<?php
-									if ($vlQueryInfo['sample_code'] != '') {
-									?>
-										<label for="sampleSuggest" class="text-danger">Cet exemple a déjà été importé avec l'ID échantillon VLSM <?= ($vlQueryInfo['sample_code']); ?></label>
-									<?php
-									} else {
-									?>
-										<label for="sampleSuggest">&nbsp;&nbsp;&nbsp;Suggérer un ID d'échantillon (peut changer en soumettant le formulaire) - </label>
-										<?php echo $sampleSuggestion; ?>
-									<?php } ?>
-								</div>
-
 
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 

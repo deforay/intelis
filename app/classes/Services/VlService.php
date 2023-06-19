@@ -11,11 +11,6 @@ use App\Interfaces\TestServiceInterface;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
-/**
- * VL Service
- *
- * @author Amit
- */
 
 class VlService implements TestServiceInterface
 {
@@ -161,8 +156,8 @@ class VlService implements TestServiceInterface
                         WHERE $sampleCodeCol= ?";
         $checkResult = $this->db->rawQueryOne($checkQuery, [$sampleCodeGenerator['sampleCode']]);
         if (!empty($checkResult)) {
-            // error_log("DUP::: Sample Code ====== " . $sampleCodeGenerator['sampleCode']);
-            // error_log("DUP::: Sample Key Code ====== " . $maxId);
+            error_log("DUP::: Sample Code ====== " . $sampleCodeGenerator['sampleCode']);
+            error_log("DUP::: Sample Key Code ====== " . $maxId);
             $params['maxCodeKeyVal'] = $maxId;
             return $this->generateSampleCode($params);
         }

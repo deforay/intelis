@@ -10,12 +10,6 @@ use App\Interfaces\TestServiceInterface;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
-/**
- * EID functions
- *
- * @author Amit
- */
-
 class EidService implements TestServiceInterface
 {
 
@@ -141,9 +135,8 @@ class EidService implements TestServiceInterface
                                 WHERE $sampleCodeCol=?";
         $checkResult = $this->db->rawQueryOne($checkQuery, [$sampleCodeGenerator['sampleCode']]);
         if (!empty($checkResult)) {
-            // error_log("DUP::: Sample Code ====== " . $sampleCodeGenerator['sampleCode']);
-            // error_log("DUP::: Sample Key Code ====== " . $maxId);
-            // error_log('DUP::: ' . $this->db->getLastQuery());
+            error_log("DUP::: Sample Code ====== " . $sampleCodeGenerator['sampleCode']);
+            error_log("DUP::: Sample Key Code ====== " . $maxId);
             $params['maxCodeKeyVal'] = $maxId;
             return $this->generateSampleCode($params);
         }
@@ -196,9 +189,9 @@ class EidService implements TestServiceInterface
             }
 
             $sampleCodeParams = [];
-            $sampleCodeParams['sampleCollectionDate'] = $params['sampleCollectionDate'] ?? null;
-            $sampleCodeParams['provinceCode'] = $params['provinceCode'] ?? null;
-            $sampleCodeParams['provinceId'] = $params['provinceId'] ?? null;
+            $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
+            $sampleCodeParams['provinceCode'] = $provinceCode;
+            $sampleCodeParams['provinceId'] = $provinceId;
             $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey'] ?? null;
 
             $sampleJson = $this->generateSampleCode($sampleCodeParams);

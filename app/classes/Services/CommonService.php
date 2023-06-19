@@ -1,10 +1,6 @@
 <?php
 
-/**
- * General functions
- *
- * @author Amit
- */
+
 
 namespace App\Services;
 

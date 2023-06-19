@@ -64,11 +64,6 @@ if (!isset($stateResult[0]['geo_code'])) {
     $provinceCode = $stateResult[0]['geo_code'];
 }
 
-//suggest sample id when lab user add request sample
-$sampleSuggestion = '';
-$sampleSuggestionDisplay = 'display:none;';
-$sCode = $_GET['c'];
-
 $pdResult = $db->query($pdQuery);
 $province = "<option value=''> -- Select -- </option>";
 foreach ($pdResult as $provinceName) {
@@ -123,7 +118,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         <?php } else { ?>
                                             <td><label for="sampleCode">Sample ID </label><span class="mandatory">*</span></td>
                                             <td>
-                                                <input type="text" readonly value="<?php echo ($sCode != '') ? $sCode : htmlspecialchars($eidInfo[$sampleCode]); ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Sample ID" title="Please enter sample id" style="width:100%;" onchange="" />
+                                                <input type="text" readonly value="<?php echo $eidInfo[$sampleCode]; ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Sample ID" title="Please enter sample id" style="width:100%;" onchange="" />
                                             </td>
                                         <?php } ?>
                                         <td></td>

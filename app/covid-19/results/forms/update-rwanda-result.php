@@ -106,32 +106,17 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                    <?php if ($covid19Info['remote_sample'] == 'yes') { ?>
-                                        <tr>
-                                            <?php
-                                            if ($covid19Info['sample_code'] != '') {
-                                            ?>
-                                                <td colspan="4"> <label for="sampleSuggest" class="text-danger">&nbsp;&nbsp;&nbsp;Please note that this Remote Sample has already been imported with VLSM Sample ID </td>
-                                                <td colspan="2" align="left"> <?php echo $covid19Info['sample_code']; ?></label> </td>
-                                            <?php
-                                            } else {
-                                            ?>
-                                                <td colspan="4"> <label for="sampleSuggest">Sample ID (might change while submitting the form)</label></td>
-                                                <td colspan="2" align="left"> <?php echo $sampleSuggestion; ?></td>
-                                            <?php } ?>
-                                        </tr>
-                                    <?php } ?>
                                     <tr>
                                         <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <td><label for="sampleCode">Sample ID </label> </td>
                                             <td colspan="5">
-                                                <span id="sampleCodeInText" style="width:30%;border-bottom:1px solid #333;"><?php echo ($sCode != '') ? $sCode : htmlspecialchars($covid19Info[$sampleCode]); ?></span>
-                                                <input type="hidden" class="<?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" value="<?php echo ($sCode != '') ? $sCode : htmlspecialchars($covid19Info[$sampleCode]); ?>" />
+                                                <span id="sampleCodeInText" style="width:30%;border-bottom:1px solid #333;"><?php echo $covid19Info[$sampleCode]; ?></span>
+                                                <input type="hidden" class="<?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" value="<?php echo $covid19Info[$sampleCode]; ?>" />
                                             </td>
                                         <?php } else { ?>
                                             <td><label for="sampleCode">Sample ID </label><span class="mandatory">*</span> </td>
                                             <td colspan="5">
-                                                <input type="text" readonly value="<?php echo ($sCode != '') ? $sCode : htmlspecialchars($covid19Info[$sampleCode]); ?>" class="form-control " id="sampleCode" name="sampleCode" placeholder="Sample ID" title="Please enter Sample ID" style="width:30%;" onchange="" />
+                                                <input type="text" readonly value="<?php echo $covid19Info[$sampleCode]; ?>" class="form-control " id="sampleCode" name="sampleCode" placeholder="Sample ID" title="Please enter Sample ID" style="width:30%;" onchange="" />
                                             </td>
                                         <?php } ?>
                                     </tr>

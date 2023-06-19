@@ -12,29 +12,21 @@ if (session_status() == PHP_SESSION_NONE) {
 /** @var HepatitisService $hepatitisService */
 $hepatitisService = ContainerRegistry::get(HepatitisService::class);
 
-$sampleCollectionDate = $province = '';
-
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
 
-if (isset($_POST['provinceCode'])) {
-  $province = $_POST['provinceCode'];
-} else if (isset($_POST['pName'])) {
-  $province = $_POST['pName'];
-}
+$provinceCode = $_POST['provinceCode'] ?? $_POST['pName'] ?? null;
+$sampleCollectionDate = $_POST['sampleCollectionDate'] ?? $_POST['sDate'] ?? null;
 
-if (isset($_POST['sampleCollectionDate'])) {
-  $sampleCollectionDate = $_POST['sampleCollectionDate'];
-} else if (isset($_POST['sDate'])) {
-  $sampleCollectionDate = $_POST['sDate'];
-}
-
-$sampleFrom = $_POST['sampleFrom'] ?? '';
-
-$prefix = $_POST['prefix'] ?? '';
+$prefix = $_POST['prefix'] ?? null;
 
 
-echo $hepatitisService->generateHepatitisSampleCode($prefix, $province, $sampleCollectionDate, $sampleFrom);
+$sampleCodeParams = [];
+$sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
+$sampleCodeParams['prefix'] = $_POST['prefix'] ?? null;
+$sampleCodeParams['provinceCode'] = $provinceCode;
+
+echo $hepatitisService->generateSampleCode($sampleCodeParams);

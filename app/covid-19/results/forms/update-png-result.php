@@ -90,19 +90,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
 $implementingPartnerOptions = $general->generateSelectOptions($implementingPartnerArray, $covid19Info['implementing_partner'], '-- Select --');
 $fundingSourceOptions = $general->generateSelectOptions($fundingSourceArray, $covid19Info['funding_source'], '-- Select --');
 
-//suggest N°EPID when lab user add request sample
-$sampleSuggestion = '';
-$sampleSuggestionDisplay = 'display:none;';
-$sCode = (isset($_GET['c']) && $_GET['c'] != '') ? $_GET['c'] : '';
-if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
-    $vlObj = new Covid19Service();
-    $sampleCollectionDate = explode(" ", $sampleCollectionDate);
-    $sampleCollectionDate = DateUtility::humanReadableDateFormat($sampleCollectionDate[0]);
-    $sampleSuggestionJson = $vlObj->generateCovid19SampleCode($stateResult[0]['geo_code'], $sampleCollectionDate, 'png');
-    $sampleCodeKeys = json_decode($sampleSuggestionJson, true);
-    $sampleSuggestion = $sampleCodeKeys['sampleCode'];
-    $sampleSuggestionDisplay = 'display:block;';
-}
 ?>
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->

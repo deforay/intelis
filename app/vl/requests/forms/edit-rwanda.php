@@ -87,9 +87,6 @@ if (trim($facilityResult[0]['facility_state']) != '') {
 }
 
 
-//suggest sample id when lab user add request sample
-$sampleSuggestion = '';
-$sampleSuggestionDisplay = 'display:none;';
 //set reason for changes history
 $rch = '';
 if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_for_vl_result_changes'] != '' && $vlQueryInfo['reason_for_vl_result_changes'] != null) {
@@ -151,19 +148,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                         <h3 class="box-title">Clinic Information: (To be filled by requesting Clinican/Nurse)</h3>
                                    </div>
                                    <div class="">
-                                        <div class="" style="<?php echo $sampleSuggestionDisplay; ?>">
-                                             <?php
-                                             if ($vlQueryInfo['sample_code'] != '') {
-                                             ?>
-                                                  <label for="sampleSuggest" class="text-danger">&nbsp;&nbsp;&nbsp;Please note that this Remote Sample has already been imported with VLSM Sample ID <?= ($vlQueryInfo['sample_code']); ?></label>
-                                             <?php
-                                             } else {
-                                             ?>
-                                                  <label for="sampleSuggest">&nbsp;&nbsp;&nbsp;Sample ID (might change while submitting the form) - </label>
-                                                  <?php echo $sampleSuggestion; ?>
-                                             <?php } ?>
 
-                                        </div>
                                         <div class="box-body">
                                              <div class="row">
                                                   <div class="col-xs-3 col-md-3">

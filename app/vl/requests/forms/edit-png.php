@@ -203,11 +203,11 @@ if (isset($vlQueryInfo['clinic_date']) && trim($vlQueryInfo['clinic_date']) != '
 										<div class="form-group">
 											<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
 												<label class="labels" for="sampleCode">Laboratory ID </label><br>
-												<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo ($sCode != '') ? $sCode : $vlQueryInfo[$sampleCode]; ?></span>
-												<input type="hidden" class="" id="sampleCode" name="sampleCode" value="<?php echo ($sCode != '') ? $sCode : $vlQueryInfo[$sampleCode]; ?>" />
+												<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo $vlQueryInfo[$sampleCode]; ?></span>
+												<input type="hidden" class="" id="sampleCode" name="sampleCode" value="<?php echo $vlQueryInfo[$sampleCode]; ?>" />
 											<?php } else { ?>
 												<label class="labels" for="sampleCode">Laboratory ID <span class="mandatory">*</span></label>
-												<input type="text" class="form-control isRequired " id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" value="<?php echo ($sCode != '') ? $sCode : $vlQueryInfo[$sampleCode]; ?>" style="width:100%;" readonly="readonly" />
+												<input type="text" class="form-control isRequired " id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" value="<?php echo $vlQueryInfo[$sampleCode]; ?>" style="width:100%;" readonly="readonly" />
 												<input type="hidden" name="sampleCodeCol" value="<?= ($vlQueryInfo['sample_code']); ?>" />
 											<?php } ?>
 

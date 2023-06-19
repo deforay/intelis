@@ -9,53 +9,35 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
+use App\Interfaces\TestServiceInterface;
 
-/**
- * Hepatitis functions
- *
- * @author Amit
- */
-
-class HepatitisService
+class HepatitisService implements TestServiceInterface
 {
 
     protected ?MysqliDb $db = null;
     protected string $table = 'form_hepatitis';
-    protected string $shortCode = 'H';
-    public array $suppressedArray = array(
-        'target not detected',
-        'tnd',
-        'not detected',
-        'below detection limit',
-        'below detection level',
-        'bdl',
-        'suppressed',
-        '< 20',
-        '<20',
-        '< 40',
-        '<40',
-        '< 839',
-        '<839',
-        '< Titer min',
-        'negative',
-        'negat'
-    );
-
+    protected string $shortCode = 'HEP';
     protected CommonService $commonService;
 
-    public function __construct($db = null, $commonService = null)
+    public function __construct(?MysqliDb $db = null, CommonService $commonService = null)
     {
         $this->db = $db ?? ContainerRegistry::get('db');
         $this->commonService = $commonService;
     }
 
-    public function generateHepatitisSampleCode($prefix, $provinceCode, $sampleCollectionDate, $sampleFrom = null, $provinceId = '', $maxCodeKeyVal = null, $user = null)
+    public function generateSampleCode($params)
     {
 
         $globalConfig = $this->commonService->getGlobalConfig();
         $vlsmSystemConfig = $this->commonService->getSystemConfig();
 
-        if (DateUtility::verifyIfDateValid($sampleCollectionDate) === false) {
+        $prefix = $params['prefix'] ?? null;
+        $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
+        $provinceCode = $params['provinceCode'] ?? null;
+        $provinceId = $params['provinceId'] ?? null;
+        $maxCodeKeyVal = $params['maxCodeKeyVal'] ?? null;
+
+        if (empty($sampleCollectionDate) || DateUtility::verifyIfDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
         $dateObj = new DateTimeImmutable($sampleCollectionDate);
@@ -76,11 +58,10 @@ class HepatitisService
         $mnthYr = $month . $year;
         // Checking if sample code format is empty then we set by default 'MMYY'
         $sampleCodeFormat = $globalConfig['hepatitis_sample_code'] ?? 'MMYY';
-        $prefixFromConfig = $globalConfig['hepatitis_sample_code_prefix'] ?? '';
 
         if ($sampleCodeFormat == 'MMYY') {
             $mnthYr = $month . $year;
-        } else if ($sampleCodeFormat == 'YY') {
+        } elseif ($sampleCodeFormat == 'YY') {
             $mnthYr = $year;
         }
 
@@ -94,7 +75,7 @@ class HepatitisService
                 if (empty($provinceId) && !empty($provinceCode)) {
                     /** @var GeoLocationsService $geoLocationsService */
                     $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
-                    $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
+                    $params['provinceId'] = $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
                 }
 
                 if (!empty($provinceId)) {
@@ -115,8 +96,6 @@ class HepatitisService
 
         $maxId = sprintf("%04d", (int) $maxId);
 
-        //error_log($maxCodeKeyVal);
-
         $sampleCodeGenerator = [
             'sampleCode' => '',
             'sampleCodeInText' => '',
@@ -127,36 +106,39 @@ class HepatitisService
             'auto' => $autoFormatedString
         ];
 
-
-
         if ($globalConfig['vl_form'] == 5) {
             // PNG format has an additional R in prefix
             $remotePrefix = $remotePrefix . "R";
         }
-        if (isset($prefix) && $prefix != "") {
-            $prefixFromConfig = $prefix;
+
+        if (empty($prefix) || $prefix == '') {
+            $prefix = $globalConfig['hepatitis_sample_code_prefix'] ?? $this->shortCode;
         }
         if ($sampleCodeFormat == 'auto') {
-            $sampleCodeGenerator['sampleCode'] = ($remotePrefix . $prefixFromConfig . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
-            $sampleCodeGenerator['sampleCodeInText'] = ($remotePrefix . $prefixFromConfig . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
-            $sampleCodeGenerator['sampleCodeFormat'] = ($remotePrefix . $prefixFromConfig . $provinceCode . $autoFormatedString);
+            $sampleCodeGenerator['sampleCode'] = ($remotePrefix . $prefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
+            $sampleCodeGenerator['sampleCodeInText'] = ($remotePrefix . $prefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
+            $sampleCodeGenerator['sampleCodeFormat'] = ($remotePrefix . $prefix . $provinceCode . $autoFormatedString);
             $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
-        } else if ($sampleCodeFormat == 'auto2') {
-            $sampleCodeGenerator['sampleCode'] = $remotePrefix . $prefixFromConfig . $year . $provinceCode . $this->shortCode . $sampleCodeGenerator['maxId'];
-            $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $year . $provinceCode . $this->shortCode . $sampleCodeGenerator['maxId'];
-            $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $provinceCode . $autoFormatedString;
+        } elseif ($sampleCodeFormat == 'auto2') {
+            $sampleCodeGenerator['sampleCode'] = $remotePrefix . $prefix . $year . $provinceCode . $this->shortCode . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $prefix . $year . $provinceCode . $this->shortCode . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefix . $provinceCode . $autoFormatedString;
             $sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
-        } else if ($sampleCodeFormat == 'YY' || $sampleCodeFormat == 'MMYY') {
-            $sampleCodeGenerator['sampleCode'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
-            $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
-            $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefixFromConfig . $sampleCodeGenerator['mnthYr'];
+        } elseif ($sampleCodeFormat == 'YY' || $sampleCodeFormat == 'MMYY') {
+            $sampleCodeGenerator['sampleCode'] = $remotePrefix . $prefix . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $prefix . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
+            $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefix . $sampleCodeGenerator['mnthYr'];
             $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
         }
 
-        $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM " . $this->table . " where $sampleCodeCol='" . $sampleCodeGenerator['sampleCode'] . "'";
-        $checkResult = $this->db->rawQueryOne($checkQuery);
+        $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol FROM $this->table
+                            where $sampleCodeCol= ?";
+        $checkResult = $this->db->rawQueryOne($checkQuery, [$sampleCodeGenerator['sampleCode']]);
         if (!empty($checkResult)) {
-            return $this->generateHepatitisSampleCode($prefix, $provinceCode, $sampleCollectionDate, $sampleFrom, $provinceId, $maxId, $user);
+            error_log("DUP::: Sample Code ====== " . $sampleCodeGenerator['sampleCode']);
+            error_log("DUP::: Sample Key Code ====== " . $maxId);
+            $params['maxCodeKeyVal'] = $maxId;
+            return $this->generateSampleCode($params);
         }
 
         return json_encode($sampleCodeGenerator);
@@ -173,7 +155,8 @@ class HepatitisService
         // Using this in sync requests/results
         if (is_array($formId)) {
 
-            $results = $this->db->rawQuery("SELECT * FROM hepatitis_patient_comorbidities WHERE `hepatitis_id` IN (" . implode(",", $formId) . ")");
+            $results = $this->db->rawQuery("SELECT * FROM hepatitis_patient_comorbidities
+                                                WHERE `hepatitis_id` IN (" . implode(",", $formId) . ")");
             if ($allData) {
                 return $results;
             }
@@ -182,7 +165,8 @@ class HepatitisService
             }
         } else {
 
-            $results = $this->db->rawQuery("SELECT * FROM hepatitis_patient_comorbidities WHERE `hepatitis_id` = $formId");
+            $results = $this->db->rawQuery("SELECT * FROM hepatitis_patient_comorbidities
+                                                WHERE `hepatitis_id` = $formId");
             if ($allData) {
                 return $results;
             }
@@ -204,7 +188,8 @@ class HepatitisService
         // Using this in sync requests/results
         if (is_array($formId)) {
 
-            $results = $this->db->rawQuery("SELECT * FROM hepatitis_risk_factors WHERE `hepatitis_id` IN (" . implode(",", $formId) . ")");
+            $results = $this->db->rawQuery("SELECT * FROM hepatitis_risk_factors
+                                                WHERE `hepatitis_id` IN (" . implode(",", $formId) . ")");
             if ($allData) {
                 return $results;
             }
@@ -213,7 +198,8 @@ class HepatitisService
             }
         } else {
 
-            $results = $this->db->rawQuery("SELECT * FROM hepatitis_risk_factors WHERE `hepatitis_id` = $formId");
+            $results = $this->db->rawQuery("SELECT * FROM hepatitis_risk_factors
+                                                WHERE `hepatitis_id` = $formId");
             if ($allData) {
                 return $results;
             }
@@ -226,7 +212,9 @@ class HepatitisService
 
     public function getHepatitisResults(): array
     {
-        $results = $this->db->rawQuery("SELECT result_id,result FROM r_hepatitis_results where status='active' ORDER BY result_id DESC");
+        $results = $this->db->rawQuery("SELECT result_id,result
+                                            FROM r_hepatitis_results
+                                            WHERE `status`='active' ORDER BY result_id DESC");
         $response = [];
         foreach ($results as $row) {
             $response[$row['result_id']] = $row['result'];
@@ -236,7 +224,8 @@ class HepatitisService
 
     public function getHepatitisSampleTypes(): array
     {
-        $results = $this->db->rawQuery("SELECT * FROM r_hepatitis_sample_type where status='active'");
+        $results = $this->db->rawQuery("SELECT * FROM r_hepatitis_sample_type
+                                            WHERE status='active'");
         $response = [];
         foreach ($results as $row) {
             $response[$row['sample_id']] = $row['sample_name'];
@@ -246,7 +235,9 @@ class HepatitisService
 
     public function getHepatitisReasonsForTesting(): array
     {
-        $results = $this->db->rawQuery("SELECT test_reason_id,test_reason_name FROM r_hepatitis_test_reasons WHERE `test_reason_status` LIKE 'active'");
+        $results = $this->db->rawQuery("SELECT test_reason_id,test_reason_name
+                                            FROM r_hepatitis_test_reasons
+                                            WHERE `test_reason_status` LIKE 'active'");
         $response = [];
         foreach ($results as $row) {
             $response[$row['test_reason_id']] = $row['test_reason_name'];
@@ -257,7 +248,9 @@ class HepatitisService
     public function getHepatitisComorbidities(): array
     {
         $comorbidityData = [];
-        $comorbidityQuery = "SELECT DISTINCT comorbidity_id, comorbidity_name FROM r_hepatitis_comorbidities WHERE comorbidity_status ='active'";
+        $comorbidityQuery = "SELECT DISTINCT comorbidity_id, comorbidity_name
+                                    FROM r_hepatitis_comorbidities
+                                    WHERE comorbidity_status ='active'";
         $comorbidityResult = $this->db->rawQuery($comorbidityQuery);
         foreach ($comorbidityResult as $comorbidity) {
             $comorbidityData[$comorbidity['comorbidity_id']] = ($comorbidity['comorbidity_name']);
@@ -269,7 +262,9 @@ class HepatitisService
     public function getHepatitisRiskFactors(): array
     {
         $riskFactorsData = [];
-        $riskFactorsQuery = "SELECT DISTINCT riskfactor_id, riskfactor_name FROM r_hepatitis_risk_factors WHERE riskfactor_status ='active'";
+        $riskFactorsQuery = "SELECT DISTINCT riskfactor_id, riskfactor_name
+                                FROM r_hepatitis_risk_factors
+                                WHERE riskfactor_status ='active'";
         $riskFactorsResult = $this->db->rawQuery($riskFactorsQuery);
         foreach ($riskFactorsResult as $riskFactors) {
             $riskFactorsData[$riskFactors['riskfactor_id']] = ($riskFactors['riskfactor_name']);
@@ -278,13 +273,13 @@ class HepatitisService
         return $riskFactorsData;
     }
 
-    public function insertSampleCode($params, $returnSampleData = false)
+    public function insertSample($params, $returnSampleData = false)
     {
         $formId = $this->commonService->getGlobalConfig('vl_form');
 
         try {
 
-            $prefix = $params['prefix'] ?? 'HEP';
+            $prefix = $params['prefix'] ?? null;
             $provinceCode = $params['provinceCode'] ?? null;
             $provinceId = $params['provinceId'] ?? null;
             $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
@@ -295,8 +290,14 @@ class HepatitisService
                 return 0;
             }
 
-            $oldSampleCodeKey = $params['oldSampleCodeKey'] ?? null;
-            $sampleJson = $this->generateHepatitisSampleCode($prefix, $provinceCode, $sampleCollectionDate, null, $provinceId, $oldSampleCodeKey);
+            $sampleCodeParams = [];
+            $sampleCodeParams['prefix'] = $prefix;
+            $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
+            $sampleCodeParams['provinceCode'] = $provinceCode;
+            $sampleCodeParams['provinceId'] = $provinceId;
+            $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey'] ?? null;
+
+            $sampleJson = $this->generateSampleCode($sampleCodeParams);
             $sampleData = json_decode($sampleJson, true);
 
             $sampleCollectionDate = DateUtility::isoDateFormat($sampleCollectionDate, true);
@@ -365,7 +366,7 @@ class HepatitisService
             } else {
                 // If this sample code exists, let us regenerate the sample code and insert
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
-                return $this->insertSampleCode($params);
+                return $this->insertSample($params);
             }
         } catch (Exception $e) {
 
