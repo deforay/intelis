@@ -12,7 +12,7 @@ class DateUtility
     }
 
     // Function to get the verify if date is in Y-m-d or specified format
-    public function verifyDateFormat($date, $format = 'Y-m-d', $strict = true): bool
+    public static function verifyDateFormat($date, $format = 'Y-m-d', $strict = true): bool
     {
         $date = trim($date);
 
@@ -59,6 +59,7 @@ class DateUtility
                     $response = true;
                 }
             } catch (Exception $e) {
+                error_log($e->getMessage());
                 $response = false;
             }
         }
@@ -105,21 +106,24 @@ class DateUtility
     }
 
     // returns age array in year, months, days
-    public function ageInYearMonthDays($dateOfBirth)
+    public static function ageInYearMonthDays($dateOfBirth)
     {
-        if (false === $this->verifyIfDateValid($dateOfBirth)) {
+        if (false === self::verifyIfDateValid($dateOfBirth)) {
             return null;
         }
         $bday = new DateTimeImmutable($dateOfBirth);
         $today = new DateTimeImmutable();
         $diff = $today->diff($bday);
-        // printf(' Your age : %d years, %d month, %d days', $diff->y, $diff->m, $diff->d);
-        return array("year" => $diff->y, "months" => $diff->m, "days" => $diff->d);
+        return [
+            "year" => $diff->y,
+            "months" => $diff->m,
+            "days" => $diff->d
+        ];
     }
 
-    public function dateDiff($dateString1, $dateString2, $format = null)
+    public static function dateDiff($dateString1, $dateString2, $format = null)
     {
-        if (false === $this->verifyIfDateValid($dateString1) || false === $this->verifyIfDateValid($dateString2)) {
+        if (false === self::verifyIfDateValid($dateString1) || false === self::verifyIfDateValid($dateString2)) {
             return null;
         }
         $datetime1 = new DateTimeImmutable($dateString1);

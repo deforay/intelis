@@ -19,9 +19,6 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/** @var MiscUtility $miscUtil */
-$miscUtil = ContainerRegistry::get(MiscUtility::class);
-
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 
@@ -97,7 +94,7 @@ try {
 
         $db->update('s_vlsm_instance', $data);
     }
-    $miscUtil->removeDirectory(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+    MiscUtility::removeDirectory(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

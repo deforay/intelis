@@ -195,7 +195,7 @@ if (!empty($requestResult)) {
         //Set Age
         $age = 'Unknown';
         if (isset($result['patient_dob']) && trim($result['patient_dob']) != '' && $result['patient_dob'] != '0000-00-00') {
-            $ageCalc = $dateUtils->ageInYearMonthDays($result['patient_dob']);
+            $ageCalc = DateUtility::ageInYearMonthDays($result['patient_dob']);
         } elseif (isset($result['patient_age']) && trim($result['patient_age']) != '' && trim($result['patient_age']) > 0) {
             $age = $result['patient_age'];
         }

@@ -4,9 +4,6 @@ namespace App\Utilities;
 
 class MiscUtility
 {
-    public function __construct()
-    {
-    }
 
     public static function randomHexColor(): string
     {
@@ -17,7 +14,7 @@ class MiscUtility
         return strtoupper($hexColorPart() . $hexColorPart() . $hexColorPart());
     }
 
-    public function removeDirectory($dirname): bool
+    public static function removeDirectory($dirname): bool
     {
         // Sanity check
         if (!file_exists($dirname)) {
@@ -38,7 +35,7 @@ class MiscUtility
             }
 
             // Recurse
-            $this->removeDirectory($dirname . DIRECTORY_SEPARATOR . $entry);
+            self::removeDirectory($dirname . DIRECTORY_SEPARATOR . $entry);
         }
 
         // Clean up

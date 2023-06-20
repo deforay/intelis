@@ -2,9 +2,10 @@
 
 // This file is included in /vl/results/generate-result-pdf.php
 
-use App\Helpers\PdfConcatenateHelper;
-use App\Helpers\PdfWatermarkHelper;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Helpers\PdfWatermarkHelper;
+use App\Helpers\PdfConcatenateHelper;
 
 $resultFilename = '';
 if (!empty($requestResult)) {
@@ -416,7 +417,7 @@ if (!empty($requestResult)) {
           $resultPdf->concat();
           $resultFilename = 'VLSM-VL-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
           $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
-          $general->removeDirectory($pathFront);
+          MiscUtility::removeDirectory($pathFront);
           unset($_SESSION['rVal']);
      }
 }

@@ -3,11 +3,12 @@
 // this file is included in tb/results/generate-result-pdf.php
 
 
-use App\Helpers\PdfConcatenateHelper;
-use App\Helpers\PdfWatermarkHelper;
-use App\Registries\ContainerRegistry;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Helpers\PdfWatermarkHelper;
+use App\Helpers\PdfConcatenateHelper;
+use App\Registries\ContainerRegistry;
 
 class SouthSudan_PDF extends MYPDF
 {
@@ -184,7 +185,7 @@ if (!empty($requestResult)) {
         $ageCalc = 0;
         $age = 'Unknown';
         if (isset($result['patient_dob']) && trim($result['patient_dob']) != '' && $result['patient_dob'] != '0000-00-00') {
-            $ageCalc = $dateUtils->ageInYearMonthDays($result['patient_dob']);
+            $ageCalc = DateUtility::ageInYearMonthDays($result['patient_dob']);
         } elseif (isset($result['patient_age']) && trim($result['patient_age']) != '' && trim($result['patient_age']) > 0) {
             $age = $result['patient_age'];
         }
@@ -538,7 +539,7 @@ if (!empty($requestResult)) {
         $resultPdf->concat();
         $resultFilename = 'VLSM-TB-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
         $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
-        $general->removeDirectory($pathFront);
+        MiscUtility::removeDirectory($pathFront);
         unset($_SESSION['rVal']);
     }
 }
