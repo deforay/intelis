@@ -19,9 +19,6 @@ $cleanup = array(
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
-/** @var MiscUtility $miscUtil */
-$miscUtil = ContainerRegistry::get(MiscUtility::class);
-
 $durationToDelete = 180 * 86400; // 180 days
 
 foreach ($cleanup as $folder) {
@@ -35,7 +32,7 @@ foreach ($cleanup as $folder) {
                 if ($fileInfo->isFile() || $fileInfo->isLink()) {
                     unlink($fileInfo->getRealPath());
                 } elseif ($fileInfo->isDir()) {
-                    $miscUtil->removeDirectory($fileInfo->getRealPath());
+                    MiscUtility::removeDirectory($fileInfo->getRealPath());
                 }
             }
         }

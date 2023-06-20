@@ -43,7 +43,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		$age = null;
 		$aRow['patient_age_in_years'] = (int) $aRow['patient_age_in_years'];
 		if (!empty($aRow['patient_dob'])) {
-			$age = $dateTimeUtil->ageInYearMonthDays($aRow['patient_dob']);
+			$age = DateUtility::ageInYearMonthDays($aRow['patient_dob']);
 			if (!empty($age) && $age['year'] > 0) {
 				$aRow['patient_age_in_years'] = $age['year'];
 			}

@@ -123,7 +123,7 @@ if (!isset($result['labName']) || trim($result['labName']) == '') {
 //Set Age
 $age = 'Unknown';
 if (isset($result['patient_dob']) && trim($result['patient_dob']) != '' && $result['patient_dob'] != '0000-00-00') {
-    $ageCalc = $dateUtils->ageInYearMonthDays($result['patient_dob']);
+    $ageCalc = DateUtility::ageInYearMonthDays($result['patient_dob']);
 } elseif (isset($result['patient_age']) && trim($result['patient_age']) != '' && trim($result['patient_age']) > 0) {
     $age = $result['patient_age'];
 }
@@ -389,7 +389,7 @@ if (!empty($signResults)) {
         $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">' . date('d-M-Y H:i:s a') . '</td>';
         $html .= '</tr>';
     }
-    /* 
+    /*
             $lqSign = "/uploads/covid-19/{$countryFormId}/pdf/lq.png";
             $html .= '<tr>';
             $html .= '<td style="line-height:17px;font-size:11px;text-align:left;font-weight:bold;border-bottom:1px solid #67b3ff;">Laboratory Quality Manager</td>';
@@ -397,7 +397,7 @@ if (!empty($signResults)) {
             $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;"><img src="' . $lqSign . '" style="width:30px;"></td>';
             $html .= '<td style="line-height:17px;font-size:11px;text-align:left;border-bottom:1px solid #67b3ff;border-left:1px solid #67b3ff;">' . date('d-M-Y H:i:s a') . '</td>';
             $html .= '</tr>';
-            
+
             $lsSign = "/uploads/covid-19/{$countryFormId}/pdf/ls.png";
             $html .= '<tr>';
             $html .= '<td style="line-height:17px;font-size:11px;text-align:left;font-weight:bold;border-bottom:1px solid #67b3ff;">Laboratory Supervisor</td>';

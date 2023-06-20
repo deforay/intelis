@@ -23,9 +23,6 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/** @var MiscUtility $miscUtil */
-$miscUtil = ContainerRegistry::get(MiscUtility::class);
-
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
@@ -326,7 +323,7 @@ if (!empty($requestResult)) {
 		$resultPdf->concat();
 		$resultFilename = 'COVID-19-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
 		$resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
-		$miscUtil->removeDirectory($pathFront);
+		MiscUtility::removeDirectory($pathFront);
 		unset($_SESSION['rVal']);
 	}
 }

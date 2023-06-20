@@ -1,11 +1,12 @@
 <?php
 
 // this file is included in eid/results/generate-result-pdf.php
-use App\Helpers\PdfConcatenateHelper;
-use App\Helpers\PdfWatermarkHelper;
-use App\Registries\ContainerRegistry;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Helpers\PdfWatermarkHelper;
+use App\Helpers\PdfConcatenateHelper;
+use App\Registries\ContainerRegistry;
 
 
 /** @var EidService $eidService */
@@ -584,7 +585,7 @@ if (!empty($requestResult)) {
         $resultPdf->concat();
         $resultFilename = 'VLSM-EID-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
         $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
-        $general->removeDirectory($pathFront);
+        MiscUtility::removeDirectory($pathFront);
         unset($_SESSION['rVal']);
     }
 }
