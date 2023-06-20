@@ -799,7 +799,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                     }
                }
           });
-          hivDetectionChange();
+          //hivDetectionChange();
      });
 
      function hivDetectionChange() {
