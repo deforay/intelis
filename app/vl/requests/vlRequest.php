@@ -66,7 +66,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 $sQuery = "SELECT * FROM r_vl_sample_type WHERE `status`='active'";
 $sResult = $db->rawQuery($sQuery);
 
-$batQuery = "SELECT batch_code FROM batch_details WHERE test_type = 'vl' AND batch_status='completed'";
+$batQuery = "SELECT batch_code FROM batch_details WHERE test_type = 'vl'";
 $batResult = $db->rawQuery($batQuery);
 // Src of alert req
 $srcQuery = "SELECT DISTINCT source_of_request FROM form_vl WHERE source_of_request is not null AND source_of_request not like ''";

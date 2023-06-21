@@ -360,10 +360,10 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Date started ART</th>
+                                        <th scope="row">Date started ART</th>
                                         <td> <input type="text" class="form-control date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['started_art_date']); ?>" name="startedArtDate" id="startedArtDate" title="Enter ART Started Date" placeholder="Enter ART Started Date" />
                                         </td>
-                                        <th>MTCT Risk</th>
+                                        <th scope="row">MTCT Risk</th>
                                         <td>
                                             <select class="form-control" name="motherMtctRisk" id="motherMtctRisk">
                                                 <option value="">--Select--</option>
@@ -578,7 +578,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             </th>
                                         </tr>
                                         <tr>
-                                            <th style="width:25%;"><label for=""> Test Date </label></th>
+                                            <th scope="row" style="width:25%;"><label for=""> Test Date </label></th>
                                             <td style="width:25%;">
                                                 <input type="text" class="form-control date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['test_1_date']); ?>" id="test1Date" name="test1Date" placeholder="<?= _("Please enter test date"); ?>" title="Test Date" onchange="" style="width:100%;" />
                                             </td>
@@ -590,7 +590,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th style="width:25%;"><label for=""> Assay </label></th>
+                                            <th scope="row" style="width:25%;"><label for=""> Assay </label></th>
                                             <td style="width:25%;">
                                                 <input type="text" class="form-control" id="test1Assay" name="test1Assay" value="<?php echo ($eidInfo['test_1_assay']); ?>" placeholder="<?= _("Please enter Assay"); ?>" title="Assay" onchange="" style="width:100%;" />
                                             </td>
@@ -603,7 +603,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         </tr>
 
                                         <tr>
-                                            <th style="width:25%;"><label for=""> Result </label></th>
+                                            <th scope="row" style="width:25%;"><label for=""> Result </label></th>
                                             <td style="width:25%;">
                                                 <select class="form-control" name="test1Result" id="test1Result">
                                                     <option value=''> -- Select -- </option>
@@ -632,7 +632,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             </th>
                                         </tr>
                                         <tr>
-                                            <th style="width:25%;"><label for=""> Test Date </label></th>
+                                            <th scope="row" style="width:25%;"><label for=""> Test Date </label></th>
                                             <td style="width:25%;">
                                                 <input type="text" class="form-control date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['test_2_date']); ?>" id="test2Date" name="test2Date" placeholder="<?= _("Please enter test date"); ?>" title="Test Date" onchange="" style="width:100%;" />
                                             </td>
@@ -644,7 +644,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th style="width:25%;"><label for=""> Assay </label></th>
+                                            <th scope="row" style="width:25%;"><label for=""> Assay </label></th>
                                             <td style="width:25%;">
                                                 <input type="text" class="form-control" id="test2Assay" name="test2Assay" value="<?php echo ($eidInfo['test_2_assay']); ?>" placeholder="<?= _("Please enter assay"); ?>" title="Assay" onchange="" style="width:100%;" />
                                             </td>
@@ -657,7 +657,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         </tr>
 
                                         <tr>
-                                            <th style="width:25%;"><label for=""> Result </label></th>
+                                            <th scope="row" style="width:25%;"><label for=""> Result </label></th>
                                             <td style="width:25%;">
                                                 <select class="form-control" name="test2Result" id="test2Result">
                                                     <option value=''> -- Select -- </option>

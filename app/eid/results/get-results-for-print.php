@@ -36,7 +36,9 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 } else if ($_SESSION['instanceType'] == 'standalone') {
     if (($key = array_search("remote_sample_code", $aColumns)) !== false) {
         unset($aColumns[$key]);
+        $aColumns = array_values($aColumns);
         unset($orderColumns[$key]);
+        $orderColumns = array_values($orderColumns);
     }
 }
 // print_r($orderColumns);die;
