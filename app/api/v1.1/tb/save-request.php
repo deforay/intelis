@@ -97,7 +97,6 @@ try {
         $cantBeFutureDates = [
             'sampleCollectionDate',
             'patientDob',
-            'requestDate',
             'sampleTestedDateTime',
             'sampleDispatchedOn',
             'sampleReceivedDate',
