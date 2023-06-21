@@ -3,14 +3,15 @@
 // this file is included in /vl/interop/fhir/vl-receive.php
 header('Content-Type: application/json');
 
+use App\Interop\Fhir;
+use App\Services\VlService;
+use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Services\CommonService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\VlService;
-use App\Utilities\DateUtility;
 use DCarbone\PHPFHIRGenerated\R4\PHPFHIRResponseParser;
-use App\Interop\Fhir;
 
 $interopConfig = require(APPLICATION_PATH . '/../configs/config.interop.php');
 
@@ -356,4 +357,4 @@ if (!empty($errors)) {
 
 $trackId = $general->addApiTracking($transactionId, 'vlsm-system', $processedCounter, 'FHIR-VL-Receive', 'vl', $fhir->getRequestUrl(), $json, null, 'json');
 
-echo $general->prettyJson($response);
+echo MiscUtility::prettyJson($response);

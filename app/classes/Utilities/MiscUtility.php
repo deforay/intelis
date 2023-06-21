@@ -66,4 +66,14 @@ class MiscUtility
         }
         return false;
     }
+
+    public static function prettyJson($json): string
+    {
+        if (is_array($json)) {
+            $json = json_encode($json, JSON_PRETTY_PRINT);
+        } else {
+            $json = json_encode(json_decode($json), JSON_PRETTY_PRINT);
+        }
+        return htmlspecialchars($json, ENT_QUOTES, 'UTF-8');
+    }
 }

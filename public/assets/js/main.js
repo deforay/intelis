@@ -145,3 +145,19 @@ function stepFX(a, d, c) {
 //let __alert = window.alert;
 let classN = "";
 Notifier.init(window, "notifier");
+
+
+
+async function copyToClipboard(text) {
+    let succeed;
+    try {
+        await navigator.clipboard.writeText(text);
+        succeed = true;
+    } catch (e) {
+        succeed = false;
+    }
+    return succeed;
+}
+
+
+

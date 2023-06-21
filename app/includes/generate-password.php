@@ -13,8 +13,6 @@ $generator
   ->setOptionValue(ComputerPasswordGenerator::OPTION_SYMBOLS, false)
   ->setMinimumCount(ComputerPasswordGenerator::OPTION_UPPER_CASE, 2)
   ->setMinimumCount(ComputerPasswordGenerator::OPTION_LOWER_CASE, 2)
-  ->setMinimumCount(ComputerPasswordGenerator::OPTION_NUMBERS, 2)
-;
+  ->setMinimumCount(ComputerPasswordGenerator::OPTION_NUMBERS, 2);
 
-$password = $generator->generatePassword();
-echo $password;
+echo $generator->generatePassword();

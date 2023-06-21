@@ -652,16 +652,6 @@ class CommonService
             (json_last_error() == JSON_ERROR_NONE);
     }
 
-    public function prettyJson($json): string
-    {
-        if (is_array($json)) {
-            return stripslashes(json_encode($json, JSON_PRETTY_PRINT));
-        } else {
-            return stripslashes(json_encode(json_decode($json), JSON_PRETTY_PRINT));
-        }
-    }
-
-
     public function addApiTracking($transactionId, $user, $numberOfRecords, $requestType, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $labId = null, $facilityId = null)
     {
 
