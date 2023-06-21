@@ -117,7 +117,7 @@ require_once APPLICATION_PATH . "/vl/vl.js.php";
 <script>
     function insertSampleCode(formId, vlSampleId, sampleCode, sampleCodeKey, sampleCodeFormat, countryId, sampleCollectionDate, provinceCode = null, provinceId = null) {
         $.blockUI();
-        $.post("/vl/requests/insertNewSample.php", {
+        $.post("/vl/requests/insert-sample.php", {
                 sampleCode: $("#" + sampleCode).val(),
                 sampleCodeKey: $("#" + sampleCodeKey).val(),
                 sampleCodeFormat: $("#" + sampleCodeFormat).val(),

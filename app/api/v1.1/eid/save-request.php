@@ -389,7 +389,7 @@ try {
             $eidData['last_modified_datetime']  = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
             $eidData['last_modified_by']  = $user['user_id'];
         } else {
-            $eidData['request_created_datetime']  = (!empty($data['createdOn'])) ? DateUtility::isoDateFormat($data['createdOn'], true) : DateUtility::getCurrentDateTime();
+            $eidData['request_created_datetime']  = DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true);
             $eidData['sample_registered_at_lab']  = DateUtility::getCurrentDateTime();
             $eidData['request_created_by']  = $user['user_id'];
         }

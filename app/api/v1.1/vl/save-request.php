@@ -251,8 +251,6 @@ try {
             }
         }
 
-
-
         $formAttributes = [
             'applicationVersion'    => $version,
             'apiTransactionId'      => $transactionId,
@@ -324,7 +322,7 @@ try {
             'result_status'                         => $status,
             'funding_source'                        => $data['fundingSource'] ?? null,
             'implementing_partner'                  => $data['implementingPartner'] ?? null,
-            'request_created_datetime'              => DateUtility::isoDateFormat($data['createdOn'] ?? '', true) ?? DateUtility::getCurrentDateTime(),
+            'request_created_datetime'              => DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true),
             'last_modified_datetime'                => DateUtility::getCurrentDateTime(),
             'manual_result_entry'                   => 'yes',
             'external_sample_code'                  => $data['serialNo'] ?? null,

@@ -4181,7 +4181,7 @@ ALTER TABLE `generic_test_symptoms_map` ADD `updated_datetime` DATETIME NOT NULL
 ALTER TABLE `generic_test_result_units_map` ADD `updated_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `test_type_id`;
 
 -- Thana 14-Jun-2023
---ALTER TABLE `form_generic` DROP `community_sample`;
+-- ALTER TABLE `form_generic` DROP `community_sample`;
 
 
 -- Amit 14-Jun-2023
