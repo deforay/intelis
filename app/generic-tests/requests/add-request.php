@@ -1476,7 +1476,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
      function insertSampleCode(formId, vlSampleId, sampleCode, sampleCodeKey, sampleCodeFormat, countryId, sampleCollectionDate, provinceCode = null, provinceId = null) {
           $.blockUI();
-          $.post("/generic-tests/requests/insertNewSample.php", {
+          $.post("/generic-tests/requests/insert-sample.php", {
                     sampleCode: $("#" + sampleCode).val(),
                     sampleCodeKey: $("#" + sampleCodeKey).val(),
                     sampleCodeFormat: $("#" + sampleCodeFormat).val(),

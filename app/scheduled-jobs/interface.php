@@ -119,7 +119,8 @@ if (!empty($interfaceData)) {
         }
 
         //Getting Approved By and Reviewed By from Instruments table
-        $instrumentDetails = $db->rawQueryOne("SELECT * FROM instruments WHERE machine_name like ?", [$result['machine_used']]);
+        $instrumentDetails = $db->rawQueryOne("SELECT * FROM instruments
+                                                WHERE machine_name like ?", [$result['machine_used']]);
 
         if (empty($instrumentDetails)) {
             $sql = "SELECT * FROM instruments
@@ -147,7 +148,7 @@ if (!empty($interfaceData)) {
                 $unit = trim($result['test_unit']);
 
                 if ($vlResult == "-1.00") {
-                    $vlResult = "Not Detected";
+                    $vlResult = "Target Not Detected";
                 }
 
                 $logVal = null;

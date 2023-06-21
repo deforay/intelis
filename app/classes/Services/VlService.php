@@ -15,12 +15,6 @@ use App\Helpers\SampleCodeGeneratorHelper;
 
 class VlService implements TestServiceInterface
 {
-
-    protected MysqliDb $db;
-    protected string $table = 'form_vl';
-    protected string $shortCode = 'VL';
-    protected CommonService $commonService;
-
     // keep all these in lower case to make it easier to compare
     protected array $suppressedArray = [
         'hiv-1 not detected',
@@ -37,6 +31,7 @@ class VlService implements TestServiceInterface
         '<40',
         '< 839',
         '<839',
+        '-1.00',
         '< titer min',
         'negative',
         'negat'
@@ -44,6 +39,10 @@ class VlService implements TestServiceInterface
 
     protected int $suppressionLimit = 1000;
     protected SampleCodeGeneratorHelper $sampleCodeGeneratorHelper;
+    protected MysqliDb $db;
+    protected string $table = 'form_vl';
+    protected string $shortCode = 'VL';
+    protected CommonService $commonService;
 
     public function __construct(
         ?MysqliDb $db = null,
@@ -99,6 +98,7 @@ class VlService implements TestServiceInterface
             'cop/ml',
             'copies',
             'cpml',
+            'cp',
             'HIV-1 DETECTED',
             'HIV1 DETECTED',
             'HIV-1 NOT DETECTED',
@@ -186,11 +186,15 @@ class VlService implements TestServiceInterface
         $resultStatus = null;
 
         // Some machines and some countries prefer a default text result
-        $vlTextResult = !empty(trim($defaultLowVlResultText)) ? $defaultLowVlResultText : "Target Not Detected";
+        $vlTextResult = !empty(trim($defaultLowVlResultText)) && trim($defaultLowVlResultText) != "" ? $defaultLowVlResultText : "Target Not Detected";
 
         $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
 
         $originalResultValue = $result;
+
+        if ($result == '-1.00') {
+            $result = "Target Not Detected";
+        }
 
         $result = strtolower($result);
         switch ($result) {
