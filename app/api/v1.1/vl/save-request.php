@@ -9,9 +9,10 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Utilities\MiscUtility;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 use JsonMachine\Exception\PathNotFoundException;
-
+use Whoops\Util\Misc;
 
 ini_set('memory_limit', -1);
 
@@ -55,8 +56,8 @@ try {
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
 
-    /** @var ApiService $app */
-    $app = ContainerRegistry::get(ApiService::class);
+    /** @var ApiService $apiService */
+    $apiService = ContainerRegistry::get(ApiService::class);
 
     /** @var UsersService $usersService */
     $usersService = ContainerRegistry::get(UsersService::class);
@@ -98,17 +99,33 @@ try {
             'facilityId',
             'appSampleCode'
         ];
+        $cantBeFutureDates = [
+            'sampleCollectionDate',
+            'patientDob',
+            'requestDate',
+            'sampleTestedDateTime',
+            'sampleDispatchedOn',
+            'sampleReceivedDate',
+        ];
 
         if ($formId == 5) {
             $mandatoryFields[] = 'provinceId';
         }
 
-        if ($app->checkIfNullOrEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
+        if (MiscUtility::hasEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
             $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
                 'status' => 'failed',
                 'message' => _("Missing required fields")
+            ];
+            continue;
+        } elseif (DateUtility::hasFutureDates(array_intersect_key($data, array_flip($cantBeFutureDates)))) {
+            $responseData[$rootKey] = [
+                'transactionId' => $transactionId,
+                'appSampleCode' => $data['appSampleCode'] ?? null,
+                'status' => 'failed',
+                'message' => _("Invalid Dates. Cannot be in the future")
             ];
             continue;
         }

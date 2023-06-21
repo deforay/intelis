@@ -4,6 +4,7 @@ use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\Covid19Service;
 use App\Exceptions\SystemException;
@@ -89,18 +90,38 @@ try {
     foreach ($input as $rootKey => $data) {
 
 
-        $mandatoryFields = ['sampleCollectionDate', 'facilityId', 'appSampleCode'];
+        $mandatoryFields = [
+            'sampleCollectionDate',
+            'facilityId',
+            'appSampleCode'
+        ];
+        $cantBeFutureDates = [
+            'sampleCollectionDate',
+            'patientDob',
+            'requestDate',
+            'sampleTestedDateTime',
+            'sampleDispatchedOn',
+            'sampleReceivedDate',
+        ];
 
         if ($formId == 5) {
             $mandatoryFields[] = 'provinceId';
         }
 
-        if ($app->checkIfNullOrEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
+        if (MiscUtility::hasEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
             $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
                 'status' => 'failed',
                 'message' => _("Missing required fields")
+            ];
+            continue;
+        } elseif (DateUtility::hasFutureDates(array_intersect_key($data, array_flip($cantBeFutureDates)))) {
+            $responseData[$rootKey] = [
+                'transactionId' => $transactionId,
+                'appSampleCode' => $data['appSampleCode'] ?? null,
+                'status' => 'failed',
+                'message' => _("Invalid Dates. Cannot be in the future")
             ];
             continue;
         }
@@ -225,11 +246,6 @@ try {
             $status = 9;
         }
 
-        if (!empty($data['arrivalDateTime']) && trim($data['arrivalDateTime']) != "") {
-            $data['arrivalDateTime'] = DateUtility::isoDateFormat($data['arrivalDateTime'], true);
-        } else {
-            $data['arrivalDateTime'] = null;
-        }
         if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
             $data['result'] = null;
             $status = 4;
@@ -242,12 +258,6 @@ try {
             $status = 7;
         } elseif ((isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") && (!empty($data['result']))) {
             $status = 8;
-        }
-
-        if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
-            $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
-        } else {
-            $sampleCollectionDate = $data['sampleCollectionDate'] = null;
         }
 
         //Set sample received date
@@ -333,7 +343,7 @@ try {
             'patient_passport_number'             => !empty($data['patientPassportNumber']) ? $data['patientPassportNumber'] : null,
             'flight_airline'                      => !empty($data['airline']) ? $data['airline'] : null,
             'flight_seat_no'                      => !empty($data['seatNo']) ? $data['seatNo'] : null,
-            'flight_arrival_datetime'             => !empty($data['arrivalDateTime']) ? $data['arrivalDateTime'] : null,
+            'flight_arrival_datetime'             => DateUtility::isoDateFormat($data['arrivalDateTime'] ?? '', true),
             'flight_airport_of_departure'         => !empty($data['airportOfDeparture']) ? $data['airportOfDeparture'] : null,
             'flight_transit'                      => !empty($data['transit']) ? $data['transit'] : null,
             'reason_of_visit'                     => !empty($data['reasonOfVisit']) ? $data['reasonOfVisit'] : null,
@@ -341,7 +351,7 @@ try {
             'reason_for_covid19_test'             => !empty($data['reasonForCovid19Test']) ? $data['reasonForCovid19Test'] : null,
             'type_of_test_requested'              => !empty($data['testTypeRequested']) ? $data['testTypeRequested'] : null,
             'specimen_type'                       => !empty($data['specimenType']) ? $data['specimenType'] : null,
-            'sample_collection_date'              => $data['sampleCollectionDate'],
+            'sample_collection_date'              => DateUtility::isoDateFormat($data['sampleCollectionDate'] ?? '', true),
             'health_outcome'                      => !empty($data['healthOutcome']) ? $data['healthOutcome'] : null,
             'health_outcome_date'                 => !empty($data['outcomeDate']) ? DateUtility::isoDateFormat($data['outcomeDate']) : null,
             // 'is_sampledata_mortem'                => !empty($data['isSamplePostMortem']) ? $data['isSamplePostMortem'] : null,

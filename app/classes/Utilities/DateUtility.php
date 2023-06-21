@@ -135,4 +135,28 @@ class DateUtility
             return $interval->format($format);
         }
     }
+
+
+    /**
+     * Checks if the given date string or date array contains any future dates.
+     *
+     * @param string|array $dates The date string or date array to check.
+     * @return bool Returns true if any date is in the future, false otherwise.
+     */
+    public static function hasFutureDates($dates): bool
+    {
+        $now = new DateTimeImmutable();
+        $dates = is_array($dates) ? $dates : [$dates];
+
+        foreach ($dates as $dateStr) {
+            if (!empty($dateStr) && $dateStr != "") {
+                $date = DateTimeImmutable::createFromFormat('Y-m-d', $dateStr);
+                if ($date > $now) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }

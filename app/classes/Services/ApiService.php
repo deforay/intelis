@@ -79,16 +79,6 @@ class ApiService
         return $response->getBody()->getContents();
     }
 
-    public function checkIfNullOrEmpty($array)
-    {
-        foreach ($array as $value) {
-            if ($value === null || trim($value) === "") {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public function generateSelectOptions($options): array
     {
         $i = 0;

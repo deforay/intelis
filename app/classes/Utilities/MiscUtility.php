@@ -50,4 +50,20 @@ class MiscUtility
         var_dump($object);
         error_log(ob_get_clean());
     }
+
+    /**
+     * Checks if the array contains any null or empty string values.
+     *
+     * @param array $array The array to check.
+     * @return bool Returns true if any value is null or an empty string, false otherwise.
+     */
+    public static function hasEmpty(array $array): bool
+    {
+        foreach ($array as $value) {
+            if ($value === null || trim($value) === "") {
+                return true;
+            }
+        }
+        return false;
+    }
 }
