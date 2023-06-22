@@ -87,8 +87,8 @@ try {
         $id = $db->update($fDetails, $fData);
     }
     if (isset($_POST['gender']) && trim($_POST['gender']) == 'male') {
-        $_POST['patientPregnant'] = null;
-        $_POST['breastfeeding'] = null;
+        $_POST['patientPregnant'] = "N/A";
+        $_POST['breastfeeding'] = "N/A";
     }
 
 
@@ -265,7 +265,7 @@ try {
         'last_vl_sample_type_failure'           => $_POST['suspendLastVLTestSampleType'] ?? null,
         'request_clinician_name'                => $_POST['reqClinician'] ?? null,
         'request_clinician_phone_number'        => $_POST['reqClinicianPhoneNumber'] ?? null,
-        'test_requested_on'                     => DateUtility::isoDateFormat($_POST['requestDate'],''),
+        'test_requested_on'                     => DateUtility::isoDateFormat($_POST['requestDate'], ''),
         'vl_focal_person'                       => $_POST['vlFocalPerson'] ?? null,
         'vl_focal_person_phone_number'          => $_POST['vlFocalPersonPhoneNumber'] ?? null,
         'lab_id'                                => $_POST['labId'] ?? null,

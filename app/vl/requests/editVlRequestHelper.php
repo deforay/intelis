@@ -84,8 +84,8 @@ try {
      }
 
      if (isset($_POST['gender']) && trim($_POST['gender']) == 'male') {
-          $_POST['patientPregnant'] = null;
-          $_POST['breastfeeding'] = null;
+          $_POST['patientPregnant'] = "N/A";
+          $_POST['breastfeeding'] = "N/A";
      }
 
      $testingPlatform = null;
