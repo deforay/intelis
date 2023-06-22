@@ -1487,7 +1487,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     testType: $('#testType').find(':selected').data('short')
                },
                function(data) {
-                    alert(data);
+                    //alert(data);
                     if (data > 0) {
                          $.unblockUI();
                          document.getElementById("vlSampleId").value = data;
