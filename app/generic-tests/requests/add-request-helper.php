@@ -102,8 +102,8 @@ try {
     //   $id=$db->update($fDetails,$fData);
     //}
     if (isset($_POST['gender']) && trim($_POST['gender']) == 'male') {
-        $_POST['patientPregnant'] = '';
-        $_POST['breastfeeding'] = '';
+        $_POST['patientPregnant'] = "N/A";
+        $_POST['breastfeeding'] = "N/A";
     }
     $instanceId = '';
     if (isset($_SESSION['instanceId'])) {
