@@ -2,6 +2,8 @@
 
 namespace App\Utilities;
 
+use ZipArchive;
+
 class MiscUtility
 {
 
@@ -75,5 +77,56 @@ class MiscUtility
             $json = json_encode(json_decode($json), JSON_PRETTY_PRINT);
         }
         return htmlspecialchars($json, ENT_QUOTES, 'UTF-8');
+    }
+    /**
+     * Unzips a JSON file and displays its contents in a pretty format.
+     *
+     * @param string $zipFile The path to the zip file.
+     * @param string $jsonFile The name of the JSON file inside the zip archive.
+     */
+    public static function getJsonFromZip($zipFile, $jsonFile): string
+    {
+        if (!file_exists($zipFile)) {
+            return "{}";
+        }
+        $zip = new ZipArchive;
+        if ($zip->open($zipFile) === true) {
+            $json = $zip->getFromName($jsonFile);
+            $zip->close();
+
+            return $json;
+        } else {
+            return "{}";
+        }
+    }
+
+    /**
+     * Zips a JSON string.
+     *
+     * @param string $json The JSON string to zip.
+     * @param string $fileName The FULL PATH of the file inside the zip archive.
+     * @return bool Returns true on success, false on failure.
+     */
+    public static function zipJson($json, $fileName)
+    {
+        if (empty($json) || empty($fileName)) {
+            return false;
+        }
+        $zip = new ZipArchive();
+        $zipPath = $fileName . '.zip';
+
+        if ($zip->open($zipPath, ZipArchive::CREATE) !== true) {
+            return false;
+        }
+        $zip->addFromString(basename($fileName), $json);
+
+        if (!$zip->status == ZIPARCHIVE::ER_OK) {
+            $zip->close();
+            return false;
+        }
+
+        $zip->close();
+
+        return true;
     }
 }

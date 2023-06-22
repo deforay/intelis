@@ -18,38 +18,14 @@ $_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
 
-/**
- * Unzips a JSON file and displays its contents in a pretty format.
- *
- * @param string $zipFile The path to the zip file.
- * @param string $jsonFile The name of the JSON file inside the zip archive.
- */
-function getJsonFromZip($zipFile, $jsonFile): string
-{
-    if (!file_exists($zipFile)) {
-        return "{}";
-    }
-    $zip = new ZipArchive;
-    if ($zip->open($zipFile) === true) {
-        $json = $zip->getFromName($jsonFile);
-        $zip->close();
-
-        return $json;
-    } else {
-        return "{}";
-    }
-}
-
-
-
 $db = $db->where('api_track_id', $id);
 $result = $db->getOne('track_api_requests');
 $zip = new ZipArchive();
 $request = $response = "{}";
 $folder = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api');
 
-$request = getJsonFromZip($folder . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip', $result['transaction_id'] . '.json');
-$response = getJsonFromZip($folder . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip', $result['transaction_id'] . '.json');
+$request = MiscUtility::getJsonFromZip($folder . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip', $result['transaction_id'] . '.json');
+$response = MiscUtility::getJsonFromZip($folder . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip', $result['transaction_id'] . '.json');
 
 ?>
 <script src="/assets/js/bootstrap.min.js"></script>

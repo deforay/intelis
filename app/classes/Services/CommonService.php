@@ -7,13 +7,12 @@ namespace App\Services;
 use MysqliDb;
 use Exception;
 use Generator;
-use ZipArchive;
 use TCPDFBarcode;
 use Ramsey\Uuid\Uuid;
 use App\Utilities\DateUtility;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-
+use App\Utilities\MiscUtility;
 
 class CommonService
 {
@@ -605,19 +604,19 @@ class CommonService
 
     public function fileExists($filePath): bool
     {
-        return (!empty($filePath) &&
+        return !empty($filePath) &&
             file_exists($filePath) &&
             !is_dir($filePath) &&
-            filesize($filePath) > 0);
+            filesize($filePath) > 0;
     }
 
     public function imageExists($filePath): bool
     {
-        return (!empty($filePath) &&
+        return !empty($filePath) &&
             file_exists($filePath) &&
             !is_dir($filePath) &&
             filesize($filePath) > 0 &&
-            false !== getimagesize($filePath));
+            false !== getimagesize($filePath);
     }
 
 
@@ -654,16 +653,12 @@ class CommonService
 
     public function addApiTracking($transactionId, $user, $numberOfRecords, $requestType, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $labId = null, $facilityId = null)
     {
-
         try {
-            $requestData = (!empty($requestData) && !$this->isJSON($requestData)) ? json_encode($requestData, JSON_UNESCAPED_SLASHES) : $requestData;
-            $responseData = (!empty($responseData) && !$this->isJSON($responseData)) ? json_encode($responseData, JSON_UNESCAPED_SLASHES) : $responseData;
+            $requestData = (!empty($requestData) && !$this->isJSON($requestData)) ? json_encode($requestData, JSON_UNESCAPED_SLASHES) : null;
+            $responseData = (!empty($responseData) && !$this->isJSON($responseData)) ? json_encode($responseData, JSON_UNESCAPED_SLASHES) : null;
 
 
             $folderPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api';
-            if (!file_exists($folderPath)) {
-                mkdir($folderPath, 0777, true);
-            }
             if (!file_exists($folderPath . DIRECTORY_SEPARATOR . 'requests')) {
                 mkdir($folderPath . DIRECTORY_SEPARATOR . 'requests', 0777, true);
             }
@@ -672,47 +667,24 @@ class CommonService
             }
 
             if (!empty($requestData) && $requestData != '[]') {
-                $path = $folderPath
-                    . DIRECTORY_SEPARATOR
-                    . 'requests'
-                    . DIRECTORY_SEPARATOR
-                    . $transactionId . '.json';
-                //file_put_contents($path, $requestData);
-
-                $zip = new ZipArchive();
-                if ($zip->open($path . '.zip', ZIPARCHIVE::CREATE) === true) {
-                    $zip->addFromString(basename($path), $requestData);
-                    //$zip->close();
-                    //unlink($path);
-                }
+                MiscUtility::zipJson($requestData, "$folderPath/requests/$transactionId.json");
             }
 
             if (!empty($responseData) && $responseData != '[]') {
-                $path = $folderPath
-                    . DIRECTORY_SEPARATOR
-                    . 'responses'
-                    . DIRECTORY_SEPARATOR
-                    . $transactionId . '.json';
-
-                $zip = new ZipArchive();
-                if ($zip->open($path . '.zip', ZIPARCHIVE::CREATE) === true) {
-                    $zip->addFromString(basename($path), $responseData);
-                    //$zip->close();
-                    //unlink($path);
-                }
+                MiscUtility::zipJson($responseData, "$folderPath/responses/$transactionId.json");
             }
 
-            $data = array(
-                'transaction_id'    => $transactionId ?: null,
-                'requested_by'      => $user ?: 'vlsm-system',
+            $data = [
+                'transaction_id'    => $transactionId ?? null,
+                'requested_by'      => $user ?? 'system',
                 'requested_on'      => DateUtility::getCurrentDateTime(),
-                'number_of_records' => $numberOfRecords ?: 0,
-                'request_type'      => $requestType ?: null,
-                'test_type'         => $testType ?: null,
-                'api_url'           => $url ?: null,
-                'facility_id'       => $labId ?: null,
-                'data_format'       => $format ?: null
-            );
+                'number_of_records' => $numberOfRecords ?? 0,
+                'request_type'      => $requestType ?? null,
+                'test_type'         => $testType ?? null,
+                'api_url'           => $url ?? null,
+                'facility_id'       => $labId ?? null,
+                'data_format'       => $format ?? null
+            ];
             return $this->db->insert("track_api_requests", $data);
         } catch (Exception $exc) {
             error_log($exc->getMessage());
