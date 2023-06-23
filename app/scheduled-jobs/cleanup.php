@@ -7,8 +7,8 @@ if (php_sapi_name() !== 'cli') {
 
 require_once(__DIR__ . "/../../bootstrap.php");
 
+use App\Utilities\MiscUtility;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 
 
 $cleanup = array(
@@ -18,9 +18,6 @@ $cleanup = array(
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 
 $durationToDelete = 180 * 86400; // 180 days
 
@@ -34,8 +31,8 @@ foreach ($cleanup as $folder) {
             ) {
                 if ($fileInfo->isFile() || $fileInfo->isLink()) {
                     unlink($fileInfo->getRealPath());
-                } else if ($fileInfo->isDir()) {
-                    $general->removeDirectory($fileInfo->getRealPath());
+                } elseif ($fileInfo->isDir()) {
+                    MiscUtility::removeDirectory($fileInfo->getRealPath());
                 }
             }
         }

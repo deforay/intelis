@@ -10,17 +10,17 @@ $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 
 if (isset($_GET['type']) && $_GET['type'] == 'vl') {
-	$title = "Viral Load";
+    $title = "Viral Load";
 } elseif (isset($_GET['type']) && $_GET['type'] == 'eid') {
-	$title = "Early Infant Diagnosis";
+    $title = "Early Infant Diagnosis";
 } elseif (isset($_GET['type']) && $_GET['type'] == 'covid19') {
-	$title = "Covid-19";
+    $title = "Covid-19";
 } elseif (isset($_GET['type']) && $_GET['type'] == 'hepatitis') {
-	$title = "Hepatitis";
+    $title = "Hepatitis";
 } elseif (isset($_GET['type']) && $_GET['type'] == 'tb') {
-	$title = "TB";
+    $title = "TB";
 } elseif (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
-	$title = "Lab Tests";
+    $title = "Lab Tests";
     $genericHide = "display:none;";
 }
 
@@ -48,17 +48,19 @@ $maxId = $general->createBatchCode();
 //Set last machine label order
 $machinesLabelOrder = [];
 foreach ($testPlatformResult as $machine) {
-    $lastOrderQuery = "SELECT label_order from batch_details WHERE machine ='" . $machine['config_id'] . "' ORDER BY request_created_datetime DESC";
-    $lastOrderInfo = $db->query($lastOrderQuery);
+    $lastOrderQuery = "SELECT label_order   FROM batch_details
+                        WHERE machine = ? ORDER BY request_created_datetime DESC";
+    $lastOrderInfo = $db->rawQuery($lastOrderQuery, [$machine['config_id']]);
     if (isset($lastOrderInfo[0]['label_order']) && trim($lastOrderInfo[0]['label_order']) != '') {
         $machinesLabelOrder[$machine['config_id']] = implode(",", json_decode($lastOrderInfo[0]['label_order'], true));
     } else {
         $machinesLabelOrder[$machine['config_id']] = '';
     }
 }
-$testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
+$testTypeQuery = "SELECT * FROM r_test_types
+                    WHERE test_status='active'
+                    ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
-//print_r($machinesLabelOrder);
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
 <style>
@@ -105,7 +107,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
     <!-- Main content -->
     <section class="content">
         <div class="box box-default">
-             <?php if(!empty($_GET['type']) && $_GET['type'] == 'generic-tests') { ?>
+            <?php if (!empty($_GET['type']) && $_GET['type'] == 'generic-tests') { ?>
                 <div class="box-header with-border">
                     <div class="row">
                         <div class="col-xs-6 col-md-6">
@@ -127,12 +129,12 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                         </div>
                     </div>
                 </div>
-            <?php }else{ ?>
-            <div class="box-header with-border">
-                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
-            </div>
+            <?php } else { ?>
+                <div class="box-header with-border">
+                    <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
+                </div>
             <?php } ?>
-            <table aria-describedby="table" class="table batchDiv" aria-hidden="true" style="margin-top:20px;width: 100%;<?php echo $genericHide;?>">
+            <table aria-describedby="table" class="table batchDiv" aria-hidden="true" style="margin-top:20px;width: 100%;<?php echo $genericHide; ?>">
                 <tr>
                     <th style="width: 20%;" scope="col"><?php echo _("Testing Platform"); ?>&nbsp;<span class="mandatory">*</span> </th>
                     <td style="width: 30%;">
@@ -179,7 +181,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                 </tr>
             </table>
             <!-- /.box-header -->
-            <div class="box-body batchDiv" style="<?php echo $genericHide;?>">
+            <div class="box-body batchDiv" style="<?php echo $genericHide; ?>">
                 <!-- form start -->
                 <form class="form-horizontal" method="post" name="addBatchForm" id="addBatchForm" autocomplete="off" action="save-batch-helper.php">
                     <div class="box-body">
@@ -220,9 +222,9 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                     <!-- /.box-body -->
                     <div class="box-footer">
                         <input type="hidden" name="selectedSample" id="selectedSample" />
-                        <input type="hidden" name="type" id="type" value="<?php echo $_GET['type'];?>" />
+                        <input type="hidden" name="type" id="type" value="<?php echo $_GET['type']; ?>" />
                         <a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" title="<?php echo _('Please select machine'); ?>" onclick="validateNow();return false;"><?php echo _("Save and Next"); ?></a>
-                        <a href="batches.php?type=<?php echo $_GET['type'];?>" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
+                        <a href="batches.php?type=<?php echo $_GET['type']; ?>" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
                     </div>
                     <!-- /.box-footer -->
                 </form>
@@ -246,30 +248,30 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
     sortedTitle = [];
     $(document).ready(function() {
         $('#search').multiselect({
-			search: {
-				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-			},
-			fireSearch: function(value) {
-				return value.length > 2;
-			},
-			afterMoveToRight: function($left, $right, $options) {
-				const count = $right.find('option').length;
-				if (count > 0) {
-					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
-				} else {
-					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
-				}
-			},
-			afterMoveToLeft: function($left, $right, $options) {
-				const count = $right.find('option').length;
-				if (count > 0) {
-					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
-				} else {
-					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
-				}
-			}
-		});
+            search: {
+                left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+                right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+            },
+            fireSearch: function(value) {
+                return value.length > 2;
+            },
+            afterMoveToRight: function($left, $right, $options) {
+                const count = $right.find('option').length;
+                if (count > 0) {
+                    $('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+                } else {
+                    $('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+                }
+            },
+            afterMoveToLeft: function($left, $right, $options) {
+                const count = $right.find('option').length;
+                if (count > 0) {
+                    $('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+                } else {
+                    $('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+                }
+            }
+        });
         $("#facilityName").select2({
             placeholder: "<?php echo _("Select Facilities"); ?>"
         });
@@ -364,8 +366,8 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
         $.post("get-samples-batch.php", {
                 sampleCollectionDate: $("#sampleCollectionDate").val(),
                 sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
-                type : '<?php echo $_GET['type'];?>',
-                testType : $('#testType').val(),
+                type: '<?php echo $_GET['type']; ?>',
+                testType: $('#testType').val(),
                 fName: fName
             },
             function(data) {
@@ -391,16 +393,16 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
     });
 
     function getBatchForm(obj) {
-		if(obj.value != ""){
-			$(".batchDiv").show();
-			$('.batchAlert').hide();
-            if($('#machine').val() != ''){
+        if (obj.value != "") {
+            $(".batchDiv").show();
+            $('.batchAlert').hide();
+            if ($('#machine').val() != '') {
                 getSampleCodeDetails();
             }
-		}else{
-			$(".batchDiv").hide();
-			$('.batchAlert').show();
-		}
-	}
+        } else {
+            $(".batchDiv").hide();
+            $('.batchAlert').show();
+        }
+    }
 </script>
 <?php require_once APPLICATION_PATH . '/footer.php';

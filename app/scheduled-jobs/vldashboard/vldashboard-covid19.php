@@ -6,6 +6,7 @@ if (php_sapi_name() == 'cli') {
 
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
@@ -89,7 +90,7 @@ try {
         );
         $db->update('s_vlsm_instance', $data);
     }
-    $general->removeDirectory(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+    MiscUtility::removeDirectory(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

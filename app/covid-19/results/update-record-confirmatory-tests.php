@@ -119,20 +119,18 @@ $disable = "disabled = 'disabled'";
 <?php
 if ($arr['vl_form'] == 1) {
 	require('forms/update-southsudan-result.php');
-} else if ($arr['vl_form'] == 2) {
+} elseif ($arr['vl_form'] == 2) {
 	require('forms/update-sierraleone-result.php');
-} else if ($arr['vl_form'] == 3) {
+} elseif ($arr['vl_form'] == 3) {
 	require('forms/update-drc-result.php');
-} else if ($arr['vl_form'] == 4) {
-	// require('forms/update-zambia-result.php');
-} else if ($arr['vl_form'] == 5) {
+} elseif ($arr['vl_form'] == 4) {
+	require('forms/update-cameroon-result.php');
+} elseif ($arr['vl_form'] == 5) {
 	require('forms/update-png-result.php');
-} else if ($arr['vl_form'] == 6) {
+} elseif ($arr['vl_form'] == 6) {
 	require('forms/update-who-result.php');
-} else if ($arr['vl_form'] == 7) {
+} elseif ($arr['vl_form'] == 7) {
 	require('forms/update-rwanda-result.php');
-} else if ($arr['vl_form'] == 8) {
-	// require('forms/update-angola-result.php');
 }
 ?>
 

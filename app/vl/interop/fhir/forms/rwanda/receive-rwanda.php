@@ -3,23 +3,15 @@
 // this file is included in /vl/interop/fhir/vl-receive.php
 header('Content-Type: application/json');
 
-function prettyJson($json): string
-{
-    if (is_array($json)) {
-        return stripslashes(json_encode($json, JSON_PRETTY_PRINT));
-    } else {
-        return stripslashes(json_encode(json_decode($json), JSON_PRETTY_PRINT));
-    }
-}
-
+use App\Interop\Fhir;
+use App\Services\VlService;
+use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Services\CommonService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\VlService;
-use App\Utilities\DateUtility;
 use DCarbone\PHPFHIRGenerated\R4\PHPFHIRResponseParser;
-use App\Interop\Fhir;
 
 $interopConfig = require(APPLICATION_PATH . '/../configs/config.interop.php');
 
@@ -52,20 +44,20 @@ $data[] = "status=requested";
 $data[] = "_count=200";
 
 $json = $fhir->get('/Task', $data);
-//echo prettyJson($json);
+//echo $general->prettyJson($json);
 
 // echo "\n\n\n\n\n\n";
 // $json = $fhir->get('/ServiceRequest/107150');
-// echo prettyJson($json);
+// echo $general->prettyJson($json);
 // echo "\n\n\n\n\n\n";
 // $json = $fhir->get('/Patient/107164');
-// echo prettyJson($json);
+// echo $general->prettyJson($json);
 // echo "\n\n\n\n\n\n";
 // $json = $fhir->get('/Specimen/107169');
-// echo prettyJson($json);
+// echo $general->prettyJson($json);
 // echo "\n\n\n\n\n\n";
 // $json = $fhir->get('/Practitioner/107167');
-// echo prettyJson($json);
+// echo $general->prettyJson($json);
 
 
 //die;
@@ -304,7 +296,10 @@ foreach ($formData as $serviceRequest => $data) {
         continue;
     }
 
-    $sampleJson = $vlService->generateVLSampleID(null, ($data['sample_collection_date']));
+    $sampleCodeParams = [];
+    $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate ?? null;
+
+    $sampleJson = $vlService->generateSampleCode($sampleCodeParams);
 
     $sampleData = json_decode($sampleJson, true);
     if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
@@ -362,4 +357,4 @@ if (!empty($errors)) {
 
 $trackId = $general->addApiTracking($transactionId, 'vlsm-system', $processedCounter, 'FHIR-VL-Receive', 'vl', $fhir->getRequestUrl(), $json, null, 'json');
 
-echo prettyJson($response);
+echo MiscUtility::prettyJson($response);

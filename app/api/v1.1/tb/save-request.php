@@ -5,6 +5,7 @@ use App\Services\TbService;
 use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
@@ -88,18 +89,37 @@ try {
 
     foreach ($input as $rootKey => $data) {
 
-        $mandatoryFields = ['sampleCollectionDate', 'facilityId', 'appSampleCode'];
+        $mandatoryFields = [
+            'sampleCollectionDate',
+            'facilityId',
+            'appSampleCode'
+        ];
+        $cantBeFutureDates = [
+            'sampleCollectionDate',
+            'patientDob',
+            'sampleTestedDateTime',
+            'sampleDispatchedOn',
+            'sampleReceivedDate',
+        ];
 
         if ($formId == 5) {
             $mandatoryFields[] = 'provinceId';
         }
 
-        if ($app->checkIfNullOrEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
+        if (MiscUtility::hasEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
             $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
                 'status' => 'failed',
                 'message' => _("Missing required fields")
+            ];
+            continue;
+        } elseif (DateUtility::hasFutureDates(array_intersect_key($data, array_flip($cantBeFutureDates)))) {
+            $responseData[$rootKey] = [
+                'transactionId' => $transactionId,
+                'appSampleCode' => $data['appSampleCode'] ?? null,
+                'status' => 'failed',
+                'message' => _("Invalid Dates. Cannot be in the future")
             ];
             continue;
         }
@@ -110,7 +130,7 @@ try {
             if (!empty($province)) {
                 $data['provinceId'] = $province[0];
             }
-            $data['provinceId'] = $general->getValueByName($data['provinceId'], 'geo_name', 'geographical_divisions', 'geo_id', true);
+            $data['provinceId'] = $general->getValueByName($data['provinceId'], 'geo_name', 'geographical_divisions', 'geo_id');
         }
         if (isset($data['implementingPartner']) && !is_numeric($data['implementingPartner'])) {
             $data['implementingPartner'] = $general->getValueByName($data['implementingPartner'], 'i_partner_name', 'r_implementation_partners', 'i_partner_id');
@@ -365,7 +385,7 @@ try {
             $tbData['last_modified_datetime']  = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
             $tbData['last_modified_by']  = $user['user_id'];
         } else {
-            $tbData['request_created_datetime']  = (!empty($data['createdOn'])) ? DateUtility::isoDateFormat($data['createdOn'], true) : DateUtility::getCurrentDateTime();
+            $tbData['request_created_datetime']  = DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true);
             $tbData['sample_registered_at_lab']  = DateUtility::getCurrentDateTime();
             $tbData['request_created_by']  = $user['user_id'];
         }

@@ -70,18 +70,18 @@ try {
                 } elseif (count($xplodResultSample) > 0) {
                     $sample = $xplodResultSample;
                 }
-                
+
                 for ($j = 0; $j < count($sample); $j++) {
                     $value = array('sample_batch_id' => $id);
                     $db = $db->where($refPrimaryColumn, $sample[$j]);
                     $db->update($refTable, $value);
                 }
                 header("Location:add-batch-position.php?type=" . $_POST['type'] . "&id=" . base64_encode($id) . "&position=" . $_POST['positions']);
-            }else{
-                // header("Location:batches.php?type=" . $_POST['type']); 
+            } else {
+                // header("Location:batches.php?type=" . $_POST['type']);
             }
         } else {
-            $exist = $general->existBatchCode($_POST['batchCode']);
+            $exist = $general->doesBatchCodeExist($_POST['batchCode']);
             if ($exist) {
                 $_SESSION['alertMsg'] = "Something went wrong. Please try again later.";
                 header("Location:batches.php?type=" . $_POST['type']);
@@ -111,8 +111,8 @@ try {
                         }
                     }
                     header("Location:add-batch-position.php?type=" . $_POST['type'] . "&id=" . base64_encode($lastId) . "&position=" . $_POST['positions']);
-                }else{
-                    header("Location:batches.php?type=" . $_POST['type']);            
+                } else {
+                    header("Location:batches.php?type=" . $_POST['type']);
                 }
             }
         }

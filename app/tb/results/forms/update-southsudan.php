@@ -308,7 +308,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 									<tr>
 										<th scope="row"><label class="label-control" for="sampleCollectionDate">Date Specimen Collected </label></th>
 										<td>
-											<input class="form-control" value="<?php echo $tbInfo['sample_collection_date']; ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="sampleCodeGeneration();" />
+											<input class="form-control" value="<?php echo $tbInfo['sample_collection_date']; ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="generateSampleCode();" />
 										</td>
 										<th scope="row"><label class="label-control" for="sampleReceivedDate">Date of Specimen Reception </label></th>
 										<td>
@@ -597,7 +597,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 						$("#district").html(details[1]);
 					}
 				});
-			sampleCodeGeneration();
+			generateSampleCode();
 		} else if (pName == '') {
 			provinceName = true;
 			facilityName = true;
@@ -651,7 +651,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		}, 3000);
 	}
 
-	function sampleCodeGeneration() {
+	function generateSampleCode() {
 		var pName = $("#province").val();
 		var sDate = $("#sampleCollectionDate").val();
 		if (pName != '' && sDate != '') {

@@ -34,9 +34,11 @@ $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_coll
 if ($sarr['sc_user_type'] == 'standalone') {
     if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
         unset($aColumns[$key]);
+        $aColumns = array_values($aColumns);
     }
     if (($key = array_search('vl.remote_sample_code', $orderColumns)) !== false) {
         unset($orderColumns[$key]);
+        $orderColumns = array_values($orderColumns);
     }
 }
 

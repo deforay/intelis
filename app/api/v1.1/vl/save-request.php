@@ -9,9 +9,10 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Utilities\MiscUtility;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 use JsonMachine\Exception\PathNotFoundException;
-
+use Whoops\Util\Misc;
 
 ini_set('memory_limit', -1);
 
@@ -55,8 +56,8 @@ try {
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
 
-    /** @var ApiService $app */
-    $app = ContainerRegistry::get(ApiService::class);
+    /** @var ApiService $apiService */
+    $apiService = ContainerRegistry::get(ApiService::class);
 
     /** @var UsersService $usersService */
     $usersService = ContainerRegistry::get(UsersService::class);
@@ -98,17 +99,33 @@ try {
             'facilityId',
             'appSampleCode'
         ];
+        $cantBeFutureDates = [
+            'sampleCollectionDate',
+            'patientDob',
+            'requestDate',
+            'sampleTestedDateTime',
+            'sampleDispatchedOn',
+            'sampleReceivedDate',
+        ];
 
         if ($formId == 5) {
             $mandatoryFields[] = 'provinceId';
         }
 
-        if ($app->checkIfNullOrEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
+        if (MiscUtility::hasEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
             $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
                 'status' => 'failed',
                 'message' => _("Missing required fields")
+            ];
+            continue;
+        } elseif (DateUtility::hasFutureDates(array_intersect_key($data, array_flip($cantBeFutureDates)))) {
+            $responseData[$rootKey] = [
+                'transactionId' => $transactionId,
+                'appSampleCode' => $data['appSampleCode'] ?? null,
+                'status' => 'failed',
+                'message' => _("Invalid Dates. Cannot be in the future")
             ];
             continue;
         }
@@ -118,7 +135,7 @@ try {
             if (!empty($province)) {
                 $data['provinceId'] = $province[0];
             }
-            $data['provinceId'] = $general->getValueByName($data['provinceId'], 'geo_name', 'geographical_divisions', 'geo_id', true);
+            $data['provinceId'] = $general->getValueByName($data['provinceId'], 'geo_name', 'geographical_divisions', 'geo_id');
         }
 
         $data['api'] = "yes";
@@ -191,7 +208,7 @@ try {
             $params['facilityId'] = $data['facilityId'] ?? null;
             $params['labId'] = $data['labId'] ?? null;
 
-            $currentSampleData = $vlService->insertSampleCode($params, true);
+            $currentSampleData = $vlService->insertSample($params, true);
             $currentSampleData['action'] = 'inserted';
             $data['vlSampleId'] = intval($currentSampleData['id']);
             if ($data['vlSampleId'] == 0) {
@@ -250,8 +267,6 @@ try {
                 $status = 7;
             }
         }
-
-
 
         $formAttributes = [
             'applicationVersion'    => $version,
@@ -324,7 +339,7 @@ try {
             'result_status'                         => $status,
             'funding_source'                        => $data['fundingSource'] ?? null,
             'implementing_partner'                  => $data['implementingPartner'] ?? null,
-            'request_created_datetime'              => DateUtility::isoDateFormat($data['createdOn'] ?? '', true) ?? DateUtility::getCurrentDateTime(),
+            'request_created_datetime'              => DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true),
             'last_modified_datetime'                => DateUtility::getCurrentDateTime(),
             'manual_result_entry'                   => 'yes',
             'external_sample_code'                  => $data['serialNo'] ?? null,

@@ -48,7 +48,8 @@
         "spatie/once": "^2.2",
         "monolog/monolog": "^2.9",
         "league/csv": "^9.8",
-        "ifsnop/mysqldump-php": "^2.12"
+        "ifsnop/mysqldump-php": "^2.12",
+        "symfony/console": "^5.4"
     },
     "suggest": {
         "dcarbone/php-fhir-generated": "Needed for FHIR Parsing",

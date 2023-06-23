@@ -102,8 +102,8 @@ try {
     //   $id=$db->update($fDetails,$fData);
     //}
     if (isset($_POST['gender']) && trim($_POST['gender']) == 'male') {
-        $_POST['patientPregnant'] = '';
-        $_POST['breastfeeding'] = '';
+        $_POST['patientPregnant'] = "N/A";
+        $_POST['breastfeeding'] = "N/A";
     }
     $instanceId = '';
     if (isset($_SESSION['instanceId'])) {
@@ -366,12 +366,12 @@ try {
     }
 
     if ($id === true) {
-        $_SESSION['alertMsg'] = _("VL request added successfully");
+        $_SESSION['alertMsg'] = _("Lab test request added successfully");
         //Add event log
 
         $eventType = 'add-test-request';
         $action = $_SESSION['userName'] . ' added a new request data with the sample code ' . $_POST['sampleCode'];
-        $resource = 'vl-request-ss';
+        $resource = 'lab-test-request';
 
         $general->activityLog($eventType, $action, $resource);
 

@@ -118,7 +118,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 						<tr>
 							<td><strong><?php echo _("Test Type"); ?>&nbsp;:</strong></td>
 							<td>
-								<select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getTestTypeForm()">
+								<select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;">
 									<option value=""> -- Select -- </option>
 									<?php foreach ($testTypeResult as $testType) { ?>
 										<option value="<?php echo $testType['test_type_id'] ?>"><?php echo $testType['test_standard_name'] ?></option>

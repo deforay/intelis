@@ -373,7 +373,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 									<tr>
 										<th scope="row">Date de collecte <span class="mandatory">*</span> </th>
 										<td>
-											<input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Date de collecte" onchange="sampleCodeGeneration();" />
+											<input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Date de collecte" onchange="generateSampleCode();" />
 										</td>
 
 										<th scope="row">Tel. du préleveur</th>
@@ -597,7 +597,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 						}
 					});
 			}
-			sampleCodeGeneration();
+			generateSampleCode();
 		} else if (pName == '') {
 			provinceName = true;
 			facilityName = true;
@@ -624,7 +624,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélect
 		$("#mothersMaritalStatus").val(patientArray['mother_marital_status']);
 	}
 
-	function sampleCodeGeneration() {
+	function generateSampleCode() {
 		var pName = $("#province").val();
 		var sDate = $("#sampleCollectionDate").val();
 		if (pName != '' && sDate != '') {

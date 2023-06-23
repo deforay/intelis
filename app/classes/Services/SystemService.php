@@ -2,28 +2,22 @@
 
 namespace App\Services;
 
-use MysqliDb;
 use Whoops\Run;
 use Whoops\Util\Misc;
 use App\Services\CommonService;
-use App\Registries\ContainerRegistry;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Handler\JsonResponseHandler;
 
 class SystemService
 {
-
-    protected ?MysqliDb $db = null;
-    protected ?array $applicationConfig = null;
+    protected array $applicationConfig = [];
     protected ?CommonService $commonService;
 
     public function __construct(
-        ?MysqliDb $db = null,
-        ?array $applicationConfig = null,
-        CommonService $commonService = null
+        ?array $applicationConfig,
+        CommonService $commonService
     ) {
-        $this->db = $db ?? ContainerRegistry::get('db');
-        $this->applicationConfig = $applicationConfig;
+        $this->applicationConfig = $applicationConfig ?? SYSTEM_CONFIG;
         $this->commonService = $commonService;
     }
 

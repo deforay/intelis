@@ -10,4 +10,4 @@ if (session_status() == PHP_SESSION_NONE) {
 
 /** @var HepatitisService $hepatitisService */
 $hepatitisService = ContainerRegistry::get(HepatitisService::class);
-echo $hepatitisService->insertSampleCode($_POST);
+echo $hepatitisService->insertSample($_POST);

@@ -10,4 +10,4 @@ if (session_status() == PHP_SESSION_NONE) {
 
 /** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);
-echo $vlService->insertSampleCode($_POST);
+echo $vlService->insertSample($_POST);

@@ -138,7 +138,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <?php } ?>
                                         <td style="width:15% !important">Sample Collection Date <span class="mandatory">*</span> </td>
                                         <td>
-                                            <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="sampleCodeGeneration();" />
+                                            <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="generateSampleCode();" />
                                         </td>
 
                                     </tr>
@@ -474,7 +474,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                     }
                 });
             //}
-            sampleCodeGeneration();
+            generateSampleCode();
         } else if (pName == '') {
             provinceName = true;
             facilityName = true;
@@ -486,7 +486,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         $.unblockUI();
     }
 
-    function sampleCodeGeneration() {
+    function generateSampleCode() {
 
         var pName = $("#province").val();
         var sDate = $("#sampleCollectionDate").val();

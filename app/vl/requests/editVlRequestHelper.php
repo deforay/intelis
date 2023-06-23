@@ -84,8 +84,8 @@ try {
      }
 
      if (isset($_POST['gender']) && trim($_POST['gender']) == 'male') {
-          $_POST['patientPregnant'] = null;
-          $_POST['breastfeeding'] = null;
+          $_POST['patientPregnant'] = "N/A";
+          $_POST['breastfeeding'] = "N/A";
      }
 
      $testingPlatform = null;
@@ -245,10 +245,10 @@ try {
           'last_viral_load_result'                => $_POST['lastViralLoadResult'] ?? null,
           'last_viral_load_date'                  => DateUtility::isoDateFormat($_POST['lastViralLoadTestDate'] ?? ''),
           'community_sample'                      => $_POST['communitySample'] ?? null,
-          'last_vl_date_routine'                  => $_POST['rmTestingLastVLDate'] ?? null,
+          'last_vl_date_routine'                  => DateUtility::isoDateFormat($_POST['rmTestingLastVLDate'] ?? null),
           'last_vl_result_routine'                => $_POST['rmTestingVlValue'] ?? null,
           'last_vl_sample_type_routine'           => $_POST['rmLastVLTestSampleType'] ?? null,
-          'last_vl_date_failure_ac'               => $_POST['repeatTestingLastVLDate'] ?? null,
+          'last_vl_date_failure_ac'               => DateUtility::isoDateFormat($_POST['repeatTestingLastVLDate'] ?? null),
           'last_vl_result_failure_ac'             => $_POST['repeatTestingVlValue'] ?? null,
           'last_vl_sample_type_failure_ac'        => $_POST['repeatLastVLTestSampleType'] ?? null,
           'last_vl_date_failure'                  => DateUtility::isoDateFormat($_POST['suspendTreatmentLastVLDate'] ?? ''),
@@ -256,7 +256,7 @@ try {
           'last_vl_sample_type_failure'           => $_POST['suspendLastVLTestSampleType'] ?? null,
           'request_clinician_name'                => $_POST['reqClinician'] ?? null,
           'request_clinician_phone_number'        => $_POST['reqClinicianPhoneNumber'] ?? null,
-          'test_requested_on'                     => DateUtility::isoDateFormat($_POST['requestDate']),
+          'test_requested_on'                     => DateUtility::isoDateFormat($_POST['requestDate'] ?? null),
           'vl_focal_person'                       => $_POST['vlFocalPerson'] ?? null,
           'vl_focal_person_phone_number'          => $_POST['vlFocalPersonPhoneNumber'] ?? null,
           'lab_id'                                => $_POST['labId'] ?? null,
@@ -265,10 +265,10 @@ try {
           'sample_received_at_vl_lab_datetime'    => DateUtility::isoDateFormat($_POST['sampleReceivedDate'] ?? '', true),
           'sample_tested_datetime'                => DateUtility::isoDateFormat($_POST['sampleTestingDateAtLab'] ?? '', true),
           'result_dispatched_datetime'            => DateUtility::isoDateFormat($_POST['resultDispatchedOn'] ?? '', true),
-          'result_value_hiv_detection'            => $_POST['hivDetection'] ?? null,
+          'result_value_hiv_detection'            => (isset($_POST['hivDetection']) && trim($_POST['hivDetection']) != '') ? $_POST['hivDetection'] : null,
           'reason_for_failure'                    => $_POST['reasonForFailure'] ?? null,
           'is_sample_rejected'                    => $_POST['noResult'] ?? null,
-          'reason_for_sample_rejection'           => $_POST['rejectionReason'] ?? null,
+          'reason_for_sample_rejection'           => (isset($_POST['rejectionReason']) && trim($_POST['rejectionReason']) != '') ? $_POST['rejectionReason'] : null,
           'rejection_on'                          => DateUtility::isoDateFormat($_POST['rejectionDate'] ?? ''),
           'result_value_absolute'                 => $absVal ?? null,
           'result_value_absolute_decimal'         => $absDecimalVal ?? null,
@@ -347,11 +347,11 @@ try {
           $pngSpecificFields['report_date'] = DateUtility::isoDateFormat($_POST['reportDate'] ?? '');
      }
      $vlData = array_merge($vlData, $pngSpecificFields);
-
+     //print_r($vlData);die;
      $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $vlData);
      error_log($db->getLastError());
-
+     //die;
      if ($id === true) {
           $_SESSION['alertMsg'] = _("VL request updated successfully");
 

@@ -185,13 +185,11 @@ if ($arr['vl_form'] == 1) {
 } elseif ($arr['vl_form'] == 3) {
   include('pdf/result-pdf-drc.php');
 } elseif ($arr['vl_form'] == 4) {
-  // include('pdf/result-pdf-zambia.php');
+  include('pdf/result-pdf-cameroon.php');
 } elseif ($arr['vl_form'] == 5) {
   include('pdf/result-pdf-png.php');
 } elseif ($arr['vl_form'] == 6) {
   // include('pdf/result-pdf-who.php');
 } elseif ($arr['vl_form'] == 7) {
   include('pdf/result-pdf-rwanda.php');
-} elseif ($arr['vl_form'] == 8) {
-  include('pdf/result-pdf-angola.php');
 }

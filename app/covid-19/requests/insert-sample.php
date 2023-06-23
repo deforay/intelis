@@ -10,4 +10,4 @@ if (session_status() == PHP_SESSION_NONE) {
 
 /** @var Covid19Service $covid19Service */
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
-echo $covid19Service->insertSampleCode($_POST);
+echo $covid19Service->insertSample($_POST);

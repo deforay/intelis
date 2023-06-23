@@ -1,10 +1,6 @@
 <?php
 
-/**
- * General functions
- *
- * @author Amit
- */
+
 
 namespace App\Services;
 
@@ -81,16 +77,6 @@ class ApiService
         $response = $client->post($url, $options);
 
         return $response->getBody()->getContents();
-    }
-
-    public function checkIfNullOrEmpty($array)
-    {
-        foreach ($array as $value) {
-            if ($value === null || trim($value) === "") {
-                return true;
-            }
-        }
-        return false;
     }
 
     public function generateSelectOptions($options): array

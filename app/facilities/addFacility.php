@@ -31,27 +31,26 @@ foreach ($userResult as $user) {
 	$userInfo[$user['user_id']] = ($user['user_name']);
 }
 
-$countryShortCode = $general->getCountryShortCode();
 $reportFormats = [];
 if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
-	$reportFormats['covid19'] = $general->activeReportFormats('covid-19', $countryShortCode);
+	$reportFormats['covid19'] = $general->activeReportFormats('covid-19');
 }
 if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
-	$reportFormats['eid'] = $general->activeReportFormats('eid', $countryShortCode);
+	$reportFormats['eid'] = $general->activeReportFormats('eid');
 }
 if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
-	$reportFormats['vl'] = $general->activeReportFormats('vl', $countryShortCode);
+	$reportFormats['vl'] = $general->activeReportFormats('vl');
 }
 
 if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
-	$reportFormats['hepatitis'] = $general->activeReportFormats('hepatitis', $countryShortCode);
+	$reportFormats['hepatitis'] = $general->activeReportFormats('hepatitis');
 }
 
 if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
-	$reportFormats['tb'] = $general->activeReportFormats('tb', $countryShortCode);
+	$reportFormats['tb'] = $general->activeReportFormats('tb');
 }
 if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true) {
-	$reportFormats['generic-tests'] = $general->activeReportFormats('generic-tests', $countryShortCode);
+	$reportFormats['generic-tests'] = $general->activeReportFormats('generic-tests');
 }
 $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 

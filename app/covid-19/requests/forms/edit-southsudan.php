@@ -123,21 +123,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                     <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                    <!-- <?php if ($covid19Info['remote_sample'] == 'yes') { ?>
-                                        <tr>
-                                            <?php
-                                                if ($covid19Info['sample_code'] != '') {
-                                            ?>
-                                                <td colspan="4"> <label for="sampleSuggest" class="text-danger">&nbsp;&nbsp;&nbsp;Please note that this Remote Sample has already been imported with VLSM Sample ID </td>
-                                                <td colspan="2" align="left"> <?php echo $covid19Info['sample_code']; ?></label> </td>
-                                            <?php
-                                                } else {
-                                            ?>
-                                                <td colspan="4"> <label for="sampleSuggest">Sample ID (might change while submitting the form)</label></td>
-                                                <td colspan="2" align="left"> <?php echo $sampleSuggestion; ?></td>
-                                            <?php } ?>
-                                        </tr>
-                                    <?php } ?> -->
                                     <tr>
                                         <?php if ($sarr['sc_user_type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') { ?>
                                             <td><label for="sampleCode">Sample ID </label> </td>
@@ -225,7 +210,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="Identification" title="Please enter ID" style="width:100%;" value="<?php echo $covid19Info['patient_id']; ?>" />
                                         </td>
-                                        <th scope="row" style="width:15% !important"><label for="externalSampleCode">DHIS2 Case ID <span class="mandatory">*</span> </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="externalSampleCode">DHIS2 Case ID </label></th>
                                         <td style="width:35% !important"><input type="text" class="form-control" id="externalSampleCode" name="externalSampleCode" placeholder="DHIS2 Case ID" title="Please enter DHIS2 Case ID" style="width:100%;" value="<?php echo $covid19Info['external_sample_code']; ?>" /></td>
                                     </tr>
                                     <tr>
@@ -651,7 +636,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                     }
                 });
             //}
-            sampleCodeGeneration();
+            generateSampleCode();
         } else if (pName == '') {
             provinceName = true;
             facilityName = true;
@@ -711,7 +696,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         $.unblockUI();
     }
 
-    function sampleCodeGeneration() {
+    function generateSampleCode() {
         var pName = $("#province").val();
         var sDate = $("#sampleCollectionDate").val();
         if (pName != '' && sDate != '') {

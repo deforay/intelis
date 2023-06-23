@@ -83,13 +83,13 @@ $_SESSION['aliasPage'] = 1;
 //header and footer
 class MYPDF extends TCPDF
 {
-    public $logo = '';
-    public $text = '';
-    public $lab = '';
-    public $htitle = '';
-    public $labFacilityId = '';
-    public $formId = '';
-    public $mFieldArray = [];
+	public $logo = '';
+	public $text = '';
+	public $lab = '';
+	public $htitle = '';
+	public $labFacilityId = '';
+	public $formId = '';
+	public $mFieldArray = [];
 	//Page header
 	public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $formId = null)
 	{
@@ -101,7 +101,7 @@ class MYPDF extends TCPDF
 		$this->formId = $formId;
 	}
 	public function imageExists($filePath): bool
-    {
+	{
 		return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
 	}
 	//Page header
@@ -188,22 +188,20 @@ $fileArray = array(
 	1 => 'pdf/result-pdf-ssudan.php',
 	2 => 'pdf/result-pdf-sierraleone.php',
 	3 => 'pdf/result-pdf-drc.php',
-	4 => 'pdf/result-pdf-zam.php',
+	4 => 'pdf/result-pdf-cameroon.php',
 	5 => 'pdf/result-pdf-png.php',
 	6 => 'pdf/result-pdf-who.php',
-	7 => 'pdf/result-pdf-rwanda.php',
-	8 => 'pdf/result-pdf-angola.php',
+	7 => 'pdf/result-pdf-rwanda.php'
 );
 
 $country = array(
 	1 => 'South sudan',
 	2 => 'Sierra Leone',
 	3 => 'Democratic Republic of the Congo',
-	4 => 'Zambia',
+	4 => 'Cameroon',
 	5 => 'Papua New Guinea',
 	6 => 'WHO',
-	7 => 'Rwanda',
-	8 => 'Angola',
+	7 => 'Rwanda'
 );
 
 require($fileArray[$arr['vl_form']]);

@@ -51,7 +51,13 @@ foreach ($sampleResult as $sampleRow) {
     // ONLY IF SAMPLE CODE IS NOT ALREADY GENERATED
     if ($sampleRow['sample_code'] == null || $sampleRow['sample_code'] == '' || $sampleRow['sample_code'] == 'null') {
 
-        $sampleJson = $hepatitisService->generatehepatitisSampleCode($sampleRow['hepatitis_test_type'], $provinceCode, DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date']));
+
+        $sampleCodeParams = [];
+        $sampleCodeParams['sampleCollectionDate'] = DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date'] ?? '');
+        $sampleCodeParams['prefix'] = $sampleRow['hepatitis_test_type'] ?? null;
+        $sampleCodeParams['provinceCode'] = $provinceCode;
+
+        $sampleJson =  $hepatitisService->generateSampleCode($sampleCodeParams);
         $sampleData = json_decode($sampleJson, true);
         $hepatitisData = [];
         $hepatitisData['sample_code'] = $sampleData['sampleCode'];

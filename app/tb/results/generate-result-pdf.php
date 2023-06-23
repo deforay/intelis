@@ -4,13 +4,14 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-use App\Helpers\PdfConcatenateHelper;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\GeoLocationsService;
 use App\Services\TbService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Services\CommonService;
+use App\Helpers\PdfConcatenateHelper;
+use App\Registries\ContainerRegistry;
+use App\Services\GeoLocationsService;
 
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);
@@ -97,7 +98,7 @@ $requestResult = $db->query($searchQuery);
 /* Test Results */
 if (isset($_POST['type']) && $_POST['type'] == "qr") {
     try {
-        $general->trackQrViewPage('tb', $requestResult[0]['tb_id'], $requestResult[0]['sample_code']);
+        $general->trackQRPageViews('tb', $requestResult[0]['tb_id'], $requestResult[0]['sample_code']);
     } catch (Exception $exc) {
         error_log($exc->getMessage());
         error_log($exc->getTraceAsString());
@@ -287,35 +288,31 @@ if (!empty($requestResult)) {
                 } else if ($arr['vl_form'] == 3) {
                     include('pdf/result-pdf-drc.php');
                 } else if ($arr['vl_form'] == 4) {
-                    // include('pdf/result-pdf-zam.php');
+                    include('pdf/result-pdf-cameroon.php');
                 } else if ($arr['vl_form'] == 5) {
                     // include('pdf/result-pdf-png.php');
                 } else if ($arr['vl_form'] == 6) {
                     // include('pdf/result-pdf-who.php');
                 } else if ($arr['vl_form'] == 7) {
                     include('pdf/result-pdf-rwanda.php');
-                } else if ($arr['vl_form'] == 8) {
-                    include('pdf/result-pdf-angola.php');
                 }
                 exit(0);
             }
         } else {
             if ($arr['vl_form'] == 1) {
                 include('pdf/result-pdf-ssudan.php');
-            } else if ($arr['vl_form'] == 2) {
+            } elseif ($arr['vl_form'] == 2) {
                 include('pdf/result-pdf-sierraleone.php');
-            } else if ($arr['vl_form'] == 3) {
+            } elseif ($arr['vl_form'] == 3) {
                 include('pdf/result-pdf-drc.php');
-            } else if ($arr['vl_form'] == 4) {
-                // include('pdf/result-pdf-zam.php');
-            } else if ($arr['vl_form'] == 5) {
+            } elseif ($arr['vl_form'] == 4) {
+                include('pdf/result-pdf-cameroon.php');
+            } elseif ($arr['vl_form'] == 5) {
                 // include('pdf/result-pdf-png.php');
-            } else if ($arr['vl_form'] == 6) {
+            } elseif ($arr['vl_form'] == 6) {
                 // include('pdf/result-pdf-who.php');
-            } else if ($arr['vl_form'] == 7) {
+            } elseif ($arr['vl_form'] == 7) {
                 include('pdf/result-pdf-rwanda.php');
-            } else if ($arr['vl_form'] == 8) {
-                include('pdf/result-pdf-angola.php');
             }
             exit(0);
         }
@@ -328,7 +325,7 @@ if (!empty($requestResult)) {
         $resultPdf->concat();
         $resultFilename = 'VLSM-TB-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
         $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
-        $general->removeDirectory($pathFront);
+        MiscUtility::removeDirectory($pathFront);
         unset($_SESSION['rVal']);
     }
 }

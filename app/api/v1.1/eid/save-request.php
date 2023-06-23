@@ -5,6 +5,7 @@ use App\Services\ApiService;
 use App\Services\EidService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
@@ -87,18 +88,37 @@ try {
     $responseData = [];
     foreach ($input as $rootKey => $data) {
 
-        $mandatoryFields = ['sampleCollectionDate', 'facilityId', 'appSampleCode'];
+        $mandatoryFields = [
+            'sampleCollectionDate',
+            'facilityId',
+            'appSampleCode'
+        ];
+        $cantBeFutureDates = [
+            'sampleCollectionDate',
+            'childDob',
+            'sampleTestedDateTime',
+            'sampleDispatchedOn',
+            'sampleReceivedDate',
+        ];
 
         if ($formId == 5) {
             $mandatoryFields[] = 'provinceId';
         }
 
-        if ($app->checkIfNullOrEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
+        if (MiscUtility::hasEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
             $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
                 'status' => 'failed',
                 'message' => _("Missing required fields")
+            ];
+            continue;
+        } elseif (DateUtility::hasFutureDates(array_intersect_key($data, array_flip($cantBeFutureDates)))) {
+            $responseData[$rootKey] = [
+                'transactionId' => $transactionId,
+                'appSampleCode' => $data['appSampleCode'] ?? null,
+                'status' => 'failed',
+                'message' => _("Invalid Dates. Cannot be in the future")
             ];
             continue;
         }
@@ -193,7 +213,7 @@ try {
             $params['facilityId'] = $data['facilityId'] ?? null;
             $params['labId'] = $data['labId'] ?? null;
 
-            $currentSampleData = $eidService->insertSampleCode($params, true);
+            $currentSampleData = $eidService->insertSample($params, true);
             $currentSampleData['action'] = 'inserted';
             $data['eidSampleId'] = intval($currentSampleData['id']);
             if ($data['eidSampleId'] == 0) {
@@ -389,7 +409,7 @@ try {
             $eidData['last_modified_datetime']  = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
             $eidData['last_modified_by']  = $user['user_id'];
         } else {
-            $eidData['request_created_datetime']  = (!empty($data['createdOn'])) ? DateUtility::isoDateFormat($data['createdOn'], true) : DateUtility::getCurrentDateTime();
+            $eidData['request_created_datetime']  = DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true);
             $eidData['sample_registered_at_lab']  = DateUtility::getCurrentDateTime();
             $eidData['request_created_by']  = $user['user_id'];
         }

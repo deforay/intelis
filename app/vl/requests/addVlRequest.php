@@ -97,11 +97,10 @@ $fileArray = array(
     1 => 'forms/add-southsudan.php',
     2 => 'forms/add-sierraleone.php',
     3 => 'forms/add-drc.php',
-    4 => 'forms/add-zambia.php',
+    4 => 'forms/add-cameroon.php',
     5 => 'forms/add-png.php',
     6 => 'forms/add-who.php',
-    7 => 'forms/add-rwanda.php',
-    8 => 'forms/add-angola.php',
+    7 => 'forms/add-rwanda.php'
 );
 
 require($fileArray[$arr['vl_form']]);
@@ -118,7 +117,7 @@ require_once APPLICATION_PATH . "/vl/vl.js.php";
 <script>
     function insertSampleCode(formId, vlSampleId, sampleCode, sampleCodeKey, sampleCodeFormat, countryId, sampleCollectionDate, provinceCode = null, provinceId = null) {
         $.blockUI();
-        $.post("/vl/requests/insertNewSample.php", {
+        $.post("/vl/requests/insert-sample.php", {
                 sampleCode: $("#" + sampleCode).val(),
                 sampleCodeKey: $("#" + sampleCodeKey).val(),
                 sampleCodeFormat: $("#" + sampleCodeFormat).val(),
@@ -136,7 +135,7 @@ require_once APPLICATION_PATH . "/vl/vl.js.php";
                 } else {
                     $.unblockUI();
                     //$("#sampleCollectionDate").val('');
-                    sampleCodeGeneration();
+                    generateSampleCode();
                     alert("<?= _("Could not save this form. Please try again."); ?>");
                 }
             });

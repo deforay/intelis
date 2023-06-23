@@ -13,23 +13,14 @@ if (session_status() == PHP_SESSION_NONE) {
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
-$c19Model = ContainerRegistry::get(Covid19Service::class);
+/** @var Covid19Service $covid19Service */
+$covid19Service = ContainerRegistry::get(Covid19Service::class);
 
-$sampleCollectionDate = $province = '';
+$provinceCode = $_POST['provinceCode'] ?? $_POST['pName'] ?? null;
+$sampleCollectionDate = $_POST['sampleCollectionDate'] ?? $_POST['sDate'] ?? null;
 
-if (isset($_POST['provinceCode'])) {
-  $province = $_POST['provinceCode'];
-} else if (isset($_POST['pName'])) {
-  $province = $_POST['pName'];
-}
+$sampleCodeParams = [];
+$sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
+$sampleCodeParams['provinceCode'] = $provinceCode;
 
-if (isset($_POST['sampleCollectionDate'])) {
-  $sampleCollectionDate = $_POST['sampleCollectionDate'];
-} else if (isset($_POST['sDate'])) {
-  $sampleCollectionDate = $_POST['sDate'];
-}
-
-$sampleFrom = $_POST['sampleFrom'] ?? '';
-
-
-echo $c19Model->generateCovid19SampleCode($province, $sampleCollectionDate, $sampleFrom);
+echo $covid19Service->generateSampleCode($sampleCodeParams);

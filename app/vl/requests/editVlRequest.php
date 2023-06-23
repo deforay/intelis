@@ -175,11 +175,10 @@ $fileArray = array(
      1 => 'forms/edit-southsudan.php',
      2 => 'forms/edit-sierraleone.php',
      3 => 'forms/edit-drc.php',
-     //4 => 'forms/edit-zambia.php',
+     4 => 'forms/edit-cameroon.php',
      5 => 'forms/edit-png.php',
      6 => 'forms/edit-who.php',
-     7 => 'forms/edit-rwanda.php',
-     8 => 'forms/edit-angola.php',
+     7 => 'forms/edit-rwanda.php'
 );
 
 require_once($fileArray[$arr['vl_form']]);

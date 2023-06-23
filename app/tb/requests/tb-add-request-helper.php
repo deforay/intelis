@@ -147,11 +147,11 @@ try {
 
     if (isset($_POST['province']) && $_POST['province'] != "") {
         $province = explode("##", $_POST['province']);
-        $provinceDetails = $geolocationService->getByName($province[0]);
-        if (!$provinceDetails) {
+        $provinceId = $geolocationService->getProvinceIdByName($province[0]);
+        if (empty($provinceId)) {
             $_POST['provinceId'] = $geolocation->addGeoLocation($province[0]);
         } else {
-            $_POST['provinceId'] = $provinceDetails['geo_id'];
+            $_POST['provinceId'] = $provinceId;
         }
     }
     $reason = $_POST['reasonForTbTest'];

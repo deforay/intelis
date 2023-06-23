@@ -39,7 +39,7 @@ $rKey = '';
 $sampleCodeKey = 'sample_code_key';
 $sampleCode = 'sample_code';
 $prefix = $arr['sample_code_prefix'];
-$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
+$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 AND geo_status='active'";
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	$rKey = 'R';
 	$sampleCodeKey = 'remote_sample_code_key';
@@ -50,17 +50,24 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 		$sampleCode = 'sample_code';
 	}
 	//check user exist in user_facility_map table
-	$chkUserFcMapQry = "SELECT user_id FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
+	$chkUserFcMapQry = "SELECT user_id FROM user_facility_map
+						WHERE user_id='" . $_SESSION['userId'] . "'";
 	$chkUserFcMapResult = $db->query($chkUserFcMapQry);
 	if ($chkUserFcMapResult) {
-		$pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
+		$pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code
+		FROM geographical_divisions as gd
+		JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id
+		JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id
+		WHERE gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
 	}
 }
 //sample rejection reason
 $rejectionQuery = "SELECT * FROM r_vl_sample_rejection_reasons";
 $rejectionResult = $db->rawQuery($rejectionQuery);
 
-$bQuery = "SELECT * FROM batch_details WHERE test_type like 'vl' or test_type is NULL ORDER BY last_modified_datetime DESC";
+$bQuery = "SELECT * FROM batch_details
+			WHERE test_type like 'vl' or test_type is NULL
+			ORDER BY last_modified_datetime DESC";
 $bResult = $db->rawQuery($bQuery);
 //get import config
 $importQuery = "SELECT * FROM instruments WHERE status = 'active'";
@@ -83,8 +90,8 @@ if (!isset($facilityResult[0]['facility_state']) || $facilityResult[0]['facility
 }
 $stateName = $facilityResult[0]['facility_state'];
 $stateId = $facilityResult[0]['facility_state_id'];
-$stateQuery = "SELECT * FROM geographical_divisions WHERE geo_id='" . $stateId . "'";
-$stateResult = $db->query($stateQuery);
+$stateQuery = "SELECT * FROM geographical_divisions WHERE geo_id= ? AND geo_status='active'";
+$stateResult = $db->rawQuery($stateQuery, [$stateId]);
 if (!isset($stateResult[0]['geo_code']) || $stateResult[0]['geo_code'] == '') {
 	$stateResult[0]['geo_code'] = "";
 }
@@ -126,23 +133,6 @@ if (isset($vlQueryInfo['clinic_date']) && trim($vlQueryInfo['clinic_date']) != '
 } else {
 	$vlQueryInfo['clinic_date'] = '';
 }
-
-
-
-
-//suggest a sample id when user adds request sample
-$sampleSuggestion = '';
-$sampleSuggestionDisplay = 'display:none;';
-if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
-	$vlObj = ContainerRegistry::get(VlService::class);
-	$sampleCollectionDate = explode(" ", $sampleCollectionDate);
-	$sampleCollectionDate = DateUtility::humanReadableDateFormat($sampleCollectionDate[0]);
-	$sampleSuggestionJson = $vlObj->generateVLSampleID($stateResult[0]['geo_code'], $sampleCollectionDate, 'png');
-	$sampleCodeKeys = json_decode($sampleSuggestionJson, true);
-	$sampleSuggestion = $sampleCodeKeys['sampleCode'];
-	$sampleSuggestionDisplay = 'display:block;';
-}
-
 
 ?>
 <style>
@@ -209,28 +199,15 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 							<div class="box-body">
 
 								<div class="row">
-									<div class="col-xs-12 col-md-12 col-lg-12" style="<?php echo $sampleSuggestionDisplay; ?>">
-										<?php
-										if ($vlQueryInfo['sample_code'] != '') {
-										?>
-											<label for="sampleSuggest" class="text-danger">Please note that this Remote Sample has already been imported with VLSM Sample ID <?= ($vlQueryInfo['sample_code']); ?></label>
-										<?php
-										} else {
-										?>
-											<label for="sampleSuggest">Sample ID (might change while submitting the form) - </label>
-											<?php echo $sampleSuggestion; ?>
-										<?php } ?>
-										<br><br>
-									</div>
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
 												<label class="labels" for="sampleCode">Laboratory ID </label><br>
-												<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo ($sCode != '') ? $sCode : $vlQueryInfo[$sampleCode]; ?></span>
-												<input type="hidden" class="" id="sampleCode" name="sampleCode" value="<?php echo ($sCode != '') ? $sCode : $vlQueryInfo[$sampleCode]; ?>" />
+												<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo $vlQueryInfo[$sampleCode]; ?></span>
+												<input type="hidden" class="" id="sampleCode" name="sampleCode" value="<?php echo $vlQueryInfo[$sampleCode]; ?>" />
 											<?php } else { ?>
 												<label class="labels" for="sampleCode">Laboratory ID <span class="mandatory">*</span></label>
-												<input type="text" class="form-control isRequired " id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" value="<?php echo ($sCode != '') ? $sCode : $vlQueryInfo[$sampleCode]; ?>" style="width:100%;" readonly="readonly" />
+												<input type="text" class="form-control isRequired " id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" value="<?php echo $vlQueryInfo[$sampleCode]; ?>" style="width:100%;" readonly="readonly" />
 												<input type="hidden" name="sampleCodeCol" value="<?= ($vlQueryInfo['sample_code']); ?>" />
 											<?php } ?>
 
@@ -738,9 +715,9 @@ if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
 												<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '-- Select --'); ?>
 											</select>
 										</td>
-										<td style="width:14%;" class="labels"><label for="approvedOn"> Approved On </label></td>
+										<td style="width:14%;" class="labels"><label for="approvedOnDateTime"> Approved On </label></td>
 										<td style="width:14%;">
-											<input type="text" name="approvedOn" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" id="approvedOn" class="dateTime form-control" placeholder="Approved on" title="Please enter the approved on" />
+											<input type="text" name="approvedOnDateTime" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" id="approvedOnDateTime" class="dateTime form-control" placeholder="Approved on" title="Please enter the approved on" />
 										</td>
 									</tr>
 									<tr>

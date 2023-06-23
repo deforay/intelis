@@ -27,4 +27,9 @@ if (isset($_POST['sampleCollectionDate'])) {
 
 $sampleFrom = $_POST['sampleFrom'] ?? '';
 
-echo $vlService->generateVLSampleID(htmlspecialchars($province), $sampleCollectionDate, htmlspecialchars($sampleFrom));
+$sampleCodeParams = [];
+$sampleCodeParams['sampleCollectionDate'] = $params['sampleCollectionDate'] ?? null;
+$sampleCodeParams['provinceCode'] = $province ?? null;
+$sampleCodeParams['provinceId'] = null;
+
+echo $vlService->generateSampleCode($sampleCodeParams);

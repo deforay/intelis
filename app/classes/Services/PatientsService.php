@@ -6,11 +6,7 @@ use App\Registries\ContainerRegistry;
 use App\Utilities\DateUtility;
 use MysqliDb;
 
-/**
- * General functions
- *
- * @author Amit
- */
+
 
 class PatientsService
 {

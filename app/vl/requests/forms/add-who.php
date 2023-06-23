@@ -298,7 +298,7 @@ $sFormat = '';
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
                                                             <label for="">Date of Sample Collection <span class="mandatory">*</span></label>
-                                                            <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" onchange="checkSampleReceviedDate();checkSampleTestingDate();sampleCodeGeneration();setSampleDispatchDate();">
+                                                            <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" onchange="checkSampleReceviedDate();checkSampleTestingDate();generateSampleCode();setSampleDispatchDate();">
                                                        </div>
                                                   </div>
                                                   <div class="col-xs-3 col-md-3">
@@ -705,7 +705,7 @@ $sFormat = '';
                                                                  <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label labels" for="approvedOn">Approved On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" value="" class="form-control dateTime" id="approvedOn" title="Please choose Approved On" name="approvedOn" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
+                                                                           <input type="text" value="" class="form-control dateTime" id="approvedOn" title="Please choose Approved On" name="approvedOnDateTime" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
@@ -752,7 +752,7 @@ $sFormat = '';
                                    </div>
                               </div>
                          </div>
-                         <input type="hidden" id="selectedSample" value="" name="selectedSample" class=""/>
+                         <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
                          <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 
                     </form>
@@ -788,38 +788,38 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      $(document).ready(function() {
           $("#artNo").on('input', function() {
 
-let artNo = $.trim($(this).val());
+               let artNo = $.trim($(this).val());
 
 
-if (artNo.length > 3) {
+               if (artNo.length > 3) {
 
-	 $.post("/common/patient-last-request-details.php", {
-			   testType: 'vl',
-			   patientId: artNo,
-		  },
-		  function(data) {
-			   if (data != "0") {
-					obj = $.parseJSON(data);
-					if (obj.no_of_req_time != null && obj.no_of_req_time > 0) {
-						 $("#artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time + '</small>');
-					}
-					if (obj.request_created_datetime != null) {
-						 $("#artNoGroup").append('<br><small style="color:red">Last Test Request Added On VLSM : ' + obj.request_created_datetime + '</small>');
-					}
-					if (obj.sample_collection_date != null) {
-						 $("#artNoGroup").append('<br><small style="color:red">Sample Collection Date for Last Request : ' + obj.sample_collection_date + '</small>');
-					}
-					if (obj.no_of_tested_time != null && obj.no_of_tested_time > 0) {
-						 $("#artNoGroup").append('<br><small style="color:red">Total No. of times Patient tested for VL : ' + obj.no_of_tested_time + '</small>');
-					}
-			   } else {
-					
-						 $("#artNoGroup").html('');
-			   }
-		  });
-}
+                    $.post("/common/patient-last-request-details.php", {
+                              testType: 'vl',
+                              patientId: artNo,
+                         },
+                         function(data) {
+                              if (data != "0") {
+                                   obj = $.parseJSON(data);
+                                   if (obj.no_of_req_time != null && obj.no_of_req_time > 0) {
+                                        $("#artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time + '</small>');
+                                   }
+                                   if (obj.request_created_datetime != null) {
+                                        $("#artNoGroup").append('<br><small style="color:red">Last Test Request Added On VLSM : ' + obj.request_created_datetime + '</small>');
+                                   }
+                                   if (obj.sample_collection_date != null) {
+                                        $("#artNoGroup").append('<br><small style="color:red">Sample Collection Date for Last Request : ' + obj.sample_collection_date + '</small>');
+                                   }
+                                   if (obj.no_of_tested_time != null && obj.no_of_tested_time > 0) {
+                                        $("#artNoGroup").append('<br><small style="color:red">Total No. of times Patient tested for VL : ' + obj.no_of_tested_time + '</small>');
+                                   }
+                              } else {
 
-});
+                                   $("#artNoGroup").html('');
+                              }
+                         });
+               }
+
+          });
           $("#labId,#fName,#sampleCollectionDate").on('change', function() {
 
                if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
@@ -1033,20 +1033,19 @@ if (artNo.length > 3) {
           $(".viralTestData").val('');
           $(".hideTestData").hide();
           $("." + chosenClass).show();
-         
-          if($("#selectedSample").val()!="")
-          {
+
+          if ($("#selectedSample").val() != "") {
                patientInfo = JSON.parse($("#selectedSample").val());
                if ($.trim(patientInfo['sample_tested_datetime']) != '') {
                     $("#rmTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
                     $("#repeatTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
                     $("#suspendTreatmentLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
-                    
+
                }
                if ($.trim(patientInfo['result']) != '') {
-                         $("#rmTestingVlValue").val($.trim(patientInfo['result']));
-                         $("#repeatTestingVlValue").val($.trim(patientInfo['result']));
-                         $("#suspendTreatmentVlValue").val($.trim(patientInfo['result']));
+                    $("#rmTestingVlValue").val($.trim(patientInfo['result']));
+                    $("#repeatTestingVlValue").val($.trim(patientInfo['result']));
+                    $("#suspendTreatmentVlValue").val($.trim(patientInfo['result']));
                }
           }
      }
@@ -1077,7 +1076,7 @@ if (artNo.length > 3) {
                               }
                          });
                }
-               sampleCodeGeneration();
+               generateSampleCode();
           } else if (pName == '' && cName == '') {
                provinceName = true;
                facilityName = true;
@@ -1087,12 +1086,12 @@ if (artNo.length > 3) {
           $.unblockUI();
      }
 
-     function sampleCodeGeneration() {
+     function generateSampleCode() {
           var pName = $("#province").val();
           var sDate = $("#sampleCollectionDate").val();
           $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
           if (pName != '' && sDate != '') {
-               $.post("/vl/requests/sampleCodeGeneration.php", {
+               $.post("/vl/requests/generateSampleCode.php", {
                          sDate: sDate
                     },
                     function(data) {
@@ -1395,7 +1394,7 @@ if (artNo.length > 3) {
      function setPatientDetails(pDetails) {
           $("#selectedSample").val(pDetails);
           var patientArray = JSON.parse(pDetails);
-       //  alert(pDetails);
+          //  alert(pDetails);
           $("#patientFirstName").val(patientArray['name']);
           $("#patientPhoneNumber").val(patientArray['mobile']);
           if ($.trim(patientArray['dob']) != '') {
@@ -1460,16 +1459,16 @@ if (artNo.length > 3) {
           }
 
           if ($.trim(patientArray['sample_tested_datetime']) != '') {
-                    $("#rmTestingLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
-                    $("#repeatTestingLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
-                    $("#suspendTreatmentLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
-                    
-               }
-               if ($.trim(patientArray['result']) != '') {
-                         $("#rmTestingVlValue").val($.trim(patientArray['result']));
-                         $("#repeatTestingVlValue").val($.trim(patientArray['result']));
-                         $("#suspendTreatmentVlValue").val($.trim(patientArray['result']));
-               }
+               $("#rmTestingLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
+               $("#repeatTestingLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
+               $("#suspendTreatmentLastVLDate").val($.trim(patientArray['sample_tested_datetime']));
+
+          }
+          if ($.trim(patientArray['result']) != '') {
+               $("#rmTestingVlValue").val($.trim(patientArray['result']));
+               $("#repeatTestingVlValue").val($.trim(patientArray['result']));
+               $("#suspendTreatmentVlValue").val($.trim(patientArray['result']));
+          }
 
      }
 
@@ -1502,5 +1501,4 @@ if (artNo.length > 3) {
                $('#vlResult').val(value);
           }
      }
-
 </script>

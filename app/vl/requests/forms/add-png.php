@@ -88,7 +88,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											<label for="province">Province <span class="mandatory">*</span></label>
 										</td>
 										<td style="width:20%">
-											<select class="form-control isRequired" name="province" id="province" title="Please choose province" style="width:100%;" onchange="getfacilityDetails(this);sampleCodeGeneration();">
+											<select class="form-control isRequired" name="province" id="province" title="Please choose province" style="width:100%;" onchange="getfacilityDetails(this);generateSampleCode();">
 												<?php echo $province; ?>
 											</select>
 										</td>
@@ -328,7 +328,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 										</td>
 										<td>
 											<label class="radio-inline">
-												<input type="text" class="form-control isRequired" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please enter the sample collection date" onchange="sampleCodeGeneration();" style="width:100%;">
+												<input type="text" class="form-control isRequired" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please enter the sample collection date" onchange="generateSampleCode();" style="width:100%;">
 											</label>
 										</td>
 										<td colspan="4" class="typeOfSample">
@@ -567,9 +567,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
 												</select>
 											</td>
-											<td style="width:14%;" class="labels"><label for="approvedOn"> Approved On </label></td>
+											<td style="width:14%;" class="labels"><label for="approvedOnDateTime"> Approved On </label></td>
 											<td style="width:14%;">
-												<input type="text" name="approvedOn" id="approvedOn" class="dateTime form-control" placeholder="Approved on" title="Please enter the approved on" />
+												<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime form-control" placeholder="Approved on" title="Please enter the approved on" />
 											</td>
 										<tr>
 											<td style="width:14%;" class="labels"><label for="approvedBy"> Approved By </label></td>
@@ -887,7 +887,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 			});
 	}
 
-	function sampleCodeGeneration() {
+	function generateSampleCode() {
 		if (sampleCodeGenerationEvent) {
 			sampleCodeGenerationEvent.abort();
 		}
@@ -897,7 +897,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 		if (pName != '' && sDate != '') {
 			// $.blockUI();
 			var provinceCode = ($("#province").find(":selected").attr("data-code") == null || $("#province").find(":selected").attr("data-code") == '') ? $("#province").find(":selected").attr("data-name") : $("#province").find(":selected").attr("data-code");
-			sampleCodeGenerationEvent = $.post("/vl/requests/sampleCodeGeneration.php", {
+			sampleCodeGenerationEvent = $.post("/vl/requests/generateSampleCode.php", {
 					sDate: sDate,
 					autoTyp: 'auto2',
 					provinceCode: provinceCode,

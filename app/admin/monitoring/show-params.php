@@ -3,6 +3,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Utilities\MiscUtility;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -16,27 +17,16 @@ $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
+
 $db = $db->where('api_track_id', $id);
 $result = $db->getOne('track_api_requests');
 $zip = new ZipArchive();
-$request = $response = [];
+$request = $response = "{}";
 $folder = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api');
-if (file_exists($folder . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip')) {
-    $res = $zip->open($folder . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip', ZipArchive::RDONLY);
-    if ($res === true) {
-        $request = $zip->getFromName($result['transaction_id'] . '.json');
-    }
-}
-//$zip->close();
 
-$zip = new ZipArchive();
-if (file_exists($folder . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip')) {
-    $res = $zip->open($folder . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip', ZipArchive::RDONLY);
-    if ($res === true) {
-        $response = $zip->getFromName($result['transaction_id'] . '.json');
-    }
-}
-//$zip->close();
+$request = MiscUtility::getJsonFromZip($folder . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip', $result['transaction_id'] . '.json');
+$response = MiscUtility::getJsonFromZip($folder . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip', $result['transaction_id'] . '.json');
+
 ?>
 <script src="/assets/js/bootstrap.min.js"></script>
 <link rel="stylesheet" media="all" type="text/css" href="/assets/css/fonts.css" />
@@ -65,10 +55,10 @@ if (file_exists($folder . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATO
             </div>
             <div id="myTabContent" class="tab-content">
                 <div class="tab-pane fade in active" id="request" style="min-height:300px;">
-                    <pre><?= $general->prettyJson(htmlspecialchars($request ?? [], ENT_QUOTES, 'UTF-8', false)); ?></pre>
+                    <pre><?= MiscUtility::prettyJson($request); ?></pre>
                 </div>
                 <div class="tab-pane fade in" id="response" style="min-height:300px;">
-                    <pre><?= $general->prettyJson(htmlspecialchars($response ?? [], ENT_QUOTES, 'UTF-8', false)); ?></pre>
+                    <pre><?= MiscUtility::prettyJson($response); ?></pre>
                 </div>
             </div>
     </section>

@@ -9,7 +9,7 @@ use App\Utilities\DateUtility;
 
 require_once APPLICATION_PATH . '/header.php';
 
-$sCode = $labFieldDisabled = '';
+$labFieldDisabled = '';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -455,7 +455,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                     <div class="col-xs-4 col-md-4">
                                         <div class="form-group">
                                             <label for="sampleCode">Sample ID <span class="mandatory">*</span></label>
-                                            <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" readonly="readonly" title="Please enter sample id" value="<?php echo ($sCode != '') ? $sCode : $genericResultInfo[$sampleCode]; ?>" style="width:100%;" onchange="checkSampleNameValidation('form_generic','<?php echo $sampleCode; ?>',this.id,'<?php echo "sample_id##" . $genericResultInfo["sample_id"]; ?>','This sample number already exists.Try another number',null)" />
+                                            <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" readonly="readonly" title="Please enter sample id" value="<?php echo $genericResultInfo[$sampleCode]; ?>" style="width:100%;" onchange="checkSampleNameValidation('form_generic','<?php echo $sampleCode; ?>',this.id,'<?php echo "sample_id##" . $genericResultInfo["sample_id"]; ?>','This sample number already exists.Try another number',null)" />
                                             <input type="hidden" name="sampleCodeCol" value="<?= htmlspecialchars($genericResultInfo['sample_code']); ?>" style="width:100%;">
                                         </div>
                                     </div>
@@ -987,7 +987,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                         </div>
                                         <?php
                                         $styleStatus = '';
-                                        if ((($_SESSION['accessType'] == 'collection-site') && $genericResultInfo['result_status'] == 9) || ($sCode != '')) {
+                                        if ((($_SESSION['accessType'] == 'collection-site') && $genericResultInfo['result_status'] == 9)) {
                                             $styleStatus = "display:none";
                                         ?>
                                             <input type="hidden" name="status" value="<?= htmlspecialchars($genericResultInfo['result_status']); ?>" />

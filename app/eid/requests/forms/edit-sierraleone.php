@@ -18,7 +18,7 @@ $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
 $eidResults = $eidObj->getEidResults();
-$specimenTypeResult = $eidObj->getEidSampleTypes(); 
+$specimenTypeResult = $eidObj->getEidSampleTypes();
 
 // Getting the list of Provinces, Districts and Facilities
 
@@ -55,19 +55,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
 
 //$eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", $eidInfo['mother_treatment']) : [];
 
-//suggest sample id when lab user add request sample
-$sampleSuggestion = '';
-$sampleSuggestionDisplay = 'display:none;';
-$sCode = $_GET['c'];
-if ($sarr['sc_user_type'] == 'vluser' && $sCode != '') {
-    $vlObj = ContainerRegistry::get(EidService::class);
-    $sampleCollectionDate = explode(" ", $sampleCollectionDate);
-    $sampleCollectionDate = DateUtility::humanReadableDateFormat($sampleCollectionDate[0]);
-    $sampleSuggestionJson = $vlObj->generateEIDSampleCode($stateResult[0]['province_code'], $sampleCollectionDate, 'png');
-    $sampleCodeKeys = json_decode($sampleSuggestionJson, true);
-    $sampleSuggestion = $sampleCodeKeys['sampleCode'];
-    $sampleSuggestionDisplay = 'display:block;';
-}
+
 $artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
 $artRegimenResult = $db->rawQuery($artRegimenQuery);
 $aQuery = "SELECT * FROM r_vl_art_regimen where art_status ='active'";
@@ -771,8 +759,8 @@ $aResult = $db->query($aQuery);
         getTestingPoint();
         checkPCRTestReason();
         showRegimen();
-        $('#rapidTestPerformed').on('change', function(){
-            if($(this).val()=='yes')
+        $('#rapidTestPerformed').on('change', function() {
+            if ($(this).val() == 'yes')
                 $('#rapidtestDate').addClass('isRequired');
             else
                 $('#rapidtestDate').removeClass('isRequired');
@@ -781,7 +769,7 @@ $aResult = $db->query($aQuery);
             $("#prePcrTestResult").val("");
             $("#previousPCRTestDate").val("");
             $("#pcrTestReason").val("");
-           
+
             $('.pcrBox').hide();
         } else {
             $('.pcrBox').show();
@@ -790,13 +778,13 @@ $aResult = $db->query($aQuery);
         $("#pcrTestNumber").on("change", function() {
             if ($("#pcrTestNumber").val() == 1) {
                 $("#prePcrTestResult").removeClass("isRequired");
-            $("#previousPCRTestDate").removeClass("isRequired");
-            $("#pcrTestReason").removeClass("isRequired");
+                $("#previousPCRTestDate").removeClass("isRequired");
+                $("#pcrTestReason").removeClass("isRequired");
                 $('.pcrBox').hide();
             } else {
                 $("#prePcrTestResult").addClass("isRequired");
-            $("#previousPCRTestDate").addClass("isRequired");
-            $("#pcrTestReason").addClass("isRequired");
+                $("#previousPCRTestDate").addClass("isRequired");
+                $("#pcrTestReason").addClass("isRequired");
                 $('.pcrBox').show();
             }
         });

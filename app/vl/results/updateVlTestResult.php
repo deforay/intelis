@@ -260,15 +260,13 @@ if ($arr['vl_form'] == 1) {
 } else if ($arr['vl_form'] == 3) {
 	include('forms/update-drc-result.php');
 } else if ($arr['vl_form'] == 4) {
-	// include('forms/update-zambia-result.php');
+	include('forms/update-cameroon-result.php');
 } else if ($arr['vl_form'] == 5) {
 	include('forms/update-png-result.php');
 } else if ($arr['vl_form'] == 6) {
 	include('forms/update-who-result.php');
 } else if ($arr['vl_form'] == 7) {
 	include('forms/update-rwanda-result.php');
-} else if ($arr['vl_form'] == 8) {
-	// include('forms/update-angola-result.php');
 }
 
 ?>
@@ -304,7 +302,7 @@ if ($arr['vl_form'] == 1) {
 		$('.dateTime').mask('99-aaa-9999 99:99');
 
 		$('.result-focus').change(function(e) {
-			<?php //if (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] != "") { 
+			<?php //if (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] != "") {
 			?>
 			var status = false;
 			$(".result-focus").each(function(index) {
@@ -321,7 +319,7 @@ if ($arr['vl_form'] == 1) {
 				$('.reasonForResultChanges').hide();
 				$('#reasonForResultChanges').removeClass('isRequired');
 			}
-			<?php //} 
+			<?php //}
 			?>
 		});
 	});

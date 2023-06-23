@@ -79,11 +79,10 @@ $fileArray = array(
     1 => 'forms/add-southsudan.php',
     2 => 'forms/add-sierraleone.php',
     3 => 'forms/add-drc.php',
-    4 => 'forms/add-zambia.php',
+    4 => 'forms/add-cameroon.php',
     5 => 'forms/add-png.php',
     6 => 'forms/add-who.php',
-    7 => 'forms/add-rwanda.php',
-    8 => 'forms/add-angola.php',
+    7 => 'forms/add-rwanda.php'
 );
 require($fileArray[$arr['vl_form']]);
 
@@ -259,7 +258,7 @@ require($fileArray[$arr['vl_form']]);
                 },
                 function(data) {
                     if (data != 0) {
-                        sampleCodeGeneration();
+                        generateSampleCode();
                     }
                 });
             $.unblockUI();
@@ -286,7 +285,7 @@ require($fileArray[$arr['vl_form']]);
                 } else {
                     $.unblockUI();
                     //$("#sampleCollectionDate").val('');
-                    sampleCodeGeneration();
+                    generateSampleCode();
                     alert("We could not save this form. Please try saving again.");
                 }
             });

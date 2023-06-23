@@ -50,7 +50,7 @@ $covid19SelectedComorbidities = $covid19Service->getCovid19ComorbiditiesByFormId
 
 $rKey = '';
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
-$sCode = (isset($_GET['c']) && $_GET['c'] != '') ? $_GET['c'] : '';
+
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCodeKey = 'remote_sample_code_key';
@@ -139,32 +139,17 @@ $patienZones["other"] = "Other";
                                 <h3 class="box-title" style="font-size:1em;">À remplir par le clinicien / infirmier demandeur</h3>
                             </div>
                             <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                <?php if ($covid19Info['remote_sample'] == 'yes') { ?>
-                                    <tr>
-                                        <?php
-                                        if ($covid19Info['sample_code'] != '') {
-                                        ?>
-                                            <td colspan="4"> <label for="sampleSuggest" class="text-danger">&nbsp;&nbsp;&nbsp;Veuillez noter que cet exemple distant a déjà été importé avec VLSM N°EPID </td>
-                                            <td colspan="4" align="left"> <?php echo $covid19Info['sample_code']; ?></label> </td>
-                                        <?php
-                                        } else {
-                                        ?>
-                                            <td colspan="4"> <label for="sampleSuggest">N&deg; EPID (peut changer lors de la soumission du formulaire)</label></td>
-                                            <td colspan="4" align="left"> <?php echo $sampleSuggestion; ?></td>
-                                        <?php } ?>
-                                    </tr>
-                                <?php } ?>
                                 <tr>
                                     <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                         <td><label for="sampleCode">Échantillon ID </label> </td>
                                         <td>
-                                            <span id="sampleCodeInText" style="width:30%;border-bottom:1px solid #333;"><?php echo ($sCode != '') ? $sCode : htmlspecialchars($covid19Info[$sampleCode]); ?></span>
-                                            <input type="hidden" class="<?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" value="<?php echo ($sCode != '') ? $sCode : htmlspecialchars($covid19Info[$sampleCode]); ?>" />
+                                            <span id="sampleCodeInText" style="width:30%;border-bottom:1px solid #333;"><?php echo $covid19Info[$sampleCode]; ?></span>
+                                            <input type="hidden" class="<?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" value="<?php echo $covid19Info[$sampleCode]; ?>" />
                                         </td>
                                     <?php } else { ?>
                                         <td><label for="sampleCode">Échantillon ID </label><span class="mandatory">*</span> </td>
                                         <td>
-                                            <input type="text" readonly value="<?php echo ($sCode != '') ? $sCode : htmlspecialchars($covid19Info[$sampleCode]); ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="N°EPID" title="N°EPID" style="width:100%;" onchange="" />
+                                            <input type="text" readonly value="<?php echo $covid19Info[$sampleCode]; ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="N°EPID" title="N°EPID" style="width:100%;" onchange="" />
                                         </td>
                                     <?php } ?>
                                     <th scope="row"><label for="testNumber">Prélévement</label></th>
@@ -525,7 +510,7 @@ $patienZones["other"] = "Other";
                                 <tr>
                                     <th scope="row" style="width:15% !important"><label for="sampleCollectionDate">Date de prélèvement de l'échantillon <span class="mandatory">*</span></label></th>
                                     <td style="width:35% !important;">
-                                        <input class="form-control isRequired" value="<?php echo date('d-M-Y H:i:s', strtotime($covid19Info['sample_collection_date'])); ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Date de prélèvement de l'échantillon" title="Date de prélèvement de l'échantillon" onchange="sampleCodeGeneration();" />
+                                        <input class="form-control isRequired" value="<?php echo date('d-M-Y H:i:s', strtotime($covid19Info['sample_collection_date'])); ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Date de prélèvement de l'échantillon" title="Date de prélèvement de l'échantillon" onchange="generateSampleCode();" />
                                     </td>
                                     <th scope="row" style="width:15% !important">Échantillon expédié le <span class="mandatory">*</span> </th>
                                     <td style="width:35% !important;">
