@@ -27,8 +27,8 @@ $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-/** @var AppMenuService $UiService */
-$uiService = ContainerRegistry::get(AppMenuService::class);
+/** @var AppMenuService $appMenuService */
+$appMenuService = ContainerRegistry::get(AppMenuService::class);
 
 $_SESSION['module'] = $_SESSION['module'] ?? [];
 
@@ -63,7 +63,8 @@ if (!$usersService->isAllowed($request)) {
 	throw new SystemException(_('Unauthorized access. You do not have permission to access this page.'), 401);
 }
 
-$_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $uiService->getAllActiveMenus();
+$_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
+
 
 ?>
 <!DOCTYPE html>

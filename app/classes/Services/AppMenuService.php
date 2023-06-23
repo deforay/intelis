@@ -21,7 +21,19 @@ class AppMenuService
         $this->usersService = $usersService;
     }
 
-    public function getAllActiveMenus($parentId = 0, $menuId = 0)
+    public function getMenuDisplayTexts()
+    {
+        $this->db->where('status', 'active');
+        $this->db->orderBy("display_order", "asc");
+        $menuData = $this->db->get($this->table, null, ['display_text']);
+        $response = [];
+        foreach ($menuData as $menu) {
+            $response[] = $menu['display_text'];
+        }
+        return $response;
+    }
+
+    public function getMenu($parentId = 0, $menuId = 0)
     {
         $this->db->where('status', 'active');
         if (!empty($menuId) && $menuId > 0) {
@@ -38,7 +50,7 @@ class AppMenuService
             }
 
             if ($menu['has_children'] == 'yes') {
-                $menu['children'] = $this->getAllActiveMenus($menu['id']);
+                $menu['children'] = $this->getMenu($menu['id']);
                 if (empty($menu['children'])) {
                     $menu['access'] = false;
                 }
