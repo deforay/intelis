@@ -4425,10 +4425,10 @@ ALTER TABLE `s_app_menu`
 
 
 -- Amit 23-Jun-2023
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'covid-19-requests', '/covid-19/requests/addSamplesFromManifest.php', 'Add Samples from Manifest')
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'covid-19-requests', '/covid-19/requests/addSamplesFromManifest.php', 'Add Samples from Manifest');
 UPDATE `privileges` SET `privilege_name` = '/tb/requests/addSamplesFromManifest.php' WHERE resource_id ='tb-requests' AND privilege_name ='addSamplesFromManifest.php';
 UPDATE `privileges` SET `privilege_name` = '/vl/requests/addSamplesFromManifest.php' WHERE resource_id ='vl-requests' AND privilege_name ='addSamplesFromManifest.php';
 UPDATE `privileges` SET `privilege_name` = '/eid/requests/addSamplesFromManifest.php' WHERE resource_id ='eid-requests' AND privilege_name ='addSamplesFromManifest.php';
-UPDATE `privileges` SET `privilege_name` = '/covid19/requests/addSamplesFromManifest.php' WHERE resource_id ='covid-19-requests' AND privilege_name ='addSamplesFromManifest.php';
+-- UPDATE `privileges` SET `privilege_name` = '/covid19/requests/addSamplesFromManifest.php' WHERE resource_id ='covid-19-requests' AND privilege_name ='addSamplesFromManifest.php';
 UPDATE `privileges` SET `privilege_name` = '/hepatitis/requests/add-samples-from-manifest.php' WHERE resource_id ='hepatitis-requests' AND privilege_name ='add-samples-from-manifest.php';
 UPDATE `privileges` SET `privilege_name` = '/generic-tests/requests/add-samples-from-manifest.php' WHERE resource_id ='generic-requests' AND privilege_name ='add-samples-from-manifest.php';
