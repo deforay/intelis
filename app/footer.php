@@ -24,7 +24,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 	if (!empty(SYSTEM_CONFIG['remoteURL']) && isset($_SESSION['userName']) && isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser')) { ?>
 		<div class="pull-right">
-			<small><a href="javascript:syncRemoteData('<?= SYSTEM_CONFIG['remoteURL']; ?>');">Force Remote Sync</a>&nbsp;&nbsp;</small>
+			<small><a href="javascript:syncRemoteData();">Force Remote Sync</a>&nbsp;&nbsp;</small>
 		</div>
 	<?php
 	}
@@ -67,7 +67,6 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 <script type="text/javascript">
 	let remoteSync = false;
-	let remoteUrl = '<?= SYSTEM_CONFIG['remoteURL'] ?? null; ?>';
 
 	window.additionalXHRParams = {
 		layout: 0,
@@ -89,13 +88,13 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 	<?php if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?>
 		remoteSync = true;
 
-		function syncRemoteData(remoteUrl) {
+		function syncRemoteData() {
 			if (!navigator.onLine) {
 				alert("<?= _("Please connect to internet to sync with STS"); ?>");
 				return false;
 			}
 
-			if (remoteUrl != null && remoteUrl != '') {
+			if (remoteSync) {
 				$.blockUI({
 					message: "<h3><?= _("Preparing for STS sync."); ?><br><?= _("Please wait..."); ?></h3>"
 				});
@@ -113,17 +112,17 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 					.always(function() {
 						//alert( "complete" );
 						$.unblockUI();
-						syncResults(remoteUrl);
+						syncResults();
 					});
 			}
 		}
 
-		function syncRequests(remoteUrl) {
+		function syncRequests() {
 			$.blockUI({
 				message: "<h3><?= _("Trying to sync Test Requests"); ?><br><?= _("Please wait..."); ?></h3>"
 			});
 
-			if (remoteUrl != null && remoteUrl != '') {
+			if (remoteSync) {
 				var jqxhr = $.ajax({
 						url: "/scheduled-jobs/remote/requestsSync.php",
 					})
@@ -137,18 +136,18 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 					})
 					.always(function() {
 						$.unblockUI();
-						//syncResults(remoteUrl);
+						//syncResults();
 					});
 			}
 		}
 
-		function syncResults(remoteUrl) {
+		function syncResults() {
 
 			$.blockUI({
 				message: "<h3><?= _("Trying to sync Test Results"); ?><br><?= _("Please wait..."); ?></h3>"
 			});
 
-			if (remoteUrl != null && remoteUrl != '') {
+			if (remoteSync) {
 				var jqxhr = $.ajax({
 						url: "/scheduled-jobs/remote/resultsSync.php",
 					})
@@ -162,7 +161,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 					})
 					.always(function() {
 						$.unblockUI();
-						syncRequests(remoteUrl);
+						syncRequests();
 					});
 			}
 		}
@@ -237,7 +236,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 			// Every 5 mins check connection if this is a local installation of VLSM and there is a remote server configured
 			(function checkNetworkConnection() {
 				$.ajax({
-					url: remoteUrl + '/api/version.php',
+					url: '<?= SYSTEM_CONFIG['remoteURL'] ?? null; ?>' + '/api/version.php',
 					cache: false,
 					success: function(data) {
 						$('.is-remote-server-reachable').fadeIn(1000);

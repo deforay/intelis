@@ -63,7 +63,8 @@ if (!$usersService->isAllowed($request)) {
 	throw new SystemException(_('Unauthorized access. You do not have permission to access this page.'), 401);
 }
 
-$_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
+//$_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
+$_SESSION['menuItems'] = $appMenuService->getMenu();
 
 
 ?>

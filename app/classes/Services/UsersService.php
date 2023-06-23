@@ -54,7 +54,6 @@ class UsersService
             $privileges = $this->getAllPrivileges();
 
             $requests = [$currentRequest, $baseFileName];
-
             foreach ($requests as $request) {
                 $parts = explode('&', $request);
                 $substring = $parts[0];
