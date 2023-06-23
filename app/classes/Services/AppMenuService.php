@@ -24,19 +24,23 @@ class AppMenuService
     public function getAllActiveMenus($parentId = 0, $menuId = 0)
     {
         $this->db->where('status', 'active');
-        $this->db->where('parent_id', $parentId);
-        if ($menuId) {
+        if (!empty($menuId) && $menuId > 0) {
             $this->db->where('id', $menuId);
         }
+        $this->db->where('parent_id', $parentId);
         $this->db->orderBy("display_order", "asc");
         $menuData = $this->db->get($this->table);
         $response = [];
         foreach ($menuData as $key => $menu) {
-            $menu['access'] = $menu['link'] ? $this->usersService->isAllowed($menu['link']) : true;
+            $menu['access'] = true;
+            if ($menu['link']  != "" && !empty($menu['link'])) {
+                $menu['access'] = $this->usersService->isAllowed($menu['link']);
+            }
+
             $menu['children'] = $menu['has_children'] == 'yes' ? $this->getAllActiveMenus($menu['id']) : [];
-            $menu['access'] = empty($menu['children']) ? false : $menu['access'];
             $response[$key] = $menu['access'] ? $menu : null;
         }
+
         return array_filter($response);
     }
 }
