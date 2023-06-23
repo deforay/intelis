@@ -6,7 +6,7 @@ use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
-use App\Services\UiService;
+use App\Services\AppMenuService;
 
 
 
@@ -27,8 +27,8 @@ $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-/** @var UiService $UiService */
-$uiService = ContainerRegistry::get(UiService::class);
+/** @var AppMenuService $UiService */
+$uiService = ContainerRegistry::get(AppMenuService::class);
 
 $_SESSION['module'] = $_SESSION['module'] ?? [];
 
@@ -63,130 +63,8 @@ if (!$usersService->isAllowed($request)) {
 	throw new SystemException(_('Unauthorized access. You do not have permission to access this page.'), 401);
 }
 
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array('roles.php', 'users.php', 'facilities.php', 'globalConfig.php', 'importConfig.php', 'otherConfig.php'))) {
-	$allAdminMenuAccess = true;
-} else {
-	$allAdminMenuAccess = false;
-}
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array('vlRequest.php', 'addVlRequest.php', 'addSamplesFromManifest.php', '/batch/batches.php?type=vl', 'specimenReferralManifestList.php'))) {
-	$vlRequestMenuAccess = true;
-} else {
-	$vlRequestMenuAccess = false;
-}
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array('addImportResult.php', 'vlTestResult.php', 'vlResultApproval.php', 'vlResultMail.php'))) {
-	$vlTestResultMenuAccess = true;
-} else {
-	$vlTestResultMenuAccess = false;
-}
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array('vl-sample-status.php', 'vl-export-data.php', 'highViralLoad.php', 'vlControlReport.php', 'vlWeeklyReport.php', 'sampleRejectionReport.php', 'vlMonitoringReport.php', 'vlPrintResult.php'))) {
-	$vlManagementMenuAccess = true;
-} else {
-	$vlManagementMenuAccess = false;
-}
+$_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $uiService->getAllActiveMenus();
 
-// EID MENUS
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array('eid-requests.php', 'eid-add-request.php', 'addSamplesFromManifest.php', '/batch/batches.php?type=eid', 'specimenReferralManifestList.php'))) {
-	$eidTestRequestMenuAccess = true;
-} else {
-	$eidTestRequestMenuAccess = false;
-}
-
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array('addImportResult.php', 'eid-manual-results.php', 'eid-result-status.php'))) {
-	$eidTestResultMenuAccess = true;
-} else {
-	$eidTestResultMenuAccess = false;
-}
-
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array('eid-sample-status.php', 'eid-export-data.php', 'eid-print-results.php', 'eid-sample-rejection-report.php', 'eid-clinic-report.php'))) {
-	$eidManagementMenuAccess = true;
-} else {
-	$eidManagementMenuAccess = false;
-}
-
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array('index.php'))) {
-	$dashBoardMenuAccess = true;
-} else {
-	$dashBoardMenuAccess = false;
-}
-
-// COVID-19 Menu start
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array("covid-19-requests.php", "covid-19-add-request.php", "covid-19-edit-request.php", "addSamplesFromManifest.php", "/batch/batches.php?type=covid19", "specimenReferralManifestList.php"))) {
-	$covid19TestRequestMenuAccess = true;
-} else {
-	$covid19TestRequestMenuAccess = false;
-}
-
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array('addImportResult.php', 'covid-19-manual-results.php', 'covid-19-confirmation-manifest.php', 'can-record-confirmatory-tests.php', 'covid-19-result-status.php'))) {
-	$covid19TestResultMenuAccess = true;
-} else {
-	$covid19TestResultMenuAccess = false;
-}
-
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array('covid-19-export-data.php', 'covid-19-sample-rejection-report.php', 'covid-19-sample-status.php', 'covid-19-print-results.php'))) {
-	$covid19ManagementMenuAccess = true;
-} else {
-	$covid19ManagementMenuAccess = false;
-}
-// COVID-19 Menu end
-// HEPATITIS Menu start
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array("hepatitis-requests.php", "hepatitis-add-request.php", "hepatitis-edit-request.php", "add-Samples-from-manifest.php"))) {
-	$hepatitisTestRequestMenuAccess = true;
-} else {
-	$hepatitisTestRequestMenuAccess = false;
-}
-
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array("addImportResult.php", "hepatitis-manual-results.php", "hepatitis-result-status.php"))) {
-	$hepatitisTestResultMenuAccess = true;
-} else {
-	$hepatitisTestResultMenuAccess = false;
-}
-
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array("hepatitis-sample-status.php", "hepatitis-export-data.php", "hepatitis-print-results.php", "hepatitis-sample-rejection-report.php", "hepatitis-clinic-report.php", "hepatitisMonthlyThresholdReport"))) {
-	$hepatitisManagementMenuAccess = true;
-} else {
-	$hepatitisManagementMenuAccess = false;
-}
-// HEPATITIS Menu end
-
-// TB Menu start
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array("tb-requests.php", "tb-add-request.php", "tb-edit-request.php", "add-Samples-from-manifest.php"))) {
-	$tbTestRequestMenuAccess = true;
-} else {
-	$tbTestRequestMenuAccess = false;
-}
-
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array("tb-manual-results.php", "tb-result-status.php"))) {
-	$tbTestResultMenuAccess = true;
-} else {
-	$tbTestResultMenuAccess = false;
-}
-
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array("tb-sample-status.php", "tb-export-data.php", "tb-print-results.php", "tb-sample-rejection-report.php", "tb-clinic-report.php"))) {
-	$tbManagementMenuAccess = true;
-} else {
-	$tbManagementMenuAccess = false;
-}
-// TB Menu end
-
-
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array("view-requests.php", "add-request.php", "add-samples-from-manifest.php", "batch-code.php", "specimenReferralManifestList.php"))) {
-	$genericTestRequestMenuAccess = true;
-} else {
-	$genericTestRequestMenuAccess = false;
-}
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array("generic-test-results.php", "update-generic-test-result.php", "generic-failed-results.php", "generic-result-approval.php"))) {
-	$genericTestResultMenuAccess = true;
-} else {
-	$genericTestResultMenuAccess = false;
-}
-if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], array("generic-sample-status.php", "generic-export-data.php", "generic-print-result.php", "generic-weekly-report.php", "sample-rejection-report.php", "generic-monitoring-report.php", "generic-monthly-threshold-report.php"))) {
-	$genericManagementMenuAccess = true;
-} else {
-	$genericManagementMenuAccess = false;
-}
-
-$menuItems = $uiService->getAllActiveMenus();
-//echo '<pre>'; print_r($menuItems); die;
 ?>
 <!DOCTYPE html>
 <html lang="<?= $_SESSION['APP_LOCALE'] ?? 'en_US'; ?>">
@@ -325,26 +203,27 @@ $menuItems = $uiService->getAllActiveMenus();
 		</header>
 		<!-- Left side column. contains the logo and sidebar -->
 		<aside class="main-sidebar">
-			<!-- sidebar: style can be found in sidebar.less -->
 			<section class="sidebar">
-				<!-- sidebar menu: : style can be found in sidebar.less -->
-				<!-- Sidebar user panel -->
 				<?php if (isset($arr['logo']) && trim($arr['logo']) != "" && file_exists('uploads' . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $arr['logo'])) { ?>
 					<div class="user-panel">
-						<div align="center">
+						<div>
 							<img src="/uploads/logo/<?php echo $arr['logo']; ?>" alt="Logo Image" style="max-width:120px;">
 						</div>
 					</div>
 				<?php } ?>
 				<ul class="sidebar-menu">
 					<?php
-					foreach ($menuItems as $menu) {
+					foreach ($_SESSION['menuItems'] as $menu) {
+						if ($menu['has_children'] == 'yes' && (empty($menu['children']) || count($menu['children']) == 0)) {
+							continue;
+						}
 						$classNames = $menu['additional_class_names'] . ($menu['has_children'] == "yes" ? ' treeview manage' : '');
+
 						if ($menu['is_header'] == 'yes') {
 							echo '<li class="header">' . $menu['display_text'];
 						} else {
-
 					?>
+
 							<li class="<?php echo $classNames; ?>">
 								<a href="<?php echo $menu['link'] ?>">
 									<span class="<?php echo $menu['icon'] ?>"></span> <span><?php echo _($menu['display_text']); ?></span>
@@ -354,57 +233,61 @@ $menuItems = $uiService->getAllActiveMenus();
 											<span class="fa-solid fa-angle-left pull-right"></span>
 										</span>
 									<?php } ?>
-								</a><?php } ?>
+								</a>
+							<?php } ?>
 							<?php if ($menu['has_children'] == "yes") {
 								if ($menu['is_header'] == 'no') { ?>
 									<ul class="treeview-menu">
 									<?php
 								}
-								$subMenuItems = $uiService->getAllActiveMenus(0, $menu['id']);
-								foreach ($subMenuItems as $subMenu) {
+
+								foreach ($menu['children'] as $subMenu) {
 									?>
-										<li class="<?php echo $subMenu['additional_class_names'] ?>">
-											<a href="<?php echo $subMenu['link']; ?>">
-												<span class="<?php echo $subMenu['icon'] ?>"></span>
-												<span><?php echo _($subMenu['display_text']); ?></span>
-												<?php if ($subMenu['has_children'] == 'yes') { ?>
+										<?php if ($subMenu['has_children'] == 'yes' && !empty($subMenu['children']) && count($subMenu['children']) != 0) { ?>
+											<li class="<?= $subMenu['additional_class_names'] ?> ">
+												<a href="<?php echo $subMenu['link']; ?>">
+													<span class="<?php echo $subMenu['icon'] ?>"></span>
+													<span><?php echo _($subMenu['display_text']); ?></span>
 													<span class="pull-right-container">
 														<span class="fa-solid fa-angle-left pull-right"></span>
 													</span>
-												<?php } ?>
-											</a>
-											<?php if ($subMenu['has_children'] == "yes") { ?>
-												<ul class="treeview-menu">
-													<?php
-													$childMenuItems = $uiService->getAllActiveMenus(0, $subMenu['id']);
-													foreach ($childMenuItems as $childMenu) {
-														$dataInnerPages = explode(',', $childMenu['inner_pages']);
-														$innerPages = implode(';', array_map('base64_encode', $dataInnerPages));
+												</a>
+												<?php if (!empty($subMenu['children']) && count($subMenu['children']) != 0) { ?>
+													<ul class="treeview-menu">
+														<?php
+														foreach ($subMenu['children'] as $childMenu) {
+															$dataInnerPages = explode(',', $childMenu['inner_pages']);
+															$innerPages = implode(';', array_map('base64_encode', $dataInnerPages));
 
-														if (!empty($childMenu['link'])) {
-															$privilegeArr = explode('/', $childMenu['link']);
-															$privilege = end($privilegeArr);
-														}
-														if ($usersService->isAllowed($privilege)) {
-													?>
+															if (!empty($childMenu['link'])) {
+																$privilegeArr = explode('/', $childMenu['link']);
+																$privilege = end($privilegeArr);
+															}
+
+														?>
 															<li class="<?php echo $childMenu['additional_class_names'] ?>">
 																<a href="<?php echo $childMenu['link'] ?>" data-inner-pages="<?php echo $innerPages; ?>">
 																	<span class="<?php echo $childMenu['icon'] ?>"></span> <?php echo _($childMenu['display_text']); ?>
 																</a>
 															</li>
-													<?php }
-													} ?>
-												</ul>
-											<?php } ?>
-										</li>
-									<?php  } ?>
+														<?php
+														}
+														?>
+													</ul>
+												<?php } ?>
+											</li>
+									<?php
+										}
+									} ?>
 									<?php if ($menu['is_header'] == 'no') { ?>
 									</ul><?php } ?>
 							<?php } ?>
 
 							</li>
 
-						<?php }   ?>
+						<?php }
+
+						?>
 				</ul>
 
 			</section>

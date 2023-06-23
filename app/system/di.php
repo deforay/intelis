@@ -22,7 +22,7 @@ use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 use App\Services\GeoLocationsService;
-use App\Services\UiService;
+use App\Services\AppMenuService;
 use App\Utilities\ImageResizeUtility;
 use Psr\Container\ContainerInterface;
 use App\Helpers\SampleCodeGeneratorHelper;
@@ -95,8 +95,8 @@ $builder->addDefinitions([
         ->constructor(DI\get('db'), DI\get('applicationConfig'), DI\get(CommonService::class)),
     GeoLocationsService::class => DI\create(GeoLocationsService::class)
         ->constructor(DI\get('db')),
-    UiService::class => DI\create(UiService::class)
-    ->constructor(DI\get('db'), DI\get(CommonService::class)),
+    AppMenuService::class => DI\create(AppMenuService::class)
+        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(UsersService::class)),
     FacilitiesService::class => DI\create(FacilitiesService::class)
         ->constructor(DI\get('db')),
     InstrumentsService::class => DI\create(InstrumentsService::class)
