@@ -385,7 +385,7 @@ $menuItems = $uiService->getAllActiveMenus();
 															$privilegeArr = explode('/', $childMenu['link']);
 															$privilege = end($privilegeArr);
 														}
-														if (($childMenu['link'] != "") && isset($_SESSION['privileges']) && in_array($privilege, $_SESSION['privileges'])) {
+														if ($usersService->isAllowed($privilege)) {
 													?>
 															<li class="<?php echo $childMenu['additional_class_names'] ?>">
 																<a href="<?php echo $childMenu['link'] ?>" data-inner-pages="<?php echo $innerPages; ?>">
