@@ -8,8 +8,6 @@ use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 use App\Services\AppMenuService;
 
-
-
 $applicationConfig = ContainerRegistry::get('applicationConfig');
 
 /** @var MysqliDb $db */
@@ -43,12 +41,14 @@ $logoName = "<img src='/assets/img/flask.png' style='margin-top:-5px;max-width:2
 $smallLogoName = "<img src='/assets/img/flask.png'>";
 $systemType = _("Lab Sample Management Module");
 $shortName = _("Sample Management");
+$shortCode = 'LIS';
 if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser') {
 	$skin = "skin-red";
 	$systemType = _("Remote Sample Tracking Module");
 	$logoName = "<span class='fa fa-medkit'></span> STS";
 	$smallLogoName = "<span class='fa fa-medkit'></span>";
 	$shortName = _("Sample Tracking");
+	$shortCode = 'STS';
 }
 
 if (!empty($applicationConfig['instanceName'])) {
@@ -73,65 +73,40 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 <head>
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<title><?php echo $shortName . " | " . ((isset($title) && $title != null && $title != "") ? $title : "VLSM"); ?></title>
+	<title><?php echo $shortName . " | " . ($title ?? $shortCode); ?></title>
 	<!-- Tell the browser to be responsive to screen width -->
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 	<meta name="viewport" content="width=1024">
 
-	<?php if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser') { ?>
-		<link rel="apple-touch-icon" sizes="180x180" href="/assets/vlsts-icons/apple-touch-icon.png">
-		<link rel="icon" type="image/png" sizes="32x32" href="/assets/vlsts-icons/favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="/assets/vlsts-icons/favicon-16x16.png">
-		<link rel="manifest" href="/assets/vlsts-icons/site.webmanifest">
-	<?php } else { ?>
-		<link rel="apple-touch-icon" sizes="180x180" href="/assets/vlsm-icons/apple-touch-icon.png">
-		<link rel="icon" type="image/png" sizes="32x32" href="/assets/vlsm-icons/favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="/assets/vlsm-icons/favicon-16x16.png">
-		<link rel="manifest" href="/assets/vlsm-icons/site.webmanifest">
-	<?php } ?>
+	<?php
+	$iconType = !empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser' ? 'vlsts' : 'vlsm';
+	?>
 
+	<link rel="apple-touch-icon" sizes="180x180" href="/assets/<?= $iconType; ?>-icons/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/assets/<?= $iconType; ?>-icons/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/assets/<?= $iconType; ?>-icons/favicon-16x16.png">
+	<link rel="manifest" href="/assets/<?= $iconType; ?>-icons/site.webmanifest">
 
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/fonts.css" />
-
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery-ui.min.css" />
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery-ui-timepicker-addon.css" />
-
-	<!-- Bootstrap 3.3.6 -->
-	<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-	<!-- Font Awesome -->
-	<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
-
-	<!-- Ionicons -->
-
-	<!-- DataTables -->
-	<link rel="stylesheet" href="/assets/plugins/datatables/dataTables.bootstrap.css">
-	<!-- Theme style -->
-	<link rel="stylesheet" href="/assets/css/AdminLTE.min.css">
-	<!-- AdminLTE Skins. Choose a skin from the css/skins
-       folder instead of downloading all of them to reduce the load. -->
-	<link rel="stylesheet" href="/assets/css/skins/_all-skins.min.css">
-	<!-- iCheck -->
-
-	<link href="/assets/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
-
-	<link href="/assets/css/select2.min.css" rel="stylesheet" />
-	<link href="/assets/css/style.css" rel="stylesheet" />
-	<link href="/assets/css/deforayModal.css" rel="stylesheet" />
-	<link href="/assets/css/jquery.fastconfirm.css" rel="stylesheet" />
-
-	<link rel="stylesheet" href="/assets/css/components-rounded.min.css">
-
-	<!-- jQuery 2.2.3 -->
+	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/bootstrap.min.css">
+	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/font-awesome.min.css">
+	<link rel="stylesheet" media="all" type="text/css" href="/assets/plugins/datatables/dataTables.bootstrap.css">
+	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/AdminLTE.min.css">
+	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/skins/_all-skins.min.css">
+	<link rel="stylesheet" media="all" type="text/css" href="/assets/plugins/daterangepicker/daterangepicker.css" />
+	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/select2.min.css" />
+	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/style.css" />
+	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/deforayModal.css" />
+	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery.fastconfirm.css" />
+	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/components-rounded.min.css">
+	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/select2.live.min.css" />
 
 	<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
-
-	<!-- Latest compiled and minified JavaScript -->
-
 	<script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
-	<script src="/assets/js/deforayModal.js"></script>
-	<script src="/assets/js/jquery.fastconfirm.js"></script>
-	<link href="/assets/css/select2.live.min.css" rel="stylesheet" />
-	<!--<script type="text/javascript" src="/assets/js/jquery-ui-sliderAccess.js"></script>-->
+	<script type="text/javascript" src="/assets/js/deforayModal.js"></script>
+	<script type="text/javascript" src="/assets/js/jquery.fastconfirm.js"></script>
 	<style>
 		.select2-selection--multiple {
 			max-height: 100px;
@@ -141,7 +116,7 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 	</style>
 </head>
 
-<body class="hold-transition <?php echo $skin; ?> sidebar-mini" id="capture">
+<body class="hold-transition <?php echo $skin; ?> sidebar-mini" id="lis-body">
 	<div class="wrapper">
 		<header class="main-header">
 			<!-- Logo -->
@@ -215,7 +190,9 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 				<ul class="sidebar-menu">
 					<?php
 					foreach ($_SESSION['menuItems'] as $menu) {
-						if ($menu['has_children'] == 'yes' && (empty($menu['children']) || count($menu['children']) == 0)) {
+						if ($menu['has_children'] == 'yes' && empty($menu['children'])) {
+							//Supposed to have children but does not have?
+							// Continue to next menu. We dont need this one
 							continue;
 						}
 						$classNames = $menu['additional_class_names'] . ($menu['has_children'] == "yes" ? ' treeview manage' : '');
@@ -244,31 +221,29 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 
 								foreach ($menu['children'] as $subMenu) {
 									?>
-										<?php if ($subMenu['has_children'] == 'yes' && !empty($subMenu['children']) && count($subMenu['children']) != 0) { ?>
+										<?php if ($subMenu['has_children'] == 'yes' && !empty($subMenu['children'])) { ?>
 											<li class="<?= $subMenu['additional_class_names'] ?> ">
-												<a href="<?php echo $subMenu['link']; ?>">
+												<a href="<?= $subMenu['link']; ?>">
 													<span class="<?php echo $subMenu['icon'] ?>"></span>
-													<span><?php echo _($subMenu['display_text']); ?></span>
+													<span><?= _($subMenu['display_text']); ?></span>
 													<span class="pull-right-container">
 														<span class="fa-solid fa-angle-left pull-right"></span>
 													</span>
 												</a>
-												<?php if (!empty($subMenu['children']) && count($subMenu['children']) != 0) { ?>
+												<?php if (!empty($subMenu['children'])) { ?>
 													<ul class="treeview-menu">
 														<?php
 														foreach ($subMenu['children'] as $childMenu) {
-															$dataInnerPages = explode(',', $childMenu['inner_pages']);
-															$innerPages = implode(';', array_map('base64_encode', $dataInnerPages));
-
-															if (!empty($childMenu['link'])) {
-																$privilegeArr = explode('/', $childMenu['link']);
-																$privilege = end($privilegeArr);
+															$innerPages = '';
+															if (!empty($childMenu['inner_pages'])) {
+																$dataInnerPages = explode(',', $childMenu['inner_pages']);
+																$dataInnerPages = implode(';', array_map('base64_encode', $dataInnerPages));
+																$innerPages = 'data-inner-pages="' . $dataInnerPages . '"';
 															}
-
 														?>
-															<li class="<?php echo $childMenu['additional_class_names'] ?>">
-																<a href="<?php echo $childMenu['link'] ?>" data-inner-pages="<?php echo $innerPages; ?>">
-																	<span class="<?php echo $childMenu['icon'] ?>"></span> <?php echo _($childMenu['display_text']); ?>
+															<li class="<?= $childMenu['additional_class_names'] ?>">
+																<a href="<?= $childMenu['link'] ?>" <?= $innerPages; ?>>
+																	<span class="<?= $childMenu['icon'] ?>"></span> <?= _($childMenu['display_text']); ?>
 																</a>
 															</li>
 														<?php

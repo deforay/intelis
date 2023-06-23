@@ -26,6 +26,11 @@ function getAgeFromDob(dob) {
 }
 
 
+$('.daterange,#daterange,#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate,#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate,#hvlSampleTestDate,#printDate,#hvlSampleTestDate').on('cancel.daterangepicker', function (ev, picker) {
+    $(this).val('');
+});
+
+
 function showModal(url, w, h) {
     showdefModal('dDiv', w, h);
     document.getElementById('dFrame').style.height = h + 'px';
@@ -161,3 +166,14 @@ async function copyToClipboard(text) {
 
 
 
+function splitPath(path) {
+    let parts = path.split('?');
+    let paths = [parts[0]];
+    if (parts.length > 1) {
+        let queryParams = parts[1].split('&');
+        for (let i = 0; i < queryParams.length; i++) {
+            paths.push(parts[0] + '?' + queryParams.slice(0, i + 1).join('&'));
+        }
+    }
+    return paths;
+}

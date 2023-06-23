@@ -11,12 +11,9 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $supportEmail = trim($general->getGlobalConfig('support_email'));
 
-
-
 ?>
 
 <footer class="main-footer">
-
 
 	<small>This project is supported by the U.S. President's Emergency Plan for AIDS Relief (PEPFAR) through the U.S. Centers for Disease Control and Prevention (CDC).</small>
 	<?php if (!empty($supportEmail)) { ?>
@@ -56,9 +53,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 <script type="text/javascript" src="/assets/js/jquery-ui-timepicker-addon.js"></script>
 <script type="text/javascript" src="/assets/js/js.cookie.js"></script>
 <script type="text/javascript" src="/assets/js/select2.min.js"></script>
-<!-- Bootstrap 3.3.6 -->
 <script type="text/javascript" src="/assets/js/bootstrap.min.js"></script>
-<!-- DataTables -->
 <script type="text/javascript" src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script type="text/javascript" src="/assets/js/moment.min.js"></script>
@@ -71,6 +66,9 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 
 <script type="text/javascript">
+	let remoteSync = false;
+	let remoteUrl = '<?= SYSTEM_CONFIG['remoteURL'] ?? null; ?>';
+
 	window.additionalXHRParams = {
 		layout: 0,
 		'X-CSRF-Token': '<?php echo $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? $general->generateUUID(); ?>'
@@ -89,7 +87,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		}
 	}
 	<?php if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?>
-		var remoteSync = true;
+		remoteSync = true;
 
 		function syncRemoteData(remoteUrl) {
 			if (!navigator.onLine) {
@@ -97,7 +95,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 				return false;
 			}
 
-			if (remoteSync && remoteUrl != null && remoteUrl != '') {
+			if (remoteUrl != null && remoteUrl != '') {
 				$.blockUI({
 					message: "<h3><?= _("Preparing for STS sync."); ?><br><?= _("Please wait..."); ?></h3>"
 				});
@@ -125,7 +123,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 				message: "<h3><?= _("Trying to sync Test Requests"); ?><br><?= _("Please wait..."); ?></h3>"
 			});
 
-			if (remoteSync && remoteUrl != null && remoteUrl != '') {
+			if (remoteUrl != null && remoteUrl != '') {
 				var jqxhr = $.ajax({
 						url: "/scheduled-jobs/remote/requestsSync.php",
 					})
@@ -150,7 +148,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 				message: "<h3><?= _("Trying to sync Test Results"); ?><br><?= _("Please wait..."); ?></h3>"
 			});
 
-			if (remoteSync && remoteUrl != null && remoteUrl != '') {
+			if (remoteUrl != null && remoteUrl != '') {
 				var jqxhr = $.ajax({
 						url: "/scheduled-jobs/remote/resultsSync.php",
 					})
@@ -170,27 +168,44 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		}
 	<?php } ?>
 
+
+
+	function screenshot(supportId, attached) {
+		if (supportId != "" && attached == 'yes') {
+			closeModal();
+			html2canvas(document.querySelector("#lis-body")).then(canvas => {
+				dataURL = canvas.toDataURL();
+				$.blockUI();
+				$.post("/support/saveScreenshot.php", {
+						image: dataURL,
+						supportId: supportId
+					},
+					function(data) {
+						$.unblockUI();
+						alert("<?= _("Thank you.Your message has been submitted."); ?>");
+					});
+			});
+		} else {
+			closeModal();
+			$.blockUI();
+			$.post("/support/saveScreenshot.php", {
+					supportId: supportId
+				},
+				function(data) {
+					$.unblockUI();
+					alert("<?= _("Thank you.Your message has been submitted."); ?>");
+				});
+		}
+	}
+
 	$(document).ready(function() {
 
 		$(".allMenu").removeClass('active');
-
-		function splitPath(path) {
-			let parts = path.split('?');
-			let paths = [parts[0]];
-			if (parts.length > 1) {
-				let queryParams = parts[1].split('&');
-				for (let i = 0; i < queryParams.length; i++) {
-					paths.push(parts[0] + '?' + queryParams.slice(0, i + 1).join('&'));
-				}
-			}
-			return paths;
-		}
 
 		let url = window.location.pathname + window.location.search;
 		let currentMenuItem = $('a[href="' + url + '"]');
 		if (currentMenuItem.length == 0) {
 			let currentPaths = splitPath(url).map(path => btoa(path));
-
 			currentMenuItem = $('a[data-inner-pages]').filter(function() {
 				let innerPages = $(this).data('inner-pages').split(';');
 				return currentPaths.some(path => innerPages.includes(path));
@@ -202,49 +217,40 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 			currentMenuItem.parents('li.treeview').addClass('active');
 		}
 
-
-
-
-		<?php if ($_SESSION['instanceType'] == 'vluser' && !empty(SYSTEM_CONFIG['remoteURL'])) { ?>
-
-				(function getLastSyncDateTime() {
-					let currentDateTime = new Date();
-					$.ajax({
-						url: '/scheduled-jobs/remote/getLastSyncTime.php',
-						cache: false,
-						success: function(lastSyncDateString) {
-							if (lastSyncDateString != null && lastSyncDateString != undefined) {
-								$('.sync-time').html(lastSyncDateString);
-								$('.syncHistoryDiv').show();
-							}
-						},
-						error: function(data) {}
-					});
-					setTimeout(getLastSyncDateTime, 15 * 60 * 1000);
-				})();
-		<?php } ?>
-
-
-		<?php
-		// Every 5 mins check connection if this is a local installation of VLSM and there is a remote server configured
-		if (!empty(SYSTEM_CONFIG['remoteURL']) && $_SESSION['instanceType'] == 'vluser') { ?>
-
-				(function checkNetworkConnection() {
-					$.ajax({
-						url: '<?php echo rtrim(SYSTEM_CONFIG['remoteURL'], "/"); ?>/api/version.php',
-						cache: false,
-						success: function(data) {
-							$('.is-remote-server-reachable').fadeIn(1000);
-							$('.is-remote-server-reachable').css('color', '#4dbc3c');
-						},
-						error: function() {
-							$('.is-remote-server-reachable').fadeIn(1000);
-							$('.is-remote-server-reachable').css('color', 'red');
+		if (remoteSync) {
+			(function getLastSyncDateTime() {
+				let currentDateTime = new Date();
+				$.ajax({
+					url: '/scheduled-jobs/remote/getLastSyncTime.php',
+					cache: false,
+					success: function(lastSyncDateString) {
+						if (lastSyncDateString != null && lastSyncDateString != undefined) {
+							$('.sync-time').html(lastSyncDateString);
+							$('.syncHistoryDiv').show();
 						}
-					});
-					setTimeout(checkNetworkConnection, 15 * 60 * 1000);
-				})();
-		<?php } ?>
+					},
+					error: function(data) {}
+				});
+				setTimeout(getLastSyncDateTime, 15 * 60 * 1000);
+			})();
+
+			// Every 5 mins check connection if this is a local installation of VLSM and there is a remote server configured
+			(function checkNetworkConnection() {
+				$.ajax({
+					url: remoteUrl + '/api/version.php',
+					cache: false,
+					success: function(data) {
+						$('.is-remote-server-reachable').fadeIn(1000);
+						$('.is-remote-server-reachable').css('color', '#4dbc3c');
+					},
+					error: function() {
+						$('.is-remote-server-reachable').fadeIn(1000);
+						$('.is-remote-server-reachable').css('color', 'red');
+					}
+				});
+				setTimeout(checkNetworkConnection, 15 * 60 * 1000);
+			})();
+		}
 
 		<?php if (isset($_SESSION['alertMsg']) && trim($_SESSION['alertMsg']) != "") { ?> alert("<?php echo $_SESSION['alertMsg']; ?>");
 		<?php
@@ -260,38 +266,8 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		?> showModal('/addInstanceDetails.php', 900, 420);
 		<?php } ?>
 
-		$('.daterange,#daterange,#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate,#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate,#hvlSampleTestDate,#printDate,#hvlSampleTestDate').on('cancel.daterangepicker', function(ev, picker) {
-			$(this).val('');
-		});
-	});
 
-	function screenshot(supportId, attached) {
-		if (supportId != "" && attached == 'yes') {
-			closeModal();
-			html2canvas(document.querySelector("#capture")).then(canvas => {
-				dataURL = canvas.toDataURL();
-				$.blockUI();
-				$.post("/support/saveScreenshot.php", {
-						image: dataURL,
-						supportId: supportId
-					},
-					function(data) {
-						$.unblockUI();
-						alert("<?= _("Thank you. Your message has been submitted."); ?>");
-					});
-			});
-		} else {
-			closeModal();
-			$.blockUI();
-			$.post("/support/saveScreenshot.php", {
-					supportId: supportId
-				},
-				function(data) {
-					$.unblockUI();
-					alert("<?= _("Thank you. Your message has been submitted."); ?>");
-				});
-		}
-	}
+	});
 </script>
 </body>
 
