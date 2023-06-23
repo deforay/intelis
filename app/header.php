@@ -73,8 +73,7 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 <head>
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<title><?php echo $shortName . " | " . ($title ?? $shortCode); ?></title>
-	<!-- Tell the browser to be responsive to screen width -->
+	<title><?= $shortName . " | " . ($title ?? $shortCode); ?></title>
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 	<meta name="viewport" content="width=1024">
 
@@ -116,15 +115,15 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 	</style>
 </head>
 
-<body class="hold-transition <?php echo $skin; ?> sidebar-mini" id="lis-body">
+<body class="hold-transition <?= $skin; ?> sidebar-mini" id="lis-body">
 	<div class="wrapper">
 		<header class="main-header">
 			<!-- Logo -->
-			<a href="<?php echo ($dashBoardMenuAccess === true) ? '/dashboard/index.php' : '#'; ?>" class="logo">
+			<a href="<?= ($dashBoardMenuAccess === true) ? '/dashboard/index.php' : '#'; ?>" class="logo">
 				<!-- mini logo for sidebar mini 50x50 pixels -->
-				<span class="logo-mini"><strong><?php echo $smallLogoName; ?></strong></span>
+				<span class="logo-mini"><strong><?= $smallLogoName; ?></strong></span>
 				<!-- logo for regular state and mobile devices -->
-				<span class="logo-lg" style="font-weight:bold;"><?php echo $logoName; ?></span>
+				<span class="logo-lg" style="font-weight:bold;"><?= $logoName; ?></span>
 			</a>
 			<!-- Header Navbar: style can be found in header.less -->
 			<nav class="navbar navbar-static-top">
@@ -134,7 +133,7 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 				</a>
 				<ul class="nav navbar-nav">
 					<li>
-						<a href="javascript:void(0);return false;"><span style="text-transform: uppercase;font-weight:600;"><?php echo $systemType; ?></span></a>
+						<a href="javascript:void(0);return false;"><span style="text-transform: uppercase;font-weight:600;"><?= $systemType; ?></span></a>
 					</li>
 				</ul>
 				<div class="navbar-custom-menu">
@@ -142,7 +141,7 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 						<?php if (!empty(SYSTEM_CONFIG['recency']['crosslogin']) && SYSTEM_CONFIG['recency']['crosslogin'] === true && !empty(SYSTEM_CONFIG['recency']['url'])) {
 						?>
 							<li class="user-menu">
-								<a onclick="setCrossLogin();" href="<?php echo rtrim(SYSTEM_CONFIG['recency']['url'], "/") . '/login?u=' . base64_encode($_SESSION['loginId']) . '&t=' . ($_SESSION['crossLoginPass']) . '&name=' . base64_encode($_SESSION['userName']); ?>" class="btn btn-link"><span class="fa-solid fa-arrow-up-right-from-square"></span> Recency</a>
+								<a onclick="setCrossLogin();" href="<?= rtrim(SYSTEM_CONFIG['recency']['url'], "/") . '/login?u=' . base64_encode($_SESSION['loginId']) . '&t=' . ($_SESSION['crossLoginPass']) . '&name=' . base64_encode($_SESSION['userName']); ?>" class="btn btn-link"><span class="fa-solid fa-arrow-up-right-from-square"></span> Recency</a>
 							</li>
 						<?php } ?>
 
@@ -150,9 +149,7 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 
 								<span class="fa-solid fa-hospital-user"></span>
-								<span class="hidden-xs"><?php if (isset($_SESSION['userName'])) {
-															echo $_SESSION['userName'];
-														} ?></span>
+								<span class="hidden-xs"><?= $_SESSION['userName'] ?? ''; ?></span>
 								<?php if (!empty(SYSTEM_CONFIG['remoteURL']) && isset($_SESSION['userName']) && isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser')) { ?>
 									<span class="fa-solid fa-circle is-remote-server-reachable" style="font-size:1em;display:none;"></span>
 								<?php } ?>
@@ -165,11 +162,11 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 									$alignRight = "pull-right-xxxxx";
 									$showProfileBtn = "style=display:block;";
 								} ?>
-								<li class="user-footer" <?php echo $showProfileBtn; ?>>
-									<a href="/users/editProfile.php" class=""><?php echo _("Edit Profile"); ?></a>
+								<li class="user-footer" <?= $showProfileBtn; ?>>
+									<a href="/users/editProfile.php" class=""><?= _("Edit Profile"); ?></a>
 								</li>
-								<li class="user-footer <?php echo $alignRight; ?>">
-									<a href="/login/logout.php"><?php echo _("Sign out"); ?></a>
+								<li class="user-footer <?= $alignRight; ?>">
+									<a href="/login/logout.php"><?= _("Sign out"); ?></a>
 								</li>
 							</ul>
 						</li>
@@ -183,7 +180,7 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 				<?php if (isset($arr['logo']) && trim($arr['logo']) != "" && file_exists('uploads' . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $arr['logo'])) { ?>
 					<div class="user-panel">
 						<div>
-							<img src="/uploads/logo/<?php echo $arr['logo']; ?>" alt="Logo Image" style="max-width:120px;">
+							<img src="/uploads/logo/<?= $arr['logo']; ?>" alt="Logo Image" style="max-width:120px;">
 						</div>
 					</div>
 				<?php } ?>
@@ -202,9 +199,9 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 						} else {
 					?>
 
-							<li class="<?php echo $classNames; ?>">
-								<a href="<?php echo $menu['link'] ?>">
-									<span class="<?php echo $menu['icon'] ?>"></span> <span><?php echo _($menu['display_text']); ?></span>
+							<li class="<?= $classNames; ?>">
+								<a href="<?= $menu['link'] ?>">
+									<span class="<?= $menu['icon'] ?>"></span> <span><?= _($menu['display_text']); ?></span>
 
 									<?php if ($menu['has_children'] == 'yes') { ?>
 										<span class="pull-right-container">
@@ -224,7 +221,7 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 										<?php if ($subMenu['has_children'] == 'yes' && !empty($subMenu['children'])) { ?>
 											<li class="<?= $subMenu['additional_class_names'] ?> ">
 												<a href="<?= $subMenu['link']; ?>">
-													<span class="<?php echo $subMenu['icon'] ?>"></span>
+													<span class="<?= $subMenu['icon'] ?>"></span>
 													<span><?= _($subMenu['display_text']); ?></span>
 													<span class="pull-right-container">
 														<span class="fa-solid fa-angle-left pull-right"></span>
@@ -256,7 +253,8 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 										}
 									} ?>
 									<?php if ($menu['is_header'] == 'no') { ?>
-									</ul><?php } ?>
+									</ul>
+								<?php } ?>
 							<?php } ?>
 
 							</li>
