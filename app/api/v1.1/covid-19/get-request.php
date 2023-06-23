@@ -220,8 +220,8 @@ try {
     }
     $where[] = " vl.app_sample_code is not null";
     $where = " WHERE " . implode(" AND ", $where);
-    $sQuery .= $where . " ORDER BY last_modified_datetime DESC limit 100 ";
-    // // die($sQuery);
+    $sQuery .= $where . " ORDER BY vl.last_modified_datetime DESC limit 100 ";
+
     $rowData = $db->rawQuery($sQuery);
 
     if (!empty($rowData)) {

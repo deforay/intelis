@@ -337,95 +337,76 @@ $menuItems = $uiService->getAllActiveMenus();
 					</div>
 				<?php } ?>
 				<ul class="sidebar-menu">
-				<?php
-				foreach($menuItems as $menu)
-				{
-					$cls="";
-					if($menu['has_children']=="yes")
-						$cls = $menu['additional_class_names'].' '."treeview manage";
-						
-						if($menu['is_header']=='yes')
-						{
-							echo '<li class="header">'.$menu['display_text'];
-						}
-						else{
-							
-							
-				?>
-					<li class="<?php echo $cls; ?>">
-						<a href="<?php echo $menu['link'] ?>">
-							<span class="<?php echo $menu['icon'] ?>"></span> <span><?php echo _($menu['display_text']); ?></span>
-							
-							<?php if($menu['has_children']=='yes'){ ?>
-							<span class="pull-right-container">
-								<span class="fa-solid fa-angle-left pull-right"></span>
-							</span>
-							<?php } ?>
-						</a><?php } ?>
-						<?php if($menu['has_children']=="yes"){ 
-							if($menu['is_header']=='no')
-							{?>
-							<ul class="treeview-menu">
-								<?php
-							}
-								$subMenuItems = $uiService->getAllActiveMenus(0,$menu['id']);
-								//echo '<pre>'; print_r($subMenuItems); 
-								foreach($subMenuItems as $subMenu)
-								{
-									
-								?>
-									<li class="<?php echo $subMenu['additional_class_names'] ?>">
-										<a href="<?php echo $subMenu['link']; ?>">
-										<span class="<?php echo $subMenu['icon'] ?>"></span>
-										<span><?php echo _($subMenu['display_text']); ?></span>
-										<?php if($subMenu['has_children']=='yes'){ ?>
-											<span class="pull-right-container">
+					<?php
+					foreach ($menuItems as $menu) {
+						$classNames = $menu['additional_class_names'] . ($menu['has_children'] == "yes" ? ' treeview manage' : '');
+						if ($menu['is_header'] == 'yes') {
+							echo '<li class="header">' . $menu['display_text'];
+						} else {
+
+					?>
+							<li class="<?php echo $classNames; ?>">
+								<a href="<?php echo $menu['link'] ?>">
+									<span class="<?php echo $menu['icon'] ?>"></span> <span><?php echo _($menu['display_text']); ?></span>
+
+									<?php if ($menu['has_children'] == 'yes') { ?>
+										<span class="pull-right-container">
 											<span class="fa-solid fa-angle-left pull-right"></span>
-											</span>
-										<?php } ?>
-										</a>
-										<?php if($subMenu['has_children']=="yes"){ ?>
-										<ul class="treeview-menu">
-											<?php
-											$childMenuItems = $uiService->getAllActiveMenus(0,$subMenu['id']);
-											foreach($childMenuItems as $childMenu)
-											{
-												$dataInnerPages = explode(',',$childMenu['inner_pages']);
-												//echo '<pre>'; print_r($dataInnerPages); die;
-												$innerPagesArr = array();
-												foreach($dataInnerPages as $page)
-												{
-													$innerPagesArr[] = base64_encode($page);
-												}
-												$innerPages = implode(';',$innerPagesArr);
+										</span>
+									<?php } ?>
+								</a><?php } ?>
+							<?php if ($menu['has_children'] == "yes") {
+								if ($menu['is_header'] == 'no') { ?>
+									<ul class="treeview-menu">
+									<?php
+								}
+								$subMenuItems = $uiService->getAllActiveMenus(0, $menu['id']);
+								foreach ($subMenuItems as $subMenu) {
+									?>
+										<li class="<?php echo $subMenu['additional_class_names'] ?>">
+											<a href="<?php echo $subMenu['link']; ?>">
+												<span class="<?php echo $subMenu['icon'] ?>"></span>
+												<span><?php echo _($subMenu['display_text']); ?></span>
+												<?php if ($subMenu['has_children'] == 'yes') { ?>
+													<span class="pull-right-container">
+														<span class="fa-solid fa-angle-left pull-right"></span>
+													</span>
+												<?php } ?>
+											</a>
+											<?php if ($subMenu['has_children'] == "yes") { ?>
+												<ul class="treeview-menu">
+													<?php
+													$childMenuItems = $uiService->getAllActiveMenus(0, $subMenu['id']);
+													foreach ($childMenuItems as $childMenu) {
+														$dataInnerPages = explode(',', $childMenu['inner_pages']);
+														$innerPages = implode(';', array_map('base64_encode', $dataInnerPages));
 
+														if (!empty($childMenu['link'])) {
+															$privilegeArr = explode('/', $childMenu['link']);
+															$privilege = end($privilegeArr);
+														}
+														if (($childMenu['link'] != "") && isset($_SESSION['privileges']) && in_array($privilege, $_SESSION['privileges'])) {
+													?>
+															<li class="<?php echo $childMenu['additional_class_names'] ?>">
+																<a href="<?php echo $childMenu['link'] ?>" data-inner-pages="<?php echo $innerPages; ?>">
+																	<span class="<?php echo $childMenu['icon'] ?>"></span> <?php echo _($childMenu['display_text']); ?>
+																</a>
+															</li>
+													<?php }
+													} ?>
+												</ul>
+											<?php } ?>
+										</li>
+									<?php  } ?>
+									<?php if ($menu['is_header'] == 'no') { ?>
+									</ul><?php } ?>
+							<?php } ?>
 
-												if(!empty($childMenu['link']))
-												{
-													$privilegeArr=explode('/',$childMenu['link']);
-													$cnt = count($privilegeArr);
-													$privilege=$privilegeArr[$cnt-1];
-												}
-												if (($childMenu['link']!="") && isset($_SESSION['privileges']) && in_array($privilege, $_SESSION['privileges'])) {
-											?>
-											<li class="<?php echo $childMenu['additional_class_names'] ?>">
-												<a href="<?php echo $childMenu['link'] ?>" data-inner-pages="<?php echo $innerPages; ?>">
-												<span class="<?php echo $childMenu['icon'] ?>"></span> <?php echo _($childMenu['display_text']); ?>
-												</a>
-											</li>
-											<?php } } ?>
-										</ul>
-										<?php } ?>
-									</li>
-								<?php  } ?>
-								<?php if($menu['is_header']=='no'){?></ul><?php } ?>
-						<?php } ?>
+							</li>
 
-					</li>
-					
-				<?php }   ?>
+						<?php }   ?>
 				</ul>
-				
+
 			</section>
 			<!-- /.sidebar -->
 		</aside>

@@ -4217,7 +4217,9 @@ ALTER TABLE `form_covid19` CHANGE `sample_package_id` `sample_package_id` INT NU
 ALTER TABLE `form_hepatitis` CHANGE `sample_package_id` `sample_package_id` INT NULL DEFAULT NULL;
 ALTER TABLE `form_tb` CHANGE `sample_package_id` `sample_package_id` INT NULL DEFAULT NULL;
 ALTER TABLE `form_generic` CHANGE `sample_package_id` `sample_package_id` INT NULL DEFAULT NULL;
+
 -- Jeyabanu 19-06-2023
+
 CREATE TABLE `menus` (
   `id` int NOT NULL,
   `module` varchar(256) NOT NULL,
@@ -4232,7 +4234,7 @@ CREATE TABLE `menus` (
   `display_order` int NOT NULL,
   `status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO `menus` (`id`, `module`, `is_header`, `display_text`, `link`, `inner_pages`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES
 (1, '', 'no', 'Dashboard', '/dashboard/index.php', NULL, 'fa-solid fa-chart-pie', 'no', 'allMenu dashboardMenu', 0, 1, 'active', '2023-06-19 16:55:13'),

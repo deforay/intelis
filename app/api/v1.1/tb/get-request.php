@@ -159,7 +159,7 @@ try {
     if (!empty($where)) {
         $whereStr = " WHERE " . implode(" AND ", $where);
     }
-    $sQuery .= $whereStr . " ORDER BY last_modified_datetime DESC limit 100 ";
+    $sQuery .= $whereStr . " ORDER BY vl.last_modified_datetime DESC limit 100 ";
     $rowData = $db->rawQuery($sQuery);
 
     if (!empty($rowData)) {

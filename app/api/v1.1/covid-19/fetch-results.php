@@ -244,7 +244,7 @@ try {
     }
 
     $where = " WHERE " . implode(" AND ", $where);
-    $sQuery .= $where . " limit 100;";
+    $sQuery .= $where . " ORDER BY vl.last_modified_datetime DESC limit 100 ";
     $rowData = $db->rawQuery($sQuery);
 
     if (!empty($rowData)) {
