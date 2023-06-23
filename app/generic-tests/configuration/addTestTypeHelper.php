@@ -85,11 +85,13 @@ try {
         $id = $db->insert($tableName, $data);
         $lastId = $db->getInsertId();
         if ($lastId != 0) {
-
+//echo '<pre>'; print_r($_POST['sampleType']); die;
             if (!empty($_POST['sampleType'])) {
                 foreach ($_POST['sampleType'] as $val) {
                     $value = array('sample_type_id' => $val, 'test_type_id' => $lastId);
+                   // echo '<pre>'; print_r($value); die;
                     $db->insert($tableName2, $value);
+                    error_log($db->getLastError());
                 }
             }
 

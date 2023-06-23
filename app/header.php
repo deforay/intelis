@@ -6,6 +6,8 @@ use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
+use App\Services\UiService;
+
 
 
 $applicationConfig = ContainerRegistry::get('applicationConfig');
@@ -24,6 +26,9 @@ $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var UiService $UiService */
+$uiService = ContainerRegistry::get(UiService::class);
 
 $_SESSION['module'] = $_SESSION['module'] ?? [];
 
@@ -179,6 +184,9 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 } else {
 	$genericManagementMenuAccess = false;
 }
+
+$menuItems = $uiService->getAllActiveMenus();
+//echo '<pre>'; print_r($menuItems); die;
 ?>
 <!DOCTYPE html>
 <html lang="<?= $_SESSION['APP_LOCALE'] ?? 'en_US'; ?>">
@@ -329,981 +337,95 @@ if (isset($_SESSION['privileges']) && array_intersect($_SESSION['privileges'], a
 					</div>
 				<?php } ?>
 				<ul class="sidebar-menu">
-					<?php if ($dashBoardMenuAccess === true) { ?>
-						<li class="allMenu dashboardMenu active">
-							<a href="/dashboard/index.php">
-								<span class="fa-solid fa-chart-pie"></span> <span><?php echo _("Dashboard"); ?></span>
-							</a>
-						</li>
-					<?php }
-					if ($allAdminMenuAccess === true && array_intersect($_SESSION['module'], array('admin'))) { ?>
-						<li class="treeview manage">
-							<a href="#">
-								<span class="fa-solid fa-shield"></span>
-								<span><?php echo _("Admin"); ?></span>
-								<span class="pull-right-container">
-									<span class="fa-solid fa-angle-left pull-right"></span>
-								</span>
-							</a>
+				<?php
+				foreach($menuItems as $menu)
+				{
+					$cls="";
+					if($menu['has_children']=="yes")
+						$cls = $menu['additional_class_names'].' '."treeview manage";
+						
+						if($menu['is_header']=='yes')
+						{
+							echo '<li class="header">'.$menu['display_text'];
+						}
+						else{
+							
+							
+				?>
+					<li class="<?php echo $cls; ?>">
+						<a href="<?php echo $menu['link'] ?>">
+							<span class="<?php echo $menu['icon'] ?>"></span> <span><?php echo _($menu['display_text']); ?></span>
+							
+							<?php if($menu['has_children']=='yes'){ ?>
+							<span class="pull-right-container">
+								<span class="fa-solid fa-angle-left pull-right"></span>
+							</span>
+							<?php } ?>
+						</a><?php } ?>
+						<?php if($menu['has_children']=="yes"){ 
+							if($menu['is_header']=='no')
+							{?>
 							<ul class="treeview-menu">
-								<?php /* if (isset($_SESSION['privileges']) && in_array("facilityMap.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser') { ?>
-                                    <li class="allMenu facilityMapMenu">
-                                        <a href="/facilities/facilityMap.php"><span class="fa-solid fa-caret-right"></span>Facility Map</a>
-                                    </li>
-                                <?php }
-                                if (isset($_SESSION['privileges']) && in_array("testRequestEmailConfig.php", $_SESSION['privileges'])) { ?>
-                                    <li class="allMenu requestEmailConfigMenu">
-                                        <a href="/vl/request-mail/testRequestEmailConfig.php"><span class="fa-solid fa-caret-right"></span>Test Request Email/SMS <br>Configuration</a>
-                                    </li>
-                                <?php } */
-								if (in_array("roles.php", $_SESSION['privileges']) || in_array("users.php", $_SESSION['privileges'])) { ?>
-									<li class="treeview access-control-menu">
-										<a href="#">
-											<span class="fa-solid fa-user"></span>
-											<span><?php echo _("Access Control"); ?></span>
+								<?php
+							}
+								$subMenuItems = $uiService->getAllActiveMenus(0,$menu['id']);
+								//echo '<pre>'; print_r($subMenuItems); 
+								foreach($subMenuItems as $subMenu)
+								{
+									
+								?>
+									<li class="<?php echo $subMenu['additional_class_names'] ?>">
+										<a href="<?php echo $subMenu['link']; ?>">
+										<span class="<?php echo $subMenu['icon'] ?>"></span>
+										<span><?php echo _($subMenu['display_text']); ?></span>
+										<?php if($subMenu['has_children']=='yes'){ ?>
 											<span class="pull-right-container">
-												<span class="fa-solid fa-angle-left pull-right"></span>
+											<span class="fa-solid fa-angle-left pull-right"></span>
 											</span>
+										<?php } ?>
 										</a>
-										<ul class="treeview-menu">
-											<?php if (isset($_SESSION['privileges']) && in_array("roles.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu roleMenu">
-													<a href="/roles/roles.php" data-inner-pages="<?= base64_encode('/roles/addRole.php') . ';' . base64_encode('/roles/editRole.php'); ?>">
-														<span class="fa-solid fa-caret-right"></span> <?php echo _("Roles"); ?>
-													</a>
-												</li>
-											<?php }
-											if (isset($_SESSION['privileges']) && in_array("users.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu userMenu">
-													<a href="/users/users.php" data-inner-pages="<?= base64_encode('/users/addUser.php') . ';' . base64_encode('/users/editUser.php'); ?>">
-														<span class="fa-solid fa-caret-right"></span> <?php echo _("Users"); ?>
-													</a>
-												</li>
-											<?php }
-											?>
-										</ul>
-									</li>
-								<?php }
-								if (isset($_SESSION['privileges']) && in_array("facilities.php", $_SESSION['privileges'])) { ?>
-									<li class="treeview facility-config-menu">
-										<a href="/facilities/facilities.php" data-inner-pages="<?= base64_encode('/facilities/addFacility.php') . ';' . base64_encode('/facilities/editFacility.php') . ';' . base64_encode('/facilities/mapTestType.php'); ?>"><span class="fa-solid fa-hospital"></span> <?php echo _("Facilities"); ?></a>
-									</li>
-								<?php }
-								if (isset($_SESSION['privileges']) && ((in_array("audit-trail.php", $_SESSION['privileges']) || in_array("api-sync-history.php", $_SESSION['privileges'])) || (in_array("sources-of-requests.php", $_SESSION['privileges'])))) { ?>
-									<li class="treeview monitoring-menu">
-										<a href="#">
-											<span class="fa-solid fa-bullseye"></span>
-											<span><?php echo _("Monitoring"); ?></span>
-											<span class="pull-right-container">
-												<span class="fa-solid fa-angle-left pull-right"></span>
-											</span>
-										</a>
-										<ul class="treeview-menu">
-											<?php if (isset($_SESSION['privileges']) && in_array("activity-log.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu treeview activity-log-menu">
-													<a href="/admin/monitoring/activity-log.php"><span class="fa-solid fa-file-lines"></span> <?php echo _("User Activity Log"); ?></a>
-												</li>
-											<?php }
-											if (isset($_SESSION['privileges']) && in_array("audit-trail.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu treeview audit-trail-menu">
-													<a href="/admin/monitoring/audit-trail.php"><span class="fa-solid fa-clock-rotate-left"></span> <?php echo _("Audit Trail"); ?></a>
-												</li>
-											<?php }
-
-											if (isset($_SESSION['privileges']) && in_array("api-sync-history.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu treeview api-sync-history-menu">
-													<a href="/admin/monitoring/api-sync-history.php"><span class="fa-solid fa-circle-nodes"></span> <?php echo _("API History"); ?></a>
-												</li>
-											<?php }
-											if (isset($_SESSION['privileges']) && in_array("sources-of-requests.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu treeview sources-of-requests-report-menu">
-													<a href="/admin/monitoring/sources-of-requests.php"><span class="fa-solid fa-circle-notch"></span> <?php echo _("Source of Requests"); ?></a>
-												</li>
-											<?php }
-											if ($_SESSION['instanceType'] == 'remoteuser' && isset($_SESSION['privileges']) && in_array("sync-status.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu treeview sync-status-menu">
-													<a href="/admin/monitoring/sync-status.php"><span class="fa-solid fa-traffic-light"></span> <?php echo _("Lab Sync Status"); ?></a>
-												</li>
-											<?php } ?>
-										</ul>
-									</li>
-								<?php }
-								if (in_array("roles.php", $_SESSION['privileges']) || in_array("users.php", $_SESSION['privileges'])) { ?>
-									<li class="treeview system-config-menu">
-										<a href="#">
-											<span class="fa-solid fa-gears"></span>
-											<span><?php echo _("System Configuration"); ?></span>
-											<span class="pull-right-container">
-												<span class="fa-solid fa-angle-left pull-right"></span>
-											</span>
-										</a>
-										<ul class="treeview-menu">
-											<?php if (isset($_SESSION['privileges']) && in_array("globalConfig.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu globalConfigMenu">
-													<a href="/global-config/editGlobalConfig.php" data-inner-pages="<?= base64_encode('/global-config/editGlobalConfig.php'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("General Configuration"); ?></a>
-												</li>
-											<?php }
-											if (isset($_SESSION['privileges']) && in_array("importConfig.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu importConfigMenu">
-													<a href="/import-configs/importConfig.php" data-inner-pages="<?= base64_encode('/import-configs/addImportConfig.php') . ';' . base64_encode('/import-configs/editImportConfig.php'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Instruments"); ?></a>
-												</li>
-											<?php }
-											if (isset($_SESSION['privileges']) && in_array("geographical-divisions-details.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu geographicalMenu">
-													<a href="/common/reference/geographical-divisions-details.php" data-inner-pages="<?= base64_encode('/common/reference/add-geographical-divisions.php') . ';' . base64_encode('/common/reference/edit-geographical-divisions.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Geographical Divisions"); ?></a>
-												</li>
-											<?php }
-											?>
-											<li class="allMenu common-reference-implementation-partners">
-												<a href="/common/reference/implementation-partners.php" data-inner-pages="<?= base64_encode('/common/reference/add-implementation-partners.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Implementation Partners"); ?></a>
-											</li>
-											<li class="allMenu common-reference-funding-sources">
-												<a href="/common/reference/funding-sources.php" data-inner-pages="<?= base64_encode('/common/reference/add-funding-sources.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Funding Sources"); ?></a>
-											</li>
-										</ul>
-									</li>
-								<?php }
-								if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true && isset($_SESSION['privileges']) && in_array("test-type.php", $_SESSION['privileges'])) { ?>
-									<li class="treeview generic-reference-manage">
-										<a href="#"><em class="fa-solid fa-vial-circle-check"></em><?php echo _("Lab Tests Config"); ?>
-											<span class="pull-right-container">
-												<span class="fa-solid fa-angle-left pull-right"></span>
-											</span>
-										</a>
-
+										<?php if($subMenu['has_children']=="yes"){ ?>
 										<ul class="treeview-menu">
 											<?php
-											if (isset($_SESSION['privileges']) && in_array("generic-sample-type.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu genericSampleTypeMenu">
-													<a href="/generic-tests/reference/sample-types/generic-sample-type.php" data-inner-pages="<?= base64_encode('/generic-tests/reference/sample-types/generic-add-sample-type.php') . ';' . base64_encode('/generic-tests/reference/sample-types/generic-edit-sample-type.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Sample Types"); ?></a>
-												</li>
-											<?php }
-											if (isset($_SESSION['privileges']) && in_array("generic-testing-reason.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu genericTestingReasonMenu">
-													<a href="/generic-tests/reference/testing-reasons/generic-testing-reason.php" data-inner-pages="<?= base64_encode('/generic-tests/reference/testing-reasons/generic-add-testing-reason.php') . ';' . base64_encode('/generic-tests/reference/testing-reasons/generic-edit-testing-reason.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Testing Reasons"); ?></a>
-												</li>
-											<?php }
-											if (isset($_SESSION['privileges']) && in_array("generic-test-failure-reason.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu genericTestFailureReasonMenu">
-													<a href="/generic-tests/reference/test-failure-reasons/generic-test-failure-reason.php" data-inner-pages="<?= base64_encode('/generic-tests/reference/test-failure-reasons/generic-add-test-failure-reason.php') . ';' . base64_encode('/generic-tests/reference/test-failure-reasons/generic-edit-test-failure-reason.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Failure Reasons"); ?></a>
-												</li>
-											<?php }
-											if (isset($_SESSION['privileges']) && in_array("generic-symptoms.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu genericSymptomsMenu">
-													<a href="/generic-tests/reference/symptoms/generic-symptoms.php" data-inner-pages="<?= base64_encode('/generic-tests/reference/symptoms/generic-add-symptoms.php') . ';' . base64_encode('/generic-tests/reference/symptoms/generic-edit-symptoms.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Symptoms"); ?></a>
-												</li>
-											<?php }
-											if (isset($_SESSION['privileges']) && in_array("generic-sample-rejection-reasons.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu genericSampleRejectionReasonsMenu">
-													<a href="/generic-tests/reference/sample-rejection-reasons/generic-sample-rejection-reasons.php" data-inner-pages="<?= base64_encode('/generic-tests/reference/sample-rejection-reasons/generic-edit-rejection-reasons.php') . ';' . base64_encode('/generic-tests/reference/sample-rejection-reasons/generic-add-rejection-reasons.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Sample Rejection Reasons"); ?></a>
-												</li>
-											<?php }
-											if (isset($_SESSION['privileges']) && in_array("generic-test-result-units.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu genericTestResultUnitsMenu">
-													<a href="/generic-tests/reference/test-result-units/generic-test-result-units.php" data-inner-pages="<?= base64_encode('/generic-tests/reference/test-result-units/generic-add-test-result-units.php') . ';' . base64_encode('/generic-tests/reference/test-result-units/generic-edit-test-result-units.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Result Units"); ?></a>
-												</li>
-											<?php }
-											if (isset($_SESSION['privileges']) && in_array("generic-test-methods.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu genericTestMethodsMenu">
-													<a href="/generic-tests/reference/test-methods/generic-test-methods.php" data-inner-pages="<?= base64_encode('/generic-tests/reference/test-methods/generic-add-test-methods.php') . ';' . base64_encode('/generic-tests/reference/test-methods/generic-edit-test-methods.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Methods"); ?></a>
-												</li>
-											<?php }
-											if (isset($_SESSION['privileges']) && in_array("generic-test-categories.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu genericTestCategoriesMenu">
-													<a href="/generic-tests/reference/test-categories/generic-test-categories.php" data-inner-pages="<?= base64_encode('/generic-tests/reference/test-categories/generic-add-test-categories.php') . ';' . base64_encode('/generic-tests/reference/test-categories/generic-edit-test-categories.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Categories"); ?></a>
-												</li>
-											<?php }
-											if (isset($_SESSION['privileges']) && in_array("test-type.php", $_SESSION['privileges'])) { ?>
-												<li class="allMenu testTypeConfigurationMenu">
-													<a href="/generic-tests/configuration/test-type.php" data-inner-pages="<?= base64_encode('/generic-tests/configuration/add-test-type.php') . ';' . base64_encode('/generic-tests/configuration/edit-test-type.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Type Configuration"); ?></a>
-												</li>
-											<?php }
+											$childMenuItems = $uiService->getAllActiveMenus(0,$subMenu['id']);
+											foreach($childMenuItems as $childMenu)
+											{
+												$dataInnerPages = explode(',',$childMenu['inner_pages']);
+												//echo '<pre>'; print_r($dataInnerPages); die;
+												$innerPagesArr = array();
+												foreach($dataInnerPages as $page)
+												{
+													$innerPagesArr[] = base64_encode($page);
+												}
+												$innerPages = implode(';',$innerPagesArr);
+
+
+												if(!empty($childMenu['link']))
+												{
+													$privilegeArr=explode('/',$childMenu['link']);
+													$cnt = count($privilegeArr);
+													$privilege=$privilegeArr[$cnt-1];
+												}
+												if (($childMenu['link']!="") && isset($_SESSION['privileges']) && in_array($privilege, $_SESSION['privileges'])) {
 											?>
+											<li class="<?php echo $childMenu['additional_class_names'] ?>">
+												<a href="<?php echo $childMenu['link'] ?>" data-inner-pages="<?php echo $innerPages; ?>">
+												<span class="<?php echo $childMenu['icon'] ?>"></span> <?php echo _($childMenu['display_text']); ?>
+												</a>
+											</li>
+											<?php } } ?>
 										</ul>
+										<?php } ?>
 									</li>
-								<?php }
-								if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true && isset($_SESSION['privileges']) && in_array("vl-art-code-details.php", $_SESSION['privileges'])) { ?>
-									<li class="treeview vl-reference-manage">
-										<a href="#"><span class="fa-solid fa-flask-vial"></span><?php echo _("VL Config"); ?>
-											<span class="pull-right-container">
-												<span class="fa-solid fa-angle-left pull-right"></span>
-											</span>
-										</a>
+								<?php  } ?>
+								<?php if($menu['is_header']=='no'){?></ul><?php } ?>
+						<?php } ?>
 
-										<ul class="treeview-menu">
-											<li class="allMenu vl-art-code-details">
-												<a href="/vl/reference/vl-art-code-details.php" data-inner-pages="<?= base64_encode('/vl/reference/add-vl-art-code-details.php') . ';' . base64_encode('/vl/reference/edit-vl-art-code-details.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("ART Regimen"); ?></a>
-											</li>
-											<li class="allMenu vl-sample-rejection-reasons">
-												<a href="/vl/reference/vl-sample-rejection-reasons.php" data-inner-pages="<?= base64_encode('/vl/reference/add-vl-sample-rejection-reasons.php') . ';' . base64_encode('/vl/reference/edit-vl-sample-rejection-reasons.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Rejection Reasons"); ?></a>
-											</li>
-											<li class="allMenu vl-sample-type">
-												<a href="/vl/reference/vl-sample-type.php" data-inner-pages="<?= base64_encode('/vl/reference/add-vl-sample-type.php') . ';' . base64_encode('/vl/reference/edit-vl-sample-type.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Sample Type"); ?></a>
-											</li>
-											<li class="allMenu vl-results">
-												<a href="/vl/reference/vl-results.php" data-inner-pages="<?= base64_encode('/vl/reference/add-vl-results.php') . ';' . base64_encode('/vl/reference/edit-vl-results.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Results"); ?></a>
-											</li>
-											<li class="allMenu vl-test-reasons">
-												<a href="/vl/reference/vl-test-reasons.php" data-inner-pages="<?= base64_encode('/vl/reference/add-vl-test-reasons.php') . ';' . base64_encode('/vl/reference/edit-vl-test-reasons.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Reasons"); ?></a>
-											</li>
-											<li class="allMenu vl-test-failure-reasons">
-												<a href="/vl/reference/vl-test-failure-reasons.php" data-inner-pages="<?= base64_encode('/vl/reference/add-vl-test-failure-reason.php') . ';' . base64_encode('/vl/reference/edit-vl-test-failure-reason.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Failure Reasons"); ?></a>
-											</li>
-										</ul>
-									</li>
-								<?php }
-								if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true && isset($_SESSION['privileges']) && in_array("eid-sample-type.php", $_SESSION['privileges'])) { ?>
-									<li class="treeview eid-reference-manage">
-										<a href="#"><span class="fa-solid fa-child"></span><?php echo _("EID Config"); ?>
-											<span class="pull-right-container">
-												<span class="fa-solid fa-angle-left pull-right"></span>
-											</span>
-										</a>
-
-										<ul class="treeview-menu">
-											<li class="allMenu eid-sample-rejection-reasons">
-												<a href="/eid/reference/eid-sample-rejection-reasons.php" data-inner-pages="<?= base64_encode('/eid/reference/add-eid-sample-rejection-reasons.php') . ';' . base64_encode('/eid/reference/edit-eid-sample-rejection-reasons.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Rejection Reasons"); ?></a>
-											</li>
-											<li class="allMenu eid-sample-type">
-												<a href="/eid/reference/eid-sample-type.php" data-inner-pages="<?= base64_encode('/eid/reference/add-eid-sample-type.php') . ';' . base64_encode('/eid/reference/edit-eid-sample-type.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Sample Type"); ?></a>
-											</li>
-											<li class="allMenu eid-test-reasons">
-												<a href="/eid/reference/eid-test-reasons.php" data-inner-pages="<?= base64_encode('/eid/reference/add-eid-test-reasons.php') . ';' . base64_encode('/eid/reference/edit-eid-test-reasons.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Test Reasons"); ?></a>
-											</li>
-											<li class="allMenu eid-results">
-												<a href="/eid/reference/eid-results.php" data-inner-pages="<?= base64_encode('/eid/reference/add-eid-results.php') . ';' . base64_encode('/eid/reference/edit-eid-results.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Results"); ?></a>
-											</li>
-										</ul>
-									</li>
-								<?php }
-								if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true && isset($_SESSION['privileges']) && in_array("covid19-sample-type.php", $_SESSION['privileges'])) { ?>
-									<li class="treeview covid19-reference-manage">
-										<a href="#"><span class="fa-solid fa-virus-covid"></span>
-											<?php echo _("Covid-19 Config"); ?>
-											<span class="pull-right-container">
-												<span class="fa-solid fa-angle-left pull-right"></span>
-											</span>
-										</a>
-
-										<ul class="treeview-menu">
-											<li class="allMenu covid19-comorbidities">
-												<a href="/covid-19/reference/covid19-comorbidities.php" data-inner-pages="<?= base64_encode('/covid-19/reference/add-covid19-comorbidities.php') . ';' . base64_encode('/covid-19/reference/edit-covid19-comorbidities.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Co-morbidities"); ?></a>
-											</li>
-											<li class="allMenu covid19-sample-rejection-reasons">
-												<a href="/covid-19/reference/covid19-sample-rejection-reasons.php" data-inner-pages="<?= base64_encode('/covid-19/reference/add-covid19-sample-rejection-reason.php') . ';' . base64_encode('/covid-19/reference/edit-covid19-sample-rejection-reason.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Rejection Reasons"); ?></a>
-											</li>
-											<li class="allMenu covid19-sample-type">
-												<a href="/covid-19/reference/covid19-sample-type.php" data-inner-pages="<?= base64_encode('/covid-19/reference/add-covid19-sample-type.php') . ';' . base64_encode('/covid-19/reference/edit-covid19-sample-type.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Sample Type"); ?></a>
-											</li>
-											<li class="allMenu covid19-symptoms">
-												<a href="/covid-19/reference/covid19-symptoms.php" data-inner-pages="<?= base64_encode('/covid-19/reference/add-covid19-symptoms.php') . ';' . base64_encode('/covid-19/reference/edit-covid19-symptoms.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Symptom"); ?></a>
-											</li>
-											<li class="allMenu covid19-test-reasons">
-												<a href="/covid-19/reference/covid19-test-reasons.php" data-inner-pages="<?= base64_encode('/covid-19/reference/add-covid19-test-reasons.php') . ';' . base64_encode('/covid-19/reference/edit-covid19-test-reasons.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Test-Reasons"); ?></a>
-											</li>
-											<li class="allMenu covid19-results">
-												<a href="/covid-19/reference/covid19-results.php" data-inner-pages="<?= base64_encode('/covid-19/reference/add-covid19-results.php') . ';' . base64_encode('/covid-19/reference/edit-covid19-results.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Results"); ?></a>
-											</li>
-											<li class="allMenu covid19-qc-test-kits">
-												<a href="/covid-19/reference/covid19-qc-test-kits.php" data-inner-pages="<?= base64_encode('/covid-19/reference/add-covid19-qc-test-kit.php') . ';' . base64_encode('/covid-19/reference/edit-covid19-qc-test-kit.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("QC Test Kits"); ?></a>
-											</li>
-										</ul>
-									</li>
-								<?php }
-								if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true && isset($_SESSION['privileges']) && in_array("hepatitis-sample-type.php", $_SESSION['privileges'])) { ?>
-									<li class="treeview hepatitis-reference-manage">
-										<a href="#"><span class="fa-solid fa-square-h"></span>
-											<?php echo _("Hepatitis Config"); ?>
-											<span class="pull-right-container">
-												<span class="fa-solid fa-angle-left pull-right"></span>
-											</span>
-										</a>
-
-										<ul class="treeview-menu">
-											<li class="allMenu hepatitis-comorbidities">
-												<a href="/hepatitis/reference/hepatitis-comorbidities.php" data-inner-pages="<?= base64_encode('/hepatitis/reference/add-hepatitis-comorbidities.php') . ';' . base64_encode('/hepatitis/reference/edit-hepatitis-comorbidities.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Co-morbidities"); ?></a>
-											</li>
-											<li class="allMenu hepatitis-risk-factors">
-												<a href="/hepatitis/reference/hepatitis-risk-factors.php" data-inner-pages="<?= base64_encode('/hepatitis/reference/add-hepatitis-risk-factors.php') . ';' . base64_encode('/hepatitis/reference/edit-hepatitis-risk-factors.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Risk Factors"); ?></a>
-											</li>
-											<li class="allMenu hepatitis-sample-rejection-reasons">
-												<a href="/hepatitis/reference/hepatitis-sample-rejection-reasons.php" data-inner-pages="<?= base64_encode('/hepatitis/reference/add-hepatitis-sample-rejection-reasons.php') . ';' . base64_encode('/hepatitis/reference/edit-hepatitis-sample-rejection-reasons.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Rejection Reasons"); ?></a>
-											</li>
-											<li class="allMenu hepatitis-sample-type">
-												<a href="/hepatitis/reference/hepatitis-sample-type.php" data-inner-pages="<?= base64_encode('/hepatitis/reference/add-hepatitis-sample-type.php') . ';' . base64_encode('/hepatitis/reference/edit-hepatitis-sample-type.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Sample Type"); ?></a>
-											</li>
-											<li class="allMenu hepatitis-results">
-												<a href="/hepatitis/reference/hepatitis-results.php" data-inner-pages="<?= base64_encode('/hepatitis/reference/add-hepatitis-results.php') . ';' . base64_encode('/hepatitis/reference/edit-hepatitis-results.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Results"); ?></a>
-											</li>
-											<li class="allMenu hepatitis-test-reasons">
-												<a href="/hepatitis/reference/hepatitis-test-reasons.php" data-inner-pages="<?= base64_encode('/hepatitis/reference/add-hepatitis-test-reasons.php') . ';' . base64_encode('/hepatitis/reference/edit-hepatitis-test-reasons.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Test-Reasons"); ?></a>
-											</li>
-										</ul>
-									</li>
-								<?php }
-								if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true && isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges'])) { ?>
-									<li class="treeview tb-reference-manage">
-										<a href="#"><span class="fa-solid fa-heart-pulse"></span>
-											<?php echo _("TB Config"); ?>
-											<span class="pull-right-container">
-												<span class="fa-solid fa-angle-left pull-right"></span>
-											</span>
-										</a>
-
-										<ul class="treeview-menu">
-											<li class="allMenu tb-sample-rejection-reasons">
-												<a href="/tb/reference/tb-sample-rejection-reasons.php" data-inner-pages="<?= base64_encode('/tb/reference/add-tb-sample-rejection-reason.php') . ';' . base64_encode('/tb/reference/edit-tb-sample-rejection-reason.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Rejection Reasons"); ?></a>
-											</li>
-											<li class="allMenu tb-reference">
-												<a href="/tb/reference/tb-sample-type.php" data-inner-pages="<?= base64_encode('/tb/reference/add-tb-sample-type.php') . ';' . base64_encode('/tb/reference/edit-tb-sample-type.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Sample Type"); ?></a>
-											</li>
-											<li class="allMenu tb-test-reasons">
-												<a href="/tb/reference/tb-test-reasons.php" data-inner-pages="<?= base64_encode('/tb/reference/add-tb-test-reasons.php') . ';' . base64_encode('/tb/reference/edit-tb-test-reasons.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Test-Reasons"); ?></a>
-											</li>
-											<li class="allMenu tb-results">
-												<a href="/tb/reference/tb-results.php" data-inner-pages="<?= base64_encode('/tb/reference/add-tb-results.php') . ';' . base64_encode('/tb/reference/edit-tb-results.php'); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Results"); ?></a>
-											</li>
-										</ul>
-									</li>
-								<?php }
-								if (isset($_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser') && in_array("move-samples.php", $_SESSION['privileges'])) { ?>
-									<li class="treeview facility-config-menu">
-										<a href="/move-samples/move-samples.php"><span class="fa-solid fa-hospital"></span> <?php echo _("Move Samples"); ?></a>
-									</li>
-								<?php } ?>
-
-							</ul>
-						</li>
-					<?php }
-					if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true) {
-					?>
-						<li class="header"><?php echo _("LAB TESTS"); ?></li>
-						<?php if ($genericTestRequestMenuAccess) { ?>
-							<li class="treeview allMenu generic-test-request-menu">
-								<a href="#">
-									<span class="fa-solid fa-pen-to-square"></span>
-									<span><?php echo _("Request Management"); ?></span>
-									<span class="pull-right-container">
-										<span class="fa-solid fa-angle-left pull-right"></span>
-									</span>
-								</a>
-								<ul class="treeview-menu">
-									<?php
-									if (isset($_SESSION['privileges']) && in_array("view-requests.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu genericRequestMenu">
-											<a href="/generic-tests/requests/view-requests.php" data-inner-pages="<?= base64_encode('/generic-tests/requests/edit-request.php'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("View Test Requests"); ?></a>
-										</li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("add-request.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu addGenericRequestMenu">
-											<a href="/generic-tests/requests/add-request.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Add New Request"); ?></a>
-										</li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("add-samples-from-manifest.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] != 'remoteuser')) { ?>
-										<li class="allMenu addGenericSamplesFromManifestMenu">
-											<a href="/generic-tests/requests/add-samples-from-manifest.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Add Samples from Manifest"); ?></a>
-										</li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("/batch/batches.php?type=generic-tests", $_SESSION['privileges'])) { ?>
-										<li class="allMenu batchGenericCodeMenu">
-											<a href="/batch/batches.php?type=generic-tests" data-inner-pages="<?= base64_encode('/batch/add-batch.php?type=generic-tests') . ';' . base64_encode('/batch/edit-batch.php?type=generic-tests') . ';' . base64_encode('/batch/add-batch-position.php?type=generic-tests') . ';' . base64_encode('/batch/edit-batch-position.php?type=generic-tests'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Batch"); ?></a>
-										</li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser')) { ?>
-										<li class="allMenu specimenGenericReferralManifestListMenu">
-											<a href="/specimen-referral-manifest/specimenReferralManifestList.php?t=<?php echo base64_encode('generic-tests'); ?>" data-inner-pages="<?= base64_encode('/specimen-referral-manifest/addSpecimenReferralManifest.php?t=' . base64_encode('generic-tests')) . ';' . base64_encode('/specimen-referral-manifest/editSpecimenReferralManifest.php?t=' . base64_encode('generic-tests')) . ';' . base64_encode('/specimen-referral-manifest/move-manifest.php?t=' . base64_encode('generic-tests')); ?>"><span class="fa-solid fa-caret-right"></span><?php echo _("Specimen Manifest"); ?></a>
-										</li>
-									<?php }
-									?>
-								</ul>
-							</li>
-						<?php }
-						if ($genericTestResultMenuAccess) { ?>
-							<li class="treeview allMenu generic-test-results-menu">
-								<a href="#">
-									<span class="fa-solid fa-list-check"></span>
-									<span><?php echo _("Test Result Management"); ?></span>
-									<span class="pull-right-container">
-										<span class="fa-solid fa-angle-left pull-right"></span>
-									</span>
-								</a>
-								<ul class="treeview-menu">
-									<?php if (isset($_SESSION['privileges']) && in_array("addImportResult.php", $_SESSION['privileges'])) { ?>
-										<!-- <li class="allMenu importGenericResultMenu"><a href="/import-result/addImportResult.php?t=<?php echo base64_encode('generic-tests'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Import Result From File"); ?></a></li> -->
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("generic-test-results.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu genericTestResultMenu"><a href="/generic-tests/results/generic-test-results.php" data-inner-pages="<?= base64_encode('/generic-tests/results/update-generic-test-result.php'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Enter Result Manually"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("generic-test-results.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu genericFailedResultMenu"><a href="/generic-tests/results/generic-failed-results.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Failed/Hold Samples"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("generic-result-approval.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu genericResultApprovalMenu"><a href="/generic-tests/results/generic-result-approval.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Results Status"); ?></a></li>
-									<?php } ?>
-								</ul>
-							</li>
-						<?php }
-						if ($genericManagementMenuAccess === true) { ?>
-							<li class="treeview allMenu generic-program-menu">
-								<a href="#">
-									<span class="fa-solid fa-book"></span>
-									<span><?php echo _("Management"); ?></span>
-									<span class="pull-right-container">
-										<span class="fa-solid fa-angle-left pull-right"></span>
-									</span>
-								</a>
-								<ul class="treeview-menu">
-									<?php if (isset($_SESSION['privileges']) && in_array("generic-sample-status.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu genericStatusReportMenu"><a href="/generic-tests/program-management/generic-sample-status.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Sample Status Report"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("generic-export-data.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu genericExportMenu"><a href="/generic-tests/program-management/generic-export-data.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Export Results"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("generic-print-result.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu genericPrintResultMenu"><a href="/generic-tests/results/generic-print-result.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Print Result"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("sample-rejection-report.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu genericSampleRejectionReport"><a href="/generic-tests/program-management/sample-rejection-report.php"><span class="fa-solid fa-caret-right"></span> Sample Rejection <?php echo _("Report"); ?></a></li>
-									<?php } ?>
-								</ul>
-							</li>
-						<?php }
-					}
-					if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true && array_intersect($_SESSION['module'], array('vl'))) { ?>
-						<li class="header"><?php echo _("VIRAL LOAD"); ?></li>
-						<?php if ($vlRequestMenuAccess === true) { ?>
-							<li class="treeview request">
-								<a href="#">
-									<span class="fa-solid fa-pen-to-square"></span>
-									<span><?php echo _("Request Management"); ?></span>
-									<span class="pull-right-container">
-										<span class="fa-solid fa-angle-left pull-right"></span>
-									</span>
-								</a>
-								<ul class="treeview-menu">
-									<?php
-									if (isset($_SESSION['privileges']) && in_array("vlRequest.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu vlRequestMenu">
-											<a href="/vl/requests/vlRequest.php" data-inner-pages="<?= base64_encode('/vl/requests/editVlRequest.php'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("View Test Requests"); ?></a>
-										</li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("addVlRequest.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu addVlRequestMenu">
-											<a href="/vl/requests/addVlRequest.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Add New Request"); ?></a>
-										</li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("addSamplesFromManifest.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] != 'remoteuser')) { ?>
-										<li class="allMenu addSamplesFromManifestMenu">
-											<a href="/vl/requests/addSamplesFromManifest.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Add Samples from Manifest"); ?></a>
-										</li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("/batch/batches.php?type=vl", $_SESSION['privileges'])) { ?>
-										<li class="allMenu batchCodeMenu">
-											<a href="/batch/batches.php?type=vl" data-inner-pages="<?= base64_encode('/batch/add-batch.php?type=vl') . ';' . base64_encode('/batch/edit-batch.php?type=vl') . ';' . base64_encode('/batch/add-batch-position.php?type=vl') . ';' . base64_encode('/batch/edit-batch-position.php?type=vl'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Batch"); ?></a>
-										</li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser')) { ?>
-										<li class="allMenu specimenReferralManifestListVLMenu">
-											<a href="/specimen-referral-manifest/specimenReferralManifestList.php?t=<?php echo base64_encode('vl'); ?>" data-inner-pages="<?= base64_encode('/specimen-referral-manifest/addSpecimenReferralManifest.php?t=' . base64_encode('vl')) . ';' . base64_encode('/specimen-referral-manifest/editSpecimenReferralManifest.php?t=' . base64_encode('vl')) . ';' . base64_encode('/specimen-referral-manifest/move-manifest.php?t=' . base64_encode('vl')); ?>"><span class="fa-solid fa-caret-right"></span> VL <?php echo _("Specimen Manifest"); ?></a>
-										</li>
-									<?php }
-									?>
-								</ul>
-							</li>
-						<?php }
-						if ($vlTestResultMenuAccess === true) { ?>
-							<li class="treeview test">
-								<a href="#">
-									<span class="fa-solid fa-list-check"></span>
-									<span><?php echo _("Test Result Management"); ?></span>
-									<span class="pull-right-container">
-										<span class="fa-solid fa-angle-left pull-right"></span>
-									</span>
-								</a>
-								<ul class="treeview-menu">
-									<?php if (isset($_SESSION['privileges']) && in_array("addImportResult.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu importResultMenu"><a href="/import-result/addImportResult.php?t=<?php echo base64_encode('vl'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Import Result From File"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("vlTestResult.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu vlTestResultMenu"><a href="/vl/results/vlTestResult.php" data-inner-pages="<?= base64_encode('/vl/results/updateVlTestResult.php'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Enter Result Manually"); ?></a></li>
-										<li class="allMenu vlFailedResultMenu"><a href="/vl/results/vl-failed-results.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Failed/Hold Samples"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("vlResultApproval.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu vlResultApprovalMenu"><a href="/vl/results/vlResultApproval.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Results Status"); ?></a></li>
-									<?php }
-									//if (isset($_SESSION['privileges']) && in_array("vlResultMail.php", $_SESSION['privileges'])) {
-									?>
-									<!-- <li class="allMenu vlResultMailMenu"><a href="/mail/vlResultMail.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("E-mail Test Result"); ?></a></li> -->
-									<?php
-									// }
-									?>
-								</ul>
-							</li>
-						<?php }
-						if ($vlManagementMenuAccess === true) { ?>
-							<li class="treeview program">
-								<a href="#">
-									<span class="fa-solid fa-book"></span>
-									<span><?php echo _("Management"); ?></span>
-									<span class="pull-right-container">
-										<span class="fa-solid fa-angle-left pull-right"></span>
-									</span>
-								</a>
-								<ul class="treeview-menu">
-									<?php if (isset($_SESSION['privileges']) && in_array("vl-sample-status.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu missingResultMenu"><a href="/vl/program-management/vl-sample-status.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Sample Status Report"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("vlControlReport.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu vlControlReport"><a href="/vl/program-management/vlControlReport.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Control Report"); ?></a></li>
-									<?php } ?>
-									<!--<li><a href="#"><span class="fa-solid fa-caret-right"></span> TOT Report</a></li>
-                                <li><a href="#"><span class="fa-solid fa-caret-right"></span> VL Suppression Report</a></li>-->
-									<?php if (isset($_SESSION['privileges']) && in_array("vl-export-data.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu vlResultMenu"><a href="/vl/program-management/vl-export-data.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Export Results"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("vlPrintResult.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu vlPrintResultMenu"><a href="/vl/results/vlPrintResult.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Print Result"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("highViralLoad.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu vlHighMenu"><a href="/vl/program-management/highViralLoad.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Clinic Reports"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("patientList.php", $_SESSION['privileges'])) { ?>
-										<!--<li class="allMenu patientList"><a href="patientList.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Export Patient List"); ?></a></li>-->
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("vlWeeklyReport.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu vlWeeklyReport"><a href="/vl/program-management/vlWeeklyReport.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("VL Lab Weekly Report"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("sampleRejectionReport.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu sampleRejectionReport"><a href="/vl/program-management/sampleRejectionReport.php"><span class="fa-solid fa-caret-right"></span> Sample Rejection <?php echo _("Report"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("vlMonitoringReport.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu vlMonitoringReport"><a href="/vl/program-management/vlMonitoringReport.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Sample Monitoring Report"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] == 'yes' && in_array("vlMonthlyThresholdReport.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu vlMonthlyThresholdReport"><a href="/vl/program-management/vlTestingTargetReport.php"><span class="fa-solid fa-caret-right"></span><?php echo _("VL Testing Target Report"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] == 'yes' && in_array("vlSuppressedTargetReport.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu vlSuppressedMonthlyThresholdReport"><a href="/vl/program-management/vlSuppressedTargetReport.php"><span class="fa-solid fa-caret-right"></span><?php echo _("VL Suppression Target Report"); ?></a></li>
-									<?php } ?>
-								</ul>
-							</li>
-						<?php
-						}
-					}
-
-					if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true && array_intersect($_SESSION['module'], array('eid'))) {  ?>
-						<li class="header"><?php echo _("EARLY INFANT DIAGNOSIS (EID)"); ?></li>
-						<?php if ($eidTestRequestMenuAccess === true) { ?>
-							<li class="treeview eidRequest">
-								<a href="#">
-									<span class="fa-solid fa-pen-to-square"></span>
-									<span><?php echo _("Request Management"); ?></span>
-									<span class="pull-right-container">
-										<span class="fa-solid fa-angle-left pull-right"></span>
-									</span>
-								</a>
-								<ul class="treeview-menu">
-									<?php if (isset($_SESSION['privileges']) && in_array("eid-requests.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu eidRequestMenu">
-											<a href="/eid/requests/eid-requests.php" data-inner-pages="<?= base64_encode('/eid/requests/eid-edit-request.php'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("View Test Requests"); ?></a>
-										</li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("eid-add-request.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu addEidRequestMenu">
-											<a href="/eid/requests/eid-add-request.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Add New Request"); ?></a>
-										</li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("addSamplesFromManifest.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] != 'remoteuser')) { ?>
-										<li class="allMenu addSamplesFromManifestEidMenu">
-											<a href="/eid/requests/addSamplesFromManifest.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Add Samples from Manifest"); ?></a>
-										</li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("/batch/batches.php?type=eid", $_SESSION['privileges'])) { ?>
-										<li class="allMenu eidBatchCodeMenu">
-											<a href="/batch/batches.php?type=eid" data-inner-pages="<?= base64_encode('/batch/add-batch.php?type=eid') . ';' . base64_encode('/batch/edit-batch.php?type=eid') . ';' . base64_encode('/batch/add-batch-position.php?type=eid') . ';' . base64_encode('/batch/edit-batch-position.php?type=eid'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Batch"); ?></a>
-										</li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser')) { ?>
-										<li class="allMenu specimenReferralManifestListEIDMenu">
-											<a href="/specimen-referral-manifest/specimenReferralManifestList.php?t=<?php echo base64_encode('eid'); ?>" data-inner-pages="<?= base64_encode('/specimen-referral-manifest/addSpecimenReferralManifest.php?t=' . base64_encode('eid')) . ';' . base64_encode('/specimen-referral-manifest/editSpecimenReferralManifest.php?t=' . base64_encode('eid')) . ';' . base64_encode('/specimen-referral-manifest/move-manifest.php?t=' . base64_encode('eid')); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("EID Specimen Manifest"); ?></a>
-										</li>
-									<?php } ?>
-								</ul>
-							</li>
-						<?php }
-						if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true && $eidTestResultMenuAccess === true) { ?>
-							<li class="treeview eidResults">
-								<a href="#">
-									<span class="fa-solid fa-list-check"></span>
-									<span><?php echo _("Test Result Management"); ?></span>
-									<span class="pull-right-container">
-										<span class="fa-solid fa-angle-left pull-right"></span>
-									</span>
-								</a>
-								<ul class="treeview-menu">
-									<?php if (isset($_SESSION['privileges']) && in_array("addImportResult.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu eidImportResultMenu"><a href="/import-result/addImportResult.php?t=<?php echo base64_encode('eid'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Import Result From File"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("eid-manual-results.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu eidResultsMenu"><a href="/eid/results/eid-manual-results.php" data-inner-pages="<?= base64_encode('/eid/results/eid-update-result.php'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Enter Result Manually"); ?></a></li>
-										<li class="allMenu eidFailedResultsMenu"><a href="/eid/results/eid-failed-results.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Failed/Hold Samples"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("eid-result-status.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu eidResultStatus"><a href="/eid/results/eid-result-status.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Results Status"); ?></a></li>
-									<?php } ?>
-								</ul>
-							</li>
-						<?php }
-						if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true && $eidManagementMenuAccess === true) { ?>
-							<li class="treeview eidProgramMenu">
-								<a href="#">
-									<span class="fa-solid fa-book"></span>
-									<span><?php echo _("Management"); ?></span>
-									<span class="pull-right-container">
-										<span class="fa-solid fa-angle-left pull-right"></span>
-									</span>
-								</a>
-								<ul class="treeview-menu">
-									<?php if (isset($_SESSION['privileges']) && in_array("eid-sample-status.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu eidSampleStatus"><a href="/eid/management/eid-sample-status.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Sample Status Report"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("eid-export-data.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu eidExportResult"><a href="/eid/management/eid-export-data.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Export Results"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("eid-print-results.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu eidPrintResults"><a href="/eid/results/eid-print-results.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Print Result"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("eid-sample-rejection-report.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu eidSampleRejectionReport"><a href="/eid/management/eid-sample-rejection-report.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Sample Rejection Report"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("eid-clinic-report.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu eidClinicReport"><a href="/eid/management/eid-clinic-report.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Clinic Report"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("eidMonthlyThresholdReport.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu eidMonthlyThresholdReport"><a href="/eid/management/eidTestingTargetReport.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("EID Testing Target Report"); ?></a></li>
-									<?php } ?>
-								</ul>
-							</li>
-					<?php }
-					} ?>
-
-					<!-- COVID-19 START -->
-					<?php if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true && array_intersect($_SESSION['module'], array('covid19'))) {  ?>
-						<li class="header"><?php echo _("COVID-19"); ?></li>
-						<?php if ($covid19TestRequestMenuAccess === true) { ?>
-							<li class="treeview covid19Request">
-								<a href="#">
-									<span class="fa-solid fa-pen-to-square"></span>
-									<span><?php echo _("Request Management"); ?></span>
-									<span class="pull-right-container">
-										<span class="fa-solid fa-angle-left pull-right"></span>
-									</span>
-								</a>
-								<ul class="treeview-menu">
-									<?php if (isset($_SESSION['privileges']) && in_array("covid-19-requests.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu covid19RequestMenu">
-											<a href="/covid-19/requests/covid-19-requests.php" data-inner-pages="<?= base64_encode('/covid-19/requests/covid-19-edit-request.php') . ';' . base64_encode('/covid-19/requests/covid-19-bulk-import-request.php') . ';' . base64_encode('/covid-19/requests/covid-19-quick-add.php'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("View Test Requests"); ?></a>
-										</li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("covid-19-add-request.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu addCovid19RequestMenu">
-											<a href="/covid-19/requests/covid-19-add-request.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Add New Request"); ?></a>
-										</li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("addSamplesFromManifest.php", $_SESSION['privileges'])  && ($_SESSION['instanceType'] != 'remoteuser')) { ?>
-										<li class="allMenu addSamplesFromManifestCovid19Menu">
-											<a href="/covid-19/requests/addSamplesFromManifest.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Add Samples from Manifest"); ?></a>
-										</li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("/batch/batches.php?type=covid19", $_SESSION['privileges'])) { ?>
-										<li class="allMenu covid19BatchCodeMenu">
-											<a href="/batch/batches.php?type=covid19" data-inner-pages="<?= base64_encode('/batch/add-batch.php?type=covid19') . ';' . base64_encode('/batch/edit-batch.php?type=covid19') . ';' . base64_encode('/batch/add-batch-position.php?type=covid19') . ';' . base64_encode('/batch/edit-batch-position.php?	type=covid19'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Batch"); ?></a>
-										</li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser')) { ?>
-										<li class="allMenu specimenReferralManifestListC19Menu">
-											<a href="/specimen-referral-manifest/specimenReferralManifestList.php?t=<?php echo base64_encode('covid19'); ?>" data-inner-pages="<?= base64_encode('/specimen-referral-manifest/addSpecimenReferralManifest.php?t=' . base64_encode('covid19')) . ';' . base64_encode('/specimen-referral-manifest/editSpecimenReferralManifest.php?t=' . base64_encode('covid19')) . ';' . base64_encode('/specimen-referral-manifest/move-manifest.php?t=' . base64_encode('covid19')); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Covid-19 Specimen Manifest"); ?></a>
-										</li>
-									<?php } ?>
-								</ul>
-							</li>
-						<?php }
-						if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true && $covid19TestResultMenuAccess === true) { ?>
-							<li class="treeview covid19Results">
-								<a href="#">
-									<span class="fa-solid fa-list-check"></span>
-									<span><?php echo _("Test Result Management"); ?></span>
-									<span class="pull-right-container">
-										<span class="fa-solid fa-angle-left pull-right"></span>
-									</span>
-								</a>
-								<ul class="treeview-menu">
-									<?php if (isset($_SESSION['privileges']) && in_array("addImportResult.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu covid19ImportResultMenu"><a href="/import-result/addImportResult.php?t=<?php echo base64_encode('covid19'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Import Result From File"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("covid-19-manual-results.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu covid19ResultsMenu"><a href="/covid-19/results/covid-19-manual-results.php" data-inner-pages="<?= base64_encode('/covid-19/batch/covid-19-update-result.php'); ?>"><span class=" fa-solid fa-caret-right"></span> <?php echo _("Enter Result Manually"); ?></a></li>
-										<li class="allMenu covid19FailedResultsMenu"><a href="/covid-19/results/covid-19-failed-results.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Failed/Hold Samples"); ?></a></li>
-									<?php }
-									if ($arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes' && isset($_SESSION['privileges']) && in_array("covid-19-confirmation-manifest.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu covid19ResultsConfirmationMenu"><a href="/covid-19/results/covid-19-confirmation-manifest.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Confirmation Manifest"); ?></a></li>
-									<?php }
-									if ($arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes' && isset($_SESSION['privileges']) && in_array("can-record-confirmatory-tests.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] != 'remoteuser')) { ?>
-										<li class="allMenu canRecordConfirmatoryTestsCovid19Menu"><a href="/covid-19/results/can-record-confirmatory-tests.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Record Confirmatory Tests"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("covid-19-result-status.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu covid19ResultStatus"><a href="/covid-19/results/covid-19-result-status.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Results Status"); ?></a></li>
-									<?php }
-									//if (isset($_SESSION['privileges']) && in_array("mail-covid-19-results.php", $_SESSION['privileges'])) {
-									?>
-									<!-- <li class="allMenu covid19ResultMailMenu"><a href="/covid-19/mail/mail-covid-19-results.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("E-mail Test Result"); ?></a></li> -->
-									<?php
-									//}
-									if (isset($_SESSION['privileges']) && in_array("covid-19-qc-data.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu covid19QcDataMenu"><a href="/covid-19/results/covid-19-qc-data.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Covid-19 QC Data"); ?></a></li>
-									<?php }  ?>
-								</ul>
-							</li>
-						<?php }
-						if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true && $covid19ManagementMenuAccess === true) { ?>
-							<li class="treeview covid19ProgramMenu">
-								<a href="#">
-									<span class="fa-solid fa-book"></span>
-									<span><?php echo _("Management"); ?></span>
-									<span class="pull-right-container">
-										<span class="fa-solid fa-angle-left pull-right"></span>
-									</span>
-								</a>
-								<ul class="treeview-menu">
-									<?php if (isset($_SESSION['privileges']) && in_array("covid-19-sample-status.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu covid19SampleStatus"><a href="/covid-19/management/covid-19-sample-status.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Sample Status Report"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("covid-19-export-data.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu covid19ExportResult"><a href="/covid-19/management/covid-19-export-data.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Export Results"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("covid-19-print-results.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu covid19PrintResults"><a href="/covid-19/results/covid-19-print-results.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Print Result"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("covid-19-sample-rejection-report.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu covid19SampleRejectionReport"><a href="/covid-19/management/covid-19-sample-rejection-report.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Sample Rejection Report"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("covid-19-clinic-report.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu covid19ClinicReportMenu"><a href="/covid-19/management/covid-19-clinic-report.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Clinic Report"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("covid19MonthlyThresholdReport.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu covid19MonthlyThresholdReport"><a href="/covid-19/management/covid19TestingTargetReport.php"><span class="fa-solid fa-caret-right"></span><?php echo _("COVID-19 Testing Target Report"); ?></a></li>
-									<?php } ?>
-								</ul>
-							</li>
-					<?php }
-					} ?>
-					<!-- COVID-19 END -->
-
-					<!-- HEPATITIS START -->
-					<?php if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true && array_intersect($_SESSION['module'], array('hepatitis'))) {  ?>
-						<li class="header"><?php echo _("Hepatitis"); ?></li>
-						<?php if ($hepatitisTestRequestMenuAccess === true) { ?>
-							<li class="treeview hepatitisRequest">
-								<a href="#">
-									<span class="fa-solid fa-pen-to-square"></span>
-									<span><?php echo _("Request Management"); ?></span>
-									<span class="pull-right-container">
-										<span class="fa-solid fa-angle-left pull-right"></span>
-									</span>
-								</a>
-								<ul class="treeview-menu">
-									<?php if (isset($_SESSION['privileges']) && in_array("hepatitis-requests.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu hepatitisRequestMenu">
-											<a href="/hepatitis/requests/hepatitis-requests.php" data-inner-pages="<?= base64_encode('/hepatitis/requests/hepatitis-edit-request.php'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("View Test Requests"); ?></a>
-										</li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("hepatitis-add-request.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu addHepatitisRequestMenu">
-											<a href="/hepatitis/requests/hepatitis-add-request.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Add New Request"); ?></a>
-										</li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("add-samples-from-manifest.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] != 'remoteuser')) { ?>
-										<li class="allMenu addSamplesFromManifestHepatitisMenu">
-											<a href="/hepatitis/requests/add-samples-from-manifest.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Add Samples from Manifest"); ?></a>
-										</li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("/batch/batches.php?type=hepatitis", $_SESSION['privileges'])) { ?>
-										<li class="allMenu hepatitisBatchCodeMenu">
-											<a href="/batch/batches.php?type=hepatitis" data-inner-pages="<?= base64_encode('/batch/add-batch.php?type=hepatitis') . ';' . base64_encode('/batch/edit-batch.php?type=hepatitis') . ';' . base64_encode('/batch/add-batch-position.php?type=hepatitis') . ';' . base64_encode('/batch/edit-batch-position.php?type=hepatitis'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Batch"); ?></a>
-										</li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser')) { ?>
-										<li class="allMenu specimenReferralManifestListHepMenu">
-											<a href="/specimen-referral-manifest/specimenReferralManifestList.php?t=<?php echo base64_encode('hepatitis'); ?>" data-inner-pages="<?= base64_encode('/specimen-referral-manifest/addSpecimenReferralManifest.php?t=' . base64_encode('hepatitis')) . ';' . base64_encode('/specimen-referral-manifest/editSpecimenReferralManifest.php?t=' . base64_encode('hepatitis')) . ';' . base64_encode('/specimen-referral-manifest/move-manifest.php?t=' . base64_encode('hepatitis')); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Hepatitis Specimen Manifest"); ?></a>
-										</li>
-									<?php } ?>
-								</ul>
-							</li>
-						<?php }
-						if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true && $hepatitisTestResultMenuAccess === true) { ?>
-							<li class="treeview hepatitisResults">
-								<a href="#">
-									<span class="fa-solid fa-list-check"></span>
-									<span><?php echo _("Test Result Management"); ?></span>
-									<span class="pull-right-container">
-										<span class="fa-solid fa-angle-left pull-right"></span>
-									</span>
-								</a>
-								<ul class="treeview-menu">
-									<?php if (isset($_SESSION['privileges']) && in_array("addImportResult.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu hepatitisImportResultMenu"><a href="/import-result/addImportResult.php?t=<?php echo base64_encode('hepatitis'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Import Result From File"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("hepatitis-manual-results.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu hepatitisResultsMenu"><a href="/hepatitis/results/hepatitis-manual-results.php" data-inner-pages="<?= base64_encode('/hepatitis/results/hepatitis-update-result.php'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Enter Result Manually"); ?></a></li>
-										<li class="allMenu hepatitisFailedResultsMenu"><a href="/hepatitis/results/hepatitis-failed-results.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Failed/Hold Samples"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("hepatitis-result-status.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu hepatitisResultStatus"><a href="/hepatitis/results/hepatitis-result-status.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Results Status"); ?></a></li>
-									<?php }
-									//    if (isset($_SESSION['privileges']) && in_array("mail-hepatitis-results.php", $_SESSION['privileges'])) {
-									?>
-									<!-- <li class="allMenu hepatitisResultMailMenu"><a href="/hepatitis/mail/mail-hepatitis-results.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("E-mail Test Result"); ?></a></li> -->
-									<?php
-									// }
-									?>
-								</ul>
-							</li>
-						<?php }
-						if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true && $hepatitisManagementMenuAccess === true) { ?>
-							<li class="treeview hepatitisProgramMenu">
-								<a href="#">
-									<span class="fa-solid fa-book"></span>
-									<span><?php echo _("Management"); ?></span>
-									<span class="pull-right-container">
-										<span class="fa-solid fa-angle-left pull-right"></span>
-									</span>
-								</a>
-								<ul class="treeview-menu">
-									<?php if (isset($_SESSION['privileges']) && in_array("hepatitis-sample-status.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu hepatitisSampleStatus"><a href="/hepatitis/management/hepatitis-sample-status.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Sample Status Report"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("hepatitis-export-data.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu hepatitisExportResult"><a href="/hepatitis/management/hepatitis-export-data.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Export Results"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("hepatitis-print-results.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu hepatitisPrintResults"><a href="/hepatitis/results/hepatitis-print-results.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Print Result"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("hepatitis-sample-rejection-report.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu hepatitisSampleRejectionReport"><a href="/hepatitis/management/hepatitis-sample-rejection-report.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Sample Rejection Report"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("hepatitis-clinic-report.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu hepatitisClinicReportMenu"><a href="/hepatitis/management/hepatitis-clinic-report.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Clinic Report"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("hepatitis-testing-target-report.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu hepatitisMonthlyThresholdReport"><a href="/hepatitis/management/hepatitis-testing-target-report.php"><span class="fa-solid fa-caret-right"></span><?php echo _("Hepatitis Testing Target Report"); ?></a></li>
-									<?php } ?>
-								</ul>
-							</li>
-					<?php }
-					} ?>
-					<!-- HEPATITIS END -->
-
-					<!-- TB START -->
-					<?php if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true && array_intersect($_SESSION['module'], array('tb'))) {  ?>
-						<li class="header"><?php echo _("TB"); ?></li>
-						<?php if ($tbTestRequestMenuAccess === true) { ?>
-							<li class="treeview tbRequest">
-								<a href="#">
-									<span class="fa-solid fa-pen-to-square"></span>
-									<span><?php echo _("Request Management"); ?></span>
-									<span class="pull-right-container">
-										<span class="fa-solid fa-angle-left pull-right"></span>
-									</span>
-								</a>
-								<ul class="treeview-menu">
-									<?php if (isset($_SESSION['privileges']) && in_array("tb-requests.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu tbRequestMenu">
-											<a href="/tb/requests/tb-requests.php" data-inner-pages="<?= base64_encode('/tb/requests/tb-edit-request.php'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("View Test Requests"); ?></a>
-										</li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("tb-add-request.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu addTbRequestMenu">
-											<a href="/tb/requests/tb-add-request.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Add New Request"); ?></a>
-										</li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("addSamplesFromManifest.php", $_SESSION['privileges'])  && ($_SESSION['instanceType'] != 'remoteuser')) { ?>
-										<li class="allMenu addSamplesFromManifestTbMenu">
-											<a href="/tb/requests/addSamplesFromManifest.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Add Samples from Manifest"); ?></a>
-										</li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("/batch/batches.php?type=tb", $_SESSION['privileges'])) { ?>
-										<li class="allMenu tbBatchCodeMenu">
-											<a href="/batch/batches.php?type=tb" data-inner-pages="<?= base64_encode('/batch/add-batch.php?type=tb') . ';' . base64_encode('/batch/edit-batch.php?type=tb') . ';' . base64_encode('/batch/add-batch-position.php?type=tb') . ';' . base64_encode('/batch/edit-batch-position.php?type=tb'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Batch"); ?></a>
-										</li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("specimenReferralManifestList.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser')) { ?>
-										<li class="allMenu specimenReferralManifestListC19Menu">
-											<a href="/specimen-referral-manifest/specimenReferralManifestList.php?t=<?php echo base64_encode('tb'); ?>" data-inner-pages="<?= base64_encode('/specimen-referral-manifest/addSpecimenReferralManifest.php?t=' . base64_encode('tb')) . ';' . base64_encode('/specimen-referral-manifest/editSpecimenReferralManifest.php?t=' . base64_encode('tb')) . ';' . base64_encode('/specimen-referral-manifest/move-manifest.php?t=' . base64_encode('tb')); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("TB Specimen Manifest"); ?></a>
-										</li>
-									<?php } ?>
-								</ul>
-							</li>
-						<?php }
-						if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true && $tbTestResultMenuAccess === true) { ?>
-							<li class="treeview tbResults">
-								<a href="#">
-									<span class="fa-solid fa-list-check"></span>
-									<span><?php echo _("Test Result Management"); ?></span>
-									<span class="pull-right-container">
-										<span class="fa-solid fa-angle-left pull-right"></span>
-									</span>
-								</a>
-								<ul class="treeview-menu">
-									<?php if (isset($_SESSION['privileges']) && in_array("addImportResult.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu tbImportResultMenu"><a href="/import-result/addImportResult.php?t=<?php echo base64_encode('tb'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Import Result From File"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("tb-manual-results.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu tbResultsMenu"><a href="/tb/results/tb-manual-results.php" data-inner-pages="<?= base64_encode('/tb/results/tb-update-result.php'); ?>"><span class="fa-solid fa-caret-right"></span> <?php echo _("Enter Result Manually"); ?></a></li>
-										<li class="allMenu tbFailedResultsMenu"><a href="/tb/results/tb-failed-results.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Failed/Hold Samples"); ?></a></li>
-									<?php }
-									if (isset($_SESSION['privileges']) && in_array("tb-result-status.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu tbResultStatus"><a href="/tb/results/tb-result-status.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Manage Results Status"); ?></a></li>
-									<?php }
-									//if (isset($_SESSION['privileges']) && in_array("mail-tb-results.php", $_SESSION['privileges'])) {
-									?>
-									<!-- <li class="allMenu tbResultMailMenu"><a href="/tb/mail/mail-tb-results.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("E-mail Test Result"); ?></a></li> -->
-									<?php
-									// }
-									?>
-								</ul>
-							</li>
-						<?php }
-						if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true && $tbManagementMenuAccess === true) { ?>
-							<li class="treeview tbProgramMenu">
-								<a href="#">
-									<span class="fa-solid fa-book"></span>
-									<span><?php echo _("Management"); ?></span>
-									<span class="pull-right-container">
-										<span class="fa-solid fa-angle-left pull-right"></span>
-									</span>
-								</a>
-								<ul class="treeview-menu">
-									<?php if (isset($_SESSION['privileges']) && in_array("tb-sample-status.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu tbSampleStatus"><a href="/tb/management/tb-sample-status.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Sample Status Report"); ?></a></li>
-									<?php } ?>
-									<?php if (isset($_SESSION['privileges']) && in_array("tb-print-results.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu tbPrintResults"><a href="/tb/results/tb-print-results.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Print Result"); ?></a></li>
-									<?php } ?>
-									<?php if (isset($_SESSION['privileges']) && in_array("tb-export-data.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu tbExportResult"><a href="/tb/management/tb-export-data.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Export Results"); ?></a></li>
-									<?php } ?>
-									<?php if (isset($_SESSION['privileges']) && in_array("tb-sample-rejection-report.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu tbSampleRejectionReport"><a href="/tb/management/tb-sample-rejection-report.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Sample Rejection Report"); ?></a></li>
-									<?php } ?>
-									<?php if (isset($_SESSION['privileges']) && in_array("tb-clinic-report.php", $_SESSION['privileges'])) { ?>
-										<li class="allMenu tbClinicReport"><a href="/tb/management/tb-clinic-report.php"><span class="fa-solid fa-caret-right"></span> <?php echo _("Clinic Report"); ?></a></li>
-									<?php } ?>
-								</ul>
-							</li>
-					<?php }
-					} ?>
-					<!-- TB END -->
+					</li>
+					
+				<?php }   ?>
 				</ul>
+				
 			</section>
 			<!-- /.sidebar -->
 		</aside>
