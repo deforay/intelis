@@ -37,10 +37,18 @@ class AppMenuService
                 $menu['access'] = $this->usersService->isAllowed($menu['link']);
             }
 
-            $menu['children'] = $menu['has_children'] == 'yes' ? $this->getAllActiveMenus($menu['id']) : [];
-            $response[$key] = $menu['access'] ? $menu : null;
+            if ($menu['has_children'] == 'yes') {
+                $menu['children'] = $this->getAllActiveMenus($menu['id']);
+                if (empty($menu['children'])) {
+                    $menu['access'] = false;
+                }
+            }
+
+            if ($menu['access']) {
+                $response[$key] = $menu;
+            }
         }
 
-        return array_filter($response);
+        return $response;
     }
 }
