@@ -110,7 +110,6 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 						alert("<?= _("Unable to do STS Sync. Please contact technical team for assistance."); ?>");
 					})
 					.always(function() {
-						//alert( "complete" );
 						$.unblockUI();
 						syncResults();
 					});
@@ -233,8 +232,8 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 				setTimeout(getLastSyncDateTime, 15 * 60 * 1000);
 			})();
 
-			// Every 5 mins check connection if this is a local installation of VLSM and there is a remote server configured
-			(function checkNetworkConnection() {
+			// Every 5 mins check if STS is reachable
+			(function checkSTSConnection() {
 				$.ajax({
 					url: '<?= SYSTEM_CONFIG['remoteURL'] ?? null; ?>' + '/api/version.php',
 					cache: false,
@@ -247,18 +246,25 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 						$('.is-remote-server-reachable').css('color', 'red');
 					}
 				});
-				setTimeout(checkNetworkConnection, 15 * 60 * 1000);
+				setTimeout(checkSTSConnection, 15 * 60 * 1000);
 			})();
 		}
 
-		<?php if (isset($_SESSION['alertMsg']) && trim($_SESSION['alertMsg']) != "") { ?> alert("<?php echo $_SESSION['alertMsg']; ?>");
 		<?php
-			$_SESSION['alertMsg'] = '';
+		$alertMsg = $_SESSION['alertMsg'] ?? '';
+		if ($alertMsg !== '') {
+		?>
+			alert("<?php echo $alertMsg; ?>");
+		<?php
 			unset($_SESSION['alertMsg']);
 		}
-		if (isset($_SESSION['logged']) && $_SESSION['logged']) { ?> setCrossLogin();
-		<?php }
+		unset($_SESSION['alertMsg']);
 
+		$isLogged = $_SESSION['logged'] ?? '';
+		if ($isLogged !== '') {
+		?>
+			setCrossLogin();
+		<?php }
 		// if instance facility name is not set, let us show the modal
 
 		if (empty($_SESSION['instanceFacilityName'])) {

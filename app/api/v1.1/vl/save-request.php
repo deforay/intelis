@@ -12,7 +12,6 @@ use App\Registries\ContainerRegistry;
 use App\Utilities\MiscUtility;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 use JsonMachine\Exception\PathNotFoundException;
-use Whoops\Util\Misc;
 
 ini_set('memory_limit', -1);
 

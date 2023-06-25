@@ -560,11 +560,19 @@ class CommonService
     public function getLastSyncDateTime()
     {
         if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser') {
-            $dateTime = $this->db->rawQueryOne("SELECT MAX(`requested_on`) AS `dateTime` FROM `track_api_requests`");
+            $dateTime = $this->db->rawQueryOne("SELECT MAX(`requested_on`) AS `dateTime`
+                                                    FROM `track_api_requests`");
         } else {
-            $dateTime = $this->db->rawQueryOne("SELECT GREATEST(COALESCE(last_remote_requests_sync, 0), COALESCE(last_remote_results_sync, 0), COALESCE(last_remote_reference_data_sync, 0)) AS `dateTime` FROM s_vlsm_instance");
+            $lastSyncQuery = "SELECT GREATEST(COALESCE(last_remote_requests_sync, 0),
+                                                COALESCE(last_remote_results_sync, 0),
+                                                COALESCE(last_remote_reference_data_sync, 0)
+                                            ) AS dateTime
+                                FROM s_vlsm_instance`";
+            $dateTime = $this->db->rawQueryOne($lastSyncQuery);
         }
-        return (isset($dateTime['dateTime']) && $dateTime['dateTime'] != "") ? DateUtility::humanReadableDateFormat($dateTime['dateTime'], false, 'd-M-Y h:i:s a') : null;
+        return (isset($dateTime['dateTime']) && $dateTime['dateTime'] != "") ?
+            DateUtility::humanReadableDateFormat($dateTime['dateTime'], false, 'd-M-Y h:i:s a')
+            : null;
     }
 
     public function doesBatchCodeExist($code)
