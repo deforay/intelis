@@ -177,7 +177,7 @@ $output = array(
     "aaData" => array()
 );
 $package = false;
-if (isset($_SESSION['privileges']) && (in_array("editSpecimenReferralManifest.php", $_SESSION['privileges']))) {
+if (isset($_SESSION['privileges']) && (in_array("edit-manifest.php", $_SESSION['privileges']))) {
     $package = true;
 }
 
@@ -206,7 +206,7 @@ foreach ($rResult as $aRow) {
     $row[] = $humanDate;
     if ($package) {
         if ($_SESSION['roleCode'] == 'AD' || $_SESSION['roleCode'] == 'ad') {
-            $editBtn = '<a href="editSpecimenReferralManifest.php?t=' . base64_encode($_POST['module']) . '&id=' . base64_encode($aRow['package_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="Edit"><em class="fa-solid fa-pen-to-square"></em> Edit</em></a>';
+            $editBtn = '<a href="edit-manifest.php?t=' . base64_encode($_POST['module']) . '&id=' . base64_encode($aRow['package_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="Edit"><em class="fa-solid fa-pen-to-square"></em> Edit</em></a>';
         } else {
             $editBtn = '';
         }

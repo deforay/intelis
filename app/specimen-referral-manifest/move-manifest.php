@@ -1,4 +1,5 @@
 <?php
+
 use App\Services\GenericTestsService;
 use App\Services\TbService;
 use App\Services\VlService;
@@ -32,7 +33,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$module = isset($_GET['t']) ? base64_decode($_GET['t']) : 'vl';
+$module = $_GET['t'];
 
 $testingLabs = $facilitiesService->getTestingLabs($module);
 
@@ -47,7 +48,7 @@ if ($module == 'vl') {
     /** @var VlService $vlService */
     $vlService = ContainerRegistry::get(VlService::class);
     $sampleTypes = $vlService->getVlSampleTypes();
-} else if ($module == 'eid') {
+} elseif ($module == 'eid') {
     /** @var EidService $eidService */
     $eidService = ContainerRegistry::get(EidService::class);
     $sampleTypes = $eidService->getEidSampleTypes();
@@ -65,8 +66,7 @@ if ($module == 'vl') {
     /** @var TbService $tbService */
     $tbService = ContainerRegistry::get(TbService::class);
     $sampleTypes = $tbService->getTbSampleTypes();
-}
-else if ($module == 'generic-tests') {
+} else if ($module == 'generic-tests') {
     /** @var GenericTestsService $genericService */
     $genericService = ContainerRegistry::get(GenericTestsService::class);
     $sampleTypes = $genericService->getGenericSampleTypes();
@@ -130,7 +130,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
         <h1><em class="fa-solid fa-angles-right"></em> Move Manifests</h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
-            <li><a href="/specimen-referral-manifest/specimenReferralManifestList.php"> Manage Specimen Referral
+            <li><a href="/specimen-referral-manifest/view-manifests.php"> Manage Specimen Referral
                     Manifest</a></li>
             <li class="active">Move Manifests</li>
         </ol>
@@ -146,23 +146,23 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
             <br><br><br><br>
             <!-- /.box-header -->
             <div class="box-body">
-            <?php $hide = "";
-				if ($module == 'generic-tests') {
-					$hide = "hide " ?>
-					<div class="row">
-						<div class="col-xs-4 col-md-4">
-							<div class="form-group" style="margin-left:30px; margin-top:30px;">
-								<label for="genericTestType">Test Type</label>
-								<select class="form-control" name="genericTestType" id="genericTestType" title="Please choose test type" style="width:100%;" onchange="getManifestCodeForm(this.value)">
-									<option value=""> -- Select -- </option>
-									<?php foreach ($testTypeResult as $testType) { ?>
-										<option value="<?php echo $testType['test_type_id']; ?>"><?php echo $testType['test_standard_name'] ?></option>
-									<?php } ?>
-								</select>
-							</div>
-						</div>
-					</div>
-				<?php } ?>
+                <?php $hide = "";
+                if ($module == 'generic-tests') {
+                    $hide = "hide " ?>
+                    <div class="row">
+                        <div class="col-xs-4 col-md-4">
+                            <div class="form-group" style="margin-left:30px; margin-top:30px;">
+                                <label for="genericTestType">Test Type</label>
+                                <select class="form-control" name="genericTestType" id="genericTestType" title="Please choose test type" style="width:100%;" onchange="getManifestCodeForm(this.value)">
+                                    <option value=""> -- Select -- </option>
+                                    <?php foreach ($testTypeResult as $testType) { ?>
+                                        <option value="<?php echo $testType['test_type_id']; ?>"><?php echo $testType['test_standard_name'] ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                <?php } ?>
                 <!-- form start -->
                 <form class="<?php echo $hide; ?> form-horizontal" method="post" name="moveSpecimenReferralManifestForm" id="moveSpecimenReferralManifestForm" autocomplete="off" action="moveSpecimenManifestCodeHelper.php">
                     <div class="box-body">
@@ -249,7 +249,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
             <!-- /.box-body -->
             <div class="box-footer">
                 <a id="packageSubmit" class="btn btn-primary" href="javascript:void(0);" title="Please select machine" onclick="validateNow();return false;" style="pointer-events:none;" disabled>Save </a>
-                <a href="specimenReferralManifestList.php?t=<?= htmlspecialchars($_GET['t']); ?>" class="btn btn-default"> Cancel</a>
+                <a href="view-manifests.php?t=<?= htmlspecialchars($_GET['t']); ?>" class="btn btn-default"> Cancel</a>
             </div>
             <!-- /.box-footer -->
             </form>
@@ -405,7 +405,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                     daterange: $('#daterange').val(),
                     assignLab: $('#assignLab').val(),
                     testType: $('#testType').val(),
-                    genericTestType:$('#genericTestType').val(),
+                    genericTestType: $('#genericTestType').val(),
                 },
                 function(data) {
                     if (data != "") {
@@ -421,13 +421,13 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
     }
 
     function getManifestCodeForm(value) {
-		if (value != "") {
-			//var code = value.toUpperCase() + '<?php echo strtoupper(date('ymd') .  $general->generateRandomString(6)); ?>';
-			//$('#packageCode').val(code);
-			$("#moveSpecimenReferralManifestForm").removeClass("hide");
-		}
-       
-	}
+        if (value != "") {
+            //var code = value.toUpperCase() + '<?php echo strtoupper(date('ymd') .  $general->generateRandomString(6)); ?>';
+            //$('#packageCode').val(code);
+            $("#moveSpecimenReferralManifestForm").removeClass("hide");
+        }
+
+    }
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';

@@ -8,8 +8,7 @@ use App\Services\CommonService;
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 
-$type = base64_decode($_GET['t']);
-//$type = $_GET['t'];
+$type = $_GET['t'];
 $title = _("Import") . " " . strtoupper($type) . " " . _("test results from file");
 
 require_once APPLICATION_PATH . '/header.php';
@@ -86,7 +85,7 @@ $lastResult = $db->rawQueryOne($lastQuery);
 					</p>
 
 
-					<form class="form-horizontal" method='post' name='addImportResultForm' id='addImportResultForm' enctype="multipart/form-data" autocomplete="off" action="addImportResultHelper.php">
+					<form class="form-horizontal" method='post' name='importFIleForm' id='importFIleForm' enctype="multipart/form-data" autocomplete="off" action="import-file-helper.php">
 						<div class="box-body">
 							<div class="wizard_content">
 								<div class="row setup-content step" id="step-1" style="display:block;">
@@ -190,10 +189,10 @@ $lastResult = $db->rawQueryOne($lastQuery);
 		$('#dateFormat').val(_dateformat);
 		$('#fileName').val(_filename);
 		flag = deforayValidator.init({
-			formId: 'addImportResultForm'
+			formId: 'importFIleForm'
 		});
 		if (flag) {
-			document.getElementById('addImportResultForm').submit();
+			document.getElementById('importFIleForm').submit();
 		}
 	}
 

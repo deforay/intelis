@@ -1,6 +1,8 @@
 <?php
+
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
@@ -13,37 +15,37 @@ $refTable = "form_vl";
 $refPrimaryColumn = "vl_sample_id";
 if (isset($_GET['type']) && $_GET['type'] == 'vl') {
 	$title = "Viral Load";
-    $refTable = "form_vl";
-    $refPrimaryColumn = "vl_sample_id";
+	$refTable = "form_vl";
+	$refPrimaryColumn = "vl_sample_id";
 } elseif (isset($_GET['type']) && $_GET['type'] == 'eid') {
 	$title = "Early Infant Diagnosis";
-    $refTable = "form_eid";
-    $refPrimaryColumn = "eid_id";
+	$refTable = "form_eid";
+	$refPrimaryColumn = "eid_id";
 } elseif (isset($_GET['type']) && $_GET['type'] == 'covid19') {
 	$title = "Covid-19";
-    $refTable = "form_covid19";
-    $refPrimaryColumn = "covid19_id";
+	$refTable = "form_covid19";
+	$refPrimaryColumn = "covid19_id";
 } elseif (isset($_GET['type']) && $_GET['type'] == 'hepatitis') {
 	$title = "Hepatitis";
-    $refTable = "form_hepatitis";
-    $refPrimaryColumn = "hepatitis_id";
+	$refTable = "form_hepatitis";
+	$refPrimaryColumn = "hepatitis_id";
 } elseif (isset($_GET['type']) && $_GET['type'] == 'tb') {
 	$title = "TB";
-    $refTable = "form_tb";
-    $refPrimaryColumn = "tb_id";
+	$refTable = "form_tb";
+	$refPrimaryColumn = "tb_id";
 } elseif (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
 	$title = "Lab Tests";
-    $refTable = "form_generic";
-    $refPrimaryColumn = "sample_id";
+	$refTable = "form_generic";
+	$refPrimaryColumn = "sample_id";
 }
-$_GET['type'] = ($_GET['type'] == 'covid19')?'covid-19':$_GET['type'];
+$_GET['type'] = ($_GET['type'] == 'covid19') ? 'covid-19' : $_GET['type'];
 $title = _($title . " | Edit Batch Position");
 require_once APPLICATION_PATH . '/header.php';
 
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
 if (!isset($id) || trim($id) == '') {
-	header("Location:batches.php?type=".$_GET['type']);
+	header("Location:batches.php?type=" . $_GET['type']);
 }
 $content = '';
 $displayOrder = [];
@@ -60,7 +62,7 @@ foreach ($configControlInfo as $info) {
 }
 
 if (empty($batchInfo)) {
-	header("Location:batches.php?type=".$_GET['type']);
+	header("Location:batches.php?type=" . $_GET['type']);
 }
 if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) != '') {
 	if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
@@ -74,13 +76,13 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 	for ($j = 0; $j < count($jsonToArray); $j++) {
 		if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
 			$index = $alphaNumeric[$j];
-		}else{
+		} else {
 			$index = $j;
 		}
 		$displayOrder[] = $jsonToArray[$index];
 		$xplodJsonToArray = explode("_", $jsonToArray[$index]);
 		if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
-			$sampleQuery = "SELECT sample_code from ".$refTable." where ".$refPrimaryColumn."=$xplodJsonToArray[1]";
+			$sampleQuery = "SELECT sample_code from " . $refTable . " where " . $refPrimaryColumn . "=$xplodJsonToArray[1]";
 			$sampleResult = $db->query($sampleQuery);
 			$label = $sampleResult[0]['sample_code'];
 		} else {
@@ -109,7 +111,7 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 			$content .= '<li class="ui-state-default" id="no_of_calibrators_' . $c . '">Calibrators ' . $c . '</li>';
 		}
 	}
-	$samplesQuery = "SELECT ".$refPrimaryColumn.",sample_code from ".$refTable." where sample_batch_id=$id ORDER BY sample_code ASC";
+	$samplesQuery = "SELECT " . $refPrimaryColumn . ",sample_code from " . $refTable . " where sample_batch_id=$id ORDER BY sample_code ASC";
 	$samplesInfo = $db->query($samplesQuery);
 	foreach ($samplesInfo as $sample) {
 		$displayOrder[] = "s_" . $sample[$refPrimaryColumn];

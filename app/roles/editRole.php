@@ -167,7 +167,7 @@ if ($priInfo) {
 											<option value=""> <?php echo _("-- Select --"); ?> </option>
 											<option value="/dashboard/index.php" <?php echo ($roleInfo[0]['landing_page'] == '/dashboard/index.php') ? "selected='selected'" : "" ?>><?php echo _("Dashboard"); ?></option>
 											<option value="/vl/requests/addVlRequest.php" <?php echo ($roleInfo[0]['landing_page'] == '/vl/requests/addVlRequest.php') ? "selected='selected'" : "" ?>><?php echo _("Add New VL Request"); ?></option>
-											<option value="/import-result/addImportResult.php" <?php echo ($roleInfo[0]['landing_page'] == 'import-result/addImportResult.php') ? "selected='selected'" : "" ?>><?php echo _("Import VL Result"); ?></option>
+											<option value="/import-result/import-file.php" <?php echo ($roleInfo[0]['landing_page'] == 'import-result/import-file.php') ? "selected='selected'" : "" ?>><?php echo _("Import VL Result"); ?></option>
 										</select>
 									</div>
 								</div>

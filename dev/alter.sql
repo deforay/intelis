@@ -4125,29 +4125,29 @@ ALTER TABLE `audit_form_eid` ADD `second_dbs_requested` VARCHAR(256) NULL DEFAUL
 -- Thana 09-Jun-2023
 
 UPDATE `privileges` SET `privilege_name` = '/batch/batches.php?type=generic-tests' WHERE `privileges`.`privilege_name` = 'batch-code.php';
-UPDATE `privileges` SET `display_name` = 'Manage Batch Code' WHERE `privileges`.`resource_id` = '/batch/batches.php?type=generic-tests';
+UPDATE `privileges` SET `display_name` = 'Manage Batch' WHERE `resource_id` = '/batch/batches.php?type=generic-tests';
 
-UPDATE `privileges` SET `privilege_name` = '/batch/batches.php?type=vl' WHERE `privileges`.`privilege_name` = 'batchcode.php';
-UPDATE `privileges` SET `privilege_name` = '/batch/add-batch.php?type=vl' WHERE `privileges`.`privilege_name` = 'addBatch.php';
-UPDATE `privileges` SET `privilege_name` = '/batch/edit-batch.php?type=vl' WHERE `privileges`.`privilege_name` = 'editBatch.php';
-UPDATE `privileges` SET `privilege_name` = '/batch/add-batch-position.php?type=vl' WHERE `privileges`.`privilege_name` = 'addBatchControlsPosition.php';
-UPDATE `privileges` SET `privilege_name` = '/batch/edit-batch-position.php?type=vl' WHERE `privileges`.`privilege_name` = 'editBatchControlsPosition.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/batches.php?type=vl' WHERE `privilege_name` = 'batchcode.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/add-batch.php?type=vl' WHERE `privilege_name` = 'addBatch.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/edit-batch.php?type=vl' WHERE `privilege_name` = 'editBatch.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/add-batch-position.php?type=vl' WHERE `privilege_name` = 'addBatchControlsPosition.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/edit-batch-position.php?type=vl' WHERE `privilege_name` = 'editBatchControlsPosition.php';
 
-UPDATE `privileges` SET `privilege_name` = '/batch/batches.php?type=eid' WHERE `privileges`.`privilege_name` = 'eid-batches.php';
-UPDATE `privileges` SET `privilege_name` = '/batch/add-batch.php?type=eid' WHERE `privileges`.`privilege_name` = 'eid-add-batch.php';
-UPDATE `privileges` SET `privilege_name` = '/batch/edit-batch.php?type=eid' WHERE `privileges`.`privilege_name` = 'eid-edit-batch.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/batches.php?type=eid' WHERE `privilege_name` = 'eid-batches.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/add-batch.php?type=eid' WHERE `privilege_name` = 'eid-add-batch.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/edit-batch.php?type=eid' WHERE `privilege_name` = 'eid-edit-batch.php';
 
-UPDATE `privileges` SET `privilege_name` = '/batch/batches.php?type=covid19' WHERE `privileges`.`privilege_name` = 'covid-19-batches.php';
-UPDATE `privileges` SET `privilege_name` = '/batch/add-batch.php?type=covid19' WHERE `privileges`.`privilege_name` = 'covid-19-add-batch.php';
-UPDATE `privileges` SET `privilege_name` = '/batch/edit-batch.php?type=covid19' WHERE `privileges`.`privilege_name` = 'covid-19-edit-batch.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/batches.php?type=covid19' WHERE `privilege_name` = 'covid-19-batches.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/add-batch.php?type=covid19' WHERE `privilege_name` = 'covid-19-add-batch.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/edit-batch.php?type=covid19' WHERE `privilege_name` = 'covid-19-edit-batch.php';
 
-UPDATE `privileges` SET `privilege_name` = '/batch/batches.php?type=hepatitis' WHERE `privileges`.`privilege_name` = 'hepatitis-batches.php';
-UPDATE `privileges` SET `privilege_name` = '/batch/add-batch.php?type=hepatitis' WHERE `privileges`.`privilege_name` = 'hepatitis-add-batch.php';
-UPDATE `privileges` SET `privilege_name` = '/batch/edit-batch.php?type=hepatitis' WHERE `privileges`.`privilege_name` = 'hepatitis-edit-batch.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/batches.php?type=hepatitis' WHERE `privilege_name` = 'hepatitis-batches.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/add-batch.php?type=hepatitis' WHERE `privilege_name` = 'hepatitis-add-batch.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/edit-batch.php?type=hepatitis' WHERE `privilege_name` = 'hepatitis-edit-batch.php';
 
-UPDATE `privileges` SET `privilege_name` = '/batch/batches.php?type=tb' WHERE `privileges`.`privilege_name` = 'tb-batches.php';
-UPDATE `privileges` SET `privilege_name` = '/batch/add-batch.php?type=tb' WHERE `privileges`.`privilege_name` = 'tb-add-batch.php';
-UPDATE `privileges` SET `privilege_name` = '/batch/edit-batch.php?type=tb' WHERE `privileges`.`privilege_name` = 'tb-edit-batch.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/batches.php?type=tb' WHERE `privilege_name` = 'tb-batches.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/add-batch.php?type=tb' WHERE `privilege_name` = 'tb-add-batch.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/edit-batch.php?type=tb' WHERE `privilege_name` = 'tb-edit-batch.php';
 
 -- Jeyabanu 09-06-2023
 ALTER TABLE `form_eid` ADD `previous_sample_code` VARCHAR(256) NULL DEFAULT NULL AFTER `caretaker_address`, ADD `clinical_assessment` VARCHAR(256) NULL DEFAULT NULL AFTER `previous_sample_code`, ADD `clinician_name` VARCHAR(256) NULL DEFAULT NULL AFTER `clinical_assessment`;
@@ -4220,7 +4220,7 @@ ALTER TABLE `form_tb` CHANGE `sample_package_id` `sample_package_id` INT NULL DE
 ALTER TABLE `form_generic` CHANGE `sample_package_id` `sample_package_id` INT NULL DEFAULT NULL;
 
 -- Jeyabanu 19-06-2023
-
+DROP TABLE IF EXISTS `s_app_menu`;
 CREATE TABLE `s_app_menu` (
   `id` int(11) NOT NULL,
   `module` varchar(256) NOT NULL,
@@ -4228,6 +4228,7 @@ CREATE TABLE `s_app_menu` (
   `display_text` varchar(256) NOT NULL,
   `link` varchar(256) DEFAULT NULL,
   `inner_pages` varchar(256) DEFAULT NULL,
+  `show_mode` varchar(132) NOT NULL DEFAULT 'always',
   `icon` varchar(256) DEFAULT NULL,
   `has_children` varchar(256) DEFAULT NULL,
   `additional_class_names` varchar(256) DEFAULT NULL,
@@ -4237,198 +4238,304 @@ CREATE TABLE `s_app_menu` (
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `s_app_menu`
---
-
-INSERT INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `inner_pages`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES
-(1, 'dashboard', 'no', 'Dashboard', '/dashboard/index.php', NULL, 'fa-solid fa-chart-pie', 'no', 'allMenu dashboardMenu', 0, 1, 'active', NULL),
-(2, 'admin', 'no', 'Admin', NULL, NULL, 'fa-solid fa-shield', 'yes', NULL, 0, 2, 'active', NULL),
-(3, 'admin', 'no', 'Access Control', '', NULL, 'fa-solid fa-user', 'yes', 'treeview access-control-menu', 2, 3, 'active', NULL),
-(4, 'admin', 'no', 'Roles', '/roles/roles.php', '/roles/addRole.php,/roles/editRole.php', 'fa-solid fa-caret-right', 'no', 'allMenu roleMenu', 3, 4, 'active', NULL),
-(5, 'admin', 'no', 'Users', '/users/users.php', '/users/addUser.php,/users/editUser.php', 'fa-solid fa-caret-right', 'no', 'allMenu userMenu', 3, 5, 'active', NULL),
-(6, 'admin', 'no', 'Facilities', '/facilities/facilities.php', '/facilities/addFacility.php,/facilities/editFacility.php,/facilities/mapTestType.php', 'fa-solid fa-hospital', 'no', 'treeview facility-config-menu', 2, 6, 'active', NULL),
-(7, 'admin', 'no', 'Monitoring', NULL, NULL, 'fa-solid fa-bullseye', 'yes', 'treeview monitoring-menu', 2, 7, 'active', NULL),
-(8, 'admin', 'no', 'System Configuration', NULL, NULL, 'fa-solid fa-gears', 'yes', 'treeview system-config-menu', 2, 8, 'active', NULL),
-(9, 'admin', 'no', 'Lab Tests Config', NULL, NULL, 'fa-solid fa-vial-circle-check', 'yes', 'treeview generic-reference-manage', 2, 9, 'active', NULL),
-(10, 'admin', 'no', 'VL Config', NULL, NULL, 'fa-solid fa-flask-vial', 'yes', 'treeview vl-reference-manage', 2, 10, 'active', NULL),
-(11, 'admin', 'no', 'EID Config', NULL, NULL, 'fa-solid fa-vial-circle-check', 'yes', 'treeview generic-reference-manage', 2, 11, 'active', NULL),
-(12, 'admin', 'no', 'Covid-19 Config', NULL, NULL, 'fa-solid fa-virus-covid', 'yes', 'treeview covid19-reference-manage', 2, 12, 'active', NULL),
-(13, 'admin', 'no', 'Hepatitis Config', NULL, NULL, 'fa-solid fa-square-h', 'yes', 'treeview hepatitis-reference-manage', 2, 13, 'active', NULL),
-(14, 'admin', 'no', 'TB Config', NULL, NULL, 'fa-solid fa-heart-pulse', 'yes', 'treeview tb-reference-manage', 2, 14, 'active', NULL),
-(15, 'admin', 'no', 'User Activity Log', '/admin/monitoring/activity-log.php', NULL, 'fa-solid fa-file-lines', 'no', 'allMenu treeview activity-log-menu', 7, 15, 'active', NULL),
-(16, 'admin', 'no', 'Audit Trail', '/admin/monitoring/audit-trail.php', NULL, 'fa-solid fa-clock-rotate-left', 'no', 'allMenu treeview audit-trail-menu', 7, 16, 'active', NULL),
-(17, 'admin', 'no', 'API History', '/admin/monitoring/api-sync-history.php', NULL, 'fa-solid fa-circle-nodes', 'no', 'allMenu treeview api-sync-history-menu', 7, 17, 'active', NULL),
-(18, 'admin', 'no', 'Source of Requests', '/admin/monitoring/sources-of-requests.php', NULL, 'fa-solid fa-circle-notch', 'no', 'allMenu treeview sources-of-requests-report-menu', 7, 18, 'active', NULL),
-(19, 'admin', 'no', 'General Configuration', '/global-config/editGlobalConfig.php', '/global-config/editGlobalConfig.php', 'fa-solid fa-caret-right', 'no', 'allMenu globalConfigMenu', 8, 19, 'active', NULL),
-(20, 'admin', 'no', 'Instruments', '/import-configs/importConfig.php', '/import-configs/addImportConfig.php,/import-configs/editImportConfig.php', 'fa-solid fa-caret-right', 'no', 'allMenu importConfigMenu', 8, 20, 'active', NULL),
-(21, 'admin', 'no', 'Geographical Divisions', '/common/reference/geographical-divisions-details.php', '/common/reference/add-geographical-divisions.php,/common/reference/edit-geographical-divisions.php', 'fa-solid fa-caret-right', 'no', 'allMenu geographicalMenu', 8, 21, 'active', NULL),
-(22, 'admin', 'no', 'Implementation Partners', '/common/reference/implementation-partners.php', '/common/reference/add-implementation-partners.php', 'fa-solid fa-caret-right', 'no', 'allMenu common-reference-implementation-partners', 8, 22, 'active', NULL),
-(23, 'admin', 'no', 'Funding Sources', '/common/reference/funding-sources.php', '/common/reference/add-funding-sources.php', 'fa-solid fa-caret-right', 'no', 'allMenu common-reference-funding-sources', 8, 23, 'active', NULL),
-(24, 'admin', 'no', 'Sample Types', '/generic-tests/reference/sample-types/generic-sample-type.php', '/generic-tests/reference/sample-types/generic-add-sample-type.php,/generic-tests/reference/sample-types/generic-edit-sample-type.php', 'fa-solid fa-caret-right', 'no', 'allMenu genericSampleTypeMenu', 9, 24, 'active', NULL),
-(25, 'admin', 'no', 'Testing Reasons', '/generic-tests/reference/testing-reasons/generic-testing-reason.php', '/generic-tests/reference/testing-reasons/generic-add-testing-reason.php,/generic-tests/reference/testing-reasons/generic-edit-testing-reason.php', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestingReasonMenu', 9, 25, 'active', NULL),
-(26, 'admin', 'no', 'Test Failure Reasons', '/generic-tests/reference/test-failure-reasons/generic-test-failure-reason.php', '/generic-tests/reference/test-failure-reasons/generic-add-test-failure-reason.php,/generic-tests/reference/test-failure-reasons/generic-edit-test-failure-reason.php', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestFailureReasonMenu', 9, 26, 'active', NULL),
-(27, 'admin', 'no', 'Symptoms', '/generic-tests/reference/symptoms/generic-symptoms.php', '/generic-tests/reference/symptoms/generic-add-symptoms.php,/generic-tests/reference/symptoms/generic-edit-symptoms.php', 'fa-solid fa-caret-right', 'no', 'allMenu genericSymptomsMenu', 9, 27, 'active', NULL),
-(28, 'admin', 'no', 'Sample Rejection Reasons', '/generic-tests/reference/sample-rejection-reasons/generic-sample-rejection-reasons.php', '/generic-tests/reference/sample-types/generic-add-sample-type.php,/generic-tests/reference/sample-rejection-reasons/generic-edit-rejection-reasons.php,/generic-tests/reference/sample-rejection-reasons/generic-add-rejection-reasons.php', 'fa-solid fa-caret-right', 'no', 'allMenu genericSampleRejectionReasonsMenu', 9, 28, 'active', NULL),
-(29, 'admin', 'no', 'Test Result Units', '/generic-tests/reference/test-result-units/generic-test-result-units.php', '/generic-tests/reference/test-result-units/generic-add-test-result-units.php,/generic-tests/reference/test-result-units/generic-edit-test-result-units.php', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestResultUnitsMenu', 9, 29, 'active', NULL),
-(30, 'admin', 'no', 'Test Methods', '/generic-tests/reference/test-methods/generic-test-methods.php', '/generic-tests/reference/test-methods/generic-add-test-methods.php,/generic-tests/reference/test-methods/generic-edit-test-methods.php', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestMethodsMenu', 9, 30, 'active', NULL),
-(31, 'admin', 'no', 'Test Categories', '/generic-tests/reference/test-categories/generic-test-categories.php', '/generic-tests/reference/test-categories/generic-add-test-categories.php,/generic-tests/reference/test-categories/generic-edit-test-categories.php', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestCategoriesMenu', 9, 31, 'active', NULL),
-(32, 'admin', 'no', 'Test Type Configuration', '/generic-tests/configuration/test-type.php', '/generic-tests/configuration/add-test-type.php,/generic-tests/configuration/edit-test-type.php', 'fa-solid fa-caret-right', 'no', 'allMenu testTypeConfigurationMenu', 9, 31, 'active', NULL),
-(33, 'admin', 'no', 'ART Regimen', '/vl/reference/vl-art-code-details.php', '/vl/reference/add-vl-art-code-details.php,/vl/reference/edit-vl-art-code-details.php', 'fa-solid fa-caret-right', 'no', 'allMenu vl-art-code-details', 10, 26, 'active', NULL),
-(34, 'admin', 'no', 'Rejection Reasons', '/vl/reference/vl-sample-rejection-reasons.php', '/vl/reference/add-vl-sample-rejection-reasons.php,/vl/reference/edit-vl-sample-rejection-reasons.php', 'fa-solid fa-caret-right', 'no', 'allMenu vl-sample-rejection-reasons', 10, 27, 'active', NULL),
-(35, 'admin', 'no', 'Sample Type', '/vl/reference/vl-sample-type.php', '/vl/reference/add-vl-sample-type.php,/vl/reference/edit-vl-sample-type.php', 'fa-solid fa-caret-right', 'no', 'allMenu vl-sample-type', 10, 28, 'active', NULL),
-(36, 'admin', 'no', 'Results', '/vl/reference/vl-results.php', '/vl/reference/add-vl-results.php,/vl/reference/edit-vl-results.php', 'fa-solid fa-caret-right', 'no', 'allMenu vl-results', 10, 29, 'active', NULL),
-(37, 'admin', 'no', 'Test Reasons', '/vl/reference/vl-test-reasons.php', '/vl/reference/add-vl-test-reasons.php,/vl/reference/edit-vl-test-reasons.php', 'fa-solid fa-caret-right', 'no', 'allMenu vl-test-reasons', 10, 30, 'active', NULL),
-(38, 'admin', 'no', 'Test Failure Reasons', '/vl/reference/vl-test-failure-reasons.php', '/vl/reference/add-vl-test-failure-reason.php,/vl/reference/edit-vl-test-failure-reason.php', 'fa-solid fa-caret-right', 'no', 'allMenu vl-test-failure-reasons', 10, 38, 'active', NULL),
-(39, 'admin', 'no', 'Rejection Reasons', '/eid/reference/eid-sample-rejection-reasons.php', '/eid/reference/add-eid-sample-rejection-reasons.php,/eid/reference/edit-eid-sample-rejection-reasons.php', 'fa-solid fa-caret-right', 'no', 'allMenu eid-sample-rejection-reasons', 11, 38, 'active', NULL),
-(40, 'admin', 'no', 'Sample Type', '/eid/reference/eid-sample-type.php', '/eid/reference/add-eid-sample-type.php,/eid/reference/edit-eid-sample-type.php', 'fa-solid fa-caret-right', 'no', 'allMenu eid-sample-type', 11, 39, 'active', NULL),
-(41, 'admin', 'no', 'Test Reasons', '/eid/reference/eid-test-reasons.php', '/eid/reference/add-eid-test-reasons.php,/eid/reference/edit-eid-test-reasons.php', 'fa-solid fa-caret-right', 'no', 'allMenu eid-test-reasons', 11, 40, 'active', NULL),
-(42, 'admin', 'no', 'Results', '/eid/reference/eid-results.php', '/eid/reference/add-eid-results.php,/eid/reference/edit-eid-results.php', 'fa-solid fa-caret-right', 'no', 'allMenu eid-results', 11, 41, 'active', NULL),
-(43, 'admin', 'no', 'Co-morbidities', '/covid-19/reference/covid19-comorbidities.php', '/covid-19/reference/add-covid19-comorbidities.php,/covid-19/reference/edit-covid19-comorbidities.php', 'fa-solid fa-caret-right', 'no', 'allMenu covid19-comorbidities', 12, 42, 'active', NULL),
-(44, 'admin', 'no', 'Rejection Reasons', '/covid-19/reference/eid-sample-rejection-reasons.php', '/covid-19/reference/add-covid-19-sample-rejection-reasons.php,/covid-19/reference/edit-covid-19-sample-rejection-reasons.php', 'fa-solid fa-caret-right', 'no', 'allMenu covid19-sample-rejection-reasons', 12, 43, 'active', NULL),
-(45, 'admin', 'no', 'Sample Type', '/covid-19/reference/eid-sample-type.php', '/covid-19/reference/add-covid-19-sample-type.php,/covid-19/reference/edit-covid-19-sample-type.php', 'fa-solid fa-caret-right', 'no', 'allMenu covid19-sample-type', 12, 44, 'active', NULL),
-(46, 'admin', 'no', 'Symptoms', '/covid-19/reference/covid19-symptoms.php', '/covid-19/reference/add-covid19-symptoms.php,/covid-19/reference/edit-covid19-symptoms.php', 'fa-solid fa-caret-right', 'no', 'allMenu covid19-symptoms', 12, 45, 'active', NULL),
-(47, 'admin', 'no', 'Test Reasons', '/covid-19/reference/covid-19-test-reasons.php', '/covid-19/reference/add-covid-19-test-reasons.php,/covid-19/reference/edit-covid-19-test-reasons.php', 'fa-solid fa-caret-right', 'no', 'allMenu covid-19-test-reasons', 12, 46, 'active', NULL),
-(48, 'admin', 'no', 'Results', '/covid-19/reference/covid-19-results.php', '/covid-19/reference/add-covid-19-results.php,/covid-19/reference/edit-covid-19-results.php', 'fa-solid fa-caret-right', 'no', 'allMenu covid19-results', 12, 47, 'active', NULL),
-(49, 'admin', 'no', 'QC Test Kits', '/covid-19/reference/covid19-qc-test-kits.php', '/covid-19/reference/add-covid19-qc-test-kit.php,/covid-19/reference/edit-covid19-qc-test-kit.php', 'fa-solid fa-caret-right', 'no', 'allMenu covid19-qc-test-kits', 12, 48, 'active', NULL),
-(50, 'admin', 'no', 'Co-morbidities', '/hepatitis/reference/hepatitis-comorbidities.php', '/hepatitis/reference/add-hepatitis-comorbidities.php,/hepatitis/reference/edit-hepatitis-comorbidities.php', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitis-comorbidities', 13, 50, 'active', NULL),
-(51, 'admin', 'no', 'Risk Factors', '/hepatitis/reference/hepatitis-risk-factors.php', '/hepatitis/reference/add-hepatitis-risk-factors.php,/hepatitis/reference/edit-hepatitis-risk-factors.php', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitis-risk-factors', 13, 51, 'active', NULL),
-(52, 'admin', 'no', 'Rejection Reasons', '/hepatitis/reference/hepatitis-sample-rejection-reasons.php', '/hepatitis/reference/add-hepatitis-sample-rejection-reasons.php,/hepatitis/reference/edit-hepatitis-sample-rejection-reasons.php', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitis-sample-rejection-reasons', 13, 52, 'active', NULL),
-(53, 'admin', 'no', 'Sample Type', '/hepatitis/reference/hepatitis-sample-type.php', '/hepatitis/reference/add-hepatitis-sample-type.php,/hepatitis/reference/edit-hepatitis-sample-type.php', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitis-sample-type', 13, 53, 'active', NULL),
-(54, 'admin', 'no', 'Results', '/hepatitis/reference/hepatitis-results.php', '/hepatitis/reference/add-hepatitis-results.php,/hepatitis/reference/edit-hepatitis-results.php', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitis-results', 13, 54, 'active', NULL),
-(55, 'admin', 'no', 'Test Reasons', '/hepatitis/reference/hepatitis-test-reasons.php', '/hepatitis/reference/add-hepatitis-test-reasons.php,/hepatitis/reference/edit-hepatitis-test-reasons.php', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitis-test-reasons', 13, 55, 'active', NULL),
-(56, 'admin', 'no', 'Rejection Reasons', '/tb/reference/tb-sample-rejection-reasons.php', '/tb/reference/add-tb-sample-rejection-reasons.php,/tb/reference/edit-tb-sample-rejection-reasons.php', 'fa-solid fa-caret-right', 'no', 'allMenu tb-sample-rejection-reasons', 14, 56, 'active', NULL),
-(57, 'admin', 'no', 'Sample Type', '/tb/reference/tb-sample-type.php', '/tb/reference/add-tb-sample-type.php,/tb/reference/edit-tb-sample-type.php', 'fa-solid fa-caret-right', 'no', 'allMenu tb-sample-type', 14, 57, 'active', NULL),
-(58, 'admin', 'no', 'Test Reasons', '/tb/reference/tb-test-reasons.php', '/tb/reference/add-tb-test-reasons.php,/tb/reference/edit-tb-test-reasons.php', 'fa-solid fa-caret-right', 'no', 'allMenu tb-test-reasons', 14, 58, 'active', NULL),
-(59, 'admin', 'no', 'Results', '/tb/reference/tb-results.php', '/tb/reference/add-tb-results.php,/tb/reference/edit-tb-results.php', 'fa-solid fa-caret-right', 'no', 'allMenu tb-results', 14, 59, 'active', NULL),
-(60, 'genericTests', 'yes', 'LAB TESTS', NULL, NULL, NULL, 'yes', 'header', 0, 60, 'active', NULL),
-(61, 'genericTests', 'no', 'Request Management', NULL, NULL, 'fa-solid fa-pen-to-square', 'yes', 'treeview allMenu generic-test-request-menu', 60, 61, 'active', NULL),
-(62, 'genericTests', 'no', 'Test Result Management', NULL, NULL, 'fa-solid fa-list-check', 'yes', 'treeview allMenu generic-test-results-menu', 60, 62, 'active', NULL),
-(63, 'genericTests', 'no', 'Management', NULL, NULL, 'fa-solid fa-book', 'yes', 'treeview allMenu generic-test-request-menu', 60, 63, 'active', NULL),
-(64, 'vl', 'yes', 'HIV VIRAL LOAD', NULL, NULL, NULL, 'yes', 'header', 0, 64, 'active', NULL),
-(65, 'eid', 'yes', 'EARLY INFANT DIAGNOSIS (EID)', NULL, NULL, NULL, 'yes', 'header', 0, 65, 'active', NULL),
-(66, 'covid19', 'yes', 'COVID-19', NULL, NULL, NULL, 'yes', 'header', 0, 66, 'active', NULL),
-(67, 'hepatitis', 'yes', 'HEPATITIS', NULL, NULL, NULL, 'yes', 'header', 0, 67, 'active', NULL),
-(68, 'tb', 'yes', 'TUBERCULOSIS', NULL, NULL, NULL, 'yes', 'header', 0, 68, 'active', NULL),
-(69, 'vl', 'no', 'Request Management', NULL, NULL, 'fa-solid fa-pen-to-square', 'yes', 'treeview request', 64, 69, 'active', NULL),
-(70, 'vl', 'no', 'Test Result Management', NULL, NULL, 'fa-solid fa-list-check', 'yes', 'treeview test', 64, 70, 'active', NULL),
-(71, 'vl', 'no', 'Management', NULL, NULL, 'fa-solid fa-book', 'yes', 'treeview program', 64, 71, 'active', NULL),
-(72, 'covid19', 'no', 'Request Management', NULL, NULL, 'fa-solid fa-pen-to-square', 'yes', 'treeview covid19Request', 66, 72, 'active', NULL),
-(73, 'covid19', 'no', 'Test Result Management', NULL, NULL, 'fa-solid fa-list-check', 'yes', 'treeview covid19Results', 66, 73, 'active', NULL),
-(74, 'covid19', 'no', 'Management', NULL, NULL, 'fa-solid fa-book', 'yes', 'treeview covid19ProgramMenu', 66, 74, 'active', NULL),
-(75, 'eid', 'no', 'Request Management', NULL, NULL, 'fa-solid fa-pen-to-square', 'yes', 'treeview eidRequest', 65, 75, 'active', NULL),
-(76, 'eid', 'no', 'Test Result Management', NULL, NULL, 'fa-solid fa-list-check', 'yes', 'treeview eidResults', 65, 76, 'active', NULL),
-(77, 'eid', 'no', 'Management', NULL, NULL, 'fa-solid fa-book', 'yes', 'treeview eidProgramMenu', 65, 77, 'active', NULL),
-(78, 'hepatitis', 'no', 'Request Management', NULL, NULL, 'fa-solid fa-pen-to-square', 'yes', 'treeview hepatitisRequest', 67, 78, 'active', NULL),
-(79, 'hepatitis', 'no', 'Test Result Management', NULL, NULL, 'fa-solid fa-list-check', 'yes', 'treeview hepatitisResults', 67, 79, 'active', NULL),
-(80, 'hepatitis', 'no', 'Management', NULL, NULL, 'fa-solid fa-book', 'yes', 'treeview hepatitisProgramMenu', 67, 80, 'active', NULL),
-(81, 'tb', 'no', 'Request Management', NULL, NULL, 'fa-solid fa-pen-to-square', 'yes', 'treeview tbRequest', 68, 81, 'active', NULL),
-(82, 'tb', 'no', 'Test Result Management', NULL, NULL, 'fa-solid fa-list-check', 'yes', 'treeview tbResults', 68, 82, 'active', NULL),
-(83, 'tb', 'no', 'Management', NULL, NULL, 'fa-solid fa-book', 'yes', 'treeview tbProgramMenu', 68, 83, 'active', NULL),
-(84, 'genericTests', 'no', 'View Test Requests', '/generic-tests/requests/view-requests.php', '/generic-tests/requests/edit-request.php', 'fa-solid fa-caret-right', 'no', 'allMenu genericRequestMenu', 61, 84, 'active', NULL),
-(85, 'genericTests', 'no', 'Add New Request', '/generic-tests/requests/add-request.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu addGenericRequestMenu', 61, 85, 'active', NULL),
-(86, 'genericTests', 'no', 'Add Samples from Manifest', '/generic-tests/requests/add-samples-from-manifest.php', '/generic-tests/requests/edit-request.php', 'fa-solid fa-caret-right', 'no', 'allMenu addGenericSamplesFromManifestMenu', 61, 86, 'active', NULL),
-(87, 'genericTests', 'no', 'Manage Batch', '/batch/batches.php?type=generic-tests', '/batch/add-batch.php?type=generic-tests,/batch/edit-batch.php?type=generic-tests,/batch/add-batch-position.php?type=generic-tests,/batch/edit-batch-position.php?type=generic-tests', 'fa-solid fa-caret-right', 'no', 'allMenu batchGenericCodeMenu', 61, 87, 'active', NULL),
-(88, 'genericTests', 'no', 'Specimen Manifest', '/specimen-referral-manifest/specimenReferralManifestList.php?t=generic-tests', '/specimen-referral-manifest/addSpecimenReferralManifest.php?t=generic-tests,/specimen-referral-manifest/editSpecimenReferralManifest.php?t=generic-tests,/specimen-referral-manifest/move-manifest.php?t=generic-tests', 'fa-solid fa-caret-right', 'no', 'allMenu specimenGenericReferralManifestListMenu', 61, 88, 'active', NULL),
-(89, 'genericTests', 'no', 'Enter Result Manually', '/generic-tests/results/generic-test-results.php', '/generic-tests/results/update-generic-test-result.php', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestResultMenu', 62, 88, 'active', NULL),
-(90, 'genericTests', 'no', 'Failed/Hold Samples', '/generic-tests/results/generic-failed-results.php', '/generic-tests/results/update-generic-test-result.php', 'fa-solid fa-caret-right', 'no', 'allMenu genericFailedResultMenu', 62, 88, 'active', NULL),
-(91, 'genericTests', 'no', 'Manage Results Status', '/generic-tests/results/generic-result-approval.php', '/generic-tests/results/update-generic-test-result.php', 'fa-solid fa-caret-right', 'no', 'allMenu genericResultApprovalMenu', 62, 88, 'active', NULL),
-(92, 'genericTests', 'no', 'Sample Status Report', '/generic-tests/program-management/generic-sample-status.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu genericStatusReportMenu', 62, 88, 'active', NULL),
-(93, 'genericTests', 'no', 'Export Results', '/generic-tests/program-management/generic-export-data.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu genericExportMenu', 63, 89, 'active', NULL),
-(94, 'genericTests', 'no', 'Print Result', '/generic-tests/results/generic-print-result.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu genericPrintResultMenu', 63, 90, 'active', NULL),
-(95, 'genericTests', 'no', 'Sample Rejection Report', '/generic-tests/program-management/sample-rejection-report.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu genericSampleRejectionReport', 63, 91, 'active', NULL),
-(96, 'vl', 'no', 'View Test Requests', '/vl/requests/vlRequest.php', '/vl/requests/editVlRequest.php', 'fa-solid fa-caret-right', 'no', 'allMenu vlRequestMenu', 69, 92, 'active', NULL),
-(97, 'vl', 'no', 'Add New Request', '/vl/requests/addVlRequest.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu addVlRequestMenu', 69, 93, 'active', NULL),
-(98, 'vl', 'no', 'Add Samples from Manifest', '/vl/requests/addSamplesFromManifest.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu addSamplesFromManifestMenu', 69, 94, 'active', NULL),
-(99, 'vl', 'no', 'Manage Batch', '/batch/batches.php?type=vl', '/batch/add-batch.php?type=vl,/batch/edit-batch.php?type=vl,/batch/edit-batch-position.php?type=vl', 'fa-solid fa-caret-right', 'no', 'allMenu batchCodeMenu', 69, 95, 'active', NULL),
-(100, 'vl', 'no', 'Add Samples from Manifest', '/specimen-referral-manifest/specimenReferralManifestList.php?t=vl', '/specimen-referral-manifest/addSpecimenReferralManifest.php?t=vl,/specimen-referral-manifest/editSpecimenReferralManifest.php?t=vl,/specimen-referral-manifest/move-manifest.php?t=vl', 'fa-solid fa-caret-right', 'no', 'allMenu specimenReferralManifestListVLMenu', 69, 96, 'active', NULL),
-(101, 'vl', 'no', 'Import Result From File', '/import-result/addImportResult.php?t=vl', '/vl/requests/editVlRequest.php', 'fa-solid fa-caret-right', 'no', 'allMenu importResultMenu', 70, 97, 'active', NULL),
-(102, 'vl', 'no', 'Enter Result Manually', '/vl/results/vlTestResult.php', '/vl/results/updateVlTestResult.php', 'fa-solid fa-caret-right', 'no', 'allMenu vlTestResultMenu', 70, 98, 'active', NULL),
-(103, 'vl', 'no', 'Failed/Hold Samples', '/vl/results/vl-failed-results.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu vlFailedResultMenu', 70, 99, 'active', NULL),
-(104, 'vl', 'no', 'Manage Results Status', '/vl/results/vlResultApproval.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu batchCodeMenu', 70, 100, 'active', NULL),
-(105, 'vl', 'no', 'Sample Status Report', '/vl/program-management/vl-sample-status.php', '/vl/requests/editVlRequest.php', 'fa-solid fa-caret-right', 'no', 'allMenu missingResultMenu', 71, 100, 'active', NULL),
-(106, 'vl', 'no', 'Control Report', '/vl/program-management/vlControlReport.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu vlResultMenu', 71, 101, 'active', NULL),
-(107, 'vl', 'no', 'Export Results', '/vl/program-management/vl-export-data.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu vlResultMenu', 71, 102, 'active', NULL),
-(108, 'vl', 'no', 'Print Result', '/vl/results/vlPrintResult.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu vlPrintResultMenu', 71, 103, 'active', NULL),
-(109, 'vl', 'no', 'Clinic Reports', '/vl/program-management/highViralLoad.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu vlHighMenu', 71, 104, 'active', NULL),
-(110, 'vl', 'no', 'VL Lab Weekly Report', '/vl/program-management/vlWeeklyReport.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu vlWeeklyReport', 71, 105, 'active', NULL),
-(111, 'vl', 'no', 'Sample Rejection Report', '/vl/program-management/sampleRejectionReport.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu sampleRejectionReport', 71, 106, 'active', NULL),
-(112, 'vl', 'no', 'Sample Monitoring Report', '/vl/program-management/vlMonitoringReport.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu vlMonitoringReport', 71, 107, 'active', NULL),
-(113, 'vl', 'no', 'VL Testing Target Report', '/vl/program-management/vlTestingTargetReport.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu vlMonthlyThresholdReport', 71, 108, 'active', NULL),
-(114, 'eid', 'no', 'View Test Requests', '/eid/requests/eid-requests.php', '/eid/requests/eid-edit-request.php', 'fa-solid fa-caret-right', 'no', 'allMenu eidRequestMenu', 75, 109, 'active', NULL),
-(115, 'eid', 'no', 'Add New Request', '/eid/requests/eid-add-request.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu addEidRequestMenu', 75, 110, 'active', NULL),
-(116, 'eid', 'no', 'Add Samples from Manifest', '/eid/requests/addSamplesFromManifest.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu addSamplesFromManifestEidMenu', 75, 111, 'active', NULL),
-(117, 'eid', 'no', 'Manage Batch', '/batch/batches.php?type=eid', '/batch/add-batch.php?type=eid,/batch/edit-batch.php?type=eid,/batch/add-batch-position.php?type=eid,/batch/edit-batch-position.php?type=eid', 'fa-solid fa-caret-right', 'no', 'allMenu eidBatchCodeMenu', 75, 112, 'active', NULL),
-(118, 'eid', 'no', 'EID Specimen Manifest', '/specimen-referral-manifest/specimenReferralManifestList.php?t=eid', '/specimen-referral-manifest/addSpecimenReferralManifest.php?t=eid,/specimen-referral-manifest/editSpecimenReferralManifest.php?t=eid,/specimen-referral-manifest/move-manifest.php?t=eid', 'fa-solid fa-caret-right', 'no', 'allMenu specimenReferralManifestListEIDMenu', 75, 113, 'active', NULL),
-(119, 'eid', 'no', 'Import Result From File', '/import-result/addImportResult.php?t=eid', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu eidImportResultMenu', 76, 114, 'active', NULL),
-(120, 'eid', 'no', 'Enter Result Manually', '/eid/results/eid-manual-results.php', '/eid/results/eid-update-result.php', 'fa-solid fa-caret-right', 'no', 'allMenu eidResultsMenu', 76, 115, 'active', NULL),
-(121, 'eid', 'no', 'Failed/Hold Samples', '/eid/results/eid-failed-results.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu eidFailedResultsMenu', 76, 116, 'active', NULL),
-(122, 'eid', 'no', 'Manage Results Status', '/eid/results/eid-result-status.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu eidResultStatus', 76, 117, 'active', NULL),
-(123, 'eid', 'no', 'Sample Status Report', '/eid/management/eid-sample-status.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu eidSampleStatus', 77, 118, 'active', NULL),
-(124, 'eid', 'no', 'Export Results', '/eid/management/eid-export-data.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu eidExportResult', 77, 119, 'active', NULL),
-(125, 'eid', 'no', 'Print Result', '/eid/results/eid-print-results.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu eidPrintResults', 77, 120, 'active', NULL),
-(126, 'eid', 'no', 'Sample Rejection Report', '/eid/management/eid-sample-rejection-report.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu eidSampleRejectionReport', 77, 121, 'active', NULL),
-(127, 'eid', 'no', 'Clinic Report', '/eid/management/eid-clinic-report.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu eidClinicReport', 77, 122, 'active', NULL),
-(128, 'eid', 'no', 'EID Testing Target Report', '/eid/management/eidTestingTargetReport.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu eidMonthlyThresholdReport', 77, 123, 'active', NULL),
-(129, 'covid19', 'no', 'View Test Requests', '/covid-19/requests/covid-19-requests.php', '/covid-19/requests/covid-19-edit-request.php,/covid-19/requests/covid-19-bulk-import-request.php,/covid-19/requests/covid-19-quick-add.php', 'fa-solid fa-caret-right', 'no', 'allMenu covid19RequestMenu', 72, 124, 'active', NULL),
-(130, 'covid19', 'no', 'Add New Request', '/covid-19/requests/covid-19-add-request.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu addCovid19RequestMenu', 72, 125, 'active', NULL),
-(131, 'covid19', 'no', 'Add Samples from Manifest', '/covid-19/requests/addSamplesFromManifest.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu addSamplesFromManifestCovid19Menu', 72, 126, 'active', NULL),
-(132, 'covid19', 'no', 'Manage Batch', '/batch/batches.php?type=covid19', '/batch/add-batch.php?type=covid19,/batch/edit-batch.php?type=covid19,/batch/add-batch-position.php?type=covid19,/batch/edit-batch-position.php?type=covid19', 'fa-solid fa-caret-right', 'no', 'allMenu covid19BatchCodeMenu', 72, 127, 'active', NULL),
-(133, 'covid19', 'no', 'Add Samples from Manifest', '/specimen-referral-manifest/specimenReferralManifestList.php?t=covid19', '/specimen-referral-manifest/addSpecimenReferralManifest.php?t=covid19,/specimen-referral-manifest/editSpecimenReferralManifest.php?t=covid19,/specimen-referral-manifest/move-manifest.php?t=covid19', 'fa-solid fa-caret-right', 'no', 'allMenu specimenReferralManifestListC19Menu', 72, 128, 'active', NULL),
-(134, 'covid19', 'no', 'Import Result From File', '/import-result/addImportResult.php?t=covid19', '/vl/requests/editVlRequest.php', 'fa-solid fa-caret-right', 'no', 'allMenu covid19ImportResultMenu', 73, 129, 'active', NULL),
-(135, 'covid19', 'no', 'Enter Result Manually', '/covid-19/results/covid-19-manual-results.php', '/covid-19/batch/covid-19-update-result.php', 'fa-solid fa-caret-right', 'no', 'allMenu covid19ResultsMenu', 73, 130, 'active', NULL),
-(136, 'covid19', 'no', 'Failed/Hold Samples', '/covid-19/results/covid-19-failed-results.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu covid19FailedResultsMenu', 73, 131, 'active', NULL),
-(137, 'covid19', 'no', 'Confirmation Manifest', '/covid-19/results/covid-19-confirmation-manifest.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu covid19ResultsConfirmationMenu', 73, 132, 'active', NULL),
-(138, 'covid19', 'no', 'Record Confirmatory Tests', '/covid-19/results/can-record-confirmatory-tests.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu canRecordConfirmatoryTestsCovid19Menu', 73, 133, 'active', NULL),
-(139, 'covid19', 'no', 'Manage Results Status', '/covid-19/results/covid-19-result-status.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu covid19ResultStatus', 73, 134, 'active', NULL),
-(140, 'covid19', 'no', 'Covid-19 QC Data', '/covid-19/results/covid-19-qc-data.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu covid19QcDataMenu', 73, 135, 'active', NULL),
-(141, 'covid19', 'no', 'Sample Status Report', '/covid-19/management/covid-19-sample-status.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu covid19SampleStatus', 74, 136, 'active', NULL),
-(142, 'covid19', 'no', 'Export Results', '/covid-19/management/covid-19-export-data.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu covid19ExportResult', 74, 137, 'active', NULL),
-(143, 'covid19', 'no', 'Print Result', '/covid-19/results/covid-19-print-results.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu covid19PrintResults', 74, 138, 'active', NULL),
-(144, 'covid19', 'no', 'Sample Rejection Report', '/covid-19/management/covid-19-sample-rejection-report.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu covid19SampleRejectionReport', 74, 139, 'active', NULL),
-(145, 'covid19', 'no', 'Clinic Reports', '/covid-19/management/covid-19-clinic-report.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu covid19ClinicReportMenu', 74, 140, 'active', NULL),
-(146, 'covid19', 'no', 'COVID-19 Testing Target Report', '/covid-19/management/covid19TestingTargetReport.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu covid19MonthlyThresholdReport', 74, 141, 'active', NULL),
-(147, 'hepatitis', 'no', 'View Test Requests', '/hepatitis/requests/hepatitis-requests.php', '/hepatitis/requests/hepatitis-edit-request.php', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisRequestMenu', 78, 142, 'active', NULL),
-(148, 'hepatitis', 'no', 'Add New Request', '/hepatitis/requests/hepatitis-add-request.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu addHepatitisRequestMenu', 78, 143, 'active', NULL),
-(149, 'hepatitis', 'no', 'Add Samples from Manifest', '/hepatitis/requests/add-samples-from-manifest.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu addSamplesFromManifestHepatitisMenu', 78, 144, 'active', NULL),
-(150, 'hepatitis', 'no', 'Manage Batch', '/batch/batches.php?type=hepatitis', '/batch/add-batch.php?type=hepatitis,/batch/edit-batch.php?type=hepatitis,/batch/add-batch-position.php?type=hepatitis,/batch/edit-batch-position.php?type=hepatitis', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisBatchCodeMenu', 78, 145, 'active', NULL),
-(151, 'hepatitis', 'no', 'Hepatitis Specimen Manifest', '/specimen-referral-manifest/specimenReferralManifestList.php?t=hepatitis', '/specimen-referral-manifest/addSpecimenReferralManifest.php?t=hepatitis,/specimen-referral-manifest/editSpecimenReferralManifest.php?t=hepatitis,/specimen-referral-manifest/move-manifest.php?t=hepatitis', 'fa-solid fa-caret-right', 'no', 'allMenu specimenReferralManifestListHepMenu', 78, 146, 'active', NULL),
-(152, 'hepatitis', 'no', 'Import Result From File', '/import-result/addImportResult.php?t=hepatitis', '/vl/requests/editVlRequest.php', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisImportResultMenu', 79, 146, 'active', NULL),
-(153, 'hepatitis', 'no', 'Enter Result Manually', '/hepatitis/results/hepatitis-manual-results.php', '/hepatitis/results/hepatitis-update-result.php', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisResultsMenu', 79, 147, 'active', NULL),
-(154, 'hepatitis', 'no', 'Failed/Hold Samples', '/hepatitis/results/hepatitis-failed-results.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisFailedResultsMenu', 79, 148, 'active', NULL),
-(155, 'hepatitis', 'no', 'Manage Results Status', '/hepatitis/results/hepatitis-result-status.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisResultStatus', 79, 149, 'active', NULL),
-(156, 'hepatitis', 'no', 'Sample Status Report', '/hepatitis/management/hepatitis-sample-status.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisSampleStatus', 80, 150, 'active', NULL),
-(157, 'hepatitis', 'no', 'Export Results', '/hepatitis/management/hepatitis-export-data.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisExportResult', 80, 151, 'active', NULL),
-(158, 'hepatitis', 'no', 'Print Result', '/hepatitis/results/hepatitis-print-results.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisPrintResults', 80, 152, 'active', NULL),
-(159, 'hepatitis', 'no', 'Sample Rejection Report', '/hepatitis/management/hepatitis-sample-rejection-report.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisSampleRejectionReport', 80, 153, 'active', NULL),
-(160, 'hepatitis', 'no', 'Clinic Reports', '/hepatitis/management/hepatitis-clinic-report.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisClinicReportMenu', 80, 154, 'active', NULL),
-(161, 'hepatitis', 'no', 'Hepatitis Testing Target Report', '/hepatitis/management/hepatitis-testing-target-report.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisMonthlyThresholdReport', 80, 155, 'active', NULL),
-(162, 'tb', 'no', 'View Test Requests', '/tb/requests/tb-requests.php', '/tb/requests/tb-edit-request.php', 'fa-solid fa-caret-right', 'no', 'allMenu tbRequestMenu', 81, 156, 'active', NULL),
-(163, 'tb', 'no', 'Add New Request', '/tb/requests/tb-add-request.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu addTbRequestMenu', 81, 157, 'active', NULL),
-(164, 'tb', 'no', 'Add Samples from Manifest', '/tb/requests/addSamplesFromManifest.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu addSamplesFromManifestTbMenu', 81, 158, 'active', NULL),
-(165, 'tb', 'no', 'Manage Batch', '/batch/batches.php?type=tb', '/batch/add-batch.php?type=tb,/batch/edit-batch.php?type=tb,/batch/add-batch-position.php?type=tb,/batch/edit-batch-position.php?type=tb', 'fa-solid fa-caret-right', 'no', 'allMenu tbBatchCodeMenu', 81, 159, 'active', NULL),
-(166, 'tb', 'no', 'TB Specimen Manifest', '/specimen-referral-manifest/specimenReferralManifestList.php?t=tb', '/specimen-referral-manifest/addSpecimenReferralManifest.php?t=tb,/specimen-referral-manifest/editSpecimenReferralManifest.php?t=tb,/specimen-referral-manifest/move-manifest.php?t=tb', 'fa-solid fa-caret-right', 'no', 'allMenu specimenReferralManifestListTbMenu', 81, 160, 'active', NULL),
-(167, 'tb', 'no', 'Import Result From File', '/import-result/addImportResult.php?t=tb', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu tbImportResultMenu', 82, 161, 'active', NULL),
-(168, 'tb', 'no', 'Enter Result Manually', '/tb/results/tb-manual-results.php', '/tb/results/tb-update-result.php', 'fa-solid fa-caret-right', 'no', 'allMenu tbResultsMenu', 82, 162, 'active', NULL),
-(169, 'tb', 'no', 'Failed/Hold Samples', '/tb/results/tb-failed-results.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu tbFailedResultsMenu', 82, 163, 'active', NULL),
-(170, 'tb', 'no', 'Manage Results Status', '/tb/results/tb-result-status.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu tbResultStatus', 82, 164, 'active', NULL),
-(171, 'tb', 'no', 'Sample Status Report', '/tb/management/tb-sample-status.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu tbSampleStatus', 83, 165, 'active', NULL),
-(172, 'tb', 'no', 'Print Result', '/tb/results/tb-print-results.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu tbPrintResults', 83, 166, 'active', NULL),
-(173, 'tb', 'no', 'Export Results', '/tb/management/tb-export-data.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu tbExportResult', 83, 167, 'active', NULL),
-(174, 'tb', 'no', 'Sample Rejection Report', '/tb/management/tb-sample-rejection-report.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu tbSampleRejectionReport', 83, 168, 'active', NULL),
-(175, 'tb', 'no', 'Clinic Reports', '/tb/management/tb-clinic-report.php', NULL, 'fa-solid fa-caret-right', 'no', 'allMenu tbClinicReport', 83, 169, 'active', NULL);
+INSERT INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES
+(1, 'dashboard', 'no', 'Dashboard', '/dashboard/index.php', NULL, 'always', 'fa-solid fa-chart-pie', 'no', 'allMenu dashboardMenu', 0, 1, 'active', NULL),
+(2, 'admin', 'no', 'Admin', NULL, NULL, 'always', 'fa-solid fa-shield', 'yes', NULL, 0, 2, 'active', NULL),
+(3, 'admin', 'no', 'Access Control', '', NULL, 'always', 'fa-solid fa-user', 'yes', 'treeview access-control-menu', 2, 3, 'active', NULL),
+(4, 'admin', 'no', 'Roles', '/roles/roles.php', '/roles/addRole.php,/roles/editRole.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu roleMenu', 3, 4, 'active', NULL),
+(5, 'admin', 'no', 'Users', '/users/users.php', '/users/addUser.php,/users/editUser.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu userMenu', 3, 5, 'active', NULL),
+(6, 'admin', 'no', 'Facilities', '/facilities/facilities.php', '/facilities/addFacility.php,/facilities/editFacility.php,/facilities/mapTestType.php', 'always', 'fa-solid fa-hospital', 'no', 'treeview facility-config-menu', 2, 6, 'active', NULL),
+(7, 'admin', 'no', 'Monitoring', NULL, NULL, 'always', 'fa-solid fa-bullseye', 'yes', 'treeview monitoring-menu', 2, 7, 'active', NULL),
+(8, 'admin', 'no', 'System Configuration', NULL, NULL, 'always', 'fa-solid fa-gears', 'yes', 'treeview system-config-menu', 2, 8, 'active', NULL),
+(9, 'admin', 'no', 'Lab Tests Config', NULL, NULL, 'always', 'fa-solid fa-vial-circle-check', 'yes', 'treeview generic-reference-manage', 2, 9, 'active', NULL),
+(10, 'admin', 'no', 'VL Config', NULL, NULL, 'always', 'fa-solid fa-flask-vial', 'yes', 'treeview vl-reference-manage', 2, 10, 'active', NULL),
+(11, 'admin', 'no', 'EID Config', NULL, NULL, 'always', 'fa-solid fa-vial-circle-check', 'yes', 'treeview generic-reference-manage', 2, 11, 'active', NULL),
+(12, 'admin', 'no', 'Covid-19 Config', NULL, NULL, 'always', 'fa-solid fa-virus-covid', 'yes', 'treeview covid19-reference-manage', 2, 12, 'active', NULL),
+(13, 'admin', 'no', 'Hepatitis Config', NULL, NULL, 'always', 'fa-solid fa-square-h', 'yes', 'treeview hepatitis-reference-manage', 2, 13, 'active', NULL),
+(14, 'admin', 'no', 'TB Config', NULL, NULL, 'always', 'fa-solid fa-heart-pulse', 'yes', 'treeview tb-reference-manage', 2, 14, 'active', NULL),
+(15, 'admin', 'no', 'User Activity Log', '/admin/monitoring/activity-log.php', NULL, 'always', 'fa-solid fa-file-lines', 'no', 'allMenu treeview activity-log-menu', 7, 15, 'active', NULL),
+(16, 'admin', 'no', 'Audit Trail', '/admin/monitoring/audit-trail.php', NULL, 'always', 'fa-solid fa-clock-rotate-left', 'no', 'allMenu treeview audit-trail-menu', 7, 16, 'active', NULL),
+(17, 'admin', 'no', 'API History', '/admin/monitoring/api-sync-history.php', NULL, 'always', 'fa-solid fa-circle-nodes', 'no', 'allMenu treeview api-sync-history-menu', 7, 17, 'active', NULL),
+(18, 'admin', 'no', 'Source of Requests', '/admin/monitoring/sources-of-requests.php', NULL, 'always', 'fa-solid fa-circle-notch', 'no', 'allMenu treeview sources-of-requests-report-menu', 7, 18, 'active', NULL),
+(19, 'admin', 'no', 'General Configuration', '/global-config/editGlobalConfig.php', '/global-config/editGlobalConfig.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu globalConfigMenu', 8, 19, 'active', NULL),
+(20, 'admin', 'no', 'Instruments', '/import-configs/importConfig.php', '/import-configs/addImportConfig.php,/import-configs/editImportConfig.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu importConfigMenu', 8, 20, 'active', NULL),
+(21, 'admin', 'no', 'Geographical Divisions', '/common/reference/geographical-divisions-details.php', '/common/reference/add-geographical-divisions.php,/common/reference/edit-geographical-divisions.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu geographicalMenu', 8, 21, 'active', NULL),
+(22, 'admin', 'no', 'Implementation Partners', '/common/reference/implementation-partners.php', '/common/reference/add-implementation-partners.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-reference-implementation-partners', 8, 22, 'active', NULL),
+(23, 'admin', 'no', 'Funding Sources', '/common/reference/funding-sources.php', '/common/reference/add-funding-sources.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-reference-funding-sources', 8, 23, 'active', NULL),
+(24, 'admin', 'no', 'Sample Types', '/generic-tests/reference/sample-types/generic-sample-type.php', '/generic-tests/reference/sample-types/generic-add-sample-type.php,/generic-tests/reference/sample-types/generic-edit-sample-type.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericSampleTypeMenu', 9, 24, 'active', NULL),
+(25, 'admin', 'no', 'Testing Reasons', '/generic-tests/reference/testing-reasons/generic-testing-reason.php', '/generic-tests/reference/testing-reasons/generic-add-testing-reason.php,/generic-tests/reference/testing-reasons/generic-edit-testing-reason.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestingReasonMenu', 9, 25, 'active', NULL),
+(26, 'admin', 'no', 'Test Failure Reasons', '/generic-tests/reference/test-failure-reasons/generic-test-failure-reason.php', '/generic-tests/reference/test-failure-reasons/generic-add-test-failure-reason.php,/generic-tests/reference/test-failure-reasons/generic-edit-test-failure-reason.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestFailureReasonMenu', 9, 26, 'active', NULL),
+(27, 'admin', 'no', 'Symptoms', '/generic-tests/reference/symptoms/generic-symptoms.php', '/generic-tests/reference/symptoms/generic-add-symptoms.php,/generic-tests/reference/symptoms/generic-edit-symptoms.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericSymptomsMenu', 9, 27, 'active', NULL),
+(28, 'admin', 'no', 'Sample Rejection Reasons', '/generic-tests/reference/sample-rejection-reasons/generic-sample-rejection-reasons.php', '/generic-tests/reference/sample-types/generic-add-sample-type.php,/generic-tests/reference/sample-rejection-reasons/generic-edit-rejection-reasons.php,/generic-tests/reference/sample-rejection-reasons/generic-add-rejection-reasons.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericSampleRejectionReasonsMenu', 9, 28, 'active', NULL),
+(29, 'admin', 'no', 'Test Result Units', '/generic-tests/reference/test-result-units/generic-test-result-units.php', '/generic-tests/reference/test-result-units/generic-add-test-result-units.php,/generic-tests/reference/test-result-units/generic-edit-test-result-units.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestResultUnitsMenu', 9, 29, 'active', NULL),
+(30, 'admin', 'no', 'Test Methods', '/generic-tests/reference/test-methods/generic-test-methods.php', '/generic-tests/reference/test-methods/generic-add-test-methods.php,/generic-tests/reference/test-methods/generic-edit-test-methods.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestMethodsMenu', 9, 30, 'active', NULL),
+(31, 'admin', 'no', 'Test Categories', '/generic-tests/reference/test-categories/generic-test-categories.php', '/generic-tests/reference/test-categories/generic-add-test-categories.php,/generic-tests/reference/test-categories/generic-edit-test-categories.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestCategoriesMenu', 9, 31, 'active', NULL),
+(32, 'admin', 'no', 'Test Type Configuration', '/generic-tests/configuration/test-type.php', '/generic-tests/configuration/add-test-type.php,/generic-tests/configuration/edit-test-type.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu testTypeConfigurationMenu', 9, 31, 'active', NULL),
+(33, 'admin', 'no', 'ART Regimen', '/vl/reference/vl-art-code-details.php', '/vl/reference/add-vl-art-code-details.php,/vl/reference/edit-vl-art-code-details.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vl-art-code-details', 10, 26, 'active', NULL),
+(34, 'admin', 'no', 'Rejection Reasons', '/vl/reference/vl-sample-rejection-reasons.php', '/vl/reference/add-vl-sample-rejection-reasons.php,/vl/reference/edit-vl-sample-rejection-reasons.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vl-sample-rejection-reasons', 10, 27, 'active', NULL),
+(35, 'admin', 'no', 'Sample Type', '/vl/reference/vl-sample-type.php', '/vl/reference/add-vl-sample-type.php,/vl/reference/edit-vl-sample-type.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vl-sample-type', 10, 28, 'active', NULL),
+(36, 'admin', 'no', 'Results', '/vl/reference/vl-results.php', '/vl/reference/add-vl-results.php,/vl/reference/edit-vl-results.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vl-results', 10, 29, 'active', NULL),
+(37, 'admin', 'no', 'Test Reasons', '/vl/reference/vl-test-reasons.php', '/vl/reference/add-vl-test-reasons.php,/vl/reference/edit-vl-test-reasons.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vl-test-reasons', 10, 30, 'active', NULL),
+(38, 'admin', 'no', 'Test Failure Reasons', '/vl/reference/vl-test-failure-reasons.php', '/vl/reference/add-vl-test-failure-reason.php,/vl/reference/edit-vl-test-failure-reason.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vl-test-failure-reasons', 10, 38, 'active', NULL),
+(39, 'admin', 'no', 'Rejection Reasons', '/eid/reference/eid-sample-rejection-reasons.php', '/eid/reference/add-eid-sample-rejection-reasons.php,/eid/reference/edit-eid-sample-rejection-reasons.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu eid-sample-rejection-reasons', 11, 38, 'active', NULL),
+(40, 'admin', 'no', 'Sample Type', '/eid/reference/eid-sample-type.php', '/eid/reference/add-eid-sample-type.php,/eid/reference/edit-eid-sample-type.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu eid-sample-type', 11, 39, 'active', NULL),
+(41, 'admin', 'no', 'Test Reasons', '/eid/reference/eid-test-reasons.php', '/eid/reference/add-eid-test-reasons.php,/eid/reference/edit-eid-test-reasons.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu eid-test-reasons', 11, 40, 'active', NULL),
+(42, 'admin', 'no', 'Results', '/eid/reference/eid-results.php', '/eid/reference/add-eid-results.php,/eid/reference/edit-eid-results.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu eid-results', 11, 41, 'active', NULL),
+(43, 'admin', 'no', 'Co-morbidities', '/covid-19/reference/covid19-comorbidities.php', '/covid-19/reference/add-covid19-comorbidities.php,/covid-19/reference/edit-covid19-comorbidities.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid19-comorbidities', 12, 42, 'active', NULL),
+(44, 'admin', 'no', 'Rejection Reasons', '/covid-19/reference/eid-sample-rejection-reasons.php', '/covid-19/reference/add-covid-19-sample-rejection-reasons.php,/covid-19/reference/edit-covid-19-sample-rejection-reasons.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid19-sample-rejection-reasons', 12, 43, 'active', NULL),
+(45, 'admin', 'no', 'Sample Type', '/covid-19/reference/eid-sample-type.php', '/covid-19/reference/add-covid-19-sample-type.php,/covid-19/reference/edit-covid-19-sample-type.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid19-sample-type', 12, 44, 'active', NULL),
+(46, 'admin', 'no', 'Symptoms', '/covid-19/reference/covid19-symptoms.php', '/covid-19/reference/add-covid19-symptoms.php,/covid-19/reference/edit-covid19-symptoms.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid19-symptoms', 12, 45, 'active', NULL),
+(47, 'admin', 'no', 'Test Reasons', '/covid-19/reference/covid-19-test-reasons.php', '/covid-19/reference/add-covid-19-test-reasons.php,/covid-19/reference/edit-covid-19-test-reasons.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid-19-test-reasons', 12, 46, 'active', NULL),
+(48, 'admin', 'no', 'Results', '/covid-19/reference/covid-19-results.php', '/covid-19/reference/add-covid-19-results.php,/covid-19/reference/edit-covid-19-results.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid19-results', 12, 47, 'active', NULL),
+(49, 'admin', 'no', 'QC Test Kits', '/covid-19/reference/covid19-qc-test-kits.php', '/covid-19/reference/add-covid19-qc-test-kit.php,/covid-19/reference/edit-covid19-qc-test-kit.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid19-qc-test-kits', 12, 48, 'active', NULL),
+(50, 'admin', 'no', 'Co-morbidities', '/hepatitis/reference/hepatitis-comorbidities.php', '/hepatitis/reference/add-hepatitis-comorbidities.php,/hepatitis/reference/edit-hepatitis-comorbidities.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitis-comorbidities', 13, 50, 'active', NULL),
+(51, 'admin', 'no', 'Risk Factors', '/hepatitis/reference/hepatitis-risk-factors.php', '/hepatitis/reference/add-hepatitis-risk-factors.php,/hepatitis/reference/edit-hepatitis-risk-factors.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitis-risk-factors', 13, 51, 'active', NULL),
+(52, 'admin', 'no', 'Rejection Reasons', '/hepatitis/reference/hepatitis-sample-rejection-reasons.php', '/hepatitis/reference/add-hepatitis-sample-rejection-reasons.php,/hepatitis/reference/edit-hepatitis-sample-rejection-reasons.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitis-sample-rejection-reasons', 13, 52, 'active', NULL),
+(53, 'admin', 'no', 'Sample Type', '/hepatitis/reference/hepatitis-sample-type.php', '/hepatitis/reference/add-hepatitis-sample-type.php,/hepatitis/reference/edit-hepatitis-sample-type.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitis-sample-type', 13, 53, 'active', NULL),
+(54, 'admin', 'no', 'Results', '/hepatitis/reference/hepatitis-results.php', '/hepatitis/reference/add-hepatitis-results.php,/hepatitis/reference/edit-hepatitis-results.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitis-results', 13, 54, 'active', NULL),
+(55, 'admin', 'no', 'Test Reasons', '/hepatitis/reference/hepatitis-test-reasons.php', '/hepatitis/reference/add-hepatitis-test-reasons.php,/hepatitis/reference/edit-hepatitis-test-reasons.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitis-test-reasons', 13, 55, 'active', NULL),
+(56, 'admin', 'no', 'Rejection Reasons', '/tb/reference/tb-sample-rejection-reasons.php', '/tb/reference/add-tb-sample-rejection-reason.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tb-sample-rejection-reasons', 14, 56, 'active', NULL),
+(57, 'admin', 'no', 'Sample Type', '/tb/reference/tb-sample-type.php', '/tb/reference/add-tb-sample-type.php,/tb/reference/edit-tb-sample-type.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tb-sample-type', 14, 57, 'active', NULL),
+(58, 'admin', 'no', 'Test Reasons', '/tb/reference/tb-test-reasons.php', '/tb/reference/add-tb-test-reasons.php,/tb/reference/edit-tb-test-reasons.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tb-test-reasons', 14, 58, 'active', NULL),
+(59, 'admin', 'no', 'Results', '/tb/reference/tb-results.php', '/tb/reference/add-tb-results.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tb-results', 14, 59, 'active', NULL),
+(60, 'genericTests', 'yes', 'LAB TESTS', NULL, NULL, 'always', NULL, 'yes', 'header', 0, 60, 'active', NULL),
+(61, 'genericTests', 'no', 'Request Management', NULL, NULL, 'always', 'fa-solid fa-pen-to-square', 'yes', 'treeview allMenu generic-test-request-menu', 60, 61, 'active', NULL),
+(62, 'genericTests', 'no', 'Test Result Management', NULL, NULL, 'always', 'fa-solid fa-list-check', 'yes', 'treeview allMenu generic-test-results-menu', 60, 62, 'active', NULL),
+(63, 'genericTests', 'no', 'Management', NULL, NULL, 'always', 'fa-solid fa-book', 'yes', 'treeview allMenu generic-test-request-menu', 60, 63, 'active', NULL),
+(64, 'vl', 'yes', 'HIV VIRAL LOAD', NULL, NULL, 'always', NULL, 'yes', 'header', 0, 64, 'active', NULL),
+(65, 'eid', 'yes', 'EARLY INFANT DIAGNOSIS (EID)', NULL, NULL, 'always', NULL, 'yes', 'header', 0, 65, 'active', NULL),
+(66, 'covid19', 'yes', 'COVID-19', NULL, NULL, 'always', NULL, 'yes', 'header', 0, 66, 'active', NULL),
+(67, 'hepatitis', 'yes', 'HEPATITIS', NULL, NULL, 'always', NULL, 'yes', 'header', 0, 67, 'active', NULL),
+(68, 'tb', 'yes', 'TUBERCULOSIS', NULL, NULL, 'always', NULL, 'yes', 'header', 0, 68, 'active', NULL),
+(69, 'vl', 'no', 'Request Management', NULL, NULL, 'always', 'fa-solid fa-pen-to-square', 'yes', 'treeview request', 64, 69, 'active', NULL),
+(70, 'vl', 'no', 'Test Result Management', NULL, NULL, 'always', 'fa-solid fa-list-check', 'yes', 'treeview test', 64, 70, 'active', NULL),
+(71, 'vl', 'no', 'Management', NULL, NULL, 'always', 'fa-solid fa-book', 'yes', 'treeview program', 64, 71, 'active', NULL),
+(72, 'covid19', 'no', 'Request Management', NULL, NULL, 'always', 'fa-solid fa-pen-to-square', 'yes', 'treeview covid19Request', 66, 72, 'active', NULL),
+(73, 'covid19', 'no', 'Test Result Management', NULL, NULL, 'always', 'fa-solid fa-list-check', 'yes', 'treeview covid19Results', 66, 73, 'active', NULL),
+(74, 'covid19', 'no', 'Management', NULL, NULL, 'always', 'fa-solid fa-book', 'yes', 'treeview covid19ProgramMenu', 66, 74, 'active', NULL),
+(75, 'eid', 'no', 'Request Management', NULL, NULL, 'always', 'fa-solid fa-pen-to-square', 'yes', 'treeview eidRequest', 65, 75, 'active', NULL),
+(76, 'eid', 'no', 'Test Result Management', NULL, NULL, 'always', 'fa-solid fa-list-check', 'yes', 'treeview eidResults', 65, 76, 'active', NULL),
+(77, 'eid', 'no', 'Management', NULL, NULL, 'always', 'fa-solid fa-book', 'yes', 'treeview eidProgramMenu', 65, 77, 'active', NULL),
+(78, 'hepatitis', 'no', 'Request Management', NULL, NULL, 'always', 'fa-solid fa-pen-to-square', 'yes', 'treeview hepatitisRequest', 67, 78, 'active', NULL),
+(79, 'hepatitis', 'no', 'Test Result Management', NULL, NULL, 'always', 'fa-solid fa-list-check', 'yes', 'treeview hepatitisResults', 67, 79, 'active', NULL),
+(80, 'hepatitis', 'no', 'Management', NULL, NULL, 'always', 'fa-solid fa-book', 'yes', 'treeview hepatitisProgramMenu', 67, 80, 'active', NULL),
+(81, 'tb', 'no', 'Request Management', NULL, NULL, 'always', 'fa-solid fa-pen-to-square', 'yes', 'treeview tbRequest', 68, 81, 'active', NULL),
+(82, 'tb', 'no', 'Test Result Management', NULL, NULL, 'always', 'fa-solid fa-list-check', 'yes', 'treeview tbResults', 68, 82, 'active', NULL),
+(83, 'tb', 'no', 'Management', NULL, NULL, 'always', 'fa-solid fa-book', 'yes', 'treeview tbProgramMenu', 68, 83, 'active', NULL),
+(84, 'genericTests', 'no', 'View Test Requests', '/generic-tests/requests/view-requests.php', '/generic-tests/requests/edit-request.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericRequestMenu', 61, 84, 'active', NULL),
+(85, 'genericTests', 'no', 'Add New Request', '/generic-tests/requests/add-request.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu addGenericRequestMenu', 61, 85, 'active', NULL),
+(86, 'genericTests', 'no', 'Add Samples from Manifest', '/generic-tests/requests/add-samples-from-manifest.php', '/generic-tests/requests/edit-request.php', 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu addGenericSamplesFromManifestMenu', 61, 86, 'active', NULL),
+(87, 'genericTests', 'no', 'Manage Batch', '/batch/batches.php?type=generic-tests', '/batch/add-batch.php?type=generic-tests,/batch/edit-batch.php?type=generic-tests,/batch/add-batch-position.php?type=generic-tests,/batch/edit-batch-position.php?type=generic-tests', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu batchGenericCodeMenu', 61, 87, 'active', NULL),
+(88, 'genericTests', 'no', 'Lab Test Manifest', '/specimen-referral-manifest/view-manifests.php?t=generic-tests', '/specimen-referral-manifest/add-manifest.php?t=generic-tests,/specimen-referral-manifest/edit-manifest.php?t=generic-tests,/specimen-referral-manifest/move-manifest.php?t=generic-tests', 'sts', 'fa-solid fa-caret-right', 'no', 'allMenu specimenGenericReferralManifestListMenu', 61, 88, 'active', NULL),
+(89, 'genericTests', 'no', 'Enter Result Manually', '/generic-tests/results/generic-test-results.php', '/generic-tests/results/update-generic-test-result.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestResultMenu', 62, 88, 'active', NULL),
+(90, 'genericTests', 'no', 'Failed/Hold Samples', '/generic-tests/results/generic-failed-results.php', '/generic-tests/results/update-generic-test-result.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericFailedResultMenu', 62, 88, 'active', NULL),
+(91, 'genericTests', 'no', 'Manage Results Status', '/generic-tests/results/generic-result-approval.php', '/generic-tests/results/update-generic-test-result.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericResultApprovalMenu', 62, 88, 'active', NULL),
+(92, 'genericTests', 'no', 'Sample Status Report', '/generic-tests/program-management/generic-sample-status.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericStatusReportMenu', 62, 88, 'active', NULL),
+(93, 'genericTests', 'no', 'Export Results', '/generic-tests/program-management/generic-export-data.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericExportMenu', 63, 89, 'active', NULL),
+(94, 'genericTests', 'no', 'Print Result', '/generic-tests/results/generic-print-result.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericPrintResultMenu', 63, 90, 'active', NULL),
+(95, 'genericTests', 'no', 'Sample Rejection Report', '/generic-tests/program-management/sample-rejection-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericSampleRejectionReport', 63, 91, 'active', NULL),
+(96, 'vl', 'no', 'View Test Requests', '/vl/requests/vlRequest.php', '/vl/requests/editVlRequest.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlRequestMenu', 69, 92, 'active', NULL),
+(97, 'vl', 'no', 'Add New Request', '/vl/requests/addVlRequest.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu addVlRequestMenu', 69, 93, 'active', NULL),
+(98, 'vl', 'no', 'Add Samples from Manifest', '/vl/requests/addSamplesFromManifest.php', NULL, 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu addSamplesFromManifestMenu', 69, 94, 'active', NULL),
+(99, 'vl', 'no', 'Manage Batch', '/batch/batches.php?type=vl', '/batch/add-batch.php?type=vl,/batch/edit-batch.php?type=vl,/batch/edit-batch-position.php?type=vl', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu batchCodeMenu', 69, 95, 'active', NULL),
+(100, 'vl', 'no', 'VL Manifest', '/specimen-referral-manifest/view-manifests.php?t=vl', '/specimen-referral-manifest/add-manifest.php?t=vl,/specimen-referral-manifest/edit-manifest.php?t=vl,/specimen-referral-manifest/move-manifest.php?t=vl', 'sts', 'fa-solid fa-caret-right', 'no', 'allMenu specimenReferralManifestListVLMenu', 69, 96, 'active', NULL),
+(101, 'vl', 'no', 'Import Result From File', '/import-result/import-file.php?t=vl', '/vl/requests/editVlRequest.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu importResultMenu', 70, 97, 'active', NULL),
+(102, 'vl', 'no', 'Enter Result Manually', '/vl/results/vlTestResult.php', '/vl/results/updateVlTestResult.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlTestResultMenu', 70, 98, 'active', NULL),
+(103, 'vl', 'no', 'Failed/Hold Samples', '/vl/results/vl-failed-results.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlFailedResultMenu', 70, 99, 'active', NULL),
+(104, 'vl', 'no', 'Manage Results Status', '/vl/results/vlResultApproval.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu batchCodeMenu', 70, 100, 'active', NULL),
+(105, 'vl', 'no', 'Sample Status Report', '/vl/program-management/vl-sample-status.php', '/vl/requests/editVlRequest.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu missingResultMenu', 71, 100, 'active', NULL),
+(106, 'vl', 'no', 'Control Report', '/vl/program-management/vlControlReport.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlResultMenu', 71, 101, 'active', NULL),
+(107, 'vl', 'no', 'Export Results', '/vl/program-management/vl-export-data.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlResultMenu', 71, 102, 'active', NULL),
+(108, 'vl', 'no', 'Print Result', '/vl/results/vlPrintResult.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlPrintResultMenu', 71, 103, 'active', NULL),
+(109, 'vl', 'no', 'Clinic Reports', '/vl/program-management/highViralLoad.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlHighMenu', 71, 104, 'active', NULL),
+(110, 'vl', 'no', 'VL Lab Weekly Report', '/vl/program-management/vlWeeklyReport.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlWeeklyReport', 71, 105, 'active', NULL),
+(111, 'vl', 'no', 'Sample Rejection Report', '/vl/program-management/sampleRejectionReport.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu sampleRejectionReport', 71, 106, 'active', NULL),
+(112, 'vl', 'no', 'Sample Monitoring Report', '/vl/program-management/vlMonitoringReport.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlMonitoringReport', 71, 107, 'active', NULL),
+(113, 'vl', 'no', 'VL Testing Target Report', '/vl/program-management/vlTestingTargetReport.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlMonthlyThresholdReport', 71, 108, 'active', NULL),
+(114, 'eid', 'no', 'View Test Requests', '/eid/requests/eid-requests.php', '/eid/requests/eid-edit-request.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu eidRequestMenu', 75, 109, 'active', NULL),
+(115, 'eid', 'no', 'Add New Request', '/eid/requests/eid-add-request.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu addEidRequestMenu', 75, 110, 'active', NULL),
+(116, 'eid', 'no', 'Add Samples from Manifest', '/eid/requests/addSamplesFromManifest.php', NULL, 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu addSamplesFromManifestEidMenu', 75, 111, 'active', NULL),
+(117, 'eid', 'no', 'Manage Batch', '/batch/batches.php?type=eid', '/batch/add-batch.php?type=eid,/batch/edit-batch.php?type=eid,/batch/add-batch-position.php?type=eid,/batch/edit-batch-position.php?type=eid', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu eidBatchCodeMenu', 75, 112, 'active', NULL),
+(118, 'eid', 'no', 'EID Manifest', '/specimen-referral-manifest/view-manifests.php?t=eid', '/specimen-referral-manifest/add-manifest.php?t=eid,/specimen-referral-manifest/edit-manifest.php?t=eid,/specimen-referral-manifest/move-manifest.php?t=eid', 'sts', 'fa-solid fa-caret-right', 'no', 'allMenu specimenReferralManifestListEIDMenu', 75, 113, 'active', NULL),
+(119, 'eid', 'no', 'Import Result From File', '/import-result/import-file.php?t=eid', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu eidImportResultMenu', 76, 114, 'active', NULL),
+(120, 'eid', 'no', 'Enter Result Manually', '/eid/results/eid-manual-results.php', '/eid/results/eid-update-result.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu eidResultsMenu', 76, 115, 'active', NULL),
+(121, 'eid', 'no', 'Failed/Hold Samples', '/eid/results/eid-failed-results.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu eidFailedResultsMenu', 76, 116, 'active', NULL),
+(122, 'eid', 'no', 'Manage Results Status', '/eid/results/eid-result-status.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu eidResultStatus', 76, 117, 'active', NULL),
+(123, 'eid', 'no', 'Sample Status Report', '/eid/management/eid-sample-status.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu eidSampleStatus', 77, 118, 'active', NULL),
+(124, 'eid', 'no', 'Export Results', '/eid/management/eid-export-data.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu eidExportResult', 77, 119, 'active', NULL),
+(125, 'eid', 'no', 'Print Result', '/eid/results/eid-print-results.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu eidPrintResults', 77, 120, 'active', NULL),
+(126, 'eid', 'no', 'Sample Rejection Report', '/eid/management/eid-sample-rejection-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu eidSampleRejectionReport', 77, 121, 'active', NULL),
+(127, 'eid', 'no', 'Clinic Report', '/eid/management/eid-clinic-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu eidClinicReport', 77, 122, 'active', NULL),
+(128, 'eid', 'no', 'EID Testing Target Report', '/eid/management/eidTestingTargetReport.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu eidMonthlyThresholdReport', 77, 123, 'active', NULL),
+(129, 'covid19', 'no', 'View Test Requests', '/covid-19/requests/covid-19-requests.php', '/covid-19/requests/covid-19-edit-request.php,/covid-19/requests/covid-19-bulk-import-request.php,/covid-19/requests/covid-19-quick-add.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid19RequestMenu', 72, 124, 'active', NULL),
+(130, 'covid19', 'no', 'Add New Request', '/covid-19/requests/covid-19-add-request.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu addCovid19RequestMenu', 72, 125, 'active', NULL),
+(131, 'covid19', 'no', 'Add Samples from Manifest', '/covid-19/requests/addSamplesFromManifest.php', NULL, 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu addSamplesFromManifestCovid19Menu', 72, 126, 'active', NULL),
+(132, 'covid19', 'no', 'Manage Batch', '/batch/batches.php?type=covid19', '/batch/add-batch.php?type=covid19,/batch/edit-batch.php?type=covid19,/batch/add-batch-position.php?type=covid19,/batch/edit-batch-position.php?type=covid19', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid19BatchCodeMenu', 72, 127, 'active', NULL),
+(133, 'covid19', 'no', 'Covid-19 Manifest', '/specimen-referral-manifest/view-manifests.php?t=covid19', '/specimen-referral-manifest/add-manifest.php?t=covid19,/specimen-referral-manifest/edit-manifest.php?t=covid19,/specimen-referral-manifest/move-manifest.php?t=covid19', 'sts', 'fa-solid fa-caret-right', 'no', 'allMenu specimenReferralManifestListC19Menu', 72, 128, 'active', NULL),
+(134, 'covid19', 'no', 'Import Result From File', '/import-result/import-file.php?t=covid19', '/vl/requests/editVlRequest.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid19ImportResultMenu', 73, 129, 'active', NULL),
+(135, 'covid19', 'no', 'Enter Result Manually', '/covid-19/results/covid-19-manual-results.php', '/covid-19/batch/covid-19-update-result.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid19ResultsMenu', 73, 130, 'active', NULL),
+(136, 'covid19', 'no', 'Failed/Hold Samples', '/covid-19/results/covid-19-failed-results.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid19FailedResultsMenu', 73, 131, 'active', NULL),
+(137, 'covid19', 'no', 'Confirmation Manifest', '/covid-19/results/covid-19-confirmation-manifest.php', NULL, 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu covid19ResultsConfirmationMenu', 73, 132, 'active', NULL),
+(138, 'covid19', 'no', 'Record Confirmatory Tests', '/covid-19/results/can-record-confirmatory-tests.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu canRecordConfirmatoryTestsCovid19Menu', 73, 133, 'active', NULL),
+(139, 'covid19', 'no', 'Manage Results Status', '/covid-19/results/covid-19-result-status.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid19ResultStatus', 73, 134, 'active', NULL),
+(140, 'covid19', 'no', 'Covid-19 QC Data', '/covid-19/results/covid-19-qc-data.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid19QcDataMenu', 73, 135, 'active', NULL),
+(141, 'covid19', 'no', 'Sample Status Report', '/covid-19/management/covid-19-sample-status.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid19SampleStatus', 74, 136, 'active', NULL),
+(142, 'covid19', 'no', 'Export Results', '/covid-19/management/covid-19-export-data.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid19ExportResult', 74, 137, 'active', NULL),
+(143, 'covid19', 'no', 'Print Result', '/covid-19/results/covid-19-print-results.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid19PrintResults', 74, 138, 'active', NULL),
+(144, 'covid19', 'no', 'Sample Rejection Report', '/covid-19/management/covid-19-sample-rejection-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid19SampleRejectionReport', 74, 139, 'active', NULL),
+(145, 'covid19', 'no', 'Clinic Reports', '/covid-19/management/covid-19-clinic-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid19ClinicReportMenu', 74, 140, 'active', NULL),
+(146, 'covid19', 'no', 'COVID-19 Testing Target Report', '/covid-19/management/covid19TestingTargetReport.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid19MonthlyThresholdReport', 74, 141, 'active', NULL),
+(147, 'hepatitis', 'no', 'View Test Requests', '/hepatitis/requests/hepatitis-requests.php', '/hepatitis/requests/hepatitis-edit-request.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisRequestMenu', 78, 142, 'active', NULL),
+(148, 'hepatitis', 'no', 'Add New Request', '/hepatitis/requests/hepatitis-add-request.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu addHepatitisRequestMenu', 78, 143, 'active', NULL),
+(149, 'hepatitis', 'no', 'Add Samples from Manifest', '/hepatitis/requests/add-samples-from-manifest.php', NULL, 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu addSamplesFromManifestHepatitisMenu', 78, 144, 'active', NULL),
+(150, 'hepatitis', 'no', 'Manage Batch', '/batch/batches.php?type=hepatitis', '/batch/add-batch.php?type=hepatitis,/batch/edit-batch.php?type=hepatitis,/batch/add-batch-position.php?type=hepatitis,/batch/edit-batch-position.php?type=hepatitis', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisBatchCodeMenu', 78, 145, 'active', NULL),
+(151, 'hepatitis', 'no', 'Hepatitis Manifest', '/specimen-referral-manifest/view-manifests.php?t=hepatitis', '/specimen-referral-manifest/add-manifest.php?t=hepatitis,/specimen-referral-manifest/edit-manifest.php?t=hepatitis,/specimen-referral-manifest/move-manifest.php?t=hepatitis', 'sts', 'fa-solid fa-caret-right', 'no', 'allMenu specimenReferralManifestListHepMenu', 78, 146, 'active', NULL),
+(152, 'hepatitis', 'no', 'Import Result From File', '/import-result/import-file.php?t=hepatitis', '/vl/requests/editVlRequest.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisImportResultMenu', 79, 146, 'active', NULL),
+(153, 'hepatitis', 'no', 'Enter Result Manually', '/hepatitis/results/hepatitis-manual-results.php', '/hepatitis/results/hepatitis-update-result.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisResultsMenu', 79, 147, 'active', NULL),
+(154, 'hepatitis', 'no', 'Failed/Hold Samples', '/hepatitis/results/hepatitis-failed-results.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisFailedResultsMenu', 79, 148, 'active', NULL),
+(155, 'hepatitis', 'no', 'Manage Results Status', '/hepatitis/results/hepatitis-result-status.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisResultStatus', 79, 149, 'active', NULL),
+(156, 'hepatitis', 'no', 'Sample Status Report', '/hepatitis/management/hepatitis-sample-status.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisSampleStatus', 80, 150, 'active', NULL),
+(157, 'hepatitis', 'no', 'Export Results', '/hepatitis/management/hepatitis-export-data.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisExportResult', 80, 151, 'active', NULL),
+(158, 'hepatitis', 'no', 'Print Result', '/hepatitis/results/hepatitis-print-results.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisPrintResults', 80, 152, 'active', NULL),
+(159, 'hepatitis', 'no', 'Sample Rejection Report', '/hepatitis/management/hepatitis-sample-rejection-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisSampleRejectionReport', 80, 153, 'active', NULL),
+(160, 'hepatitis', 'no', 'Clinic Reports', '/hepatitis/management/hepatitis-clinic-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisClinicReportMenu', 80, 154, 'active', NULL),
+(161, 'hepatitis', 'no', 'Hepatitis Testing Target Report', '/hepatitis/management/hepatitis-testing-target-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisMonthlyThresholdReport', 80, 155, 'active', NULL),
+(162, 'tb', 'no', 'View Test Requests', '/tb/requests/tb-requests.php', '/tb/requests/tb-edit-request.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbRequestMenu', 81, 156, 'active', NULL),
+(163, 'tb', 'no', 'Add New Request', '/tb/requests/tb-add-request.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu addTbRequestMenu', 81, 157, 'active', NULL),
+(164, 'tb', 'no', 'Add Samples from Manifest', '/tb/requests/addSamplesFromManifest.php', NULL, 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu addSamplesFromManifestTbMenu', 81, 158, 'active', NULL),
+(165, 'tb', 'no', 'Manage Batch', '/batch/batches.php?type=tb', '/batch/add-batch.php?type=tb,/batch/edit-batch.php?type=tb,/batch/add-batch-position.php?type=tb,/batch/edit-batch-position.php?type=tb', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbBatchCodeMenu', 81, 159, 'active', NULL),
+(166, 'tb', 'no', 'TB Manifest', '/specimen-referral-manifest/view-manifests.php?t=tb', '/specimen-referral-manifest/add-manifest.php?t=tb,/specimen-referral-manifest/edit-manifest.php?t=tb,/specimen-referral-manifest/move-manifest.php?t=tb', 'sts', 'fa-solid fa-caret-right', 'no', 'allMenu specimenReferralManifestListTbMenu', 81, 160, 'active', NULL),
+(167, 'tb', 'no', 'Import Result From File', '/import-result/import-file.php?t=tb', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbImportResultMenu', 82, 161, 'active', NULL),
+(168, 'tb', 'no', 'Enter Result Manually', '/tb/results/tb-manual-results.php', '/tb/results/tb-update-result.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbResultsMenu', 82, 162, 'active', NULL),
+(169, 'tb', 'no', 'Failed/Hold Samples', '/tb/results/tb-failed-results.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbFailedResultsMenu', 82, 163, 'active', NULL),
+(170, 'tb', 'no', 'Manage Results Status', '/tb/results/tb-result-status.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbResultStatus', 82, 164, 'active', NULL),
+(171, 'tb', 'no', 'Sample Status Report', '/tb/management/tb-sample-status.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbSampleStatus', 83, 165, 'active', NULL),
+(172, 'tb', 'no', 'Print Result', '/tb/results/tb-print-results.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbPrintResults', 83, 166, 'active', NULL),
+(173, 'tb', 'no', 'Export Results', '/tb/management/tb-export-data.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbExportResult', 83, 167, 'active', NULL),
+(174, 'tb', 'no', 'Sample Rejection Report', '/tb/management/tb-sample-rejection-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbSampleRejectionReport', 83, 168, 'active', NULL),
+(175, 'tb', 'no', 'Clinic Reports', '/tb/management/tb-clinic-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbClinicReport', 83, 169, 'active', NULL);
 
 ALTER TABLE `s_app_menu`
   ADD PRIMARY KEY (`id`);
+
 ALTER TABLE `s_app_menu`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=176;
 
 
 -- Amit 23-Jun-2023
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'covid-19-requests', '/covid-19/requests/addSamplesFromManifest.php', 'Add Samples from Manifest');
-UPDATE `privileges` SET `privilege_name` = '/tb/requests/addSamplesFromManifest.php' WHERE resource_id ='tb-requests' AND privilege_name ='addSamplesFromManifest.php';
-UPDATE `privileges` SET `privilege_name` = '/vl/requests/addSamplesFromManifest.php' WHERE resource_id ='vl-requests' AND privilege_name ='addSamplesFromManifest.php';
-UPDATE `privileges` SET `privilege_name` = '/eid/requests/addSamplesFromManifest.php' WHERE resource_id ='eid-requests' AND privilege_name ='addSamplesFromManifest.php';
--- UPDATE `privileges` SET `privilege_name` = '/covid19/requests/addSamplesFromManifest.php' WHERE resource_id ='covid-19-requests' AND privilege_name ='addSamplesFromManifest.php';
-UPDATE `privileges` SET `privilege_name` = '/hepatitis/requests/add-samples-from-manifest.php' WHERE resource_id ='hepatitis-requests' AND privilege_name ='add-samples-from-manifest.php';
-UPDATE `privileges` SET `privilege_name` = '/generic-tests/requests/add-samples-from-manifest.php' WHERE resource_id ='generic-requests' AND privilege_name ='add-samples-from-manifest.php';
+
+
+-- FIXING COMMON PRIVILEGES
+DELETE FROM privileges WHERE `privilege_name` like "batches.php";
+DELETE FROM privileges WHERE `privilege_name` like "add-batch.php";
+DELETE FROM privileges WHERE `privilege_name` like "edit-batch.php";
+DELETE FROM privileges WHERE `privilege_name` like "delete-batch-code.php";
+DELETE FROM privileges WHERE `privilege_name` like "add-batch-position.php";
+DELETE FROM privileges WHERE `privilege_name` like "edit-batch-position.php";
+DELETE FROM privileges WHERE `privilege_name` like "batch-code.php";
+DELETE FROM privileges WHERE `privilege_name` like "eid-import-result.php";
+DELETE FROM privileges WHERE `privilege_name` like "covid-19-import-result.php";
+DELETE FROM privileges WHERE `privilege_name` like "%addImportResult.php";
+DELETE FROM privileges WHERE `privilege_name` like "%specimenReferralManifestList.php%";
+DELETE FROM privileges WHERE `privilege_name` like "%addSpecimenReferralManifest.php%";
+DELETE FROM privileges WHERE `privilege_name` like "%editSpecimenReferralManifest.php%";
+DELETE FROM privileges WHERE `privilege_name` like "%move-manifest.php%";
+UPDATE `privileges` set privilege_name = CONCAT("/import-configs/",privilege_name) WHERE resource_id like "import-config" and privilege_name NOT LIKE "/import-config/%";
+
+-- FIXING VL PRIVILEGES
+DELETE FROM privileges WHERE `privilege_name` like "vlRequestMail.php";
+DELETE FROM privileges WHERE `privilege_name` like "vlResultMail.php";
+DELETE FROM privileges WHERE `privilege_name` like "/batch/edit-batch-position.php?type=vl";
+DELETE FROM privileges WHERE `privilege_name` like "/batch/add-batch-position.php?type=vl";
+
+UPDATE `privileges` set privilege_name = CONCAT("/vl/requests/",privilege_name) WHERE resource_id like "vl-requests" and privilege_name NOT LIKE "/vl/requests/%";
+UPDATE `privileges` set privilege_name = CONCAT("/vl/results/",privilege_name) WHERE resource_id like "vl-results" and privilege_name NOT LIKE "/vl/results/%";
+UPDATE `privileges` set privilege_name = CONCAT("/vl/program-management/",privilege_name) WHERE resource_id like "vl-reports" and privilege_name NOT LIKE "/vl/program-management/%";
+UPDATE `privileges` set privilege_name = CONCAT("/vl/reference/",privilege_name) WHERE resource_id like "vl-reference" and privilege_name NOT LIKE "/vl/reference/%";
+
+-- FIXING EID PRIVILEGES
+UPDATE `privileges` set privilege_name = CONCAT("/eid/requests/",privilege_name) WHERE resource_id like "eid-requests" and privilege_name NOT LIKE "/eid/requests/%";
+UPDATE `privileges` set privilege_name = CONCAT("/eid/results/",privilege_name) WHERE resource_id like "eid-results" and privilege_name NOT LIKE "/eid/results/%";
+UPDATE `privileges` set privilege_name = CONCAT("/eid/management/",privilege_name) WHERE resource_id like "eid-management" and privilege_name NOT LIKE "/eid/management/%";
+UPDATE `privileges` set privilege_name = CONCAT("/eid/reference/",privilege_name) WHERE resource_id like "eid-reference" and privilege_name NOT LIKE "/eid/reference/%";
+
+-- FIXING COVID-19 PRIVILEGES
+UPDATE `privileges` set privilege_name = CONCAT("/covid-19/requests/",privilege_name) WHERE resource_id like "covid-19-requests" and privilege_name NOT LIKE "/covid-19/requests/%";
+UPDATE `privileges` set privilege_name = CONCAT("/covid-19/results/",privilege_name) WHERE resource_id like "covid-19-results" and privilege_name NOT LIKE "/covid-19/results/%";
+UPDATE `privileges` set privilege_name = CONCAT("/covid-19/management/",privilege_name) WHERE resource_id like "covid-19-management" and privilege_name NOT LIKE "/covid-19/management/%";
+UPDATE `privileges` set privilege_name = CONCAT("/covid-19/reference/",privilege_name) WHERE resource_id like "covid-19-reference" and privilege_name NOT LIKE "/covid-19/reference/%";
+
+
+-- FIXING HEPATITIS PRIVILEGES
+DELETE FROM privileges WHERE `privilege_name` like "hepatitis-add-batch-position.php";
+DELETE FROM privileges WHERE `privilege_name` like "hepatitis-edit-batch-position.php";
+
+UPDATE `privileges` SET `resource_id` = 'hepatitis-results' WHERE `privilege_name` like "%hepatitis-result-status.php";
+UPDATE `privileges` SET `resource_id` = 'hepatitis-results' WHERE `privilege_name` like "%hepatitis-print-results.php";
+UPDATE `privileges` set privilege_name = CONCAT("/hepatitis/requests/",privilege_name) WHERE resource_id like "hepatitis-requests" and privilege_name NOT LIKE "/hepatitis/requests/%";
+UPDATE `privileges` set privilege_name = CONCAT("/hepatitis/results/",privilege_name) WHERE resource_id like "hepatitis-results" and privilege_name NOT LIKE "/hepatitis/results/%";
+UPDATE `privileges` set privilege_name = CONCAT("/hepatitis/management/",privilege_name) WHERE resource_id like "hepatitis-management" and privilege_name NOT LIKE "/hepatitis/management/%";
+UPDATE `privileges` set privilege_name = CONCAT("/hepatitis/reference/",privilege_name) WHERE resource_id like "hepatitis-reference" and privilege_name NOT LIKE "/hepatitis/reference/%";
+
+-- FIXING GENERIC TESTS PRIVILEGES
+
+UPDATE `privileges` SET `resource_id` = 'hepatitis-results' WHERE `privilege_name` like "%hepatitis-result-status.php";
+UPDATE `privileges` SET `resource_id` = 'hepatitis-results' WHERE `privilege_name` like "%hepatitis-print-results.php";
+UPDATE `privileges` set privilege_name = CONCAT("/generic-tests/requests/",privilege_name) WHERE resource_id like "generic-requests" and privilege_name NOT LIKE "/generic-tests/requests/%";
+UPDATE `privileges` set privilege_name = CONCAT("/generic-tests/results/",privilege_name) WHERE resource_id like "generic-results" and privilege_name NOT LIKE "/generic-tests/results/%";
+UPDATE `privileges` set privilege_name = CONCAT("/generic-tests/program-management/",privilege_name) WHERE resource_id like "generic-management" and privilege_name NOT LIKE "/generic-tests/program-management/%";
+UPDATE `privileges` set privilege_name = CONCAT("/generic-tests/reference/",privilege_name) WHERE resource_id like "generic-test-reference" and privilege_name NOT LIKE "/generic-tests/reference/%";
+
+-- FIXING TB PRIVILEGES
+DELETE FROM privileges WHERE `privilege_name` like "tb-add-batch-position.php";
+DELETE FROM privileges WHERE `privilege_name` like "tb-edit-batch-position.php";
+UPDATE `privileges` SET `resource_id` = 'tb-management' WHERE `privilege_name` like "%tb-sample-status.php";
+UPDATE `privileges` SET `resource_id` = 'tb-management' WHERE `privilege_name` like "%tb-clinic-report.php";
+UPDATE `privileges` SET `resource_id` = 'tb-management' WHERE `privilege_name` like "%tb-sample-rejection-report.php";
+UPDATE `privileges` SET `resource_id` = 'tb-management' WHERE `privilege_name` like "%tb-export-data.php";
+
+UPDATE `privileges` set privilege_name = CONCAT("/tb/requests/",privilege_name) WHERE resource_id like "tb-requests" and privilege_name NOT LIKE "/tb/requests/%";
+UPDATE `privileges` set privilege_name = CONCAT("/tb/results/",privilege_name) WHERE resource_id like "tb-results" and privilege_name NOT LIKE "/tb/results/%";
+UPDATE `privileges` set privilege_name = CONCAT("/tb/management/",privilege_name) WHERE resource_id like "tb-management" and privilege_name NOT LIKE "/tb/management/%";
+UPDATE `privileges` set privilege_name = CONCAT("/tb/reference/",privilege_name) WHERE resource_id like "tb-reference" and privilege_name NOT LIKE "/tb/reference/%";
+
+
+-- Import Result from File
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`)
+VALUES
+(NULL, 'vl-results', '/import-result/import-file.php?t=vl', 'Import Result from Files'),
+(NULL, 'eid-results', '/import-result/import-file.php?t=eid', 'Import Result from Files'),
+(NULL, 'covid-19-results', '/import-result/import-file.php?t=covid19', 'Import Result from Files'),
+(NULL, 'hepatitis-results', '/import-result/import-file.php?t=hepatitis', 'Import Result from Files'),
+(NULL, 'tb-results', '/import-result/import-file.php?t=tb', 'Import Result from Files'),
+(NULL, 'generic-results', '/import-result/import-file.php?t=generic-tests', 'Import Result from Files');
+
+
+-- Create Manifest
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`)
+VALUES
+(NULL, 'vl-requests', '/specimen-referral-manifest/view-manifests.php?t=vl', 'View VL Manifests'),
+(NULL, 'eid-requests', '/specimen-referral-manifest/view-manifests.php?t=eid', 'View EID Manifests'),
+(NULL, 'covid-19-requests', '/specimen-referral-manifest/view-manifests.php?t=covid19', 'View COVID-19 Manifests'),
+(NULL, 'hepatitis-requests', '/specimen-referral-manifest/view-manifests.php?t=hepatitis', 'View Hepatitis Manifests'),
+(NULL, 'tb-requests', '/specimen-referral-manifest/view-manifests.php?t=tb', 'View TB Manifests'),
+(NULL, 'generic-requests', '/specimen-referral-manifest/view-manifests.php?t=generic-tests', 'View Lab Tests Manifests'),
+(NULL, 'vl-requests', '/specimen-referral-manifest/add-manifest.php?t=vl', 'Add VL Manifests'),
+(NULL, 'eid-requests', '/specimen-referral-manifest/add-manifest.php?t=eid', 'Add EID Manifests'),
+(NULL, 'covid-19-requests', '/specimen-referral-manifest/add-manifest.php?t=covid19', 'Add COVID-19 Manifests'),
+(NULL, 'hepatitis-requests', '/specimen-referral-manifest/add-manifest.php?t=hepatitis', 'Add Hepatitis Manifests'),
+(NULL, 'tb-requests', '/specimen-referral-manifest/add-manifest.php?t=tb', 'Add TB Manifests'),
+(NULL, 'generic-requests', '/specimen-referral-manifest/add-manifest.php?t=generic-tests', 'Add Lab Tests Manifests'),
+(NULL, 'vl-requests', '/specimen-referral-manifest/edit-manifest.php?t=vl', 'Edit VL Manifests'),
+(NULL, 'eid-requests', '/specimen-referral-manifest/edit-manifest.php?t=eid', 'Edit EID Manifests'),
+(NULL, 'covid-19-requests', '/specimen-referral-manifest/edit-manifest.php?t=covid19', 'Edit COVID-19 Manifests'),
+(NULL, 'hepatitis-requests', '/specimen-referral-manifest/edit-manifest.php?t=hepatitis', 'Edit Hepatitis Manifests'),
+(NULL, 'tb-requests', '/specimen-referral-manifest/edit-manifest.php?t=tb', 'Edit TB Manifests'),
+(NULL, 'generic-requests', '/specimen-referral-manifest/edit-manifest.php?t=generic-tests', 'Edit Lab Tests Manifests'),
+(NULL, 'vl-requests', '/specimen-referral-manifest/move-manifest.php?t=vl', 'Move VL Manifests'),
+(NULL, 'eid-requests', '/specimen-referral-manifest/move-manifest.php?t=eid', 'Move EID Manifests'),
+(NULL, 'covid-19-requests', '/specimen-referral-manifest/move-manifest.php?t=covid19', 'Move COVID-19 Manifests'),
+(NULL, 'hepatitis-requests', '/specimen-referral-manifest/move-manifest.php?t=hepatitis', 'Move Hepatitis Manifests'),
+(NULL, 'tb-requests', '/specimen-referral-manifest/move-manifest.php?t=tb', 'Move TB Manifests'),
+(NULL, 'generic-requests', '/specimen-referral-manifest/move-manifest.php?t=generic-tests', 'Move Lab Tests Manifests');

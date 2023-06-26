@@ -1,6 +1,6 @@
 <?php
 
-// File included in addImportResultHelper.php
+// File included in import-file-helper.php
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\UsersService;

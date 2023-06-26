@@ -155,7 +155,6 @@ $rInfo = $db->query($resourcesQuery);
 										<select class="form-control " name='landingPage' id='landingPage' title="<?php echo _('Please select landing page'); ?>">
 											<option value=""> <?php echo _("-- Select --"); ?> </option>
 											<option value="/dashboard/index.php"><?php echo _("Dashboard"); ?></option>
-											<!--<option value="/import-result/addImportResult.php"><?php echo _("Import VL Result"); ?></option>-->
 											<?php if (!empty($activeTestModules) && in_array('vl', $activeTestModules)) { ?>
 												<option value="/vl/requests/addVlRequest.php"><?php echo _("Add New VL Request"); ?></option>
 												<option value="/vl/requests/vlRequest.php"><?php echo _("VL View Test Requests"); ?></option>

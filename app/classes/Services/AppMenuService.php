@@ -39,6 +39,20 @@ class AppMenuService
         if (!empty($menuId) && $menuId > 0) {
             $this->db->where('id', $menuId);
         }
+
+
+        switch ($_SESSION['instanceType']) {
+            case 'remoteuser':
+                $mode = "(show_mode like 'sts' or show_mode like 'always')";
+                break;
+            case 'vluser':
+                $mode = "(show_mode like 'lis' or show_mode like 'always')";
+                break;
+            default:
+                $mode = "(show_mode like 'always')";
+                break;
+        }
+        $this->db->where($mode);
         $this->db->where('parent_id', $parentId);
         $this->db->orderBy("display_order", "asc");
         $menuData = $this->db->get($this->table);

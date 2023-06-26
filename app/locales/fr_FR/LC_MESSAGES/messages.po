@@ -145,7 +145,7 @@ msgstr "Bienvenue sur la page d’administration"
 #: hepatitis/results/hepatitis-print-results.php:58
 #: hepatitis/results/hepatitis-result-status.php:65
 #: import-configs/addImportConfig.php:44 import-configs/editImportConfig.php:74
-#: import-configs/importConfig.php:12 import-result/addImportResult.php:59
+#: import-configs/importConfig.php:12 import-result/import-file.php:59
 #: mail/vlResultMail.php:57 roles/addRole.php:116 roles/editRole.php:126
 #: roles/roles.php:13 system-admin/api-stats/api-stats.php:13
 #: system-admin/edit-config/index.php:28
@@ -372,8 +372,8 @@ msgstr "Rechercher"
 #: hepatitis/results/hepatitis-print-results.php:434
 #: hepatitis/results/hepatitis-result-status.php:211 mail/vlResultMail.php:295
 #: move-samples/select-samples-to-move.php:232
-#: specimen-referral-manifest/addSpecimenReferralManifest.php:275
-#: specimen-referral-manifest/editSpecimenReferralManifest.php:340
+#: specimen-referral-manifest/add-manifest.php:275
+#: specimen-referral-manifest/edit-manifest.php:340
 #: specimen-referral-manifest/move-manifest.php:293
 #: system-admin/user-login-history/userLoginIndex.php:165
 #: tb/management/tb-clinic-report.php:490 tb/management/tb-export-data.php:335
@@ -537,7 +537,7 @@ msgstr "Historique de l’API"
 #: import-configs/editImportConfig.php:219
 #: import-configs/editImportConfig.php:322
 #: specimen-referral-manifest/move-manifest.php:203
-#: specimen-referral-manifest/specimenReferralManifestList.php:41
+#: specimen-referral-manifest/view-manifests.php:41
 msgid "Test Type"
 msgstr "Type de test"
 
@@ -726,8 +726,8 @@ msgstr "Veuillez sélectionner les types de tests"
 #: hepatitis/results/hepatitis-result-status.php:96
 #: hepatitis/results/hepatitis-result-status.php:112
 #: hepatitis/results/hepatitis-result-status.php:150
-#: import-result/addImportResult.php:101 import-result/addImportResult.php:116
-#: import-result/addImportResult.php:146
+#: import-result/import-file.php:101 import-result/import-file.php:116
+#: import-result/import-file.php:146
 #: includes/siteInformationDropdownOptions.php:27 mail/vlResultMail.php:129
 #: mail/vlResultMail.php:150 mail/vlResultMail.php:173
 #: mail/vlResultMail.php:184 mail/vlResultMail.php:192
@@ -976,7 +976,7 @@ msgstr "Synchronisé sur"
 #: import-configs/addImportConfig.php:334
 #: import-configs/editImportConfig.php:392 import-configs/importConfig.php:32
 #: roles/roles.php:39
-#: specimen-referral-manifest/specimenReferralManifestList.php:46
+#: specimen-referral-manifest/view-manifests.php:46
 #: system-admin/instance-overview/instanceIndex.php:120
 #: tb/management/tb-export-data.php:286 tb/requests/tb-requests.php:331
 #: tb/results/tb-failed-results.php:169 tb/results/tb-manual-results.php:194
@@ -1137,7 +1137,7 @@ msgstr "Code d'échantillon"
 #: hepatitis/requests/add-samples-from-manifest.php:37
 #: import-configs/addImportConfig.php:372
 #: import-configs/editImportConfig.php:476
-#: import-result/addImportResult.php:163 roles/addRole.php:305
+#: import-result/import-file.php:163 roles/addRole.php:305
 #: roles/editRole.php:305 system-admin/edit-config/index.php:131
 #: system-admin/edit-config/resetPassword.php:60
 #: system-admin/setup/index.php:98 tb/reference/add-tb-results.php:66
@@ -1778,7 +1778,7 @@ msgstr "Types de tests"
 #: generic-tests/program-management/get-rejection-result.php:89
 #: hepatitis/management/get-rejected-samples.php:94
 #: hepatitis/management/hepatitis-testing-target-report.php:194
-#: import-result/addImportResult.php:143 system-admin/edit-config/index.php:86
+#: import-result/import-file.php:143 system-admin/edit-config/index.php:86
 #: tb/management/get-rejected-samples.php:99
 #: tb/management/tb-export-data.php:250 tb/management/tb-export-data.php:281
 #: vl/program-management/getRejectionResult.php:89
@@ -2478,7 +2478,7 @@ msgstr "Sauvegarder et Suivant"
 #: hepatitis/reference/add-hepatitis-test-reasons.php:70
 #: import-configs/addImportConfig.php:373
 #: import-configs/editImportConfig.php:477
-#: import-result/addImportResult.php:164 mail/vlResultMail.php:259
+#: import-result/import-file.php:164 mail/vlResultMail.php:259
 #: roles/addRole.php:306 roles/editRole.php:306
 #: system-admin/edit-config/resetPassword.php:61
 #: system-admin/instance-overview/instanceIndex.php:126
@@ -3743,8 +3743,8 @@ msgstr "Veuillez sélectionner le code du lot"
 #: hepatitis/results/hepatitis-failed-results.php:95
 #: hepatitis/results/hepatitis-manual-results.php:144
 #: import-result/imported-results.php:172 mail/vlResultMail.php:126
-#: specimen-referral-manifest/addSpecimenReferralManifest.php:195
-#: specimen-referral-manifest/editSpecimenReferralManifest.php:239
+#: specimen-referral-manifest/add-manifest.php:195
+#: specimen-referral-manifest/edit-manifest.php:239
 #: tb/management/tb-clinic-report.php:114
 #: tb/management/tb-clinic-report.php:222
 #: tb/management/tb-clinic-report.php:324
@@ -4233,7 +4233,7 @@ msgstr "Date de test de l'échantillon"
 #: import-configs/addImportConfig.php:77
 #: import-configs/editImportConfig.php:106 roles/addRole.php:203
 #: roles/editRole.php:195 specimen-referral-manifest/move-manifest.php:193
-#: specimen-referral-manifest/specimenReferralManifestList.php:42
+#: specimen-referral-manifest/view-manifests.php:42
 #: tb/management/tb-clinic-report.php:190 tb/management/tb-export-data.php:112
 #: tb/management/tb-sample-status.php:75 tb/requests/tb-requests.php:239
 #: tb/requests/tb-requests.php:317 tb/results/tb-failed-results.php:89
@@ -12255,7 +12255,7 @@ msgid "Add Instrument"
 msgstr "Ajouter un instrument"
 
 #: import-configs/addImportConfig.php:64 import-configs/editImportConfig.php:93
-#: import-configs/importConfig.php:30 import-result/addImportResult.php:98
+#: import-configs/importConfig.php:30 import-result/import-file.php:98
 #, fuzzy
 msgid "Instrument Name"
 msgstr "Nom de l'instrument"
@@ -12875,24 +12875,24 @@ msgstr ""
 "Les détails de la configuration de l'importation ont été mis à jour avec "
 "succès"
 
-#: import-result/addImportResult.php:13 import-result/addImportResult.php:57
+#: import-result/import-file.php:13 import-result/import-file.php:57
 msgid "Import"
 msgstr "Importer"
 
-#: import-result/addImportResult.php:13
+#: import-result/import-file.php:13
 #, fuzzy
 msgid "test results from file"
 msgstr "Importer le résultat à partir du fichier"
 
-#: import-result/addImportResult.php:57
+#: import-result/import-file.php:57
 msgid "Test Results From File"
 msgstr "Importer le résultat à partir du fichier"
 
-#: import-result/addImportResult.php:60
+#: import-result/import-file.php:60
 msgid "Import Result"
 msgstr "Importer les résultats"
 
-#: import-result/addImportResult.php:75
+#: import-result/import-file.php:75
 #, fuzzy
 msgid ""
 "Please ensure that the Sample IDs in the import file match the Sample IDs in "
@@ -12901,31 +12901,31 @@ msgstr ""
 "Veillez à ce que les ID des échantillons dans le fichier d'importation "
 "correspondent aux ID des échantillons dans le VLSM."
 
-#: import-result/addImportResult.php:78
+#: import-result/import-file.php:78
 #, fuzzy
 msgid "To ensure proper result import :"
 msgstr "Pour garantir une importation correcte des résultats :"
 
-#: import-result/addImportResult.php:80
+#: import-result/import-file.php:80
 #, fuzzy
 msgid "Record the Samples in VLSM before sending them to Viral Load machine."
 msgstr ""
 "Enregistrer les échantillons dans le VLSM avant de les envoyer à la machine "
 "de charge virale."
 
-#: import-result/addImportResult.php:81
+#: import-result/import-file.php:81
 #, fuzzy
 msgid "Create a Batch with the samples recorded in the previous step."
 msgstr "Créez un lot avec les échantillons enregistrés à l'étape précédente."
 
-#: import-result/addImportResult.php:82
+#: import-result/import-file.php:82
 #, fuzzy
 msgid "Use the Batch to test Samples in Viral Load machines."
 msgstr ""
 "Utilisez le lot pour tester les échantillons dans les machines à charge "
 "virale."
 
-#: import-result/addImportResult.php:83
+#: import-result/import-file.php:83
 #, fuzzy
 msgid ""
 "Export the result file (containing Sample IDs generated by VLSM) from the VL "
@@ -12934,7 +12934,7 @@ msgstr ""
 "Exporter le fichier de résultats (contenant les ID d'échantillons générés "
 "par le VLSM) de la machine VL."
 
-#: import-result/addImportResult.php:84
+#: import-result/import-file.php:84
 #, fuzzy
 msgid ""
 "Import the file below. Make sure to pick the right Machine Configuration."
@@ -12942,42 +12942,42 @@ msgstr ""
 "Importez le fichier ci-dessous. Veillez à choisir la bonne configuration de "
 "machine."
 
-#: import-result/addImportResult.php:100
+#: import-result/import-file.php:100
 #, fuzzy
 msgid "Please select the import machine type"
 msgstr "Veuillez sélectionner le type de machine d'importation"
 
-#: import-result/addImportResult.php:113
+#: import-result/import-file.php:113
 #, fuzzy
 msgid "Configuration Machine Name"
 msgstr "Configuration Nom de la machine"
 
-#: import-result/addImportResult.php:115
+#: import-result/import-file.php:115
 #, fuzzy
 msgid "Please select the import config machine name"
 msgstr ""
 "Veuillez sélectionner le nom de la machine de configuration d'importation"
 
-#: import-result/addImportResult.php:125
+#: import-result/import-file.php:125
 #, fuzzy
 msgid "Upload"
 msgstr "Télécharger"
 
-#: import-result/addImportResult.php:125
+#: import-result/import-file.php:125
 msgid "File"
 msgstr "Fichier"
 
-#: import-result/addImportResult.php:127
+#: import-result/import-file.php:127
 #, fuzzy
 msgid "Please choose result file"
 msgstr "Veuillez choisir le fichier de résultat"
 
-#: import-result/addImportResult.php:128
+#: import-result/import-file.php:128
 #, fuzzy
 msgid "(Upload xls, xlsx, csv, txt format)"
 msgstr "(Télécharger les formats xls, xlsx, csv, txt)"
 
-#: import-result/addImportResult.php:145 system-admin/edit-config/index.php:88
+#: import-result/import-file.php:145 system-admin/edit-config/index.php:88
 #, fuzzy
 msgid "Please select the lab name"
 msgstr "Veuillez sélectionner le nom du laboratoire"
@@ -13500,22 +13500,22 @@ msgstr ""
 "Le mot de passe doit comporter au moins 8 caractères et doit inclure AU "
 "MOINS un chiffre, un alphabet et éventuellement des caractères spéciaux."
 
-#: specimen-referral-manifest/addSpecimenReferralManifest.php:172
-#: specimen-referral-manifest/editSpecimenReferralManifest.php:217
+#: specimen-referral-manifest/add-manifest.php:172
+#: specimen-referral-manifest/edit-manifest.php:217
 #, fuzzy
 msgid "Operator/Technician"
 msgstr "Opérateur/Technicien"
 
-#: specimen-referral-manifest/addSpecimenReferralManifest.php:183
-#: specimen-referral-manifest/editSpecimenReferralManifest.php:229
+#: specimen-referral-manifest/add-manifest.php:183
+#: specimen-referral-manifest/edit-manifest.php:229
 #, fuzzy
 msgid "Sample Collection Point"
 msgstr "Point de prélèvement de l'échantillon"
 
-#: specimen-referral-manifest/addSpecimenReferralManifest.php:206
-#: specimen-referral-manifest/addSpecimenReferralManifest.php:208
-#: specimen-referral-manifest/editSpecimenReferralManifest.php:251
-#: specimen-referral-manifest/editSpecimenReferralManifest.php:253
+#: specimen-referral-manifest/add-manifest.php:206
+#: specimen-referral-manifest/add-manifest.php:208
+#: specimen-referral-manifest/edit-manifest.php:251
+#: specimen-referral-manifest/edit-manifest.php:253
 #, fuzzy
 msgid "Sample Collection Date Range"
 msgstr "Date de prélèvement de l'échantillon"
@@ -13525,27 +13525,27 @@ msgstr "Date de prélèvement de l'échantillon"
 msgid "Assign Manifests to Testing Lab"
 msgstr "Affectation des manifestes au laboratoire de test"
 
-#: specimen-referral-manifest/specimenReferralManifestList.php:28
+#: specimen-referral-manifest/view-manifests.php:28
 #, fuzzy
 msgid "Move Manifest"
 msgstr "Déplacer le manifeste"
 
-#: specimen-referral-manifest/specimenReferralManifestList.php:30
+#: specimen-referral-manifest/view-manifests.php:30
 #, fuzzy
 msgid "Add Specimen Referral Manifest"
 msgstr "Ajouter un manifeste d'envoi de spécimens"
 
-#: specimen-referral-manifest/specimenReferralManifestList.php:40
+#: specimen-referral-manifest/view-manifests.php:40
 #, fuzzy
 msgid "Manifest Code"
 msgstr "Veuillez saisir le code du manifeste, puis soumettre !"
 
-#: specimen-referral-manifest/specimenReferralManifestList.php:43
+#: specimen-referral-manifest/view-manifests.php:43
 #, fuzzy
 msgid "Number of Samples"
 msgstr "Nombre d'échantillons testés"
 
-#: specimen-referral-manifest/specimenReferralManifestList.php:44
+#: specimen-referral-manifest/view-manifests.php:44
 #, fuzzy
 msgid "Manifest Created On"
 msgstr "Manifeste créé le"

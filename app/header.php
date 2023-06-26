@@ -63,8 +63,7 @@ if (!$usersService->isAllowed($request)) {
 	throw new SystemException(_('Unauthorized access. You do not have permission to access this page.'), 401);
 }
 
-//$_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
-$_SESSION['menuItems'] = $appMenuService->getMenu();
+$_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 
 
 ?>
@@ -120,7 +119,7 @@ $_SESSION['menuItems'] = $appMenuService->getMenu();
 	<div class="wrapper">
 		<header class="main-header">
 			<!-- Logo -->
-			<a href="<?= ($dashBoardMenuAccess === true) ? '/dashboard/index.php' : '#'; ?>" class="logo">
+			<a href="<?= ($usersService->isAllowed('/dashboard/index.php') === true) ? '/dashboard/index.php' : '#'; ?>" class="logo">
 				<!-- mini logo for sidebar mini 50x50 pixels -->
 				<span class="logo-mini"><strong><?= $smallLogoName; ?></strong></span>
 				<!-- logo for regular state and mobile devices -->

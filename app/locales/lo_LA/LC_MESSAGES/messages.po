@@ -69,7 +69,7 @@ msgstr "ເສັ້ນທາງກວດກາ"
 #: hepatitis/results/hepatitis-failed-results.php:30 hepatitis/results/hepatitis-manual-results.php:46
 #: hepatitis/results/hepatitis-print-results.php:41 hepatitis/results/hepatitis-result-status.php:65
 #: import-configs/addImportConfig.php:19 import-configs/editImportConfig.php:41
-#: import-configs/importConfig.php:12 import-result/addImportResult.php:39 mail/vlResultMail.php:46
+#: import-configs/importConfig.php:12 import-result/import-file.php:39 mail/vlResultMail.php:46
 #: roles/addRole.php:39 roles/editRole.php:54 roles/roles.php:13 tb/batch/tb-add-batch.php:55
 #: tb/batch/tb-batches.php:16 tb/management/tb-clinic-report.php:38
 #: tb/management/tb-sample-rejection-report.php:30 tb/management/tb-sample-status.php:36
@@ -386,7 +386,7 @@ msgstr "ບໍ່ເຂັ້ມ"
 #: hepatitis/reference/add-hepatitis-sample-type.php:56
 #: hepatitis/reference/add-hepatitis-test-reasons.php:69
 #: hepatitis/requests/add-samples-from-manifest.php:37 import-configs/addImportConfig.php:225
-#: import-configs/editImportConfig.php:293 import-result/addImportResult.php:141 roles/addRole.php:173
+#: import-configs/editImportConfig.php:293 import-result/import-file.php:141 roles/addRole.php:173
 #: roles/editRole.php:195 tb/reference/add-tb-results.php:66
 #: tb/reference/add-tb-sample-rejection-reason.php:76 tb/reference/add-tb-sample-type.php:56
 #: tb/reference/add-tb-test-reasons.php:75 tb/requests/addSamplesFromManifest.php:37
@@ -413,7 +413,7 @@ msgstr "ສົ່ງ"
 #: hepatitis/reference/add-hepatitis-sample-rejection-reasons.php:77
 #: hepatitis/reference/add-hepatitis-sample-type.php:57
 #: hepatitis/reference/add-hepatitis-test-reasons.php:70 import-configs/addImportConfig.php:226
-#: import-configs/editImportConfig.php:294 import-result/addImportResult.php:142
+#: import-configs/editImportConfig.php:294 import-result/import-file.php:142
 #: mail/vlResultMail.php:248 roles/addRole.php:174 roles/editRole.php:196 tb/batch/tb-add-batch.php:128
 #: tb/reference/add-tb-results.php:67 tb/reference/add-tb-sample-rejection-reason.php:77
 #: tb/reference/add-tb-sample-type.php:57 tb/reference/add-tb-test-reasons.php:76 users/addUser.php:271
@@ -674,8 +674,8 @@ msgstr "ກະລຸນາເລືອກເຄື່ອງ"
 #: hepatitis/results/hepatitis-print-results.php:70 hepatitis/results/hepatitis-print-results.php:188
 #: hepatitis/results/hepatitis-result-status.php:77 hepatitis/results/hepatitis-result-status.php:96
 #: hepatitis/results/hepatitis-result-status.php:112 hepatitis/results/hepatitis-result-status.php:150
-#: import-result/addImportResult.php:81 import-result/addImportResult.php:96
-#: import-result/addImportResult.php:126 includes/siteInformationDropdownOptions.php:20
+#: import-result/import-file.php:81 import-result/import-file.php:96
+#: import-result/import-file.php:126 includes/siteInformationDropdownOptions.php:20
 #: mail/vlResultMail.php:118 mail/vlResultMail.php:139 mail/vlResultMail.php:162
 #: mail/vlResultMail.php:173 mail/vlResultMail.php:181 mail/vlResultMail.php:192
 #: mail/vlResultMail.php:480 mail/vlResultMail.php:484 roles/addRole.php:79 roles/addRole.php:92
@@ -2249,7 +2249,7 @@ msgstr "ການຈັດຕັ້ງປະຕິບັດຄູ່ຮ່ວມ
 #: covid-19/management/get-rejected-samples.php:76 eid/management/eid-export-data.php:219
 #: eid/management/eidTestingTargetReport.php:183 eid/management/get-rejected-samples.php:76
 #: hepatitis/management/get-rejected-samples.php:79
-#: hepatitis/management/hepatitis-testing-target-report.php:183 import-result/addImportResult.php:123
+#: hepatitis/management/hepatitis-testing-target-report.php:183 import-result/import-file.php:123
 #: tb/management/get-rejected-samples.php:76 tb/management/tb-export-data.php:227
 #: vl/program-management/getRejectionResult.php:72 vl/program-management/vlMonitoringReport.php:189
 #: vl/program-management/vl-export-data.php:273 vl/result-mail/editTestResultEmailConfig.php:105
@@ -6197,87 +6197,87 @@ msgstr "tb"
 msgid "Import config details updated successfully"
 msgstr "ລາຍ ລະ ອຽດ ການ ນໍາ ເຂົ້າ config updated ສໍາ ເລັດ"
 
-#: import-result/addImportResult.php:6
+#: import-result/import-file.php:6
 msgid "Import "
 msgstr "ການນໍາເຂົ້າ "
 
-#: import-result/addImportResult.php:6
+#: import-result/import-file.php:6
 msgid " Test Results From File"
 msgstr " ຜົນການທົດສອບຈາກໄຟລ໌"
 
-#: import-result/addImportResult.php:37
+#: import-result/import-file.php:37
 msgid "Import"
 msgstr "ການນໍາເຂົ້າ"
 
-#: import-result/addImportResult.php:37
+#: import-result/import-file.php:37
 msgid "Test Results From File"
 msgstr "ຜົນການທົດສອບຈາກໄຟລ໌"
 
-#: import-result/addImportResult.php:40
+#: import-result/import-file.php:40
 msgid "Import Result"
 msgstr "ຜົນການນໍາເຂົ້າ"
 
-#: import-result/addImportResult.php:55
+#: import-result/import-file.php:55
 msgid "Please ensure that the Sample IDs in the import file match the Sample IDs in VLSM."
 msgstr "ກະລຸນາໃຫ້ແນ່ໃຈວ່າຕົວແບບIDs ໃນໄຟລ໌ການນໍາເຂົ້າສົມທົບກັບຕົວແບບໄອທີໃນ VLSM."
 
-#: import-result/addImportResult.php:58
+#: import-result/import-file.php:58
 msgid "To ensure proper result import :"
 msgstr "ເພື່ອຮັບປະກັນການນໍາເຂົ້າຜົນໄດ້ຮັບທີ່ເຫມາະສົມ :"
 
-#: import-result/addImportResult.php:60
+#: import-result/import-file.php:60
 msgid "Record the Samples in VLSM before sending them to Viral Load machine."
 msgstr "ບັນທຶກຕົວຢ່າງໃນ VLSM ກ່ອນທີ່ຈະສົ່ງໃຫ້ເຂົາເຈົ້າໄປທີ່ເຄື່ອງ Viral Load."
 
-#: import-result/addImportResult.php:61
+#: import-result/import-file.php:61
 msgid "Create a Batch with the samples recorded in the previous step."
 msgstr "ສ້າງ Batch ກັບຕົວແບບທີ່ບັນທຶກໄວ້ໃນຂັ້ນຕອນກ່ອນຫນ້ານີ້."
 
-#: import-result/addImportResult.php:62
+#: import-result/import-file.php:62
 msgid "Use the Batch to test Samples in Viral Load machines."
 msgstr "ໃຊ້ Batch ເພື່ອທົດສອບຕົວຢ່າງໃນເຄື່ອງຈັກ Viral Load."
 
-#: import-result/addImportResult.php:63
+#: import-result/import-file.php:63
 msgid "Export the result file (containing Sample IDs generated by VLSM) from the VL machine."
 msgstr "ສົ່ງອອກໄຟລ໌ຜົນໄດ້ຮັບ (ມີຕົວແບບ IDs ທີ່ສ້າງໂດຍ VLSM) ຈາກເຄື່ອງຈັກ VL."
 
-#: import-result/addImportResult.php:64
+#: import-result/import-file.php:64
 msgid "Import the file below. Make sure to pick the right Machine Configuration."
 msgstr "ນໍາເຂົ້າໄຟລ໌ຂ້າງລຸ່ມນີ້. ເຮັດ ໃຫ້ ແນ່ ໃຈວ່ າ ການ ເລືອກ ຕັ້ງ ທີ່ ຖືກ ຕ້ອງ ການ ເຄື່ອງ ຈັກ ."
 
-#: import-result/addImportResult.php:78
+#: import-result/import-file.php:78
 msgid "Instrument Name"
 msgstr "ຊື່ການຕັ້ງຄ່າ"
 
-#: import-result/addImportResult.php:80
+#: import-result/import-file.php:80
 msgid "Please select the import machine type"
 msgstr "ກະລຸນາເລືອກປະເພດເຄື່ອງນໍາເຂົ້າ"
 
-#: import-result/addImportResult.php:93
+#: import-result/import-file.php:93
 msgid "Configuration Machine Name"
 msgstr "ຊື່ເຄື່ອງຕັ້ງຄ່າ"
 
-#: import-result/addImportResult.php:95
+#: import-result/import-file.php:95
 msgid "Please select the import config machine name"
 msgstr "ກະລຸນາເລືອກຊື່ເຄື່ອງconfig ການນໍາເຂົ້າ"
 
-#: import-result/addImportResult.php:105
+#: import-result/import-file.php:105
 msgid "Upload"
 msgstr "ອັບໂຫຼດ"
 
-#: import-result/addImportResult.php:105
+#: import-result/import-file.php:105
 msgid "File"
 msgstr "ໄຟລ໌"
 
-#: import-result/addImportResult.php:107
+#: import-result/import-file.php:107
 msgid "Please choose result file"
 msgstr "ກະລຸນາເລືອກໄຟລ໌ຜົນ"
 
-#: import-result/addImportResult.php:108
+#: import-result/import-file.php:108
 msgid "(Upload xls, xlsx, csv, txt format)"
 msgstr "(Upload xls, xlsx, csv, txt format)"
 
-#: import-result/addImportResult.php:125
+#: import-result/import-file.php:125
 msgid "Please select the lab name"
 msgstr "ກະລຸນາເລືອກຊື່ຫ້ອງທົດລອງ"
 
@@ -6615,11 +6615,11 @@ msgid ""
 msgstr ""
 "ລະຫັດຜ່ານຕ້ອງມີຄວາມຍາວຢ່າງຫນ້ອຍ 8 ຕົວອັກສອນແລະຕ້ອງລວມເອົາ AT LEAST ຫນຶ່ງຕົວອັກສອນ, ຫນຶ່ງຕົວອັກສອນແລະອາດຈະມີຕົວອັກສອນພິເສດ."
 
-#: specimen-referral-manifest/addSpecimenReferralManifest.php:112
+#: specimen-referral-manifest/add-manifest.php:112
 msgid "Operator/Technician"
 msgstr "ຜູ້ປະກອບການ/ເຕັກນິກ"
 
-#: specimen-referral-manifest/addSpecimenReferralManifest.php:123
+#: specimen-referral-manifest/add-manifest.php:123
 msgid "Sample Collection Point"
 msgstr "ຈຸດເກັບຕົວຢ່າງ"
 

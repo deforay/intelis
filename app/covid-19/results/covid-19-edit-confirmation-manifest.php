@@ -268,7 +268,7 @@ $result = $db->rawQuery($query, [$id]);
   function getSampleCodeDetails() {
     $.blockUI();
 
-    $.post("/specimen-referral-manifest/getSpecimenReferralManifestSampleCodeDetails.php", {
+    $.post("/specimen-referral-manifest/get-samples-for-manifest.php", {
         module: $("#module").val()
       },
       function(data) {
@@ -283,4 +283,3 @@ $result = $db->rawQuery($query, [$id]);
 </script>
 <?php
 require_once(APPLICATION_PATH . '/footer.php');
-?>

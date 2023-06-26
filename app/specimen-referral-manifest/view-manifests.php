@@ -1,7 +1,18 @@
 <?php
+
+
+use App\Services\UsersService;
+use App\Registries\ContainerRegistry;
+
+
 $title = "Specimen Referral Manifest";
 
 require_once APPLICATION_PATH . '/header.php';
+
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
 ?>
 <style>
 	.center {
@@ -24,25 +35,24 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (isset($_SESSION['privileges']) && in_array("move-manifest.php", $_SESSION['privileges'])) { ?>
-							<a href="move-manifest.php?t=<?php echo htmlspecialchars($_GET['t']); ?>" class="btn btn-primary pull-right" style=" margin-left: 10px; "> <em class="fa-solid fa-angles-right"></em> <?= _("Move Manifest");?></a>
-						<?php } if (isset($_SESSION['privileges']) && in_array("addSpecimenReferralManifest.php", $_SESSION['privileges'])) { ?>
-							<a href="addSpecimenReferralManifest.php?t=<?php echo htmlspecialchars($_GET['t']); ?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Specimen Referral Manifest");?></a>
+						<?php if ($usersService->isAllowed("move-manifest.php?t=" . $_GET['t'])) { ?>
+							<a href="move-manifest.php?t=<?php echo ($_GET['t']); ?>" class="btn btn-primary pull-right" style=" margin-left: 10px; "> <em class="fa-solid fa-angles-right"></em> <?= _("Move Manifest"); ?></a>
+						<?php }
+						if ($usersService->isAllowed("add-manifest.php?t=" . $_GET['t'])) { ?>
+							<a href="add-manifest.php?t=<?php echo ($_GET['t']); ?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Specimen Referral Manifest"); ?></a>
 						<?php } ?>
-						<!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body">
 						<table aria-describedby="table" id="specimenReferralManifestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<!-- <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="checkPackageData" onclick="checkAllPackageRows(this);"/></th> -->
 									<th><?= _("Manifest Code"); ?></th>
 									<th><?= _("Test Type"); ?></th>
 									<th><?= _("Testing Lab"); ?></th>
 									<th><?= _("Number of Samples"); ?></th>
 									<th><?= _("Manifest Created On"); ?></th>
-									<?php if (isset($_SESSION['privileges']) && in_array("editSpecimenReferralManifest.php", $_SESSION['privileges'])) { ?>
+									<?php if (isset($_SESSION['privileges']) && in_array("edit-manifest.php", $_SESSION['privileges'])) { ?>
 										<th><?= _("Action"); ?></th>
 									<?php } ?>
 								</tr>
@@ -97,7 +107,7 @@ require_once APPLICATION_PATH . '/header.php';
 				{
 					"sClass": "center"
 				},
-				<?php if (isset($_SESSION['privileges']) && in_array("editSpecimenReferralManifest.php", $_SESSION['privileges'])) { ?> {
+				<?php if ($usersService->isAllowed("edit-manifest.php?t=" . $_GET['t'])) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					},
@@ -117,7 +127,7 @@ require_once APPLICATION_PATH . '/header.php';
 			},
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "getSpecimenReferralManifestCodeDetails.php",
+			"sAjaxSource": "get-manifests.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "module",
@@ -146,9 +156,9 @@ require_once APPLICATION_PATH . '/header.php';
 			manifestFileName = "generateCovid19Manifest.php";
 		} else if (module == 'hepatitis') {
 			manifestFileName = "generateHepatitisManifest.php";
-		}else if (module == 'tb') {
+		} else if (module == 'tb') {
 			manifestFileName = "generateTBManifest.php";
-		}else if (module == 'generic-tests') {
+		} else if (module == 'generic-tests') {
 			manifestFileName = "generateGenericManifest.php";
 		}
 		//alert(manifestFileName);
@@ -216,4 +226,5 @@ require_once APPLICATION_PATH . '/header.php';
 	// count_elem.parentNode.insertBefore(div, count_elem);
 </script>
 <?php
+
 require_once APPLICATION_PATH . '/footer.php';

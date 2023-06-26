@@ -10,8 +10,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 $table = 'form_vl';
-if(isset($_POST['testType']) && $_POST['testType']=="")
-{
+if (isset($_POST['testType']) && $_POST['testType'] == "") {
     $_POST['testType'] = "generic-tests";
 }
 if ($_POST['testType'] == 'vl') {
@@ -60,7 +59,7 @@ try {
 
     $general->activityLog($eventType, $action, $resource);
 
-    header("Location:specimenReferralManifestList.php?t=" . base64_encode($_POST['testType']));
+    header("Location:view-manifests.php?t=" . base64_encode($_POST['testType']));
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
