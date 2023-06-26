@@ -4422,9 +4422,6 @@ ALTER TABLE `s_app_menu`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=176;
 
 
--- Amit 23-Jun-2023
--- INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'covid-19-requests', '/covid-19/requests/addSamplesFromManifest.php', 'Add Samples from Manifest');
-
 
 -- FIXING COMMON PRIVILEGES
 DELETE FROM privileges WHERE `privilege_name` like "batches.php";
@@ -4449,23 +4446,23 @@ DELETE FROM privileges WHERE `privilege_name` like "vlResultMail.php";
 DELETE FROM privileges WHERE `privilege_name` like "/batch/edit-batch-position.php?type=vl";
 DELETE FROM privileges WHERE `privilege_name` like "/batch/add-batch-position.php?type=vl";
 
-UPDATE `privileges` set privilege_name = CONCAT("/vl/requests/",privilege_name) WHERE resource_id like "vl-requests" and privilege_name NOT LIKE "/vl/requests/%";
+UPDATE `privileges` set privilege_name = CONCAT("/vl/requests/",privilege_name) WHERE resource_id like "vl-requests" and privilege_name NOT LIKE "/vl/requests/%" and privilege_name NOT LIKE "/specimen-referral-manifest/%";
 UPDATE `privileges` set privilege_name = CONCAT("/vl/results/",privilege_name) WHERE resource_id like "vl-results" and privilege_name NOT LIKE "/vl/results/%";
 UPDATE `privileges` set privilege_name = CONCAT("/vl/program-management/",privilege_name) WHERE resource_id like "vl-reports" and privilege_name NOT LIKE "/vl/program-management/%";
 UPDATE `privileges` set privilege_name = CONCAT("/vl/reference/",privilege_name) WHERE resource_id like "vl-reference" and privilege_name NOT LIKE "/vl/reference/%";
 
 -- FIXING EID PRIVILEGES
-UPDATE `privileges` set privilege_name = CONCAT("/eid/requests/",privilege_name) WHERE resource_id like "eid-requests" and privilege_name NOT LIKE "/eid/requests/%";
+UPDATE `privileges` set privilege_name = CONCAT("/eid/requests/",privilege_name) WHERE resource_id like "eid-requests" and privilege_name NOT LIKE "/eid/requests/%" and privilege_name NOT LIKE "/specimen-referral-manifest/%";
 UPDATE `privileges` set privilege_name = CONCAT("/eid/results/",privilege_name) WHERE resource_id like "eid-results" and privilege_name NOT LIKE "/eid/results/%";
 UPDATE `privileges` set privilege_name = CONCAT("/eid/management/",privilege_name) WHERE resource_id like "eid-management" and privilege_name NOT LIKE "/eid/management/%";
 UPDATE `privileges` set privilege_name = CONCAT("/eid/reference/",privilege_name) WHERE resource_id like "eid-reference" and privilege_name NOT LIKE "/eid/reference/%";
 
 -- FIXING COVID-19 PRIVILEGES
-UPDATE `privileges` set privilege_name = CONCAT("/covid-19/requests/",privilege_name) WHERE resource_id like "covid-19-requests" and privilege_name NOT LIKE "/covid-19/requests/%";
+UPDATE `privileges` set privilege_name = CONCAT("/covid-19/requests/",privilege_name) WHERE resource_id like "covid-19-requests" and privilege_name NOT LIKE "/covid-19/requests/%" and privilege_name NOT LIKE "/specimen-referral-manifest/%";
 UPDATE `privileges` set privilege_name = CONCAT("/covid-19/results/",privilege_name) WHERE resource_id like "covid-19-results" and privilege_name NOT LIKE "/covid-19/results/%";
 UPDATE `privileges` set privilege_name = CONCAT("/covid-19/management/",privilege_name) WHERE resource_id like "covid-19-management" and privilege_name NOT LIKE "/covid-19/management/%";
 UPDATE `privileges` set privilege_name = CONCAT("/covid-19/reference/",privilege_name) WHERE resource_id like "covid-19-reference" and privilege_name NOT LIKE "/covid-19/reference/%";
-
+INSERT IGNORE INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'covid-19-requests', '/covid-19/requests/addSamplesFromManifest.php', 'Add Samples from Manifest');
 
 -- FIXING HEPATITIS PRIVILEGES
 DELETE FROM privileges WHERE `privilege_name` like "hepatitis-add-batch-position.php";
@@ -4473,16 +4470,15 @@ DELETE FROM privileges WHERE `privilege_name` like "hepatitis-edit-batch-positio
 
 UPDATE `privileges` SET `resource_id` = 'hepatitis-results' WHERE `privilege_name` like "%hepatitis-result-status.php";
 UPDATE `privileges` SET `resource_id` = 'hepatitis-results' WHERE `privilege_name` like "%hepatitis-print-results.php";
-UPDATE `privileges` set privilege_name = CONCAT("/hepatitis/requests/",privilege_name) WHERE resource_id like "hepatitis-requests" and privilege_name NOT LIKE "/hepatitis/requests/%";
+UPDATE `privileges` set privilege_name = CONCAT("/hepatitis/requests/",privilege_name) WHERE resource_id like "hepatitis-requests" and privilege_name NOT LIKE "/hepatitis/requests/%" and privilege_name NOT LIKE "/specimen-referral-manifest/%";
 UPDATE `privileges` set privilege_name = CONCAT("/hepatitis/results/",privilege_name) WHERE resource_id like "hepatitis-results" and privilege_name NOT LIKE "/hepatitis/results/%";
 UPDATE `privileges` set privilege_name = CONCAT("/hepatitis/management/",privilege_name) WHERE resource_id like "hepatitis-management" and privilege_name NOT LIKE "/hepatitis/management/%";
 UPDATE `privileges` set privilege_name = CONCAT("/hepatitis/reference/",privilege_name) WHERE resource_id like "hepatitis-reference" and privilege_name NOT LIKE "/hepatitis/reference/%";
 
 -- FIXING GENERIC TESTS PRIVILEGES
-
 UPDATE `privileges` SET `resource_id` = 'hepatitis-results' WHERE `privilege_name` like "%hepatitis-result-status.php";
 UPDATE `privileges` SET `resource_id` = 'hepatitis-results' WHERE `privilege_name` like "%hepatitis-print-results.php";
-UPDATE `privileges` set privilege_name = CONCAT("/generic-tests/requests/",privilege_name) WHERE resource_id like "generic-requests" and privilege_name NOT LIKE "/generic-tests/requests/%";
+UPDATE `privileges` set privilege_name = CONCAT("/generic-tests/requests/",privilege_name) WHERE resource_id like "generic-requests" and privilege_name NOT LIKE "/generic-tests/requests/%" and privilege_name NOT LIKE "/specimen-referral-manifest/%";
 UPDATE `privileges` set privilege_name = CONCAT("/generic-tests/results/",privilege_name) WHERE resource_id like "generic-results" and privilege_name NOT LIKE "/generic-tests/results/%";
 UPDATE `privileges` set privilege_name = CONCAT("/generic-tests/program-management/",privilege_name) WHERE resource_id like "generic-management" and privilege_name NOT LIKE "/generic-tests/program-management/%";
 UPDATE `privileges` set privilege_name = CONCAT("/generic-tests/reference/",privilege_name) WHERE resource_id like "generic-test-reference" and privilege_name NOT LIKE "/generic-tests/reference/%";
@@ -4495,7 +4491,7 @@ UPDATE `privileges` SET `resource_id` = 'tb-management' WHERE `privilege_name` l
 UPDATE `privileges` SET `resource_id` = 'tb-management' WHERE `privilege_name` like "%tb-sample-rejection-report.php";
 UPDATE `privileges` SET `resource_id` = 'tb-management' WHERE `privilege_name` like "%tb-export-data.php";
 
-UPDATE `privileges` set privilege_name = CONCAT("/tb/requests/",privilege_name) WHERE resource_id like "tb-requests" and privilege_name NOT LIKE "/tb/requests/%";
+UPDATE `privileges` set privilege_name = CONCAT("/tb/requests/",privilege_name) WHERE resource_id like "tb-requests" and privilege_name NOT LIKE "/tb/requests/%" and privilege_name NOT LIKE "/specimen-referral-manifest/%";
 UPDATE `privileges` set privilege_name = CONCAT("/tb/results/",privilege_name) WHERE resource_id like "tb-results" and privilege_name NOT LIKE "/tb/results/%";
 UPDATE `privileges` set privilege_name = CONCAT("/tb/management/",privilege_name) WHERE resource_id like "tb-management" and privilege_name NOT LIKE "/tb/management/%";
 UPDATE `privileges` set privilege_name = CONCAT("/tb/reference/",privilege_name) WHERE resource_id like "tb-reference" and privilege_name NOT LIKE "/tb/reference/%";
@@ -4542,3 +4538,4 @@ VALUES
 
 
 DELETE FROM roles_privileges_map where privilege_id not in (select privilege_id from privileges);
+DELETE FROM resources WHERE `resource_id` = 'specimen-referral-manifest'";

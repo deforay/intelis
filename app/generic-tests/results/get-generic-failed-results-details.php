@@ -212,7 +212,7 @@ $output = array(
     "aaData" => array()
 );
 $editRequest = false;
-if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges']))) {
+if (isset($_SESSION['privileges']) && (in_array("/vl/requests/editVlRequest.php", $_SESSION['privileges']))) {
     $editRequest = true;
 }
 

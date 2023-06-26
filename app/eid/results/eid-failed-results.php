@@ -182,7 +182,7 @@ $sResult = $db->rawQuery($sQuery);
                                     <th><?php echo _("Result"); ?></th>
                                     <th><?php echo _("Last Modified On"); ?></th>
                                     <th scope="row"><?php echo _("Status"); ?></th>
-                                    <?php if (isset($_SESSION['privileges']) && (in_array("eid-edit-request.php", $_SESSION['privileges']))) { ?>
+                                    <?php if (isset($_SESSION['privileges']) && (in_array("/eid/requests/eid-edit-request.php", $_SESSION['privileges']))) { ?>
                                         <th><?php echo _("Action"); ?></th>
                                     <?php } ?>
                                 </tr>
@@ -383,7 +383,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 }, {
                     "sClass": "center"
                 },
-                <?php if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges']))) { ?> {
+                <?php if (isset($_SESSION['privileges']) && (in_array("/vl/requests/editVlRequest.php", $_SESSION['privileges']))) { ?> {
                         "sClass": "center",
                         "bSortable": false
                     },

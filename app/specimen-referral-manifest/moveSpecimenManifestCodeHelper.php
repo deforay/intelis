@@ -59,7 +59,7 @@ try {
 
     $general->activityLog($eventType, $action, $resource);
 
-    header("Location:view-manifests.php?t=" . base64_encode($_POST['testType']));
+    header("Location:view-manifests.php?t=" . ($_POST['testType']));
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

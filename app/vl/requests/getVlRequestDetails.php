@@ -1,9 +1,10 @@
 <?php
 
+use App\Services\UsersService;
+use App\Utilities\DateUtility;
+use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Utilities\DateUtility;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -14,6 +15,8 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 $barCodePrinting = $general->getGlobalConfig('bar_code_printing');
 
@@ -377,7 +380,7 @@ $output = array(
 );
 $editRequest = false;
 $syncRequest = false;
-if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges']))) {
+if ($usersService->isAllowed("/vl/requests/editVlRequest.php")) {
      $editRequest = true;
      $syncRequest = true;
 }
@@ -398,8 +401,6 @@ foreach ($rResult as $aRow) {
 
 
      $row = [];
-
-     //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['vl_sample_id'] . '"  value="' . $aRow['vl_sample_id'] . '" onclick="toggleTest(this);"  />';
      $row[] = $aRow['sample_code'];
      if ($_SESSION['instanceType'] != 'standalone') {
           $row[] = $aRow['remote_sample_code'];
@@ -417,15 +418,10 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['last_modified_datetime'];
      $row[] = ($aRow['status_name']);
 
-     //$printBarcode='<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="View" onclick="printBarcode(\''.base64_encode($aRow['vl_sample_id']).'\');"><em class="fa-solid fa-barcode"></em> Print barcode</a>';
-     //$enterResult='<a href="javascript:void(0);" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result" onclick="showModal(\'updateVlResult.php?id=' . base64_encode($aRow['vl_sample_id']) . '\',900,520);"> Result</a>';
-
      if ($editRequest) {
           $edit = '<a href="editVlRequest.php?id=' . base64_encode($aRow['vl_sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
-          if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
-               if (isset($_SESSION['privileges']) && !in_array("edit-locked-vl-samples", $_SESSION['privileges'])) {
-                    $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _("Locked") . '</a>';
-               }
+          if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes' && !$usersService->isAllowed("/vl/requests/edit-locked-vl-samples")) {
+               $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _("Locked") . '</a>';
           }
      }
 

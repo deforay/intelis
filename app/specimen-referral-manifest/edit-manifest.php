@@ -175,7 +175,7 @@ $global = $general->getGlobalConfig();
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method="post" name="editSpecimenReferralManifestForm" id="editSpecimenReferralManifestForm" autocomplete="off" action="edit-manifest-helper.php">
+				<form class="form-horizontal" method="post" name="editSpecimenReferralManifestForm" id="editSpecimenReferralManifestForm" autocomplete="off" action="/specimen-referral-manifest/edit-manifest-helper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">

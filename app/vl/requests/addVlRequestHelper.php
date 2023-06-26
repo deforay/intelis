@@ -38,7 +38,7 @@ try {
     $chkValidation = $general->checkMandatoryFields($validateField);
     if ($chkValidation) {
         $_SESSION['alertMsg'] = _("Please enter all mandatory fields to save the test request");
-        header("Location:addVlRequest.php");
+        header("Location:/vl/requests/addVlRequest.php");
         die;
     }
 
@@ -386,13 +386,13 @@ try {
         }
 
         if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
-            header("Location:addVlRequest.php");
+            header("Location:/vl/requests/addVlRequest.php");
         } else {
-            header("Location:vlRequest.php");
+            header("Location:/vl/requests/vlRequest.php");
         }
     } else {
         $_SESSION['alertMsg'] = _("Please try again later");
-        header("Location:vlRequest.php");
+        header("Location:/vl/requests/vlRequest.php");
     }
 } catch (Exception $exc) {
     error_log($exc->getMessage());

@@ -276,7 +276,7 @@ foreach ($srcResults as $list) {
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span><?php echo _("Hide Advanced Search Options"); ?></span></button>
 							</td>
 							<td colspan="4">
-								<?php if (isset($_SESSION['privileges']) && in_array("covid-19-add-request.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
+								<?php if (isset($_SESSION['privileges']) && in_array("/covid-19/requests/covid-19-add-request.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
 									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add new Covid-19 Request"); ?></a>
 									<?php if ($global['vl_form'] == 1 && $_SESSION['instanceType'] != 'remoteuser' && !$hidesrcofreq) { ?>
 										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Bulk Import Covid-19 Request"); ?></a>
@@ -285,7 +285,7 @@ foreach ($srcResults as $list) {
 										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Quick Add Covid-19 Request"); ?></a>
 									<?php }
 								}
-								if (isset($_SESSION['privileges']) && in_array("export-covid19-requests.php", $_SESSION['privileges'])) { ?>
+								if (isset($_SESSION['privileges']) && in_array("/covid-19/requests/export-covid19-requests.php", $_SESSION['privileges'])) { ?>
 									<a class="btn btn-success btn-sm" href="javascript:void(0);" style=" float: right; " onclick="exportAllCovid19Requests();"><span><?php echo _("Export Requests"); ?></span></a>
 								<?php } ?>
 							</td>
@@ -296,7 +296,7 @@ foreach ($srcResults as $list) {
 							<td>
 
 								<?php
-								if (isset($_SESSION['privileges']) && in_array("covid-19-add-request.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
+								if (isset($_SESSION['privileges']) && in_array("/covid-19/requests/covid-19-add-request.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
 									<?php if ($formId == 1 && $_SESSION['instanceType'] != 'remoteuser') { ?>
 										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?= _("Quick Add Covid-19 Request"); ?></a>
 									<?php } ?>
@@ -306,7 +306,7 @@ foreach ($srcResults as $list) {
 										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?= _("Bulk Import Covid-19 Requests"); ?></a>
 									<?php }
 								}
-								if (isset($_SESSION['privileges']) && in_array("export-covid19-requests.php", $_SESSION['privileges'])) { ?>
+								if (isset($_SESSION['privileges']) && in_array("/covid-19/requests/export-covid19-requests.php", $_SESSION['privileges'])) { ?>
 									<button style=" margin: 0px 5px; " class="btn btn-success btn-sm pull-right" style="margin-right:5px;" onclick="exportAllCovid19Requests();"><span><?= _("Export Requests"); ?></span></button>
 								<?php } ?>
 								<button style=" margin: 0px 5px; " class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?= _("Show Advanced Search Options"); ?></span></button>
@@ -339,7 +339,7 @@ foreach ($srcResults as $list) {
 									<th><?php echo _("Result"); ?></th>
 									<th><?php echo _("Last Modified On"); ?></th>
 									<th scope="row"><?php echo _("Status"); ?></th>
-									<?php if ((isset($_SESSION['privileges']) && (in_array("covid-19-edit-request.php", $_SESSION['privileges'])) || (in_array("covid-19-view-request.php", $_SESSION['privileges']))) && !$hidesrcofreq) { ?>
+									<?php if ((isset($_SESSION['privileges']) && (in_array("/eid/requests/covid-19-edit-request.php", $_SESSION['privileges'])) || (in_array("covid-19-view-request.php", $_SESSION['privileges']))) && !$hidesrcofreq) { ?>
 										<th><?php echo _("Action"); ?></th>
 									<?php } ?>
 								</tr>
@@ -527,7 +527,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				}, {
 					"sClass": "center"
 				},
-				<?php if ((isset($_SESSION['privileges']) && (in_array("covid-19-edit-request.php", $_SESSION['privileges'])) || (in_array("covid-19-view-request.php", $_SESSION['privileges']))) && !$hidesrcofreq) { ?> {
+				<?php if ((isset($_SESSION['privileges']) && (in_array("/eid/requests/covid-19-edit-request.php", $_SESSION['privileges'])) || (in_array("covid-19-view-request.php", $_SESSION['privileges']))) && !$hidesrcofreq) { ?> {
 						"sClass": "center action",
 						"bSortable": false
 					},
@@ -729,7 +729,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		}
 		$.blockUI();
 		var requestSampleType = $('#requestSampleType').val();
-		$.post("export-covid19-requests.php", {
+		$.post("/covid-19/requests/export-covid19-requests.php", {
 				reqSampleType: requestSampleType,
 				patientInfo: $('#patientInfo').val(),
 			},

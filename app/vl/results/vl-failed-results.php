@@ -209,7 +209,7 @@ $state = $geolocationService->getProvinces("yes");
                                     <th><?php echo _("Result"); ?></th>
                                     <th><?php echo _("Last Modified Date"); ?></th>
                                     <th scope="row"><?php echo _("Status"); ?></th>
-                                    <?php if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges']))) { ?>
+                                    <?php if (isset($_SESSION['privileges']) && (in_array("/vl/requests/editVlRequest.php", $_SESSION['privileges']))) { ?>
                                         <th><?php echo _("Action"); ?></th>
                                     <?php } ?>
                                 </tr>
@@ -432,7 +432,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 {
                     "sClass": "center"
                 },
-                <?php if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges']))) { ?> {
+                <?php if (isset($_SESSION['privileges']) && (in_array("/vl/requests/editVlRequest.php", $_SESSION['privileges']))) { ?> {
                         "sClass": "center",
                         "bSortable": false
                     },
@@ -561,7 +561,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
     function exportAllPendingVlRequest() {
         $.blockUI();
         var requestSampleType = $('#requestSampleType').val();
-        $.post("export-vl-requests.php", {
+        $.post("/vl/requests/export-vl-requests.php", {
                 reqSampleType: requestSampleType
             },
             function(data) {

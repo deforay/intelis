@@ -1,8 +1,9 @@
 <?php
 
+use App\Services\UsersService;
+use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -18,6 +19,12 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
+
 //system config
 $sarr = $general->getSystemConfig();
 
@@ -62,9 +69,8 @@ $vlForm = $general->getGlobalConfig('vl_form');
     */
 $aColumns = array('p.package_code', 'p.module', 'facility_name', "DATE_FORMAT(p.request_created_datetime,'%d-%b-%Y %H:%i:%s')");
 $orderColumns = array('p.package_id', 'p.module', 'facility_name', 'p.package_code', 'p.package_id', 'p.request_created_datetime');
-/* Indexed column (used for fast and accurate table cardinality) */
-// $sIndexColumn = "package_id";
-// $sTable = "package_details";
+
+
 /*
         * Paging
         */
@@ -177,7 +183,8 @@ $output = array(
     "aaData" => array()
 );
 $package = false;
-if (isset($_SESSION['privileges']) && (in_array("edit-manifest.php", $_SESSION['privileges']))) {
+
+if ($usersService->isAllowed("/specimen-referral-manifest/edit-manifest.php?t=" . $_POST['module'])) {
     $package = true;
 }
 
@@ -198,7 +205,7 @@ foreach ($rResult as $aRow) {
         $aRow['module'] = "LAB TESTS ";
     }
     $row = [];
-    //$row[] = '<input type="checkbox" name="chkPackage[]" class="chkPackage" id="chkPackage' . $aRow['package_id'] . '"  value="' . $aRow['package_id'] . '" onclick="checkPackage(this);"  />';
+
     $row[] = $aRow['package_code'];
     $row[] = strtoupper($aRow['module']);
     $row[] = $aRow['labName'];
@@ -206,7 +213,7 @@ foreach ($rResult as $aRow) {
     $row[] = $humanDate;
     if ($package) {
         if ($_SESSION['roleCode'] == 'AD' || $_SESSION['roleCode'] == 'ad') {
-            $editBtn = '<a href="edit-manifest.php?t=' . base64_encode($_POST['module']) . '&id=' . base64_encode($aRow['package_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="Edit"><em class="fa-solid fa-pen-to-square"></em> Edit</em></a>';
+            $editBtn = '<a href="/specimen-referral-manifest/edit-manifest.php?t=' . ($_POST['module']) . '&id=' . base64_encode($aRow['package_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="Edit"><em class="fa-solid fa-pen-to-square"></em> Edit</em></a>';
         } else {
             $editBtn = '';
         }

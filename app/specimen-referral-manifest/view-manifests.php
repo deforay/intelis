@@ -35,11 +35,11 @@ $usersService = ContainerRegistry::get(UsersService::class);
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if ($usersService->isAllowed("move-manifest.php?t=" . $_GET['t'])) { ?>
+						<?php if ($usersService->isAllowed("/specimen-referral-manifest/move-manifest.php?t=" . $_GET['t'])) { ?>
 							<a href="move-manifest.php?t=<?php echo ($_GET['t']); ?>" class="btn btn-primary pull-right" style=" margin-left: 10px; "> <em class="fa-solid fa-angles-right"></em> <?= _("Move Manifest"); ?></a>
 						<?php }
-						if ($usersService->isAllowed("add-manifest.php?t=" . $_GET['t'])) { ?>
-							<a href="add-manifest.php?t=<?php echo ($_GET['t']); ?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Specimen Referral Manifest"); ?></a>
+						if ($usersService->isAllowed("/specimen-referral-manifest/add-manifest.php?t=" . $_GET['t'])) { ?>
+							<a href="/specimen-referral-manifest/add-manifest.php?t=<?php echo ($_GET['t']); ?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Specimen Referral Manifest"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -52,7 +52,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 									<th><?= _("Testing Lab"); ?></th>
 									<th><?= _("Number of Samples"); ?></th>
 									<th><?= _("Manifest Created On"); ?></th>
-									<?php if (isset($_SESSION['privileges']) && in_array("edit-manifest.php", $_SESSION['privileges'])) { ?>
+									<?php if ($usersService->isAllowed("/specimen-referral-manifest/edit-manifest.php?t=" . $_GET['t'])) { ?>
 										<th><?= _("Action"); ?></th>
 									<?php } ?>
 								</tr>
@@ -107,7 +107,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 				{
 					"sClass": "center"
 				},
-				<?php if ($usersService->isAllowed("edit-manifest.php?t=" . $_GET['t'])) { ?> {
+				<?php if ($usersService->isAllowed("/specimen-referral-manifest/edit-manifest.php?t=" . $_GET['t'])) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					},
@@ -127,11 +127,11 @@ $usersService = ContainerRegistry::get(UsersService::class);
 			},
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "get-manifests.php",
+			"sAjaxSource": "/specimen-referral-manifest/get-manifests.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "module",
-					"value": "<?= htmlspecialchars(base64_decode($_GET['t'])); ?>"
+					"value": "<?= $_GET['t']; ?>"
 				});
 				$.ajax({
 					"dataType": 'json',
@@ -147,7 +147,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 
 	function generateManifestPDF(pId, frmSrc) {
 		var ids = $("#checkedPackages").val();
-		var module = '<?= htmlspecialchars(base64_decode($_GET['t'])); ?>';
+		var module = '<?= $_GET['t']; ?>';
 		if (module == 'vl') {
 			manifestFileName = "generateVLManifest.php";
 		} else if (module == 'eid') {
@@ -196,34 +196,6 @@ $usersService = ContainerRegistry::get(UsersService::class);
 			$('.printBarcode').hide();
 		}
 	}
-
-	function checkAllPackageRows(obj) {
-		// if ($(obj).is(':checked')) {
-		//   $(".chkPackage").each(function() {
-		//     if ($.inArray(this.value, selectedPackages) == -1) {
-		//       $(this).prop('checked', true);
-		//       selectedPackages.push(this.value);
-		//     }
-		//   });
-		// } else {
-		//   $(".chkPackage").each(function() {
-		//     $(this).prop('checked', false);
-		//     selectedPackages.splice($.inArray(this.value, selectedPackages), 1);
-		//   });
-		// }
-		// $("#checkedPackages").val(selectedPackages.join());
-		// $('.selectedRows').html(selectedPackages.length + ' Row(s) Selected');
-		// if (selectedPackages.length > 0) {
-		//   $('.printBarcode').show();
-		// } else {
-		//   $('.printBarcode').hide();
-		// }
-	}
-
-	// var count_elem = document.getElementById('specimenReferralManifestDataTable');
-	// var div = document.createElement('div');
-	// div.innerHTML = '<span class="selectedRows" style="font-weight:bold;">0 Row(s) Selected</span>&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-info btn-xs printBarcode" href="javascript:void(0);" onclick="generateManifestPDF(\' \',\'pk2\');" style="display:none;margin-bottom: 1vh;"><em class="fa-solid fa-barcode"></em> Print Barcode</a>';
-	// count_elem.parentNode.insertBefore(div, count_elem);
 </script>
 <?php
 

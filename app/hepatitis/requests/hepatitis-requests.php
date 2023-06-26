@@ -268,10 +268,10 @@ foreach ($srcResults as $list) {
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span><?php echo _("Hide Advanced Search Options"); ?></span></button>
 							</td>
 							<td colspan="4">
-								<?php if (isset($_SESSION['privileges']) && in_array("hepatitis-add-request.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
+								<?php if (isset($_SESSION['privileges']) && in_array("/hepatitis/requests/hepatitis-add-request.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
 									<a style=" margin: 0px 5px; " href="/hepatitis/requests/hepatitis-add-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add new Hepatitis Request"); ?></a>
 								<?php } ?>
-								<?php if (isset($_SESSION['privileges']) && in_array("export-hepatitis-requests.php", $_SESSION['privileges'])) { ?>
+								<?php if (isset($_SESSION['privileges']) && in_array("/hepatitis/requests/export-hepatitis-requests.php", $_SESSION['privileges'])) { ?>
 									<a class="btn btn-success btn-sm pull-right" href="javascript:void(0);" onclick="exportAllPendingHepatitisRequest();"><span><?php echo _("Export Requests"); ?></span></a>
 								<?php } ?>
 							</td>
@@ -280,10 +280,10 @@ foreach ($srcResults as $list) {
 					<table aria-describedby="table" id="filter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
 						<tr id="">
 							<td>
-								<?php if (isset($_SESSION['privileges']) && in_array("hepatitis-add-request.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
+								<?php if (isset($_SESSION['privileges']) && in_array("/hepatitis/requests/hepatitis-add-request.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
 									<a style=" margin: 0px 5px; " href="/hepatitis/requests/hepatitis-add-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add new Hepatitis Request"); ?></a>
 								<?php }
-								if (isset($_SESSION['privileges']) && in_array("export-hepatitis-requests.php", $_SESSION['privileges'])) { ?>
+								if (isset($_SESSION['privileges']) && in_array("/hepatitis/requests/export-hepatitis-requests.php", $_SESSION['privileges'])) { ?>
 									<button style=" margin: 0px 5px; " class="btn btn-success btn-sm pull-right" style="margin-right:5px;" onclick="exportAllPendingHepatitisRequest();"><span> <?php echo _("Export Requests"); ?></span></button>
 								<?php } ?>
 								<button style=" margin: 0px 5px; " class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?php echo _("Show Advanced Search Options"); ?></span></button>

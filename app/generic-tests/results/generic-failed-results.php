@@ -207,7 +207,7 @@ $state = $geolocationService->getProvinces("yes");
                                     <th><?php echo _("Result"); ?></th>
                                     <th><?php echo _("Last Modified Date"); ?></th>
                                     <th scope="row"><?php echo _("Status"); ?></th>
-                                    <?php if (isset($_SESSION['privileges']) && (in_array("edit-request.php", $_SESSION['privileges']))) { ?>
+                                    <?php if (isset($_SESSION['privileges']) && (in_array("/generic-tests/requests/edit-request.php", $_SESSION['privileges']))) { ?>
                                         <th><?php echo _("Action"); ?></th>
                                     <?php } ?>
                                 </tr>
@@ -416,7 +416,7 @@ $state = $geolocationService->getProvinces("yes");
                 {
                     "sClass": "center"
                 },
-                <?php if (isset($_SESSION['privileges']) && (in_array("edit-request.php", $_SESSION['privileges']))) { ?> {
+                <?php if (isset($_SESSION['privileges']) && (in_array("/generic-tests/requests/edit-request.php", $_SESSION['privileges']))) { ?> {
                         "sClass": "center",
                         "bSortable": false
                     },
@@ -545,7 +545,7 @@ $state = $geolocationService->getProvinces("yes");
     function exportAllPendingVlRequest() {
         $.blockUI();
         var requestSampleType = $('#requestSampleType').val();
-        $.post("export-vl-requests.php", {
+        $.post("/vl/requests/export-vl-requests.php", {
                 reqSampleType: requestSampleType
             },
             function(data) {

@@ -282,13 +282,15 @@ foreach ($srcResults as $list) {
 							</td>
 							<td colspan="4">
 								<?php
-								if (isset($_SESSION['privileges']) && in_array("eid-add-request.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
+								if ($usersService->isAllowed("/eid/requests/eid-add-request.php") && !$hidesrcofreq) {
+								?>
 									<a href="/eid/requests/eid-add-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add new EID Request"); ?></a>
 									<?php if ($formId == 1) { ?>
 										<a style=" margin: 0px 5px; " href="/eid/requests/eid-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Bulk Import EID Request"); ?></a>
 									<?php }
 								}
-								if (isset($_SESSION['privileges']) && in_array("export-eid-requests.php", $_SESSION['privileges'])) { ?>
+								if ($usersService->isAllowed("/eid/requests/export-eid-requests.php")) {
+									?>
 									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllEidRequests();"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export Excel"); ?></a>
 								<?php } ?>
 								&nbsp;
@@ -300,13 +302,13 @@ foreach ($srcResults as $list) {
 							<td>
 
 								<?php
-								if (isset($_SESSION['privileges']) && in_array("eid-add-request.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
+								if ($usersService->isAllowed("/eid/requests/eid-add-request.php") && !$hidesrcofreq) { ?>
 									<a href="/eid/requests/eid-add-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add new EID Request"); ?></a>
 									<?php if ($formId == 1) { ?>
 										<a style=" margin: 0px 5px; " href="/eid/requests/eid-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Bulk Import EID Request"); ?></a>
 									<?php }
 								}
-								if (isset($_SESSION['privileges']) && in_array("export-eid-requests.php", $_SESSION['privileges'])) { ?>
+								if (isset($_SESSION['privileges']) && in_array("/eid/requests/export-eid-requests.php", $_SESSION['privileges'])) { ?>
 									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllEidRequests();"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export Excel"); ?></a>
 								<?php } ?>
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?php echo _("Show Advanced Search Options"); ?></span></button>
@@ -337,7 +339,7 @@ foreach ($srcResults as $list) {
 									<th><?php echo _("Result"); ?></th>
 									<th><?php echo _("Last Modified On"); ?></th>
 									<th scope="row"><?php echo _("Status"); ?></th>
-									<?php if ((!empty($_SESSION['privileges']) && (in_array("eid-edit-request.php", $_SESSION['privileges'])) || (in_array("eid-view-request.php", $_SESSION['privileges']))) && !$hidesrcofreq) { ?>
+									<?php if ((!empty($_SESSION['privileges']) && (in_array("/eid/requests/eid-edit-request.php", $_SESSION['privileges'])) || (in_array("eid-view-request.php", $_SESSION['privileges']))) && !$hidesrcofreq) { ?>
 										<th><?php echo _("Action"); ?></th>
 									<?php } ?>
 								</tr>
@@ -529,7 +531,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				}, {
 					"sClass": "center"
 				},
-				<?php if (isset($_SESSION['privileges']) && (in_array("eid-edit-request.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?> {
+				<?php if (isset($_SESSION['privileges']) && (in_array("/eid/requests/eid-edit-request.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					},
@@ -742,7 +744,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		if (searchExecuted === false) {
 			searchVlRequestData();
 		}
-		$.post("export-eid-requests.php", {
+		$.post("/eid/requests/export-eid-requests.php", {
 				reqSampleType: $('#requestSampleType').val(),
 				patientInfo: $('#patientInfo').val(),
 			},

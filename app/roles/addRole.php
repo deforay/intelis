@@ -172,7 +172,7 @@ $rInfo = $db->query($resourcesQuery);
 												<option value='/hepatitis/requests/hepatitis-requests.php'><?php echo _("Hepatitis View Test Requests"); ?></option>
 											<?php }
 											if (!empty($activeTestModules) && in_array('tb', $activeTestModules)) { ?>
-												<option value="/tb/requests/tb-add-request.php"><?php echo _("Add New TB Request"); ?></option>
+												<option value=><?php echo _("Add New TB Request"); ?></option>
 												<option value='/tb/requests/tb-requests.php'><?php echo _("TB View Test Requests"); ?></option>
 											<?php } ?>
 										</select>

@@ -51,7 +51,7 @@ $batResult = $db->rawQuery($batQuery);
 							<td>
 
 								<?php
-								if (isset($_SESSION['privileges']) && in_array("covid-19-add-request.php", $_SESSION['privileges'])) { ?>
+								if (isset($_SESSION['privileges']) && in_array("/covid-19/requests/covid-19-add-request.php", $_SESSION['privileges'])) { ?>
 									<?php if ($_SESSION['instanceType'] != 'remoteuser') { ?>
 										<a style=" margin: 0px 5px; " href="javascript:receiveDhis2Data();" class="btn btn-success btn-sm pull-right"> <em class="fa-solid fa-download"></em> Receive Test Requests from DHIS2</a>
 										<a style=" margin: 0px 5px; " href="javascript:sendDhis2Data();" class="btn btn-warning btn-sm pull-right"> <em class="fa-solid fa-upload"></em> Send Results to DHIS2</a>
@@ -86,7 +86,7 @@ $batResult = $db->rawQuery($batQuery);
 									<th>Result</th>
 									<th>Last Modified On</th>
 									<th>Status</th>
-									<?php if (isset($_SESSION['privileges']) && (in_array("covid-19-edit-request.php", $_SESSION['privileges'])) || (in_array("covid-19-view-request.php", $_SESSION['privileges']))) { ?>
+									<?php if (isset($_SESSION['privileges']) && (in_array("/eid/requests/covid-19-edit-request.php", $_SESSION['privileges'])) || (in_array("covid-19-view-request.php", $_SESSION['privileges']))) { ?>
 										<th>Action</th>
 									<?php } ?>
 								</tr>
@@ -340,7 +340,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				}, {
 					"sClass": "center"
 				},
-				<?php if (isset($_SESSION['privileges']) && (in_array("covid-19-edit-request.php", $_SESSION['privileges'])) || (in_array("covid-19-view-request.php", $_SESSION['privileges']))) { ?> {
+				<?php if (isset($_SESSION['privileges']) && (in_array("/eid/requests/covid-19-edit-request.php", $_SESSION['privileges'])) || (in_array("covid-19-view-request.php", $_SESSION['privileges']))) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					},

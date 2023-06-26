@@ -1,8 +1,9 @@
 <?php
 
+use App\Services\UsersService;
+use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 
 $title = _("View All Requests");
@@ -48,6 +49,10 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
+
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 $state = $geolocationService->getProvinces("yes");
 $healthFacilites = $facilitiesService->getHealthFacilities('vl');
@@ -355,13 +360,15 @@ foreach ($srcResults as $list) {
 							</td>
 							<td colspan="4">
 								<?php
-								if (isset($_SESSION['privileges']) && in_array("addVlRequest.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
-									<a href="addVlRequest.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add VL Request Form"); ?></a>
+								if ($usersService->isAllowed("/vl/requests/addVlRequest.php") && !$hidesrcofreq) { ?>
+									<a href="/vl/requests/addVlRequest.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add VL Request Form"); ?></a>
 								<?php }
 								?>
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
 								&nbsp;
-								<?php if (isset($_SESSION['privileges']) && in_array("export-vl-requests.php", $_SESSION['privileges'])) { ?>
+								<?php
+								if ($usersService->isAllowed("/vl/requests/export-vl-requests.php")) {
+								?>
 									<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingVlRequest();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp; <?php echo _("Export Excel"); ?></a>
 								<?php } ?>
 							</td>
@@ -372,12 +379,12 @@ foreach ($srcResults as $list) {
 							<td>
 
 								<?php
-								if (isset($_SESSION['privileges']) && in_array("addVlRequest.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
-									<a href="addVlRequest.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add VL Request Form"); ?></a>
+								if (isset($_SESSION['privileges']) && in_array("/vl/requests/addVlRequest.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
+									<a href="/vl/requests/addVlRequest.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add VL Request Form"); ?></a>
 								<?php }
 								?>
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
-								<?php if (isset($_SESSION['privileges']) && in_array("export-vl-requests.php", $_SESSION['privileges'])) { ?>
+								<?php if (isset($_SESSION['privileges']) && in_array("/vl/requests/export-vl-requests.php", $_SESSION['privileges'])) { ?>
 									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllPendingVlRequest();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;<?php echo _("Export Excel"); ?></a>
 								<?php } ?>
 
@@ -460,7 +467,7 @@ foreach ($srcResults as $list) {
 									<th><?php echo _("Result"); ?></th>
 									<th><?php echo _("Last Modified Date"); ?></th>
 									<th scope="row"><?php echo _("Status"); ?></th>
-									<?php if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?>
+									<?php if (isset($_SESSION['privileges']) && (in_array("/vl/requests/editVlRequest.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?>
 										<th><?php echo _("Action"); ?></th>
 									<?php } ?>
 								</tr>
@@ -674,7 +681,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				{
 					"sClass": "center"
 				},
-				<?php if (isset($_SESSION['privileges']) && (in_array("editVlRequest.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?> {
+				<?php if ($usersService->isAllowed("/vl/requests/editVlRequest.php") && !$hidesrcofreq) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					},
@@ -694,7 +701,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			},
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "getVlRequestDetails.php",
+			"sAjaxSource": "/vl/requests/getVlRequestDetails.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "batchCode",
@@ -923,7 +930,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			searchVlRequestData();
 		}
 		$.blockUI();
-		$.post("export-vl-requests.php", {
+		$.post("/vl/requests/export-vl-requests.php", {
 				reqSampleType: $('#requestSampleType').val(),
 				patientInfo: $('#patientInfo').val(),
 			},

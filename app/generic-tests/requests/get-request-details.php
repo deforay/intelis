@@ -164,7 +164,7 @@ $output = array(
 );
 
 $editRequest = false;
-if (isset($_SESSION['privileges']) && (in_array("edit-request.php", $_SESSION['privileges']))) {
+if (isset($_SESSION['privileges']) && (in_array("/generic-tests/requests/edit-request.php", $_SESSION['privileges']))) {
      $editRequest = true;
 }
 foreach ($rResult as $aRow) {
@@ -199,7 +199,7 @@ foreach ($rResult as $aRow) {
      $row[] = ($aRow['status_name']);
 
      if ($editRequest) {
-          $row[] = '<a href="edit-request.php?id=' . base64_encode($aRow['sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
+          $row[] = '<a href="/generic-tests/requests/edit-request.php?id=' . base64_encode($aRow['sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
      } else {
           $row[] = "";
      }

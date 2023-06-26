@@ -359,7 +359,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			},
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "get-request-details.php",
+			"sAjaxSource": "/generic-tests/requests/get-request-details.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "testType",
@@ -467,7 +467,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			searchVlRequestData();
 		}
 		$.blockUI();
-		$.post("export-vl-requests.php", {
+		$.post("/vl/requests/export-vl-requests.php", {
 				reqSampleType: $('#requestSampleType').val(),
 				patientInfo: $('#patientInfo').val(),
 			},

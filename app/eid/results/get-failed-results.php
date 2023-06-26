@@ -230,7 +230,7 @@ $output = array(
     "aaData" => array()
 );
 $editRequest = false;
-if (isset($_SESSION['privileges']) && (in_array("eid-edit-request.php", $_SESSION['privileges']))) {
+if (isset($_SESSION['privileges']) && (in_array("/eid/requests/eid-edit-request.php", $_SESSION['privileges']))) {
     $editRequest = true;
 }
 

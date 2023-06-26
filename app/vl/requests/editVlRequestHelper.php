@@ -363,7 +363,7 @@ try {
      } else {
           $_SESSION['alertMsg'] = _("Please try again later");
      }
-     header("Location:vlRequest.php");
+     header("Location:/vl/requests/vlRequest.php");
 } catch (Exception $exc) {
      error_log($exc->getMessage());
      error_log($exc->getTraceAsString());
