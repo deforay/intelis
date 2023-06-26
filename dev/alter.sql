@@ -4423,7 +4423,7 @@ ALTER TABLE `s_app_menu`
 
 
 -- Amit 23-Jun-2023
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'covid-19-requests', '/covid-19/requests/addSamplesFromManifest.php', 'Add Samples from Manifest');
+-- INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'covid-19-requests', '/covid-19/requests/addSamplesFromManifest.php', 'Add Samples from Manifest');
 
 
 -- FIXING COMMON PRIVILEGES
@@ -4539,3 +4539,6 @@ VALUES
 (NULL, 'hepatitis-requests', '/specimen-referral-manifest/move-manifest.php?t=hepatitis', 'Move Hepatitis Manifests'),
 (NULL, 'tb-requests', '/specimen-referral-manifest/move-manifest.php?t=tb', 'Move TB Manifests'),
 (NULL, 'generic-requests', '/specimen-referral-manifest/move-manifest.php?t=generic-tests', 'Move Lab Tests Manifests');
+
+
+DELETE FROM roles_privileges_map where privilege_id not in (select privilege_id from privileges);
