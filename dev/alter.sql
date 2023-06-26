@@ -4538,4 +4538,4 @@ VALUES
 
 
 DELETE FROM roles_privileges_map where privilege_id not in (select privilege_id from privileges);
-DELETE FROM resources WHERE `resource_id` = 'specimen-referral-manifest'";
+DELETE FROM resources WHERE `resource_id` = 'specimen-referral-manifest';
