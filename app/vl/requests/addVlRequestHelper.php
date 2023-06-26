@@ -38,7 +38,7 @@ try {
     $chkValidation = $general->checkMandatoryFields($validateField);
     if ($chkValidation) {
         $_SESSION['alertMsg'] = _("Please enter all mandatory fields to save the test request");
-        header("Location:/vl/requests/addVlRequest.php");
+        header("Location:addVlRequest.php");
         die;
     }
 
@@ -186,6 +186,10 @@ try {
     //set vl test reason
     if (isset($_POST['reasonForVLTesting']) && trim($_POST['reasonForVLTesting']) != "") {
         if (!is_numeric($_POST['reasonForVLTesting'])) {
+            if($_POST['reasonForVLTesting']=="other")
+            {
+                $_POST['reasonForVLTesting'] = $_POST['newreasonForVLTesting'];
+            }
             $reasonQuery = "SELECT test_reason_id FROM r_vl_test_reasons
                         WHERE test_reason_name='" . $_POST['reasonForVLTesting'] . "'";
             $reasonResult = $db->rawQuery($reasonQuery);
@@ -200,6 +204,7 @@ try {
                 $_POST['reasonForVLTesting'] = $id;
             }
         }
+        
     }
 
     if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
@@ -225,10 +230,13 @@ try {
         'sample_dispatched_datetime'            => DateUtility::isoDateFormat($_POST['sampleDispatchedDate'] ?? '', true),
         'patient_gender'                        => $_POST['gender'] ?? null,
         'patient_dob'                           => DateUtility::isoDateFormat($_POST['dob'] ?? ''),
+        'patient_last_name'                     => $_POST['patientLastName'] ?? null,
         'patient_age_in_years'                  => $_POST['ageInYears'] ?? null,
         'patient_age_in_months'                 => $_POST['ageInMonths'] ?? null,
         'is_patient_pregnant'                   => $_POST['patientPregnant'] ?? null,
+        'no_of_pregnancy_weeks'                 => $_POST['noOfPregnancyWeeks'] ?? null,
         'is_patient_breastfeeding'              => $_POST['breastfeeding'] ?? null,
+        'no_of_breastfeeding_weeks'             => $_POST['noOfBreastfeedingWeeks'] ?? null,
         'pregnancy_trimester'                   => $_POST['trimester'] ?? null,
         'patient_has_active_tb'                 => $_POST['activeTB'] ?? null,
         'patient_active_tb_phase'               => $_POST['tbPhase'] ?? null,
@@ -243,6 +251,7 @@ try {
         'regimen_change_date'                   => DateUtility::isoDateFormat($_POST['dateOfArvRegimenChange']),
         'line_of_treatment'                     => $_POST['lineOfTreatment'] ?? null,
         'line_of_treatment_failure_assessed'    => $_POST['lineOfTreatmentFailureAssessed'] ?? null,
+        'current_arv_protocol'                  => $_POST['currentArvProtocol'] ?? null,
         'date_of_initiation_of_current_regimen' => DateUtility::isoDateFormat($_POST['regimenInitiatedOn']),
         'patient_mobile_number'                 => $_POST['patientPhoneNumber'] ?? null,
         'consent_to_receive_sms'                => $_POST['receiveSms'] ?? 'no',
@@ -386,13 +395,13 @@ try {
         }
 
         if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
-            header("Location:/vl/requests/addVlRequest.php");
+            header("Location:addVlRequest.php");
         } else {
-            header("Location:/vl/requests/vlRequest.php");
+            header("Location:vlRequest.php");
         }
     } else {
         $_SESSION['alertMsg'] = _("Please try again later");
-        header("Location:/vl/requests/vlRequest.php");
+        header("Location:vlRequest.php");
     }
 } catch (Exception $exc) {
     error_log($exc->getMessage());
