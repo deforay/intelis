@@ -567,7 +567,7 @@ class CommonService
                                                 COALESCE(last_remote_results_sync, 0),
                                                 COALESCE(last_remote_reference_data_sync, 0)
                                             ) AS dateTime
-                                FROM s_vlsm_instance`";
+                                FROM s_vlsm_instance";
             $dateTime = $this->db->rawQueryOne($lastSyncQuery);
         }
         return (isset($dateTime['dateTime']) && $dateTime['dateTime'] != "") ?
