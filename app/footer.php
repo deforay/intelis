@@ -78,12 +78,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 	});
 
 	function setCrossLogin() {
-		if (typeof(Storage) !== "undefined") {
-			sessionStorage.setItem("crosslogin", "true");
-		} else {
-			alert("Your browser doesn't support this session!");
-			sessionStorage.setItem("crosslogin", "false");
-		}
+		StorageHelper.storeInSessionStorage('crosslogin', 'true');
 	}
 	<?php if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?>
 		remoteSync = true;
@@ -203,7 +198,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		let url = window.location.pathname + window.location.search;
 		let currentMenuItem = $('a[href="' + url + '"]');
 		if (currentMenuItem.length == 0) {
-			let currentPaths = splitPath(url).map(path => btoa(path));
+			let currentPaths = Utilities.splitPath(url).map(path => btoa(path));
 			currentMenuItem = $('a[data-inner-pages]').filter(function() {
 				let innerPages = $(this).data('inner-pages').split(';');
 				return currentPaths.some(path => innerPages.includes(path));

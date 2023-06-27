@@ -75,12 +75,12 @@ require_once APPLICATION_PATH . '/header.php';
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table aria-describedby="table" id="qcTestKitsDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+                        <table aria-describedby="table" id="qcTestKitsDataTable" class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
                                 <tr>
                                     <th><?php echo _("QC Code"); ?></th>
                                     <th><?php echo _("Test Kit"); ?></th>
-                                    <th><?php echo _("Lot No."); ?></th>
+                                    <th><?php echo _("Lot Number"); ?></th>
                                     <th><?php echo _("Expiry Date"); ?></th>
                                     <th scope="row"><?php echo _("Testing Lab"); ?></th>
                                     <th><?php echo _("Tester Name"); ?></th>
@@ -120,32 +120,31 @@ require_once APPLICATION_PATH . '/header.php';
                 "sLengthMenu": "_MENU_ records per page"
             },
             "bJQueryUI": false,
-			"bAutoWidth": false,
-			"bInfo": true,
-			"bScrollCollapse": true,
-			//"bStateSave" : true,
-			"bRetrieve": true,
+            "bAutoWidth": false,
+            "bInfo": true,
+            "bScrollCollapse": true,
+            //"bStateSave" : true,
+            "bRetrieve": true,
             "aoColumns": [{
-                    "sClass": "center"
-                }, {
-                    "sClass": "center"
-                }, {
-                    "sClass": "center"
-                }, {
-                    "sClass": "center"
-                }, {
-                    "sClass": "center"
-                }, {
-                    "sClass": "center"
-                }, {
-                    "sClass": "center"
-                }, {
-                    "sClass": "center"
-                }, {
-                    "sClass": "center",
-                    "bSortable": false
-                }
-            ],
+                "sClass": "center"
+            }, {
+                "sClass": "center"
+            }, {
+                "sClass": "center"
+            }, {
+                "sClass": "center"
+            }, {
+                "sClass": "center"
+            }, {
+                "sClass": "center"
+            }, {
+                "sClass": "center"
+            }, {
+                "sClass": "center"
+            }, {
+                "sClass": "center",
+                "bSortable": false
+            }],
             "aaSorting": [
                 [7, "desc"]
             ],

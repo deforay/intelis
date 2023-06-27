@@ -722,8 +722,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      facilityName = true;
 
      $(document).ready(function() {
-          autoSelectSingleOption('fName');
-          autoSelectSingleOption('specimenType');
+          Utilities.autoSelectSingleOption('fName');
+          Utilities.autoSelectSingleOption('specimenType');
 
           $("#artNo").on('input', function() {
 

@@ -260,7 +260,7 @@ responsive: true
     $("#password").val(data);
     $("#confirmPassword").val(data);
     try {
-      const success = await copyToClipboard(data);
+      const success = await Utilities.copyToClipboard(data);
       if (success) {
         Toastify({
           text: "Random password generated and copied to clipboard",

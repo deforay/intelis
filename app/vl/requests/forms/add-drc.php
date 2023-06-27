@@ -200,9 +200,9 @@ $sFormat = '';
 										<td style="width:15% !important;">
 											<input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _("Please enter date"); ?>" title="Please select date de naissance" onchange="getAge();checkARTInitiationDate();" style="width:100%;" />
 										</td>
-										<td style="width:6% !important;"><label for="ageInYears">Âge en années </label></td>
+										<td style="width:6% !important;"><label for="ageInYears">Âge en années <span class="mandatory">*</span></label></td>
 										<td style="width:19% !important;">
-											<input type="text" class="form-control forceNumeric" id="ageInYears" name="ageInYears" placeholder="Aannées" title="Please enter àge en années" onchange="clearDOB(this.value);" style="width:100%;" />
+											<input type="text" class="form-control forceNumeric isRequired" id="ageInYears" name="ageInYears" placeholder="Aannées" title="<?= _("Please enter Patient age") ?>" onchange="clearDOB(this.value);" style="width:100%;" />
 										</td>
 										<td style="width:10% !important;"><label for="ageInMonths">Âge en mois </label></td>
 										<td style="width:15% !important;">

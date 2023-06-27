@@ -1410,7 +1410,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 	function getAge() {
 		let dob = $("#dob").val();
 		if ($.trim(dob) != '') {
-			let age = getAgeFromDob(dob);
+			let age = Utilities.getAgeFromDob(dob);
 			$("#ageInYears").val("");
 			$("#ageInMonths").val("");
 			if (age.years >= 1) {

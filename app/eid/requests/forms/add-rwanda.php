@@ -614,7 +614,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     }
 
     $(document).ready(function() {
-        autoSelectSingleOption('facilityId');
+        Utilities.autoSelectSingleOption('facilityId');
         $("#childId").on('input', function() {
             $.post("/common/patient-last-request-details.php", {
                     patientId: $.trim($(this).val()),

@@ -12,36 +12,9 @@ $(document).on('select2:open', (e) => {
 });
 
 
-function getAgeFromDob(dob) {
-    let dobDate = dayjs(dob);
-    if (dob != '' && dobDate.isValid()) {
-        let currentDate = dayjs();
-        let ageInYears = currentDate.diff(dobDate, 'year');
-        let ageInMonths = currentDate.diff(dobDate, 'month') % 12;
-        return {
-            years: ageInYears,
-            months: ageInMonths
-        }
-    }
-}
-
-
 $('.daterange,#daterange,#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate,#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate,#hvlSampleTestDate,#printDate,#hvlSampleTestDate').on('cancel.daterangepicker', function (ev, picker) {
     $(this).val('');
 });
-
-
-function showModal(url, w, h) {
-    showdefModal('dDiv', w, h);
-    document.getElementById('dFrame').style.height = h + 'px';
-    document.getElementById('dFrame').style.width = w + 'px';
-    document.getElementById('dFrame').src = url;
-}
-
-function closeModal() {
-    document.getElementById('dFrame').src = "";
-    hidedefModal('dDiv');
-}
 
 
 jQuery('.forceNumeric').on('input', function () {
@@ -61,119 +34,179 @@ jQuery('#ageInYears').on('input', function () {
     }
 });
 
-function autoSelectSingleOption(selectId) {
-    let nonEmptyOptions = $('#' + selectId).find("option[value!='']");
-    if (nonEmptyOptions.length === 1) {
-        $('#' + selectId).val(nonEmptyOptions.val()).trigger('change');
+class Utilities {
+    static async copyToClipboard(text) {
+        let succeed;
+        try {
+            await navigator.clipboard.writeText(text);
+            succeed = true;
+        } catch (e) {
+            succeed = false;
+        }
+        return succeed;
     }
-};
 
-
-let notificationCounts = 0;
-let Notifier = new function () {
-    this._alert = null;
-    return {
-        notify: function (f, j) {
-            let n = this.main;
-            let i = this.main.document;
-            let a = i.documentElement;
-            let h = n.innerWidth ? n.innerWidth + n.pageXOffset : a.clientWidth + a.scrollLeft;
-            let e = n.innerHeight ? n.innerHeight + n.pageYOffset : a.clientHeight + a.scrollTop;
-            let l = i.createElement("div");
-            l.id = "Message";
-            l.className = j || "";
-            l.style.cssText = "position:fixed;white-space:nowrap;";
-            if (l.className.length == 0) {
-                l.className = "notifier"
+    static getAgeFromDob(dob) {
+        let dobDate = dayjs(dob);
+        if (dob != '' && dobDate.isValid()) {
+            let currentDate = dayjs();
+            let ageInYears = currentDate.diff(dobDate, 'year');
+            let ageInMonths = currentDate.diff(dobDate, 'month') % 12;
+            return {
+                years: ageInYears,
+                months: ageInMonths
             }
-            l = i.body.insertBefore(l, i.body.firstChild);
-            l.innerHTML = f;
-            let g = l.offsetHeight;
-            l.style.display = "none";
-            let bottomPosition = g * notificationCounts;
-            l.style.left = 0;
-            l.setAttribute("style", "bottom:" + bottomPosition + "px;");
-            l.style.bottom = bottomPosition;
-            l.style.display = "block";
-            notificationCounts++;
-            setFading(l, 150, 0, 2000, function () {
-                i.body.removeChild(l);
-                notificationCounts--;
-            })
-        },
-        init: function (a, b) {
-            this.main = a;
-            if (b == "" || b == "null") {
-                b = "notifier"
-            }
-            this.classname = b || "";
-            // if (this._alert == null) {
-            //     this._alert = this.main.alert;
-            //     this.main.alert = function (c, d) {
-            //         Notifier.notify(c, d)
-            //     }
-            // }
-        },
-        shut: function () {
-            // if (this._alert != null) {
-            //     this.main.alert = this._alert;
-            //     this._alert = null
-            // }
         }
     }
-};
 
-function setFading(j, a, h, i, g) {
-    let c = setInterval(function () {
-        a = stepFX(a, h, 2);
-        setOpacity(j, a / 100);
-        if (a == h) {
-            if (c) {
-                clearInterval(c);
-                c = null
-            }
-            if (typeof g == "function") {
-                g()
+    static splitPath(path) {
+        let parts = path.split('?');
+        let paths = [parts[0]];
+        if (parts.length > 1) {
+            let queryParams = parts[1].split('&');
+            for (let i = 0; i < queryParams.length; i++) {
+                paths.push(parts[0] + '?' + queryParams.slice(0, i + 1).join('&'));
             }
         }
-    }, i / 50);
+        return paths;
+    }
+
+    static autoSelectSingleOption(selectId) {
+        let nonEmptyOptions = $('#' + selectId).find("option[value!='']");
+        if (nonEmptyOptions.length === 1) {
+            $('#' + selectId).val(nonEmptyOptions.val()).trigger('change');
+        }
+    }
 }
 
-function setOpacity(a, b) {
-    a.style.filter = "alpha(opacity=" + b * 100 + ")";
-    a.style.opacity = b;
-};
-
-function stepFX(a, d, c) {
-    return (a > d ? a - c > d ? a - c : d : a < d ? a + c < d ? a + c : d : a);
-};
-//let __alert = window.alert;
-let classN = "";
-Notifier.init(window, "notifier");
-
-
-
-async function copyToClipboard(text) {
-    let succeed;
-    try {
-        await navigator.clipboard.writeText(text);
-        succeed = true;
-    } catch (e) {
-        succeed = false;
-    }
-    return succeed;
-}
-
-
-
-function splitPath(path) {
-    let parts = path.split('?');
-    let paths = [parts[0]];
-    if (parts.length > 1) {
-        let queryParams = parts[1].split('&');
-        for (let i = 0; i < queryParams.length; i++) {
-            paths.push(parts[0] + '?' + queryParams.slice(0, i + 1).join('&'));
+class StorageHelper {
+    static isSupported() {
+        try {
+            const storage = window['localStorage'];
+            const x = '__storage_test__';
+            storage.setItem(x, x);
+            storage.removeItem(x);
+            return true;
+        } catch (e) {
+            return e instanceof DOMException && (
+                // everything except Firefox
+                e.name === 'QuotaExceededError' ||
+                // Firefox
+                e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+                // acknowledge QuotaExceededError only if there's something already stored
+                storage.length !== 0;
         }
     }
-    return paths;
+
+    static storeInLocalStorage(key, value) {
+        if (!StorageHelper.isSupported()) {
+            console.error('localStorage is not supported in this browser');
+            return;
+        }
+
+        try {
+            if (typeof value !== 'string') {
+                value = JSON.stringify(value);
+            }
+            localStorage.setItem(key, value);
+        } catch (error) {
+            console.error(`Error storing item in localStorage: ${error}`);
+        }
+    }
+
+    static getFromLocalStorage(key) {
+        if (!StorageHelper.isSupported()) {
+            console.error('localStorage is not supported in this browser');
+            return;
+        }
+
+        const value = localStorage.getItem(key);
+        try {
+            return JSON.parse(value);
+        } catch (error) {
+            return value;
+        }
+    }
+
+    static removeItemFromLocalStorage(key) {
+        if (!StorageHelper.isSupported()) {
+            console.error('localStorage is not supported in this browser');
+            return;
+        }
+
+        try {
+            localStorage.removeItem(key);
+        } catch (error) {
+            console.error(`Error removing item from localStorage: ${error}`);
+        }
+    }
+
+    static clearLocalStorage() {
+        if (!StorageHelper.isSupported()) {
+            console.error('localStorage is not supported in this browser');
+            return;
+        }
+
+        try {
+            localStorage.clear();
+        } catch (error) {
+            console.error(`Error clearing localStorage: ${error}`);
+        }
+    }
+
+    static storeInSessionStorage(key, value) {
+        if (!StorageHelper.isSupported()) {
+            console.error('sessionStorage is not supported in this browser');
+            return;
+        }
+
+        try {
+            if (typeof value !== 'string') {
+                value = JSON.stringify(value);
+            }
+            sessionStorage.setItem(key, value);
+        } catch (error) {
+            console.error(`Error storing item in sessionStorage: ${error}`);
+        }
+    }
+
+    static getFromSessionStorage(key) {
+        if (!StorageHelper.isSupported()) {
+            console.error('sessionStorage is not supported in this browser');
+            return;
+        }
+
+        const value = sessionStorage.getItem(key);
+        try {
+            return JSON.parse(value);
+        } catch (error) {
+            return value;
+        }
+    }
+
+    static removeItemFromSessionStorage(key) {
+        if (!StorageHelper.isSupported()) {
+            console.error('sessionStorage is not supported in this browser');
+            return;
+        }
+
+        try {
+            sessionStorage.removeItem(key);
+        } catch (error) {
+            console.error(`Error removing item from sessionStorage: ${error}`);
+        }
+    }
+
+    static clearSessionStorage() {
+        if (!StorageHelper.isSupported()) {
+            console.error('sessionStorage is not supported in this browser');
+            return;
+        }
+
+        try {
+            sessionStorage.clear();
+        } catch (error) {
+            console.error(`Error clearing sessionStorage: ${error}`);
+        }
+    }
 }
