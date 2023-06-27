@@ -95,7 +95,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 												<option value="<?php echo $testType['test_type_id']; ?>"><?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?></option>
 											<?php } ?>
 										</select>
-										<span class="batchAlert" style="font-size:1.1em;color: red;">Choose test type to see relavent sample bacthes</span>
+
 									</div>
 								</div>
 								<div class="col-xs-6 col-md-6">
