@@ -4124,7 +4124,7 @@ ALTER TABLE `audit_form_eid` ADD `second_dbs_requested` VARCHAR(256) NULL DEFAUL
 
 -- Thana 09-Jun-2023
 
-UPDATE `privileges` SET `privilege_name` = '/batch/batches.php?type=generic-tests' WHERE `privileges`.`privilege_name` = 'batch-code.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/batches.php?type=generic-tests' WHERE `privilege_name` = 'batch-code.php';
 UPDATE `privileges` SET `display_name` = 'Manage Batch' WHERE `resource_id` = '/batch/batches.php?type=generic-tests';
 
 UPDATE `privileges` SET `privilege_name` = '/batch/batches.php?type=vl' WHERE `privilege_name` = 'batchcode.php';
@@ -4164,11 +4164,11 @@ UPDATE `batch_details` SET `last_modified_datetime` = `request_created_datetime`
 
 -- Thana 13-Jun-2023
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('generic-tests-batches', 'generic-test', 'Lab Tests Batch Management');
-UPDATE `privileges` SET `resource_id` = 'generic-test-batches' WHERE `privileges`.`resource_id` = 'generic-requests' AND `privileges`.`privilege_name` = '/batch/batches.php?type=generic-tests';
+UPDATE `privileges` SET `resource_id` = 'generic-tests-batches' WHERE `privileges`.`resource_id` = 'generic-requests' AND `privileges`.`privilege_name` = '/batch/batches.php?type=generic-tests';
 
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES
-(NULL, 'generic-test-batches', '/batch/add-batch.php?type=generic-tests', 'Add New Batch'),
-(NULL, 'generic-test-batches', '/batch/edit-batch.php?type=generic-tests', 'Edit Batch');
+(NULL, 'generic-tests-batches', '/batch/add-batch.php?type=generic-tests', 'Add New Batch'),
+(NULL, 'generic-tests-batches', '/batch/edit-batch.php?type=generic-tests', 'Edit Batch');
 
 ALTER TABLE `generic_sample_rejection_reason_map` ADD PRIMARY KEY(`map_id`);
 ALTER TABLE `generic_sample_rejection_reason_map` CHANGE `map_id` `map_id` INT NOT NULL AUTO_INCREMENT;
@@ -4500,12 +4500,12 @@ UPDATE `privileges` set privilege_name = CONCAT("/tb/reference/",privilege_name)
 -- Import Result from File
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`)
 VALUES
-(NULL, 'vl-results', '/import-result/import-file.php?t=vl', 'Import Result from Files'),
-(NULL, 'eid-results', '/import-result/import-file.php?t=eid', 'Import Result from Files'),
-(NULL, 'covid-19-results', '/import-result/import-file.php?t=covid19', 'Import Result from Files'),
-(NULL, 'hepatitis-results', '/import-result/import-file.php?t=hepatitis', 'Import Result from Files'),
-(NULL, 'tb-results', '/import-result/import-file.php?t=tb', 'Import Result from Files'),
-(NULL, 'generic-results', '/import-result/import-file.php?t=generic-tests', 'Import Result from Files');
+(NULL, 'vl-results', '/import-result/import-file.php?t=vl', 'Import VL Results from Files'),
+(NULL, 'eid-results', '/import-result/import-file.php?t=eid', 'Import EID Results from Files'),
+(NULL, 'covid-19-results', '/import-result/import-file.php?t=covid19', 'Import COVID-19 Results from Files'),
+(NULL, 'hepatitis-results', '/import-result/import-file.php?t=hepatitis', 'Import Hepatitis Results from Files'),
+(NULL, 'tb-results', '/import-result/import-file.php?t=tb', 'Import TB Results from Files'),
+(NULL, 'generic-results', '/import-result/import-file.php?t=generic-tests', 'Import Results from Files');
 
 
 -- Create Manifest
@@ -4539,9 +4539,22 @@ VALUES
 
 DELETE FROM roles_privileges_map where privilege_id not in (select privilege_id from privileges);
 DELETE FROM resources WHERE `resource_id` = 'specimen-referral-manifest';
+DELETE FROM privileges WHERE `resource_id` = 'generic-test-batches';
+
+UPDATE `resources` SET `module` = 'generic-tests' WHERE `resources`.`resource_id` = 'generic-tests-batches';
+
+INSERT IGNORE INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES
+(NULL, 'generic-tests-batches', '/batch/batches.php?type=generic-tests', 'Manage Batch');
+
+INSERT IGNORE INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES
+(NULL, 'generic-tests-batches', '/batch/add-batch.php?type=generic-tests', 'Add New Batch');
+
+INSERT IGNORE INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES
+(NULL, 'generic-tests-batches', '/batch/edit-batch.php?type=generic-tests', 'Edit Batch');
 
 
---Jeyabanu 26-Jun-2023
+
+-- Jeyabanu 26-Jun-2023
 ALTER TABLE `form_vl` ADD `no_of_pregnancy_weeks` INT NULL DEFAULT NULL AFTER `is_patient_pregnant`;
 ALTER TABLE `audit_form_vl` ADD `no_of_pregnancy_weeks` INT NULL DEFAULT NULL AFTER `is_patient_pregnant`;
 ALTER TABLE `form_vl` ADD `no_of_breastfeeding_weeks` INT NULL DEFAULT NULL AFTER `is_patient_breastfeeding`;
