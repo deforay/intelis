@@ -331,13 +331,13 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                         </div>
                                         <div class="box-body">
                                                 <div class="row">
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-3">
                                                        <div class="form-group">
                                                             <label for=""><?= _('Date of Sample Collection'); ?> <span class="mandatory">*</span></label>
                                                             <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" value="<?php echo $vlQueryInfo['sample_collection_date']; ?>" onchange="checkSampleReceviedDate();checkSampleTestingDate();">
                                                        </div>
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-3">
                                                        <div class="form-group">
                                                             <label for="specimenType"><?= _('Sample Type'); ?> <span class="mandatory">*</span></label>
                                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="<?= _('Please choose sample type'); ?>">
@@ -352,18 +352,17 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                             </select>
                                                        </div>
                                                   </div>
-                                                </div>
-                                             <div class="row">
-                                                            <div class="col-md-6">
+                                               
+                                                            <div class="col-md-3">
                                                             <div class="form-group">
-                                                                 <label for="reqClinician" class="col-lg-5 control-label"><?= _('Name of health personnel collecting sample'); ?></label>
+                                                                 <label for="reqClinician" class=""><?= _('Name of health personnel collecting sample'); ?></label>
                                                                 
                                                                       <input type="text" class="form-control" id="reqClinician" name="reqClinician" value="<?= $vlQueryInfo['request_clinician_name']; ?>" placeholder="<?= _('Request Clinician name'); ?>" title="<?= _('Please enter request clinician'); ?>" />
                                                                       </div>     
                                                             </div>
-                                                            <div class="col-md-6">
+                                                            <div class="col-md-3">
                                                             <div class="form-group">
-                                                                <label for="reqClinicianPhoneNumber" class="col-lg-5 control-label"><?= _('Contact Number'); ?> </label>
+                                                                <label for="reqClinicianPhoneNumber" class=""><?= _('Contact Number'); ?> </label>
                                                                       <input type="text" class="form-control forceNumeric" id="reqClinicianPhoneNumber" value="<?= $vlQueryInfo['request_clinician_phone_number']; ?>" name="reqClinicianPhoneNumber" maxlength="15" placeholder="<?= _('Phone Number'); ?>" title="<?= _('Please enter request clinician phone number'); ?>" />
                                                                 </div>
                                                             </div>

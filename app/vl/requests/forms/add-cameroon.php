@@ -286,44 +286,44 @@ $sFormat = '';
                                              <h3 class="box-title"><?= _('Sample Information'); ?></h3>
                                         </div>
                                         <div class="box-body">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                       <div class="form-group">
-                                                            <label for=""><?= _('Date of Sample Collection'); ?> <span class="mandatory">*</span></label>
-                                                            <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _('Sample Collection Date'); ?>" title="<?= _('Please select sample collection date'); ?>" onchange="generateSampleCode()">
-                                                       </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                       <div class="form-group">
-                                                            <label for="specimenType"><?= _('Sample Type'); ?> <span class="mandatory">*</span></label>
-                                                            <select name="specimenType" id="specimenType" class="form-control isRequired" title="<?= _('Please choose sample type'); ?>">
-                                                                 <option value=""> -- Select -- </option>
-                                                                 <?php
-                                                                 $selected = '';
-                                                                 if (count($sResult) == 1)
-                                                                      $selected = "selected='selected'";
-                                                                 foreach ($sResult as $name) { ?>
-                                                                      <option <?= $selected; ?> value="<?php echo $name['sample_id']; ?>"><?= $name['sample_name']; ?></option>
-                                                                 <?php } ?>
-                                                            </select>
-                                                       </div>
-                                                  </div>
-                                                </div>
-                                             <div class="row">
-                                                            <div class="col-md-6">
+                                                  <div class="row">
+                                                       <div class="col-md-3">
                                                             <div class="form-group">
-                                                                 <label for="reqClinician" class="col-lg-5 control-label"><?= _('Name of health personnel collecting sample'); ?></label>
-                                                                
-                                                                      <input type="text" class="form-control" id="reqClinician" name="reqClinician" placeholder="<?= _('Request Clinician name'); ?>" title="<?= _('Please enter request clinician'); ?>" />
-                                                                      </div>     
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <label for="reqClinicianPhoneNumber" class="col-lg-5 control-label"><?= _('Contact Number'); ?> </label>
-                                                                      <input type="text" class="form-control forceNumeric" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="<?= _('Phone Number'); ?>" title="<?= _('Please enter request clinician phone number'); ?>" />
-                                                                </div>
+                                                                 <label for=""><?= _('Date of Sample Collection'); ?> <span class="mandatory">*</span></label>
+                                                                 <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _('Sample Collection Date'); ?>" title="<?= _('Please select sample collection date'); ?>" onchange="generateSampleCode()">
                                                             </div>
                                                        </div>
+                                                       <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                 <label for="specimenType"><?= _('Sample Type'); ?> <span class="mandatory">*</span></label>
+                                                                 <select name="specimenType" id="specimenType" class="form-control isRequired" title="<?= _('Please choose sample type'); ?>">
+                                                                      <option value=""> -- Select -- </option>
+                                                                      <?php
+                                                                      $selected = '';
+                                                                      if (count($sResult) == 1)
+                                                                           $selected = "selected='selected'";
+                                                                      foreach ($sResult as $name) { ?>
+                                                                           <option <?= $selected; ?> value="<?php echo $name['sample_id']; ?>"><?= $name['sample_name']; ?></option>
+                                                                      <?php } ?>
+                                                                 </select>
+                                                            </div>
+                                                       </div>
+                                                  
+                                                       <div class="col-md-3">
+                                                            <div class="form-group">
+                                                            <label for="reqClinician" class=""><?= _('Name of health personnel collecting sample'); ?></label>
+                                                            <input type="text" class="form-control" id="reqClinician" name="reqClinician" placeholder="<?= _('Request Clinician name'); ?>" title="<?= _('Please enter request clinician'); ?>" />                                                            
+                                                                      </div>
+                                                       </div>
+                                                       <div class="col-md-3">
+                                                            <div class="form-group">
+                                                            <label for="reqClinicianPhoneNumber" class=""><?= _('Contact Number'); ?> </label>
+                                                            <input type="text" class="form-control forceNumeric" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="<?= _('Phone Number'); ?>" title="<?= _('Please enter request clinician phone number'); ?>" />
+
+                                                            </div>
+                                                       </div>
+                                                  </div>    
+                                           
                                         </div>
                                         <div class="box box-primary">
                                              <div class="box-header with-border">
