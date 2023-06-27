@@ -329,7 +329,7 @@ $output = array(
 );
 $editRequest = false;
 $syncRequest = false;
-if (isset($_SESSION['privileges']) && (in_array("hepatitis-edit-request.php", $_SESSION['privileges']))) {
+if (isset($_SESSION['privileges']) && (in_array("/hepatitis/requests/hepatitis-edit-request.php", $_SESSION['privileges']))) {
      $editRequest = true;
      $syncRequest = true;
 }
