@@ -54,6 +54,9 @@ $pdResult = $general->fetchDataFromTable('geographical_divisions');
 //get suspected treatment failure at
 $suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatment_failure_at FROM form_vl where vlsm_country_id='" . $arr['vl_form'] . "'";
 $suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQuery);
+
+//get vl test reason list
+$vlTestReasonResult = $vlService->getVlReasonsForTesting();
 ?>
 <style>
     .ui_tpicker_second_label {

@@ -298,7 +298,7 @@ $output = array(
 );
 $editRequest = false;
 $syncRequest = false;
-if (isset($_SESSION['privileges']) && (in_array("tb-edit-request.php", $_SESSION['privileges']))) {
+if (isset($_SESSION['privileges']) && (in_array("/tb/requests/tb-edit-request.php", $_SESSION['privileges']))) {
      $editRequest = true;
      $syncRequest = true;
 }

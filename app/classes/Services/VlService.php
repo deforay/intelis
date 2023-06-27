@@ -475,4 +475,14 @@ class VlService implements TestServiceInterface
         $this->db->where('status', 'active');
         return $this->db->get('r_vl_results');
     }
+
+    public function getVlReasonsForTesting(): array
+    {
+        $results = $this->db->rawQuery("SELECT test_reason_id,test_reason_name
+                                            FROM r_vl_test_reasons
+                                                WHERE `test_reason_status` LIKE 'active'
+                                                AND (parent_reason IS NULL OR parent_reason = 0)");
+      
+        return $results;
+    }
 }

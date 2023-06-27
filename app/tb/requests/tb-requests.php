@@ -327,7 +327,7 @@ foreach ($srcResults as $list) {
                                     <th><?php echo _("Result"); ?></th>
                                     <th><?php echo _("Last Modified On"); ?></th>
                                     <th scope="row"><?php echo _("Status"); ?></th>
-                                    <?php if (isset($_SESSION['privileges']) && (in_array("tb-edit-request.php", $_SESSION['privileges'])) || (in_array("tb-view-request.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?>
+                                    <?php if (isset($_SESSION['privileges']) && (in_array("/tb/requests/tb-edit-request.php", $_SESSION['privileges'])) || (in_array("tb-view-request.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?>
                                         <th><?php echo _("Action"); ?></th>
                                     <?php } ?>
                                 </tr>
@@ -511,7 +511,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 }, {
                     "sClass": "center"
                 },
-                <?php if (isset($_SESSION['privileges']) && (in_array("tb-edit-request.php", $_SESSION['privileges'])) || (in_array("tb-view-request.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?> {
+                <?php if (isset($_SESSION['privileges']) && (in_array("/tb/requests/tb-edit-request.php", $_SESSION['privileges'])) || (in_array("tb-view-request.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?> {
                         "sClass": "center action",
                         "bSortable": false
                     },
