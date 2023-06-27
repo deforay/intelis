@@ -332,7 +332,7 @@ $output = array(
 );
 $editRequest = false;
 $syncRequest = false;
-if (isset($_SESSION['privileges']) && (in_array("/eid/requests/covid-19-edit-request.php", $_SESSION['privileges']))) {
+if (isset($_SESSION['privileges']) && (in_array("/covid-19/requests/covid-19-edit-request.php", $_SESSION['privileges']))) {
      $editRequest = true;
      $syncRequest = true;
 }

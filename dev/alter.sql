@@ -4124,7 +4124,7 @@ ALTER TABLE `audit_form_eid` ADD `second_dbs_requested` VARCHAR(256) NULL DEFAUL
 
 -- Thana 09-Jun-2023
 
-UPDATE `privileges` SET `privilege_name` = '/batch/batches.php?type=generic-tests' WHERE `privileges`.`privilege_name` = 'batch-code.php';
+UPDATE `privileges` SET `privilege_name` = '/batch/batches.php?type=generic-tests' WHERE `privilege_name` = 'batch-code.php';
 UPDATE `privileges` SET `display_name` = 'Manage Batch' WHERE `resource_id` = '/batch/batches.php?type=generic-tests';
 
 UPDATE `privileges` SET `privilege_name` = '/batch/batches.php?type=vl' WHERE `privilege_name` = 'batchcode.php';
