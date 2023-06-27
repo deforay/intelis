@@ -355,104 +355,205 @@ $sFormat = '';
                                                                  <input type="text" class="form-control" style="width:100%;" name="currentArvProtocol" id="currentArvProtocol" placeholder="<?= _('Current ARV Protocol'); ?>" title="<?= _('Please enter current ARV protocol'); ?>">
                                                             </div>
                                                        </div>
-                                                       <div class="col-xs-3 col-md-3">
+                                                     <!--  <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
                                                                  <label for="arvAdherence"><?= _('Reason of Request of the Viral Load'); ?></label>
                                                                  <select name="reasonForVLTesting" id="reasonForVLTesting" class="form-control" title="<?= _('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
-                                                                      <option value=""> -- Sélectionner -- </option>
-                                                                      <?php
-                                                                      foreach ($vlTestReasonResult as $tReason) {
-                                                                      ?>
-                                                                           <option value="<?php echo $tReason['test_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $tReason['test_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ($tReason['test_reason_name']); ?></option>
-                                                                      <?php } ?>
-                                                                      <option value="other">Other</option>
-                                                                 </select>
-                                                                 <input type="text" class="form-control" name="newreasonForVLTesting" id="newreasonForVLTesting" placeholder="<?= _('Enter new reason of testing'); ?>" title="<?= _('Enter new reason of testing'); ?>" style="width:100%; display:none;">
+                                                                    <option value=""> -- Sélectionner -- </option>
+                                                                    <?php
+                                                                    foreach ($vlTestReasonResult as $tReason) {
+                                                                    ?>
+                                                                        <option value="<?php echo $tReason['test_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $tReason['test_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ($tReason['test_reason_name']); ?></option>
+                                                                    <?php } ?>
+                                                                    <option value="other">Other</option>
+                                                                </select>
+                                                                <input type="text" class="form-control" name="newreasonForVLTesting" id="newreasonForVLTesting" placeholder="<?= _('Enter new reason of testing'); ?>" title="<?= _('Enter new reason of testing'); ?>" style="width:100%; display:none;">
                                                             </div>
-                                                       </div>
+                                                       </div>-->
                                                   </div>
                                              </div>
-
-
-                                             <?php //if ($usersService->isAllowed('updateVlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { 
-                                             ?>
                                              <div class="box box-primary">
                                                   <div class="box-header with-border">
-                                                       <h3 class="box-title"><?= _('Laboratory Information'); ?></h3>
+                                                       <h3 class="box-title"><?= _('Reason of Request of the Viral Load'); ?> <span class="mandatory">*</span></h3><small> (Please pick one): (To be completed by clinician)</small>
                                                   </div>
                                                   <div class="box-body">
                                                        <div class="row">
                                                             <div class="col-md-6">
-                                                                 <label for="testingPlatform" class="col-lg-5 control-label"><?= _('VL Testing Platform'); ?> </label>
-                                                                 <div class="col-lg-7">
-                                                                      <select name="testingPlatform" id="testingPlatform" class="form-control" title="<?= _('Please choose VL Testing Platform'); ?>" <?php echo $labFieldDisabled; ?> onchange="hivDetectionChange();">
-                                                                           <option value="">-- Select --</option>
-                                                                           <?php foreach ($importResult as $mName) { ?>
-                                                                                <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>"><?php echo $mName['machine_name']; ?></option>
-                                                                           <?php } ?>
-                                                                      </select>
-                                                                 </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label" for="sampleReceivedDate"><?= _('Date Sample Received at Testing Lab'); ?> </label>
-                                                                 <div class="col-lg-7">
-                                                                      <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _('Sample Received Date'); ?>" title="<?= _('Please select sample received date'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate()" />
+                                                                 <div class="form-group">
+                                                                      <div class="col-lg-12">
+                                                                           <label class="radio-inline">
+                                                                                <input type="radio" class="isRequired" id="rmTesting" name="reasonForVLTesting" value="controlVlTesting" title="Please check viral load indication testing type" onclick="showTesting('rmTesting');">
+                                                                                <strong>Control VL Testing</strong>
+                                                                           </label>
+                                                                      </div>
                                                                  </div>
                                                             </div>
                                                        </div>
-                                                       <div class="row">
+                                                       <div class="row rmTesting hideTestData well" style="display:none;">
                                                             <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label" for="sampleTestingDateAtLab"><?= _('Sample Testing Date'); ?> </label>
+                                                                 <label class="col-lg-5 control-label">Types Of Control VL Testing</label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _('Sample Testing Date'); ?>" title="<?= _('Please select sample testing date'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkSampleTestingDate();" />
+                                        
+                                                                      <select name="controlVlTestingType" id="controlVlType" class="form-control" title="<?= _('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
+                                                                           <option value=""> -- Sélectionner -- </option>
+                                                                           <option value="6 Months">6 Months</option>
+                                                                           <option value="12 Months">12 Months</option>
+                                                                           <option value="24 Months">24 Months</option>
+                                                                           <option value="36 Months(3 Years)">36 Months(3 Years)</option>
+                                                                           <option value=">= 4 years">>= 4 years</option>
+                                                                           <option value="3 months after a VL > 1000cp/ml">3 months after a VL > 1000cp/ml</option>
+                                                                           <option value="Suspected Treatment Failure">Suspected Treatment Failure</option>
+                                                                           <option value="VL Pregnant Woman">VL Pregnant Woman</option>
+                                                                           <option value="VL Breastfeeding woman">VL Breastfeeding woman</option>
+                                                                      </select>
                                                                  </div>
                                                             </div>
-                                                            <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label" for="resultDispatchedOn"><?= _('Date Results Dispatched'); ?> </label>
-                                                                 <div class="col-lg-7">
-                                                                      <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="<?= _('Result Dispatched Date'); ?>" title="<?= _('Please select result dispatched date'); ?>" <?php echo $labFieldDisabled; ?> />
-                                                                 </div>
-                                                            </div>
+                                                           
                                                        </div>
                                                        <div class="row">
                                                             <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label" for="noResult"><?= _('Sample Rejection'); ?> </label>
-                                                                 <div class="col-lg-7">
-                                                                      <select name="noResult" id="noResult" class="form-control" title="<?= _('Please check if sample is rejected or not'); ?>">
-                                                                           <option value="">-- Select --</option>
-                                                                           <option value="yes">Yes</option>
-                                                                           <option value="no">No</option>
-                                                                      </select>
+                                                                 <div class="form-group">
+                                                                      <div class="col-lg-12">
+                                                                           <label class="radio-inline">
+                                                                                <input type="radio" class="" id="suspendTreatment" name="reasonForVLTesting" value="coinfection" title="Please check viral load indication testing type" onclick="showTesting('suspendTreatment');">
+                                                                                <strong><?= _('Co-infection'); ?></strong>
+                                                                           </label>
+                                                                      </div>
                                                                  </div>
                                                             </div>
-
-                                                            <div class="col-md-6 rejectionReason" style="display:none;">
-                                                                 <label class="col-lg-5 control-label" for="rejectionReason"><?= _('Rejection Reason'); ?> </label>
+                                                       </div>
+                                                       <div class="row suspendTreatment hideTestData well" style="display: none;margin-bottom:20px;">
+                                                            <div class="col-md-6">
+                                                                 <label class="col-lg-5 control-label"><?= _('Types of Co-infection'); ?></label>
                                                                  <div class="col-lg-7">
-                                                                      <select name="rejectionReason" id="rejectionReason" class="form-control" title="<?= _('Please choose reason'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();">
-                                                                           <option value="">-- Select --</option>
-                                                                           <?php foreach ($rejectionTypeResult as $type) { ?>
-                                                                                <optgroup label="<?php echo ($type['rejection_type']); ?>">
-                                                                                     <?php foreach ($rejectionResult as $reject) {
-                                                                                          if ($type['rejection_type'] == $reject['rejection_type']) {
-                                                                                     ?>
-                                                                                               <option value="<?php echo $reject['rejection_reason_id']; ?>"><?= $reject['rejection_reason_name']; ?></option>
-                                                                                     <?php }
-                                                                                     } ?>
-                                                                                </optgroup>
-                                                                           <?php } ?>
-
-                                                                      </select>
+                                                                 <select name="coinfectionType" id="coinfectionType" class="form-control" title="<?= _('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
+                                                                           <option value=""> -- Sélectionner -- </option>
+                                                                           <option value="Tuberculosis">Tuberculosis</option>
+                                                                           <option value="Viral Hepatitis">Viral Hepatitis</option>
+                                                                    </select>
                                                                  </div>
                                                             </div>
-                                                            <div class="col-md-6 vlResult">
-                                                                 <label class="col-lg-5 control-label" for="vlResult"><?= _('Viral Load Result (copies/ml)'); ?> </label>
-                                                                 <div class="col-lg-7 resultInputContainer">
-                                                                      <input list="possibleVlResults" autocomplete="off" class="form-control" id="vlResult" name="vlResult" placeholder="<?= _('Viral Load Result'); ?>" title="<?= _('Please enter viral load result'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this)" disabled />
-                                                                      <datalist id="possibleVlResults">
+                                                           
+                                                       </div>
+                                                       <div class="row">
+                                                            <div class="col-md-8">
+                                                                 <div class="form-group">
+                                                                      <div class="col-lg-12">
+                                                                           <label class="radio-inline">
+                                                                                <input type="radio" class="" id="repeatTesting" name="reasonForVLTesting" value="other" title="<?= _('Please check reason for viral load request'); ?>" onclick="showTesting('repeatTesting');">
+                                                                                <strong><?= _('Other reasons') ?> </strong>
+                                                                           </label>
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                       </div>
+                                                       <div class="row repeatTesting hideTestData well" style="display:none;">
+                                                            <div class="col-md-6">
+                                                                 <label class="col-lg-5 control-label"><?= _('Please specify other reasons'); ?></label>
+                                                                 <div class="col-lg-7">
+                                                                      <input type="text" class="form-control" id="newreasonForVLTesting" name="newreasonForVLTesting" placeholder="<?= _('Please specify other test reason') ?>" title="<?= _('Please specify other test reason') ?>" />
+                                                                 </div>
+                                                            </div>
+                                                           
+                                                       </div>
 
-                                                                      </datalist>
-                                                                      <!--   <input type="checkbox" class="labSection specialResults" name="lt20" value="yes" title="Please check <20">
+                                                       <?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) {  ?>
+                                                            <div class="row">
+                                                                 <div class="col-md-6">
+                                                                      <div class="form-group">
+                                                                           <div class="col-lg-12">
+                                                                                <label class="radio-inline">
+                                                                                     <input type="radio" class="" id="recencyTest" name="reasonForVLTesting" value="recency" title="Please check viral load indication testing type" onclick="showTesting('recency')">
+                                                                                     <strong>Confirmation Test for Recency</strong>
+                                                                                </label>
+                                                                           </div>
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                       <?php }  ?>
+                                                       <hr>
+                                                  
+                                                  </div>
+                                             </div>
+                                             
+                                             <?php //if ($usersService->isAllowed('updateVlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                                                  <div class="box box-primary">
+                                                       <div class="box-header with-border">
+                                                            <h3 class="box-title"><?= _('Laboratory Information'); ?></h3>
+                                                       </div>
+                                                       <div class="box-body">
+                                                            <div class="row">
+                                                                 <div class="col-md-6">
+                                                                      <label for="testingPlatform" class="col-lg-5 control-label"><?= _('VL Testing Platform'); ?> </label>
+                                                                      <div class="col-lg-7">
+                                                                           <select name="testingPlatform" id="testingPlatform" class="form-control" title="<?= _('Please choose VL Testing Platform'); ?>" <?php echo $labFieldDisabled; ?> onchange="hivDetectionChange();">
+                                                                                <option value="">-- Select --</option>
+                                                                                <?php foreach ($importResult as $mName) { ?>
+                                                                                     <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>"><?php echo $mName['machine_name']; ?></option>
+                                                                                <?php } ?>
+                                                                           </select>
+                                                                      </div>
+                                                                 </div>
+                                                                 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label" for="sampleReceivedDate"><?= _('Date Sample Received at Testing Lab'); ?> </label>
+                                                                      <div class="col-lg-7">
+                                                                           <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _('Sample Received Date'); ?>" title="<?= _('Please select sample received date'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate()" />
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label" for="sampleTestingDateAtLab"><?= _('Sample Testing Date'); ?> </label>
+                                                                      <div class="col-lg-7">
+                                                                           <input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _('Sample Testing Date'); ?>" title="<?= _('Please select sample testing date'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkSampleTestingDate();" />
+                                                                      </div>
+                                                                 </div>
+                                                                 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label" for="resultDispatchedOn"><?= _('Date Results Dispatched'); ?> </label>
+                                                                      <div class="col-lg-7">
+                                                                           <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="<?= _('Result Dispatched Date'); ?>" title="<?= _('Please select result dispatched date'); ?>" <?php echo $labFieldDisabled; ?> />
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label" for="noResult"><?= _('Sample Rejection'); ?> </label>
+                                                                      <div class="col-lg-7">
+                                                                           <select name="noResult" id="noResult" class="form-control" title="<?= _('Please check if sample is rejected or not'); ?>">
+                                                                                <option value="">-- Select --</option>
+                                                                                <option value="yes">Yes</option>
+                                                                                <option value="no">No</option>
+                                                                           </select>
+                                                                      </div>
+                                                                 </div>
+
+                                                                 <div class="col-md-6 rejectionReason" style="display:none;">
+                                                                      <label class="col-lg-5 control-label" for="rejectionReason"><?= _('Rejection Reason'); ?> </label>
+                                                                      <div class="col-lg-7">
+                                                                           <select name="rejectionReason" id="rejectionReason" class="form-control" title="<?= _('Please choose reason'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();">
+                                                                                <option value="">-- Select --</option>
+                                                                                <?php foreach ($rejectionTypeResult as $type) { ?>
+                                                                                     <optgroup label="<?php echo ($type['rejection_type']); ?>">
+                                                                                          <?php foreach ($rejectionResult as $reject) {
+                                                                                               if ($type['rejection_type'] == $reject['rejection_type']) {
+                                                                                          ?>
+                                                                                                    <option value="<?php echo $reject['rejection_reason_id']; ?>"><?= $reject['rejection_reason_name']; ?></option>
+                                                                                          <?php }
+                                                                                          } ?>
+                                                                                     </optgroup>
+                                                                                <?php } ?>
+                                                                               
+                                                                           </select>
+                                                                      </div>
+                                                                 </div>
+                                                                 <div class="col-md-6 vlResult">
+                                                                      <label class="col-lg-5 control-label" for="vlResult"><?= _('Viral Load Result (copies/ml)'); ?> </label>
+                                                                      <div class="col-lg-7 resultInputContainer">
+                                                                           <input list="possibleVlResults" autocomplete="off" class="form-control" id="vlResult" name="vlResult" placeholder="<?= _('Viral Load Result'); ?>" title="<?= _('Please enter viral load result'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this)" disabled />
+                                                                           <datalist id="possibleVlResults">
+
+                                                                           </datalist>
+                                                                           <!--   <input type="checkbox" class="labSection specialResults" name="lt20" value="yes" title="Please check <20">
                                                                            &lt; 20<br>
                                                                            <input type="checkbox" class="labSection specialResults" name="lt40" value="yes" title="Please check <40">
                                                                            &lt; 40<br>
