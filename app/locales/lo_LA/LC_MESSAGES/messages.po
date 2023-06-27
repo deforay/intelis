@@ -6318,8 +6318,8 @@ msgid "Clinic/Site Name"
 msgstr "ຊື່ຄລີນິກ/Site Name"
 
 #: import-result/imported-results.php:162
-msgid "Lot No."
-msgstr "Lot No."
+msgid "Lot Number"
+msgstr "Lot Number"
 
 #: import-result/imported-results.php:163
 msgid "Lot Expiry Date"

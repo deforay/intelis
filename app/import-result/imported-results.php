@@ -166,7 +166,7 @@ foreach ($rejectionTypeResult as $type) {
 										<th style="width: 10%;"><?= _("Sample Test Date"); ?></th>
 										<th style="width: 10%;"><?= _("Clinic/Site Name"); ?></th>
 										<th style="width: 10%;"><?= _("Batch Code"); ?></th>
-										<th style="width: 10%;"><?= _("Lot No."); ?></th>
+										<th style="width: 10%;"><?= _("Lot Number"); ?></th>
 										<th style="width: 10%;"><?= _("Lot Expiry Date"); ?></th>
 										<th style="width: 10%;"><?= _("Rejection Reason"); ?></th>
 										<th style="max-width: 9%;"><?= _("Sample Type"); ?></th>

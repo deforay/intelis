@@ -264,7 +264,7 @@ if ($id > 0) {
                         <th align="center" width="20%"><strong>Sample ID</strong></th>
                         <th align="center" width="35%"><strong>BARCODE</strong></th>
                         <th align="center" width="13%"><strong>Patient Code</strong></th>
-                        <th align="center" width="13%"><strong>Lot No. / <br>Exp. Date</strong></th>
+                        <th align="center" width="13%"><strong>Lot Number / <br>Exp. Date</strong></th>
                         <th align="center" width="13%"><strong>Test Result</strong></th>
                     </tr>';
             $tbl .= '</table>';
