@@ -398,7 +398,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                  <input type="text" class="form-control" style="width:100%;" value="<?php echo ($vlQueryInfo['current_arv_protocol']); ?>" name="currentArvProtocol" id="currentArvProtocol" placeholder="<?= _('Current ARV Protocol'); ?>" title="<?= _('Please enter current ARV protocol'); ?>">
                                                             </div>
                                                        </div>
-                                                       <div class="col-xs-3 col-md-3">
+                                                     <!--  <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
                                                                  <label for="arvAdherence"><?= _('Reason of Request of the Viral Load'); ?></label>
                                                                  <select name="reasonForVLTesting" id="reasonForVLTesting" class="form-control" title="<?= _('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
@@ -412,10 +412,153 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                 </select>
                                                                 <input type="text" class="form-control" name="newreasonForVLTesting" id="newreasonForVLTesting" placeholder="<?= _('Enter new reason of testing'); ?>" title="<?= _('Enter new reason of testing'); ?>" style="width:100%; display:none;">
                                                             </div>
-                                                       </div>
+                                                       </div>-->
                                                   </div>
                                              </div>
-                                            
+                                             <div class="box box-primary">
+                                                  <div class="box-header with-border">
+                                                       <h3 class="box-title"><?= _('Reason of Request of the Viral Load'); ?> <span class="mandatory">*</span></h3><small> (Please pick one): (To be completed by clinician)</small>
+                                                  </div>
+                                                  <div class="box-body">
+                                                       <div class="row">
+                                                            <div class="col-md-6">
+                                                                 <div class="form-group">
+                                                                      <div class="col-lg-12">
+                                                                           <label class="radio-inline">
+                                                                           <?php
+                                                                                     $vlTestReasonQueryRow = "SELECT * from r_vl_test_reasons where test_reason_id='" . trim($vlQueryInfo['reason_for_vl_testing']) . "' OR test_reason_name = '" . trim($vlQueryInfo['reason_for_vl_testing']) . "'";
+                                                                                     $vlTestReasonResultRow = $db->query($vlTestReasonQueryRow);
+                                                                                     $checked = '';
+                                                                                     $display = '';
+                                                                                     $vlValue = '';
+                                                                                     if (trim($vlQueryInfo['reason_for_vl_testing']) == 'controlVlTesting' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'controlVlTesting') {
+                                                                                          $checked = 'checked="checked"';
+                                                                                          $display = 'block';
+                                                                                         
+                                                                                     } else {
+                                                                                          $checked = '';
+                                                                                          $display = 'none';
+                                                                                     }
+                                                                                     ?>
+                                                                                <input type="radio" class="isRequired" id="rmTesting" name="reasonForVLTesting" value="controlVlTesting" title="Please check viral load indication testing type" <?php echo $checked; ?> onclick="showTesting('rmTesting');">
+                                                                                <strong>Control VL Testing</strong>
+                                                                           </label>
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                       </div>
+                                                       <div class="row rmTesting hideTestData well"  style="display:<?php echo $display; ?>;">
+                                                            <div class="col-md-6">
+                                                                 <label class="col-lg-5 control-label">Types Of Control VL Testing</label>
+                                                                 <div class="col-lg-7">
+                                        
+                                                                      <select name="controlVlTestingType" id="controlVlType" class="form-control" title="<?= _('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
+                                                                           <option value=""> -- Sélectionner -- </option>
+                                                                           <option value="6 Months" <?php echo ($vlQueryInfo['control_vl_testing_type'] == '6 Months') ? "selected='selected' " : "" ?>>6 Months</option>
+                                                                           <option value="12 Months" <?php echo ($vlQueryInfo['control_vl_testing_type'] == '12 Months') ? "selected='selected' " : "" ?>>12 Months</option>
+                                                                           <option value="24 Months" <?php echo ($vlQueryInfo['control_vl_testing_type'] == '24 Months') ? "selected='selected' " : "" ?>>24 Months</option>
+                                                                           <option value="36 Months(3 Years)" <?php echo ($vlQueryInfo['control_vl_testing_type'] == '36 Months(3 Years)') ? "selected='selected' " : "" ?>>36 Months(3 Years)</option>
+                                                                           <option value=">= 4 years" <?php echo ($vlQueryInfo['control_vl_testing_type'] == '>= 4 years') ? "selected='selected' " : "" ?>>>= 4 years</option>
+                                                                           <option value="3 months after a VL > 1000cp/ml" <?php echo ($vlQueryInfo['control_vl_testing_type'] == '3 months after a VL > 1000cp/ml') ? "selected='selected' " : "" ?>>3 months after a VL > 1000cp/ml</option>
+                                                                           <option value="Suspected Treatment Failure" <?php echo ($vlQueryInfo['control_vl_testing_type'] == 'Suspected Treatment Failure') ? "selected='selected' " : "" ?>>Suspected Treatment Failure</option>
+                                                                           <option value="VL Pregnant Woman" <?php echo ($vlQueryInfo['control_vl_testing_type'] == 'VL Pregnant Woman') ? "selected='selected' " : "" ?>>VL Pregnant Woman</option>
+                                                                           <option value="VL Breastfeeding woman" <?php echo ($vlQueryInfo['control_vl_testing_type'] == 'VL Breastfeeding woman') ? "selected='selected' " : "" ?>>VL Breastfeeding woman</option>
+                                                                      </select>
+                                                                 </div>
+                                                            </div>
+                                                           
+                                                       </div>
+                                                       <div class="row">
+                                                            <div class="col-md-6">
+                                                                 <div class="form-group">
+                                                                      <div class="col-lg-12">
+                                                                           <label class="radio-inline">
+                                                                           <?php
+                                                                                     $checked = '';
+                                                                                     $display = '';
+                                                                                     $vlValue = '';
+                                                                                     if (trim($vlQueryInfo['reason_for_vl_testing']) == 'coinfection' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'coinfection') {
+                                                                                          $checked = 'checked="checked"';
+                                                                                          $display = 'block';
+                                                                                         
+                                                                                     } else {
+                                                                                          $checked = '';
+                                                                                          $display = 'none';
+                                                                                     }
+                                                                                     ?>
+                                                                                <input type="radio" class="" id="suspendTreatment" name="reasonForVLTesting" value="coinfection" title="Please check viral load indication testing type" <?= $checked; ?> onclick="showTesting('suspendTreatment');">
+                                                                                <strong><?= _('Co-infection'); ?></strong>
+                                                                           </label>
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                       </div>
+                                                       <div class="row suspendTreatment hideTestData well" style="display: <?php echo $display; ?>;">
+                                                            <div class="col-md-6">
+                                                                 <label class="col-lg-5 control-label"><?= _('Types of Co-infection'); ?></label>
+                                                                 <div class="col-lg-7">
+                                                                 <select name="coinfectionType" id="coinfectionType" class="form-control" title="<?= _('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
+                                                                           <option value=""> -- Sélectionner -- </option>
+                                                                           <option value="Tuberculosis" <?php echo ($vlQueryInfo['coinfection_type'] == 'Tuberculosis') ? "selected='selected' " : "" ?>>Tuberculosis</option>
+                                                                           <option value="Viral Hepatitis" <?php echo ($vlQueryInfo['coinfection_type'] == 'Viral Hepatitis') ? "selected='selected' " : "" ?>>Viral Hepatitis</option>
+                                                                    </select>
+                                                                 </div>
+                                                            </div>
+                                                           
+                                                       </div>
+                                                       <div class="row">
+                                                            <div class="col-md-8">
+                                                                 <div class="form-group">
+                                                                      <div class="col-lg-12">
+                                                                           <label class="radio-inline">
+                                                                           <?php
+                                                                                     $checked = '';
+                                                                                     $display = '';
+                                                                                     $vlValue = '';
+                                                                                     if (trim($vlQueryInfo['reason_for_vl_testing']) == 'other' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'other') {
+                                                                                          $checked = 'checked="checked"';
+                                                                                          $display = 'block';
+                                                                                         
+                                                                                     } else {
+                                                                                          $checked = '';
+                                                                                          $display = 'none';
+                                                                                     }
+                                                                                     ?>
+                                                                                <input type="radio" class="" id="repeatTesting" name="reasonForVLTesting" value="other" title="<?= _('Please check reason for viral load request'); ?>" <?= $checked; ?> onclick="showTesting('repeatTesting');">
+                                                                                <strong><?= _('Other reasons') ?> </strong>
+                                                                           </label>
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                       </div>
+                                                       <div class="row repeatTesting hideTestData well" style="display: <?php echo $display; ?>;">
+                                                            <div class="col-md-6">
+                                                                 <label class="col-lg-5 control-label"><?= _('Please specify other reasons'); ?></label>
+                                                                 <div class="col-lg-7">
+                                                                      <input type="text" value="<?php echo ($vlQueryInfo['reason_for_vl_testing_other']); ?>" class="form-control" id="newreasonForVLTesting" name="newreasonForVLTesting" placeholder="<?= _('Please specify other test reason') ?>" title="<?= _('Please specify other test reason') ?>" />
+                                                                 </div>
+                                                            </div>
+                                                           
+                                                       </div>
+
+                                                       <?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) {  ?>
+                                                            <div class="row">
+                                                                 <div class="col-md-6">
+                                                                      <div class="form-group">
+                                                                           <div class="col-lg-12">
+                                                                                <label class="radio-inline">
+                                                                                     <input type="radio" class="" id="recencyTest" name="reasonForVLTesting" value="recency" title="Please check viral load indication testing type" onclick="showTesting('recency')">
+                                                                                     <strong>Confirmation Test for Recency</strong>
+                                                                                </label>
+                                                                           </div>
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                       <?php }  ?>
+                                                       <hr>
+                                                  
+                                                  </div>
+                                             </div>
                                              
                                              <?php //if ($usersService->isAllowed('updateVlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                                   <div class="box box-primary">

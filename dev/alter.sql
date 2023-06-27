@@ -4549,15 +4549,5 @@ ALTER TABLE `audit_form_vl` ADD `no_of_breastfeeding_weeks` INT NULL DEFAULT NUL
 ALTER TABLE `form_vl` ADD `current_arv_protocol` TEXT NULL DEFAULT NULL AFTER `line_of_treatment_ref_type`;
 ALTER TABLE `audit_form_vl` ADD `current_arv_protocol` TEXT NULL DEFAULT NULL AFTER `line_of_treatment_ref_type`;
 
-INSERT INTO `r_vl_test_reasons` (`test_reason_id`, `test_reason_name`, `parent_reason`, `test_reason_status`, `updated_datetime`, `data_sync`) VALUES
-(12, 'Control VL Testing 6 Months', 0, 'active', NULL, 0),
-(13, 'Control VL Testing 12 Months', 0, 'active', NULL, 0),
-(14, 'Control VL Testing 24 Months', 0, 'active', NULL, 0),
-(15, 'Control VL Testing 36 Months(3 Years)', 0, 'active', NULL, 0),
-(16, 'Control VL Testing >= 4 years', 0, 'active', NULL, 0),
-(17, 'Control VL Testing, 3 months after a VL > 1000cp/ml', 0, 'active', NULL, 0),
-(18, 'Suspected Treatment Failure', 0, 'active', NULL, 0),
-(19, 'VL Pregnant Woman', 0, 'active', NULL, 0),
-(20, 'VL Breastfeeding woman', 0, 'active', NULL, 0),
-(21, 'Co-infection - Tuberculosis', 0, 'active', NULL, 0),
-(22, 'Co-infection - Viral Hepatitis', 0, 'active', NULL, 0);
+ALTER TABLE `form_vl` ADD `control_vl_testing_type` TEXT NULL DEFAULT NULL AFTER `reason_for_vl_testing_other`, ADD `coinfection_type` TEXT NULL DEFAULT NULL AFTER `control_vl_testing_type`;
+ALTER TABLE `audit_form_vl` ADD `control_vl_testing_type` TEXT NULL DEFAULT NULL AFTER `reason_for_vl_testing_other`, ADD `coinfection_type` TEXT NULL DEFAULT NULL AFTER `control_vl_testing_type`;
