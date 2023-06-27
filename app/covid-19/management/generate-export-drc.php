@@ -263,7 +263,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 
         $nameValue = '';
         foreach ($_POST as $key => $value) {
-            if (trim($value) != '' && trim($value) != '-- Select --' && trim($value) != '-- Sélectionner --') {
+            if (trim($value) != '' && trim($value) != '-- Select --' && trim($value) != '<?= _("-- Select --"); ?>') {
                 $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
             }
         }

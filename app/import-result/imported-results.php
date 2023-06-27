@@ -160,7 +160,6 @@ foreach ($rejectionTypeResult as $type) {
 							<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 								<thead>
 									<tr>
-										<!--<th style="width: 1%;"><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
 										<th style="width: 23%;"><?= _("Sample Code/ID"); ?></th>
 										<th style="width: 11%;"><?= _("Sample Collection Date"); ?></th>
 										<th style="width: 10%;"><?= _("Sample Test Date"); ?></th>
