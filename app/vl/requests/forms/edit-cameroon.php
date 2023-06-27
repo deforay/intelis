@@ -204,7 +204,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="">
                                                        <label for="fCode"><?= _('Clinic/Health Center Code'); ?> </label>
-                                                       <input type="text" class="form-control" style="width:100%;" name="fCode" id="fCode" placeholder="<?= _('Clinic/Health Center Code'); ?>" title="<?= _('Please enter clinic/health center code'); ?>">
+                                                       <input type="text" class="form-control" style="width:100%;" name="fCode" id="fCode" placeholder="<?= _('Clinic/Health Center Code'); ?>" title="<?= _('Please enter clinic/health center code'); ?>" value="<?php echo $facilityResult[0]['facility_code']; ?>">
                                                   </div>
                                              </div>
                                         </div>
@@ -402,7 +402,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                             <div class="form-group">
                                                                  <label for="arvAdherence"><?= _('Reason of Request of the Viral Load'); ?></label>
                                                                  <select name="reasonForVLTesting" id="reasonForVLTesting" class="form-control" title="<?= _('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
-                                                                    <option value=""> -- Sélectionner -- </option>
+                                                                    <option value="">  <?= _("-- Select --"); ?>  </option>
                                                                     <?php
                                                                     foreach ($vlTestReasonResult as $tReason) {
                                                                     ?>
@@ -453,7 +453,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                  <div class="col-lg-7">
                                         
                                                                       <select name="controlVlTestingType" id="controlVlType" class="form-control" title="<?= _('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
-                                                                           <option value=""> -- Sélectionner -- </option>
+                                                                           <option value="">  <?= _("-- Select --"); ?>  </option>
                                                                            <option value="6 Months" <?php echo ($vlQueryInfo['control_vl_testing_type'] == '6 Months') ? "selected='selected' " : "" ?>>6 Months</option>
                                                                            <option value="12 Months" <?php echo ($vlQueryInfo['control_vl_testing_type'] == '12 Months') ? "selected='selected' " : "" ?>>12 Months</option>
                                                                            <option value="24 Months" <?php echo ($vlQueryInfo['control_vl_testing_type'] == '24 Months') ? "selected='selected' " : "" ?>>24 Months</option>
@@ -498,7 +498,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                  <label class="col-lg-5 control-label"><?= _('Types of Co-infection'); ?></label>
                                                                  <div class="col-lg-7">
                                                                  <select name="coinfectionType" id="coinfectionType" class="form-control" title="<?= _('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
-                                                                           <option value=""> -- Sélectionner -- </option>
+                                                                           <option value="">  <?= _("-- Select --"); ?>  </option>
                                                                            <option value="Tuberculosis" <?php echo ($vlQueryInfo['coinfection_type'] == 'Tuberculosis') ? "selected='selected' " : "" ?>>Tuberculosis</option>
                                                                            <option value="Viral Hepatitis" <?php echo ($vlQueryInfo['coinfection_type'] == 'Viral Hepatitis') ? "selected='selected' " : "" ?>>Viral Hepatitis</option>
                                                                     </select>

@@ -359,7 +359,7 @@ $sFormat = '';
                                                             <div class="form-group">
                                                                  <label for="arvAdherence"><?= _('Reason of Request of the Viral Load'); ?></label>
                                                                  <select name="reasonForVLTesting" id="reasonForVLTesting" class="form-control" title="<?= _('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
-                                                                    <option value=""> -- Sélectionner -- </option>
+                                                                    <option value=""> <?= _("-- Select --"); ?> </option>
                                                                     <?php
                                                                     foreach ($vlTestReasonResult as $tReason) {
                                                                     ?>
@@ -395,7 +395,7 @@ $sFormat = '';
                                                                  <div class="col-lg-7">
                                         
                                                                       <select name="controlVlTestingType" id="controlVlType" class="form-control" title="<?= _('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
-                                                                           <option value=""> -- Sélectionner -- </option>
+                                                                           <option value=""> <?= _("-- Select --"); ?> </option>
                                                                            <option value="6 Months">6 Months</option>
                                                                            <option value="12 Months">12 Months</option>
                                                                            <option value="24 Months">24 Months</option>
@@ -427,7 +427,7 @@ $sFormat = '';
                                                                  <label class="col-lg-5 control-label"><?= _('Types of Co-infection'); ?></label>
                                                                  <div class="col-lg-7">
                                                                  <select name="coinfectionType" id="coinfectionType" class="form-control" title="<?= _('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
-                                                                           <option value=""> -- Sélectionner -- </option>
+                                                                           <option value=""> <?= _("-- Select --"); ?> </option>
                                                                            <option value="Tuberculosis">Tuberculosis</option>
                                                                            <option value="Viral Hepatitis">Viral Hepatitis</option>
                                                                     </select>
