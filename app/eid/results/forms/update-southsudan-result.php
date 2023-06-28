@@ -546,7 +546,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
             $("#province").html("<?php echo $province; ?>");
             $("#facilityId").html("<?php echo $facility; ?>");
             $("#facilityId").select2("val", "");
-            $("#district").html("<option value=''> -- Sélectionner -- </option>");
+            $("#district").html("<option value=''><?= _("-- Select --"); ?></option>");
         }
         $.unblockUI();
     }

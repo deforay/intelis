@@ -127,7 +127,7 @@ class UsersService
                     '/batch/generate-batch-pdf.php?type=generic-tests'        => '/batch/batches.php?type=generic-tests',
                     '/batch/add-batch-position.php?type=generic-tests'         => '/batch/add-batch.php?type=generic-tests',
                     '/batch/edit-batch-position.php?type=generic-tests'        => '/batch/edit-batch.php?type=generic-tests',
-                    'update-generic-test-result.php' => 'generic-test-results.php'
+                    '/generic-tests/results/update-generic-test-result.php' => '/generic-tests/results/generic-test-results.php'
                 ];
 
                 $sharedPrivileges = array_merge($sharedPrivileges, $sharedGenericPrivileges);
