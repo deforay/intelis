@@ -393,7 +393,8 @@ class UsersService
 
     public function generateAuthToken($size = 8): string
     {
-        return  base64_encode($this->commonService->generateUUID() . "-" . $this->commonService->generateToken($size));
+        return  base64_encode($this->commonService->generateUUID() .
+            "-" . $this->commonService->generateRandomString($size));
     }
 
     public function getUserByUserId(?string $userId = null): ?array

@@ -118,14 +118,10 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 <body class="hold-transition <?= $skin; ?> sidebar-mini" id="lis-body">
 	<div class="wrapper">
 		<header class="main-header">
-			<!-- Logo -->
 			<a href="<?= ($usersService->isAllowed('/dashboard/index.php') === true) ? '/dashboard/index.php' : '#'; ?>" class="logo">
-				<!-- mini logo for sidebar mini 50x50 pixels -->
 				<span class="logo-mini"><strong><?= $smallLogoName; ?></strong></span>
-				<!-- logo for regular state and mobile devices -->
 				<span class="logo-lg" style="font-weight:bold;"><?= $logoName; ?></span>
 			</a>
-			<!-- Header Navbar: style can be found in header.less -->
 			<nav class="navbar navbar-static-top">
 				<!-- Sidebar toggle button-->
 				<a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
@@ -133,7 +129,9 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 				</a>
 				<ul class="nav navbar-nav">
 					<li>
-						<a href="javascript:void(0);return false;"><span style="text-transform: uppercase;font-weight:600;"><?= $systemType; ?></span></a>
+						<a href="javascript:void(0);return false;">
+							<span style="text-transform: uppercase;font-weight:600;"><?= $systemType; ?></span>
+						</a>
 					</li>
 				</ul>
 				<div class="navbar-custom-menu">
@@ -147,25 +145,19 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 
 						<li class="dropdown user user-menu">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-
 								<span class="fa-solid fa-hospital-user"></span>
 								<span class="hidden-xs"><?= $_SESSION['userName'] ?? ''; ?></span>
-								<?php if (!empty(SYSTEM_CONFIG['remoteURL']) && isset($_SESSION['userName']) && isset($_SESSION['instanceType']) && ($_SESSION['instanceType'] == 'vluser')) { ?>
-									<span class="fa-solid fa-circle is-remote-server-reachable" style="font-size:1em;display:none;"></span>
-								<?php } ?>
+								<span class="fa-solid fa-circle is-remote-server-reachable" style="font-size:1em;display:none;"></span>
 							</a>
 							<ul class="dropdown-menu">
-								<!-- Menu Footer-->
-								<?php $alignRight = '';
-								$showProfileBtn = "style=display:none;";
-								if ($arr['edit_profile'] != 'no') {
-									$alignRight = "pull-right-xxxxx";
-									$showProfileBtn = "style=display:block;";
-								} ?>
-								<li class="user-footer" <?= $showProfileBtn; ?>>
-									<a href="/users/editProfile.php" class=""><?= _("Edit Profile"); ?></a>
-								</li>
-								<li class="user-footer <?= $alignRight; ?>">
+								<?php
+								if (!empty($arr['edit_profile']) && $arr['edit_profile'] == 'yes') {
+								?>
+									<li class="user-footer">
+										<a href="/users/editProfile.php" class=""><?= _("Edit Profile"); ?></a>
+									</li>
+								<?php } ?>
+								<li class="user-footer">
 									<a href="/login/logout.php"><?= _("Sign out"); ?></a>
 								</li>
 							</ul>
@@ -188,7 +180,7 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 					<?php
 					foreach ($_SESSION['menuItems'] as $menu) {
 						if ($menu['has_children'] == 'yes' && empty($menu['children'])) {
-							//Supposed to have children but does not have?
+							// Supposed to have children but does not have?
 							// Continue to next menu. We dont need this one
 							continue;
 						}
@@ -269,7 +261,9 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 		</aside>
 		<!-- content-wrapper -->
 		<div id="dDiv" class="dialog">
-			<div style="text-align:center"><span onclick="closeModal();" style="float:right;clear:both;" class="closeModal"></span></div>
+			<div style="text-align:center">
+				<span onclick="closeModal();" style="float:right;clear:both;" class="closeModal"></span>
+			</div>
 			<iframe id="dFrame" src="" title="LIS Content" style="border:none;" scrolling="yes" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0">
 				<?= _("Unable to load this page or resource"); ?>
 			</iframe>

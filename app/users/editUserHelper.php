@@ -11,7 +11,9 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+/** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
