@@ -241,18 +241,61 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control " id="motherName" name="motherName" placeholder="<?= _('Mother name'); ?>" title="<?= _('Please enter Infant Name'); ?>" style="width:100%;" onchange="" />
                                         </td>
-                                        <th scope="row"><label for="motherDob"><?= _('Date of Birth'); ?> <span class="mandatory">*</span> </label></th>
+                                        <th scope="row"><label for="dob"><?= _('Date of Birth'); ?> <span class="mandatory">*</span> </label></th>
                                         <td>
-                                            <input type="text" class="form-control isRequired" id="motherDob" name="motherDob" placeholder="<?= _('Date of birth'); ?>" title="<?= _('Please enter Date of birth'); ?>" style="width:100%;" onchange="calculateAgeInMonths();" />
+                                            <input type="text" class="form-control isRequired" id="dob" name="dob" placeholder="<?= _('Date of birth'); ?>" title="<?= _('Please enter Date of birth'); ?>" style="width:100%;" onchange="calculateAgeInMonths();" />
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <th scope="row" style="width:18% !important"><?= _('Date of next appointment'); ?> </th>
+                                        <td>
+                                            <input class="form-control date" type="text" name="nextAppointmentDate" id="nextAppointmentDate" placeholder="<?= _('Please enter date of next appointment'); ?>" />
+                                        </td>
+                                        <th scope="row" style="width:18% !important"><?= _('Mode of Delivery'); ?> </th>
+                                        <td>
+                                            <select class="form-control" name="modeOfDelivery" id="modeOfDelivery" onchange="showOtherOption(this.value)">
+                                                <option value=''> <?= _('-- Select --'); ?> </option>
+                                                <option value="Normal"> Normal </option>
+                                                <option value="Caesarean"> Caesarean </option>
+                                                <option value="Unknown"> Gravidity N* </option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" style="width:18% !important"><?= _('Number of exposed children'); ?> </th>
+                                        <td>
+                                            <input class="form-control forceNumeric" type="text" name="noOfExposedChildren" id="noOfExposedChildren" placeholder="<?= _('Please enter number of exposed children'); ?>" />
+                                        </td>
+                                        <th scope="row" style="width:18% !important"><?= _('Number of infected children'); ?> </th>
+                                        <td>
+                                            <input class="form-control forceNumeric" type="text" name="noOfInfectedChildren" id="noOfInfectedChildren" placeholder="<?= _('Please enter number of infected children'); ?>" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" style="width:18% !important"><?= _('ARV protocol followed by mother'); ?> </th>
+                                        <td>
+                                            <select class="form-control" name="motherArvProtocol" id="motherArvProtocol" onchange="showArvProtocolOtherOption()">
+                                                <option value=''> <?= _('-- Select --'); ?> </option>
+                                                <option value="Nothing"> Nothing </option>
+                                                <option value="TELE (TDF+TC+EFV)">TELE (TDF+TC+EFV) </option>
+                                                <option value="other"> Other</option>
+                                            </select> 
+                                            <input type="text" class="form-control" name="motherArvProtocolOther" id="motherArvProtocolOther" style="display:none;"/>
+
+                                      </td>
+                                        <th scope="row"><?= _('Date of Initiation'); ?></th>
+                                        <td>
+                                            <input type="text" class="form-control date" name="motherTreatmentInitiationDate" id="motherTreatmentInitiationDate" />
+                                        </td>
+                                    </tr>
+
                                     <tr>
                                         <th scope="row" style="width:16% !important">Mother's HIV Status: <span class="mandatory">*</span></th>
                                         <td style="width:30% !important">
                                             <select class="form-control isRequired" name="mothersHIVStatus" id="mothersHIVStatus">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="positive"> Positive </option>
-                                                <option value="unknown"> Unknown </option>
+                                                <option value="unknown"> Unknown </option> 
                                             </select>
                                         </td>
 
@@ -662,6 +705,21 @@ function showOtherARV()
     }
 }
 
+function showArvProtocolOtherOption()
+{
+    arvMother = $("#motherArvProtocol").val();
+    if(arvMother=="other")
+    {
+        $("#motherArvProtocolOther").show();
+        $("#motherArvProtocolOther").addClass('isRequired');
+    }
+    else
+    {
+        $("#motherArvProtocolOther").removeClass('isRequired');
+        $("#motherArvProtocolOther").hide();
+    }
+}
+
     $(document).ready(function() {
         autoSelectSingleOption('facilityId');
         $("#childId").on('input', function() {
@@ -709,6 +767,6 @@ function showOtherARV()
             }
         });
 
-
+   
     });
 </script>

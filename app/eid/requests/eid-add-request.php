@@ -155,6 +155,20 @@ require($fileArray[$arr['vl_form']]);
             $('.ui-datepicker-calendar').show();
         });
 
+        $("#dob").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd-M-yy',
+            maxDate: "Today",
+            yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
+            onSelect: function(dateText, inst) {
+                $("#sampleCollectionDate").datepicker("option", "minDate", $("#patientDob").datepicker("getDate"));
+                $(this).change();
+            }
+        }).click(function() {
+            $('.ui-datepicker-calendar').show();
+        });
+
 
         $('.dateTime').datetimepicker({
             changeMonth: true,
