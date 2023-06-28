@@ -465,7 +465,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                         </div>
                                    </div>
                                    <div id="otherSection"></div>
-                                   <?php if ($usersService->isAllowed('generic-test-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                                   <?php if ($usersService->isAllowed('/generic-tests/results/generic-test-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                         <div class="box box-primary">
                                              <div class="box-header with-border">
                                                   <h3 class="box-title">Laboratory Information</h3>
