@@ -416,7 +416,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 								</table>
 							</div>
 						</div>
-						<?php if ($usersService->isAllowed('tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
+						<?php if ($usersService->isAllowed('tb/results/tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
 
 							<div class="box box-primary">
 								<div class="box-body">
