@@ -135,6 +135,13 @@ try {
 		$_POST['approvedOn'] = null;
 	}
 
+	if(!empty($_POST['patientProvince'])){
+		$pprovince = explode("##", $_POST['patientProvince']);
+		if (!empty($pprovince)) {
+			$_POST['patientProvince'] = $pprovince[0];
+		}
+	}
+	
 	$covid19Data = array(
 		'vlsm_instance_id'                    => $instanceId,
 		'vlsm_country_id'                     => $_POST['formId'],
