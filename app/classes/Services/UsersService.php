@@ -127,7 +127,25 @@ class UsersService
                     '/batch/generate-batch-pdf.php?type=generic-tests'        => '/batch/batches.php?type=generic-tests',
                     '/batch/add-batch-position.php?type=generic-tests'         => '/batch/add-batch.php?type=generic-tests',
                     '/batch/edit-batch-position.php?type=generic-tests'        => '/batch/edit-batch.php?type=generic-tests',
-                    '/generic-tests/results/update-generic-test-result.php' => '/generic-tests/results/generic-test-results.php'
+                    '/generic-tests/results/update-generic-test-result.php' => '/generic-tests/results/generic-test-results.php',
+                    '/generic-tests/configuration/add-test-type.php' => '/generic-tests/configuration/test-type.php',
+                    '/generic-tests/configuration/edit-test-type.php' => '/generic-tests/configuration/test-type.php',
+                    '/generic-tests/configuration/sample-types/generic-add-sample-type.php' => '/generic-tests/configuration/sample-types/generic-sample-type.php',
+                    '/generic-tests/configuration/sample-types/generic-edit-sample-type.php' => '/generic-tests/configuration/sample-types/generic-sample-type.php',
+                    '/generic-tests/configuration/testing-reasons/generic-add-testing-reason.php' => '/generic-tests/configuration/testing-reasons/generic-testing-reason.php',
+                    '/generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php' => '/generic-tests/configuration/testing-reasons/generic-testing-reason.php',
+                    '/generic-tests/configuration/symptoms/generic-add-symptoms.php' => '/generic-tests/configuration/symptoms/generic-symptoms.php',
+                    '/generic-tests/configuration/symptoms/generic-edit-symptoms.php' => '/generic-tests/configuration/symptoms/generic-symptoms.php',
+                    '/generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php' => '/generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php',
+                    '/generic-tests/configuration/sample-rejection-reasons/generic-edit-sample-rejection-reasons.php' => '/generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php',
+                    '/generic-tests/configuration/test-failure-reasons/generic-add-test-failure-reason.php' => '/generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php',
+                    '/generic-tests/configuration/test-failure-reasons/generic-edit-test-failure-reason.php' => '/generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php',
+                    '/generic-tests/configuration/test-result-units/generic-add-test-result-units.php' => '/generic-tests/configuration/test-result-units/generic-test-result-units.php',
+                    '/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php' => '/generic-tests/configuration/test-result-units/generic-test-result-units.php',
+                    '/generic-tests/configuration/test-methods/generic-add-test-methods.php' => '/generic-tests/configuration/test-methods/generic-test-methods.php',
+                    '/generic-tests/configuration/test-methods/generic-edit-test-methods.php' => '/generic-tests/configuration/test-methods/generic-test-methods.php',
+                    '/generic-tests/configuration/test-categories/generic-add-test-categories.php' => '/generic-tests/configuration/test-categories/generic-test-categories.php',
+                    '/generic-tests/configuration/test-categories/generic-edit-test-categories.php' => '/generic-tests/configuration/test-categories/generic-test-categories.php',
                 ];
 
                 $sharedPrivileges = array_merge($sharedPrivileges, $sharedGenericPrivileges);

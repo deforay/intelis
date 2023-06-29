@@ -1,17 +1,23 @@
 <?php
-$title = _("Test Methods");
+$title = _("Lab Tests Sample Rejection Reasons");
 
 require_once APPLICATION_PATH . '/header.php';
+
+use App\Services\UsersService;
+use App\Registries\ContainerRegistry;
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-gears"></em> <?php echo _("Test Methods"); ?></h1>
+		<h1><em class="fa-solid fa-flask-vial"></em> <?php echo _("Lab Tests Sample Rejection Reasons"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Test Methods"); ?></li>
+			<li class="active"><?php echo _("Lab Tests Sample Rejection Reasons"); ?></li>
 		</ol>
 	</section>
 
@@ -21,26 +27,27 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (isset($_SESSION['privileges']) && in_array("generic-add-test-methods.php", $_SESSION['privileges'])) { ?>
-							<a href="generic-add-test-methods.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Test Methods"); ?></a>
+						<?php if ($usersService->isAllowed("/generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php") && $sarr['sc_user_type'] != 'vluser') { ?>
+							<a href="/generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Sample Rejection Reasons"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="partnerTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="samRejReasonDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th scope="row"><?php echo _("Test Method"); ?></th>
-									<th scope="row"><?php echo _("Status"); ?></th>
-									<th scope="row"><?php echo _("Updated On"); ?></th>
-									<?php if (isset($_SESSION['privileges']) && in_array("generic-edit-test-methods.php", $_SESSION['privileges'])) { ?>
-										<th scope="row">Action</th>
+									<th scope="row"><?php echo _("Rejection Reason"); ?></th>
+									<th scope="row"><?php echo _("Rejection Reason Type"); ?></th>
+									<th scope="row"><?php echo _("Rejection Reason Code"); ?></th>
+									<th scope="row"><?php echo _("Rejection Reason Status"); ?></th>
+									<?php if ($usersService->isAllowed("/generic-tests/configuration/sample-rejection-reasons/generic-edit-sample-rejection-reasons.php") && $sarr['sc_user_type'] != 'vluser') { ?>
+										<!-- <th scope="row">Action</th> -->
 									<?php } ?>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="5" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+									<td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 
@@ -61,7 +68,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 	$(document).ready(function() {
 		$.blockUI();
-		oTable = $('#partnerTable').dataTable({
+		oTable = $('#samRejReasonDataTable').dataTable({
 			"oLanguage": {
 				"sLengthMenu": "_MENU_ records per page"
 			},
@@ -80,20 +87,16 @@ require_once APPLICATION_PATH . '/header.php';
 				{
 					"sClass": "center"
 				},
-			
-				<?php if (isset($_SESSION['privileges']) && in_array("generic-edit-test-methods.php", $_SESSION['privileges'])) { ?>
 				{
-					"sClass": "center",
-					"bSortable": false
+					"sClass": "center"
 				}
-				<?php } ?>
 			],
 			"aaSorting": [
-				[3, "asc"]
+				[0, "asc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "get-test-methods-helper.php",
+			"sAjaxSource": "/generic-tests/configuration/sample-rejection-reasons/get-generic-sample-rejection-reasons-helper.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				$.ajax({
 					"dataType": 'json',
@@ -109,16 +112,16 @@ require_once APPLICATION_PATH . '/header.php';
 
 	function updateStatus(obj, optVal) {
 		if (obj.value != '') {
-			conf = confirm('<?php echo _("Are you sure you want to change the status"); ?>?');
+			conf = confirm("<?php echo _("Are you sure you want to change the status?"); ?>");
 			if (conf) {
-				$.post("update-implementation-status.php", {
+				$.post("update-vl-rejection-status.php", {
 						status: obj.value,
 						id: obj.id
 					},
 					function(data) {
 						if (data != "") {
 							oTable.fnDraw();
-							alert('<?php echo _("Updated successfully"); ?>.');
+							alert("<?php echo _("Updated successfully"); ?>.");
 						}
 					});
 			} else {

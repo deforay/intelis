@@ -1,27 +1,29 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
 
+use App\Utilities\DateUtility;
 
-$tableName = "r_generic_sample_rejection_reasons";
-$primaryKey = "rejection_reason_id";
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-    $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
+use App\Services\UsersService;
+use App\Registries\ContainerRegistry;
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
+
+$tableName = "r_generic_symptoms";
+$primaryKey = "symptom_id";
+
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
         */
 
-$aColumns = array('rejection_reason_name', 'rejection_type', 'rejection_reason_code', 'rejection_reason_status');
+$aColumns = array('symptom_name', 'symptom_code', 'symptom_status', 'updated_datetime');
 
 /* Indexed column (used for fast and accurate table cardinality) */
-$sIndexColumn = $primaryKey;
+//$sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 /*
@@ -96,7 +98,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * Get data to display
         */
 
-$sQuery = "SELECT * FROM $tableName";
+$sQuery = "SELECT * FROM r_generic_symptoms";
 
 if (!empty($sWhere)) {
     $sWhere = ' where ' . $sWhere;
@@ -117,15 +119,14 @@ $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
 /* Data set length after filtering */
 
-$aResultFilterTotal = $db->rawQuery("SELECT * FROM $tableName $sWhere order by $sOrder");
+$aResultFilterTotal = $db->rawQuery("SELECT * FROM r_generic_symptoms $sWhere order by $sOrder");
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */
-$aResultTotal =  $db->rawQuery("select COUNT($primaryKey) as total FROM $tableName");
+$aResultTotal =  $db->rawQuery("SELECT * FROM r_generic_symptoms");
 // $aResultTotal = $countResult->fetch_row();
 //print_r($aResultTotal);
-$iTotal = $aResultTotal[0]['total'];
-
+$iTotal = count($aResultTotal);
 /*
          * Output
         */
@@ -137,21 +138,15 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
-    $status = '<select class="form-control" name="status[]" id="' . $aRow['rejection_reason_id'] . '" title="' . _("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['rejection_reason_status'] . '\')">
-               <option value="active" ' . ($aRow['rejection_reason_status'] == "active" ? "selected=selected" : "") . '>' . _("Active") . '</option>
-               <option value="inactive" ' . ($aRow['rejection_reason_status'] == "inactive"  ? "selected=selected" : "") . '>' . _("Inactive") . '</option>
-               </select><br><br>';
     $row = [];
-    $row[] = ($aRow['rejection_reason_name']);
-    $row[] = ($aRow['rejection_type']);
-    $row[] = ($aRow['rejection_reason_code']);
-    if (isset($_SESSION['privileges']) && in_array("generic-edit-rejection-reasons.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') {
-        $row[] = $status;
-        // $row[] = '<a href="generic-edit-rejection-reasons.php?id=' . base64_encode($aRow['rejection_reason_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
-    } else {
-        $row[] = ucwords($aRow['rejection_reason_status']);
+    //$expDateTime=explode(" ",$aRow['updated_datetime']);
+    $row[] = ($aRow['symptom_name']);
+    $row[] = ($aRow['symptom_code']);
+    $row[] = ucwords($aRow['symptom_status']);
+    $row[] = $aRow['updated_datetime'] = DateUtility::humanReadableDateFormat($aRow['updated_datetime'], true);
+    if ($usersService->isAllowed("/generic-tests/configuration/symptoms/generic-edit-symptoms.php")) {
+        $row[] = '<a href="generic-edit-symptoms.php?id=' . base64_encode($aRow['symptom_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
     }
     $output['aaData'][] = $row;
 }
-
 echo json_encode($output);

@@ -1,17 +1,24 @@
 <?php
-$title = _("Sample Types");
+$title = _("Test Categories");
 
 require_once APPLICATION_PATH . '/header.php';
+
+use App\Services\UsersService;
+use App\Registries\ContainerRegistry;
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
 
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-gears"></em> <?php echo _("Sample Types"); ?></h1>
+		<h1><em class="fa-solid fa-gears"></em> <?php echo _("Test Categories"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Sample Types"); ?></li>
+			<li class="active"><?php echo _("Test Categories"); ?></li>
 		</ol>
 	</section>
 
@@ -21,8 +28,8 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (isset($_SESSION['privileges']) && in_array("generic-add-sample-type.php", $_SESSION['privileges'])) { ?>
-							<a href="generic-add-sample-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Sample Type"); ?></a>
+						<?php if ($usersService->isAllowed("/generic-tests/configuration/test-categories/generic-add-test-categories.php")) { ?>
+							<a href="/generic-tests/configuration/test-categories/generic-add-test-categories.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Test Categories"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -30,11 +37,10 @@ require_once APPLICATION_PATH . '/header.php';
 						<table aria-describedby="table" id="partnerTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th scope="row"><?php echo _("Sample Type Name"); ?></th>
-									<th scope="row"><?php echo _("Sample Type Code"); ?></th>
+									<th scope="row"><?php echo _("Test Category"); ?></th>
 									<th scope="row"><?php echo _("Status"); ?></th>
 									<th scope="row"><?php echo _("Updated On"); ?></th>
-									<?php if (isset($_SESSION['privileges']) && in_array("generic-edit-sample-type.php", $_SESSION['privileges'])) { ?>
+									<?php if ($usersService->isAllowed("/generic-tests/configuration/test-categories/generic-edit-test-categories.php")) { ?>
 										<th scope="row">Action</th>
 									<?php } ?>
 								</tr>
@@ -81,10 +87,8 @@ require_once APPLICATION_PATH . '/header.php';
 				{
 					"sClass": "center"
 				},
-				{
-					"sClass": "center"
-				},
-				<?php if (isset($_SESSION['privileges']) && in_array("editSampleType.php", $_SESSION['privileges'])) { ?> {
+
+				<?php if ($usersService->isAllowed("/generic-tests/configuration/test-categories/generic-edit-test-categories.php")) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					}
@@ -95,7 +99,7 @@ require_once APPLICATION_PATH . '/header.php';
 			],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "get-generic-sample-type-helper.php",
+			"sAjaxSource": "get-test-categories-helper.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				$.ajax({
 					"dataType": 'json',

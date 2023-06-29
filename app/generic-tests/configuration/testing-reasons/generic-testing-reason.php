@@ -1,17 +1,23 @@
 <?php
-$title = _("Symptoms");
+$title = _("Testing Reasons");
 
 require_once APPLICATION_PATH . '/header.php';
+
+use App\Services\UsersService;
+use App\Registries\ContainerRegistry;
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-gears"></em> <?php echo _("Symptoms"); ?></h1>
+		<h1><em class="fa-solid fa-gears"></em> <?php echo _("Testing Reasons"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Symptoms"); ?></li>
+			<li class="active"><?php echo _("Testing Reasons"); ?></li>
 		</ol>
 	</section>
 
@@ -21,8 +27,8 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (isset($_SESSION['privileges']) && in_array("generic-add-symptoms.php", $_SESSION['privileges'])) { ?>
-							<a href="generic-add-symptoms.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Symptoms"); ?></a>
+						<?php if ($usersService->isAllowed("/generic-tests/configuration/testing-reasons/generic-add-testing-reason.php")) { ?>
+							<a href="/generic-tests/configuration/testing-reasons/generic-add-testing-reason.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Testing Reason"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -30,11 +36,11 @@ require_once APPLICATION_PATH . '/header.php';
 						<table aria-describedby="table" id="partnerTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th scope="row"><?php echo _("Symptom Name"); ?></th>
-									<th scope="row"><?php echo _("Symptom Code"); ?></th>
+									<th scope="row"><?php echo _("Test Reason"); ?></th>
+									<th scope="row"><?php echo _("Test Reason Code"); ?></th>
 									<th scope="row"><?php echo _("Status"); ?></th>
 									<th scope="row"><?php echo _("Updated On"); ?></th>
-									<?php if (isset($_SESSION['privileges']) && in_array("generic-edit-symptoms.php", $_SESSION['privileges'])) { ?>
+									<?php if ($usersService->isAllowed("/generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php")) { ?>
 										<th scope="row">Action</th>
 									<?php } ?>
 								</tr>
@@ -84,11 +90,10 @@ require_once APPLICATION_PATH . '/header.php';
 				{
 					"sClass": "center"
 				},
-				<?php if (isset($_SESSION['privileges']) && in_array("editSymptoms.php", $_SESSION['privileges'])) { ?>
-				{
-					"sClass": "center",
-					"bSortable": false
-				}
+				<?php if ($usersService->isAllowed("/generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php")) { ?> {
+						"sClass": "center",
+						"bSortable": false
+					}
 				<?php } ?>
 			],
 			"aaSorting": [
@@ -96,7 +101,7 @@ require_once APPLICATION_PATH . '/header.php';
 			],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "get-symptoms-helper.php",
+			"sAjaxSource": "/generic-tests/configuration/testing-reasons/get-testing-reason-helper.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				$.ajax({
 					"dataType": 'json',

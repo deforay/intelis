@@ -1,17 +1,22 @@
 <?php
-$title = _("Test Failure Reasons");
-
+$title = _("Sample Types");
 require_once APPLICATION_PATH . '/header.php';
+
+use App\Services\UsersService;
+use App\Registries\ContainerRegistry;
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-gears"></em> <?php echo _("Test Failure Reasons"); ?></h1>
+		<h1><em class="fa-solid fa-gears"></em> <?php echo _("Sample Types"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Test Failure Reasons"); ?></li>
+			<li class="active"><?php echo _("Sample Types"); ?></li>
 		</ol>
 	</section>
 
@@ -21,8 +26,8 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (isset($_SESSION['privileges']) && in_array("generic-add-test-failure-reason.php", $_SESSION['privileges'])) { ?>
-							<a href="generic-add-test-failure-reason.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Test Failure Reason"); ?></a>
+						<?php if ($usersService->isAllowed("/generic-tests/configuration/sample-types/generic-add-sample-type.php")) { ?>
+							<a href="/generic-tests/configuration/sample-types/generic-add-sample-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Sample Type"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -30,11 +35,11 @@ require_once APPLICATION_PATH . '/header.php';
 						<table aria-describedby="table" id="partnerTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th scope="row"><?php echo _("Test Failure Reason"); ?></th>
-									<th scope="row"><?php echo _("Test Failure Reason Code"); ?></th>
-									<th scope="row"><?php echo _("Test Failure Status"); ?></th>
+									<th scope="row"><?php echo _("Sample Type Name"); ?></th>
+									<th scope="row"><?php echo _("Sample Type Code"); ?></th>
+									<th scope="row"><?php echo _("Status"); ?></th>
 									<th scope="row"><?php echo _("Updated On"); ?></th>
-									<?php if (isset($_SESSION['privileges']) && in_array("generic-edit-test-failure-reason.php", $_SESSION['privileges'])) { ?>
+									<?php if ($usersService->isAllowed("/generic-tests/configuration/sample-types/generic-edit-sample-type.php")) { ?>
 										<th scope="row">Action</th>
 									<?php } ?>
 								</tr>
@@ -84,11 +89,10 @@ require_once APPLICATION_PATH . '/header.php';
 				{
 					"sClass": "center"
 				},
-				<?php if (isset($_SESSION['privileges']) && in_array("generic-edit-test-failure-reason.php", $_SESSION['privileges'])) { ?>
-				{
-					"sClass": "center",
-					"bSortable": false
-				}
+				<?php if ($usersService->isAllowed("/generic-tests/configuration/sample-types/generic-edit-sample-type.php")) { ?> {
+						"sClass": "center",
+						"bSortable": false
+					}
 				<?php } ?>
 			],
 			"aaSorting": [
@@ -96,7 +100,7 @@ require_once APPLICATION_PATH . '/header.php';
 			],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "get-test-failure-reason-helper.php",
+			"sAjaxSource": "get-generic-sample-type-helper.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				$.ajax({
 					"dataType": 'json',
@@ -131,4 +135,5 @@ require_once APPLICATION_PATH . '/header.php';
 	}
 </script>
 <?php
+
 require_once APPLICATION_PATH . '/footer.php';

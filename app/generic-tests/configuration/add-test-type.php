@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Services;
+
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 use App\Services\CommonService;
@@ -116,7 +118,7 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 									<label for="testMethod" class="col-lg-4 control-label"><?php echo _("Test Methods"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" name='testMethod[]' id='testMethod' title="<?php echo _('Please select the test methods'); ?>" multiple>
-											
+
 										</select>
 									</div>
 								</div>
@@ -126,7 +128,7 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 									<label for="testCategory" class="col-lg-4 control-label"><?php echo _("Test Category"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" name='testCategory' id='testCategory' title="<?php echo _('Please select the test categories'); ?>">
-											
+
 										</select>
 									</div>
 								</div>
@@ -149,7 +151,7 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 									<label for="testingReason" class="col-lg-4 control-label"><?php echo _("Reasons for Testing"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" name='testingReason[]' id='testingReason' title="<?php echo _('Please select the testing reason'); ?>" multiple>
-											
+
 										</select>
 									</div>
 								</div>
@@ -162,7 +164,7 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 									<label for="testFailureReason" class="col-lg-4 control-label"><?php echo _("Test Failure Reasons"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" name='testFailureReason[]' id='testFailureReason' title="<?php echo _('Please select the test failure reason'); ?>" multiple>
-											
+
 										</select>
 									</div>
 								</div>
@@ -172,7 +174,7 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 									<label for="rejectionReason" class="col-lg-4 control-label"><?php echo _("Sample Rejection Reasons"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" name='rejectionReason[]' id='rejectionReason' title="<?php echo _('Please select the sample rejection reason'); ?>" multiple>
-											
+
 										</select>
 									</div>
 								</div>
@@ -257,7 +259,7 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 											<input type="text" name="sectionOther[]" id="sectionOther1" class="form-control auto-complete-tbx" onchange="addNewSection(this.value)" placeholder='<?php echo _("Section Other"); ?>' title='<?php echo _("Please enter section other"); ?>' style="display:none;" />
 										</td>
 										<td>
-										<input type="text" name="fieldOrder[]" id="fieldOrder1" class="form-control forceNumeric" placeholder="<?php echo _("Field Order"); ?>" title="<?php echo _("Please enter field order"); ?>" />
+											<input type="text" name="fieldOrder[]" id="fieldOrder1" class="form-control forceNumeric" placeholder="<?php echo _("Field Order"); ?>" title="<?php echo _("Please enter field order"); ?>" />
 										</td>
 										<td align="center" style="vertical-align:middle;">
 											<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
@@ -366,7 +368,7 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 										<label for="resultUnit" class="col-lg-4 control-label"><?php echo _("Test Result Unit"); ?> </label>
 										<div class="col-lg-7">
 											<select class="form-control quantitativeResult" id="testResultUnit" name="resultConfig[test_result_unit][]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>' multiple>
-											<?= $general->generateSelectOptions($testResultUnits, null, '-- Select --') ?>
+												<?= $general->generateSelectOptions($testResultUnits, null, '-- Select --') ?>
 											</select>
 										</div>
 									</div>
@@ -414,17 +416,16 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 	testQualCounter = 1;
 	testQuanCounter = 1;
 	var otherSectionNames = [];
-	
-	function addNewSection(section)
-	{
-		if(section!="" && ($.inArray(section, otherSectionNames) == -1))
+
+	function addNewSection(section) {
+		if (section != "" && ($.inArray(section, otherSectionNames) == -1))
 			otherSectionNames.push(section);
 	}
 	$(document).ready(function() {
-		$( ".auto-complete-tbx" ).autocomplete({
-      source: otherSectionNames
-    });
-		
+		$(".auto-complete-tbx").autocomplete({
+			source: otherSectionNames
+		});
+
 		$('input').tooltip();
 		generateRandomString('1');
 		$("#sampleType").select2({
@@ -475,45 +476,45 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 		let _t = ["r_generic_test_methods", "r_generic_test_categories", "r_generic_test_reasons", "r_generic_test_failure_reasons", "r_generic_sample_rejection_reasons"];
 		let _as = ["test_method_status", "test_category_status", "test_reason_status", "test_failure_reason_status", "rejection_reason_status"];
 
-		$(ajaxSelect).each(function(index, item){
-			$("#"+item).select2({
-               placeholder: "Enter" + _p[index],
-               minimumInputLength: 0,
-               width: '100%',
-               allowClear: true,
-               id: function(bond) {
-                    return bond._id;
-               },
-               ajax: {
-                    placeholder: "Type one or more character to search",
-                    url: "/includes/get-data-list-for-generic.php",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function(params) {
-                         return {
-							  status: _as[index],
-							  fieldId: _fi[index],
-                              fieldName: _f[index],
-                              tableName: _t[index],
-                              q: params.term, // search term
-                              page: params.page
-                         };
-                    },
-                    processResults: function(data, params) {
-                         params.page = params.page || 1;
-                         return {
-                              results: data.result,
-                              pagination: {
-                                   more: (params.page * 30) < data.total_count
-                              }
-                         };
-                    },
-                    //cache: true
-               },
-               escapeMarkup: function(markup) {
-                    return markup;
-               }
-          });
+		$(ajaxSelect).each(function(index, item) {
+			$("#" + item).select2({
+				placeholder: "Select " + _p[index],
+				minimumInputLength: 0,
+				width: '100%',
+				allowClear: true,
+				id: function(bond) {
+					return bond._id;
+				},
+				ajax: {
+					placeholder: "Type one or more character to search",
+					url: "/includes/get-data-list-for-generic.php",
+					dataType: 'json',
+					delay: 250,
+					data: function(params) {
+						return {
+							status: _as[index],
+							fieldId: _fi[index],
+							fieldName: _f[index],
+							tableName: _t[index],
+							q: params.term, // search term
+							page: params.page
+						};
+					},
+					processResults: function(data, params) {
+						params.page = params.page || 1;
+						return {
+							results: data.result,
+							pagination: {
+								more: (params.page * 30) < data.total_count
+							}
+						};
+					},
+					//cache: true
+				},
+				escapeMarkup: function(markup) {
+					return markup;
+				}
+			});
 		});
 	});
 
@@ -583,7 +584,7 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 		var e = a.insertCell(3);
 		var f = a.insertCell(4);
 		var g = a.insertCell(5);
-		
+
 		g.setAttribute("align", "center");
 		g.setAttribute("style", "vertical-align:middle");
 		tagClass = 'container' + tableRowId;
@@ -614,9 +615,9 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 		g.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
 		$(a).fadeIn(800);
 
-		$( ".auto-complete-tbx" ).autocomplete({
-      source: otherSectionNames
-    });
+		$(".auto-complete-tbx").autocomplete({
+			source: otherSectionNames
+		});
 
 		generateRandomString(tableRowId);
 		tableRowId++;

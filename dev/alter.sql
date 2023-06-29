@@ -4163,7 +4163,7 @@ UPDATE `batch_details` SET `last_modified_by` = `created_by` WHERE `last_modifie
 UPDATE `batch_details` SET `last_modified_datetime` = `request_created_datetime` WHERE `last_modified_datetime` IS NULL;
 
 -- Thana 13-Jun-2023
-INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('generic-tests-batches', 'generic-test', 'Lab Tests Batch Management');
+INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('generic-tests-batches', 'generic-tests', 'Lab Tests Batch Management');
 UPDATE `privileges` SET `resource_id` = 'generic-tests-batches' WHERE `privileges`.`resource_id` = 'generic-requests' AND `privileges`.`privilege_name` = '/batch/batches.php?type=generic-tests';
 
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES
@@ -4262,14 +4262,14 @@ INSERT INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `
 (21, 'admin', 'no', 'Geographical Divisions', '/common/reference/geographical-divisions-details.php', '/common/reference/add-geographical-divisions.php,/common/reference/edit-geographical-divisions.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu geographicalMenu', 8, 21, 'active', NULL),
 (22, 'admin', 'no', 'Implementation Partners', '/common/reference/implementation-partners.php', '/common/reference/add-implementation-partners.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-reference-implementation-partners', 8, 22, 'active', NULL),
 (23, 'admin', 'no', 'Funding Sources', '/common/reference/funding-sources.php', '/common/reference/add-funding-sources.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-reference-funding-sources', 8, 23, 'active', NULL),
-(24, 'admin', 'no', 'Sample Types', '/generic-tests/reference/sample-types/generic-sample-type.php', '/generic-tests/reference/sample-types/generic-add-sample-type.php,/generic-tests/reference/sample-types/generic-edit-sample-type.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericSampleTypeMenu', 9, 24, 'active', NULL),
-(25, 'admin', 'no', 'Testing Reasons', '/generic-tests/reference/testing-reasons/generic-testing-reason.php', '/generic-tests/reference/testing-reasons/generic-add-testing-reason.php,/generic-tests/reference/testing-reasons/generic-edit-testing-reason.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestingReasonMenu', 9, 25, 'active', NULL),
-(26, 'admin', 'no', 'Test Failure Reasons', '/generic-tests/reference/test-failure-reasons/generic-test-failure-reason.php', '/generic-tests/reference/test-failure-reasons/generic-add-test-failure-reason.php,/generic-tests/reference/test-failure-reasons/generic-edit-test-failure-reason.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestFailureReasonMenu', 9, 26, 'active', NULL),
-(27, 'admin', 'no', 'Symptoms', '/generic-tests/reference/symptoms/generic-symptoms.php', '/generic-tests/reference/symptoms/generic-add-symptoms.php,/generic-tests/reference/symptoms/generic-edit-symptoms.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericSymptomsMenu', 9, 27, 'active', NULL),
-(28, 'admin', 'no', 'Sample Rejection Reasons', '/generic-tests/reference/sample-rejection-reasons/generic-sample-rejection-reasons.php', '/generic-tests/reference/sample-types/generic-add-sample-type.php,/generic-tests/reference/sample-rejection-reasons/generic-edit-rejection-reasons.php,/generic-tests/reference/sample-rejection-reasons/generic-add-rejection-reasons.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericSampleRejectionReasonsMenu', 9, 28, 'active', NULL),
-(29, 'admin', 'no', 'Test Result Units', '/generic-tests/reference/test-result-units/generic-test-result-units.php', '/generic-tests/reference/test-result-units/generic-add-test-result-units.php,/generic-tests/reference/test-result-units/generic-edit-test-result-units.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestResultUnitsMenu', 9, 29, 'active', NULL),
-(30, 'admin', 'no', 'Test Methods', '/generic-tests/reference/test-methods/generic-test-methods.php', '/generic-tests/reference/test-methods/generic-add-test-methods.php,/generic-tests/reference/test-methods/generic-edit-test-methods.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestMethodsMenu', 9, 30, 'active', NULL),
-(31, 'admin', 'no', 'Test Categories', '/generic-tests/reference/test-categories/generic-test-categories.php', '/generic-tests/reference/test-categories/generic-add-test-categories.php,/generic-tests/reference/test-categories/generic-edit-test-categories.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestCategoriesMenu', 9, 31, 'active', NULL),
+(24, 'admin', 'no', 'Sample Types', '/generic-tests/configuration/sample-types/generic-sample-type.php', '/generic-tests/configuration/sample-types/generic-add-sample-type.php,/generic-tests/configuration/sample-types/generic-edit-sample-type.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericSampleTypeMenu', 9, 24, 'active', NULL),
+(25, 'admin', 'no', 'Testing Reasons', '/generic-tests/configuration/testing-reasons/generic-testing-reason.php', '/generic-tests/configuration/testing-reasons/generic-add-testing-reason.php,/generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestingReasonMenu', 9, 25, 'active', NULL),
+(26, 'admin', 'no', 'Test Failure Reasons', '/generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php', '/generic-tests/configuration/test-failure-reasons/generic-add-test-failure-reason.php,/generic-tests/configuration/test-failure-reasons/generic-edit-test-failure-reason.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestFailureReasonMenu', 9, 26, 'active', NULL),
+(27, 'admin', 'no', 'Symptoms', '/generic-tests/configuration/symptoms/generic-symptoms.php', '/generic-tests/configuration/symptoms/generic-add-symptoms.php,/generic-tests/configuration/symptoms/generic-edit-symptoms.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericSymptomsMenu', 9, 27, 'active', NULL),
+(28, 'admin', 'no', 'Sample Rejection Reasons', '/generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php', '/generic-tests/configuration/sample-types/generic-add-sample-type.php,/generic-tests/configuration/sample-rejection-reasons/generic-edit-rejection-reasons.php,/generic-tests/configuration/sample-rejection-reasons/generic-add-rejection-reasons.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericSampleRejectionReasonsMenu', 9, 28, 'active', NULL),
+(29, 'admin', 'no', 'Test Result Units', '/generic-tests/configuration/test-result-units/generic-test-result-units.php', '/generic-tests/configuration/test-result-units/generic-add-test-result-units.php,/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestResultUnitsMenu', 9, 29, 'active', NULL),
+(30, 'admin', 'no', 'Test Methods', '/generic-tests/configuration/test-methods/generic-test-methods.php', '/generic-tests/configuration/test-methods/generic-add-test-methods.php,/generic-tests/configuration/test-methods/generic-edit-test-methods.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestMethodsMenu', 9, 30, 'active', NULL),
+(31, 'admin', 'no', 'Test Categories', '/generic-tests/configuration/test-categories/generic-test-categories.php', '/generic-tests/configuration/test-categories/generic-add-test-categories.php,/generic-tests/configuration/test-categories/generic-edit-test-categories.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestCategoriesMenu', 9, 31, 'active', NULL),
 (32, 'admin', 'no', 'Test Type Configuration', '/generic-tests/configuration/test-type.php', '/generic-tests/configuration/add-test-type.php,/generic-tests/configuration/edit-test-type.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu testTypeConfigurationMenu', 9, 31, 'active', NULL),
 (33, 'admin', 'no', 'ART Regimen', '/vl/reference/vl-art-code-details.php', '/vl/reference/add-vl-art-code-details.php,/vl/reference/edit-vl-art-code-details.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vl-art-code-details', 10, 26, 'active', NULL),
 (34, 'admin', 'no', 'Rejection Reasons', '/vl/reference/vl-sample-rejection-reasons.php', '/vl/reference/add-vl-sample-rejection-reasons.php,/vl/reference/edit-vl-sample-rejection-reasons.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vl-sample-rejection-reasons', 10, 27, 'active', NULL),
@@ -4600,3 +4600,33 @@ ALTER TABLE `form_eid` ADD `child_started_art_date` TEXT NULL DEFAULT NULL AFTER
 ALTER TABLE `audit_form_eid` ADD `child_started_art_date` TEXT NULL DEFAULT NULL AFTER `infant_art_status_other`;
 ALTER TABLE `form_eid` ADD `lab_testing_point_other` TEXT NULL DEFAULT NULL AFTER `lab_testing_point`;
 ALTER TABLE `audit_form_eid` ADD `lab_testing_point_other` TEXT NULL DEFAULT NULL AFTER `lab_testing_point`;
+
+
+-- Amit 29-Jun-2023
+
+DELETE FROM `privileges` WHERE `resource_id` = 'generic-test-reference';
+DELETE FROM `resources` WHERE `resource_id` = 'generic-test-reference';
+DELETE FROM `resources` WHERE `resource_id` = 'common-sample-type';
+DELETE FROM `resources` WHERE `resource_id` = 'common-symptoms';
+DELETE FROM `resources` WHERE `resource_id` = 'common-testing-reason';
+INSERT IGNORE INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('generic-tests-config', 'admin' ,'Configure Generic Lab Tests');
+INSERT IGNORE  INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`)
+VALUES
+(NULL, 'generic-tests-config', '/generic-tests/configuration/test-type.php', 'Add/Edit Test Types'),
+(NULL, 'generic-tests-config', '/generic-tests/configuration/sample-types/generic-sample-type.php', 'Manage Sample Types'),
+(NULL, 'generic-tests-config', '/generic-tests/configuration/testing-reasons/generic-testing-reason.php', 'Manage Testing Reasons'),
+(NULL, 'generic-tests-config', '/generic-tests/configuration/symptoms/generic-symptoms.php', 'Manage Symptoms'),
+(NULL, 'generic-tests-config', '/generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php', 'Manage Sample Rejection Reasons'),
+(NULL, 'generic-tests-config', '/generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php', 'Manage Test Failure Reasons'),
+(NULL, 'generic-tests-config', '/generic-tests/configuration/test-result-units/generic-test-result-units.php', 'Manage Test Result Units'),
+(NULL, 'generic-tests-config', '/generic-tests/configuration/test-methods/generic-test-methods.php', 'Manage Test Methods'),
+(NULL, 'generic-tests-config', '/generic-tests/configuration/test-categories/generic-test-categories.php', 'Manage Test Categories');
+DELETE FROM roles_privileges_map where privilege_id not in (select privilege_id from privileges);
+UPDATE s_app_menu
+SET link = REPLACE(link, '/generic-tests/reference/', '/generic-tests/configuration/')
+WHERE link LIKE '%/generic-tests/reference/%';
+
+UPDATE s_app_menu
+SET inner_pages = REPLACE(inner_pages, '/generic-tests/reference/', '/generic-tests/configuration/')
+WHERE inner_pages LIKE '%/generic-tests/reference/%';
+

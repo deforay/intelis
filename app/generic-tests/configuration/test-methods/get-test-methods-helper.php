@@ -2,17 +2,25 @@
 
 use App\Utilities\DateUtility;
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-$tableName = "r_generic_sample_types";
-$primaryKey = "sample_type_id";
+use App\Services\UsersService;
+use App\Registries\ContainerRegistry;
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
+
+$tableName = "r_generic_test_methods";
+$primaryKey = "test_method_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
         */
 
-$aColumns = array('sample_type_name', 'sample_type_code', 'sample_type_status', 'updated_datetime');
+$aColumns = array('test_method_name', 'test_method_status', 'updated_datetime');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 //$sIndexColumn = $primaryKey;
@@ -90,7 +98,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * Get data to display
         */
 
-$sQuery = "SELECT * FROM r_generic_sample_types";
+$sQuery = "SELECT * FROM r_generic_test_methods";
 
 if (!empty($sWhere)) {
     $sWhere = ' where ' . $sWhere;
@@ -110,12 +118,15 @@ if (isset($sLimit) && isset($sOffset)) {
 $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
 /* Data set length after filtering */
-
-$aResultFilterTotal = $db->rawQuery("SELECT * FROM r_generic_sample_types $sWhere order by $sOrder");
+$order = "";
+if (!empty($sOrder)) {
+    $order = " order by $sOrder";
+}
+$aResultFilterTotal = $db->rawQuery("SELECT * FROM r_generic_test_methods $sWhere $order");
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */
-$aResultTotal =  $db->rawQuery("SELECT * FROM r_generic_sample_types");
+$aResultTotal =  $db->rawQuery("SELECT * FROM r_generic_test_methods");
 // $aResultTotal = $countResult->fetch_row();
 //print_r($aResultTotal);
 $iTotal = count($aResultTotal);
@@ -131,12 +142,12 @@ $output = array(
 
 foreach ($rResult as $aRow) {
     $row = [];
-    $row[] = ($aRow['sample_type_name']);
-    $row[] = ($aRow['sample_type_code']);
-    $row[] = ucwords($aRow['sample_type_status']);
+    //$expDateTime=explode(" ",$aRow['updated_datetime']);
+    $row[] = ($aRow['test_method_name']);
+    $row[] = ucwords($aRow['test_method_status']);
     $row[] = $aRow['updated_datetime'] = DateUtility::humanReadableDateFormat($aRow['updated_datetime'], true);
-    if (isset($_SESSION['privileges']) && in_array("generic-edit-sample-type.php", $_SESSION['privileges'])) {
-        $row[] = '<a href="generic-edit-sample-type.php?id=' . base64_encode($aRow['sample_type_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
+    if ($usersService->isAllowed("/generic-tests/configuration/test-methods/generic-edit-test-methods.php")) {
+        $row[] = '<a href="generic-edit-test-methods.php?id=' . base64_encode($aRow['test_method_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
     }
     $output['aaData'][] = $row;
 }

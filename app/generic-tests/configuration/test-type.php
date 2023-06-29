@@ -2,6 +2,14 @@
 $title = "Test Type Configuration";
 
 require_once APPLICATION_PATH . '/header.php';
+
+
+use App\Services\UsersService;
+use App\Registries\ContainerRegistry;
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -20,7 +28,7 @@ require_once APPLICATION_PATH . '/header.php';
       <div class="col-xs-12">
         <div class="box">
           <div class="box-header with-border">
-            <?php if (isset($_SESSION['privileges']) && in_array("add-test-type.php", $_SESSION['privileges'])) { ?>
+            <?php if ($usersService->isAllowed("/generic-tests/configuration/add-test-type.php")) { ?>
               <a href="add-test-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Test Type"); ?></a>
             <?php } ?>
           </div>
@@ -34,7 +42,7 @@ require_once APPLICATION_PATH . '/header.php';
                   <th><?php echo _("Short Code"); ?></th>
                   <th><?php echo _("LOINC Code"); ?></th>
                   <th><?php echo _("Status"); ?></th>
-                  <?php if (isset($_SESSION['privileges']) && in_array("edit-test-type.php", $_SESSION['privileges'])) { ?>
+                  <?php if ($usersService->isAllowed("/generic-tests/configuration/edit-test-type.php")) { ?>
                     <th><?php echo _("Action"); ?></th>
                   <?php } ?>
                 </tr>

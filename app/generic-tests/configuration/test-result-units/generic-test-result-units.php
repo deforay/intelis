@@ -1,17 +1,25 @@
 <?php
-$title = _("Testing Reasons");
+$title = _("Test Result Units");
 
 require_once APPLICATION_PATH . '/header.php';
+
+
+use App\Services\UsersService;
+use App\Registries\ContainerRegistry;
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
 
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-gears"></em> <?php echo _("Testing Reasons"); ?></h1>
+		<h1><em class="fa-solid fa-gears"></em> <?php echo _("Test Result Units"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Testing Reasons"); ?></li>
+			<li class="active"><?php echo _("Test Result Units"); ?></li>
 		</ol>
 	</section>
 
@@ -21,8 +29,8 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (isset($_SESSION['privileges']) && in_array("generic-add-testing-reason.php", $_SESSION['privileges'])) { ?>
-							<a href="generic-add-testing-reason.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Testing Reason"); ?></a>
+						<?php if ($usersService->isAllowed("/generic-tests/configuration/test-result-units/generic-add-test-result-units.php")) { ?>
+							<a href="/generic-tests/configuration/test-result-units/generic-add-test-result-units.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Test Result Units"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -30,11 +38,10 @@ require_once APPLICATION_PATH . '/header.php';
 						<table aria-describedby="table" id="partnerTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th scope="row"><?php echo _("Test Reason"); ?></th>
-									<th scope="row"><?php echo _("Test Reason Code"); ?></th>
-									<th scope="row"><?php echo _("Status"); ?></th>
+									<th scope="row"><?php echo _("Result Unit Name"); ?></th>
+									<th scope="row"><?php echo _("Result Unit Status"); ?></th>
 									<th scope="row"><?php echo _("Updated On"); ?></th>
-									<?php if (isset($_SESSION['privileges']) && in_array("generic-edit-testing-reason.php", $_SESSION['privileges'])) { ?>
+									<?php if ($usersService->isAllowed("/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php")) { ?>
 										<th scope="row">Action</th>
 									<?php } ?>
 								</tr>
@@ -81,14 +88,10 @@ require_once APPLICATION_PATH . '/header.php';
 				{
 					"sClass": "center"
 				},
-				{
-					"sClass": "center"
-				},
-				<?php if (isset($_SESSION['privileges']) && in_array("generic-edit-testing-reason.php", $_SESSION['privileges'])) { ?>
-				{
-					"sClass": "center",
-					"bSortable": false
-				}
+				<?php if ($usersService->isAllowed("/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php")) { ?> {
+						"sClass": "center",
+						"bSortable": false
+					}
 				<?php } ?>
 			],
 			"aaSorting": [
@@ -96,7 +99,7 @@ require_once APPLICATION_PATH . '/header.php';
 			],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "get-testing-reason-helper.php",
+			"sAjaxSource": "get-test-result-units-helper.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				$.ajax({
 					"dataType": 'json',

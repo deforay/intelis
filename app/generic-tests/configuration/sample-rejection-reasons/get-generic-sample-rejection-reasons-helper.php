@@ -1,21 +1,36 @@
 <?php
 
-use App\Utilities\DateUtility;
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+use App\Services\UsersService;
+use App\Registries\ContainerRegistry;
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
+
+
+$tableName = "r_generic_sample_rejection_reasons";
+$primaryKey = "rejection_reason_id";
+//system config
+$systemConfigQuery = "SELECT * from system_config";
+$systemConfigResult = $db->query($systemConfigQuery);
+$sarr = [];
+// now we create an associative array so that we can easily create view variables
+for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
+    $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
-$tableName = "r_generic_test_categories";
-$primaryKey = "test_category_id";
-
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
         */
 
-$aColumns = array('test_category_name', 'test_category_status', 'updated_datetime');
+$aColumns = array('rejection_reason_name', 'rejection_type', 'rejection_reason_code', 'rejection_reason_status');
 
 /* Indexed column (used for fast and accurate table cardinality) */
-//$sIndexColumn = $primaryKey;
+$sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 /*
@@ -90,7 +105,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * Get data to display
         */
 
-$sQuery = "SELECT * FROM r_generic_test_categories";
+$sQuery = "SELECT * FROM $tableName";
 
 if (!empty($sWhere)) {
     $sWhere = ' where ' . $sWhere;
@@ -110,18 +125,16 @@ if (isset($sLimit) && isset($sOffset)) {
 $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
 /* Data set length after filtering */
-$order = "";
-if (!empty($sOrder)) {
-    $order = " order by $sOrder";
-}
-$aResultFilterTotal = $db->rawQuery("SELECT * FROM r_generic_test_categories $sWhere $order");
+
+$aResultFilterTotal = $db->rawQuery("SELECT * FROM $tableName $sWhere order by $sOrder");
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */
-$aResultTotal =  $db->rawQuery("SELECT * FROM r_generic_test_categories");
+$aResultTotal =  $db->rawQuery("select COUNT($primaryKey) as total FROM $tableName");
 // $aResultTotal = $countResult->fetch_row();
 //print_r($aResultTotal);
-$iTotal = count($aResultTotal);
+$iTotal = $aResultTotal[0]['total'];
+
 /*
          * Output
         */
@@ -133,14 +146,21 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
+    $status = '<select class="form-control" name="status[]" id="' . $aRow['rejection_reason_id'] . '" title="' . _("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['rejection_reason_status'] . '\')">
+               <option value="active" ' . ($aRow['rejection_reason_status'] == "active" ? "selected=selected" : "") . '>' . _("Active") . '</option>
+               <option value="inactive" ' . ($aRow['rejection_reason_status'] == "inactive"  ? "selected=selected" : "") . '>' . _("Inactive") . '</option>
+               </select><br><br>';
     $row = [];
-    //$expDateTime=explode(" ",$aRow['updated_datetime']);
-    $row[] = ($aRow['test_category_name']);
-    $row[] = ucwords($aRow['test_category_status']);
-    $row[] = $aRow['updated_datetime'] = DateUtility::humanReadableDateFormat($aRow['updated_datetime'], true);
-    if (isset($_SESSION['privileges']) && in_array("generic-edit-test-categories.php", $_SESSION['privileges'])) {
-        $row[] = '<a href="generic-edit-test-categories.php?id=' . base64_encode($aRow['test_category_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
+    $row[] = ($aRow['rejection_reason_name']);
+    $row[] = ($aRow['rejection_type']);
+    $row[] = ($aRow['rejection_reason_code']);
+    if ($usersService->isAllowed("/generic-tests/configuration/sample-rejection-reasons/generic-edit-sample-rejection-reasons.php") && $sarr['sc_user_type'] != 'vluser') {
+        $row[] = $status;
+        // $row[] = '<a href="generic-edit-rejection-reasons.php?id=' . base64_encode($aRow['rejection_reason_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
+    } else {
+        $row[] = ucwords($aRow['rejection_reason_status']);
     }
     $output['aaData'][] = $row;
 }
+
 echo json_encode($output);

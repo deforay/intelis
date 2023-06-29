@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Registries\ContainerRegistry;
@@ -56,33 +57,33 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 	}
 
 	.tag-input {
-  width: 100%;
-  padding: 10px;
-  box-sizing: border-box;
-  background-color: #f9f9f9;
-  border: 1px solid #ccc;
-}
+		width: 100%;
+		padding: 10px;
+		box-sizing: border-box;
+		background-color: #f9f9f9;
+		border: 1px solid #ccc;
+	}
 
-.tag-input .tag-input-field {
-  border: none;
-  background-color: transparent;
-  width: 100%;
-}
+	.tag-input .tag-input-field {
+		border: none;
+		background-color: transparent;
+		width: 100%;
+	}
 
-.tag {
-  display: inline-block;
-  padding: 5px 10px;
-  margin-right: 5px;
-  background-color: #007bff;
-  color: #fff;
-  border-radius: 3px;
-  margin-bottom: 5px;
-}
+	.tag {
+		display: inline-block;
+		padding: 5px 10px;
+		margin-right: 5px;
+		background-color: #007bff;
+		color: #fff;
+		border-radius: 3px;
+		margin-bottom: 5px;
+	}
 
-.remove-tag {
-  margin-left: 5px;
-  cursor: pointer;
-}
+	.remove-tag {
+		margin-left: 5px;
+		cursor: pointer;
+	}
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -245,7 +246,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 							<table aria-describedby="table" border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
 								<thead>
 									<tr>
-									<th style="text-align:center;width:25%;"><?php echo _("Field Name"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:25%;"><?php echo _("Field Name"); ?> <span class="mandatory">*</span></th>
 										<th style="text-align:center;width:20%;"><?php echo _("Field Type"); ?> <span class="mandatory">*</span></th>
 										<th style="text-align:center;width:10%;"><?php echo _("Is it Mandatory?"); ?> <span class="mandatory">*</span></th>
 										<th style="text-align:center;width:25%;"><?php echo _("Section"); ?> <span class="mandatory">*</span></th>
@@ -255,183 +256,182 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 								</thead>
 								<tbody id="attributeTable">
 									<?php
-									$arraySection=['facilitySection','patientSection','specimenSection','labSection'];
+									$arraySection = ['facilitySection', 'patientSection', 'specimenSection', 'labSection'];
 									$eCount = count($testAttr);
 									if ($eCount > 0) {
-										$i=1;
-										foreach($testAttr as $testAttrkey=>$testAttributeDetails) {
-											if(in_array($testAttrkey,$arraySection)){
-												foreach($testAttributeDetails as $testAttributeId=>$testAttribute) {
+										$i = 1;
+										foreach ($testAttr as $testAttrkey => $testAttributeDetails) {
+											if (in_array($testAttrkey, $arraySection)) {
+												foreach ($testAttributeDetails as $testAttributeId => $testAttribute) {
 									?>
-											<tr>
-												<td align="center" style="vertical-align:middle;">
-													<input type="text" name="fieldName[]" id="fieldName<?php echo $i ?>" class="form-control fieldName isRequired" placeholder='<?php echo _("Field Name"); ?>' title='<?php echo _("Please enter field name"); ?>' onblur="checkDublicateName(this, 'fieldName');" value="<?php echo $testAttribute['field_name']; ?>" />
-													<input type="hidden" name="fieldId[]" id="fieldId<?php echo $i ?>" class="form-control isRequired" value="<?php echo $testAttributeId; ?>" />
-												</td>
+													<tr>
+														<td align="center" style="vertical-align:middle;">
+															<input type="text" name="fieldName[]" id="fieldName<?php echo $i ?>" class="form-control fieldName isRequired" placeholder='<?php echo _("Field Name"); ?>' title='<?php echo _("Please enter field name"); ?>' onblur="checkDublicateName(this, 'fieldName');" value="<?php echo $testAttribute['field_name']; ?>" />
+															<input type="hidden" name="fieldId[]" id="fieldId<?php echo $i ?>" class="form-control isRequired" value="<?php echo $testAttributeId; ?>" />
+														</td>
 
-												<td align="center" style="vertical-align:middle;padding-top: 20px;">
-													<select class="form-control isRequired" name="fieldType[]" id="fieldType<?php echo $i ?>" title="<?php echo _('Please select the field type'); ?>" onchange="changeField(this, <?php echo $i ?>)">
-														<option value=""> <?php echo _("-- Select --"); ?> </option>
-														<option value="number" <?php echo ($testAttribute['field_type'] == 'number') ? "selected='selected'" : "" ?>><?php echo _("Number"); ?></option>
-														<option value="text" <?php echo ($testAttribute['field_type'] == 'text') ? "selected='selected'" : "" ?>><?php echo _("Text"); ?></option>
-														<option value="date" <?php echo ($testAttribute['field_type'] == 'date') ? "selected='selected'" : "" ?>><?php echo _("Date"); ?></option>
-														<option value="dropdown" <?php echo ($testAttribute['field_type'] == 'dropdown') ? "selected='selected'" : "" ?>><?php echo _("Dropdown"); ?></option>
-														<option value="multiple" <?php echo ($testAttribute['field_type'] == 'multiple') ? "selected='selected'" : "" ?>><?php echo _("Multiselect Dropdown"); ?></option>
-													</select><br>
-													<div class="tag-input dropDown<?php echo $i ?>" style="<?php echo ($testAttribute['field_type'] == 'multiple' || $testAttribute['field_type'] == 'dropdown') ? "" : "display:none;" ?>">
-													<input type="text" name="dropDown[]" id="dropDown<?php echo $i ?>" onkeyup="showTags(event,this,'<?php echo $i ?>')" class="tag-input-field form-control" placeholder="Enter options..." />
-													<input type="hidden" value="<?php echo (!empty($testAttribute['dropdown_options'])) ? $testAttribute['dropdown_options'].',' : "" ?>" id="fdropDown<?php echo $i ?>" name="fdropDown[]" class="fdropDown"/>
-													<div class="tag-container container<?php echo $i ?>">
-													<?php  
-													if(!empty($testAttribute['dropdown_options'])){
-													$val = explode(",",$testAttribute['dropdown_options']);
-													foreach($val as $v)
-													{
-													?>
-													<div class="tag"><?php echo $v; ?><span class="remove-tag">x</span></div>
-													<?php }
-													} ?>
-													</div>
-													</div>
-												</td>
-												<td align="center" style="vertical-align:middle;">
-													<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField<?php echo $i ?>" title="<?php echo _('Please select is it mandatory'); ?>">
-														<option value="yes" <?php echo ($testAttribute['mandatory_field'] == 'yes') ? "selected='selected'" : "" ?>><?php echo _("Yes"); ?></option>
-														<option value="no" <?php echo ($testAttribute['mandatory_field'] == 'no') ? "selected='selected'" : "" ?>><?php echo _("No"); ?></option>
-													</select>
-												</td>
-												<td align="center" style="vertical-align:middle;">
-													<select class="form-control isRequired" name="section[]" id="section<?php echo $i ?>" title="<?php echo _('Please select the section'); ?>" onchange="checkSection('<?php echo $i ?>')">
-														<option value=""> <?php echo _("-- Select --"); ?> </option>
-														<option value="facilitySection" <?php echo ($testAttribute['section'] == 'facilitySection') ? "selected='selected'" : "" ?>><?php echo _("Facility"); ?></option>
-														<option value="patientSection" <?php echo ($testAttribute['section'] == 'patientSection') ? "selected='selected'" : "" ?>><?php echo _("Patient"); ?></option>
-														<option value="specimenSection" <?php echo ($testAttribute['section'] == 'specimenSection') ? "selected='selected'" : "" ?>><?php echo _("Specimen"); ?></option>
-														<option value="labSection" <?php echo ($testAttribute['section'] == 'labSection') ? "selected='selected'" : "" ?>><?php echo _("Lab"); ?></option>
-														<option value="otherSection" <?php echo ($testAttribute['section'] == 'otherSection') ? "selected='selected'" : "" ?>><?php echo _("Other"); ?></option>
-													</select>
-													<input type="text" name="sectionOther[]" id="sectionOther<?php echo $i ?>" onchange="addNewSection(this.value)" class="form-control auto-complete-tbx" placeholder='<?php echo _("Section Other"); ?>' title='<?php echo _("Please enter section other"); ?>' style="<?php echo ($testAttribute['section'] == 'otherSection') ? "" : "display:none;" ?>" value="<?php echo ($testAttribute['section'] == 'otherSection') ? $testAttribute['section_name'] : "" ?>" />
-												</td>
-												<td align="center" style="vertical-align:middle;">
-													<input type="text" name="fieldOrder[]" id="fieldOrder1" class="form-control forceNumeric" placeholder="<?php echo _("Field Order"); ?>" title="<?php echo _("Please enter field order"); ?>" value="<?php echo $testAttribute['field_order']; ?>"/>
-												</td>
-												<td align="center" style="vertical-align:middle;">
-													<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
-												</td>
-											</tr>
-											
-										<?php
-												$i++;
+														<td align="center" style="vertical-align:middle;padding-top: 20px;">
+															<select class="form-control isRequired" name="fieldType[]" id="fieldType<?php echo $i ?>" title="<?php echo _('Please select the field type'); ?>" onchange="changeField(this, <?php echo $i ?>)">
+																<option value=""> <?php echo _("-- Select --"); ?> </option>
+																<option value="number" <?php echo ($testAttribute['field_type'] == 'number') ? "selected='selected'" : "" ?>><?php echo _("Number"); ?></option>
+																<option value="text" <?php echo ($testAttribute['field_type'] == 'text') ? "selected='selected'" : "" ?>><?php echo _("Text"); ?></option>
+																<option value="date" <?php echo ($testAttribute['field_type'] == 'date') ? "selected='selected'" : "" ?>><?php echo _("Date"); ?></option>
+																<option value="dropdown" <?php echo ($testAttribute['field_type'] == 'dropdown') ? "selected='selected'" : "" ?>><?php echo _("Dropdown"); ?></option>
+																<option value="multiple" <?php echo ($testAttribute['field_type'] == 'multiple') ? "selected='selected'" : "" ?>><?php echo _("Multiselect Dropdown"); ?></option>
+															</select><br>
+															<div class="tag-input dropDown<?php echo $i ?>" style="<?php echo ($testAttribute['field_type'] == 'multiple' || $testAttribute['field_type'] == 'dropdown') ? "" : "display:none;" ?>">
+																<input type="text" name="dropDown[]" id="dropDown<?php echo $i ?>" onkeyup="showTags(event,this,'<?php echo $i ?>')" class="tag-input-field form-control" placeholder="Enter options..." />
+																<input type="hidden" value="<?php echo (!empty($testAttribute['dropdown_options'])) ? $testAttribute['dropdown_options'] . ',' : "" ?>" id="fdropDown<?php echo $i ?>" name="fdropDown[]" class="fdropDown" />
+																<div class="tag-container container<?php echo $i ?>">
+																	<?php
+																	if (!empty($testAttribute['dropdown_options'])) {
+																		$val = explode(",", $testAttribute['dropdown_options']);
+																		foreach ($val as $v) {
+																	?>
+																			<div class="tag"><?php echo $v; ?><span class="remove-tag">x</span></div>
+																	<?php }
+																	} ?>
+																</div>
+															</div>
+														</td>
+														<td align="center" style="vertical-align:middle;">
+															<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField<?php echo $i ?>" title="<?php echo _('Please select is it mandatory'); ?>">
+																<option value="yes" <?php echo ($testAttribute['mandatory_field'] == 'yes') ? "selected='selected'" : "" ?>><?php echo _("Yes"); ?></option>
+																<option value="no" <?php echo ($testAttribute['mandatory_field'] == 'no') ? "selected='selected'" : "" ?>><?php echo _("No"); ?></option>
+															</select>
+														</td>
+														<td align="center" style="vertical-align:middle;">
+															<select class="form-control isRequired" name="section[]" id="section<?php echo $i ?>" title="<?php echo _('Please select the section'); ?>" onchange="checkSection('<?php echo $i ?>')">
+																<option value=""> <?php echo _("-- Select --"); ?> </option>
+																<option value="facilitySection" <?php echo ($testAttribute['section'] == 'facilitySection') ? "selected='selected'" : "" ?>><?php echo _("Facility"); ?></option>
+																<option value="patientSection" <?php echo ($testAttribute['section'] == 'patientSection') ? "selected='selected'" : "" ?>><?php echo _("Patient"); ?></option>
+																<option value="specimenSection" <?php echo ($testAttribute['section'] == 'specimenSection') ? "selected='selected'" : "" ?>><?php echo _("Specimen"); ?></option>
+																<option value="labSection" <?php echo ($testAttribute['section'] == 'labSection') ? "selected='selected'" : "" ?>><?php echo _("Lab"); ?></option>
+																<option value="otherSection" <?php echo ($testAttribute['section'] == 'otherSection') ? "selected='selected'" : "" ?>><?php echo _("Other"); ?></option>
+															</select>
+															<input type="text" name="sectionOther[]" id="sectionOther<?php echo $i ?>" onchange="addNewSection(this.value)" class="form-control auto-complete-tbx" placeholder='<?php echo _("Section Other"); ?>' title='<?php echo _("Please enter section other"); ?>' style="<?php echo ($testAttribute['section'] == 'otherSection') ? "" : "display:none;" ?>" value="<?php echo ($testAttribute['section'] == 'otherSection') ? $testAttribute['section_name'] : "" ?>" />
+														</td>
+														<td align="center" style="vertical-align:middle;">
+															<input type="text" name="fieldOrder[]" id="fieldOrder1" class="form-control forceNumeric" placeholder="<?php echo _("Field Order"); ?>" title="<?php echo _("Please enter field order"); ?>" value="<?php echo $testAttribute['field_order']; ?>" />
+														</td>
+														<td align="center" style="vertical-align:middle;">
+															<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+														</td>
+													</tr>
+
+													<?php
+													$i++;
 												}
-											}else{
-												foreach($testAttributeDetails as $key=>$otherAttributeDetails) {
-													foreach($otherAttributeDetails as $otherAttributeId=>$testAttribute) {
-										?>
-											<tr>
-												<td align="center" style="vertical-align:middle;">
-													<input type="text" name="fieldName[]" id="fieldName<?php echo $i ?>" class="form-control fieldName isRequired" placeholder='<?php echo _("Field Name"); ?>' title='<?php echo _("Please enter field name"); ?>' onblur="checkDublicateName(this, 'fieldName');" value="<?php echo $testAttribute['field_name']; ?>" />
-													<input type="hidden" name="fieldId[]" id="fieldId<?php echo $i ?>" class="form-control isRequired" value="<?php echo $otherAttributeId; ?>" />
-												</td>
-												<td align="center" style="vertical-align:middle;padding-top: 20px;">
-													<select class="form-control isRequired" name="fieldType[]" id="fieldType<?php echo $i ?>" title="<?php echo _('Please select the field type'); ?>" onchange="changeField(this, <?php echo $i ?>)">
-														<option value=""> <?php echo _("-- Select --"); ?> </option>
-														<option value="number" <?php echo ($testAttribute['field_type'] == 'number') ? "selected='selected'" : "" ?>><?php echo _("Number"); ?></option>
-														<option value="text" <?php echo ($testAttribute['field_type'] == 'text') ? "selected='selected'" : "" ?>><?php echo _("Text"); ?></option>
-														<option value="date" <?php echo ($testAttribute['field_type'] == 'date') ? "selected='selected'" : "" ?>><?php echo _("Date"); ?></option>
-														<option value="dropdown" <?php echo ($testAttribute['field_type'] == 'dropdown') ? "selected='selected'" : "" ?>><?php echo _("Dropdown"); ?></option>
-														<option value="multiple" <?php echo ($testAttribute['field_type'] == 'multiple') ? "selected='selected'" : "" ?>><?php echo _("Multiselect Dropdown"); ?></option>
-													</select><br>
-													<div class="tag-input dropDown<?php echo $i ?>" style="<?php echo ($testAttribute['field_type'] == 'multiple' || $testAttribute['field_type'] == 'dropdown') ? "" : "display:none;" ?>">
-													<input type="text" name="dropDown[]" id="dropDown<?php echo $i ?>" onkeyup="showTags(event,this,'<?php echo $i ?>')" class="tag-input-field form-control" placeholder="Enter options..." />
-													<input type="hidden" value="<?php echo (!empty($testAttribute['dropdown_options'])) ? $testAttribute['dropdown_options'].',' : "" ?>" id="fdropDown<?php echo $i ?>" name="fdropDown[]" class="fdropDown"/>
-													<div class="tag-container container<?php echo $i ?>">
-													<?php  
-													if(!empty($testAttribute['dropdown_options'])){
-													$val = explode(",",$testAttribute['dropdown_options']);
-													foreach($val as $v)
-													{
+											} else {
+												foreach ($testAttributeDetails as $key => $otherAttributeDetails) {
+													foreach ($otherAttributeDetails as $otherAttributeId => $testAttribute) {
 													?>
-													<div class="tag"><?php echo $v; ?><span class="remove-tag">x</span></div>
-													<?php } }?>
-													</div>
-													</div>
-												</td>
-												<td align="center" style="vertical-align:middle;">
-													<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField<?php echo $i ?>" title="<?php echo _('Please select is it mandatory'); ?>">
-														<option value="yes" <?php echo ($testAttribute['mandatory_field'] == 'yes') ? "selected='selected'" : "" ?>><?php echo _("Yes"); ?></option>
-														<option value="no" <?php echo ($testAttribute['mandatory_field'] == 'no') ? "selected='selected'" : "" ?>><?php echo _("No"); ?></option>
-													</select>
-												</td>
-												<td align="center" style="vertical-align:middle;">
-													<select class="form-control isRequired" name="section[]" id="section<?php echo $i ?>" title="<?php echo _('Please select the section'); ?>" onchange="checkSection('<?php echo $i ?>')">
-														<option value=""> <?php echo _("-- Select --"); ?> </option>
-														<option value="facilitySection" <?php echo ($testAttribute['section'] == 'facilitySection') ? "selected='selected'" : "" ?>><?php echo _("Facility"); ?></option>
-														<option value="patientSection" <?php echo ($testAttribute['section'] == 'patientSection') ? "selected='selected'" : "" ?>><?php echo _("Patient"); ?></option>
-														<option value="specimenSection" <?php echo ($testAttribute['section'] == 'specimenSection') ? "selected='selected'" : "" ?>><?php echo _("Specimen"); ?></option>
-														<option value="labSection" <?php echo ($testAttribute['section'] == 'labSection') ? "selected='selected'" : "" ?>><?php echo _("Lab"); ?></option>
-														<option value="otherSection" <?php echo ($testAttribute['section'] == 'otherSection') ? "selected='selected'" : "" ?>><?php echo _("Other"); ?></option>
-													</select>
-													<input type="text" name="sectionOther[]" id="sectionOther<?php echo $i ?>" onchange="addNewSection(this.value)" class="form-control auto-complete-tbx" placeholder='<?php echo _("Section Other"); ?>' title='<?php echo _("Please enter section other"); ?>' style="<?php echo ($testAttribute['section'] == 'otherSection') ? "" : "display:none;" ?>" value="<?php echo ($testAttribute['section'] == 'otherSection') ? $testAttribute['section_name'] : "" ?>" />
-												</td>
-												<td align="center" style="vertical-align:middle;">
-													<input type="text" name="fieldOrder[]" id="fieldOrder1" class="form-control forceNumeric" placeholder="<?php echo _("Field Order"); ?>" title="<?php echo _("Please enter field order"); ?>" value="<?php echo $testAttribute['field_order']; ?>"/>
-												</td>
-												<td align="center" style="vertical-align:middle;">
-													<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
-												</td>
-											</tr>
+														<tr>
+															<td align="center" style="vertical-align:middle;">
+																<input type="text" name="fieldName[]" id="fieldName<?php echo $i ?>" class="form-control fieldName isRequired" placeholder='<?php echo _("Field Name"); ?>' title='<?php echo _("Please enter field name"); ?>' onblur="checkDublicateName(this, 'fieldName');" value="<?php echo $testAttribute['field_name']; ?>" />
+																<input type="hidden" name="fieldId[]" id="fieldId<?php echo $i ?>" class="form-control isRequired" value="<?php echo $otherAttributeId; ?>" />
+															</td>
+															<td align="center" style="vertical-align:middle;padding-top: 20px;">
+																<select class="form-control isRequired" name="fieldType[]" id="fieldType<?php echo $i ?>" title="<?php echo _('Please select the field type'); ?>" onchange="changeField(this, <?php echo $i ?>)">
+																	<option value=""> <?php echo _("-- Select --"); ?> </option>
+																	<option value="number" <?php echo ($testAttribute['field_type'] == 'number') ? "selected='selected'" : "" ?>><?php echo _("Number"); ?></option>
+																	<option value="text" <?php echo ($testAttribute['field_type'] == 'text') ? "selected='selected'" : "" ?>><?php echo _("Text"); ?></option>
+																	<option value="date" <?php echo ($testAttribute['field_type'] == 'date') ? "selected='selected'" : "" ?>><?php echo _("Date"); ?></option>
+																	<option value="dropdown" <?php echo ($testAttribute['field_type'] == 'dropdown') ? "selected='selected'" : "" ?>><?php echo _("Dropdown"); ?></option>
+																	<option value="multiple" <?php echo ($testAttribute['field_type'] == 'multiple') ? "selected='selected'" : "" ?>><?php echo _("Multiselect Dropdown"); ?></option>
+																</select><br>
+																<div class="tag-input dropDown<?php echo $i ?>" style="<?php echo ($testAttribute['field_type'] == 'multiple' || $testAttribute['field_type'] == 'dropdown') ? "" : "display:none;" ?>">
+																	<input type="text" name="dropDown[]" id="dropDown<?php echo $i ?>" onkeyup="showTags(event,this,'<?php echo $i ?>')" class="tag-input-field form-control" placeholder="Enter options..." />
+																	<input type="hidden" value="<?php echo (!empty($testAttribute['dropdown_options'])) ? $testAttribute['dropdown_options'] . ',' : "" ?>" id="fdropDown<?php echo $i ?>" name="fdropDown[]" class="fdropDown" />
+																	<div class="tag-container container<?php echo $i ?>">
+																		<?php
+																		if (!empty($testAttribute['dropdown_options'])) {
+																			$val = explode(",", $testAttribute['dropdown_options']);
+																			foreach ($val as $v) {
+																		?>
+																				<div class="tag"><?php echo $v; ?><span class="remove-tag">x</span></div>
+																		<?php }
+																		} ?>
+																	</div>
+																</div>
+															</td>
+															<td align="center" style="vertical-align:middle;">
+																<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField<?php echo $i ?>" title="<?php echo _('Please select is it mandatory'); ?>">
+																	<option value="yes" <?php echo ($testAttribute['mandatory_field'] == 'yes') ? "selected='selected'" : "" ?>><?php echo _("Yes"); ?></option>
+																	<option value="no" <?php echo ($testAttribute['mandatory_field'] == 'no') ? "selected='selected'" : "" ?>><?php echo _("No"); ?></option>
+																</select>
+															</td>
+															<td align="center" style="vertical-align:middle;">
+																<select class="form-control isRequired" name="section[]" id="section<?php echo $i ?>" title="<?php echo _('Please select the section'); ?>" onchange="checkSection('<?php echo $i ?>')">
+																	<option value=""> <?php echo _("-- Select --"); ?> </option>
+																	<option value="facilitySection" <?php echo ($testAttribute['section'] == 'facilitySection') ? "selected='selected'" : "" ?>><?php echo _("Facility"); ?></option>
+																	<option value="patientSection" <?php echo ($testAttribute['section'] == 'patientSection') ? "selected='selected'" : "" ?>><?php echo _("Patient"); ?></option>
+																	<option value="specimenSection" <?php echo ($testAttribute['section'] == 'specimenSection') ? "selected='selected'" : "" ?>><?php echo _("Specimen"); ?></option>
+																	<option value="labSection" <?php echo ($testAttribute['section'] == 'labSection') ? "selected='selected'" : "" ?>><?php echo _("Lab"); ?></option>
+																	<option value="otherSection" <?php echo ($testAttribute['section'] == 'otherSection') ? "selected='selected'" : "" ?>><?php echo _("Other"); ?></option>
+																</select>
+																<input type="text" name="sectionOther[]" id="sectionOther<?php echo $i ?>" onchange="addNewSection(this.value)" class="form-control auto-complete-tbx" placeholder='<?php echo _("Section Other"); ?>' title='<?php echo _("Please enter section other"); ?>' style="<?php echo ($testAttribute['section'] == 'otherSection') ? "" : "display:none;" ?>" value="<?php echo ($testAttribute['section'] == 'otherSection') ? $testAttribute['section_name'] : "" ?>" />
+															</td>
+															<td align="center" style="vertical-align:middle;">
+																<input type="text" name="fieldOrder[]" id="fieldOrder1" class="form-control forceNumeric" placeholder="<?php echo _("Field Order"); ?>" title="<?php echo _("Please enter field order"); ?>" value="<?php echo $testAttribute['field_order']; ?>" />
+															</td>
+															<td align="center" style="vertical-align:middle;">
+																<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+															</td>
+														</tr>
 										<?php
-												$i++;
+														$i++;
 													}
 												}
 											}
 										}
 									} else { ?>
 										<tr>
-										<td>
-											<input type="text" name="fieldName[]" id="fieldName1" class="form-control fieldName isRequired" placeholder='<?php echo _("Field Name"); ?>' title='<?php echo _("Please enter field name"); ?>' onblur="checkDublicateName(this, 'fieldName');" />
-											<input type="hidden" name="fieldId[]" id="fieldId1" class="form-control isRequired" />
-										</td>
-										<td>
-											<select class="form-control isRequired" name="fieldType[]" id="fieldType1" title="<?php echo _('Please select the field type'); ?>" onchange="changeField(this, 1)">
-												<option value=""> <?php echo _("-- Select --"); ?> </option>
-												<option value="number"><?php echo _("Number"); ?></option>
-												<option value="text"><?php echo _("Text"); ?></option>
-												<option value="date"><?php echo _("Date"); ?></option>
-												<option value="dropdown"><?php echo _("Dropdown"); ?></option>
-												<option value="multiple"><?php echo _("Multiselect Dropdown"); ?></option>
-											</select><br>
-											<!--<textarea name="dropDown[]" id="dropDown1" class="form-control" placeholder='<?php echo _("Drop down values as , separated"); ?>' title='<?php echo _("Please drop down values as comma separated"); ?>' style="display:none;"></textarea>--> 
+											<td>
+												<input type="text" name="fieldName[]" id="fieldName1" class="form-control fieldName isRequired" placeholder='<?php echo _("Field Name"); ?>' title='<?php echo _("Please enter field name"); ?>' onblur="checkDublicateName(this, 'fieldName');" />
+												<input type="hidden" name="fieldId[]" id="fieldId1" class="form-control isRequired" />
+											</td>
+											<td>
+												<select class="form-control isRequired" name="fieldType[]" id="fieldType1" title="<?php echo _('Please select the field type'); ?>" onchange="changeField(this, 1)">
+													<option value=""> <?php echo _("-- Select --"); ?> </option>
+													<option value="number"><?php echo _("Number"); ?></option>
+													<option value="text"><?php echo _("Text"); ?></option>
+													<option value="date"><?php echo _("Date"); ?></option>
+													<option value="dropdown"><?php echo _("Dropdown"); ?></option>
+													<option value="multiple"><?php echo _("Multiselect Dropdown"); ?></option>
+												</select><br>
+												<!--<textarea name="dropDown[]" id="dropDown1" class="form-control" placeholder='<?php echo _("Drop down values as , separated"); ?>' title='<?php echo _("Please drop down values as comma separated"); ?>' style="display:none;"></textarea>-->
 												<div class="tag-input dropDown1" style="display:none;">
-												<input type="text" name="dropDown[]" id="dropDown1" onkeyup="showTags(event,this,'1')" class="tag-input-field form-control" placeholder="Enter options..." />
-												<input type="hidden" class="fdropDown" id="fdropDown1" name="fdropDown[]"/>
-												<div class="tag-container container1">
+													<input type="text" name="dropDown[]" id="dropDown1" onkeyup="showTags(event,this,'1')" class="tag-input-field form-control" placeholder="Enter options..." />
+													<input type="hidden" class="fdropDown" id="fdropDown1" name="fdropDown[]" />
+													<div class="tag-container container1">
+													</div>
 												</div>
-												</div>
-										</td>
-										<td>
-											<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField1" title="<?php echo _('Please select is it mandatory'); ?>">
-												<option value="yes"><?php echo _("Yes"); ?></option>
-												<option value="no" selected><?php echo _("No"); ?></option>
-											</select>
-										</td>
-										<td>
-											<select class="form-control isRequired" name="section[]" id="section1" title="<?php echo _('Please select the section'); ?>" onchange="checkSection('1')">
-												<option value=""> <?php echo _("-- Select --"); ?> </option>
-												<option value="facilitySection"><?php echo _("Facility"); ?></option>
-												<option value="patientSection"><?php echo _("Patient"); ?></option>
-												<option value="specimenSection"><?php echo _("Specimen"); ?></option>
-												<option value="labSection"><?php echo _("Lab"); ?></option>
-												<option value="otherSection"><?php echo _("Other"); ?></option>
-											</select>
-											<input type="text" name="sectionOther[]" id="sectionOther1" class="form-control auto-complete-tbx" onchange="addNewSection(this.value)" placeholder='<?php echo _("Section Other"); ?>' title='<?php echo _("Please enter section other"); ?>' style="display:none;" />
-										</td>
-										<td>
-											<input type="text" name="fieldOrder[]" id="fieldOrder1" class="form-control forceNumeric" placeholder="<?php echo _("Field Order"); ?>" title="<?php echo _("Please enter field order"); ?>" />
-										</td>
-										<td align="center" style="vertical-align:middle;">
-											<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
-										</td>
-									</tr>
+											</td>
+											<td>
+												<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField1" title="<?php echo _('Please select is it mandatory'); ?>">
+													<option value="yes"><?php echo _("Yes"); ?></option>
+													<option value="no" selected><?php echo _("No"); ?></option>
+												</select>
+											</td>
+											<td>
+												<select class="form-control isRequired" name="section[]" id="section1" title="<?php echo _('Please select the section'); ?>" onchange="checkSection('1')">
+													<option value=""> <?php echo _("-- Select --"); ?> </option>
+													<option value="facilitySection"><?php echo _("Facility"); ?></option>
+													<option value="patientSection"><?php echo _("Patient"); ?></option>
+													<option value="specimenSection"><?php echo _("Specimen"); ?></option>
+													<option value="labSection"><?php echo _("Lab"); ?></option>
+													<option value="otherSection"><?php echo _("Other"); ?></option>
+												</select>
+												<input type="text" name="sectionOther[]" id="sectionOther1" class="form-control auto-complete-tbx" onchange="addNewSection(this.value)" placeholder='<?php echo _("Section Other"); ?>' title='<?php echo _("Please enter section other"); ?>' style="display:none;" />
+											</td>
+											<td>
+												<input type="text" name="fieldOrder[]" id="fieldOrder1" class="form-control forceNumeric" placeholder="<?php echo _("Field Order"); ?>" title="<?php echo _("Please enter field order"); ?>" />
+											</td>
+											<td align="center" style="vertical-align:middle;">
+												<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+											</td>
+										</tr>
 									<?php } ?>
 								</tbody>
 							</table>
@@ -617,29 +617,29 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 
 <script type="text/javascript">
 	tableRowId = <?php echo $i + 1; ?>;
-	testQualCounter = <?php echo count($testResultAttribute['result']);?>;
-	testQuanCounter = <?php echo count($testResultAttribute['quantitative_result']);?>;
+	testQualCounter = <?php echo count($testResultAttribute['result']); ?>;
+	testQuanCounter = <?php echo count($testResultAttribute['quantitative_result']); ?>;
 	var otherSectionNames = [];
 
-	function addNewSection(section,rowId)
-	{
-		if(section!="" && ($.inArray(section, otherSectionNames) == -1))
+	function addNewSection(section, rowId) {
+		if (section != "" && ($.inArray(section, otherSectionNames) == -1))
 			otherSectionNames.push(section);
 	}
 
 	$(document).ready(function() {
 		addOtherSection();
-		function addOtherSection(){
-			$(".auto-complete-tbx").each(function(){
-				if($(this).val()!="" && ($.inArray($(this).val(), otherSectionNames) == -1))
+
+		function addOtherSection() {
+			$(".auto-complete-tbx").each(function() {
+				if ($(this).val() != "" && ($.inArray($(this).val(), otherSectionNames) == -1))
 					otherSectionNames.push($(this).val());
 			});
 		}
 
-		$( ".auto-complete-tbx" ).autocomplete({
-      source: otherSectionNames
-    });
-	
+		$(".auto-complete-tbx").autocomplete({
+			source: otherSectionNames
+		});
+
 		$('input').tooltip();
 		checkResultType();
 		$("#sampleType").select2({
@@ -665,8 +665,8 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 			htmlVal = ($(this).parent().html());
 			htmlVal = htmlVal.replace('<span class="remove-tag">x</span>', '');
 			prevVal = $(this).parent().parent().prev(".fdropDown").val();
-			curVal = prevVal.replace(htmlVal+',', "");
-			$(this).parent().parent().prev(".fdropDown").val(curVal); 
+			curVal = prevVal.replace(htmlVal + ',', "");
+			$(this).parent().parent().prev(".fdropDown").val(curVal);
 			$(this).parent().remove();
 		});
 
@@ -677,67 +677,68 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 		let _t = ["r_generic_test_methods", "r_generic_test_categories", "r_generic_test_reasons", "r_generic_test_failure_reasons", "r_generic_sample_rejection_reasons"];
 		let _as = ["test_method_status", "test_category_status", "test_reason_status", "test_failure_reason_status", "rejection_reason_status"];
 
-		$(ajaxSelect).each(function(index, item){
-			$("#"+item).select2({
-               placeholder: "Enter" + _p[index],
-               minimumInputLength: 0,
-               width: '100%',
-               allowClear: true,
-               id: function(bond) {
-                    return bond._id;
-               },
-               ajax: {
-                    placeholder: "Type one or more character to search",
-                    url: "/includes/get-data-list-for-generic.php",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function(params) {
-                         return {
-							  status: _as[index],
-							  fieldId: _fi[index],
-                              fieldName: _f[index],
-                              tableName: _t[index],
-                              q: params.term, // search term
-                              page: params.page
-                         };
-                    },
-                    processResults: function(data, params) {
-                         params.page = params.page || 1;
-                         return {
-                              results: data.result,
-                              pagination: {
-                                   more: (params.page * 30) < data.total_count
-                              }
-                         };
-                    },
-                    //cache: true
-               },
-               escapeMarkup: function(markup) {
-                    return markup;
-               }
-          });
+		$(ajaxSelect).each(function(index, item) {
+			$("#" + item).select2({
+				placeholder: "Select " + _p[index],
+				minimumInputLength: 0,
+				width: '100%',
+				allowClear: true,
+				id: function(bond) {
+					return bond._id;
+				},
+				ajax: {
+					placeholder: "Type one or more character to search",
+					url: "/includes/get-data-list-for-generic.php",
+					dataType: 'json',
+					delay: 250,
+					data: function(params) {
+						return {
+							status: _as[index],
+							fieldId: _fi[index],
+							fieldName: _f[index],
+							tableName: _t[index],
+							q: params.term, // search term
+							page: params.page
+						};
+					},
+					processResults: function(data, params) {
+						params.page = params.page || 1;
+						return {
+							results: data.result,
+							pagination: {
+								more: (params.page * 30) < data.total_count
+							}
+						};
+					},
+					//cache: true
+				},
+				escapeMarkup: function(markup) {
+					return markup;
+				}
+			});
 		});
 	});
-	function showTags(e,obj,cls)
-	{
-		var options=new Array();
+
+	function showTags(e, obj, cls) {
+		var options = new Array();
 		if (e.key === ',' || e.key === 'Enter') {
 			var val = obj.value;
 			if (val.length > 0) {
-			var tag = val.split(',')[0].trim();
-			$('.container'+cls).append('<div class="tag">' + tag + '<span class="remove-tag">x</span></div>');
-			options.push(tag);
-			obj.value = "";
-			//obj.removeClass('isRequired');
+				var tag = val.split(',')[0].trim();
+				$('.container' + cls).append('<div class="tag">' + tag + '<span class="remove-tag">x</span></div>');
+				options.push(tag);
+				obj.value = "";
+				//obj.removeClass('isRequired');
+			}
+
 		}
-		
-		}
-		//console.log(options); 
-		for(let i = 0; i < options.length; i++){
-			$('#fdropDown'+cls).val($('#fdropDown'+cls).val()+options[i]+',');
-			
+		//console.log(options);
+		for (let i = 0; i < options.length; i++) {
+			$('#fdropDown' + cls).val($('#fdropDown' + cls).val() + options[i] + ',');
+
 		}
 	}
+
 	function validateNow() {
 		flag = deforayValidator.init({
 			formId: 'editTestTypeForm'
@@ -755,7 +756,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 				fieldName: fieldName,
 				value: obj.value.trim(),
 				fnct: fnct,
-				type: (fieldName == 'test_loinc_code')?'multiple' : '',
+				type: (fieldName == 'test_loinc_code') ? 'multiple' : '',
 				format: "html"
 			},
 			function(data) {
@@ -790,7 +791,8 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 							<option value="dropdown"><?php echo _("Dropdown"); ?></option>\
 							<option value="multiple"><?php echo _("multiple Dropdown"); ?></option>\
 						</select><br>\
-						<div class="tag-input dropDown'+tableRowId+'" style="display:none;"><input type="text" name="dropDown[]" id="dropDown'+tableRowId+'" onkeyup="showTags(event,this,'+tableRowId+')" class="tag-input-field form-control" placeholder="Enter options..." /><input type="hidden" class="fdropDown" id="fdropDown'+tableRowId+'" name="fdropDown[]" /><div class="tag-container container'+tableRowId+'"></div></div>';		d.innerHTML = '<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField' + tableRowId + '" title="<?php echo _('Please select is it mandatory'); ?>">\
+						<div class="tag-input dropDown' + tableRowId + '" style="display:none;"><input type="text" name="dropDown[]" id="dropDown' + tableRowId + '" onkeyup="showTags(event,this,' + tableRowId + ')" class="tag-input-field form-control" placeholder="Enter options..." /><input type="hidden" class="fdropDown" id="fdropDown' + tableRowId + '" name="fdropDown[]" /><div class="tag-container container' + tableRowId + '"></div></div>';
+		d.innerHTML = '<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField' + tableRowId + '" title="<?php echo _('Please select is it mandatory'); ?>">\
                             <option value="yes"><?php echo _("Yes"); ?></option>\
                             <option value="no" selected><?php echo _("No"); ?></option>\
                         </select>';
@@ -811,9 +813,9 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 		g.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
 		$(a).fadeIn(800);
 
-		$( ".auto-complete-tbx" ).autocomplete({
-      source: otherSectionNames
-    });
+		$(".auto-complete-tbx").autocomplete({
+			source: otherSectionNames
+		});
 
 		generateRandomString(tableRowId);
 		tableRowId++;
@@ -855,7 +857,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 			$(".qualitativeResult").removeClass("isRequired");
 			$(".quantitativeResult").addClass("isRequired");
 			$("#qualitativeResult").val('');
-		} else{
+		} else {
 			$("#qualitativeDiv, .quantitativeDiv").hide();
 			$(".qualitativeResult, .quantitativeResult").removeClass("isRequired");
 			$("#qualitativeResult, .quantitativeResult").val('');
@@ -890,7 +892,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 	function addResultRow(table) {
 		let rowString = '';
 
-		if(table == 'qualitativeTable'){
+		if (table == 'qualitativeTable') {
 			testQualCounter++;
 			rowString = `<tr>
 				<td class="text-center">` + testQualCounter + `</td>
@@ -903,7 +905,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 					<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeResultRow(this.parentNode.parentNode, 'qualitativeTable');"><em class="fa-solid fa-minus"></em></a>
 				</td>
 			</tr>`;
-		}else if(table == 'quantitativeTable'){
+		} else if (table == 'quantitativeTable') {
 			testQuanCounter++;
 			rowString = `<tr>
 				<td class="text-center">` + testQuanCounter + `</td>
@@ -917,7 +919,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 				</td>
 			</tr>`;
 		}
-		$("#"+table).append(rowString);
+		$("#" + table).append(rowString);
 	}
 
 	function removeResultRow(el, table) {
@@ -931,9 +933,9 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 		});
 	}
 
-	
-	function changeField(obj, i){
-		(obj.value == 'dropdown' || obj.value == 'multiple') ? ($('.dropDown'+i).show()) : ($('.dropDown'+i).hide(), $('#dropDown'+i).removeClass('isRequired'));
+
+	function changeField(obj, i) {
+		(obj.value == 'dropdown' || obj.value == 'multiple') ? ($('.dropDown' + i).show()) : ($('.dropDown' + i).hide(), $('#dropDown' + i).removeClass('isRequired'));
 	}
 </script>
 
