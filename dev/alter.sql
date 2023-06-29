@@ -4564,3 +4564,39 @@ ALTER TABLE `audit_form_vl` ADD `current_arv_protocol` TEXT NULL DEFAULT NULL AF
 
 ALTER TABLE `form_vl` ADD `control_vl_testing_type` TEXT NULL DEFAULT NULL AFTER `reason_for_vl_testing_other`, ADD `coinfection_type` TEXT NULL DEFAULT NULL AFTER `control_vl_testing_type`;
 ALTER TABLE `audit_form_vl` ADD `control_vl_testing_type` TEXT NULL DEFAULT NULL AFTER `reason_for_vl_testing_other`, ADD `coinfection_type` TEXT NULL DEFAULT NULL AFTER `control_vl_testing_type`;
+
+ALTER TABLE `form_eid` ADD `child_weight` INT NULL DEFAULT NULL AFTER `child_gender`;
+ALTER TABLE `audit_form_eid` ADD `child_weight` INT NULL DEFAULT NULL AFTER `child_gender`;
+
+ALTER TABLE `form_eid` ADD `child_prophylactic_arv` TEXT NULL DEFAULT NULL AFTER `child_weight`;
+ALTER TABLE `form_eid` ADD `child_prophylactic_arv_other` TEXT NULL DEFAULT NULL AFTER `child_prophylactic_arv`;
+
+ALTER TABLE `audit_form_eid` ADD `child_prophylactic_arv` TEXT NULL DEFAULT NULL AFTER `child_weight`;
+ALTER TABLE `audit_form_eid` ADD `child_prophylactic_arv_other` TEXT NULL DEFAULT NULL AFTER `child_prophylactic_arv`;
+
+ALTER TABLE `form_eid` ADD `child_treatment_initiation_date` DATE NULL DEFAULT NULL AFTER `child_treatment_other`;
+ALTER TABLE `audit_form_eid` ADD `child_treatment_initiation_date` DATE NULL DEFAULT NULL AFTER `child_treatment_other`;
+ALTER TABLE `form_eid` ADD `next_appointment_date` DATE NULL DEFAULT NULL AFTER `mother_hiv_status`;
+ALTER TABLE `audit_form_eid` ADD `next_appointment_date` DATE NULL DEFAULT NULL AFTER `mother_hiv_status`;
+ALTER TABLE `form_eid` ADD `no_of_exposed_children` INT NULL DEFAULT NULL AFTER `next_appointment_date`;
+ALTER TABLE `audit_form_eid` ADD `no_of_exposed_children` INT NULL DEFAULT NULL AFTER `next_appointment_date`;
+ALTER TABLE `form_eid` ADD `no_of_infected_children` INT NULL DEFAULT NULL AFTER `no_of_exposed_children`;
+ALTER TABLE `audit_form_eid` ADD `no_of_infected_children` INT NULL DEFAULT NULL AFTER `no_of_exposed_children`;
+ALTER TABLE `form_eid` ADD `mother_arv_protocol` INT NULL DEFAULT NULL AFTER `no_of_infected_children`;
+ALTER TABLE `audit_form_eid` ADD `mother_arv_protocol` INT NULL DEFAULT NULL AFTER `no_of_infected_children`;
+ALTER TABLE `form_eid` ADD `is_child_symptomatic` INT NULL DEFAULT NULL AFTER `mother_vl_test_date`;
+ALTER TABLE `audit_form_eid` ADD `is_child_symptomatic` INT NULL DEFAULT NULL AFTER `mother_vl_test_date`;
+ALTER TABLE `form_eid` ADD `date_of_weaning` DATE NULL DEFAULT NULL AFTER `is_child_symptomatic`;
+ALTER TABLE `audit_form_eid` ADD `date_of_weaning` DATE NULL DEFAULT NULL AFTER `is_child_symptomatic`;
+ALTER TABLE `form_eid` ADD `was_child_breastfed` TEXT NULL DEFAULT NULL AFTER `date_of_weaning`;
+ALTER TABLE `audit_form_eid` ADD `was_child_breastfed` TEXT NULL DEFAULT NULL AFTER `date_of_weaning`;
+ALTER TABLE `form_eid` ADD `is_child_on_cotrim` TEXT NULL DEFAULT NULL AFTER `choice_of_feeding`;
+ALTER TABLE `audit_form_eid` ADD `is_child_on_cotrim` TEXT NULL DEFAULT NULL AFTER `choice_of_feeding`;
+ALTER TABLE `form_eid` ADD `child_started_cotrim_date` TEXT NULL DEFAULT NULL AFTER `is_child_on_cotrim`;
+ALTER TABLE `audit_form_eid` ADD `child_started_cotrim_date` TEXT NULL DEFAULT NULL AFTER `is_child_on_cotrim`;
+ALTER TABLE `form_eid` ADD `sample_collection_reason` TEXT NULL DEFAULT NULL AFTER `rapid_test_result`;
+ALTER TABLE `audit_form_eid` ADD `sample_collection_reason` TEXT NULL DEFAULT NULL AFTER `rapid_test_result`;
+ALTER TABLE `form_eid` ADD `child_started_art_date` TEXT NULL DEFAULT NULL AFTER `infant_art_status_other`;
+ALTER TABLE `audit_form_eid` ADD `child_started_art_date` TEXT NULL DEFAULT NULL AFTER `infant_art_status_other`;
+ALTER TABLE `form_eid` ADD `lab_testing_point_other` TEXT NULL DEFAULT NULL AFTER `lab_testing_point`;
+ALTER TABLE `audit_form_eid` ADD `lab_testing_point_other` TEXT NULL DEFAULT NULL AFTER `lab_testing_point`;

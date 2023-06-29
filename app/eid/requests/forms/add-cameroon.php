@@ -187,9 +187,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <th scope="row"><label for="childGender"><?= _('Gender'); ?> <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <select class="form-control isRequired" name="childGender" id="childGender">
-                                                <option value=''> -- Select -- </option>
-                                                <option value='male'> Male </option>
-                                                <option value='female'> Female </option>
+                                                <option value=''> <?= _('-- Select --'); ?> </option>
+                                                <option value='male'> <?= _('Male'); ?> </option>
+                                                <option value='female'> <?= _('Female'); ?> </option>
 
                                             </select>
                                         </td>
@@ -198,7 +198,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <th scope="row"><?= _('Infant Age (months)'); ?></th>
                                         <td><input type="number" max="24" maxlength="2" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" /></td>
                                         <th scope="row"><?= _('Weight of the day'); ?></th>
-                                        <td><input type="text" class="form-control forceNumeric" id="infantWeight" name="infantWeight" placeholder="<?= _('Infant weight of the day in Kg'); ?>" title="<?= ('Infant weight of the day in Kg'); ?>" style="width:100%;" /></td>
+                                        <td><input type="text" class="form-control forceNumeric" id="childWeight" name="childWeight" placeholder="<?= _('Infant weight of the day in Kg'); ?>" title="<?= ('Infant weight of the day in Kg'); ?>" style="width:100%;" /></td>
                                     </tr>
                                     <tr>
                                         <th scope="row"><?= _('Caretaker phone number'); ?></th>
@@ -212,17 +212,17 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <th scope="row"><?= _('Prophylactic ARV given to child'); ?></th>
                                         <td>
                                             <select class="form-control isRequired" name="childProphylacticArv" id="childProphylacticArv" title="<?= _('Prophylactic ARV given to child'); ?>" onchange="showOtherARV();">
-                                                <option value=''> -- Select -- </option>
-                                                <option value='nothing'> Nothing </option>
-                                                <option value='nvp'> NVP </option>
-                                                <option value='azt'> AZT </option>
-                                                <option value='other'> Other </option>
+                                                <option value=''> <?= _('-- Select --'); ?> </option>
+                                                <option value='nothing'> <?= _('Nothing'); ?> </option>
+                                                <option value='nvp'> <?= _('NVP'); ?> </option>
+                                                <option value='azt'> <?= _('AZT'); ?> </option>
+                                                <option value='other'> <?= _('Other'); ?> </option>
                                             </select>
                                             <input type="text" name="childProphylacticArvOther" id="childProphylacticArvOther" class="form-control" placeholder="<?= _('Please specify other prophylactic ARV given'); ?>" title="<?= _('Please specify other prophylactic ARV given'); ?>" style="display:none;" />
                                         </td>
                                         <th scope="row"><?= _('Date of Initiation'); ?></th>
                                         <td>
-                                            <input type="text" class="form-control date" name="childTreatmentInitiationDate" id="childTreatmentInitiationDate" />
+                                            <input type="text" class="form-control date" name="childTreatmentInitiationDate" id="childTreatmentInitiationDate" placeholder="<?= _('Enter date of initiation'); ?>"/>
                                         </td>
                                     </tr>
 
@@ -237,13 +237,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </th>
                                     </tr>
                                     <tr>
-                                        <th scope="row" style="width:15% !important"><label for="motherName"><?= _('Mother name'); ?> </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="mothersName"><?= _('Mother name'); ?> </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control " id="motherName" name="motherName" placeholder="<?= _('Mother name'); ?>" title="<?= _('Please enter Infant Name'); ?>" style="width:100%;" onchange="" />
+                                            <input type="text" class="form-control" id="mothersName" name="mothersName" placeholder="<?= _('Mother name'); ?>" title="<?= _('Please enter Infant Name'); ?>" style="width:100%;" onchange="" />
                                         </td>
                                         <th scope="row"><label for="dob"><?= _('Date of Birth'); ?> <span class="mandatory">*</span> </label></th>
                                         <td>
-                                            <input type="text" class="form-control isRequired" id="dob" name="dob" placeholder="<?= _('Date of birth'); ?>" title="<?= _('Please enter Date of birth'); ?>" style="width:100%;" onchange="calculateAgeInMonths();" />
+                                            <input type="text" class="form-control isRequired" id="mothersDob" name="mothersDob" placeholder="<?= _('Date of birth'); ?>" title="<?= _('Please enter Date of birth'); ?>" style="width:100%;" onchange="calculateAgeInMonths();" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -255,9 +255,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td>
                                             <select class="form-control" name="modeOfDelivery" id="modeOfDelivery" onchange="showOtherOption(this.value)">
                                                 <option value=''> <?= _('-- Select --'); ?> </option>
-                                                <option value="Normal"> Normal </option>
-                                                <option value="Caesarean"> Caesarean </option>
-                                                <option value="Unknown"> Gravidity N* </option>
+                                                <option value="Normal"> <?= _('Normal'); ?> </option>
+                                                <option value="Caesarean"> <?= _('Caesarean'); ?> </option>
+                                                <option value="Unknown"> <?= _('Gravidity N*'); ?>' </option>
                                             </select>
                                         </td>
                                     </tr>
@@ -276,197 +276,253 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td>
                                             <select class="form-control" name="motherArvProtocol" id="motherArvProtocol" onchange="showArvProtocolOtherOption()">
                                                 <option value=''> <?= _('-- Select --'); ?> </option>
-                                                <option value="Nothing"> Nothing </option>
-                                                <option value="TELE (TDF+TC+EFV)">TELE (TDF+TC+EFV) </option>
-                                                <option value="other"> Other</option>
+                                                <option value="Nothing"> <?= _('Nothing'); ?> </option>
+                                                <option value="TELE (TDF+TC+EFV)"><?= _('TELE (TDF+TC+EFV)'); ?> </option>
+                                                <option value="other"><?= _('Other'); ?></option>
                                             </select> 
                                             <input type="text" class="form-control" name="motherArvProtocolOther" id="motherArvProtocolOther" style="display:none;"/>
 
                                       </td>
                                         <th scope="row"><?= _('Date of Initiation'); ?></th>
                                         <td>
-                                            <input type="text" class="form-control date" name="motherTreatmentInitiationDate" id="motherTreatmentInitiationDate" />
+                                            <input type="text" class="form-control date" name="motherTreatmentInitiationDate" id="motherTreatmentInitiationDate"  placeholder="<?= _('Enter date of initiation'); ?>"/>
                                         </td>
                                     </tr>
+                                </table>
+                                    <br>
+                                <hr style="border: 1px solid #ccc;">
 
-                                    <tr>
-                                        <th scope="row" style="width:16% !important">Mother's HIV Status: <span class="mandatory">*</span></th>
+                                <div class="box-header with-border">
+                                    <h3 class="box-title"><?= _("CLINICAL INFORMATION"); ?></h3>
+                                </div>
+                                <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
+                                <tr>
+                                        <th scope="row" style="width:16% !important"><?= _('Is the child symptomatic?'); ?> <span class="mandatory">*</span></th>
                                         <td style="width:30% !important">
-                                            <select class="form-control isRequired" name="mothersHIVStatus" id="mothersHIVStatus">
-                                                <option value=''> -- Select -- </option>
-                                                <option value="positive"> Positive </option>
-                                                <option value="unknown"> Unknown </option> 
+                                            <select class="form-control isRequired" name="isChildSymptomatic" id="isChildSymptomatic">
+                                            <option value=''> <?= _('-- Select --'); ?> </option>
+                                                <option value="yes"> <?= _('Yes'); ?> </option>
+                                                <option value="no"> <?= _('No'); ?> </option> 
                                             </select>
                                         </td>
-
-                                        <th scope="row" style="width:15% !important">ART given to the Mother during:</th>
-                                        <td style="width:35% !important">
-                                            <input type="checkbox" name="motherTreatment[]" value="No ART given" /> No ART given <br>
-                                            <input type="checkbox" name="motherTreatment[]" value="Pregnancy" /> Pregnancy <br>
-                                            <input type="checkbox" name="motherTreatment[]" value="Labour/Delivery" /> Labour/Delivery <br>
-                                            <input type="checkbox" name="motherTreatment[]" value="Postnatal" /> Postnatal <br>
-                                            <!-- <input type="checkbox" name="motherTreatment[]" value="Other" onclick="$('#motherTreatmentOther').prop('disabled', function(i, v) { return !v; });" /> Other (Please specify): <input class="form-control" style="max-width:200px;display:inline;" disabled="disabled" placeholder="Other" type="text" name="motherTreatmentOther" id="motherTreatmentOther" /> <br> -->
-                                            <input type="checkbox" name="motherTreatment[]" value="Unknown" /> Unknown
+                                        <th scope="row" style="width:16% !important"><?= _('Date of Weaning?'); ?> </th>
+                                        <td style="width:30% !important">
+                                            <input type="text" class="form-control date" name="dateOfWeaning" id="dateOfWeaning" title="<?= _('Enter date of weaning'); ?>" placeholder="<?= _('Enter date of weaning'); ?>" />
                                         </td>
-                                    </tr>
+                                </tr>
+                                <tr>
+                                <th scope="row" style="width:16% !important"><?= _('Was the child breastfed?'); ?> </th>
+                                        <td style="width:30% !important">
+                                            <select class="form-control" name="wasChildBreastfed" id="wasChildBreastfed">
+                                                <option value=''> <?= _('-- Select --'); ?> </option>
+                                                <option value="yes"> <?= _('Yes'); ?> </option>
+                                                <option value="no"> <?= _('No'); ?> </option> 
+                                                <option value="unknown"> <?= _('Unknown'); ?> </option> 
+                                            </select>
+                                        </td>
+                                <th scope="row" style="width:16% !important"><?= _('If Yes,'); ?> </th>
+                                        <td style="width:30% !important">
+                                            <select class="form-control" name="choiceOfFeeding" id="choiceOfFeeding">
+                                                <option value=''> <?= _('-- Select --'); ?> </option>
+                                                <option value="Exclusive"><?= _('Exclusive'); ?></option>
+                                                <option value="Mixed"><?= _('Mixed'); ?></option> 
+                                                <option value="Exclusive formula feeding"><?= _('Exclusive formula feeding'); ?></option> 
+                                            </select>
+                                        </td>
+                                </tr>
+                                <tr>
+                                <th scope="row" style="width:16% !important"><?= _('Is the child on Cotrim?'); ?> </th>
+                                        <td style="width:30% !important">
+                                            <select class="form-control" name="isChildOnCotrim" id="isChildOnCotrim">
+                                            <option value=''> <?= _('-- Select --'); ?> </option>
+                                                <option value="yes"> <?= _('Yes'); ?> </option>
+                                                <option value="no"> <?= _('No'); ?> </option> 
+                                            </select>
+                                        </td>
+                                <th scope="row" style="width:16% !important"><?= _('If Yes, Date of Initiation'); ?> </th>
+                                        <td style="width:30% !important">
+                                        <input type="text" class="form-control date" name="childStartedCotrimDate" id="childStartedCotrimDate" title="<?= _('Enter date of Initiation'); ?>" placeholder="<?= _('Enter date of Initiation'); ?>" />
 
+                                        </td>
+                                </tr>
+                                <tr>
+                                <th scope="row" style="width:16% !important"><?= _('Is the child on ART?'); ?> </th>
+                                        <td style="width:30% !important">
+                                            <select class="form-control" name="infantArtStatus" id="infantArtStatus">
+                                            <option value=''> <?= _('-- Select --'); ?> </option>
+                                                <option value="yes"> <?= _('Yes'); ?> </option>
+                                                <option value="no"> <?= _('No'); ?> </option> 
+                                            </select>
+                                        </td>
+                                <th scope="row" style="width:16% !important"><?= _('If Yes, Date of Initiation'); ?> </th>
+                                        <td style="width:30% !important">
+                                        <input type="text" class="form-control date" name="childStartedArtDate" id="childStartedArtDate" title="<?= _('Enter date of Initiation'); ?>" placeholder="<?= _('Enter date of Initiation'); ?>" />
+
+                                        </td>
+                                </tr>
                                     <tr>
-                                        <th scope="row">Infant Rapid HIV Test Done <span class="mandatory">*</span></th>
-                                        <td>
-                                            <select class="form-control isRequired" name="rapidTestPerformed" id="rapidTestPerformed">
-                                                <option value=''> -- Select -- </option>
-                                                <option value="yes"> Yes </option>
-                                                <option value="no"> No </option>
-                                            </select>
-                                        </td>
-
-                                        <th scope="row">If yes, test date :</th>
-                                        <td>
-                                            <input class="form-control date" type="text" name="rapidtestDate" id="rapidtestDate" placeholder="if yes, test date" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Rapid Test Result</th>
-                                        <td>
-                                            <select class="form-control" name="rapidTestResult" id="rapidTestResult">
-                                                <option value=''> -- Select -- </option>
-                                                <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
-                                                    <option value="<?php echo strtolower($eidResultKey); ?>"> <?php echo $eidResultValue; ?> </option>
-                                                <?php } ?>
-
-                                            </select>
-                                        </td>
-
-                                        <th scope="row">Stopped breastfeeding ?</th>
+                                        <th scope="row"><?= _('Stopped breastfeeding ?'); ?></th>
                                         <td>
                                             <select class="form-control" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
-                                                <option value=''> -- Select -- </option>
-                                                <option value="yes"> Yes </option>
-                                                <option value="no"> No </option>
-                                                <option value="unknown"> Unknown </option>
+                                            <option value=''> <?= _('-- Select --'); ?> </option>
+                                                <option value="yes"> <?= _('Yes'); ?> </option>
+                                                <option value="no"> <?= _('No'); ?> </option> 
+                                                <option value="unknown"> <?= _('Unknown'); ?> </option> 
                                             </select>
                                         </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Age (months) breastfeeding stopped :</th>
+                                        <th scope="row"><?= _('Age (months) breastfeeding stopped'); ?> </th>
                                         <td>
                                             <input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="Age (months) breastfeeding stopped" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" />
                                         </td>
+                                    </tr>
 
-                                        <th scope="row">Previous PCR test : <span class="mandatory">*</span></th>
+                                    <tr>
+                                       
+                                        <th scope="row"><?= _('Previous PCR test'); ?> </th>
                                         <td>
-                                            <select class="form-control isRequired" title="Please select if Previous PCR Test was done" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore" onchange="setRelatedField(this.value);">
-                                                <option value=''> -- Select -- </option>
-                                                <option value="yes"> Yes </option>
-                                                <option value="no"> No </option>
+                                            <select class="form-control" title="Please select if Previous PCR Test was done" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore" onchange="setRelatedField(this.value);">
+                                                <option value=''> <?= _('-- Select --'); ?> </option>
+                                                <option value="yes"> <?= _('Yes'); ?> </option>
+                                                <option value="no"> <?= _('No'); ?> </option> 
                                             </select>
                                         </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Previous PCR test date :</th>
+                                        <th scope="row"><?= _('Previous PCR test date'); ?></th>
                                         <td>
                                             <input class="form-control date" type="text" name="previousPCRTestDate" id="previousPCRTestDate" placeholder="if yes, test date" />
                                         </td>
+                                    </tr>
 
-                                        <th scope="row">Reason for 2nd PCR :</th>
+                                    <tr>
+                                       
+                                    <th scope="row"><?= _('Previous PCR test Result'); ?></th>
+                                        <td>
+                                            <select class="form-control" name="prePcrTestResult" id="prePcrTestResult">
+                                                <option value=''> <?= _('-- Select --'); ?> </option>
+                                                <option value="Detected"> <?= _('Detected'); ?> </option>
+                                                <option value="Not Detected"> <?= _('Not Detected'); ?> </option>
+                                            </select>
+                                        </td>
+                                        <th scope="row"><?= _('Reason for 2nd PCR'); ?></th>
                                         <td>
                                             <select class="form-control" name="pcrTestReason" id="pcrTestReason">
-                                                <option value=''> -- Select -- </option>
-                                                <option value="Confirmation of positive first EID PCR test result"> Confirmation of positive first EID PCR test result </option>
+                                                <option value=''> <?= _('-- Select --'); ?> </option>
+                                                <option value="Confirmation of positive first EID PCR test result"> <?= _('Confirmation of positive first EID PCR test result'); ?> </option>
                                                 <option value="Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months"> Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months </option>
                                                 <option value="Positive HIV rapid test result at 9 months or later"> Positive HIV rapid test result at 9 months or later </option>
                                                 <option value="Other"> Other </option>
                                             </select>
                                         </td>
                                     </tr>
-
-
+                                    <tr>
+                                        <th scope="row"><?= _('Reason for Sample Collection'); ?></th>
+                                        <td>
+                                            <select class="form-control" name="sampleCollectionReason" id="sampleCollectionReason">
+                                                <option value=''> <?= _('-- Select --'); ?> </option>
+                                                <option value="1st Test for well child born of HIV+ mother"><?= _('1st Test for well child born of HIV+ mother'); ?></option>
+                                                <option value="1st Test for sick child"><?= _('1st Test for sick child'); ?></option>
+                                                <option value="Repeat Testing for 6 weeks after weaning"><?= _('Repeat Testing for 6 weeks after weaning'); ?></option>
+                                                <option value="Repeat Testing due to loss of 1st sample"><?= _('Repeat Testing due to loss of 1st sample'); ?></option>
+                                                <option value="Repeat due to clinical suspicion following negative 1st test"><?= _('Repeat due to clinical suspicion following negative 1st test');?></option>
+                                            </select>
+                                        </td>
+                                        <th scope="row"><?= _('Point of Entry'); ?></th>
+                                        <td>
+                                            <select class="form-control" name="labTestingPoint" id="labTestingPoint" onchange="showTestingPointOther();">
+                                                <option value=''> <?= _('-- Select --'); ?> </option>
+                                                <option value="PMTCT(PT)"><?= _('PMTCT(PT)'); ?></option>
+                                                <option value="IWC(IC)"> <?= _('IWC(IC)'); ?> </option>
+                                                <option value="Hospitalization (HO)"> <?= _('Hospitalization (HO)'); ?>' </option>
+                                                <option value="Consultation (CS)"> <?= _('Consultation (CS)'); ?> </option>
+                                                <option value="EPI(PE)"> <?= _('EPI(PE)'); ?> </option>
+                                                <option value="other"><?= _('Other'); ?></option>
+                                            </select>
+                                            <input type="text" name="labTestingPointOther" id="labTestingPointOther" class="form-control" title="<?= _('Please specify other point of entry') ?>" placeholder="<?= _('Please specify other point of entry') ?>" style="display:none;"/> 
+                                        </td>
+                                    </tr>
                                 </table>
 
                                 <br><br>
                                 <table aria-describedby="table" class="table" aria-hidden="true">
                                     <tr>
                                         <th scope="row" colspan=4 style="border-top:#ccc 2px solid;">
-                                            <h4>Sample Information</h4>
+                                            <h4><?= _('QUALITY SAMPLE INFORMATION'); ?></h4>
                                         </th>
                                     </tr>
                                     <tr>
-                                        <th scope="row" style="width:15% !important">Sample Collection Date <span class="mandatory">*</span> </th>
+                                        <th scope="row" style="width:15% !important"><?= _('Sample Collection Date'); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="generateSampleCode();" />
+                                            <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _('Sample Collection Date'); ?>" onchange="generateSampleCode();" />
                                         </td>
                                         <th style="width:15% !important;"></th>
                                         <td style="width:35% !important;"></td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Requesting Officer</th>
+                                        <th scope="row"><?= _('Name of health personnel'); ?></th>
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Requesting Officer" />
                                         </td>
-                                        <th scope="row">Sample Requestor Phone</th>
+                                        <th scope="row"><?= _('Contact Number'); ?></th>
                                         <td>
-                                            <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" />
+                                            <input class="form-control forceNumeric" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" />
                                         </td>
                                     </tr>
-
                                 </table>
-
 
                             </div>
                         </div>
-                        <?php if ($usersService->isAllowed('eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if ($usersService->isAllowed('/eid/results/eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
-                                        <h3 class="box-title">Reserved for Laboratory Use </h3>
+                                        <h3 class="box-title"><?= _('Reserved for Laboratory Use'); ?> </h3>
                                     </div>
                                     <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
-                                            <th scope="row"><label for="">Sample Received Date </label></th>
+                                            <th scope="row"><label for=""><?= _('Sample Received Date'); ?> </label></th>
                                             <td>
                                                 <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
                                             </td>
-                                            <td><label for="labId">Lab Name </label> </td>
+                                            <td><label for="labId"><?= _('Lab Name'); ?> </label> </td>
                                             <td>
                                                 <select name="labId" id="labId" class="form-control" title="Please select Testing Lab name" style="width:100%;">
                                                     <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
                                         <tr>
-                                            <th scope="row">Is Sample Rejected?</th>
+                                            <th scope="row"><?= _('Is Sample Rejected?'); ?></th>
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">
-                                                    <option value=''> -- Select -- </option>
-                                                    <option value="yes"> Yes </option>
-                                                    <option value="no"> No </option>
+                                                <option value=''> <?= _('-- Select --'); ?> </option>
+                                                <option value="yes"> <?= _('Yes'); ?> </option>
+                                                <option value="no"> <?= _('No'); ?> </option> 
                                                 </select>
                                             </td>
 
-                                            <th scope="row" class="rejected" style="display: none;">Reason for Rejection</th>
+                                            <th scope="row" class="rejected" style="display: none;"><?= _('Reason for Rejection'); ?></th>
                                             <td class="rejected" style="display: none;">
-                                                <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please choose reason for rejection">
-                                                    <option value=''> -- Select -- </option>
+                                                <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="<?= _('Please choose reason for rejection'); ?>">
+                                                    <option value=''> <?= _('-- Select --'); ?> </option>
                                                     <?php echo $rejectionReason; ?>
                                                 </select>
                                             </td>
                                         </tr>
                                         <tr class="show-rejection rejected" style="display:none;">
-                                            <td><label for="rejectionDate">Rejection Date</label><span class="mandatory">*</span></td>
-                                            <td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
+                                            <td><label for="rejectionDate"><?= _('Rejection Date'); ?></label><span class="mandatory">*</span></td>
+                                            <td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="<?= _('Select Rejection Date'); ?>" /></td>
                                             <td></td>
                                             <td></td>
                                         </tr>
                                         <tr>
-                                            <td style="width:25%;"><label for="">Sample Test Date </label></td>
+                                            <td style="width:25%;"><label for=""><?= _('Sample Test Date'); ?> </label></td>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="<?= _("Please enter date"); ?>" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
                                             </td>
 
 
-                                            <th scope="row">Result</th>
+                                            <th scope="row"><?= _('Result'); ?></th>
                                             <td>
                                                 <select class="form-control" name="result" id="result">
-                                                    <option value=''> -- Select -- </option>
+                                                    <option value=''> <?= _('-- Select --'); ?> </option>
                                                     <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
                                                         <option value="<?php echo $eidResultKey; ?>"> <?php echo $eidResultValue; ?> </option>
                                                     <?php } ?>
@@ -474,9 +530,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th scope="row">Reviewed On</th>
-                                            <td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
-                                            <th scope="row">Reviewed By</th>
+                                            <th scope="row"><?= _('Reviewed On'); ?></th>
+                                            <td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="<?= _('Please enter the Reviewed on'); ?>" /></td>
+                                            <th scope="row"><?= _('Reviewed By'); ?></th>
                                             <td>
                                                 <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
@@ -484,11 +540,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th scope="row">Approved On</th>
-                                            <td><input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime disabled-field form-control" placeholder="Approved on" title="Please enter the Approved on" /></td>
-                                            <th scope="row">Approved By</th>
+                                            <th scope="row"><?= _('Approved On'); ?></th>
+                                            <td><input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime disabled-field form-control" placeholder="<?= _('Approved on'); ?>" title="<?= _('Please enter the Approved on'); ?>" /></td>
+                                            <th scope="row"><?= _('Approved By'); ?></th>
                                             <td>
-                                                <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
+                                                <select name="approvedBy" id="approvedBy" class="select2 form-control" title="<?= _('Please choose approved by'); ?>" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
@@ -717,6 +773,21 @@ function showArvProtocolOtherOption()
     {
         $("#motherArvProtocolOther").removeClass('isRequired');
         $("#motherArvProtocolOther").hide();
+    }
+}
+
+function showTestingPointOther()
+{
+    entryPoint = $("#labTestingPoint").val();
+    if(entryPoint=="other")
+    {
+        $("#labTestingPointOther").show();
+        $("#labTestingPointOther").addClass('isRequired');
+    }
+    else
+    {
+        $("#labTestingPointOther").removeClass('isRequired');
+        $("#labTestingPointOther").hide();
     }
 }
 

@@ -420,7 +420,7 @@ $aResult = $db->query($aQuery);
                                         <td>
                                             <input class="form-control isRequired" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" value="<?= htmlspecialchars($eidInfo['sample_requestor_phone']); ?>" />
                                         </td>
-                                        <?php if ($usersService->isAllowed('eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                                        <?php if ($usersService->isAllowed('/eid/results/eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                             <th scope="row">Sample Received Date (at Testing Lab) <span class="mandatory">*</span></th>
                                             <td>
                                                 <input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" style="width:100%;" />
@@ -431,7 +431,7 @@ $aResult = $db->query($aQuery);
                                 </table>
                             </div>
                         </div>
-                        <?php if ($usersService->isAllowed('eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if ($usersService->isAllowed('/eid/results/eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">

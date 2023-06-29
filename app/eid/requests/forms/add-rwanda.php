@@ -345,7 +345,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                             </div>
                         </div>
-                        <?php if ($usersService->isAllowed('eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if ($usersService->isAllowed('/eid/results/eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">

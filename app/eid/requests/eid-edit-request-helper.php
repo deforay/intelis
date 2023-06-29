@@ -124,6 +124,42 @@ try {
 		$_POST['motherTreatmentInitiationDate'] = null;
 	}
 
+	if (isset($_POST['childTreatmentInitiationDate']) && trim($_POST['childTreatmentInitiationDate']) != "") {
+		$childTreatmentInitiationDate = explode(" ", $_POST['childTreatmentInitiationDate']);
+		$_POST['childTreatmentInitiationDate'] = DateUtility::isoDateFormat($childTreatmentInitiationDate[0]) . " " . $childTreatmentInitiationDate[1];
+	} else {
+		$_POST['childTreatmentInitiationDate'] = null;
+	}
+
+	if (isset($_POST['nextAppointmentDate']) && trim($_POST['nextAppointmentDate']) != "") {
+		$nextAppointmentDate = explode(" ", $_POST['nextAppointmentDate']);
+		$_POST['nextAppointmentDate'] = DateUtility::isoDateFormat($nextAppointmentDate[0]) . " " . $nextAppointmentDate[1];
+	} else {
+		$_POST['nextAppointmentDate'] = null;
+	}
+
+	if (isset($_POST['childStartedCotrimDate']) && trim($_POST['childStartedCotrimDate']) != "") {
+		$nextAppointmentDate = explode(" ", $_POST['childStartedCotrimDate']);
+		$_POST['childStartedCotrimDate'] = DateUtility::isoDateFormat($childStartedCotrimDate[0]) . " " . $childStartedCotrimDate[1];
+	} else {
+		$_POST['childStartedCotrimDate'] = null;
+	}
+
+	if (isset($_POST['childStartedArtDate']) && trim($_POST['childStartedArtDate']) != "") {
+		$nextAppointmentDate = explode(" ", $_POST['childStartedArtDate']);
+		$_POST['childStartedArtDate'] = DateUtility::isoDateFormat($childStartedArtDate[0]) . " " . $childStartedArtDate[1];
+	} else {
+		$_POST['childStartedArtDate'] = null;
+	}
+
+	if (isset($_POST['dateOfWeaning']) && trim($_POST['dateOfWeaning']) != "") {
+		$nextAppointmentDate = explode(" ", $_POST['dateOfWeaning']);
+		$_POST['dateOfWeaning'] = DateUtility::isoDateFormat($dateOfWeaning[0]) . " " . $dateOfWeaning[1];
+	} else {
+		$_POST['dateOfWeaning'] = null;
+	}
+	
+
 	if (isset($_POST['newArtRegimen']) && trim($_POST['newArtRegimen']) != "") {
 		$artQuery = "SELECT art_id,art_code FROM r_vl_art_regimen where (art_code='" . $_POST['newArtRegimen'] . "' OR art_code='" . strtolower($_POST['newArtRegimen']) . "' OR art_code='" . (strtolower($_POST['newArtRegimen'])) . "')";
 		$artResult = $db->rawQuery($artQuery);
@@ -219,6 +255,10 @@ try {
 		'mother_treatment' 									=> is_array($_POST['motherTreatment']) ? implode(",", $_POST['motherTreatment']) : $_POST['motherTreatment'] ?? null,
 		'mother_regimen' 									=> (isset($_POST['motherRegimen']) && $_POST['motherRegimen'] != '') ? $_POST['motherRegimen'] :  null,
 		'mother_treatment_other' 							=> $_POST['motherTreatmentOther'] ?? null,
+		'next_appointment_date' 							=> $_POST['nextAppointmentDate'] ?? null,
+		'no_of_exposed_children' 							=> $_POST['noOfExposedChildren'] ?? null,
+		'no_of_infected_children' 							=> $_POST['noOfInfectedChildren'] ?? null,
+		'mother_arv_protocol' 								=> $_POST['motherArvProtocol'] ?? null,
 		'mother_treatment_initiation_date' 					=> $_POST['motherTreatmentInitiationDate'] ?? null,
 		'child_id' 											=> $_POST['childId'] ?? null,
 		'child_name' 										=> $_POST['childName'] ?? null,
@@ -227,6 +267,10 @@ try {
 		'child_age' 										=> $_POST['childAge'] ?? null,
 		'child_treatment' 									=> isset($_POST['childTreatment']) ? implode(",", $_POST['childTreatment']) : null,
 		'child_treatment_other' 							=> $_POST['childTreatmentOther'] ?? null,
+		'child_weight' 										=> $_POST['childWeight'] ?? null,
+		'child_prophylactic_arv' 							=> $_POST['childProphylacticArv'] ?? null,
+		'child_prophylactic_arv_other' 						=> $_POST['childProphylacticArvOther'] ?? null,
+		'child_treatment_initiation_date' 					=> $_POST['childTreatmentInitiationDate'] ?? null,
 		'mother_cd4'	 									=> $_POST['mothercd4'] ?? null,
 		'mother_vl_result' 									=> $motherVlResult,
 		'mother_hiv_status' 								=> $_POST['mothersHIVStatus'] ?? null,
@@ -235,6 +279,13 @@ try {
 		'mother_art_status' 								=> $_POST['motherArtStatus'] ?? null,
 		'mother_mtct_risk' 									=> $_POST['motherMtctRisk'] ?? null,
 		'started_art_date' 									=> $_POST['startedArtDate'] ?? null,
+		'is_child_symptomatic' 								=> $_POST['isChildSymptomatic'] ?? null,
+		'date_of_weaning' 									=> $_POST['dateOfWeaning'] ?? null,
+		'was_child_breastfed' 								=> $_POST['wasChildBreastfed'] ?? null,
+		'is_child_on_cotrim' 								=> $_POST['isChildOnCotrim'] ?? null,
+		'child_started_cotrim_date' 						=> $_POST['childStartedCotrimDate'] ?? null,
+		'child_started_art_date' 							=> $_POST['childStartedArtDate'] ?? null,
+		'sample_collection_reason' 							=> $_POST['sampleCollectionReason'] ?? null,
 		'pcr_test_performed_before' 						=> $_POST['pcrTestPerformedBefore'] ?? null,
 		'pcr_test_number' 									=> $_POST['pcrTestNumber'] ?? null,
 		'previous_pcr_result' 								=> $_POST['prePcrTestResult'] ?? null,
