@@ -25,10 +25,11 @@ class UsersService
         $this->commonService = $commonService;
     }
 
-    public function isAllowed($currentRequest): bool
+    public function isAllowed($currentRequest, $privileges = null): bool
     {
-        return once(function () use ($currentRequest) {
-            if (empty($_SESSION['privileges']) || empty($currentRequest)) {
+        return once(function () use ($currentRequest, $privileges) {
+            $privileges = $privileges ?? $_SESSION['privileges'] ?? null;
+            if (empty($privileges) || empty($currentRequest)) {
                 return false;
             }
 
