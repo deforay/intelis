@@ -4621,6 +4621,10 @@ VALUES
 (NULL, 'generic-tests-config', '/generic-tests/configuration/test-result-units/generic-test-result-units.php', 'Manage Test Result Units'),
 (NULL, 'generic-tests-config', '/generic-tests/configuration/test-methods/generic-test-methods.php', 'Manage Test Methods'),
 (NULL, 'generic-tests-config', '/generic-tests/configuration/test-categories/generic-test-categories.php', 'Manage Test Categories');
+
+UPDATE `privileges` SET `privilege_name` = '/generic-tests/results/generic-print-result.php' WHERE `privileges`.`privilege_name` like  "%generic-print-result.php";
+
+
 DELETE FROM roles_privileges_map where privilege_id not in (select privilege_id from privileges);
 UPDATE s_app_menu
 SET link = REPLACE(link, '/generic-tests/reference/', '/generic-tests/configuration/')
