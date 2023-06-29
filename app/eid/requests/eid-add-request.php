@@ -155,7 +155,7 @@ require($fileArray[$arr['vl_form']]);
             $('.ui-datepicker-calendar').show();
         });
 
-        $("#dob").datepicker({
+        $("#mothersDob").datepicker({
             changeMonth: true,
             changeYear: true,
             dateFormat: 'dd-M-yy',

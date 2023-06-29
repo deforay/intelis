@@ -46,12 +46,12 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      $rKey = '';
 }
 $pdResult = $db->query($pdQuery);
-$province = "<option value=''> -- Select -- </option>";
+$province = "<option value=''> <?= _('-- Select --'); ?> </option>";
 foreach ($pdResult as $provinceName) {
      $province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
 }
 
-$facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
+$facility = $general->generateSelectOptions($healthFacilities, null, '<?= _("-- Select --"); ?>');
 
 //regimen heading
 $artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
@@ -82,7 +82,7 @@ $sFormat = '';
      <section class="content-header">
           <h1><em class="fa-solid fa-pen-to-square"></em> <?= _('VIRAL LOAD LABORATORY REQUEST FORM'); ?> </h1>
           <ol class="breadcrumb">
-               <li><a href="/dashboard/index.php"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
+               <li><a href="/dashboard/index.php"><em class="fa-solid fa-chart-pie"></em> <?= _('Home'); ?></a></li>
                <li class="active"><?= _('Add VL Request'); ?></li>
           </ol>
      </section>
@@ -90,7 +90,7 @@ $sFormat = '';
      <section class="content">
           <div class="box box-default">
                <div class="box-header with-border">
-                    <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
+                    <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _('indicates required field'); ?> &nbsp;</div>
                </div>
                <div class="box-body">
                     <!-- form start -->
@@ -145,7 +145,7 @@ $sFormat = '';
                                                   <div class="">
                                                        <label for="district"><?= _('District'); ?> <span class="mandatory">*</span></label>
                                                        <select class="form-control isRequired" name="district" id="district" title="<?= _('Please choose a district'); ?>" style="width:100%;" onchange="getFacilities(this);">
-                                                            <option value=""> -- Select -- </option>
+                                                            <option value=""> <?= _('-- Select --'); ?> </option>
                                                        </select>
                                                   </div>
                                              </div>
@@ -226,10 +226,10 @@ $sFormat = '';
                                                   <div class="form-group">
                                                        <label for="gender"><?= _('Gender'); ?> <span class="mandatory">*</span></label><br>
                                                        <label class="radio-inline" style="margin-left:0px;">
-                                                            <input type="radio" class="isRequired" id="genderMale" name="gender" value="male" title="<?= _('Please choose gender'); ?>">Male
+                                                            <input type="radio" class="isRequired" id="genderMale" name="gender" value="male" title="<?= _('Please choose gender'); ?>"><?= _('Male'); ?>
                                                        </label>&nbsp;&nbsp;
                                                        <label class="radio-inline" style="margin-left:0px;">
-                                                            <input type="radio" id="genderFemale" name="gender" value="female" title="<?= _('Please choose gender'); ?>">Female
+                                                            <input type="radio" id="genderFemale" name="gender" value="female" title="<?= _('Please choose gender'); ?>"><?= _('Female'); ?>
                                                        </label>&nbsp;&nbsp;
                                                        <!--<label class="radio-inline" style="margin-left:0px;">
                                                        <input type="radio" class="" id="genderNotRecorded" name="gender" value="not_recorded" title="Please check gender">Not Recorded
@@ -249,10 +249,10 @@ $sFormat = '';
                                                   <div class="form-group">
                                                        <label for="patientPregnant"><?= _('Is Patient Pregnant?'); ?> <span class="mandatory">*</span></label><br>
                                                        <label class="radio-inline">
-                                                            <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="<?= _('Please check if patient is pregnant'); ?>"> Yes
+                                                            <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="<?= _('Please check if patient is pregnant'); ?>"> <?= _('Yes'); ?>
                                                        </label>
                                                        <label class="radio-inline">
-                                                            <input type="radio" class="" id="pregNo" name="patientPregnant" value="no"> No
+                                                            <input type="radio" class="" id="pregNo" name="patientPregnant" value="no"> <?= _('No'); ?>
                                                        </label>
                                                   </div>
                                              </div>
@@ -266,10 +266,10 @@ $sFormat = '';
                                                   <div class="form-group">
                                                        <label for="breastfeeding"><?= _('Is Patient Breastfeeding?'); ?> <span class="mandatory">*</span></label><br>
                                                        <label class="radio-inline">
-                                                            <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="<?= _('Please check if patient is breastfeeding'); ?>"> Yes
+                                                            <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="<?= _('Please check if patient is breastfeeding'); ?>"> <?= _('Yes'); ?>
                                                        </label>
                                                        <label class="radio-inline">
-                                                            <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no"> No
+                                                            <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no"> <?= _('No'); ?>
                                                        </label>
                                                   </div>
                                              </div>
@@ -297,7 +297,7 @@ $sFormat = '';
                                                        <div class="form-group">
                                                             <label for="specimenType"><?= _('Sample Type'); ?> <span class="mandatory">*</span></label>
                                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="<?= _('Please choose sample type'); ?>">
-                                                                 <option value=""> -- Select -- </option>
+                                                                 <option value=""> <?= _('-- Select --'); ?> </option>
                                                                  <?php
                                                                  $selected = '';
                                                                  if (count($sResult) == 1)
@@ -341,11 +341,11 @@ $sFormat = '';
                                                             <div class="form-group">
                                                                  <label for="lineOfTreatment" class="labels"><?= _('Line of Treatment'); ?> </label>
                                                                  <select class="form-control" name="lineOfTreatment" id="lineOfTreatment" title="<?= _('Line Of Treatment'); ?>">
-                                                                      <option value="">--Select--</option>
-                                                                      <option value="1">1st Line</option>
-                                                                      <option value="2">2nd Line</option>
-                                                                      <option value="3">3rd Line</option>
-                                                                      <option value="n/a">N/A</option>
+                                                                      <option value=""><?= _('--Select--'); ?></option>
+                                                                      <option value="1"><?= _('1st Line'); ?></option>
+                                                                      <option value="2"><?= _('2nd Line'); ?></option>
+                                                                      <option value="3"><?= _('3rd Line'); ?></option>
+                                                                      <option value="n/a"><?= _('N/A'); ?></option>
                                                                  </select>
                                                             </div>
                                                        </div>
@@ -359,7 +359,7 @@ $sFormat = '';
                                                             <div class="form-group">
                                                                  <label for="arvAdherence"><?= _('Reason of Request of the Viral Load'); ?></label>
                                                                  <select name="reasonForVLTesting" id="reasonForVLTesting" class="form-control" title="<?= _('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
-                                                                    <option value=""> <?= _("-- Select --"); ?> </option>
+                                                                    <option value=""> <?= _("<?= _('-- Select --'); ?>"); ?> </option>
                                                                     <?php
                                                                     foreach ($vlTestReasonResult as $tReason) {
                                                                     ?>
@@ -374,7 +374,7 @@ $sFormat = '';
                                              </div>
                                              <div class="box box-primary">
                                                   <div class="box-header with-border">
-                                                       <h3 class="box-title"><?= _('Reason of Request of the Viral Load'); ?> <span class="mandatory">*</span></h3><small> (Please pick one): (To be completed by clinician)</small>
+                                                       <h3 class="box-title"><?= _('Reason of Request of the Viral Load'); ?> <span class="mandatory">*</span></h3><small> <?= _('(Please pick one): (To be completed by clinician)'); ?></small>
                                                   </div>
                                                   <div class="box-body">
                                                        <div class="row">
@@ -382,8 +382,8 @@ $sFormat = '';
                                                                  <div class="form-group">
                                                                       <div class="col-lg-12">
                                                                            <label class="radio-inline">
-                                                                                <input type="radio" class="isRequired" id="rmTesting" name="reasonForVLTesting" value="controlVlTesting" title="Please check viral load indication testing type" onclick="showTesting('rmTesting');">
-                                                                                <strong>Control VL Testing</strong>
+                                                                                <input type="radio" class="isRequired" id="rmTesting" name="reasonForVLTesting" value="controlVlTesting" title="<?= _('Please check viral load indication testing type'); ?>" onclick="showTesting('rmTesting');">
+                                                                                <strong><?= _('Control VL Testing'); ?></strong>
                                                                            </label>
                                                                       </div>
                                                                  </div>
@@ -391,20 +391,20 @@ $sFormat = '';
                                                        </div>
                                                        <div class="row rmTesting hideTestData well" style="display:none;">
                                                             <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label">Types Of Control VL Testing</label>
+                                                                 <label class="col-lg-5 control-label"><?= _('Types Of Control VL Testing'); ?></label>
                                                                  <div class="col-lg-7">
                                         
                                                                       <select name="controlVlTestingType" id="controlVlType" class="form-control" title="<?= _('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
                                                                            <option value=""> <?= _("-- Select --"); ?> </option>
-                                                                           <option value="6 Months">6 Months</option>
-                                                                           <option value="12 Months">12 Months</option>
-                                                                           <option value="24 Months">24 Months</option>
-                                                                           <option value="36 Months(3 Years)">36 Months(3 Years)</option>
-                                                                           <option value=">= 4 years">>= 4 years</option>
-                                                                           <option value="3 months after a VL > 1000cp/ml">3 months after a VL > 1000cp/ml</option>
-                                                                           <option value="Suspected Treatment Failure">Suspected Treatment Failure</option>
-                                                                           <option value="VL Pregnant Woman">VL Pregnant Woman</option>
-                                                                           <option value="VL Breastfeeding woman">VL Breastfeeding woman</option>
+                                                                           <option value="6 Months"><?= _('6 Months'); ?></option>
+                                                                           <option value="12 Months"><?= _('12 Months'); ?></option>
+                                                                           <option value="24 Months"><?= _('24 Months'); ?></option>
+                                                                           <option value="36 Months(3 Years)"><?= _('36 Months(3 Years)'); ?></option>
+                                                                           <option value=">= 4 years"><?= _('>= 4 years'); ?></option>
+                                                                           <option value="3 months after a VL > 1000cp/ml"><?= _('3 months after a VL > 1000cp/ml'); ?></option>
+                                                                           <option value="Suspected Treatment Failure"><?= _('Suspected Treatment Failure'); ?></option>
+                                                                           <option value="VL Pregnant Woman"><?= _('VL Pregnant Woman'); ?></option>
+                                                                           <option value="VL Breastfeeding woman"><?= _('VL Breastfeeding woman'); ?></option>
                                                                       </select>
                                                                  </div>
                                                             </div>
@@ -428,8 +428,8 @@ $sFormat = '';
                                                                  <div class="col-lg-7">
                                                                  <select name="coinfectionType" id="coinfectionType" class="form-control" title="<?= _('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
                                                                            <option value=""> <?= _("-- Select --"); ?> </option>
-                                                                           <option value="Tuberculosis">Tuberculosis</option>
-                                                                           <option value="Viral Hepatitis">Viral Hepatitis</option>
+                                                                           <option value="Tuberculosis"><?= _('Tuberculosis'); ?></option>
+                                                                           <option value="Viral Hepatitis"><?= _('Viral Hepatitis'); ?></option>
                                                                     </select>
                                                                  </div>
                                                             </div>
@@ -464,7 +464,7 @@ $sFormat = '';
                                                                            <div class="col-lg-12">
                                                                                 <label class="radio-inline">
                                                                                      <input type="radio" class="" id="recencyTest" name="reasonForVLTesting" value="recency" title="Please check viral load indication testing type" onclick="showTesting('recency')">
-                                                                                     <strong>Confirmation Test for Recency</strong>
+                                                                                     <strong><?= _('Confirmation Test for Recency'); ?></strong>
                                                                                 </label>
                                                                            </div>
                                                                       </div>
@@ -476,7 +476,7 @@ $sFormat = '';
                                                   </div>
                                              </div>
                                              
-                                             <?php if ($usersService->isAllowed('updateVlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                                             <?php if ($usersService->isAllowed('/vl/results/updateVlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                                   <div class="box box-primary">
                                                        <div class="box-header with-border">
                                                             <h3 class="box-title"><?= _('Laboratory Information'); ?></h3>
@@ -487,7 +487,7 @@ $sFormat = '';
                                                                       <label for="testingPlatform" class="col-lg-5 control-label"><?= _('VL Testing Platform'); ?> </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="testingPlatform" id="testingPlatform" class="form-control" title="<?= _('Please choose VL Testing Platform'); ?>" <?php echo $labFieldDisabled; ?> onchange="hivDetectionChange();">
-                                                                                <option value="">-- Select --</option>
+                                                                                <option value=""><?= _('-- Select --'); ?></option>
                                                                                 <?php foreach ($importResult as $mName) { ?>
                                                                                      <option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>"><?php echo $mName['machine_name']; ?></option>
                                                                                 <?php } ?>
@@ -520,9 +520,9 @@ $sFormat = '';
                                                                       <label class="col-lg-5 control-label" for="noResult"><?= _('Sample Rejection'); ?> </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="noResult" id="noResult" class="form-control" title="<?= _('Please check if sample is rejected or not'); ?>">
-                                                                                <option value="">-- Select --</option>
-                                                                                <option value="yes">Yes</option>
-                                                                                <option value="no">No</option>
+                                                                                <option value=""><?=_('-- Select --'); ?></option>
+                                                                                <option value="yes"> <?= _('Yes'); ?> </option>
+                                                                                <option value="no"> <?= _('No'); ?> </option> 
                                                                            </select>
                                                                       </div>
                                                                  </div>
@@ -531,7 +531,7 @@ $sFormat = '';
                                                                       <label class="col-lg-5 control-label" for="rejectionReason"><?= _('Rejection Reason'); ?> </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="rejectionReason" id="rejectionReason" class="form-control" title="<?= _('Please choose reason'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();">
-                                                                                <option value="">-- Select --</option>
+                                                                                <option value=""><?= _('-- Select --'); ?></option>
                                                                                 <?php foreach ($rejectionTypeResult as $type) { ?>
                                                                                      <optgroup label="<?php echo ($type['rejection_type']); ?>">
                                                                                           <?php foreach ($rejectionResult as $reject) {
@@ -568,17 +568,17 @@ $sFormat = '';
                                                             <div class="col-md-6 rejectionReason" style="display:none;">
                                                                  <label class="col-lg-5 control-label labels" for="rejectionDate"><?= _('Rejection Date'); ?> </label>
                                                                  <div class="col-lg-7">
-                                                                      <input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select rejection date" />
+                                                                      <input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="<?= _('Select Rejection Date'); ?>" title="Please select rejection date" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6 vlResult">
                                                                  <label class="col-lg-5 control-label" for="vlLog"><?= _('Viral Load (Log)'); ?> </label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control" id="vlLog" name="vlLog" placeholder="Viral Load Log" title="Please enter viral load log" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this);" />
+                                                                      <input type="text" class="form-control" id="vlLog" name="vlLog" placeholder="<?= _('Viral Load Log'); ?>" title="<?= _('Please enter viral load log'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this);" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label" for="reviewedOn">Reviewed On </label>
+                                                                 <label class="col-lg-5 control-label" for="reviewedOn"><?= _('Reviewed On'); ?> </label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
                                                                  </div>
@@ -586,16 +586,16 @@ $sFormat = '';
                                                        </div>
                                                        <div class="row">
                                                             <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label" for="reviewedBy">Reviewed By </label>
+                                                                 <label class="col-lg-5 control-label" for="reviewedBy"><?= _('Reviewed By'); ?> </label>
                                                                  <div class="col-lg-7">
-                                                                      <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
-                                                                           <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+                                                                      <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="<?= _('Please choose reviewed by'); ?>" style="width: 100%;">
+                                                                           <?= $general->generateSelectOptions($userInfo, null, '<?= _("-- Select --"); ?>'); ?>
                                                                       </select>
                                                                  </div>
                                                             </div>
 
                                                             <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On </label>
+                                                                 <label class="col-lg-5 control-label" for="approvedOnDateTime"><?= _('Approved On'); ?> </label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime form-control" placeholder="Approved on" title="Please enter the Approved on" />
                                                                  </div>
@@ -603,10 +603,10 @@ $sFormat = '';
                                                        </div>
                                                        <div class="row">
                                                             <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label" for="approvedBy">Approved By </label>
+                                                                 <label class="col-lg-5 control-label" for="approvedBy"><?= _('Approved By'); ?> </label>
                                                                  <div class="col-lg-7">
-                                                                      <select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" <?php echo $labFieldDisabled; ?>>
-                                                                           <option value="">-- Select --</option>
+                                                                      <select name="approvedBy" id="approvedBy" class="form-control" title="<?= _('Please choose approved by'); ?>" <?php echo $labFieldDisabled; ?>>
+                                                                           <option value=""><?= _('-- Select --'); ?></option>
                                                                            <?php foreach ($userResult as $uName) { ?>
                                                                                 <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
                                                                            <?php } ?>
@@ -614,7 +614,7 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label" for="labComments">Lab Tech. Comments </label>
+                                                                 <label class="col-lg-5 control-label" for="labComments"><?= _('Lab Tech. Comments'); ?> </label>
                                                                  <div class="col-lg-7">
                                                                       <textarea class="form-control" name="labComments" id="labComments" placeholder="Lab comments" <?php echo $labFieldDisabled; ?>></textarea>
                                                                  </div>
@@ -644,7 +644,7 @@ $sFormat = '';
                                                   </div> <!-- /printer_select -->
                                              <?php } ?>
                                              <!-- BARCODESTUFF END -->
-                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
+                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;"><?= _('Save'); ?></a>
                                              <input type="hidden" name="saveNext" id="saveNext" />
                                              <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
                                                   <input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="<?php echo $sFormat; ?>" />
@@ -652,8 +652,8 @@ $sFormat = '';
                                              <?php } ?>
                                              <input type="hidden" name="vlSampleId" id="vlSampleId" value="" />
                                              <input type="hidden" name="provinceId" id="provinceId" />
-                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;">Save and Next</a>
-                                             <a href="vlRequest.php" class="btn btn-default"> Cancel</a>
+                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;"><?= _('Save and Next'); ?></a>
+                                             <a href="vlRequest.php" class="btn btn-default"> <?= _('Cancel');?></a>
                                         </div>
                                         <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
                                         <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
@@ -826,7 +826,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          if (data != "") {
                               details = data.split("###");
                               $("#district").html(details[1]);
-                              $("#fName").html("<option data-code='' data-emails='' data-mobile-nos='' data-contact-person='' value=''> -- Select -- </option>");
+                              $("#fName").html("<option data-code='' data-emails='' data-mobile-nos='' data-contact-person='' value=''> <?= _('-- Select --'); ?> </option>");
                               $(".facilityDetails").hide();
                               $(".facilityEmails").html('');
                               $(".facilityMobileNumbers").html('');
@@ -839,7 +839,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                provinceName = true;
                facilityName = true;
                $("#province").html("<?php echo $province; ?>");
-               $("#district").html("<option value=''> -- Select -- </option>");
+               $("#district").html("<option value=''> <?= _('-- Select --'); ?> </option>");
                $("#fName").html("<?php echo $facility; ?>");
                $("#fName").select2("val", "");
           }

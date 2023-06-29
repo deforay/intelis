@@ -27,23 +27,29 @@ class CommonService
 
     public function generateRandomString($length = 32): string
     {
-        $randomString = '';
-        for ($i = 0; $i < $length; $i++) {
-            $number = random_int(0, 36);
-            $character = base_convert($number, 10, 36);
-            $randomString .= $character;
+        // Ensure $length is always even
+        if ($length % 2 != 0) {
+            $length++;
         }
-        return $randomString;
+
+        $attempts = 0;
+        while ($attempts < 3) {
+            try {
+                return bin2hex(random_bytes($length / 2));
+            } catch (SystemException $e) {
+                error_log($e->getMessage());
+                $attempts++;
+            }
+        }
+        throw new SystemException('Could not generate a random string');
     }
+
 
     // Returns a UUID format string
     public function generateUUID($attachExtraString = true): string
     {
         $uuid = (Uuid::uuid4())->toString();
-
-        if ($attachExtraString === true) {
-            $uuid .= "-" . $this->generateRandomString(6);
-        }
+        $uuid .= $attachExtraString ? '-' . $this->generateRandomString(6) : '';
         return $uuid;
     }
 
@@ -68,22 +74,6 @@ class CommonService
 
             return $ipAddress;
         });
-    }
-
-
-    //This will return a hex token
-    public function generateToken($length = 32): string
-    {
-        try {
-            // Ensure $length is always even
-            if ($length % 2 != 0) {
-                $length++;
-            }
-
-            return bin2hex(random_bytes($length / 2));
-        } catch (Exception $e) {
-            throw new SystemException($e->getMessage(), $e->getCode(), $e);
-        }
     }
 
     // get data from the system_config table from database
