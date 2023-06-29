@@ -180,7 +180,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 												<option value="">-- Select --</option>
 												<option value="art" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'art') ? "selected='selected'" : ""; ?>>ART</option>
 												<option value="opd" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'opd') ? "selected='selected'" : ""; ?>>OPD</option>
-												<option value="tb <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'tb') ? "selected='selected'" : ""; ?>">TB</option>
+												<option value="tb" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'tb') ? "selected='selected'" : ""; ?>">TB</option>
 												<option value="pmtct" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'pmtct') ? "selected='selected'" : ""; ?>>PMTCT</option>
 												<option value="medical" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'medical') ? "selected='selected'" : ""; ?>>Medical</option>
 												<option value="paediatric" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'paediatric') ? "selected='selected'" : ""; ?>>Paediatric</option>
@@ -358,7 +358,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 								</table>
 							</div>
 						</div>
-						<?php if ($usersService->isAllowed('tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
+						<?php if ($usersService->isAllowed('tb/results/tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
 							<?php // if (false) {
 							?>
 							<div class="box box-primary">

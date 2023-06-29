@@ -281,7 +281,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										</td>
 										<td style="float: left;text-align: center;">
 											<div class="follow-up hide-reasons" style="display: none;">
-												<input type="text" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][value]" placeholder="Enter the follow up" title="Please enter the follow up">
+												<input type="text" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][followup][value]" placeholder="Enter the follow up" title="Please enter the follow up">
 											</div>
 										</td>
 									</tr>
@@ -339,7 +339,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 								</table>
 							</div>
 						</div>
-						<?php if ($usersService->isAllowed('tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
+						<?php if ($usersService->isAllowed('tb/results/tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
 							<?php // if (false) {
 							?>
 							<div class="box box-primary">
