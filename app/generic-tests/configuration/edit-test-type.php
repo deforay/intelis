@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
-use App\Services\CommonService;
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -14,7 +14,7 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var GenericTestsService $generic */
 $generic = ContainerRegistry::get(GenericTestsService::class);
 
-/** @var \MysqliDb $db */
+/** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
 // Sanitized values from $request object
@@ -23,10 +23,10 @@ $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
-$tQuery = "SELECT * from r_test_types where test_type_id=$id";
-$testTypeInfo = $db->query($tQuery);
-$testAttr = json_decode($testTypeInfo[0]['test_form_config'], true);
-$testResultAttribute = json_decode($testTypeInfo[0]['test_results_config'], true);
+$tQuery = "SELECT * from r_test_types WHERE test_type_id=?";
+$testTypeInfo = $db->rawQueryOne($tQuery, [$id]);
+$testAttr = json_decode($testTypeInfo['test_form_config'], true);
+$testResultAttribute = json_decode($testTypeInfo['test_results_config'], true);
 
 // $stQuery = "SELECT * from r_generic_sample_types where sample_type_status='active'";
 $testMethodInfo = $general->getDataByTableAndFields("r_generic_test_methods", array("test_method_id", "test_method_name"), true, "test_method_status='active'");
@@ -111,8 +111,8 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 								<div class="form-group">
 									<label for="testStandardName" class="col-lg-4 control-label"><?php echo _("Test Standard Name"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="testStandardName" name="testStandardName" placeholder='<?php echo _("Test Standard Name"); ?>' title='<?php echo _("Please enter standard name"); ?>' value="<?php echo $testTypeInfo[0]['test_standard_name']; ?>" onblur="checkNameValidation('r_test_types','test_standard_name',this,'<?php echo "test_type_id##" . $testTypeInfo[0]['test_type_id']; ?>','<?php echo _("This test standard name that you entered already exists.Try another name"); ?>',null)" />
-										<input type="hidden" name="testTypeId" id="testTypeId" value="<?php echo base64_encode($testTypeInfo[0]['test_type_id']); ?>" />
+										<input type="text" class="form-control isRequired" id="testStandardName" name="testStandardName" placeholder='<?php echo _("Test Standard Name"); ?>' title='<?php echo _("Please enter standard name"); ?>' value="<?php echo $testTypeInfo['test_standard_name']; ?>" onblur="checkNameValidation('r_test_types','test_standard_name',this,'<?php echo "test_type_id##" . $testTypeInfo['test_type_id']; ?>','<?php echo _("This test standard name that you entered already exists.Try another name"); ?>',null)" />
+										<input type="hidden" name="testTypeId" id="testTypeId" value="<?php echo base64_encode($testTypeInfo['test_type_id']); ?>" />
 									</div>
 								</div>
 							</div>
@@ -121,7 +121,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 								<div class="form-group">
 									<label for="testGenericName" class="col-lg-4 control-label"><?php echo _("Test Generic Name"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="testGenericName" name="testGenericName" placeholder='<?php echo _("Test Generic Name"); ?>' title='<?php echo _("Please enter the test generic name"); ?>' value="<?php echo $testTypeInfo[0]['test_generic_name']; ?>" onblur="checkNameValidation('r_test_types','test_generic_name',this,'<?php echo "test_type_id##" . $testTypeInfo[0]['test_type_id']; ?>','<?php echo _("This test generic name that you entered already exists.Try another name"); ?>',null)" />
+										<input type="text" class="form-control isRequired" id="testGenericName" name="testGenericName" placeholder='<?php echo _("Test Generic Name"); ?>' title='<?php echo _("Please enter the test generic name"); ?>' value="<?php echo $testTypeInfo['test_generic_name']; ?>" onblur="checkNameValidation('r_test_types','test_generic_name',this,'<?php echo "test_type_id##" . $testTypeInfo['test_type_id']; ?>','<?php echo _("This test generic name that you entered already exists.Try another name"); ?>',null)" />
 									</div>
 								</div>
 							</div>
@@ -132,7 +132,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 								<div class="form-group">
 									<label for="testShortCode" class="col-lg-4 control-label"><?php echo _("Test Short Code"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="testShortCode" name="testShortCode" placeholder='<?php echo _("Test Short Code"); ?>' title='<?php echo _("Please enter short code"); ?>' onblur="checkNameValidation('r_test_types','test_short_code',this,'<?php echo "test_type_id##" . $testTypeInfo[0]['test_type_id']; ?>','<?php echo _("This test short code that you entered already exists.Try another code"); ?>',null)" value="<?php echo $testTypeInfo[0]['test_short_code']; ?>" />
+										<input type="text" class="form-control isRequired" id="testShortCode" name="testShortCode" placeholder='<?php echo _("Test Short Code"); ?>' title='<?php echo _("Please enter short code"); ?>' onblur="checkNameValidation('r_test_types','test_short_code',this,'<?php echo "test_type_id##" . $testTypeInfo['test_type_id']; ?>','<?php echo _("This test short code that you entered already exists.Try another code"); ?>',null)" value="<?php echo $testTypeInfo['test_short_code']; ?>" />
 									</div>
 								</div>
 							</div>
@@ -141,7 +141,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 								<div class="form-group">
 									<label for="testLoincCode" class="col-lg-4 control-label"><?php echo _("LOINC Codes"); ?></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="testLoincCode" name="testLoincCode" placeholder='<?php echo _("Test LOINC Code"); ?>' title='<?php echo _("Please enter test loinc code"); ?>' value="<?php echo $testTypeInfo[0]['test_loinc_code']; ?>" onblur="checkNameValidation('r_test_types','test_loinc_code',this,'<?php echo "test_type_id##" . $testTypeInfo[0]['test_type_id']; ?>','<?php echo _("This test loinc code that you entered already exists.Try another code"); ?>',null)" value="<?php echo $testTypeInfo[0]['test_loinc_code']; ?>" />
+										<input type="text" class="form-control" id="testLoincCode" name="testLoincCode" placeholder='<?php echo _("Test LOINC Code"); ?>' title='<?php echo _("Please enter test loinc code"); ?>' value="<?php echo $testTypeInfo['test_loinc_code']; ?>" onblur="checkNameValidation('r_test_types','test_loinc_code',this,'<?php echo "test_type_id##" . $testTypeInfo['test_type_id']; ?>','<?php echo _("This test loinc code that you entered already exists.Try another code"); ?>',null)" value="<?php echo $testTypeInfo['test_loinc_code']; ?>" />
 									</div>
 								</div>
 							</div>
@@ -162,7 +162,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 									<label for="testCategory" class="col-lg-4 control-label"><?php echo _("Test Category"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" name='testCategory' id='testCategory' title="<?php echo _('Please select the test categories'); ?>">
-											<?= $general->generateSelectOptions($categoryInfo, $testTypeInfo[0]['test_category'], '-- Select --') ?>
+											<?= $general->generateSelectOptions($categoryInfo, $testTypeInfo['test_category'], '-- Select --') ?>
 										</select>
 									</div>
 								</div>
@@ -230,8 +230,8 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 									<label for="status" class="col-lg-4 control-label"><?php echo _("Status"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select class="form-control isRequired" name='status' id='status' title="<?php echo _('Please select the status'); ?>">
-											<option value="active" <?php echo ($testTypeInfo[0]['test_status'] == 'active') ? "selected='selected'" : "" ?>><?php echo _("Active"); ?></option>
-											<option value="inactive" <?php echo ($testTypeInfo[0]['test_status'] == 'inactive') ? "selected='selected'" : "" ?>><?php echo _("Inactive"); ?></option>
+											<option value="active" <?php echo ($testTypeInfo['test_status'] == 'active') ? "selected='selected'" : "" ?>><?php echo _("Active"); ?></option>
+											<option value="inactive" <?php echo ($testTypeInfo['test_status'] == 'inactive') ? "selected='selected'" : "" ?>><?php echo _("Inactive"); ?></option>
 										</select>
 									</div>
 								</div>

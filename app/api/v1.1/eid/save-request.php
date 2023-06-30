@@ -129,7 +129,7 @@ try {
             if (!empty($province)) {
                 $data['provinceId'] = $province[0];
             }
-            $data['provinceId'] = $general->getValueByName($data['provinceId'], 'geo_name', 'geographical_divisions', 'geo_id', true);
+            $data['provinceId'] = $general->getValueByName($data['provinceId'], 'geo_name', 'geographical_divisions', 'geo_id');
         }
         if (!is_numeric($data['implementingPartner'])) {
             $data['implementingPartner'] = $general->getValueByName($data['implementingPartner'], 'i_partner_name', 'r_implementation_partners', 'i_partner_id');
