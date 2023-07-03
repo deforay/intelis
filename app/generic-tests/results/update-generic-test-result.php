@@ -218,7 +218,7 @@ if (!empty($patientFullName)) {
 } else {
     $patientFullName = '';
 }
-
+$testResultUnits = $genericTestsService->getTestResultUnit($genericResultInfo['test_type']);
 
 ?>
 <style>
@@ -849,6 +849,8 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                                         <th scope="row" class="text-center">Date of Testing</th>
                                                         <th scope="row" class="text-center">Test Platform/Test Kit</th>
                                                         <th scope="row" class="text-center">Test Result</th>
+                                                        <th scope="row" class="text-center testResultUnit">Test Result Unit</th>
+                                                        <th scope="row" class="text-center">Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="testKitNameTable">
@@ -897,14 +899,20 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                                                     </select>
                                                                 </td>
                                                                 <td>
-                                                                    <input type="text" id="testResult<?= ($indexKey + 1); ?>" value="<?php echo $rows['result']; ?>" name="testResult[]" class="form-control" value="<?php echo $genericResultInfo['result']; ?>" placeholder="Enter result" title="Please enter final results">
-                                                                    <!-- <select class="form-control test-result test-name-table-input result-focus" name="testResult[]" id="testResult< ?= ($indexKey + 1); ?>" title="Please select the result for row < ?= ($indexKey + 1); ?>">
-																				<option value=''> -- Select -- </option>
-																				< ?php foreach ($genericResults as $genResultKey => $genResultValue) { ?>
-																					<option value="< ?php echo $genResultKey; ?>" < ?php echo ($rows['result'] == $genResultKey) ? "selected='selected'" : ""; ?>> < ?php echo $genResultValue; ?> </option>
-																				< ?php } ?>
-																			</select> -->
-                                                                </td>
+																		<input type="text" id="testResult<?= ($indexKey + 1); ?>" value="<?php echo $rows['result']; ?>" name="testResult[]" class="form-control result-focus" value="<?php echo $genericResultInfo['result']; ?>" placeholder="Enter result" title="Please enter final results">
+																	</td>
+																	<td class="testResultUnit">
+																		<select class="form-control resultUnit" id="testResultUnit<?= ($indexKey + 1); ?>" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+																			<option value="">--Select--</option>
+																			<?php
+																			foreach ($testResultUnits as $unit) {
+																			?>
+																				<option value="<?php echo $unit['unit_id']; ?>" <?php echo (isset($rows['result_unit']) && $rows['result_unit'] == $unit['unit_id']) ? "selected='selected'" : ""; ?>><?php echo $unit['unit_name']; ?></option>
+																			<?php
+																			}
+																			?>
+																		</select>
+																	</td>
                                                                 <td style="vertical-align:middle;text-align: center;width:100px;">
                                                                     <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
                                                                     <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode($rows['test_id']); ?>');"><em class="fa-solid fa-minus"></em></a>
@@ -934,11 +942,20 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                                                 </select>
                                                             </td>
                                                             <td>
-                                                                <input type="text" id="testResult<?= ($indexKey + 1); ?>" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
-                                                                <!-- <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult1" title="Please select the result for row 1">
-                                                                                               <?= $general->generateSelectOptions($genericResults, null, '-- Select --'); ?>
-                                                                                          </select> -->
-                                                            </td>
+																	<input type="text" id="testResult<?= ($indexKey + 1); ?>" name="testResult[]" class="form-control result-focus" placeholder="Enter result" title="Please enter final results">
+																</td>
+																<td class="testResultUnit">
+																	<select class="form-control" id="testResultUnit<?= ($indexKey + 1); ?>" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+																		<option value="">--Select--</option>
+																		<?php
+																		foreach ($testResultUnits as $unit) {
+																		?>
+																			<option value="<?php echo $unit['unit_id']; ?>"><?php echo $unit['unit_name']; ?></option>
+																		<?php
+																		}
+																		?>
+																	</select>
+																</td>
                                                             <td style="vertical-align:middle;text-align: center;width:100px;">
                                                                 <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
                                                                 <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
@@ -949,15 +966,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                                     ?>
                                                 </tbody>
                                                 <tfoot id="resultSection">
-                                                    <tr>
-                                                        <th scope="row" colspan="4" class="text-right final-result-row">Final Result <br><br />Result Interpretation</th>
-                                                        <td id="result-sections">
-                                                            <input type="text" id="result" name="result" class="form-control result-text" value="" placeholder="Enter final result" title="Please enter final results" onchange="updateInterpretationResult(this);" autocomplete="off">
-                                                            <br>
-                                                            <input type="text" class="form-control" id="resultInterpretation" name="resultInterpretation" value="<?php echo $genericResultInfo['final_result_interpretation']; ?>">
-                                                            <input type="hidden" id="resultType" name="resultType" class="form-control result-text" value="quantitative">
-                                                        </td>
-                                                    </tr>
+                                                    
                                                 </tfoot>
                                             </table>
                                         </div>
@@ -1752,7 +1761,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                         $("#labSection").html(data.labSection);
                     }
                     if (typeof(data.result) != "undefined" && data.result !== null && data.result.length > 0) {
-                        $("#result-sections").html(data.result);
+                        $("#resultSection").html(data.result);
                     } else {
                         $('#resultSection').hide()
                     }
@@ -1780,6 +1789,13 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                         width: '100%',
                         placeholder: "<?php echo _("Select any one of the option"); ?>"
                     });
+                    if($('#resultType').val() == 'qualitative'){
+						$('.final-result-row').attr('colspan',4)
+						$('.testResultUnit').hide();
+					}else{
+						$('.final-result-row').attr('colspan',5)
+						$('.testResultUnit').show();
+					}
                 });
         } else {
             removeDynamicForm();
@@ -1829,6 +1845,17 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
             <td>
                <input type="text" id="testResult${testCounter}" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
             </td>
+            <td class="testResultUnit">
+            <select class="form-control" id="testResultUnit${testCounter}" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+					<option value="">--Select--</option>
+					<?php
+					foreach ($testResultUnits as $unit) {
+					?>
+					<option value="<?php echo $unit['unit_id']; ?>"><?php echo $unit['unit_name']; ?></option>
+					<?php
+					}
+					?>
+			</select>
             <td style="vertical-align:middle;text-align: center;width:100px;">
                 <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><em class="fa-solid fa-plus"></em></a>&nbsp;
                 <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
@@ -1882,7 +1909,13 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
         if ($('.kitlabels').is(':visible') == true) {
             $('.kitlabels').show();
         }
-
+        if($('#resultType').val() == 'qualitative'){
+            $('.final-result-row').attr('colspan',4)
+            $('.testResultUnit').hide();
+        }else{
+            $('.final-result-row').attr('colspan',5)
+            $('.testResultUnit').show();
+        }
     }
 
     function removeTestRow(el) {

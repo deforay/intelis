@@ -17,10 +17,7 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/** @var SystemService $systemService */
-$systemService = ContainerRegistry::get(SystemService::class);
-
-$activeTestModules = $systemService->getActiveTestModules();
+$activeModules = SystemService::getActiveModules();
 
 
 /** @var GeoLocationsService $geolocationService */
@@ -29,8 +26,7 @@ $state = $geolocationService->getProvinces("yes");
 ?>
 <style>
   select {
-    width: 400px;
-    !important
+    width: 400px !important
   }
 
   .select2-element {
@@ -88,19 +84,19 @@ $state = $geolocationService->getProvinces("yes");
                 <td>
                   <select id="testType" name="testType" onchange="return checkFacilityType();" class="form-control select2-element" placeholder="<?php echo _('Please select the Test types'); ?>">
                     <option value="">-- Choose Test Type--</option>
-                    <?php if (!empty($activeTestModules) && in_array('vl', $activeTestModules)) { ?>
+                    <?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
                       <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'vl') ? "selected='selected'" : ""; ?> value="vl"><?php echo _("Viral Load"); ?></option>
                     <?php }
-                    if (!empty($activeTestModules) && in_array('eid', $activeTestModules)) { ?>
+                    if (!empty($activeModules) && in_array('eid', $activeModules)) { ?>
                       <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'eid') ? "selected='selected'" : ""; ?> value="eid"><?php echo _("Early Infant Diagnosis"); ?></option>
                     <?php }
-                    if (!empty($activeTestModules) && in_array('covid19', $activeTestModules)) { ?>
+                    if (!empty($activeModules) && in_array('covid19', $activeModules)) { ?>
                       <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'covid19') ? "selected='selected'" : ""; ?> value="covid19"><?php echo _("Covid-19"); ?></option>
                     <?php }
-                    if (!empty($activeTestModules) && in_array('hepatitis', $activeTestModules)) { ?>
+                    if (!empty($activeModules) && in_array('hepatitis', $activeModules)) { ?>
                       <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'hepatitis') ? "selected='selected'" : ""; ?> value='hepatitis'><?php echo _("Hepatitis"); ?></option>
                     <?php }
-                    if (!empty($activeTestModules) && in_array('tb', $activeTestModules)) { ?>
+                    if (!empty($activeModules) && in_array('tb', $activeModules)) { ?>
                       <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'tb') ? "selected='selected'" : ""; ?> value='tb'><?php echo _("TB"); ?></option>
                     <?php } ?>
                   </select>

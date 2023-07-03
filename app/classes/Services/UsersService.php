@@ -106,8 +106,8 @@ class UsersService
         ];
 
         if (
-            isset($this->applicationConfig['modules']['genericTests']) &&
-            $this->applicationConfig['modules']['genericTests'] === true
+            isset($this->applicationConfig['modules']['generic-tests']) &&
+            $this->applicationConfig['modules']['generic-tests'] === true
         ) {
             $sharedGenericPrivileges = [
                 '/batch/delete-batch.php?type=generic-tests'              => '/batch/edit-batch.php?type=generic-tests',

@@ -53,7 +53,7 @@ try {
     }
 
     // GERNERIC TEST RESULTS
-    if (isset($systemConfig['modules']['genericTests']) && $systemConfig['modules']['genericTests'] === true) {
+    if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']['generic-tests'] === true) {
 
         $genericQuery = "SELECT generic.*, a.user_name as 'approved_by_name'
                     FROM `form_generic` AS generic

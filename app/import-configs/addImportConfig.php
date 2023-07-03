@@ -21,10 +21,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $vlsmSystemConfig = $general->getSystemConfig();
 $labNameList = $facilitiesService->getTestingLabs();
 
-/** @var SystemService $systemService */
-$systemService = ContainerRegistry::get(SystemService::class);
-
-$activeTestModules = $systemService->getActiveTestModules();
+$activeModules = SystemService::getActiveModules();
 
 $userList = $usersService->getAllUsers(null, null, 'drop-down');
 ?>
@@ -90,22 +87,22 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 									<label for="supportedTests" class="col-lg-4 control-label"><?php echo _("Supported Tests"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<select multiple class="form-control" id="supportedTests" name="supportedTests[]">
-											<?php if (!empty($activeTestModules) && in_array('vl', $activeTestModules)) { ?>
+											<?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
 												<option value='vl'><?php echo _("Viral Load"); ?></option>
 											<?php }
-											if (!empty($activeTestModules) && in_array('eid', $activeTestModules)) { ?>
+											if (!empty($activeModules) && in_array('eid', $activeModules)) { ?>
 												<option value='eid'><?php echo _("EID"); ?></option>
 											<?php }
-											if (!empty($activeTestModules) && in_array('covid19', $activeTestModules)) { ?>
+											if (!empty($activeModules) && in_array('covid19', $activeModules)) { ?>
 												<option value='covid19'><?php echo _("Covid-19"); ?></option>
 											<?php }
-											if (!empty($activeTestModules) && in_array('hepatitis', $activeTestModules)) { ?>
+											if (!empty($activeModules) && in_array('hepatitis', $activeModules)) { ?>
 												<option value='hepatitis'><?php echo _("Hepatitis"); ?></option>
 											<?php }
-											if (!empty($activeTestModules) && in_array('tb', $activeTestModules)) { ?>
+											if (!empty($activeModules) && in_array('tb', $activeModules)) { ?>
 												<option value='tb'><?php echo _("TB"); ?></option>
 											<?php }
-											if (!empty($activeTestModules) && in_array('genericTests', $activeTestModules)) { ?>
+											if (!empty($activeModules) && in_array('generic-tests', $activeModules)) { ?>
 												<option value='generic-tests'><?php echo _("Lab Tests"); ?></option>
 											<?php } ?>
 										</select>
@@ -308,7 +305,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder='<?php echo _("No of Calibrators in TB"); ?>' title='<?php echo _("Please enter No of Calibrators in TB"); ?>' /></td>
 											</tr>
 										<?php }
-										if (SYSTEM_CONFIG['modules']['genericTests']) { ?>
+										if (SYSTEM_CONFIG['modules']['generic-tests']) { ?>
 											<tr id="generic-testsTable" class="ctlCalibrator">
 												<td align="left" style="text-align:center;"><?php echo _("Lab Tests"); ?><input type="hidden" name="testType[]" id="testType1" value="generic-tests" /></td>
 												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder='<?php echo _("No of In-House Controls in Lab Tests"); ?>' title='<?php echo _("Please enter No of In-House Controls in Lab Tests"); ?>' /></td>

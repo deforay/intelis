@@ -115,3 +115,19 @@ form table tr td>label,
     background-color: #3C8DBC;
     outline: 0 none;
 }
+
+/* .main-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    overflow-y: auto;
+} */
+
+
+.main-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    padding-right: 0;
+    overflow-y: auto;
+}

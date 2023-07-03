@@ -516,7 +516,11 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 </select>
                                             </td>
                                             <th scope="row">Authorized By</th>
-                                            <td><input type="text" value="<?php echo $covid19Info['authorized_by']; ?>" name="authorizedBy" id="authorizedBy" class="disabled-field form-control isRequired" placeholder="Authorized By" title="Please enter te Authorized By" /></td>
+                                            <td>
+                                                <select name="authorizedBy" id="authorizedBy" class="select2 form-control isRequired" title="Please choose authorized by" style="width: 100%;">
+                                                    <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['authorized_by'], '-- Select --'); ?>
+                                                </select>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <th scope="row">Authorized on</th>

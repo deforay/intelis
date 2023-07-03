@@ -855,7 +855,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 																		<input type="text" id="testResult<?= ($indexKey + 1); ?>" value="<?php echo $rows['result']; ?>" name="testResult[]" class="form-control result-focus" value="<?php echo $genericResultInfo['result']; ?>" placeholder="Enter result" title="Please enter final results">
 																	</td>
 																	<td class="testResultUnit">
-																		<select class="form-control" id="testResultUnit<?= ($indexKey + 1); ?>" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+																		<select class="form-control resultUnit" id="testResultUnit<?= ($indexKey + 1); ?>" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
 																			<option value="">--Select--</option>
 																			<?php
 																			foreach ($testResultUnits as $unit) {
@@ -918,12 +918,12 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 														<?php } ?>
 													</tbody>
 													<tfoot id="resultSection">
-														<tr>
-															<th scope="row" colspan="5" class="text-right final-result-row">Final Result<br><br><span class="testResultUnit">Test Result Unit<br><br></span>Result Interpretation</th>
+														<!-- <tr>
+															<th scope="row" colspan="4" class="text-right final-result-row">Final Result<br><br><span class="testResultUnit">Test Result Unit<br><br></span>Result Interpretation</th>
 															<td id="result-sections" class="resultInputContainer">
 
 															</td>
-														</tr>
+														</tr> -->
 													</tfoot>
 												</table>
 											</div>
@@ -1737,7 +1737,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 						$("#labSection").html(data.labSection);
 					}
 					if (typeof(data.result) != "undefined" && data.result !== null && data.result.length > 0) {
-						$("#result-sections").html(data.result);
+						$("#resultSection").html(data.result);
 					} else {
 						$('#resultSection').hide();
 					}
@@ -1770,12 +1770,12 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 						placeholder: "<?php echo _("Select any one of the option"); ?>"
 					});
 					if($('#resultType').val() == 'qualitative'){
-                              $('.testResultUnit').hide();
-                              $(".final-result-row").attr('colspan',4);
-                         }else{
-                              $('.testResultUnit').show();
-                              $(".final-result-row").attr('colspan',5);
-                         }
+						$('.final-result-row').attr('colspan',4)
+						$('.testResultUnit').hide();
+					}else{
+						$('.final-result-row').attr('colspan',5)
+						$('.testResultUnit').show();
+					}
 				});
 		} else {
 			removeDynamicForm();
@@ -1901,7 +1901,13 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 		if ($('.kitlabels').is(':visible') == true) {
 			$('.kitlabels').show();
 		}
-
+		if($('#resultType').val() == 'qualitative'){
+			$('.final-result-row').attr('colspan',4)
+			$('.testResultUnit').hide();
+		}else{
+			$('.final-result-row').attr('colspan',5)
+			$('.testResultUnit').show();
+		}
 	}
 
 	function removeTestRow(el) {
