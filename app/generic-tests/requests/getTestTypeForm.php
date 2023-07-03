@@ -232,7 +232,7 @@ if (!empty($testResultsAttribute)) {
             }
         }
     }
-    $resultSection .= '<br> <select class="form-control resultUnit" id="finalTestResultUnit" name="finalTestResultUnit" placeholder="Please Enter test result unit" title="Please Enter test result unit"><option value="">--Select--</option>';
+    $resultSection .= '<br> <select class="form-control testResultUnit resultUnit" id="finalTestResultUnit" name="finalTestResultUnit" placeholder="Please Enter test result unit" title="Please Enter test result unit"><option value="">--Select--</option>';
     $selected ="";
         foreach ($testResultUnits as $unit) {
         if(isset($_POST['resultUnit'])==$unit['unit_id'])
