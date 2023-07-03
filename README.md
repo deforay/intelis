@@ -19,7 +19,7 @@ If you are using Ubuntu 22.04 (recommended), then you can find setup instruction
 * Open phpMyAdmin or any MySQL client and create a blank database called `vlsm`
 * Import the [init.sql file from sql folder](./sql/init.sql) into the blank database.
 * Copy the file configs/config.production.dist.php to configs/config.production.php
-* Enter Database User, Password, DB Name etc. 
+* Enter Database User, Password, DB Name etc.
 
 ```php
 // config.production.php
@@ -41,6 +41,7 @@ $systemConfig['database']['charset']  = 'utf8mb4';
 $systemConfig['modules']['vl'] = true;
 $systemConfig['modules']['eid'] = true;
 $systemConfig['modules']['covid19'] = false;
+$systemConfig['modules']['generic-tests'] = false;
 $systemConfig['modules']['hepatitis'] = false;
 $systemConfig['modules']['tb'] = false;
 ```
@@ -48,12 +49,12 @@ $systemConfig['modules']['tb'] = false;
 * Next we will set up virtual host for this application. You can find many guides online on this topic. For example to set up on Ubuntu you can follow this guide : [https://www.digitalocean.com/community/tutorials/how-to-set-up-apache-virtual-hosts-on-ubuntu-20-04](https://www.digitalocean.com/community/tutorials/how-to-set-up-apache-virtual-hosts-on-ubuntu-20-04)
 * Before we set up the virtual host, ensure that the apache rewrite module is enabled in your Apache webserver settings.
 * Edit your computer's hosts file to make an entry for this virtual host name.
-* Next we create a virtual host pointing to the root folder of the source code. You can see an example below (assuming the full path to VLSM is `/var/www/vlsm`) : 
+* Next we create a virtual host pointing to the root folder of the source code. You can see an example below (assuming the full path to VLSM is `/var/www/vlsm`) :
 
 ```apache
 <VirtualHost *:80>
    DocumentRoot "/var/www/vlsm/public"
-   
+
    ServerName vlsm.example.org
 
    <Directory "/var/www/vlsm/public">
