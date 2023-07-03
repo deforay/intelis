@@ -899,7 +899,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 																	<input type="text" id="testResult<?= ($indexKey + 1); ?>" name="testResult[]" class="form-control result-focus" placeholder="Enter result" title="Please enter final results">
 																</td>
 																<td class="testResultUnit">
-																	<select class="form-control resultUnit" id="testResultUnit<?= ($indexKey + 1); ?>" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+																	<select class="form-control" id="testResultUnit<?= ($indexKey + 1); ?>" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
 																		<option value="">--Select--</option>
 																		<?php
 																		foreach ($testResultUnits as $unit) {
@@ -1836,7 +1836,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                <input type="text" id="testResult${testCounter}" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
             </td>
 			<td class="testResultUnit">
-            <select class="form-control resultUnit" id="testResultUnit${testCounter}" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+            <select class="form-control" id="testResultUnit${testCounter}" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
 					<option value="">--Select--</option>
 					<?php
 					foreach ($testResultUnits as $unit) {

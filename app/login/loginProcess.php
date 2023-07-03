@@ -36,7 +36,6 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 
-
 $_SESSION['logged'] = false;
 $systemInfo = $general->getSystemConfig();
 $ipaddress = $general->getClientIpAddress();
@@ -170,18 +169,18 @@ try {
                                 INNER JOIN resources as r ON r.resource_id=p.resource_id
                                 WHERE rp.role_id= ?";
             $privilegesResult = $db->rawQuery($privilegesQuery, [$userRow['role_id']]);
-            $module = $privileges = [];
+            $modules = $privileges = [];
             if (!empty($privilegesResult)) {
                 foreach ($privilegesResult as $id) {
                     $privileges[] = $id['privilege_name'];
-                    $module[$id['module']] = $id['module'];
+                    $modules[$id['module']] = $id['module'];
                 }
             }
 
             $redirect = !empty($userRow['landing_page']) ? $userRow['landing_page'] : '/dashboard/index.php';
 
-            $_SESSION['privileges'] = $privileges ?? [];
-            $_SESSION['module'] = $module ?? [];
+            $_SESSION['privileges'] = $usersService->getAllPrivileges($privileges);
+            $_SESSION['modules'] = $modules;
 
             if (!empty($_SESSION['forcePasswordReset']) && $_SESSION['forcePasswordReset'] == 1) {
                 $redirect = "/users/editProfile.php";

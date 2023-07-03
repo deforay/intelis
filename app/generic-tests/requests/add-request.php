@@ -630,7 +630,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                                           </select> -->
                                                                            </td>
                                                                            <td class="testResultUnit">
-                                                                                <select class="form-control resultUnit" id="testResultUnit1" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+                                                                                <select class="form-control" id="testResultUnit1" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
                                                                                      <option value="">--Select--</option>
                                                                                      <?php foreach ($testResultUnits as $key => $unit) { ?>
                                                                                           <option value="<?php echo $key; ?>"><?php echo $unit; ?></option>

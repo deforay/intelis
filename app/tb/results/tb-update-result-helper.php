@@ -133,11 +133,11 @@ try {
     }
 
     $tbData = array(
-        'specimen_quality'                    => !empty($_POST['testNumber']) ? $_POST['testNumber'] : null,
+        //'specimen_quality'                    => !empty($_POST['testNumber']) ? $_POST['testNumber'] : null,
         'lab_id'                              => !empty($_POST['labId']) ? $_POST['labId'] : null,
-        'reason_for_tb_test'                  => !empty($_POST['reasonForTbTest']) ? json_encode($_POST['reasonForTbTest']) : null,
-        'tests_requested'                     => !empty($_POST['testTypeRequested']) ? json_encode($_POST['testTypeRequested']) : null,
-        'specimen_type'                       => !empty($_POST['specimenType']) ? $_POST['specimenType'] : null,
+        //'reason_for_tb_test'                  => !empty($_POST['reasonForTbTest']) ? json_encode($_POST['reasonForTbTest']) : null,
+        //'tests_requested'                     => !empty($_POST['testTypeRequested']) ? json_encode($_POST['testTypeRequested']) : null,
+        //'specimen_type'                       => !empty($_POST['specimenType']) ? $_POST['specimenType'] : null,
         //  'sample_collection_date'              => !empty($_POST['sampleCollectionDate']) ? $_POST['sampleCollectionDate'] : null,
         'sample_received_at_lab_datetime'     => !empty($_POST['sampleReceivedDate']) ? $_POST['sampleReceivedDate'] : null,
         'is_sample_rejected'                  => !empty($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : null,
