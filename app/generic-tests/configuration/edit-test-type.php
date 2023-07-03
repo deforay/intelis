@@ -132,7 +132,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 								<div class="form-group">
 									<label for="testShortCode" class="col-lg-4 control-label"><?php echo _("Test Short Code"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="testShortCode" name="testShortCode" placeholder='<?php echo _("Test Short Code"); ?>' title='<?php echo _("Please enter short code"); ?>' onblur="checkNameValidation('r_test_types','test_short_code',this,'<?php echo "test_type_id##" . $testTypeInfo['test_type_id']; ?>','<?php echo _("This test short code that you entered already exists.Try another code"); ?>',null)" value="<?php echo $testTypeInfo['test_short_code']; ?>" />
+										<input type="text" class="form-control isRequired" id="testShortCode" name="testShortCode" placeholder='<?php echo _("Test Short Code"); ?>' title='<?php echo _("Please enter short code"); ?>' onblur="checkNameValidation('r_test_types','test_short_code',this,'<?php echo "test_type_id##" . $testTypeInfo['test_type_id']; ?>','<?php echo _("This test short code that you entered already exists.Try another code"); ?>',null)" value="<?php echo $testTypeInfo['test_short_code']; ?>"  onchange="alphanumericValidation(this.value);"/>
 									</div>
 								</div>
 							</div>
@@ -936,6 +936,23 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 
 	function changeField(obj, i) {
 		(obj.value == 'dropdown' || obj.value == 'multiple') ? ($('.dropDown' + i).show()) : ($('.dropDown' + i).hide(), $('#dropDown' + i).removeClass('isRequired'));
+	}
+
+	function alphanumericValidation(shortCode) {
+		/*var regEx = /^[0-9a-zA-Z]+$/;
+		if (shortCode.match(regEx)) {
+			return true;
+		} else {
+			alert("Please enter letters and numbers only in short code.");
+			return false;
+		}*/
+		// Convert to uppercase
+		shortCode = shortCode.toUpperCase();
+
+		// Remove all special characters and spaces, except hyphens
+		shortCode = shortCode.replace(/[^A-Z0-9-]/g, '');
+
+		$('#testShortCode').val(shortCode);
 	}
 </script>
 
