@@ -27,11 +27,17 @@ class UsersService
 
     public function isAllowed($currentRequest, $privileges = null): bool
     {
-        return once(function () use ($currentRequest, $privileges) {
-            $privileges = $privileges ?? $_SESSION['privileges'] ?? null;
-            if (empty($privileges) || empty($currentRequest)) {
-                return false;
-            }
+
+        $sessionKey = base64_encode(is_string($currentRequest) ? $currentRequest : $currentRequest->getUri());
+
+        // If the result is already stored in the session, return it
+        if (isset($_SESSION['access'][$sessionKey])) {
+            return $_SESSION['access'][$sessionKey];
+        }
+
+        $privileges = $privileges ?? $_SESSION['privileges'] ?? null;
+        $isAllowed = false;
+        if (!empty($privileges) && !empty($currentRequest)) {
 
             if ($currentRequest instanceof ServerRequest) {
                 $uri = $currentRequest->getUri();
@@ -62,15 +68,15 @@ class UsersService
                 }
             }
 
-            $privileges = $_SESSION['privileges'];
-
             foreach ($requestArray as $requestUrl) {
                 if (isset($privileges[$requestUrl])) {
-                    return true;
+                    $isAllowed = true;
+                    break;
                 }
             }
-            return false;
-        });
+        }
+        $_SESSION['access'][$sessionKey] = $isAllowed;
+        return $isAllowed;
     }
 
     public function getAllPrivileges(?array $privileges = []): array

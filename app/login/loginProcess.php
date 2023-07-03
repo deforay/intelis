@@ -36,7 +36,6 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 
-
 $_SESSION['logged'] = false;
 $systemInfo = $general->getSystemConfig();
 $ipaddress = $general->getClientIpAddress();
