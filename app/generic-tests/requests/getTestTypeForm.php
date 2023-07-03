@@ -235,18 +235,19 @@ if (!empty($testResultsAttribute)) {
             }
         }
     }
-    $resultSection .= '<tr class="testResultUnit"><th scope="row" colspan="5" class="text-right final-result-row">Test Result Unit</th>';
-    $resultSection .= '<td>
-    <select class="form-control testResultUnit resultUnit" id="finalTestResultUnit" name="finalTestResultUnit" placeholder="Please Enter test result unit" title="Please Enter test result unit">
-    <option value="">--Select--</option>';
-    foreach ($testResultUnits as $unit) {
-        $selected = isset($_POST['resultUnit']) && $_POST['resultUnit'] == $unit['unit_id'] ? "selected='selected'" : "";
-        $resultSection .= '<option value="' . $unit['unit_id'] . '" ' . $selected . '>' . $unit['unit_name'] . '</option>';
-    }
+    $resultSection .='<tr class="testResultUnit"><th scope="row" colspan="5" class="text-right final-result-row">Test Result Unit</th>';
+    $resultSection .= '<td> 
+    <select class="form-control testResultUnit resultUnit" id="finalTestResultUnit" name="finalTestResultUnit" placeholder="Please Enter test result unit" title="Please Enter test result unit"><option value="">--Select--</option>';
 
+        foreach ($testResultUnits as $unit) {
+        $selected = isset($_POST['resultUnit']) && $_POST['resultUnit'] == $unit['unit_id'] ? "selected='selected'" : "";
+            $resultSection .= '<option value="'.$unit['unit_id'].'" '.$selected.'>'.$unit['unit_name'].'</option>';
+    
+        }
+   
     $resultSection .= '</select></td></tr>';
-    $resultSection .= '<tr><th scope="row" colspan="5" class="text-right final-result-row">Result Interpretation</th>';
-    $resultSection .= '<td><input type="text" placeholder="Interpretation result" title="Please enter the result interpretation" class="form-control" id="resultInterpretation" value="' . $resultInterpretation . '" name="resultInterpretation"></input>';
+    $resultSection .='<tr><th scope="row" colspan="5" class="text-right final-result-row">Result Interpretation</th>';
+    $resultSection .= '<td><input type="text" placeholder="Interpretation result" title="Please enter the result interpretation" class="form-control" id="resultInterpretation" value="'.$resultInterpretation.'" name="resultInterpretation"></input>';
     $resultSection .= '<input type="hidden" id="resultType" name="resultType" class="form-control result-text" value="' . $testResultsAttribute['result_type'] . '"></td></tr>';
     $resultForm[] = $resultSection;
 }

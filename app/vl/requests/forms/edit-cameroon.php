@@ -344,8 +344,9 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                  <option value=""> <?= _('-- Select --'); ?> </option>
                                                                  <?php
                                                                  $selected = '';
-                                                                 if (count($sResult) == 1)
+                                                                 if (count($sResult) == 1){
                                                                       $selected = "selected='selected'";
+                                                                 }
                                                                  foreach ($sResult as $name) { ?>
                                                                       <option <?= $selected; ?> <?php if($name['sample_id']==$vlQueryInfo['sample_type']) echo "selected='selected'"; else echo ""; ?> value="<?php echo $name['sample_id']; ?>"><?= $name['sample_name']; ?></option>
                                                                  <?php } ?>

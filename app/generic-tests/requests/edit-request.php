@@ -806,7 +806,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 															<th scope="row" class="text-center">Test Method</th>
 															<th scope="row" class="text-center">Date of Testing</th>
 															<th scope="row" class="text-center">Test Platform/Test
-																Kit</th>
+																Kit</th>	
 															<th scope="row" class="text-center">Test Result</th>
 															<th scope="row" class="text-center testResultUnit">Test Result Unit</th>
 

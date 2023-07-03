@@ -266,8 +266,9 @@ $sFormat = '';
                                                                  <option value=""> -- Select -- </option>
                                                                  <?php
                                                                  $selected = '';
-                                                                 if (count($sResult) == 1)
+                                                                 if (count($sResult) == 1){
                                                                       $selected = "selected='selected'";
+                                                                 }
                                                                  foreach ($sResult as $name) { ?>
                                                                       <option <?= $selected; ?> value="<?php echo $name['sample_id']; ?>"><?= $name['sample_name']; ?></option>
                                                                  <?php } ?>
