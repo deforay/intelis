@@ -49,7 +49,7 @@ if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['he
 if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
 	$reportFormats['tb'] = $general->activeReportFormats('tb');
 }
-if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true) {
+if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) {
 	$reportFormats['generic-tests'] = $general->activeReportFormats('generic-tests');
 }
 $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
@@ -297,7 +297,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 												if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
 													<option value='tb'><?php echo _("TB"); ?></option>
 												<?php }
-												if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true) { ?>
+												if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) { ?>
 													<option value='generic-tests'><?php echo _("Lab Tests"); ?></option>
 												<?php } ?>
 											</select>
@@ -499,7 +499,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 													if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
 														<option value='tb'><?php echo _("TB"); ?></option>
 													<?php }
-													if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true) { ?>
+													if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) { ?>
 														<option value='generic-tests'><?php echo _("Lab Tests"); ?></option>
 													<?php } ?>
 												</select>
@@ -720,7 +720,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 				} else if (testType[i] == 'tb') {
 					testOrg = 'TB';
 					var extraDiv = '<td></td>';
-				} else if (testType[i] == 'genericTests') {
+				} else if (testType[i] == 'generic-tests') {
 					testOrg = 'Lab Tests';
 					var extraDiv = '<td></td>';
 				}

@@ -17,7 +17,7 @@ $systemConfig['modules']['eid'] = true;
 $systemConfig['modules']['covid19'] = true;
 $systemConfig['modules']['hepatitis'] = false;
 $systemConfig['modules']['tb'] = false;
-$systemConfig['modules']['genericTests'] = false;
+$systemConfig['modules']['generic-tests'] = false;
 
 $systemConfig['instanceName'] = '';
 

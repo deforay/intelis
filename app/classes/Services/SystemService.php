@@ -10,14 +10,11 @@ use Whoops\Handler\JsonResponseHandler;
 
 class SystemService
 {
-    protected array $applicationConfig = [];
     protected ?CommonService $commonService;
 
     public function __construct(
-        ?array $applicationConfig,
         CommonService $commonService
     ) {
-        $this->applicationConfig = $applicationConfig ?? SYSTEM_CONFIG;
         $this->commonService = $commonService;
     }
 
@@ -80,21 +77,13 @@ class SystemService
         return $this;
     }
 
-    public function getActiveTestModules(): array
+    public static function getActiveModules(bool $onlyTests = false): array
     {
-        $response = [];
+        $activeModules = [];
 
-        $modules = ['vl', 'eid', 'covid19', 'hepatitis', 'tb', 'genericTests'];
-
-        foreach ($modules as $module) {
-            if (
-                isset($this->applicationConfig['modules'][$module]) &&
-                $this->applicationConfig['modules'][$module] === true
-            ) {
-                $response[] = $module;
-            }
+        if ($onlyTests === false) {
+            $activeModules = ['admin', 'dashboard', 'common'];
         }
-
-        return $response;
+        return array_merge($activeModules, array_keys(array_filter(SYSTEM_CONFIG['modules'])));
     }
 }

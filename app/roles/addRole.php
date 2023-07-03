@@ -13,33 +13,12 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/** @var SystemService $systemService */
-$systemService = ContainerRegistry::get(SystemService::class);
+$activeModules = SystemService::getActiveModules();
 
-$activeTestModules = $systemService->getActiveTestModules();
-
-$activeModules = array('admin', 'common');
-
-if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
-	$activeModules[] = 'vl';
-}
-if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
-	$activeModules[] = 'eid';
-}
-if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
-	$activeModules[] = 'covid19';
-}
-if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis']) {
-	$activeModules[] = 'hepatitis';
-}
-if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
-	$activeModules[] = 'tb';
-}
-if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true) {
-	$activeModules[] = 'generic-tests';
-}
-
-$resourcesQuery = "SELECT module, GROUP_CONCAT( DISTINCT CONCAT(resources.resource_id,',',resources.display_name) ORDER BY resources.display_name SEPARATOR '##' ) as 'module_resources' FROM `resources` WHERE `module` IN ('" . implode("','", $activeModules) . "') GROUP BY `module` ORDER BY `module` ASC";
+$resourcesQuery = "SELECT module,
+			GROUP_CONCAT(DISTINCT CONCAT(resources.resource_id,',',resources.display_name)
+			ORDER BY resources.display_name SEPARATOR '##' ) as 'module_resources'
+			FROM `resources` WHERE `module` IN ('" . implode("','", $activeModules) . "') GROUP BY `module` ORDER BY `module` ASC";
 $rInfo = $db->query($resourcesQuery);
 ?>
 <style>
@@ -155,23 +134,23 @@ $rInfo = $db->query($resourcesQuery);
 										<select class="form-control " name='landingPage' id='landingPage' title="<?php echo _('Please select landing page'); ?>">
 											<option value=""> <?php echo _("-- Select --"); ?> </option>
 											<option value="/dashboard/index.php"><?php echo _("Dashboard"); ?></option>
-											<?php if (!empty($activeTestModules) && in_array('vl', $activeTestModules)) { ?>
+											<?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
 												<option value="/vl/requests/addVlRequest.php"><?php echo _("Add New VL Request"); ?></option>
 												<option value="/vl/requests/vlRequest.php"><?php echo _("VL View Test Requests"); ?></option>
 											<?php }
-											if (!empty($activeTestModules) && in_array('eid', $activeTestModules)) { ?>
+											if (!empty($activeModules) && in_array('eid', $activeModules)) { ?>
 												<option value="/eid/requests/eid-add-request.php"><?php echo _("Add New EID Request"); ?></option>
 												<option value="/eid/requests/eid-requests.php"><?php echo _("EID View Test Requests"); ?></option>
 											<?php }
-											if (!empty($activeTestModules) && in_array('covid19', $activeTestModules)) { ?>
+											if (!empty($activeModules) && in_array('covid19', $activeModules)) { ?>
 												<option value="/covid-19/requests/covid-19-add-request.php"><?php echo _("Add New Covid-19 Request"); ?></option>
 												<option value="/covid-19/requests/covid-19-requests.php"><?php echo _("Covid-19 View Test Requests"); ?></option>
 											<?php }
-											if (!empty($activeTestModules) && in_array('hepatitis', $activeTestModules)) { ?>
+											if (!empty($activeModules) && in_array('hepatitis', $activeModules)) { ?>
 												<option value="/hepatitis/requests/hepatitis-add-request.php"><?php echo _("Add New Hepatitis Request"); ?></option>
 												<option value='/hepatitis/requests/hepatitis-requests.php'><?php echo _("Hepatitis View Test Requests"); ?></option>
 											<?php }
-											if (!empty($activeTestModules) && in_array('tb', $activeTestModules)) { ?>
+											if (!empty($activeModules) && in_array('tb', $activeModules)) { ?>
 												<option value=><?php echo _("Add New TB Request"); ?></option>
 												<option value='/tb/requests/tb-requests.php'><?php echo _("TB View Test Requests"); ?></option>
 											<?php } ?>

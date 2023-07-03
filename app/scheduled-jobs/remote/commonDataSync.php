@@ -114,7 +114,7 @@ $commonDataToSync = array(
 
 $url = $remoteUrl . '/remote/remote/commonData.php';
 
-if (isset($systemConfig['modules']['genericTests']) && $systemConfig['modules']['genericTests'] === true) {
+if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']['generic-tests'] === true) {
     $toSyncTables = array(
         "r_test_types",
         "r_generic_test_methods",

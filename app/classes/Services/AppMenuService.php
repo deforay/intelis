@@ -35,6 +35,11 @@ class AppMenuService
 
     public function getMenu($parentId = 0, $menuId = 0)
     {
+
+
+        $activeModules = SystemService::getActiveModules();
+
+        $this->db->where('module', $activeModules, 'IN');
         $this->db->where('status', 'active');
         if (!empty($menuId) && $menuId > 0) {
             $this->db->where('id', $menuId);

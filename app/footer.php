@@ -200,7 +200,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		if (currentMenuItem.length == 0) {
 			let currentPaths = Utilities.splitPath(url).map(path => btoa(path));
 			currentMenuItem = $('a[data-inner-pages]').filter(function() {
-				let innerPages = $(this).data('inner-pages').split(';');
+				const innerPages = $(this).data('inner-pages').split(';');
 				return currentPaths.some(path => innerPages.includes(path));
 			});
 		}
@@ -208,6 +208,12 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		if (currentMenuItem.length > 0) {
 			currentMenuItem.parent().addClass('active');
 			currentMenuItem.parents('li.treeview').addClass('active');
+			if (currentMenuItem.parents('li.treeview')) {
+				const offset = currentMenuItem.parents('li.treeview')[0].offsetTop;
+				if (offset > 200) {
+					$('.main-sidebar').scrollTop(offset);
+				}
+			}
 		}
 
 		if (remoteSync) {

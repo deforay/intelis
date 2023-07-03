@@ -177,7 +177,7 @@ try {
                 }
             }
 
-            $redirect = !empty($userRow['landing_page']) ? $userRow['landing_page'] : '/dashboard/index.php';
+            $_SESSION['landingPage'] = $redirect = !empty($userRow['landing_page']) ? $userRow['landing_page'] : '/dashboard/index.php';
 
             $_SESSION['privileges'] = $usersService->getAllPrivileges($privileges);
             $_SESSION['modules'] = $modules;
