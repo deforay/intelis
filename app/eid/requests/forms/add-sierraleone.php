@@ -578,8 +578,9 @@ $aResult = $db->query($aQuery);
             $("#newArtRegimen").addClass("isRequired");
             $("#newArtRegimen").focus();
         } else {
-            $(".newArtRegimen").hide();
+            
             $("#newArtRegimen").removeClass("isRequired");
+            $(".newArtRegimen").hide();
             $('#newArtRegimen').val("");
         }
     }
@@ -743,8 +744,9 @@ $aResult = $db->query($aQuery);
             $("#reasonForRepeatPcrOther").addClass("isRequired");
             $("#reasonForRepeatPcrOther").focus();
         } else {
-            $(".reasonForRepeatPcrOther").hide();
+            
             $("#reasonForRepeatPcrOther").removeClass("isRequired");
+            $(".reasonForRepeatPcrOther").hide();
             $('#reasonForRepeatPcrOther').val("");
         }
     }
@@ -789,8 +791,9 @@ $aResult = $db->query($aQuery);
                         $("#labTestingPoint").addClass("isRequired");
                         $("#labTestingPoint").html(data);
                     } else {
-                        $('.testingPoint').css('display', 'none');
+                        
                         $("#labTestingPoint").removeClass("isRequired");
+                        $('.testingPoint').css('display', 'none');
                         $("#labTestingPoint").html("");
                     }
                 });
@@ -799,12 +802,15 @@ $aResult = $db->query($aQuery);
 
         $("#pcrTestNumber").on("change", function() {
             if ($(this).val() == 1) {
-                $("#prePcrTestResult").addClass("isRequired");
-                $("#previousPCRTestDate").addClass("isRequired");
-                $("#pcrTestReason").addClass("isRequired");
+                $("#prePcrTestResult").removeClass("isRequired");
+                $("#previousPCRTestDate").removeClass("isRequired");
+                $("#pcrTestReason").removeClass("isRequired");
                 $('.pcrBox').hide();
             } else {
                 $('.pcrBox').show();
+                $("#prePcrTestResult").addClass("isRequired");
+                $("#previousPCRTestDate").addClass("isRequired");
+                $("#pcrTestReason").addClass("isRequired");
             }
         });
 

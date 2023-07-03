@@ -261,7 +261,7 @@ $patientProvince = $patientProvinceInfo[0];
                                         <th scope="row">County</th>
                                         <td>
                                             <select class="form-control select2" name="patientDistrict" id="patientDistrict" title="Please Case County" style="width:100%;">
-                                                <option value="">--Select--</option>
+                                            <?= $general->generateSelectOptions($provinceInfo, $patientProvince, '-- Select --'); ?>
                                             </select>
                                         </td>
                                         <th scope="row">Payam</th>
@@ -381,7 +381,10 @@ $patientProvince = $patientProvinceInfo[0];
                                             <select class="form-control" name="testNumber" id="testNumber" title="Prélévement" style="width:100%;">
                                                 <option value="">--Select--</option>
                                                 <?php foreach (range(1, 5) as $element) {
-                                                    echo '<option value="' . $element . '">' . $element . '</option>';
+                                                    $selected="";
+                                                    if($element==$covid19Info['test_number'])
+                                                        $selected="selected='selected'";
+                                                    echo '<option value="' . $element . '" '.$selected.'>' . $element . '</option>';
                                                 } ?>
                                             </select>
                                         </td>
@@ -390,7 +393,7 @@ $patientProvince = $patientProvinceInfo[0];
                                 </table>
                             </div>
                         </div>
-                        <?php if ($usersService->isAllowed('covid-19-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if ($usersService->isAllowed('/covid-19/results/covid-19-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <?php //if (false) {
                             ?>
                             <div class="box box-primary">

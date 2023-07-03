@@ -218,7 +218,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         <td><input type="text" class="form-control " id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Phone Number" title="Phone Number" style="width:100%;" value="<?php echo $covid19Info['patient_phone_number']; ?>" /></td>
 
                                         <th scope="row">Case address</th>
-                                        <td><textarea class="form-control " id="patientAddress" name="patientAddress" placeholder="Address" title="Address" style="width:100%;" onchange=""><?php echo $covid19Info['patient_address']; ?></textarea></td>
+                                        <td><textarea class="form-control" id="patientAddress" name="patientAddress" placeholder="Address" title="Address" style="width:100%;" onchange=""><?php echo $covid19Info['patient_address']; ?></textarea></td>
                                     </tr>
                                     <tr>
                                         <th scope="row">Case State</th>
@@ -311,7 +311,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                 </table>
                             </div>
                         </div>
-                        <?php if ($usersService->isAllowed('covid-19-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if ($usersService->isAllowed('/covid-19/results/covid-19-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
@@ -763,7 +763,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         if ($('#result').val() != "") {
             $('#isResultAuthorized').val('yes');
         }
-        getPatientDistrictDetails('<?php echo (isset($covid19Info['patient_province']) && $covid19Info['patient_province'] != ""); ?>');
+        getPatientDistrictDetails('<?php echo ($covid19Info['patient_province']); ?>');
         <?php if ($kitShow) { ?>
             $('.kitlabels').show();
         <?php } ?>
