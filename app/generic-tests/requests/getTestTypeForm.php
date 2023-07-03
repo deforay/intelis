@@ -231,8 +231,8 @@ if (!empty($testResultsAttribute)) {
                 $resultSection .= '</datalist>';
             }
         }
-    }
-    $resultSection .= '<br> <select class="form-control testResultUnit resultUnit" id="finalTestResultUnit" name="finalTestResultUnit" placeholder="Please Enter test result unit" title="Please Enter test result unit"><option value="">--Select--</option>';
+    
+    $resultSection .= '<br> <select class="form-control testResultUnit" id="finalTestResultUnit" name="finalTestResultUnit" placeholder="Please Enter test result unit" title="Please Enter test result unit"><option value="">--Select--</option>';
     $selected ="";
         foreach ($testResultUnits as $unit) {
         if(isset($_POST['resultUnit'])==$unit['unit_id'])
@@ -242,6 +242,7 @@ if (!empty($testResultsAttribute)) {
         }
    
         $resultSection .= '</select>';
+    }
     $resultSection .= '<br><input type="text" placeholder="Interpretation result" title="Please enter the result interpretation" class="form-control" id="resultInterpretation" value="'.$resultInterpretation.'" name="resultInterpretation"></input>';
     $resultSection .= '<input type="hidden" id="resultType" name="resultType" class="form-control result-text" value="' . $testResultsAttribute['result_type'] . '">';
     $resultForm[] = $resultSection;

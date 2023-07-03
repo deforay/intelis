@@ -629,8 +629,8 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                                                <?= $general->generateSelectOptions($genericResults, null, '-- Select --'); ?>
                                                                                           </select> -->
                                                                            </td>
-                                                                           <td>
-                                                                                <select class="form-control resultUnit" id="testResultUnit1" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+                                                                           <td class="testResultUnit">
+                                                                                <select class="form-control" id="testResultUnit1" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
                                                                                      <option value="">--Select--</option>
                                                                                      <?php foreach ($testResultUnits as $key => $unit) { ?>
                                                                                           <option value="<?php echo $key; ?>"><?php echo $unit; ?></option>
@@ -645,7 +645,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                  </tbody>
                                                                  <tfoot id="resultSection">
                                                                       <tr>
-                                                                           <th scope="row" colspan="4" class="text-right final-result-row">Final Result<br><br><span class="testResultUnit">Test Result Unit<br><br></span>Result Interpretation</th>
+                                                                           <th scope="row" colspan="5" class="text-right final-result-row">Final Result<br><br><span class="testResultUnit">Test Result Unit<br><br></span>Result Interpretation</th>
                                                                            <td id="result-sections" class="resultInputContainer">
 
                                                                            </td>
@@ -1608,8 +1608,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
                          if($('#resultType').val() == 'qualitative'){
                               $('.testResultUnit').hide();
+                              $(".final-result-row").attr('colspan',4);
                          }else{
                               $('.testResultUnit').show();
+                              $(".final-result-row").attr('colspan',5);
                          }
                     });
 
@@ -1679,7 +1681,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                <input type="text" id="testResult${testCounter}" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
             </td>
             <td>
-            <select class="form-control resultUnit" id="testResultUnit${testCounter}" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+            <select class="form-control testResultUnit" id="testResultUnit${testCounter}" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
                <option value="">--Select--</option>
                <?php foreach ($testResultUnits as $key => $unit) { ?>
                <option value="<?php echo $key; ?>"><?php echo $unit; ?></option>

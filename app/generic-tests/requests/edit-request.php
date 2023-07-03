@@ -808,7 +808,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 															<th scope="row" class="text-center">Test Platform/Test
 																Kit</th>
 															<th scope="row" class="text-center">Test Result</th>
-															<th scope="row" class="text-center">Test Result Unit</th>
+															<th scope="row" class="text-center testResultUnit">Test Result Unit</th>
 
 															<th scope="row" class="text-center">Action</th>
 														</tr>
@@ -854,8 +854,8 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 																	<td>
 																		<input type="text" id="testResult<?= ($indexKey + 1); ?>" value="<?php echo $rows['result']; ?>" name="testResult[]" class="form-control result-focus" value="<?php echo $genericResultInfo['result']; ?>" placeholder="Enter result" title="Please enter final results">
 																	</td>
-																	<td>
-																		<select class="form-control resultUnit" id="testResultUnit<?= ($indexKey + 1); ?>" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+																	<td class="testResultUnit">
+																		<select class="form-control" id="testResultUnit<?= ($indexKey + 1); ?>" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
 																			<option value="">--Select--</option>
 																			<?php
 																			foreach ($testResultUnits as $unit) {
@@ -898,8 +898,8 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 																<td>
 																	<input type="text" id="testResult<?= ($indexKey + 1); ?>" name="testResult[]" class="form-control result-focus" placeholder="Enter result" title="Please enter final results">
 																</td>
-																<td>
-																	<select class="form-control resultUnit" id="testResultUnit<?= ($indexKey + 1); ?>" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+																<td class="testResultUnit">
+																	<select class="form-control" id="testResultUnit<?= ($indexKey + 1); ?>" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
 																		<option value="">--Select--</option>
 																		<?php
 																		foreach ($testResultUnits as $unit) {
@@ -1770,10 +1770,12 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 						placeholder: "<?php echo _("Select any one of the option"); ?>"
 					});
 					if($('#resultType').val() == 'qualitative'){
-						$('.testResultUnit').hide();
-					}else{
-						$('.testResultUnit').show();
-					}
+                              $('.testResultUnit').hide();
+                              $(".final-result-row").attr('colspan',4);
+                         }else{
+                              $('.testResultUnit').show();
+                              $(".final-result-row").attr('colspan',5);
+                         }
 				});
 		} else {
 			removeDynamicForm();
@@ -1833,8 +1835,8 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
             <td>
                <input type="text" id="testResult${testCounter}" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
             </td>
-			<td>
-            <select class="form-control resultUnit" id="testResultUnit${testCounter}" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+			<td class="testResultUnit">
+            <select class="form-control" id="testResultUnit${testCounter}" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
 					<option value="">--Select--</option>
 					<?php
 					foreach ($testResultUnits as $unit) {
