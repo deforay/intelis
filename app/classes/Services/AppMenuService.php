@@ -37,7 +37,7 @@ class AppMenuService
     {
 
 
-        $activeModules = $this->commonService->getActiveModules();
+        $activeModules = SystemService::getActiveModules();
 
         $this->db->where('module', $activeModules, 'IN');
         $this->db->where('status', 'active');

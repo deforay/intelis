@@ -78,7 +78,7 @@ $testTypes = array(
     "covid19" => "Covid-19",
     "hepatitis" => "Hepatitis",
     "tb" => "TB",
-    "genericTests" => "Generic Tests"
+    "generic-tests" => "Generic Tests"
 );
 
 if (!empty(SYSTEM_CONFIG['modules'])) {

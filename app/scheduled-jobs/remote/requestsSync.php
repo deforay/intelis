@@ -65,7 +65,7 @@ if (!empty($forceSyncModule)) {
  ****************************************************************
  */
 $request = [];
-if (isset($systemConfig['modules']['genericTests']) && $systemConfig['modules']['genericTests'] === true) {
+if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']['generic-tests'] === true) {
 
     $url = $remoteUrl . '/remote/remote/generic-test-requests.php';
     $payload = array(

@@ -3,6 +3,7 @@
 
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
+use App\Services\SystemService;
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -24,7 +25,8 @@ $roleInfo = $db->rawQuery($roleQuery, [$id]);
 if (isset($roleInfo[0]['role_code']) && $roleInfo[0]['role_code'] == 'API') {
 	header("Location:roles.php");
 }
-$activeModules = $general->getActiveModules();
+$activeModules = SystemService::getActiveModules();
+
 $resourcesQuery = "SELECT module, GROUP_CONCAT( DISTINCT CONCAT(resources.resource_id,',',resources.display_name) ORDER BY resources.display_name SEPARATOR '##' ) as 'module_resources' FROM `resources` WHERE `module` IN ('" . implode("','", $activeModules) . "') GROUP BY `module` ORDER BY `module` ASC";
 $rInfo = $db->query($resourcesQuery);
 

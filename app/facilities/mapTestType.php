@@ -71,7 +71,7 @@ require_once APPLICATION_PATH . '/header.php';
 													if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
 														<option value='tb'><?php echo _("TB"); ?></option>
 													<?php }
-													if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true) { ?>
+													if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) { ?>
 														<option value='generic-tests'><?php echo _("Lab Tests"); ?></option>
 													<?php } ?>
 												</select>
