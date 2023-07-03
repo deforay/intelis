@@ -36,8 +36,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 
-
-$_SESSION['logged'] = false;
+$_SESSION['logged'] = false;010
 $systemInfo = $general->getSystemConfig();
 $ipaddress = $general->getClientIpAddress();
 
@@ -178,7 +177,7 @@ try {
                 }
             }
 
-            $redirect = !empty($userRow['landing_page']) ? $userRow['landing_page'] : '/dashboard/index.php';
+            $redirect = $userRow['landing_page'] ?? '/dashboard/index.php';
 
             $_SESSION['privileges'] = $usersService->getAllPrivileges($privileges);
             $_SESSION['modules'] = $modules;
