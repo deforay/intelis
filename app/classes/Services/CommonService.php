@@ -25,9 +25,13 @@ class CommonService
         $this->db = $db ?? ContainerRegistry::get('db');
     }
 
-    public function getActiveModules(): array
+    public function getActiveModules(bool $onlyTests = false): array
     {
-        $activeModules = ['admin', 'dashboard'];
+        $activeModules = [];
+
+        if ($onlyTests === false) {
+            $activeModules = ['admin', 'dashboard', 'common'];
+        }
 
         if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
             $activeModules[] = 'vl';

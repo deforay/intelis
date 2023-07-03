@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
 require_once APPLICATION_PATH . '/header.php';
@@ -13,6 +14,9 @@ $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 $roleQuery = "SELECT * from roles where role_id= ?";
 $roleInfo = $db->rawQuery($roleQuery, [$id]);

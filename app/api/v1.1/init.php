@@ -49,7 +49,9 @@ $user = $usersService->getUserByToken($authToken);
 $updatedDateTime = $input['latestDateTime'] ?? null;
 /* Status name list */
 $statusList = [];
-$tsQuery = "SELECT status_id, status_name FROM r_sample_status WHERE status = 'active'";
+$tsQuery = "SELECT status_id, status_name
+                FROM r_sample_status
+                WHERE status = 'active'";
 $tsResult = $db->rawQuery($tsQuery);
 foreach ($tsResult as $row) {
     $statusList[$row['status_id']] = $row['status_name'];
@@ -58,7 +60,9 @@ foreach ($tsResult as $row) {
 $status = false;
 /* Funding Source List */
 $fundingSourceList = [];
-$fundingSourceQry = "SELECT funding_source_id, funding_source_name FROM r_funding_sources WHERE funding_source_status='active' ";
+$fundingSourceQry = "SELECT funding_source_id, funding_source_name
+                        FROM r_funding_sources
+                        WHERE funding_source_status='active' ";
 if ($updatedDateTime) {
     $fundingSourceQry .= " AND updated_datetime >= '$updatedDateTime'";
 }
@@ -70,7 +74,9 @@ foreach ($fundingSourceResult as $funding) {
 }
 /* Implementing Partner Details */
 $implementingPartnerList = [];
-$implementingPartnerQry = "SELECT i_partner_id, i_partner_name FROM r_implementation_partners WHERE i_partner_status='active' ";
+$implementingPartnerQry = "SELECT i_partner_id, i_partner_name
+                            FROM r_implementation_partners
+                            WHERE i_partner_status='active' ";
 if ($updatedDateTime) {
     $implementingPartnerQry .= " AND updated_datetime >= '$updatedDateTime'";
 }
@@ -101,22 +107,8 @@ $labTechniciansList = [];
 foreach ($userResult as $row) {
     $labTechniciansList[$row['user_id']] = ($row['user_name']);
 }
-$activeModule = [];
-if (isset($applicationConfig['modules']['vl']) && $applicationConfig['modules']['vl'] === true) {
-    $activeModule[] = '"vl"';
-}
-if (isset($applicationConfig['modules']['eid']) && $applicationConfig['modules']['eid'] === true) {
-    $activeModule[] = '"eid"';
-}
-if (isset($applicationConfig['modules']['covid19']) && $applicationConfig['modules']['covid19'] === true) {
-    $activeModule[] = '"covid19"';
-}
-if (isset($applicationConfig['modules']['hepatitis']) && $applicationConfig['modules']['hepatitis'] === true) {
-    $activeModule[] = '"hepatitis"';
-}
-if (isset($applicationConfig['modules']['tb']) && $applicationConfig['modules']['tb'] === true) {
-    $activeModule[] = '"tb"';
-}
+
+$activeModule = $general->getActiveModules(true);
 
 $data = [];
 $data['formId'] = $formId;
