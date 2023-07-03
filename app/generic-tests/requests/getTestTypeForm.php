@@ -209,8 +209,10 @@ if ($n > 0) {
 // echo "<pre>";
 //print_r($testAttr);die;
 if (!empty($testResultsAttribute)) {
+    $resultSection = "";
     if ($testResultsAttribute['result_type'] == 'qualitative') {
-        $resultSection = '<select class="form-control result-select" name="result" id="result" onchange="updateInterpretationResult(this);">>';
+        $resultSection .='<tr><th scope="row" colspan="4" class="text-right final-result-row">Final Result</th>';
+        $resultSection .= '<td><select class="form-control result-select" name="result" id="result" onchange="updateInterpretationResult(this);">>';
         $resultSection .= '<option value="">-- Select --</option>';
         if (!empty($testResultsAttribute['result'])) {
             foreach ($testResultsAttribute['result'] as $row) {
@@ -218,9 +220,10 @@ if (!empty($testResultsAttribute)) {
                 $resultSection .= '<option value="' . trim($row) . '" ' . $selected . '>' . ucwords($row) . '</option>';
             }
         }
-        $resultSection .= '</select>';
+        $resultSection .= '</select></td></tr>';
     } else {
-        $resultSection = '<input type="text" list="resultList" id="result" name="result" class="form-control result-text" value="' . $_POST['result'] . '" placeholder="Enter final result" title="Please enter final results" onchange="updateInterpretationResult(this);">';
+        $resultSection .='<tr><th scope="row" colspan="5" class="text-right final-result-row">Final Result</th>';
+        $resultSection .= '<td><input type="text" list="resultList" id="result" name="result" class="form-control result-text" value="' . $_POST['result'] . '" placeholder="Enter final result" title="Please enter final results" onchange="updateInterpretationResult(this);">';
         if (!empty($testResultsAttribute['quantitative_result'])) {
             $resultSection .= '<datalist id="resultList">';
             if (!empty($testResultsAttribute['quantitative_result'])) {
@@ -228,11 +231,13 @@ if (!empty($testResultsAttribute)) {
                     $selected = (isset($_POST['result']) && $_POST['result'] != "" && $_POST['result'] == trim($row)) ? "selected" : "";
                     $resultSection .= '<option value="'.trim($row).'" '.$selected.' data-interpretation="'.$testResultsAttribute['quantitative_result_interpretation'][$key].'"> '.ucwords($row).' </option>';
                 }
-                $resultSection .= '</datalist>';
+                $resultSection .= '</datalist></td></tr>';
             }
         }
     }
-    $resultSection .= '<br> <select class="form-control testResultUnit resultUnit" id="finalTestResultUnit" name="finalTestResultUnit" placeholder="Please Enter test result unit" title="Please Enter test result unit"><option value="">--Select--</option>';
+    $resultSection .='<tr class="testResultUnit"><th scope="row" colspan="5" class="text-right final-result-row">Test Result Unit</th>';
+    $resultSection .= '<td> 
+    <select class="form-control testResultUnit resultUnit" id="finalTestResultUnit" name="finalTestResultUnit" placeholder="Please Enter test result unit" title="Please Enter test result unit"><option value="">--Select--</option>';
     $selected ="";
         foreach ($testResultUnits as $unit) {
         if(isset($_POST['resultUnit'])==$unit['unit_id'])
@@ -241,9 +246,10 @@ if (!empty($testResultsAttribute)) {
     
         }
    
-        $resultSection .= '</select>';
-    $resultSection .= '<br><input type="text" placeholder="Interpretation result" title="Please enter the result interpretation" class="form-control" id="resultInterpretation" value="'.$resultInterpretation.'" name="resultInterpretation"></input>';
-    $resultSection .= '<input type="hidden" id="resultType" name="resultType" class="form-control result-text" value="' . $testResultsAttribute['result_type'] . '">';
+    $resultSection .= '</select></td></tr>';
+    $resultSection .='<tr><th scope="row" colspan="5" class="text-right final-result-row">Result Interpretation</th>';
+    $resultSection .= '<td><input type="text" placeholder="Interpretation result" title="Please enter the result interpretation" class="form-control" id="resultInterpretation" value="'.$resultInterpretation.'" name="resultInterpretation"></input>';
+    $resultSection .= '<input type="hidden" id="resultType" name="resultType" class="form-control result-text" value="' . $testResultsAttribute['result_type'] . '"></td></tr>';
     $resultForm[] = $resultSection;
 }
 $result['result'] = $resultForm;
