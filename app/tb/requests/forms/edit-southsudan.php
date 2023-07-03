@@ -289,7 +289,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										</td>
 										<td>
 											<label class="radio-inline" style="margin-left:0;">
-												<input type="radio" class="isRequired followup-uncheck" id="reasonForTbTest1" name="reasonForTbTest[reason]" value="followup" title="Select reason for examination" onchange="checkSubReason(this,'follow-up', 'diagnosis-check');" <?php echo (isset($reasonForTbTest->reason->followup) && $reasonForTbTest->reason->followup == "yes") ? "checked" : ""; ?>>
+												<input type="radio" class="isRequired followup-uncheck" id="reasonForTbTest2" name="reasonForTbTest[reason]" value="followup" title="Select reason for examination" onchange="checkSubReason(this,'follow-up', 'diagnosis-check');" <?php echo (isset($reasonForTbTest->reason->followup) && $reasonForTbTest->reason->followup == "yes") ? "checked" : ""; ?>>
 												<strong>Follow Up</strong>
 											</label>
 										</td>
@@ -855,6 +855,9 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 					});
 			}
 		});
+		if ($('#reasonForTbTest2').is(':checked') && $('#reasonForTbTest2').val() === 'followup') {
+			$("#xPertMTMResult").prop('disabled', true);
+		}
 	});
 
 	function checkIsResultAuthorized() {
