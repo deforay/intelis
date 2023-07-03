@@ -195,8 +195,6 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 		$(".allMenu").removeClass('active');
 
-
-
 		let url = window.location.pathname + window.location.search;
 		let currentMenuItem = $('a[href="' + url + '"]');
 		if (currentMenuItem.length == 0) {

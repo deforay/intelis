@@ -497,9 +497,11 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													<div class="col-lg-12">
 														<label class="radio-inline">
 															<?php
+															$vlTestReasonQueryRow = "SELECT * from r_vl_test_reasons where test_reason_id='" . trim($vlQueryInfo['reason_for_vl_testing']) . "' OR test_reason_name = '" . trim($vlQueryInfo['reason_for_vl_testing']) . "'";
+															$vlTestReasonResultRow = $db->query($vlTestReasonQueryRow);
 															$checked = '';
 															$display = '';
-															if (trim($vlQueryInfo['reason_for_vl_testing']) == 'routine') {
+															if (trim($vlQueryInfo['reason_for_vl_testing']) == 'routine' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'routine') {
 																$checked = 'checked="checked"';
 																$display = 'block';
 															} else {
