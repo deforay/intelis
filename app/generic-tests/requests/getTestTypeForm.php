@@ -240,8 +240,9 @@ if (!empty($testResultsAttribute)) {
     <select class="form-control testResultUnit resultUnit" id="finalTestResultUnit" name="finalTestResultUnit" placeholder="Please Enter test result unit" title="Please Enter test result unit"><option value="">--Select--</option>';
     $selected ="";
         foreach ($testResultUnits as $unit) {
-        if(isset($_POST['resultUnit'])==$unit['unit_id'])
+        if(isset($_POST['resultUnit'])==$unit['unit_id']){
             $selected = "selected='selected'";
+        }
             $resultSection .= '<option value="'.$unit['unit_id'].'" '.$selected.'>'.$unit['unit_name'].'</option>';
     
         }
