@@ -28,7 +28,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var AppMenuService $appMenuService */
 $appMenuService = ContainerRegistry::get(AppMenuService::class);
 
-$_SESSION['module'] = $_SESSION['module'] ?? [];
+$_SESSION['modules'] = $_SESSION['modules'] ?? [];
 
 $syncLatestTime = $general->getLastSyncDateTime();
 

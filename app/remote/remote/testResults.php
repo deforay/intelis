@@ -65,7 +65,7 @@ try {
                     $lab[$columnName] = null;
                 }
             }
-            //remove unwan  ted columns
+            //remove unwanted columns
             $unwantedColumns = array(
                 'vl_sample_id',
                 'sample_package_id',
