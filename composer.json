@@ -62,7 +62,6 @@
     },
     "config": {},
     "require-dev": {
-        "symfony/var-dumper": "^5.4",
-        "phpstan/phpstan": "^1.10"
+        "symfony/var-dumper": "^5.4"
     }
 }

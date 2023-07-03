@@ -5,9 +5,12 @@ use App\Services\CommonService;
 use App\Utilities\DateUtility;
 
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
+
 
 $table = 'form_vl';
 if (isset($_POST['testType']) && $_POST['testType'] == "") {

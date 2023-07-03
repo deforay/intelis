@@ -29,9 +29,9 @@ $testingLabs = $facilitiesService->getTestingLabs('eid');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
-
-
-$batQuery = "SELECT batch_code FROM batch_details where test_type = 'eid' AND batch_status='completed'";
+$batQuery = "SELECT batch_code FROM batch_details
+				WHERE test_type = 'eid'
+				AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
 //check filters
 $collectionDate = '';
@@ -42,18 +42,6 @@ $gender = '';
 $status = 'no_result';
 $lastUrl1 = '';
 $lastUrl2 = '';
-// if (isset($_SERVER['HTTP_REFERER'])) {
-//   $lastUrl1 = strpos($_SERVER['HTTP_REFERER'], "updateVlTestResult.php");
-//   $lastUrl2 = strpos($_SERVER['HTTP_REFERER'], "vlTestResult.php");
-// }
-// if ($lastUrl1 != '' || $lastUrl2 != '') {
-//   $collectionDate = (isset($_COOKIE['collectionDate']) && $_COOKIE['collectionDate'] != '') ? $_COOKIE['collectionDate'] : '';
-//   $batchCode = (isset($_COOKIE['batchCode']) && $_COOKIE['batchCode'] != '') ? $_COOKIE['batchCode'] : '';
-
-//   $facilityName = (isset($_COOKIE['facilityName']) && $_COOKIE['facilityName'] != '') ? explode(',', $_COOKIE['facilityName']) : [];
-
-//   $status = (isset($_COOKIE['status']) && $_COOKIE['status'] != '') ? $_COOKIE['status'] : '';
-// }
 ?>
 <style>
 	.select2-selection__choice {
@@ -250,7 +238,7 @@ $lastUrl2 = '';
 		?>
 			$('#sampleCollectionDate').val("");
 		<?php
-		} else if (($lastUrl1 != '' || $lastUrl2 != '') && isset($_COOKIE['collectionDate'])) { ?>
+		} else if (isset($_COOKIE['collectionDate'])) { ?>
 			$('#sampleCollectionDate').val("<?= ($_COOKIE['collectionDate']); ?>");
 		<?php } ?>
 

@@ -919,7 +919,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 													</tbody>
 													<tfoot id="resultSection">
 														<tr>
-															<th scope="row" colspan="5" class="text-right final-result-row">Final Result<br><br>Test Result Unit<br><br>Result Interpretation</th>
+															<th scope="row" colspan="5" class="text-right final-result-row">Final Result<br><br><span class="testResultUnit">Test Result Unit<br><br></span>Result Interpretation</th>
 															<td id="result-sections" class="resultInputContainer">
 
 															</td>
@@ -1769,7 +1769,11 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 						width: '100%',
 						placeholder: "<?php echo _("Select any one of the option"); ?>"
 					});
-
+					if($('#resultType').val() == 'qualitative'){
+						$('.testResultUnit').hide();
+					}else{
+						$('.testResultUnit').show();
+					}
 				});
 		} else {
 			removeDynamicForm();

@@ -2,54 +2,76 @@
 
 namespace App\Registries;
 
-use App\Exceptions\SystemException;
-use Exception;
-use ArrayObject;
-
-class AppRegistry extends ArrayObject
+class AppRegistry
 {
-    private static $appRegistry = null;
+    /**
+     * The instance of the AppRegistry.
+     *
+     * @var AppRegistry
+     */
+    private static $instance;
 
-    public function __construct($array = [], $flags = parent::ARRAY_AS_PROPS)
+    /**
+     * The array of stored values.
+     *
+     * @var array
+     */
+    private $values = [];
+
+    /**
+     * Gets the instance of the AppRegistry.
+     *
+     * @return AppRegistry
+     */
+    public static function getInstance(): AppRegistry
     {
-        parent::__construct($array, $flags);
-    }
-
-    public static function setInstance(AppRegistry $registry)
-    {
-        if (self::$appRegistry !== null) {
-            throw new SystemException('Registry is already initialized');
-        }
-        self::$appRegistry = $registry;
-    }
-
-    public static function getInstance()
-    {
-        if (self::$appRegistry === null) {
-            self::init();
-        }
-        return self::$appRegistry;
-    }
-
-    protected static function init()
-    {
-        self::setInstance(new self());
-    }
-
-    public static function set($index, $value)
-    {
-        $instance = self::getInstance();
-        $instance->offsetSet($index, $value);
-    }
-
-    public static function get($index)
-    {
-        $instance = self::getInstance();
-
-        if (!$instance->offsetExists($index)) {
-            throw new SystemException("No entry is registered for key '$index'");
+        if (null === static::$instance) {
+            static::$instance = new static();
         }
 
-        return $instance->offsetGet($index);
+        return static::$instance;
+    }
+
+    /**
+     * Stores a value in the registry.
+     *
+     * @param string $key
+     * @param mixed $value
+     */
+    public function set(string $key, $value): void
+    {
+        $this->values[$key] = $value;
+    }
+
+    /**
+     * Gets a value from the registry.
+     *
+     * @param string $key
+     * @return mixed
+     */
+    public function get(string $key)
+    {
+        return $this->values[$key] ?? null;
+    }
+
+    /**
+     * AppRegistry constructor.
+     */
+    protected function __construct()
+    {
+    }
+
+    /**
+     * Prevent the instance from being cloned.
+     */
+    private function __clone()
+    {
+    }
+
+    /**
+     * Prevent the instance from being unserialized.
+     */
+    private function __wakeup()
+    {
     }
 }

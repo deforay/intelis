@@ -13,6 +13,12 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
+$_COOKIE = $request->getCookieParams();
+
 ?>
 <style>
 	.center {
