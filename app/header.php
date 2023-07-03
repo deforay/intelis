@@ -96,12 +96,11 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/skins/_all-skins.min.css">
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/plugins/daterangepicker/daterangepicker.css" />
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/select2.min.css" />
-	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/style.css" />
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/deforayModal.css" />
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery.fastconfirm.css" />
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/components-rounded.min.css">
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/select2.live.min.css" />
-
+	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/style.css" />
 	<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 	<script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="/assets/js/deforayModal.js"></script>
@@ -115,14 +114,14 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 	</style>
 </head>
 
-<body class="hold-transition <?= $skin; ?> sidebar-mini" id="lis-body">
+<body class="hold-transition <?= $skin; ?> sidebar-mini" id="lis-body" style="margin-top:50px !important;">
 	<div class="wrapper">
 		<header class="main-header">
-			<a href="<?= ($usersService->isAllowed('/dashboard/index.php') === true) ? '/dashboard/index.php' : '#'; ?>" class="logo">
+			<a href="<?= $_SESSION['landingPage']; ?>" class="logo" style="position: fixed;top: 0;">
 				<span class="logo-mini"><strong><?= $smallLogoName; ?></strong></span>
 				<span class="logo-lg" style="font-weight:bold;"><?= $logoName; ?></span>
 			</a>
-			<nav class="navbar navbar-static-top">
+			<nav class="navbar navbar-fixed-top">
 				<!-- Sidebar toggle button-->
 				<a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
 					<span class="sr-only">Toggle navigation</span>

@@ -25,6 +25,32 @@ class CommonService
         $this->db = $db ?? ContainerRegistry::get('db');
     }
 
+    public function getActiveModules(): array
+    {
+        $activeModules = ['admin', 'dashboard'];
+
+        if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
+            $activeModules[] = 'vl';
+        }
+        if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
+            $activeModules[] = 'eid';
+        }
+        if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
+            $activeModules[] = 'covid19';
+        }
+        if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis']) {
+            $activeModules[] = 'hepatitis';
+        }
+        if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
+            $activeModules[] = 'tb';
+        }
+        if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true) {
+            $activeModules[] = 'generic-tests';
+        }
+
+        return $activeModules;
+    }
+
     public function generateRandomString($length = 32): string
     {
         // Ensure $length is always even

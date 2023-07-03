@@ -18,26 +18,7 @@ $systemService = ContainerRegistry::get(SystemService::class);
 
 $activeTestModules = $systemService->getActiveTestModules();
 
-$activeModules = array('admin', 'common');
-
-if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
-	$activeModules[] = 'vl';
-}
-if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
-	$activeModules[] = 'eid';
-}
-if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
-	$activeModules[] = 'covid19';
-}
-if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis']) {
-	$activeModules[] = 'hepatitis';
-}
-if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
-	$activeModules[] = 'tb';
-}
-if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true) {
-	$activeModules[] = 'generic-tests';
-}
+$activeModules = $general->getActiveModules();
 
 $resourcesQuery = "SELECT module, GROUP_CONCAT( DISTINCT CONCAT(resources.resource_id,',',resources.display_name) ORDER BY resources.display_name SEPARATOR '##' ) as 'module_resources' FROM `resources` WHERE `module` IN ('" . implode("','", $activeModules) . "') GROUP BY `module` ORDER BY `module` ASC";
 $rInfo = $db->query($resourcesQuery);
