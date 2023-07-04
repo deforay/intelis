@@ -83,10 +83,14 @@ try {
         if(!is_numeric($_POST['testCategory'])){
             $_POST['testCategory'] = $generic->quickInsert('r_generic_test_categories', array('test_category_name', 'test_category_status'), array($_POST['testCategory'], 'active'));
         }
+         // Convert to uppercase
+         $shortCode = strtoupper($_POST['testShortCode']);
+         // Remove all special characters and spaces, except hyphens
+         $shortCode = preg_replace('/[^A-Z0-9-]/', '', $shortCode);
         $data = array(
             'test_standard_name' => $_POST['testStandardName'],
             'test_generic_name' => $_POST['testGenericName'],
-            'test_short_code' => $_POST['testShortCode'],
+            'test_short_code' => $shortCode,
             'test_loinc_code' => !empty($_POST['testLoincCode']) ? $_POST['testLoincCode'] : null,
             'test_category' => !empty($_POST['testCategory']) ? $_POST['testCategory'] : null,
             'test_form_config' => json_encode($testAttribute),

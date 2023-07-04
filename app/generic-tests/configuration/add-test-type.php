@@ -97,7 +97,7 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 								<div class="form-group">
 									<label for="testShortCode" class="col-lg-4 control-label"><?php echo _("Test Short Code"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="testShortCode" name="testShortCode" placeholder='<?php echo _("Test Short Code"); ?>' title='<?php echo _("Please enter short code"); ?>' onblur='checkNameValidation("r_test_types","test_short_code",this,null,"<?php echo _("This test short code that you entered already exists.Try another code"); ?>",null); alphanumericValidation(this.value)' />
+										<input type="text" class="form-control isRequired" id="testShortCode" name="testShortCode" placeholder='<?php echo _("Test Short Code"); ?>' title='<?php echo _("Please enter short code"); ?>' onblur='checkNameValidation("r_test_types","test_short_code",this,null,"<?php echo _("This test short code that you entered already exists.Try another code"); ?>",null);' onchange="alphanumericValidation(this.value);" />
 									</div>
 								</div>
 							</div>
@@ -565,13 +565,20 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 	}
 
 	function alphanumericValidation(shortCode) {
-		var regEx = /^[0-9a-zA-Z]+$/;
+		/*var regEx = /^[0-9a-zA-Z]+$/;
 		if (shortCode.match(regEx)) {
 			return true;
 		} else {
 			alert("Please enter letters and numbers only in short code.");
 			return false;
-		}
+		}*/
+		// Convert to uppercase
+		shortCode = shortCode.toUpperCase();
+
+		// Remove all special characters and spaces, except hyphens
+		shortCode = shortCode.replace(/[^A-Z0-9-]/g, '');
+
+		$('#testShortCode').val(shortCode);
 	}
 
 	function insRow() {

@@ -26,10 +26,7 @@ $sources = array(
     'dhis2' => 'DHIS2'
 );
 
-/** @var SystemService $systemService */
-$systemService = ContainerRegistry::get(SystemService::class);
-
-$activeTestModules = $systemService->getActiveTestModules();
+$activeModules = SystemService::getActiveModules();
 
 ?>
 <style>
@@ -66,19 +63,19 @@ $activeTestModules = $systemService->getActiveTestModules();
                             <td><strong><?php echo _("Test Types"); ?>&nbsp;:</strong></td>
                             <td>
                                 <select id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
-                                    <?php if (!empty($activeTestModules) && in_array('vl', $activeTestModules)) { ?>
+                                    <?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
                                         <option value="vl"><?php echo _("Viral Load"); ?></option>
                                     <?php }
-                                    if (!empty($activeTestModules) && in_array('eid', $activeTestModules)) { ?>
+                                    if (!empty($activeModules) && in_array('eid', $activeModules)) { ?>
                                         <option value="eid"><?php echo _("Early Infant Diagnosis"); ?></option>
                                     <?php }
-                                    if (!empty($activeTestModules) && in_array('covid19', $activeTestModules)) { ?>
+                                    if (!empty($activeModules) && in_array('covid19', $activeModules)) { ?>
                                         <option value="covid19"><?php echo _("Covid-19"); ?></option>
                                     <?php }
-                                    if (!empty($activeTestModules) && in_array('hepatitis', $activeTestModules)) { ?>
+                                    if (!empty($activeModules) && in_array('hepatitis', $activeModules)) { ?>
                                         <option value='hepatitis'><?php echo _("Hepatitis"); ?></option>
                                     <?php }
-                                    if (!empty($activeTestModules) && in_array('tb', $activeTestModules)) { ?>
+                                    if (!empty($activeModules) && in_array('tb', $activeModules)) { ?>
                                         <option value='tb'><?php echo _("TB"); ?></option>
                                     <?php } ?>
                                 </select>

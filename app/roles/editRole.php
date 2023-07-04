@@ -1,7 +1,9 @@
 <?php
 
 
+use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
+use App\Services\SystemService;
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -14,32 +16,17 @@ $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
 $roleQuery = "SELECT * from roles where role_id= ?";
 $roleInfo = $db->rawQuery($roleQuery, [$id]);
 /* Not allowed to edit API role */
 if (isset($roleInfo[0]['role_code']) && $roleInfo[0]['role_code'] == 'API') {
 	header("Location:roles.php");
 }
-$activeModules = array('admin', 'common');
+$activeModules = SystemService::getActiveModules();
 
-if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
-	$activeModules[] = 'vl';
-}
-if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
-	$activeModules[] = 'eid';
-}
-if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
-	$activeModules[] = 'covid19';
-}
-if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
-	$activeModules[] = 'hepatitis';
-}
-if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
-	$activeModules[] = 'tb';
-}
-if (isset(SYSTEM_CONFIG['modules']['genericTests']) && SYSTEM_CONFIG['modules']['genericTests'] === true) {
-	$activeModules[] = 'generic-tests';
-}
 $resourcesQuery = "SELECT module, GROUP_CONCAT( DISTINCT CONCAT(resources.resource_id,',',resources.display_name) ORDER BY resources.display_name SEPARATOR '##' ) as 'module_resources' FROM `resources` WHERE `module` IN ('" . implode("','", $activeModules) . "') GROUP BY `module` ORDER BY `module` ASC";
 $rInfo = $db->query($resourcesQuery);
 
