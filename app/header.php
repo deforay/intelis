@@ -30,8 +30,6 @@ $appMenuService = ContainerRegistry::get(AppMenuService::class);
 
 $_SESSION['modules'] = $_SESSION['modules'] ?? [];
 
-$syncLatestTime = $general->getLastSyncDateTime();
-
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 

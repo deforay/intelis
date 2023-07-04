@@ -6,11 +6,13 @@ use App\Services\VlService;
 use App\Services\ApiService;
 use App\Services\EidService;
 use App\Helpers\ResultsHelper;
+use App\Services\BatchService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\SystemService;
+use App\Services\AppMenuService;
 use App\Services\Covid19Service;
 use App\Services\PatientsService;
 use App\Utilities\CaptchaUtility;
@@ -22,7 +24,6 @@ use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 use App\Services\GeoLocationsService;
-use App\Services\AppMenuService;
 use App\Utilities\ImageResizeUtility;
 use Psr\Container\ContainerInterface;
 use App\Helpers\SampleCodeGeneratorHelper;
@@ -78,6 +79,8 @@ $builder->addDefinitions([
     SystemService::class => DI\create(SystemService::class)
         ->constructor(DI\get(CommonService::class)),
     CommonService::class => DI\create(CommonService::class)
+        ->constructor(DI\get('db')),
+    BatchService::class => DI\create(BatchService::class)
         ->constructor(DI\get('db')),
     VlService::class => DI\create(VlService::class)
         ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(SampleCodeGeneratorHelper::class)),

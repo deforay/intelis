@@ -165,11 +165,11 @@ class CommonService
 
         $cipher = sodium_bin2base64(
             $nonce .
-                sodium_crypto_secretbox(
-                    $message,
-                    $nonce,
-                    $key
-                ),
+            sodium_crypto_secretbox(
+                $message,
+                $nonce,
+                $key
+            ),
             SODIUM_BASE64_VARIANT_URLSAFE
         );
         sodium_memzero($message);
@@ -462,37 +462,37 @@ class CommonService
             }
 
             $osArray = array(
-                '/windows nt 10/i'     =>  'Windows 10',
-                '/windows nt 6.3/i'    =>  'Windows 8.1',
-                '/windows nt 6.2/i'    =>  'Windows 8',
-                '/windows nt 6.1/i'    =>  'Windows 7',
-                '/windows nt 6.0/i'    =>  'Windows Vista',
-                '/windows nt 5.2/i'    =>  'Windows Server 2003/XP x64',
-                '/windows nt 5.1/i'    =>  'Windows XP',
-                '/windows xp/i'        =>  'Windows XP',
-                '/windows nt 5.0/i'    =>  'Windows 2000',
-                '/windows me/i'        =>  'Windows ME',
-                '/win98/i'             =>  'Windows 98',
-                '/win95/i'             =>  'Windows 95',
-                '/win16/i'             =>  'Windows 3.11',
-                '/macintosh|mac os x/i' =>  'Mac OS X',
-                '/mac_powerpc/i'       =>  'Mac OS 9',
-                '/linux/i'             =>  'Linux',
-                '/ubuntu/i'            =>  'Ubuntu',
-                '/iphone/i'            =>  'iPhone',
-                '/ipod/i'              =>  'iPod',
-                '/ipad/i'              =>  'iPad',
-                '/android/i'           =>  'Android',
-                '/blackberry/i'        =>  'BlackBerry',
-                '/webos/i'             =>  'Mobile',
-                '/fedora/i'            =>  'Fedora',
-                '/debian/i'            =>  'Debian',
-                '/freebsd/i'           =>  'FreeBSD',
-                '/openbsd/i'           =>  'OpenBSD',
-                '/netbsd/i'            =>  'NetBSD',
-                '/sunos/i'             =>  'SunOS',
-                '/solaris/i'           =>  'Solaris',
-                '/aix/i'               =>  'AIX'
+                '/windows nt 10/i' => 'Windows 10',
+                '/windows nt 6.3/i' => 'Windows 8.1',
+                '/windows nt 6.2/i' => 'Windows 8',
+                '/windows nt 6.1/i' => 'Windows 7',
+                '/windows nt 6.0/i' => 'Windows Vista',
+                '/windows nt 5.2/i' => 'Windows Server 2003/XP x64',
+                '/windows nt 5.1/i' => 'Windows XP',
+                '/windows xp/i' => 'Windows XP',
+                '/windows nt 5.0/i' => 'Windows 2000',
+                '/windows me/i' => 'Windows ME',
+                '/win98/i' => 'Windows 98',
+                '/win95/i' => 'Windows 95',
+                '/win16/i' => 'Windows 3.11',
+                '/macintosh|mac os x/i' => 'Mac OS X',
+                '/mac_powerpc/i' => 'Mac OS 9',
+                '/linux/i' => 'Linux',
+                '/ubuntu/i' => 'Ubuntu',
+                '/iphone/i' => 'iPhone',
+                '/ipod/i' => 'iPod',
+                '/ipad/i' => 'iPad',
+                '/android/i' => 'Android',
+                '/blackberry/i' => 'BlackBerry',
+                '/webos/i' => 'Mobile',
+                '/fedora/i' => 'Fedora',
+                '/debian/i' => 'Debian',
+                '/freebsd/i' => 'FreeBSD',
+                '/openbsd/i' => 'OpenBSD',
+                '/netbsd/i' => 'NetBSD',
+                '/sunos/i' => 'SunOS',
+                '/solaris/i' => 'Solaris',
+                '/aix/i' => 'AIX'
             );
 
             foreach ($osArray as $regex => $value) {
@@ -514,19 +514,19 @@ class CommonService
             }
 
             $browserArray = array(
-                '/msie/i'       =>  'Internet Explorer',
-                '/trident/i'    =>  'Internet Explorer',
-                '/firefox/i'    =>  'Firefox',
-                '/safari/i'     =>  'Safari',
-                '/chrome/i'     =>  'Chrome',
-                '/edge/i'       =>  'Edge',
-                '/opera/i'      =>  'Opera',
-                '/netscape/i'   =>  'Netscape',
-                '/maxthon/i'    =>  'Maxthon',
-                '/konqueror/i'  =>  'Konqueror',
-                '/mobile/i'     =>  'Mobile Browser',
-                '/applewebkit/i' =>  'Webkit Browser',
-                '/brave/i'      =>  'Brave'
+                '/msie/i' => 'Internet Explorer',
+                '/trident/i' => 'Internet Explorer',
+                '/firefox/i' => 'Firefox',
+                '/safari/i' => 'Safari',
+                '/chrome/i' => 'Chrome',
+                '/edge/i' => 'Edge',
+                '/opera/i' => 'Opera',
+                '/netscape/i' => 'Netscape',
+                '/maxthon/i' => 'Maxthon',
+                '/konqueror/i' => 'Konqueror',
+                '/mobile/i' => 'Mobile Browser',
+                '/applewebkit/i' => 'Webkit Browser',
+                '/brave/i' => 'Brave'
             );
 
             foreach ($browserArray as $regex => $value) {
@@ -547,9 +547,16 @@ class CommonService
             return $this->db->getValue("s_vlsm_instance", "vlsm_instance_id");
         });
     }
+
+    public function isRemoteUser(): bool
+    {
+        return once(function () {
+            return isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser';
+        });
+    }
     public function getLastSyncDateTime()
     {
-        if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser') {
+        if ($this->isRemoteUser()) {
             $dateTime = $this->db->rawQueryOne("SELECT MAX(`requested_on`) AS `dateTime`
                                                     FROM `track_api_requests`");
         } else {
@@ -563,41 +570,6 @@ class CommonService
         return (isset($dateTime['dateTime']) && $dateTime['dateTime'] != "") ?
             DateUtility::humanReadableDateFormat($dateTime['dateTime'], false, 'd-M-Y h:i:s a')
             : null;
-    }
-
-    public function doesBatchCodeExist($code)
-    {
-        $this->db->where("batch_code", $code);
-        return $this->db->getOne("batch_details");
-    }
-
-    public function createBatchCode()
-    {
-        $batchQuery = 'SELECT MAX(batch_code_key)
-                        FROM batch_details as bd
-                        WHERE DATE(bd.request_created_datetime) = CURRENT_DATE';
-        $batchResult = $this->db->query($batchQuery);
-
-        if (!empty($batchResult[0]['MAX(batch_code_key)'])) {
-            $code = $batchResult[0]['MAX(batch_code_key)'] + 1;
-            $length = strlen($code);
-            if ($length == 1) {
-                $code = "00" . $code;
-            } elseif ($length == 2) {
-                $code = "0" . $code;
-            }
-        } else {
-            $code = '001';
-        }
-        return $code;
-    }
-
-    public function excelColumnRange($lower, $upper): Generator
-    {
-        ++$upper;
-        for ($i = $lower; $i !== $upper; ++$i) {
-            yield $i;
-        }
     }
 
     public function fileExists($filePath): bool
@@ -618,17 +590,6 @@ class CommonService
     }
 
 
-    // This function removes control characters from the strings in the CSV file.
-    // https://en.wikipedia.org/wiki/Control_character#ASCII_control_characters
-    // Also checks UTF-8 encoding and converts if needed
-    public function removeCntrlCharsAndEncode($inputString, $encodeToUTF8 = true): string
-    {
-        $inputString = preg_replace('/[[:cntrl:]]/', '',  $inputString);
-        if ($encodeToUTF8 && mb_detect_encoding($inputString, 'UTF-8', true) === false) {
-            $inputString = mb_convert_encoding($inputString, 'UTF-8');
-        }
-        return $inputString;
-    }
 
     // Returns false if string not matched, and returns string if matched
     public function checkIfStringExists(string $sourceString, array $itemsToSearch, int $offset = 0)
@@ -673,15 +634,15 @@ class CommonService
             }
 
             $data = [
-                'transaction_id'    => $transactionId ?? null,
-                'requested_by'      => $user ?? 'system',
-                'requested_on'      => DateUtility::getCurrentDateTime(),
+                'transaction_id' => $transactionId ?? null,
+                'requested_by' => $user ?? 'system',
+                'requested_on' => DateUtility::getCurrentDateTime(),
                 'number_of_records' => $numberOfRecords ?? 0,
-                'request_type'      => $requestType ?? null,
-                'test_type'         => $testType ?? null,
-                'api_url'           => $url ?? null,
-                'facility_id'       => $labId ?? null,
-                'data_format'       => $format ?? null
+                'request_type' => $requestType ?? null,
+                'test_type' => $testType ?? null,
+                'api_url' => $url ?? null,
+                'facility_id' => $labId ?? null,
+                'data_format' => $format ?? null
             ];
             return $this->db->insert("track_api_requests", $data);
         } catch (Exception $exc) {
@@ -768,7 +729,7 @@ class CommonService
         if (!$table) {
             return null;
         }
-        $response =  $this->db->rawQueryOne("SHOW KEYS FROM " . $table . " WHERE Key_name = 'PRIMARY';");
+        $response = $this->db->rawQueryOne("SHOW KEYS FROM " . $table . " WHERE Key_name = 'PRIMARY';");
         return $response['Column_name'] ?? null;
     }
 }
