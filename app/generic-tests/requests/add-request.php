@@ -1449,7 +1449,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     },
                     function(data) {
                          if (data === '1') {
-                              showModal('patientModal.php?artNo=' + obj.value, 900, 520);
+                              showModal('patientModal.php?artNo=' + obj.value + '&testType=' + $.trim($("#testType").val()), 900, 520);
                          }
                     });
           }
@@ -1777,6 +1777,16 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          }
                     });
           }
+     }
+     function showModal(url, w, h) {
+          showdefModal('dDiv', w, h);
+          document.getElementById('dFrame').style.height = h + 'px';
+          document.getElementById('dFrame').style.width = w + 'px';
+          document.getElementById('dFrame').src = url;
+     }
+     function closeModal() {
+          document.getElementById('dFrame').src = "";
+          hidedefModal('dDiv');
      }
 </script>
 
