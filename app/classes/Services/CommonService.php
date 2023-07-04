@@ -359,27 +359,11 @@ class CommonService
 
     public function getRejectionReasons($testType): array
     {
-        $rejArray = array('general', 'whole blood', 'plasma', 'dbs', 'testing');
-        if ($testType == "vl") {
-            $rejArray = array('general', 'whole blood', 'plasma', 'dbs', 'testing');
-        }
-        if ($testType == "eid") {
-            $rejArray = array('general', 'whole blood', 'plasma', 'dbs', 'testing');
-        }
-        if ($testType == "covid19") {
-            $rejArray = array('general', 'whole blood', 'plasma', 'dbs', 'testing');
-        }
-        if ($testType == "hepatitis") {
-            $rejArray = array('general', 'whole blood', 'plasma', 'dbs', 'testing');
-        }
-        if ($testType == "tb") {
-            $rejArray = array('general', 'whole blood', 'plasma', 'dbs', 'testing');
-        }
-        if ($testType == "generic-tests") {
-            $rejArray = array('general', 'whole blood', 'plasma', 'dbs', 'testing');
-        }
-        foreach ($rejArray as $rej) {
-            $rejReaons[$rej] = ($rej);
+        $rejArray = ['general', 'whole blood', 'plasma', 'dbs', 'testing'];
+        if (in_array($testType, ['vl', 'eid', 'covid19', 'hepatitis', 'tb', 'generic-tests'])) {
+            foreach ($rejArray as $rej) {
+                $rejReaons[$rej] = $rej;
+            }
         }
         return $rejReaons;
     }
@@ -571,25 +555,6 @@ class CommonService
             DateUtility::humanReadableDateFormat($dateTime['dateTime'], false, 'd-M-Y h:i:s a')
             : null;
     }
-
-    public function fileExists($filePath): bool
-    {
-        return !empty($filePath) &&
-            file_exists($filePath) &&
-            !is_dir($filePath) &&
-            filesize($filePath) > 0;
-    }
-
-    public function imageExists($filePath): bool
-    {
-        return !empty($filePath) &&
-            file_exists($filePath) &&
-            !is_dir($filePath) &&
-            filesize($filePath) > 0 &&
-            false !== getimagesize($filePath);
-    }
-
-
 
     // Returns false if string not matched, and returns string if matched
     public function checkIfStringExists(string $sourceString, array $itemsToSearch, int $offset = 0)

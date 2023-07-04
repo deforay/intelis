@@ -1,8 +1,9 @@
 <?php
 
+use App\Utilities\MiscUtility;
+use App\Services\CommonService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 
 $webRootPath = realpath(WEB_ROOT);
 
@@ -11,6 +12,7 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
 
 if (!isset($_GET['f']) || !is_file(base64_decode($_GET['f']))) {
     $redirect = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/';
@@ -38,7 +40,7 @@ if ($file === false) {
     throw new SystemException('Cannot download this file');
 }
 
-if (!$general->startsWith($file, $webRootPath) || !$general->fileExists($file)) {
+if (!$general->startsWith($file, $webRootPath) || !MiscUtility::fileExists($file)) {
     http_response_code(403);
     throw new SystemException('Cannot download this file');
 }
