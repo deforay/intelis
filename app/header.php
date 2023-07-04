@@ -72,7 +72,9 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 <head>
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<title><?= $shortName . " | " . ($title ?? $shortCode); ?></title>
+	<title>
+		<?= $shortName . " | " . ($title ?? $shortCode); ?>
+	</title>
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 	<meta name="viewport" content="width=1024">
 
@@ -117,8 +119,12 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 	<div class="wrapper">
 		<header class="main-header">
 			<a href="<?= $_SESSION['landingPage']; ?>" class="logo" style="position: fixed;top: 0;">
-				<span class="logo-mini"><strong><?= $smallLogoName; ?></strong></span>
-				<span class="logo-lg" style="font-weight:bold;"><?= $logoName; ?></span>
+				<span class="logo-mini"><strong>
+						<?= $smallLogoName; ?>
+					</strong></span>
+				<span class="logo-lg" style="font-weight:bold;">
+					<?= $logoName; ?>
+				</span>
 			</a>
 			<nav class="navbar navbar-fixed-top">
 				<!-- Sidebar toggle button-->
@@ -128,35 +134,47 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 				<ul class="nav navbar-nav">
 					<li>
 						<a href="javascript:void(0);return false;">
-							<span style="text-transform: uppercase;font-weight:600;"><?= $systemType; ?></span>
+							<span style="text-transform: uppercase;font-weight:600;">
+								<?= $systemType; ?>
+							</span>
 						</a>
 					</li>
 				</ul>
 				<div class="navbar-custom-menu">
 					<ul class="nav navbar-nav">
 						<?php if (!empty(SYSTEM_CONFIG['recency']['crosslogin']) && SYSTEM_CONFIG['recency']['crosslogin'] === true && !empty(SYSTEM_CONFIG['recency']['url'])) {
-						?>
+							?>
 							<li class="user-menu">
-								<a onclick="setCrossLogin();" href="<?= rtrim(SYSTEM_CONFIG['recency']['url'], "/") . '/login?u=' . base64_encode($_SESSION['loginId']) . '&t=' . ($_SESSION['crossLoginPass']) . '&name=' . base64_encode($_SESSION['userName']); ?>" class="btn btn-link"><span class="fa-solid fa-arrow-up-right-from-square"></span> Recency</a>
+								<a onclick="setCrossLogin();"
+									href="<?= rtrim(SYSTEM_CONFIG['recency']['url'], "/") . '/login?u=' . base64_encode($_SESSION['loginId']) . '&t=' . ($_SESSION['crossLoginPass']) . '&name=' . base64_encode($_SESSION['userName']); ?>"
+									class="btn btn-link"><span class="fa-solid fa-arrow-up-right-from-square"></span>
+									Recency</a>
 							</li>
 						<?php } ?>
 
 						<li class="dropdown user user-menu">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 								<span class="fa-solid fa-hospital-user"></span>
-								<span class="hidden-xs"><?= $_SESSION['userName'] ?? ''; ?></span>
-								<span class="fa-solid fa-circle is-remote-server-reachable" style="font-size:1em;display:none;"></span>
+								<span class="hidden-xs">
+									<?= $_SESSION['userName'] ?? ''; ?>
+								</span>
+								<span class="fa-solid fa-circle is-remote-server-reachable"
+									style="font-size:1em;display:none;"></span>
 							</a>
 							<ul class="dropdown-menu">
 								<?php
 								if (!empty($arr['edit_profile']) && $arr['edit_profile'] == 'yes') {
-								?>
+									?>
 									<li class="user-footer">
-										<a href="/users/editProfile.php" class=""><?= _("Edit Profile"); ?></a>
+										<a href="/users/editProfile.php" class="">
+											<?= _("Edit Profile"); ?>
+										</a>
 									</li>
 								<?php } ?>
 								<li class="user-footer">
-									<a href="/login/logout.php"><?= _("Sign out"); ?></a>
+									<a href="/login/logout.php">
+										<?= _("Sign out"); ?>
+									</a>
 								</li>
 							</ul>
 						</li>
@@ -187,11 +205,13 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 						if ($menu['is_header'] == 'yes') {
 							echo '<li class="header">' . $menu['display_text'];
 						} else {
-					?>
+							?>
 
 							<li class="<?= $classNames; ?>">
 								<a href="<?= $menu['link'] ?>">
-									<span class="<?= $menu['icon'] ?>"></span> <span><?= _($menu['display_text']); ?></span>
+									<span class="<?= $menu['icon'] ?>"></span> <span>
+										<?= _($menu['display_text']); ?>
+									</span>
 
 									<?php if ($menu['has_children'] == 'yes') { ?>
 										<span class="pull-right-container">
@@ -200,19 +220,21 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 									<?php } ?>
 								</a>
 							<?php } ?>
-							<?php if ($menu['has_children'] == "yes") {
-								if ($menu['is_header'] == 'no') { ?>
-									<ul class="treeview-menu">
+						<?php if ($menu['has_children'] == "yes") {
+							if ($menu['is_header'] == 'no') { ?>
+								<ul class="treeview-menu">
 									<?php
-								}
+							}
 
-								foreach ($menu['children'] as $subMenu) {
-									?>
+							foreach ($menu['children'] as $subMenu) {
+								?>
 										<?php if ($subMenu['has_children'] == 'yes' && !empty($subMenu['children'])) { ?>
 											<li class="<?= $subMenu['additional_class_names'] ?> ">
 												<a href="<?= $subMenu['link']; ?>">
 													<span class="<?= $subMenu['icon'] ?>"></span>
-													<span><?= _($subMenu['display_text']); ?></span>
+													<span>
+														<?= _($subMenu['display_text']); ?>
+													</span>
 													<span class="pull-right-container">
 														<span class="fa-solid fa-angle-left pull-right"></span>
 													</span>
@@ -227,31 +249,32 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 																$dataInnerPages = implode(';', array_map('base64_encode', $dataInnerPages));
 																$innerPages = 'data-inner-pages="' . $dataInnerPages . '"';
 															}
-														?>
+															?>
 															<li class="<?= $childMenu['additional_class_names'] ?>">
 																<a href="<?= $childMenu['link'] ?>" <?= $innerPages; ?>>
-																	<span class="<?= $childMenu['icon'] ?>"></span> <?= _($childMenu['display_text']); ?>
+																	<span class="<?= $childMenu['icon'] ?>"></span>
+																	<?= _($childMenu['display_text']); ?>
 																</a>
 															</li>
-														<?php
+															<?php
 														}
 														?>
 													</ul>
 												<?php } ?>
 											</li>
-									<?php
+											<?php
 										}
-									} ?>
-									<?php if ($menu['is_header'] == 'no') { ?>
-									</ul>
-								<?php } ?>
+							} ?>
+							<?php if ($menu['is_header'] == 'no') { ?>
+								</ul>
 							<?php } ?>
+						<?php } ?>
 
-							</li>
+						</li>
 
-						<?php }
+					<?php }
 
-						?>
+					?>
 				</ul>
 
 			</section>
@@ -262,7 +285,8 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 			<div style="text-align:center">
 				<span onclick="closeModal();" style="float:right;clear:both;" class="closeModal"></span>
 			</div>
-			<iframe id="dFrame" src="" title="LIS Content" style="border:none;" scrolling="yes" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0">
+			<iframe id="dFrame" src="" title="LIS Content" style="border:none;" scrolling="yes" marginwidth="0"
+				marginheight="0" frameborder="0" vspace="0" hspace="0">
 				<?= _("Unable to load this page or resource"); ?>
 			</iframe>
 		</div>

@@ -35,61 +35,61 @@ $i = 0;
 if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $table = "form_eid";
     $primaryKey = "eid_id";
-    $samplesReceivedChart   = "eidSamplesReceivedChart";
-    $samplesTestedChart     = "eidSamplesTestedChart";
-    $samplesRejectedChart   = "eidSamplesRejectedChart";
-    $samplesWaitingChart    = "eidSamplesWaitingChart";
-    $samplesOverviewChart   = "eidSamplesOverviewChart";
+    $samplesReceivedChart = "eidSamplesReceivedChart";
+    $samplesTestedChart = "eidSamplesTestedChart";
+    $samplesRejectedChart = "eidSamplesRejectedChart";
+    $samplesWaitingChart = "eidSamplesWaitingChart";
+    $samplesOverviewChart = "eidSamplesOverviewChart";
 } else if (isset($_POST['type']) && trim($_POST['type']) == 'covid19') {
     $table = "form_covid19";
     $primaryKey = "covid19_id";
-    $samplesReceivedChart   = "covid19SamplesReceivedChart";
-    $samplesTestedChart     = "covid19SamplesTestedChart";
-    $samplesNotTestedChart  = "covid19SamplesNotTestedChart";
-    $samplesRejectedChart   = "covid19SamplesRejectedChart";
-    $samplesWaitingChart    = "covid19SamplesWaitingChart";
-    $samplesOverviewChart   = "covid19SamplesOverviewChart";
+    $samplesReceivedChart = "covid19SamplesReceivedChart";
+    $samplesTestedChart = "covid19SamplesTestedChart";
+    $samplesNotTestedChart = "covid19SamplesNotTestedChart";
+    $samplesRejectedChart = "covid19SamplesRejectedChart";
+    $samplesWaitingChart = "covid19SamplesWaitingChart";
+    $samplesOverviewChart = "covid19SamplesOverviewChart";
 } else if (isset($_POST['type']) && trim($_POST['type']) == 'hepatitis') {
     $table = "form_hepatitis";
     $primaryKey = "hepatitis_id";
-    $samplesReceivedChart   = "hepatitisSamplesReceivedChart";
-    $samplesTestedChart     = "hepatitisSamplesTestedChart";
-    $samplesRejectedChart   = "hepatitisSamplesRejectedChart";
-    $samplesWaitingChart    = "hepatitisSamplesWaitingChart";
-    $samplesOverviewChart   = "hepatitisSamplesOverviewChart";
+    $samplesReceivedChart = "hepatitisSamplesReceivedChart";
+    $samplesTestedChart = "hepatitisSamplesTestedChart";
+    $samplesRejectedChart = "hepatitisSamplesRejectedChart";
+    $samplesWaitingChart = "hepatitisSamplesWaitingChart";
+    $samplesOverviewChart = "hepatitisSamplesOverviewChart";
 } else if (isset($_POST['type']) && trim($_POST['type']) == 'vl') {
 
     $recencyWhere = " IFNULL(reason_for_vl_testing, 0)  != 9999 ";
     $table = "form_vl";
     $primaryKey = "vl_sample_id";
-    $samplesReceivedChart   = "vlSamplesReceivedChart";
-    $samplesTestedChart     = "vlSamplesTestedChart";
-    $samplesRejectedChart   = "vlSamplesRejectedChart";
-    $samplesWaitingChart    = "vlSamplesWaitingChart";
-    $samplesOverviewChart   = "vlSamplesOverviewChart";
+    $samplesReceivedChart = "vlSamplesReceivedChart";
+    $samplesTestedChart = "vlSamplesTestedChart";
+    $samplesRejectedChart = "vlSamplesRejectedChart";
+    $samplesWaitingChart = "vlSamplesWaitingChart";
+    $samplesOverviewChart = "vlSamplesOverviewChart";
 } else if (isset($_POST['type']) && trim($_POST['type']) == 'recency') {
     $recencyWhere = " reason_for_vl_testing = 9999 ";
     $table = "form_vl";
     $primaryKey = "vl_sample_id";
-    $samplesReceivedChart   = "recencySamplesReceivedChart";
-    $samplesTestedChart     = "recencySamplesTestedChart";
-    $samplesRejectedChart   = "recencySamplesRejectedChart";
-    $samplesWaitingChart    = "recencySamplesWaitingChart";
-    $samplesOverviewChart   = "recencySamplesOverviewChart";
+    $samplesReceivedChart = "recencySamplesReceivedChart";
+    $samplesTestedChart = "recencySamplesTestedChart";
+    $samplesRejectedChart = "recencySamplesRejectedChart";
+    $samplesWaitingChart = "recencySamplesWaitingChart";
+    $samplesOverviewChart = "recencySamplesOverviewChart";
 } else if (isset($_POST['type']) && trim($_POST['type']) == 'tb') {
     $table = "form_tb";
     $primaryKey = "tb_id";
-    $samplesReceivedChart   = "tbSamplesReceivedChart";
-    $samplesTestedChart     = "tbSamplesTestedChart";
-    $samplesRejectedChart   = "tbSamplesRejectedChart";
-    $samplesWaitingChart    = "tbSamplesWaitingChart";
-    $samplesOverviewChart   = "tbSamplesOverviewChart";
+    $samplesReceivedChart = "tbSamplesReceivedChart";
+    $samplesTestedChart = "tbSamplesTestedChart";
+    $samplesRejectedChart = "tbSamplesRejectedChart";
+    $samplesWaitingChart = "tbSamplesWaitingChart";
+    $samplesOverviewChart = "tbSamplesOverviewChart";
 }
 
 $systemType = $general->getSystemConfig('sc_user_type');
 
 if ($systemType != 'remoteuser') {
-    $whereCondition = " result_status!=9  AND ";
+    $whereCondition = " result_status!= " . SAMPLE_STATUS_RECEIVED_AT_CLINIC . "  AND ";
 } else {
     $whereCondition = "";
     if (!empty($_SESSION['facilityMap'])) {
@@ -281,7 +281,7 @@ if ($table == "form_covid19") {
 
     .select2-container--default .select2-selection--multiple .select2-selection__choice {
         /* background-color: #00c0ef;
-			border-color: #00acd6; */
+            border-color: #00acd6; */
         color: #000 !important;
         font-family: helvetica, arial, sans-serif;
     }
@@ -293,8 +293,12 @@ if ($table == "form_covid19") {
                 <h3 class="font-green-sharp">
                     <span data-counter="counterup" data-value="<?php echo $receivedTotal; ?>"><?php echo $receivedTotal; ?></span>
                 </h3>
-                <small class="font-green-sharp"><?php echo _("SAMPLES REGISTERED"); ?></small><br>
-                <small class="font-green-sharp" style="font-size:0.75em;"><?php echo _("in selected range"); ?></small>
+                <small class="font-green-sharp">
+                    <?php echo _("SAMPLES REGISTERED"); ?>
+                </small><br>
+                <small class="font-green-sharp" style="font-size:0.75em;">
+                    <?php echo _("in selected range"); ?>
+                </small>
             </div>
             <div class="icon font-green-sharp">
                 <em class="fa-solid fa-chart-simple"></em>
@@ -310,8 +314,12 @@ if ($table == "form_covid19") {
                 <h3 class="font-blue-sharp">
                     <span data-counter="counterup" data-value="<?php echo $acceptedTotal; ?>"><?php echo $acceptedTotal; ?></span>
                 </h3>
-                <small class="font-blue-sharp"><?php echo _("SAMPLES TESTED"); ?></small><br>
-                <small class="font-blue-sharp" style="font-size:0.75em;"><?php echo _("In Selected Range"); ?></small>
+                <small class="font-blue-sharp">
+                    <?php echo _("SAMPLES TESTED"); ?>
+                </small><br>
+                <small class="font-blue-sharp" style="font-size:0.75em;">
+                    <?php echo _("In Selected Range"); ?>
+                </small>
             </div>
             <div class="icon">
                 <em class="fa-solid fa-chart-simple"></em>
@@ -328,8 +336,12 @@ if ($table == "form_covid19") {
                 <h3 class="font-red-haze">
                     <span data-counter="counterup" data-value="<?php echo $rejectedTotal; ?>"><?php echo $rejectedTotal; ?></span>
                 </h3>
-                <small class="font-red-haze"><?php echo _("SAMPLES REJECTED"); ?></small><br>
-                <small class="font-red-haze" style="font-size:0.75em;"><?php echo _("In Selected Range"); ?></small>
+                <small class="font-red-haze">
+                    <?php echo _("SAMPLES REJECTED"); ?>
+                </small><br>
+                <small class="font-red-haze" style="font-size:0.75em;">
+                    <?php echo _("In Selected Range"); ?>
+                </small>
             </div>
             <div class="icon">
                 <em class="fa-solid fa-chart-simple"></em>
@@ -346,8 +358,12 @@ if ($table == "form_covid19") {
                 <h3 class="font-purple-soft">
                     <span data-counter="counterup" data-value="<?php echo $waitingTotal; ?>"><?php echo $waitingTotal; ?></span>
                 </h3>
-                <small class="font-purple-soft"><?php echo _("SAMPLES WITH NO RESULTS"); ?></small><br>
-                <small class="font-purple-soft" style="font-size:0.75em;"><?php echo _("(LAST 6 MONTHS)"); ?></small>
+                <small class="font-purple-soft">
+                    <?php echo _("SAMPLES WITH NO RESULTS"); ?>
+                </small><br>
+                <small class="font-purple-soft" style="font-size:0.75em;">
+                    <?php echo _("(LAST 6 MONTHS)"); ?>
+                </small>
 
             </div>
             <div class="icon">
@@ -361,8 +377,12 @@ if ($table == "form_covid19") {
     <div class="dashboard-stat2 bluebox" style="cursor:pointer;">
         <div class="display font-purple-soft">
             <div class="number">
-                <h4 class="font-purple-soft" style="font-weight:600;"><?= _("OVERALL SAMPLE STATUS"); ?></h4>
-                <small class="font-purple-soft" style="font-size:0.75em;"><?= _("(BASED ON SAMPLES COLLECTED IN THE SELECTED DATE RANGE)"); ?></small>
+                <h4 class="font-purple-soft" style="font-weight:600;">
+                    <?= _("OVERALL SAMPLE STATUS"); ?>
+                </h4>
+                <small class="font-purple-soft" style="font-size:0.75em;">
+                    <?= _("(BASED ON SAMPLES COLLECTED IN THE SELECTED DATE RANGE)"); ?>
+                </small>
             </div>
             <div class="icon">
                 <em class="fa-solid fa-chart-simple"></em>
@@ -433,14 +453,14 @@ if ($table == "form_covid19") {
                 showInLegend: false,
                 name: 'Samples',
                 data: [<?php
-                        foreach ($tResult as $tRow) {
-                            echo ($tRow['total']) . ",";
-                        }
-                        ?>]
+                foreach ($tResult as $tRow) {
+                    echo ($tRow['total']) . ",";
+                }
+                ?>]
 
-            }],
-            colors: ['#2ab4c0'],
-        });
+                }],
+        colors: ['#2ab4c0'],
+            });
     <?php }
     //waiting result
     if ($waitingTotal > 0) { ?>
@@ -460,110 +480,110 @@ if ($table == "form_covid19") {
             },
             xAxis: {
                 categories: [<?php
-                                foreach ($waitingResult as $total) {
-                                    echo "'" . ($total['date']) . "',";
-                                }
-                                ?>],
-                crosshair: true,
-                scrollbar: {
-                    enabled: true
-                },
+                foreach ($waitingResult as $total) {
+                    echo "'" . ($total['date']) . "',";
+                }
+                ?>],
+            crosshair: true,
+            scrollbar: {
+                enabled: true
             },
+        },
             yAxis: {
-                min: 0,
-                title: {
-                    text: null
-                }
-            },
+            min: 0,
+            title: {
+                text: null
+            }
+        },
             tooltip: {
-                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
-                footerFormat: '</table>',
-                shared: true,
-                useHTML: true
-            },
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
             plotOptions: {
-                column: {
-                    pointPadding: 0.2,
-                    borderWidth: 0,
-                    cursor: 'pointer',
-                }
-            },
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0,
+                cursor: 'pointer',
+            }
+        },
             series: [{
                 showInLegend: false,
                 name: 'Samples',
                 data: [<?php
-                        foreach ($waitingResult as $total) {
-                            echo ($total[0]['total']) . ",";
-                        }
-                        ?>]
+                foreach ($waitingResult as $total) {
+                    echo ($total[0]['total']) . ",";
+                }
+                ?>]
 
             }],
-            colors: ['#8877a9']
+    colors: ['#8877a9']
         });
     <?php }
     if ($acceptedTotal > 0) {
-    ?>
+        ?>
 
-        $('#<?php echo $samplesTestedChart; ?>').highcharts({
-            chart: {
-                type: 'column',
-                height: 150
-            },
-            title: {
-                text: ''
-            },
-            subtitle: {
-                text: ''
-            },
-            credits: {
-                enabled: false
-            },
-            xAxis: {
-                categories: [<?php
-                                foreach ($acceptedResult as $tRow) {
-                                    echo "'" . ($tRow['date']) . "',";
-                                }
-                                ?>],
-                crosshair: true,
-                scrollbar: {
-                    enabled: true
+                $('#<?php echo $samplesTestedChart; ?>').highcharts({
+                    chart: {
+                        type: 'column',
+                        height: 150
+                    },
+                    title: {
+                        text: ''
+                    },
+                    subtitle: {
+                        text: ''
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    xAxis: {
+                        categories: [<?php
+                        foreach ($acceptedResult as $tRow) {
+                            echo "'" . ($tRow['date']) . "',";
+                        }
+                        ?>],
+                    crosshair: true,
+                    scrollbar: {
+                        enabled: true
+                    },
                 },
-            },
-            yAxis: {
-                min: 0,
-                title: {
-                    text: null
-                }
-            },
-            tooltip: {
-                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
-                footerFormat: '</table>',
-                shared: true,
-                useHTML: true
-            },
-            plotOptions: {
-                column: {
-                    pointPadding: 0.2,
-                    borderWidth: 0,
-                    cursor: 'pointer',
-                }
-            },
-            series: [{
-                showInLegend: false,
-                name: 'Samples',
-                data: [<?php
+                    yAxis: {
+                    min: 0,
+                    title: {
+                        text: null
+                    }
+                },
+                    tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                    plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0,
+                        cursor: 'pointer',
+                    }
+                },
+                    series: [{
+                        showInLegend: false,
+                        name: 'Samples',
+                        data: [<?php
                         foreach ($acceptedResult as $tRow) {
                             echo ($tRow['total']) . ",";
                         }
                         ?>]
 
-            }],
-            colors: ['#7cb72a']
-        });
+                }],
+        colors: ['#7cb72a']
+            });
     <?php }
 
     if ($rejectedTotal > 0) { ?>
@@ -583,47 +603,47 @@ if ($table == "form_covid19") {
             },
             xAxis: {
                 categories: [<?php
-                                foreach ($rejectedResult as $tRow) {
-                                    echo "'" . ($tRow['date']) . "',";
-                                }
-                                ?>],
-                crosshair: true,
-                scrollbar: {
-                    enabled: true
-                },
+                foreach ($rejectedResult as $tRow) {
+                    echo "'" . ($tRow['date']) . "',";
+                }
+                ?>],
+            crosshair: true,
+            scrollbar: {
+                enabled: true
             },
+        },
             yAxis: {
-                min: 0,
-                title: {
-                    text: null
-                }
-            },
+            min: 0,
+            title: {
+                text: null
+            }
+        },
             tooltip: {
-                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
-                footerFormat: '</table>',
-                shared: true,
-                useHTML: true
-            },
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
             plotOptions: {
-                column: {
-                    pointPadding: 0.2,
-                    borderWidth: 0,
-                    cursor: 'pointer',
-                }
-            },
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0,
+                cursor: 'pointer',
+            }
+        },
             series: [{
                 showInLegend: false,
                 name: "<?php echo _("Samples"); ?>",
                 data: [<?php
-                        foreach ($rejectedResult as $tRow) {
-                            echo ($tRow['total']) . ",";
-                        }
-                        ?>]
+                foreach ($rejectedResult as $tRow) {
+                    echo ($tRow['total']) . ",";
+                }
+                ?>]
 
             }],
-            colors: ['#5C9BD1']
+    colors: ['#5C9BD1']
         });
     <?php }
     //}
@@ -668,7 +688,7 @@ if ($table == "form_covid19") {
             },
 
             tooltip: {
-                formatter: function() {
+                formatter: function () {
                     return '<strong>' + this.x + '</strong><br/>' +
                         this.series.name + ': ' + this.y + '<br/>' +
                         'Total: ' + this.point.stackTotal;
@@ -689,32 +709,32 @@ if ($table == "form_covid19") {
                 name: 'Sample',
                 showInLegend: false,
                 data: [{
-                        y: <?php echo (isset($aggregateResult['tested'])) ? $aggregateResult['tested'] : 0; ?>,
+                    y: <?php echo (isset($aggregateResult['tested'])) ? $aggregateResult['tested'] : 0; ?>,
                         color: '#039BE6'
-                    },
-                    {
-                        y: <?php echo (isset($aggregateResult['rejected'])) ? $aggregateResult['rejected'] : 0; ?>,
-                        color: '#492828'
-                    },
-                    {
-                        y: <?php echo (isset($aggregateResult['hold'])) ? $aggregateResult['hold'] : 0; ?>,
-                        color: '#60d18f'
-                    },
-                    {
-                        y: <?php echo (isset($aggregateResult['registeredAtTestingLab'])) ? $aggregateResult['registeredAtTestingLab'] : 0; ?>,
-                        color: '#ff1900'
-                    },
-                    {
-                        y: <?php echo (isset($aggregateResult['awaitingApproval'])) ? $aggregateResult['awaitingApproval'] : 0; ?>,
-                        color: '#395B64'
-                    },
-                    {
-                        y: <?php echo (isset($aggregateResult['registeredAtCollectionPoint'])) ? $aggregateResult['registeredAtCollectionPoint'] : 0; ?>,
-                        color: '#2C3333'
-                    }
+    },
+    {
+        y: <?php echo (isset($aggregateResult['rejected'])) ? $aggregateResult['rejected'] : 0; ?>,
+            color: '#492828'
+    },
+    {
+        y: <?php echo (isset($aggregateResult['hold'])) ? $aggregateResult['hold'] : 0; ?>,
+            color: '#60d18f'
+    },
+    {
+        y: <?php echo (isset($aggregateResult['registeredAtTestingLab'])) ? $aggregateResult['registeredAtTestingLab'] : 0; ?>,
+            color: '#ff1900'
+    },
+    {
+        y: <?php echo (isset($aggregateResult['awaitingApproval'])) ? $aggregateResult['awaitingApproval'] : 0; ?>,
+            color: '#395B64'
+    },
+    {
+        y: <?php echo (isset($aggregateResult['registeredAtCollectionPoint'])) ? $aggregateResult['registeredAtCollectionPoint'] : 0; ?>,
+            color: '#2C3333'
+    }
                 ],
-                stack: 'total',
-                color: 'red',
+    stack: 'total',
+        color: 'red',
             }]
         });
     <?php } ?>

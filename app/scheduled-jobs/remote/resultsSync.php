@@ -58,7 +58,7 @@ try {
         $genericQuery = "SELECT generic.*, a.user_name as 'approved_by_name'
                     FROM `form_generic` AS generic
                     LEFT JOIN `user_details` AS a ON generic.result_approved_by = a.user_id
-                    WHERE result_status != 9
+                    WHERE result_status != " . SAMPLE_STATUS_RECEIVED_AT_CLINIC . "
                     AND sample_code !=''
                     AND sample_code is not null
                     AND generic.data_sync=0";
@@ -99,7 +99,7 @@ try {
         $vlQuery = "SELECT vl.*, a.user_name as 'approved_by_name'
             FROM `form_vl` AS vl
             LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id
-            WHERE result_status != 9
+            WHERE result_status != " . SAMPLE_STATUS_RECEIVED_AT_CLINIC . "
             AND (facility_id != '' AND facility_id is not null)
             AND (sample_code !='' AND sample_code is not null)
             AND vl.data_sync = 0";
@@ -134,7 +134,7 @@ try {
         $eidQuery = "SELECT vl.*, a.user_name as 'approved_by_name'
                     FROM `form_eid` AS vl
                     LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id
-                    WHERE result_status != 9
+                    WHERE result_status != " . SAMPLE_STATUS_RECEIVED_AT_CLINIC . "
                     AND sample_code !=''
                     AND sample_code is not null
                     AND vl.data_sync=0";
@@ -168,7 +168,7 @@ try {
         $covid19Query = "SELECT c19.*, a.user_name as 'approved_by_name'
                     FROM `form_covid19` AS c19
                     LEFT JOIN `user_details` AS a ON c19.result_approved_by = a.user_id
-                    WHERE result_status != 9
+                    WHERE result_status != " . SAMPLE_STATUS_RECEIVED_AT_CLINIC . "
                     AND sample_code !=''
                     AND sample_code is not null
                     AND c19.data_sync=0";
@@ -201,7 +201,7 @@ try {
 
         if (!empty($result)) {
             $db = $db->where('sample_code', $result, 'IN');
-            $id = $db->update('form_covid19',  ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+            $id = $db->update('form_covid19', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
         }
 
         $general->addApiTracking($transactionId, 'vlsm-system', count($c19LabResult), 'send-results', 'covid19', $url, $json_data, $result, 'json', $labId);
@@ -214,8 +214,8 @@ try {
         $hepQuery = "SELECT hep.*, a.user_name as 'approved_by_name'
                     FROM `form_hepatitis` AS hep
                     LEFT JOIN `user_details` AS a ON hep.result_approved_by = a.user_id
-                    WHERE result_status != 9
-                    AND sample_code !=''
+                    WHERE result_status != " . SAMPLE_STATUS_RECEIVED_AT_CLINIC . "
+                    AND sample_code != ''
                     AND sample_code is not null
                     AND hep.data_sync=0";
         if (!empty($forceSyncModule) && trim($forceSyncModule) == "hepatitis" && !empty($sampleCode) && trim($sampleCode) != "") {

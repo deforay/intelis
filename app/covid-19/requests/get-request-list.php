@@ -297,7 +297,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
           $sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
      }
 } else if (!$_POST['hidesrcofreq']) {
-     $sWhere[] = 'vl.result_status!=9 ';
+     $sWhere[] = 'vl.result_status != ' . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
 }
 
 

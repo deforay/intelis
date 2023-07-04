@@ -85,7 +85,7 @@ try {
             if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
 
                 $lab['result_approved_by'] = $usersService->addUserIfNotExists($resultRow['approved_by_name']);
-                $lab['result_approved_datetime'] =  DateUtility::getCurrentDateTime();
+                $lab['result_approved_datetime'] = DateUtility::getCurrentDateTime();
                 // we dont need this now
                 //unset($resultRow['approved_by_name']);
             }
@@ -99,7 +99,7 @@ try {
             // unset($lab['last_modified_by']);
             // unset($lab['request_created_datetime']);
 
-            if ($lab['result_status'] != 7 && $lab['result_status'] != 4) {
+            if ($lab['result_status'] != SAMPLE_STATUS_ACCEPTED && $lab['result_status'] != SAMPLE_STATUS_REJECTED) {
                 unset($lab['result']);
                 unset($lab['is_sample_rejected']);
                 unset($lab['reason_for_sample_rejection']);
@@ -155,13 +155,13 @@ try {
                 $db->delete("generic_test_results");
                 foreach ($testResults as $testId => $test) {
                     $testResultValues = array(
-                        "generic_id"                => $sampleId,
-                        "test_name"                 => $test['test_name'],
-                        "facility_id"               => $test['facility_id'],
-                        "sample_tested_datetime"    => $test['sample_tested_datetime'],
-                        "testing_platform"          => $test['testing_platform'],
-                        "result"                    => $test['result'],
-                        "updated_datetime"          => DateUtility::getCurrentDateTime()
+                        "generic_id" => $sampleId,
+                        "test_name" => $test['test_name'],
+                        "facility_id" => $test['facility_id'],
+                        "sample_tested_datetime" => $test['sample_tested_datetime'],
+                        "testing_platform" => $test['testing_platform'],
+                        "result" => $test['result'],
+                        "updated_datetime" => DateUtility::getCurrentDateTime()
                     );
                     $_id[$testId] = $db->insert("generic_test_results", $testResultValues);
                 }
