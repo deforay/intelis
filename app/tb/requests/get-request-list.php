@@ -22,8 +22,8 @@ $tableName = "form_tb";
 $primaryKey = "tb_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
-* you want to insert a non-database field (for example a counter or static image)
-*/
+ * you want to insert a non-database field (for example a counter or static image)
+ */
 $sampleCode = 'sample_code';
 
 $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'l.facility_name', 'f.facility_name', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
@@ -48,8 +48,8 @@ $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 /*
-* Paging
-*/
+ * Paging
+ */
 $sLimit = "";
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
      $sOffset = $_POST['iDisplayStart'];
@@ -57,8 +57,8 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 }
 
 /*
-* Ordering
-*/
+ * Ordering
+ */
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -73,11 +73,11 @@ if (isset($_POST['iSortCol_0'])) {
 }
 
 /*
-* Filtering
-* NOTE this does not match the built-in DataTables filtering which does it
-* word by word on any field. It's possible to do here, but concerned about efficiency
-* on very large tables, and MySQL's regex functionality is very limited
-*/
+ * Filtering
+ * NOTE this does not match the built-in DataTables filtering which does it
+ * word by word on any field. It's possible to do here, but concerned about efficiency
+ * on very large tables, and MySQL's regex functionality is very limited
+ */
 
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
@@ -111,9 +111,9 @@ for ($i = 0; $i < count($aColumns); $i++) {
 }
 
 /*
-* SQL queries
-* Get data to display
-*/
+ * SQL queries
+ * Get data to display
+ */
 $sQuery = '';
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, f.*, l.facility_name as lab_name, rtbr.result as lamResult, ts.status_name, b.batch_code FROM form_tb as vl
@@ -242,7 +242,7 @@ if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 6) {
      $sWhere[] = ' vl.sample_received_at_lab_datetime is not null AND vl.sample_received_at_lab_datetime not like ""';
 }
 if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 7) {
-     $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = 7';
+     $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . SAMPLE_STATUS_ACCEPTED;
 }
 if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == "sent") {
      $sWhere[] = ' vl.result_sent_to_source is not null and vl.result_sent_to_source = "sent"';
@@ -288,8 +288,8 @@ $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 $_SESSION['tbRequestSearchResultQueryCount'] = $iTotal;
 
 /*
-* Output
-*/
+ * Output
+ */
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
      "iTotalRecords" => $iTotal,

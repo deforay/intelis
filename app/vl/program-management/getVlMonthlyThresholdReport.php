@@ -32,8 +32,8 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
-* you want to insert a non-database field (for example a counter or static image)
-*/
+ * you want to insert a non-database field (for example a counter or static image)
+ */
 
 $aColumns = array('vl.sample_tested_datetime', 'f.facility_name');
 $orderColumns = array('vl.sample_tested_datetime', 'f.facility_name');
@@ -43,8 +43,8 @@ $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 /*
-* Paging
-*/
+ * Paging
+ */
 $sLimit = "";
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
      $sOffset = $_POST['iDisplayStart'];
@@ -52,8 +52,8 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 }
 
 /*
-* Ordering
-*/
+ * Ordering
+ */
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -68,11 +68,11 @@ if (isset($_POST['iSortCol_0'])) {
 }
 
 /*
-* Filtering
-* NOTE this does not match the built-in DataTables filtering which does it
-* word by word on any field. It's possible to do here, but concerned about efficiency
-* on very large tables, and MySQL's regex functionality is very limited
-*/
+ * Filtering
+ * NOTE this does not match the built-in DataTables filtering which does it
+ * word by word on any field. It's possible to do here, but concerned about efficiency
+ * on very large tables, and MySQL's regex functionality is very limited
+ */
 
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
@@ -110,9 +110,9 @@ for ($i = 0; $i < count($aColumns); $i++) {
 }
 
 /*
-          * SQL queries
-          * Get data to display
-          */
+ * SQL queries
+ * Get data to display
+ */
 $aWhere = '';
 $sQuery = "SELECT DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as monthrange, f.facility_id, f.facility_name, vl.is_sample_rejected,vl.sample_tested_datetime,vl.sample_collection_date, tl.monthly_target,
           SUM(CASE WHEN (is_sample_rejected IS NOT NULL AND is_sample_rejected LIKE 'yes%') THEN 1 ELSE 0 END) as totalRejected,
@@ -148,7 +148,7 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
 }
 
 if (!empty($sWhere)) {
-     $sWhere = ' where ' . $sWhere;
+     $sWhere = ' WHERE ' . $sWhere;
      if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
           if (trim($sTestDate) == trim($eTestDate)) {
                $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
@@ -171,7 +171,7 @@ if (!empty($sWhere)) {
                $sWhere = $sWhere . ' AND vl.lab_id IN ' . $out;
           } else {
                $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
+               $sWhere = ' WHERE ' . $sWhere;
                $sWhere = $sWhere . ' vl.lab_id IN ' . $out;
           }
      }
@@ -181,15 +181,15 @@ if (!empty($sWhere)) {
                $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
           } else {
                $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
+               $sWhere = ' WHERE ' . $sWhere;
                $sWhere = $sWhere . ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
           }
      }
 }
 if ($sWhere != '') {
-     $sWhere = $sWhere . ' AND vl.result!="" AND vl.result_status!=9';
+     $sWhere = $sWhere . ' AND vl.result!="" AND vl.result_status != ' . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
 } else {
-     $sWhere = $sWhere . ' where vl.result!="" AND vl.result_status!=9';
+     $sWhere = $sWhere . ' where vl.result!="" AND vl.result_status != ' . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
 }
 
 // HAVING COUNT(c2.sid) >= 2)
@@ -211,12 +211,12 @@ $aResultFilterTotal = $db->rawQuery($sQuery);
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */
-$aResultTotal =  $db->rawQuery($sQuery);
+$aResultTotal = $db->rawQuery($sQuery);
 $iTotal = count($aResultTotal);
 
 /*
-* Output
-*/
+ * Output
+ */
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
      // "iTotalRecords" => $cnt,

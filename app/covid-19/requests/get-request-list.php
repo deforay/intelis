@@ -33,11 +33,11 @@ $tableName = "form_covid19";
 $primaryKey = "covid19_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
-* you want to insert a non-database field (for example a counter or static image)
-*/
+ * you want to insert a non-database field (for example a counter or static image)
+ */
 $sampleCode = 'sample_code';
 
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')",  'l_f.facility_name', 'f.facility_name', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
+$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'l_f.facility_name', 'f.facility_name', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'lab_name', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
@@ -59,8 +59,8 @@ $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 /*
-* Paging
-*/
+ * Paging
+ */
 $sLimit = "";
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
      $sOffset = $_POST['iDisplayStart'];
@@ -68,8 +68,8 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 }
 
 /*
-* Ordering
-*/
+ * Ordering
+ */
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -84,11 +84,11 @@ if (isset($_POST['iSortCol_0'])) {
 }
 
 /*
-* Filtering
-* NOTE this does not match the built-in DataTables filtering which does it
-* word by word on any field. It's possible to do here, but concerned about efficiency
-* on very large tables, and MySQL's regex functionality is very limited
-*/
+ * Filtering
+ * NOTE this does not match the built-in DataTables filtering which does it
+ * word by word on any field. It's possible to do here, but concerned about efficiency
+ * on very large tables, and MySQL's regex functionality is very limited
+ */
 
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
@@ -122,9 +122,9 @@ for ($i = 0; $i < count($aColumns); $i++) {
 }
 
 /*
-* SQL queries
-* Get data to display
-*/
+ * SQL queries
+ * Get data to display
+ */
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, f.*,  ts.status_name, b.batch_code, r.result as resultTxt,
           rtr.test_reason_name,
@@ -285,7 +285,7 @@ if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 6) {
      $sWhere[] = ' vl.sample_received_at_vl_lab_datetime is not null AND vl.sample_received_at_vl_lab_datetime not like ""';
 }
 if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 7) {
-     $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = 7';
+     $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . SAMPLE_STATUS_ACCEPTED;
 }
 if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == "sent") {
      $sWhere[] = ' vl.result_sent_to_source is not null and vl.result_sent_to_source = "sent"';
@@ -322,8 +322,8 @@ $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 $_SESSION['covid19RequestSearchResultQueryCount'] = $iTotal;
 
 /*
-          * Output
-          */
+ * Output
+ */
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
      "iTotalRecords" => $iTotal,
@@ -378,8 +378,6 @@ foreach ($rResult as $aRow) {
      $row[] = (is_numeric($aRow['result'])) ? ($aRow['resultTxt']) : ($aRow['result']);
      $row[] = $aRow['last_modified_datetime'];
      $row[] = ($aRow['status_name']);
-     //$printBarcode='<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="View" onclick="printBarcode(\''.base64_encode($aRow['covid19_id']).'\');"><em class="fa-solid fa-barcode"></em> Print Barcode</a>';
-     //$enterResult='<a href="javascript:void(0);" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result" onclick="showModal(\'updateVlResult.php?id=' . base64_encode($aRow['covid19_id']) . '\',900,520);"> Result</a>';
 
      if ($editRequest) {
           $edit = '<a href="covid-19-edit-request.php?id=' . base64_encode($aRow['covid19_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
@@ -413,7 +411,6 @@ foreach ($rResult as $aRow) {
      if (!$_POST['hidesrcofreq']) {
           $row[] = $actions . $barcode;
      }
-     // echo '<pre>';print_r($row);die;
      $output['aaData'][] = $row;
 }
 echo json_encode($output);

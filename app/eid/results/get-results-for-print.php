@@ -26,8 +26,8 @@ $tableName = "form_eid";
 $primaryKey = "eid_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
-* you want to insert a non-database field (for example a counter or static image)
-*/
+ * you want to insert a non-database field (for example a counter or static image)
+ */
 $sampleCode = 'sample_code';
 $aColumns = array('vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'mother_name', 'f.facility_name', 'l_f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'mother_name', 'f.facility_name', 'l_f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
@@ -47,8 +47,8 @@ $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 /*
-* Paging
-*/
+ * Paging
+ */
 $sLimit = "";
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
@@ -56,8 +56,8 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 }
 
 /*
-* Ordering
-*/
+ * Ordering
+ */
 
 $sOrder = "";
 
@@ -73,11 +73,11 @@ if (isset($_POST['iSortCol_0'])) {
 }
 
 /*
-* Filtering
-* NOTE this does not match the built-in DataTables filtering which does it
-* word by word on any field. It's possible to do here, but concerned about efficiency
-* on very large tables, and MySQL's regex functionality is very limited
-*/
+ * Filtering
+ * NOTE this does not match the built-in DataTables filtering which does it
+ * word by word on any field. It's possible to do here, but concerned about efficiency
+ * on very large tables, and MySQL's regex functionality is very limited
+ */
 
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
@@ -111,9 +111,9 @@ for ($i = 0; $i < count($aColumns); $i++) {
 }
 
 /*
-          * SQL queries
-          * Get data to display
-          */
+ * SQL queries
+ * Get data to display
+ */
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,b.*,ts.*,imp.*,
             f.facility_name, f.facility_district, f.facility_state,
             l_f.facility_name as labName,
@@ -206,7 +206,7 @@ if (isset($_POST['status']) && trim($_POST['status']) != '') {
     } else if ($_POST['status'] == 'result') {
         $statusCondition = ' (vl.result is NOT NULL AND vl.result !="")';
     } else {
-        $statusCondition = ' vl.result_status=4';
+        $statusCondition = ' vl.result_status = ' . SAMPLE_STATUS_REJECTED;
     }
     $sWhere[] = $statusCondition;
 }
@@ -232,7 +232,7 @@ if (!isset($_POST['status']) || trim($_POST['status']) == '') {
         $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
     }
 } else {
-    $sWhere[] = " vl.result_status!=9";
+    $sWhere[] = " vl.result_status != " . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
 }
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
@@ -262,8 +262,8 @@ $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 /*
-          * Output
-          */
+ * Output
+ */
 $output = array(
     "sEcho" => intval($_POST['sEcho']),
     "iTotalRecords" => $iTotal,

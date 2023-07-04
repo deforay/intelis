@@ -20,26 +20,26 @@ $testTableName = 'covid19_tests';
 
 try {
 	$covid19Data = array(
-		'sample_received_at_vl_lab_datetime'  => DateUtility::isoDateFormat($_POST['sampleReceivedDate'] ?? '', true),
-		'lab_id'                              => $_POST['labId'] ?? null,
-		'is_sample_rejected'                  => $_POST['isSampleRejected'] ?? null,
-		'result'                              => $_POST['result'] ?? null,
-		'is_result_authorised'                => $_POST['isResultAuthorized'] ?? null,
-		'authorized_by'                       => $_POST['authorizedBy'] ?? null,
-		'authorized_on'                       => isset($_POST['authorizedOn']) ? DateUtility::isoDateFormat($_POST['authorizedOn']) : null,
-		'reason_for_changing'                  => (!empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
-		'rejection_on'                           => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
-		'result_status'                       => 6,
-		'data_sync'                           => 0,
-		'reason_for_sample_rejection'         => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
-		'last_modified_by'                    => $_SESSION['userId'],
-		'last_modified_datetime'              => DateUtility::getCurrentDateTime()
+		'sample_received_at_vl_lab_datetime' => DateUtility::isoDateFormat($_POST['sampleReceivedDate'] ?? '', true),
+		'lab_id' => $_POST['labId'] ?? null,
+		'is_sample_rejected' => $_POST['isSampleRejected'] ?? null,
+		'result' => $_POST['result'] ?? null,
+		'is_result_authorised' => $_POST['isResultAuthorized'] ?? null,
+		'authorized_by' => $_POST['authorizedBy'] ?? null,
+		'authorized_on' => isset($_POST['authorizedOn']) ? DateUtility::isoDateFormat($_POST['authorizedOn']) : null,
+		'reason_for_changing' => (!empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
+		'rejection_on' => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
+		'result_status' => 6,
+		'data_sync' => 0,
+		'reason_for_sample_rejection' => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
+		'last_modified_by' => $_SESSION['userId'],
+		'last_modified_datetime' => DateUtility::getCurrentDateTime()
 	);
 
 
 	if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
 		$covid19Data['result'] = null;
-		$covid19Data['result_status'] = 4;
+		$covid19Data['result_status'] = SAMPLE_STATUS_REJECTED;
 	}
 	if (isset($_POST['deletedRow']) && trim($_POST['deletedRow']) != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
 		$deleteRows = explode(',', $_POST['deletedRow']);
@@ -52,11 +52,11 @@ try {
 		if (!empty($_POST['testName'])) {
 			foreach ($_POST['testName'] as $testKey => $testerName) {
 				$covid19TestData = array(
-					'covid19_id'             => $_POST['covid19SampleId'],
-					'test_name'                 => $_POST['testName'][$testKey],
-					'facility_id'            => $_POST['labId'] ?? null,
+					'covid19_id' => $_POST['covid19SampleId'],
+					'test_name' => $_POST['testName'][$testKey],
+					'facility_id' => $_POST['labId'] ?? null,
 					'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$testKey] ?? '', true),
-					'result'                 => $_POST['testResult'][$testKey],
+					'result' => $_POST['testResult'][$testKey],
 				);
 				if (isset($_POST['testId'][$testKey]) && $_POST['testId'][$testKey] != '') {
 					$db = $db->where('test_id', base64_decode($_POST['testId'][$testKey]));

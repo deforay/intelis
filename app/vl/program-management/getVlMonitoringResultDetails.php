@@ -38,8 +38,8 @@ $general = ContainerRegistry::get(CommonService::class);
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
-* you want to insert a non-database field (for example a counter or static image)
-*/
+ * you want to insert a non-database field (for example a counter or static image)
+ */
 
 $aColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 's.sample_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'ts.status_name');
@@ -49,8 +49,8 @@ $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 /*
-* Paging
-*/
+ * Paging
+ */
 $sLimit = "";
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
      $sOffset = $_POST['iDisplayStart'];
@@ -58,8 +58,8 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 }
 
 /*
-* Ordering
-*/
+ * Ordering
+ */
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -74,11 +74,11 @@ if (isset($_POST['iSortCol_0'])) {
 }
 
 /*
-* Filtering
-* NOTE this does not match the built-in DataTables filtering which does it
-* word by word on any field. It's possible to do here, but concerned about efficiency
-* on very large tables, and MySQL's regex functionality is very limited
-*/
+ * Filtering
+ * NOTE this does not match the built-in DataTables filtering which does it
+ * word by word on any field. It's possible to do here, but concerned about efficiency
+ * on very large tables, and MySQL's regex functionality is very limited
+ */
 $sWhere = [];
 $sWhere[] = " WHERE IFNULL(reason_for_vl_testing, 0)  != 9999 ";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
@@ -101,7 +101,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
           }
           $sWhereSub .= ")";
      }
-     $sWhere[] =  $sWhereSub;
+     $sWhere[] = $sWhereSub;
 }
 
 /* Individual column filtering */
@@ -112,9 +112,9 @@ for ($i = 0; $i < count($aColumns); $i++) {
 }
 
 /*
-          * SQL queries
-          * Get data to display
-          */
+ * SQL queries
+ * Get data to display
+ */
 $aWhere = '';
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                     vl.sample_code,
@@ -168,7 +168,7 @@ $eTestDate = '';
 
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
      if (trim($start_date) == trim($end_date)) {
-          $sWhere[] =  '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
+          $sWhere[] = '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
      } else {
           $sWhere[] = '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
      }
@@ -189,13 +189,13 @@ if (isset($_POST['district']) && trim($_POST['district']) != '') {
      $sWhere[] = " f.facility_district_id LIKE " . $_POST['district'];
 }
 if (isset($_POST['state']) && trim($_POST['state']) != '') {
-     $sWhere[] =  " f.facility_state_id LIKE " . $_POST['state'];
+     $sWhere[] = " f.facility_state_id LIKE " . $_POST['state'];
 }
 
 if (!empty($sWhere)) {
-     $sWhere[] =  ' vl.result!="" AND vl.result_status!=9';
+     $sWhere[] = ' vl.result!="" AND vl.result_status != ' . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
 } else {
-     $sWhere[] = ' WHERE vl.result!="" AND vl.result_status!=9';
+     $sWhere[] = ' WHERE vl.result!="" AND vl.result_status != ' . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
 }
 
 if (!empty($_SESSION['facilityMap'])) {
@@ -234,8 +234,8 @@ $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 /*
-          * Output
-          */
+ * Output
+ */
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
      "iTotalRecords" => $iTotal,

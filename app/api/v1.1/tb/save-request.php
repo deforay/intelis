@@ -228,9 +228,9 @@ try {
             }
         }
 
-        $status = 6;
+        $status = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
         if ($roleUser['access_type'] != 'testing-lab') {
-            $status = 9;
+            $status = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
         }
 
         if (!empty($data['arrivalDateTime']) && trim($data['arrivalDateTime']) != "") {
@@ -241,16 +241,16 @@ try {
         }
         if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
             $data['result'] = null;
-            $status = 4;
+            $status = SAMPLE_STATUS_REJECTED;
         } elseif (
             isset($globalConfig['tb_auto_approve_api_results']) &&
             $globalConfig['tb_auto_approve_api_results'] == "yes" &&
             (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") &&
             (!empty($data['result']))
         ) {
-            $status = 7;
+            $status = SAMPLE_STATUS_ACCEPTED;
         } elseif ((isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") && (!empty($data['result']))) {
-            $status = 8;
+            $status = SAMPLE_STATUS_PENDING_APPROVAL;
         }
 
         if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
@@ -317,81 +317,81 @@ try {
         }
 
         $formAttributes = [
-            'applicationVersion'    => $version,
-            'apiTransactionId'      => $transactionId,
-            'mobileAppVersion'      => $appVersion,
-            'deviceId'              => $deviceId
+            'applicationVersion' => $version,
+            'apiTransactionId' => $transactionId,
+            'mobileAppVersion' => $appVersion,
+            'deviceId' => $deviceId
         ];
         $formAttributes = json_encode($formAttributes);
 
         $tbData = [
-            'vlsm_instance_id'                    => $data['instanceId'],
-            'vlsm_country_id'                     => $formId,
-            'unique_id'                           => $uniqueId,
-            'app_sample_code'                     => !empty($data['appSampleCode']) ? $data['appSampleCode'] : null,
-            'sample_reordered'                    => !empty($data['sampleReordered']) ? $data['sampleReordered'] : 'no',
-            'facility_id'                         => !empty($data['facilityId']) ? $data['facilityId'] : null,
-            'province_id'                         => !empty($data['provinceId']) ? $data['provinceId'] : null,
-            'referring_unit'                      => !empty($data['referringUnit']) ? $data['referringUnit'] : null,
-            'sample_requestor_name'               => !empty($data['sampleRequestorName']) ? $data['sampleRequestorName'] : null,
-            'sample_requestor_phone'              => !empty($data['sampleRequestorPhone']) ? $data['sampleRequestorPhone'] : null,
-            'specimen_quality'                    => !empty($data['specimenQuality']) ? $data['specimenQuality'] : null,
-            'other_referring_unit'                => !empty($data['otherReferringUnit']) ? $data['otherReferringUnit'] : null,
-            'lab_id'                              => !empty($data['labId']) ? $data['labId'] : null,
-            'implementing_partner'                => !empty($data['implementingPartner']) ? $data['implementingPartner'] : null,
-            'funding_source'                      => !empty($data['fundingSource']) ? $data['fundingSource'] : null,
-            'patient_id'                          => !empty($data['patientId']) ? $data['patientId'] : null,
-            'patient_name'                        => !empty($data['firstName']) ? $data['firstName'] : null,
-            'patient_surname'                     => !empty($data['lastName']) ? $data['lastName'] : null,
-            'patient_dob'                         => !empty($data['patientDob']) ? DateUtility::isoDateFormat($data['patientDob']) : null,
-            'patient_gender'                      => !empty($data['patientGender']) ? $data['patientGender'] : null,
-            'patient_age'                         => !empty($data['patientAge']) ? $data['patientAge'] : null,
-            'patient_address'                     => !empty($data['patientAddress']) ? $data['patientAddress'] : null,
-            'patient_type'                        => !empty($data['patientType']) ? json_encode($data['patientType']) : null,
-            'other_patient_type'                  => !empty($data['otherPatientType']) ? $data['otherPatientType'] : null,
-            'hiv_status'                          => !empty($data['hivStatus']) ? $data['hivStatus'] : null,
-            'reason_for_tb_test'                  => !empty($data['reasonFortbTest']) ? json_encode($data['reasonFortbTest']) : null,
-            'tests_requested'                     => !empty($data['testTypeRequested']) ? json_encode($data['testTypeRequested']) : null,
-            'specimen_type'                       => !empty($data['specimenType']) ? $data['specimenType'] : null,
-            'other_specimen_type'                 => !empty($data['otherSpecimenType']) ? $data['otherSpecimenType'] : null,
-            'sample_collection_date'              => $data['sampleCollectionDate'],
-            'sample_dispatched_datetime'          => $data['sampleDispatchedOn'],
-            'result_dispatched_datetime'          => $data['resultDispatchedOn'],
-            'sample_tested_datetime'              => $data['sampleTestedDateTime'] ?? null,
-            'sample_received_at_hub_datetime'     => !empty($data['sampleReceivedHubDate']) ? $data['sampleReceivedHubDate'] : null,
-            'sample_received_at_lab_datetime'     => !empty($data['sampleReceivedDate']) ? $data['sampleReceivedDate'] : null,
-            'lab_technician'                      => (!empty($data['labTechnician']) && $data['labTechnician'] != '') ? $data['labTechnician'] :  $user['user_id'],
-            'lab_reception_person'                => (!empty($data['labReceptionPerson']) && $data['labReceptionPerson'] != '') ? $data['labReceptionPerson'] :  null,
-            'is_sample_rejected'                  => !empty($data['isSampleRejected']) ? $data['isSampleRejected'] : null,
-            'result'                              => !empty($data['result']) ? $data['result'] : null,
-            'xpert_mtb_result'                    => !empty($data['xpertMtbResult']) ? $data['xpertMtbResult'] : null,
-            'tested_by'                           => !empty($data['testedBy']) ? $data['testedBy'] : null,
-            'result_reviewed_by'                  => !empty($data['reviewedBy']) ? $data['reviewedBy'] : null,
-            'result_reviewed_datetime'            => !empty($data['reviewedOn']) ? DateUtility::isoDateFormat($data['reviewedOn']) : null,
-            'result_approved_by'                  => !empty($data['approvedBy']) ? $data['approvedBy'] : null,
-            'result_approved_datetime'            => !empty($data['approvedOn']) ? DateUtility::isoDateFormat($data['approvedOn']) : null,
-            'lab_tech_comments'                   => !empty($data['approverComments']) ? $data['approverComments'] : null,
-            'revised_by'                          => (isset($data['revisedBy']) && $data['revisedBy'] != "") ? $data['revisedBy'] : "",
-            'revised_on'                          => (isset($data['revisedOn']) && $data['revisedOn'] != "") ? $data['revisedOn'] : null,
-            'reason_for_changing'                 => (!empty($data['reasonFortbResultChanges'])) ? $data['reasonFortbResultChanges'] : null,
-            'rejection_on'                        => (!empty($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($data['rejectionDate']) : null,
-            'result_status'                       => $status,
-            'data_sync'                           => 0,
-            'reason_for_sample_rejection'         => (isset($data['sampleRejectionReason']) && $data['isSampleRejected'] == 'yes') ? $data['sampleRejectionReason'] : null,
-            'source_of_request'                   => $data['sourceOfRequest'] ?? "API",
-            'form_attributes'                       => $db->func($general->jsonToSetString($formAttributes, 'form_attributes'))
+            'vlsm_instance_id' => $data['instanceId'],
+            'vlsm_country_id' => $formId,
+            'unique_id' => $uniqueId,
+            'app_sample_code' => !empty($data['appSampleCode']) ? $data['appSampleCode'] : null,
+            'sample_reordered' => !empty($data['sampleReordered']) ? $data['sampleReordered'] : 'no',
+            'facility_id' => !empty($data['facilityId']) ? $data['facilityId'] : null,
+            'province_id' => !empty($data['provinceId']) ? $data['provinceId'] : null,
+            'referring_unit' => !empty($data['referringUnit']) ? $data['referringUnit'] : null,
+            'sample_requestor_name' => !empty($data['sampleRequestorName']) ? $data['sampleRequestorName'] : null,
+            'sample_requestor_phone' => !empty($data['sampleRequestorPhone']) ? $data['sampleRequestorPhone'] : null,
+            'specimen_quality' => !empty($data['specimenQuality']) ? $data['specimenQuality'] : null,
+            'other_referring_unit' => !empty($data['otherReferringUnit']) ? $data['otherReferringUnit'] : null,
+            'lab_id' => !empty($data['labId']) ? $data['labId'] : null,
+            'implementing_partner' => !empty($data['implementingPartner']) ? $data['implementingPartner'] : null,
+            'funding_source' => !empty($data['fundingSource']) ? $data['fundingSource'] : null,
+            'patient_id' => !empty($data['patientId']) ? $data['patientId'] : null,
+            'patient_name' => !empty($data['firstName']) ? $data['firstName'] : null,
+            'patient_surname' => !empty($data['lastName']) ? $data['lastName'] : null,
+            'patient_dob' => !empty($data['patientDob']) ? DateUtility::isoDateFormat($data['patientDob']) : null,
+            'patient_gender' => !empty($data['patientGender']) ? $data['patientGender'] : null,
+            'patient_age' => !empty($data['patientAge']) ? $data['patientAge'] : null,
+            'patient_address' => !empty($data['patientAddress']) ? $data['patientAddress'] : null,
+            'patient_type' => !empty($data['patientType']) ? json_encode($data['patientType']) : null,
+            'other_patient_type' => !empty($data['otherPatientType']) ? $data['otherPatientType'] : null,
+            'hiv_status' => !empty($data['hivStatus']) ? $data['hivStatus'] : null,
+            'reason_for_tb_test' => !empty($data['reasonFortbTest']) ? json_encode($data['reasonFortbTest']) : null,
+            'tests_requested' => !empty($data['testTypeRequested']) ? json_encode($data['testTypeRequested']) : null,
+            'specimen_type' => !empty($data['specimenType']) ? $data['specimenType'] : null,
+            'other_specimen_type' => !empty($data['otherSpecimenType']) ? $data['otherSpecimenType'] : null,
+            'sample_collection_date' => $data['sampleCollectionDate'],
+            'sample_dispatched_datetime' => $data['sampleDispatchedOn'],
+            'result_dispatched_datetime' => $data['resultDispatchedOn'],
+            'sample_tested_datetime' => $data['sampleTestedDateTime'] ?? null,
+            'sample_received_at_hub_datetime' => !empty($data['sampleReceivedHubDate']) ? $data['sampleReceivedHubDate'] : null,
+            'sample_received_at_lab_datetime' => !empty($data['sampleReceivedDate']) ? $data['sampleReceivedDate'] : null,
+            'lab_technician' => (!empty($data['labTechnician']) && $data['labTechnician'] != '') ? $data['labTechnician'] : $user['user_id'],
+            'lab_reception_person' => (!empty($data['labReceptionPerson']) && $data['labReceptionPerson'] != '') ? $data['labReceptionPerson'] : null,
+            'is_sample_rejected' => !empty($data['isSampleRejected']) ? $data['isSampleRejected'] : null,
+            'result' => !empty($data['result']) ? $data['result'] : null,
+            'xpert_mtb_result' => !empty($data['xpertMtbResult']) ? $data['xpertMtbResult'] : null,
+            'tested_by' => !empty($data['testedBy']) ? $data['testedBy'] : null,
+            'result_reviewed_by' => !empty($data['reviewedBy']) ? $data['reviewedBy'] : null,
+            'result_reviewed_datetime' => !empty($data['reviewedOn']) ? DateUtility::isoDateFormat($data['reviewedOn']) : null,
+            'result_approved_by' => !empty($data['approvedBy']) ? $data['approvedBy'] : null,
+            'result_approved_datetime' => !empty($data['approvedOn']) ? DateUtility::isoDateFormat($data['approvedOn']) : null,
+            'lab_tech_comments' => !empty($data['approverComments']) ? $data['approverComments'] : null,
+            'revised_by' => (isset($data['revisedBy']) && $data['revisedBy'] != "") ? $data['revisedBy'] : "",
+            'revised_on' => (isset($data['revisedOn']) && $data['revisedOn'] != "") ? $data['revisedOn'] : null,
+            'reason_for_changing' => (!empty($data['reasonFortbResultChanges'])) ? $data['reasonFortbResultChanges'] : null,
+            'rejection_on' => (!empty($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($data['rejectionDate']) : null,
+            'result_status' => $status,
+            'data_sync' => 0,
+            'reason_for_sample_rejection' => (isset($data['sampleRejectionReason']) && $data['isSampleRejected'] == 'yes') ? $data['sampleRejectionReason'] : null,
+            'source_of_request' => $data['sourceOfRequest'] ?? "API",
+            'form_attributes' => $db->func($general->jsonToSetString($formAttributes, 'form_attributes'))
         ];
         if (!empty($rowData)) {
-            $tbData['last_modified_datetime']  = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
-            $tbData['last_modified_by']  = $user['user_id'];
+            $tbData['last_modified_datetime'] = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
+            $tbData['last_modified_by'] = $user['user_id'];
         } else {
-            $tbData['request_created_datetime']  = DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true);
-            $tbData['sample_registered_at_lab']  = DateUtility::getCurrentDateTime();
-            $tbData['request_created_by']  = $user['user_id'];
+            $tbData['request_created_datetime'] = DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true);
+            $tbData['sample_registered_at_lab'] = DateUtility::getCurrentDateTime();
+            $tbData['request_created_by'] = $user['user_id'];
         }
 
-        $tbData['request_created_by'] =  $user['user_id'];
-        $tbData['last_modified_by'] =  $user['user_id'];
+        $tbData['request_created_by'] = $user['user_id'];
+        $tbData['last_modified_by'] = $user['user_id'];
 
         if (isset($data['tbSampleId']) && $data['tbSampleId'] != '' && ($data['isSampleRejected'] == 'no' || $data['isSampleRejected'] == '')) {
             if (!empty($data['testResult'])) {
@@ -401,10 +401,10 @@ try {
                 foreach ($data['testResult'] as $testKey => $testResult) {
                     if (!empty($testResult) && trim($testResult) != "") {
                         $db->insert($testTableName, [
-                            'tb_id'             => $data['tbSampleId'],
-                            'actual_no'         => $data['actualNo'][$testKey] ?? null,
-                            'test_result'       => $testResult,
-                            'updated_datetime'  => DateUtility::getCurrentDateTime()
+                            'tb_id' => $data['tbSampleId'],
+                            'actual_no' => $data['actualNo'][$testKey] ?? null,
+                            'test_result' => $testResult,
+                            'updated_datetime' => DateUtility::getCurrentDateTime()
                         ]);
                     }
                 }
@@ -441,7 +441,7 @@ try {
         'status' => 'success',
         'transactionId' => $transactionId,
         'timestamp' => time(),
-        'data'  => $responseData ?? []
+        'data' => $responseData ?? []
     ];
     http_response_code(200);
 } catch (SystemException $exc) {

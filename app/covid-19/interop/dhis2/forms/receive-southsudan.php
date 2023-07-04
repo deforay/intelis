@@ -23,7 +23,8 @@ $programStages = [
 
 
 $attributesDataElementMapping = [
-    'HAZ7VQ730yn' => 'external_sample_code', //dhis2 case id
+    'HAZ7VQ730yn' => 'external_sample_code',
+    //dhis2 case id
     'yCWkkKtr6vd' => 'source_of_alert',
     'he05i8FUwu3' => 'patient_id',
     'sB1IHYu2xQT' => 'patient_name',
@@ -84,7 +85,8 @@ $url = "/api/trackedEntityInstances.json";
 
 $jsonResponse = $dhis2->get($url, $data);
 
-if ($jsonResponse == '' || $jsonResponse == '[]' || empty($jsonResponse)) die('No Response from API');
+if ($jsonResponse == '' || $jsonResponse == '[]' || empty($jsonResponse))
+    die('No Response from API');
 
 $options = [
     'pointer' => '/trackedEntityInstances',
@@ -107,7 +109,8 @@ foreach ($trackedEntityInstances as $tracker) {
 
         $screeningEventIds = array_keys($allProgramStages, $programStages['labRequest']); // screening programStage
 
-        if (count($screeningEventIds) == 0)  continue 2; // if no screening stage, skip this tracker entirely
+        if (count($screeningEventIds) == 0)
+            continue 2; // if no screening stage, skip this tracker entirely
 
         $enrollmentDate = explode("T", $enrollments['enrollmentDate']);
         $enrollmentDate = $enrollmentDate[0];
@@ -115,10 +118,12 @@ foreach ($trackedEntityInstances as $tracker) {
         $eventsData = [];
         foreach ($enrollments['events'] as $event) {
 
-            if ($event['programStage'] != $programStages['labRequest']) continue;
+            if ($event['programStage'] != $programStages['labRequest'])
+                continue;
 
             foreach ($event['dataValues'] as $dV) {
-                if (empty($eventsDataElementMapping[$dV['dataElement']])) continue;
+                if (empty($eventsDataElementMapping[$dV['dataElement']]))
+                    continue;
                 $eventsData["dhis2::" . $tracker['trackedEntityInstance'] . "::" . $event['event']][$eventsDataElementMapping[$dV['dataElement']]] = $dV['value'];
             }
         }
@@ -126,7 +131,8 @@ foreach ($trackedEntityInstances as $tracker) {
 
     $attributesData = [];
     foreach ($tracker['attributes'] as $trackerAttr) {
-        if (empty($attributesDataElementMapping[$trackerAttr['attribute']])) continue;
+        if (empty($attributesDataElementMapping[$trackerAttr['attribute']]))
+            continue;
         $attributesData[$attributesDataElementMapping[$trackerAttr['attribute']]] = $trackerAttr['value'];
     }
 
@@ -148,7 +154,7 @@ foreach ($trackedEntityInstances as $tracker) {
         $facility = $tracker['orgUnit'];
 
 
-        $formData['sample_collection_date'] = (!empty($formData['sample_collection_date']) ?  $formData['sample_collection_date'] : $enrollmentDate);
+        $formData['sample_collection_date'] = (!empty($formData['sample_collection_date']) ? $formData['sample_collection_date'] : $enrollmentDate);
 
         // Reason for Testing
         if (!empty($formData['reason_for_covid19_test'])) {
@@ -162,7 +168,7 @@ foreach ($trackedEntityInstances as $tracker) {
                     'test_reason_status' => 'active',
                     'updated_datetime' => DateUtility::getCurrentDateTime()
                 );
-                $formData['reason_for_covid19_test'] =   $db->insert("r_covid19_test_reasons", $reasonData);
+                $formData['reason_for_covid19_test'] = $db->insert("r_covid19_test_reasons", $reasonData);
             }
         }
 
@@ -195,7 +201,7 @@ foreach ($trackedEntityInstances as $tracker) {
         // Facility ID
         $db->where("other_id", $facility);
         $fac = $db->getOne("facility_details");
-        $formData['facility_id'] =  $fac['facility_id'];
+        $formData['facility_id'] = $fac['facility_id'];
 
         $db->where("geo_name", $fac['facility_state']);
         $prov = $db->getOne("geographical_divisions");
@@ -221,9 +227,9 @@ foreach ($trackedEntityInstances as $tracker) {
         }
 
 
-        $status = 6;
+        $status = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
         if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
-            $status = 9;
+            $status = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
         }
 
         $formData['result_status'] = $status;
@@ -232,7 +238,7 @@ foreach ($trackedEntityInstances as $tracker) {
 
         $formData['patient_gender'] = (!empty($formData['patient_gender']) ? strtolower($formData['patient_gender']) : null);
         if (!empty($formData['specimen_quality'])) {
-            $formData['specimen_quality'] =  strtolower($formData['specimen_quality']);
+            $formData['specimen_quality'] = strtolower($formData['specimen_quality']);
         }
 
 
@@ -245,7 +251,7 @@ foreach ($trackedEntityInstances as $tracker) {
         $sampleCodeParams['sampleCollectionDate'] = DateUtility::humanReadableDateFormat($formData['sample_collection_date'] ?? '');
         $sampleCodeParams['provinceId'] = $formData['province_id'];
 
-        $sampleJson =  $covid19Service->generateSampleCode($sampleCodeParams);
+        $sampleJson = $covid19Service->generateSampleCode($sampleCodeParams);
 
         $sampleData = json_decode($sampleJson, true);
 

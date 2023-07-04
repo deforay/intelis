@@ -13,7 +13,7 @@ $dhis2 = new Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 $hepatitisService = ContainerRegistry::get(HepatitisService::class);
 
 $query = "SELECT * FROM form_hepatitis WHERE (source_of_request LIKE 'dhis2' OR unique_id like 'dhis2%') AND result_status = 7 AND (result_sent_to_source is null or result_sent_to_source NOT LIKE 'sent')";
-//$query = "SELECT * FROM form_hepatitis WHERE source_of_request LIKE 'dhis2' AND result_status = 7";// AND result_sent_to_source NOT LIKE 'sent'";
+//$query = "SELECT * FROM form_hepatitis WHERE source_of_request LIKE 'dhis2' AND result_status = " . SAMPLE_STATUS_ACCEPTED;// AND result_sent_to_source NOT LIKE 'sent'";
 $formResults = $db->rawQuery($query);
 //var_dump($formResults);die;
 $counter = 0;
@@ -110,9 +110,9 @@ foreach ($formResults as $row) {
     } else {
       $interpretaion = 'Not Detected';
     }
-    $dataValues[$programStagesVariables['labResultHbvVlCount']]  = $row['hbv_vl_count'];
-    $dataValues[$programStagesVariables['dateHbvResultsAvailable']] =  $row['sample_tested_datetime'];
-    $dataValues[$programStagesVariables['hbvSampleId']] =  $row['sample_code'];
+    $dataValues[$programStagesVariables['labResultHbvVlCount']] = $row['hbv_vl_count'];
+    $dataValues[$programStagesVariables['dateHbvResultsAvailable']] = $row['sample_tested_datetime'];
+    $dataValues[$programStagesVariables['hbvSampleId']] = $row['sample_code'];
     $dataValues[$programStagesVariables['hbvResultInterpretaion']] = $interpretaion;
   } else if ($row['reason_for_vl_test'] == 'Initial HCV VL') {
     if (!empty($row['hcv_vl_count']) && in_array(strtolower($row['hcv_vl_count']), $hepatitisService->suppressedArray)) {
@@ -125,8 +125,8 @@ foreach ($formResults as $row) {
       $interpretaion = 'Not Detected';
     }
     $dataValues[$programStagesVariables['labResultHcvVlCount']] = $row['hcv_vl_count'];
-    $dataValues[$programStagesVariables['dateHcvResultsAvailable']] =  $row['sample_tested_datetime'];
-    $dataValues[$programStagesVariables['hcvSampleId']] =  $row['sample_code'];
+    $dataValues[$programStagesVariables['dateHcvResultsAvailable']] = $row['sample_tested_datetime'];
+    $dataValues[$programStagesVariables['hcvSampleId']] = $row['sample_code'];
     $dataValues[$programStagesVariables['hcvResultInterpretaion']] = $interpretaion;
   } else if ($row['reason_for_vl_test'] == 'Follow up HBV VL') {
     if (!empty($row['hbv_vl_count']) && in_array(strtolower($row['hbv_vl_count']), $hepatitisService->suppressedArray)) {
@@ -139,9 +139,9 @@ foreach ($formResults as $row) {
       $interpretaion = 'Not Detected';
     }
 
-    $dataValues[$programStagesVariables['followUpHbvVlCount']]  = $row['hbv_vl_count'];
-    $dataValues[$programStagesVariables['dateHbvResultsAvailable']] =  $row['sample_tested_datetime'];
-    $dataValues[$programStagesVariables['hbvSampleId']] =  $row['sample_code'];
+    $dataValues[$programStagesVariables['followUpHbvVlCount']] = $row['hbv_vl_count'];
+    $dataValues[$programStagesVariables['dateHbvResultsAvailable']] = $row['sample_tested_datetime'];
+    $dataValues[$programStagesVariables['hbvSampleId']] = $row['sample_code'];
     $dataValues[$programStagesVariables['hbvResultInterpretaion']] = $interpretaion;
   } else if ($row['reason_for_vl_test'] == 'SVR12 HCV VL') {
     $interpretaion = "";
@@ -156,10 +156,10 @@ foreach ($formResults as $row) {
     }
     $dataValues[$programStagesVariables['finalConfirmationHcvVlCount']] = $row['hcv_vl_count'];
     $dataValues[$programStagesVariables['hcvResultInterpretaion']] = $interpretaion;
-    $dataValues[$programStagesVariables['sampleCollectionDate']] =  $row['sample_collection_date'];
-    $dataValues[$programStagesVariables['sampleTestedDate']] =  $row['sample_tested_datetime'];
-    $dataValues[$programStagesVariables['dateHcvResultsAvailable']] =  $row['sample_tested_datetime'];
-    $dataValues[$programStagesVariables['hcvSampleId']] =  $row['sample_code'];
+    $dataValues[$programStagesVariables['sampleCollectionDate']] = $row['sample_collection_date'];
+    $dataValues[$programStagesVariables['sampleTestedDate']] = $row['sample_tested_datetime'];
+    $dataValues[$programStagesVariables['dateHcvResultsAvailable']] = $row['sample_tested_datetime'];
+    $dataValues[$programStagesVariables['hcvSampleId']] = $row['sample_code'];
   } else if ($row['reason_for_vl_test'] == 'SVR12 HCV VL - Second Line') {
     $interpretaion = "";
     $programID = 'LQUdgfzYQCt';
@@ -174,7 +174,7 @@ foreach ($formResults as $row) {
     }
     $dataValues[$programStagesVariables['2LlabResultHcvVlCount']] = $row['hcv_vl_count'];
     $dataValues[$programStagesVariables['2LhcvResultInterpretaion']] = $interpretaion;
-    $dataValues[$programStagesVariables['2LsampleTestedDate']] =  $row['sample_tested_datetime'];
+    $dataValues[$programStagesVariables['2LsampleTestedDate']] = $row['sample_tested_datetime'];
   }
 
 

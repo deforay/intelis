@@ -105,16 +105,16 @@ try {
         $sampleCodeKey = 'sample_code_key';
     }
 
-    $status = 6;
+    $status = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
     if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
-        $status = 9;
+        $status = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
     }
 
     $resultSentToSource = null;
 
     if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
         $_POST['result'] = null;
-        $status = 4;
+        $status = SAMPLE_STATUS_REJECTED;
         $resultSentToSource = 'pending';
     }
     if (!empty($_POST['patientDob'])) {
@@ -149,58 +149,58 @@ try {
     $reason = $_POST['reasonForTbTest'];
     $reason['reason'] = array($reason['reason'] => 'yes');
     $tbData = array(
-        'vlsm_instance_id'                    => $instanceId,
-        'vlsm_country_id'                     => $_POST['formId'],
-        'facility_id'                         => !empty($_POST['facilityId']) ? $_POST['facilityId'] : null,
-        'specimen_quality'                    => !empty($_POST['testNumber']) ? $_POST['testNumber'] : null,
-        'province_id'                         => !empty($_POST['provinceId']) ? $_POST['provinceId'] : null,
-        'lab_id'                              => !empty($_POST['labId']) ? $_POST['labId'] : null,
-        'implementing_partner'                => !empty($_POST['implementingPartner']) ? $_POST['implementingPartner'] : null,
-        'funding_source'                      => !empty($_POST['fundingSource']) ? $_POST['fundingSource'] : null,
-        'referring_unit'                      => !empty($_POST['referringUnit']) ? $_POST['referringUnit'] : null,
-        'patient_id'                          => !empty($_POST['patientId']) ? $_POST['patientId'] : null,
-        'patient_type'                        => !empty($_POST['typeOfPatient']) ? json_encode($_POST['typeOfPatient']) : null,
-        'patient_name'                        => !empty($_POST['firstName']) ? $_POST['firstName'] : null,
-        'patient_surname'                     => !empty($_POST['lastName']) ? $_POST['lastName'] : null,
-        'patient_dob'                         => !empty($_POST['patientDob']) ? $_POST['patientDob'] : null,
-        'patient_gender'                      => !empty($_POST['patientGender']) ? $_POST['patientGender'] : null,
-        'patient_age'                         => !empty($_POST['patientAge']) ? $_POST['patientAge'] : null,
-        'reason_for_tb_test'                  => !empty($reason) ? json_encode($reason) : null,
-        'hiv_status'                          => !empty($_POST['hivStatus']) ? $_POST['hivStatus'] : null,
-        'previously_treated_for_tb'           => !empty($_POST['previouslyTreatedForTB']) ? $_POST['previouslyTreatedForTB'] : null,
-        'tests_requested'                     => !empty($_POST['testTypeRequested']) ? json_encode($_POST['testTypeRequested']) : null,
-        'number_of_sputum_samples'            => !empty($_POST['numberOfSputumSamples']) ? $_POST['numberOfSputumSamples'] : null,
+        'vlsm_instance_id' => $instanceId,
+        'vlsm_country_id' => $_POST['formId'],
+        'facility_id' => !empty($_POST['facilityId']) ? $_POST['facilityId'] : null,
+        'specimen_quality' => !empty($_POST['testNumber']) ? $_POST['testNumber'] : null,
+        'province_id' => !empty($_POST['provinceId']) ? $_POST['provinceId'] : null,
+        'lab_id' => !empty($_POST['labId']) ? $_POST['labId'] : null,
+        'implementing_partner' => !empty($_POST['implementingPartner']) ? $_POST['implementingPartner'] : null,
+        'funding_source' => !empty($_POST['fundingSource']) ? $_POST['fundingSource'] : null,
+        'referring_unit' => !empty($_POST['referringUnit']) ? $_POST['referringUnit'] : null,
+        'patient_id' => !empty($_POST['patientId']) ? $_POST['patientId'] : null,
+        'patient_type' => !empty($_POST['typeOfPatient']) ? json_encode($_POST['typeOfPatient']) : null,
+        'patient_name' => !empty($_POST['firstName']) ? $_POST['firstName'] : null,
+        'patient_surname' => !empty($_POST['lastName']) ? $_POST['lastName'] : null,
+        'patient_dob' => !empty($_POST['patientDob']) ? $_POST['patientDob'] : null,
+        'patient_gender' => !empty($_POST['patientGender']) ? $_POST['patientGender'] : null,
+        'patient_age' => !empty($_POST['patientAge']) ? $_POST['patientAge'] : null,
+        'reason_for_tb_test' => !empty($reason) ? json_encode($reason) : null,
+        'hiv_status' => !empty($_POST['hivStatus']) ? $_POST['hivStatus'] : null,
+        'previously_treated_for_tb' => !empty($_POST['previouslyTreatedForTB']) ? $_POST['previouslyTreatedForTB'] : null,
+        'tests_requested' => !empty($_POST['testTypeRequested']) ? json_encode($_POST['testTypeRequested']) : null,
+        'number_of_sputum_samples' => !empty($_POST['numberOfSputumSamples']) ? $_POST['numberOfSputumSamples'] : null,
         'first_sputum_samples_collection_date' => !empty($_POST['firstSputumSamplesCollectionDate']) ? $_POST['firstSputumSamplesCollectionDate'] : null,
-        'sample_requestor_name'               => !empty($_POST['sampleRequestorName']) ? $_POST['sampleRequestorName'] : null,
-        'specimen_type'                       => !empty($_POST['specimenType']) ? $_POST['specimenType'] : null,
-        'sample_collection_date'              => !empty($_POST['sampleCollectionDate']) ? $_POST['sampleCollectionDate'] : null,
-        'sample_dispatched_datetime'          => !empty($_POST['sampleDispatchedDate']) ? $_POST['sampleDispatchedDate'] : null,
-        'sample_received_at_lab_datetime'     => !empty($_POST['sampleReceivedDate']) ? $_POST['sampleReceivedDate'] : null,
-        'is_sample_rejected'                  => !empty($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : '',
-        'result'                              => !empty($_POST['result']) ? $_POST['result'] : null,
-        'xpert_mtb_result'                    => !empty($_POST['xPertMTMResult']) ? $_POST['xPertMTMResult'] : null,
-        'result_sent_to_source'               => $resultSentToSource,
-        'result_dispatched_datetime'          => !empty($_POST['resultDispatchedDatetime']) ? $_POST['resultDispatchedDatetime'] : null,
-        'result_reviewed_by'                  => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
-        'result_reviewed_datetime'            => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
-        'result_approved_by'                  => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != "") ? $_POST['approvedBy'] : "",
-        'result_approved_datetime'            => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != "") ? $_POST['approvedOn'] : null,
-        'sample_tested_datetime'              => (isset($_POST['sampleTestedDateTime']) && $_POST['sampleTestedDateTime'] != "") ? $_POST['sampleTestedDateTime'] : null,
-        'other_referring_unit'                => (isset($_POST['typeOfReferringUnit']) && $_POST['typeOfReferringUnit'] != "") ? $_POST['typeOfReferringUnit'] : null,
-        'other_specimen_type'                 => (isset($_POST['specimenTypeOther']) && $_POST['specimenTypeOther'] != "") ? $_POST['specimenTypeOther'] : null,
-        'other_patient_type'                  => (isset($_POST['typeOfPatientOther']) && $_POST['typeOfPatientOther'] != "") ? $_POST['typeOfPatientOther'] : null,
-        'tested_by'                           => !empty($_POST['testedBy']) ? $_POST['testedBy'] : null,
-        'result_date'                         => !empty($_POST['resultDate']) ? $_POST['resultDate'] : null,
-        'rejection_on'                        => (!empty($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
-        'result_status'                       => $status,
-        'data_sync'                           => 0,
-        'reason_for_sample_rejection'         => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
-        'sample_registered_at_lab'            => DateUtility::getCurrentDateTime(),
-        'last_modified_by'                    => $_SESSION['userId'],
-        'last_modified_datetime'              => DateUtility::getCurrentDateTime(),
-        'request_created_by'                  => $_SESSION['userId'],
-        'lab_technician'                      => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId'],
-        'source_of_request'                   => "web"
+        'sample_requestor_name' => !empty($_POST['sampleRequestorName']) ? $_POST['sampleRequestorName'] : null,
+        'specimen_type' => !empty($_POST['specimenType']) ? $_POST['specimenType'] : null,
+        'sample_collection_date' => !empty($_POST['sampleCollectionDate']) ? $_POST['sampleCollectionDate'] : null,
+        'sample_dispatched_datetime' => !empty($_POST['sampleDispatchedDate']) ? $_POST['sampleDispatchedDate'] : null,
+        'sample_received_at_lab_datetime' => !empty($_POST['sampleReceivedDate']) ? $_POST['sampleReceivedDate'] : null,
+        'is_sample_rejected' => !empty($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : '',
+        'result' => !empty($_POST['result']) ? $_POST['result'] : null,
+        'xpert_mtb_result' => !empty($_POST['xPertMTMResult']) ? $_POST['xPertMTMResult'] : null,
+        'result_sent_to_source' => $resultSentToSource,
+        'result_dispatched_datetime' => !empty($_POST['resultDispatchedDatetime']) ? $_POST['resultDispatchedDatetime'] : null,
+        'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
+        'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
+        'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != "") ? $_POST['approvedBy'] : "",
+        'result_approved_datetime' => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != "") ? $_POST['approvedOn'] : null,
+        'sample_tested_datetime' => (isset($_POST['sampleTestedDateTime']) && $_POST['sampleTestedDateTime'] != "") ? $_POST['sampleTestedDateTime'] : null,
+        'other_referring_unit' => (isset($_POST['typeOfReferringUnit']) && $_POST['typeOfReferringUnit'] != "") ? $_POST['typeOfReferringUnit'] : null,
+        'other_specimen_type' => (isset($_POST['specimenTypeOther']) && $_POST['specimenTypeOther'] != "") ? $_POST['specimenTypeOther'] : null,
+        'other_patient_type' => (isset($_POST['typeOfPatientOther']) && $_POST['typeOfPatientOther'] != "") ? $_POST['typeOfPatientOther'] : null,
+        'tested_by' => !empty($_POST['testedBy']) ? $_POST['testedBy'] : null,
+        'result_date' => !empty($_POST['resultDate']) ? $_POST['resultDate'] : null,
+        'rejection_on' => (!empty($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
+        'result_status' => $status,
+        'data_sync' => 0,
+        'reason_for_sample_rejection' => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
+        'sample_registered_at_lab' => DateUtility::getCurrentDateTime(),
+        'last_modified_by' => $_SESSION['userId'],
+        'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+        'request_created_by' => $_SESSION['userId'],
+        'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId'],
+        'source_of_request' => "web"
     );
     $id = 0;
 
@@ -211,12 +211,15 @@ try {
 
             foreach ($_POST['testResult'] as $testKey => $testResult) {
                 if (!empty($testResult) && trim($testResult) != "") {
-                    $db->insert($testTableName, array(
-                        'tb_id'             => $_POST['tbSampleId'],
-                        'actual_no'         => $_POST['actualNo'][$testKey] ?? null,
-                        'test_result'       => $testResult,
-                        'updated_datetime'  => DateUtility::getCurrentDateTime()
-                    ));
+                    $db->insert(
+                        $testTableName,
+                        array(
+                            'tb_id' => $_POST['tbSampleId'],
+                            'actual_no' => $_POST['actualNo'][$testKey] ?? null,
+                            'test_result' => $testResult,
+                            'updated_datetime' => DateUtility::getCurrentDateTime()
+                        )
+                    );
                 }
             }
         }

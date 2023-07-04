@@ -74,7 +74,7 @@ try {
 	}
 
 	if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
-		$status = 9;
+		$status = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
 	}
 
 	if (!empty($_POST['oldStatus'])) {
@@ -82,22 +82,22 @@ try {
 	}
 
 	if ($sarr['sc_user_type'] == 'vluser' && $_POST['oldStatus'] == 9) {
-		$status = 6;
+		$status = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
 	}
 
 	if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
 		$_POST['result'] = null;
-		$status = 4;
+		$status = SAMPLE_STATUS_REJECTED;
 	}
 
 
 	if ($sarr['sc_user_type'] == 'remoteuser' && $_POST['oldStatus'] == 9) {
-		$_POST['status'] = 9;
-	} else if ($sarr['sc_user_type'] == 'vluser' && $_POST['oldStatus'] == 9) {
-		$_POST['status'] = 6;
+		$_POST['status'] = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+	} elseif ($sarr['sc_user_type'] == 'vluser' && $_POST['oldStatus'] == 9) {
+		$_POST['status'] = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
 	}
 	if (isset($_POST['status']) && $_POST['status'] == '') {
-		$_POST['status']  = $_POST['oldStatus'];
+		$_POST['status'] = $_POST['oldStatus'];
 	}
 	$resultSentToSource = 'pending';
 
@@ -105,7 +105,7 @@ try {
 		$_POST['hcvCount'] = null;
 		$_POST['hbvCount'] = null;
 		$resultSentToSource = 'pending';
-	} else if (empty($_POST['hcvCount']) && empty($_POST['hbvCount'])) {
+	} elseif (empty($_POST['hcvCount']) && empty($_POST['hbvCount'])) {
 		$resultSentToSource = null;
 	}
 
@@ -117,64 +117,64 @@ try {
 	}
 
 	$hepatitisData = array(
-		'external_sample_code'                => $_POST['externalSampleCode'] ?? null,
-		'hepatitis_test_type'                 => $_POST['hepatitisTestType'] ?? 'hcv',
-		'facility_id'                         => $_POST['facilityId'] ?? null,
-		'test_number'                         => $_POST['testNumber'] ?? null,
-		'province_id'                         => $_POST['provinceId'] ?? null,
-		'lab_id'                              => $_POST['labId'] ?? null,
-		'implementing_partner'                => $_POST['implementingPartner'] ?? null,
-		'funding_source'                      => $_POST['fundingSource'] ?? null,
-		'patient_id'                          => $_POST['patientId'] ?? null,
-		'patient_name'                        => $_POST['firstName'] ?? null,
-		'patient_surname'                     => $_POST['lastName'] ?? null,
-		'patient_dob'                         => isset($_POST['patientDob']) ? DateUtility::isoDateFormat($_POST['patientDob']) : null,
-		'patient_gender'                      => $_POST['patientGender'] ?? null,
-		'patient_age'                         => $_POST['patientAge'] ?? null,
-		'patient_marital_status'              => $_POST['maritalStatus'] ?? null,
-		'patient_insurance'                	  => $_POST['insurance'] ?? null,
-		'patient_phone_number'                => $_POST['patientPhoneNumber'] ?? null,
-		'patient_address'                     => $_POST['patientAddress'] ?? null,
-		'patient_province'                    => $_POST['patientProvince'] ?? null,
-		'patient_district'                    => $_POST['patientDistrict'] ?? null,
-		'patient_city'                    	  => $_POST['patientCity'] ?? null,
-		'patient_occupation'                  => $_POST['patientOccupation'] ?? null,
-		'patient_nationality'                 => $_POST['patientNationality'] ?? null,
-		'hbv_vaccination'                     => $_POST['HbvVaccination'] ?? null,
-		'is_sample_collected'                 => $_POST['isSampleCollected'] ?? null,
-		'type_of_test_requested'              => $_POST['testTypeRequested'] ?? null,
-		'reason_for_vl_test'  				  => $_POST['reasonVlTest'] ?? null,
-		'specimen_type'                       => $_POST['specimenType'] ?? null,
-		'sample_collection_date'              => $_POST['sampleCollectionDate'] ?? null,
-		'sample_received_at_vl_lab_datetime'  => $_POST['sampleReceivedDate'] ?? null,
-		'sample_tested_datetime'  			  => $_POST['sampleTestedDateTime'] ?? null,
-		'vl_testing_site'  			  		  => $_POST['vlTestingSite'] ?? null,
-		'sample_condition'  				  => $_POST['sampleCondition'] ?? ($_POST['specimenQuality'] ?? null),
-		'is_sample_rejected'                  => $_POST['isSampleRejected'] ?? null,
-		'hbsag_result'                        => $_POST['HBsAg'] ?? null,
-		'anti_hcv_result'                     => $_POST['antiHcv'] ?? null,
-		'result'                       		  => $_POST['result'] ?? null,
-		'hcv_vl_result'                       => $_POST['hcv'] ?? null,
-		'hbv_vl_result'                       => $_POST['hbv'] ?? null,
-		'hcv_vl_count'                        => $_POST['hcvCount'] ?? null,
-		'hbv_vl_count'                        => $_POST['hbvCount'] ?? null,
-		'hepatitis_test_platform'             => $_POST['hepatitisPlatform'] ?? null,
-		'import_machine_name'                 => $_POST['machineName'] ?? null,
-		'is_result_authorised'                => $_POST['isResultAuthorized'] ?? null,
-		'result_reviewed_by' 				  => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
-		'result_reviewed_datetime' 			  => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
-		'authorized_by'                       => $_POST['authorizedBy'] ?? null,
-		'authorized_on' 					  => isset($_POST['authorizedOn']) ? DateUtility::isoDateFormat($_POST['authorizedOn']) : null,
-		'revised_by' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
-		'revised_on' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : "",
-		'rejection_on'	 					  => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
-		'result_status'                       => $status,
-		'result_sent_to_source'               => $resultSentToSource,
-		'data_sync'                           => 0,
-		'reason_for_sample_rejection'         => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
-		'last_modified_by'                    => $_SESSION['userId'],
-		'last_modified_datetime'              => DateUtility::getCurrentDateTime(),
-		'lab_technician'              		  => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId'],
+		'external_sample_code' => $_POST['externalSampleCode'] ?? null,
+		'hepatitis_test_type' => $_POST['hepatitisTestType'] ?? 'hcv',
+		'facility_id' => $_POST['facilityId'] ?? null,
+		'test_number' => $_POST['testNumber'] ?? null,
+		'province_id' => $_POST['provinceId'] ?? null,
+		'lab_id' => $_POST['labId'] ?? null,
+		'implementing_partner' => $_POST['implementingPartner'] ?? null,
+		'funding_source' => $_POST['fundingSource'] ?? null,
+		'patient_id' => $_POST['patientId'] ?? null,
+		'patient_name' => $_POST['firstName'] ?? null,
+		'patient_surname' => $_POST['lastName'] ?? null,
+		'patient_dob' => isset($_POST['patientDob']) ? DateUtility::isoDateFormat($_POST['patientDob']) : null,
+		'patient_gender' => $_POST['patientGender'] ?? null,
+		'patient_age' => $_POST['patientAge'] ?? null,
+		'patient_marital_status' => $_POST['maritalStatus'] ?? null,
+		'patient_insurance' => $_POST['insurance'] ?? null,
+		'patient_phone_number' => $_POST['patientPhoneNumber'] ?? null,
+		'patient_address' => $_POST['patientAddress'] ?? null,
+		'patient_province' => $_POST['patientProvince'] ?? null,
+		'patient_district' => $_POST['patientDistrict'] ?? null,
+		'patient_city' => $_POST['patientCity'] ?? null,
+		'patient_occupation' => $_POST['patientOccupation'] ?? null,
+		'patient_nationality' => $_POST['patientNationality'] ?? null,
+		'hbv_vaccination' => $_POST['HbvVaccination'] ?? null,
+		'is_sample_collected' => $_POST['isSampleCollected'] ?? null,
+		'type_of_test_requested' => $_POST['testTypeRequested'] ?? null,
+		'reason_for_vl_test' => $_POST['reasonVlTest'] ?? null,
+		'specimen_type' => $_POST['specimenType'] ?? null,
+		'sample_collection_date' => $_POST['sampleCollectionDate'] ?? null,
+		'sample_received_at_vl_lab_datetime' => $_POST['sampleReceivedDate'] ?? null,
+		'sample_tested_datetime' => $_POST['sampleTestedDateTime'] ?? null,
+		'vl_testing_site' => $_POST['vlTestingSite'] ?? null,
+		'sample_condition' => $_POST['sampleCondition'] ?? ($_POST['specimenQuality'] ?? null),
+		'is_sample_rejected' => $_POST['isSampleRejected'] ?? null,
+		'hbsag_result' => $_POST['HBsAg'] ?? null,
+		'anti_hcv_result' => $_POST['antiHcv'] ?? null,
+		'result' => $_POST['result'] ?? null,
+		'hcv_vl_result' => $_POST['hcv'] ?? null,
+		'hbv_vl_result' => $_POST['hbv'] ?? null,
+		'hcv_vl_count' => $_POST['hcvCount'] ?? null,
+		'hbv_vl_count' => $_POST['hbvCount'] ?? null,
+		'hepatitis_test_platform' => $_POST['hepatitisPlatform'] ?? null,
+		'import_machine_name' => $_POST['machineName'] ?? null,
+		'is_result_authorised' => $_POST['isResultAuthorized'] ?? null,
+		'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
+		'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
+		'authorized_by' => $_POST['authorizedBy'] ?? null,
+		'authorized_on' => isset($_POST['authorizedOn']) ? DateUtility::isoDateFormat($_POST['authorizedOn']) : null,
+		'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
+		'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : "",
+		'rejection_on' => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
+		'result_status' => $status,
+		'result_sent_to_source' => $resultSentToSource,
+		'data_sync' => 0,
+		'reason_for_sample_rejection' => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
+		'last_modified_by' => $_SESSION['userId'],
+		'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+		'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId'],
 	);
 
 	// For Save Comorbidity

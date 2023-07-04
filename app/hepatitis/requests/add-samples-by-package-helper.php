@@ -57,13 +57,13 @@ foreach ($sampleResult as $sampleRow) {
         $sampleCodeParams['prefix'] = $sampleRow['hepatitis_test_type'] ?? null;
         $sampleCodeParams['provinceCode'] = $provinceCode;
 
-        $sampleJson =  $hepatitisService->generateSampleCode($sampleCodeParams);
+        $sampleJson = $hepatitisService->generateSampleCode($sampleCodeParams);
         $sampleData = json_decode($sampleJson, true);
         $hepatitisData = [];
         $hepatitisData['sample_code'] = $sampleData['sampleCode'];
         $hepatitisData['sample_code_format'] = $sampleData['sampleCodeFormat'];
         $hepatitisData['sample_code_key'] = $sampleData['sampleCodeKey'];
-        $hepatitisData['result_status'] = 6;
+        $hepatitisData['result_status'] = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
         $hepatitisData['data_sync'] = 0;
         $hepatitisData['last_modified_datetime'] = DateUtility::getCurrentDateTime();
         if (!empty($_POST['testDate'])) {

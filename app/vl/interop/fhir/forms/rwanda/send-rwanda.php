@@ -31,7 +31,7 @@ $transactionId = $general->generateUUID();
 $fhir = new Fhir($interopConfig['FHIR']['url'], $interopConfig['FHIR']['auth']);
 
 //$query = "SELECT * FROM form_vl WHERE (source_of_request LIKE 'fhir' OR unique_id like 'fhir%') AND result_status = 7 AND (result_sent_to_source is null or result_sent_to_source NOT LIKE 'sent')";
-//$query = "SELECT * FROM form_vl WHERE source_of_request LIKE 'fhir' AND result_status = 7";// AND result_sent_to_source NOT LIKE 'sent'";
+//$query = "SELECT * FROM form_vl WHERE source_of_request LIKE 'fhir' AND result_status = " . SAMPLE_STATUS_ACCEPTED;// AND result_sent_to_source NOT LIKE 'sent'";
 // $query = "SELECT vl.*, rej.rejection_reason_name, tester.user_name as tester_name, tester.phone_number as tester_phone_number
 //             FROM form_vl as vl
 //             LEFT JOIN r_vl_sample_rejection_reasons as rej ON rej.rejection_reason_id = vl.reason_for_sample_rejection

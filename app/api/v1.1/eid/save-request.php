@@ -227,23 +227,23 @@ try {
             }
         }
 
-        $status = 6;
+        $status = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
         if ($roleUser['access_type'] != 'testing-lab') {
-            $status = 9;
+            $status = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
         }
 
         if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
             $data['result'] = null;
-            $status = 4;
+            $status = SAMPLE_STATUS_REJECTED;
         } elseif (
             isset($globalConfig['eid_auto_approve_api_results']) &&
             $globalConfig['eid_auto_approve_api_results'] == "yes" &&
             (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") &&
             (!empty($data['result']))
         ) {
-            $status = 7;
+            $status = SAMPLE_STATUS_ACCEPTED;
         } elseif ((isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") && (!empty($data['result']))) {
-            $status = 8;
+            $status = SAMPLE_STATUS_PENDING_APPROVAL;
         }
 
         if (isset($data['approvedOn']) && trim($data['approvedOn']) != "") {
@@ -328,90 +328,90 @@ try {
 
 
         $formAttributes = [
-            'applicationVersion'    => $version,
-            'apiTransactionId'      => $transactionId,
-            'mobileAppVersion'      => $appVersion,
-            'deviceId'              => $deviceId
+            'applicationVersion' => $version,
+            'apiTransactionId' => $transactionId,
+            'mobileAppVersion' => $appVersion,
+            'deviceId' => $deviceId
         ];
         $formAttributes = json_encode($formAttributes);
 
         $eidData = [
-            'vlsm_instance_id'                                  => $instanceId,
-            'app_sample_code'                                   => $data['appSampleCode'] ?? null,
-            'facility_id'                                       => $data['facilityId'] ?? null,
-            'province_id'                                       => $data['provinceId'] ?? null,
-            'lab_id'                                            => $data['labId'] ?? null,
-            'implementing_partner'                              => $data['implementingPartner'] ?? null,
-            'funding_source'                                    => $data['fundingSource'] ?? null,
-            'mother_id'                                         => $data['mothersId'] ?? null,
-            'caretaker_contact_consent'                         => $data['caretakerConsentForContact'] ?? null,
-            'caretaker_phone_number'                            => $data['caretakerPhoneNumber'] ?? null,
-            'caretaker_address'                                 => $data['caretakerAddress'] ?? null,
-            'mother_name'                                       => (!empty($data['mothersName']) && $data['mothersName'] != 'undefined') ? $data['mothersName'] : null,
-            'mother_dob'                                        => $data['mothersDob'] ?? null,
-            'mother_marital_status'                             => $data['mothersMaritalStatus'] ?? null,
-            'mother_treatment'                                  => isset($data['motherTreatment']) ? implode(",", $data['motherTreatment']) : null,
-            'mother_treatment_other'                            => $data['motherTreatmentOther'] ?? null,
-            'mother_treatment_initiation_date'                  => $data['motherTreatmentInitiationDate'] ?? null,
-            'child_id'                                          => $data['childId'] ?? null,
-            'child_name'                                        => $data['childName'] ?? null,
-            'child_surname'                                     => $data['childSurName'] ?? null,
-            'child_dob'                                         => $data['childDob'] ?? null,
-            'child_gender'                                      => $data['childGender'] ?? null,
-            'child_age'                                         => $data['childAge'] ?? null,
-            'child_treatment'                                   => isset($data['childTreatment']) ? implode(",", $data['childTreatment']) : null,
-            'child_treatment_other'                             => isset($data['childTreatmentOther']) ? implode(",", $data['childTreatmentOther']) : null,
-            'mother_cd4'                                        => $data['mothercd4'] ?? null,
-            'mother_vl_result'                                  => $motherVlResult,
-            'mother_hiv_status'                                 => $data['mothersHIVStatus'] ?? null,
-            'pcr_test_performed_before'                         => $data['pcrTestPerformedBefore'] ?? null,
-            'previous_pcr_result'                               => $data['prePcrTestResult'] ?? null,
-            'last_pcr_date'                                     => $data['previousPCRTestDate'] ?? null,
-            'reason_for_pcr'                                    => $data['pcrTestReason'] ?? null,
-            'has_infant_stopped_breastfeeding'                  => $data['hasInfantStoppedBreastfeeding'] ?? null,
-            'age_breastfeeding_stopped_in_months'               => $data['ageBreastfeedingStopped'] ?? null,
-            'choice_of_feeding'                                 => $data['choiceOfFeeding'] ?? null,
+            'vlsm_instance_id' => $instanceId,
+            'app_sample_code' => $data['appSampleCode'] ?? null,
+            'facility_id' => $data['facilityId'] ?? null,
+            'province_id' => $data['provinceId'] ?? null,
+            'lab_id' => $data['labId'] ?? null,
+            'implementing_partner' => $data['implementingPartner'] ?? null,
+            'funding_source' => $data['fundingSource'] ?? null,
+            'mother_id' => $data['mothersId'] ?? null,
+            'caretaker_contact_consent' => $data['caretakerConsentForContact'] ?? null,
+            'caretaker_phone_number' => $data['caretakerPhoneNumber'] ?? null,
+            'caretaker_address' => $data['caretakerAddress'] ?? null,
+            'mother_name' => (!empty($data['mothersName']) && $data['mothersName'] != 'undefined') ? $data['mothersName'] : null,
+            'mother_dob' => $data['mothersDob'] ?? null,
+            'mother_marital_status' => $data['mothersMaritalStatus'] ?? null,
+            'mother_treatment' => isset($data['motherTreatment']) ? implode(",", $data['motherTreatment']) : null,
+            'mother_treatment_other' => $data['motherTreatmentOther'] ?? null,
+            'mother_treatment_initiation_date' => $data['motherTreatmentInitiationDate'] ?? null,
+            'child_id' => $data['childId'] ?? null,
+            'child_name' => $data['childName'] ?? null,
+            'child_surname' => $data['childSurName'] ?? null,
+            'child_dob' => $data['childDob'] ?? null,
+            'child_gender' => $data['childGender'] ?? null,
+            'child_age' => $data['childAge'] ?? null,
+            'child_treatment' => isset($data['childTreatment']) ? implode(",", $data['childTreatment']) : null,
+            'child_treatment_other' => isset($data['childTreatmentOther']) ? implode(",", $data['childTreatmentOther']) : null,
+            'mother_cd4' => $data['mothercd4'] ?? null,
+            'mother_vl_result' => $motherVlResult,
+            'mother_hiv_status' => $data['mothersHIVStatus'] ?? null,
+            'pcr_test_performed_before' => $data['pcrTestPerformedBefore'] ?? null,
+            'previous_pcr_result' => $data['prePcrTestResult'] ?? null,
+            'last_pcr_date' => $data['previousPCRTestDate'] ?? null,
+            'reason_for_pcr' => $data['pcrTestReason'] ?? null,
+            'has_infant_stopped_breastfeeding' => $data['hasInfantStoppedBreastfeeding'] ?? null,
+            'age_breastfeeding_stopped_in_months' => $data['ageBreastfeedingStopped'] ?? null,
+            'choice_of_feeding' => $data['choiceOfFeeding'] ?? null,
             'is_cotrimoxazole_being_administered_to_the_infant' => $data['isCotrimoxazoleBeingAdministered'] ?? null,
-            'specimen_type'                                     => $data['specimenType'] ?? null,
-            'sample_collection_date'                            => $sampleCollectionDate,
-            'sample_dispatched_datetime'                        => $data['sampleDispatchedOn'],
-            'result_dispatched_datetime'                        => $data['resultDispatchedOn'],
-            'sample_requestor_phone'                            => $data['sampleRequestorPhone'] ?? null,
-            'sample_requestor_name'                             => $data['sampleRequestorName'] ?? null,
-            'rapid_test_performed'                              => $data['rapidTestPerformed'] ?? null,
-            'rapid_test_date'                                   => $data['rapidtestDate'] ?? null,
-            'rapid_test_result'                                 => $data['rapidTestResult'] ?? null,
-            'lab_reception_person'                              => $data['labReceptionPerson'] ?? null,
-            'sample_received_at_vl_lab_datetime'                => $data['sampleReceivedDate'] ?? null,
-            'eid_test_platform'                                 => $data['eidPlatform'] ?? null,
-            'import_machine_name'                               => $data['machineName'] ?? null,
-            'sample_tested_datetime'                            => $data['sampleTestedDateTime'] ?? null,
-            'is_sample_rejected'                                => $data['isSampleRejected'] ?? null,
-            'result'                                            => $data['result'] ?? null,
-            'tested_by'                                         => (isset($data['testedBy']) && $data['testedBy'] != '') ? $data['testedBy'] :  $user['user_id'],
-            'result_approved_by'                                => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedBy'] :  null,
-            'result_approved_datetime'                          => (isset($data['approvedOn']) && $data['approvedOn'] != '') ? $data['approvedOn'] :  null,
-            'lab_tech_comments'                                 => !empty($data['approverComments']) ? $data['approverComments'] : null,
-            'result_reviewed_by'                                => (isset($data['reviewedBy']) && $data['reviewedBy'] != "") ? $data['reviewedBy'] : null,
-            'result_reviewed_datetime'                          => (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
-            'revised_by'                                        => (isset($data['revisedBy']) && $data['revisedBy'] != "") ? $data['revisedBy'] : "",
-            'revised_on'                                        => (isset($data['revisedOn']) && $data['revisedOn'] != "") ? $data['revisedOn'] : "",
-            'reason_for_changing'                               => (!empty($data['reasonForEidResultChanges'])) ? $data['reasonForEidResultChanges'] : null,
-            'result_status'                                     => $status,
-            'data_sync'                                         => 0,
-            'reason_for_sample_rejection'                       => $data['sampleRejectionReason'] ?? null,
-            'rejection_on'                                      => (isset($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($data['rejectionDate']) : null,
-            'source_of_request'                                 => $data['sourceOfRequest'] ?? "API",
-            'form_attributes'                                   => $db->func($general->jsonToSetString($formAttributes, 'form_attributes'))
+            'specimen_type' => $data['specimenType'] ?? null,
+            'sample_collection_date' => $sampleCollectionDate,
+            'sample_dispatched_datetime' => $data['sampleDispatchedOn'],
+            'result_dispatched_datetime' => $data['resultDispatchedOn'],
+            'sample_requestor_phone' => $data['sampleRequestorPhone'] ?? null,
+            'sample_requestor_name' => $data['sampleRequestorName'] ?? null,
+            'rapid_test_performed' => $data['rapidTestPerformed'] ?? null,
+            'rapid_test_date' => $data['rapidtestDate'] ?? null,
+            'rapid_test_result' => $data['rapidTestResult'] ?? null,
+            'lab_reception_person' => $data['labReceptionPerson'] ?? null,
+            'sample_received_at_vl_lab_datetime' => $data['sampleReceivedDate'] ?? null,
+            'eid_test_platform' => $data['eidPlatform'] ?? null,
+            'import_machine_name' => $data['machineName'] ?? null,
+            'sample_tested_datetime' => $data['sampleTestedDateTime'] ?? null,
+            'is_sample_rejected' => $data['isSampleRejected'] ?? null,
+            'result' => $data['result'] ?? null,
+            'tested_by' => (isset($data['testedBy']) && $data['testedBy'] != '') ? $data['testedBy'] : $user['user_id'],
+            'result_approved_by' => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedBy'] : null,
+            'result_approved_datetime' => (isset($data['approvedOn']) && $data['approvedOn'] != '') ? $data['approvedOn'] : null,
+            'lab_tech_comments' => !empty($data['approverComments']) ? $data['approverComments'] : null,
+            'result_reviewed_by' => (isset($data['reviewedBy']) && $data['reviewedBy'] != "") ? $data['reviewedBy'] : null,
+            'result_reviewed_datetime' => (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
+            'revised_by' => (isset($data['revisedBy']) && $data['revisedBy'] != "") ? $data['revisedBy'] : "",
+            'revised_on' => (isset($data['revisedOn']) && $data['revisedOn'] != "") ? $data['revisedOn'] : "",
+            'reason_for_changing' => (!empty($data['reasonForEidResultChanges'])) ? $data['reasonForEidResultChanges'] : null,
+            'result_status' => $status,
+            'data_sync' => 0,
+            'reason_for_sample_rejection' => $data['sampleRejectionReason'] ?? null,
+            'rejection_on' => (isset($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($data['rejectionDate']) : null,
+            'source_of_request' => $data['sourceOfRequest'] ?? "API",
+            'form_attributes' => $db->func($general->jsonToSetString($formAttributes, 'form_attributes'))
         ];
 
         if (!empty($rowData)) {
-            $eidData['last_modified_datetime']  = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
-            $eidData['last_modified_by']  = $user['user_id'];
+            $eidData['last_modified_datetime'] = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
+            $eidData['last_modified_by'] = $user['user_id'];
         } else {
-            $eidData['request_created_datetime']  = DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true);
-            $eidData['sample_registered_at_lab']  = DateUtility::getCurrentDateTime();
-            $eidData['request_created_by']  = $user['user_id'];
+            $eidData['request_created_datetime'] = DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true);
+            $eidData['sample_registered_at_lab'] = DateUtility::getCurrentDateTime();
+            $eidData['request_created_by'] = $user['user_id'];
         }
 
         $id = false;
@@ -444,7 +444,7 @@ try {
         'status' => 'success',
         'transactionId' => $transactionId,
         'timestamp' => time(),
-        'data'  => $responseData ?? []
+        'data' => $responseData ?? []
     ];
 } catch (SystemException $exc) {
 

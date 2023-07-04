@@ -35,8 +35,8 @@ $tableName = "form_hepatitis";
 $primaryKey = "hepatitis_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
-         * you want to insert a non-database field (for example a counter or static image)
-        */
+ * you want to insert a non-database field (for example a counter or static image)
+ */
 if ($sarr['sc_user_type'] == 'remoteuser') {
 	$sampleCode = 'remote_sample_code';
 } else {
@@ -50,8 +50,8 @@ $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 /*
-         * Paging
-         */
+ * Paging
+ */
 $sLimit = "";
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 	$sOffset = $_POST['iDisplayStart'];
@@ -59,8 +59,8 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 }
 
 /*
-         * Ordering
-        */
+ * Ordering
+ */
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -75,11 +75,11 @@ if (isset($_POST['iSortCol_0'])) {
 }
 
 /*
-         * Filtering
-         * NOTE this does not match the built-in DataTables filtering which does it
-         * word by word on any field. It's possible to do here, but concerned about efficiency
-         * on very large tables, and MySQL's regex functionality is very limited
-        */
+ * Filtering
+ * NOTE this does not match the built-in DataTables filtering which does it
+ * word by word on any field. It's possible to do here, but concerned about efficiency
+ * on very large tables, and MySQL's regex functionality is very limited
+ */
 
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
@@ -113,9 +113,9 @@ for ($i = 0; $i < count($aColumns); $i++) {
 }
 
 /*
-         * SQL queries
-         * Get data to display
-        */
+ * SQL queries
+ * Get data to display
+ */
 $sQuery = "select SQL_CALC_FOUND_ROWS vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime,vl.request_created_by,vl.sample_code, vl.remote_sample_code from form_hepatitis as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) > '1970-01-01')
                         AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01')
                         AND vl.hcv_vl_result is not null
@@ -129,7 +129,7 @@ if ($sarr['sc_user_type'] == 'remoteuser') {
 	}
 	$sQuery = $sQuery . $whereCondition;
 } else {
-	$sQuery = $sQuery . " AND vl.result_status!=9";
+	$sQuery = $sQuery . " AND vl.result_status != " . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
 }
 $start_date = '';
 $end_date = '';
@@ -211,34 +211,13 @@ if (isset($sLimit) && isset($sOffset)) {
 	$sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
 $rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering
-$rUser = '';
-if ($sarr['sc_user_type'] == 'remoteuser') {
-	$rUser = $rUser . $whereCondition;
-} else {
-	$rUser = " AND vl.result_status!=9";
-}
-$aResultFilterTotal = $db->rawQuery("select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime from form_hepatitis as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) > '1970-01-01')
-                        AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' )
-                        AND vl.hcv_vl_result is not null
-                        AND vl.hcv_vl_result != '' AND vl.vlsm_country_id='" . $gconfig['vl_form'] . "' $rUser");
-$iFilteredTotal = count($aResultFilterTotal);
-
-/* Total data set length
-$aResultTotal =  $db->rawQuery("select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime from form_hepatitis as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) > '1970-01-01')
-                        AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' )
-                        AND vl.hcv_vl_result is not null
-                        AND vl.hcv_vl_result != '' AND vl.vlsm_country_id='" . $gconfig['vl_form'] . "' AND vl.result_status!=9 $rUser");
-// $aResultTotal = $countResult->fetch_row();
-//print_r($aResultTotal);
-$iTotal = count($aResultTotal);*/
 
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 /*
-         * Output
-        */
+ * Output
+ */
 $output = array(
 	"sEcho" => intval($_POST['sEcho']),
 	"iTotalRecords" => $iTotal,

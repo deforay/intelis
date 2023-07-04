@@ -22,8 +22,8 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
-         * you want to insert a non-database field (for example a counter or static image)
-        */
+ * you want to insert a non-database field (for example a counter or static image)
+ */
 $aColumns = array('p.manifest_code', 'p.module', "DATE_FORMAT(p.request_created_datetime,'%d-%b-%Y %H:%i:%s')");
 $orderColumns = array('p.manifest_id', 'p.module', 'p.manifest_code', 'p.manifest_id', 'p.request_created_datetime');
 /* Indexed column (used for fast and accurate table cardinality) */
@@ -38,8 +38,8 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sLimit = $_POST['iDisplayLength'];
 }
 /*
-         * Ordering
-        */
+ * Ordering
+ */
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
     $sOrder = "";
@@ -53,11 +53,11 @@ if (isset($_POST['iSortCol_0'])) {
     $sOrder = substr_replace($sOrder, "", -2);
 }
 /*
-         * Filtering
-         * NOTE this does not match the built-in DataTables filtering which does it
-         * word by word on any field. It's possible to do here, but concerned about efficiency
-         * on very large tables, and MySQL's regex functionality is very limited
-        */
+ * Filtering
+ * NOTE this does not match the built-in DataTables filtering which does it
+ * word by word on any field. It's possible to do here, but concerned about efficiency
+ * on very large tables, and MySQL's regex functionality is very limited
+ */
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", $_POST['sSearch']);
@@ -92,9 +92,9 @@ for ($i = 0; $i < count($aColumns); $i++) {
     }
 }
 /*
-         * SQL queries
-         * Get data to display
-        */
+ * SQL queries
+ * Get data to display
+ */
 $facilityQuery = '';
 
 $tableName = "form_covid19";
@@ -125,13 +125,13 @@ $aResultFilterTotal = $db->rawQuery("select p.request_created_datetime ,p.manife
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */
-$aResultTotal =  $db->rawQuery("select p.request_created_datetime ,p.manifest_code,p.manifest_status,count(vl." . $sCode . ") as sample_code from $tableName vl right join covid19_positive_confirmation_manifest p on vl.positive_test_manifest_id = p.manifest_id where vl.vlsm_country_id ='" . $configResult[0]['value'] . "' $facilityQuery group by p.manifest_id");
+$aResultTotal = $db->rawQuery("select p.request_created_datetime ,p.manifest_code,p.manifest_status,count(vl." . $sCode . ") as sample_code from $tableName vl right join covid19_positive_confirmation_manifest p on vl.positive_test_manifest_id = p.manifest_id where vl.vlsm_country_id ='" . $configResult[0]['value'] . "' $facilityQuery group by p.manifest_id");
 // $aResultTotal = $countResult->fetch_row();
 //print_r($aResultTotal);
 $iTotal = count($aResultTotal);
 /*
-         * Output
-        */
+ * Output
+ */
 $output = array(
     "sEcho" => intval($_POST['sEcho']),
     "iTotalRecords" => $iTotal,
@@ -152,7 +152,7 @@ foreach ($rResult as $aRow) {
     $printBarcode = '<a href="generate-confirmation-manifest.php?id=' . base64_encode($aRow['manifest_code']) . '" class="btn btn-info btn-xs" style="margin-right: 2px;" title="Print Barcode" target="_blank"><em class="fa-solid fa-barcode"></em> Print Barcode</a>';
     if (trim($aRow['request_created_datetime']) != "" && $aRow['request_created_datetime'] != '0000-00-00 00:00:00') {
         $date = $aRow['request_created_datetime'];
-        $humanDate =  date("d-M-Y H:i:s", strtotime($date));
+        $humanDate = date("d-M-Y H:i:s", strtotime($date));
     }
     $disable = '';
     $pointerEvent = '';
