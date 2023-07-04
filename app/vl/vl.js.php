@@ -218,4 +218,14 @@
         }
         $.unblockUI();
     }
+    function showModal(url, w, h) {
+          showdefModal('dDiv', w, h);
+          document.getElementById('dFrame').style.height = h + 'px';
+          document.getElementById('dFrame').style.width = w + 'px';
+          document.getElementById('dFrame').src = url;
+     }
+     function closeModal() {
+          document.getElementById('dFrame').src = "";
+          hidedefModal('dDiv');
+     }
 </script>
