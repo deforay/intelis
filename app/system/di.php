@@ -5,7 +5,6 @@ use App\Services\TbService;
 use App\Services\VlService;
 use App\Services\ApiService;
 use App\Services\EidService;
-use App\Helpers\ResultsHelper;
 use App\Services\BatchService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -100,7 +99,7 @@ $builder->addDefinitions([
     GeoLocationsService::class => DI\create(GeoLocationsService::class)
         ->constructor(DI\get('db')),
     TestResultsService::class => DI\create(TestResultsService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class)),
+        ->constructor(DI\get('db')),
     AppMenuService::class => DI\create(AppMenuService::class)
         ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(UsersService::class)),
     FacilitiesService::class => DI\create(FacilitiesService::class)

@@ -4,18 +4,15 @@ namespace App\Services;
 
 use MysqliDb;
 use DateTimeImmutable;
-use App\Registries\ContainerRegistry;
 
 class TestResultsService
 {
 
     protected ?MysqliDb $db = null;
-    protected CommonService $commonService;
 
-    public function __construct(?MysqliDb $db = null, CommonService $commonService = null)
+    public function __construct(?MysqliDb $db = null)
     {
-        $this->db = $db ?? ContainerRegistry::get('db');
-        $this->commonService = $commonService;
+        $this->db = $db;
     }
 
 
@@ -26,50 +23,40 @@ class TestResultsService
     {
         return once(function () use ($inputString, $encodeToUTF8) {
             $inputString = preg_replace('/[[:cntrl:]]/', '', $inputString);
-            if ($encodeToUTF8 && mb_detect_encoding($inputString, 'UTF-8', true) === false) {
+            if ($encodeToUTF8 === true && mb_detect_encoding($inputString, 'UTF-8', true) === false) {
                 $inputString = mb_convert_encoding($inputString, 'UTF-8');
             }
             return $inputString;
         });
     }
 
-    public function abbottTestingDateFormatter($inputTestingDate, $inputTestingDateFormat, $interpretFormat = true): ?array
+    public function abbottTestingDateFormatter($testDate, $testDateFormat, $interpretFormat = true): ?array
     {
 
-        if (empty($inputTestingDate)) {
+        if (empty($testDate) || empty($testDateFormat)) {
             return null;
         }
+
+        $testDateFormat = trim($testDateFormat);
 
         if ($interpretFormat === true) {
             $find = ['am', 'pm', 'dd', 'mm', 'yyyy', 'yy'];
             $replace = ['', '', 'd', 'm', 'Y', 'y'];
-            $dateFormat = trim(str_ireplace($find, $replace, strtolower($inputTestingDateFormat)));
-        } else {
-            $dateFormat = trim($inputTestingDateFormat);
+            $testDateFormat = trim(str_ireplace($find, $replace, strtolower($testDateFormat)));
         }
 
-        $numberOfColons = substr_count($inputTestingDate, ':');
+        $testingDateFormat = substr_count($testDate, ':') === 1 ? "$testDateFormat h:i" : "$testDateFormat H:i:s";
 
-        if ($numberOfColons === 1) {
-            $testingDateFormat = "$dateFormat h:i";
-        } elseif ($numberOfColons === 2) {
-            $testingDateFormat = "$dateFormat H:i:s";
+        if (stripos($testDate, 'am') !== false || stripos($testDate, 'pm') !== false) {
+            $testingDateFormat .= ' A';
         }
 
-        $checkIf12HourFormat = $this->commonService->checkIfStringExists($inputTestingDate, ['am', 'pm']);
-        if ($checkIf12HourFormat !== false) {
-            $testingDateFormat = "$testingDateFormat A";
-        }
-        $timestamp = DateTimeImmutable::createFromFormat("!" . $testingDateFormat, $inputTestingDate);
-        if (!empty($timestamp)) {
-            $testingDate = $timestamp->format('Y-m-d H:i');
-        } else {
-            $testingDate = null;
-        }
+        $timestamp = DateTimeImmutable::createFromFormat("!" . $testingDateFormat, $testDate);
+        $testingDate = $timestamp ? $timestamp->format('Y-m-d H:i') : null;
 
         return [
             'testingDate' => $testingDate,
-            'dateFormat' => $dateFormat,
+            'dateFormat' => $testDateFormat,
         ];
     }
 

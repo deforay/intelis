@@ -13,7 +13,6 @@ class BatchService
 
     protected ?MysqliDb $db = null;
 
-
     public function __construct(?MysqliDb $db = null)
     {
         $this->db = $db ?? ContainerRegistry::get('db');
