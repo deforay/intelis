@@ -40,9 +40,6 @@ class TestResultsService
             return null;
         }
 
-        /** @var CommonService $general */
-        $general = ContainerRegistry::get(CommonService::class);
-
         if ($interpretFormat === true) {
             $find = ['am', 'pm', 'dd', 'mm', 'yyyy', 'yy'];
             $replace = ['', '', 'd', 'm', 'Y', 'y'];
@@ -59,7 +56,7 @@ class TestResultsService
             $testingDateFormat = "$dateFormat H:i:s";
         }
 
-        $checkIf12HourFormat = $general->checkIfStringExists($inputTestingDate, ['am', 'pm']);
+        $checkIf12HourFormat = $this->commonService->checkIfStringExists($inputTestingDate, ['am', 'pm']);
         if ($checkIf12HourFormat !== false) {
             $testingDateFormat = "$testingDateFormat A";
         }

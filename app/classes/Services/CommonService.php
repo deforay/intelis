@@ -6,13 +6,12 @@ namespace App\Services;
 
 use MysqliDb;
 use Exception;
-use Generator;
 use TCPDFBarcode;
 use Ramsey\Uuid\Uuid;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-use App\Utilities\MiscUtility;
 
 class CommonService
 {
