@@ -41,11 +41,11 @@ $tableName = "form_covid19";
 $primaryKey = "covid19_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
-* you want to insert a non-database field (for example a counter or static image)
-*/
+ * you want to insert a non-database field (for example a counter or static image)
+ */
 $sampleCode = 'sample_code';
 $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name',  'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
 } else if ($sarr['sc_user_type'] == 'standalone') {
@@ -66,8 +66,8 @@ $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 /*
-* Paging
-*/
+ * Paging
+ */
 $sLimit = "";
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
      $sOffset = $_POST['iDisplayStart'];
@@ -75,8 +75,8 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 }
 
 /*
-* Ordering
-*/
+ * Ordering
+ */
 
 $sOrder = "";
 
@@ -94,11 +94,11 @@ if (isset($_POST['iSortCol_0'])) {
 }
 
 /*
-* Filtering
-* NOTE this does not match the built-in DataTables filtering which does it
-* word by word on any field. It's possible to do here, but concerned about efficiency
-* on very large tables, and MySQL's regex functionality is very limited
-*/
+ * Filtering
+ * NOTE this does not match the built-in DataTables filtering which does it
+ * word by word on any field. It's possible to do here, but concerned about efficiency
+ * on very large tables, and MySQL's regex functionality is very limited
+ */
 
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
@@ -136,9 +136,9 @@ for ($i = 0; $i < count($aColumns); $i++) {
 }
 
 /*
-          * SQL queries
-          * Get data to display
-          */
+ * SQL queries
+ * Get data to display
+ */
 $sQuery = "SELECT vl.*,b.*,ts.*,f.facility_name,
           l_f.facility_name as labName,
           l_f.facility_logo as facilityLogo,
@@ -171,7 +171,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 }
 
 if (!empty($sWhere)) {
-     $sWhere = ' where ' . $sWhere;
+     $sWhere = ' WHERE ' . $sWhere;
      if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
           $sWhere = $sWhere . ' AND b.batch_code = "' . $_POST['batchCode'] . '"';
      }
@@ -188,11 +188,11 @@ if (!empty($sWhere)) {
      }
      if (isset($_POST['status']) && trim($_POST['status']) != '') {
           if ($_POST['status'] == 'no_result') {
-               $statusCondition = ' AND (vl.result is NULL OR vl.result ="") AND vl.result_status != 4';
+               $statusCondition = ' AND (vl.result is NULL OR vl.result ="") AND vl.result_status != ' . SAMPLE_STATUS_REJECTED;
           } else if ($_POST['status'] == 'result') {
-               $statusCondition = ' AND (vl.result is NOT NULL AND vl.result !="" AND vl.result_status != 4)';
+               $statusCondition = ' AND (vl.result is NOT NULL AND vl.result !="" AND vl. != ' . SAMPLE_STATUS_REJECTED . ')';
           } else {
-               $statusCondition = ' AND vl.result_status=4';
+               $statusCondition = ' AND vl.result_status = ' . SAMPLE_STATUS_REJECTED;
           }
           $sWhere = $sWhere . $statusCondition;
      }
@@ -206,7 +206,7 @@ if (!empty($sWhere)) {
 } else {
      if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
           $setWhr = 'where';
-          $sWhere = ' where ' . $sWhere;
+          $sWhere = ' WHERE ' . $sWhere;
           $sWhere = $sWhere . ' b.batch_code = "' . $_POST['batchCode'] . '"';
      }
 
@@ -219,7 +219,7 @@ if (!empty($sWhere)) {
                }
           } else {
                $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
+               $sWhere = ' WHERE ' . $sWhere;
                $sWhere = $sWhere . ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
           }
      }
@@ -230,7 +230,7 @@ if (!empty($sWhere)) {
                $sWhere = $sWhere . ' AND f.facility_id IN (' . $_POST['facilityName'] . ')';
           } else {
                $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
+               $sWhere = ' WHERE ' . $sWhere;
                $sWhere = $sWhere . ' f.facility_id IN (' . $_POST['facilityName'] . ')';
           }
      }
@@ -238,22 +238,22 @@ if (!empty($sWhere)) {
      if (isset($_POST['status']) && trim($_POST['status']) != '') {
           if (isset($setWhr)) {
                if ($_POST['status'] == 'no_result') {
-                    $statusCondition = ' AND  (vl.result is NULL OR vl.result ="")  AND vl.result_status !=4 ';
+                    $statusCondition = ' AND  (vl.result is NULL OR vl.result ="")  AND vl.result_status = ' . SAMPLE_STATUS_REJECTED;
                } else if ($_POST['status'] == 'result') {
-                    $statusCondition = ' AND (vl.result is NOT NULL AND vl.result !=""  AND vl.result_status !=4 )';
+                    $statusCondition = ' AND (vl.result is NOT NULL AND vl.result !=""  AND vl.result_status != ' . SAMPLE_STATUS_REJECTED . ')';
                } else {
-                    $statusCondition = ' AND vl.result_status=4';
+                    $statusCondition = ' AND vl.result_status = ' . SAMPLE_STATUS_REJECTED;
                }
                $sWhere = $sWhere . $statusCondition;
           } else {
                $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
+               $sWhere = ' WHERE ' . $sWhere;
                if ($_POST['status'] == 'no_result') {
-                    $statusCondition = '  (vl.result is NULL OR vl.result ="")  AND vl.result_status !=4 ';
+                    $statusCondition = '  (vl.result is NULL OR vl.result ="")  AND vl.result_status = ' . SAMPLE_STATUS_REJECTED;
                } else if ($_POST['status'] == 'result') {
-                    $statusCondition = ' (vl.result is NOT NULL AND vl.result !=""  AND vl.result_status !=4 )';
+                    $statusCondition = ' (vl.result is NOT NULL AND vl.result !=""  AND vl.result_status != ' . SAMPLE_STATUS_REJECTED . ')';
                } else {
-                    $statusCondition = ' vl.result_status=4';
+                    $statusCondition = ' vl.result_status = ' . SAMPLE_STATUS_REJECTED;
                }
                $sWhere = $sWhere . $statusCondition;
           }
@@ -264,7 +264,7 @@ if (!empty($sWhere)) {
                $sWhere = $sWhere . ' AND vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
           } else {
                $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
+               $sWhere = ' WHERE ' . $sWhere;
                $sWhere = $sWhere . ' vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
           }
      }
@@ -273,7 +273,7 @@ if (!empty($sWhere)) {
                $sWhere = $sWhere . ' AND vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
           } else {
                $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
+               $sWhere = ' WHERE ' . $sWhere;
                $sWhere = $sWhere . ' vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
           }
      }
@@ -292,11 +292,11 @@ if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
      $dWhere = "WHERE ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
 } else {
      if (trim($sWhere) != '') {
-          $sWhere = $sWhere . "  AND vl.result_status!=9";
+          $sWhere = $sWhere . "  AND vl.result_status != " . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
      } else {
-          $sWhere = "WHERE vl.result_status!=9";
+          $sWhere = "WHERE vl.result_status != " . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
      }
-     $dWhere = "WHERE vl.result_status!=9";
+     $dWhere = "WHERE vl.result_statu != " . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
 }
 if ($_SESSION['instanceType'] == 'remoteuser') {
      //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";
@@ -327,12 +327,12 @@ $rResult = $db->rawQuery($sQuery);
 $aResultFilterTotal = $db->rawQuery("SELECT * FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere ORDER BY $sOrder");
 $iFilteredTotal = count($aResultFilterTotal);
 /* Total data set length */
-$aResultTotal =  $db->rawQuery("SELECT * FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere ORDER BY $sOrder");
+$aResultTotal = $db->rawQuery("SELECT * FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere ORDER BY $sOrder");
 $iTotal = count($aResultTotal);
 
 /*
-          * Output
-          */
+ * Output
+ */
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
      "iTotalRecords" => $iTotal,

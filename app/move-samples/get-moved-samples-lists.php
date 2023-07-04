@@ -19,8 +19,8 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
-         * you want to insert a non-database field (for example a counter or static image)
-        */
+ * you want to insert a non-database field (for example a counter or static image)
+ */
 
 $aColumns = array('lff.facility_name', "DATE_FORMAT(b.list_request_created_datetime,'%d-%b-%Y %H:%i:%s')");
 $orderColumns = array('lff.facility_name', '', '', '', '', '', 'b.list_request_created_datetime');
@@ -30,8 +30,8 @@ $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 /*
-         * Paging
-         */
+ * Paging
+ */
 $sLimit = "";
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
@@ -39,8 +39,8 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 }
 
 /*
-         * Ordering
-        */
+ * Ordering
+ */
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -56,11 +56,11 @@ if (isset($_POST['iSortCol_0'])) {
 }
 
 /*
-         * Filtering
-         * NOTE this does not match the built-in DataTables filtering which does it
-         * word by word on any field. It's possible to do here, but concerned about efficiency
-         * on very large tables, and MySQL's regex functionality is very limited
-        */
+ * Filtering
+ * NOTE this does not match the built-in DataTables filtering which does it
+ * word by word on any field. It's possible to do here, but concerned about efficiency
+ * on very large tables, and MySQL's regex functionality is very limited
+ */
 
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
@@ -98,13 +98,13 @@ for ($i = 0; $i < count($aColumns); $i++) {
 }
 
 /*
-         * SQL queries
-         * Get data to display
-        */
+ * SQL queries
+ * Get data to display
+ */
 
 $sQuery = "select ms.*,lff.facility_name as labNameFrom,lft.facility_name as labNameTo,count(msm.test_type_sample_id) as sample_code from move_samples as ms inner join move_samples_map msm on msm.move_sample_id = ms.move_sample_id LEFT JOIN facility_details as lff ON ms.moved_from_lab_id=lff.facility_id LEFT JOIN facility_details as lft ON ms.moved_to_lab_id=lft.facility_id";
 if (!empty($sWhere)) {
-    $sWhere = ' where ' . $sWhere;
+    $sWhere = ' WHERE ' . $sWhere;
 }
 $sQuery = $sQuery . ' ' . $sWhere;
 $sQuery = $sQuery . ' group by ms.move_sample_id';
@@ -123,11 +123,11 @@ $aResultFilterTotal = $db->rawQuery("select ms.*,lff.facility_name as labNameFro
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */
-$aResultTotal =  $db->rawQuery("select ms.*,lff.facility_name as labNameFrom,lft.facility_name as labNameTo,count(msm.test_type_sample_id) as sample_code from move_samples as ms inner join move_samples_map msm on msm.move_sample_id = ms.move_sample_id LEFT JOIN facility_details as lff ON ms.moved_from_lab_id=lff.facility_id LEFT JOIN facility_details as lft ON ms.moved_to_lab_id=lft.facility_id group by ms.move_sample_id");
+$aResultTotal = $db->rawQuery("select ms.*,lff.facility_name as labNameFrom,lft.facility_name as labNameTo,count(msm.test_type_sample_id) as sample_code from move_samples as ms inner join move_samples_map msm on msm.move_sample_id = ms.move_sample_id LEFT JOIN facility_details as lff ON ms.moved_from_lab_id=lff.facility_id LEFT JOIN facility_details as lft ON ms.moved_to_lab_id=lft.facility_id group by ms.move_sample_id");
 $iTotal = count($aResultTotal);
 /*
-         * Output
-        */
+ * Output
+ */
 $output = array(
     "sEcho" => intval($_POST['sEcho']),
     "iTotalRecords" => $iTotal,
@@ -139,7 +139,7 @@ foreach ($rResult as $aRow) {
     $humanDate = "";
     if (trim($aRow['list_request_created_datetime']) != "" && $aRow['list_request_created_datetime'] != '0000-00-00 00:00:00') {
         $date = $aRow['list_request_created_datetime'];
-        $humanDate =  date("d-M-Y H:i:s", strtotime($date));
+        $humanDate = date("d-M-Y H:i:s", strtotime($date));
     }
 
     $row = [];

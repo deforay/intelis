@@ -67,11 +67,11 @@ class Covid19Service implements TestServiceInterface
     public function insertCovid19Tests($covid19SampleId, $testKitName = null, $labId = null, $sampleTestedDatetime = null, $result = null): bool
     {
         $covid19TestData = array(
-            'covid19_id'            => $covid19SampleId,
-            'test_name'                => $testKitName,
-            'facility_id'           => $labId,
+            'covid19_id' => $covid19SampleId,
+            'test_name' => $testKitName,
+            'facility_id' => $labId,
             'sample_tested_datetime' => $sampleTestedDatetime,
-            'result'                => $result
+            'result' => $result
         );
         return $this->db->insert("covid19_tests", $covid19TestData);
     }
@@ -373,7 +373,7 @@ class Covid19Service implements TestServiceInterface
             $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
             $sampleCodeParams['provinceCode'] = $params['provinceCode'] ?? null;
             $sampleCodeParams['provinceId'] = $provinceId;
-            $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey']  ?? null;
+            $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey'] ?? null;
 
             $sampleJson = $this->generateSampleCode($sampleCodeParams);
             $sampleData = json_decode($sampleJson, true);
@@ -412,23 +412,23 @@ class Covid19Service implements TestServiceInterface
                     $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
                     $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
                     $tesRequestData['remote_sample'] = 'yes';
-                    $tesRequestData['result_status'] = 9;
+                    $tesRequestData['result_status'] = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
                     if ($accessType === 'testing-lab') {
                         $tesRequestData['sample_code'] = $sampleData['sampleCode'];
-                        $tesRequestData['result_status'] = 6;
+                        $tesRequestData['result_status'] = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
                     }
                 } else {
                     $tesRequestData['sample_code'] = $sampleData['sampleCode'];
                     $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
                     $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
                     $tesRequestData['remote_sample'] = 'no';
-                    $tesRequestData['result_status'] = 6;
+                    $tesRequestData['result_status'] = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
                 }
 
 
                 $formAttributes = [
-                    'applicationVersion'  => $this->commonService->getSystemConfig('sc_version'),
-                    'ip_address'    => $this->commonService->getClientIpAddress()
+                    'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
+                    'ip_address' => $this->commonService->getClientIpAddress()
                 ];
                 $tesRequestData['form_attributes'] = json_encode($formAttributes);
                 $this->db->insert($this->table, $tesRequestData);
@@ -446,7 +446,7 @@ class Covid19Service implements TestServiceInterface
             error_log('Insert Covid-19 Sample : ' . $this->db->getLastError());
             error_log('Insert Covid-19 Sample : ' . $this->db->getLastQuery());
             error_log('Insert Covid-19 Sample : ' . $e->getMessage());
-            $id =  0;
+            $id = 0;
         }
         if ($returnSampleData === true) {
             return [

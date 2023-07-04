@@ -89,10 +89,10 @@ try {
     }
 
     $isRejected = false;
-    $resultStatus = 8; // Awaiting Approval
+    $resultStatus = SAMPLE_STATUS_PENDING_APPROVAL; // Awaiting Approval
     if (isset($_POST['noResult']) && $_POST['noResult'] === 'yes') {
         $isRejected = true;
-        $resultStatus = 4;
+        $resultStatus = SAMPLE_STATUS_REJECTED; // Rejected
     }
 
     $reasonForChanges = '';
@@ -106,7 +106,7 @@ try {
     if (!empty($allChange) && !empty($reasonForChanges)) {
         $allChange = $reasonForChanges . 'vlsm' . $allChange;
     } elseif (trim($reasonForChanges) != '') {
-        $allChange =  $reasonForChanges;
+        $allChange = $reasonForChanges;
     }
     if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
         $reviewedOn = explode(" ", $_POST['reviewedOn']);
@@ -124,41 +124,41 @@ try {
     }
 
     $vldata = array(
-        'vlsm_instance_id'                          => $instanceId,
-        'lab_id'                                    => (isset($_POST['labId']) && $_POST['labId'] != '') ? $_POST['labId'] :  null,
-        'test_platform'                             => $testingPlatform,
-        'sample_received_at_hub_datetime'           => $_POST['sampleReceivedAtHubOn'],
-        'sample_received_at_testing_lab_datetime'   => $_POST['sampleReceivedDate'],
-        'sample_tested_datetime'                    => $_POST['sampleTestingDateAtLab'],
-        'reason_for_testing'                        => (isset($_POST['reasonForTesting']) && $_POST['reasonForTesting'] != '') ? $_POST['reasonForTesting'] :  null,
-        'result_dispatched_datetime'                => !empty($_POST['resultDispatchedOn']) ? $_POST['resultDispatchedOn'] : null,
-        'is_sample_rejected'                        => (isset($_POST['noResult']) && $_POST['noResult'] != '') ? $_POST['noResult'] :  null,
-        'reason_for_sample_rejection'               => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] :  null,
-        'rejection_on'                              => (!empty($_POST['rejectionDate'])) ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
-        'result'                                    => $_POST['result'] ?: null,
-        'final_result_interpretation'               => $interpretationResult,
-        'result_reviewed_by'                        => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
-        'result_reviewed_datetime'                  => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
-        'testing_lab_focal_person'                  => (isset($_POST['vlFocalPerson']) && $_POST['vlFocalPerson'] != '') ? $_POST['vlFocalPerson'] :  null,
-        'testing_lab_focal_person_phone_number'     => (isset($_POST['vlFocalPersonPhoneNumber']) && $_POST['vlFocalPersonPhoneNumber'] != '') ? $_POST['vlFocalPersonPhoneNumber'] :  null,
-        'tested_by'                                 => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] :  null,
-        'result_approved_by'                        => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  null,
-        'result_approved_datetime'                  => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedOn'] :  null,
-        'lab_tech_comments'                         => (isset($_POST['labComments']) && trim($_POST['labComments']) != '') ? trim($_POST['labComments']) :  null,
-        'reason_for_test_result_changes'            => $allChange,
-        'revised_by'                                => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : null,
-        'revised_on'                                => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
-        'last_modified_by'                          => $_SESSION['userId'],
-        'last_modified_datetime'                    => DateUtility::getCurrentDateTime(),
-        'manual_result_entry'                       => 'yes',
-        'result_status'                             => $resultStatus,
-        'data_sync'                                 => 0,
-        'result_printed_datetime'                   => null
+        'vlsm_instance_id' => $instanceId,
+        'lab_id' => (isset($_POST['labId']) && $_POST['labId'] != '') ? $_POST['labId'] : null,
+        'test_platform' => $testingPlatform,
+        'sample_received_at_hub_datetime' => $_POST['sampleReceivedAtHubOn'],
+        'sample_received_at_testing_lab_datetime' => $_POST['sampleReceivedDate'],
+        'sample_tested_datetime' => $_POST['sampleTestingDateAtLab'],
+        'reason_for_testing' => (isset($_POST['reasonForTesting']) && $_POST['reasonForTesting'] != '') ? $_POST['reasonForTesting'] : null,
+        'result_dispatched_datetime' => !empty($_POST['resultDispatchedOn']) ? $_POST['resultDispatchedOn'] : null,
+        'is_sample_rejected' => (isset($_POST['noResult']) && $_POST['noResult'] != '') ? $_POST['noResult'] : null,
+        'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] : null,
+        'rejection_on' => (!empty($_POST['rejectionDate'])) ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
+        'result' => $_POST['result'] ?: null,
+        'final_result_interpretation' => $interpretationResult,
+        'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
+        'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
+        'testing_lab_focal_person' => (isset($_POST['vlFocalPerson']) && $_POST['vlFocalPerson'] != '') ? $_POST['vlFocalPerson'] : null,
+        'testing_lab_focal_person_phone_number' => (isset($_POST['vlFocalPersonPhoneNumber']) && $_POST['vlFocalPersonPhoneNumber'] != '') ? $_POST['vlFocalPersonPhoneNumber'] : null,
+        'tested_by' => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] : null,
+        'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] : null,
+        'result_approved_datetime' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedOn'] : null,
+        'lab_tech_comments' => (isset($_POST['labComments']) && trim($_POST['labComments']) != '') ? trim($_POST['labComments']) : null,
+        'reason_for_test_result_changes' => $allChange,
+        'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : null,
+        'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
+        'last_modified_by' => $_SESSION['userId'],
+        'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+        'manual_result_entry' => 'yes',
+        'result_status' => $resultStatus,
+        'data_sync' => 0,
+        'result_printed_datetime' => null
     );
 
 
     if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
-        $vldata['result_status'] = 4;
+        $vldata['result_status'] = SAMPLE_STATUS_REJECTED;
     }
 
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['noResult'] == 'no' || $_POST['noResult'] == '')) {
@@ -168,14 +168,14 @@ try {
             foreach ($_POST['testName'] as $testKey => $testKitName) {
                 if (!empty($testKitName)) {
                     $covid19TestData = array(
-                        'generic_id'                => $_POST['vlSampleId'],
-                        'test_name'                    => ($testKitName == 'other') ? $_POST['testNameOther'][$testKey] : $testKitName,
-                        'facility_id'               => $_POST['labId'] ?? null,
-                        'sample_tested_datetime'     => DateUtility::isoDateFormat($_POST['testDate'][$testKey] ?? '', true),
-                        'testing_platform'          => $_POST['testingPlatform'][$testKey] ?? null,
-                        'kit_lot_no'                  => (strpos($testKitName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
-                        'kit_expiry_date'              => (strpos($testKitName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
-                        'result'                    => $_POST['testResult'][$testKey]
+                        'generic_id' => $_POST['vlSampleId'],
+                        'test_name' => ($testKitName == 'other') ? $_POST['testNameOther'][$testKey] : $testKitName,
+                        'facility_id' => $_POST['labId'] ?? null,
+                        'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$testKey] ?? '', true),
+                        'testing_platform' => $_POST['testingPlatform'][$testKey] ?? null,
+                        'kit_lot_no' => (strpos($testKitName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
+                        'kit_expiry_date' => (strpos($testKitName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
+                        'result' => $_POST['testResult'][$testKey]
                     );
                     $db->insert($testTableName, $covid19TestData);
                 }

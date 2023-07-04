@@ -25,15 +25,15 @@ $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
-* you want to insert a non-database field (for example a counter or static image)
-*/
+ * you want to insert a non-database field (for example a counter or static image)
+ */
 $sampleCode = 'sample_code';
 $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'l.facility_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
 
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'l.facility_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
-} elseif ($_SESSION['instanceType'] ==  'standalone') {
+} elseif ($_SESSION['instanceType'] == 'standalone') {
      if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
           unset($aColumns[$key]);
           $aColumns = array_values($aColumns);
@@ -49,8 +49,8 @@ $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 /*
-* Paging
-*/
+ * Paging
+ */
 $sLimit = "";
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
      $sOffset = $_POST['iDisplayStart'];
@@ -58,8 +58,8 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 }
 
 /*
-* Ordering
-*/
+ * Ordering
+ */
 //  echo intval($_POST['iSortingCols']);
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -114,9 +114,9 @@ for ($i = 0; $i < count($aColumns); $i++) {
 }
 
 /*
-          * SQL queries
-          * Get data to display
-          */
+ * SQL queries
+ * Get data to display
+ */
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                     vl.*,
@@ -206,9 +206,9 @@ if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '')
 /* Viral load filter */
 if (isset($_POST['vLoad']) && trim($_POST['vLoad']) != '') {
      if ($_POST['vLoad'] === 'suppressed') {
-          $sWhere[] =   " vl.vl_result_category like 'suppressed' AND vl.vl_result_category is NOT NULL ";
+          $sWhere[] = " vl.vl_result_category like 'suppressed' AND vl.vl_result_category is NOT NULL ";
      } else {
-          $sWhere[] =   "  vl.vl_result_category like 'not suppressed' AND vl.vl_result_category is NOT NULL ";
+          $sWhere[] = "  vl.vl_result_category like 'not suppressed' AND vl.vl_result_category is NOT NULL ";
      }
 }
 $sPrintDate = '';
@@ -247,7 +247,7 @@ if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) != '') {
      $sWhere[] = ' vl.sample_reordered IN ("' . $_POST['showReordSample'] . '")';
 }
 if (isset($_POST['communitySample']) && trim($_POST['communitySample']) != '') {
-     $sWhere[] =  ' (vl.community_sample IS NOT NULL AND vl.community_sample ="' . $_POST['communitySample'] . '") ';
+     $sWhere[] = ' (vl.community_sample IS NOT NULL AND vl.community_sample ="' . $_POST['communitySample'] . '") ';
 }
 if (isset($_POST['patientPregnant']) && trim($_POST['patientPregnant']) != '') {
      $sWhere[] = ' vl.is_patient_pregnant IN ("' . $_POST['patientPregnant'] . '")';
@@ -294,7 +294,7 @@ if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 6) {
      $sWhere[] = ' vl.sample_received_at_vl_lab_datetime is not null AND vl.sample_received_at_vl_lab_datetime not like ""';
 }
 if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 7) {
-     $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = 7';
+     $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . SAMPLE_STATUS_ACCEPTED;
 }
 if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == "sent") {
      $sWhere[] = ' vl.result_sent_to_source is not null and vl.result_sent_to_source = "sent"';
@@ -324,17 +324,17 @@ if (isset($_POST['requestCreatedDatetime']) && trim($_POST['requestCreatedDateti
      }
 
      if (trim($sRequestCreatedDatetime) == trim($eRequestCreatedDatetime)) {
-          $sWhere[] =  '  DATE(vl.request_created_datetime) like "' . $sRequestCreatedDatetime . '"';
+          $sWhere[] = '  DATE(vl.request_created_datetime) like "' . $sRequestCreatedDatetime . '"';
      } else {
-          $sWhere[] =  '  DATE(vl.request_created_datetime) >= "' . $sRequestCreatedDatetime . '" AND DATE(vl.request_created_datetime) <= "' . $eRequestCreatedDatetime . '"';
+          $sWhere[] = '  DATE(vl.request_created_datetime) >= "' . $sRequestCreatedDatetime . '" AND DATE(vl.request_created_datetime) <= "' . $eRequestCreatedDatetime . '"';
      }
 }
 
 if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      if (trim($sPrintDate) == trim($eTestDate)) {
-          $sWhere[] =  '  DATE(vl.result_printed_datetime) = "' . $sPrintDate . '"';
+          $sWhere[] = '  DATE(vl.result_printed_datetime) = "' . $sPrintDate . '"';
      } else {
-          $sWhere[] =  '  DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
+          $sWhere[] = '  DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
      }
 }
 
@@ -342,8 +342,8 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      if (!empty($_SESSION['facilityMap'])) {
           $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
      }
-} else if (!$_POST['hidesrcofreq']) {
-     $sWhere[] = ' vl.result_status!=9';
+} elseif (!$_POST['hidesrcofreq']) {
+     $sWhere[] = ' vl.result_status != ' . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
 }
 
 if (!empty($sWhere)) {
@@ -370,8 +370,8 @@ $iTotal = $aResultFilterTotal['totalCount'];
 $_SESSION['vlRequestSearchResultQueryCount'] = $iTotal;
 
 /*
-* Output
-*/
+ * Output
+ */
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
      "iTotalRecords" => $iTotal,

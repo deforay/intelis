@@ -54,28 +54,28 @@ try {
 
             if ($rResult[0]['sample_type'] != 'S' && $rResult[0]['sample_type'] != 's') {
                 $data = array(
-                    'control_code'                  => $rResult[0]['sample_code'],
-                    'lab_id'                        => $rResult[0]['lab_id'],
-                    'control_type'                  => $rResult[0]['sample_type'],
-                    'lot_number'                    => $rResult[0]['lot_number'],
-                    'lot_expiration_date'           => $rResult[0]['lot_expiration_date'],
-                    'sample_tested_datetime'        => $rResult[0]['sample_tested_datetime'],
+                    'control_code' => $rResult[0]['sample_code'],
+                    'lab_id' => $rResult[0]['lab_id'],
+                    'control_type' => $rResult[0]['sample_type'],
+                    'lot_number' => $rResult[0]['lot_number'],
+                    'lot_expiration_date' => $rResult[0]['lot_expiration_date'],
+                    'sample_tested_datetime' => $rResult[0]['sample_tested_datetime'],
                     //'is_sample_rejected'=>'yes',
                     //'reason_for_sample_rejection'=>$rResult[0]['reason_for_sample_rejection'],
-                    'result_value_log'              => $rResult[0]['result_value_log'],
-                    'result_value_absolute'         => $rResult[0]['result_value_absolute'],
-                    'result_value_text'             => $rResult[0]['result_value_text'],
+                    'result_value_log' => $rResult[0]['result_value_log'],
+                    'result_value_absolute' => $rResult[0]['result_value_absolute'],
+                    'result_value_text' => $rResult[0]['result_value_text'],
                     'result_value_absolute_decimal' => $rResult[0]['result_value_absolute_decimal'],
-                    'result'                        => $rResult[0]['result'],
-                    'tested_by'                     => $_POST['testBy'],
-                    'lab_tech_comments'             => $comments,
-                    'result_reviewed_by'            => $rResult[0]['result_reviewed_by'],
-                    'result_reviewed_datetime'      => DateUtility::getCurrentDateTime(),
-                    'result_approved_by'            => $_POST['appBy'],
-                    'result_approved_datetime'      => DateUtility::getCurrentDateTime(),
-                    'vlsm_country_id'               => $arr['vl_form'],
-                    'file_name'                     => $rResult[0]['import_machine_file_name'],
-                    'imported_date_time'            => $rResult[0]['result_imported_datetime'],
+                    'result' => $rResult[0]['result'],
+                    'tested_by' => $_POST['testBy'],
+                    'lab_tech_comments' => $comments,
+                    'result_reviewed_by' => $rResult[0]['result_reviewed_by'],
+                    'result_reviewed_datetime' => DateUtility::getCurrentDateTime(),
+                    'result_approved_by' => $_POST['appBy'],
+                    'result_approved_datetime' => DateUtility::getCurrentDateTime(),
+                    'vlsm_country_id' => $arr['vl_form'],
+                    'file_name' => $rResult[0]['import_machine_file_name'],
+                    'imported_date_time' => $rResult[0]['result_imported_datetime'],
                 );
                 if ($status[$i] == 4) {
                     $data['is_sample_rejected'] = 'yes';
@@ -191,9 +191,9 @@ try {
                     $data['vl_result_category'] = $vlService->getVLResultCategory($data['result_status'], $data['result']);
 
                     if ($data['vl_result_category'] == 'failed' || $data['vl_result_category'] == 'invalid') {
-                        $data['result_status'] = 5;
+                        $data['result_status'] = SAMPLE_STATUS_TEST_FAILED;
                     } elseif ($vldata['vl_result_category'] == 'rejected') {
-                        $data['result_status'] = 4;
+                        $data['result_status'] = SAMPLE_STATUS_REJECTED;
                     }
 
                     $data['sample_code'] = $rResult[0]['sample_code'];
@@ -206,7 +206,8 @@ try {
 
                         $vlSampleId = $vlResult[0]['vl_sample_id'];
                     } else {
-                        if (!$importNonMatching) continue;
+                        if (!$importNonMatching)
+                            continue;
                         $data['sample_code'] = $rResult[0]['sample_code'];
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['vlsm_instance_id'] = $instanceResult[0]['vlsm_instance_id'];
@@ -217,14 +218,17 @@ try {
                 }
             }
             if (isset($vlSampleId) && $vlSampleId != "") {
-                $db->insert('log_result_updates', array(
-                    "user_id" => $_SESSION['userId'],
-                    "vl_sample_id" => $vlSampleId,
-                    "test_type" => "vl",
-                    "result_method" => "import",
-                    "file_name" => $rResult[0]['import_machine_file_name'],
-                    "updated_on" => DateUtility::getCurrentDateTime()
-                ));
+                $db->insert(
+                    'log_result_updates',
+                    array(
+                        "user_id" => $_SESSION['userId'],
+                        "vl_sample_id" => $vlSampleId,
+                        "test_type" => "vl",
+                        "result_method" => "import",
+                        "file_name" => $rResult[0]['import_machine_file_name'],
+                        "updated_on" => DateUtility::getCurrentDateTime()
+                    )
+                );
             }
             $db = $db->where('temp_sample_id', $id[$i]);
             $result = $db->update('temp_sample_import', array('temp_sample_status' => 1));
@@ -255,7 +259,7 @@ try {
                 'result' => $accResult[$i]['result'],
                 'sample_tested_datetime' => $accResult[$i]['sample_tested_datetime'],
                 'lab_id' => $accResult[$i]['lab_id'],
-                'tested_by'                     => $_POST['testBy'],
+                'tested_by' => $_POST['testBy'],
                 'request_created_by' => $accResult[$i]['result_reviewed_by'],
                 'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_datetime' => DateUtility::getCurrentDateTime(),
@@ -295,9 +299,9 @@ try {
             $data['vl_result_category'] = $vlService->getVLResultCategory($data['result_status'], $data['result']);
 
             if ($data['vl_result_category'] == 'failed' || $data['vl_result_category'] == 'invalid') {
-                $data['result_status'] = 5;
+                $data['result_status'] = SAMPLE_STATUS_TEST_FAILED;
             } elseif ($data['vl_result_category'] == 'rejected') {
-                $data['result_status'] = 4;
+                $data['result_status'] = SAMPLE_STATUS_REJECTED;
             }
 
             //get bacth code

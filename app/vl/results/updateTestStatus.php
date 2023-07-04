@@ -23,10 +23,10 @@ try {
     $id = explode(",", $_POST['id']);
     for ($i = 0; $i < count($id); $i++) {
         $status = array(
-            'result_status'             => $_POST['status'],
-            'result_approved_datetime'  =>  DateUtility::getCurrentDateTime(),
-            'last_modified_datetime'     =>  DateUtility::getCurrentDateTime(),
-            'data_sync'                 => 0
+            'result_status' => $_POST['status'],
+            'result_approved_datetime' => DateUtility::getCurrentDateTime(),
+            'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+            'data_sync' => 0
         );
         /* Check if already have reviewed and approved by */
         $db = $db->where('vl_sample_id', $id[$i]);
@@ -55,9 +55,9 @@ try {
         $vlService = ContainerRegistry::get(VlService::class);
         $status['vl_result_category'] = $vlService->getVLResultCategory($status['result_status'], $vlRow['result']);
         if ($status['vl_result_category'] == 'failed' || $status['vl_result_category'] == 'invalid') {
-            $status['result_status'] = 5;
+            $status['result_status'] = SAMPLE_STATUS_TEST_FAILED;
         } elseif ($vldata['vl_result_category'] == 'rejected') {
-            $status['result_status'] = 4;
+            $status['result_status'] = SAMPLE_STATUS_REJECTED;
         }
 
         // echo "<pre>";print_r($status);die;

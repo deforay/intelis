@@ -53,7 +53,7 @@ foreach ($sampleResult as $sampleRow) {
         $eidData['sample_code'] = $sampleData['sampleCode'];
         $eidData['sample_code_format'] = $sampleData['sampleCodeFormat'];
         $eidData['sample_code_key'] = $sampleData['sampleCodeKey'];
-        $eidData['result_status'] = 6;
+        $eidData['result_status'] = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
         $eidData['data_sync'] = 0;
         if (!empty($_POST['testDate'])) {
             $eidData['sample_tested_datetime'] = null;

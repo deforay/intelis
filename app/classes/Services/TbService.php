@@ -66,11 +66,11 @@ class TbService implements TestServiceInterface
     public function insertTbTests($tbSampleId, $testKitName = null, $labId = null, $sampleTestedDatetime = null, $result = null)
     {
         $tbTestData = array(
-            'tb_id'            => $tbSampleId,
-            'test_name'                => $testKitName,
-            'facility_id'           => $labId,
+            'tb_id' => $tbSampleId,
+            'test_name' => $testKitName,
+            'facility_id' => $labId,
             'sample_tested_datetime' => $sampleTestedDatetime,
-            'result'                => $result
+            'result' => $result
         );
         return $this->db->insert("tb_tests", $tbTestData);
     }
@@ -80,7 +80,8 @@ class TbService implements TestServiceInterface
         $response = $this->db->rawQuery("SELECT * FROM tb_tests WHERE `tb_id` = $tbSampleId ORDER BY test_id ASC");
 
         foreach ($response as $row) {
-            if ($row['result'] == 'positive') return true;
+            if ($row['result'] == 'positive')
+                return true;
         }
 
         return false;
@@ -216,21 +217,21 @@ class TbService implements TestServiceInterface
                     $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
                     $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
                     $tesRequestData['remote_sample'] = 'yes';
-                    $tesRequestData['result_status'] = 9;
+                    $tesRequestData['result_status'] = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
                     if ($accessType === 'testing-lab') {
                         $tesRequestData['sample_code'] = $sampleData['sampleCode'];
-                        $tesRequestData['result_status'] = 6;
+                        $tesRequestData['result_status'] = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
                     }
                 } else {
                     $tesRequestData['sample_code'] = $sampleData['sampleCode'];
                     $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
                     $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
                     $tesRequestData['remote_sample'] = 'no';
-                    $tesRequestData['result_status'] = 6;
+                    $tesRequestData['result_status'] = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
                 }
                 $formAttributes = [
-                    'applicationVersion'  => $this->commonService->getSystemConfig('sc_version'),
-                    'ip_address'    => $this->commonService->getClientIpAddress()
+                    'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
+                    'ip_address' => $this->commonService->getClientIpAddress()
                 ];
                 $tesRequestData['form_attributes'] = json_encode($formAttributes);
                 $this->db->insert("form_tb", $tesRequestData);

@@ -66,7 +66,7 @@ foreach ($sampleResult as $sampleRow) {
             $tbData['sample_tested_datetime'] = null;
             $tbData['sample_received_at_vl_lab_datetime'] = $_POST['testDate'];
         }
-        $tbData['result_status'] = 6;
+        $tbData['result_status'] = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
         $tbData['data_sync'] = 0;
         $tbData['last_modified_by'] = $_SESSION['userId'];
         $tbData['last_modified_datetime'] = DateUtility::getCurrentDateTime();

@@ -17,8 +17,8 @@ $tableName = "r_generic_test_reasons";
 $primaryKey = "test_reason_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
-         * you want to insert a non-database field (for example a counter or static image)
-        */
+ * you want to insert a non-database field (for example a counter or static image)
+ */
 
 $aColumns = array('test_reason', 'test_reason_code', 'test_reason_status', 'updated_datetime');
 
@@ -27,8 +27,8 @@ $aColumns = array('test_reason', 'test_reason_code', 'test_reason_status', 'upda
 
 $sTable = $tableName;
 /*
-         * Paging
-         */
+ * Paging
+ */
 $sLimit = "";
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
@@ -36,8 +36,8 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 }
 
 /*
-         * Ordering
-        */
+ * Ordering
+ */
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -52,11 +52,11 @@ if (isset($_POST['iSortCol_0'])) {
 }
 
 /*
-         * Filtering
-         * NOTE this does not match the built-in DataTables filtering which does it
-         * word by word on any field. It's possible to do here, but concerned about efficiency
-         * on very large tables, and MySQL's regex functionality is very limited
-        */
+ * Filtering
+ * NOTE this does not match the built-in DataTables filtering which does it
+ * word by word on any field. It's possible to do here, but concerned about efficiency
+ * on very large tables, and MySQL's regex functionality is very limited
+ */
 
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
@@ -94,14 +94,14 @@ for ($i = 0; $i < count($aColumns); $i++) {
 }
 
 /*
-         * SQL queries
-         * Get data to display
-        */
+ * SQL queries
+ * Get data to display
+ */
 
 $sQuery = "SELECT * FROM r_generic_test_reasons";
 
 if (!empty($sWhere)) {
-    $sWhere = ' where ' . $sWhere;
+    $sWhere = ' WHERE ' . $sWhere;
     $sQuery = $sQuery . ' ' . $sWhere;
 }
 
@@ -122,11 +122,11 @@ $rResult = $db->rawQuery($sQuery);
 $aResultFilterTotal = $db->rawQuery("SELECT * FROM r_generic_test_reasons $sWhere order by $sOrder");
 $iFilteredTotal = count($aResultFilterTotal);
 
-$aResultTotal =  $db->rawQuery("SELECT * FROM r_generic_test_reasons");
+$aResultTotal = $db->rawQuery("SELECT * FROM r_generic_test_reasons");
 $iTotal = count($aResultTotal);
 /*
-         * Output
-        */
+ * Output
+ */
 $output = array(
     "sEcho" => intval($_POST['sEcho']),
     "iTotalRecords" => $iTotal,

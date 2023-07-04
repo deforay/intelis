@@ -5,8 +5,8 @@ $tableName = "facility_details";
 $primaryKey = "facility_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
-         * you want to insert a non-database field (for example a counter or static image)
-        */
+ * you want to insert a non-database field (for example a counter or static image)
+ */
 
 $aColumns = array('facility_id', 'facility_code', 'facility_name', 'facility_type_name');
 
@@ -15,8 +15,8 @@ $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 /*
-         * Paging
-         */
+ * Paging
+ */
 $sLimit = "";
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
@@ -24,8 +24,8 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 }
 
 /*
-         * Ordering
-        */
+ * Ordering
+ */
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -40,11 +40,11 @@ if (isset($_POST['iSortCol_0'])) {
 }
 
 /*
-         * Filtering
-         * NOTE this does not match the built-in DataTables filtering which does it
-         * word by word on any field. It's possible to do here, but concerned about efficiency
-         * on very large tables, and MySQL's regex functionality is very limited
-        */
+ * Filtering
+ * NOTE this does not match the built-in DataTables filtering which does it
+ * word by word on any field. It's possible to do here, but concerned about efficiency
+ * on very large tables, and MySQL's regex functionality is very limited
+ */
 
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
@@ -82,14 +82,14 @@ for ($i = 0; $i < count($aColumns); $i++) {
 }
 
 /*
-         * SQL queries
-         * Get data to display
-        */
+ * SQL queries
+ * Get data to display
+ */
 
 $sQuery = "SELECT * FROM facility_details as f_d LEFT JOIN facility_type as f_t ON f_t.facility_type_id=f_d.facility_type";
 
 if (!empty($sWhere)) {
-    $sWhere = ' where ' . $sWhere;
+    $sWhere = ' WHERE ' . $sWhere;
     $sWhere = $sWhere . ' AND status = "active"';
     if (isset($_POST['hub']) && trim($_POST['hub']) != '') {
         $sWhere = $sWhere . " AND f_d.facility_hub_name LIKE '%" . $_POST['hub'] . "%' ";
@@ -140,17 +140,17 @@ $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */
 if ($_POST['type'] == 'all') {
-    $aResultTotal =  $db->rawQuery("select COUNT(facility_id) as total FROM facility_details WHERE status = 'active'");
+    $aResultTotal = $db->rawQuery("select COUNT(facility_id) as total FROM facility_details WHERE status = 'active'");
 } else {
-    $aResultTotal =  $db->rawQuery("select COUNT(facility_id) as total FROM facility_details WHERE status = 'active' AND facility_type=2");
+    $aResultTotal = $db->rawQuery("select COUNT(facility_id) as total FROM facility_details WHERE status = 'active' AND facility_type=2");
 }
 // $aResultTotal = $countResult->fetch_row();
 //print_r($aResultTotal);
 $iTotal = $aResultTotal[0]['total'];
 
 /*
-         * Output
-        */
+ * Output
+ */
 $output = array(
     "sEcho" => intval($_POST['sEcho']),
     "iTotalRecords" => $iTotal,

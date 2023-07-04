@@ -7,7 +7,7 @@ use App\Utilities\DateUtility;
 if (isset($_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
     header('Access-Control-Allow-Credentials: true');
-    header('Access-Control-Max-Age: 86400');    // cache for 1 day
+    header('Access-Control-Max-Age: 86400'); // cache for 1 day
 }
 
 // Access-Control headers are received during OPTIONS requests
@@ -36,14 +36,14 @@ try {
 
     /* While it coming from the recency service we change the params */
     if ($result[9] == "service=") {
-        $sam    = explode('=', $result[0]);
-        $pat    = explode('=', $result[1]);
-        $fac    = explode('=', $result[2]);
-        $scd    = str_replace("sCDate=", "", $result[3]);
-        $lab    = explode('=', $result[4]);
-        $by     = explode('=', $result[5]);
-        $dob    = explode('=', $result[6]);
-        $age    = explode('=', $result[7]);
+        $sam = explode('=', $result[0]);
+        $pat = explode('=', $result[1]);
+        $fac = explode('=', $result[2]);
+        $scd = str_replace("sCDate=", "", $result[3]);
+        $lab = explode('=', $result[4]);
+        $by = explode('=', $result[5]);
+        $dob = explode('=', $result[6]);
+        $age = explode('=', $result[7]);
         $gender = explode('=', $result[8]);
         $result = [];
         $result[0] = $sam[1];
@@ -87,7 +87,7 @@ try {
         $data['recency_vl'] = 'yes';
         $data['reason_for_vl_testing'] = 9999; // 9999 is Recency Test in r_vl_test_reasons table
         $data['vlsm_country_id'] = $general->getGlobalConfig('vl_form');
-        $data['result_status'] = 9;
+        $data['result_status'] = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
         $data['patient_dob'] = date('Y-m-d', strtotime($result[9]));
         $data['patient_age_in_years'] = $result[10];
         $data['patient_gender'] = $result[11];

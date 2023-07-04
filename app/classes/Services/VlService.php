@@ -121,7 +121,7 @@ class VlService implements TestServiceInterface
         } else {
 
             if (is_numeric($finalResult)) {
-                $finalResult = (float)$finalResult;
+                $finalResult = (float) $finalResult;
                 if ($finalResult < $this->suppressionLimit) {
                     $vlResultCategory = 'suppressed';
                 } elseif ($finalResult >= $this->suppressionLimit) {
@@ -131,7 +131,7 @@ class VlService implements TestServiceInterface
                 if (in_array(strtolower($orignalResultValue), $this->suppressedArray)) {
                     $textResult = 10;
                 } else {
-                    $textResult = (float)filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT);
+                    $textResult = (float) filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT);
                 }
 
                 if ($textResult < $this->suppressionLimit) {
@@ -289,7 +289,7 @@ class VlService implements TestServiceInterface
             } elseif (!empty($unit) && strpos($unit, '10') !== false) {
                 $unitArray = explode(".", $unit);
                 $exponentArray = explode("*", $unitArray[0]);
-                $multiplier = pow((float)$exponentArray[0], (float)$exponentArray[1]);
+                $multiplier = pow((float) $exponentArray[0], (float) $exponentArray[1]);
                 $vlResult = $result * $multiplier;
                 $unit = $unitArray[1];
             } elseif (strpos($result, 'E+') !== false || strpos($result, 'E-') !== false) {
@@ -362,7 +362,7 @@ class VlService implements TestServiceInterface
             $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
             $sampleCodeParams['provinceCode'] = $params['provinceCode'] ?? null;
             $sampleCodeParams['provinceId'] = $provinceId;
-            $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey']  ?? null;
+            $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey'] ?? null;
 
 
             $sampleJson = $this->generateSampleCode($sampleCodeParams);
@@ -402,22 +402,22 @@ class VlService implements TestServiceInterface
                     $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
                     $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
                     $tesRequestData['remote_sample'] = 'yes';
-                    $tesRequestData['result_status'] = 9;
+                    $tesRequestData['result_status'] = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
                     if ($accessType === 'testing-lab') {
                         $tesRequestData['sample_code'] = $sampleData['sampleCode'];
-                        $tesRequestData['result_status'] = 6;
+                        $tesRequestData['result_status'] = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
                     }
                 } else {
                     $tesRequestData['sample_code'] = $sampleData['sampleCode'];
                     $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
                     $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
                     $tesRequestData['remote_sample'] = 'no';
-                    $tesRequestData['result_status'] = 6;
+                    $tesRequestData['result_status'] = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
                 }
 
                 $formAttributes = [
-                    'applicationVersion'  => $this->commonService->getSystemConfig('sc_version'),
-                    'ip_address'    => $this->commonService->getClientIpAddress()
+                    'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
+                    'ip_address' => $this->commonService->getClientIpAddress()
                 ];
                 $tesRequestData['form_attributes'] = json_encode($formAttributes);
                 $this->db->insert("form_vl", $tesRequestData);
@@ -482,7 +482,7 @@ class VlService implements TestServiceInterface
                                             FROM r_vl_test_reasons
                                                 WHERE `test_reason_status` LIKE 'active'
                                                 AND (parent_reason IS NULL OR parent_reason = 0)");
-      
+
         return $results;
     }
 }
