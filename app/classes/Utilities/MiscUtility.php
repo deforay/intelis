@@ -143,4 +143,10 @@ class MiscUtility
         return self::fileExists($filePath) &&
             false !== getimagesize($filePath);
     }
+
+    public static function startsWith($string, $startString): bool
+    {
+        $len = strlen($startString);
+        return (substr($string, 0, $len) === $startString);
+    }
 }

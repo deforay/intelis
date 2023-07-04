@@ -243,12 +243,6 @@ class CommonService
         $this->db->insert('result_import_stats', $data);
     }
 
-    public function startsWith($string, $startString): bool
-    {
-        $len = strlen($startString);
-        return (substr($string, 0, $len) === $startString);
-    }
-
     public function generateSelectOptions($optionList, $selectedOptions = [], $emptySelectText = false)
     {
         return once(function () use ($optionList, $selectedOptions, $emptySelectText) {
@@ -285,7 +279,7 @@ class CommonService
             isset($result[$modifiedDateTimeColName]) &&
             $result[$modifiedDateTimeColName] != '' &&
             $result[$modifiedDateTimeColName] != null &&
-            !$this->startsWith($result[$modifiedDateTimeColName], '0000-00-00')
+            !MiscUtility::startsWith($result[$modifiedDateTimeColName], '0000-00-00')
         ) {
             return $result[$modifiedDateTimeColName];
         } else {

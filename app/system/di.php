@@ -20,6 +20,7 @@ use App\Services\HepatitisService;
 use App\Helpers\PdfWatermarkHelper;
 use App\Services\FacilitiesService;
 use App\Services\InstrumentsService;
+use App\Services\TestResultsService;
 use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
@@ -98,6 +99,8 @@ $builder->addDefinitions([
         ->constructor(DI\get('db'), DI\get('applicationConfig'), DI\get(CommonService::class)),
     GeoLocationsService::class => DI\create(GeoLocationsService::class)
         ->constructor(DI\get('db')),
+    TestResultsService::class => DI\create(TestResultsService::class)
+        ->constructor(DI\get('db'), DI\get(CommonService::class)),
     AppMenuService::class => DI\create(AppMenuService::class)
         ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(UsersService::class)),
     FacilitiesService::class => DI\create(FacilitiesService::class)
@@ -134,7 +137,6 @@ $builder->addDefinitions([
         ->constructor($debugMode),
     PdfConcatenateHelper::class => DI\create(PdfConcatenateHelper::class),
     PdfWatermarkHelper::class => DI\create(PdfWatermarkHelper::class),
-    ResultsHelper::class => DI\create(ResultsHelper::class),
     SampleCodeGeneratorHelper::class => DI\create(SampleCodeGeneratorHelper::class)
         ->constructor(DI\get('db'), DI\get(CommonService::class)),
 ]);
