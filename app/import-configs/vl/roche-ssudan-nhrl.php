@@ -15,7 +15,7 @@ try {
     $db = $db->where('imported_by', $_SESSION['userId']);
     $db->delete('temp_sample_import');
     //set session for controller track id in hold_sample_record table
-    $cQuery  = "select MAX(import_batch_tracking) FROM hold_sample_import";
+    $cQuery = "select MAX(import_batch_tracking) FROM hold_sample_import";
     $cResult = $db->query($cQuery);
     if ($cResult[0]['MAX(import_batch_tracking)'] != '') {
         $maxId = $cResult[0]['MAX(import_batch_tracking)'] + 1;
@@ -37,10 +37,10 @@ try {
     }
 
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename($_FILES['resultFile']['name'])));
-    $fileName          = str_replace(" ", "-", $fileName);
-    $ranNumber         = $general->generateRandomString(12);
-    $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    $fileName          = $ranNumber . "." . $extension;
+    $fileName = str_replace(" ", "-", $fileName);
+    $ranNumber = $general->generateRandomString(12);
+    $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    $fileName = $ranNumber . "." . $extension;
 
 
     if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results")) {
@@ -52,13 +52,13 @@ try {
         //$mime_type = $file_info->buffer(file_get_contents($resultFile)); // e.g. gives "image/jpeg"
 
         $objPHPExcel = IOFactory::load(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
-        $sheetData   = $objPHPExcel->getActiveSheet();
+        $sheetData = $objPHPExcel->getActiveSheet();
 
 
 
 
 
-        $bquery    = "select MAX(batch_code_key) from batch_details";
+        $bquery = "select MAX(batch_code_key) from batch_details";
         $bvlResult = $db->rawQuery($bquery);
         if ($bvlResult[0]['MAX(batch_code_key)'] != '' && $bvlResult[0]['MAX(batch_code_key)'] != null) {
             $maxBatchCodeKey = $bvlResult[0]['MAX(batch_code_key)'] + 1;
@@ -105,15 +105,15 @@ try {
                 continue;
 
 
-            $sampleCode    = "";
-            $batchCode     = "";
-            $sampleType    = "";
+            $sampleCode = "";
+            $batchCode = "";
+            $sampleType = "";
             $absDecimalVal = "";
-            $absVal        = "";
-            $logVal        = "";
-            $txtVal        = "";
-            $resultFlag    = "";
-            $testingDate   = "";
+            $absVal = "";
+            $logVal = "";
+            $txtVal = "";
+            $resultFlag = "";
+            $testingDate = "";
             $lotNumberVal = "";
             $reviewBy = "";
             $lotExpirationDateVal = null;
@@ -127,12 +127,12 @@ try {
             $testingDate = date('Y-m-d H:i', strtotime($row[$testingDateCol]));
 
             if (trim($row[$absValCol]) != "") {
-                $resVal = (float)$row[$absValCol];
+                $resVal = (float) $row[$absValCol];
                 if ($resVal > 0) {
                     $absVal = $resVal;
                     $absDecimalVal = $resVal;
                     if ($row[$logValCol] != null && trim($row[$logValCol]) != "") {
-                        $logVal = (float)$row[$logValCol];
+                        $logVal = (float) $row[$logValCol];
                     } else {
                         $logVal = round(log10($absDecimalVal), 4);
                     }
@@ -212,12 +212,12 @@ try {
             }
 
             if ($batchCode == '') {
-                $data['batch_code']     = $newBatchCode;
+                $data['batch_code'] = $newBatchCode;
                 $data['batch_code_key'] = $maxBatchCodeKey;
             } else {
                 $data['batch_code'] = $batchCode;
             }
-            //get user name
+            //get username
             if (!empty($d['reviewBy'])) {
 
                 /** @var UsersService $usersService */
@@ -225,7 +225,7 @@ try {
                 $data['sample_review_by'] = $usersService->addUserIfNotExists($d['reviewBy']);
             }
 
-            $query    = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal from form_vl where result_printed_datetime is null AND sample_code='" . $sampleCode . "'";
+            $query = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal from form_vl where result_printed_datetime is null AND sample_code='" . $sampleCode . "'";
             $vlResult = $db->rawQuery($query);
             //insert sample controls
             $scQuery = "select r_sample_control_name from r_sample_controls where r_sample_control_name='" . trim($d['sampleType']) . "'";
@@ -262,7 +262,7 @@ try {
     //Add event log
     $eventType = 'result-import';
     $action = $_SESSION['userName'] . ' imported test results for Roche VL';
-    $resource  = 'import-result';
+    $resource = 'import-result';
     $general->activityLog($eventType, $action, $resource);
 
     header("Location:/import-result/imported-results.php");

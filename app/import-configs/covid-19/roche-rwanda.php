@@ -82,8 +82,8 @@ try {
         $lotExpirationDateCol = 13;
 
         $spreadsheet = IOFactory::load(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
-        $sheetData   = $spreadsheet->getActiveSheet();
-        $sheetData   = $sheetData->toArray(null, true, true, true);
+        $sheetData = $spreadsheet->getActiveSheet();
+        $sheetData = $sheetData->toArray(null, true, true, true);
 
         // echo "<pre>";
         // var_dump($sheetData);
@@ -232,7 +232,7 @@ try {
             } else {
                 $data['batch_code'] = $batchCode;
             }
-            //get user name
+            //get username
             if (!empty($d['reviewBy'])) {
 
                 /** @var UsersService $usersService */

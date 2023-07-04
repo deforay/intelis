@@ -102,15 +102,18 @@ try {
                     $sampleCode = null;
                 } else if ($v == "Sample ID" || $v == "N° Id de l'échantillon") {
                     $sampleCode = $general->removeCntrlCharsAndEncode($record[1]);
-                    if (empty($sampleCode)) continue;
+                    if (empty($sampleCode))
+                        continue;
                     $infoFromFile[$sampleCode]['sampleCode'] = $sampleCode;
                     $infoFromFile[$sampleCode]['testedOn'] = $testedOn;
                     $infoFromFile[$sampleCode]['testedBy'] = $testedBy;
                 } else if ($v == "Assay" || $v == "Test") {
-                    if (empty($sampleCode)) continue;
+                    if (empty($sampleCode))
+                        continue;
                     $infoFromFile[$sampleCode]['assay'] = $general->removeCntrlCharsAndEncode($record[1]);
                 } else if ($v == "Test Result" || $v == "Résultat du test") {
-                    if (empty($sampleCode)) continue;
+                    if (empty($sampleCode))
+                        continue;
                     $parsedResult = (str_replace("SARS-COV-2 ", "", strtoupper($general->removeCntrlCharsAndEncode($record[1]))));
                     if ($parsedResult == 'NEGATIVE' || $parsedResult == 'NÉGATIF' || $parsedResult == 'NÉGATIVE') {
                         $parsedResult = 'negative';
@@ -155,7 +158,7 @@ try {
             } else {
                 $data['batch_code'] = $batchCode;
             }
-            //get user name
+            //get username
             if (!empty($d['reviewBy'])) {
 
                 /** @var UsersService $usersService */

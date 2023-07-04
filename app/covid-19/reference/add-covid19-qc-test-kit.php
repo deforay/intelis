@@ -54,7 +54,7 @@ $covid19Results = $covid19Service->getCovid19Results();
                                 <div class="form-group">
                                     <label for="testKitStatus" class="col-lg-4 control-label"><?php echo _("Status"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <select class="form-control isRequired" id="testKitStatus" name="testKitStatus" placeholder="<?php echo _('Status'); ?>" title="<?php echo _('Please select Status'); ?>">
+                                        <select class="form-control isRequired" id="testKitStatus" name="testKitStatus" title="<?php echo _('Please select Status'); ?>">
                                             <option value="active"><?php echo _("Active"); ?></option>
                                             <option value="inactive"><?php echo _("Inactive"); ?></option>
                                         </select>

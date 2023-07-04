@@ -16,7 +16,7 @@ try {
     $db->where('module', 'hepatitis');
     $db->delete('temp_sample_import');
     //set session for controller track id in hold_sample_record table
-    $cQuery  = "SELECT MAX(import_batch_tracking) FROM hold_sample_import";
+    $cQuery = "SELECT MAX(import_batch_tracking) FROM hold_sample_import";
     $cResult = $db->query($cQuery);
     if ($cResult[0]['MAX(import_batch_tracking)'] != '') {
         $maxId = $cResult[0]['MAX(import_batch_tracking)'] + 1;
@@ -38,8 +38,8 @@ try {
     }
 
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename($_FILES['resultFile']['name'])));
-    $fileName          = str_replace(" ", "-", $fileName);
-    $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    $fileName = str_replace(" ", "-", $fileName);
+    $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName = $_POST['fileName'] . "." . $extension;
     // $ranNumber = $general->generateRandomString(12);
     // $fileName          = $ranNumber . "." . $extension;
@@ -54,9 +54,9 @@ try {
         //$mime_type = $file_info->buffer(file_get_contents($resultFile)); // e.g. gives "image/jpeg"
 
         $objPHPExcel = IOFactory::load(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
-        $sheetData   = $objPHPExcel->getActiveSheet();
+        $sheetData = $objPHPExcel->getActiveSheet();
 
-        $bquery    = "select MAX(batch_code_key) from batch_details";
+        $bquery = "select MAX(batch_code_key) from batch_details";
         $bvlResult = $db->rawQuery($bquery);
         if ($bvlResult[0]['MAX(batch_code_key)'] != '' && $bvlResult[0]['MAX(batch_code_key)'] != null) {
             $maxBatchCodeKey = $bvlResult[0]['MAX(batch_code_key)'] + 1;
@@ -94,15 +94,15 @@ try {
             if ($rowIndex < $skipTillRow)
                 continue;
 
-            $sampleCode    = "";
-            $batchCode     = "";
-            $sampleType    = "";
+            $sampleCode = "";
+            $batchCode = "";
+            $sampleType = "";
             $absDecimalVal = "";
-            $absVal        = "";
-            $logVal        = "";
-            $txtVal        = "";
-            $resultFlag    = "";
-            $testingDate   = "";
+            $absVal = "";
+            $logVal = "";
+            $txtVal = "";
+            $resultFlag = "";
+            $testingDate = "";
             $lotNumberVal = "";
             $reviewBy = "";
             $lotExpirationDateVal = null;
@@ -232,12 +232,12 @@ try {
 
 
             if ($batchCode == '') {
-                $data['batch_code']     = $newBatchCode;
+                $data['batch_code'] = $newBatchCode;
                 $data['batch_code_key'] = $maxBatchCodeKey;
             } else {
                 $data['batch_code'] = $batchCode;
             }
-            //get user name
+            //get username
             if (!empty($d['reviewBy'])) {
 
                 /** @var UsersService $usersService */
@@ -245,7 +245,7 @@ try {
                 $data['sample_review_by'] = $usersService->addUserIfNotExists($d['reviewBy']);
             }
 
-            $query    = "SELECT facility_id,hepatitis_id,hcv_vl_count,hbv_vl_count,hepatitis_test_type, result_status FROM form_hepatitis WHERE sample_code='" . $sampleCode . "'";
+            $query = "SELECT facility_id,hepatitis_id,hcv_vl_count,hbv_vl_count,hepatitis_test_type, result_status FROM form_hepatitis WHERE sample_code='" . $sampleCode . "'";
             $hepResult = $db->rawQuery($query);
 
             // $testType = strtolower($hepResult['hepatitis_test_type']);
@@ -307,9 +307,9 @@ try {
 
     $_SESSION['alertMsg'] = "Results imported successfully";
     //Add event log
-    $eventType            = 'import';
-    $action               = $_SESSION['userName'] . ' imported a new test result with the sample code ' . $sampleCode;
-    $resource             = 'import-result';
+    $eventType = 'import';
+    $action = $_SESSION['userName'] . ' imported a new test result with the sample code ' . $sampleCode;
+    $resource = 'import-result';
     $general->activityLog($eventType, $action, $resource);
 
     header("Location:/import-result/imported-results.php");

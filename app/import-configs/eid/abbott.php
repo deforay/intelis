@@ -209,7 +209,7 @@ try {
             } else {
                 $data['batch_code'] = $batchCode;
             }
-            //get user name
+            //get username
             if (!empty($d['reviewBy'])) {
 
                 /** @var UsersService $usersService */
