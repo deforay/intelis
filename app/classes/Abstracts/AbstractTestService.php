@@ -6,7 +6,6 @@ use MysqliDb;
 use DateTimeImmutable;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
-use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
 abstract class AbstractTestService
