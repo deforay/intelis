@@ -2,12 +2,13 @@
 
 use App\Utilities\MiscUtility;
 use App\Exceptions\SystemException;
-use App\Registries\ContainerRegistry;
 
 $webRootPath = realpath(WEB_ROOT);
 
-/** @var MysqliDb $db */
-$db = ContainerRegistry::get('db');
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
 
 if (!isset($_GET['f']) || !is_file(base64_decode($_GET['f']))) {
     $redirect = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/';
@@ -22,11 +23,6 @@ $allowedMimeTypes = [
     'text/csv' => true,
     'text/plain' => true
 ];
-
-// Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
-$_GET = $request->getQueryParams();
 
 $file = realpath(urldecode(base64_decode($_GET['f'])));
 
