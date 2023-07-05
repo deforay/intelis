@@ -156,7 +156,7 @@ require($fileArray[$arr['vl_form']]);
         });
 
 
-        /* $('#sampleCollectionDate').datetimepicker({
+         $('#sampleCollectionDate').datetimepicker({
              changeMonth: true,
              changeYear: true,
              dateFormat: 'dd-M-yy',
@@ -174,7 +174,7 @@ require($fileArray[$arr['vl_form']]);
              yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
          }).click(function() {
              $('.ui-datepicker-calendar').show();
-         });*/
+         });
 
         $('#sampleReceivedDate').datetimepicker({
             changeMonth: true,
@@ -279,7 +279,7 @@ require($fileArray[$arr['vl_form']]);
     }
 
     function insertSampleCode(formId, covid19SampleId, sampleCode, sampleCodeKey, sampleCodeFormat, countryId, sampleCollectionDate, provinceCode = null, provinceId = null) {
-        //$.blockUI();
+        $.blockUI();
         $.post("/covid-19/requests/insert-sample.php", {
                 sampleCode: $("#" + sampleCode).val(),
                 sampleCodeKey: $("#" + sampleCodeKey).val(),
@@ -296,6 +296,7 @@ require($fileArray[$arr['vl_form']]);
                 patientGender: $("#patientGender").val(),
             },
             function(data) {
+                console.log(data);
                 if (data > 0) {
                     $.unblockUI();
                     document.getElementById("covid19SampleId").value = data;

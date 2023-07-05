@@ -51,11 +51,11 @@ try {
 		$_POST['sampleDispatchedDate'] = null;
 	}
 
-	if (isset($_POST['approvedOnDateTime']) && trim($_POST['approvedOnDateTime']) != "") {
-		$approvedOnDateTime = explode(" ", $_POST['approvedOnDateTime']);
-		$_POST['approvedOnDateTime'] = DateUtility::isoDateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
+	if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
+		$approvedOn = explode(" ", $_POST['approvedOn']);
+		$_POST['approvedOn'] = DateUtility::isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
 	} else {
-		$_POST['approvedOnDateTime'] = null;
+		$_POST['approvedOn'] = null;
 	}
 
 

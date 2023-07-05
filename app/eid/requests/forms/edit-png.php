@@ -508,7 +508,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         <tr>
                                             <th scope="row"><label for="">Sample Received Date </label></th>
                                             <td>
-                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" value="<?php echo $eidInfo['sample_received_at_vl_lab_datetime'] ?>" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
                                             </td>
                                             <td><label for="labId">Lab Name </label> </td>
                                             <td>
@@ -553,7 +553,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         <tr>
                                             <td style="width:25%;"><label for="">Sample Test Date </label></td>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" value="<?php echo $eidInfo['sample_tested_datetime'] ?>" placeholder="<?= _("Please enter date"); ?>" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
                                             </td>
 
 
@@ -562,7 +562,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                                 <select class="form-control result-focus" name="result" id="result">
                                                     <option value=''> -- Select -- </option>
                                                     <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
-                                                        <option value="<?php echo $eidResultKey; ?>"> <?php echo $eidResultValue; ?> </option>
+                                                        <option value="<?php echo $eidResultKey; ?>" <?php echo ($eidResultKey==$eidInfo['result']) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?> </option>
                                                     <?php } ?>
                                                 </select>
                                             </td>
@@ -652,7 +652,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 
                                             <th scope="row">CT/QS value</th>
                                             <td>
-                                                <input type="text" class="form-control" id="test2CtQs" name="test2CtQs" value="<?php echo ($eidInfo['test_2_ctqs']); ?>" placeholder="<?= _("Please enter CT/QS value"); ?>" title="CT/QS value" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="test2CtQs" name="test2CtQs" value="<?php echo ($eidInfo['test_2_ct_qs']); ?>" placeholder="<?= _("Please enter CT/QS value"); ?>" title="CT/QS value" onchange="" style="width:100%;" />
                                             </td>
                                         </tr>
 
