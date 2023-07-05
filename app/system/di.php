@@ -83,17 +83,17 @@ $builder->addDefinitions([
     BatchService::class => DI\create(BatchService::class)
         ->constructor(DI\get('db')),
     VlService::class => DI\create(VlService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class)),
+        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(GeoLocationsService::class)),
     EidService::class => DI\create(EidService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class)),
+        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(GeoLocationsService::class)),
     Covid19Service::class => DI\create(Covid19Service::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class)),
+        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(GeoLocationsService::class)),
     HepatitisService::class => DI\create(HepatitisService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class)),
+        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(GeoLocationsService::class)),
     TbService::class => DI\create(TbService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class)),
+        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(GeoLocationsService::class)),
     GenericTestsService::class => DI\create(GenericTestsService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class)),
+        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(GeoLocationsService::class)),
     UsersService::class => DI\create(UsersService::class)
         ->constructor(DI\get('db'), DI\get('applicationConfig'), DI\get(CommonService::class)),
     GeoLocationsService::class => DI\create(GeoLocationsService::class)

@@ -2,10 +2,8 @@
 
 namespace App\Services;
 
-use MysqliDb;
 use Exception;
 use App\Utilities\DateUtility;
-use App\Services\CommonService;
 use App\Abstracts\AbstractTestService;
 
 
@@ -35,13 +33,6 @@ class VlService extends AbstractTestService
     protected int $suppressionLimit = 1000;
     protected string $table = 'form_vl';
     protected string $shortCode = 'VL';
-
-    public function __construct(
-        ?MysqliDb $db = null,
-        CommonService $commonService = null
-    ) {
-        parent::__construct($db, $commonService);
-    }
 
     public function getSampleCode($params)
     {

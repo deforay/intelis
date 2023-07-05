@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use MysqliDb;
 use Exception;
 use App\Utilities\DateUtility;
 use App\Abstracts\AbstractTestService;
@@ -12,12 +11,6 @@ class EidService extends AbstractTestService
 
     protected string $table = 'form_eid';
     protected string $shortCode = 'EID';
-    public function __construct(
-        ?MysqliDb $db = null,
-        CommonService $commonService = null
-    ) {
-        parent::__construct($db, $commonService);
-    }
 
     public function getSampleCode($params)
     {

@@ -13,13 +13,16 @@ abstract class AbstractTestService
 {
     protected MysqliDb $db;
     protected CommonService $commonService;
+    protected GeoLocationsService $geoLocationsService;
 
     public function __construct(
-        ?MysqliDb $db = null,
-        CommonService $commonService = null
+        MysqliDb $db,
+        CommonService $commonService,
+        GeoLocationsService $geoLocationsService
     ) {
         $this->db = $db;
         $this->commonService = $commonService;
+        $this->geoLocationsService = $geoLocationsService;
     }
     abstract public function getSampleCode($params);
     abstract public function insertSample($params, $returnSampleData = false);
@@ -71,9 +74,7 @@ abstract class AbstractTestService
             if ($formId == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    /** @var GeoLocationsService $geoLocationsService */
-                    $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
-                    $params['provinceId'] = $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
+                    $params['provinceId'] = $provinceId = $this->geoLocationsService->getProvinceIDFromCode($provinceCode);
                 }
 
                 if (!empty($provinceId)) {
