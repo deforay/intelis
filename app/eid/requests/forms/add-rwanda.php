@@ -244,7 +244,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr>
                                         <th scope="row">Infant Rapid HIV Test Done <span class="mandatory">*</span></th>
                                         <td>
-                                            <select class="form-control isRequired" name="rapidTestPerformed" id="rapidTestPerformed">
+                                            <select class="form-control isRequired" name="rapidTestPerformed" id="rapidTestPerformed" onchange="setrapidTestRelatedField(this.value);">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="yes"> Yes </option>
                                                 <option value="no"> No </option>
@@ -596,6 +596,16 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         var motherVlText = $("#motherViralLoadText").val();
         if (motherVlText != '') {
             $("#motherViralLoadCopiesPerMl").val('');
+        }
+    }
+
+    function setrapidTestRelatedField(rapidtestVal) {
+        if (rapidtestVal == 'yes') {
+            $('#rapidtestDate').addClass('isRequired');
+            $('#rapidtestDate').prop('disabled', false);
+        } else {
+            $('#rapidtestDate').prop('disabled', true);
+            $('#rapidtestDate').removeClass('isRequired');
         }
     }
 
