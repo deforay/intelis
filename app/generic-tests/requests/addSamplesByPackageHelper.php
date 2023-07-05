@@ -61,7 +61,7 @@ foreach ($sampleResult as $sampleRow) {
         $sampleCodeParams['provinceCode'] = $provinceCode;
         $sampleCodeParams['testType'] = $testTypeShortCode;
 
-        $sampleJson = $genericTestsService->generateSampleCode($sampleCodeParams);
+        $sampleJson = $genericTestsService->getSampleCode($sampleCodeParams);
         $sampleData = json_decode($sampleJson, true);
         //$vldata['sample_code'] = $sampleData['sampleCode'];
         $vldata['sample_code'] = $sampleData['sampleCode'];

@@ -4,39 +4,29 @@ namespace App\Services;
 
 use MysqliDb;
 use Exception;
-use DateTimeImmutable;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
-use App\Registries\ContainerRegistry;
-use App\Services\GeoLocationsService;
-use App\Interfaces\TestServiceInterface;
-use App\Helpers\SampleCodeGeneratorHelper;
+use App\Abstracts\AbstractTestService;
 
-class Covid19Service implements TestServiceInterface
+class Covid19Service extends AbstractTestService
 {
 
-    protected ?MysqliDb $db = null;
     protected string $table = 'form_covid19';
     protected string $shortCode = 'C19';
-    protected CommonService $commonService;
-    protected SampleCodeGeneratorHelper $sampleCodeGeneratorHelper;
 
     public function __construct(
         ?MysqliDb $db = null,
-        CommonService $commonService = null,
-        SampleCodeGeneratorHelper $sampleCodeGeneratorHelper = null
+        CommonService $commonService = null
     ) {
-        $this->db = $db ?? ContainerRegistry::get('db');
-        $this->commonService = $commonService;
-        $this->sampleCodeGeneratorHelper = $sampleCodeGeneratorHelper;
+        parent::__construct($db, $commonService);
     }
 
-    public function generateSampleCode($params)
+    public function getSampleCode($params)
     {
         $globalConfig = $this->commonService->getGlobalConfig();
         $params['sampleCodeFormat'] = $globalConfig['covid19_sample_code'] ?? 'MMYY';
         $params['prefix'] = $params['prefix'] ?? $globalConfig['covid19_sample_code_prefix'] ?? $this->shortCode;
-        return $this->sampleCodeGeneratorHelper->generateSampleCode($this->table, $params);
+        return $this->generateSampleCode($this->table, $params);
     }
 
 
@@ -375,7 +365,7 @@ class Covid19Service implements TestServiceInterface
             $sampleCodeParams['provinceId'] = $provinceId;
             $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey'] ?? null;
 
-            $sampleJson = $this->generateSampleCode($sampleCodeParams);
+            $sampleJson = $this->getSampleCode($sampleCodeParams);
             $sampleData = json_decode($sampleJson, true);
 
             $sQuery = "SELECT covid19_id FROM $this->table ";

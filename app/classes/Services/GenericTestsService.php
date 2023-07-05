@@ -4,40 +4,30 @@ namespace App\Services;
 
 use MysqliDb;
 use Exception;
-use DateTimeImmutable;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
-use App\Registries\ContainerRegistry;
-use App\Services\GeoLocationsService;
-use App\Interfaces\TestServiceInterface;
-use App\Helpers\SampleCodeGeneratorHelper;
+use App\Abstracts\AbstractTestService;
 
 
-class GenericTestsService implements TestServiceInterface
+class GenericTestsService extends AbstractTestService
 {
 
-    protected ?MysqliDb $db = null;
     protected string $table = 'form_generic';
     protected string $shortCode = 'T';
-    protected CommonService $commonService;
-    protected SampleCodeGeneratorHelper $sampleCodeGeneratorHelper;
 
     public function __construct(
         ?MysqliDb $db = null,
-        CommonService $commonService = null,
-        SampleCodeGeneratorHelper $sampleCodeGeneratorHelper = null
+        CommonService $commonService = null
     ) {
-        $this->db = $db ?? ContainerRegistry::get('db');
-        $this->commonService = $commonService;
-        $this->sampleCodeGeneratorHelper = $sampleCodeGeneratorHelper;
+        parent::__construct($db, $commonService);
     }
 
-    public function generateSampleCode($params)
+    public function getSampleCode($params)
     {
         $globalConfig = $this->commonService->getGlobalConfig();
         $params['sampleCodeFormat'] = $globalConfig['sample_code'] ?? 'MMYY';
         $params['prefix'] = $params['testType'] ?? $this->shortCode;
-        return $this->sampleCodeGeneratorHelper->generateSampleCode($this->table, $params);
+        return $this->generateSampleCode($this->table, $params);
     }
 
     public function getGenericSampleTypesByName($name = "")
@@ -101,7 +91,7 @@ class GenericTestsService implements TestServiceInterface
             $sampleCodeParams['testType'] = $testType;
             $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey'] ?? null;
 
-            $sampleJson = $this->generateSampleCode($sampleCodeParams);
+            $sampleJson = $this->getSampleCode($sampleCodeParams);
             $sampleData = json_decode($sampleJson, true);
 
             $sQuery = "SELECT sample_id FROM form_generic ";

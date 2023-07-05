@@ -20,4 +20,4 @@ $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
 $sampleCodeParams['provinceCode'] = $provinceCode;
 $sampleCodeParams['testType'] = $testType;
 
-echo $genericTestsService->generateSampleCode($sampleCodeParams);
+echo $genericTestsService->getSampleCode($sampleCodeParams);

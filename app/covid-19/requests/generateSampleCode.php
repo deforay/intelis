@@ -23,4 +23,4 @@ $sampleCodeParams = [];
 $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
 $sampleCodeParams['provinceCode'] = $provinceCode;
 
-echo $covid19Service->generateSampleCode($sampleCodeParams);
+echo $covid19Service->getSampleCode($sampleCodeParams);

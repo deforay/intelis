@@ -1,5 +1,6 @@
 <?php
 
+use MysqliDb;
 use DI\ContainerBuilder;
 use App\Services\TbService;
 use App\Services\VlService;
@@ -26,7 +27,6 @@ use App\Services\GenericTestsService;
 use App\Services\GeoLocationsService;
 use App\Utilities\ImageResizeUtility;
 use Psr\Container\ContainerInterface;
-use App\Helpers\SampleCodeGeneratorHelper;
 use App\HttpHandlers\LegacyRequestHandler;
 use App\Middlewares\Api\ApiAuthMiddleware;
 use App\Middlewares\App\AppAuthMiddleware;
@@ -83,17 +83,17 @@ $builder->addDefinitions([
     BatchService::class => DI\create(BatchService::class)
         ->constructor(DI\get('db')),
     VlService::class => DI\create(VlService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(SampleCodeGeneratorHelper::class)),
+        ->constructor(DI\get('db'), DI\get(CommonService::class)),
     EidService::class => DI\create(EidService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(SampleCodeGeneratorHelper::class)),
+        ->constructor(DI\get('db'), DI\get(CommonService::class)),
     Covid19Service::class => DI\create(Covid19Service::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(SampleCodeGeneratorHelper::class)),
+        ->constructor(DI\get('db'), DI\get(CommonService::class)),
     HepatitisService::class => DI\create(HepatitisService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(SampleCodeGeneratorHelper::class)),
+        ->constructor(DI\get('db'), DI\get(CommonService::class)),
     TbService::class => DI\create(TbService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(SampleCodeGeneratorHelper::class)),
+        ->constructor(DI\get('db'), DI\get(CommonService::class)),
     GenericTestsService::class => DI\create(GenericTestsService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(SampleCodeGeneratorHelper::class)),
+        ->constructor(DI\get('db'), DI\get(CommonService::class)),
     UsersService::class => DI\create(UsersService::class)
         ->constructor(DI\get('db'), DI\get('applicationConfig'), DI\get(CommonService::class)),
     GeoLocationsService::class => DI\create(GeoLocationsService::class)
@@ -135,9 +135,7 @@ $builder->addDefinitions([
     ErrorResponseGenerator::class => DI\create(ErrorResponseGenerator::class)
         ->constructor($debugMode),
     PdfConcatenateHelper::class => DI\create(PdfConcatenateHelper::class),
-    PdfWatermarkHelper::class => DI\create(PdfWatermarkHelper::class),
-    SampleCodeGeneratorHelper::class => DI\create(SampleCodeGeneratorHelper::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class)),
+    PdfWatermarkHelper::class => DI\create(PdfWatermarkHelper::class)
 ]);
 
 

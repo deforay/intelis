@@ -4,39 +4,28 @@ namespace App\Services;
 
 use MysqliDb;
 use Exception;
-use DateTimeImmutable;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
-use App\Registries\ContainerRegistry;
-use App\Services\GeoLocationsService;
-use App\Interfaces\TestServiceInterface;
-use App\Helpers\SampleCodeGeneratorHelper;
+use App\Abstracts\AbstractTestService;
 
-class TbService implements TestServiceInterface
+class TbService extends AbstractTestService
 {
 
-    protected ?MysqliDb $db = null;
     protected string $table = 'form_tb';
     protected string $shortCode = 'TB';
-    protected CommonService $commonService;
-    protected SampleCodeGeneratorHelper $sampleCodeGeneratorHelper;
-
     public function __construct(
         ?MysqliDb $db = null,
-        CommonService $commonService = null,
-        SampleCodeGeneratorHelper $sampleCodeGeneratorHelper = null
+        CommonService $commonService = null
     ) {
-        $this->db = $db ?? ContainerRegistry::get('db');
-        $this->commonService = $commonService;
-        $this->sampleCodeGeneratorHelper = $sampleCodeGeneratorHelper;
+        parent::__construct($db, $commonService);
     }
 
-    public function generateSampleCode($params)
+    public function getSampleCode($params)
     {
         $globalConfig = $this->commonService->getGlobalConfig();
         $params['sampleCodeFormat'] = $globalConfig['tb_sample_code'] ?? 'MMYY';
         $params['prefix'] = $params['prefix'] ?? $globalConfig['tb_sample_code_prefix'] ?? $this->shortCode;
-        return $this->sampleCodeGeneratorHelper->generateSampleCode($this->table, $params);
+        return $this->generateSampleCode($this->table, $params);
     }
 
     public function getTbSampleTypes($updatedDateTime = null): array
@@ -180,7 +169,7 @@ class TbService implements TestServiceInterface
             $sampleCodeParams['provinceId'] = $provinceId;
             $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey'] ?? null;
 
-            $sampleJson = $this->generateSampleCode($sampleCodeParams);
+            $sampleJson = $this->getSampleCode($sampleCodeParams);
             $sampleData = json_decode($sampleJson, true);
 
 

@@ -47,7 +47,7 @@ foreach ($sampleResult as $sampleRow) {
         $sampleCodeParams['sampleCollectionDate'] = DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date'] ?? '');
         $sampleCodeParams['provinceCode'] = $provinceCode ?? null;
 
-        $sampleJson = $eidObj->generateSampleCode($sampleCodeParams);
+        $sampleJson = $eidObj->getSampleCode($sampleCodeParams);
         $sampleData = json_decode($sampleJson, true);
 
         $eidData['sample_code'] = $sampleData['sampleCode'];

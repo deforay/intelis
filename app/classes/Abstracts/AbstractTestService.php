@@ -1,23 +1,28 @@
 <?php
 
-namespace App\Helpers;
+namespace App\Abstracts;
 
 use MysqliDb;
 use DateTimeImmutable;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
+use App\Services\GeoLocationsService;
 
-class SampleCodeGeneratorHelper
+abstract class AbstractTestService
 {
-    private ?MysqliDb $db;
-    private CommonService $commonService;
+    protected MysqliDb $db;
+    protected CommonService $commonService;
 
-    public function __construct(?MysqliDb $db, CommonService $commonService)
-    {
+    public function __construct(
+        ?MysqliDb $db = null,
+        CommonService $commonService = null
+    ) {
         $this->db = $db;
         $this->commonService = $commonService;
     }
+    abstract public function getSampleCode($params);
+    abstract public function insertSample($params, $returnSampleData = false);
 
     public function generateSampleCode($testTable, $params)
     {

@@ -4,18 +4,14 @@ namespace App\Services;
 
 use MysqliDb;
 use Exception;
-use DateTimeImmutable;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
-use App\Registries\ContainerRegistry;
-use App\Services\GeoLocationsService;
-use App\Interfaces\TestServiceInterface;
-use App\Helpers\SampleCodeGeneratorHelper;
+use App\Abstracts\AbstractTestService;
 
 
-class VlService implements TestServiceInterface
+class VlService extends AbstractTestService
 {
-    // keep all these in lower case to make it easier to compare
+    // keep in lowercase to make them easier to compare
     protected array $suppressedArray = [
         'hiv-1 not detected',
         'target not detected',
@@ -36,30 +32,23 @@ class VlService implements TestServiceInterface
         'negative',
         'negat'
     ];
-
     protected int $suppressionLimit = 1000;
-    protected SampleCodeGeneratorHelper $sampleCodeGeneratorHelper;
-    protected MysqliDb $db;
     protected string $table = 'form_vl';
     protected string $shortCode = 'VL';
-    protected CommonService $commonService;
 
     public function __construct(
         ?MysqliDb $db = null,
-        CommonService $commonService = null,
-        SampleCodeGeneratorHelper $sampleCodeGeneratorHelper = null
+        CommonService $commonService = null
     ) {
-        $this->db = $db ?? ContainerRegistry::get('db');
-        $this->commonService = $commonService;
-        $this->sampleCodeGeneratorHelper = $sampleCodeGeneratorHelper;
+        parent::__construct($db, $commonService);
     }
 
-    public function generateSampleCode($params)
+    public function getSampleCode($params)
     {
         $globalConfig = $this->commonService->getGlobalConfig();
         $params['sampleCodeFormat'] = $globalConfig['sample_code'] ?? 'MMYY';
         $params['prefix'] = $params['prefix'] ?? $globalConfig['sample_code_prefix'] ?? $this->shortCode;
-        return $this->sampleCodeGeneratorHelper->generateSampleCode($this->table, $params);
+        return $this->generateSampleCode($this->table, $params);
     }
 
     public function getVlSampleTypesByName($name = "")
@@ -365,7 +354,7 @@ class VlService implements TestServiceInterface
             $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey'] ?? null;
 
 
-            $sampleJson = $this->generateSampleCode($sampleCodeParams);
+            $sampleJson = $this->getSampleCode($sampleCodeParams);
             $sampleData = json_decode($sampleJson, true);
 
             $sQuery = "SELECT vl_sample_id FROM form_vl ";

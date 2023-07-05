@@ -5,35 +5,26 @@ namespace App\Services;
 use MysqliDb;
 use Exception;
 use App\Utilities\DateUtility;
-use App\Registries\ContainerRegistry;
-use App\Interfaces\TestServiceInterface;
-use App\Helpers\SampleCodeGeneratorHelper;
+use App\Abstracts\AbstractTestService;
 
-class EidService implements TestServiceInterface
+class EidService extends AbstractTestService
 {
 
-    protected ?MysqliDb $db = null;
     protected string $table = 'form_eid';
     protected string $shortCode = 'EID';
-    protected CommonService $commonService;
-    protected SampleCodeGeneratorHelper $sampleCodeGeneratorHelper;
-
     public function __construct(
         ?MysqliDb $db = null,
-        CommonService $commonService = null,
-        SampleCodeGeneratorHelper $sampleCodeGeneratorHelper = null
+        CommonService $commonService = null
     ) {
-        $this->db = $db ?? ContainerRegistry::get('db');
-        $this->commonService = $commonService;
-        $this->sampleCodeGeneratorHelper = $sampleCodeGeneratorHelper;
+        parent::__construct($db, $commonService);
     }
 
-    public function generateSampleCode($params)
+    public function getSampleCode($params)
     {
         $globalConfig = $this->commonService->getGlobalConfig();
         $params['sampleCodeFormat'] = $globalConfig['eid_sample_code'] ?? 'MMYY';
         $params['prefix'] = $params['prefix'] ?? $globalConfig['eid_sample_code_prefix'] ?? $this->shortCode;
-        return $this->sampleCodeGeneratorHelper->generateSampleCode($this->table, $params);
+        return $this->generateSampleCode($this->table, $params);
     }
 
 
@@ -88,7 +79,7 @@ class EidService implements TestServiceInterface
             $sampleCodeParams['provinceId'] = $provinceId;
             $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey'] ?? null;
 
-            $sampleJson = $this->generateSampleCode($sampleCodeParams);
+            $sampleJson = $this->getSampleCode($sampleCodeParams);
             $sampleData = json_decode($sampleJson, true);
 
             $sQuery = "SELECT eid_id FROM form_eid ";

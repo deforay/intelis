@@ -55,7 +55,7 @@ foreach ($sampleResult as $sampleRow) {
         $sampleCodeParams['sampleCollectionDate'] = DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date'] ?? '');
         $sampleCodeParams['provinceCode'] = $provinceCode ?? null;
 
-        $sampleJson = $vlObj->generateSampleCode($sampleCodeParams);
+        $sampleJson = $vlObj->getSampleCode($sampleCodeParams);
         $sampleData = json_decode($sampleJson, true);
         $vldata['sample_code'] = $sampleData['sampleCode'];
         $vldata['sample_code_format'] = $sampleData['sampleCodeFormat'];

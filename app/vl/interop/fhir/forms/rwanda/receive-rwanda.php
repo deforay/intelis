@@ -298,7 +298,7 @@ foreach ($formData as $serviceRequest => $data) {
     $sampleCodeParams = [];
     $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate ?? null;
 
-    $sampleJson = $vlService->generateSampleCode($sampleCodeParams);
+    $sampleJson = $vlService->getSampleCode($sampleCodeParams);
 
     $sampleData = json_decode($sampleJson, true);
     if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {

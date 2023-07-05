@@ -57,7 +57,7 @@ foreach ($sampleResult as $sampleRow) {
         $sampleCodeParams['prefix'] = $sampleRow['hepatitis_test_type'] ?? null;
         $sampleCodeParams['provinceCode'] = $provinceCode;
 
-        $sampleJson = $hepatitisService->generateSampleCode($sampleCodeParams);
+        $sampleJson = $hepatitisService->getSampleCode($sampleCodeParams);
         $sampleData = json_decode($sampleJson, true);
         $hepatitisData = [];
         $hepatitisData['sample_code'] = $sampleData['sampleCode'];
