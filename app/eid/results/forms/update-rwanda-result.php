@@ -289,8 +289,8 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     <td>
                                         <select class="form-control" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore">
                                             <option value=''> -- Select -- </option>
-                                            <option value="yes"> Yes </option>
-                                            <option value="no"> No </option>
+                                            <option value="yes" <?php echo (isset($eidInfo['pcr_test_performed_before']) && $eidInfo['pcr_test_performed_before'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
+                                            <option value="no" <?php echo (isset($eidInfo['pcr_test_performed_before']) && $eidInfo['pcr_test_performed_before'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
                                         </select>
                                     </td>
                                 </tr>
@@ -423,7 +423,17 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             </select>
                                         </td>
                                         <th scope="row">Reviewed On</th>
-                                        <td><input type="text" value="<?= DateUtility::humanReadableDateFormat($eidInfo['result_reviewed_datetime']); ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
+                                        <td><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['result_reviewed_datetime']); ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Approved By</th>
+                                        <td>
+                                            <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
+                                                <?= $general->generateSelectOptions($userInfo, $eidInfo['result_approved_by'], '-- Select --'); ?>
+                                            </select>
+                                        </td>
+                                        <th scope="row">Approved On</th>
+                                        <td><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['result_approved_datetime']); ?>" name="approvedOn" id="approvedOn" class="dateTime disabled-field form-control" placeholder="Approved on" title="Please enter the Approved on" /></td>
                                     </tr>
                                     <tr class="change-reason">
                                         <th scope="row" class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></th>
