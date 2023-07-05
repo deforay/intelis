@@ -57,11 +57,11 @@ $builder->useAutowiring(true);
 // Enable compilation for better performance in production
 if (!empty($systemConfig['system']['cache_di']) && true === $systemConfig['system']['cache_di']) {
 
-    if (!is_dir(ROOT_PATH . '/cache')) {
-        mkdir(ROOT_PATH . '/cache', 0777, true);
+    if (!is_dir(CACHE_PATH)) {
+        mkdir(CACHE_PATH, 0777, true);
     }
-    $builder->enableCompilation(ROOT_PATH . '/cache');
-    $builder->enableDefinitionCache(ROOT_PATH . '/cache');
+    $builder->enableCompilation(CACHE_PATH);
+    $builder->enableDefinitionCache(CACHE_PATH);
 }
 
 // Configuration and DB
