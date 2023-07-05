@@ -321,7 +321,7 @@ try {
 		'tested_by' 										=> (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] :  null,
 		'lab_tech_comments' 									=> (isset($_POST['labTechCmt']) && $_POST['labTechCmt'] != '') ? $_POST['labTechCmt'] :  null,
 		'result_approved_by' 								=> (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] :  null,
-		'result_approved_datetime' 							=> $_POST['approvedOnDateTime'] ?? null,
+		'result_approved_datetime' 							=> $_POST['approvedOn'] ?? null,
 		'result_status' 									=> $status,
 		'second_dbs_requested' 								=> (isset($_POST['secondDBSRequested']) && $_POST['secondDBSRequested'] != '') ? $_POST['secondDBSRequested'] :  null,
 		'second_dbs_requested_reason' 						=> (isset($_POST['secondDBSRequestedReason']) && $_POST['secondDBSRequestedReason'] != '') ? $_POST['secondDBSRequestedReason'] :  null,
