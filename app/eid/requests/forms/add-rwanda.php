@@ -124,9 +124,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <!-- <td><label for="supportPartner">Implementing Partner </label></td>
+                                        <td><label for="supportPartner">Implementing Partner </label></td>
                                         <td>
-                                         <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire dappui" title="Please enter partenaire dappui" style="width:100%;"/>
+                                         <!-- <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire dappui" title="Please enter partenaire dappui" style="width:100%;"/> -->
                                             <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
                                                 <option value=""> -- Select -- </option>
                                                 <?php
@@ -146,7 +146,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <option value="<?php echo ($fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
                                                 <?php } ?>
                                             </select>
-                                        </td>-->
+                                        </td>
                                         <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                             <!-- <tr> -->
                                             <td><label for="labId">Lab Name <span class="mandatory">*</span></label> </td>
@@ -244,7 +244,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr>
                                         <th scope="row">Infant Rapid HIV Test Done <span class="mandatory">*</span></th>
                                         <td>
-                                            <select class="form-control isRequired" name="rapidTestPerformed" id="rapidTestPerformed">
+                                            <select class="form-control isRequired" name="rapidTestPerformed" id="rapidTestPerformed" onchange="setrapidTestRelatedField(this.value);">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="yes"> Yes </option>
                                                 <option value="no"> No </option>
@@ -596,6 +596,16 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         var motherVlText = $("#motherViralLoadText").val();
         if (motherVlText != '') {
             $("#motherViralLoadCopiesPerMl").val('');
+        }
+    }
+
+    function setrapidTestRelatedField(rapidtestVal) {
+        if (rapidtestVal == 'yes') {
+            $('#rapidtestDate').addClass('isRequired');
+            $('#rapidtestDate').prop('disabled', false);
+        } else {
+            $('#rapidtestDate').prop('disabled', true);
+            $('#rapidtestDate').removeClass('isRequired');
         }
     }
 
