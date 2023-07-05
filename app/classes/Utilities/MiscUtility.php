@@ -129,4 +129,24 @@ class MiscUtility
 
         return true;
     }
+
+    public static function fileExists($filePath): bool
+    {
+        return !empty($filePath) &&
+            file_exists($filePath) &&
+            !is_dir($filePath) &&
+            filesize($filePath) > 0;
+    }
+
+    public static function imageExists($filePath): bool
+    {
+        return self::fileExists($filePath) &&
+            false !== getimagesize($filePath);
+    }
+
+    public static function startsWith($string, $startString): bool
+    {
+        $len = strlen($startString);
+        return (substr($string, 0, $len) === $startString);
+    }
 }

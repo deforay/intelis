@@ -58,17 +58,17 @@ if (isset($testType) && $testType == 'tb') {
 }
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
-* you want to insert a non-database field (for example a counter or static image)
-*/
-$aColumns = array('l.facility_name',  'vl.source_of_request', 'vl.request_created_datetime');
+ * you want to insert a non-database field (for example a counter or static image)
+ */
+$aColumns = array('l.facility_name', 'vl.source_of_request', 'vl.request_created_datetime');
 $orderColumns = array('l.facility_name', '', '', '', '', 'vl.source_of_request', 'vl.request_created_datetime');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
 
 /*
-* Paging
-*/
+ * Paging
+ */
 $sLimit = "";
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
@@ -76,8 +76,8 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 }
 
 /*
-* Ordering
-*/
+ * Ordering
+ */
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -92,11 +92,11 @@ if (isset($_POST['iSortCol_0'])) {
 }
 
 /*
-* Filtering
-* NOTE this does not match the built-in DataTables filtering which does it
-* word by word on any field. It's possible to do here, but concerned about efficiency
-* on very large tables, and MySQL's regex functionality is very limited
-*/
+ * Filtering
+ * NOTE this does not match the built-in DataTables filtering which does it
+ * word by word on any field. It's possible to do here, but concerned about efficiency
+ * on very large tables, and MySQL's regex functionality is very limited
+ */
 
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
@@ -126,9 +126,9 @@ for ($i = 0; $i < count($aColumns); $i++) {
 }
 
 /*
-* SQL queries
-* Get data to display
-*/
+ * SQL queries
+ * Get data to display
+ */
 $aWhere = '';
 $sQuery = '';
 
@@ -193,8 +193,8 @@ $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 /*
-* Output
-*/
+ * Output
+ */
 $output = array(
     "sEcho" => intval($_POST['sEcho']),
     "iTotalRecords" => $iTotal,
@@ -206,25 +206,25 @@ foreach ($rResult as $key => $aRow) {
     $params = array($aRow['sample_collection_date'], $aRow['lab_id'], $aRow['source_of_request']);
     if (isset($aRow['samples']) && $aRow['samples'] > 0) {
         $samples = $params;
-        $samples[] = 9;
+        $samples[] = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
         $samplesParams = implode("##", $samples);
     }
 
     if (isset($aRow['noOfSampleReceivedAtLab']) && $aRow['noOfSampleReceivedAtLab'] > 0) {
         $register = $params;
-        $register[] = 6;
+        $register[] = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
         $registerParams = implode("##", $register);
     }
 
     if (isset($aRow['samplesWithResults']) && $aRow['samplesWithResults'] > 0) {
         $tested = $params;
-        $tested[] = 7;
+        $tested[] = SAMPLE_STATUS_ACCEPTED;
         $testedParams = implode("##", $tested);
     }
 
     if (isset($aRow['rejected']) && $aRow['rejected'] > 0) {
         $rejected = $params;
-        $rejected[] = 4;
+        $rejected[] = SAMPLE_STATUS_REJECTED;
         $rejectedParams = implode("##", $rejected);
     }
 

@@ -35,8 +35,8 @@ $general = ContainerRegistry::get(CommonService::class);
 $tableName = "form_hepatitis";
 $primaryKey = "hepatitis_id";
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
-* you want to insert a non-database field (for example a counter or static image)
-*/
+ * you want to insert a non-database field (for example a counter or static image)
+ */
 $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'vl.hcv_vl_result', 'vl.hbv_vl_result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.hcv_vl_result', 'vl.hbv_vl_result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
 $sampleCode = 'sample_code';
@@ -56,8 +56,8 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 $sIndexColumn = $primaryKey;
 $sTable = $tableName;
 /*
-* Paging
-*/
+ * Paging
+ */
 $sLimit = "";
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
      $sOffset = $_POST['iDisplayStart'];
@@ -65,8 +65,8 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 }
 
 /*
-* Ordering
-*/
+ * Ordering
+ */
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -81,11 +81,11 @@ if (isset($_POST['iSortCol_0'])) {
 }
 
 /*
-* Filtering
-* NOTE this does not match the built-in DataTables filtering which does it
-* word by word on any field. It's possible to do here, but concerned about efficiency
-* on very large tables, and MySQL's regex functionality is very limited
-*/
+ * Filtering
+ * NOTE this does not match the built-in DataTables filtering which does it
+ * word by word on any field. It's possible to do here, but concerned about efficiency
+ * on very large tables, and MySQL's regex functionality is very limited
+ */
 
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
@@ -119,9 +119,9 @@ for ($i = 0; $i < count($aColumns); $i++) {
 }
 
 /*
-          * SQL queries
-          * Get data to display
-          */
+ * SQL queries
+ * Get data to display
+ */
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                vl.*,
                b.batch_code,
@@ -213,11 +213,11 @@ if (isset($_POST['district']) && trim($_POST['district']) != '') {
      $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
 }
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-     $sWhere[] =  ' vl.facility_id = "' . $_POST['facilityName'] . '"';
+     $sWhere[] = ' vl.facility_id = "' . $_POST['facilityName'] . '"';
 }
 
 if (isset($_POST['testingLab']) && trim($_POST['testingLab']) != '') {
-     $sWhere[] =  ' vl.lab_id = "' . $_POST['testingLab'] . '"';
+     $sWhere[] = ' vl.lab_id = "' . $_POST['testingLab'] . '"';
 }
 
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
@@ -245,12 +245,12 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      if (trim($sPrintDate) == trim($eTestDate)) {
           $sWhere[] = ' DATE(vl.result_printed_datetime) like "' . $sPrintDate . '"';
      } else {
-          $sWhere[] =  ' DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
+          $sWhere[] = ' DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
      }
 }
 if (isset($_POST['hcvVLoad']) && trim($_POST['hcvVLoad']) != '') {
 
-     $sWhere[] =  ' vl.hcv_vl_result = "' . $_POST['hcvVLoad'] . '"';
+     $sWhere[] = ' vl.hcv_vl_result = "' . $_POST['hcvVLoad'] . '"';
 }
 if (isset($_POST['hbvVLoad']) && trim($_POST['hbvVLoad']) != '') {
 
@@ -258,10 +258,10 @@ if (isset($_POST['hbvVLoad']) && trim($_POST['hbvVLoad']) != '') {
 }
 
 if (isset($_POST['status']) && trim($_POST['status']) != '') {
-     $sWhere[] =  ' vl.result_status =' . $_POST['status'];
+     $sWhere[] = ' vl.result_status =' . $_POST['status'];
 }
 if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
-     $sWhere[] =  ' vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
+     $sWhere[] = ' vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
 }
 if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
      $sWhere[] = ' vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
@@ -272,7 +272,7 @@ if (isset($_POST['patientId']) && trim($_POST['patientId']) != '') {
 if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
      $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
 }
-$sWhere[] = ' vl.result_status!=9 ';
+$sWhere[] = ' vl.result_status != ' . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
 
 
 if (!empty($_SESSION['facilityMap'])) {

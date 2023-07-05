@@ -21,8 +21,8 @@ $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
-* you want to insert a non-database field (for example a counter or static image)
-*/
+ * you want to insert a non-database field (for example a counter or static image)
+ */
 $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result');
 $orderColumns = array('vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result');
 
@@ -31,8 +31,8 @@ $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 /*
-* Paging
-*/
+ * Paging
+ */
 $sLimit = "";
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
      $sOffset = $_POST['iDisplayStart'];
@@ -40,8 +40,8 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 }
 
 /*
-* Ordering
-*/
+ * Ordering
+ */
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -56,11 +56,11 @@ if (isset($_POST['iSortCol_0'])) {
 }
 
 /*
-* Filtering
-* NOTE this does not match the built-in DataTables filtering which does it
-* word by word on any field. It's possible to do here, but concerned about efficiency
-* on very large tables, and MySQL's regex functionality is very limited
-*/
+ * Filtering
+ * NOTE this does not match the built-in DataTables filtering which does it
+ * word by word on any field. It's possible to do here, but concerned about efficiency
+ * on very large tables, and MySQL's regex functionality is very limited
+ */
 
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
@@ -98,9 +98,9 @@ for ($i = 0; $i < count($aColumns); $i++) {
 }
 
 /*
-          * SQL queries
-          * Get data to display
-          */
+ * SQL queries
+ * Get data to display
+ */
 $sQuery = "SELECT * FROM form_vl as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type LEFT JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 $start_date = '';
 $end_date = '';
@@ -115,7 +115,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 }
 
 if (!empty($sWhere)) {
-     $sWhere = ' where ' . $sWhere;
+     $sWhere = ' WHERE ' . $sWhere;
      //$sQuery = $sQuery.' '.$sWhere;
      if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
           $sWhere = $sWhere . ' AND b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
@@ -136,7 +136,7 @@ if (!empty($sWhere)) {
 } else {
      if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
           $setWhr = 'where';
-          $sWhere = ' where ' . $sWhere;
+          $sWhere = ' WHERE ' . $sWhere;
           $sWhere = $sWhere . ' b.batch_code = "' . $_POST['batchCode'] . '"';
      }
      if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
@@ -145,13 +145,13 @@ if (!empty($sWhere)) {
                     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
                          $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
                     } else {
-                         $sWhere = ' where ' . $sWhere;
+                         $sWhere = ' WHERE ' . $sWhere;
                          $sWhere = $sWhere . ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
                     }
                }
           } else {
                $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
+               $sWhere = ' WHERE ' . $sWhere;
                $sWhere = $sWhere . ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
           }
      }
@@ -160,7 +160,7 @@ if (!empty($sWhere)) {
                $sWhere = $sWhere . ' AND s.sample_id = "' . $_POST['sampleType'] . '"';
           } else {
                $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
+               $sWhere = ' WHERE ' . $sWhere;
                $sWhere = $sWhere . ' s.sample_id = "' . $_POST['sampleType'] . '"';
           }
      }
@@ -168,7 +168,7 @@ if (!empty($sWhere)) {
           if (isset($setWhr)) {
                $sWhere = $sWhere . ' AND f.facility_id = "' . $_POST['facilityName'] . '"';
           } else {
-               $sWhere = ' where ' . $sWhere;
+               $sWhere = ' WHERE ' . $sWhere;
                $sWhere = $sWhere . ' f.facility_id = "' . $_POST['facilityName'] . '"';
           }
      }
@@ -197,14 +197,14 @@ $aResultFilterTotal = $db->rawQuery("SELECT vl.vl_sample_id,vl.facility_id,vl.pa
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */
-$aResultTotal =  $db->rawQuery("select COUNT(vl_sample_id) as total FROM form_vl where result_status = '" . $_POST['status'] . "' AND vlsm_country_id = '" . $configResult[0]['value'] . "'");
+$aResultTotal = $db->rawQuery("select COUNT(vl_sample_id) as total FROM form_vl where result_status = '" . $_POST['status'] . "' AND vlsm_country_id = '" . $configResult[0]['value'] . "'");
 // $aResultTotal = $countResult->fetch_row();
 //print_r($aResultTotal);
 $iTotal = $aResultTotal[0]['total'];
 
 /*
-          * Output
-          */
+ * Output
+ */
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
      "iTotalRecords" => $iTotal,

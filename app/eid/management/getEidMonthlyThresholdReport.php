@@ -28,8 +28,8 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
-* you want to insert a non-database field (for example a counter or static image)
-*/
+ * you want to insert a non-database field (for example a counter or static image)
+ */
 
 $aColumns = array('vl.sample_tested_datetime', 'f.facility_name');
 $orderColumns = array('vl.sample_tested_datetime', 'f.facility_name');
@@ -39,8 +39,8 @@ $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 /*
-* Paging
-*/
+ * Paging
+ */
 $sLimit = "";
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
      $sOffset = $_POST['iDisplayStart'];
@@ -48,8 +48,8 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 }
 
 /*
-* Ordering
-*/
+ * Ordering
+ */
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -64,11 +64,11 @@ if (isset($_POST['iSortCol_0'])) {
 }
 
 /*
-* Filtering
-* NOTE this does not match the built-in DataTables filtering which does it
-* word by word on any field. It's possible to do here, but concerned about efficiency
-* on very large tables, and MySQL's regex functionality is very limited
-*/
+ * Filtering
+ * NOTE this does not match the built-in DataTables filtering which does it
+ * word by word on any field. It's possible to do here, but concerned about efficiency
+ * on very large tables, and MySQL's regex functionality is very limited
+ */
 
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
@@ -102,9 +102,9 @@ for ($i = 0; $i < count($aColumns); $i++) {
 }
 
 /*
-* SQL queries
-* Get data to display
-*/
+ * SQL queries
+ * Get data to display
+ */
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS
           DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as monthrange,
@@ -147,7 +147,7 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
 
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      if (trim($sTestDate) == trim($eTestDate)) {
-          $sWhere[] =  ' DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
+          $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
      }
@@ -168,7 +168,7 @@ if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
      $sWhere[] = ' vl.lab_id IN ' . $out;
 }
 if (isset($_POST['district']) && trim($_POST['district']) != '') {
-     $sWhere[] =  " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+     $sWhere[] = " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
 }
 if (isset($_POST['state']) && trim($_POST['state']) != '') {
      $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
@@ -178,12 +178,12 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
 }
 
-$sWhere[] =  ' vl.result!="" AND vl.result_status!=9';
+$sWhere[] = ' vl.result!="" AND vl.result_status != ' . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
 
 $sWhere[] = "  tl.test_type = 'eid'";
 
 if (!empty($sWhere)) {
-     $sWhere = ' where ' . implode(' AND ', $sWhere);
+     $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
 }
 
 
@@ -201,15 +201,15 @@ $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 
 /* Total data set length */
-$aResultTotal =  $db->rawQuery($sQuery);
+$aResultTotal = $db->rawQuery($sQuery);
 //$iTotal = count($aResultTotal);
 
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 /*
-* Output
-*/
+ * Output
+ */
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
      "aaData" => array()

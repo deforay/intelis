@@ -62,7 +62,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
         if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
 
             $lab['result_approved_by'] = $usersService->addUserIfNotExists($resultRow['approved_by_name']);
-            $lab['result_approved_datetime'] =  DateUtility::getCurrentDateTime();
+            $lab['result_approved_datetime'] = DateUtility::getCurrentDateTime();
             // we dont need this now
             //unset($resultRow['approved_by_name']);
         }
@@ -74,7 +74,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
         //unset($lab['last_modified_by']);
         //unset($lab['request_created_datetime']);
 
-        if ($lab['result_status'] != 7 && $lab['result_status'] != 4) {
+        if ($lab['result_status'] != SAMPLE_STATUS_ACCEPTED && $lab['result_status'] != SAMPLE_STATUS_REJECTED) {
             unset($lab['result']);
             unset($lab['is_sample_rejected']);
             unset($lab['reason_for_sample_rejection']);

@@ -122,7 +122,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td>
                                             <label for="fCode"><?= _('Clinic/Health Center Code'); ?> </label><br>
                                            <input type="text" class="form-control" style="width:100%;" name="fCode" id="fCode" placeholder="<?= _('Clinic/Health Center Code'); ?>" title="<?= _('Please enter clinic/health center code'); ?>">
-                                        </tb>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <!-- <td><label for="supportPartner">Implementing Partner </label></td>
@@ -279,7 +279,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value="Nothing"> <?= _('Nothing'); ?> </option>
                                                 <option value="TELE (TDF+TC+EFV)"><?= _('TELE (TDF+TC+EFV)'); ?> </option>
                                                 <option value="other"><?= _('Other'); ?></option>
-                                            </select> 
+                                            </select>
                                             <input type="text" class="form-control" name="motherArvProtocolOther" id="motherArvProtocolOther" style="display:none;"/>
 
                                       </td>
@@ -302,7 +302,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <select class="form-control isRequired" name="isChildSymptomatic" id="isChildSymptomatic">
                                             <option value=''> <?= _('-- Select --'); ?> </option>
                                                 <option value="yes"> <?= _('Yes'); ?> </option>
-                                                <option value="no"> <?= _('No'); ?> </option> 
+                                                <option value="no"> <?= _('No'); ?> </option>
                                             </select>
                                         </td>
                                         <th scope="row" style="width:16% !important"><?= _('Date of Weaning?'); ?> </th>
@@ -316,8 +316,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <select class="form-control" name="wasChildBreastfed" id="wasChildBreastfed">
                                                 <option value=''> <?= _('-- Select --'); ?> </option>
                                                 <option value="yes"> <?= _('Yes'); ?> </option>
-                                                <option value="no"> <?= _('No'); ?> </option> 
-                                                <option value="unknown"> <?= _('Unknown'); ?> </option> 
+                                                <option value="no"> <?= _('No'); ?> </option>
+                                                <option value="unknown"> <?= _('Unknown'); ?> </option>
                                             </select>
                                         </td>
                                 <th scope="row" style="width:16% !important"><?= _('If Yes,'); ?> </th>
@@ -325,8 +325,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <select class="form-control" name="choiceOfFeeding" id="choiceOfFeeding">
                                                 <option value=''> <?= _('-- Select --'); ?> </option>
                                                 <option value="Exclusive"><?= _('Exclusive'); ?></option>
-                                                <option value="Mixed"><?= _('Mixed'); ?></option> 
-                                                <option value="Exclusive formula feeding"><?= _('Exclusive formula feeding'); ?></option> 
+                                                <option value="Mixed"><?= _('Mixed'); ?></option>
+                                                <option value="Exclusive formula feeding"><?= _('Exclusive formula feeding'); ?></option>
                                             </select>
                                         </td>
                                 </tr>
@@ -336,7 +336,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <select class="form-control" name="isChildOnCotrim" id="isChildOnCotrim">
                                             <option value=''> <?= _('-- Select --'); ?> </option>
                                                 <option value="yes"> <?= _('Yes'); ?> </option>
-                                                <option value="no"> <?= _('No'); ?> </option> 
+                                                <option value="no"> <?= _('No'); ?> </option>
                                             </select>
                                         </td>
                                 <th scope="row" style="width:16% !important"><?= _('If Yes, Date of Initiation'); ?> </th>
@@ -351,7 +351,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <select class="form-control" name="infantArtStatus" id="infantArtStatus">
                                             <option value=''> <?= _('-- Select --'); ?> </option>
                                                 <option value="yes"> <?= _('Yes'); ?> </option>
-                                                <option value="no"> <?= _('No'); ?> </option> 
+                                                <option value="no"> <?= _('No'); ?> </option>
                                             </select>
                                         </td>
                                 <th scope="row" style="width:16% !important"><?= _('If Yes, Date of Initiation'); ?> </th>
@@ -366,8 +366,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <select class="form-control" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
                                             <option value=''> <?= _('-- Select --'); ?> </option>
                                                 <option value="yes"> <?= _('Yes'); ?> </option>
-                                                <option value="no"> <?= _('No'); ?> </option> 
-                                                <option value="unknown"> <?= _('Unknown'); ?> </option> 
+                                                <option value="no"> <?= _('No'); ?> </option>
+                                                <option value="unknown"> <?= _('Unknown'); ?> </option>
                                             </select>
                                         </td>
                                         <th scope="row"><?= _('Age (months) breastfeeding stopped'); ?> </th>
@@ -377,13 +377,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </tr>
 
                                     <tr>
-                                       
+
                                         <th scope="row"><?= _('Previous PCR test'); ?> </th>
                                         <td>
                                             <select class="form-control" title="Please select if Previous PCR Test was done" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore" onchange="setRelatedField(this.value);">
                                                 <option value=''> <?= _('-- Select --'); ?> </option>
                                                 <option value="yes"> <?= _('Yes'); ?> </option>
-                                                <option value="no"> <?= _('No'); ?> </option> 
+                                                <option value="no"> <?= _('No'); ?> </option>
                                             </select>
                                         </td>
                                         <th scope="row"><?= _('Previous PCR test date'); ?></th>
@@ -393,7 +393,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </tr>
 
                                     <tr>
-                                       
+
                                     <th scope="row"><?= _('Previous PCR test Result'); ?></th>
                                         <td>
                                             <select class="form-control" name="prePcrTestResult" id="prePcrTestResult">
@@ -436,7 +436,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value="EPI(PE)"> <?= _('EPI(PE)'); ?> </option>
                                                 <option value="other"><?= _('Other'); ?></option>
                                             </select>
-                                            <input type="text" name="labTestingPointOther" id="labTestingPointOther" class="form-control" title="<?= _('Please specify other point of entry') ?>" placeholder="<?= _('Please specify other point of entry') ?>" style="display:none;"/> 
+                                            <input type="text" name="labTestingPointOther" id="labTestingPointOther" class="form-control" title="<?= _('Please specify other point of entry') ?>" placeholder="<?= _('Please specify other point of entry') ?>" style="display:none;"/>
                                         </td>
                                     </tr>
                                 </table>
@@ -494,7 +494,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">
                                                 <option value=''> <?= _('-- Select --'); ?> </option>
                                                 <option value="yes"> <?= _('Yes'); ?> </option>
-                                                <option value="no"> <?= _('No'); ?> </option> 
+                                                <option value="no"> <?= _('No'); ?> </option>
                                                 </select>
                                             </td>
 
@@ -741,10 +741,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     function fillFacilityDetails() {
           $.blockUI();
           //check facility name
-         
+
           $.unblockUI();
           $("#fCode").val($('#facilityId').find(':selected').data('code'));
-         
+
      }
 function showOtherARV()
 {
@@ -838,6 +838,6 @@ function showTestingPointOther()
             }
         });
 
-   
+
     });
 </script>

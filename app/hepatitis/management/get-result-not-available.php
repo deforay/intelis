@@ -34,8 +34,8 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
-         * you want to insert a non-database field (for example a counter or static image)
-        */
+ * you want to insert a non-database field (for example a counter or static image)
+ */
 $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'fd.facility_name');
 if ($sarr['sc_user_type'] == 'standalone') {
@@ -48,8 +48,8 @@ $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 /*
-         * Paging
-         */
+ * Paging
+ */
 $sLimit = "";
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
@@ -57,8 +57,8 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 }
 
 /*
-         * Ordering
-        */
+ * Ordering
+ */
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -72,11 +72,11 @@ if (isset($_POST['iSortCol_0'])) {
 }
 
 /*
-         * Filtering
-         * NOTE this does not match the built-in DataTables filtering which does it
-         * word by word on any field. It's possible to do here, but concerned about efficiency
-         * on very large tables, and MySQL's regex functionality is very limited
-        */
+ * Filtering
+ * NOTE this does not match the built-in DataTables filtering which does it
+ * word by word on any field. It's possible to do here, but concerned about efficiency
+ * on very large tables, and MySQL's regex functionality is very limited
+ */
 
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
@@ -110,11 +110,21 @@ for ($i = 0; $i < count($aColumns); $i++) {
 }
 
 /*
-         * SQL queries
-         * Get data to display
-        */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,fd.facility_name as labName,ts.status_name FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
-             INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status where vl.result_status!=4 AND vl.sample_code is NOT NULL AND (vl.hcv_vl_result IS NULL OR vl.hcv_vl_result='') AND (vl.hbv_vl_result IS NULL OR vl.hbv_vl_result='')";
+ * SQL queries
+ * Get data to display
+ */
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*
+                    f.*,s.*,fd.facility_name as labName,
+                    ts.status_name
+                    FROM form_hepatitis as vl
+                    LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+                    LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id
+                    LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
+                    LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+                    INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+                    WHERE vl.result_status != " . SAMPLE_STATUS_REJECTED . "
+                    AND vl.sample_code is NOT NULL
+                    AND (vl.hcv_vl_result IS NULL OR vl.hcv_vl_result='') AND (vl.hbv_vl_result IS NULL OR vl.hbv_vl_result='')";
 $start_date = '';
 $end_date = '';
 if (isset($_POST['noResultBatchCode']) && trim($_POST['noResultBatchCode']) != '') {
@@ -159,13 +169,10 @@ if (isset($_POST['noResultPatientBreastfeeding']) && $_POST['noResultPatientBrea
 }
 // $dWhere = '';
 if ($sarr['sc_user_type'] == 'remoteuser') {
-    //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";
-    //$dWhere = $dWhere." AND request_created_by='".$_SESSION['userId']."'";
     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
         $sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")   ";
-        //  $dWhere = $dWhere." AND vl.facility_id IN (".$userfacilityMapresult[0]['facility_id'].") ";
     }
 }
 
@@ -188,23 +195,13 @@ if (isset($sLimit) && isset($sOffset)) {
 
 // echo $sQuery;die;
 $rResult = $db->rawQuery($sQuery);
-// print_r($rResult);
-/* Data set length after filtering
-
-        $aResultFilterTotal =$db->rawQuery("SELECT vl.*,f.*,s.*,fd.facility_name as labName FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status!=4 AND vl.sample_code is NOT NULL AND  (vl.hcv_vl_result IS NULL OR vl.hcv_vl_result='') AND (vl.hbv_vl_result IS NULL OR vl.hbv_vl_result='') $sWhere group by vl.hepatitis_id order by $sOrder");
-        $iFilteredTotal = count($aResultFilterTotal);
-
-        /* Total data set length
-        $aResultTotal =  $db->rawQuery("select COUNT(hepatitis_id) as total FROM form_hepatitis as vl where result_status!=4 AND  vl.sample_code is NOT NULL AND (vl.hcv_vl_result IS NULL OR vl.hcv_vl_result='') AND (vl.hbv_vl_result IS NULL OR vl.hbv_vl_result='') AND vlsm_country_id='".$arr['vl_form']."' $dWhere");
-        $iTotal = $aResultTotal[0]['total'];*/
-
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 $_SESSION['resultNotAvailableCount'] = $iTotal;
 
 /*
-         * Output
-        */
+ * Output
+ */
 $output = array(
     "sEcho" => intval($_POST['sEcho']),
     "iTotalRecords" => $iTotal,

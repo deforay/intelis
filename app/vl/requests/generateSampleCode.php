@@ -32,4 +32,4 @@ $sampleCodeParams['sampleCollectionDate'] = $params['sampleCollectionDate'] ?? n
 $sampleCodeParams['provinceCode'] = $province ?? null;
 $sampleCodeParams['provinceId'] = null;
 
-echo $vlService->generateSampleCode($sampleCodeParams);
+echo $vlService->getSampleCode($sampleCodeParams);

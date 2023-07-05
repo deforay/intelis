@@ -61,13 +61,13 @@ foreach ($sampleResult as $sampleRow) {
         $sampleCodeParams['provinceCode'] = $provinceCode;
         $sampleCodeParams['testType'] = $testTypeShortCode;
 
-        $sampleJson = $genericTestsService->generateSampleCode($sampleCodeParams);
+        $sampleJson = $genericTestsService->getSampleCode($sampleCodeParams);
         $sampleData = json_decode($sampleJson, true);
         //$vldata['sample_code'] = $sampleData['sampleCode'];
         $vldata['sample_code'] = $sampleData['sampleCode'];
         $vldata['sample_code_format'] = $sampleData['sampleCodeFormat'];
         $vldata['sample_code_key'] = $sampleData['sampleCodeKey'];
-        $vldata['result_status'] = 6;
+        $vldata['result_status'] = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
         $vldata['data_sync'] = 0;
 
         $vldata['last_modified_by'] = $_SESSION['userId'];

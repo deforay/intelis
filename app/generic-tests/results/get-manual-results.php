@@ -26,8 +26,8 @@ $tableName = "form_generic";
 $primaryKey = "sample_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
-* you want to insert a non-database field (for example a counter or static image)
-*/
+ * you want to insert a non-database field (for example a counter or static image)
+ */
 $sampleCode = 'sample_code';
 $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_type_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_type_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name');
@@ -47,8 +47,8 @@ $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 /*
-* Paging
-*/
+ * Paging
+ */
 $sLimit = "";
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
      $sOffset = $_POST['iDisplayStart'];
@@ -56,8 +56,8 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 }
 
 /*
-* Ordering
-*/
+ * Ordering
+ */
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
      $sOrder = "";
@@ -110,9 +110,9 @@ for ($i = 0; $i < count($aColumns); $i++) {
 }
 
 /*
-* SQL queries
-* Get data to display
-*/
+ * SQL queries
+ * Get data to display
+ */
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.sample_id,
 vl.sample_code,
 vl.remote_sample,
@@ -229,9 +229,9 @@ if (isset($_POST['patientId']) && trim($_POST['patientId']) != '') {
 }
 if (isset($_POST['status']) && trim($_POST['status']) != '') {
      if ($_POST['status'] == 'no_result') {
-          $statusCondition = '  (vl.result is NULL OR vl.result ="")  AND vl.result_status !=4 ';
+          $statusCondition = '  (vl.result is NULL OR vl.result ="")  AND vl.result_status = ' . SAMPLE_STATUS_REJECTED;
      } else if ($_POST['status'] == 'result') {
-          $statusCondition = ' (vl.result is NOT NULL AND vl.result !=""  AND vl.result_status !=4) ';
+          $statusCondition = ' (vl.result is NOT NULL AND vl.result !=""  AND vl.result_status = ' . SAMPLE_STATUS_REJECTED;
      } else {
           $statusCondition = ' vl.result_status=4 ';
      }
@@ -255,7 +255,7 @@ if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) 
 if (!isset($_POST['status']) || trim($_POST['status']) == '') {
      $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
 } else {
-     $sWhere[] = " vl.result_status!=9 ";
+     $sWhere[] = " vl.result_status != " . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
 }
 if (!empty($_SESSION['facilityMap'])) {
      $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
@@ -283,8 +283,8 @@ $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $aResultFilterTotal['totalCount'];
 
 /*
-* Output
-*/
+ * Output
+ */
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
      "iTotalRecords" => $iTotal,

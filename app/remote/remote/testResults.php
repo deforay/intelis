@@ -82,7 +82,7 @@ try {
             if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
 
                 $lab['result_approved_by'] = $usersService->addUserIfNotExists($resultRow['approved_by_name']);
-                $lab['result_approved_datetime'] =  DateUtility::getCurrentDateTime();
+                $lab['result_approved_datetime'] = DateUtility::getCurrentDateTime();
                 // we dont need this now
                 //unset($resultRow['approved_by_name']);
             }
@@ -93,7 +93,7 @@ try {
             $lab['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
 
-            if ($lab['result_status'] != 7 && $lab['result_status'] != 4) {
+            if ($lab['result_status'] != SAMPLE_STATUS_ACCEPTED && $lab['result_status'] != SAMPLE_STATUS_REJECTED) {
                 unset($lab['result']);
                 unset($lab['result_value_log']);
                 unset($lab['result_value_absolute']);

@@ -18,7 +18,7 @@ $resultFilename = '';
 
 if (!empty($requestResult)) {
     $_SESSION['rVal'] = $general->generateRandomString(6);
-    $pathFront = (TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal']);
+    $pathFront = (TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
     if (!file_exists($pathFront) && !is_dir($pathFront)) {
         mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'], 0777, true);
         $pathFront = realpath(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
@@ -151,7 +151,7 @@ if (!empty($requestResult)) {
         if (isset($result['approvedBy']) && trim($result['approvedBy']) != '') {
             $resultApprovedBy = ($result['approvedBy']);
         } else {
-            $resultApprovedBy  = '';
+            $resultApprovedBy = '';
         }
 
         $reviewedBy = '';
@@ -414,7 +414,7 @@ if (!empty($requestResult)) {
 
             $html .= '<tr>';
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
-            if (!empty($testUserSignaturePath) &&  $general->imageExists($testUserSignaturePath)) {
+            if (!empty($testUserSignaturePath) && MiscUtility::imageExists($testUserSignaturePath)) {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testUserSignaturePath . '" style="width:50px;" /></td>';
             } else {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -435,7 +435,7 @@ if (!empty($requestResult)) {
             $html .= '</tr>';
             $html .= '<tr>';
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
-            if (!empty($reviewedBySignaturePath) &&  $general->imageExists($reviewedBySignaturePath)) {
+            if (!empty($reviewedBySignaturePath) && MiscUtility::imageExists($reviewedBySignaturePath)) {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedBySignaturePath . '" style="width:50px;" /></td>';
             } else {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -457,7 +457,7 @@ if (!empty($requestResult)) {
             $html .= '</tr>';
             $html .= '<tr>';
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
-            if (!empty($approvedBySignaturePath) &&  $general->imageExists($approvedBySignaturePath)) {
+            if (!empty($approvedBySignaturePath) && MiscUtility::imageExists($approvedBySignaturePath)) {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $approvedBySignaturePath . '" style="width:50px;" /></td>';
             } else {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -486,7 +486,7 @@ if (!empty($requestResult)) {
 
             $html .= '<tr>';
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $revisedBy . '</td>';
-            if (!empty($revisedSignaturePath) && $general->imageExists($revisedSignaturePath)) {
+            if (!empty($revisedSignaturePath) && MiscUtility::imageExists($revisedSignaturePath)) {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedSignaturePath . '" style="width:70px;" /></td>';
             } else {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';

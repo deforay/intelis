@@ -2,11 +2,11 @@
 
 // File included in import-file-helper.php
 
-use App\Exceptions\SystemException;
-use App\Helpers\ResultsHelper;
-use App\Registries\ContainerRegistry;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Exceptions\SystemException;
+use App\Services\TestResultsService;
+use App\Registries\ContainerRegistry;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -16,6 +16,11 @@ try {
     /** @var Laminas\Diactoros\ServerRequest $request */
     $request = $GLOBALS['request'];
     $_POST = $request->getParsedBody();
+
+    /** @var TestResultsService $testResultsService */
+    $testResultsService = ContainerRegistry::get(TestResultsService::class);
+
+
     $dateFormat = (!empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'd/m/Y H:i';
     $db = $db->where('imported_by', $_SESSION['userId']);
     $db->delete('temp_sample_import');
@@ -94,7 +99,7 @@ try {
                     $row++;
                     if ($row < $skip) {
                         if ($row == 8) {
-                            $testingDateArray = ResultsHelper::abbottTestingDateFormatter($sheetData[1], $sheetData[2]);
+                            $testingDateArray = $testResultsService->abbottTestingDateFormatter($sheetData[1], $sheetData[2]);
                             $dateFormat = $testingDateArray['dateFormat'];
                             $testingDate = $testingDateArray['testingDate'];
                         }
@@ -279,7 +284,7 @@ try {
             } else {
                 $data['batch_code'] = $batchCode;
             }
-            //get user name
+            //get username
             if (!empty($d['reviewBy'])) {
 
                 /** @var UsersService $usersService */

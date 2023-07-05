@@ -221,9 +221,9 @@ try {
             }
         }
 
-        $status = 6;
+        $status = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
         if ($roleUser['access_type'] != 'testing-lab') {
-            $status = 9;
+            $status = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
         }
 
 
@@ -235,124 +235,124 @@ try {
         if (isset($data['tnd']) && $data['tnd'] == 'yes' && $data['isSampleRejected'] == 'no') {
             $data['vlResult'] = 'Target Not Detected';
         }
-        if (isset($data['bdl']) && $data['bdl'] == 'bdl'  && $data['isSampleRejected'] == 'no') {
+        if (isset($data['bdl']) && $data['bdl'] == 'bdl' && $data['isSampleRejected'] == 'no') {
             $data['vlResult'] = 'Below Detection Level';
         }
 
         if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
             $finalResult = null;
-            $status = 4;
+            $status = SAMPLE_STATUS_REJECTED;
         } elseif (isset($data['vlResult']) && trim($data['vlResult']) != '') {
             if (in_array(strtolower($data['vlResult']), ['fail', 'failed', 'failure', 'error', 'err'])) {
                 //Result is saved as entered
-                $finalResult  = $data['vlResult'];
+                $finalResult = $data['vlResult'];
                 $status = 5; // Invalid/Failed
             } else {
 
                 $interpretedResults = $vlService->interpretViralLoadResult($data['vlResult']);
 
                 //Result is saved as entered
-                $finalResult  = $data['vlResult'];
+                $finalResult = $data['vlResult'];
                 $logVal = $interpretedResults['logVal'];
                 $absDecimalVal = $interpretedResults['absDecimalVal'];
                 $absVal = $interpretedResults['absVal'];
                 $txtVal = $interpretedResults['txtVal'];
             }
-            $status = 8;
+            $status = SAMPLE_STATUS_PENDING_APPROVAL;
             if (
                 isset($globalConfig['vl_auto_approve_api_results']) &&
                 $globalConfig['vl_auto_approve_api_results'] == "yes"
             ) {
-                $status = 7;
+                $status = SAMPLE_STATUS_ACCEPTED;
             }
         }
 
         $formAttributes = [
-            'applicationVersion'    => $version,
-            'apiTransactionId'      => $transactionId,
-            'mobileAppVersion'      => $appVersion,
-            'deviceId'              => $deviceId
+            'applicationVersion' => $version,
+            'apiTransactionId' => $transactionId,
+            'mobileAppVersion' => $appVersion,
+            'deviceId' => $deviceId
         ];
         $formAttributes = json_encode($formAttributes);
 
 
         $vlFulldata = [
-            'vlsm_instance_id'                      => $instanceId,
-            'sample_collection_date'                => $sampleCollectionDate,
-            'app_sample_code'                       => $data['appSampleCode'] ?? null,
-            'sample_reordered'                      => $data['sampleReordered'] ?? 'no',
-            'facility_id'                           => $data['facilityId'] ?? null,
-            'patient_Gender'                        => $data['patientGender'] ?? null,
-            'patient_dob'                           => DateUtility::isoDateFormat($data['patientDob'] ?? ''),
-            'patient_age_in_years'                  => $data['ageInYears'] ?? null,
-            'patient_age_in_months'                 => $data['ageInMonths'] ?? null,
-            'is_patient_pregnant'                   => $data['patientPregnant'] ?? null,
-            'is_patient_breastfeeding'              => $data['breastfeeding'] ?? null,
-            'patient_art_no'                        => $data['patientArtNo'] ?? null,
-            'treatment_initiated_date'              => DateUtility::isoDateFormat($data['dateOfArtInitiation'] ?? ''),
-            'reason_for_regimen_change'             => $data['reasonForArvRegimenChange'] ?? null,
-            'regimen_change_date'                   => DateUtility::isoDateFormat($data['dateOfArvRegimenChange'] ?? ''),
-            'current_regimen'                       => $data['artRegimen'] ?? null,
+            'vlsm_instance_id' => $instanceId,
+            'sample_collection_date' => $sampleCollectionDate,
+            'app_sample_code' => $data['appSampleCode'] ?? null,
+            'sample_reordered' => $data['sampleReordered'] ?? 'no',
+            'facility_id' => $data['facilityId'] ?? null,
+            'patient_Gender' => $data['patientGender'] ?? null,
+            'patient_dob' => DateUtility::isoDateFormat($data['patientDob'] ?? ''),
+            'patient_age_in_years' => $data['ageInYears'] ?? null,
+            'patient_age_in_months' => $data['ageInMonths'] ?? null,
+            'is_patient_pregnant' => $data['patientPregnant'] ?? null,
+            'is_patient_breastfeeding' => $data['breastfeeding'] ?? null,
+            'patient_art_no' => $data['patientArtNo'] ?? null,
+            'treatment_initiated_date' => DateUtility::isoDateFormat($data['dateOfArtInitiation'] ?? ''),
+            'reason_for_regimen_change' => $data['reasonForArvRegimenChange'] ?? null,
+            'regimen_change_date' => DateUtility::isoDateFormat($data['dateOfArvRegimenChange'] ?? ''),
+            'current_regimen' => $data['artRegimen'] ?? null,
             'date_of_initiation_of_current_regimen' => DateUtility::isoDateFormat($data['regimenInitiatedOn'] ?? '', true),
-            'patient_mobile_number'                 => $data['patientPhoneNumber'] ?? null,
-            'consent_to_receive_sms'                => $data['receiveSms'] ?? 'no',
-            'sample_type'                           => $data['specimenType'] ?? null,
-            'arv_adherance_percentage'              => $data['arvAdherence'] ?? null,
-            'reason_for_vl_testing'                 => $data['reasonForVLTesting'] ?? $data['vlTestReason'] ?? null,
-            'community_sample'                      => $data['communitySample'] ?? null,
-            'last_vl_date_routine'                  => DateUtility::isoDateFormat($data['rmTestingLastVLDate'] ?? ''),
-            'last_vl_result_routine'                => $data['rmTestingVlValue'] ?? null,
-            'last_vl_date_failure_ac'               => DateUtility::isoDateFormat($data['repeatTestingLastVLDate'] ?? ''),
-            'last_vl_result_failure_ac'             => $data['repeatTestingVlValue'] ?? null,
-            'last_vl_date_failure'                  => DateUtility::isoDateFormat($data['suspendTreatmentLastVLDate'] ?? ''),
-            'last_vl_result_failure'                => $data['suspendTreatmentVlValue'] ?? null,
-            'request_clinician_name'                => $data['reqClinician'] ?? null,
-            'request_clinician_phone_number'        => $data['reqClinicianPhoneNumber'] ?? null,
-            'test_requested_on'                     => DateUtility::isoDateFormat($data['requestDate'] ?? ''),
-            'vl_focal_person'                       => $data['vlFocalPerson'] ?? null,
-            'vl_focal_person_phone_number'          => $data['vlFocalPersonPhoneNumber'] ?? null,
-            'lab_id'                                => $data['labId'] ?? null,
-            'vl_test_platform'                      => $data['testingPlatform'] ?? null,
-            'sample_received_at_hub_datetime'       => DateUtility::isoDateFormat($data['sampleReceivedAtHubOn'] ?? '', true),
-            'sample_received_at_vl_lab_datetime'    => DateUtility::isoDateFormat($data['sampleReceivedDate'] ?? '', true),
-            'sample_tested_datetime'                => DateUtility::isoDateFormat($data['sampleTestedDateTime'] ?? '', true),
-            'sample_dispatched_datetime'            => DateUtility::isoDateFormat($data['sampleDispatchedOn'] ?? '', true),
-            'result_dispatched_datetime'            => DateUtility::isoDateFormat($data['resultDispatchedOn'] ?? '', true),
-            'result_value_hiv_detection'            => $data['hivDetection'] ?? null,
-            'reason_for_failure'                    => $data['reasonForFailure'] ?? null,
-            'is_sample_rejected'                    => $data['isSampleRejected'] ?? null,
-            'reason_for_sample_rejection'           => $data['rejectionReason'] ?? null,
-            'rejection_on'                          => DateUtility::isoDateFormat($data['rejectionDate'] ?? ''),
-            'result_value_absolute'                 => $absVal  ?? null,
-            'result_value_absolute_decimal'         => $absDecimalVal ?? null,
-            'result_value_text'                     => $txtVal ?? null,
-            'result'                                => $finalResult ?? null,
-            'result_value_log'                      => $logVal ?? null,
-            'tested_by'                             => $data['testedBy'] ?? null,
-            'result_approved_by'                    => $data['approvedBy'] ?? null,
-            'result_approved_datetime'              => DateUtility::isoDateFormat($data['approvedOnDateTime'] ?? '', true),
-            'revised_by'                            => $data['revisedBy'] ?? null,
-            'revised_on'                            => DateUtility::isoDateFormat($data['revisedOn'] ?? '', true),
-            'reason_for_vl_result_changes'          => $data['reasonForVlResultChanges'] ?? null,
-            'lab_tech_comments'                     => $data['labComments'] ?? null,
-            'result_status'                         => $status,
-            'funding_source'                        => $data['fundingSource'] ?? null,
-            'implementing_partner'                  => $data['implementingPartner'] ?? null,
-            'request_created_datetime'              => DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true),
-            'last_modified_datetime'                => DateUtility::getCurrentDateTime(),
-            'manual_result_entry'                   => 'yes',
-            'external_sample_code'                  => $data['serialNo'] ?? null,
-            'is_patient_new'                        => $data['isPatientNew'] ?? null,
-            'has_patient_changed_regimen'           => $data['hasChangedRegimen'] ?? null,
-            'vl_test_number'                        => $data['viralLoadNo'] ?? null,
-            'last_viral_load_result'                => $data['lastViralLoadResult'] ?? null,
-            'last_viral_load_date'                  => DateUtility::isoDateFormat($data['lastViralLoadTestDate'] ?? ''),
-            'facility_support_partner'              => $data['implementingPartner'] ?? null,
-            'date_test_ordered_by_physician'        => DateUtility::isoDateFormat($data['dateOfDemand'] ?? ''),
-            'result_reviewed_by'                    => $data['reviewedBy'] ?? null,
-            'result_reviewed_datetime'              => DateUtility::isoDateFormat($data['reviewedOn'] ?? '', true),
-            'source_of_request'                     => $data['sourceOfRequest'] ?? "API",
-            'form_attributes'                       => $db->func($general->jsonToSetString($formAttributes, 'form_attributes'))
+            'patient_mobile_number' => $data['patientPhoneNumber'] ?? null,
+            'consent_to_receive_sms' => $data['receiveSms'] ?? 'no',
+            'sample_type' => $data['specimenType'] ?? null,
+            'arv_adherance_percentage' => $data['arvAdherence'] ?? null,
+            'reason_for_vl_testing' => $data['reasonForVLTesting'] ?? $data['vlTestReason'] ?? null,
+            'community_sample' => $data['communitySample'] ?? null,
+            'last_vl_date_routine' => DateUtility::isoDateFormat($data['rmTestingLastVLDate'] ?? ''),
+            'last_vl_result_routine' => $data['rmTestingVlValue'] ?? null,
+            'last_vl_date_failure_ac' => DateUtility::isoDateFormat($data['repeatTestingLastVLDate'] ?? ''),
+            'last_vl_result_failure_ac' => $data['repeatTestingVlValue'] ?? null,
+            'last_vl_date_failure' => DateUtility::isoDateFormat($data['suspendTreatmentLastVLDate'] ?? ''),
+            'last_vl_result_failure' => $data['suspendTreatmentVlValue'] ?? null,
+            'request_clinician_name' => $data['reqClinician'] ?? null,
+            'request_clinician_phone_number' => $data['reqClinicianPhoneNumber'] ?? null,
+            'test_requested_on' => DateUtility::isoDateFormat($data['requestDate'] ?? ''),
+            'vl_focal_person' => $data['vlFocalPerson'] ?? null,
+            'vl_focal_person_phone_number' => $data['vlFocalPersonPhoneNumber'] ?? null,
+            'lab_id' => $data['labId'] ?? null,
+            'vl_test_platform' => $data['testingPlatform'] ?? null,
+            'sample_received_at_hub_datetime' => DateUtility::isoDateFormat($data['sampleReceivedAtHubOn'] ?? '', true),
+            'sample_received_at_vl_lab_datetime' => DateUtility::isoDateFormat($data['sampleReceivedDate'] ?? '', true),
+            'sample_tested_datetime' => DateUtility::isoDateFormat($data['sampleTestedDateTime'] ?? '', true),
+            'sample_dispatched_datetime' => DateUtility::isoDateFormat($data['sampleDispatchedOn'] ?? '', true),
+            'result_dispatched_datetime' => DateUtility::isoDateFormat($data['resultDispatchedOn'] ?? '', true),
+            'result_value_hiv_detection' => $data['hivDetection'] ?? null,
+            'reason_for_failure' => $data['reasonForFailure'] ?? null,
+            'is_sample_rejected' => $data['isSampleRejected'] ?? null,
+            'reason_for_sample_rejection' => $data['rejectionReason'] ?? null,
+            'rejection_on' => DateUtility::isoDateFormat($data['rejectionDate'] ?? ''),
+            'result_value_absolute' => $absVal ?? null,
+            'result_value_absolute_decimal' => $absDecimalVal ?? null,
+            'result_value_text' => $txtVal ?? null,
+            'result' => $finalResult ?? null,
+            'result_value_log' => $logVal ?? null,
+            'tested_by' => $data['testedBy'] ?? null,
+            'result_approved_by' => $data['approvedBy'] ?? null,
+            'result_approved_datetime' => DateUtility::isoDateFormat($data['approvedOnDateTime'] ?? '', true),
+            'revised_by' => $data['revisedBy'] ?? null,
+            'revised_on' => DateUtility::isoDateFormat($data['revisedOn'] ?? '', true),
+            'reason_for_vl_result_changes' => $data['reasonForVlResultChanges'] ?? null,
+            'lab_tech_comments' => $data['labComments'] ?? null,
+            'result_status' => $status,
+            'funding_source' => $data['fundingSource'] ?? null,
+            'implementing_partner' => $data['implementingPartner'] ?? null,
+            'request_created_datetime' => DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true),
+            'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+            'manual_result_entry' => 'yes',
+            'external_sample_code' => $data['serialNo'] ?? null,
+            'is_patient_new' => $data['isPatientNew'] ?? null,
+            'has_patient_changed_regimen' => $data['hasChangedRegimen'] ?? null,
+            'vl_test_number' => $data['viralLoadNo'] ?? null,
+            'last_viral_load_result' => $data['lastViralLoadResult'] ?? null,
+            'last_viral_load_date' => DateUtility::isoDateFormat($data['lastViralLoadTestDate'] ?? ''),
+            'facility_support_partner' => $data['implementingPartner'] ?? null,
+            'date_test_ordered_by_physician' => DateUtility::isoDateFormat($data['dateOfDemand'] ?? ''),
+            'result_reviewed_by' => $data['reviewedBy'] ?? null,
+            'result_reviewed_datetime' => DateUtility::isoDateFormat($data['reviewedOn'] ?? '', true),
+            'source_of_request' => $data['sourceOfRequest'] ?? "API",
+            'form_attributes' => $db->func($general->jsonToSetString($formAttributes, 'form_attributes'))
         ];
 
 
@@ -389,21 +389,21 @@ try {
         $vlFulldata['patient_last_name'] = null;
 
         if (!empty($rowData)) {
-            $vlFulldata['last_modified_datetime']  = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
-            $vlFulldata['last_modified_by']  = $user['user_id'];
+            $vlFulldata['last_modified_datetime'] = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
+            $vlFulldata['last_modified_by'] = $user['user_id'];
         } else {
-            $vlFulldata['sample_registered_at_lab']  = DateUtility::getCurrentDateTime();
-            $vlFulldata['request_created_by']  = $user['user_id'];
+            $vlFulldata['sample_registered_at_lab'] = DateUtility::getCurrentDateTime();
+            $vlFulldata['request_created_by'] = $user['user_id'];
         }
 
-        $vlFulldata['request_created_by'] =  $user['user_id'];
-        $vlFulldata['last_modified_by'] =  $user['user_id'];
+        $vlFulldata['request_created_by'] = $user['user_id'];
+        $vlFulldata['last_modified_by'] = $user['user_id'];
 
         $vlFulldata['vl_result_category'] = $vlService->getVLResultCategory($vlFulldata['result_status'], $vlFulldata['result']);
         if ($vlFulldata['vl_result_category'] == 'failed' || $vlFulldata['vl_result_category'] == 'invalid') {
-            $vlFulldata['result_status'] = 5;
+            $vlFulldata['result_status'] = SAMPLE_STATUS_TEST_FAILED;
         } elseif ($vlFulldata['vl_result_category'] == 'rejected') {
-            $vlFulldata['result_status'] = 4;
+            $vlFulldata['result_status'] = SAMPLE_STATUS_REJECTED;
         }
 
         $id = false;
@@ -436,7 +436,7 @@ try {
         'status' => 'success',
         'transactionId' => $transactionId,
         'timestamp' => time(),
-        'data'  => $responseData ?? []
+        'data' => $responseData ?? []
     ];
     $db->commit();
     http_response_code(200);

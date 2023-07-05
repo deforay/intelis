@@ -117,29 +117,27 @@ $disable = "disabled = 'disabled'";
 	}
 </style>
 <?php
-if ($arr['vl_form'] == 1) {
-	require('forms/update-southsudan-result.php');
-} elseif ($arr['vl_form'] == 2) {
-	require('forms/update-sierraleone-result.php');
-} elseif ($arr['vl_form'] == 3) {
-	require('forms/update-drc-result.php');
-} elseif ($arr['vl_form'] == 4) {
-	require('forms/update-cameroon-result.php');
-} elseif ($arr['vl_form'] == 5) {
-	require('forms/update-png-result.php');
-} elseif ($arr['vl_form'] == 6) {
-	require('forms/update-who-result.php');
-} elseif ($arr['vl_form'] == 7) {
-	require('forms/update-rwanda-result.php');
+$forms = [
+	1 => 'forms/update-southsudan-result.php',
+	2 => 'forms/update-sierraleone-result.php',
+	3 => 'forms/update-drc-result.php',
+	4 => 'forms/update-cameroon-result.php',
+	5 => 'forms/update-png-result.php',
+	6 => 'forms/update-who-result.php',
+	7 => 'forms/update-rwanda-result.php'
+];
+
+if (isset($forms[$arr['vl_form']])) {
+	require($forms[$arr['vl_form']]);
 }
 ?>
 
 <script>
-	$(document).ready(function() {
-		$('#isSampleRejected').change(function(e) {
+	$(document).ready(function () {
+		$('#isSampleRejected').change(function (e) {
 			changeReject(this.value);
 		});
-		$('#hasRecentTravelHistory').change(function(e) {
+		$('#hasRecentTravelHistory').change(function (e) {
 			changeHistory(this.value);
 		});
 		$('.date').datepicker({
@@ -149,7 +147,7 @@ if ($arr['vl_form'] == 1) {
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-		}).click(function() {
+		}).click(function () {
 			$('.ui-datepicker-calendar').show();
 		});
 		$('.dateTime').datetimepicker({
@@ -158,13 +156,13 @@ if ($arr['vl_form'] == 1) {
 			dateFormat: 'dd-M-yy',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
-			onChangeMonthYear: function(year, month, widget) {
-				setTimeout(function() {
+			onChangeMonthYear: function (year, month, widget) {
+				setTimeout(function () {
 					$('.ui-datepicker-calendar').show();
 				});
 			},
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-		}).click(function() {
+		}).click(function () {
 			$('.ui-datepicker-calendar').show();
 		});
 
@@ -174,17 +172,17 @@ if ($arr['vl_form'] == 1) {
 			dateFormat: 'dd-M-yy',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
-			onChangeMonthYear: function(year, month, widget) {
-				setTimeout(function() {
+			onChangeMonthYear: function (year, month, widget) {
+				setTimeout(function () {
 					$('.ui-datepicker-calendar').show();
 				});
 			},
-			onSelect: function(e) {
+			onSelect: function (e) {
 				$('#sampleReceivedDate').val('');
 				$('#sampleReceivedDate').datetimepicker('option', 'minDate', e);
 			},
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-		}).click(function() {
+		}).click(function () {
 			$('.ui-datepicker-calendar').show();
 		});
 
@@ -194,17 +192,17 @@ if ($arr['vl_form'] == 1) {
 			dateFormat: 'dd-M-yy',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
-			onChangeMonthYear: function(year, month, widget) {
-				setTimeout(function() {
+			onChangeMonthYear: function (year, month, widget) {
+				setTimeout(function () {
 					$('.ui-datepicker-calendar').show();
 				});
 			},
-			onSelect: function(e) {
+			onSelect: function (e) {
 				$('#sampleTestedDateTime').val('');
 				$('#sampleTestedDateTime').datetimepicker('option', 'minDate', e);
 			},
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-		}).click(function() {
+		}).click(function () {
 			$('.ui-datepicker-calendar').show();
 		});
 

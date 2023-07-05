@@ -1,16 +1,18 @@
 <?php
 
+use MysqliDb;
 use DI\ContainerBuilder;
 use App\Services\TbService;
 use App\Services\VlService;
 use App\Services\ApiService;
 use App\Services\EidService;
-use App\Helpers\ResultsHelper;
+use App\Services\BatchService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\SystemService;
+use App\Services\AppMenuService;
 use App\Services\Covid19Service;
 use App\Services\PatientsService;
 use App\Utilities\CaptchaUtility;
@@ -18,14 +20,13 @@ use App\Services\HepatitisService;
 use App\Helpers\PdfWatermarkHelper;
 use App\Services\FacilitiesService;
 use App\Services\InstrumentsService;
+use App\Services\TestResultsService;
 use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 use App\Services\GeoLocationsService;
-use App\Services\AppMenuService;
 use App\Utilities\ImageResizeUtility;
 use Psr\Container\ContainerInterface;
-use App\Helpers\SampleCodeGeneratorHelper;
 use App\HttpHandlers\LegacyRequestHandler;
 use App\Middlewares\Api\ApiAuthMiddleware;
 use App\Middlewares\App\AppAuthMiddleware;
@@ -56,11 +57,11 @@ $builder->useAutowiring(true);
 // Enable compilation for better performance in production
 if (!empty($systemConfig['system']['cache_di']) && true === $systemConfig['system']['cache_di']) {
 
-    if (!is_dir(ROOT_PATH . '/cache')) {
-        mkdir(ROOT_PATH . '/cache', 0777, true);
+    if (!is_dir(CACHE_PATH)) {
+        mkdir(CACHE_PATH, 0777, true);
     }
-    $builder->enableCompilation(ROOT_PATH . '/cache');
-    $builder->enableDefinitionCache(ROOT_PATH . '/cache');
+    $builder->enableCompilation(CACHE_PATH);
+    $builder->enableDefinitionCache(CACHE_PATH);
 }
 
 // Configuration and DB
@@ -79,21 +80,25 @@ $builder->addDefinitions([
         ->constructor(DI\get(CommonService::class)),
     CommonService::class => DI\create(CommonService::class)
         ->constructor(DI\get('db')),
+    BatchService::class => DI\create(BatchService::class)
+        ->constructor(DI\get('db')),
     VlService::class => DI\create(VlService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(SampleCodeGeneratorHelper::class)),
+        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(GeoLocationsService::class)),
     EidService::class => DI\create(EidService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(SampleCodeGeneratorHelper::class)),
+        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(GeoLocationsService::class)),
     Covid19Service::class => DI\create(Covid19Service::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(SampleCodeGeneratorHelper::class)),
+        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(GeoLocationsService::class)),
     HepatitisService::class => DI\create(HepatitisService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(SampleCodeGeneratorHelper::class)),
+        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(GeoLocationsService::class)),
     TbService::class => DI\create(TbService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(SampleCodeGeneratorHelper::class)),
+        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(GeoLocationsService::class)),
     GenericTestsService::class => DI\create(GenericTestsService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(SampleCodeGeneratorHelper::class)),
+        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(GeoLocationsService::class)),
     UsersService::class => DI\create(UsersService::class)
         ->constructor(DI\get('db'), DI\get('applicationConfig'), DI\get(CommonService::class)),
     GeoLocationsService::class => DI\create(GeoLocationsService::class)
+        ->constructor(DI\get('db')),
+    TestResultsService::class => DI\create(TestResultsService::class)
         ->constructor(DI\get('db')),
     AppMenuService::class => DI\create(AppMenuService::class)
         ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(UsersService::class)),
@@ -130,10 +135,7 @@ $builder->addDefinitions([
     ErrorResponseGenerator::class => DI\create(ErrorResponseGenerator::class)
         ->constructor($debugMode),
     PdfConcatenateHelper::class => DI\create(PdfConcatenateHelper::class),
-    PdfWatermarkHelper::class => DI\create(PdfWatermarkHelper::class),
-    ResultsHelper::class => DI\create(ResultsHelper::class),
-    SampleCodeGeneratorHelper::class => DI\create(SampleCodeGeneratorHelper::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class)),
+    PdfWatermarkHelper::class => DI\create(PdfWatermarkHelper::class)
 ]);
 
 

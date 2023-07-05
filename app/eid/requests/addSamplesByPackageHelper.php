@@ -47,13 +47,13 @@ foreach ($sampleResult as $sampleRow) {
         $sampleCodeParams['sampleCollectionDate'] = DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date'] ?? '');
         $sampleCodeParams['provinceCode'] = $provinceCode ?? null;
 
-        $sampleJson = $eidObj->generateSampleCode($sampleCodeParams);
+        $sampleJson = $eidObj->getSampleCode($sampleCodeParams);
         $sampleData = json_decode($sampleJson, true);
 
         $eidData['sample_code'] = $sampleData['sampleCode'];
         $eidData['sample_code_format'] = $sampleData['sampleCodeFormat'];
         $eidData['sample_code_key'] = $sampleData['sampleCodeKey'];
-        $eidData['result_status'] = 6;
+        $eidData['result_status'] = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
         $eidData['data_sync'] = 0;
         if (!empty($_POST['testDate'])) {
             $eidData['sample_tested_datetime'] = null;

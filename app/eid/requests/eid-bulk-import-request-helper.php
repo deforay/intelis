@@ -51,8 +51,8 @@ try {
         $mime_type = $file_info->buffer(file_get_contents(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName)); // e.g. gives "image/jpeg"
 
         $spreadsheet = IOFactory::load(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName);
-        $sheetData   = $spreadsheet->getActiveSheet();
-        $sheetData   = $sheetData->toArray(null, true, true, true);
+        $sheetData = $spreadsheet->getActiveSheet();
+        $sheetData = $sheetData->toArray(null, true, true, true);
 
         $resultArray = array_slice($sheetData, 1);
         // echo "<pre>";print_r($resultArray);die;
@@ -94,15 +94,15 @@ try {
                     $instanceId = $_SESSION['instanceId'];
                 }
 
-                $status = 6;
+                $status = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
                 if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
-                    $status = 9;
+                    $status = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
                 }
 
 
                 if (isset($rowData['AB']) && strtolower($rowData['AB']) == 'yes') {
                     $result['result_id'] = null;
-                    $status = 4;
+                    $status = SAMPLE_STATUS_REJECTED;
                 }
 
                 if (!empty($rowData['I'])) {
@@ -117,46 +117,46 @@ try {
                 }
 
                 $eidData = array(
-                    'vlsm_instance_id'                                  => $instanceId,
-                    'vlsm_country_id'                                   => 1,
-                    'sample_code'                                       => $rowData['B'] ?? null,
-                    'province_id'                                       => $state['geo_id'] ?? null,
-                    'facility_id'                                       => $facility['facility_id'] ?? null,
-                    'child_id'                                          => $rowData['F'] ?? null,
-                    'child_name'                                        => $rowData['G'] ?? null,
+                    'vlsm_instance_id' => $instanceId,
+                    'vlsm_country_id' => 1,
+                    'sample_code' => $rowData['B'] ?? null,
+                    'province_id' => $state['geo_id'] ?? null,
+                    'facility_id' => $facility['facility_id'] ?? null,
+                    'child_id' => $rowData['F'] ?? null,
+                    'child_name' => $rowData['G'] ?? null,
                     // 'child_dob'                                         => isset($rowData['H']) ? date('Y-M-d',strtotime($rowData['H'])) : null,
-                    'child_gender'                                      => $rowData['I'],
-                    'child_age'                                         => $rowData['H'] ?? null,
-                    'mother_id'                                         => $rowData['J'] ?? null,
-                    'caretaker_phone_number'                            => $rowData['K'] ?? null,
-                    'caretaker_address'                                 => $rowData['L'] ?? null,
-                    'mother_hiv_status'                                 => $rowData['M'] ?? null,
-                    'mother_treatment'                                  => $rowData['N'] ?? null,
-                    'rapid_test_performed'                              => isset($rowData['O']) ? strtolower($rowData['O']) : null,
-                    'rapid_test_date'                                   => isset($rowData['P']) ? date('Y-M-d', strtotime($rowData['P'])) : null,
-                    'rapid_test_result'                                 => isset($rowData['Q']) ? strtolower($rowData['Q']) : null,
-                    'has_infant_stopped_breastfeeding'                  => isset($rowData['R']) ? strtolower($rowData['R']) : null,
-                    'age_breastfeeding_stopped_in_months'               => $rowData['S'] ?? null,
-                    'pcr_test_performed_before'                         => isset($rowData['T']) ? strtolower($rowData['T']) : null,
-                    'last_pcr_date'                                     => isset($rowData['U']) ? date('Y-M-d', strtotime($rowData['U'])) : null,
-                    'reason_for_pcr'                                    => $rowData['V'] ?? null,
-                    'sample_collection_date'                            => $sampleCollectionDate,
-                    'sample_requestor_name'                             => $rowData['X'] ?? null,
-                    'sample_requestor_phone'                            => $rowData['Y'] ?? null,
-                    'sample_received_at_vl_lab_datetime'                => $sampleReceivedDate,
-                    'lab_id'                                            => $labName['facility_id'] ?? null,
-                    'sample_tested_datetime'                            => $sampleTestDate,
-                    'is_sample_rejected'                                => isset($rowData['AB']) ? strtolower($rowData['AB']) : null,
-                    'reason_for_sample_rejection'                       => $rejectionReason['rejection_reason_id'] ?? null,
-                    'result'                                            => $result['result_id'] ?? null,
-                    'result_status'                                     => $status,
-                    'specimen_type'                                     => $sampleType['sample_id'] ?? null,
-                    'data_sync'                                         => 0,
-                    'request_created_by'                                => $_SESSION['userId'],
-                    'request_created_datetime'                          => DateUtility::getCurrentDateTime(),
-                    'sample_registered_at_lab'                          => DateUtility::getCurrentDateTime(),
-                    'last_modified_by'                                  => $_SESSION['userId'],
-                    'last_modified_datetime'                            => DateUtility::getCurrentDateTime()
+                    'child_gender' => $rowData['I'],
+                    'child_age' => $rowData['H'] ?? null,
+                    'mother_id' => $rowData['J'] ?? null,
+                    'caretaker_phone_number' => $rowData['K'] ?? null,
+                    'caretaker_address' => $rowData['L'] ?? null,
+                    'mother_hiv_status' => $rowData['M'] ?? null,
+                    'mother_treatment' => $rowData['N'] ?? null,
+                    'rapid_test_performed' => isset($rowData['O']) ? strtolower($rowData['O']) : null,
+                    'rapid_test_date' => isset($rowData['P']) ? date('Y-M-d', strtotime($rowData['P'])) : null,
+                    'rapid_test_result' => isset($rowData['Q']) ? strtolower($rowData['Q']) : null,
+                    'has_infant_stopped_breastfeeding' => isset($rowData['R']) ? strtolower($rowData['R']) : null,
+                    'age_breastfeeding_stopped_in_months' => $rowData['S'] ?? null,
+                    'pcr_test_performed_before' => isset($rowData['T']) ? strtolower($rowData['T']) : null,
+                    'last_pcr_date' => isset($rowData['U']) ? date('Y-M-d', strtotime($rowData['U'])) : null,
+                    'reason_for_pcr' => $rowData['V'] ?? null,
+                    'sample_collection_date' => $sampleCollectionDate,
+                    'sample_requestor_name' => $rowData['X'] ?? null,
+                    'sample_requestor_phone' => $rowData['Y'] ?? null,
+                    'sample_received_at_vl_lab_datetime' => $sampleReceivedDate,
+                    'lab_id' => $labName['facility_id'] ?? null,
+                    'sample_tested_datetime' => $sampleTestDate,
+                    'is_sample_rejected' => isset($rowData['AB']) ? strtolower($rowData['AB']) : null,
+                    'reason_for_sample_rejection' => $rejectionReason['rejection_reason_id'] ?? null,
+                    'result' => $result['result_id'] ?? null,
+                    'result_status' => $status,
+                    'specimen_type' => $sampleType['sample_id'] ?? null,
+                    'data_sync' => 0,
+                    'request_created_by' => $_SESSION['userId'],
+                    'request_created_datetime' => DateUtility::getCurrentDateTime(),
+                    'sample_registered_at_lab' => DateUtility::getCurrentDateTime(),
+                    'last_modified_by' => $_SESSION['userId'],
+                    'last_modified_datetime' => DateUtility::getCurrentDateTime()
                 );
 
                 if (empty($sampleCode)) {

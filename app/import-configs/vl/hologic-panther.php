@@ -40,7 +40,7 @@ try {
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename($_FILES['resultFile']['name'])));
     $fileName = str_replace(" ", "-", $fileName);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    $fileName          = $_POST['fileName'] . "." . $extension;
+    $fileName = $_POST['fileName'] . "." . $extension;
     // $ranNumber = $general->generateRandomString(12);
     // $fileName = $ranNumber . "." . $extension;
 
@@ -267,7 +267,7 @@ try {
             } else {
                 $data['batch_code'] = $batchCode;
             }
-            //get user name
+            //get username
             if (!empty($d['reviewBy'])) {
 
                 /** @var UsersService $usersService */

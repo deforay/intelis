@@ -2,41 +2,23 @@
 
 namespace App\Services;
 
-use MysqliDb;
 use Exception;
-use DateTimeImmutable;
 use App\Utilities\DateUtility;
-use App\Services\CommonService;
-use App\Registries\ContainerRegistry;
-use App\Services\GeoLocationsService;
-use App\Interfaces\TestServiceInterface;
-use App\Helpers\SampleCodeGeneratorHelper;
+use App\Abstracts\AbstractTestService;
 
-class HepatitisService implements TestServiceInterface
+class HepatitisService extends AbstractTestService
 {
 
-    protected ?MysqliDb $db = null;
     protected string $table = 'form_hepatitis';
     protected string $shortCode = 'HEP';
-    protected CommonService $commonService;
-    protected SampleCodeGeneratorHelper $sampleCodeGeneratorHelper;
 
-    public function __construct(
-        ?MysqliDb $db = null,
-        CommonService $commonService = null,
-        SampleCodeGeneratorHelper $sampleCodeGeneratorHelper = null
-    ) {
-        $this->db = $db ?? ContainerRegistry::get('db');
-        $this->commonService = $commonService;
-        $this->sampleCodeGeneratorHelper = $sampleCodeGeneratorHelper;
-    }
 
-    public function generateSampleCode($params)
+    public function getSampleCode($params)
     {
         $globalConfig = $this->commonService->getGlobalConfig();
         $params['sampleCodeFormat'] = $globalConfig['hepatitis_sample_code'] ?? 'MMYY';
         $params['prefix'] = $params['prefix'] ?? $globalConfig['hepatitis_sample_code_prefix'] ?? $this->shortCode;
-        return $this->sampleCodeGeneratorHelper->generateSampleCode($this->table, $params);
+        return $this->generateSampleCode($this->table, $params);
     }
 
     public function getComorbidityByHepatitisId($formId, $allData = false)
@@ -192,7 +174,7 @@ class HepatitisService implements TestServiceInterface
             $sampleCodeParams['provinceId'] = $provinceId;
             $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey'] ?? null;
 
-            $sampleJson = $this->generateSampleCode($sampleCodeParams);
+            $sampleJson = $this->getSampleCode($sampleCodeParams);
             $sampleData = json_decode($sampleJson, true);
 
             $sampleCollectionDate = DateUtility::isoDateFormat($sampleCollectionDate, true);
@@ -235,22 +217,22 @@ class HepatitisService implements TestServiceInterface
                     $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
                     $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
                     $tesRequestData['remote_sample'] = 'yes';
-                    $tesRequestData['result_status'] = 9;
+                    $tesRequestData['result_status'] = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
                     if ($accessType === 'testing-lab') {
                         $tesRequestData['sample_code'] = $sampleData['sampleCode'];
-                        $tesRequestData['result_status'] = 6;
+                        $tesRequestData['result_status'] = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
                     }
                 } else {
                     $tesRequestData['sample_code'] = $sampleData['sampleCode'];
                     $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
                     $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
                     $tesRequestData['remote_sample'] = 'no';
-                    $tesRequestData['result_status'] = 6;
+                    $tesRequestData['result_status'] = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
                 }
 
                 $formAttributes = [
-                    'applicationVersion'  => $this->commonService->getSystemConfig('sc_version'),
-                    'ip_address'    => $this->commonService->getClientIpAddress()
+                    'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
+                    'ip_address' => $this->commonService->getClientIpAddress()
                 ];
                 $tesRequestData['form_attributes'] = json_encode($formAttributes);
                 $this->db->insert("form_hepatitis", $tesRequestData);

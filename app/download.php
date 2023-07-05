@@ -1,16 +1,14 @@
 <?php
 
+use App\Utilities\MiscUtility;
 use App\Exceptions\SystemException;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 
 $webRootPath = realpath(WEB_ROOT);
 
-/** @var MysqliDb $db */
-$db = ContainerRegistry::get('db');
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
 
 if (!isset($_GET['f']) || !is_file(base64_decode($_GET['f']))) {
     $redirect = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/';
@@ -26,11 +24,6 @@ $allowedMimeTypes = [
     'text/plain' => true
 ];
 
-// Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
-$_GET = $request->getQueryParams();
-
 $file = realpath(urldecode(base64_decode($_GET['f'])));
 
 if ($file === false) {
@@ -38,7 +31,7 @@ if ($file === false) {
     throw new SystemException('Cannot download this file');
 }
 
-if (!$general->startsWith($file, $webRootPath) || !$general->fileExists($file)) {
+if (!MiscUtility::startsWith($file, $webRootPath) || !MiscUtility::fileExists($file)) {
     http_response_code(403);
     throw new SystemException('Cannot download this file');
 }

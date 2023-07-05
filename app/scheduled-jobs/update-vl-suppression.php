@@ -16,12 +16,17 @@ $db = ContainerRegistry::get('db');
 /** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);
 
-$sql = "SELECT vl_sample_id,result_value_absolute_decimal, result_value_text, result, result_status
-
+$sql = "SELECT vl_sample_id,
+                result_value_absolute_decimal,
+                result_value_text,
+                result,
+                result_status
 		FROM form_vl
-
-		WHERE ((result_status = 4 OR result_status = 7) OR result is not null)
-
+		WHERE (
+                (result_status = " . SAMPLE_STATUS_REJECTED . "
+                    OR result_status = " . SAMPLE_STATUS_ACCEPTED . ")
+                OR result is not null
+            )
         AND vl_result_category is null
         ";
 
@@ -37,9 +42,9 @@ foreach ($result as $aRow) {
         $dataToUpdate = [];
         $dataToUpdate['vl_result_category'] = $vlResultCategory;
         if ($vlResultCategory == 'failed' || $vlResultCategory == 'invalid') {
-            $dataToUpdate['result_status'] = 5;
+            $dataToUpdate['result_status'] = SAMPLE_STATUS_TEST_FAILED;
         } elseif ($vlResultCategory == 'rejected') {
-            $dataToUpdate['result_status'] = 4;
+            $dataToUpdate['result_status'] = SAMPLE_STATUS_REJECTED;
         }
         $res = $db->update("form_vl", $dataToUpdate);
     }

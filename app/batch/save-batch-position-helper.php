@@ -1,6 +1,8 @@
 <?php
-use App\Registries\ContainerRegistry;
+use App\Services\BatchService;
 use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
@@ -9,6 +11,11 @@ $_POST = $request->getParsedBody();
 $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+
+/** @var BatchService $batchService */
+$batchService = ContainerRegistry::get(BatchService::class);
+
 $tableName = "batch_details";
 try {
     $labelOrder = '';
@@ -16,7 +23,7 @@ try {
         $xplodSortOrders = explode(",", $_POST['sortOrders']);
         $orderArray = [];
         if (isset($_POST['positions']) && $_POST['positions'] == 'alpha-numeric') {
-            foreach ($general->excelColumnRange('A', 'H') as $value) {
+            foreach ($batchService->excelColumnRange('A', 'H') as $value) {
                 foreach (range(1, 12) as $no) {
                     $alphaNumeric[] = $value . $no;
                 }
@@ -35,7 +42,7 @@ try {
         $db->update($tableName, $data);
         $_SESSION['alertMsg'] = "Batch position saved";
     }
-    header("Location:batches.php?type=".$_POST['type']);
+    header("Location:batches.php?type=" . $_POST['type']);
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

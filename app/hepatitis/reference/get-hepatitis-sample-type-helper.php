@@ -15,8 +15,8 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
-         * you want to insert a non-database field (for example a counter or static image)
-        */
+ * you want to insert a non-database field (for example a counter or static image)
+ */
 
 $aColumns = array('sample_name', 'status');
 
@@ -25,8 +25,8 @@ $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 /*
-         * Paging
-         */
+ * Paging
+ */
 $sLimit = "";
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
@@ -34,8 +34,8 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 }
 
 /*
-         * Ordering
-        */
+ * Ordering
+ */
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -50,11 +50,11 @@ if (isset($_POST['iSortCol_0'])) {
 }
 
 /*
-         * Filtering
-         * NOTE this does not match the built-in DataTables filtering which does it
-         * word by word on any field. It's possible to do here, but concerned about efficiency
-         * on very large tables, and MySQL's regex functionality is very limited
-        */
+ * Filtering
+ * NOTE this does not match the built-in DataTables filtering which does it
+ * word by word on any field. It's possible to do here, but concerned about efficiency
+ * on very large tables, and MySQL's regex functionality is very limited
+ */
 
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
@@ -92,14 +92,14 @@ for ($i = 0; $i < count($aColumns); $i++) {
 }
 
 /*
-         * SQL queries
-         * Get data to display
-        */
+ * SQL queries
+ * Get data to display
+ */
 
 $sQuery = "SELECT * FROM $tableName";
 
 if (!empty($sWhere)) {
-    $sWhere = ' where ' . $sWhere;
+    $sWhere = ' WHERE ' . $sWhere;
     $sQuery = $sQuery . ' ' . $sWhere;
 }
 
@@ -121,14 +121,14 @@ $aResultFilterTotal = $db->rawQuery("SELECT * FROM $tableName $sWhere order by $
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */
-$aResultTotal =  $db->rawQuery("select COUNT($primaryKey) as total FROM $tableName");
+$aResultTotal = $db->rawQuery("select COUNT($primaryKey) as total FROM $tableName");
 // $aResultTotal = $countResult->fetch_row();
 //print_r($aResultTotal);
 $iTotal = $aResultTotal[0]['total'];
 
 /*
-         * Output
-        */
+ * Output
+ */
 $output = array(
     "sEcho" => intval($_POST['sEcho']),
     "iTotalRecords" => $iTotal,
@@ -139,7 +139,7 @@ $output = array(
 foreach ($rResult as $aRow) {
     $status = '<select class="form-control" name="status[]" id="' . $aRow['sample_id'] . '" title="' . _("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['status'] . '\')">
                <option value="active" ' . ($aRow['status'] == "active" ? "selected=selected" : "") . '>' . _("Active") . '</option>
-               <option value="inactive" ' . ($aRow['status'] == "inactive"  ? "selected=selected" : "") . '>' . _("Inactive") . '</option>
+               <option value="inactive" ' . ($aRow['status'] == "inactive" ? "selected=selected" : "") . '>' . _("Inactive") . '</option>
                </select><br><br>';
     $row = [];
     $row[] = ($aRow['sample_name']);

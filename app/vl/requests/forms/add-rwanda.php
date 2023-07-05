@@ -386,9 +386,9 @@ $sFormat = '';
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control forceNumeric viralTestData" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
                                                                       (copies/ml)<br>
-                                                                      <input type="checkbox" id="rmTestingVlCheckValuelt20" name="rmTestingVlCheckValue" value="<20" title="Please check VL Result">
+                                                                      <input type="checkbox" id="rmTestingVlCheckValuelt20" name="rmTestingVlValue" value="<20" title="Please check VL Result">
                                                                       < 20<br>
-                                                                           <input type="checkbox" id="rmTestingVlCheckValueTnd" name="rmTestingVlCheckValue" value="tnd" title="Please check VL Result"> Target Not Detected
+                                                                           <input type="checkbox" id="rmTestingVlCheckValueTnd" name="rmTestingVlValue" value="tnd" title="Please check VL Result"> Target Not Detected
                                                                  </div>
                                                             </div>
                                                        </div>
@@ -416,9 +416,9 @@ $sFormat = '';
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control forceNumeric viralTestData" id="suspendTreatmentVlValue" name="suspendTreatmentVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
                                                                       (copies/ml)<br>
-                                                                      <input type="checkbox" id="suspendTreatmentVlCheckValuelt20" name="suspendTreatmentVlCheckValue" value="<20" title="Please check VL Result">
+                                                                      <input type="checkbox" id="suspendTreatmentVlCheckValuelt20" name="suspendTreatmentVlValue" value="<20" title="Please check VL Result">
                                                                       < 20<br>
-                                                                           <input type="checkbox" id="suspendTreatmentVlCheckValueTnd" name="suspendTreatmentVlCheckValue" value="tnd" title="Please check VL Result"> Target Not Detected
+                                                                           <input type="checkbox" id="suspendTreatmentVlCheckValueTnd" name="suspendTreatmentVlValue" value="tnd" title="Please check VL Result"> Target Not Detected
                                                                  </div>
                                                             </div>
                                                        </div>
@@ -446,9 +446,9 @@ $sFormat = '';
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control forceNumeric viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
                                                                       (copies/ml)<br>
-                                                                      <input type="checkbox" id="repeatTestingVlCheckValuelt20" name="repeatTestingVlCheckValue" value="<20" title="Please check VL Result">
+                                                                      <input type="checkbox" id="repeatTestingVlCheckValuelt20" name="repeatTestingVlValue" value="<20" title="Please check VL Result">
                                                                       < 20<br>
-                                                                           <input type="checkbox" id="repeatTestingVlCheckValueTnd" name="repeatTestingVlCheckValue" value="tnd" title="Please check VL Result"> Target Not Detected
+                                                                           <input type="checkbox" id="repeatTestingVlCheckValueTnd" name="repeatTestingVlValue" value="tnd" title="Please check VL Result"> Target Not Detected
                                                                  </div>
                                                             </div>
                                                        </div>

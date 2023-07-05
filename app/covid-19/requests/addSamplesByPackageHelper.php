@@ -53,13 +53,13 @@ foreach ($sampleResult as $sampleRow) {
         $sampleCodeParams['sampleCollectionDate'] = DateUtility::humanReadableDateFormat($formData['sample_collection_date'] ?? '');
         $sampleCodeParams['provinceCode'] = $provinceCode;
 
-        $sampleJson =  $covid19Service->generateSampleCode($sampleCodeParams);
+        $sampleJson = $covid19Service->getSampleCode($sampleCodeParams);
         $sampleData = json_decode($sampleJson, true);
         $covid19Data = [];
         $covid19Data['sample_code'] = $sampleData['sampleCode'];
         $covid19Data['sample_code_format'] = $sampleData['sampleCodeFormat'];
         $covid19Data['sample_code_key'] = $sampleData['sampleCodeKey'];
-        $covid19Data['result_status'] = 6;
+        $covid19Data['result_status'] = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
         $covid19Data['data_sync'] = 0;
         if (!empty($_POST['testDate'])) {
             $covid19Data['sample_tested_datetime'] = null;

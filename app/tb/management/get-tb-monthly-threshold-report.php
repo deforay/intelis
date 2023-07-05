@@ -46,8 +46,8 @@ $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 /*
-* Paging
-*/
+ * Paging
+ */
 $sLimit = "";
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
      $sOffset = $_POST['iDisplayStart'];
@@ -55,8 +55,8 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 }
 
 /*
-* Ordering
-*/
+ * Ordering
+ */
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -133,7 +133,7 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
 }
 
 if (!empty($sWhere)) {
-     $sWhere = ' where ' . $sWhere;
+     $sWhere = ' WHERE ' . $sWhere;
 
      if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
           if (trim($sTestDate) == trim($eTestDate)) {
@@ -159,7 +159,7 @@ if (!empty($sWhere)) {
                $sWhere = $sWhere . ' AND vl.lab_id IN ' . $out;
           } else {
                $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
+               $sWhere = ' WHERE ' . $sWhere;
                $sWhere = $sWhere . ' vl.lab_id IN ' . $out;
           }
      }
@@ -178,7 +178,7 @@ if (!empty($sWhere)) {
                $sWhere = $sWhere . ' AND vl.lab_id IN ' . $out;
           } else {
                $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
+               $sWhere = ' WHERE ' . $sWhere;
                $sWhere = $sWhere . ' vl.lab_id IN ' . $out;
           }
      }
@@ -188,15 +188,15 @@ if (!empty($sWhere)) {
                $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
           } else {
                $setWhr = 'where';
-               $sWhere = ' where ' . $sWhere;
+               $sWhere = ' WHERE ' . $sWhere;
                $sWhere = $sWhere . ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
           }
      }
 }
 if ($sWhere != '') {
-     $sWhere = $sWhere . '  AND vl.result_status!=9';
+     $sWhere = $sWhere . '  AND vl.result_status != ' . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
 } else {
-     $sWhere = $sWhere . ' where vl.result_status!=9';
+     $sWhere = $sWhere . ' WHERE vl.result_status != ' . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
 }
 
 if (!empty($_SESSION['facilityMap'])) {
@@ -211,13 +211,13 @@ $aResultFilterTotal = $db->rawQuery($sQuery);
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */
-$aResultTotal =  $db->rawQuery($sQuery);
+$aResultTotal = $db->rawQuery($sQuery);
 // $aResultTotal = $countResult->fetch_row();
 $iTotal = count($aResultTotal);
 
 /*
-          * Output
-          */
+ * Output
+ */
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
      "aaData" => array()

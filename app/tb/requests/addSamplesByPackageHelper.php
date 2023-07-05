@@ -56,7 +56,7 @@ foreach ($sampleResult as $sampleRow) {
         $sampleCodeParams['sampleCollectionDate'] = DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date'] ?? '');
         $sampleCodeParams['provinceCode'] = $provinceCode;
 
-        $sampleJson = $tbService->generateSampleCode($sampleCodeParams);
+        $sampleJson = $tbService->getSampleCode($sampleCodeParams);
         $sampleData = json_decode($sampleJson, true);
         $tbData = [];
         $tbData['sample_code'] = $sampleData['sampleCode'];
@@ -66,7 +66,7 @@ foreach ($sampleResult as $sampleRow) {
             $tbData['sample_tested_datetime'] = null;
             $tbData['sample_received_at_vl_lab_datetime'] = $_POST['testDate'];
         }
-        $tbData['result_status'] = 6;
+        $tbData['result_status'] = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
         $tbData['data_sync'] = 0;
         $tbData['last_modified_by'] = $_SESSION['userId'];
         $tbData['last_modified_datetime'] = DateUtility::getCurrentDateTime();

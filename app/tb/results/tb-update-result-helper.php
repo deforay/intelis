@@ -94,16 +94,16 @@ try {
         $sampleCodeKey = 'sample_code_key';
     }
 
-    $status = 6;
+    $status = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
     if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
-        $status = 9;
+        $status = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
     }
 
     $resultSentToSource = null;
 
     if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
         $_POST['result'] = null;
-        $status = 4;
+        $status = SAMPLE_STATUS_REJECTED;
         $resultSentToSource = 'pending';
     }
     if (!empty($_POST['patientDob'])) {
@@ -141,33 +141,33 @@ try {
 
     $tbData = array(
         //'specimen_quality'                    => !empty($_POST['testNumber']) ? $_POST['testNumber'] : null,
-        'lab_id'                              => !empty($_POST['labId']) ? $_POST['labId'] : null,
+        'lab_id' => !empty($_POST['labId']) ? $_POST['labId'] : null,
         //'reason_for_tb_test'                  => !empty($_POST['reasonForTbTest']) ? json_encode($_POST['reasonForTbTest']) : null,
         //'tests_requested'                     => !empty($_POST['testTypeRequested']) ? json_encode($_POST['testTypeRequested']) : null,
         //'specimen_type'                       => !empty($_POST['specimenType']) ? $_POST['specimenType'] : null,
         //  'sample_collection_date'              => !empty($_POST['sampleCollectionDate']) ? $_POST['sampleCollectionDate'] : null,
         'result_date'                         => !empty($_POST['resultDate']) ? $_POST['resultDate'] : null,
-        'sample_received_at_lab_datetime'     => !empty($_POST['sampleReceivedDate']) ? $_POST['sampleReceivedDate'] : null,
-        'is_sample_rejected'                  => !empty($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : null,
-        'result'                              => !empty($_POST['result']) ? $_POST['result'] : null,
-        'xpert_mtb_result'                    => !empty($_POST['xPertMTMResult']) ? $_POST['xPertMTMResult'] : null,
-        'result_sent_to_source'               => $resultSentToSource,
-        'result_dispatched_datetime'          => !empty($_POST['resultDispatchedDatetime']) ? $_POST['resultDispatchedDatetime'] : null,
-        'result_reviewed_by'                  => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
-        'result_reviewed_datetime'            => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
-        'result_approved_by'                  => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != "") ? $_POST['approvedBy'] : "",
-        'result_approved_datetime'            => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != "") ? $_POST['approvedOn'] : null,
-        'sample_tested_datetime'              => (isset($_POST['sampleTestedDateTime']) && $_POST['sampleTestedDateTime'] != "") ? $_POST['sampleTestedDateTime'] : null,
-        'tested_by'                           => !empty($_POST['testedBy']) ? $_POST['testedBy'] : null,
-        'rejection_on'                        => (!empty($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
-        'result_status'                       => $status,
-        'data_sync'                           => 0,
-        'reason_for_sample_rejection'         => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
-        'sample_registered_at_lab'            => DateUtility::getCurrentDateTime(),
-        'last_modified_by'                    => $_SESSION['userId'],
-        'last_modified_datetime'              => DateUtility::getCurrentDateTime(),
-        'request_created_by'                  => $_SESSION['userId'],
-        'lab_technician'                      => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId']
+        'sample_received_at_lab_datetime' => !empty($_POST['sampleReceivedDate']) ? $_POST['sampleReceivedDate'] : null,
+        'is_sample_rejected' => !empty($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : null,
+        'result' => !empty($_POST['result']) ? $_POST['result'] : null,
+        'xpert_mtb_result' => !empty($_POST['xPertMTMResult']) ? $_POST['xPertMTMResult'] : null,
+        'result_sent_to_source' => $resultSentToSource,
+        'result_dispatched_datetime' => !empty($_POST['resultDispatchedDatetime']) ? $_POST['resultDispatchedDatetime'] : null,
+        'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
+        'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
+        'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != "") ? $_POST['approvedBy'] : "",
+        'result_approved_datetime' => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != "") ? $_POST['approvedOn'] : null,
+        'sample_tested_datetime' => (isset($_POST['sampleTestedDateTime']) && $_POST['sampleTestedDateTime'] != "") ? $_POST['sampleTestedDateTime'] : null,
+        'tested_by' => !empty($_POST['testedBy']) ? $_POST['testedBy'] : null,
+        'rejection_on' => (!empty($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
+        'result_status' => $status,
+        'data_sync' => 0,
+        'reason_for_sample_rejection' => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
+        'sample_registered_at_lab' => DateUtility::getCurrentDateTime(),
+        'last_modified_by' => $_SESSION['userId'],
+        'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+        'request_created_by' => $_SESSION['userId'],
+        'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId']
     );
     //echo '<pre>'; print_r($tbData); die;
     $id = 0;
@@ -179,12 +179,15 @@ try {
 
             foreach ($_POST['testResult'] as $testKey => $testResult) {
                 if (!empty($testResult) && trim($testResult) != "") {
-                    $db->insert($testTableName, array(
-                        'tb_id'             => $_POST['tbSampleId'],
-                        'actual_no'         => $_POST['actualNo'][$testKey] ?? null,
-                        'test_result'       => $testResult,
-                        'updated_datetime'  => DateUtility::getCurrentDateTime()
-                    ));
+                    $db->insert(
+                        $testTableName,
+                        array(
+                            'tb_id' => $_POST['tbSampleId'],
+                            'actual_no' => $_POST['actualNo'][$testKey] ?? null,
+                            'test_result' => $testResult,
+                            'updated_datetime' => DateUtility::getCurrentDateTime()
+                        )
+                    );
                 }
             }
         }

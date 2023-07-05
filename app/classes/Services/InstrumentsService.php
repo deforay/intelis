@@ -43,4 +43,5 @@ class InstrumentsService
         $db->where('machine_name', $instrumentName);
         return $db->getOne($this->table);
     }
+
 }

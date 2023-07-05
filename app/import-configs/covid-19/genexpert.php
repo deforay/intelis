@@ -2,18 +2,23 @@
 
 // File included in import-file-helper.php
 
-use App\Exceptions\SystemException;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
+use League\Csv\Reader;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
-use League\Csv\Reader;
+use App\Services\CommonService;
+use App\Exceptions\SystemException;
+use App\Services\TestResultsService;
+use App\Registries\ContainerRegistry;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var TestResultsService $testResultsService */
+$testResultsService = ContainerRegistry::get(TestResultsService::class);
+
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
@@ -50,8 +55,6 @@ try {
         throw new SystemException("Invalid file format.");
     }
     $fileName = $_POST['fileName'] . "." . $extension;
-    // $ranNumber = $general->generateRandomString(12);
-    // $fileName = $ranNumber . "." . $extension;
 
 
     if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results")) {
@@ -84,50 +87,45 @@ try {
         $reader = Reader::createFromPath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
         $infoFromFile = [];
         foreach ($reader as $offset => $record) {
-            //$newRow = [];
-            //$sampleCode = null;
             foreach ($record as $o => $v) {
 
-                $v = $general->removeCntrlCharsAndEncode($v);
-                // echo "<pre>";
-                // var_dump(($v));
-                // echo "</pre><br><br><br>";
+                $v = $testResultsService->removeCntrlCharsAndEncode($v);
                 if ($v == "End Time" || $v == "Heure de fin") {
-                    $testedOn = $general->removeCntrlCharsAndEncode($record[1]);
+                    $testedOn = $testResultsService->removeCntrlCharsAndEncode($record[1]);
                     $testedOn = str_replace("/", "-", $testedOn);
                     $testedOn = date('Y-m-d H:i', strtotime($testedOn));
                 } elseif ($v == "User" || $v == 'Utilisateur') {
-                    $testedBy = $general->removeCntrlCharsAndEncode($record[1]);
-                } else if ($v == "RESULT TABLE" || $v == "TABLEAU DE RÉSULTATS") {
+                    $testedBy = $testResultsService->removeCntrlCharsAndEncode($record[1]);
+                } elseif ($v == "RESULT TABLE" || $v == "TABLEAU DE RÉSULTATS") {
                     $sampleCode = null;
-                } else if ($v == "Sample ID" || $v == "N° Id de l'échantillon") {
-                    $sampleCode = $general->removeCntrlCharsAndEncode($record[1]);
-                    if (empty($sampleCode)) continue;
+                } elseif ($v == "Sample ID" || $v == "N° Id de l'échantillon") {
+                    $sampleCode = $testResultsService->removeCntrlCharsAndEncode($record[1]);
+                    if (empty($sampleCode))
+                        continue;
                     $infoFromFile[$sampleCode]['sampleCode'] = $sampleCode;
                     $infoFromFile[$sampleCode]['testedOn'] = $testedOn;
                     $infoFromFile[$sampleCode]['testedBy'] = $testedBy;
-                } else if ($v == "Assay" || $v == "Test") {
-                    if (empty($sampleCode)) continue;
-                    $infoFromFile[$sampleCode]['assay'] = $general->removeCntrlCharsAndEncode($record[1]);
-                } else if ($v == "Test Result" || $v == "Résultat du test") {
-                    if (empty($sampleCode)) continue;
-                    $parsedResult = (str_replace("SARS-COV-2 ", "", strtoupper($general->removeCntrlCharsAndEncode($record[1]))));
+                } elseif ($v == "Assay" || $v == "Test") {
+                    if (empty($sampleCode)) {
+                        continue;
+                    } else {
+                        $infoFromFile[$sampleCode]['assay'] = $testResultsService->removeCntrlCharsAndEncode($record[1]);
+                    }
+                } elseif ($v == "Test Result" || $v == "Résultat du test") {
+                    if (empty($sampleCode)) {
+                        continue;
+                    }
+                    $parsedResult = (str_replace("SARS-COV-2 ", "", strtoupper($testResultsService->removeCntrlCharsAndEncode($record[1]))));
                     if ($parsedResult == 'NEGATIVE' || $parsedResult == 'NÉGATIF' || $parsedResult == 'NÉGATIVE') {
                         $parsedResult = 'negative';
-                    } else if ($parsedResult == 'POSITIVE' || $parsedResult == 'POSITIF') {
+                    } elseif ($parsedResult == 'POSITIVE' || $parsedResult == 'POSITIF') {
                         $parsedResult = 'positive';
                     }
                     $infoFromFile[$sampleCode]['result'] = strtolower($parsedResult);
-                    //echo "<pre>";var_dump($infoFromFile[$sampleCode]['result']);echo "</pre><br><br><br>";
                 }
             }
         }
 
-
-        // echo "<pre>";
-        // var_dump($infoFromFile);
-        // echo "</pre>";
-        // die;
         $inc = 0;
         foreach ($infoFromFile as $sampleCode => $d) {
 
@@ -146,7 +144,7 @@ try {
             );
 
             if (empty($data['result'])) {
-                $data['result_status'] = '1'; // 1= Hold
+                $data['result_status'] = SAMPLE_STATUS_ON_HOLD;
             }
 
             if (empty($batchCode)) {
@@ -155,7 +153,7 @@ try {
             } else {
                 $data['batch_code'] = $batchCode;
             }
-            //get user name
+            //get username
             if (!empty($d['reviewBy'])) {
 
                 /** @var UsersService $usersService */

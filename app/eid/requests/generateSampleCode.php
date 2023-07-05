@@ -40,4 +40,4 @@ $sampleCodeParams['sampleCollectionDate'] = $params['sampleCollectionDate'] ?? n
 $sampleCodeParams['provinceCode'] = $province ?? null;
 $sampleCodeParams['provinceId'] = null;
 
-echo $eidService->generateSampleCode($sampleCodeParams);
+echo $eidService->getSampleCode($sampleCodeParams);

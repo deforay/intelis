@@ -1,10 +1,9 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
+use App\Services\BatchService;
 use App\Utilities\DateUtility;
-
-
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -12,6 +11,8 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+/** @var BatchService $batchService */
+$batchService = ContainerRegistry::get(BatchService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -21,51 +22,60 @@ $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
 
 $showPatientName = false;
-if (isset($_GET['type']) && $_GET['type'] == 'vl') {
-    $refTable = "form_vl";
-    $refPrimaryColumn = "vl_sample_id";
-    $patientIdColumn = 'patient_art_no';
-    $patientFirstName = 'patient_first_name';
-    $patientLastName = 'patient_last_name';
-    $worksheetName = 'Viral Load Test Worksheet';
-} elseif (isset($_GET['type']) && $_GET['type'] == 'eid') {
-    $refTable = "form_eid";
-    $refPrimaryColumn = "eid_id";
-    $patientIdColumn = 'child_id';
-    $patientFirstName = 'child_name';
-    $patientLastName = 'child_surname';
-    $worksheetName = 'EID Test Worksheet';
-} elseif (isset($_GET['type']) && $_GET['type'] == 'covid19') {
-    $refTable = "form_covid19";
-    $refPrimaryColumn = "covid19_id";
-    $patientIdColumn = 'patient_id';
-    $patientFirstName = 'patient_name';
-    $patientLastName = 'patient_surname';
-    $worksheetName = 'Covid-19 Test Worksheet';
-} elseif (isset($_GET['type']) && $_GET['type'] == 'hepatitis') {
-    $refTable = "form_hepatitis";
-    $refPrimaryColumn = "hepatitis_id";
-    $patientIdColumn = 'patient_id';
-    $patientFirstName = 'patient_name';
-    $patientLastName = 'patient_surname';
-    $worksheetName = 'Hepatitis Test Worksheet';
-    $showPatientName = true;
-} elseif (isset($_GET['type']) && $_GET['type'] == 'tb') {
-    $refTable = "form_tb";
-    $refPrimaryColumn = "tb_id";
-    $patientIdColumn = 'patient_id';
-    $patientFirstName = 'patient_name';
-    $patientLastName = 'patient_surname';
-    $worksheetName = 'TB Test Worksheet';
-    $showPatientName = true;
-} elseif (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
-    $refTable = "form_generic";
-    $refPrimaryColumn = "sample_id";
-    $patientIdColumn = 'patient_id';
-    $patientFirstName = 'patient_first_name';
-    $patientLastName = 'patient_last_name';
-    $worksheetName = 'Lab Test Worksheet';
-    $showPatientName = true;
+if (isset($_GET['type'])) {
+    switch ($_GET['type']) {
+        case 'vl':
+            $refTable = "form_vl";
+            $refPrimaryColumn = "vl_sample_id";
+            $patientIdColumn = 'patient_art_no';
+            $patientFirstName = 'patient_first_name';
+            $patientLastName = 'patient_last_name';
+            $worksheetName = 'Viral Load Test Worksheet';
+            break;
+        case 'eid':
+            $refTable = "form_eid";
+            $refPrimaryColumn = "eid_id";
+            $patientIdColumn = 'child_id';
+            $patientFirstName = 'child_name';
+            $patientLastName = 'child_surname';
+            $worksheetName = 'EID Test Worksheet';
+            break;
+        case 'covid19':
+            $refTable = "form_covid19";
+            $refPrimaryColumn = "covid19_id";
+            $patientIdColumn = 'patient_id';
+            $patientFirstName = 'patient_name';
+            $patientLastName = 'patient_surname';
+            $worksheetName = 'Covid-19 Test Worksheet';
+            break;
+        case 'hepatitis':
+            $refTable = "form_hepatitis";
+            $refPrimaryColumn = "hepatitis_id";
+            $patientIdColumn = 'patient_id';
+            $patientFirstName = 'patient_name';
+            $patientLastName = 'patient_surname';
+            $worksheetName = 'Hepatitis Test Worksheet';
+            $showPatientName = true;
+            break;
+        case 'tb':
+            $refTable = "form_tb";
+            $refPrimaryColumn = "tb_id";
+            $patientIdColumn = 'patient_id';
+            $patientFirstName = 'patient_name';
+            $patientLastName = 'patient_surname';
+            $worksheetName = 'TB Test Worksheet';
+            $showPatientName = true;
+            break;
+        case 'generic-tests':
+            $refTable = "form_generic";
+            $refPrimaryColumn = "sample_id";
+            $patientIdColumn = 'patient_id';
+            $patientFirstName = 'patient_first_name';
+            $patientLastName = 'patient_last_name';
+            $worksheetName = 'Lab Test Worksheet';
+            $showPatientName = true;
+            break;
+    }
 }
 
 
@@ -273,7 +283,7 @@ if ($id > 0) {
             $jsonToArray = json_decode($bResult[0]['label_order'], true);
             $sampleCounter = 1;
             if (isset($bResult[0]['position_type']) && $bResult[0]['position_type'] == 'alpha-numeric') {
-                foreach ($general->excelColumnRange('A', 'H') as $value) {
+                foreach ($batchService->excelColumnRange('A', 'H') as $value) {
                     foreach (range(1, 12) as $no) {
                         $alphaNumeric[] = $value . $no;
                     }
@@ -455,7 +465,7 @@ if ($id > 0) {
             $result = $db->query($sQuery);
             $sampleCounter = 1;
             if (isset($bResult[0]['position_type']) && $bResult[0]['position_type'] == 'alpha-numeric') {
-                foreach ($general->excelColumnRange('A', 'H') as $value) {
+                foreach ($batchService->excelColumnRange('A', 'H') as $value) {
                     foreach (range(1, 12) as $no) {
                         $alphaNumeric[] = $value . $no;
                     }

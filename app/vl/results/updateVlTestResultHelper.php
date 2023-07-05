@@ -91,44 +91,44 @@ try {
 
     $isRejected = false;
     $finalResult = null;
-    $resultStatus = 8; // Awaiting Approval
+    $resultStatus = SAMPLE_STATUS_PENDING_APPROVAL; // Awaiting Approval
     if (isset($_POST['noResult']) && $_POST['noResult'] === 'yes') {
         $isRejected = true;
         $finalResult = $_POST['vlResult'] = $_POST['vlLog'] = null;
-        $resultStatus = 4;
+        $resultStatus = SAMPLE_STATUS_REJECTED;
     }
 
     $_POST['result'] = null;
     if (!empty($_POST['vlResult'])) {
 
         $_POST['result'] = $_POST['vlResult'];
-        $resultStatus = 8; // Awaiting Approval
+        $resultStatus = SAMPLE_STATUS_PENDING_APPROVAL; // Awaiting Approval
 
         if (in_array(strtolower($_POST['vlResult']), ['bdl', 'below detection level'])) {
-            $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?? 'Below Detection Level';
+            $finalResult = $_POST['vlResult'] = $_POST['vlResult'] ?? 'Below Detection Level';
             $_POST['vlResult'] = 'Below Detection Level';
             $_POST['vlLog'] = null;
         } elseif (in_array(strtolower($_POST['vlResult']), ['fail', 'failed', 'failure'])) {
-            $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?? 'Failed';
+            $finalResult = $_POST['vlResult'] = $_POST['vlResult'] ?? 'Failed';
             $_POST['vlLog'] = null;
             $_POST['hivDetection'] = null;
-            $resultStatus = 5; // Invalid/Failed
+            $resultStatus = SAMPLE_STATUS_TEST_FAILED; // Invalid/Failed
         } elseif (in_array(strtolower($_POST['vlResult']), ['error', 'err'])) {
-            $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?? 'Error';
+            $finalResult = $_POST['vlResult'] = $_POST['vlResult'] ?? 'Error';
             $_POST['vlLog'] = null;
             $_POST['hivDetection'] = null;
-            $resultStatus = 5; // Invalid/Failed
+            $resultStatus = SAMPLE_STATUS_TEST_FAILED; // Invalid/Failed
         } elseif (in_array(strtolower($_POST['vlResult']), ['no result', 'no'])) {
-            $finalResult = $_POST['vlResult'] = $_POST['vlResult']  ?? 'No Result';
+            $finalResult = $_POST['vlResult'] = $_POST['vlResult'] ?? 'No Result';
             $_POST['vlLog'] = null;
             $_POST['hivDetection'] = null;
-            $resultStatus = 11; // No Result
+            $resultStatus = SAMPLE_STATUS_NO_RESULT; // No Result
         } else {
 
             $interpretedResults = $vlService->interpretViralLoadResult($_POST['vlResult']);
 
             //Result is saved as entered
-            $finalResult  = $_POST['vlResult'];
+            $finalResult = $_POST['vlResult'];
 
             $logVal = $interpretedResults['logVal'] ?? null;
             $absDecimalVal = $interpretedResults['absDecimalVal'] ?? null;
@@ -136,11 +136,11 @@ try {
             $txtVal = $interpretedResults['txtVal'] ?? null;
         }
     } elseif (!empty($_POST['vlLog'])) {
-        $resultStatus = 8; // Awaiting Approval
+        $resultStatus = SAMPLE_STATUS_PENDING_APPROVAL; // Awaiting Approval
         $finalResult = $_POST['result'] = pow(10, $_POST['vlLog']);
     }
 
-    $finalResult = (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] . ' ' . $finalResult :  $finalResult;
+    $finalResult = (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] . ' ' . $finalResult : $finalResult;
 
 
     $reasonForChanges = null;
@@ -154,7 +154,7 @@ try {
     if (!empty($allChange) && !empty($reasonForChanges)) {
         $allChange = $reasonForChanges . 'vlsm' . $allChange;
     } elseif (!empty($reasonForChanges)) {
-        $allChange =  $reasonForChanges;
+        $allChange = $reasonForChanges;
     }
     if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
         $_POST['reviewedOn'] = DateUtility::isoDateFormat($_POST['reviewedOn'], true);
@@ -206,15 +206,15 @@ try {
         'sample_received_at_vl_lab_datetime' => $_POST['sampleReceivedOn'],
         'sample_tested_datetime' => $_POST['sampleTestingDateAtLab'],
         'result_dispatched_datetime' => $_POST['resultDispatchedOn'] ?? null,
-        'is_sample_rejected' => (isset($_POST['noResult']) && $_POST['noResult'] != '') ? $_POST['noResult'] :  null,
+        'is_sample_rejected' => (isset($_POST['noResult']) && $_POST['noResult'] != '') ? $_POST['noResult'] : null,
         'reason_for_sample_rejection' => $_POST['rejectionReason'] ?? null,
         'rejection_on' => DateUtility::isoDateFormat($_POST['rejectionDate']),
-        'result_value_absolute'                 => $absVal ?? null,
-        'result_value_absolute_decimal'         => $absDecimalVal ?? null,
-        'result_value_text'                     => $txtVal ?? null,
-        'cphl_vl_result'                                => $finalResult ?? null,
-        'result'                                => $finalResult ?? null,
-        'result_value_log'                      => $logVal ?? null,
+        'result_value_absolute' => $absVal ?? null,
+        'result_value_absolute_decimal' => $absDecimalVal ?? null,
+        'result_value_text' => $txtVal ?? null,
+        'cphl_vl_result' => $finalResult ?? null,
+        'result' => $finalResult ?? null,
+        'result_value_log' => $logVal ?? null,
         'result_value_hiv_detection' => $_POST['hivDetection'] ?? null,
         'reason_for_failure' => $_POST['reasonForFailure'] ?? null,
         'result_reviewed_by' => $_POST['reviewedBy'] ?? null,
@@ -253,16 +253,16 @@ try {
 
 
     if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
-        $vlData['result_status'] = 4;
+        $vlData['result_status'] = SAMPLE_STATUS_REJECTED;
     }
 
     $vlData['vl_result_category'] = $vlService->getVLResultCategory($vlData['result_status'], $vlData['result']);
 
 
     if ($vlData['vl_result_category'] == 'failed' || $vlData['vl_result_category'] == 'invalid') {
-        $vlData['result_status'] = 5;
+        $vlData['result_status'] = SAMPLE_STATUS_TEST_FAILED;
     } elseif ($vlData['vl_result_category'] == 'rejected') {
-        $vlData['result_status'] = 4;
+        $vlData['result_status'] = SAMPLE_STATUS_REJECTED;
     }
 
     $db = $db->where('vl_sample_id', $_POST['vlSampleId']);

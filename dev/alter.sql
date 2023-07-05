@@ -4637,3 +4637,7 @@ WHERE inner_pages LIKE '%/generic-tests/reference/%';
 
 -- Amit 03-Jul-2023
 UPDATE s_app_menu SET `module` ="generic-tests"  WHERE `module` LIKE "genericTests";
+
+
+-- Amit 04-Jul-2023 version 5.1.8
+UPDATE `system_config` SET `value` = '5.1.8' WHERE `system_config`.`name` = 'sc_version';

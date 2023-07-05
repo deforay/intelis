@@ -5,6 +5,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 
 if (!class_exists('DRC_PDF')) {
 
@@ -20,7 +21,7 @@ if (!class_exists('DRC_PDF')) {
                 $inrbImage = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . '4999' . DIRECTORY_SEPARATOR . "inrb.png";
 
                 //left logo
-                if (!empty($this->facilityInfo) && !empty($this->facilityInfo['facility_logo']) &&   $this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
+                if (!empty($this->facilityInfo) && !empty($this->facilityInfo['facility_logo']) && $this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
                     $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
                 } else {
@@ -221,7 +222,7 @@ if (isset($result['approvedBy']) && trim($result['approvedBy']) != '') {
     $resultApprovedBy = ($result['approvedBy']);
     $userRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
 } else {
-    $resultApprovedBy  = '';
+    $resultApprovedBy = '';
 }
 $userSignaturePath = null;
 
@@ -287,7 +288,7 @@ $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td width="20%" style="line-height:10px;font-size:11px;text-align:left;font-weight:bold;">Age<br><span style="font-size:8;font-weight:normal;">(Age)</span></td>';
 $html .= '<td width="5%" style="line-height:10px;font-size:11px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;">' .  (!empty($age) ? $age . ' ans' : '') . '</td>';
+$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;">' . (!empty($age) ? $age . ' ans' : '') . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';
@@ -367,7 +368,7 @@ if (!empty($result['lab_manager'])) {
     $labManagerSignature = '';
     if (!empty($labManagerRes['user_signature'])) {
         $labManagerSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $labManagerRes['user_signature'];
-        if ($general->imageExists($labManagerSignaturePath)) {
+        if (MiscUtility::imageExists($labManagerSignaturePath)) {
             $labManagerSignature = '<img src="' . $labManagerSignaturePath . '" style="width:70px;" /><br>';
         }
     }
@@ -376,14 +377,6 @@ if (!empty($result['lab_manager'])) {
 $html .= '<tr>';
 $html .= '<td colspan="3" style="line-height:12px;font-size:12px;text-align:center;"><strong>' . $labManagerSignature . $labManager . '</strong><br>Chef de Laboratoire<br><span style="font-size:8;font-weight:normal;">(Lab Manager)</span><br></td>';
 $html .= '</tr>';
-
-
-/* $html .= '<tr>';
-$html .= '<td width="100%" style="line-height:20px;border-bottom:2px solid #d3d3d3;" colspan="3"></td>';
-$html .= '</tr>';
-$html .= '<tr>';
-$html .= '<td width="100%" style="line-height:10px;font-size:11px;text-align:left;color:#545252;" colspan="3"><br><br>' . str_replace($real, $french, $resultPrintedDate) . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>Department de virologie</em></td>';
-$html .= '</tr>'; */
 
 $html .= '</table>';
 $html .= '</td></tr></table>';

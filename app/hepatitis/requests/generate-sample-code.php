@@ -29,4 +29,4 @@ $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
 $sampleCodeParams['prefix'] = $_POST['prefix'] ?? null;
 $sampleCodeParams['provinceCode'] = $provinceCode;
 
-echo $hepatitisService->generateSampleCode($sampleCodeParams);
+echo $hepatitisService->getSampleCode($sampleCodeParams);

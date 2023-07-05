@@ -2,42 +2,23 @@
 
 namespace App\Services;
 
-use MysqliDb;
 use Exception;
-use DateTimeImmutable;
 use App\Utilities\DateUtility;
-use App\Services\CommonService;
-use App\Registries\ContainerRegistry;
-use App\Services\GeoLocationsService;
-use App\Interfaces\TestServiceInterface;
-use App\Helpers\SampleCodeGeneratorHelper;
+use App\Abstracts\AbstractTestService;
 
 
-class GenericTestsService implements TestServiceInterface
+class GenericTestsService extends AbstractTestService
 {
 
-    protected ?MysqliDb $db = null;
     protected string $table = 'form_generic';
     protected string $shortCode = 'T';
-    protected CommonService $commonService;
-    protected SampleCodeGeneratorHelper $sampleCodeGeneratorHelper;
 
-    public function __construct(
-        ?MysqliDb $db = null,
-        CommonService $commonService = null,
-        SampleCodeGeneratorHelper $sampleCodeGeneratorHelper = null
-    ) {
-        $this->db = $db ?? ContainerRegistry::get('db');
-        $this->commonService = $commonService;
-        $this->sampleCodeGeneratorHelper = $sampleCodeGeneratorHelper;
-    }
-
-    public function generateSampleCode($params)
+    public function getSampleCode($params)
     {
         $globalConfig = $this->commonService->getGlobalConfig();
         $params['sampleCodeFormat'] = $globalConfig['sample_code'] ?? 'MMYY';
         $params['prefix'] = $params['testType'] ?? $this->shortCode;
-        return $this->sampleCodeGeneratorHelper->generateSampleCode($this->table, $params);
+        return $this->generateSampleCode($this->table, $params);
     }
 
     public function getGenericSampleTypesByName($name = "")
@@ -69,7 +50,7 @@ class GenericTestsService implements TestServiceInterface
         return array(
             'positive' => 'Positive',
             'negative' => 'Negative',
-            'invalid'  => 'Invalid'
+            'invalid' => 'Invalid'
         );
     }
 
@@ -99,9 +80,9 @@ class GenericTestsService implements TestServiceInterface
             $sampleCodeParams['provinceCode'] = $params['provinceCode'] ?? null;
             $sampleCodeParams['provinceId'] = $provinceId;
             $sampleCodeParams['testType'] = $testType;
-            $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey']  ?? null;
+            $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey'] ?? null;
 
-            $sampleJson = $this->generateSampleCode($sampleCodeParams);
+            $sampleJson = $this->getSampleCode($sampleCodeParams);
             $sampleData = json_decode($sampleJson, true);
 
             $sQuery = "SELECT sample_id FROM form_generic ";
@@ -139,22 +120,22 @@ class GenericTestsService implements TestServiceInterface
                     $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
                     $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
                     $tesRequestData['remote_sample'] = 'yes';
-                    $tesRequestData['result_status'] = 9;
+                    $tesRequestData['result_status'] = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
                     if ($accessType === 'testing-lab') {
                         $tesRequestData['sample_code'] = $sampleData['sampleCode'];
-                        $tesRequestData['result_status'] = 6;
+                        $tesRequestData['result_status'] = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
                     }
                 } else {
                     $tesRequestData['sample_code'] = $sampleData['sampleCode'];
                     $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
                     $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
                     $tesRequestData['remote_sample'] = 'no';
-                    $tesRequestData['result_status'] = 6;
+                    $tesRequestData['result_status'] = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
                 }
 
                 $formAttributes = [
-                    'applicationVersion'  => $this->commonService->getSystemConfig('sc_version'),
-                    'ip_address'    => $this->commonService->getClientIpAddress()
+                    'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
+                    'ip_address' => $this->commonService->getClientIpAddress()
                 ];
                 $tesRequestData['form_attributes'] = json_encode($formAttributes);
                 $this->db->insert("form_generic", $tesRequestData);
@@ -196,7 +177,7 @@ class GenericTestsService implements TestServiceInterface
             $this->db->where("sample_id", $genericTestId);
             $generic = $this->db->getOne('form_generic');
             if ($generic['test_type_form']) {
-                $dynamicJson = (array)json_decode($generic['test_type_form']);
+                $dynamicJson = (array) json_decode($generic['test_type_form']);
                 $this->db->where('test_type_id', $generic['test_type']);
                 $testTypes = $this->db->getOne('r_test_types');
                 $labels = json_decode($testTypes['test_form_config'], true);
@@ -255,11 +236,11 @@ class GenericTestsService implements TestServiceInterface
                     $return = $resultConfig['below_threshold'];
                 }
             } else {
-                $resultIndex =  (isset($result) && isset($resultConfig['quantitative_result']) && in_array($result, $resultConfig['quantitative_result'])) ? array_search(strtolower($result), array_map('strtolower', $resultConfig['quantitative_result'])) : '';
+                $resultIndex = (isset($result) && isset($resultConfig['quantitative_result']) && in_array($result, $resultConfig['quantitative_result'])) ? array_search(strtolower($result), array_map('strtolower', $resultConfig['quantitative_result'])) : '';
                 $return = $resultConfig['quantitative_result_interpretation'][$resultIndex];
             }
         } elseif (isset($resultConfig['result_type']) && $resultConfig['result_type'] == 'qualitative') {
-            $resultIndex =  (isset($result) && isset($resultConfig['result']) && in_array($result, $resultConfig['result'])) ? array_search(strtolower($result), array_map('strtolower', $resultConfig['result'])) : '';
+            $resultIndex = (isset($result) && isset($resultConfig['result']) && in_array($result, $resultConfig['result'])) ? array_search(strtolower($result), array_map('strtolower', $resultConfig['result'])) : '';
             $return = $resultConfig['result_interpretation'][$resultIndex];
         }
 

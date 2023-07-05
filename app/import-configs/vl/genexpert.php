@@ -2,19 +2,23 @@
 
 // File included in import-file-helper.php
 
-use App\Exceptions\SystemException;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\UsersService;
-use App\Services\VlService;
-use App\Utilities\DateUtility;
 use League\Csv\Reader;
+use App\Services\VlService;
+use App\Services\UsersService;
+use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Exceptions\SystemException;
+use App\Services\TestResultsService;
+use App\Registries\ContainerRegistry;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var TestResultsService $testResultsService */
+$testResultsService = ContainerRegistry::get(TestResultsService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -92,10 +96,10 @@ try {
             foreach ($record as $o => $v) {
 
 
-                $v = $general->removeCntrlCharsAndEncode($v);
+                $v = $testResultsService->removeCntrlCharsAndEncode($v);
 
                 if ($v == "End Time" || $v == "Heure de fin") {
-                    $testedOn = $general->removeCntrlCharsAndEncode($record[1]);
+                    $testedOn = $testResultsService->removeCntrlCharsAndEncode($record[1]);
                     $timestamp = DateTimeImmutable::createFromFormat("!$dateFormat", $testedOn);
                     if (!empty($timestamp)) {
                         $timestamp = $timestamp->getTimestamp();
@@ -104,11 +108,11 @@ try {
                         $testedOn = null;
                     }
                 } elseif ($v == "User" || $v == 'Utilisateur') {
-                    $testedBy = $general->removeCntrlCharsAndEncode($record[1]);
+                    $testedBy = $testResultsService->removeCntrlCharsAndEncode($record[1]);
                 } elseif ($v == "RESULT TABLE" || $v == "TABLEAU DE RÉSULTATS") {
                     $sampleCode = null;
                 } elseif ($v == "Sample ID" || $v == "N° Id de l'échantillon") {
-                    $sampleCode = $general->removeCntrlCharsAndEncode($record[1]);
+                    $sampleCode = $testResultsService->removeCntrlCharsAndEncode($record[1]);
                     if (empty($sampleCode)) {
                         continue;
                     }
@@ -119,13 +123,13 @@ try {
                     if (empty($sampleCode)) {
                         continue;
                     }
-                    $infoFromFile[$sampleCode]['assay'] = $general->removeCntrlCharsAndEncode($record[1]);
+                    $infoFromFile[$sampleCode]['assay'] = $testResultsService->removeCntrlCharsAndEncode($record[1]);
                 } elseif ($v == "Test Result" || $v == "Résultat du test") {
                     if (empty($sampleCode)) {
                         continue;
                     }
 
-                    $parsedResult = (str_replace("|", "", strtoupper($general->removeCntrlCharsAndEncode($record[1]))));
+                    $parsedResult = (str_replace("|", "", strtoupper($testResultsService->removeCntrlCharsAndEncode($record[1]))));
                     $parts = explode(" (LOG ", $parsedResult);
                     $vlResult = $parts[0];
                     $logVal = isset($parts[1]) ? rtrim($parts[1], ")") : null;
@@ -146,7 +150,7 @@ try {
         $inc = 0;
         foreach ($infoFromFile as $sampleCode => $d) {
 
-            $data = array(
+            $data = [
                 'module' => 'vl',
                 'lab_id' => base64_decode($_POST['labId']),
                 'vl_test_platform' => $_POST['vltestPlatform'],
@@ -162,10 +166,10 @@ try {
                 'result_value_absolute' => $d['absVal'],
                 'result_value_text' => $d['txtVal'],
                 'result_value_absolute_decimal' => $d['absDecimalVal']
-            );
+            ];
 
             if (empty($data['result'])) {
-                $data['result_status'] = '1'; // 1= Hold
+                $data['result_status'] = SAMPLE_STATUS_ON_HOLD; // 1= Hold
             }
 
             if (empty($batchCode)) {
@@ -174,7 +178,7 @@ try {
             } else {
                 $data['batch_code'] = $batchCode;
             }
-            //get user name
+            //get username
             if (!empty($d['reviewBy'])) {
 
                 /** @var UsersService $usersService */

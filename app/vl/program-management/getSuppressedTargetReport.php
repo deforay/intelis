@@ -38,13 +38,23 @@ $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 
 
-$sQuery = "SELECT DATE_FORMAT(DATE(vl.sample_tested_datetime), '%Y-%b') as monthrange, f.facility_id, f.facility_name, vl.is_sample_rejected,vl.sample_tested_datetime,vl.sample_collection_date, vl.vl_result_category, tl.suppressed_monthly_target,
-SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) as totalCollected,
-SUM(CASE WHEN (vl_result_category IS NOT NULL AND vl_result_category LIKE 'suppressed%') THEN 1 ELSE 0 END) as totalSuppressed,
-SUM(IF(vl_result_category LIKE 'suppressed%', (((IF(vl_result_category LIKE 'suppressed%',1,0))/tl.suppressed_monthly_target) * 100), 0)) as supp_percent
- FROM testing_labs as tl INNER JOIN form_vl as vl ON vl.lab_id=tl.facility_id LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  ";
+$sQuery = "SELECT DATE_FORMAT(DATE(vl.sample_tested_datetime), '%Y-%b') as monthrange,
+                f.facility_id,
+                f.facility_name,
+                vl.is_sample_rejected,
+                vl.sample_tested_datetime,
+                vl.sample_collection_date,
+                vl.vl_result_category,
+                tl.suppressed_monthly_target,
+                SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) as totalCollected,
+                SUM(CASE WHEN (vl_result_category IS NOT NULL AND vl_result_category LIKE 'suppressed%') THEN 1 ELSE 0 END) as totalSuppressed,
+                SUM(IF(vl_result_category LIKE 'suppressed%', (((IF(vl_result_category LIKE 'suppressed%',1,0))/tl.suppressed_monthly_target) * 100), 0)) as supp_percent
+                FROM testing_labs as tl
+                INNER JOIN form_vl as vl ON vl.lab_id=tl.facility_id
+                LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  ";
 
-$sWhere = ' WHERE vl.result_status!=9';
+$sWhere = ' WHERE vl.result_status != ' . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+
 if (!empty($_POST['facilityName'])) {
     $fac = $_POST['facilityName'];
     $out = '';
@@ -75,7 +85,7 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
     if (isset($sWhere)) {
         $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
     } else {
-        $sWhere = ' where ' . $sWhere;
+        $sWhere = ' WHERE ' . $sWhere;
         $sWhere = $sWhere . ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
     }
 }
@@ -90,10 +100,10 @@ $_SESSION['vlSuppressedTargetReportQuery'] = $sQuery;
 $rResult = $db->rawQuery($sQuery);
 
 foreach ($rResult as $subRow) {
-    $res[$subRow['monthrange']][$subRow['facility_id']]['totalSuppressed']   = $subRow['totalSuppressed'];
-    $res[$subRow['monthrange']][$subRow['facility_id']]['totalCollected']    = $subRow['totalCollected'];
-    $res[$subRow['monthrange']][$subRow['facility_id']]['facility_name']     = $subRow['facility_name'];
-    $res[$subRow['monthrange']][$subRow['facility_id']]['supp_percent']      = $subRow['supp_percent'];
+    $res[$subRow['monthrange']][$subRow['facility_id']]['totalSuppressed'] = $subRow['totalSuppressed'];
+    $res[$subRow['monthrange']][$subRow['facility_id']]['totalCollected'] = $subRow['totalCollected'];
+    $res[$subRow['monthrange']][$subRow['facility_id']]['facility_name'] = $subRow['facility_name'];
+    $res[$subRow['monthrange']][$subRow['facility_id']]['supp_percent'] = $subRow['supp_percent'];
 }
 
 ksort($res);
@@ -109,7 +119,7 @@ if (isset($_POST['monthYear']) && $_POST['monthYear'] != '') {
     $resArray = end($res);
 }
 
-if (isset($_POST['targetType'])  && $_POST['targetType'] != '') {
+if (isset($_POST['targetType']) && $_POST['targetType'] != '') {
     $returnVal = 0;
     foreach ($rResult as $subRow) {
         /* foreach($row as $subRow)
@@ -154,15 +164,15 @@ if (isset($_POST['targetType'])  && $_POST['targetType'] != '') {
         xAxis: {
             //  categories: ["21 Mar", "22 Mar", "23 Mar", "24 Mar", "25 Mar", "26 Mar", "27 Mar"]
             categories: [<?php
-                            echo "'" . htmlspecialchars($monthYear) . "',";
-                            ?>]
+            echo "'" . htmlspecialchars($monthYear) . "',";
+            ?>]
         },
         yAxis: {
             title: {
                 text: "<?php echo _("No of target in month %"); ?>"
             },
             labels: {
-                formatter: function() {
+                formatter: function () {
                     return this.value;
                 }
             },
@@ -186,16 +196,16 @@ if (isset($_POST['targetType'])  && $_POST['targetType'] != '') {
         series: [
             <?php foreach ($resArray as $tRow) {
                 $color = sprintf("#%06x", random_int(0, 16777215)); ?> {
-                    name: '<?php echo  $tRow['facility_name']; ?>',
-                    // data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
-                    data: [
+                name: '<?php echo $tRow['facility_name']; ?>',
+                // data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
+                data: [
                         <?php
-                        echo  $tRow['supp_percent'];
+                        echo $tRow['supp_percent'];
                         ?>
                     ]
-                },
+    },
 
-            <?php  } ?>
+            <?php } ?>
         ]
     });
 </script>

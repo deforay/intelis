@@ -1,23 +1,30 @@
 <?php
 
-namespace App\Helpers;
+namespace App\Abstracts;
 
 use MysqliDb;
 use DateTimeImmutable;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
-use App\Registries\ContainerRegistry;
+use App\Services\GeoLocationsService;
 
-class SampleCodeGeneratorHelper
+abstract class AbstractTestService
 {
-    private ?MysqliDb $db;
-    private CommonService $commonService;
+    protected MysqliDb $db;
+    protected CommonService $commonService;
+    protected GeoLocationsService $geoLocationsService;
 
-    public function __construct(?MysqliDb $db, CommonService $commonService)
-    {
+    public function __construct(
+        MysqliDb $db,
+        CommonService $commonService,
+        GeoLocationsService $geoLocationsService
+    ) {
         $this->db = $db;
         $this->commonService = $commonService;
+        $this->geoLocationsService = $geoLocationsService;
     }
+    abstract public function getSampleCode($params);
+    abstract public function insertSample($params, $returnSampleData = false);
 
     public function generateSampleCode($testTable, $params)
     {
@@ -66,9 +73,7 @@ class SampleCodeGeneratorHelper
             if ($formId == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    /** @var GeoLocationsService $geoLocationsService */
-                    $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
-                    $params['provinceId'] = $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
+                    $params['provinceId'] = $provinceId = $this->geoLocationsService->getProvinceIDFromCode($provinceCode);
                 }
 
                 if (!empty($provinceId)) {

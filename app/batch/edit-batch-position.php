@@ -1,10 +1,15 @@
 <?php
 
-use App\Registries\ContainerRegistry;
+use App\Services\BatchService;
 use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+
+/** @var BatchService $batchService */
+$batchService = ContainerRegistry::get(BatchService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -13,34 +18,48 @@ $_GET = $request->getQueryParams();
 $title = "Viral Load";
 $refTable = "form_vl";
 $refPrimaryColumn = "vl_sample_id";
-if (isset($_GET['type']) && $_GET['type'] == 'vl') {
-	$title = "Viral Load";
-	$refTable = "form_vl";
-	$refPrimaryColumn = "vl_sample_id";
-} elseif (isset($_GET['type']) && $_GET['type'] == 'eid') {
-	$title = "Early Infant Diagnosis";
-	$refTable = "form_eid";
-	$refPrimaryColumn = "eid_id";
-} elseif (isset($_GET['type']) && $_GET['type'] == 'covid19') {
-	$title = "Covid-19";
-	$refTable = "form_covid19";
-	$refPrimaryColumn = "covid19_id";
-} elseif (isset($_GET['type']) && $_GET['type'] == 'hepatitis') {
-	$title = "Hepatitis";
-	$refTable = "form_hepatitis";
-	$refPrimaryColumn = "hepatitis_id";
-} elseif (isset($_GET['type']) && $_GET['type'] == 'tb') {
-	$title = "TB";
-	$refTable = "form_tb";
-	$refPrimaryColumn = "tb_id";
-} elseif (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
-	$title = "Lab Tests";
-	$refTable = "form_generic";
-	$refPrimaryColumn = "sample_id";
+if (isset($_GET['type'])) {
+	switch ($_GET['type']) {
+		case 'vl':
+			$title = "Viral Load";
+			$refTable = "form_vl";
+			$refPrimaryColumn = "vl_sample_id";
+			break;
+		case 'eid':
+			$title = "Early Infant Diagnosis";
+			$refTable = "form_eid";
+			$refPrimaryColumn = "eid_id";
+			break;
+		case 'covid19':
+			$title = "Covid-19";
+			$refTable = "form_covid19";
+			$refPrimaryColumn = "covid19_id";
+			break;
+		case 'hepatitis':
+			$title = "Hepatitis";
+			$refTable = "form_hepatitis";
+			$refPrimaryColumn = "hepatitis_id";
+			break;
+		case 'tb':
+			$title = "TB";
+			$refTable = "form_tb";
+			$refPrimaryColumn = "tb_id";
+			break;
+		case 'generic-tests':
+			$title = "Lab Tests";
+			$refTable = "form_generic";
+			$refPrimaryColumn = "sample_id";
+			break;
+	}
 }
 $_GET['type'] = ($_GET['type'] == 'covid19') ? 'covid-19' : $_GET['type'];
 $title = _($title . " | Edit Batch Position");
+
+
+
+
 require_once APPLICATION_PATH . '/header.php';
+
 
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
@@ -66,7 +85,7 @@ if (empty($batchInfo)) {
 }
 if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) != '') {
 	if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
-		foreach ($general->excelColumnRange('A', 'H') as $value) {
+		foreach ($batchService->excelColumnRange('A', 'H') as $value) {
 			foreach (range(1, 12) as $no) {
 				$alphaNumeric[] = $value . $no;
 			}
@@ -150,13 +169,16 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 	<section class="content">
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<h4><strong>Batch Code : <?php echo (isset($batchInfo[0]['batch_code'])) ? $batchInfo[0]['batch_code'] : ''; ?></strong></h4>
+				<h4><strong>Batch Code :
+						<?php echo (isset($batchInfo[0]['batch_code'])) ? $batchInfo[0]['batch_code'] : ''; ?>
+					</strong></h4>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- <pre><?php print_r($configControl); ?></pre> -->
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='editBatchControlsPosition' id='editBatchControlsPosition' autocomplete="off" action="save-batch-position-helper.php">
+				<form class="form-horizontal" method='post' name='editBatchControlsPosition'
+					id='editBatchControlsPosition' autocomplete="off" action="save-batch-position-helper.php">
 					<div class="box-body">
 						<div class="row" id="displayOrderDetails">
 							<div class="col-md-8">
@@ -171,9 +193,11 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 					<!-- /.box-body -->
 					<div class="box-footer">
 						<input type="hidden" name="type" id="type" value="<?php echo $_GET['type']; ?>" />
-						<input type="hidden" name="sortOrders" id="sortOrders" value="<?php echo implode(",", $displayOrder); ?>" />
+						<input type="hidden" name="sortOrders" id="sortOrders"
+							value="<?php echo implode(",", $displayOrder); ?>" />
 						<input type="hidden" name="batchId" id="batchId" value="<?php echo htmlspecialchars($id); ?>" />
-						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
+						<a class="btn btn-primary" href="javascript:void(0);"
+							onclick="validateNow();return false;">Submit</a>
 						<a href="batches.php?type=<?php echo $_GET['type']; ?>" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->
@@ -189,7 +213,7 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 </div>
 <script>
 	sortedTitle = [];
-	$(document).ready(function() {
+	$(document).ready(function () {
 		function cleanArray(actual) {
 			var newArray = [];
 			for (var i = 0; i < actual.length; i++) {
@@ -203,7 +227,7 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 		$("#sortableRow").sortable({
 			opacity: 0.6,
 			cursor: 'move',
-			update: function() {
+			update: function () {
 				sortedTitle = cleanArray($(this).sortable("toArray"));
 				$("#sortOrders").val("");
 				$("#sortOrders").val(sortedTitle);

@@ -19,4 +19,4 @@ $sampleCodeParams = [];
 $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
 $sampleCodeParams['provinceCode'] = $provinceCode;
 
-echo $tbService->generateSampleCode($sampleCodeParams);
+echo $tbService->getSampleCode($sampleCodeParams);

@@ -128,9 +128,9 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                         <td>
                                             <label for="fCode"><?= _('Clinic/Health Center Code'); ?> </label><br>
                                            <input type="text" class="form-control" style="width:100%;" name="fCode" id="fCode" placeholder="<?= _('Clinic/Health Center Code'); ?>" title="<?= _('Please enter clinic/health center code'); ?>" value="<?php echo $facilityResult[0]['facility_code']; ?>">
-                                        </tb>
+                                        </td>
                                     </tr>
-                                   
+
                                 </table>
                                 <br>
                                 <hr style="border: 1px solid #ccc;">
@@ -197,7 +197,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                         </td>
                                     </tr>
 
-                                </table> 
+                                </table>
 
                                 <br><br>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
@@ -241,7 +241,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                             <input class="form-control forceNumeric" type="text" name="noOfInfectedChildren" value="<?php echo ($eidInfo['no_of_infected_children']); ?>" id="noOfInfectedChildren" placeholder="<?= _('Please enter number of infected children'); ?>" />
                                         </td>
                                     </tr>
-                                    
+
                                     <tr>
                                         <th scope="row" style="width:18% !important"><?= _('ARV protocol followed by mother'); ?> </th>
                                         <td>
@@ -250,7 +250,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                                 <option value="Nothing" <?php echo ($eidInfo['mother_arv_protocol'] == 'Nothing') ? "selected='selected'" : ""; ?>> <?= _('Nothing'); ?> </option>
                                                 <option value="TELE (TDF+TC+EFV)" <?php echo ($eidInfo['mother_arv_protocol'] == 'TELE (TDF+TC+EFV)') ? "selected='selected'" : ""; ?>><?= _('TELE (TDF+TC+EFV)'); ?> </option>
                                                 <option value="other" <?php echo ($eidInfo['mother_arv_protocol'] == 'other') ? "selected='selected'" : ""; ?>><?= _('Other'); ?></option>
-                                            </select> 
+                                            </select>
                                             <input type="text" class="form-control" name="motherArvProtocolOther" id="motherArvProtocolOther" style="display:none;"/>
 
                                       </td>
@@ -273,7 +273,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                             <select class="form-control isRequired" name="isChildSymptomatic" id="isChildSymptomatic">
                                             <option value=''> <?= _('-- Select --'); ?> </option>
                                                 <option value="yes" <?php echo ($eidInfo['is_child_symptomatic'] == 'yes') ? "selected='selected'" : ""; ?>> <?= _('Yes'); ?> </option>
-                                                <option value="no" <?php echo ($eidInfo['is_child_symptomatic'] == 'no') ? "selected='selected'" : ""; ?>> <?= _('No'); ?> </option> 
+                                                <option value="no" <?php echo ($eidInfo['is_child_symptomatic'] == 'no') ? "selected='selected'" : ""; ?>> <?= _('No'); ?> </option>
                                             </select>
                                         </td>
                                         <th scope="row" style="width:16% !important"><?= _('Date of Weaning?'); ?> </th>
@@ -287,8 +287,8 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                             <select class="form-control" name="wasChildBreastfed" id="wasChildBreastfed">
                                                 <option value=''> <?= _('-- Select --'); ?> </option>
                                                 <option value="yes" <?php echo ($eidInfo['was_child_breastfed'] == 'yes') ? "selected='selected'" : ""; ?>> <?= _('Yes'); ?> </option>
-                                                <option value="no" <?php echo ($eidInfo['was_child_breastfed'] == 'no') ? "selected='selected'" : ""; ?>> <?= _('No'); ?> </option> 
-                                                <option value="unknown" <?php echo ($eidInfo['was_child_breastfed'] == 'unknown') ? "selected='selected'" : ""; ?>> <?= _('Unknown'); ?> </option> 
+                                                <option value="no" <?php echo ($eidInfo['was_child_breastfed'] == 'no') ? "selected='selected'" : ""; ?>> <?= _('No'); ?> </option>
+                                                <option value="unknown" <?php echo ($eidInfo['was_child_breastfed'] == 'unknown') ? "selected='selected'" : ""; ?>> <?= _('Unknown'); ?> </option>
                                             </select>
                                         </td>
                                 <th scope="row" style="width:16% !important"><?= _('If Yes,'); ?> </th>
@@ -296,8 +296,8 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                             <select class="form-control" name="choiceOfFeeding" id="choiceOfFeeding">
                                                 <option value=''> <?= _('-- Select --'); ?> </option>
                                                 <option value="Exclusive" <?php echo ($eidInfo['choice_of_feeding'] == 'Exclusive') ? "selected='selected'" : ""; ?>><?= _('Exclusive'); ?></option>
-                                                <option value="Mixed" <?php echo ($eidInfo['choice_of_feeding'] == 'Mixed') ? "selected='selected'" : ""; ?>><?= _('Mixed'); ?></option> 
-                                                <option value="Exclusive formula feeding" <?php echo ($eidInfo['choice_of_feeding'] == 'Exclusive formula feeding') ? "selected='selected'" : ""; ?>><?= _('Exclusive formula feeding'); ?></option> 
+                                                <option value="Mixed" <?php echo ($eidInfo['choice_of_feeding'] == 'Mixed') ? "selected='selected'" : ""; ?>><?= _('Mixed'); ?></option>
+                                                <option value="Exclusive formula feeding" <?php echo ($eidInfo['choice_of_feeding'] == 'Exclusive formula feeding') ? "selected='selected'" : ""; ?>><?= _('Exclusive formula feeding'); ?></option>
                                             </select>
                                         </td>
                                 </tr>
@@ -307,7 +307,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                             <select class="form-control" name="isChildOnCotrim" id="isChildOnCotrim">
                                                 <option value=''> <?= _('-- Select --'); ?> </option>
                                                 <option value="yes" <?php echo ($eidInfo['is_child_on_cotrim'] == 'yes') ? "selected='selected'" : ""; ?>> <?= _('Yes'); ?> </option>
-                                                <option value="no" <?php echo ($eidInfo['is_child_on_cotrim'] == 'no') ? "selected='selected'" : ""; ?>> <?= _('No'); ?> </option> 
+                                                <option value="no" <?php echo ($eidInfo['is_child_on_cotrim'] == 'no') ? "selected='selected'" : ""; ?>> <?= _('No'); ?> </option>
                                             </select>
                                         </td>
                                 <th scope="row" style="width:16% !important"><?= _('If Yes, Date of Initiation'); ?> </th>
@@ -322,7 +322,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                             <select class="form-control" name="infantArtStatus" id="infantArtStatus">
                                             <option value=''> <?= _('-- Select --'); ?> </option>
                                             <option value="yes" <?php echo ($eidInfo['infant_art_status'] == 'yes') ? "selected='selected'" : ""; ?>> <?= _('Yes'); ?> </option>
-                                                <option value="no" <?php echo ($eidInfo['infant_art_status'] == 'no') ? "selected='selected'" : ""; ?>> <?= _('No'); ?> </option> 
+                                                <option value="no" <?php echo ($eidInfo['infant_art_status'] == 'no') ? "selected='selected'" : ""; ?>> <?= _('No'); ?> </option>
                                             </select>
                                         </td>
                                 <th scope="row" style="width:16% !important"><?= _('If Yes, Date of Initiation'); ?> </th>
@@ -337,8 +337,8 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                             <select class="form-control" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
                                             <option value=''> <?= _('-- Select --'); ?> </option>
                                             <option value="yes" <?php echo ($eidInfo['has_infant_stopped_breastfeeding'] == 'yes') ? "selected='selected'" : ""; ?>> <?= _('Yes'); ?> </option>
-                                                <option value="no" <?php echo ($eidInfo['has_infant_stopped_breastfeeding'] == 'no') ? "selected='selected'" : ""; ?>> <?= _('No'); ?> </option> 
-                                                <option value="unknown" <?php echo ($eidInfo['has_infant_stopped_breastfeeding'] == 'unknown') ? "selected='selected'" : ""; ?>> <?= _('Unknown'); ?> </option> 
+                                                <option value="no" <?php echo ($eidInfo['has_infant_stopped_breastfeeding'] == 'no') ? "selected='selected'" : ""; ?>> <?= _('No'); ?> </option>
+                                                <option value="unknown" <?php echo ($eidInfo['has_infant_stopped_breastfeeding'] == 'unknown') ? "selected='selected'" : ""; ?>> <?= _('Unknown'); ?> </option>
                                             </select>
                                         </td>
                                         <th scope="row"><?= _('Age (months) breastfeeding stopped'); ?> </th>
@@ -348,13 +348,13 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                     </tr>
 
                                     <tr>
-                                       
+
                                         <th scope="row"><?= _('Previous PCR test'); ?> </th>
                                         <td>
                                             <select class="form-control" title="Please select if Previous PCR Test was done" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore" onchange="setRelatedField(this.value);">
                                                 <option value=''> <?= _('-- Select --'); ?> </option>
                                                 <option value="yes" <?php echo ($eidInfo['pcr_test_performed_before'] == 'yes') ? "selected='selected'" : ""; ?>> <?= _('Yes'); ?> </option>
-                                                <option value="no" <?php echo ($eidInfo['pcr_test_performed_before'] == 'no') ? "selected='selected'" : ""; ?>> <?= _('No'); ?> </option> 
+                                                <option value="no" <?php echo ($eidInfo['pcr_test_performed_before'] == 'no') ? "selected='selected'" : ""; ?>> <?= _('No'); ?> </option>
                                             </select>
                                         </td>
                                         <th scope="row"><?= _('Previous PCR test date'); ?></th>
@@ -364,7 +364,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                     </tr>
 
                                     <tr>
-                                       
+
                                     <th scope="row"><?= _('Previous PCR test Result'); ?></th>
                                         <td>
                                             <select class="form-control" name="prePcrTestResult" id="prePcrTestResult">
@@ -393,7 +393,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                                 <option value="1st Test for sick child" <?php echo ($eidInfo['sample_collection_reason'] == '1st Test for sick child') ? "selected='selected'" : ""; ?>><?= _('1st Test for sick child'); ?></option>
                                                 <option value="Repeat Testing for 6 weeks after weaning" <?php echo ($eidInfo['sample_collection_reason'] == 'Repeat Testing for 6 weeks after weaning') ? "selected='selected'" : ""; ?>><?= _('Repeat Testing for 6 weeks after weaning'); ?></option>
                                                 <option value="Repeat Testing due to loss of 1st sample" <?php echo ($eidInfo['sample_collection_reason'] == 'Repeat Testing due to loss of 1st sample') ? "selected='selected'" : ""; ?>><?= _('Repeat Testing due to loss of 1st sample'); ?></option>
-                                                <option value="Repeat due to clinical suspicion following negative 1st test" <?php echo ($eidInfo['sample_collection_reason'] == 'Repeat due to clinical suspicion following negative 1st test') ? "selected='selected'" : ""; ?>><?= _('Repeat due to clinical suspicion following negative 1st test');?></option>
+                                                <option value="Repeat due to clinical suspicion following negative 1st test" <?php echo ($eidInfo['sample_collection_reason'] == 'Repeat due to clinical suspicion following negative 1st test') ? "selected='selected'" : ""; ?>><?= _('Repeat due to clinical suspicion following negative 1st test'); ?></option>
                                             </select>
                                         </td>
                                         <th scope="row"><?= _('Point of Entry'); ?></th>
@@ -407,7 +407,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                                 <option value="EPI(PE)" <?php echo ($eidInfo['lab_testing_point'] == 'EPI(PE)') ? "selected='selected'" : ""; ?>> <?= _('EPI(PE)'); ?> </option>
                                                 <option value="other" <?php echo ($eidInfo['lab_testing_point'] == 'other') ? "selected='selected'" : ""; ?>><?= _('Other'); ?></option>
                                             </select>
-                                            <input type="text" name="labTestingPointOther" id="labTestingPointOther" class="form-control" title="<?= _('Please specify other point of entry') ?>" placeholder="<?= _('Please specify other point of entry') ?>" style="display:<?php echo ($eidInfo['lab_testing_point']=='other') ? 'none' : '' ?>;" value="<?php echo ($eidInfo['lab_testing_point_other']); ?>" /> 
+                                            <input type="text" name="labTestingPointOther" id="labTestingPointOther" class="form-control" title="<?= _('Please specify other point of entry') ?>" placeholder="<?= _('Please specify other point of entry') ?>" style="display:<?php echo ($eidInfo['lab_testing_point'] == 'other') ? 'none' : '' ?>;" value="<?php echo ($eidInfo['lab_testing_point_other']); ?>" />
                                         </td>
                                     </tr>
                                 </table>
@@ -484,7 +484,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                                             <?php }
                                                             } ?>
                                                         </optgroup>
-                                                    <?php }  ?>
+                                                    <?php } ?>
                                                 </select>
                                             </td>
                                         </tr>
@@ -699,10 +699,10 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
     function fillFacilityDetails() {
           $.blockUI();
           //check facility name
-         
+
           $.unblockUI();
           $("#fCode").val($('#facilityId').find(':selected').data('code'));
-         
+
      }
 
     function showOtherARV()
