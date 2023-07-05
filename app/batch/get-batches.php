@@ -42,8 +42,8 @@ if (isset($_POST['type']) && $_POST['type'] == 'vl') {
 
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
-    * you want to insert a non-database field (for example a counter or static image)
-*/
+ * you want to insert a non-database field (for example a counter or static image)
+ */
 $aColumns = array('b.batch_code', 'total_samples', 'testcount', "DATE_FORMAT(last_tested_date,'%d-%b-%Y')", "DATE_FORMAT(b.last_modified_datetime,'%d-%b-%Y %H:%i:%s')");
 $orderColumns = array('b.batch_code', 'total_samples', 'testcount', 'last_tested_date', 'b.last_modified_datetime');
 
@@ -52,8 +52,8 @@ $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
 /*
-         * Paging
-         */
+ * Paging
+ */
 $sLimit = "";
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
@@ -61,8 +61,8 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 }
 
 /*
-         * Ordering
-        */
+ * Ordering
+ */
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -78,11 +78,11 @@ if (isset($_POST['iSortCol_0'])) {
 }
 
 /*
-* Filtering
-* NOTE this does not match the built-in DataTables filtering which does it
-* word by word on any field. It's possible to do here, but concerned about efficiency
-* on very large tables, and MySQL's regex functionality is very limited
-*/
+ * Filtering
+ * NOTE this does not match the built-in DataTables filtering which does it
+ * word by word on any field. It's possible to do here, but concerned about efficiency
+ * on very large tables, and MySQL's regex functionality is very limited
+ */
 
 $sWhere[] = " vl.sample_batch_id = b.batch_id";
 $sWhere[] = " b.test_type like '" . $_POST['type'] . "'";
@@ -119,9 +119,9 @@ if (isset($_POST['testType']) && ($_POST['testType'] != "")) {
     $sWhere[] = " vl.test_type = '" . $_POST['testType'] . "'";
 }
 /*
-* SQL queries
-* Get data to display
-*/
+ * SQL queries
+ * Get data to display
+ */
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS  SUM(CASE WHEN vl.sample_tested_datetime is not null THEN 1 ELSE 0 END) as `testcount`,
                 MAX(vl.sample_tested_datetime) as last_tested_date,
                 b.request_created_datetime,
@@ -151,16 +151,16 @@ $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 /*
-* Output
-*/
+ * Output
+ */
 $output = array(
     "sEcho" => intval($_POST['sEcho']),
     "iTotalRecords" => $iTotal,
     "iTotalDisplayRecords" => $iFilteredTotal,
     "aaData" => array()
 );
-$editBatch = $delete = $pdf = $editPosition =  false;
-if (isset($_SESSION['privileges']) && (in_array('/batch/edit-batch.php?type='.$_POST['type'], $_SESSION['privileges']))) {
+$editBatch = $delete = $pdf = $editPosition = false;
+if (isset($_SESSION['privileges']) && (in_array('/batch/edit-batch.php?type=' . $_POST['type'], $_SESSION['privileges']))) {
     $editBatch = true;
     $delete = true;
     $pdf = true;
@@ -172,20 +172,20 @@ foreach ($rResult as $aRow) {
     $deleteBatch = '';
     $edit = '';
     if ($editBatch) {
-        if(!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
-            $edit = '<a href="edit-batch.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '&testType='.base64_encode($_POST['testType']).'" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>&nbsp;';
-        }else{
+        if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
+            $edit = '<a href="edit-batch.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '&testType=' . base64_encode($_POST['testType']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>&nbsp;';
+        } else {
             $edit = '<a href="edit-batch.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>&nbsp;';
         }
     }
-    if($editPosition){
+    if ($editPosition) {
         $editPosition = '<a href="edit-batch-position.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _("Edit Position") . '"><em class="fa-solid fa-arrow-down-1-9"></em> ' . _("Edit Position") . '</a>';
     }
     if ($pdf) {
-        $printBarcode = '<a href="generate-batch-pdf.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" target="_blank"  rel="noopener" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _("Print bar code") . '"><em class="fa-solid fa-barcode"></em> ' . _("Print Batch PDF") . '</a>';
+        $printBarcode = '<a href="generate-batch-pdf.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" target="_blank"  rel="noopener" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _("Print Batch PDF") . '"><em class="fa-solid fa-barcode"></em> ' . _("Print Batch PDF") . '</a>';
     }
     if (trim($aRow['request_created_datetime']) != "" && $aRow['request_created_datetime'] != '0000-00-00 00:00:00') {
-        $createdDate =  date("d-M-Y H:i:s", strtotime($aRow['request_created_datetime']));
+        $createdDate = date("d-M-Y H:i:s", strtotime($aRow['request_created_datetime']));
     }
 
     if (($aRow['total_samples'] == 0 || $aRow['testcount'] == 0) && $delete) {

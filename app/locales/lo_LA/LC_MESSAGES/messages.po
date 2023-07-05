@@ -2501,7 +2501,7 @@ msgstr "ເປັນຄົນອົດອາຫານຖືພາ"
 
 #: covid-19/management/generate-export-drc.php:37
 #: covid-19/requests/export-covid19-requests.php:38
-msgid "Patient Phone No."
+msgid "Patient Phone Number"
 msgstr "ໂທລະສັບຄົນເຈັບ ເລກທີ."
 
 #: covid-19/management/generate-export-drc.php:38
@@ -6958,7 +6958,7 @@ msgid "Test Result"
 msgstr "ຜົນການທົດສອບ"
 
 #: vl/batch/getBatchCodeDetails.php:176
-msgid "Print bar code"
+msgid "Print barcode"
 msgstr "ພິມລະຫັດbar"
 
 #: vl/batch/getBatchCodeDetails.php:176

@@ -11,15 +11,15 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 
+$title = "Edit Specimen Referral Manifest";
+require_once APPLICATION_PATH . '/header.php';
+
+
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-
-$title = "Edit Specimen Referral Manifest";
-
-require_once APPLICATION_PATH . '/header.php';
 
 
 /** @var FacilitiesService $facilitiesService */
@@ -42,13 +42,14 @@ $country = $configResult[0]['value'];
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = isset($_GET['id']) ? base64_decode($_GET['id']) : null;
+$m = $module = $_GET['t'] ?? 'vl';
 
 $pQuery = "SELECT * FROM package_details WHERE package_id = ?";
 $pResult = $db->rawQuery($pQuery, [$id]);
 
 if ($pResult[0]['package_status'] == 'dispatch') {
-	header("Location:packageList.php");
+	header("Location:/specimen-referral-manifest/view-manifests.php?t=" . $module);
 }
 
 $sarr = $general->getSystemConfig();
@@ -61,20 +62,24 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sCode = 'sample_code';
 }
 
-// Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
-$request = $GLOBALS['request'];
-$_GET = $request->getQueryParams();
-$m = $module = isset($_GET['t']) ? base64_decode($_GET['t']) : 'vl';
-
 if ($module == 'vl') {
-	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.vl_sample_id,vl.sample_package_id FROM form_vl as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') ";
+	$query = "SELECT vl.sample_code,
+				vl.remote_sample_code,
+				vl.vl_sample_id,
+				vl.sample_package_id
+				FROM form_vl as vl
+				WHERE (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') ";
 	$m = ($module == 'vl') ? 'vl' : $module;
 	/** @var VlService $vlService */
 	$vlService = ContainerRegistry::get(VlService::class);
 	$sampleTypes = $vlService->getVlSampleTypes();
 } elseif ($module == 'eid') {
-	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.eid_id,vl.sample_package_id FROM form_eid as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') ";
+	$query = "SELECT vl.sample_code,
+					vl.remote_sample_code,
+					vl.eid_id,
+					vl.sample_package_id
+					FROM form_eid as vl
+					WHERE (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes') ";
 	$m = ($module == 'eid') ? 'eid' : $module;
 	/** @var EidService $eidService */
 	$eidService = ContainerRegistry::get(EidService::class);
@@ -98,7 +103,11 @@ if ($module == 'vl') {
 	$tbService = ContainerRegistry::get(TbService::class);
 	$sampleTypes = $tbService->getTbSampleTypes();
 } elseif ($module == 'generic-tests') {
-	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.sample_id,vl.sample_package_id FROM form_generic as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes')  ";
+	$query = "SELECT vl.sample_code,
+				vl.remote_sample_code,
+				vl.sample_id,vl.sample_package_id
+				FROM form_generic as vl
+				WHERE (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes')  ";
 	$m = ($module == 'GEN') ? 'generic-tests' : $module;
 	/** @var GenericTestsService $genService */
 	$genService = ContainerRegistry::get(GenericTestsService::class);
@@ -114,11 +123,6 @@ if (!empty($_SESSION['facilityMap'])) {
 $query = $query . " ORDER BY vl.request_created_datetime ASC";
 
 $result = $db->rawQuery($query);
-// if($sarr['sc_user_type']=='remoteuser'){
-//   $sCode = 'remote_sample_code';
-// }else if($sarr['sc_user_type']=='vluser'){
-//   $sCode = 'sample_code';
-// }
 
 $global = $general->getGlobalConfig();
 
@@ -170,19 +174,26 @@ $global = $general->getGlobalConfig();
 	<section class="content">
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required
+					field &nbsp;</div>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method="post" name="editSpecimenReferralManifestForm" id="editSpecimenReferralManifestForm" autocomplete="off" action="/specimen-referral-manifest/edit-manifest-helper.php">
+				<form class="form-horizontal" method="post" name="editSpecimenReferralManifestForm"
+					id="editSpecimenReferralManifestForm" autocomplete="off"
+					action="/specimen-referral-manifest/edit-manifest-helper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="packageCode" class="col-lg-4 control-label">Manifest Code <span class="mandatory">*</span></label>
+									<label for="packageCode" class="col-lg-4 control-label">Manifest Code <span
+											class="mandatory">*</span></label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<input type="text" class="form-control isRequired" id="packageCode" name="packageCode" placeholder="Manifest Code" title="Please enter manifest code" readonly value="<?php echo strtoupper($pResult[0]['package_code']); ?>" />
+										<input type="text" class="form-control isRequired" id="packageCode"
+											name="packageCode" placeholder="Manifest Code"
+											title="Please enter manifest code" readonly
+											value="<?php echo strtoupper($pResult[0]['package_code']); ?>" />
 									</div>
 								</div>
 							</div>
@@ -191,7 +202,8 @@ $global = $general->getGlobalConfig();
 								<div class="form-group">
 									<label for="packageCode" class="col-lg-4 control-label">Testing Lab :</label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<select class="form-control" id="testingLab" name="testingLab" title="Choose one test lab" readonly="readonly">
+										<select class="form-control" id="testingLab" name="testingLab"
+											title="Choose one test lab" readonly="readonly">
 											<?= $general->generateSelectOptions($testingLabs, $pResult[0]['lab_id'], '-- Select --'); ?>
 										</select>
 									</div>
@@ -201,9 +213,11 @@ $global = $general->getGlobalConfig();
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="packageCode" class="col-lg-4 control-label">Manifest Status <span class="mandatory">*</span></label>
+									<label for="packageCode" class="col-lg-4 control-label">Manifest Status <span
+											class="mandatory">*</span></label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<select class="form-control isRequired" name="packageStatus" id="packageStatus" title="Please select manifest status" readonly="readonly">
+										<select class="form-control isRequired" name="packageStatus" id="packageStatus"
+											title="Please select manifest status" readonly="readonly">
 											<option value="">-- Select --</option>
 											<option value="pending" <?php echo ($pResult[0]['package_status'] == 'pending') ? "selected='selected'" : ''; ?>>Pending</option>
 											<option value="dispatch" <?php echo ($pResult[0]['package_status'] == 'dispatch') ? "selected='selected'" : ''; ?>>Dispatch</option>
@@ -214,9 +228,12 @@ $global = $general->getGlobalConfig();
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="operator" class="col-lg-4 control-label"><?php echo _("Operator/Technician"); ?></label>
+									<label for="operator" class="col-lg-4 control-label">
+										<?php echo _("Operator/Technician"); ?>
+									</label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<select class="form-control select2" id="operator" name="operator" title="Choose one Operator/Technician">
+										<select class="form-control select2" id="operator" name="operator"
+											title="Choose one Operator/Technician">
 											<?= $general->generateSelectOptions($usersList, $pResult[0]['added_by'], '-- Select --'); ?>
 										</select>
 									</div>
@@ -226,9 +243,12 @@ $global = $general->getGlobalConfig();
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="facility" class="col-lg-4 control-label"><?php echo _("Sample Collection Point"); ?></label>
+									<label for="facility" class="col-lg-4 control-label">
+										<?php echo _("Sample Collection Point"); ?>
+									</label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<select class="form-control select2" id="facility" name="facility" title="Choose one sample collection point">
+										<select class="form-control select2" id="facility" name="facility"
+											title="Choose one sample collection point">
 											<?= $general->generateSelectOptions($facilities, null, '-- Select --'); ?>
 										</select>
 									</div>
@@ -236,9 +256,12 @@ $global = $general->getGlobalConfig();
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="sampleType" class="col-lg-4 control-label"><?php echo _("Sample Type"); ?></label>
+									<label for="sampleType" class="col-lg-4 control-label">
+										<?php echo _("Sample Type"); ?>
+									</label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<select class="form-control select2" id="sampleType" name="sampleType" title="Choose Sample Type">
+										<select class="form-control select2" id="sampleType" name="sampleType"
+											title="Choose Sample Type">
 											<?= $general->generateSelectOptions($sampleTypes, null, '-- Select --'); ?>
 										</select>
 									</div>
@@ -248,9 +271,13 @@ $global = $general->getGlobalConfig();
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="daterange" class="col-lg-4 control-label"><?php echo _("Sample Collection Date Range"); ?></label>
+									<label for="daterange" class="col-lg-4 control-label">
+										<?php echo _("Sample Collection Date Range"); ?>
+									</label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<input type="text" class="form-control" id="daterange" name="daterange" placeholder="<?php echo _('Sample Collection Date Range'); ?>" title="Choose one sample collection date range">
+										<input type="text" class="form-control" id="daterange" name="daterange"
+											placeholder="<?php echo _('Sample Collection Date Range'); ?>"
+											title="Choose one sample collection date range">
 									</div>
 								</div>
 							</div>
@@ -258,8 +285,11 @@ $global = $general->getGlobalConfig();
 						<div class="row">
 							<div class="col-md-12 text-center">
 								<div class="form-group">
-									<a class="btn btn-primary" href="javascript:void(0);" title="Please select testing lab" onclick="getSampleCodeDetails();return false;">Search </a>
-									<a href="javascript:void(0);" class="btn btn-default" onclick="clearSelection();"> Clear</a>
+									<a class="btn btn-primary" href="javascript:void(0);"
+										title="Please select testing lab"
+										onclick="getSampleCodeDetails();return false;">Search </a>
+									<a href="javascript:void(0);" class="btn btn-default" onclick="clearSelection();">
+										Clear</a>
 								</div>
 							</div>
 						</div>
@@ -269,27 +299,32 @@ $global = $general->getGlobalConfig();
 							<div class="form-group">
 								<div class="col-md-12">
 									<div style="width:60%;margin:0 auto;clear:both;">
-										<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
+										<a href='#' id='select-all-samplecode' style="float:left"
+											class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em
+												class="fa-solid fa-chevron-right"></em></a> <a href='#'
+											id='deselect-all-samplecode' style="float:right"
+											class="btn btn-danger btn-xs"><em
+												class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
 									</div><br /><br />
 									<select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search">
 										<?php foreach ($result as $sample) {
 											if (!empty($sample[$sCode])) {
 												if ($module == 'vl') {
-													$sampleId  = $sample['vl_sample_id'];
+													$sampleId = $sample['vl_sample_id'];
 												} else if ($module == 'eid') {
-													$sampleId  = $sample['eid_id'];
+													$sampleId = $sample['eid_id'];
 												} else if ($module == 'covid19') {
-													$sampleId  = $sample['covid19_id'];
+													$sampleId = $sample['covid19_id'];
 												} else if ($module == 'hepatitis') {
-													$sampleId  = $sample['hepatitis_id'];
+													$sampleId = $sample['hepatitis_id'];
 												} else if ($module == 'tb') {
-													$sampleId  = $sample['tb_id'];
+													$sampleId = $sample['tb_id'];
 												} else if ($module == 'generic-tests') {
-													$sampleId  = $sample['sample_id'];
+													$sampleId = $sample['sample_id'];
 												}
-										?>
+												?>
 												<option value="<?php echo $sampleId; ?>" <?php echo ($sample['sample_package_id'] == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample[$sCode]; ?></option>
-										<?php }
+											<?php }
 										} ?>
 									</select>
 								</div>
@@ -301,8 +336,10 @@ $global = $general->getGlobalConfig();
 			<!-- /.box-body -->
 			<div class="box-footer">
 				<input type="hidden" name="packageId" value="<?php echo $pResult[0]['package_id']; ?>" />
-				<input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title="" readonly value="<?= htmlspecialchars($module); ?>" />
-				<a id="packageSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
+				<input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title=""
+					readonly value="<?= htmlspecialchars($module); ?>" />
+				<a id="packageSubmit" class="btn btn-primary" href="javascript:void(0);"
+					onclick="validateNow();return false;">Submit</a>
 				<a href="javascript:history.go(-1);" class="btn btn-default"> Cancel</a>
 			</div>
 			<!-- /.box-footer -->
@@ -333,29 +370,29 @@ $global = $general->getGlobalConfig();
 	}
 
 	//$("#auditRndNo").multiselect({height: 100,minWidth: 150});
-	$(document).ready(function() {
+	$(document).ready(function () {
 
 		$('#daterange').daterangepicker({
-				locale: {
-					cancelLabel: "<?= _("Clear"); ?>",
-					format: 'DD-MMM-YYYY',
-					separator: ' to ',
-				},
-				showDropdowns: true,
-				alwaysShowCalendars: false,
-				startDate: moment().subtract(28, 'days'),
-				endDate: moment(),
-				maxDate: moment(),
-				ranges: {
-					'Today': [moment(), moment()],
-					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-				}
+			locale: {
+				cancelLabel: "<?= _("Clear"); ?>",
+				format: 'DD-MMM-YYYY',
+				separator: ' to ',
 			},
-			function(start, end) {
+			showDropdowns: true,
+			alwaysShowCalendars: false,
+			startDate: moment().subtract(28, 'days'),
+			endDate: moment(),
+			maxDate: moment(),
+			ranges: {
+				'Today': [moment(), moment()],
+				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+				'This Month': [moment().startOf('month'), moment().endOf('month')],
+				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+			}
+		},
+			function (start, end) {
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
@@ -368,7 +405,7 @@ $global = $general->getGlobalConfig();
 		$('.search').multiSelect({
 			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
 			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
-			afterInit: function(ms) {
+			afterInit: function (ms) {
 				var that = this,
 					$selectableSearch = that.$selectableUl.prev(),
 					$selectionSearch = that.$selectionUl.prev(),
@@ -376,7 +413,7 @@ $global = $general->getGlobalConfig();
 					selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
 
 				that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-					.on('keydown', function(e) {
+					.on('keydown', function (e) {
 						if (e.which === 40) {
 							that.$selectableUl.focus();
 							return false;
@@ -384,14 +421,14 @@ $global = $general->getGlobalConfig();
 					});
 
 				that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-					.on('keydown', function(e) {
+					.on('keydown', function (e) {
 						if (e.which == 40) {
 							that.$selectionUl.focus();
 							return false;
 						}
 					});
 			},
-			afterSelect: function() {
+			afterSelect: function () {
 				//button disabled/enabled
 				if (this.qs2.cache().matchedResultsCount == noOfSamples) {
 					alert("You have selected maximum number of samples - " + this.qs2.cache().matchedResultsCount);
@@ -408,7 +445,7 @@ $global = $general->getGlobalConfig();
 				this.qs1.cache();
 				this.qs2.cache();
 			},
-			afterDeselect: function() {
+			afterDeselect: function () {
 				//button disabled/enabled
 				if (this.qs2.cache().matchedResultsCount == 0) {
 					//$("#packageSubmit").attr("disabled", true);
@@ -428,11 +465,11 @@ $global = $general->getGlobalConfig();
 				this.qs2.cache();
 			}
 		});
-		$('#select-all-samplecode').click(function() {
+		$('#select-all-samplecode').click(function () {
 			$('#sampleCode').multiSelect('select_all');
 			return false;
 		});
-		$('#deselect-all-samplecode').click(function() {
+		$('#deselect-all-samplecode').click(function () {
 			$('#sampleCode').multiSelect('deselect_all');
 			$("#packageSubmit").attr("disabled", true);
 			$("#packageSubmit").css("pointer-events", "none");
@@ -445,13 +482,13 @@ $global = $general->getGlobalConfig();
 		var removeDots = removeDots.replace(/\,/g, "");
 		removeDots = removeDots.replace(/\s{2,}/g, ' ');
 		$.post("/includes/checkDuplicate.php", {
-				tableName: tableName,
-				fieldName: fieldName,
-				value: removeDots.trim(),
-				fnct: fnct,
-				format: "html"
-			},
-			function(data) {
+			tableName: tableName,
+			fieldName: fieldName,
+			value: removeDots.trim(),
+			fnct: fnct,
+			format: "html"
+		},
+			function (data) {
 				if (data === '1') {
 					alert(alrt);
 					duplicateName = false;
@@ -465,14 +502,14 @@ $global = $general->getGlobalConfig();
 			$.blockUI();
 
 			$.post("/specimen-referral-manifest/get-samples-for-manifest.php", {
-					module: $("#module").val(),
-					testingLab: $('#testingLab').val(),
-					facility: $('#facility').val(),
-					daterange: $('#daterange').val(),
-					sampleType: $('#sampleType').val(),
-					operator: $('#operator').val()
-				},
-				function(data) {
+				module: $("#module").val(),
+				testingLab: $('#testingLab').val(),
+				facility: $('#facility').val(),
+				daterange: $('#daterange').val(),
+				sampleType: $('#sampleType').val(),
+				operator: $('#operator').val()
+			},
+				function (data) {
 					if (data != "") {
 						$("#sampleDetails").html(data);
 						$("#packageSubmit").attr("disabled", true);

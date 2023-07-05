@@ -27,7 +27,7 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
      $excel = new Spreadsheet();
      $output = [];
      $sheet = $excel->getActiveSheet();
-     $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient's Name", "Patient ART no.", "Patient phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
+     $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient's Name", "Patient ART no.", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
      if ($_SESSION['instanceType'] == 'standalone') {
           if (($key = array_search("Remote Sample Code", $headings)) !== false) {
                unset($headings[$key]);
@@ -96,11 +96,11 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
           $sampleTestDate = '';
           if ($aRow['sample_collection_date'] != null && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", $aRow['sample_collection_date']);
-               $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
+               $sampleCollectionDate = date("d-m-Y", strtotime($expStr[0]));
           }
           if ($aRow['sample_tested_datetime'] != null && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", $aRow['sample_tested_datetime']);
-               $sampleTestDate =  date("d-m-Y", strtotime($expStr[0]));
+               $sampleTestDate = date("d-m-Y", strtotime($expStr[0]));
           }
 
           if ($aRow['remote_sample'] == 'yes') {
@@ -120,8 +120,8 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
           $row[] = $sampleCollectionDate;
           $row[] = $sampleTestDate;
           $row[] = $aRow['labName'];
-          $row[] =  ($aRow['hcv_vl_result']);
-          $row[] =  ($aRow['hbv_vl_result']);
+          $row[] = ($aRow['hcv_vl_result']);
+          $row[] = ($aRow['hbv_vl_result']);
           $vlSampleId[] = $aRow['vl_sample_id'];
           $output[] = $row;
      }
