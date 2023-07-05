@@ -57,11 +57,11 @@ $builder->useAutowiring(true);
 // Enable compilation for better performance in production
 if (!empty($systemConfig['system']['cache_di']) && true === $systemConfig['system']['cache_di']) {
 
-    if (!is_dir(ROOT_PATH . '/cache')) {
-        mkdir(ROOT_PATH . '/cache', 0777, true);
+    if (!is_dir(CACHE_PATH)) {
+        mkdir(CACHE_PATH, 0777, true);
     }
-    $builder->enableCompilation(ROOT_PATH . '/cache');
-    $builder->enableDefinitionCache(ROOT_PATH . '/cache');
+    $builder->enableCompilation(CACHE_PATH);
+    $builder->enableDefinitionCache(CACHE_PATH);
 }
 
 // Configuration and DB
@@ -83,17 +83,17 @@ $builder->addDefinitions([
     BatchService::class => DI\create(BatchService::class)
         ->constructor(DI\get('db')),
     VlService::class => DI\create(VlService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class)),
+        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(GeoLocationsService::class)),
     EidService::class => DI\create(EidService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class)),
+        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(GeoLocationsService::class)),
     Covid19Service::class => DI\create(Covid19Service::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class)),
+        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(GeoLocationsService::class)),
     HepatitisService::class => DI\create(HepatitisService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class)),
+        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(GeoLocationsService::class)),
     TbService::class => DI\create(TbService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class)),
+        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(GeoLocationsService::class)),
     GenericTestsService::class => DI\create(GenericTestsService::class)
-        ->constructor(DI\get('db'), DI\get(CommonService::class)),
+        ->constructor(DI\get('db'), DI\get(CommonService::class), DI\get(GeoLocationsService::class)),
     UsersService::class => DI\create(UsersService::class)
         ->constructor(DI\get('db'), DI\get('applicationConfig'), DI\get(CommonService::class)),
     GeoLocationsService::class => DI\create(GeoLocationsService::class)

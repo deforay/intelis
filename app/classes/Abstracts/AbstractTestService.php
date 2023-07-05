@@ -6,20 +6,22 @@ use MysqliDb;
 use DateTimeImmutable;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
-use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
 abstract class AbstractTestService
 {
     protected MysqliDb $db;
     protected CommonService $commonService;
+    protected GeoLocationsService $geoLocationsService;
 
     public function __construct(
-        ?MysqliDb $db = null,
-        CommonService $commonService = null
+        MysqliDb $db,
+        CommonService $commonService,
+        GeoLocationsService $geoLocationsService
     ) {
         $this->db = $db;
         $this->commonService = $commonService;
+        $this->geoLocationsService = $geoLocationsService;
     }
     abstract public function getSampleCode($params);
     abstract public function insertSample($params, $returnSampleData = false);
@@ -37,7 +39,7 @@ abstract class AbstractTestService
         $sampleCodeFormat = $params['sampleCodeFormat'] ?? 'MMYY';
         $prefix = $params['prefix'] ?? 'T';
 
-        if (empty($sampleCollectionDate) || DateUtility::verifyIfDateValid($sampleCollectionDate) === false) {
+        if (empty($sampleCollectionDate) || DateUtility::isDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
         $dateObj = new DateTimeImmutable($sampleCollectionDate);
@@ -71,9 +73,7 @@ abstract class AbstractTestService
             if ($formId == 5) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
-                    /** @var GeoLocationsService $geoLocationsService */
-                    $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
-                    $params['provinceId'] = $provinceId = $geoLocationsService->getProvinceIDFromCode($provinceCode);
+                    $params['provinceId'] = $provinceId = $this->geoLocationsService->getProvinceIDFromCode($provinceCode);
                 }
 
                 if (!empty($provinceId)) {

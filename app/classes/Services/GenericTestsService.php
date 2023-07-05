@@ -2,10 +2,8 @@
 
 namespace App\Services;
 
-use MysqliDb;
 use Exception;
 use App\Utilities\DateUtility;
-use App\Services\CommonService;
 use App\Abstracts\AbstractTestService;
 
 
@@ -14,13 +12,6 @@ class GenericTestsService extends AbstractTestService
 
     protected string $table = 'form_generic';
     protected string $shortCode = 'T';
-
-    public function __construct(
-        ?MysqliDb $db = null,
-        CommonService $commonService = null
-    ) {
-        parent::__construct($db, $commonService);
-    }
 
     public function getSampleCode($params)
     {

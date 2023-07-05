@@ -17,6 +17,9 @@ defined('ROOT_PATH')
 defined('WEB_ROOT')
     || define('WEB_ROOT', ROOT_PATH . DIRECTORY_SEPARATOR . 'public');
 
+defined('CACHE_PATH')
+    || define('CACHE_PATH', ROOT_PATH . DIRECTORY_SEPARATOR . 'cache');
+
 defined('APPLICATION_PATH')
     || define('APPLICATION_PATH', ROOT_PATH . DIRECTORY_SEPARATOR . 'app');
 

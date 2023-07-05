@@ -274,12 +274,7 @@ class CommonService
 
         $result = $this->db->rawQueryOne($query);
 
-        if (
-            isset($result[$modifiedDateTimeColName]) &&
-            $result[$modifiedDateTimeColName] != '' &&
-            $result[$modifiedDateTimeColName] != null &&
-            !MiscUtility::startsWith($result[$modifiedDateTimeColName], '0000-00-00')
-        ) {
+        if (DateUtility::isDateValid($result[$modifiedDateTimeColName] ?? null)) {
             return $result[$modifiedDateTimeColName];
         } else {
             return null;

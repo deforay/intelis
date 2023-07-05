@@ -147,6 +147,13 @@ if (isset($tbInfo['result_reviewed_datetime']) && trim($tbInfo['result_reviewed_
     $tbInfo['result_reviewed_datetime'] = '';
 }
 
+if (isset($tbInfo['result_date']) && trim($tbInfo['result_date']) != '' && $tbInfo['result_date'] != '0000-00-00 00:00:00') {
+    $reviewedOn = explode(" ", $tbInfo['result_date']);
+    $tbInfo['result_date'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+} else {
+    $tbInfo['result_date'] = '';
+}
+
 if (isset($tbInfo['result_approved_datetime']) && trim($tbInfo['result_approved_datetime']) != '' && $tbInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
     $approvedOn = explode(" ", $tbInfo['result_approved_datetime']);
     $tbInfo['result_approved_datetime'] = DateUtility::humanReadableDateFormat($approvedOn[0]) . " " . $approvedOn[1];
