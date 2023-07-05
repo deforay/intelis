@@ -17,50 +17,42 @@ if (!isset($_GET['f']) || !is_file(base64_decode($_GET['f']))) {
 }
 
 $allowedMimeTypes = [
-    'application/pdf' => true,
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => true,
-    'application/vnd.ms-excel' => true,
-    'text/csv' => true,
-    'text/plain' => true
+    'application/pdf',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/vnd.ms-excel',
+    'text/csv',
+    'text/plain'
 ];
 
 $file = realpath(urldecode(base64_decode($_GET['f'])));
 
-if ($file === false) {
+if (
+    $file === false ||
+    strpos($file, $webRootPath) !== 0 ||
+    !MiscUtility::fileExists($file)
+) {
     http_response_code(404);
-    throw new SystemException('Cannot download this file');
+    throw new SystemException('File does not exist. Cannot download this file');
 }
 
-if (!MiscUtility::startsWith($file, $webRootPath) || !MiscUtility::fileExists($file)) {
-    http_response_code(403);
-    throw new SystemException('Cannot download this file');
-}
+$mimeType = MiscUtility::getMimeType($file, $allowedMimeTypes);
 
-$finfo = finfo_open(FILEINFO_MIME_TYPE);
-if ($finfo === false) {
-    http_response_code(500);
-    throw new SystemException('Cannot download this file');
-}
-
-$mime = finfo_file($finfo, $file);
-finfo_close($finfo);
-
-if (!isset($allowedMimeTypes[$mime])) {
-    http_response_code(403);
-    throw new SystemException('Cannot download this file');
+if (!$mimeType) {
+    http_response_code(404);
+    throw new SystemException('Invalid file. Cannot download this file');
 }
 
 $filename = basename($file);
 $filename = preg_replace('/[^a-zA-Z0-9_\-.]/', '', $filename);
 
-if ($mime === 'text/plain' || $mime === 'text/csv') {
+if ($mimeType === 'text/plain' || $mimeType === 'text/csv') {
     $disposition = 'attachment';
 } else {
     $disposition = (isset($_GET['d']) && $_GET['d'] === 'a') ? 'attachment' : 'inline';
 }
 
 header('Content-Description: File Transfer');
-header('Content-Type: ' . (($mime !== false) ? $mime : 'application/octet-stream'));
+header('Content-Type: ' . (($mimeType !== false && !empty($mimeType)) ? $mimeType : 'application/octet-stream'));
 header('Content-Security-Policy: default-src \'none\'; img-src \'self\'; script-src \'self\'; style-src \'self\'');
 header('Content-Disposition: ' . $disposition . '; filename=' . $filename);
 header('Content-Transfer-Encoding: binary');

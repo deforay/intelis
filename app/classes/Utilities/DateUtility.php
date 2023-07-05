@@ -12,7 +12,7 @@ class DateUtility
     }
 
     // Function to get the verify if date is in Y-m-d or specified format
-    public static function verifyDateFormat($date, $format = 'Y-m-d', $strict = true): bool
+    public static function isDateFormatValid($date, $format = 'Y-m-d', $strict = true): bool
     {
         $date = trim($date);
 
@@ -40,7 +40,7 @@ class DateUtility
     }
 
     // Function to verify if date is valid or not
-    public static function verifyIfDateValid($date): bool
+    public static function isDateValid($date): bool
     {
         $date = trim($date);
 
@@ -71,7 +71,7 @@ class DateUtility
     // (with or without time depending on the $includeTime parameter)
     public static function humanReadableDateFormat($date, $includeTime = false, $format = "d-M-Y")
     {
-        if (false === self::verifyIfDateValid($date)) {
+        if (false === self::isDateValid($date)) {
             return null;
         } else {
 
@@ -93,7 +93,7 @@ class DateUtility
     public static function isoDateFormat($date, $includeTime = false)
     {
         return once(function () use ($date, $includeTime) {
-            if (false === self::verifyIfDateValid($date)) {
+            if (false === self::isDateValid($date)) {
                 return null;
             } else {
                 $format = "Y-m-d";
@@ -108,7 +108,7 @@ class DateUtility
     // returns age array in year, months, days
     public static function ageInYearMonthDays($dateOfBirth)
     {
-        if (false === self::verifyIfDateValid($dateOfBirth)) {
+        if (false === self::isDateValid($dateOfBirth)) {
             return null;
         }
         $bday = new DateTimeImmutable($dateOfBirth);
@@ -123,7 +123,7 @@ class DateUtility
 
     public static function dateDiff($dateString1, $dateString2, $format = null)
     {
-        if (false === self::verifyIfDateValid($dateString1) || false === self::verifyIfDateValid($dateString2)) {
+        if (false === self::isDateValid($dateString1) || false === self::isDateValid($dateString2)) {
             return null;
         }
         $datetime1 = new DateTimeImmutable($dateString1);

@@ -39,7 +39,7 @@ abstract class AbstractTestService
         $sampleCodeFormat = $params['sampleCodeFormat'] ?? 'MMYY';
         $prefix = $params['prefix'] ?? 'T';
 
-        if (empty($sampleCollectionDate) || DateUtility::verifyIfDateValid($sampleCollectionDate) === false) {
+        if (empty($sampleCollectionDate) || DateUtility::isDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
         }
         $dateObj = new DateTimeImmutable($sampleCollectionDate);
