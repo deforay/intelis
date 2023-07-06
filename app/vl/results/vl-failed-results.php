@@ -558,7 +558,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
         resetBtnShowHide();
     }
 
-    function exportAllPendingVlRequest() {
+    function exportTestRequests() {
         $.blockUI();
         var requestSampleType = $('#requestSampleType').val();
         $.post("/vl/requests/export-vl-requests.php", {

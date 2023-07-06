@@ -19,7 +19,7 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$roleQuery = "SELECT * from roles where role_id= ?";
+$roleQuery = "SELECT * FROM roles WHERE role_id= ?";
 $roleInfo = $db->rawQuery($roleQuery, [$id]);
 /* Not allowed to edit API role */
 if (isset($roleInfo[0]['role_code']) && $roleInfo[0]['role_code'] == 'API') {
@@ -27,7 +27,12 @@ if (isset($roleInfo[0]['role_code']) && $roleInfo[0]['role_code'] == 'API') {
 }
 $activeModules = SystemService::getActiveModules();
 
-$resourcesQuery = "SELECT module, GROUP_CONCAT( DISTINCT CONCAT(resources.resource_id,',',resources.display_name) ORDER BY resources.display_name SEPARATOR '##' ) as 'module_resources' FROM `resources` WHERE `module` IN ('" . implode("','", $activeModules) . "') GROUP BY `module` ORDER BY `module` ASC";
+$resourcesQuery = "SELECT module,
+					GROUP_CONCAT( DISTINCT CONCAT(resources.resource_id,',',resources.display_name)
+									ORDER BY resources.display_name SEPARATOR '##' ) as 'module_resources'
+					FROM `resources`
+					WHERE `module` IN ('" . implode("','", $activeModules) . "')
+					GROUP BY `module` ORDER BY `module` ASC";
 $rInfo = $db->query($resourcesQuery);
 
 $priQuery = "SELECT * from roles_privileges_map where role_id=$id";
@@ -108,10 +113,16 @@ if ($priInfo) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-user"></em> <?php echo _("Edit Role"); ?></h1>
+		<h1><em class="fa-solid fa-user"></em>
+			<?php echo _("Edit Role"); ?>
+		</h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Roles"); ?></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em>
+					<?php echo _("Home"); ?>
+				</a></li>
+			<li class="active">
+				<?php echo _("Roles"); ?>
+			</li>
 		</ol>
 	</section>
 
@@ -119,28 +130,44 @@ if ($priInfo) {
 	<section class="content">
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
+					<?php echo _("indicates required field"); ?> &nbsp;
+				</div>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='roleEditForm' id='roleEditForm' autocomplete="off" action="editRolesHelper.php">
+				<form class="form-horizontal" method='post' name='roleEditForm' id='roleEditForm' autocomplete="off"
+					action="editRolesHelper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="userName" class="col-lg-4 control-label"><?php echo _("Role Name"); ?> <span class="mandatory">*</span></label>
+									<label for="userName" class="col-lg-4 control-label">
+										<?php echo _("Role Name"); ?> <span class="mandatory">*</span>
+									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="roleName" name="roleName" placeholder="<?php echo _('Role Name'); ?>" title="<?php echo _('Please enter a name for this role'); ?>" value="<?php echo $roleInfo[0]['role_name']; ?>" onblur="checkNameValidation('roles','role_name',this,'<?php echo "role_id##" . $roleInfo[0]['role_id']; ?>','<?php echo _("This role name that you entered already exists.Try another role name"); ?>',null)" />
-										<input type="hidden" name="roleId" id="roleId" value="<?php echo base64_encode($roleInfo[0]['role_id']); ?>" />
+										<input type="text" class="form-control isRequired" id="roleName" name="roleName"
+											placeholder="<?php echo _('Role Name'); ?>"
+											title="<?php echo _('Please enter a name for this role'); ?>"
+											value="<?php echo $roleInfo[0]['role_name']; ?>"
+											onblur="checkNameValidation('roles','role_name',this,'<?php echo "role_id##" . $roleInfo[0]['role_id']; ?>','<?php echo _("This role name that you entered already exists.Try another role name"); ?>',null)" />
+										<input type="hidden" name="roleId" id="roleId"
+											value="<?php echo base64_encode($roleInfo[0]['role_id']); ?>" />
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="email" class="col-lg-4 control-label"><?php echo _("Role Code"); ?> <span class="mandatory">*</span></label>
+									<label for="email" class="col-lg-4 control-label">
+										<?php echo _("Role Code"); ?> <span class="mandatory">*</span>
+									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="roleCode" name="roleCode" placeholder="<?php echo _('Role Code'); ?>" title="<?php echo _('Please enter role code'); ?>" value="<?php echo $roleInfo[0]['role_code']; ?>" onblur="checkNameValidation('roles','role_code',this,'<?php echo "role_id##" . $roleInfo[0]['role_id']; ?>','<?php echo _("This role code that you entered already exists.Try another role code"); ?>',null)" />
+										<input type="text" class="form-control isRequired" id="roleCode" name="roleCode"
+											placeholder="<?php echo _('Role Code'); ?>"
+											title="<?php echo _('Please enter role code'); ?>"
+											value="<?php echo $roleInfo[0]['role_code']; ?>"
+											onblur="checkNameValidation('roles','role_code',this,'<?php echo "role_id##" . $roleInfo[0]['role_id']; ?>','<?php echo _("This role code that you entered already exists.Try another role code"); ?>',null)" />
 									</div>
 								</div>
 							</div>
@@ -148,23 +175,35 @@ if ($priInfo) {
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="landingPage" class="col-lg-4 control-label"><?php echo _("Landing Page"); ?></label>
+									<label for="landingPage" class="col-lg-4 control-label">
+										<?php echo _("Landing Page"); ?>
+									</label>
 									<div class="col-lg-7">
-										<select class="form-control " name='landingPage' id='landingPage' title="<?php echo _('Please select landing page'); ?>">
-											<option value=""> <?php echo _("-- Select --"); ?> </option>
+										<select class="form-control " name='landingPage' id='landingPage'
+											title="<?php echo _('Please select landing page'); ?>">
+											<option value="">
+												<?php echo _("-- Select --"); ?>
+											</option>
 											<option value="/dashboard/index.php" <?php echo ($roleInfo[0]['landing_page'] == '/dashboard/index.php') ? "selected='selected'" : "" ?>><?php echo _("Dashboard"); ?></option>
-											<option value="/vl/requests/addVlRequest.php" <?php echo ($roleInfo[0]['landing_page'] == '/vl/requests/addVlRequest.php') ? "selected='selected'" : "" ?>><?php echo _("Add New VL Request"); ?></option>
-											<option value="/import-result/import-file.php" <?php echo ($roleInfo[0]['landing_page'] == 'import-result/import-file.php') ? "selected='selected'" : "" ?>><?php echo _("Import VL Result"); ?></option>
+											<option value="/vl/requests/addVlRequest.php" <?php echo ($roleInfo[0]['landing_page'] == '/vl/requests/addVlRequest.php') ? "selected='selected'" : "" ?>><?php echo _("Add New VL Request"); ?>
+											</option>
+											<option value="/import-result/import-file.php" <?php echo ($roleInfo[0]['landing_page'] == 'import-result/import-file.php') ? "selected='selected'" : "" ?>><?php echo _("Import VL Result"); ?>
+											</option>
 										</select>
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="status" class="col-lg-4 control-label"><?php echo _("Status"); ?> <span class="mandatory">*</span></label>
+									<label for="status" class="col-lg-4 control-label">
+										<?php echo _("Status"); ?> <span class="mandatory">*</span>
+									</label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name='status' id='status' title="<?php echo _('Please select the status'); ?>">
-											<option value=""> <?php echo _("-- Select --"); ?> </option>
+										<select class="form-control isRequired" name='status' id='status'
+											title="<?php echo _('Please select the status'); ?>">
+											<option value="">
+												<?php echo _("-- Select --"); ?>
+											</option>
 											<option value="active" <?php echo ($roleInfo[0]['status'] == 'active') ? "selected='selected'" : "" ?>><?php echo _("Active"); ?></option>
 											<option value="inactive" <?php echo ($roleInfo[0]['status'] == 'inactive') ? "selected='selected'" : "" ?>><?php echo _("Inactive"); ?></option>
 										</select>
@@ -175,10 +214,15 @@ if ($priInfo) {
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="accessType" class="col-lg-4 control-label"><?php echo _("Access Type"); ?> <span class="mandatory">*</span></label>
+									<label for="accessType" class="col-lg-4 control-label">
+										<?php echo _("Access Type"); ?> <span class="mandatory">*</span>
+									</label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name='accessType' id='accessType' title="<?php echo _('Please select access type'); ?>">
-											<option value=""> <?php echo _("-- Select --"); ?> </option>
+										<select class="form-control isRequired" name='accessType' id='accessType'
+											title="<?php echo _('Please select access type'); ?>">
+											<option value="">
+												<?php echo _("-- Select --"); ?>
+											</option>
 											<option value="testing-lab" <?php echo ($roleInfo[0]['access_type'] == 'testing-lab') ? "selected='selected'" : "" ?>><?php echo _("Testing Lab"); ?></option>
 											<option value="collection-site" <?php echo ($roleInfo[0]['access_type'] == 'collection-site') ? "selected='selected'" : "" ?>><?php echo _("Collection Site"); ?></option>
 										</select>
@@ -188,18 +232,28 @@ if ($priInfo) {
 						</div>
 						<fieldset>
 							<div class="form-group">
-								<label class="col-sm-2 control-label"><?php echo _("Note"); ?>:</label>
+								<label class="col-sm-2 control-label">
+									<?php echo _("Note"); ?>:
+								</label>
 								<div class="col-sm-10">
-									<p class="form-control-static"><?php echo _('Unless you choose "access" the people belonging to this role will not be able to access other rights like "add", "edit" etc'); ?>.</p>
+									<p class="form-control-static">
+										<?php echo _('Unless you choose "access" the people belonging to this role will not be able to access other rights like "add", "edit" etc'); ?>.
+									</p>
 								</div>
 							</div>
 							<div class="form-group" style="padding-left:138px;">
 								<div class="switch-field">
 
-									<input type="radio" class='layCek' id="cekAllPrivileges" name='cekUnCekAll' value="yes" /></a>
-									<label for="cekAllPrivileges"><?php echo _("Select All"); ?></label>
-									<input type="radio" class='layCek' name='cekUnCekAll' id="unCekAllPrivileges" name="switch-one" value="no" /></a>
-									<label for="unCekAllPrivileges"><?php echo _("Unselect All"); ?></label>
+									<input type="radio" class='layCek' id="cekAllPrivileges" name='cekUnCekAll'
+										value="yes" /></a>
+									<label for="cekAllPrivileges">
+										<?php echo _("Select All"); ?>
+									</label>
+									<input type="radio" class='layCek' name='cekUnCekAll' id="unCekAllPrivileges"
+										name="switch-one" value="no" /></a>
+									<label for="unCekAllPrivileges">
+										<?php echo _("Unselect All"); ?>
+									</label>
 								</div>
 							</div>
 							<div class="bs-example bs-example-tabs">
@@ -213,9 +267,10 @@ if ($priInfo) {
 											$cls = "active";
 										else
 											$cls = "";
-									?>
-										<li class="<?= $cls; ?>"><a href="#<?= $moduleRow['module']; ?>" data-toggle="tab" class="bg-primary"><?php echo strtoupper($moduleName); ?> </a></li>
-									<?php
+										?>
+										<li class="<?= $cls; ?>"><a href="#<?= $moduleRow['module']; ?>" data-toggle="tab"
+												class="bg-primary"><?php echo strtoupper($moduleName); ?> </a></li>
+										<?php
 										$a++;
 									} ?>
 								</ul>
@@ -225,10 +280,11 @@ if ($priInfo) {
 									$b = 0;
 									$j = 1;
 									foreach ($rInfo as $moduleRow) {
-										if ($b == 0)
+										if ($b == 0) {
 											$tabCls = "active";
-										else
+										} else {
 											$tabCls = "";
+										}
 										echo '<div class="tab-pane fade in ' . $tabCls . '" id="' . $moduleRow['module'] . '">';
 										echo "<table aria-describedby='table' class='table table-striped responsive-utilities jambo_table'>";
 
@@ -241,19 +297,40 @@ if ($priInfo) {
 											echo "<tr>";
 											echo "<th>";
 
-									?>
+											?>
 											<small class="toggler">
-												<h4 style="font-weight: bold;"><?= $mRes[1]; ?></h4>
+												<h4 style="font-weight: bold;">
+													<?= $mRes[1]; ?>
+												</h4>
 												<div class="switch-field pull-right">
-													<input type='radio' class='' id='all<?= $mRes[0]; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",true);'> <label for='all<?= $mRes[0]; ?>'><?php echo _("All"); ?></label>
-													<input type='radio' class='' id='none<?= $mRes[0]; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",false);'> <label for='none<?= $mRes[0]; ?>'><?php echo _("None"); ?></label>
+													<input type='radio' class='' id='all<?= $mRes[0]; ?>'
+														name='<?= $mRes[1]; ?>'
+														onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",true);'>
+													<label for='all<?= $mRes[0]; ?>'><?php echo _("All"); ?></label>
+													<input type='radio' class='' id='none<?= $mRes[0]; ?>'
+														name='<?= $mRes[1]; ?>'
+														onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",false);'>
+													<label for='none<?= $mRes[0]; ?>'><?php echo _("None"); ?></label>
 												</div>
 											</small>
-									<?php
+											<?php
 											echo "</th>";
 											echo "</tr>";
-											$pQuery = "SELECT * FROM privileges WHERE resource_id='" . $mRes[0] . "' order by display_name ASC";
-											$pInfo = $db->query($pQuery);
+
+											switch ($_SESSION['instanceType']) {
+												case 'remoteuser':
+													$mode = " AND (show_mode like 'sts' or show_mode like 'always')";
+													break;
+												case 'vluser':
+													$mode = " AND (show_mode like 'lis' or show_mode like 'always')";
+													break;
+												default:
+													$mode = " AND (show_mode like 'always')";
+													break;
+											}
+
+											$pQuery = "SELECT * FROM privileges WHERE resource_id= ? $mode ORDER BY display_order ASC";
+											$pInfo = $db->rawQuery($pQuery, [$mRes[0]]);
 											echo "<tr class=''>";
 											echo "<td style='text-align:center;vertical-align:middle;' class='privilegesNode' id='" . $mRes[0] . "'>";
 											foreach ($pInfo as $privilege) {
@@ -289,8 +366,12 @@ if ($priInfo) {
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">
-						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
-						<a href="roles.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
+						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">
+							<?php echo _("Submit"); ?>
+						</a>
+						<a href="roles.php" class="btn btn-default">
+							<?php echo _("Cancel"); ?>
+						</a>
 					</div>
 					<!-- /.box-footer -->
 				</form>
@@ -315,12 +396,12 @@ if ($priInfo) {
 		}
 	}
 
-	$("#cekAllPrivileges").click(function() {
+	$("#cekAllPrivileges").click(function () {
 		$('.unCekAll').prop('checked', false);
 		$('.cekAll').prop('checked', true);
 	});
 
-	$("#unCekAllPrivileges").click(function() {
+	$("#unCekAllPrivileges").click(function () {
 		$('.cekAll').prop('checked', false);
 		$('.unCekAll').prop('checked', true);
 
@@ -343,13 +424,13 @@ if ($priInfo) {
 		removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
 		$.post("/includes/checkDuplicate.php", {
-				tableName: tableName,
-				fieldName: fieldName,
-				value: removeDots.trim(),
-				fnct: fnct,
-				format: "html"
-			},
-			function(data) {
+			tableName: tableName,
+			fieldName: fieldName,
+			value: removeDots.trim(),
+			fnct: fnct,
+			format: "html"
+		},
+			function (data) {
 				if (data === '1') {
 					alert(alrt);
 					document.getElementById(obj.id).value = "";
