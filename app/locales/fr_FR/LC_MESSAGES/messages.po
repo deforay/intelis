@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-07-06 16:15+0530\n"
-"PO-Revision-Date: 2023-07-06 16:20+0530\n"
+"POT-Creation-Date: 2023-07-06 16:40+0530\n"
+"PO-Revision-Date: 2023-07-06 16:40+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -337,14 +337,14 @@ msgstr "Rechercher"
 #: covid-19/management/covid-19-sample-rejection-report.php:106
 #: covid-19/management/covid-19-sample-status.php:149
 #: covid-19/management/covid19TestingTargetReport.php:267
-#: covid-19/requests/covid-19-dhis2.php:259
+#: covid-19/requests/covid-19-dhis2.php:274
 #: covid-19/requests/covid-19-requests.php:436
-#: covid-19/results/can-record-confirmatory-tests.php:210
+#: covid-19/results/can-record-confirmatory-tests.php:260
 #: covid-19/results/covid-19-failed-results.php:220
 #: covid-19/results/covid-19-manual-results.php:224
 #: covid-19/results/covid-19-print-results.php:428
 #: covid-19/results/covid-19-result-status.php:215 dashboard/index.php:373
-#: dashboard/index.php:642 dashboard/vlTestResultStatus.php:178
+#: dashboard/index.php:642 dashboard/vlTestResultStatus.php:218
 #: eid/management/eid-clinic-report.php:498
 #: eid/management/eid-export-data.php:359
 #: eid/management/eid-export-data.php:388
@@ -1582,6 +1582,7 @@ msgstr "Veuillez sélectionner la province ou l'État"
 #: covid-19/requests/addSamplesFromManifest.php:59
 #: covid-19/requests/covid-19-requests.php:238
 #: covid-19/requests/covid-19-requests.php:330
+#: covid-19/requests/patientModal.php:95
 #: covid-19/results/covid-19-failed-results.php:84
 #: covid-19/results/covid-19-failed-results.php:161
 #: covid-19/results/covid-19-manual-results.php:94
@@ -1608,9 +1609,9 @@ msgstr "Veuillez sélectionner la province ou l'État"
 #: eid/management/eidTestingTargetReport.php:225
 #: eid/management/get-rejected-samples.php:91
 #: eid/requests/addSamplesFromManifest.php:69 eid/requests/eid-requests.php:228
-#: eid/requests/eid-requests.php:332 eid/results/eid-failed-results.php:88
-#: eid/results/eid-failed-results.php:175 eid/results/eid-manual-results.php:85
-#: eid/results/eid-manual-results.php:130
+#: eid/requests/eid-requests.php:332 eid/requests/patientModal.php:91
+#: eid/results/eid-failed-results.php:88 eid/results/eid-failed-results.php:175
+#: eid/results/eid-manual-results.php:85 eid/results/eid-manual-results.php:130
 #: eid/results/eid-manual-results.php:169 eid/results/eid-print-results.php:112
 #: eid/results/eid-print-results.php:174 eid/results/eid-print-results.php:211
 #: eid/results/eid-print-results.php:269 eid/results/eid-print-results.php:330
@@ -1624,6 +1625,7 @@ msgstr "Veuillez sélectionner la province ou l'État"
 #: generic-tests/program-management/generic-export-data.php:327
 #: generic-tests/program-management/get-rejection-result.php:96
 #: generic-tests/requests/add-samples-from-manifest.php:59
+#: generic-tests/requests/patientModal.php:95
 #: generic-tests/requests/view-requests.php:189
 #: generic-tests/results/generic-failed-results.php:80
 #: generic-tests/results/generic-failed-results.php:165
@@ -1676,13 +1678,14 @@ msgstr "Veuillez sélectionner la province ou l'État"
 #: tb/management/tb-clinic-report.php:440 tb/management/tb-export-data.php:106
 #: tb/management/tb-export-data.php:247 tb/management/tb-export-data.php:280
 #: tb/reference/tb-sample-type.php:33 tb/requests/addSamplesFromManifest.php:60
-#: tb/requests/tb-requests.php:233 tb/requests/tb-requests.php:318
-#: tb/results/tb-failed-results.php:83 tb/results/tb-failed-results.php:160
-#: tb/results/tb-manual-results.php:101 tb/results/tb-manual-results.php:149
-#: tb/results/tb-manual-results.php:188 tb/results/tb-print-results.php:102
-#: tb/results/tb-print-results.php:156 tb/results/tb-print-results.php:191
-#: tb/results/tb-print-results.php:250 tb/results/tb-print-results.php:304
-#: tb/results/tb-print-results.php:338 tb/results/tb-result-status.php:170
+#: tb/requests/patientModal.php:95 tb/requests/tb-requests.php:233
+#: tb/requests/tb-requests.php:318 tb/results/tb-failed-results.php:83
+#: tb/results/tb-failed-results.php:160 tb/results/tb-manual-results.php:101
+#: tb/results/tb-manual-results.php:149 tb/results/tb-manual-results.php:188
+#: tb/results/tb-print-results.php:102 tb/results/tb-print-results.php:156
+#: tb/results/tb-print-results.php:191 tb/results/tb-print-results.php:250
+#: tb/results/tb-print-results.php:304 tb/results/tb-print-results.php:338
+#: tb/results/tb-result-status.php:170
 #: vl/program-management/getRejectionResult.php:96
 #: vl/program-management/highViralLoad.php:198
 #: vl/program-management/highViralLoad.php:348
@@ -1693,15 +1696,16 @@ msgstr "Veuillez sélectionner la province ou l'État"
 #: vl/program-management/vl-export-data.php:317
 #: vl/program-management/vl-export-data.php:365
 #: vl/program-management/vlMonitoringReport.php:247
-#: vl/requests/addSamplesFromManifest.php:71 vl/requests/vl-requests.php:447
-#: vl/requests/vl-requests.php:660 vl/requests/vl-requests.php:733
-#: vl/results/vl-failed-results.php:78 vl/results/vl-failed-results.php:167
-#: vl/results/vl-failed-results.php:205 vl/results/vlPrintResult.php:122
-#: vl/results/vlPrintResult.php:196 vl/results/vlPrintResult.php:234
-#: vl/results/vlPrintResult.php:302 vl/results/vlPrintResult.php:375
-#: vl/results/vlPrintResult.php:412 vl/results/vlResultApproval.php:137
-#: vl/results/vlResultApproval.php:193 vl/results/vlTestResult.php:119
-#: vl/results/vlTestResult.php:171 vl/results/vlTestResult.php:209
+#: vl/requests/addSamplesFromManifest.php:71 vl/requests/patientModal.php:86
+#: vl/requests/vl-requests.php:447 vl/requests/vl-requests.php:660
+#: vl/requests/vl-requests.php:733 vl/results/vl-failed-results.php:78
+#: vl/results/vl-failed-results.php:167 vl/results/vl-failed-results.php:205
+#: vl/results/vlPrintResult.php:122 vl/results/vlPrintResult.php:196
+#: vl/results/vlPrintResult.php:234 vl/results/vlPrintResult.php:302
+#: vl/results/vlPrintResult.php:375 vl/results/vlPrintResult.php:412
+#: vl/results/vlResultApproval.php:137 vl/results/vlResultApproval.php:193
+#: vl/results/vlTestResult.php:119 vl/results/vlTestResult.php:171
+#: vl/results/vlTestResult.php:209
 msgid "Facility Name"
 msgstr "Nom de la structure"
 
@@ -3867,11 +3871,13 @@ msgstr "Tout"
 #: covid-19/management/covid-19-clinic-report.php:258
 #: covid-19/management/covid-19-clinic-report.php:357
 #: covid-19/requests/covid-19-requests.php:203
+#: covid-19/requests/patientModal.php:92
 #: eid/management/eid-clinic-report.php:160
 #: eid/management/eid-clinic-report.php:260
 #: eid/management/eid-clinic-report.php:366 eid/requests/eid-requests.php:182
-#: eid/requests/forms/add-cameroon.php:187
+#: eid/requests/forms/add-cameroon.php:187 eid/requests/patientModal.php:88
 #: generic-tests/program-management/generic-export-data.php:209
+#: generic-tests/requests/patientModal.php:92
 #: generic-tests/results/generic-print-result.php:111
 #: generic-tests/results/generic-print-result.php:265
 #: generic-tests/results/generic-test-results.php:115
@@ -3882,13 +3888,14 @@ msgstr "Tout"
 #: hepatitis/requests/hepatitis-requests.php:168
 #: tb/management/tb-clinic-report.php:159
 #: tb/management/tb-clinic-report.php:258
-#: tb/management/tb-clinic-report.php:360 tb/requests/tb-requests.php:186
-#: vl/program-management/highViralLoad.php:147
+#: tb/management/tb-clinic-report.php:360 tb/requests/patientModal.php:92
+#: tb/requests/tb-requests.php:186 vl/program-management/highViralLoad.php:147
 #: vl/program-management/highViralLoad.php:279
 #: vl/program-management/highViralLoad.php:426
 #: vl/program-management/vl-export-data.php:237
 #: vl/requests/forms/add-cameroon.php:227
-#: vl/requests/forms/edit-cameroon.php:271 vl/requests/vl-requests.php:358
+#: vl/requests/forms/edit-cameroon.php:271 vl/requests/patientModal.php:85
+#: vl/requests/vl-requests.php:358
 #: vl/result-mail/editTestResultEmailConfig.php:90
 #: vl/results/vlPrintResult.php:137 vl/results/vlPrintResult.php:317
 #: vl/results/vlTestResult.php:131
@@ -4426,9 +4433,12 @@ msgstr "Veuillez remplir les champs"
 #: covid-19/management/covid-19-export-data.php:247
 #: covid-19/management/covid-19-export-data.php:284
 #: covid-19/requests/addSamplesFromManifest.php:60
+#: covid-19/requests/covid-19-dhis2.php:88
 #: covid-19/requests/covid-19-requests.php:261
 #: covid-19/requests/covid-19-requests.php:263
 #: covid-19/requests/covid-19-requests.php:334
+#: covid-19/requests/patientModal.php:83
+#: covid-19/results/can-record-confirmatory-tests.php:216
 #: covid-19/results/covid-19-failed-results.php:120
 #: covid-19/results/covid-19-failed-results.php:162
 #: covid-19/results/covid-19-manual-results.php:182
@@ -4441,6 +4451,7 @@ msgstr "Veuillez remplir les champs"
 #: generic-tests/program-management/generic-export-data.php:273
 #: generic-tests/program-management/generic-export-data.php:325
 #: generic-tests/requests/add-samples-from-manifest.php:57
+#: generic-tests/requests/patientModal.php:83
 #: generic-tests/results/generic-failed-results.php:112
 #: generic-tests/results/generic-print-result.php:124
 #: generic-tests/results/generic-print-result.php:159
@@ -4467,14 +4478,15 @@ msgstr "Veuillez remplir les champs"
 #: hepatitis/results/hepatitis-result-status.php:168
 #: tb/management/tb-clinic-report.php:413 tb/management/tb-export-data.php:199
 #: tb/management/tb-export-data.php:241 tb/management/tb-export-data.php:278
-#: tb/requests/addSamplesFromManifest.php:61 tb/requests/tb-requests.php:256
-#: tb/requests/tb-requests.php:322 tb/results/tb-failed-results.php:119
-#: tb/results/tb-manual-results.php:189 tb/results/tb-print-results.php:117
-#: tb/results/tb-print-results.php:189 tb/results/tb-print-results.php:265
-#: tb/results/tb-print-results.php:336 tb/results/tb-result-status.php:168
-#: vl/program-management/vl-export-data.php:269 vl/requests/vl-requests.php:482
-#: vl/results/vl-failed-results.php:114 vl/results/vlPrintResult.php:157
-#: vl/results/vlPrintResult.php:336
+#: tb/requests/addSamplesFromManifest.php:61 tb/requests/patientModal.php:83
+#: tb/requests/tb-requests.php:256 tb/requests/tb-requests.php:322
+#: tb/results/tb-failed-results.php:119 tb/results/tb-manual-results.php:189
+#: tb/results/tb-print-results.php:117 tb/results/tb-print-results.php:189
+#: tb/results/tb-print-results.php:265 tb/results/tb-print-results.php:336
+#: tb/results/tb-result-status.php:168
+#: vl/program-management/vl-export-data.php:269 vl/requests/patientModal.php:82
+#: vl/requests/vl-requests.php:482 vl/results/vl-failed-results.php:114
+#: vl/results/vlPrintResult.php:157 vl/results/vlPrintResult.php:336
 msgid "Patient ID"
 msgstr "No Patient"
 
@@ -4986,9 +4998,12 @@ msgstr "Veuillez saisir l'identifiant du patient à rechercher"
 #: covid-19/management/covid-19-export-data.php:285
 #: covid-19/management/generate-export-drc.php:44
 #: covid-19/requests/addSamplesFromManifest.php:61
+#: covid-19/requests/covid-19-dhis2.php:92
 #: covid-19/requests/covid-19-requests.php:266
 #: covid-19/requests/covid-19-requests.php:336
 #: covid-19/requests/export-covid19-requests.php:37
+#: covid-19/requests/patientModal.php:86
+#: covid-19/results/can-record-confirmatory-tests.php:219
 #: covid-19/results/covid-19-failed-results.php:125
 #: covid-19/results/covid-19-failed-results.php:163
 #: covid-19/results/covid-19-manual-results.php:183
@@ -4997,6 +5012,7 @@ msgstr "Veuillez saisir l'identifiant du patient à rechercher"
 #: covid-19/results/covid-19-print-results.php:281
 #: covid-19/results/covid-19-print-results.php:352
 #: generic-tests/program-management/generic-export-data.php:121
+#: generic-tests/requests/patientModal.php:86
 #: generic-tests/results/generic-failed-results.php:117
 #: generic-tests/results/generic-print-result.php:130
 #: generic-tests/results/generic-print-result.php:284
@@ -5015,17 +5031,17 @@ msgstr "Veuillez saisir l'identifiant du patient à rechercher"
 #: hepatitis/results/hepatitis-print-results.php:358
 #: tb/management/tb-export-data.php:206 tb/management/tb-export-data.php:244
 #: tb/management/tb-export-data.php:279
-#: tb/requests/addSamplesFromManifest.php:62 tb/requests/tb-requests.php:260
-#: tb/requests/tb-requests.php:324 tb/results/tb-failed-results.php:124
-#: tb/results/tb-manual-results.php:190 tb/results/tb-print-results.php:121
-#: tb/results/tb-print-results.php:190 tb/results/tb-print-results.php:269
-#: tb/results/tb-print-results.php:337
+#: tb/requests/addSamplesFromManifest.php:62 tb/requests/patientModal.php:86
+#: tb/requests/tb-requests.php:260 tb/requests/tb-requests.php:324
+#: tb/results/tb-failed-results.php:124 tb/results/tb-manual-results.php:190
+#: tb/results/tb-print-results.php:121 tb/results/tb-print-results.php:190
+#: tb/results/tb-print-results.php:269 tb/results/tb-print-results.php:337
 #: vl/program-management/highViralLoad.php:350
 #: vl/program-management/highViralLoad.php:477
 #: vl/program-management/highViralLoad.php:505
-#: vl/program-management/vl-export-data.php:276 vl/requests/vl-requests.php:489
-#: vl/results/vl-failed-results.php:119 vl/results/vlPrintResult.php:161
-#: vl/results/vlPrintResult.php:340
+#: vl/program-management/vl-export-data.php:276 vl/requests/patientModal.php:83
+#: vl/requests/vl-requests.php:489 vl/results/vl-failed-results.php:119
+#: vl/results/vlPrintResult.php:161 vl/results/vlPrintResult.php:340
 msgid "Patient Name"
 msgstr "Nom du patient"
 
@@ -6838,6 +6854,15 @@ msgstr ""
 msgid "Import Test Requests In Bulk"
 msgstr "Importer des demandes de test en bloc"
 
+#: covid-19/requests/covid-19-dhis2.php:97
+#: covid-19/results/can-record-confirmatory-tests.php:222
+#: dashboard/vlTestResultStatus.php:187
+#: generic-tests/requests/patientModal.php:104 vl/requests/patientModal.php:89
+#, fuzzy
+#| msgid "Previous PCR test"
+msgid "Previous Result"
+msgstr "Test PCR antérieur"
+
 #: covid-19/requests/covid-19-edit-request-helper.php:359
 #, fuzzy
 msgid "Covid-19 request updated successfully"
@@ -7343,11 +7368,33 @@ msgstr "Synchroniser"
 msgid "Barcode"
 msgstr "Code barre"
 
-#: covid-19/requests/patientModal.php:147 eid/requests/patientModal.php:135
-#: generic-tests/requests/patientModal.php:143 header.php:291
-#: support/index.php:102 tb/requests/patientModal.php:130
-#: vl/requests/addFacilityModal.php:235 vl/requests/facilitiesModal.php:125
-#: vl/requests/patientModal.php:145
+#: covid-19/requests/patientModal.php:80 eid/requests/patientModal.php:80
+#: generic-tests/requests/patientModal.php:80 tb/requests/patientModal.php:80
+#: vl/requests/facilitiesModal.php:111 vl/requests/patientModal.php:81
+#, fuzzy
+#| msgid "--Select--"
+msgid "Select"
+msgstr "--Sélectionner--"
+
+#: covid-19/requests/patientModal.php:89 eid/requests/patientModal.php:85
+#: generic-tests/requests/patientModal.php:89 tb/requests/patientModal.php:89
+#: vl/requests/patientModal.php:84
+msgid "Age"
+msgstr "Age"
+
+#: covid-19/requests/patientModal.php:98 eid/requests/patientModal.php:94
+#: generic-tests/requests/patientModal.php:98 tb/requests/patientModal.php:98
+#: vl/requests/patientModal.php:87
+#, fuzzy
+#| msgid "Date Range"
+msgid "Date and Time"
+msgstr "Plage de dates"
+
+#: covid-19/requests/patientModal.php:183 eid/requests/patientModal.php:168
+#: generic-tests/requests/patientModal.php:188 header.php:291
+#: support/index.php:102 tb/requests/patientModal.php:167
+#: vl/requests/addFacilityModal.php:235 vl/requests/facilitiesModal.php:141
+#: vl/requests/patientModal.php:176
 #, fuzzy
 msgid "Unable to load this page or resource"
 msgstr "Impossible de charger cette page ou cette ressource"
@@ -11194,6 +11241,11 @@ msgstr "Date de dernière modification"
 #, fuzzy
 msgid "Request updated successfully"
 msgstr "Demande mise à jour avec succès"
+
+#: generic-tests/requests/patientModal.php:101 vl/requests/patientModal.php:88
+#, fuzzy
+msgid "Previous Tested Date"
+msgstr "Veuillez saisir le motif du test"
 
 #: generic-tests/requests/view-requests.php:8
 #: generic-tests/results/generic-failed-results.php:8
