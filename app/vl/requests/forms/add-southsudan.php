@@ -155,7 +155,7 @@ $sFormat = '';
                                                   <div class="form-group">
                                                        <label for="fName">Clinic/Health Center <span class="mandatory">*</span></label>
                                                        <select class="form-control isRequired select2" id="fName" name="fName" title="Please select clinic/health center name" style="width:100%;" onchange="getfacilityProvinceDetails(this);fillFacilityDetails();setSampleDispatchDate();">
-                                                            <?php echo $facility;  ?>
+                                                            <?php echo $facility; ?>
                                                        </select>
                                                   </div>
                                              </div>
@@ -182,7 +182,7 @@ $sFormat = '';
                                                             <option value=""> -- Select -- </option>
                                                             <?php
                                                             foreach ($implementingPartnerList as $implementingPartner) {
-                                                            ?>
+                                                                 ?>
                                                                  <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
                                                             <?php } ?>
                                                        </select>
@@ -195,7 +195,7 @@ $sFormat = '';
                                                             <option value=""> -- Select -- </option>
                                                             <?php
                                                             foreach ($fundingSourceList as $fundingSource) {
-                                                            ?>
+                                                                 ?>
                                                                  <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
                                                             <?php } ?>
                                                        </select>
@@ -342,7 +342,7 @@ $sFormat = '';
                                                                                 <?php
                                                                                 foreach ($aResult as $regimen) {
                                                                                      if ($heading['headings'] == $regimen['headings']) {
-                                                                                ?>
+                                                                                          ?>
                                                                                           <option value="<?php echo $regimen['art_code']; ?>"><?php echo $regimen['art_code']; ?></option>
                                                                                 <?php
                                                                                      }
@@ -601,13 +601,13 @@ $sFormat = '';
                                                                                      <optgroup label="<?php echo ($type['rejection_type']); ?>">
                                                                                           <?php foreach ($rejectionResult as $reject) {
                                                                                                if ($type['rejection_type'] == $reject['rejection_type']) {
-                                                                                          ?>
+                                                                                                    ?>
                                                                                                     <option value="<?php echo $reject['rejection_reason_id']; ?>"><?= $reject['rejection_reason_name']; ?></option>
                                                                                           <?php }
                                                                                           } ?>
                                                                                      </optgroup>
                                                                                 <?php }
-                                                                                if ($sarr['sc_user_type'] != 'vluser') {  ?>
+                                                                                if ($sarr['sc_user_type'] != 'vluser') { ?>
                                                                                      <option value="other">Other (Please Specify) </option>
                                                                                 <?php } ?>
                                                                            </select>
@@ -772,17 +772,17 @@ $sFormat = '';
 <?php
 if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
      if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
-?>
+          ?>
           <script src="/assets/js/DYMO.Label.Framework.js"></script>
           <script src="/configs/dymo-format.js"></script>
           <script src="/assets/js/dymo-print.js"></script>
      <?php
      } else if ($global['bar_code_printing'] == 'zebra-printer') {
-     ?>
-          <script src="/assets/js/zebra-browserprint.js.js"></script>
-          <script src="/configs/zebra-format.js"></script>
-          <script src="/assets/js/zebra-print.js"></script>
-<?php
+          ?>
+               <script src="/assets/js/zebra-browserprint.js.js"></script>
+               <script src="/configs/zebra-format.js"></script>
+               <script src="/assets/js/zebra-print.js"></script>
+     <?php
      }
 }
 ?>
@@ -811,16 +811,16 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               if (data != "0") {
                                    obj = $.parseJSON(data);
                                    if (obj.no_of_req_time != null && obj.no_of_req_time > 0) {
-                                        $("#artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time + '</small>');
+                                        $("#artNoGroup").html("<small style='color: red'><?= _("No. of times Test Requested for this Patient"); ?> : " + obj.no_of_req_time + "</small>");
                                    }
                                    if (obj.request_created_datetime != null) {
-                                        $("#artNoGroup").append('<br><small style="color:red">Last Test Request Added On VLSM : ' + obj.request_created_datetime + '</small>');
+                                        $("#artNoGroup").append("<br><small style='color:red'><?= _("Last Test Request Added On LIS/STS"); ?> : " + obj.request_created_datetime + "</small>");
                                    }
                                    if (obj.sample_collection_date != null) {
-                                        $("#artNoGroup").append('<br><small style="color:red">Sample Collection Date for Last Request : ' + obj.sample_collection_date + '</small>');
+                                        $("#artNoGroup").append("<br><small style='color:red'><?= _("Sample Collection Date for Last Request"); ?> : " + obj.sample_collection_date + "</small>");
                                    }
                                    if (obj.no_of_tested_time != null && obj.no_of_tested_time > 0) {
-                                        $("#artNoGroup").append('<br><small style="color:red">Total No. of times Patient tested for VL : ' + obj.no_of_tested_time + '</small>');
+                                        $("#artNoGroup").append("<br><small style='color:red'><?= _("Total No. of times Patient tested for HIV VL"); ?> : " + obj.no_of_tested_time + "</small >");
                                    }
                               } else {
 
