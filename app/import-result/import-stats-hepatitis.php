@@ -52,7 +52,8 @@ unset($_SESSION['controllertrack']);
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+                        <table aria-describedby="table" id="vlRequestDataTable"
+                            class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
                                 <tr>
                                     <th style="width: 13%;">No. of Results imported</th>
@@ -64,24 +65,40 @@ unset($_SESSION['controllertrack']);
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><?php echo (isset($tsResult[0]['totalCount'])) ? $tsResult[0]['totalCount'] : 0; ?></td>
-                                    <td><?php echo (isset($tsResult[0]['HighViralLoad'])) ? $tsResult[0]['HighViralLoad'] : 0; ?></td>
-                                    <td><?php echo (isset($tsResult[0]['LowViralLoad'])) ? $tsResult[0]['LowViralLoad'] : 0; ?></td>
-                                    <td><?php echo (isset($tsResult[0]['TargetNotDetected'])) ? $tsResult[0]['TargetNotDetected'] : 0; ?></td>
-                                    <td><?php echo (isset($tsResult[0]['invalid'])) ? $tsResult[0]['invalid'] : 0; ?></td>
+                                    <td>
+                                        <?php echo (isset($tsResult[0]['totalCount'])) ? $tsResult[0]['totalCount'] : 0; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo (isset($tsResult[0]['HighViralLoad'])) ? $tsResult[0]['HighViralLoad'] : 0; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo (isset($tsResult[0]['LowViralLoad'])) ? $tsResult[0]['LowViralLoad'] : 0; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo (isset($tsResult[0]['TargetNotDetected'])) ? $tsResult[0]['TargetNotDetected'] : 0; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo (isset($tsResult[0]['invalid'])) ? $tsResult[0]['invalid'] : 0; ?>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                    <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:30px;width: 75%;">
+                    <table aria-describedby="table" class="table" aria-hidden="true"
+                        style="margin-left:1%;margin-top:30px;width: 75%;">
                         <tr>
                             <td>
                                 <?php
                                 if (isset($tsResult[0]['totalCount']) && $tsResult[0]['totalCount'] > 0) { ?>
-                                    <input type="button" onclick="convertSearchResultToPdf();return false;" value="Print all results" class="btn btn-success btn-sm">&nbsp;&nbsp;
-                                    <a href="/hepatitis/results/hepatitis-print-results.php" class="btn btn-success btn-sm">Continue without printing results</a>
+                                    <input type="button" onclick="convertSearchResultToPdf();return false;"
+                                        value="Print all results" class="btn btn-success btn-sm">&nbsp;&nbsp;
+                                    <a href="/hepatitis/results/hepatitis-print-results.php" class="btn btn-success btn-sm">
+                                        <?= _("Continue without printing results"); ?>
+                                    </a>
                                 <?php } else { ?>
-                                    <a href="/hepatitis/results/hepatitis-print-results.php" class="btn btn-success btn-sm">Continue </a>
+                                    <a href="/hepatitis/results/hepatitis-print-results.php" class="btn btn-success btn-sm">
+                                        <?= _("Continue"); ?>
+                                    </a>
                                 <?php } ?>
                             </td>
                         </tr>
@@ -106,13 +123,13 @@ unset($_SESSION['controllertrack']);
         $path = '/hepatitis/results/generate-result-pdf.php';
         ?>
         $.post("<?php echo $path; ?>", {
-                source: 'print',
-                id: ''
-            },
-            function(data) {
+            source: 'print',
+            id: ''
+        },
+            function (data) {
                 if (data == "" || data == null || data == undefined) {
                     $.unblockUI();
-                    alert('Unable to generate download');
+                    alert("<?= _("Unable to generate download"); ?>");
                 } else {
                     $.unblockUI();
                     window.open('/download.php?f=' + data, '_blank');

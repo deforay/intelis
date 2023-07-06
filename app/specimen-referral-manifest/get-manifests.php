@@ -5,11 +5,6 @@ use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-
-
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -36,52 +31,60 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 
 
 // in case module is not set, we pick vl as the default one
-if ($_POST['module'] == 'vl' || empty($_POST['module'])) {
-    $module = 'vl';
-    $tableName = "form_vl";
-    $primaryKey = "vl_sample_id";
-} elseif ($_POST['module'] == 'eid') {
-    $module = 'eid';
-    $tableName = "form_eid";
-    $primaryKey = "eid_id";
-} elseif ($_POST['module'] == 'C19' || $_POST['module'] == 'covid19') {
-    $module = 'covid19';
-    $tableName = "form_covid19";
-    $primaryKey = "covid19_id";
-} elseif ($_POST['module'] == 'hepatitis') {
-    $module = 'hepatitis';
-    $tableName = "form_hepatitis";
-    $primaryKey = "hepatitis_id";
-} elseif ($_POST['module'] == 'tb') {
-    $module = 'tb';
-    $tableName = "form_tb";
-    $primaryKey = "tb_id";
-} elseif ($_POST['module'] == 'generic-tests') {
-    $module = 'generic-tests';
-    $tableName = "form_generic";
-    $primaryKey = "sample_id";
+switch ($_POST['module']) {
+    case 'eid':
+        $module = 'eid';
+        $tableName = "form_eid";
+        $primaryKey = "eid_id";
+        break;
+    case 'C19':
+    case 'covid19':
+        $module = 'covid19';
+        $tableName = "form_covid19";
+        $primaryKey = "covid19_id";
+        break;
+    case 'hepatitis':
+        $module = 'hepatitis';
+        $tableName = "form_hepatitis";
+        $primaryKey = "hepatitis_id";
+        break;
+    case 'tb':
+        $module = 'tb';
+        $tableName = "form_tb";
+        $primaryKey = "tb_id";
+        break;
+    case 'generic-tests':
+        $module = 'generic-tests';
+        $tableName = "form_generic";
+        $primaryKey = "sample_id";
+        break;
+    default:
+        $module = 'vl';
+        $tableName = "form_vl";
+        $primaryKey = "vl_sample_id";
+        break;
 }
 
 $vlForm = $general->getGlobalConfig('vl_form');
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
-        * you want to insert a non-database field (for example a counter or static image)
-    */
+ * you want to insert a non-database field (for example a counter or static image)
+ */
 $aColumns = array('p.package_code', 'p.module', 'facility_name', "DATE_FORMAT(p.request_created_datetime,'%d-%b-%Y %H:%i:%s')");
 $orderColumns = array('p.package_id', 'p.module', 'facility_name', 'p.package_code', 'p.package_id', 'p.request_created_datetime');
 
 
 /*
-        * Paging
-        */
+ * Paging
+ */
 $sLimit = "";
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
     $sLimit = $_POST['iDisplayLength'];
 }
 /*
-        * Ordering
-    */
+ * Ordering
+ */
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
     $sOrder = "";
@@ -95,11 +98,11 @@ if (isset($_POST['iSortCol_0'])) {
     $sOrder = substr_replace($sOrder, "", -2);
 }
 /*
-        * Filtering
-        * NOTE this does not match the built-in DataTables filtering which does it
-        * word by word on any field. It's possible to do here, but concerned about efficiency
-        * on very large tables, and MySQL's regex functionality is very limited
-    */
+ * Filtering
+ * NOTE this does not match the built-in DataTables filtering which does it
+ * word by word on any field. It's possible to do here, but concerned about efficiency
+ * on very large tables, and MySQL's regex functionality is very limited
+ */
 $sWhere = [];
 $sWhere[] = "p.module = '$module'";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
@@ -132,9 +135,9 @@ for ($i = 0; $i < count($aColumns); $i++) {
     }
 }
 /*
-        * SQL queries
-        * Get data to display
-    */
+ * SQL queries
+ * Get data to display
+ */
 
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS p.request_created_datetime,
@@ -174,8 +177,8 @@ $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 
 /*
-        * Output
-    */
+ * Output
+ */
 $output = array(
     "sEcho" => intval($_POST['sEcho']),
     "iTotalRecords" => $iTotal,
@@ -190,10 +193,10 @@ if ($usersService->isAllowed("/specimen-referral-manifest/edit-manifest.php?t=" 
 
 foreach ($rResult as $aRow) {
     $humanDate = "";
-    $printBarcode = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="Print bar code" onclick="generateManifestPDF(\'' . base64_encode($aRow['package_id']) . '\',\'pk1\');"><em class="fa-solid fa-barcode"></em> Print Barcode</a>';
+    $printBarcode = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="Print Manifest PDF" onclick="generateManifestPDF(\'' . base64_encode($aRow['package_id']) . '\',\'pk1\');"><em class="fa-solid fa-barcode"></em>' . _("Print Manifest PDF") . '</a>';
     if (trim($aRow['request_created_datetime']) != "" && $aRow['request_created_datetime'] != '0000-00-00 00:00:00') {
         $date = $aRow['request_created_datetime'];
-        $humanDate =  date("d-M-Y H:i:s", strtotime($date));
+        $humanDate = date("d-M-Y H:i:s", strtotime($date));
     }
     $disable = '';
     $pointerEvent = '';

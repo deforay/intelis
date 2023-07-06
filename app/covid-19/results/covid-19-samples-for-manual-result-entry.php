@@ -298,7 +298,7 @@ foreach ($rResult as $aRow) {
      $row = [];
      $print = '<a href="covid-19-update-result.php?id=' . base64_encode($aRow['covid19_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Enter Result") . '</a>';
      if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
-          if (isset($_SESSION['privileges']) && !in_array("edit-locked-covid19-samples", $_SESSION['privileges'])) {
+          if (isset($_SESSION['privileges']) && !in_array("/covid-19/requests/edit-locked-covid19-samples", $_SESSION['privileges'])) {
                $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title=' . _("Locked") . ' disabled><em class="fa-solid fa-lock"></em> ' . _("Locked") . '</a>';
           }
      }

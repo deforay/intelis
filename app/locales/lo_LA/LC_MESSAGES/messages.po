@@ -88,7 +88,7 @@ msgstr "ເສັ້ນທາງກວດກາ"
 #: vl/reference/add-vl-test-reasons.php:18 vl/reference/vl-art-code-details.php:12
 #: vl/reference/vl-sample-rejection-reasons.php:13 vl/reference/vl-sample-type.php:13
 #: vl/reference/vl-test-reasons.php:12 vl/requests/addSamplesFromManifest.php:28
-#: vl/requests/vlRequest.php:39 vl/result-mail/editTestResultEmailConfig.php:34
+#: vl/requests/vl-requests.php:39 vl/result-mail/editTestResultEmailConfig.php:34
 #: vl/result-mail/testResultEmailConfig.php:12 vl/results/vl-failed-results.php:31
 #: vl/results/vlPrintResult.php:36 vl/results/vlResultApproval.php:71 vl/results/vlTestResult.php:52
 msgid "Home"
@@ -161,7 +161,7 @@ msgstr "ບັນທຶກໄວ້ໃນ"
 #: vl/program-management/vlMonitoringReport.php:243 vl/program-management/vl-export-data.php:284
 #: vl/program-management/vlWeeklyReport.php:126 vl/program-management/vlWeeklyReport.php:185
 #: vl/reference/vl-art-code-details.php:42 vl/reference/vl-sample-rejection-reasons.php:45
-#: vl/reference/vl-sample-type.php:42 vl/reference/vl-test-reasons.php:42 vl/requests/vlRequest.php:286
+#: vl/reference/vl-sample-type.php:42 vl/reference/vl-test-reasons.php:42 vl/requests/vl-requests.php:286
 #: vl/result-mail/testResultEmailConfig.php:36 vl/results/vl-failed-results.php:195
 #: vl/results/vlPrintResult.php:201 vl/results/vlPrintResult.php:348 vl/results/vlResultApproval.php:195
 #: vl/results/vlTestResult.php:202
@@ -170,7 +170,7 @@ msgstr "ການໂຫຼດຂໍ້ມູນຈາກ server"
 
 #: admin/audit-trail/audit-trail.php:208 covid-19/requests/covid-19-requests.php:535
 #: eid/requests/eid-requests.php:512 hepatitis/requests/hepatitis-requests.php:502
-#: tb/requests/tb-requests.php:504 vl/requests/vlRequest.php:692
+#: tb/requests/tb-requests.php:504 vl/requests/vl-requests.php:692
 msgid "Trying to sync"
 msgstr "ພະຍາຍາມ sync"
 
@@ -179,7 +179,7 @@ msgstr "ພະຍາຍາມ sync"
 #: eid/requests/eid-requests.php:512 facilities/mapTestType.php:158
 #: hepatitis/requests/add-samples-from-manifest.php:209 hepatitis/requests/hepatitis-requests.php:502
 #: tb/requests/addSamplesFromManifest.php:206 tb/requests/tb-requests.php:504
-#: vl/requests/addSamplesFromManifest.php:225 vl/requests/vlRequest.php:692
+#: vl/requests/addSamplesFromManifest.php:225 vl/requests/vl-requests.php:692
 msgid "Please wait"
 msgstr "ກະ​ລຸ​ນາ​ລໍ​ຖ້າ"
 
@@ -200,7 +200,7 @@ msgstr "ກະ​ລຸ​ນາ​ລໍ​ຖ້າ"
 #: tb/management/tb-sample-status.php:265 vl/program-management/highViralLoad.php:906
 #: vl/program-management/highViralLoad.php:928 vl/program-management/highViralLoad.php:950
 #: vl/program-management/highViralLoad.php:967 vl/program-management/vlWeeklyReport.php:478
-#: vl/program-management/vlWeeklyReport.php:502 vl/requests/vlRequest.php:664
+#: vl/program-management/vlWeeklyReport.php:502 vl/requests/vl-requests.php:664
 #: vl/results/vl-failed-results.php:526 vl/results/vlTestResult.php:435
 msgid "Unable to generate the excel file"
 msgstr "ບໍ່ສາມາດສ້າງໄຟລ໌ excel ໄດ້"
@@ -460,7 +460,7 @@ msgstr "ກະລຸນາເລືອກສະຖານະພາບຄູ່ຮ
 #: covid-19/requests/covid-19-requests.php:136 eid/management/eid-export-data.php:124
 #: eid/requests/eid-requests.php:121 header.php:462 hepatitis/management/hepatitis-export-data.php:121
 #: hepatitis/requests/hepatitis-requests.php:122 tb/management/tb-export-data.php:136
-#: tb/requests/tb-requests.php:128 vl/program-management/vl-export-data.php:180 vl/requests/vlRequest.php:144
+#: tb/requests/tb-requests.php:128 vl/program-management/vl-export-data.php:180 vl/requests/vl-requests.php:144
 msgid "Funding Sources"
 msgstr "ແຫຼ່ງທຶນ"
 
@@ -525,7 +525,7 @@ msgstr "ຊື່ແຫຼ່ງທຶນ"
 #: vl/program-management/vl-export-data.php:126 vl/program-management/vl-export-data.php:248
 #: vl/program-management/vl-export-data.php:276 vl/reference/add-vl-art-code-details.php:77
 #: vl/reference/vl-art-code-details.php:34 vl/reference/vl-test-reasons.php:34
-#: vl/requests/addSamplesFromManifest.php:74 vl/requests/vlRequest.php:253 vl/requests/vlRequest.php:278
+#: vl/requests/addSamplesFromManifest.php:74 vl/requests/vl-requests.php:253 vl/requests/vl-requests.php:278
 #: vl/result-mail/editTestResultEmailConfig.php:117 vl/results/vl-failed-results.php:161
 #: vl/results/vl-failed-results.php:187 vl/results/vlPrintResult.php:173
 #: vl/results/vlPrintResult.php:195 vl/results/vlPrintResult.php:321 vl/results/vlPrintResult.php:342
@@ -718,9 +718,9 @@ msgstr "ກະລຸນາເລືອກເຄື່ອງ"
 #: vl/program-management/vl-export-data.php:194 vl/program-management/vlWeeklyReport.php:68
 #: vl/program-management/vlWeeklyReport.php:145 vl/reference/add-vl-art-code-details.php:56
 #: vl/reference/add-vl-sample-rejection-reasons.php:44 vl/reference/add-vl-test-reasons.php:49
-#: vl/requests/vlRequest.php:58 vl/requests/vlRequest.php:71 vl/requests/vlRequest.php:108
-#: vl/requests/vlRequest.php:129 vl/requests/vlRequest.php:137 vl/requests/vlRequest.php:147
-#: vl/requests/vlRequest.php:158 vl/results/getVlResultsForApproval.php:279
+#: vl/requests/vl-requests.php:58 vl/requests/vl-requests.php:71 vl/requests/vl-requests.php:108
+#: vl/requests/vl-requests.php:129 vl/requests/vl-requests.php:137 vl/requests/vl-requests.php:147
+#: vl/requests/vl-requests.php:158 vl/results/getVlResultsForApproval.php:279
 #: vl/results/vl-failed-results.php:50 vl/results/vl-failed-results.php:63
 #: vl/results/vlPrintResult.php:65 vl/results/vlPrintResult.php:79 vl/results/vlPrintResult.php:100
 #: vl/results/vlPrintResult.php:218 vl/results/vlPrintResult.php:232 vl/results/vlPrintResult.php:253
@@ -767,7 +767,7 @@ msgstr "ສິ່ງອໍານວຍຄວາມສະດວກ"
 #: vl/program-management/highViralLoad.php:92 vl/program-management/highViralLoad.php:210
 #: vl/program-management/highViralLoad.php:315 vl/program-management/vl-sample-status.php:92
 #: vl/program-management/vlMonitoringReport.php:191 vl/program-management/vl-export-data.php:84
-#: vl/requests/vlRequest.php:85 vl/results/vl-failed-results.php:77 vl/results/vlPrintResult.php:93
+#: vl/requests/vl-requests.php:85 vl/results/vl-failed-results.php:77 vl/results/vlPrintResult.php:93
 #: vl/results/vlPrintResult.php:246 vl/results/vlResultApproval.php:129 vl/results/vlTestResult.php:98
 msgid "Please select facility name"
 msgstr "ກະລຸນາເລືອກຊື່ສະຖານທີ່"
@@ -823,7 +823,7 @@ msgstr "ກະລຸນາເລືອກຊື່ສະຖານທີ່"
 #: vl/program-management/highViralLoad.php:422 vl/program-management/sampleRejectionReport.php:48
 #: vl/program-management/vl-sample-status.php:57 vl/program-management/vl-sample-status.php:120
 #: vl/program-management/vlMonitoringReport.php:176 vl/program-management/vl-export-data.php:58
-#: vl/requests/vlRequest.php:51 vl/requests/vlRequest.php:223
+#: vl/requests/vl-requests.php:51 vl/requests/vl-requests.php:223
 #: vl/result-mail/editTestResultEmailConfig.php:87 vl/results/vl-failed-results.php:43
 #: vl/results/vl-failed-results.php:131 vl/results/vlPrintResult.php:58 vl/results/vlPrintResult.php:211
 #: vl/results/vlResultApproval.php:95 vl/results/vlResultApproval.php:179 vl/results/vlTestResult.php:63
@@ -855,7 +855,7 @@ msgstr "ວັນທີເກັບຕົວຢ່າງ"
 #: tb/results/tb-manual-results.php:66 tb/results/tb-print-results.php:48
 #: tb/results/tb-print-results.php:165 tb/results/tb-result-status.php:91 vl/batch/addBatch.php:124
 #: vl/program-management/sampleRejectionReport.php:50 vl/program-management/vl-sample-status.php:59
-#: vl/program-management/vl-export-data.php:60 vl/requests/vlRequest.php:53
+#: vl/program-management/vl-export-data.php:60 vl/requests/vl-requests.php:53
 #: vl/results/vl-failed-results.php:45 vl/results/vlPrintResult.php:60 vl/results/vlPrintResult.php:213
 #: vl/results/vlResultApproval.php:97 vl/results/vlTestResult.php:65
 msgid "Select Collection Date"
@@ -974,8 +974,8 @@ msgstr "Reset Filters"
 #: vl/program-management/highViralLoad.php:423 vl/program-management/vl-sample-status.php:61
 #: vl/program-management/vlMonitoringReport.php:230 vl/program-management/vl-export-data.php:167
 #: vl/program-management/vl-export-data.php:230 vl/program-management/vl-export-data.php:269
-#: vl/requests/addSamplesFromManifest.php:65 vl/requests/vlRequest.php:55 vl/requests/vlRequest.php:226
-#: vl/requests/vlRequest.php:269 vl/results/vl-failed-results.php:47
+#: vl/requests/addSamplesFromManifest.php:65 vl/requests/vl-requests.php:55 vl/requests/vl-requests.php:226
+#: vl/requests/vl-requests.php:269 vl/results/vl-failed-results.php:47
 #: vl/results/vl-failed-results.php:134 vl/results/vl-failed-results.php:178
 #: vl/results/vlPrintResult.php:62 vl/results/vlPrintResult.php:152 vl/results/vlPrintResult.php:188
 #: vl/results/vlPrintResult.php:215 vl/results/vlPrintResult.php:300 vl/results/vlPrintResult.php:335
@@ -1041,7 +1041,7 @@ msgstr "Save and Next"
 #: tb/results/tb-failed-results.php:205 tb/results/tb-manual-results.php:205
 #: tb/results/tb-print-results.php:301 tb/results/tb-result-status.php:206 vl/batch/addBatch.php:240
 #: vl/program-management/highViralLoad.php:462 vl/program-management/vl-export-data.php:316
-#: vl/requests/vlRequest.php:361 vl/results/vl-failed-results.php:270 vl/results/vlPrintResult.php:380
+#: vl/requests/vl-requests.php:361 vl/results/vl-failed-results.php:270 vl/results/vlPrintResult.php:380
 #: vl/results/vlResultApproval.php:220 vl/results/vlTestResult.php:227
 msgid "Select Facilities"
 msgstr "ເລືອກສິ່ງອໍານວຍຄວາມສະດວກ"
@@ -1160,7 +1160,7 @@ msgstr "ວັນທີທົດສອບຄັ້ງສຸດທ້າຍ"
 #: tb/batch/tb-batches.php:61 tb/management/tb-export-data.php:232 tb/requests/tb-requests.php:201
 #: tb/results/tb-failed-results.php:130 tb/results/tb-manual-results.php:175
 #: tb/results/tb-print-results.php:148 tb/results/tb-print-results.php:264 users/users.php:62
-#: vl/batch/batchcode.php:59 vl/program-management/vl-export-data.php:279 vl/requests/vlRequest.php:280
+#: vl/batch/batchcode.php:59 vl/program-management/vl-export-data.php:279 vl/requests/vl-requests.php:280
 #: vl/results/vl-failed-results.php:189 vl/results/vlPrintResult.php:196
 #: vl/results/vlPrintResult.php:343 vl/results/vlTestResult.php:197
 msgid "Action"
@@ -1329,7 +1329,7 @@ msgstr "ເລືອກວັນສອບເສັງຕົວຢ່າງ"
 #: tb/results/tb-result-status.php:95 vl/program-management/highViralLoad.php:64
 #: vl/program-management/highViralLoad.php:182 vl/program-management/highViralLoad.php:287
 #: vl/program-management/vl-sample-status.php:63 vl/program-management/vl-export-data.php:169
-#: vl/requests/vlRequest.php:57 vl/results/vl-failed-results.php:49 vl/results/vlPrintResult.php:64
+#: vl/requests/vl-requests.php:57 vl/results/vl-failed-results.php:49 vl/results/vlPrintResult.php:64
 #: vl/results/vlPrintResult.php:217 vl/results/vlResultApproval.php:101 vl/results/vlTestResult.php:69
 msgid "Please select batch code"
 msgstr "ກະລຸນາເລືອກລະຫັດ batch"
@@ -1361,7 +1361,7 @@ msgstr "ກະລຸນາເລືອກລະຫັດ batch"
 #: vl/program-management/vl-sample-status.php:76 vl/program-management/vlMonitoringReport.php:236
 #: vl/program-management/vl-export-data.php:67 vl/program-management/vl-export-data.php:242
 #: vl/program-management/vl-export-data.php:274 vl/requests/addSamplesFromManifest.php:71
-#: vl/requests/vlRequest.php:68 vl/requests/vlRequest.php:244 vl/requests/vlRequest.php:275
+#: vl/requests/vl-requests.php:68 vl/requests/vl-requests.php:244 vl/requests/vl-requests.php:275
 #: vl/results/vl-failed-results.php:60 vl/results/vl-failed-results.php:152
 #: vl/results/vl-failed-results.php:184 vl/results/vlPrintResult.php:76 vl/results/vlPrintResult.php:164
 #: vl/results/vlPrintResult.php:192 vl/results/vlPrintResult.php:229 vl/results/vlPrintResult.php:312
@@ -1382,7 +1382,7 @@ msgstr "ປະເພດຕົວຢ່າງ"
 #: vl/program-management/highViralLoad.php:77 vl/program-management/highViralLoad.php:195
 #: vl/program-management/highViralLoad.php:300 vl/program-management/sampleRejectionReport.php:62
 #: vl/program-management/vl-sample-status.php:78 vl/program-management/vl-export-data.php:69
-#: vl/requests/vlRequest.php:70 vl/results/vl-failed-results.php:62 vl/results/vlPrintResult.php:78
+#: vl/requests/vl-requests.php:70 vl/results/vl-failed-results.php:62 vl/results/vlPrintResult.php:78
 #: vl/results/vlPrintResult.php:231 vl/results/vlResultApproval.php:116 vl/results/vlTestResult.php:83
 msgid "Please select sample type"
 msgstr "ກະລຸນາເລືອກປະເພດຕົວຢ່າງ"
@@ -1430,7 +1430,7 @@ msgstr "ບໍ່ສໍາເລັດ"
 #: hepatitis/results/hepatitis-failed-results.php:62 roles/addRole.php:142 roles/editRole.php:158
 #: tb/management/tb-clinic-report.php:106 tb/requests/tb-requests.php:79
 #: tb/results/tb-failed-results.php:62 vl/program-management/highViralLoad.php:109
-#: vl/requests/vlRequest.php:171 vl/results/vl-failed-results.php:94
+#: vl/requests/vl-requests.php:171 vl/results/vl-failed-results.php:94
 msgid "All"
 msgstr "ທັງໝົດ"
 
@@ -1445,7 +1445,7 @@ msgstr "ທັງໝົດ"
 #: tb/management/tb-clinic-report.php:285 tb/requests/tb-requests.php:109
 #: vl/program-management/highViralLoad.php:112 vl/program-management/highViralLoad.php:221
 #: vl/program-management/highViralLoad.php:326 vl/program-management/vl-export-data.php:115
-#: vl/requests/vlRequest.php:105 vl/result-mail/editTestResultEmailConfig.php:90
+#: vl/requests/vl-requests.php:105 vl/result-mail/editTestResultEmailConfig.php:90
 #: vl/results/vlPrintResult.php:97 vl/results/vlPrintResult.php:250 vl/results/vlTestResult.php:104
 msgid "Gender"
 msgstr "ເພດ"
@@ -1461,7 +1461,7 @@ msgstr "ເພດ"
 #: tb/management/tb-clinic-report.php:287 tb/requests/tb-requests.php:111 vl/batch/addBatch.php:140
 #: vl/program-management/highViralLoad.php:114 vl/program-management/highViralLoad.php:223
 #: vl/program-management/highViralLoad.php:328 vl/program-management/vl-export-data.php:117
-#: vl/requests/vlRequest.php:107 vl/results/vlPrintResult.php:99 vl/results/vlPrintResult.php:252
+#: vl/requests/vl-requests.php:107 vl/results/vlPrintResult.php:99 vl/results/vlPrintResult.php:252
 msgid "Please choose gender"
 msgstr "ກະລຸນາເລືອກເພດ"
 
@@ -1476,7 +1476,7 @@ msgstr "ກະລຸນາເລືອກເພດ"
 #: tb/management/tb-clinic-report.php:203 tb/management/tb-clinic-report.php:289
 #: tb/requests/tb-requests.php:113 vl/batch/addBatch.php:142 vl/program-management/highViralLoad.php:116
 #: vl/program-management/highViralLoad.php:225 vl/program-management/highViralLoad.php:330
-#: vl/program-management/vl-export-data.php:119 vl/requests/vlRequest.php:109 vl/results/vlPrintResult.php:101
+#: vl/program-management/vl-export-data.php:119 vl/requests/vl-requests.php:109 vl/results/vlPrintResult.php:101
 #: vl/results/vlPrintResult.php:254 vl/results/vlTestResult.php:108
 msgid "Male"
 msgstr "ຜູ້​ຊາຍ"
@@ -1492,7 +1492,7 @@ msgstr "ຜູ້​ຊາຍ"
 #: tb/management/tb-clinic-report.php:204 tb/management/tb-clinic-report.php:290
 #: tb/requests/tb-requests.php:114 vl/batch/addBatch.php:143 vl/program-management/highViralLoad.php:117
 #: vl/program-management/highViralLoad.php:226 vl/program-management/highViralLoad.php:331
-#: vl/program-management/vl-export-data.php:120 vl/requests/vlRequest.php:110 vl/results/vlPrintResult.php:102
+#: vl/program-management/vl-export-data.php:120 vl/requests/vl-requests.php:110 vl/results/vlPrintResult.php:102
 #: vl/results/vlPrintResult.php:255 vl/results/vlTestResult.php:109
 msgid "Female"
 msgstr "ເພດຍິງ"
@@ -1508,7 +1508,7 @@ msgstr "ເພດຍິງ"
 #: tb/management/tb-clinic-report.php:205 tb/management/tb-clinic-report.php:291
 #: tb/requests/tb-requests.php:115 vl/batch/addBatch.php:144 vl/program-management/highViralLoad.php:118
 #: vl/program-management/highViralLoad.php:227 vl/program-management/highViralLoad.php:332
-#: vl/program-management/vl-export-data.php:121 vl/requests/vlRequest.php:111 vl/results/vlPrintResult.php:103
+#: vl/program-management/vl-export-data.php:121 vl/requests/vl-requests.php:111 vl/results/vlPrintResult.php:103
 #: vl/results/vlPrintResult.php:256 vl/results/vlTestResult.php:110
 msgid "Not Recorded"
 msgstr "ບໍ່ໄດ້ບັນທຶກ"
@@ -1554,7 +1554,7 @@ msgstr "ບໍ່ໄດ້ບັນທຶກ"
 #: vl/program-management/sampleRejectionReport.php:83 vl/program-management/vl-sample-status.php:99
 #: vl/program-management/vlControlReport.php:51 vl/program-management/vlMonitoringReport.php:217
 #: vl/program-management/vl-export-data.php:205 vl/program-management/vlWeeklyReport.php:81
-#: vl/program-management/vlWeeklyReport.php:158 vl/requests/vlRequest.php:178
+#: vl/program-management/vlWeeklyReport.php:158 vl/requests/vl-requests.php:178
 #: vl/results/vl-failed-results.php:101 vl/results/vlPrintResult.php:130
 #: vl/results/vlPrintResult.php:278 vl/results/vlResultApproval.php:144 vl/results/vlTestResult.php:123
 msgid "Search"
@@ -1596,7 +1596,7 @@ msgstr "ຊອກຫາ"
 #: vl/program-management/highViralLoad.php:410 vl/program-management/sampleRejectionReport.php:84
 #: vl/program-management/vl-sample-status.php:100 vl/program-management/vlControlReport.php:52
 #: vl/program-management/vlMonitoringReport.php:218 vl/program-management/vlWeeklyReport.php:82
-#: vl/program-management/vlWeeklyReport.php:159 vl/requests/vlRequest.php:179
+#: vl/program-management/vlWeeklyReport.php:159 vl/requests/vl-requests.php:179
 #: vl/results/vl-failed-results.php:102 vl/results/vlPrintResult.php:131
 #: vl/results/vlPrintResult.php:279 vl/results/vlResultApproval.php:145 vl/results/vlTestResult.php:124
 msgid "Reset"
@@ -1667,7 +1667,7 @@ msgstr "ການສົ່ງອອກສູ່ excel"
 #: vl/program-management/highViralLoad.php:364 vl/program-management/highViralLoad.php:393
 #: vl/program-management/highViralLoad.php:418 vl/program-management/vlMonitoringReport.php:229
 #: vl/program-management/vl-export-data.php:220 vl/program-management/vl-export-data.php:265
-#: vl/requests/addSamplesFromManifest.php:60 vl/requests/vlRequest.php:213 vl/requests/vlRequest.php:264
+#: vl/requests/addSamplesFromManifest.php:60 vl/requests/vl-requests.php:213 vl/requests/vl-requests.php:264
 #: vl/results/vl-failed-results.php:121 vl/results/vl-failed-results.php:173
 #: vl/results/vlPrintResult.php:142 vl/results/vlPrintResult.php:184 vl/results/vlPrintResult.php:290
 #: vl/results/vlPrintResult.php:331 vl/results/vlResultApproval.php:175 vl/results/vlTestResult.php:135
@@ -1704,7 +1704,7 @@ msgstr "ປະມວນຜົນຕົວຢ່າງ"
 #: tb/results/tb-result-status.php:164 vl/program-management/highViralLoad.php:153
 #: vl/program-management/highViralLoad.php:261 vl/program-management/highViralLoad.php:366
 #: vl/program-management/highViralLoad.php:420 vl/program-management/vl-export-data.php:267
-#: vl/requests/addSamplesFromManifest.php:62 vl/requests/vlRequest.php:266
+#: vl/requests/addSamplesFromManifest.php:62 vl/requests/vl-requests.php:266
 #: vl/results/vl-failed-results.php:175 vl/results/vlPrintResult.php:186
 #: vl/results/vlPrintResult.php:333 vl/results/vlResultApproval.php:177 vl/results/vlTestResult.php:187
 msgid "Remote Sample"
@@ -1812,7 +1812,7 @@ msgstr "ລະຫັດ"
 #: vl/program-management/highViralLoad.php:426 vl/program-management/vlMonitoringReport.php:233
 #: vl/program-management/vl-export-data.php:82 vl/program-management/vl-export-data.php:239
 #: vl/program-management/vl-export-data.php:272 vl/requests/addSamplesFromManifest.php:68
-#: vl/requests/vlRequest.php:83 vl/requests/vlRequest.php:235 vl/requests/vlRequest.php:272
+#: vl/requests/vl-requests.php:83 vl/requests/vl-requests.php:235 vl/requests/vl-requests.php:272
 #: vl/results/vl-failed-results.php:75 vl/results/vl-failed-results.php:143
 #: vl/results/vl-failed-results.php:181 vl/results/vlPrintResult.php:91 vl/results/vlPrintResult.php:161
 #: vl/results/vlPrintResult.php:191 vl/results/vlPrintResult.php:244 vl/results/vlPrintResult.php:309
@@ -1849,7 +1849,7 @@ msgstr "ID ຂອງຄົນເຈັບ"
 #: tb/results/tb-print-results.php:228 vl/program-management/highViralLoad.php:157
 #: vl/program-management/highViralLoad.php:425 vl/program-management/vlMonitoringReport.php:232
 #: vl/program-management/vl-export-data.php:236 vl/program-management/vl-export-data.php:271
-#: vl/requests/addSamplesFromManifest.php:67 vl/requests/vlRequest.php:232 vl/requests/vlRequest.php:271
+#: vl/requests/addSamplesFromManifest.php:67 vl/requests/vl-requests.php:232 vl/requests/vl-requests.php:271
 #: vl/results/vl-failed-results.php:140 vl/results/vl-failed-results.php:180
 #: vl/results/vlPrintResult.php:158 vl/results/vlPrintResult.php:190 vl/results/vlPrintResult.php:306
 #: vl/results/vlPrintResult.php:337 vl/results/vlResultApproval.php:182 vl/results/vlTestResult.php:151
@@ -1879,7 +1879,7 @@ msgstr "ວັນທີທົດສອບຕົວຢ່າງ"
 #: tb/management/tb-clinic-report.php:146 tb/management/tb-export-data.php:84
 #: tb/management/tb-sample-status.php:69 tb/requests/tb-requests.php:103
 #: vl/program-management/vl-sample-status.php:90 vl/program-management/vl-export-data.php:88
-#: vl/requests/vlRequest.php:99
+#: vl/requests/vl-requests.php:99
 msgid "Testing Lab"
 msgstr "Lab ການທົດສອບ"
 
@@ -1920,7 +1920,7 @@ msgstr "Lab ການທົດສອບ"
 #: vl/program-management/highViralLoad.php:402 vl/program-management/highViralLoad.php:430
 #: vl/program-management/vlMonitoringReport.php:237 vl/program-management/vl-export-data.php:245
 #: vl/program-management/vl-export-data.php:275 vl/requests/addSamplesFromManifest.php:72
-#: vl/requests/vlRequest.php:247 vl/requests/vlRequest.php:276 vl/results/getVlTestResultDetails.php:457
+#: vl/requests/vl-requests.php:247 vl/requests/vl-requests.php:276 vl/results/getVlTestResultDetails.php:457
 #: vl/results/vl-failed-results.php:155 vl/results/vl-failed-results.php:185
 #: vl/results/vlPrintResult.php:167 vl/results/vlPrintResult.php:193 vl/results/vlPrintResult.php:315
 #: vl/results/vlPrintResult.php:340 vl/results/vlResultApproval.php:185 vl/results/vlTestResult.php:160
@@ -2015,8 +2015,8 @@ msgstr "ປະເທດ"
 #: tb/requests/tb-requests.php:93 tb/requests/tb-requests.php:195 tb/results/tb-failed-results.php:76
 #: tb/results/tb-failed-results.php:124 vl/program-management/highViralLoad.php:427
 #: vl/program-management/vlWeeklyReport.php:90 vl/program-management/vlWeeklyReport.php:167
-#: vl/requests/addSamplesFromManifest.php:69 vl/requests/vlRequest.php:89 vl/requests/vlRequest.php:238
-#: vl/requests/vlRequest.php:273 vl/result-mail/editTestResultEmailConfig.php:83
+#: vl/requests/addSamplesFromManifest.php:69 vl/requests/vl-requests.php:89 vl/requests/vl-requests.php:238
+#: vl/requests/vl-requests.php:273 vl/result-mail/editTestResultEmailConfig.php:83
 #: vl/results/vl-failed-results.php:81 vl/results/vl-failed-results.php:146
 #: vl/results/vl-failed-results.php:182
 msgid "Province/State"
@@ -2038,8 +2038,8 @@ msgstr "ແຂວງ/ລັດ"
 #: tb/results/tb-failed-results.php:125 vl/program-management/highViralLoad.php:428
 #: vl/program-management/vlMonitoringReport.php:204 vl/program-management/vlMonitoringReport.php:235
 #: vl/program-management/vlWeeklyReport.php:91 vl/program-management/vlWeeklyReport.php:168
-#: vl/requests/addSamplesFromManifest.php:70 vl/requests/vlRequest.php:93 vl/requests/vlRequest.php:241
-#: vl/requests/vlRequest.php:274 vl/result-mail/editTestResultEmailConfig.php:84
+#: vl/requests/addSamplesFromManifest.php:70 vl/requests/vl-requests.php:93 vl/requests/vl-requests.php:241
+#: vl/requests/vl-requests.php:274 vl/result-mail/editTestResultEmailConfig.php:84
 #: vl/results/vl-failed-results.php:85 vl/results/vl-failed-results.php:149
 #: vl/results/vl-failed-results.php:183
 msgid "District/County"
@@ -2088,7 +2088,7 @@ msgstr "ເລືອກວັນທີ Recieved"
 #: covid-19/management/covid-19-export-data.php:88 covid-19/requests/covid-19-requests.php:109
 #: eid/requests/eid-requests.php:98 hepatitis/management/hepatitis-export-data.php:81
 #: hepatitis/requests/hepatitis-requests.php:99 tb/management/tb-export-data.php:86
-#: tb/requests/tb-requests.php:105 vl/program-management/vl-export-data.php:90 vl/requests/vlRequest.php:101
+#: tb/requests/tb-requests.php:105 vl/program-management/vl-export-data.php:90 vl/requests/vl-requests.php:101
 msgid "Please select vl lab"
 msgstr "ກະລຸນາເລືອກ vl lab"
 
@@ -2159,7 +2159,7 @@ msgstr "ສິ້ນສຸດລົງ"
 #: eid/management/eid-export-data.php:126 eid/requests/eid-requests.php:123
 #: hepatitis/management/hepatitis-export-data.php:123 hepatitis/requests/hepatitis-requests.php:124
 #: tb/management/tb-export-data.php:138 tb/requests/tb-requests.php:130
-#: vl/program-management/vl-export-data.php:182 vl/requests/vlRequest.php:146
+#: vl/program-management/vl-export-data.php:182 vl/requests/vl-requests.php:146
 msgid "Please choose funding source"
 msgstr "ກະລຸນາເລືອກແຫຼ່ງທຶນ"
 
@@ -2167,7 +2167,7 @@ msgstr "ກະລຸນາເລືອກແຫຼ່ງທຶນ"
 #: eid/management/eid-export-data.php:137 eid/requests/eid-requests.php:132
 #: hepatitis/management/hepatitis-export-data.php:132 hepatitis/requests/hepatitis-requests.php:133
 #: tb/management/tb-export-data.php:147 tb/requests/tb-requests.php:139
-#: vl/program-management/vl-export-data.php:191 vl/requests/vlRequest.php:155
+#: vl/program-management/vl-export-data.php:191 vl/requests/vl-requests.php:155
 msgid "Implementing Partners"
 msgstr "ການຈັດຕັ້ງປະຕິບັດຄູ່ຮ່ວມງານ"
 
@@ -2175,7 +2175,7 @@ msgstr "ການຈັດຕັ້ງປະຕິບັດຄູ່ຮ່ວມ
 #: eid/management/eid-export-data.php:139 eid/requests/eid-requests.php:134
 #: hepatitis/management/hepatitis-export-data.php:134 hepatitis/requests/hepatitis-requests.php:135
 #: tb/management/tb-export-data.php:149 tb/requests/tb-requests.php:141
-#: vl/program-management/vl-export-data.php:193 vl/requests/vlRequest.php:157
+#: vl/program-management/vl-export-data.php:193 vl/requests/vl-requests.php:157
 msgid "Please choose implementing partner"
 msgstr "ກະລຸນາເລືອກຄູ່ຮ່ວມງານ"
 
@@ -2199,7 +2199,7 @@ msgstr "ດາວໂຫຼດ"
 #: hepatitis/results/hepatitis-print-results.php:103 hepatitis/results/hepatitis-print-results.php:221
 #: tb/management/tb-export-data.php:168 tb/results/tb-manual-results.php:103
 #: tb/results/tb-print-results.php:86 tb/results/tb-print-results.php:203
-#: vl/program-management/vl-export-data.php:211 vl/requests/vlRequest.php:188 vl/requests/vlRequest.php:203
+#: vl/program-management/vl-export-data.php:211 vl/requests/vl-requests.php:188 vl/requests/vl-requests.php:203
 #: vl/results/vlPrintResult.php:133 vl/results/vlPrintResult.php:281 vl/results/vlTestResult.php:127
 msgid "Manage Columns"
 msgstr "ຈັດການຄໍລໍາ"
@@ -2212,7 +2212,7 @@ msgstr "ຈັດການຄໍລໍາ"
 #: hepatitis/results/hepatitis-print-results.php:118 hepatitis/results/hepatitis-print-results.php:236
 #: tb/management/tb-export-data.php:183 tb/results/tb-manual-results.php:117
 #: tb/results/tb-print-results.php:101 tb/results/tb-print-results.php:218
-#: vl/batch/generateBarcode.php:216 vl/program-management/vl-export-data.php:226 vl/requests/vlRequest.php:219
+#: vl/batch/generateBarcode.php:216 vl/program-management/vl-export-data.php:226 vl/requests/vl-requests.php:219
 #: vl/results/vl-failed-results.php:127 vl/results/vlPrintResult.php:148
 #: vl/results/vlPrintResult.php:296 vl/results/vlTestResult.php:141
 msgid "Remote Sample Code"
@@ -2501,7 +2501,7 @@ msgstr "ເປັນຄົນອົດອາຫານຖືພາ"
 
 #: covid-19/management/generate-export-drc.php:37
 #: covid-19/requests/export-covid19-requests.php:38
-msgid "Patient Phone No."
+msgid "Patient Phone Number"
 msgstr "ໂທລະສັບຄົນເຈັບ ເລກທີ."
 
 #: covid-19/management/generate-export-drc.php:38
@@ -2707,8 +2707,8 @@ msgstr "ບໍ່ໄດ້ຮັບອະນຸຍາດ"
 #: covid-19/management/get-rejected-samples.php:70 eid/management/get-rejected-samples.php:70
 #: eid/requests/eid-requests.php:156 eid/requests/eid-requests.php:172
 #: hepatitis/management/get-rejected-samples.php:73 tb/management/get-rejected-samples.php:70
-#: vl/program-management/getRejectionResult.php:66 vl/requests/vlRequest.php:190
-#: vl/requests/vlRequest.php:204 vl/results/vlTestResult.php:126
+#: vl/program-management/getRejectionResult.php:66 vl/requests/vl-requests.php:190
+#: vl/requests/vl-requests.php:204 vl/results/vlTestResult.php:126
 msgid "Export Excel"
 msgstr "ການສົ່ງອອກ Excel"
 
@@ -3200,7 +3200,7 @@ msgstr "ທ່ານແນ່ໃຈວ່າທ່ານຕ້ອງການປ
 #: hepatitis/reference/hepatitis-risk-factors.php:115
 #: hepatitis/reference/hepatitis-sample-rejection-reasons.php:124
 #: hepatitis/reference/hepatitis-sample-type.php:115 hepatitis/reference/hepatitis-test-reasons.php:116
-#: hepatitis/results/hepatitis-result-status.php:415 vl/requests/vlRequest.php:646
+#: hepatitis/results/hepatitis-result-status.php:415 vl/requests/vl-requests.php:646
 #: vl/results/vlResultApproval.php:431 vl/results/vlResultApproval.php:477
 #: vl/results/vlResultApproval.php:507
 msgid "Updated successfully."
@@ -3263,7 +3263,7 @@ msgstr "ກະຕຸ້ນຕົວຢ່າງ"
 #: hepatitis/requests/add-samples-from-manifest.php:55 hepatitis/requests/hepatitis-requests.php:181
 #: hepatitis/results/hepatitis-failed-results.php:117 tb/requests/addSamplesFromManifest.php:55
 #: tb/requests/tb-requests.php:186 tb/results/tb-failed-results.php:117
-#: vl/requests/addSamplesFromManifest.php:64 vl/requests/vlRequest.php:268
+#: vl/requests/addSamplesFromManifest.php:64 vl/requests/vl-requests.php:268
 #: vl/results/vl-failed-results.php:177
 msgid "Sample Collection"
 msgstr "ການເກັບຕົວຢ່າງ"
@@ -3274,7 +3274,7 @@ msgstr "ການເກັບຕົວຢ່າງ"
 #: hepatitis/requests/add-samples-from-manifest.php:55 hepatitis/requests/hepatitis-requests.php:181
 #: hepatitis/results/hepatitis-failed-results.php:117 tb/requests/addSamplesFromManifest.php:55
 #: tb/requests/tb-requests.php:186 tb/results/tb-failed-results.php:117
-#: vl/requests/addSamplesFromManifest.php:64 vl/requests/vlRequest.php:268
+#: vl/requests/addSamplesFromManifest.php:64 vl/requests/vl-requests.php:268
 #: vl/results/vl-failed-results.php:177
 msgid "Date"
 msgstr "ວັນ"
@@ -3364,7 +3364,7 @@ msgstr "ຄໍາຮ້ອງສອບເສັງ Covid-19"
 #: hepatitis/requests/hepatitis-requests.php:42 hepatitis/results/hepatitis-failed-results.php:31
 #: hepatitis/results/hepatitis-result-status.php:66 tb/requests/tb-requests.php:48
 #: tb/results/tb-failed-results.php:31 tb/results/tb-result-status.php:66
-#: vl/requests/addSamplesFromManifest.php:29 vl/requests/vlRequest.php:40
+#: vl/requests/addSamplesFromManifest.php:29 vl/requests/vl-requests.php:40
 #: vl/results/vl-failed-results.php:32 vl/results/vlResultApproval.php:72
 msgid "Test Request"
 msgstr "ຄໍາຮ້ອງສອບເສັງ"
@@ -3372,7 +3372,7 @@ msgstr "ຄໍາຮ້ອງສອບເສັງ"
 #: covid-19/requests/covid-19-requests.php:80 covid-19/results/covid-19-failed-results.php:59
 #: eid/requests/eid-requests.php:69 eid/results/eid-failed-results.php:63
 #: hepatitis/requests/hepatitis-requests.php:70 hepatitis/results/hepatitis-failed-results.php:59
-#: tb/requests/tb-requests.php:76 tb/results/tb-failed-results.php:59 vl/requests/vlRequest.php:168
+#: tb/requests/tb-requests.php:76 tb/results/tb-failed-results.php:59 vl/requests/vl-requests.php:168
 #: vl/results/vl-failed-results.php:91
 msgid "Req. Sample Type"
 msgstr "Req. ປະເພດຕົວຢ່າງ"
@@ -3380,7 +3380,7 @@ msgstr "Req. ປະເພດຕົວຢ່າງ"
 #: covid-19/requests/covid-19-requests.php:82 covid-19/results/covid-19-failed-results.php:61
 #: eid/requests/eid-requests.php:71 eid/results/eid-failed-results.php:65
 #: hepatitis/requests/hepatitis-requests.php:72 hepatitis/results/hepatitis-failed-results.php:61
-#: tb/requests/tb-requests.php:78 tb/results/tb-failed-results.php:61 vl/requests/vlRequest.php:170
+#: tb/requests/tb-requests.php:78 tb/results/tb-failed-results.php:61 vl/requests/vl-requests.php:170
 #: vl/results/vl-failed-results.php:93
 msgid "Please select request sample type"
 msgstr "ກະລຸນາເລືອກປະເພດຕົວຢ່າງຄໍາຮ້ອງຂໍ"
@@ -3388,7 +3388,7 @@ msgstr "ກະລຸນາເລືອກປະເພດຕົວຢ່າງຄ
 #: covid-19/requests/covid-19-requests.php:84 covid-19/results/covid-19-failed-results.php:63
 #: eid/requests/eid-requests.php:73 eid/results/eid-failed-results.php:67
 #: hepatitis/requests/hepatitis-requests.php:74 hepatitis/results/hepatitis-failed-results.php:63
-#: tb/requests/tb-requests.php:80 tb/results/tb-failed-results.php:63 vl/requests/vlRequest.php:172
+#: tb/requests/tb-requests.php:80 tb/results/tb-failed-results.php:63 vl/requests/vl-requests.php:172
 #: vl/results/vl-failed-results.php:95
 msgid "Sample With Result"
 msgstr "ຕົວຢ່າງທີ່ມີຜົນ"
@@ -3396,7 +3396,7 @@ msgstr "ຕົວຢ່າງທີ່ມີຜົນ"
 #: covid-19/requests/covid-19-requests.php:85 covid-19/results/covid-19-failed-results.php:64
 #: eid/requests/eid-requests.php:74 eid/results/eid-failed-results.php:68
 #: hepatitis/requests/hepatitis-requests.php:75 hepatitis/results/hepatitis-failed-results.php:64
-#: tb/requests/tb-requests.php:81 tb/results/tb-failed-results.php:64 vl/requests/vlRequest.php:173
+#: tb/requests/tb-requests.php:81 tb/results/tb-failed-results.php:64 vl/requests/vl-requests.php:173
 #: vl/results/vl-failed-results.php:96
 msgid "Sample Without Result"
 msgstr "ຕົວຢ່າງໂດຍບໍ່ມີຜົນ"
@@ -3405,7 +3405,7 @@ msgstr "ຕົວຢ່າງໂດຍບໍ່ມີຜົນ"
 #: eid/requests/eid-requests.php:88 eid/results/eid-failed-results.php:82 facilities/addFacility.php:173
 #: facilities/addFacility.php:176 facilities/editFacility.php:243 facilities/editFacility.php:247
 #: hepatitis/requests/hepatitis-requests.php:89 hepatitis/results/hepatitis-failed-results.php:78
-#: tb/requests/tb-requests.php:95 tb/results/tb-failed-results.php:78 vl/requests/vlRequest.php:91
+#: tb/requests/tb-requests.php:95 tb/results/tb-failed-results.php:78 vl/requests/vl-requests.php:91
 #: vl/results/vl-failed-results.php:83
 msgid "Enter Province/State"
 msgstr "ເຂົ້າແຂວງ/ລັດ"
@@ -3414,7 +3414,7 @@ msgstr "ເຂົ້າແຂວງ/ລັດ"
 #: eid/requests/eid-requests.php:92 eid/results/eid-failed-results.php:86 facilities/addFacility.php:189
 #: facilities/editFacility.php:260 facilities/editFacility.php:263
 #: hepatitis/requests/hepatitis-requests.php:93 hepatitis/results/hepatitis-failed-results.php:82
-#: tb/requests/tb-requests.php:99 tb/results/tb-failed-results.php:82 vl/requests/vlRequest.php:95
+#: tb/requests/tb-requests.php:99 tb/results/tb-failed-results.php:82 vl/requests/vl-requests.php:95
 #: vl/results/vl-failed-results.php:87
 msgid "Enter District/County"
 msgstr "ເຂົ້າແຂວງ/ທ້ອງຖີ່ນ"
@@ -3425,7 +3425,7 @@ msgstr "ກະລຸນາໃສ່ID ຂອງຄົນເຈັບເພື່
 
 #: covid-19/requests/covid-19-requests.php:128 eid/requests/eid-requests.php:111
 #: hepatitis/requests/hepatitis-requests.php:112 tb/requests/tb-requests.php:118
-#: vl/program-management/vl-export-data.php:137 vl/requests/vlRequest.php:114
+#: vl/program-management/vl-export-data.php:137 vl/requests/vl-requests.php:114
 msgid "Show only Reordered Samples"
 msgstr "ສະ ແດງ ໃຫ້ ເຫັນ ພຽງ ແຕ່ ຕົວ ຢ່າງ reordered"
 
@@ -3449,7 +3449,7 @@ msgstr "ກະລຸນາເລືອກຕົວຢ່າງບັນທຶກ
 #: vl/program-management/highViralLoad.php:244 vl/program-management/highViralLoad.php:339
 #: vl/program-management/highViralLoad.php:349 vl/program-management/vl-export-data.php:141
 #: vl/program-management/vl-export-data.php:151 vl/program-management/vl-export-data.php:159
-#: vl/requests/vlRequest.php:118 vl/requests/vlRequest.php:130 vl/requests/vlRequest.php:138
+#: vl/requests/vl-requests.php:118 vl/requests/vl-requests.php:130 vl/requests/vl-requests.php:138
 msgid "Yes"
 msgstr "ແມ່ນແລ້ວ"
 
@@ -3467,14 +3467,14 @@ msgstr "ແມ່ນແລ້ວ"
 #: vl/program-management/highViralLoad.php:245 vl/program-management/highViralLoad.php:340
 #: vl/program-management/highViralLoad.php:350 vl/program-management/vl-export-data.php:142
 #: vl/program-management/vl-export-data.php:152 vl/program-management/vl-export-data.php:160
-#: vl/requests/vlRequest.php:119 vl/requests/vlRequest.php:131 vl/requests/vlRequest.php:139
+#: vl/requests/vl-requests.php:119 vl/requests/vl-requests.php:131 vl/requests/vl-requests.php:139
 msgid "No"
 msgstr "ບໍ່"
 
 #: covid-19/requests/covid-19-requests.php:162 covid-19/results/covid-19-failed-results.php:91
 #: eid/requests/eid-requests.php:146 eid/results/eid-failed-results.php:95
 #: hepatitis/requests/hepatitis-requests.php:148 hepatitis/results/hepatitis-failed-results.php:91
-#: tb/requests/tb-requests.php:154 tb/results/tb-failed-results.php:91 vl/requests/vlRequest.php:180
+#: tb/requests/tb-requests.php:154 tb/results/tb-failed-results.php:91 vl/requests/vl-requests.php:180
 #: vl/results/vl-failed-results.php:103
 msgid "Hide Advanced Search Options"
 msgstr "ເຊື່ອງ ການ ຄົ້ນ ຄ້ວາ ຂັ້ນ ສູງ"
@@ -3510,7 +3510,7 @@ msgstr "ບໍ່ມີການຄັດເລືອກເຄື່ອງພິ
 #: covid-19/requests/covid-19-requests.php:246 eid/requests/eid-requests.php:223
 #: eid/results/eid-failed-results.php:156 hepatitis/requests/hepatitis-requests.php:215
 #: hepatitis/results/hepatitis-failed-results.php:148 tb/requests/tb-requests.php:223
-#: tb/results/tb-failed-results.php:150 vl/requests/vlRequest.php:302
+#: tb/results/tb-failed-results.php:150 vl/requests/vl-requests.php:302
 #: vl/results/vl-failed-results.php:211
 msgid "Change/Retry"
 msgstr "ປ່ຽນ/Retry"
@@ -3518,7 +3518,7 @@ msgstr "ປ່ຽນ/Retry"
 #: covid-19/requests/covid-19-requests.php:249 eid/requests/eid-requests.php:226
 #: eid/results/eid-failed-results.php:159 hepatitis/requests/hepatitis-requests.php:218
 #: hepatitis/results/hepatitis-failed-results.php:151 tb/requests/tb-requests.php:226
-#: tb/results/tb-failed-results.php:153 vl/requests/vlRequest.php:305
+#: tb/results/tb-failed-results.php:153 vl/requests/vl-requests.php:305
 #: vl/results/vl-failed-results.php:214
 msgid "Zebra Printer Options"
 msgstr "ທາງເລືອກເຄື່ອງແມ່ພິມ Zebra"
@@ -3529,7 +3529,7 @@ msgstr "ເຄື່ອງພິມ:"
 
 #: covid-19/requests/covid-19-requests.php:308 eid/requests/eid-requests.php:285
 #: hepatitis/requests/hepatitis-requests.php:277 tb/requests/tb-requests.php:285
-#: vl/program-management/vl-export-data.php:319 vl/requests/vlRequest.php:364
+#: vl/program-management/vl-export-data.php:319 vl/requests/vl-requests.php:364
 msgid "Select Vl Lab"
 msgstr "ເລືອກ Vl Lab"
 
@@ -3687,7 +3687,7 @@ msgstr "ເຂົ້າCovid-19 ຜົນໄດ້ຮັບດ້ວຍຕົນ
 #: hepatitis/results/hepatitis-manual-results.php:117 hepatitis/results/hepatitis-print-results.php:125
 #: hepatitis/results/hepatitis-print-results.php:243 tb/results/tb-manual-results.php:124
 #: tb/results/tb-print-results.php:108 tb/results/tb-print-results.php:225
-#: vl/program-management/vl-export-data.php:233 vl/requests/vlRequest.php:229
+#: vl/program-management/vl-export-data.php:233 vl/requests/vl-requests.php:229
 #: vl/results/vl-failed-results.php:137 vl/results/vlPrintResult.php:155
 #: vl/results/vlPrintResult.php:303 vl/results/vlTestResult.php:148
 msgid "Art No"
@@ -3844,7 +3844,7 @@ msgid "Last Modified on"
 msgstr "ດັດ ແປງ ຄັ້ງ ສຸດ ທ້າຍ ກ່ຽວ ກັບ"
 
 #: covid-19/results/covid-19-result-status.php:392 hepatitis/results/hepatitis-result-status.php:397
-#: tb/results/tb-result-status.php:392 vl/requests/vlRequest.php:630
+#: tb/results/tb-result-status.php:392 vl/requests/vl-requests.php:630
 msgid "Do you wish to change the test status ?"
 msgstr "ທ່ານຕ້ອງການປ່ຽນສະຖານະການທົດສອບບໍ ?"
 
@@ -4274,13 +4274,13 @@ msgid "Bulk Import EID Request"
 msgstr "ຄໍາຮ້ອງຂໍການນໍາເຂົ້າBulk EID"
 
 #: eid/requests/eid-requests.php:173 hepatitis/requests/hepatitis-requests.php:166
-#: tb/requests/tb-requests.php:171 vl/requests/vlRequest.php:205
+#: tb/requests/tb-requests.php:171 vl/requests/vl-requests.php:205
 msgid "Show Advanced Search Options"
 msgstr "ສະ ແດງ ໃຫ້ ເຫັນ ການ ຄົ້ນ ຫາ ທີ່ ກ້າວ ຫນ້າ"
 
 #: eid/requests/eid-requests.php:215 eid/results/eid-failed-results.php:148
 #: hepatitis/requests/hepatitis-requests.php:207 hepatitis/results/hepatitis-failed-results.php:140
-#: tb/requests/tb-requests.php:215 tb/results/tb-failed-results.php:142 vl/requests/vlRequest.php:294
+#: tb/requests/tb-requests.php:215 tb/results/tb-failed-results.php:142 vl/requests/vl-requests.php:294
 #: vl/results/vl-failed-results.php:203
 msgid "Loading Printer Details"
 msgstr "Loading Printer ລາຍລະອຽດ"
@@ -4306,7 +4306,7 @@ msgstr "ແກ້ໄຂຄໍາຮ້ອງຂໍ EID"
 
 #: eid/results/eid-failed-results.php:160 hepatitis/requests/hepatitis-requests.php:219
 #: hepatitis/results/hepatitis-failed-results.php:152 tb/requests/tb-requests.php:227
-#: tb/results/tb-failed-results.php:154 vl/requests/vlRequest.php:306
+#: tb/results/tb-failed-results.php:154 vl/requests/vl-requests.php:306
 #: vl/results/vl-failed-results.php:215
 msgid "Printer"
 msgstr "ເຄື່ອງພິມ"
@@ -6389,7 +6389,7 @@ msgstr "ກະລຸນາໃຊ້ດັ່ງຕໍ່ໄປນີ້ເພື
 
 #: mail/vlResultMail.php:147 vl/program-management/highViralLoad.php:123
 #: vl/program-management/highViralLoad.php:230 vl/program-management/highViralLoad.php:335
-#: vl/program-management/vl-export-data.php:148 vl/requests/vlRequest.php:127
+#: vl/program-management/vl-export-data.php:148 vl/requests/vl-requests.php:127
 msgid "Pregnant"
 msgstr "ຖືພາ"
 
@@ -6958,7 +6958,7 @@ msgid "Test Result"
 msgstr "ຜົນການທົດສອບ"
 
 #: vl/batch/getBatchCodeDetails.php:176
-msgid "Print bar code"
+msgid "Print barcode"
 msgstr "ພິມລະຫັດbar"
 
 #: vl/batch/getBatchCodeDetails.php:176
@@ -7020,13 +7020,13 @@ msgstr "ລາຍງານໄວຣັສ໌໌໌໌ສູງ"
 
 #: vl/program-management/highViralLoad.php:125 vl/program-management/highViralLoad.php:232
 #: vl/program-management/highViralLoad.php:337 vl/program-management/vl-export-data.php:149
-#: vl/program-management/vl-export-data.php:157 vl/requests/vlRequest.php:128 vl/requests/vlRequest.php:136
+#: vl/program-management/vl-export-data.php:157 vl/requests/vl-requests.php:128 vl/requests/vl-requests.php:136
 msgid "Please choose pregnant option"
 msgstr "ກະລຸນາເລືອກທາງເລືອກໃນການຖືພາ"
 
 #: vl/program-management/highViralLoad.php:131 vl/program-management/highViralLoad.php:240
 #: vl/program-management/highViralLoad.php:345 vl/program-management/vl-export-data.php:156
-#: vl/requests/vlRequest.php:135
+#: vl/requests/vl-requests.php:135
 msgid "Breastfeeding"
 msgstr "ການລ້ຽງລູກດ້ວຍນົມແມ່"
 
@@ -7050,7 +7050,7 @@ msgstr "Viral Load (cp/ml)"
 
 #: vl/program-management/highViralLoad.php:396 vl/program-management/highViralLoad.php:424
 #: vl/program-management/vlMonitoringReport.php:231 vl/program-management/vl-export-data.php:270
-#: vl/requests/addSamplesFromManifest.php:66 vl/requests/vlRequest.php:270
+#: vl/requests/addSamplesFromManifest.php:66 vl/requests/vl-requests.php:270
 #: vl/results/vl-failed-results.php:179 vl/results/vlResultApproval.php:181
 #: vl/results/vlTestResult.php:190
 msgid "Unique ART No"
@@ -7384,7 +7384,7 @@ msgstr "ຕື່ມ VL ຕົວຢ່າງການປະຕິເສດເ�
 msgid "Sample Manifest Code"
 msgstr "ປະມວນຜົນຕົວຢ່າງ"
 
-#: vl/requests/addSamplesFromManifest.php:73 vl/requests/vlRequest.php:250 vl/requests/vlRequest.php:277
+#: vl/requests/addSamplesFromManifest.php:73 vl/requests/vl-requests.php:250 vl/requests/vl-requests.php:277
 #: vl/results/vl-failed-results.php:158 vl/results/vl-failed-results.php:186
 msgid "Last Modified Date"
 msgstr "ວັນທີດັດແກ້ຄັ້ງສຸດທ້າຍ"
@@ -7405,27 +7405,27 @@ msgstr "ຄໍາຮ້ອງຂໍ VL ໄດ້ເພີ່ມຄວາມສ�
 msgid "VL request updated successfully"
 msgstr "ຄໍາ ຮ້ອງ ສະ ຫມັກ VL ໄດ້ ຮັບ ການ ອັບ ເດດ ຢ່າງ ສໍາ ເລັດ ຜົນ"
 
-#: vl/requests/vlRequest.php:2 vl/results/vl-failed-results.php:2
+#: vl/requests/vl-requests.php:2 vl/results/vl-failed-results.php:2
 msgid "View All Requests"
 msgstr "ເບິ່ງຄໍາຮ້ອງທຸກ"
 
-#: vl/requests/vlRequest.php:37
+#: vl/requests/vl-requests.php:37
 msgid "Viral Load Test Requests"
 msgstr "ຄໍາຮ້ອງຂໍການທົດສອບViral Load"
 
-#: vl/requests/vlRequest.php:185 vl/requests/vlRequest.php:200
+#: vl/requests/vl-requests.php:185 vl/requests/vl-requests.php:200
 msgid "Add VL Request Form"
 msgstr "ຕື່ມແບບຟອມຄໍາຮ້ອງຂໍ VL"
 
-#: vl/requests/vlRequest.php:301
+#: vl/requests/vl-requests.php:301
 msgid "No printer selected!"
 msgstr "ບໍ່ມີການຄັດເລືອກເຄື່ອງພິມ!"
 
-#: vl/requests/vlRequest.php:367
+#: vl/requests/vl-requests.php:367
 msgid "Select Batch Code"
 msgstr "ຄັດເລືອກລະຫັດ Batch'"
 
-#: vl/requests/vlRequest.php:651
+#: vl/requests/vl-requests.php:651
 msgid "Please checked atleast one checkbox."
 msgstr "ກະລຸນາກວດເບິ່ງຕູ້ກວດສອບຢ່າງຫນ້ອຍຫນຶ່ງ."
 

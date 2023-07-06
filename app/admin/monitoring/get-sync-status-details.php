@@ -28,7 +28,7 @@ if (!empty($_POST['testType'])) {
 }
 
 if (isset($testType) && $testType == 'vl') {
-    $url = "/vl/requests/vlRequest.php";
+    $url = "/vl/requests/vl-requests.php";
     $table = "form_vl";
     $testName = 'Viral Load';
 }
@@ -84,12 +84,25 @@ $_SESSION['labSyncStatusDetails'] = $sQuery;
 // die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 foreach ($rResult as $key => $aRow) { ?>
-    <tr class="<?php echo $color; ?>" data-facilityId="<?= base64_encode($aRow['facility_id']); ?>" data-labId="<?= htmlspecialchars($_POST['labId']); ?>" data-url="<?php echo urlencode($url); ?>">
-        <td><?= htmlspecialchars($aRow['facility_name']); ?></td>
-        <td><?= htmlspecialchars($_POST['testType']); ?></td>
-        <td><?= htmlspecialchars($aRow['province']); ?></td>
-        <td><?= htmlspecialchars($aRow['district']); ?></td>
-        <td><?= DateUtility::humanReadableDateFormat($aRow['lastRequestsSync'], true); ?></td>
-        <td><?= DateUtility::humanReadableDateFormat($aRow['lastResultsSync'], true); ?></td>
+    <tr class="<?php echo $color; ?>" data-facilityId="<?= base64_encode($aRow['facility_id']); ?>"
+        data-labId="<?= htmlspecialchars($_POST['labId']); ?>" data-url="<?php echo urlencode($url); ?>">
+        <td>
+            <?= htmlspecialchars($aRow['facility_name']); ?>
+        </td>
+        <td>
+            <?= htmlspecialchars($_POST['testType']); ?>
+        </td>
+        <td>
+            <?= htmlspecialchars($aRow['province']); ?>
+        </td>
+        <td>
+            <?= htmlspecialchars($aRow['district']); ?>
+        </td>
+        <td>
+            <?= DateUtility::humanReadableDateFormat($aRow['lastRequestsSync'], true); ?>
+        </td>
+        <td>
+            <?= DateUtility::humanReadableDateFormat($aRow['lastResultsSync'], true); ?>
+        </td>
     </tr>
 <?php }

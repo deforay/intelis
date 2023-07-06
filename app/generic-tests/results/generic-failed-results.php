@@ -542,7 +542,7 @@ $state = $geolocationService->getProvinces("yes");
         resetBtnShowHide();
     }
 
-    function exportAllPendingVlRequest() {
+    function exportTestRequests() {
         $.blockUI();
         var requestSampleType = $('#requestSampleType').val();
         $.post("/vl/requests/export-vl-requests.php", {
