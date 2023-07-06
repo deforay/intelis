@@ -117,6 +117,14 @@ if (isset($covid19Info['result_reviewed_datetime']) && trim($covid19Info['result
 } else {
     $covid19Info['result_reviewed_datetime'] = '';
 }
+
+if (isset($covid19Info['result_approved_datetime']) && trim($covid19Info['result_approved_datetime']) != '' && $covid19Info['result_approved_datetime'] != '0000-00-00 00:00:00') {
+    $approvedOn = explode(" ", $covid19Info['result_approved_datetime']);
+    $covid19Info['result_approved_datetime'] = DateUtility::humanReadableDateFormat($approvedOn[0]) . " " . $approvedOn[1];
+} else {
+    $covid19Info['result_approved_datetime'] = '';
+}
+
 $fileArray = array(
     1 => 'forms/edit-southsudan.php',
     2 => 'forms/edit-sierraleone.php',
