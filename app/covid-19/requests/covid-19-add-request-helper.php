@@ -257,7 +257,7 @@ try {
 		}
 	}
 
-	if (isset($_POST['asymptomatic']) && $_POST['asymptomatic'] != "yes") {
+	//if (isset($_POST['asymptomatic']) && $_POST['asymptomatic'] != "yes") {
 		$db = $db->where('covid19_id', $_POST['covid19SampleId']);
 		$db->delete("covid19_patient_symptoms");
 		if (!empty($_POST['symptomDetected']) || (!empty($_POST['symptom']))) {
@@ -271,7 +271,7 @@ try {
 				$db->insert("covid19_patient_symptoms", $symptomData);
 			}
 		}
-	}
+	//}
 
 	$db = $db->where('covid19_id', $_POST['covid19SampleId']);
 	$db->delete("covid19_reasons_for_testing");

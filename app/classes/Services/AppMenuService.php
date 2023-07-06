@@ -35,8 +35,6 @@ class AppMenuService
 
     public function getMenu($parentId = 0, $menuId = 0)
     {
-
-
         $activeModules = SystemService::getActiveModules();
 
         $this->db->where('module', $activeModules, 'IN');
@@ -64,7 +62,7 @@ class AppMenuService
         $response = [];
         foreach ($menuData as $key => $menu) {
             $menu['access'] = true;
-            if ($menu['link']  != "" && !empty($menu['link'])) {
+            if ($menu['link'] != "" && !empty($menu['link'])) {
                 $menu['access'] = $this->usersService->isAllowed($menu['link']);
             }
 

@@ -139,7 +139,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             <option value=""> -- Select -- </option>
                                             <?php
                                             foreach ($implementingPartnerList as $implementingPartner) {
-                                            ?>
+                                                ?>
                                                 <option value="<?php echo ($implementingPartner['i_partner_id']); ?>" <?php echo ($eidInfo['implementing_partner'] == $implementingPartner['i_partner_id']) ? "selected='selected'" : ""; ?>><?= $implementingPartner['i_partner_name']; ?></option>
                                             <?php } ?>
                                         </select>
@@ -150,7 +150,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             <option value=""> -- Select -- </option>
                                             <?php
                                             foreach ($fundingSourceList as $fundingSource) {
-                                            ?>
+                                                ?>
                                                 <option value="<?php echo ($fundingSource['funding_source_id']); ?>" <?php echo ($eidInfo['funding_source'] == $fundingSource['funding_source_id']) ? "selected='selected'" : ""; ?>><?= $fundingSource['funding_source_name']; ?></option>
                                             <?php } ?>
                                         </select>
@@ -416,7 +416,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                                         <?php }
                                                         } ?>
                                                     </optgroup>
-                                                <?php }  ?>
+                                                <?php } ?>
                                             </select>
                                         </td>
                                         <th class="labels" scope="row">Rejection Date<span class="mandatory">*</span></th>
@@ -686,9 +686,9 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
     });
 
     function getMachine(value) {
-        $.post("/import-configs/get-config-machine-by-config.php", {
-                configName: value,
-                machine: <?php echo !empty($eidInfo['import_machine_name']) ? $eidInfo['import_machine_name']  : '""'; ?>,
+        $.post("/instruments/get-machine-names-by-instrument.php", {
+                instrumentId: value,
+                machine: <?php echo !empty($eidInfo['import_machine_name']) ? $eidInfo['import_machine_name'] : '""'; ?>,
                 testType: 'eid'
             },
             function(data) {

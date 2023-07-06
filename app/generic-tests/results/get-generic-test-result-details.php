@@ -316,7 +316,7 @@ foreach ($rResult as $aRow) {
      } else {
           $print = '<a href="/generic-tests/results/update-generic-test-result.php?id=' . base64_encode($aRow['sample_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Enter Result") . '</a>';
           if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
-               if (isset($_SESSION['privileges']) && !in_array("edit-locked-vl-samples", $_SESSION['privileges'])) {
+               if (isset($_SESSION['privileges']) && !in_array("/vl/requests/edit-locked-vl-samples", $_SESSION['privileges'])) {
                     $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _("Locked") . '</a>';
                }
           }

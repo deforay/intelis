@@ -330,13 +330,11 @@ class VlService extends AbstractTestService
             $provinceId = $params['provinceId'] ?? null;
             $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
 
-
             // PNG FORM (formId = 5) CANNOT HAVE PROVINCE EMPTY
             // Sample Collection Date Cannot be Empty
             if (empty($sampleCollectionDate) || ($formId == 5 && empty($provinceId))) {
                 return 0;
             }
-
 
             $sampleCodeParams = [];
             $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;

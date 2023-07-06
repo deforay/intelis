@@ -227,7 +227,7 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 							foreach ($menu['children'] as $subMenu) {
 								?>
 										<?php if ($subMenu['has_children'] == 'yes' && !empty($subMenu['children'])) { ?>
-											<li class="<?= $subMenu['additional_class_names'] ?> ">
+											<li class="sub-menu-li <?= $subMenu['additional_class_names'] ?> ">
 												<a href="<?= $subMenu['link']; ?>">
 													<span class="<?= $subMenu['icon'] ?>"></span>
 													<span>
@@ -238,7 +238,7 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 													</span>
 												</a>
 												<?php if (!empty($subMenu['children'])) { ?>
-													<ul class="treeview-menu">
+													<ul class="sub-menu-li-ul treeview-menu">
 														<?php
 														foreach ($subMenu['children'] as $childMenu) {
 															$innerPages = '';
@@ -248,10 +248,12 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 																$innerPages = 'data-inner-pages="' . $dataInnerPages . '"';
 															}
 															?>
-															<li class="<?= $childMenu['additional_class_names'] ?>">
-																<a href="<?= $childMenu['link'] ?>" <?= $innerPages; ?>>
+															<li class="sub-menu-li-ul-li <?= $childMenu['additional_class_names'] ?>">
+																<a class="menu-item" href="<?= $childMenu['link'] ?>" <?= $innerPages; ?>>
 																	<span class="<?= $childMenu['icon'] ?>"></span>
-																	<?= _($childMenu['display_text']); ?>
+																	<span class="inner-menu-item-text">
+																		<?= _($childMenu['display_text']); ?>
+																	</span>
 																</a>
 															</li>
 															<?php

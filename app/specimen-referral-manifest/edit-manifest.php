@@ -46,9 +46,9 @@ $id = isset($_GET['id']) ? base64_decode($_GET['id']) : null;
 $m = $module = $_GET['t'] ?? 'vl';
 
 $pQuery = "SELECT * FROM package_details WHERE package_id = ?";
-$pResult = $db->rawQuery($pQuery, [$id]);
+$pResult = $db->rawQueryOne($pQuery, [$id]);
 
-if ($pResult[0]['package_status'] == 'dispatch') {
+if ($pResult['package_status'] == 'dispatch') {
 	header("Location:/specimen-referral-manifest/view-manifests.php?t=" . $module);
 }
 
@@ -193,7 +193,7 @@ $global = $general->getGlobalConfig();
 										<input type="text" class="form-control isRequired" id="packageCode"
 											name="packageCode" placeholder="Manifest Code"
 											title="Please enter manifest code" readonly
-											value="<?php echo strtoupper($pResult[0]['package_code']); ?>" />
+											value="<?php echo strtoupper($pResult['package_code']); ?>" />
 									</div>
 								</div>
 							</div>
@@ -204,7 +204,7 @@ $global = $general->getGlobalConfig();
 									<div class="col-lg-7" style="margin-left:3%;">
 										<select class="form-control" id="testingLab" name="testingLab"
 											title="Choose one test lab" readonly="readonly">
-											<?= $general->generateSelectOptions($testingLabs, $pResult[0]['lab_id'], '-- Select --'); ?>
+											<?= $general->generateSelectOptions($testingLabs, $pResult['lab_id'], '-- Select --'); ?>
 										</select>
 									</div>
 								</div>
@@ -219,9 +219,9 @@ $global = $general->getGlobalConfig();
 										<select class="form-control isRequired" name="packageStatus" id="packageStatus"
 											title="Please select manifest status" readonly="readonly">
 											<option value="">-- Select --</option>
-											<option value="pending" <?php echo ($pResult[0]['package_status'] == 'pending') ? "selected='selected'" : ''; ?>>Pending</option>
-											<option value="dispatch" <?php echo ($pResult[0]['package_status'] == 'dispatch') ? "selected='selected'" : ''; ?>>Dispatch</option>
-											<option value="received" <?php echo ($pResult[0]['package_status'] == 'received') ? "selected='selected'" : ''; ?>>Received</option>
+											<option value="pending" <?php echo ($pResult['package_status'] == 'pending') ? "selected='selected'" : ''; ?>>Pending</option>
+											<option value="dispatch" <?php echo ($pResult['package_status'] == 'dispatch') ? "selected='selected'" : ''; ?>>Dispatch</option>
+											<option value="received" <?php echo ($pResult['package_status'] == 'received') ? "selected='selected'" : ''; ?>>Received</option>
 										</select>
 									</div>
 								</div>
@@ -234,7 +234,7 @@ $global = $general->getGlobalConfig();
 									<div class="col-lg-7" style="margin-left:3%;">
 										<select class="form-control select2" id="operator" name="operator"
 											title="Choose one Operator/Technician">
-											<?= $general->generateSelectOptions($usersList, $pResult[0]['added_by'], '-- Select --'); ?>
+											<?= $general->generateSelectOptions($usersList, $pResult['added_by'], '-- Select --'); ?>
 										</select>
 									</div>
 								</div>
@@ -335,7 +335,7 @@ $global = $general->getGlobalConfig();
 			</div>
 			<!-- /.box-body -->
 			<div class="box-footer">
-				<input type="hidden" name="packageId" value="<?php echo $pResult[0]['package_id']; ?>" />
+				<input type="hidden" name="packageId" value="<?php echo $pResult['package_id']; ?>" />
 				<input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title=""
 					readonly value="<?= htmlspecialchars($module); ?>" />
 				<a id="packageSubmit" class="btn btn-primary" href="javascript:void(0);"

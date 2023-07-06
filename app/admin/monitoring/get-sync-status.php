@@ -23,7 +23,7 @@ if (!empty($_POST['testType'])) {
 }
 
 if (isset($testType) && $testType == 'vl') {
-    $url = "/vl/requests/vlRequest.php";
+    $url = "/vl/requests/vl-requests.php";
     $table = "form_vl";
     $testName = 'Viral Load';
 }
@@ -108,12 +108,23 @@ foreach ($rResult as $key => $aRow) {
         $color = "red";
     }
 
-    /* Assign data table variables */ ?>
+    /* Assign data table variables */?>
     <tr class="<?php echo $color; ?>" data-facilityId="<?= base64_encode($aRow['facility_id']); ?>">
-        <td><?= $aRow['facility_name']; ?></td>
-        <td><?= DateUtility::humanReadableDateFormat($aRow['latest'], true); ?></td>
-        <td><?= DateUtility::humanReadableDateFormat($aRow['lastResultsSync'], true); ?></td>
-        <td><?= DateUtility::humanReadableDateFormat($aRow['lastRequestsSync'], true); ?></td>
-        <td><?= $aRow['version'] ?? '-'; ?></td>
+        <td>
+            <?= $aRow['facility_name']; ?>
+        </td>
+        <td>
+            <?= DateUtility::humanReadableDateFormat($aRow['latest'], true); ?>
+        </td>
+        <td>
+            <?= DateUtility::humanReadableDateFormat($aRow['lastResultsSync'], true); ?>
+        </td>
+        <td>
+            <?= DateUtility::humanReadableDateFormat($aRow['lastRequestsSync'], true); ?>
+        </td>
+        <td>
+            <?= $aRow['version'] ?? '-'; ?>
+        </td>
     </tr>
 <?php } ?>
+

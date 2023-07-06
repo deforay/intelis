@@ -90,10 +90,16 @@ $rInfo = $db->query($resourcesQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-user"></em> <?php echo _("Add Role"); ?></h1>
+		<h1><em class="fa-solid fa-user"></em>
+			<?php echo _("Add Role"); ?>
+		</h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Add Role"); ?></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em>
+					<?php echo _("Home"); ?>
+				</a></li>
+			<li class="active">
+				<?php echo _("Add Role"); ?>
+			</li>
 		</ol>
 	</section>
 
@@ -101,27 +107,40 @@ $rInfo = $db->query($resourcesQuery);
 	<section class="content">
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
+					<?php echo _("indicates required field"); ?> &nbsp;
+				</div>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='roleAddForm' id='roleAddForm' autocomplete="off" action="addRolesHelper.php">
+				<form class="form-horizontal" method='post' name='roleAddForm' id='roleAddForm' autocomplete="off"
+					action="addRolesHelper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="userName" class="col-lg-4 control-label"><?php echo _("Role Name"); ?> <span class="mandatory">*</span></label>
+									<label for="userName" class="col-lg-4 control-label">
+										<?php echo _("Role Name"); ?> <span class="mandatory">*</span>
+									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="roleName" name="roleName" placeholder="<?php echo _('Role Name'); ?>" title="<?php echo _('Please enter a name for this role'); ?>" onblur='checkNameValidation("roles","role_name",this,null,"<?php echo _("This role name that you entered already exists.Try another role name"); ?>",null)' />
+										<input type="text" class="form-control isRequired" id="roleName" name="roleName"
+											placeholder="<?php echo _('Role Name'); ?>"
+											title="<?php echo _('Please enter a name for this role'); ?>"
+											onblur='checkNameValidation("roles","role_name",this,null,"<?php echo _("This role name that you entered already exists.Try another role name"); ?>",null)' />
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="email" class="col-lg-4 control-label"><?php echo _("Role Code"); ?> <span class="mandatory">*</span></label>
+									<label for="email" class="col-lg-4 control-label">
+										<?php echo _("Role Code"); ?> <span class="mandatory">*</span>
+									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="roleCode" name="roleCode" placeholder="<?php echo _('Role Code'); ?>" title="<?php echo _('Please enter role code'); ?>" onblur='checkNameValidation("roles","role_code",this,null,"<?php echo _("This role code that you entered already exists.Try another role code"); ?>",null)' />
+										<input type="text" class="form-control isRequired" id="roleCode" name="roleCode"
+											placeholder="<?php echo _('Role Code'); ?>"
+											title="<?php echo _('Please enter role code'); ?>"
+											onblur='checkNameValidation("roles","role_code",this,null,"<?php echo _("This role code that you entered already exists.Try another role code"); ?>",null)' />
 									</div>
 								</div>
 							</div>
@@ -129,30 +148,55 @@ $rInfo = $db->query($resourcesQuery);
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="landingPage" class="col-lg-4 control-label"><?php echo _("Landing Page"); ?></label>
+									<label for="landingPage" class="col-lg-4 control-label">
+										<?php echo _("Landing Page"); ?>
+									</label>
 									<div class="col-lg-7">
-										<select class="form-control " name='landingPage' id='landingPage' title="<?php echo _('Please select landing page'); ?>">
-											<option value=""> <?php echo _("-- Select --"); ?> </option>
-											<option value="/dashboard/index.php"><?php echo _("Dashboard"); ?></option>
+										<select class="form-control " name='landingPage' id='landingPage'
+											title="<?php echo _('Please select landing page'); ?>">
+											<option value="">
+												<?php echo _("-- Select --"); ?>
+											</option>
+											<option value="/dashboard/index.php">
+												<?php echo _("Dashboard"); ?>
+											</option>
 											<?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
-												<option value="/vl/requests/addVlRequest.php"><?php echo _("Add New VL Request"); ?></option>
-												<option value="/vl/requests/vlRequest.php"><?php echo _("VL View Test Requests"); ?></option>
+												<option value="/vl/requests/addVlRequest.php">
+													<?php echo _("Add New VL Request"); ?>
+												</option>
+												<option value="/vl/requests/vl-requests.php">
+													<?php echo _("VL View Test Requests"); ?>
+												</option>
 											<?php }
 											if (!empty($activeModules) && in_array('eid', $activeModules)) { ?>
-												<option value="/eid/requests/eid-add-request.php"><?php echo _("Add New EID Request"); ?></option>
-												<option value="/eid/requests/eid-requests.php"><?php echo _("EID View Test Requests"); ?></option>
+												<option value="/eid/requests/eid-add-request.php">
+													<?php echo _("Add New EID Request"); ?>
+												</option>
+												<option value="/eid/requests/eid-requests.php">
+													<?php echo _("EID View Test Requests"); ?>
+												</option>
 											<?php }
 											if (!empty($activeModules) && in_array('covid19', $activeModules)) { ?>
-												<option value="/covid-19/requests/covid-19-add-request.php"><?php echo _("Add New Covid-19 Request"); ?></option>
-												<option value="/covid-19/requests/covid-19-requests.php"><?php echo _("Covid-19 View Test Requests"); ?></option>
+												<option value="/covid-19/requests/covid-19-add-request.php">
+													<?php echo _("Add New Covid-19 Request"); ?>
+												</option>
+												<option value="/covid-19/requests/covid-19-requests.php">
+													<?php echo _("Covid-19 View Test Requests"); ?>
+												</option>
 											<?php }
 											if (!empty($activeModules) && in_array('hepatitis', $activeModules)) { ?>
-												<option value="/hepatitis/requests/hepatitis-add-request.php"><?php echo _("Add New Hepatitis Request"); ?></option>
-												<option value='/hepatitis/requests/hepatitis-requests.php'><?php echo _("Hepatitis View Test Requests"); ?></option>
+												<option value="/hepatitis/requests/hepatitis-add-request.php">
+													<?php echo _("Add New Hepatitis Request"); ?>
+												</option>
+												<option value='/hepatitis/requests/hepatitis-requests.php'>
+													<?php echo _("Hepatitis View Test Requests"); ?>
+												</option>
 											<?php }
 											if (!empty($activeModules) && in_array('tb', $activeModules)) { ?>
 												<option value=><?php echo _("Add New TB Request"); ?></option>
-												<option value='/tb/requests/tb-requests.php'><?php echo _("TB View Test Requests"); ?></option>
+												<option value='/tb/requests/tb-requests.php'>
+													<?php echo _("TB View Test Requests"); ?>
+												</option>
 											<?php } ?>
 										</select>
 									</div>
@@ -160,12 +204,21 @@ $rInfo = $db->query($resourcesQuery);
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="status" class="col-lg-4 control-label"><?php echo _("Status"); ?> <span class="mandatory">*</span></label>
+									<label for="status" class="col-lg-4 control-label">
+										<?php echo _("Status"); ?> <span class="mandatory">*</span>
+									</label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name='status' id='status' title="<?php echo _('Please select the status'); ?>">
-											<option value=""> <?php echo _("-- Select --"); ?> </option>
-											<option value="active"><?php echo _("Active"); ?></option>
-											<option value="inactive"><?php echo _("Inactive"); ?></option>
+										<select class="form-control isRequired" name='status' id='status'
+											title="<?php echo _('Please select the status'); ?>">
+											<option value="">
+												<?php echo _("-- Select --"); ?>
+											</option>
+											<option value="active">
+												<?php echo _("Active"); ?>
+											</option>
+											<option value="inactive">
+												<?php echo _("Inactive"); ?>
+											</option>
 										</select>
 									</div>
 								</div>
@@ -174,12 +227,21 @@ $rInfo = $db->query($resourcesQuery);
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="accessType" class="col-lg-4 control-label"><?php echo _("Access Type"); ?> <span class="mandatory">*</span></label>
+									<label for="accessType" class="col-lg-4 control-label">
+										<?php echo _("Access Type"); ?> <span class="mandatory">*</span>
+									</label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name='accessType' id='accessType' title="<?php echo _('Please select access type'); ?>">
-											<option value=""> <?php echo _("-- Select --"); ?> </option>
-											<option value="testing-lab"><?php echo _("Testing Lab"); ?></option>
-											<option value="collection-site"><?php echo _("Collection Site"); ?></option>
+										<select class="form-control isRequired" name='accessType' id='accessType'
+											title="<?php echo _('Please select access type'); ?>">
+											<option value="">
+												<?php echo _("-- Select --"); ?>
+											</option>
+											<option value="testing-lab">
+												<?php echo _("Testing Lab"); ?>
+											</option>
+											<option value="collection-site">
+												<?php echo _("Collection Site"); ?>
+											</option>
 										</select>
 									</div>
 								</div>
@@ -187,18 +249,28 @@ $rInfo = $db->query($resourcesQuery);
 						</div>
 						<fieldset>
 							<div class="form-group">
-								<label class="col-sm-2 control-label"><?php echo _("Note"); ?>:</label>
+								<label class="col-sm-2 control-label">
+									<?php echo _("Note"); ?>:
+								</label>
 								<div class="col-sm-10">
-									<p class="form-control-static"><?php echo _('Unless you choose "access" the people belonging to this role will not be able to access other rights like "add", "edit" etc'); ?>.</p>
+									<p class="form-control-static">
+										<?php echo _('Unless you choose "access" the people belonging to this role will not be able to access other rights like "add", "edit" etc'); ?>.
+									</p>
 								</div>
 							</div>
 							<div class="form-group" style="padding-left:138px;">
 								<div class="switch-field">
 
-									<input type="radio" class='layCek' id="cekAllPrivileges" name='cekUnCekAll' value="yes" /></a>
-									<label for="cekAllPrivileges"><?php echo _("Select All"); ?></label>
-									<input type="radio" class='layCek' name='cekUnCekAll' id="unCekAllPrivileges" name="switch-one" value="no" /></a>
-									<label for="unCekAllPrivileges"><?php echo _("Unselect All"); ?></label>
+									<input type="radio" class='layCek' id="cekAllPrivileges" name='cekUnCekAll'
+										value="yes" /></a>
+									<label for="cekAllPrivileges">
+										<?php echo _("Select All"); ?>
+									</label>
+									<input type="radio" class='layCek' name='cekUnCekAll' id="unCekAllPrivileges"
+										name="switch-one" value="no" /></a>
+									<label for="unCekAllPrivileges">
+										<?php echo _("Unselect All"); ?>
+									</label>
 								</div>
 							</div>
 							<div class="bs-example bs-example-tabs">
@@ -212,9 +284,10 @@ $rInfo = $db->query($resourcesQuery);
 											$cls = "active";
 										else
 											$cls = "";
-									?>
-										<li class="<?= $cls; ?>"><a href="#<?= $moduleRow['module']; ?>" data-toggle="tab" class="bg-primary"><?php echo strtoupper($moduleName); ?> </a></li>
-									<?php
+										?>
+										<li class="<?= $cls; ?>"><a href="#<?= $moduleRow['module']; ?>" data-toggle="tab"
+												class="bg-primary"><?php echo strtoupper($moduleName); ?> </a></li>
+										<?php
 										$a++;
 									}
 									?>
@@ -225,10 +298,11 @@ $rInfo = $db->query($resourcesQuery);
 									$b = 0;
 									$j = 1;
 									foreach ($rInfo as $moduleRow) {
-										if ($b == 0)
+										if ($b == 0) {
 											$tabCls = "active";
-										else
+										} else {
 											$tabCls = "";
+										}
 										echo '<div class="tab-pane fade in ' . $tabCls . '" id="' . $moduleRow['module'] . '">';
 										echo "<table aria-describedby='table' class='table table-striped responsive-utilities jambo_table'>";
 
@@ -240,19 +314,40 @@ $rInfo = $db->query($resourcesQuery);
 
 											echo "<tr>";
 											echo "<th>";
-									?>
+											?>
 											<small class="toggler">
-												<h4 style="font-weight: bold;"><?= $mRes[1]; ?></h4>
+												<h4 style="font-weight: bold;">
+													<?= $mRes[1]; ?>
+												</h4>
 												<div class="switch-field pull-right">
-													<input type='radio' class='' id='all<?= $mRes[0]; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",true);'> <label for='all<?= $mRes[0]; ?>'><?php echo _("All"); ?></label>
-													<input type='radio' class='' id='none<?= $mRes[0]; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",false);'> <label for='none<?= $mRes[0]; ?>'><?php echo _("None"); ?></label>
+													<input type='radio' class='' id='all<?= $mRes[0]; ?>'
+														name='<?= $mRes[1]; ?>'
+														onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",true);'>
+													<label for='all<?= $mRes[0]; ?>'><?php echo _("All"); ?></label>
+													<input type='radio' class='' id='none<?= $mRes[0]; ?>'
+														name='<?= $mRes[1]; ?>'
+														onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",false);'>
+													<label for='none<?= $mRes[0]; ?>'><?php echo _("None"); ?></label>
 												</div>
 											</small>
-									<?php
+											<?php
 											echo "</th>";
 											echo "</tr>";
-											$pQuery = "SELECT * FROM privileges WHERE resource_id='" . $mRes[0] . "' order by display_name ASC";
-											$pInfo = $db->query($pQuery);
+
+											switch ($_SESSION['instanceType']) {
+												case 'remoteuser':
+													$mode = " AND (show_mode like 'sts' or show_mode like 'always')";
+													break;
+												case 'vluser':
+													$mode = " AND (show_mode like 'lis' or show_mode like 'always')";
+													break;
+												default:
+													$mode = " AND (show_mode like 'always')";
+													break;
+											}
+
+											$pQuery = "SELECT * FROM privileges WHERE resource_id= ? $mode ORDER BY display_order ASC";
+											$pInfo = $db->rawQuery($pQuery, [$mRes[0]]);
 											echo "<tr class=''>";
 											echo "<td style='text-align:center;vertical-align:middle;' class='privilegesNode' id='" . $mRes[0] . "'>";
 											foreach ($pInfo as $privilege) {
@@ -280,8 +375,12 @@ $rInfo = $db->query($resourcesQuery);
 					</div>
 					<!-- /.box-body -->
 					<div class=" box-footer">
-						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
-						<a href="roles.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
+						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">
+							<?php echo _("Submit"); ?>
+						</a>
+						<a href="roles.php" class="btn btn-default">
+							<?php echo _("Cancel"); ?>
+						</a>
 					</div>
 					<!-- /.box-footer -->
 				</form>
@@ -307,12 +406,12 @@ $rInfo = $db->query($resourcesQuery);
 		}
 	}
 
-	$("#cekAllPrivileges").click(function() {
+	$("#cekAllPrivileges").click(function () {
 		$('.unCekAll').prop('checked', false);
 		$('.cekAll').prop('checked', true);
 	});
 
-	$("#unCekAllPrivileges").click(function() {
+	$("#unCekAllPrivileges").click(function () {
 		$('.cekAll').prop('checked', false);
 		$('.unCekAll').prop('checked', true);
 	});
@@ -334,13 +433,13 @@ $rInfo = $db->query($resourcesQuery);
 		removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
 		$.post("/includes/checkDuplicate.php", {
-				tableName: tableName,
-				fieldName: fieldName,
-				value: removeDots.trim(),
-				fnct: fnct,
-				format: "html"
-			},
-			function(data) {
+			tableName: tableName,
+			fieldName: fieldName,
+			value: removeDots.trim(),
+			fnct: fnct,
+			format: "html"
+		},
+			function (data) {
 				if (data === '1') {
 					alert(alrt);
 					document.getElementById(obj.id).value = "";

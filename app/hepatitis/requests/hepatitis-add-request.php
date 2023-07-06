@@ -104,18 +104,18 @@ require($fileArray[$arr['vl_form']]);
 ?>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('.date').datepicker({
             changeMonth: true,
             changeYear: true,
-            onSelect: function() {
+            onSelect: function () {
                 $(this).change();
             },
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
+        }).click(function () {
             $('.ui-datepicker-calendar').show();
         });
 
@@ -125,29 +125,29 @@ require($fileArray[$arr['vl_form']]);
             dateFormat: 'dd-M-yy',
             maxDate: "Today",
             yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
-            onSelect: function(dateText, inst) {
+            onSelect: function (dateText, inst) {
                 $("#sampleCollectionDate").datepicker("option", "minDate", $("#patientDob").datepicker("getDate"));
                 $(this).change();
             }
-        }).click(function() {
+        }).click(function () {
             $('.ui-datepicker-calendar').show();
         });
 
 
-        $(document).on('focus', ".dateTime", function() {
+        $(document).on('focus', ".dateTime", function () {
             $(this).datetimepicker({
                 changeMonth: true,
                 changeYear: true,
                 dateFormat: 'dd-M-yy',
                 timeFormat: "HH:mm",
                 maxDate: "Today",
-                onChangeMonthYear: function(year, month, widget) {
-                    setTimeout(function() {
+                onChangeMonthYear: function (year, month, widget) {
+                    setTimeout(function () {
                         $('.ui-datepicker-calendar').show();
                     });
                 },
                 yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y'); ?>"
-            }).click(function() {
+            }).click(function () {
                 $('.ui-datepicker-calendar').show();
             });
         });
@@ -159,17 +159,17 @@ require($fileArray[$arr['vl_form']]);
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "Today",
-            onChangeMonthYear: function(year, month, widget) {
-                setTimeout(function() {
+            onChangeMonthYear: function (year, month, widget) {
+                setTimeout(function () {
                     $('.ui-datepicker-calendar').show();
                 });
             },
-            onSelect: function(e) {
+            onSelect: function (e) {
                 $('#sampleReceivedDate').val('');
                 $('#sampleReceivedDate').datetimepicker('option', 'minDate', e);
             },
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
+        }).click(function () {
             $('.ui-datepicker-calendar').show();
         });
 
@@ -179,17 +179,17 @@ require($fileArray[$arr['vl_form']]);
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "Today",
-            onChangeMonthYear: function(year, month, widget) {
-                setTimeout(function() {
+            onChangeMonthYear: function (year, month, widget) {
+                setTimeout(function () {
                     $('.ui-datepicker-calendar').show();
                 });
             },
-            onSelect: function(e) {
+            onSelect: function (e) {
                 $('#sampleTestedDateTime').val('');
                 $('#sampleTestedDateTime').datetimepicker('option', 'minDate', e);
             },
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
+        }).click(function () {
             $('.ui-datepicker-calendar').show();
         });
 
@@ -199,23 +199,23 @@ require($fileArray[$arr['vl_form']]);
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "Today",
-            onChangeMonthYear: function(year, month, widget) {
-                setTimeout(function() {
+            onChangeMonthYear: function (year, month, widget) {
+                setTimeout(function () {
                     $('.ui-datepicker-calendar').show();
                 });
             },
-            onSelect: function(e) {
+            onSelect: function (e) {
 
             },
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
+        }).click(function () {
             $('.ui-datepicker-calendar').show();
         });
 
         $('.date').mask('99-aaa-9999');
         $('.dateTime').mask('99-aaa-9999 99:99');
 
-        $('#isSampleRejected').change(function(e) {
+        $('#isSampleRejected').change(function (e) {
             if (this.value == 'yes') {
                 $('.show-rejection').show();
                 $('.rejected-input').prop('disabled', true);
@@ -241,13 +241,13 @@ require($fileArray[$arr['vl_form']]);
         if ($.trim($("#" + id).val()) != '') {
             $.blockUI();
             $.post("/hepatitis/requests/check-sample-duplicate.php", {
-                    tableName: tableName,
-                    fieldName: fieldName,
-                    value: $("#" + id).val(),
-                    fnct: fnct,
-                    format: "html"
-                },
-                function(data) {
+                tableName: tableName,
+                fieldName: fieldName,
+                value: $("#" + id).val(),
+                fnct: fnct,
+                format: "html"
+            },
+                function (data) {
                     if (data != 0) {
                         generateSampleCode();
                     }
@@ -259,16 +259,16 @@ require($fileArray[$arr['vl_form']]);
     function insertSampleCode(formId, hepatitisTestType, hepatitisSampleId, sampleCode, sampleCodeKey, sampleCodeFormat, countryId, sampleCollectionDate, provinceCode = null, provinceId = null) {
         $.blockUI();
         $.post("/hepatitis/requests/insert-sample.php", {
-                sampleCode: $("#" + sampleCode).val(),
-                sampleCodeKey: $("#" + sampleCodeKey).val(),
-                sampleCodeFormat: $("#" + sampleCodeFormat).val(),
-                countryId: countryId,
-                sampleCollectionDate: $("#" + sampleCollectionDate).val(),
-                provinceCode: provinceCode,
-                prefix: $("#" + hepatitisTestType).val(),
-                provinceId: provinceId
-            },
-            function(data) {
+            sampleCode: $("#" + sampleCode).val(),
+            sampleCodeKey: $("#" + sampleCodeKey).val(),
+            sampleCodeFormat: $("#" + sampleCodeFormat).val(),
+            countryId: countryId,
+            sampleCollectionDate: $("#" + sampleCollectionDate).val(),
+            provinceCode: provinceCode,
+            prefix: $("#" + hepatitisTestType).val(),
+            provinceId: provinceId
+        },
+            function (data) {
                 if (data > 0) {
                     $.unblockUI();
                     document.getElementById("hepatitisSampleId").value = data;
@@ -281,7 +281,7 @@ require($fileArray[$arr['vl_form']]);
                 }
             });
 
-        $("#hepatitisPlatform").on("change", function() {
+        $("#hepatitisPlatform").on("change", function () {
             if (this.value != "") {
                 getMachine(this.value);
             }
@@ -294,12 +294,12 @@ require($fileArray[$arr['vl_form']]);
     }
 
     function getMachine(value) {
-        $.post("/import-configs/get-config-machine-by-config.php", {
-                configName: value,
-                machine: '',
-                testType: 'hepatitis'
-            },
-            function(data) {
+        $.post("/instruments/get-machine-names-by-instrument.php", {
+            instrumentId: value,
+            machine: '',
+            testType: 'hepatitis'
+        },
+            function (data) {
                 $('#machineName').html('');
                 if (data != "") {
                     $('#machineName').append(data);
