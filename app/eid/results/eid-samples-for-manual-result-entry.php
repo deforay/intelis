@@ -171,11 +171,11 @@ if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
 }
 if (isset($_POST['status']) && trim($_POST['status']) != '') {
      if ($_POST['status'] == 'no_result') {
-          $statusCondition = ' (vl.result is NULL OR vl.result ="") AND vl.result_status != ' . SAMPLE_STATUS_REJECTED;
+          $statusCondition = '  (vl.result is NULL OR vl.result ="")  AND vl.result_status != ' . SAMPLE_STATUS_REJECTED;
      } else if ($_POST['status'] == 'result') {
-          $statusCondition = ' (vl.result is NOT NULL AND vl.result !="" AND vl. != ' . SAMPLE_STATUS_REJECTED . ')';
+          $statusCondition = ' (vl.result is NOT NULL AND vl.result !="")  OR vl.result_status = ' . SAMPLE_STATUS_REJECTED;
      } else {
-          $statusCondition = ' vl.result_status = ' . SAMPLE_STATUS_REJECTED;
+          $statusCondition = ' vl.result_status= '.SAMPLE_STATUS_REJECTED ;
      }
      $sWhere[] = $statusCondition;
 }
