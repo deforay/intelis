@@ -4818,3 +4818,12 @@ WHERE link = '/instruments/instruments.php';
 UPDATE `privileges` SET `display_order` = '1' , `privilege_name` ='/instruments/instruments.php' WHERE `privilege_name` like '%/importConfig.php';
 UPDATE `privileges` SET `display_order` = '2' , `privilege_name` ='/instruments/add-instrument.php' WHERE `privilege_name` like '%/addImportConfig.php';
 UPDATE `privileges` SET `display_order` = '3' ,`privilege_name` ='/instruments/edit-instrument.php' WHERE `privilege_name` like '%/editImportConfig.php';
+
+
+--
+
+ALTER TABLE `form_vl` CHANGE `patient_first_name` `patient_first_name` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_middle_name` `patient_middle_name` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_last_name` `patient_last_name` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_vl` ADD INDEX(`patient_first_name`);
+ALTER TABLE `form_vl` ADD INDEX(`patient_middle_name`);
+ALTER TABLE `form_vl` ADD INDEX(`patient_last_name`);
+ALTER TABLE `audit_form_vl` CHANGE `patient_first_name` `patient_first_name` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_middle_name` `patient_middle_name` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_last_name` `patient_last_name` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;

@@ -124,6 +124,13 @@ if (isset($covid19Info['result_approved_datetime']) && trim($covid19Info['result
 } else {
     $covid19Info['result_approved_datetime'] = '';
 }
+$countryResult = $general->fetchDataFromTable('r_countries');
+$countyData = [];
+if (isset($countryResult) && sizeof($countryResult) > 0) {
+    foreach ($countryResult as $country) {
+        $countyData[$country['id']] = $country['iso_name'];
+    }
+}
 
 $fileArray = array(
     1 => 'forms/edit-southsudan.php',

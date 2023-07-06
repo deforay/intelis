@@ -443,7 +443,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 								</table>
 							</div>
 						</div>
-						<?php if ($usersService->isAllowed('tb/results/tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
+						<?php if ($usersService->isAllowed('/tb/results/tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
 							<?php // if (false) {
 							?>
 							<div class="box box-primary">

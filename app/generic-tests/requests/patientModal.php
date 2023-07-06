@@ -16,20 +16,39 @@ $general = ContainerRegistry::get(CommonService::class);
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 
-$artNo = $_GET['artNo'];
-$testType = $_GET['testType'];
+$artNo = urldecode($_GET['artNo']);
+$testType = urldecode($_GET['testType']);
 
-$pQuery = "SELECT * FROM form_generic as g inner join facility_details as fd ON fd.facility_id=g.facility_id where g.test_type=$testType AND(patient_id like '%" . $artNo . "%' OR patient_first_name like '%" . $artNo . "%' OR patient_middle_name like '%" . $artNo . "%' OR patient_last_name like '%" . $artNo . "%') ORDER BY sample_tested_datetime DESC, sample_collection_date DESC LIMIT 25";
-$pResult = $db->rawQuery($pQuery);
+
+$db->join("facility_details fd", "fd.facility_id=vl.facility_id", "LEFT");
+$db->where("patient_art_no LIKE ?", ["%$artNo%"]);
+$db->orWhere("patient_first_name LIKE ?", ["%$artNo%"]);
+$db->orWhere("patient_middle_name LIKE ?", ["%$artNo%"]);
+$db->orWhere("patient_last_name LIKE ?", ["%$artNo%"]);
+$db->orderBy("sample_tested_datetime", "DESC");
+$db->orderBy("sample_collection_date", "DESC");
+
+$pResult = $db->get("form_generic vl", 25, "fd.facility_id,
+            fd.facility_name,
+			sample_id,
+			patient_first_name,
+			patient_last_name,
+			patient_gender,
+			patient_dob,
+			patient_age_in_years,
+			patient_age_in_months,
+			is_patient_pregnant,
+			is_patient_breastfeeding,
+			patient_mobile_number,
+			consent_to_receive_sms,
+			patient_id,
+			sample_tested_datetime,
+			request_created_datetime");
+
 ?>
-<link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery-ui.min.css" />
-<!-- Bootstrap 3.3.6 -->
 <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-<!-- Font Awesome -->
-<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
-<!-- DataTables -->
 <link rel="stylesheet" href="/assets/plugins/datatables/dataTables.bootstrap.css">
-<link href="/assets/css/deforayModal.css" rel="stylesheet" />
+
 <style>
 	.content-wrapper {
 		padding: 2%;
@@ -53,14 +72,14 @@ $pResult = $db->rawQuery($pQuery);
 		font-size: 15px;
 	}
 </style>
-<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
-<script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
-<script src="/assets/js/deforayModal.js"></script>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h4 class="pull-left bg-primary" style="width:100%;padding:8px;font-weight:normal;">Results matching your search - <?= htmlspecialchars($artNo); ?></h4>
+		<h4 class="pull-left bg-primary" style="width:100%;padding:8px;font-weight:normal;">Results matching your search
+			-
+			<?= ($artNo); ?>
+		</h4>
 	</section>
 	<!-- Main content -->
 	<section class="content">
@@ -69,18 +88,34 @@ $pResult = $db->rawQuery($pQuery);
 				<div class="box">
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="patientModalDataTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="patientModalDataTable"
+							class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th style="width:10%;">Select</th>
-									<th>Patient ID</th>
-									<th>Patient Name</th>
-									<th>Age</th>
-									<th>Gender</th>
-									<th>Facility</th>
-									<th>Date and Time</th>
-									<th>Tested Date and Time</th>
-									<th>Result</th>
+									<th style="width:10%;">
+										<?= _("Select"); ?>
+									</th>
+									<th style="width:10%;">
+										<?= _("Patient ID"); ?>
+									</th>
+									<th style="width:10%;">
+										<?= _("Patient Name"); ?>
+									</th>
+									<th style="width:10%;">
+										<?= _("Age"); ?>
+									</th>
+									<th style="width:10%;">
+										<?= _("Gender"); ?>
+									</th>
+									<th style="width:10%;">
+										<?= _("Facility Name"); ?>
+									</th>
+									<th style="width:10%;">
+										<?= _("Date and Time"); ?>
+									</th>
+									<th style="width:10%;">
+										<?= _("Previous Tested Date"); ?>
+									</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -90,38 +125,49 @@ $pResult = $db->rawQuery($pQuery);
 									$value = $patient['patient_id'] . strtolower($patient['patient_first_name']) . strtolower($patient['patient_last_name']) . $patient['patient_age_in_years'] . strtolower($patient['patient_gender']) . strtolower($patient['facility_name']);
 									if (!in_array($value, $artNoList)) {
 										$artNoList[] = $value;
-										$patientDetails = json_encode(array(
-											"name" => $patient['patient_first_name'] . " " . $patient['patient_last_name'],
-											"gender" => $patient['patient_gender'],
-											"dob" => DateUtility::humanReadableDateFormat($patient['patient_dob']),
-											"age_in_years" => $patient['patient_age_in_years'],
-											"age_in_months" => $patient['patient_age_in_months'],
-											"is_pregnant" => $patient['is_patient_pregnant'],
-											"is_breastfeeding" => $patient['is_patient_breastfeeding'],
-											"mobile" => $patient['patient_mobile_number'],
-											"consent_to_receive_sms" => $patient['consent_to_receive_sms'],
-											"treatment_initiated_date" => DateUtility::humanReadableDateFormat($patient['treatment_initiated_date']),
-											"last_viral_load_date" => DateUtility::humanReadableDateFormat($patient['last_viral_load_date']),
-											"last_viral_load_result" => $patient['last_viral_load_result'],
-											"number_of_enhanced_sessions" => $patient['number_of_enhanced_sessions'],
-											"patient_id" => $patient['patient_id'],
-											"is_patient_new" => $patient['is_patient_new'],
-											"sample_tested_datetime" => DateUtility::humanReadableDateFormat($patient['sample_tested_datetime']),
-											"result" => $patient['result'],
-										)); ?>
+										$patientDetails = json_encode(
+											array(
+												"name" => $patient['patient_first_name'] . " " . $patient['patient_last_name'],
+												"gender" => $patient['patient_gender'],
+												"dob" => DateUtility::humanReadableDateFormat($patient['patient_dob']),
+												"age_in_years" => $patient['patient_age_in_years'],
+												"age_in_months" => $patient['patient_age_in_months'],
+												"is_pregnant" => $patient['is_patient_pregnant'],
+												"is_breastfeeding" => $patient['is_patient_breastfeeding'],
+												"mobile" => $patient['patient_mobile_number'],
+												"consent_to_receive_sms" => $patient['consent_to_receive_sms'],
+												"patient_id" => $patient['patient_id'],
+												"sample_tested_datetime" => DateUtility::humanReadableDateFormat($patient['sample_tested_datetime'])
+											)
+										); ?>
 
 										<tr>
-											<td><input type="radio" id="patient<?php echo $patient['vl_sample_id']; ?>" name="patient" value='<?php echo $patientDetails; ?>' onclick="getPatientDetails(this.value);"></td>
-											<td><?= $patient['patient_id']; ?></td>
-											<td><?php echo ($patient['patient_first_name']) . " " . $patient['patient_last_name']; ?></td>
-											<td><?php echo $patient['patient_age_in_years']; ?></td>
-											<td><?= str_replace("_", " ", $patient['patient_gender']); ?></td>
-											<td><?= $patient['facility_name']; ?></td>
-											<td><?= DateUtility::humanReadableDateFormat($patient['request_created_datetime'], true); ?></td>
-											<td><?php echo DateUtility::humanReadableDateFormat($patient['sample_tested_datetime']); ?></td>
-											<td><?php echo $patient['result']; ?></td>
+											<td><input type="radio" id="patient<?php echo $patient['sample_id']; ?>"
+													name="patient" value='<?php echo $patientDetails; ?>'
+													onclick="getPatientDetails(this.value);"></td>
+											<td>
+												<?= $patient['patient_id']; ?>
+											</td>
+											<td>
+												<?php echo ($patient['patient_first_name']) . " " . $patient['patient_last_name']; ?>
+											</td>
+											<td>
+												<?php echo $patient['patient_age_in_years']; ?>
+											</td>
+											<td>
+												<?= str_replace("_", " ", $patient['patient_gender']); ?>
+											</td>
+											<td>
+												<?= $patient['facility_name']; ?>
+											</td>
+											<td>
+												<?= DateUtility::humanReadableDateFormat($patient['request_created_datetime'], true); ?>
+											</td>
+											<td>
+												<?php echo DateUtility::humanReadableDateFormat($patient['sample_tested_datetime']); ?>
+											</td>
 										</tr>
-								<?php
+										<?php
 									}
 								}
 								?>
@@ -138,17 +184,12 @@ $pResult = $db->rawQuery($pQuery);
 	</section>
 	<!-- /.content -->
 </div>
-<div id="dDiv" class="dialog">
-	<div style="text-align:center"><span onclick="closeModal();" style="float:right;clear:both;" class="closeModal"></span></div>
-	<iframe id="dFrame" src="" title="LIS Content" style="border:none;" scrolling="yes" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0"><?= _("Unable to load this page or resource"); ?></iframe>
-</div>
-<!-- Bootstrap 3.3.6 -->
-<script src="/assets/js/bootstrap.min.js"></script>
-<!-- DataTables -->
+
+<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 <script src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script>
-	$(document).ready(function() {
+	$(document).ready(function () {
 		$('#patientModalDataTable').DataTable({
 			"aaSorting": [
 				[1, 'asc'],

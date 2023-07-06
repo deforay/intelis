@@ -213,11 +213,11 @@ try {
 		$_POST['resultDispatchedOn'] = null;
 	}
 
-	if (isset($_POST['approvedOnDateTime']) && trim($_POST['approvedOnDateTime']) != "") {
-		$approvedOnDateTime = explode(" ", $_POST['approvedOnDateTime']);
-		$_POST['approvedOnDateTime'] = DateUtility::isoDateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
+	if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
+		$approvedOn = explode(" ", $_POST['approvedOn']);
+		$_POST['approvedOn'] = DateUtility::isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
 	} else {
-		$_POST['approvedOnDateTime'] = null;
+		$_POST['approvedOn'] = null;
 	}
 
 	$eidData = array(
@@ -321,7 +321,7 @@ try {
 		'tested_by' => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] : null,
 		'lab_tech_comments' => (isset($_POST['labTechCmt']) && $_POST['labTechCmt'] != '') ? $_POST['labTechCmt'] : null,
 		'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] : null,
-		'result_approved_datetime' => $_POST['approvedOnDateTime'] ?? null,
+		'result_approved_datetime' => $_POST['approvedOn'] ?? null,
 		'result_status' => $status,
 		'second_dbs_requested' => (isset($_POST['secondDBSRequested']) && $_POST['secondDBSRequested'] != '') ? $_POST['secondDBSRequested'] : null,
 		'second_dbs_requested_reason' => (isset($_POST['secondDBSRequestedReason']) && $_POST['secondDBSRequestedReason'] != '') ? $_POST['secondDBSRequestedReason'] : null,

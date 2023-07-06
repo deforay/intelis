@@ -153,7 +153,7 @@ $sFormat = '';
                                                   <div class="">
                                                        <label for="fName">Clinic/Health Center <span class="mandatory">*</span></label>
                                                        <select class="form-control isRequired" id="fName" name="fName" title="Please select a clinic/health center name" style="width:100%;" onchange="fillFacilityDetails();">
-                                                            <?php echo $facility;  ?>
+                                                            <?php echo $facility; ?>
                                                        </select>
                                                   </div>
                                              </div>
@@ -266,7 +266,7 @@ $sFormat = '';
                                                                  <option value=""> -- Select -- </option>
                                                                  <?php
                                                                  $selected = '';
-                                                                 if (count($sResult) == 1){
+                                                                 if (count($sResult) == 1) {
                                                                       $selected = "selected='selected'";
                                                                  }
                                                                  foreach ($sResult as $name) { ?>
@@ -307,7 +307,7 @@ $sFormat = '';
                                                                                 ?>
                                                                            </optgroup>
                                                                       <?php }
-                                                                      if ($sarr['sc_user_type'] != 'vluser') {  ?>
+                                                                      if ($sarr['sc_user_type'] != 'vluser') { ?>
                                                                            <!-- <option value="other">Other</option> -->
                                                                       <?php } ?>
                                                                  </select>
@@ -453,7 +453,7 @@ $sFormat = '';
                                                             </div>
                                                        </div>
 
-                                                       <?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) {  ?>
+                                                       <?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) { ?>
                                                             <div class="row">
                                                                  <div class="col-md-6">
                                                                       <div class="form-group">
@@ -466,7 +466,7 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                             </div>
-                                                       <?php }  ?>
+                                                       <?php } ?>
                                                        <hr>
                                                        <div class="row">
                                                             <div class="col-md-6">
@@ -570,13 +570,13 @@ $sFormat = '';
                                                                                      <optgroup label="<?php echo ($type['rejection_type']); ?>">
                                                                                           <?php foreach ($rejectionResult as $reject) {
                                                                                                if ($type['rejection_type'] == $reject['rejection_type']) {
-                                                                                          ?>
+                                                                                                    ?>
                                                                                                     <option value="<?php echo $reject['rejection_reason_id']; ?>"><?= $reject['rejection_reason_name']; ?></option>
                                                                                           <?php }
                                                                                           } ?>
                                                                                      </optgroup>
                                                                                 <?php }
-                                                                                if ($sarr['sc_user_type'] != 'vluser') {  ?>
+                                                                                if ($sarr['sc_user_type'] != 'vluser') { ?>
                                                                                      <option value="other">Other (Please Specify) </option>
                                                                                 <?php } ?>
                                                                            </select>
@@ -743,16 +743,16 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               if (data != "0") {
                                    obj = $.parseJSON(data);
                                    if (obj.no_of_req_time != null && obj.no_of_req_time > 0) {
-                                        $("#artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time + '</small>');
+                                        $("#artNoGroup").html("<small style='color: red'><?= _("No. of times Test Requested for this Patient"); ?> : " + obj.no_of_req_time + "</small>");
                                    }
                                    if (obj.request_created_datetime != null) {
-                                        $("#artNoGroup").append('<br><small style="color:red">Last Test Request Added On VLSM : ' + obj.request_created_datetime + '</small>');
+                                        $("#artNoGroup").append("<br><small style='color:red'><?= _("Last Test Request Added On LIS/STS"); ?> : " + obj.request_created_datetime + "</small>");
                                    }
                                    if (obj.sample_collection_date != null) {
-                                        $("#artNoGroup").append('<br><small style="color:red">Sample Collection Date for Last Request : ' + obj.sample_collection_date + '</small>');
+                                        $("#artNoGroup").append("<br><small style='color:red'><?= _("Sample Collection Date for Last Request"); ?> : " + obj.sample_collection_date + "</small>");
                                    }
                                    if (obj.no_of_tested_time != null && obj.no_of_tested_time > 0) {
-                                        $("#artNoGroup").append('<br><small style="color:red">Total No. of times Patient tested for VL : ' + obj.no_of_tested_time + '</small>');
+                                        $("#artNoGroup").append("<br><small style='color:red'><?= _("Total No. of times Patient tested for HIV VL"); ?> : " + obj.no_of_tested_time + "</small >");
                                    }
                               } else {
                                    if (artNo.length < 10) {
