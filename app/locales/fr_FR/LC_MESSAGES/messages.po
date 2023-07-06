@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-07-06 16:06+0530\n"
-"PO-Revision-Date: 2023-07-06 16:06+0530\n"
+"POT-Creation-Date: 2023-07-06 16:15+0530\n"
+"PO-Revision-Date: 2023-07-06 16:20+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -84,7 +84,7 @@ msgstr "Bienvenue sur la page d’administration"
 #: eid/requests/forms/edit-rwanda.php:75 eid/results/eid-failed-results.php:58
 #: eid/results/eid-manual-results.php:57 eid/results/eid-print-results.php:53
 #: eid/results/eid-result-status.php:77
-#: eid/results/forms/update-drc-result.php:58
+#: eid/results/forms/update-drc-result.php:64
 #: eid/results/forms/update-png-result.php:84
 #: eid/results/forms/update-rwanda-result.php:69
 #: eid/results/forms/update-sierraleone-result.php:71
@@ -4299,7 +4299,7 @@ msgstr "Labo de test"
 #: generic-tests/results/generic-test-results.php:164
 #: generic-tests/results/generic-test-results.php:199
 #: generic-tests/results/get-generic-test-result-details.php:317
-#: generic-tests/results/get-manual-results.php:305
+#: generic-tests/results/get-manual-results.php:306
 #: hepatitis/management/hepatitis-clinic-report.php:422
 #: hepatitis/results/hepatitis-failed-results.php:165
 #: hepatitis/results/hepatitis-manual-results.php:147
@@ -4321,7 +4321,7 @@ msgstr "Labo de test"
 #: vl/program-management/vl-export-data.php:370
 #: vl/program-management/vlMonitoringReport.php:251
 #: vl/requests/addSamplesFromManifest.php:75 vl/requests/vl-requests.php:684
-#: vl/requests/vl-requests.php:745 vl/results/get-manual-results.php:320
+#: vl/requests/vl-requests.php:745 vl/results/get-manual-results.php:321
 #: vl/results/getVlTestResultDetails.php:328
 #: vl/results/vl-failed-results.php:179 vl/results/vl-failed-results.php:209
 #: vl/results/vlPrintResult.php:211 vl/results/vlPrintResult.php:239
@@ -6844,7 +6844,7 @@ msgid "Covid-19 request updated successfully"
 msgstr "La demande de Covid-19 a été mise à jour avec succès"
 
 #: covid-19/requests/covid-19-edit-request-helper.php:367
-#: covid-19/results/covid-19-update-result-helper.php:147
+#: covid-19/results/covid-19-update-result-helper.php:154
 #: eid/requests/eid-add-request-helper.php:363
 #: eid/requests/eid-edit-request-helper.php:376
 #: generic-tests/requests/add-request-helper.php:391
@@ -7163,11 +7163,11 @@ msgstr "Veuillez saisir le nom du partenaire"
 #: covid-19/requests/forms/edit-who.php:344
 #: covid-19/requests/forms/edit-who.php:486
 #: covid-19/requests/forms/quick-add-southsudan.php:157
-#: covid-19/results/forms/update-drc-result.php:681
-#: covid-19/results/forms/update-drc-result.php:737
+#: covid-19/results/forms/update-drc-result.php:693
+#: covid-19/results/forms/update-drc-result.php:749
 #: covid-19/results/forms/update-png-result.php:517
 #: covid-19/results/forms/update-rwanda-result.php:429
-#: covid-19/results/forms/update-rwanda-result.php:571
+#: covid-19/results/forms/update-rwanda-result.php:585
 #: covid-19/results/forms/update-sierraleone-result.php:324
 #: covid-19/results/forms/update-southsudan-result.php:322
 #: covid-19/results/forms/update-who-result.php:378
@@ -7185,8 +7185,8 @@ msgstr "Veuillez saisir le nom du partenaire"
 #: eid/requests/forms/add-southsudan.php:571 eid/requests/forms/add-who.php:361
 #: eid/requests/forms/add-who.php:414 eid/requests/forms/add-who.php:457
 #: eid/requests/forms/edit-cameroon.php:456
-#: eid/requests/forms/edit-cameroon.php:500 eid/requests/forms/edit-drc.php:589
-#: eid/requests/forms/edit-drc.php:645 eid/requests/forms/edit-png.php:511
+#: eid/requests/forms/edit-cameroon.php:500 eid/requests/forms/edit-drc.php:586
+#: eid/requests/forms/edit-drc.php:642 eid/requests/forms/edit-png.php:511
 #: eid/requests/forms/edit-png.php:556 eid/requests/forms/edit-rwanda.php:368
 #: eid/requests/forms/edit-rwanda.php:412
 #: eid/requests/forms/edit-sierraleone.php:426
@@ -7197,8 +7197,8 @@ msgstr "Veuillez saisir le nom du partenaire"
 #: eid/requests/forms/edit-southsudan.php:630
 #: eid/requests/forms/edit-who.php:478 eid/requests/forms/edit-who.php:561
 #: eid/requests/forms/edit-who.php:624
-#: eid/results/forms/update-drc-result.php:462
-#: eid/results/forms/update-drc-result.php:506
+#: eid/results/forms/update-drc-result.php:468
+#: eid/results/forms/update-drc-result.php:512
 #: eid/results/forms/update-png-result.php:377
 #: eid/results/forms/update-png-result.php:421
 #: eid/results/forms/update-rwanda-result.php:360
@@ -7259,7 +7259,7 @@ msgstr "Veuillez saisir le nom du partenaire"
 #: vl/requests/forms/edit-drc.php:591 vl/requests/forms/edit-drc.php:645
 #: vl/requests/forms/edit-drc.php:673 vl/requests/forms/edit-drc.php:691
 #: vl/requests/forms/edit-sierraleone.php:962
-#: vl/requests/forms/edit-southsudan.php:854 vl/requests/forms/edit-who.php:852
+#: vl/requests/forms/edit-southsudan.php:852 vl/requests/forms/edit-who.php:852
 #: vl/results/forms/update-drc-result.php:205
 #: vl/results/forms/update-drc-result.php:246
 #: vl/results/forms/update-drc-result.php:315
@@ -7310,13 +7310,13 @@ msgstr "Mettre à jour la demande"
 #: eid/requests/get-request-list.php:392
 #: eid/results/eid-samples-for-manual-result-entry.php:251
 #: generic-tests/results/get-generic-test-result-details.php:320
-#: generic-tests/results/get-manual-results.php:308
+#: generic-tests/results/get-manual-results.php:309
 #: hepatitis/requests/get-request-list.php:386
 #: hepatitis/results/hepatitis-samples-for-manual-result-entry.php:257
 #: tb/requests/get-request-list.php:345
 #: tb/results/tb-samples-for-manual-result-entry.php:247
 #: vl/requests/getVlRequestDetails.php:424
-#: vl/results/get-manual-results.php:323
+#: vl/results/get-manual-results.php:324
 #: vl/results/getVlTestResultDetails.php:331
 msgid "Locked"
 msgstr "Verrouillé"
@@ -7887,16 +7887,16 @@ msgstr "Souhaitez-vous modifier le statut ?"
 #: covid-19/results/covid-19-samples-for-manual-result-entry.php:299
 #: eid/results/eid-samples-for-manual-result-entry.php:248
 #: generic-tests/results/get-generic-test-result-details.php:317
-#: generic-tests/results/get-manual-results.php:305
+#: generic-tests/results/get-manual-results.php:306
 #: hepatitis/results/hepatitis-samples-for-manual-result-entry.php:254
 #: tb/results/tb-samples-for-manual-result-entry.php:244
-#: vl/results/get-manual-results.php:320
+#: vl/results/get-manual-results.php:321
 #: vl/results/getVlTestResultDetails.php:328
 #, fuzzy
 msgid "Enter Result"
 msgstr "Saisir le résultat"
 
-#: covid-19/results/covid-19-update-result-helper.php:145
+#: covid-19/results/covid-19-update-result-helper.php:152
 #, fuzzy
 msgid "Covid-19 result updated successfully"
 msgstr "Les résultats du Covid-19 ont été mis à jour avec succès"
@@ -7939,10 +7939,10 @@ msgstr "Retester"
 #: covid-19/results/get-results-for-print.php:283
 #: eid/results/get-results-for-print.php:282
 #: generic-tests/results/get-generic-test-result-details.php:315
-#: generic-tests/results/get-manual-results.php:303
+#: generic-tests/results/get-manual-results.php:304
 #: hepatitis/results/get-results-for-print.php:297
 #: tb/results/get-results-for-print.php:295
-#: vl/results/get-manual-results.php:318
+#: vl/results/get-manual-results.php:319
 #: vl/results/getVlTestResultDetails.php:326
 msgid "Print"
 msgstr "Imprimer"
@@ -8492,7 +8492,7 @@ msgstr "Chargement des détails de l'imprimante"
 #: eid/requests/forms/add-png.php:60 eid/requests/forms/add-rwanda.php:61
 #: eid/requests/forms/edit-cameroon.php:66 eid/requests/forms/edit-drc.php:69
 #: eid/requests/forms/edit-png.php:89 eid/requests/forms/edit-rwanda.php:73
-#: eid/results/forms/update-drc-result.php:56
+#: eid/results/forms/update-drc-result.php:62
 #: eid/results/forms/update-png-result.php:82
 #: eid/results/forms/update-rwanda-result.php:67
 #: eid/results/forms/update-sierraleone-result.php:69
@@ -9135,7 +9135,7 @@ msgstr ""
 "Résultat positif au test rapide de dépistage du VIH à 9 mois ou plus tard"
 
 #: eid/requests/forms/edit-drc.php:76 eid/requests/forms/edit-png.php:92
-#: eid/results/forms/update-drc-result.php:59
+#: eid/results/forms/update-drc-result.php:65
 #: eid/results/forms/update-png-result.php:85
 #: eid/results/forms/update-rwanda-result.php:70
 #: eid/results/forms/update-sierraleone-result.php:72
@@ -16060,10 +16060,8 @@ msgstr "Nombre de fois où le test a été demandé pour ce patient"
 #: vl/requests/forms/add-png.php:802 vl/requests/forms/add-rwanda.php:749
 #: vl/requests/forms/add-sierraleone.php:921
 #: vl/requests/forms/add-southsudan.php:817 vl/requests/forms/add-who.php:807
-#, fuzzy
-#| msgid "Last Request Sent from STS"
 msgid "Last Test Request Added On LIS/STS"
-msgstr "Dernière demande envoyée par STS"
+msgstr "Dernière demande envoyée par LIS/STS"
 
 #: vl/requests/forms/add-cameroon.php:717 vl/requests/forms/add-drc.php:1096
 #: vl/requests/forms/add-png.php:805 vl/requests/forms/add-rwanda.php:752
@@ -16234,9 +16232,8 @@ msgid "Age in months"
 msgstr "Âge en mois"
 
 #: vl/result-mail/editTestResultEmailConfig.php:95
-#, fuzzy
 msgid "Is Patient Breastfeeding"
-msgstr "La patiente allaite-t-elle ?"
+msgstr "La patiente allaite-t-elle"
 
 #: vl/result-mail/editTestResultEmailConfig.php:96
 #, fuzzy

@@ -1,15 +1,22 @@
 <?php
 
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 $artNo = $_POST['artPatientNo'];
 
 $count = 0;
-$pQuery = "SELECT * FROM form_vl where (patient_art_no like '%" . $artNo . "%' OR patient_first_name like '%" . $artNo . "%' OR patient_middle_name like '%" . $artNo . "%' OR patient_last_name like '%" . $artNo . "%') ORDER BY sample_tested_datetime DESC, sample_collection_date DESC LIMIT 25";
-$pResult = $db->rawQuery($pQuery);
-$count = count($pResult);
-echo $count;
+$pQuery = "SELECT count(*) as 'count' FROM form_vl
+                WHERE patient_art_no like '%$artNo%'
+                OR patient_first_name like '%$artNo%'
+                OR patient_middle_name like '%$artNo%'
+                OR patient_last_name like '%$artNo%'";
+$pResult = $db->rawQueryOne($pQuery);
+echo $pResult['count'];
