@@ -63,6 +63,10 @@ if (!$usersService->isAllowed($request)) {
 
 $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 
+// //dump($_SESSION['privileges']);
+// dump($usersService->getAllPrivileges());
+// die;
+
 ?>
 <!DOCTYPE html>
 <html lang="<?= $_SESSION['APP_LOCALE'] ?? 'en_US'; ?>">

@@ -147,13 +147,13 @@ require($fileArray[$arr['vl_form']]);
         if ($.trim($("#" + id).val()) != '') {
             $.blockUI();
             $.post("/covid-19/requests/check-sample-duplicate.php", {
-                    tableName: tableName,
-                    fieldName: fieldName,
-                    value: $("#" + id).val(),
-                    fnct: fnct,
-                    format: "html"
-                },
-                function(data) {
+                tableName: tableName,
+                fieldName: fieldName,
+                value: $("#" + id).val(),
+                fnct: fnct,
+                format: "html"
+            },
+                function (data) {
                     if (data != 0) {
                         <?php if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?>
                             alert(alrt);
@@ -168,18 +168,18 @@ require($fileArray[$arr['vl_form']]);
         }
     }
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('.date').datepicker({
             changeMonth: true,
             changeYear: true,
-            onSelect: function() {
+            onSelect: function () {
                 $(this).change();
             },
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
+        }).click(function () {
             $('.ui-datepicker-calendar').show();
         });
 
@@ -190,11 +190,11 @@ require($fileArray[$arr['vl_form']]);
             dateFormat: 'dd-M-yy',
             maxDate: "Today",
             yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
-            onSelect: function(dateText, inst) {
+            onSelect: function (dateText, inst) {
                 $("#sampleCollectionDate").datepicker("option", "minDate", $("#patientDob").datepicker("getDate"));
                 $(this).change();
             }
-        }).click(function() {
+        }).click(function () {
             $('.ui-datepicker-calendar').show();
         });
 
@@ -205,13 +205,13 @@ require($fileArray[$arr['vl_form']]);
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "Today",
-            onChangeMonthYear: function(year, month, widget) {
-                setTimeout(function() {
+            onChangeMonthYear: function (year, month, widget) {
+                setTimeout(function () {
                     $('.ui-datepicker-calendar').show();
                 });
             },
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
+        }).click(function () {
             $('.ui-datepicker-calendar').show();
         });
 
@@ -221,17 +221,17 @@ require($fileArray[$arr['vl_form']]);
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "Today",
-            onChangeMonthYear: function(year, month, widget) {
-                setTimeout(function() {
+            onChangeMonthYear: function (year, month, widget) {
+                setTimeout(function () {
                     $('.ui-datepicker-calendar').show();
                 });
             },
-            onSelect: function(e) {
+            onSelect: function (e) {
                 $('#sampleReceivedDate').val('');
                 $('#sampleReceivedDate').datetimepicker('option', 'minDate', e);
             },
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
+        }).click(function () {
             $('.ui-datepicker-calendar').show();
         });
 
@@ -241,17 +241,17 @@ require($fileArray[$arr['vl_form']]);
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "Today",
-            onChangeMonthYear: function(year, month, widget) {
-                setTimeout(function() {
+            onChangeMonthYear: function (year, month, widget) {
+                setTimeout(function () {
                     $('.ui-datepicker-calendar').show();
                 });
             },
-            onSelect: function(e) {
+            onSelect: function (e) {
                 $('#sampleTestedDateTime').val('');
                 $('#sampleTestedDateTime').datetimepicker('option', 'minDate', e);
             },
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
+        }).click(function () {
             $('.ui-datepicker-calendar').show();
         });
 
@@ -261,35 +261,35 @@ require($fileArray[$arr['vl_form']]);
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "Today",
-            onChangeMonthYear: function(year, month, widget) {
-                setTimeout(function() {
+            onChangeMonthYear: function (year, month, widget) {
+                setTimeout(function () {
                     $('.ui-datepicker-calendar').show();
                 });
             },
-            onSelect: function(e) {
+            onSelect: function (e) {
 
             },
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
+        }).click(function () {
             $('.ui-datepicker-calendar').show();
         });
 
         //$('.date').mask('99-aaa-9999');
         //$('.dateTime').mask('99-aaa-9999 99:99');
-        $('#isSampleRejected').change(function(e) {
+        $('#isSampleRejected').change(function (e) {
             changeReject(this.value);
         });
 
-        $("#hepatitisPlatform").on("change", function() {
+        $("#hepatitisPlatform").on("change", function () {
             if (this.value != "") {
                 getMachine(this.value);
             }
         });
         getMachine($("#hepatitisPlatform").val());
 
-        $('.result-focus').change(function(e) {
+        $('.result-focus').change(function (e) {
             var status = false;
-            $(".result-focus").each(function(index) {
+            $(".result-focus").each(function (index) {
                 if ($(this).val() != "") {
                     status = true;
                 }
@@ -331,12 +331,12 @@ require($fileArray[$arr['vl_form']]);
     }
 
     function getMachine(value) {
-        $.post("/import-configs/get-config-machine-by-config.php", {
-                configName: value,
-                machine: <?php echo !empty($hepatitisInfo['import_machine_name']) ? $hepatitisInfo['import_machine_name']  : '""'; ?>,
-                testType: 'hepatitis'
-            },
-            function(data) {
+        $.post("/instruments/get-machine-names-by-instrument.php", {
+            instrumentId: value,
+            machine: <?php echo !empty($hepatitisInfo['import_machine_name']) ? $hepatitisInfo['import_machine_name'] : '""'; ?>,
+            testType: 'hepatitis'
+        },
+            function (data) {
                 $('#machineName').html('');
                 if (data != "") {
                     $('#machineName').append(data);

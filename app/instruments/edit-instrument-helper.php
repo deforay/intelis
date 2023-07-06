@@ -153,7 +153,7 @@ try {
             fclose($fp);
         }
     }
-    header("Location:importConfig.php");
+    header("Location:/instruments/instruments.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

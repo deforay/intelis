@@ -81,7 +81,7 @@ class UsersService
 
     public function getAllPrivileges(?array $privileges = []): array
     {
-        $privileges = $privileges ?? $_SESSION['privileges'] ?? [];
+        $privileges = !empty($privileges) ? $privileges : array_flip($_SESSION['privileges']);
         $matchingKeys = array_keys(array_intersect($this->getSharedPrivileges(), $privileges));
         return array_flip(array_merge($this->getSkippedPrivileges(), $privileges, $matchingKeys));
     }
@@ -92,17 +92,17 @@ class UsersService
         // on the left put intermediate/inner file, on the right put the file
         // which has entry in privileges table.
         $sharedPrivileges = [
-            '/import-result/imported-results.php'           => '/import-result/import-file.php',
-            '/import-result/importedStatistics.php'         => '/import-result/import-file.php',
-            'mapTestType.php'                               => 'addFacility.php',
-            'add-province.php'                              => 'province-details.php',
-            'edit-province.php'                             => 'province-details.php',
-            'implementation-partners.php'                   => 'province-details.php',
-            'add-implementation-partners.php'               => 'province-details.php',
-            'edit-implementation-partners.php'              => 'province-details.php',
-            'funding-sources.php'                           => 'province-details.php',
-            'add-funding-sources.php'                       => 'province-details.php',
-            'edit-funding-sources.php'                      => 'province-details.php'
+            '/import-result/imported-results.php' => '/import-result/import-file.php',
+            '/import-result/importedStatistics.php' => '/import-result/import-file.php',
+            'mapTestType.php' => 'addFacility.php',
+            'add-province.php' => 'province-details.php',
+            'edit-province.php' => 'province-details.php',
+            'implementation-partners.php' => 'province-details.php',
+            'add-implementation-partners.php' => 'province-details.php',
+            'edit-implementation-partners.php' => 'province-details.php',
+            'funding-sources.php' => 'province-details.php',
+            'add-funding-sources.php' => 'province-details.php',
+            'edit-funding-sources.php' => 'province-details.php'
         ];
 
         if (
@@ -110,10 +110,10 @@ class UsersService
             $this->applicationConfig['modules']['generic-tests'] === true
         ) {
             $sharedGenericPrivileges = [
-                '/batch/delete-batch.php?type=generic-tests'              => '/batch/edit-batch.php?type=generic-tests',
-                '/batch/generate-batch-pdf.php?type=generic-tests'        => '/batch/batches.php?type=generic-tests',
-                '/batch/add-batch-position.php?type=generic-tests'         => '/batch/add-batch.php?type=generic-tests',
-                '/batch/edit-batch-position.php?type=generic-tests'        => '/batch/edit-batch.php?type=generic-tests',
+                '/batch/delete-batch.php?type=generic-tests' => '/batch/edit-batch.php?type=generic-tests',
+                '/batch/generate-batch-pdf.php?type=generic-tests' => '/batch/batches.php?type=generic-tests',
+                '/batch/add-batch-position.php?type=generic-tests' => '/batch/add-batch.php?type=generic-tests',
+                '/batch/edit-batch-position.php?type=generic-tests' => '/batch/edit-batch.php?type=generic-tests',
                 '/generic-tests/results/update-generic-test-result.php' => '/generic-tests/results/generic-test-results.php',
                 '/generic-tests/configuration/add-test-type.php' => '/generic-tests/configuration/test-type.php',
                 '/generic-tests/configuration/edit-test-type.php' => '/generic-tests/configuration/test-type.php',
@@ -143,29 +143,29 @@ class UsersService
             $this->applicationConfig['modules']['vl'] === true
         ) {
             $sharedVLPrivileges = [
-                '/batch/delete-batch.php?type=vl'              => '/batch/edit-batch.php?type=vl',
-                '/batch/generate-batch-pdf.php?type=vl'        => '/batch/batches.php?type=vl',
-                '/batch/add-batch-position.php?type=vl'         => '/batch/add-batch.php?type=vl',
-                '/batch/edit-batch-position.php?type=vl'        => '/batch/edit-batch.php?type=vl',
-                '/vl/results/updateVlTestResult.php'                => '/vl/results/vlTestResult.php',
-                '/vl/results/vl-failed-results.php'                 => '/vl/results/vlTestResult.php',
-                '/vl/reference/add-vl-art-code-details.php'           => '/vl/reference/vl-art-code-details.php',
-                '/vl/reference/edit-vl-art-code-details.php'          => '/vl/reference/vl-art-code-details.php',
-                '/vl/reference/add-vl-results.php'                    => '/vl/reference/vl-art-code-details.php',
-                '/vl/reference/edit-vl-results.php'                   => '/vl/reference/vl-art-code-details.php',
-                '/vl/reference/vl-sample-rejection-reasons.php'       => '/vl/reference/vl-art-code-details.php',
-                '/vl/reference/add-vl-sample-rejection-reasons.php'   => '/vl/reference/vl-art-code-details.php',
-                '/vl/reference/edit-vl-sample-rejection-reasons.php'  => '/vl/reference/vl-art-code-details.php',
-                '/vl/reference/vl-sample-type.php'                    => '/vl/reference/vl-art-code-details.php',
-                '/vl/reference/edit-vl-sample-type.php'               => '/vl/reference/vl-art-code-details.php',
-                '/vl/reference/add-vl-sample-type.php'                => '/vl/reference/vl-art-code-details.php',
-                '/vl/reference/vl-test-reasons.php'                   => '/vl/reference/vl-art-code-details.php',
-                '/vl/reference/add-vl-test-reasons.php'               => '/vl/reference/vl-art-code-details.php',
-                '/vl/reference/edit-vl-test-reasons.php'              => '/vl/reference/vl-art-code-details.php',
-                '/vl/reference/vl-test-failure-reasons.php'           => '/vl/reference/vl-art-code-details.php',
-                '/vl/referencea/dd-vl-test-failure-reason.php'        => '/vl/reference/vl-art-code-details.php',
-                '/vl/reference/edit-vl-test-failure-reason.php'       => '/vl/reference/vl-art-code-details.php',
-                '/vl/program-management/vlTestingTargetReport.php'    => '/vl/program-management/vlMonthlyThresholdReport.php',
+                '/batch/delete-batch.php?type=vl' => '/batch/edit-batch.php?type=vl',
+                '/batch/generate-batch-pdf.php?type=vl' => '/batch/batches.php?type=vl',
+                '/batch/add-batch-position.php?type=vl' => '/batch/add-batch.php?type=vl',
+                '/batch/edit-batch-position.php?type=vl' => '/batch/edit-batch.php?type=vl',
+                '/vl/results/updateVlTestResult.php' => '/vl/results/vlTestResult.php',
+                '/vl/results/vl-failed-results.php' => '/vl/results/vlTestResult.php',
+                '/vl/reference/add-vl-art-code-details.php' => '/vl/reference/vl-art-code-details.php',
+                '/vl/reference/edit-vl-art-code-details.php' => '/vl/reference/vl-art-code-details.php',
+                '/vl/reference/add-vl-results.php' => '/vl/reference/vl-art-code-details.php',
+                '/vl/reference/edit-vl-results.php' => '/vl/reference/vl-art-code-details.php',
+                '/vl/reference/vl-sample-rejection-reasons.php' => '/vl/reference/vl-art-code-details.php',
+                '/vl/reference/add-vl-sample-rejection-reasons.php' => '/vl/reference/vl-art-code-details.php',
+                '/vl/reference/edit-vl-sample-rejection-reasons.php' => '/vl/reference/vl-art-code-details.php',
+                '/vl/reference/vl-sample-type.php' => '/vl/reference/vl-art-code-details.php',
+                '/vl/reference/edit-vl-sample-type.php' => '/vl/reference/vl-art-code-details.php',
+                '/vl/reference/add-vl-sample-type.php' => '/vl/reference/vl-art-code-details.php',
+                '/vl/reference/vl-test-reasons.php' => '/vl/reference/vl-art-code-details.php',
+                '/vl/reference/add-vl-test-reasons.php' => '/vl/reference/vl-art-code-details.php',
+                '/vl/reference/edit-vl-test-reasons.php' => '/vl/reference/vl-art-code-details.php',
+                '/vl/reference/vl-test-failure-reasons.php' => '/vl/reference/vl-art-code-details.php',
+                '/vl/referencea/dd-vl-test-failure-reason.php' => '/vl/reference/vl-art-code-details.php',
+                '/vl/reference/edit-vl-test-failure-reason.php' => '/vl/reference/vl-art-code-details.php',
+                '/vl/program-management/vlTestingTargetReport.php' => '/vl/program-management/vlMonthlyThresholdReport.php',
                 '/vl/program-management/vlSuppressedTargetReport.php' => '/vl/program-management/vlMonthlyThresholdReport.php'
             ];
 
@@ -177,26 +177,26 @@ class UsersService
             $this->applicationConfig['modules']['eid'] === true
         ) {
             $sharedEIDPrivileges = [
-                '/batch/delete-batch.php?type=eid'              => '/batch/edit-batch.php?type=eid',
-                '/batch/generate-batch-pdf.php?type=eid'        => '/batch/batches.php?type=eid',
-                '/batch/add-batch-position.php?type=eid'         => '/batch/add-batch.php?type=eid',
-                '/batch/edit-batch-position.php?type=eid'        => '/batch/edit-batch.php?type=eid',
-                '/eid/results/eid-update-result.php'                 => '/eid/results/eid-manual-results.php',
-                '/eid/results/eid-failed-results.php'                => '/eid/results/eid-manual-results.php',
-                '/eid/requests/eid-bulk-import-request.php'           => '/eid/requests/eid-add-request.php',
-                '/eid/reference/eid-sample-rejection-reasons.php'      => '/eid/reference/eid-sample-type.php',
-                '/eid/reference/add-eid-sample-rejection-reasons.php'  => '/eid/reference/eid-sample-type.php',
+                '/batch/delete-batch.php?type=eid' => '/batch/edit-batch.php?type=eid',
+                '/batch/generate-batch-pdf.php?type=eid' => '/batch/batches.php?type=eid',
+                '/batch/add-batch-position.php?type=eid' => '/batch/add-batch.php?type=eid',
+                '/batch/edit-batch-position.php?type=eid' => '/batch/edit-batch.php?type=eid',
+                '/eid/results/eid-update-result.php' => '/eid/results/eid-manual-results.php',
+                '/eid/results/eid-failed-results.php' => '/eid/results/eid-manual-results.php',
+                '/eid/requests/eid-bulk-import-request.php' => '/eid/requests/eid-add-request.php',
+                '/eid/reference/eid-sample-rejection-reasons.php' => '/eid/reference/eid-sample-type.php',
+                '/eid/reference/add-eid-sample-rejection-reasons.php' => '/eid/reference/eid-sample-type.php',
                 'edit-eid-sample-rejection-reasons.php' => '/eid/reference/eid-sample-type.php',
-                '/eid/reference/add-eid-sample-type.php'               => '/eid/reference/eid-sample-type.php',
-                '/eid/reference/edit-eid-sample-type.php'              => '/eid/reference/eid-sample-type.php',
-                '/eid/reference/eid-test-reasons.php'                  => '/eid/reference/eid-sample-type.php',
-                '/eid/reference/add-eid-test-reasons.php'              => '/eid/reference/eid-sample-type.php',
-                '/eid/reference/edit-eid-test-reasons.php'             => '/eid/reference/eid-sample-type.php',
-                '/eid/reference/eid-results.php'                       => '/eid/reference/eid-sample-type.php',
-                '/eid/reference/add-eid-results.php'                   => '/eid/reference/eid-sample-type.php',
-                '/eid/reference/edit-eid-results.php'                  => '/eid/reference/eid-sample-type.php',
-                '/eid/management/eidTestingTargetReport.php'            => '/eid/management/eidMonthlyThresholdReport.php',
-                '/eid/management/eidSuppressedTargetReport.php'         => '/eid/management/eidMonthlyThresholdReport.php'
+                '/eid/reference/add-eid-sample-type.php' => '/eid/reference/eid-sample-type.php',
+                '/eid/reference/edit-eid-sample-type.php' => '/eid/reference/eid-sample-type.php',
+                '/eid/reference/eid-test-reasons.php' => '/eid/reference/eid-sample-type.php',
+                '/eid/reference/add-eid-test-reasons.php' => '/eid/reference/eid-sample-type.php',
+                '/eid/reference/edit-eid-test-reasons.php' => '/eid/reference/eid-sample-type.php',
+                '/eid/reference/eid-results.php' => '/eid/reference/eid-sample-type.php',
+                '/eid/reference/add-eid-results.php' => '/eid/reference/eid-sample-type.php',
+                '/eid/reference/edit-eid-results.php' => '/eid/reference/eid-sample-type.php',
+                '/eid/management/eidTestingTargetReport.php' => '/eid/management/eidMonthlyThresholdReport.php',
+                '/eid/management/eidSuppressedTargetReport.php' => '/eid/management/eidMonthlyThresholdReport.php'
             ];
             $sharedPrivileges = array_merge($sharedPrivileges, $sharedEIDPrivileges);
         }
@@ -206,36 +206,36 @@ class UsersService
             $this->applicationConfig['modules']['covid19'] === true
         ) {
             $sharedCovid19Privileges = [
-                '/batch/delete-batch.php?type=covid19'              => '/batch/edit-batch.php?type=covid19',
-                '/batch/generate-batch-pdf.php?type=covid19'        => '/batch/batches.php?type=covid19',
-                '/batch/add-batch-position.php?type=covid19'         => '/batch/add-batch.php?type=covid19',
-                '/batch/edit-batch-position.php?type=covid19'        => '/batch/edit-batch.php?type=covid19',
-                '/covid-19/mail/mail-covid-19-results.php'                 => '/covid-19/results/covid-19-print-results.php',
-                '/covid-19/mail/covid-19-result-mail-confirm.php'          => '/covid-19/results/covid-19-print-results.php',
-                '/covid-19/results/covid-19-update-result.php'                => '/covid-19/results/covid-19-manual-results.php',
-                '/covid-19/results/covid-19-failed-results.php'               => '/covid-19/results/covid-19-manual-results.php',
-                '/covid-19/requests/covid-19-bulk-import-request.php'          => '/covid-19/requests/covid-19-add-request.php',
-                '/covid-19/requests/covid-19-quick-add.php'                    => '/covid-19/requests/covid-19-add-request.php',
-                '/covid-19/reference/covid19-sample-rejection-reasons.php'      => '/covid-19/reference/covid19-sample-type.php',
-                '/covid-19/reference/add-covid19-sample-rejection-reason.php'   => '/covid-19/reference/covid19-sample-type.php',
-                '/covid-19/reference/covid19-comorbidities.php'                 => '/covid-19/reference/covid19-sample-type.php',
-                '/covid-19/reference/add-covid19-comorbidities.php'             => '/covid-19/reference/covid19-sample-type.php',
-                '/covid-19/reference/covid19-symptoms.php'                      => '/covid-19/reference/covid19-sample-type.php',
-                '/covid-19/reference/add-covid19-sample-type.php'               => '/covid-19/reference/covid19-sample-type.php',
-                '/covid-19/reference/covid19-test-symptoms.php'                 => '/covid-19/reference/covid19-sample-type.php',
-                '/covid-19/reference/add-covid19-symptoms.php'                  => '/covid-19/reference/covid19-sample-type.php',
-                '/covid-19/reference/covid19-test-reasons.php'                  => '/covid-19/reference/covid19-sample-type.php',
-                '/covid-19/reference/add-covid19-test-reasons.php'              => '/covid-19/reference/covid19-sample-type.php',
-                '/covid-19/reference/covid19-results.php'                       => '/covid-19/reference/covid19-sample-type.php',
-                '/covid-19/reference/add-covid19-results.php'                   => '/covid-19/reference/covid19-sample-type.php',
-                '/covid-19/management/covid19TestingTargetReport.php'            => '/covid-19/management/covid19MonthlyThresholdReport.php',
-                '/covid-19/management/covid19SuppressedTargetReport.php'         => '/covid-19/management/covid19MonthlyThresholdReport.php',
-                '/covid-19/interop/dhis2/covid-19-init.php'                         => '/covid-19/requests/covid-19-dhis2.php',
-                '/covid-19/interop/dhis2/covid-19-send.php'                         => '/covid-19/requests/covid-19-dhis2.php',
-                '/covid-19/interop/dhis2/covid-19-receive.php'                      => '/covid-19/requests/covid-19-dhis2.php',
-                '/covid-19/reference/covid19-qc-test-kits.php'                          => '/covid-19/reference/covid19-sample-type.php',
-                '/covid-19/reference/add-covid19-qc-test-kit.php'               => '/covid-19/reference/covid19-sample-type.php',
-                '/covid-19/reference/edit-covid19-qc-test-kit.php'              => '/covid-19/reference/covid19-sample-type.php'
+                '/batch/delete-batch.php?type=covid19' => '/batch/edit-batch.php?type=covid19',
+                '/batch/generate-batch-pdf.php?type=covid19' => '/batch/batches.php?type=covid19',
+                '/batch/add-batch-position.php?type=covid19' => '/batch/add-batch.php?type=covid19',
+                '/batch/edit-batch-position.php?type=covid19' => '/batch/edit-batch.php?type=covid19',
+                '/covid-19/mail/mail-covid-19-results.php' => '/covid-19/results/covid-19-print-results.php',
+                '/covid-19/mail/covid-19-result-mail-confirm.php' => '/covid-19/results/covid-19-print-results.php',
+                '/covid-19/results/covid-19-update-result.php' => '/covid-19/results/covid-19-manual-results.php',
+                '/covid-19/results/covid-19-failed-results.php' => '/covid-19/results/covid-19-manual-results.php',
+                '/covid-19/requests/covid-19-bulk-import-request.php' => '/covid-19/requests/covid-19-add-request.php',
+                '/covid-19/requests/covid-19-quick-add.php' => '/covid-19/requests/covid-19-add-request.php',
+                '/covid-19/reference/covid19-sample-rejection-reasons.php' => '/covid-19/reference/covid19-sample-type.php',
+                '/covid-19/reference/add-covid19-sample-rejection-reason.php' => '/covid-19/reference/covid19-sample-type.php',
+                '/covid-19/reference/covid19-comorbidities.php' => '/covid-19/reference/covid19-sample-type.php',
+                '/covid-19/reference/add-covid19-comorbidities.php' => '/covid-19/reference/covid19-sample-type.php',
+                '/covid-19/reference/covid19-symptoms.php' => '/covid-19/reference/covid19-sample-type.php',
+                '/covid-19/reference/add-covid19-sample-type.php' => '/covid-19/reference/covid19-sample-type.php',
+                '/covid-19/reference/covid19-test-symptoms.php' => '/covid-19/reference/covid19-sample-type.php',
+                '/covid-19/reference/add-covid19-symptoms.php' => '/covid-19/reference/covid19-sample-type.php',
+                '/covid-19/reference/covid19-test-reasons.php' => '/covid-19/reference/covid19-sample-type.php',
+                '/covid-19/reference/add-covid19-test-reasons.php' => '/covid-19/reference/covid19-sample-type.php',
+                '/covid-19/reference/covid19-results.php' => '/covid-19/reference/covid19-sample-type.php',
+                '/covid-19/reference/add-covid19-results.php' => '/covid-19/reference/covid19-sample-type.php',
+                '/covid-19/management/covid19TestingTargetReport.php' => '/covid-19/management/covid19MonthlyThresholdReport.php',
+                '/covid-19/management/covid19SuppressedTargetReport.php' => '/covid-19/management/covid19MonthlyThresholdReport.php',
+                '/covid-19/interop/dhis2/covid-19-init.php' => '/covid-19/requests/covid-19-dhis2.php',
+                '/covid-19/interop/dhis2/covid-19-send.php' => '/covid-19/requests/covid-19-dhis2.php',
+                '/covid-19/interop/dhis2/covid-19-receive.php' => '/covid-19/requests/covid-19-dhis2.php',
+                '/covid-19/reference/covid19-qc-test-kits.php' => '/covid-19/reference/covid19-sample-type.php',
+                '/covid-19/reference/add-covid19-qc-test-kit.php' => '/covid-19/reference/covid19-sample-type.php',
+                '/covid-19/reference/edit-covid19-qc-test-kit.php' => '/covid-19/reference/covid19-sample-type.php'
             ];
             $sharedPrivileges = array_merge($sharedPrivileges, $sharedCovid19Privileges);
         }
@@ -245,28 +245,28 @@ class UsersService
             $this->applicationConfig['modules']['hepatitis'] === true
         ) {
             $sharedHepPrivileges = [
-                '/batch/delete-batch.php?type=hepatitis'              => '/batch/edit-batch.php?type=hepatitis',
-                '/batch/generate-batch-pdf.php?type=hepatitis'        => '/batch/batches.php?type=hepatitis',
-                '/batch/add-batch-position.php?type=hepatitis'         => '/batch/add-batch.php?type=hepatitis',
-                '/batch/edit-batch-position.php?type=hepatitis'        => '/batch/edit-batch.php?type=hepatitis',
-                '/hepatitis/results/hepatitis-update-result.php'                   => '/hepatitis/results/hepatitis-manual-results.php',
-                '/hepatitis/results/hepatitis-failed-results.php'                  => '/hepatitis/results/hepatitis-manual-results.php',
-                '/hepatitis/mail/mail-hepatitis-results.php'                    => '/hepatitis/results/hepatitis-print-results.php',
-                'hepatitis-result-mail-confirm.php'             => '/hepatitis/results/hepatitis-print-results.php',
-                '/hepatitis/reference/hepatitis-sample-rejection-reasons.php'        => '/hepatitis/reference/hepatitis-sample-type.php',
-                '/hepatitis/reference/add-hepatitis-sample-rejection-reasons.php'    => '/hepatitis/reference/hepatitis-sample-type.php',
-                '/hepatitis/reference/hepatitis-comorbidities.php'                   => '/hepatitis/reference/hepatitis-sample-type.php',
-                '/hepatitis/reference/add-hepatitis-comorbidities.php'               => '/hepatitis/reference/hepatitis-sample-type.php',
-                '/hepatitis/reference/add-hepatitis-sample-type.php'                 => '/hepatitis/reference/hepatitis-sample-type.php',
-                '/hepatitis/reference/hepatitis-results.php'                         => '/hepatitis/reference/hepatitis-sample-type.php',
-                '/hepatitis/reference/add-hepatitis-results.php'                     => '/hepatitis/reference/hepatitis-sample-type.php',
-                '/hepatitis/reference/hepatitis-risk-factors.php'                    => '/hepatitis/reference/hepatitis-sample-type.php',
-                '/hepatitis/reference/add-hepatitis-risk-factors.php'                => '/hepatitis/reference/hepatitis-sample-type.php',
-                '/hepatitis/reference/hepatitis-test-reasons.php'                    => '/hepatitis/reference/hepatitis-sample-type.php',
-                '/hepatitis/reference/add-hepatitis-test-reasons.php'                => '/hepatitis/reference/hepatitis-sample-type.php',
-                '/hepatitis/interop/dhis2/hepatitis-init.php'                            => '/hepatitis/requests/hepatitis-dhis2.php',
-                '/hepatitis/interop/dhis2/hepatitis-send.php'                            => '/hepatitis/requests/hepatitis-dhis2.php',
-                '/hepatitis/interop/dhis2/hepatitis-receive.php'                         => '/hepatitis/requests/hepatitis-dhis2.php'
+                '/batch/delete-batch.php?type=hepatitis' => '/batch/edit-batch.php?type=hepatitis',
+                '/batch/generate-batch-pdf.php?type=hepatitis' => '/batch/batches.php?type=hepatitis',
+                '/batch/add-batch-position.php?type=hepatitis' => '/batch/add-batch.php?type=hepatitis',
+                '/batch/edit-batch-position.php?type=hepatitis' => '/batch/edit-batch.php?type=hepatitis',
+                '/hepatitis/results/hepatitis-update-result.php' => '/hepatitis/results/hepatitis-manual-results.php',
+                '/hepatitis/results/hepatitis-failed-results.php' => '/hepatitis/results/hepatitis-manual-results.php',
+                '/hepatitis/mail/mail-hepatitis-results.php' => '/hepatitis/results/hepatitis-print-results.php',
+                'hepatitis-result-mail-confirm.php' => '/hepatitis/results/hepatitis-print-results.php',
+                '/hepatitis/reference/hepatitis-sample-rejection-reasons.php' => '/hepatitis/reference/hepatitis-sample-type.php',
+                '/hepatitis/reference/add-hepatitis-sample-rejection-reasons.php' => '/hepatitis/reference/hepatitis-sample-type.php',
+                '/hepatitis/reference/hepatitis-comorbidities.php' => '/hepatitis/reference/hepatitis-sample-type.php',
+                '/hepatitis/reference/add-hepatitis-comorbidities.php' => '/hepatitis/reference/hepatitis-sample-type.php',
+                '/hepatitis/reference/add-hepatitis-sample-type.php' => '/hepatitis/reference/hepatitis-sample-type.php',
+                '/hepatitis/reference/hepatitis-results.php' => '/hepatitis/reference/hepatitis-sample-type.php',
+                '/hepatitis/reference/add-hepatitis-results.php' => '/hepatitis/reference/hepatitis-sample-type.php',
+                '/hepatitis/reference/hepatitis-risk-factors.php' => '/hepatitis/reference/hepatitis-sample-type.php',
+                '/hepatitis/reference/add-hepatitis-risk-factors.php' => '/hepatitis/reference/hepatitis-sample-type.php',
+                '/hepatitis/reference/hepatitis-test-reasons.php' => '/hepatitis/reference/hepatitis-sample-type.php',
+                '/hepatitis/reference/add-hepatitis-test-reasons.php' => '/hepatitis/reference/hepatitis-sample-type.php',
+                '/hepatitis/interop/dhis2/hepatitis-init.php' => '/hepatitis/requests/hepatitis-dhis2.php',
+                '/hepatitis/interop/dhis2/hepatitis-send.php' => '/hepatitis/requests/hepatitis-dhis2.php',
+                '/hepatitis/interop/dhis2/hepatitis-receive.php' => '/hepatitis/requests/hepatitis-dhis2.php'
             ];
             $sharedPrivileges = array_merge($sharedPrivileges, $sharedHepPrivileges);
         }
@@ -276,19 +276,19 @@ class UsersService
             $this->applicationConfig['modules']['tb'] === true
         ) {
             $sharedTbPrivileges = [
-                '/batch/delete-batch.php?type=tb'              => '/batch/edit-batch.php?type=tb',
-                '/batch/generate-batch-pdf.php?type=tb'        => '/batch/batches.php?type=tb',
-                '/batch/add-batch-position.php?type=tb'         => '/batch/add-batch.php?type=tb',
-                '/batch/edit-batch-position.php?type=tb'        => '/batch/edit-batch.php?type=tb',
-                '/tb/results/tb-update-result.php'                    => '/tb/results/tb-manual-results.php',
-                '/tb/results/tb-failed-results.php'                   => '/tb/results/tb-manual-results.php',
-                '/tb/reference/add-tb-sample-type.php'                => 'tb-sample-type.php',
-                '/tb/reference/tb-sample-rejection-reasons.php'       => 'tb-sample-type.php',
-                '/tb/reference/add-tb-sample-rejection-reason.php'    => 'tb-sample-type.php',
-                '/tb/reference/tb-test-reasons.php'                   => 'tb-sample-type.php',
-                '/tb/reference/add-tb-test-reasons.php'               => 'tb-sample-type.php',
-                '/tb/reference/tb-results.php'                        => 'tb-sample-type.php',
-                '/tb/reference/add-tb-results.php'                    => 'tb-sample-type.php',
+                '/batch/delete-batch.php?type=tb' => '/batch/edit-batch.php?type=tb',
+                '/batch/generate-batch-pdf.php?type=tb' => '/batch/batches.php?type=tb',
+                '/batch/add-batch-position.php?type=tb' => '/batch/add-batch.php?type=tb',
+                '/batch/edit-batch-position.php?type=tb' => '/batch/edit-batch.php?type=tb',
+                '/tb/results/tb-update-result.php' => '/tb/results/tb-manual-results.php',
+                '/tb/results/tb-failed-results.php' => '/tb/results/tb-manual-results.php',
+                '/tb/reference/add-tb-sample-type.php' => 'tb-sample-type.php',
+                '/tb/reference/tb-sample-rejection-reasons.php' => 'tb-sample-type.php',
+                '/tb/reference/add-tb-sample-rejection-reason.php' => 'tb-sample-type.php',
+                '/tb/reference/tb-test-reasons.php' => 'tb-sample-type.php',
+                '/tb/reference/add-tb-test-reasons.php' => 'tb-sample-type.php',
+                '/tb/reference/tb-results.php' => 'tb-sample-type.php',
+                '/tb/reference/add-tb-results.php' => 'tb-sample-type.php',
             ];
             $sharedPrivileges = array_merge($sharedPrivileges, $sharedTbPrivileges);
         }
@@ -336,7 +336,7 @@ class UsersService
             $this->db->orderBy("user_name", "asc");
 
             if (isset($type) && $type == 'drop-down') {
-                $result =  $this->db->get('user_details u');
+                $result = $this->db->get('user_details u');
                 $userDetails = [];
                 foreach ($result as $user) {
                     $userDetails[$user['user_id']] = ($user['user_name']);
@@ -397,7 +397,7 @@ class UsersService
 
     public function generateAuthToken($size = 8): string
     {
-        return  base64_encode($this->commonService->generateUUID() .
+        return base64_encode($this->commonService->generateUUID() .
             "-" . $this->commonService->generateRandomString($size));
     }
 
@@ -495,8 +495,8 @@ class UsersService
             $response['role']['code'] = $row['role_code'];
             $response['role']['type'] = $row['access_type'];
 
-            $row['display_name'] =  strtolower(trim(preg_replace("![^a-z0-9]+!i", " ", $row['display_name'])));
-            $row['display_name'] =  preg_replace("![^a-z0-9]+!i", "-", $row['display_name']);
+            $row['display_name'] = strtolower(trim(preg_replace("![^a-z0-9]+!i", " ", $row['display_name'])));
+            $row['display_name'] = preg_replace("![^a-z0-9]+!i", "-", $row['display_name']);
             $response['privileges'][$row['module']][$row['resource_id']][] = $row['display_name'];
         }
         return $response;
@@ -514,7 +514,7 @@ class UsersService
             'login_attempted_datetime' => DateUtility::getCurrentDateTime(),
             'login_status' => $loginStatus,
             'ip_address' => $ipaddress,
-            'browser'    => $browserAgent,
+            'browser' => $browserAgent,
             'operating_system' => $os
         ];
         $this->db->insert('user_login_history', $data);

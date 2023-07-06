@@ -143,8 +143,8 @@ msgstr "Bienvenue sur la page d’administration"
 #: hepatitis/results/hepatitis-manual-results.php:68
 #: hepatitis/results/hepatitis-print-results.php:58
 #: hepatitis/results/hepatitis-result-status.php:65
-#: import-configs/addImportConfig.php:41 import-configs/editImportConfig.php:77
-#: import-configs/importConfig.php:12 import-result/import-file.php:58
+#: instruments/add-instrument.php:41 instruments/edit-instrument.php:77
+#: instruments/instruments.php:12 import-result/import-file.php:58
 #: mail/vlResultMail.php:57 roles/addRole.php:95 roles/editRole.php:113
 #: roles/roles.php:13 system-admin/api-stats/api-stats.php:13
 #: system-admin/edit-config/index.php:28
@@ -475,7 +475,7 @@ msgstr "Enregistré le"
 #: hepatitis/results/hepatitis-print-results.php:221
 #: hepatitis/results/hepatitis-print-results.php:372
 #: hepatitis/results/hepatitis-result-status.php:182
-#: import-configs/importConfig.php:37 roles/roles.php:45
+#: instruments/instruments.php:37 roles/roles.php:45
 #: system-admin/api-stats/api-stats.php:41
 #: system-admin/user-login-history/userLoginIndex.php:73
 #: tb/management/tb-clinic-report.php:197 tb/management/tb-clinic-report.php:299
@@ -520,9 +520,9 @@ msgstr "Historique de l’API"
 #: facilities/editFacility.php:356 facilities/editFacility.php:849
 #: facilities/mapTestType.php:55 generic-tests/requests/view-requests.php:119
 #: generic-tests/requests/view-requests.php:148
-#: import-configs/addImportConfig.php:173 import-configs/addImportConfig.php:261
-#: import-configs/editImportConfig.php:275
-#: import-configs/editImportConfig.php:434
+#: instruments/add-instrument.php:173 instruments/add-instrument.php:261
+#: instruments/edit-instrument.php:275
+#: instruments/edit-instrument.php:434
 #: specimen-referral-manifest/move-manifest.php:203
 #: specimen-referral-manifest/view-manifests.php:57
 msgid "Test Type"
@@ -861,7 +861,7 @@ msgstr "-- Sélectionner --"
 #: facilities/editFacility.php:360 facilities/editFacility.php:564
 #: facilities/editFacility.php:591 facilities/editFacility.php:906
 #: facilities/facilities.php:88 facilities/mapTestType.php:60
-#: import-configs/addImportConfig.php:91 import-configs/editImportConfig.php:146
+#: instruments/add-instrument.php:91 instruments/edit-instrument.php:146
 #: vl/program-management/vl-export-data.php:134 vl/requests/vl-requests.php:152
 msgid "Viral Load"
 msgstr "CHARGE VIRALE"
@@ -886,11 +886,11 @@ msgstr "DIAGNOSTIC PRÉCOCE DU NOURRISSON (EID)"
 #: facilities/editFacility.php:366 facilities/editFacility.php:566
 #: facilities/editFacility.php:593 facilities/editFacility.php:867
 #: facilities/editFacility.php:908 facilities/facilities.php:94
-#: facilities/mapTestType.php:66 import-configs/addImportConfig.php:97
-#: import-configs/addImportConfig.php:211 import-configs/addImportConfig.php:286
-#: import-configs/editImportConfig.php:152
-#: import-configs/editImportConfig.php:336
-#: import-configs/editImportConfig.php:504
+#: facilities/mapTestType.php:66 instruments/add-instrument.php:97
+#: instruments/add-instrument.php:211 instruments/add-instrument.php:286
+#: instruments/edit-instrument.php:152
+#: instruments/edit-instrument.php:336
+#: instruments/edit-instrument.php:504
 msgid "Covid-19"
 msgstr "COVID-19"
 
@@ -906,10 +906,10 @@ msgstr "COVID-19"
 #: hepatitis/management/hepatitis-sample-rejection-report.php:37
 #: hepatitis/management/hepatitis-sample-status.php:48
 #: hepatitis/management/hepatitis-testing-target-report.php:178
-#: import-configs/addImportConfig.php:100 import-configs/addImportConfig.php:226
-#: import-configs/addImportConfig.php:294 import-configs/editImportConfig.php:155
-#: import-configs/editImportConfig.php:359
-#: import-configs/editImportConfig.php:531 system/menu.php:54
+#: instruments/add-instrument.php:100 instruments/add-instrument.php:226
+#: instruments/add-instrument.php:294 instruments/edit-instrument.php:155
+#: instruments/edit-instrument.php:359
+#: instruments/edit-instrument.php:531 system/menu.php:54
 msgid "Hepatitis"
 msgstr "Hépatite"
 
@@ -920,9 +920,9 @@ msgstr "Hépatite"
 #: facilities/addFacility.php:500 facilities/editFacility.php:372
 #: facilities/editFacility.php:568 facilities/editFacility.php:910
 #: facilities/facilities.php:100 facilities/mapTestType.php:72
-#: import-configs/addImportConfig.php:103 import-configs/addImportConfig.php:241
-#: import-configs/addImportConfig.php:302 import-configs/editImportConfig.php:158
-#: import-configs/editImportConfig.php:382 system/menu.php:55
+#: instruments/add-instrument.php:103 instruments/add-instrument.php:241
+#: instruments/add-instrument.php:302 instruments/edit-instrument.php:158
+#: instruments/edit-instrument.php:382 system/menu.php:55
 msgid "TB"
 msgstr "Tuberculose"
 
@@ -986,8 +986,8 @@ msgstr "Synchronisé sur"
 #: hepatitis/results/hepatitis-manual-results.php:187
 #: hepatitis/results/hepatitis-print-results.php:216
 #: hepatitis/results/hepatitis-print-results.php:367
-#: import-configs/addImportConfig.php:331 import-configs/editImportConfig.php:636
-#: import-configs/importConfig.php:32 roles/roles.php:39
+#: instruments/add-instrument.php:331 instruments/edit-instrument.php:636
+#: instruments/instruments.php:32 roles/roles.php:39
 #: specimen-referral-manifest/view-manifests.php:62
 #: system-admin/instance-overview/instanceIndex.php:120
 #: tb/management/tb-export-data.php:286 tb/requests/tb-requests.php:331
@@ -1141,7 +1141,7 @@ msgstr "Code d'échantillon"
 #: hepatitis/reference/add-hepatitis-sample-type.php:56
 #: hepatitis/reference/add-hepatitis-test-reasons.php:69
 #: hepatitis/requests/add-samples-from-manifest.php:37
-#: import-configs/addImportConfig.php:369 import-configs/editImportConfig.php:768
+#: instruments/add-instrument.php:369 instruments/edit-instrument.php:768
 #: import-result/import-file.php:162 roles/addRole.php:283 roles/editRole.php:292
 #: system-admin/edit-config/index.php:131
 #: system-admin/edit-config/resetPassword.php:60 system-admin/setup/index.php:98
@@ -1969,7 +1969,7 @@ msgstr "Lot"
 #: hepatitis/reference/add-hepatitis-sample-rejection-reasons.php:23
 #: hepatitis/reference/add-hepatitis-sample-type.php:22
 #: hepatitis/reference/add-hepatitis-test-reasons.php:27
-#: import-configs/addImportConfig.php:51 import-configs/editImportConfig.php:90
+#: instruments/add-instrument.php:51 instruments/edit-instrument.php:90
 #: mail/vlResultMail.php:67 roles/addRole.php:104 roles/editRole.php:122
 #: system-admin/edit-config/resetPassword.php:29
 #: tb/reference/add-tb-results.php:23
@@ -2421,7 +2421,7 @@ msgstr "Sauvegarder et Suivant"
 #: hepatitis/reference/add-hepatitis-sample-rejection-reasons.php:77
 #: hepatitis/reference/add-hepatitis-sample-type.php:57
 #: hepatitis/reference/add-hepatitis-test-reasons.php:70
-#: import-configs/addImportConfig.php:370 import-configs/editImportConfig.php:771
+#: instruments/add-instrument.php:370 instruments/edit-instrument.php:771
 #: import-result/import-file.php:163 mail/vlResultMail.php:259
 #: roles/addRole.php:284 roles/editRole.php:293
 #: system-admin/edit-config/resetPassword.php:61
@@ -2653,7 +2653,7 @@ msgstr "Envoie de résultats par email"
 #: generic-tests/configuration/testing-reasons/get-testing-reason-helper.php:144
 #: generic-tests/requests/get-request-details.php:202
 #: hepatitis/requests/get-request-list.php:383
-#: import-configs/getImportConfigDetails.php:132 roles/getRoleDetails.php:134
+#: instruments/get-instruments.php:132 roles/getRoleDetails.php:134
 #: tb/requests/get-request-list.php:342 users/getUserDetails.php:145
 #: vl/reference/get-vl-results-helper.php:145
 #: vl/reference/get-vl-test-failure-reasons-helper.php:152
@@ -2795,7 +2795,7 @@ msgstr "Veuillez sélectionner la source de financement"
 #: hepatitis/reference/get-hepatitis-sample-type-helper.php:141
 #: hepatitis/reference/get-hepatitis-test-reasons-helper.php:131
 #: hepatitis/reference/getHepatitisComorbiditiesDetails.php:130
-#: import-configs/editImportConfig.php:256 roles/addRole.php:167
+#: instruments/edit-instrument.php:256 roles/addRole.php:167
 #: roles/editRole.php:168 tb/reference/add-tb-results.php:55
 #: tb/reference/add-tb-sample-rejection-reason.php:64
 #: tb/reference/add-tb-sample-type.php:43 tb/reference/add-tb-test-reasons.php:62
@@ -2880,7 +2880,7 @@ msgstr "Actif"
 #: hepatitis/reference/get-hepatitis-sample-type-helper.php:142
 #: hepatitis/reference/get-hepatitis-test-reasons-helper.php:132
 #: hepatitis/reference/getHepatitisComorbiditiesDetails.php:131
-#: import-configs/editImportConfig.php:257 roles/addRole.php:168
+#: instruments/edit-instrument.php:257 roles/addRole.php:168
 #: roles/editRole.php:169 tb/reference/add-tb-results.php:56
 #: tb/reference/add-tb-sample-rejection-reason.php:65
 #: tb/reference/add-tb-sample-type.php:44 tb/reference/add-tb-test-reasons.php:63
@@ -3079,7 +3079,7 @@ msgstr "Veuillez sélectionner la division des parents"
 #: hepatitis/results/hepatitis-print-results.php:343
 #: hepatitis/results/hepatitis-print-results.php:366
 #: hepatitis/results/hepatitis-result-status.php:174
-#: import-configs/editImportConfig.php:251 import-configs/importConfig.php:31
+#: instruments/edit-instrument.php:251 instruments/instruments.php:31
 #: import-result/imported-results.php:216 roles/addRole.php:163
 #: roles/editRole.php:164 roles/roles.php:37
 #: system-admin/user-login-history/userLoginIndex.php:67
@@ -4085,7 +4085,7 @@ msgstr "Date de test de l'échantillon"
 #: hepatitis/requests/hepatitis-requests.php:306
 #: hepatitis/results/hepatitis-failed-results.php:89
 #: hepatitis/results/hepatitis-manual-results.php:104
-#: import-configs/addImportConfig.php:74 import-configs/editImportConfig.php:124
+#: instruments/add-instrument.php:74 instruments/edit-instrument.php:124
 #: roles/addRole.php:181 roles/editRole.php:182
 #: specimen-referral-manifest/move-manifest.php:193
 #: specimen-referral-manifest/view-manifests.php:58
@@ -9172,12 +9172,12 @@ msgstr "Pays"
 
 #: facilities/addFacility.php:263 facilities/addFacility.php:265
 #: facilities/editFacility.php:324 facilities/editFacility.php:326
-#: import-configs/addImportConfig.php:351 import-configs/addImportConfig.php:497
-#: import-configs/editImportConfig.php:689
-#: import-configs/editImportConfig.php:690
-#: import-configs/editImportConfig.php:739
-#: import-configs/editImportConfig.php:740
-#: import-configs/editImportConfig.php:867
+#: instruments/add-instrument.php:351 instruments/add-instrument.php:497
+#: instruments/edit-instrument.php:689
+#: instruments/edit-instrument.php:690
+#: instruments/edit-instrument.php:739
+#: instruments/edit-instrument.php:740
+#: instruments/edit-instrument.php:867
 msgid "Latitude"
 msgstr "Latitude"
 
@@ -9188,12 +9188,12 @@ msgstr "Veuillez saisir la latitude"
 
 #: facilities/addFacility.php:271 facilities/addFacility.php:273
 #: facilities/editFacility.php:333 facilities/editFacility.php:335
-#: import-configs/addImportConfig.php:354 import-configs/addImportConfig.php:500
-#: import-configs/editImportConfig.php:697
-#: import-configs/editImportConfig.php:698
-#: import-configs/editImportConfig.php:745
-#: import-configs/editImportConfig.php:746
-#: import-configs/editImportConfig.php:870
+#: instruments/add-instrument.php:354 instruments/add-instrument.php:500
+#: instruments/edit-instrument.php:697
+#: instruments/edit-instrument.php:698
+#: instruments/edit-instrument.php:745
+#: instruments/edit-instrument.php:746
+#: instruments/edit-instrument.php:870
 msgid "Longitude"
 msgstr "Longitude"
 
@@ -9211,10 +9211,10 @@ msgid "Choose one test type"
 msgstr "Choisir un type de test"
 
 #: facilities/addFacility.php:301 facilities/addFacility.php:503
-#: facilities/mapTestType.php:75 import-configs/addImportConfig.php:106
-#: import-configs/addImportConfig.php:310 import-configs/editImportConfig.php:161
-#: import-configs/editImportConfig.php:405
-#: import-configs/editImportConfig.php:584
+#: facilities/mapTestType.php:75 instruments/add-instrument.php:106
+#: instruments/add-instrument.php:310 instruments/edit-instrument.php:161
+#: instruments/edit-instrument.php:405
+#: instruments/edit-instrument.php:584
 #, fuzzy
 msgid "Lab Tests"
 msgstr "Tests de laboratoire"
@@ -12344,116 +12344,116 @@ msgstr "Veuillez cocher au moins une case."
 msgid "Hepatitis result updated successfully"
 msgstr "Le résultat de l'hépatite a été mis à jour avec succès"
 
-#: import-configs/addImportConfig.php:39 import-configs/addImportConfig.php:42
-#: import-configs/importConfig.php:23
+#: instruments/add-instrument.php:39 instruments/add-instrument.php:42
+#: instruments/instruments.php:23
 #, fuzzy
 msgid "Add Instrument"
 msgstr "Ajouter un instrument"
 
-#: import-configs/addImportConfig.php:61 import-configs/editImportConfig.php:103
-#: import-configs/importConfig.php:30 import-result/import-file.php:97
+#: instruments/add-instrument.php:61 instruments/edit-instrument.php:103
+#: instruments/instruments.php:30 import-result/import-file.php:97
 #, fuzzy
 msgid "Instrument Name"
 msgstr "Nom de l'instrument"
 
-#: import-configs/addImportConfig.php:63 import-configs/editImportConfig.php:108
+#: instruments/add-instrument.php:63 instruments/edit-instrument.php:108
 #, fuzzy
 msgid "eg. Roche or Abbott"
 msgstr "ex. Roche ou Abbott"
 
-#: import-configs/addImportConfig.php:63 import-configs/editImportConfig.php:109
+#: instruments/add-instrument.php:63 instruments/edit-instrument.php:109
 #, fuzzy
 msgid "Please enter instrument name"
 msgstr "Veuillez saisir le nom de l'instrument"
 
-#: import-configs/addImportConfig.php:63 import-configs/editImportConfig.php:111
+#: instruments/add-instrument.php:63 instruments/edit-instrument.php:111
 #, fuzzy
 msgid "This instrument name already exists.Try another name"
 msgstr "Ce nom d'instrument existe déjà, essayez un autre nom"
 
-#: import-configs/addImportConfig.php:87 import-configs/editImportConfig.php:140
+#: instruments/add-instrument.php:87 instruments/edit-instrument.php:140
 #, fuzzy
 msgid "Supported Tests"
 msgstr "Tests pris en charge"
 
-#: import-configs/addImportConfig.php:94 import-configs/addImportConfig.php:196
-#: import-configs/addImportConfig.php:278 import-configs/editImportConfig.php:149
-#: import-configs/editImportConfig.php:313
-#: import-configs/editImportConfig.php:477
+#: instruments/add-instrument.php:94 instruments/add-instrument.php:196
+#: instruments/add-instrument.php:278 instruments/edit-instrument.php:149
+#: instruments/edit-instrument.php:313
+#: instruments/edit-instrument.php:477
 #, fuzzy
 msgid "EID"
 msgstr "EID-Rapport de status d'échantillons"
 
-#: import-configs/addImportConfig.php:116
+#: instruments/add-instrument.php:116
 #, fuzzy
 msgid "Instrument File"
 msgstr "Fichier des instruments"
 
-#: import-configs/addImportConfig.php:118 import-configs/editImportConfig.php:177
+#: instruments/add-instrument.php:118 instruments/edit-instrument.php:177
 #, fuzzy
 msgid "eg. roche.php or abbott.php"
 msgstr "ex. roche.php ou abbott.php"
 
-#: import-configs/addImportConfig.php:118 import-configs/addImportConfig.php:337
-#: import-configs/addImportConfig.php:489 import-configs/editImportConfig.php:661
-#: import-configs/editImportConfig.php:717
-#: import-configs/editImportConfig.php:859
+#: instruments/add-instrument.php:118 instruments/add-instrument.php:337
+#: instruments/add-instrument.php:489 instruments/edit-instrument.php:661
+#: instruments/edit-instrument.php:717
+#: instruments/edit-instrument.php:859
 #, fuzzy
 msgid "Please enter machine name"
 msgstr "Veuillez saisir le nom de la machine"
 
-#: import-configs/addImportConfig.php:118
+#: instruments/add-instrument.php:118
 #, fuzzy
 msgid "This file name already exists.Try another name"
 msgstr "Ce nom de fichier existe déjà, essayez un autre nom"
 
-#: import-configs/addImportConfig.php:126 import-configs/editImportConfig.php:188
+#: instruments/add-instrument.php:126 instruments/edit-instrument.php:188
 msgid "Lower Limit"
 msgstr "Limite inférieure"
 
-#: import-configs/addImportConfig.php:128 import-configs/editImportConfig.php:192
+#: instruments/add-instrument.php:128 instruments/edit-instrument.php:192
 #, fuzzy
 msgid "eg. 20"
 msgstr "eg. 20"
 
-#: import-configs/addImportConfig.php:128 import-configs/addImportConfig.php:138
-#: import-configs/editImportConfig.php:193
-#: import-configs/editImportConfig.php:208
+#: instruments/add-instrument.php:128 instruments/add-instrument.php:138
+#: instruments/edit-instrument.php:193
+#: instruments/edit-instrument.php:208
 #, fuzzy
 msgid "Please enter lower limit"
 msgstr "Veuillez saisir la limite inférieure"
 
-#: import-configs/addImportConfig.php:136 import-configs/editImportConfig.php:203
+#: instruments/add-instrument.php:136 instruments/edit-instrument.php:203
 #, fuzzy
 msgid "Higher Limit"
 msgstr "Limite supérieure"
 
-#: import-configs/addImportConfig.php:138 import-configs/editImportConfig.php:207
+#: instruments/add-instrument.php:138 instruments/edit-instrument.php:207
 #, fuzzy
 msgid "eg. 10000000"
 msgstr "ex. 10000000"
 
-#: import-configs/addImportConfig.php:146 import-configs/editImportConfig.php:218
+#: instruments/add-instrument.php:146 instruments/edit-instrument.php:218
 #, fuzzy
 msgid "Maximum No. of Samples In a Batch"
 msgstr "Nombre maximal d'échantillons dans un lot"
 
-#: import-configs/addImportConfig.php:148 import-configs/editImportConfig.php:224
+#: instruments/add-instrument.php:148 instruments/edit-instrument.php:224
 #, fuzzy
 msgid "Max. no of samples"
 msgstr "Nombre maximal d'échantillons"
 
-#: import-configs/addImportConfig.php:148 import-configs/editImportConfig.php:225
+#: instruments/add-instrument.php:148 instruments/edit-instrument.php:225
 #, fuzzy
 msgid "Please enter max no of samples in a row"
 msgstr "Veuillez saisir le nombre maximum d'échantillons dans une rangée"
 
-#: import-configs/addImportConfig.php:157 import-configs/editImportConfig.php:236
+#: instruments/add-instrument.php:157 instruments/edit-instrument.php:236
 #, fuzzy
 msgid "Low VL Result Text"
 msgstr "Faible VL Texte de résultat"
 
-#: import-configs/addImportConfig.php:159 import-configs/editImportConfig.php:240
+#: instruments/add-instrument.php:159 instruments/edit-instrument.php:240
 #, fuzzy
 msgid ""
 "Comma separated Low Viral Load Result Text for eg. Target Not Detected, TND, < "
@@ -12462,434 +12462,434 @@ msgstr ""
 "Texte du résultat de faible charge virale séparé par des virgules, par "
 "exemple : Target Not Detected, TND, < 20, < 40"
 
-#: import-configs/addImportConfig.php:159 import-configs/editImportConfig.php:241
+#: instruments/add-instrument.php:159 instruments/edit-instrument.php:241
 #, fuzzy
 msgid "Low Viral Load Result Text for eg. Target Not Detected, TND, < 20, < 40"
 msgstr ""
 "Texte du résultat de faible charge virale, par exemple : cible non détectée, "
 "TND, < 20, < 40"
 
-#: import-configs/addImportConfig.php:174 import-configs/editImportConfig.php:278
+#: instruments/add-instrument.php:174 instruments/edit-instrument.php:278
 #, fuzzy
 msgid "Default Reviewer"
 msgstr "Réviseur par défaut"
 
-#: import-configs/addImportConfig.php:175 import-configs/editImportConfig.php:281
+#: instruments/add-instrument.php:175 instruments/edit-instrument.php:281
 #, fuzzy
 msgid "Default Approver"
 msgstr "Approbateur par défaut"
 
-#: import-configs/addImportConfig.php:181 import-configs/addImportConfig.php:270
-#: import-configs/editImportConfig.php:290
-#: import-configs/editImportConfig.php:451
+#: instruments/add-instrument.php:181 instruments/add-instrument.php:270
+#: instruments/edit-instrument.php:290
+#: instruments/edit-instrument.php:451
 #, fuzzy
 msgid "VL"
 msgstr "Nom du labo de CV"
 
-#: import-configs/addImportConfig.php:183 import-configs/editImportConfig.php:296
+#: instruments/add-instrument.php:183 instruments/edit-instrument.php:296
 #, fuzzy
 msgid "Please enter Reviewed By for VL Test"
 msgstr "Veuillez saisir Reviewed By pour VL Test"
 
-#: import-configs/addImportConfig.php:188 import-configs/editImportConfig.php:303
+#: instruments/add-instrument.php:188 instruments/edit-instrument.php:303
 #, fuzzy
 msgid "Please enter Approved By for VL Test"
 msgstr "Veuillez saisir Approuvé par pour le test VL"
 
-#: import-configs/addImportConfig.php:198 import-configs/editImportConfig.php:319
+#: instruments/add-instrument.php:198 instruments/edit-instrument.php:319
 #, fuzzy
 msgid "Please enter Reviewed By for EID Test"
 msgstr "Veuillez saisir Reviewed By pour le test EID"
 
-#: import-configs/addImportConfig.php:203 import-configs/editImportConfig.php:326
+#: instruments/add-instrument.php:203 instruments/edit-instrument.php:326
 #, fuzzy
 msgid "Please enter Approved By for EID Test"
 msgstr "Veuillez saisir Approuvé par pour le test EID"
 
-#: import-configs/addImportConfig.php:213 import-configs/editImportConfig.php:342
+#: instruments/add-instrument.php:213 instruments/edit-instrument.php:342
 #, fuzzy
 msgid "Please enter Reviewed By for Covid19 Test"
 msgstr "Veuillez saisir Reviewed By pour Covid19 Test"
 
-#: import-configs/addImportConfig.php:218 import-configs/editImportConfig.php:349
+#: instruments/add-instrument.php:218 instruments/edit-instrument.php:349
 #, fuzzy
 msgid "Please enter Approved By for Covid19 Test"
 msgstr "Veuillez saisir Approved By pour Covid19 Test"
 
-#: import-configs/addImportConfig.php:228 import-configs/editImportConfig.php:365
+#: instruments/add-instrument.php:228 instruments/edit-instrument.php:365
 #, fuzzy
 msgid "Please enter Reviewed By for Hepatitis Test"
 msgstr "Veuillez saisir Reviewed By pour Hepatitis Test"
 
-#: import-configs/addImportConfig.php:233 import-configs/editImportConfig.php:372
+#: instruments/add-instrument.php:233 instruments/edit-instrument.php:372
 #, fuzzy
 msgid "Please enter Approved By for Hepatitis Test"
 msgstr "Veuillez saisir Approved By pour le test de dépistage de l'hépatite"
 
-#: import-configs/addImportConfig.php:243 import-configs/editImportConfig.php:388
+#: instruments/add-instrument.php:243 instruments/edit-instrument.php:388
 #, fuzzy
 msgid "Please enter Reviewed By for TB Test"
 msgstr "Veuillez saisir Examiné par pour le test de dépistage de la tuberculose"
 
-#: import-configs/addImportConfig.php:248 import-configs/editImportConfig.php:395
+#: instruments/add-instrument.php:248 instruments/edit-instrument.php:395
 #, fuzzy
 msgid "Please enter Approved By for TB Test"
 msgstr ""
 "Veuillez saisir \"Approuvé par\" pour le test de dépistage de la tuberculose"
 
-#: import-configs/addImportConfig.php:262 import-configs/editImportConfig.php:437
+#: instruments/add-instrument.php:262 instruments/edit-instrument.php:437
 #, fuzzy
 msgid "Number of In-House Controls"
 msgstr "Nombre de contrôles internes"
 
-#: import-configs/addImportConfig.php:263 import-configs/editImportConfig.php:440
+#: instruments/add-instrument.php:263 instruments/edit-instrument.php:440
 #, fuzzy
 msgid "Number of Manufacturer Controls"
 msgstr "Nombre de contrôles du fabricant"
 
-#: import-configs/addImportConfig.php:264 import-configs/editImportConfig.php:443
+#: instruments/add-instrument.php:264 instruments/edit-instrument.php:443
 #, fuzzy
 msgid "No. Of Calibrators"
 msgstr "Nombre d'étalonneurs"
 
-#: import-configs/addImportConfig.php:271 import-configs/editImportConfig.php:457
+#: instruments/add-instrument.php:271 instruments/edit-instrument.php:457
 #, fuzzy
 msgid "No of In-House Controls in vl"
 msgstr "Nombre de contrôles internes dans le vl"
 
-#: import-configs/addImportConfig.php:271 import-configs/editImportConfig.php:458
+#: instruments/add-instrument.php:271 instruments/edit-instrument.php:458
 #, fuzzy
 msgid "Please enter No of In-House Controls in vl"
 msgstr "Veuillez saisir le nombre de contrôles internes dans le vl"
 
-#: import-configs/addImportConfig.php:272 import-configs/editImportConfig.php:464
+#: instruments/add-instrument.php:272 instruments/edit-instrument.php:464
 #, fuzzy
 msgid "No of Manufacturer Controls in vl"
 msgstr "Nombre de contrôles de fabricants dans le vl"
 
-#: import-configs/addImportConfig.php:272 import-configs/editImportConfig.php:465
+#: instruments/add-instrument.php:272 instruments/edit-instrument.php:465
 #, fuzzy
 msgid "Please enter No of Manufacturer Controls in vl"
 msgstr "Veuillez saisir le nombre de contrôles du fabricant en vl"
 
-#: import-configs/addImportConfig.php:273 import-configs/editImportConfig.php:470
+#: instruments/add-instrument.php:273 instruments/edit-instrument.php:470
 #, fuzzy
 msgid "No of Calibrators in vl"
 msgstr "Nombre d'étalons en vl"
 
-#: import-configs/addImportConfig.php:273 import-configs/editImportConfig.php:471
+#: instruments/add-instrument.php:273 instruments/edit-instrument.php:471
 #, fuzzy
 msgid "Please enter No of Calibrators in vl"
 msgstr "Veuillez saisir le nombre d'étalonneurs en vl"
 
-#: import-configs/addImportConfig.php:279 import-configs/editImportConfig.php:483
+#: instruments/add-instrument.php:279 instruments/edit-instrument.php:483
 #, fuzzy
 msgid "No of In-House Controls in eid"
 msgstr "Nombre de contrôles internes dans l'eid"
 
-#: import-configs/addImportConfig.php:279 import-configs/editImportConfig.php:484
+#: instruments/add-instrument.php:279 instruments/edit-instrument.php:484
 #, fuzzy
 msgid "Please enter No of In-House Controls in eid"
 msgstr "Veuillez indiquer le nombre de contrôles internes dans l'eid"
 
-#: import-configs/addImportConfig.php:280 import-configs/editImportConfig.php:490
+#: instruments/add-instrument.php:280 instruments/edit-instrument.php:490
 #, fuzzy
 msgid "No of Manufacturer Controls in eid"
 msgstr "Nombre de contrôles de fabricants à l'occasion de l'Aïd"
 
-#: import-configs/addImportConfig.php:280 import-configs/editImportConfig.php:491
+#: instruments/add-instrument.php:280 instruments/edit-instrument.php:491
 #, fuzzy
 msgid "Please enter No of Manufacturer Controls in eid"
 msgstr "Veuillez saisir le numéro des contrôles du fabricant dans l'eid"
 
-#: import-configs/addImportConfig.php:281 import-configs/editImportConfig.php:496
+#: instruments/add-instrument.php:281 instruments/edit-instrument.php:496
 #, fuzzy
 msgid "No of Calibrators in eid"
 msgstr "Nombre d'étalonneurs dans l'eid"
 
-#: import-configs/addImportConfig.php:281 import-configs/editImportConfig.php:497
+#: instruments/add-instrument.php:281 instruments/edit-instrument.php:497
 #, fuzzy
 msgid "Please enter No of Calibrators in eid"
 msgstr "Veuillez saisir le nombre d'étalonneurs dans l'eid"
 
-#: import-configs/addImportConfig.php:287 import-configs/editImportConfig.php:510
+#: instruments/add-instrument.php:287 instruments/edit-instrument.php:510
 #, fuzzy
 msgid "No of In-House Controls in covid-19"
 msgstr "Nombre de contrôles internes dans covid-19"
 
-#: import-configs/addImportConfig.php:287 import-configs/editImportConfig.php:511
+#: instruments/add-instrument.php:287 instruments/edit-instrument.php:511
 #, fuzzy
 msgid "Please enter No of In-House Controls in covid-19"
 msgstr "Veuillez indiquer le nombre de contrôles internes dans covid-19"
 
-#: import-configs/addImportConfig.php:288 import-configs/editImportConfig.php:517
+#: instruments/add-instrument.php:288 instruments/edit-instrument.php:517
 #, fuzzy
 msgid "No of Manufacturer Controls in covid-19"
 msgstr "Nombre de contrôles du fabricant dans covid-19"
 
-#: import-configs/addImportConfig.php:288 import-configs/editImportConfig.php:518
+#: instruments/add-instrument.php:288 instruments/edit-instrument.php:518
 #, fuzzy
 msgid "Please enter No of Manufacturer Controls in covid-19"
 msgstr "Veuillez saisir le nombre de contrôles du fabricant dans covid-19"
 
-#: import-configs/addImportConfig.php:289 import-configs/editImportConfig.php:523
+#: instruments/add-instrument.php:289 instruments/edit-instrument.php:523
 #, fuzzy
 msgid "No of Calibrators in covid-19"
 msgstr "Nombre de calibrateurs dans covid-19"
 
-#: import-configs/addImportConfig.php:289 import-configs/editImportConfig.php:524
+#: instruments/add-instrument.php:289 instruments/edit-instrument.php:524
 #, fuzzy
 msgid "Please enter No of Calibrators in covid-19"
 msgstr "Veuillez saisir le nombre de calibrateurs dans covid-19"
 
-#: import-configs/addImportConfig.php:295
+#: instruments/add-instrument.php:295
 #, fuzzy
 msgid "No of In-House Controls in Hepatitis"
 msgstr "Nombre de contrôles internes dans le domaine de l'hépatite"
 
-#: import-configs/addImportConfig.php:295
+#: instruments/add-instrument.php:295
 #, fuzzy
 msgid "Please enter No of In-House Controls in Hepatitis"
 msgstr ""
 "Veuillez indiquer le nombre de contrôles internes dans le domaine de l'hépatite"
 
-#: import-configs/addImportConfig.php:296
+#: instruments/add-instrument.php:296
 #, fuzzy
 msgid "No of Manufacturer Controls in Hepatitis"
 msgstr ""
 "Nombre de contrôles effectués par les fabricants dans le domaine de l'hépatite"
 
-#: import-configs/addImportConfig.php:296
+#: instruments/add-instrument.php:296
 #, fuzzy
 msgid "Please enter No of Manufacturer Controls in Hepatitis"
 msgstr ""
 "Veuillez saisir le nombre de contrôles du fabricant dans le domaine de "
 "l'hépatite"
 
-#: import-configs/addImportConfig.php:297
+#: instruments/add-instrument.php:297
 #, fuzzy
 msgid "No of Calibrators in Hepatitis"
 msgstr "Nombre de calibrateurs dans l'hépatite"
 
-#: import-configs/addImportConfig.php:297
+#: instruments/add-instrument.php:297
 #, fuzzy
 msgid "Please enter No of Calibrators in Hepatitis"
 msgstr "Veuillez saisir le nombre de calibrateurs dans le domaine de l'hépatite"
 
-#: import-configs/addImportConfig.php:303 import-configs/editImportConfig.php:564
+#: instruments/add-instrument.php:303 instruments/edit-instrument.php:564
 #, fuzzy
 msgid "No of In-House Controls in TB"
 msgstr "Nombre de contrôles internes au sein du CT"
 
-#: import-configs/addImportConfig.php:303 import-configs/editImportConfig.php:565
+#: instruments/add-instrument.php:303 instruments/edit-instrument.php:565
 #, fuzzy
 msgid "Please enter No of In-House Controls in TB"
 msgstr "Veuillez indiquer le nombre de contrôles internes dans TB"
 
-#: import-configs/addImportConfig.php:304 import-configs/editImportConfig.php:571
+#: instruments/add-instrument.php:304 instruments/edit-instrument.php:571
 #, fuzzy
 msgid "No of Manufacturer Controls in TB"
 msgstr "Nombre de contrôles du fabricant dans la tuberculose"
 
-#: import-configs/addImportConfig.php:304 import-configs/editImportConfig.php:572
+#: instruments/add-instrument.php:304 instruments/edit-instrument.php:572
 #, fuzzy
 msgid "Please enter No of Manufacturer Controls in TB"
 msgstr "Veuillez indiquer le nombre de contrôles du fabricant dans TB"
 
-#: import-configs/addImportConfig.php:305 import-configs/editImportConfig.php:577
+#: instruments/add-instrument.php:305 instruments/edit-instrument.php:577
 #, fuzzy
 msgid "No of Calibrators in TB"
 msgstr "Nombre d'étalons dans le CT"
 
-#: import-configs/addImportConfig.php:305 import-configs/editImportConfig.php:578
+#: instruments/add-instrument.php:305 instruments/edit-instrument.php:578
 #, fuzzy
 msgid "Please enter No of Calibrators in TB"
 msgstr "Veuillez saisir le nombre d'étalonneurs dans TB"
 
-#: import-configs/addImportConfig.php:311 import-configs/editImportConfig.php:590
+#: instruments/add-instrument.php:311 instruments/edit-instrument.php:590
 #, fuzzy
 msgid "No of In-House Controls in Lab Tests"
 msgstr "Nombre de contrôles internes dans les tests de laboratoire"
 
-#: import-configs/addImportConfig.php:311 import-configs/editImportConfig.php:591
+#: instruments/add-instrument.php:311 instruments/edit-instrument.php:591
 #, fuzzy
 msgid "Please enter No of In-House Controls in Lab Tests"
 msgstr ""
 "Veuillez indiquer le nombre de contrôles internes dans les tests de laboratoire"
 
-#: import-configs/addImportConfig.php:312 import-configs/editImportConfig.php:597
+#: instruments/add-instrument.php:312 instruments/edit-instrument.php:597
 #, fuzzy
 msgid "No of Manufacturer Controls in Lab Tests"
 msgstr "Nombre de contrôles du fabricant dans les essais en laboratoire"
 
-#: import-configs/addImportConfig.php:312 import-configs/editImportConfig.php:598
+#: instruments/add-instrument.php:312 instruments/edit-instrument.php:598
 #, fuzzy
 msgid "Please enter No of Manufacturer Controls in Lab Tests"
 msgstr ""
 "Veuillez indiquer le nombre de contrôles du fabricant dans les tests de "
 "laboratoire"
 
-#: import-configs/addImportConfig.php:313 import-configs/editImportConfig.php:603
+#: instruments/add-instrument.php:313 instruments/edit-instrument.php:603
 #, fuzzy
 msgid "No of Calibrators in Lab Tests"
 msgstr "Nombre d'étalons dans les tests de laboratoire"
 
-#: import-configs/addImportConfig.php:313 import-configs/editImportConfig.php:604
+#: instruments/add-instrument.php:313 instruments/edit-instrument.php:604
 #, fuzzy
 msgid "Please enter No of Calibrators in Lab Tests"
 msgstr "Veuillez saisir le nombre de calibrateurs dans les tests de laboratoire"
 
-#: import-configs/addImportConfig.php:321 import-configs/editImportConfig.php:614
+#: instruments/add-instrument.php:321 instruments/edit-instrument.php:614
 #, fuzzy
 msgid "Machine Names"
 msgstr "Noms des machines"
 
-#: import-configs/addImportConfig.php:327 import-configs/addImportConfig.php:337
-#: import-configs/addImportConfig.php:489 import-configs/editImportConfig.php:624
-#: import-configs/editImportConfig.php:660
-#: import-configs/editImportConfig.php:716
-#: import-configs/editImportConfig.php:859
+#: instruments/add-instrument.php:327 instruments/add-instrument.php:337
+#: instruments/add-instrument.php:489 instruments/edit-instrument.php:624
+#: instruments/edit-instrument.php:660
+#: instruments/edit-instrument.php:716
+#: instruments/edit-instrument.php:859
 msgid "Machine Name"
 msgstr "Nom système"
 
-#: import-configs/addImportConfig.php:328 import-configs/addImportConfig.php:340
-#: import-configs/addImportConfig.php:490 import-configs/editImportConfig.php:627
-#: import-configs/editImportConfig.php:669
-#: import-configs/editImportConfig.php:722
-#: import-configs/editImportConfig.php:860
+#: instruments/add-instrument.php:328 instruments/add-instrument.php:340
+#: instruments/add-instrument.php:490 instruments/edit-instrument.php:627
+#: instruments/edit-instrument.php:669
+#: instruments/edit-instrument.php:722
+#: instruments/edit-instrument.php:860
 #: system-admin/api-stats/api-stats.php:35
 msgid "Date Format"
 msgstr "Format de date"
 
-#: import-configs/addImportConfig.php:329 import-configs/editImportConfig.php:172
-#: import-configs/editImportConfig.php:630
+#: instruments/add-instrument.php:329 instruments/edit-instrument.php:172
+#: instruments/edit-instrument.php:630
 #, fuzzy
 msgid "Instrument File Name"
 msgstr "Nom du fichier de l'instrument"
 
-#: import-configs/addImportConfig.php:330 import-configs/editImportConfig.php:633
+#: instruments/add-instrument.php:330 instruments/edit-instrument.php:633
 #, fuzzy
 msgid "Is this a POC Device?"
 msgstr "S'agit-il d'un dispositif POC ?"
 
-#: import-configs/addImportConfig.php:340 import-configs/addImportConfig.php:490
-#: import-configs/editImportConfig.php:670
-#: import-configs/editImportConfig.php:723
-#: import-configs/editImportConfig.php:860
+#: instruments/add-instrument.php:340 instruments/add-instrument.php:490
+#: instruments/edit-instrument.php:670
+#: instruments/edit-instrument.php:723
+#: instruments/edit-instrument.php:860
 #, fuzzy
 msgid "Please enter date format"
 msgstr "Veuillez saisir le format de la date"
 
-#: import-configs/addImportConfig.php:343 import-configs/addImportConfig.php:491
-#: import-configs/editImportConfig.php:675
-#: import-configs/editImportConfig.php:727
-#: import-configs/editImportConfig.php:861
+#: instruments/add-instrument.php:343 instruments/add-instrument.php:491
+#: instruments/edit-instrument.php:675
+#: instruments/edit-instrument.php:727
+#: instruments/edit-instrument.php:861
 msgid "File Name"
 msgstr "Nom du fichier"
 
-#: import-configs/addImportConfig.php:343 import-configs/addImportConfig.php:491
-#: import-configs/editImportConfig.php:178
-#: import-configs/editImportConfig.php:676
-#: import-configs/editImportConfig.php:728
-#: import-configs/editImportConfig.php:861
+#: instruments/add-instrument.php:343 instruments/add-instrument.php:491
+#: instruments/edit-instrument.php:178
+#: instruments/edit-instrument.php:676
+#: instruments/edit-instrument.php:728
+#: instruments/edit-instrument.php:861
 #, fuzzy
 msgid "Please enter file name"
 msgstr "Veuillez saisir le nom du fichier"
 
-#: import-configs/addImportConfig.php:390
+#: instruments/add-instrument.php:390
 #, fuzzy
 msgid "Select the options"
 msgstr "Sélectionner les options"
 
-#: import-configs/addImportConfig.php:394 import-configs/editImportConfig.php:796
+#: instruments/add-instrument.php:394 instruments/edit-instrument.php:796
 #, fuzzy
 msgid "Select Test Types"
 msgstr "Sélectionner les types de tests"
 
-#: import-configs/addImportConfigHelper.php:90
+#: instruments/add-instrument-helper.php:90
 #, fuzzy
 msgid "Result Import configuration initited for "
 msgstr "Résultat Configuration d'importation initiée pour"
 
-#: import-configs/addImportConfigHelper.php:90
+#: instruments/add-instrument-helper.php:90
 #, fuzzy
 msgid ". Please proceed to write the import logic in the file "
 msgstr ""
 ". Veuillez procéder à l'écriture de la logique d'importation dans le fichier"
 
-#: import-configs/addImportConfigHelper.php:90
+#: instruments/add-instrument-helper.php:90
 #, fuzzy
-msgid " present in import-configs folder"
-msgstr " présent dans le dossier import-configs"
+msgid " present in instruments folder"
+msgstr " présent dans le dossier instruments"
 
-#: import-configs/editImportConfig.php:73 import-configs/editImportConfig.php:80
+#: instruments/edit-instrument.php:73 instruments/edit-instrument.php:80
 #, fuzzy
 msgid "Edit Instrument"
 msgstr "Modifier l'instrument"
 
-#: import-configs/editImportConfig.php:255
+#: instruments/edit-instrument.php:255
 #, fuzzy
 msgid "Please select import config status"
 msgstr "Veuillez sélectionner l'état de la configuration de l'importation"
 
-#: import-configs/editImportConfig.php:411
+#: instruments/edit-instrument.php:411
 #, fuzzy
 msgid "Please enter Reviewed By for Lab Test"
 msgstr "Veuillez saisir Reviewed By pour Lab Test"
 
-#: import-configs/editImportConfig.php:418
+#: instruments/edit-instrument.php:418
 #, fuzzy
 msgid "Please enter Approved By for Lab Test"
 msgstr "Veuillez saisir Approved By pour le test de laboratoire"
 
-#: import-configs/editImportConfig.php:537
+#: instruments/edit-instrument.php:537
 #, fuzzy
 msgid "No of In-House Controls in hepatitis"
 msgstr "Nombre de contrôles internes dans le domaine de l'hépatite"
 
-#: import-configs/editImportConfig.php:538
+#: instruments/edit-instrument.php:538
 #, fuzzy
 msgid "Please enter No of In-House Controls in hepatitis"
 msgstr ""
 "Veuillez indiquer le nombre de contrôles internes dans le domaine de l'hépatite"
 
-#: import-configs/editImportConfig.php:544
+#: instruments/edit-instrument.php:544
 #, fuzzy
 msgid "No of Manufacturer Controls in hepatitis"
 msgstr "Nombre de contrôles de fabricants dans le domaine de l'hépatite"
 
-#: import-configs/editImportConfig.php:545
+#: instruments/edit-instrument.php:545
 #, fuzzy
 msgid "Please enter No of Manufacturer Controls in hepatitis"
 msgstr ""
 "Veuillez saisir le numéro des contrôles du fabricant dans le domaine de "
 "l'hépatite"
 
-#: import-configs/editImportConfig.php:550
+#: instruments/edit-instrument.php:550
 #, fuzzy
 msgid "No of Calibrators in hepatitis"
 msgstr "Nombre de calibrateurs dans l'hépatite"
 
-#: import-configs/editImportConfig.php:551
+#: instruments/edit-instrument.php:551
 #, fuzzy
 msgid "Please enter No of Calibrators in hepatitis"
 msgstr "Veuillez saisir le nombre de calibrateurs dans l'hépatite"
 
-#: import-configs/editImportConfig.php:558
+#: instruments/edit-instrument.php:558
 msgid "tb"
 msgstr "tb"
 
-#: import-configs/editImportConfig.php:792
+#: instruments/edit-instrument.php:792
 msgid "Select a user"
 msgstr "Sélectionnez un utilisateur"
 
-#: import-configs/editImportConfigHelper.php:120
+#: instruments/edit-instrument-helper.php:120
 #, fuzzy
 msgid "Import config details updated successfully"
 msgstr ""
 "Les détails de la configuration de l'importation ont été mis à jour avec succès"
 
-#: import-configs/importConfig.php:10 import-configs/importConfig.php:13
+#: instruments/instruments.php:10 instruments/instruments.php:13
 #: system/menu.php:26 vl/reference/vl-results.php:33
 msgid "Instruments"
 msgstr "Instruments"

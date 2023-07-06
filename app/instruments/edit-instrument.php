@@ -94,7 +94,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 			<div class="box-body">
 				<!-- form start -->
 				<form class="form-horizontal" method='post' name='editImportConfigForm' id='editImportConfigForm'
-					autocomplete="off" action="editImportConfigHelper.php">
+					autocomplete="off" action="edit-instrument-helper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
@@ -767,7 +767,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">
 							<?php echo _("Submit"); ?>
 						</a>
-						<a href="importConfig.php" class="btn btn-default">
+						<a href="/instruments/instruments.php" class="btn btn-default">
 							<?php echo _("Cancel"); ?>
 						</a>
 					</div>
