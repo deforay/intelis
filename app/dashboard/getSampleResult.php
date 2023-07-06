@@ -40,7 +40,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $samplesRejectedChart = "eidSamplesRejectedChart";
     $samplesWaitingChart = "eidSamplesWaitingChart";
     $samplesOverviewChart = "eidSamplesOverviewChart";
-} else if (isset($_POST['type']) && trim($_POST['type']) == 'covid19') {
+} elseif (isset($_POST['type']) && trim($_POST['type']) == 'covid19') {
     $table = "form_covid19";
     $primaryKey = "covid19_id";
     $samplesReceivedChart = "covid19SamplesReceivedChart";
@@ -49,7 +49,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $samplesRejectedChart = "covid19SamplesRejectedChart";
     $samplesWaitingChart = "covid19SamplesWaitingChart";
     $samplesOverviewChart = "covid19SamplesOverviewChart";
-} else if (isset($_POST['type']) && trim($_POST['type']) == 'hepatitis') {
+} elseif (isset($_POST['type']) && trim($_POST['type']) == 'hepatitis') {
     $table = "form_hepatitis";
     $primaryKey = "hepatitis_id";
     $samplesReceivedChart = "hepatitisSamplesReceivedChart";
@@ -57,8 +57,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $samplesRejectedChart = "hepatitisSamplesRejectedChart";
     $samplesWaitingChart = "hepatitisSamplesWaitingChart";
     $samplesOverviewChart = "hepatitisSamplesOverviewChart";
-} else if (isset($_POST['type']) && trim($_POST['type']) == 'vl') {
-
+} elseif (isset($_POST['type']) && trim($_POST['type']) == 'vl') {
     $recencyWhere = " IFNULL(reason_for_vl_testing, 0)  != 9999 ";
     $table = "form_vl";
     $primaryKey = "vl_sample_id";
@@ -67,7 +66,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $samplesRejectedChart = "vlSamplesRejectedChart";
     $samplesWaitingChart = "vlSamplesWaitingChart";
     $samplesOverviewChart = "vlSamplesOverviewChart";
-} else if (isset($_POST['type']) && trim($_POST['type']) == 'recency') {
+} elseif (isset($_POST['type']) && trim($_POST['type']) == 'recency') {
     $recencyWhere = " reason_for_vl_testing = 9999 ";
     $table = "form_vl";
     $primaryKey = "vl_sample_id";
@@ -76,7 +75,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $samplesRejectedChart = "recencySamplesRejectedChart";
     $samplesWaitingChart = "recencySamplesWaitingChart";
     $samplesOverviewChart = "recencySamplesOverviewChart";
-} else if (isset($_POST['type']) && trim($_POST['type']) == 'tb') {
+} elseif (isset($_POST['type']) && trim($_POST['type']) == 'tb') {
     $table = "form_tb";
     $primaryKey = "tb_id";
     $samplesReceivedChart = "tbSamplesReceivedChart";
@@ -95,9 +94,9 @@ if ($systemType != 'remoteuser') {
     if (!empty($_SESSION['facilityMap'])) {
         if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
             $whereCondition = " eid.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
-        } else if (isset($_POST['type']) && trim($_POST['type']) == 'covid19') {
+        } elseif (isset($_POST['type']) && trim($_POST['type']) == 'covid19') {
             $whereCondition = " covid19.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
-        } else if (isset($_POST['type']) && trim($_POST['type']) == 'tb') {
+        } elseif (isset($_POST['type']) && trim($_POST['type']) == 'tb') {
             $whereCondition = " tb.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
         } else {
             $whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  AND ";
@@ -109,7 +108,6 @@ if ($systemType != 'remoteuser') {
 
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
-    //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
         $lastSevenDay = DateUtility::isoDateFormat(trim($s_c_date[0]));
     }
@@ -119,23 +117,56 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 }
 $sWhere = '';
 
-
+$currentDateTime = DateUtility::getCurrentDateTime();
 //get waiting data
 if ($table == "form_eid") {
-    $waitingQuery = "SELECT COUNT(eid_id) as total FROM " . $table . " as eid LEFT JOIN facility_details as f ON f.facility_id=eid.facility_id WHERE $whereCondition (sample_collection_date > DATE_SUB('" . DateUtility::getCurrentDateTime() . "', INTERVAL 6 MONTH)) AND (eid.result is null or eid.result = '') AND (eid.is_sample_rejected like 'no' or eid.is_sample_rejected is null or eid.is_sample_rejected like '')";
+    $waitingQuery = "SELECT COUNT(eid_id) as total
+                        FROM $table as eid
+                        LEFT JOIN facility_details as f ON f.facility_id=eid.facility_id
+                        WHERE $whereCondition (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
+                        AND (eid.result is null or eid.result = '')
+                        AND (eid.is_sample_rejected like 'no'
+                                    OR eid.is_sample_rejected is null
+                                    OR eid.is_sample_rejected like '' )";
 } elseif ($table == "form_covid19") {
-    $waitingQuery = "SELECT COUNT(covid19_id) as total FROM " . $table . " as covid19 LEFT JOIN facility_details as f ON f.facility_id=covid19.facility_id WHERE $whereCondition (sample_collection_date > DATE_SUB('" . DateUtility::getCurrentDateTime() . "', INTERVAL 6 MONTH)) AND (covid19.result is null or covid19.result = '') AND (covid19.is_sample_rejected like 'no' or covid19.is_sample_rejected is null or covid19.is_sample_rejected like '')";
+    $waitingQuery = "SELECT COUNT(covid19_id) as total
+                        FROM $table as covid19
+                        LEFT JOIN facility_details as f ON f.facility_id=covid19.facility_id
+                        WHERE $whereCondition (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
+                        AND (covid19.result is null or covid19.result = '')
+                        AND (covid19.is_sample_rejected like 'no' or covid19.is_sample_rejected is null or covid19.is_sample_rejected like '')";
 } elseif ($table == "form_hepatitis") {
-    $waitingQuery = "SELECT COUNT(hepatitis_id) as total FROM " . $table . " as hepatitis LEFT JOIN facility_details as f ON f.facility_id=hepatitis.facility_id WHERE $whereCondition (sample_collection_date > DATE_SUB('" . DateUtility::getCurrentDateTime() . "', INTERVAL 6 MONTH)) AND (((hepatitis.hcv_vl_count IS NULL OR hepatitis.hcv_vl_count = '') AND (hepatitis.hbv_vl_count IS NULL OR hepatitis.hbv_vl_count = ''))) AND (hepatitis.is_sample_rejected like 'no' or hepatitis.is_sample_rejected is null or hepatitis.is_sample_rejected like '')";
+    $waitingQuery = "SELECT COUNT(hepatitis_id) as total
+                        FROM $table as hepatitis
+                        LEFT JOIN facility_details as f ON f.facility_id=hepatitis.facility_id
+                        WHERE $whereCondition (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
+                        AND (((hepatitis.hcv_vl_count IS NULL OR hepatitis.hcv_vl_count = '')
+                        AND (hepatitis.hbv_vl_count IS NULL OR hepatitis.hbv_vl_count = '')))
+                        AND (hepatitis.is_sample_rejected like 'no'
+                                OR hepatitis.is_sample_rejected is null
+                                OR hepatitis.is_sample_rejected like '' )";
 } elseif ($table == "form_tb") {
-    $waitingQuery = "SELECT COUNT(tb_id) as total FROM " . $table . " as tb LEFT JOIN facility_details as f ON f.facility_id=tb.facility_id WHERE $whereCondition (sample_collection_date > DATE_SUB('" . DateUtility::getCurrentDateTime() . "', INTERVAL 6 MONTH)) AND (tb.result is null or tb.result = '') AND (tb.is_sample_rejected like 'no' or tb.is_sample_rejected is null or tb.is_sample_rejected like '')";
+    $waitingQuery = "SELECT COUNT(tb_id) as total
+                        FROM $table as tb
+                        LEFT JOIN facility_details as f ON f.facility_id=tb.facility_id
+                        WHERE $whereCondition (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
+                        AND (tb.result is null or tb.result = '')
+                        AND (tb.is_sample_rejected like 'no'
+                                    OR tb.is_sample_rejected is null
+                                    OR tb.is_sample_rejected like '' )";
 } elseif ($table == "form_vl") {
     if ($whereCondition == "") {
         $vlWhereCondition = $recencyWhere . " AND ";
     } else {
         $vlWhereCondition = $recencyWhere . " AND " . $whereCondition;
     }
-    $waitingQuery = "SELECT COUNT(vl_sample_id) as total FROM " . $table . " as vl LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id WHERE $vlWhereCondition (sample_collection_date > DATE_SUB('" . DateUtility::getCurrentDateTime() . "', INTERVAL 6 MONTH)) AND (vl.result is null or vl.result = '') AND (vl.is_sample_rejected like 'no' or vl.is_sample_rejected is null or vl.is_sample_rejected = '')";
+    $waitingQuery = "SELECT COUNT(vl_sample_id) as total
+                        FROM $table as vl LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id
+                        WHERE $vlWhereCondition (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
+                        AND (vl.result is null or vl.result = '')
+                        AND (vl.is_sample_rejected like 'no'
+                                OR vl.is_sample_rejected is null
+                                OR vl.is_sample_rejected = '' )";
 }
 
 $waitingResult[$i] = $db->rawQuery($waitingQuery); //waiting result
@@ -151,13 +182,13 @@ if ($waitingResult[$i][0]['total'] != 0) {
 if ($table == "form_eid") {
     $accessionQuery = 'SELECT DATE(eid.sample_collection_date) as `collection_date`, COUNT(eid_id) as `count` FROM ' . $table . ' as eid LEFT JOIN facility_details as f ON f.facility_id=eid.facility_id WHERE ' . $whereCondition . ' DATE(eid.sample_collection_date) <= "' . $cDate . '" AND DATE(eid.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
     $primaryKey = "eid_id";
-} else if ($table == "form_covid19") {
+} elseif ($table == "form_covid19") {
     $accessionQuery = 'SELECT DATE(covid19.sample_collection_date) as `collection_date`, COUNT(covid19_id) as `count` FROM ' . $table . ' as covid19 LEFT JOIN facility_details as f ON f.facility_id=covid19.facility_id WHERE ' . $whereCondition . ' DATE(covid19.sample_collection_date) <= "' . $cDate . '" AND DATE(covid19.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
     $primaryKey = "covid19_id";
-} else if ($table == "form_hepatitis") {
+} elseif ($table == "form_hepatitis") {
     $accessionQuery = 'SELECT DATE(req.sample_collection_date) as `collection_date`, COUNT(hepatitis_id) as `count` FROM ' . $table . ' as req LEFT JOIN facility_details as f ON f.facility_id=req.facility_id WHERE ' . $whereCondition . ' DATE(req.sample_collection_date) <= "' . $cDate . '" AND DATE(req.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
     $primaryKey = "hepatitis_id";
-} else if ($table == "form_tb") {
+} elseif ($table == "form_tb") {
     $accessionQuery = 'SELECT DATE(tb.sample_collection_date) as `collection_date`, COUNT(tb_id) as `count` FROM ' . $table . ' as tb LEFT JOIN facility_details as f ON f.facility_id=tb.facility_id WHERE ' . $whereCondition . ' DATE(tb.sample_collection_date) <= "' . $cDate . '" AND DATE(tb.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
     $primaryKey = "tb_id";
 } else {
@@ -171,7 +202,10 @@ if ($table == "form_eid") {
 }
 
 $aggregateQuery = "SELECT COUNT($primaryKey) as totalCollected,
-    SUM(CASE WHEN (vl.lab_id is NOT NULL AND vl.sample_tested_datetime is NOT NULL AND vl.result is NOT NULL AND vl.result not like '' AND vl.result_status = 7) THEN 1 ELSE 0 END) as 'tested',
+    SUM(CASE WHEN (vl.lab_id is NOT NULL AND vl.sample_tested_datetime is NOT NULL
+                        AND vl.result is NOT NULL AND vl.result not like ''
+                        AND vl.result_status = 7) THEN 1 ELSE 0 END)
+                                                            as 'tested',
     SUM(CASE WHEN (vl.result_status = 1) THEN 1 ELSE 0 END) as 'hold',
     SUM(CASE WHEN (vl.result_status = 4) THEN 1 ELSE 0 END) as 'rejected',
     SUM(CASE WHEN (vl.result_status = 5) THEN 1 ELSE 0 END) as 'invalid',
@@ -181,9 +215,9 @@ $aggregateQuery = "SELECT COUNT($primaryKey) as totalCollected,
     SUM(CASE WHEN (vl.result_status = 10) THEN 1 ELSE 0 END) as 'expired'
 FROM $table as vl
 INNER JOIN facility_details as f ON f.facility_id=vl.facility_id
-WHERE DATE(vl.sample_collection_date) <= '" . $cDate . "'
-AND DATE(vl.sample_collection_date) >= '" . $lastSevenDay . "'";
-//die($aggregateQuery);
+WHERE DATE(vl.sample_collection_date) <= '$cDate'
+AND DATE(vl.sample_collection_date) >= '$lastSevenDay'";
+
 $aggregateResult = $db->rawQueryOne($aggregateQuery);
 
 
@@ -291,20 +325,20 @@ if ($table == "form_covid19") {
         <div class="display">
             <div class="number">
                 <h3 class="font-green-sharp">
-                    <span data-counter="counterup" data-value="<?php echo $receivedTotal; ?>"><?php echo $receivedTotal; ?></span>
+                    <span data-counter="counterup" data-value="<?= $receivedTotal; ?>"><?php echo $receivedTotal; ?></span>
                 </h3>
                 <small class="font-green-sharp">
-                    <?php echo _("SAMPLES REGISTERED"); ?>
+                    <?= _("SAMPLES REGISTERED"); ?>
                 </small><br>
                 <small class="font-green-sharp" style="font-size:0.75em;">
-                    <?php echo _("in selected range"); ?>
+                    <?= _("in selected range"); ?>
                 </small>
             </div>
             <div class="icon font-green-sharp">
                 <em class="fa-solid fa-chart-simple"></em>
             </div>
         </div>
-        <div id="<?php echo $samplesReceivedChart; ?>" width="210" height="150" style="min-height:150px;"></div>
+        <div id="<?= $samplesReceivedChart; ?>" width="210" height="150" style="min-height:150px;"></div>
     </div>
 </div>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
@@ -458,9 +492,9 @@ if ($table == "form_covid19") {
                 }
                 ?>]
 
-                }],
+                                                                                                                                                                                                                                                                    }],
         colors: ['#2ab4c0'],
-            });
+                                                                                                                                                                                                                                                                });
     <?php }
     //waiting result
     if ($waitingTotal > 0) { ?>
@@ -581,9 +615,9 @@ if ($table == "form_covid19") {
                         }
                         ?>]
 
-                }],
+                                                                                                                                                                                                                                                                    }],
         colors: ['#7cb72a']
-            });
+                                                                                                                                                                                                                                                                });
     <?php }
 
     if ($rejectedTotal > 0) { ?>

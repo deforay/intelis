@@ -1,5 +1,5 @@
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('.date').datepicker({
             changeMonth: true,
             changeYear: true,
@@ -7,7 +7,7 @@
             timeFormat: "hh:mm",
             maxDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
+        }).click(function () {
             $('.ui-datepicker-calendar').show();
         });
         $('.dateTime').datetimepicker({
@@ -16,12 +16,12 @@
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             maxDate: "Today",
-            onChangeMonthYear: function(year, month, widget) {
-                setTimeout(function() {
+            onChangeMonthYear: function (year, month, widget) {
+                setTimeout(function () {
                     $('.ui-datepicker-calendar').show();
                 });
             }
-        }).click(function() {
+        }).click(function () {
             $('.ui-datepicker-calendar').show();
         });
         $('.date').mask('99-aaa-9999');
@@ -139,11 +139,11 @@
         $("#showEmptyResult").hide();
         if ($.trim($("#artPatientNo").val()) != '') {
             $.post("/vl/requests/search-patients.php", {
-                    artPatientNo: $.trim($("#artPatientNo").val())
-                },
-                function(data) {
+                artPatientNo: $.trim($("#artPatientNo").val())
+            },
+                function (data) {
                     if (data >= '1') {
-                        showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
+                        showModal('/vl/requests/patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
                     } else {
                         $("#showEmptyResult").show();
                     }
@@ -155,13 +155,13 @@
         //if ($.trim(obj.value).length == 10) {
         if ($.trim(obj.value) != '') {
             $.post("/includes/checkDuplicate.php", {
-                    tableName: tableName,
-                    fieldName: fieldName,
-                    value: obj.value,
-                    fnct: fnct,
-                    format: "html"
-                },
-                function(data) {
+                tableName: tableName,
+                fieldName: fieldName,
+                value: obj.value,
+                fnct: fnct,
+                format: "html"
+            },
+                function (data) {
                     if (data === '1') {
                         showModal('patientModal.php?artNo=' + obj.value, 900, 520);
                     }
@@ -173,13 +173,13 @@
         if ($.trim($("#" + id).val()) != '') {
             //$.blockUI();
             $.post("/vl/requests/checkSampleDuplicate.php", {
-                    tableName: tableName,
-                    fieldName: fieldName,
-                    value: $("#" + id).val(),
-                    fnct: fnct,
-                    format: "html"
-                },
-                function(data) {
+                tableName: tableName,
+                fieldName: fieldName,
+                value: $("#" + id).val(),
+                fnct: fnct,
+                format: "html"
+            },
+                function (data) {
                     if (data != 0) {
                         generateSampleCode();
                     }
@@ -200,10 +200,10 @@
         }
         if (cName != '' && facilityName) {
             $.post("/includes/siteInformationDropdownOptions.php", {
-                    cName: cName,
-                    testType: 'vl'
-                },
-                function(data) {
+                cName: cName,
+                testType: 'vl'
+            },
+                function (data) {
                     if (data != "") {
                         details = data.split("###");
                         $("#province").html(details[0]);
@@ -219,13 +219,13 @@
         $.unblockUI();
     }
     function showModal(url, w, h) {
-          showdefModal('dDiv', w, h);
-          document.getElementById('dFrame').style.height = h + 'px';
-          document.getElementById('dFrame').style.width = w + 'px';
-          document.getElementById('dFrame').src = url;
-     }
-     function closeModal() {
-          document.getElementById('dFrame').src = "";
-          hidedefModal('dDiv');
-     }
+        showdefModal('dDiv', w, h);
+        document.getElementById('dFrame').style.height = h + 'px';
+        document.getElementById('dFrame').style.width = w + 'px';
+        document.getElementById('dFrame').src = url;
+    }
+    function closeModal() {
+        document.getElementById('dFrame').src = "";
+        hidedefModal('dDiv');
+    }
 </script>

@@ -143,6 +143,10 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                                 <td style="width:35% !important;">
                                     <input value="<?php echo ($hepatitisInfo['sample_collection_date']); ?>" class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" />
                                 </td>
+                                <td style="width:15% !important">DHIS2 Case ID </td>
+                                <td>
+                                    <input value="<?php echo ($hepatitisInfo['external_sample_code']); ?>" class="form-control" type="text" name="externalSampleCode" id="externalSampleCode" placeholder="DHIS2 Case ID" />
+                                </td>
                             </tr>
 
                         </table>
@@ -544,6 +548,10 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
             checkIsResultAuthorized();
         });
         checkIsResultAuthorized();
+        var hepatitisTestTypeVal = $('#hepatitisTestType').val();
+        if(hepatitisTestTypeVal != ''){
+            hepatitisTestTypeFn(hepatitisTestTypeVal);
+        }
     });
 
     function checkIsResultAuthorized() {

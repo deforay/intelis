@@ -583,6 +583,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             checkIsResultAuthorized();
         });
         checkIsResultAuthorized();
+        var hepatitisTestTypeVal = $('#hepatitisTestType').val();
+        if(hepatitisTestTypeVal != ''){
+            hepatitisTestTypeFn(hepatitisTestTypeVal);
+        }
     });
 
     function checkIsResultAuthorized() {
