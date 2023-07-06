@@ -254,7 +254,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     <tr>
                                         <th scope="row">Infant Rapid HIV Test Done <span class="mandatory">*</span></th>
                                         <td>
-                                            <select class="form-control isRequired" name="rapidTestPerformed" id="rapidTestPerformed">
+                                            <select class="form-control isRequired" name="rapidTestPerformed" id="rapidTestPerformed" onchange="setrapidTestRelatedField(this.value);">
                                                 <option value=''> -- Select -- </option>
                                                 <option value="yes" <?php echo ($eidInfo['rapid_test_performed'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
                                                 <option value="no" <?php echo ($eidInfo['rapid_test_performed'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
@@ -594,6 +594,16 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
         }
     }
 
+    function setrapidTestRelatedField(rapidtestVal) {
+        if (rapidtestVal == 'yes') {
+            $('#rapidtestDate').addClass('isRequired');
+            $('#rapidtestDate').prop('disabled', false);
+        } else {
+            $('#rapidtestDate').prop('disabled', true);
+            $('#rapidtestDate').removeClass('isRequired');
+        }
+    }
+
     function setRelatedField(pcrVal) {
         if (pcrVal == 'yes') {
             $('#previousPCRTestDate').addClass('isRequired');
@@ -610,6 +620,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 
     $(document).ready(function() {
 
+        setrapidTestRelatedField($('#rapidTestPerformed').val());
         setRelatedField($('#pcrTestPerformedBefore').val());
         $('#facilityId').select2({
             placeholder: "Select Clinic/Health Center"

@@ -341,7 +341,7 @@ foreach ($rResult as $aRow) {
      if ($editRequest) {
           $edit = '<a href="tb-edit-request.php?id=' . base64_encode($aRow['tb_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
           if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
-               if (isset($_SESSION['privileges']) && !in_array("edit-locked-tb-samples", $_SESSION['privileges'])) {
+               if (isset($_SESSION['privileges']) && !in_array("/tb/requests/edit-locked-tb-samples", $_SESSION['privileges'])) {
                     $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _("Locked") . '</a>';
                }
           }

@@ -4228,7 +4228,7 @@ CREATE TABLE `s_app_menu` (
   `display_text` varchar(256) NOT NULL,
   `link` varchar(256) DEFAULT NULL,
   `inner_pages` varchar(256) DEFAULT NULL,
-  `show_mode` varchar(132) NOT NULL DEFAULT 'always',
+  `show_mode` varchar(32) NOT NULL DEFAULT 'always',
   `icon` varchar(256) DEFAULT NULL,
   `has_children` varchar(256) DEFAULT NULL,
   `additional_class_names` varchar(256) DEFAULT NULL,
@@ -4258,7 +4258,7 @@ INSERT INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `
 (17, 'admin', 'no', 'API History', '/admin/monitoring/api-sync-history.php', NULL, 'always', 'fa-solid fa-circle-nodes', 'no', 'allMenu treeview api-sync-history-menu', 7, 17, 'active', NULL),
 (18, 'admin', 'no', 'Source of Requests', '/admin/monitoring/sources-of-requests.php', NULL, 'always', 'fa-solid fa-circle-notch', 'no', 'allMenu treeview sources-of-requests-report-menu', 7, 18, 'active', NULL),
 (19, 'admin', 'no', 'General Configuration', '/global-config/editGlobalConfig.php', '/global-config/editGlobalConfig.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu globalConfigMenu', 8, 19, 'active', NULL),
-(20, 'admin', 'no', 'Instruments', '/import-configs/importConfig.php', '/import-configs/addImportConfig.php,/import-configs/editImportConfig.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu importConfigMenu', 8, 20, 'active', NULL),
+(20, 'admin', 'no', 'Instruments', '/instruments/instruments.php', '/instruments/add-instrument.php,/instruments/edit-instrument.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu importConfigMenu', 8, 20, 'active', NULL),
 (21, 'admin', 'no', 'Geographical Divisions', '/common/reference/geographical-divisions-details.php', '/common/reference/add-geographical-divisions.php,/common/reference/edit-geographical-divisions.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu geographicalMenu', 8, 21, 'active', NULL),
 (22, 'admin', 'no', 'Implementation Partners', '/common/reference/implementation-partners.php', '/common/reference/add-implementation-partners.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-reference-implementation-partners', 8, 22, 'active', NULL),
 (23, 'admin', 'no', 'Funding Sources', '/common/reference/funding-sources.php', '/common/reference/add-funding-sources.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-reference-funding-sources', 8, 23, 'active', NULL),
@@ -4298,10 +4298,10 @@ INSERT INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `
 (57, 'admin', 'no', 'Sample Type', '/tb/reference/tb-sample-type.php', '/tb/reference/add-tb-sample-type.php,/tb/reference/edit-tb-sample-type.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tb-sample-type', 14, 57, 'active', NULL),
 (58, 'admin', 'no', 'Test Reasons', '/tb/reference/tb-test-reasons.php', '/tb/reference/add-tb-test-reasons.php,/tb/reference/edit-tb-test-reasons.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tb-test-reasons', 14, 58, 'active', NULL),
 (59, 'admin', 'no', 'Results', '/tb/reference/tb-results.php', '/tb/reference/add-tb-results.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tb-results', 14, 59, 'active', NULL),
-(60, 'generic-tests', 'yes', 'OTHER LAB TESTS', NULL, NULL, 'always', NULL, 'yes', 'header', 0, 8, 'active', NULL),
-(61, 'generic-tests', 'no', 'Request Management', NULL, NULL, 'always', 'fa-solid fa-pen-to-square', 'yes', 'treeview allMenu generic-test-request-menu', 60, 61, 'active', NULL),
-(62, 'generic-tests', 'no', 'Test Result Management', NULL, NULL, 'always', 'fa-solid fa-list-check', 'yes', 'treeview allMenu generic-test-results-menu', 60, 62, 'active', NULL),
-(63, 'generic-tests', 'no', 'Management', NULL, NULL, 'always', 'fa-solid fa-book', 'yes', 'treeview allMenu generic-test-request-menu', 60, 63, 'active', NULL),
+(60, 'genericTests', 'yes', 'OTHER LAB TESTS', NULL, NULL, 'always', NULL, 'yes', 'header', 0, 8, 'active', NULL),
+(61, 'genericTests', 'no', 'Request Management', NULL, NULL, 'always', 'fa-solid fa-pen-to-square', 'yes', 'treeview allMenu generic-test-request-menu', 60, 61, 'active', NULL),
+(62, 'genericTests', 'no', 'Test Result Management', NULL, NULL, 'always', 'fa-solid fa-list-check', 'yes', 'treeview allMenu generic-test-results-menu', 60, 62, 'active', NULL),
+(63, 'genericTests', 'no', 'Management', NULL, NULL, 'always', 'fa-solid fa-book', 'yes', 'treeview allMenu generic-test-request-menu', 60, 63, 'active', NULL),
 (64, 'vl', 'yes', 'HIV VIRAL LOAD', NULL, NULL, 'always', NULL, 'yes', 'header', 0, 3, 'active', NULL),
 (65, 'eid', 'yes', 'EARLY INFANT DIAGNOSIS (EID)', NULL, NULL, 'always', NULL, 'yes', 'header', 0, 4, 'active', NULL),
 (66, 'covid19', 'yes', 'COVID-19', NULL, NULL, 'always', NULL, 'yes', 'header', 0, 5, 'active', NULL),
@@ -4322,19 +4322,19 @@ INSERT INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `
 (81, 'tb', 'no', 'Request Management', NULL, NULL, 'always', 'fa-solid fa-pen-to-square', 'yes', 'treeview tbRequest', 68, 81, 'active', NULL),
 (82, 'tb', 'no', 'Test Result Management', NULL, NULL, 'always', 'fa-solid fa-list-check', 'yes', 'treeview tbResults', 68, 82, 'active', NULL),
 (83, 'tb', 'no', 'Management', NULL, NULL, 'always', 'fa-solid fa-book', 'yes', 'treeview tbProgramMenu', 68, 83, 'active', NULL),
-(84, 'generic-tests', 'no', 'View Test Requests', '/generic-tests/requests/view-requests.php', '/generic-tests/requests/edit-request.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericRequestMenu', 61, 84, 'active', NULL),
-(85, 'generic-tests', 'no', 'Add New Request', '/generic-tests/requests/add-request.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu addGenericRequestMenu', 61, 85, 'active', NULL),
-(86, 'generic-tests', 'no', 'Add Samples from Manifest', '/generic-tests/requests/add-samples-from-manifest.php', '/generic-tests/requests/edit-request.php', 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu addGenericSamplesFromManifestMenu', 61, 86, 'active', NULL),
-(87, 'generic-tests', 'no', 'Manage Batch', '/batch/batches.php?type=generic-tests', '/batch/add-batch.php?type=generic-tests,/batch/edit-batch.php?type=generic-tests,/batch/add-batch-position.php?type=generic-tests,/batch/edit-batch-position.php?type=generic-tests', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu batchGenericCodeMenu', 61, 87, 'active', NULL),
-(88, 'generic-tests', 'no', 'Lab Test Manifest', '/specimen-referral-manifest/view-manifests.php?t=generic-tests', '/specimen-referral-manifest/add-manifest.php?t=generic-tests,/specimen-referral-manifest/edit-manifest.php?t=generic-tests,/specimen-referral-manifest/move-manifest.php?t=generic-tests', 'sts', 'fa-solid fa-caret-right', 'no', 'allMenu specimenGenericReferralManifestListMenu', 61, 88, 'active', NULL),
-(89, 'generic-tests', 'no', 'Enter Result Manually', '/generic-tests/results/generic-test-results.php', '/generic-tests/results/update-generic-test-result.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestResultMenu', 62, 88, 'active', NULL),
-(90, 'generic-tests', 'no', 'Failed/Hold Samples', '/generic-tests/results/generic-failed-results.php', '/generic-tests/results/update-generic-test-result.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericFailedResultMenu', 62, 88, 'active', NULL),
-(91, 'generic-tests', 'no', 'Manage Results Status', '/generic-tests/results/generic-result-approval.php', '/generic-tests/results/update-generic-test-result.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericResultApprovalMenu', 62, 88, 'active', NULL),
-(92, 'generic-tests', 'no', 'Sample Status Report', '/generic-tests/program-management/generic-sample-status.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericStatusReportMenu', 62, 88, 'active', NULL),
-(93, 'generic-tests', 'no', 'Export Results', '/generic-tests/program-management/generic-export-data.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericExportMenu', 63, 89, 'active', NULL),
-(94, 'generic-tests', 'no', 'Print Result', '/generic-tests/results/generic-print-result.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericPrintResultMenu', 63, 90, 'active', NULL),
-(95, 'generic-tests', 'no', 'Sample Rejection Report', '/generic-tests/program-management/sample-rejection-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericSampleRejectionReport', 63, 91, 'active', NULL),
-(96, 'vl', 'no', 'View Test Requests', '/vl/requests/vlRequest.php', '/vl/requests/editVlRequest.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlRequestMenu', 69, 92, 'active', NULL),
+(84, 'genericTests', 'no', 'View Test Requests', '/generic-tests/requests/view-requests.php', '/generic-tests/requests/edit-request.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericRequestMenu', 61, 84, 'active', NULL),
+(85, 'genericTests', 'no', 'Add New Request', '/generic-tests/requests/add-request.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu addGenericRequestMenu', 61, 85, 'active', NULL),
+(86, 'genericTests', 'no', 'Add Samples from Manifest', '/generic-tests/requests/add-samples-from-manifest.php', '/generic-tests/requests/edit-request.php', 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu addGenericSamplesFromManifestMenu', 61, 86, 'active', NULL),
+(87, 'genericTests', 'no', 'Manage Batch', '/batch/batches.php?type=generic-tests', '/batch/add-batch.php?type=generic-tests,/batch/edit-batch.php?type=generic-tests,/batch/add-batch-position.php?type=generic-tests,/batch/edit-batch-position.php?type=generic-tests', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu batchGenericCodeMenu', 61, 87, 'active', NULL),
+(88, 'genericTests', 'no', 'Lab Test Manifest', '/specimen-referral-manifest/view-manifests.php?t=generic-tests', '/specimen-referral-manifest/add-manifest.php?t=generic-tests,/specimen-referral-manifest/edit-manifest.php?t=generic-tests,/specimen-referral-manifest/move-manifest.php?t=generic-tests', 'sts', 'fa-solid fa-caret-right', 'no', 'allMenu specimenGenericReferralManifestListMenu', 61, 88, 'active', NULL),
+(89, 'genericTests', 'no', 'Enter Result Manually', '/generic-tests/results/generic-test-results.php', '/generic-tests/results/update-generic-test-result.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestResultMenu', 62, 88, 'active', NULL),
+(90, 'genericTests', 'no', 'Failed/Hold Samples', '/generic-tests/results/generic-failed-results.php', '/generic-tests/results/update-generic-test-result.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericFailedResultMenu', 62, 88, 'active', NULL),
+(91, 'genericTests', 'no', 'Manage Results Status', '/generic-tests/results/generic-result-approval.php', '/generic-tests/results/update-generic-test-result.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericResultApprovalMenu', 62, 88, 'active', NULL),
+(92, 'genericTests', 'no', 'Sample Status Report', '/generic-tests/program-management/generic-sample-status.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericStatusReportMenu', 62, 88, 'active', NULL),
+(93, 'genericTests', 'no', 'Export Results', '/generic-tests/program-management/generic-export-data.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericExportMenu', 63, 89, 'active', NULL),
+(94, 'genericTests', 'no', 'Print Result', '/generic-tests/results/generic-print-result.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericPrintResultMenu', 63, 90, 'active', NULL),
+(95, 'genericTests', 'no', 'Sample Rejection Report', '/generic-tests/program-management/sample-rejection-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericSampleRejectionReport', 63, 91, 'active', NULL),
+(96, 'vl', 'no', 'View Test Requests', '/vl/requests/vl-requests.php', '/vl/requests/editVlRequest.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlRequestMenu', 69, 92, 'active', NULL),
 (97, 'vl', 'no', 'Add New Request', '/vl/requests/addVlRequest.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu addVlRequestMenu', 69, 93, 'active', NULL),
 (98, 'vl', 'no', 'Add Samples from Manifest', '/vl/requests/addSamplesFromManifest.php', NULL, 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu addSamplesFromManifestMenu', 69, 94, 'active', NULL),
 (99, 'vl', 'no', 'Manage Batch', '/batch/batches.php?type=vl', '/batch/add-batch.php?type=vl,/batch/edit-batch.php?type=vl,/batch/edit-batch-position.php?type=vl', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu batchCodeMenu', 69, 95, 'active', NULL),
@@ -4641,3 +4641,180 @@ UPDATE s_app_menu SET `module` ="generic-tests"  WHERE `module` LIKE "genericTes
 
 -- Amit 04-Jul-2023 version 5.1.8
 UPDATE `system_config` SET `value` = '5.1.8' WHERE `system_config`.`name` = 'sc_version';
+
+-- Amit 05-Jul-2023
+
+ALTER TABLE `privileges` ADD `display_order` INT NULL DEFAULT NULL AFTER `display_name`;
+ALTER TABLE `privileges` ADD `show_mode` VARCHAR (32) NULL DEFAULT 'always' AFTER `display_order`;
+
+DELETE FROM `privileges` WHERE `privilege_name` = '/vl/requests/patientList.php';
+DELETE FROM `privileges` WHERE `privilege_name` = '/vl/requests/sendRequestToMail.php';
+DELETE FROM `privileges` WHERE `privilege_name` = '/vl/requests/vlRequestMailConfirm.php';
+DELETE FROM `privileges` WHERE `privilege_name` = '/vl/requests/vlResultMailConfirm.php';
+UPDATE `privileges` SET `privilege_name` = '/vl/requests/vl-requests.php' WHERE `privilege_name` = "/vl/requests/vlRequest.php";
+
+DELETE FROM roles_privileges_map where privilege_id not in (select privilege_id from privileges);
+
+UPDATE s_app_menu
+SET link = '/vl/requests/vl-requests.php'
+WHERE link LIKE '%/vlRequest.php';
+
+
+-- VL REQUESTS AND BATCH PRIVILEGES
+UPDATE `privileges` SET `display_order` = '1' WHERE `privilege_name` = '/vl/requests/vl-requests.php';
+UPDATE `privileges` SET `display_order` = '2' WHERE `privilege_name` = '/vl/requests/addVlRequest.php';
+UPDATE `privileges` SET `display_order` = '3' WHERE `privilege_name` = '/vl/requests/editVlRequest.php';
+UPDATE `privileges` SET `display_order` = '4' WHERE `privilege_name` = '/vl/requests/export-vl-requests.php';
+UPDATE `privileges` SET `display_order` = '5' WHERE `privilege_name` = '/vl/requests/edit-locked-vl-samples';
+UPDATE `privileges` SET `display_order` = '6' WHERE `privilege_name` = '/vl/requests/addSamplesFromManifest.php';
+UPDATE `privileges` SET `display_order` = '7' WHERE `privilege_name` = '/specimen-referral-manifest/view-manifests.php?t=vl';
+UPDATE `privileges` SET `display_order` = '8' WHERE `privilege_name` = '/specimen-referral-manifest/add-manifest.php?t=vl';
+UPDATE `privileges` SET `display_order` = '9' WHERE `privilege_name` = '/specimen-referral-manifest/edit-manifest.php?t=vl';
+UPDATE `privileges` SET `display_order` = '10' WHERE `privilege_name` = '/specimen-referral-manifest/move-manifest.php?t=vl';
+
+UPDATE `privileges` SET `display_order` = '1' WHERE `privilege_name` = '/batch/batches.php?type=vl';
+UPDATE `privileges` SET `display_order` = '2' WHERE `privilege_name` = '/batch/add-batch.php?type=vl';
+UPDATE `privileges` SET `display_order` = '3' WHERE `privilege_name` = '/batch/edit-batch.php?type=vl';
+
+UPDATE `privileges` SET `show_mode` = 'lis' WHERE `privilege_name` = '/vl/requests/addSamplesFromManifest.php';
+UPDATE `privileges` SET `show_mode` = 'sts' WHERE `privilege_name` = '/specimen-referral-manifest/view-manifests.php?t=vl';
+UPDATE `privileges` SET `show_mode` = 'sts' WHERE `privilege_name` = '/specimen-referral-manifest/add-manifest.php?t=vl';
+UPDATE `privileges` SET `show_mode` = 'sts' WHERE `privilege_name` = '/specimen-referral-manifest/edit-manifest.php?t=vl';
+UPDATE `privileges` SET `show_mode` = 'sts' WHERE `privilege_name` = '/specimen-referral-manifest/move-manifest.php?t=vl';
+
+
+-- EID REQUESTS AND BATCH PRIVILEGES
+UPDATE `privileges` SET `display_order` = '1' WHERE `privilege_name` = '/eid/requests/eid-requests.php';
+UPDATE `privileges` SET `display_order` = '2' WHERE `privilege_name` = '/eid/requests/eid-add-request.php';
+UPDATE `privileges` SET `display_order` = '3' WHERE `privilege_name` = '/eid/requests/eid-edit-request.php';
+UPDATE `privileges` SET `display_order` = '4' WHERE `privilege_name` = '/eid/requests/export-eid-requests.php';
+UPDATE `privileges` SET `display_order` = '5' WHERE `privilege_name` = '/eid/requests/edit-locked-eid-samples';
+UPDATE `privileges` SET `display_order` = '6' WHERE `privilege_name` = '/eid/requests/addSamplesFromManifest.php';
+UPDATE `privileges` SET `display_order` = '7' WHERE `privilege_name` = '/specimen-referral-manifest/view-manifests.php?t=eid';
+UPDATE `privileges` SET `display_order` = '8' WHERE `privilege_name` = '/specimen-referral-manifest/add-manifest.php?t=eid';
+UPDATE `privileges` SET `display_order` = '9' WHERE `privilege_name` = '/specimen-referral-manifest/edit-manifest.php?t=eid';
+UPDATE `privileges` SET `display_order` = '10' WHERE `privilege_name` = '/specimen-referral-manifest/move-manifest.php?t=eid';
+
+UPDATE `privileges` SET `display_order` = '1' WHERE `privilege_name` = '/batch/batches.php?type=eid';
+UPDATE `privileges` SET `display_order` = '2' WHERE `privilege_name` = '/batch/add-batch.php?type=eid';
+UPDATE `privileges` SET `display_order` = '3' WHERE `privilege_name` = '/batch/edit-batch.php?type=eid';
+
+UPDATE `privileges` SET `show_mode` = 'lis' WHERE `privilege_name` = '/eid/requests/addSamplesFromManifest.php';
+UPDATE `privileges` SET `show_mode` = 'sts' WHERE `privilege_name` = '/specimen-referral-manifest/view-manifests.php?t=eid';
+UPDATE `privileges` SET `show_mode` = 'sts' WHERE `privilege_name` = '/specimen-referral-manifest/add-manifest.php?t=eid';
+UPDATE `privileges` SET `show_mode` = 'sts' WHERE `privilege_name` = '/specimen-referral-manifest/edit-manifest.php?t=eid';
+UPDATE `privileges` SET `show_mode` = 'sts' WHERE `privilege_name` = '/specimen-referral-manifest/move-manifest.php?t=eid';
+
+-- COVID-19 REQUESTS AND BATCH PRIVILEGES
+UPDATE `privileges` SET `display_order` = '1' WHERE `privilege_name` = '/covid-19/requests/covid-19-requests.php';
+UPDATE `privileges` SET `display_order` = '2' WHERE `privilege_name` = '/covid-19/requests/covid-19-add-request.php';
+UPDATE `privileges` SET `display_order` = '3' WHERE `privilege_name` = '/covid-19/requests/covid-19-edit-request.php';
+UPDATE `privileges` SET `display_order` = '4' WHERE `privilege_name` = '/covid-19/requests/export-covid19-requests.php';
+UPDATE `privileges` SET `display_order` = '5' WHERE `privilege_name` = '/covid-19/requests/edit-locked-covid19-samples';
+UPDATE `privileges` SET `display_order` = '6' WHERE `privilege_name` = '/covid-19/requests/addSamplesFromManifest.php';
+UPDATE `privileges` SET `display_order` = '7' WHERE `privilege_name` = '/specimen-referral-manifest/view-manifests.php?t=covid19';
+UPDATE `privileges` SET `display_order` = '8' WHERE `privilege_name` = '/specimen-referral-manifest/add-manifest.php?t=covid19';
+UPDATE `privileges` SET `display_order` = '9' WHERE `privilege_name` = '/specimen-referral-manifest/edit-manifest.php?t=covid19';
+UPDATE `privileges` SET `display_order` = '10' WHERE `privilege_name` = '/specimen-referral-manifest/move-manifest.php?t=covid19';
+
+UPDATE `privileges` SET `display_order` = '1' WHERE `privilege_name` = '/batch/batches.php?type=covid19';
+UPDATE `privileges` SET `display_order` = '2' WHERE `privilege_name` = '/batch/add-batch.php?type=covid19';
+UPDATE `privileges` SET `display_order` = '3' WHERE `privilege_name` = '/batch/edit-batch.php?type=covid19';
+
+UPDATE `privileges` SET `show_mode` = 'lis' WHERE `privilege_name` = '/covid-19/requests/addSamplesFromManifest.php';
+UPDATE `privileges` SET `show_mode` = 'sts' WHERE `privilege_name` = '/specimen-referral-manifest/view-manifests.php?t=covid19';
+UPDATE `privileges` SET `show_mode` = 'sts' WHERE `privilege_name` = '/specimen-referral-manifest/add-manifest.php?t=covid19';
+UPDATE `privileges` SET `show_mode` = 'sts' WHERE `privilege_name` = '/specimen-referral-manifest/edit-manifest.php?t=covid19';
+UPDATE `privileges` SET `show_mode` = 'sts' WHERE `privilege_name` = '/specimen-referral-manifest/move-manifest.php?t=covid19';
+
+-- Hepatitis REQUESTS AND BATCH PRIVILEGES
+INSERT IGNORE INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'hepatitis-requests', '/hepatitis/requests/edit-locked-hepatitis-samples', 'Edit Locked Samples', '1', 'always');
+
+UPDATE `privileges` SET `display_order` = '1' WHERE `privilege_name` = '/hepatitis/requests/hepatitis-requests.php';
+UPDATE `privileges` SET `display_order` = '2' WHERE `privilege_name` = '/hepatitis/requests/hepatitis-add-request.php';
+UPDATE `privileges` SET `display_order` = '3' WHERE `privilege_name` = '/hepatitis/requests/hepatitis-edit-request.php';
+UPDATE `privileges` SET `display_order` = '4' WHERE `privilege_name` = '/hepatitis/requests/export-hepatitis-requests.php';
+UPDATE `privileges` SET `display_order` = '5' WHERE `privilege_name` = '/hepatitis/requests/edit-locked-hepatitis-samples';
+UPDATE `privileges` SET `display_order` = '6' WHERE `privilege_name` = '/hepatitis/requests/add-samples-from-manifest.php';
+UPDATE `privileges` SET `display_order` = '7' WHERE `privilege_name` = '/specimen-referral-manifest/view-manifests.php?t=hepatitis';
+UPDATE `privileges` SET `display_order` = '8' WHERE `privilege_name` = '/specimen-referral-manifest/add-manifest.php?t=hepatitis';
+UPDATE `privileges` SET `display_order` = '9' WHERE `privilege_name` = '/specimen-referral-manifest/edit-manifest.php?t=hepatitis';
+UPDATE `privileges` SET `display_order` = '10' WHERE `privilege_name` = '/specimen-referral-manifest/move-manifest.php?t=hepatitis';
+
+UPDATE `privileges` SET `display_order` = '1' WHERE `privilege_name` = '/batch/batches.php?type=hepatitis';
+UPDATE `privileges` SET `display_order` = '2' WHERE `privilege_name` = '/batch/add-batch.php?type=hepatitis';
+UPDATE `privileges` SET `display_order` = '3' WHERE `privilege_name` = '/batch/edit-batch.php?type=hepatitis';
+
+UPDATE `privileges` SET `show_mode` = 'lis' WHERE `privilege_name` = '/hepatitis/requests/add-samples-from-manifest.php';
+UPDATE `privileges` SET `show_mode` = 'sts' WHERE `privilege_name` = '/specimen-referral-manifest/view-manifests.php?t=hepatitis';
+UPDATE `privileges` SET `show_mode` = 'sts' WHERE `privilege_name` = '/specimen-referral-manifest/add-manifest.php?t=hepatitis';
+UPDATE `privileges` SET `show_mode` = 'sts' WHERE `privilege_name` = '/specimen-referral-manifest/edit-manifest.php?t=hepatitis';
+UPDATE `privileges` SET `show_mode` = 'sts' WHERE `privilege_name` = '/specimen-referral-manifest/move-manifest.php?t=hepatitis';
+
+-- TB REQUESTS AND BATCH PRIVILEGES
+INSERT IGNORE INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'tb-requests', '/tb/requests/edit-locked-tb-samples', 'Edit Locked Samples', '1', 'always');
+
+UPDATE `privileges` SET `display_order` = '1' WHERE `privilege_name` = '/tb/requests/tb-requests.php';
+UPDATE `privileges` SET `display_order` = '2' WHERE `privilege_name` = '/tb/requests/tb-add-request.php';
+UPDATE `privileges` SET `display_order` = '3' WHERE `privilege_name` = '/tb/requests/tb-edit-request.php';
+UPDATE `privileges` SET `display_order` = '4' WHERE `privilege_name` = '/tb/requests/export-tb-requests.php';
+UPDATE `privileges` SET `display_order` = '5' WHERE `privilege_name` = '/tb/requests/edit-locked-tb-samples';
+UPDATE `privileges` SET `display_order` = '6' WHERE `privilege_name` = '/tb/requests/addSamplesFromManifest.php';
+UPDATE `privileges` SET `display_order` = '7' WHERE `privilege_name` = '/specimen-referral-manifest/view-manifests.php?t=tb';
+UPDATE `privileges` SET `display_order` = '8' WHERE `privilege_name` = '/specimen-referral-manifest/add-manifest.php?t=tb';
+UPDATE `privileges` SET `display_order` = '9' WHERE `privilege_name` = '/specimen-referral-manifest/edit-manifest.php?t=tb';
+UPDATE `privileges` SET `display_order` = '10' WHERE `privilege_name` = '/specimen-referral-manifest/move-manifest.php?t=tb';
+
+UPDATE `privileges` SET `display_order` = '1' WHERE `privilege_name` = '/batch/batches.php?type=tb';
+UPDATE `privileges` SET `display_order` = '2' WHERE `privilege_name` = '/batch/add-batch.php?type=tb';
+UPDATE `privileges` SET `display_order` = '3' WHERE `privilege_name` = '/batch/edit-batch.php?type=tb';
+
+UPDATE `privileges` SET `show_mode` = 'lis' WHERE `privilege_name` = '/tb/requests/addSamplesFromManifest.php';
+UPDATE `privileges` SET `show_mode` = 'sts' WHERE `privilege_name` = '/specimen-referral-manifest/view-manifests.php?t=tb';
+UPDATE `privileges` SET `show_mode` = 'sts' WHERE `privilege_name` = '/specimen-referral-manifest/add-manifest.php?t=tb';
+UPDATE `privileges` SET `show_mode` = 'sts' WHERE `privilege_name` = '/specimen-referral-manifest/edit-manifest.php?t=tb';
+UPDATE `privileges` SET `show_mode` = 'sts' WHERE `privilege_name` = '/specimen-referral-manifest/move-manifest.php?t=tb';
+
+
+
+-- Generic Tests REQUESTS AND BATCH PRIVILEGES
+INSERT IGNORE INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'generic-tests-requests', '/generic-tests/requests/edit-locked-generic-tests-samples', 'Edit Locked Samples', null, 'always');
+INSERT IGNORE INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'generic-tests-requests', '/generic-tests/requests/export-generic-tests-requests.php', 'Export Requests', null, 'always');
+
+UPDATE `privileges` SET `display_order` = '1' WHERE `privilege_name` = '/generic-tests/requests/view-requests.php';
+UPDATE `privileges` SET `display_order` = '2' WHERE `privilege_name` = '/generic-tests/requests/add-request.php';
+UPDATE `privileges` SET `display_order` = '3' WHERE `privilege_name` = '/generic-tests/requests/edit-request.php';
+UPDATE `privileges` SET `display_order` = '4' WHERE `privilege_name` = '/generic-tests/requests/export-generic-tests-requests.php';
+UPDATE `privileges` SET `display_order` = '5' WHERE `privilege_name` = '/generic-tests/requests/edit-locked-generic-tests-samples';
+UPDATE `privileges` SET `display_order` = '6' WHERE `privilege_name` = '/generic-tests/requests/add-samples-from-manifest.php';
+UPDATE `privileges` SET `display_order` = '7' WHERE `privilege_name` = '/specimen-referral-manifest/view-manifests.php?t=generic-tests';
+UPDATE `privileges` SET `display_order` = '8' WHERE `privilege_name` = '/specimen-referral-manifest/add-manifest.php?t=generic-tests';
+UPDATE `privileges` SET `display_order` = '9' WHERE `privilege_name` = '/specimen-referral-manifest/edit-manifest.php?t=generic-tests';
+UPDATE `privileges` SET `display_order` = '10' WHERE `privilege_name` = '/specimen-referral-manifest/move-manifest.php?t=generic-tests';
+
+UPDATE `privileges` SET `display_order` = '1' WHERE `privilege_name` = '/batch/batches.php?type=generic-tests';
+UPDATE `privileges` SET `display_order` = '2' WHERE `privilege_name` = '/batch/add-batch.php?type=generic-tests';
+UPDATE `privileges` SET `display_order` = '3' WHERE `privilege_name` = '/batch/edit-batch.php?type=generic-tests';
+
+UPDATE `privileges` SET `show_mode` = 'lis' WHERE `privilege_name` = '/generic-tests/requests/add-samples-from-manifest.php';
+UPDATE `privileges` SET `show_mode` = 'sts' WHERE `privilege_name` = '/specimen-referral-manifest/view-manifests.php?t=generic-tests';
+UPDATE `privileges` SET `show_mode` = 'sts' WHERE `privilege_name` = '/specimen-referral-manifest/add-manifest.php?t=generic-tests';
+UPDATE `privileges` SET `show_mode` = 'sts' WHERE `privilege_name` = '/specimen-referral-manifest/edit-manifest.php?t=generic-tests';
+UPDATE `privileges` SET `show_mode` = 'sts' WHERE `privilege_name` = '/specimen-referral-manifest/move-manifest.php?t=generic-tests';
+
+
+-- ALTER TABLE `privileges` ADD `privilege_id2` VARCHAR(256) NULL DEFAULT NULL AFTER `resource_id`;
+UPDATE `resources` SET `resource_id` = 'facilities' WHERE `resource_id` = 'facility';
+UPDATE `privileges` SET `resource_id` = 'facilities' WHERE `resource_id` = 'facility';
+UPDATE `resources` SET `display_name`='Manage Instruments', `resource_id` = 'instruments' WHERE `resource_id` = 'import-config';
+UPDATE `privileges` SET `resource_id` = 'instruments' WHERE `resource_id` = 'import-config';
+
+
+UPDATE s_app_menu SET link = '/instruments/instruments.php' WHERE link LIKE '%/importConfig.php';
+
+UPDATE s_app_menu SET inner_pages = "/instruments/add-instrument.php,/instruments/edit-instrument.php"
+WHERE link = '/instruments/instruments.php';
+
+UPDATE `privileges` SET `display_order` = '1' , `privilege_name` ='/instruments/instruments.php' WHERE `privilege_name` like '%/importConfig.php';
+UPDATE `privileges` SET `display_order` = '2' , `privilege_name` ='/instruments/add-instrument.php' WHERE `privilege_name` like '%/addImportConfig.php';
+UPDATE `privileges` SET `display_order` = '3' ,`privilege_name` ='/instruments/edit-instrument.php' WHERE `privilege_name` like '%/editImportConfig.php';

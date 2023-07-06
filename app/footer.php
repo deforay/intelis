@@ -210,6 +210,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 	$(document).ready(function () {
 
+
 		$(".allMenu").removeClass('active');
 
 		let url = window.location.pathname + window.location.search;
@@ -292,6 +293,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 
 	});
+
 </script>
 </body>
 

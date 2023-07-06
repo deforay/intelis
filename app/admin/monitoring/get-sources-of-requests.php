@@ -31,7 +31,7 @@ if (!empty($_POST['testType'])) {
 }
 
 if (isset($testType) && $testType == 'vl') {
-    $url = "/vl/requests/vlRequest.php";
+    $url = "/vl/requests/vl-requests.php";
     $table = "form_vl";
     $testName = 'Viral Load';
 }

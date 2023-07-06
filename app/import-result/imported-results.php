@@ -116,7 +116,9 @@ foreach ($rejectionTypeResult as $type) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><?= _("Imported Results"); ?></h1>
+		<h1>
+			<?= _("Imported Results"); ?>
+		</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
 			<li class="active">Test Request</li>
@@ -124,11 +126,15 @@ foreach ($rejectionTypeResult as $type) {
 	</section>
 	<!-- for sample rejection -->
 	<div id="rejectReasonDiv">
-		<a href="javascript:void(0)" style="float:right;color:red;" title="close" onclick="hideReasonDiv('rejectReasonDiv')"><em class="fa-solid fa-xmark"></em></a>
+		<a href="javascript:void(0)" style="float:right;color:red;" title="close"
+			onclick="hideReasonDiv('rejectReasonDiv')"><em class="fa-solid fa-xmark"></em></a>
 		<div class="arrow-right"></div>
 		<input type="hidden" name="statusDropDownId" id="statusDropDownId" />
-		<h3 style="color:red;">Choose Rejection Reason</h3>
-		<select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" onchange="updateRejectionReasonStatus(this);">
+		<h3 style="color:red;">
+			<?= _("Choose Rejection Reason"); ?>
+		</h3>
+		<select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason"
+			onchange="updateRejectionReasonStatus(this);">
 			<?php echo $rejectionReason; ?>
 		</select>
 
@@ -144,33 +150,71 @@ foreach ($rejectionTypeResult as $type) {
 						<div class="box-header without-border">
 							<div class="box-header with-border">
 								<ul style="list-style: none;float: right;">
-									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation" style="color:#e8000b;"></em> <?= _("Sample Code/ID not from VLSM"); ?></li>
-									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation" style="color:#86c0c8;"></em> <?= _("Result already exists for this sample"); ?></li>
-									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation" style="color:#337ab7;"></em> <?= _("Result for sample from VLSM"); ?></li>
-									<li style="float:left;margin-right:20px;"><em class="fa-solid fa-exclamation" style="color:#7d8388;"></em> <?= _("Control"); ?></li>
+									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation"
+											style="color:#e8000b;"></em>
+										<?= _("Sample Code/ID not from VLSM"); ?>
+									</li>
+									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation"
+											style="color:#86c0c8;"></em>
+										<?= _("Result already exists for this sample"); ?>
+									</li>
+									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation"
+											style="color:#337ab7;"></em>
+										<?= _("Result for sample from VLSM"); ?>
+									</li>
+									<li style="float:left;margin-right:20px;"><em class="fa-solid fa-exclamation"
+											style="color:#7d8388;"></em>
+										<?= _("Control"); ?>
+									</li>
 								</ul>
 							</div>
 						</div>
 						<!-- /.box-header -->
 						<div class="box-body">
 							<div class="col-md-6 col-sm-6">
-								<input type="button" onclick="acceptAllSamples();" value="<?= _("Accept All Samples"); ?>" class="btn btn-success btn-sm">
-								<br><strong class="text-danger"><?= _("Only accepts samples that do not have status field already selected"); ?></strong>
+								<input type="button" onclick="acceptAllSamples();" value="<?= _("Accept All Samples"); ?>"
+									class="btn btn-success btn-sm">
+								<br><strong class="text-danger">
+									<?= _("Only accepts samples that do not have status field already selected"); ?>
+								</strong>
 							</div>
-							<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+							<table aria-describedby="table" id="vlRequestDataTable"
+								class="table table-bordered table-striped" aria-hidden="true">
 								<thead>
 									<tr>
-										<th style="width: 23%;"><?= _("Sample Code/ID"); ?></th>
-										<th style="width: 11%;"><?= _("Sample Collection Date"); ?></th>
-										<th style="width: 10%;"><?= _("Sample Test Date"); ?></th>
-										<th style="width: 10%;"><?= _("Clinic/Site Name"); ?></th>
-										<th style="width: 10%;"><?= _("Batch Code"); ?></th>
-										<th style="width: 10%;"><?= _("Lot Number"); ?></th>
-										<th style="width: 10%;"><?= _("Lot Expiry Date"); ?></th>
-										<th style="width: 10%;"><?= _("Rejection Reason"); ?></th>
-										<th style="max-width: 9%;"><?= _("Sample Type"); ?></th>
-										<th style="width: 9%;"><?= _("Result"); ?></th>
-										<th style="width: 9%;"><?= _("Status"); ?></th>
+										<th style="width: 23%;">
+											<?= _("Sample Code/ID"); ?>
+										</th>
+										<th style="width: 11%;">
+											<?= _("Sample Collection Date"); ?>
+										</th>
+										<th style="width: 10%;">
+											<?= _("Sample Test Date"); ?>
+										</th>
+										<th style="width: 10%;">
+											<?= _("Clinic/Site Name"); ?>
+										</th>
+										<th style="width: 10%;">
+											<?= _("Batch Code"); ?>
+										</th>
+										<th style="width: 10%;">
+											<?= _("Lot Number"); ?>
+										</th>
+										<th style="width: 10%;">
+											<?= _("Lot Expiry Date"); ?>
+										</th>
+										<th style="width: 10%;">
+											<?= _("Rejection Reason"); ?>
+										</th>
+										<th style="max-width: 9%;">
+											<?= _("Sample Type"); ?>
+										</th>
+										<th style="width: 9%;">
+											<?= _("Result"); ?>
+										</th>
+										<th style="width: 9%;">
+											<?= _("Status"); ?>
+										</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -180,51 +224,64 @@ foreach ($rejectionTypeResult as $type) {
 								</tbody>
 							</table>
 						</div>
-						<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:30px;width: 100%;">
+						<table aria-describedby="table" class="table" aria-hidden="true"
+							style="margin-left:1%;margin-top:30px;width: 100%;">
 							<tr>
 								<input type="hidden" name="checkedTests" id="checkedTests" />
 								<input type="hidden" name="checkedTestsIdValue" id="checkedTestsIdValue" />
 								<td style=" width: 30%; ">
-									<strong><?= _("Comments") ?>&nbsp;</strong>
-									<textarea style="height: 34px;width: 100%;" class="form-control" id="comments" name="comments" placeholder="Comments"></textarea>
+									<strong>
+										<?= _("Comments") ?>&nbsp;
+									</strong>
+									<textarea style="height: 34px;width: 100%;" class="form-control" id="comments"
+										name="comments" placeholder="Comments"></textarea>
 								</td>
 								<td style=" width: 20%; ">
-									<strong><?= _("Tested By"); ?><span class="mandatory">*</span>&nbsp;</strong>
-									<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose tested by" style="width: 100%;">
+									<strong>
+										<?= _("Tested By"); ?><span class="mandatory">*</span>&nbsp;
+									</strong>
+									<select name="testedBy" id="testedBy" class="select2 form-control"
+										title="Please choose tested by" style="width: 100%;">
 										<option value="">-- Select --</option>
 										<?php
 										foreach ($userResult as $uName) {
-										?>
+											?>
 											<option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
-										<?php
+											<?php
 										}
 										?>
 									</select>
 								</td>
 								<td style=" width: 20%; ">
-									<strong><?= _("Reviewed By"); ?><span class="mandatory">*</span>&nbsp;</strong>
+									<strong>
+										<?= _("Reviewed By"); ?><span class="mandatory">*</span>&nbsp;
+									</strong>
 									<!--<input type="text" name="reviewedBy" id="reviewedBy" class="form-control" title="Please enter Reviewed By" placeholder ="Reviewed By"/>-->
-									<select name="reviewedBy" id="reviewedBy" class="form-control" title="Please choose reviewed by" style="width: 100%;">
+									<select name="reviewedBy" id="reviewedBy" class="form-control"
+										title="Please choose reviewed by" style="width: 100%;">
 										<option value="">-- Select --</option>
 										<?php
 										foreach ($userResult as $uName) {
-										?>
+											?>
 											<option value="<?php echo $uName['user_id']; ?>" <?php echo ($uName['user_id'] == $reviewBy) ? "selected=selected" : ""; ?>><?php echo ($uName['user_name']); ?></option>
-										<?php
+											<?php
 										}
 										?>
 									</select>
 								</td>
 								<td style=" width: 20%; ">
-									<strong><?= _("Approved By"); ?><span class="mandatory">*</span>&nbsp;</strong>
+									<strong>
+										<?= _("Approved By"); ?><span class="mandatory">*</span>&nbsp;
+									</strong>
 									<!--<input type="text" name="approvedBy" id="approvedBy" class="form-control" title="Please enter Approved By" placeholder ="Approved By"/>-->
-									<select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" style="width: 100%;">
+									<select name="approvedBy" id="approvedBy" class="form-control"
+										title="Please choose approved by" style="width: 100%;">
 										<option value="">-- Select --</option>
 										<?php
 										foreach ($userResult as $uName) {
-										?>
+											?>
 											<option value="<?php echo $uName['user_id']; ?>" <?php echo ($uName['user_id'] == $_SESSION['userId']) ? "selected=selected" : ""; ?>><?php echo ($uName['user_name']); ?></option>
-										<?php
+											<?php
 										}
 										?>
 									</select>
@@ -232,8 +289,10 @@ foreach ($rejectionTypeResult as $type) {
 								<td style=" width: 10%; ">
 									<br>
 									<input type="hidden" name="print" id="print" />
-									<input type="hidden" name="module" id="module" value="<?= htmlspecialchars($module); ?>" />
-									<input type="button" onclick="submitTestStatus();" value="<?= _("Save"); ?>" class="btn btn-success btn-sm">
+									<input type="hidden" name="module" id="module"
+										value="<?= htmlspecialchars($module); ?>" />
+									<input type="button" onclick="submitTestStatus();" value="<?= _("Save"); ?>"
+										class="btn btn-success btn-sm">
 								</td>
 							</tr>
 
@@ -245,9 +304,14 @@ foreach ($rejectionTypeResult as $type) {
 						<div class="box-body">
 							<div class="col-md-12 col-sm-12">
 								<br>
-								<h3>Either there were no records imported or you seem to have reached this page by mistake. <br><br> Please contact technical support if you need assistance. </h3>
+								<h3>
+									<?= _("Either there were no records imported or you seem to have reached this page by mistake."); ?>
+									<br><br>
+									<?= _("Please contact technical support if you need assistance."); ?>
+								</h3>
 								<br>
-								<input type="button" onclick="history.go(-1);" value="Back" class="btn btn-danger btn-sm">
+								<input type="button" onclick="history.go(-1);" value="<?= _("Back"); ?>"
+									class="btn btn-danger btn-sm">
 							</div>
 						</div>
 
@@ -268,7 +332,7 @@ foreach ($rejectionTypeResult as $type) {
 	var endDate = "";
 	var selectedTests = [];
 	var selectedTestsIdValue = [];
-	$(document).ready(function() {
+	$(document).ready(function () {
 		$('#testedBy').select2({
 			width: '100%',
 			placeholder: "Select Tested By"
@@ -298,60 +362,52 @@ foreach ($rejectionTypeResult as $type) {
 			"bScrollCollapse": true,
 			"bRetrieve": true,
 			"aoColumns": [{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center sampleType",
-					"bSortable": false
-				},
-				{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center sampleType",
-					"bSortable": false
-				},
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center sampleType",
+				"bSortable": false
+			},
+			{
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center sampleType",
+				"bSortable": false
+			},
 			],
 			"iDisplayLength": 100,
-			//"aaSorting": [[ 1, "desc" ]],
-			"fnDrawCallback": function() {
-				//		var checkBoxes=document.getElementsByName("chk[]");
-				//                len = checkBoxes.length;
-				//                for(c=0;c<len;c++){
-				//                    if (jQuery.inArray(checkBoxes[c].id, selectedTestsId) != -1 ){
-				//			checkBoxes[c].setAttribute("checked",true);
-				//                    }
-				//                }
+			"fnDrawCallback": function () {
 				var oSettings = this.fnSettings();
 				var iTotalRecords = oSettings.fnRecordsTotal();
 				if (iTotalRecords == 0) {
@@ -361,7 +417,7 @@ foreach ($rejectionTypeResult as $type) {
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "getImportedResults.php",
-			"fnServerData": function(sSource, aoData, fnCallback) {
+			"fnServerData": function (sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "module",
 					"value": '<?= $module; ?>'
@@ -385,7 +441,7 @@ foreach ($rejectionTypeResult as $type) {
 			return false;
 		}
 		if (obj.value == '4') {
-			var confrm = confirm("Do you wish to overwrite this result?");
+			var confrm = confirm("<?= _("Do you wish to overwrite this result?"); ?>");
 			if (confrm) {
 				var pos = $("#" + obj.id).offset();
 				$("#rejectReasonDiv").show();
@@ -407,113 +463,95 @@ foreach ($rejectionTypeResult as $type) {
 			$("#rejectReasonDiv").hide();
 		}
 
-		// var dValue = obj.value;
-		// var dId = obj.id;
-		// if($.inArray(obj.id, selectedTests) == -1){
-		//   selectedTests.push(obj.id);
-		//   selectedTestsIdValue.push(obj.value);
-		// }else{
-		//   var indexValue = selectedTests.indexOf(obj.id);
-		//   selectedTestsIdValue[indexValue]=obj.value;
-		// }
-		// $("#checkedTests").val(selectedTests.join());
-		// $("#checkedTestsIdValue").val(selectedTestsIdValue.join());
 	}
 
 	function updateRejectionReasonStatus(obj) {
 		var rejectDropDown = $("#statusDropDownId").val();
-		//var indexValue = selectedTests.indexOf(rejectDropDown);
 		if (obj.value != '') {
-			//var result = {statusId:selectedTestsIdValue[indexValue],reasonId:obj.value};
-			//selectedTestsIdValue[indexValue] = result;
 			$("#rejectReasonName" + rejectDropDown).html(
 				$("#" + obj.id + " option:selected").text() +
 				'<input type="hidden" id="rejectedReasonId' + rejectDropDown + '" name="rejectedReasonId[]" value="' + obj.value + '"/><a href="javascript:void(0)" style="float:right;color:red;" title="cancel" onclick="showRejectedReasonList(' + rejectDropDown + ');"><em class="fa-solid fa-xmark"></em></a>'
 			);
 		} else {
 			$("#rejectedReasonId" + rejectDropDown).val('');
-			//selectedTestsIdValue[indexValue] = $("#"+$("#statusDropDownId").val()).val();
 		}
-		//$("#checkedTests").val(selectedTests.join());
-		//$("#checkedTestsIdValue").val(selectedTestsIdValue.join());
-	}
 
-	function showRejectedReasonList(postionId) {
-		var pos = $("#" + postionId).offset();
-		$("#rejectReasonDiv").show();
-		$("#rejectReasonDiv").css({
-			top: Math.round(pos.top) - 30,
-			position: 'absolute',
-			'z-index': 1,
-			right: '15%'
-		});
-		$("#statusDropDownId").val(postionId);
-		$(".content").css('pointer-events', 'none');
-	}
+		function showRejectedReasonList(postionId) {
+			var pos = $("#" + postionId).offset();
+			$("#rejectReasonDiv").show();
+			$("#rejectReasonDiv").css({
+				top: Math.round(pos.top) - 30,
+				position: 'absolute',
+				'z-index': 1,
+				right: '15%'
+			});
+			$("#statusDropDownId").val(postionId);
+			$(".content").css('pointer-events', 'none');
+		}
 
 
-	function submitTestStatus() {
+		function submitTestStatus() {
 
-		var idArray = [];
-		var statusArray = [];
-		var rejectReasonArray = [];
-		var somethingmissing = false;
+			var idArray = [];
+			var statusArray = [];
+			var rejectReasonArray = [];
+			var somethingmissing = false;
 
-		$('[name="status[]"]').each(function() {
+			$('[name="status[]"]').each(function () {
 
-			if ($(this).val() == null || $(this).val() == '') {
-				//console.log($(this));
-				somethingmissing = true;
-			}
+				if ($(this).val() == null || $(this).val() == '') {
+					//console.log($(this));
+					somethingmissing = true;
+				}
 
-			idArray.push($(this).attr('id'));
-			statusArray.push($(this).val());
-			rejectReasonArray.push($("#rejectedReasonId" + $(this).attr('id')).val());
+				idArray.push($(this).attr('id'));
+				statusArray.push($(this).val());
+				rejectReasonArray.push($("#rejectedReasonId" + $(this).attr('id')).val());
 
 
 
 
-		});
+			});
 
-		id = idArray.join();
-		status = statusArray.join();
-		rejectReasonId = rejectReasonArray.join();
-		comments = $("#comments").val();
-		testBy = $("#testedBy").val();
-		appBy = $("#approvedBy").val();
-		reviewedBy = $("#reviewedBy").val();
-		moduleName = $("#module").val();
-		globalValue = '<?php echo $arr["user_review_approve"]; ?>';
-		if (appBy == reviewedBy && (reviewedBy != '' && appBy != '') && globalValue == 'yes') {
-			conf = confirm("Same person is reviewing and approving result!");
-			if (conf) {} else {
+			id = idArray.join();
+			status = statusArray.join();
+			rejectReasonId = rejectReasonArray.join();
+			comments = $("#comments").val();
+			testBy = $("#testedBy").val();
+			appBy = $("#approvedBy").val();
+			reviewedBy = $("#reviewedBy").val();
+			moduleName = $("#module").val();
+			globalValue = '<?php echo $arr["user_review_approve"]; ?>';
+			if (appBy == reviewedBy && (reviewedBy != '' && appBy != '') && globalValue == 'yes') {
+				conf = confirm("Same person is reviewing and approving result!");
+				if (conf) { } else {
+					return false;
+				}
+			} else if (appBy == reviewedBy && (reviewedBy != '' && appBy != '') && globalValue == 'no') {
+				alert("<?= _("Same person is reviewing and approving result!"); ?>");
 				return false;
 			}
-		} else if (appBy == reviewedBy && (reviewedBy != '' && appBy != '') && globalValue == 'no') {
-			alert("Same person is reviewing and approving result!");
-			return false;
-		}
 
-		if (appBy == reviewedBy && (reviewedBy != '' && appBy != '') && globalValue == 'yes') {
-			conf = confirm("Same person is reviewing and approving result!");
-			if (conf) {} else {
+			if (appBy == reviewedBy && (reviewedBy != '' && appBy != '') && globalValue == 'yes') {
+				conf = confirm("<?= _("Same person is reviewing and approving result!"); ?>");
+				if (conf) { } else {
+					return false;
+				}
+			}
+
+			//alert(somethingmissing);return false;
+
+			if (somethingmissing == true) {
+				alert("<?= _("Please ensure that you have updated the status of all the Controls and Samples"); ?> ");
+				$.unblockUI();
 				return false;
 			}
-		}
 
-		//alert(somethingmissing);return false;
-
-		if (somethingmissing == true) {
-			alert("Please ensure that you have updated the status of all the Controls and Samples");
-			$.unblockUI();
-			return false;
-		}
-
-		if (appBy != '' && somethingmissing == false && testBy != "" && reviewedBy != "") {
-			conf = confirm("Are you sure you want to continue ?");
-			if (conf) {
-				$.blockUI();
-				$.post("/import-result/processImportedResults.php", {
+			if (appBy != '' && somethingmissing == false && testBy != "" && reviewedBy != "") {
+				conf = confirm("<?= _("Are you sure you want to continue ?"); ?>");
+				if (conf) {
+					$.blockUI();
+					$.post("/import-result/processImportedResults.php", {
 						rejectReasonId: rejectReasonId,
 						value: id,
 						status: status,
@@ -524,164 +562,164 @@ foreach ($rejectionTypeResult as $type) {
 						reviewedBy: reviewedBy,
 						format: "html"
 					},
-					function(data) {
-						if ($("#print").val() == 'print') {
-							convertSearchResultToPdf('');
-						}
-						if (data == 'importedStatistics.php') {
-							window.location.href = "importedStatistics.php";
-						}
-						oTable.fnDraw();
-						selectedTests = [];
-						selectedTestsIdValue = [];
-						$("#checkedTests").val('');
-						$("#checkedTestsIdValue").val('');
-						$("#comments").val('');
-					});
-				// $.unblockUI();
+						function (data) {
+							if ($("#print").val() == 'print') {
+								convertSearchResultToPdf('');
+							}
+							if (data == 'importedStatistics.php') {
+								window.location.href = "importedStatistics.php";
+							}
+							oTable.fnDraw();
+							selectedTests = [];
+							selectedTestsIdValue = [];
+							$("#checkedTests").val('');
+							$("#checkedTestsIdValue").val('');
+							$("#comments").val('');
+						});
+					// $.unblockUI();
+				} else {
+					oTable.fnDraw();
+				}
 			} else {
-				oTable.fnDraw();
+				alert("Please ensure you have updated the status and the approved by and reviewed by and tested by field");
+				return false;
 			}
-		} else {
-			alert("Please ensure you have updated the status and the approved by and reviewed by and tested by field");
-			return false;
 		}
-	}
 
-	function submitTestStatusAndPrint() {
-		$("#print").val('print');
-		submitTestStatus();
-	}
+		function submitTestStatusAndPrint() {
+			$("#print").val('print');
+			submitTestStatus();
+		}
 
-	function updateStatus(value, status) {
-		if (status != '') {
-			conf = confirm("<?= _("Do you wish to change the status ?"); ?>");
-			if (conf) {
-				$.blockUI();
-				$.post("/import-result/processImportedResults.php", {
+		function updateStatus(value, status) {
+			if (status != '') {
+				conf = confirm("<?= _("Do you wish to change the status ?"); ?>");
+				if (conf) {
+					$.blockUI();
+					$.post("/import-result/processImportedResults.php", {
 						value: value,
 						status: status,
 						format: "html"
 					},
-					function(data) {
-						convertSearchResultToPdf('');
-						oTable.fnDraw();
-						selectedTests = [];
-						selectedTestsId = [];
-						$("#checkedTests").val('');
-						$(".countChecksPending").html(0);
-					});
-				$.unblockUI();
+						function (data) {
+							convertSearchResultToPdf('');
+							oTable.fnDraw();
+							selectedTests = [];
+							selectedTestsId = [];
+							$("#checkedTests").val('');
+							$(".countChecksPending").html(0);
+						});
+					$.unblockUI();
+				} else {
+					oTable.fnDraw();
+				}
 			} else {
-				oTable.fnDraw();
+				alert("Please select the status.");
 			}
-		} else {
-			alert("Please select the status.");
 		}
-	}
 
-	function updateSampleCode(obj, oldSampleCode, tempsampleId) {
-		$(obj).fastConfirm({
-			position: "right",
-			questionText: "Are you sure you want to rename this Sample?",
-			onProceed: function(trigger) {
-				var pos = oTable.fnGetPosition(obj);
-				$.blockUI();
-				$.post("/import-result/updateImportedSample.php", {
+		function updateSampleCode(obj, oldSampleCode, tempsampleId) {
+			$(obj).fastConfirm({
+				position: "right",
+				questionText: "Are you sure you want to rename this Sample?",
+				onProceed: function (trigger) {
+					var pos = oTable.fnGetPosition(obj);
+					$.blockUI();
+					$.post("/import-result/updateImportedSample.php", {
 						sampleCode: obj.value,
 						tempsampleId: tempsampleId
 					},
-					function(data) {
-						if (data == 0) {
-							alert("Something went wrong!Please try again");
-							oTable.fnDraw();
-						}
-					});
-				$.unblockUI();
-			},
-			onCancel: function(trigger) {
-				$("#" + obj.id).val(oldSampleCode);
-			}
-		});
-	}
+						function (data) {
+							if (data == 0) {
+								alert("Something went wrong!Please try again");
+								oTable.fnDraw();
+							}
+						});
+					$.unblockUI();
+				},
+				onCancel: function (trigger) {
+					$("#" + obj.id).val(oldSampleCode);
+				}
+			});
+		}
 
-	function updateBatchCode(obj, oldBatchCode, tempsampleId) {
-		$(obj).fastConfirm({
-			position: "right",
-			questionText: "Are you sure you want to rename this Batch?",
-			onProceed: function(trigger) {
-				var pos = oTable.fnGetPosition(obj);
-				$.blockUI();
-				$.post("/import-result/updateImportedSample.php", {
+		function updateBatchCode(obj, oldBatchCode, tempsampleId) {
+			$(obj).fastConfirm({
+				position: "right",
+				questionText: "Are you sure you want to rename this Batch?",
+				onProceed: function (trigger) {
+					var pos = oTable.fnGetPosition(obj);
+					$.blockUI();
+					$.post("/import-result/updateImportedSample.php", {
 						batchCode: obj.value,
 						tempsampleId: tempsampleId
 					},
-					function(data) {
-						if (data == 0) {
-							alert("Something went wrong! Please try again");
-							oTable.fnDraw();
-						}
-					});
-				$.unblockUI();
-			},
-			onCancel: function(trigger) {
-				$("#" + obj.id).val(oldBatchCode);
-			}
-		});
-	}
+						function (data) {
+							if (data == 0) {
+								alert("Something went wrong! Please try again");
+								oTable.fnDraw();
+							}
+						});
+					$.unblockUI();
+				},
+				onCancel: function (trigger) {
+					$("#" + obj.id).val(oldBatchCode);
+				}
+			});
+		}
 
-	function sampleToControl(obj, oldValue, tempsampleId) {
-		$(obj).fastConfirm({
-			position: "left",
-			questionText: "Are you sure you want to change this Sample?",
-			onProceed: function(trigger) {
-				var pos = oTable.fnGetPosition(obj);
-				$.blockUI();
-				$.post("/import-result/updateImportedSample.php", {
+		function sampleToControl(obj, oldValue, tempsampleId) {
+			$(obj).fastConfirm({
+				position: "left",
+				questionText: "Are you sure you want to change this Sample?",
+				onProceed: function (trigger) {
+					var pos = oTable.fnGetPosition(obj);
+					$.blockUI();
+					$.post("/import-result/updateImportedSample.php", {
 						sampleType: obj.value,
 						tempsampleId: tempsampleId
 					},
-					function(data) {
-						if (data == 0) {
-							alert("Something went wrong! Please try again");
-							oTable.fnDraw();
-						}
-					});
-				$.unblockUI();
-			},
-			onCancel: function(trigger) {
-				$("#" + obj.id).val(oldValue);
-			}
-		});
-	}
-
-	function sampleToControlAlert(number) {
-		alert("Max number of controls as per the config is " + number);
-		oTable.fnDraw();
-	}
-
-	function hideReasonDiv(id) {
-		$("#" + id).hide();
-		$(".content").css('pointer-events', 'auto');
-		if ($("#rejectionReason").val() == '') {
-			$("#" + $("#statusDropDownId").val()).val('');
-		}
-	}
-
-	function acceptAllSamples() {
-		conf = confirm("Are you sure you want to mark all samples as 'Accepted' ?");
-		if (conf) {
-			$.blockUI();
-			$.post("/import-result/updateAllSampleStatus.php", {},
-				function(data) {
-					oTable.fnDraw();
+						function (data) {
+							if (data == 0) {
+								alert("Something went wrong! Please try again");
+								oTable.fnDraw();
+							}
+						});
 					$.unblockUI();
-				});
+				},
+				onCancel: function (trigger) {
+					$("#" + obj.id).val(oldValue);
+				}
+			});
+		}
 
-		} else {
+		function sampleToControlAlert(number) {
+			alert("Max number of controls as per the config is " + number);
 			oTable.fnDraw();
 		}
-	}
+
+		function hideReasonDiv(id) {
+			$("#" + id).hide();
+			$(".content").css('pointer-events', 'auto');
+			if ($("#rejectionReason").val() == '') {
+				$("#" + $("#statusDropDownId").val()).val('');
+			}
+		}
+
+		function acceptAllSamples() {
+			conf = confirm("Are you sure you want to mark all samples as 'Accepted' ?");
+			if (conf) {
+				$.blockUI();
+				$.post("/import-result/updateAllSampleStatus.php", {},
+					function (data) {
+						oTable.fnDraw();
+						$.unblockUI();
+					});
+
+			} else {
+				oTable.fnDraw();
+			}
+		}
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';

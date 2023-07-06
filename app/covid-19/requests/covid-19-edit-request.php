@@ -118,6 +118,12 @@ if (isset($covid19Info['result_reviewed_datetime']) && trim($covid19Info['result
     $covid19Info['result_reviewed_datetime'] = '';
 }
 
+if (isset($covid19Info['result_approved_datetime']) && trim($covid19Info['result_approved_datetime']) != '' && $covid19Info['result_approved_datetime'] != '0000-00-00 00:00:00') {
+    $approvedOn = explode(" ", $covid19Info['result_approved_datetime']);
+    $covid19Info['result_approved_datetime'] = DateUtility::humanReadableDateFormat($approvedOn[0]) . " " . $approvedOn[1];
+} else {
+    $covid19Info['result_approved_datetime'] = '';
+}
 $countryResult = $general->fetchDataFromTable('r_countries');
 $countyData = [];
 if (isset($countryResult) && sizeof($countryResult) > 0) {
@@ -125,6 +131,7 @@ if (isset($countryResult) && sizeof($countryResult) > 0) {
         $countyData[$country['id']] = $country['iso_name'];
     }
 }
+
 $fileArray = array(
     1 => 'forms/edit-southsudan.php',
     2 => 'forms/edit-sierraleone.php',

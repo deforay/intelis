@@ -129,7 +129,7 @@ foreach ($rResult as $aRow) {
     $row = [];
     $row[] = ($aRow['machine_name']);
     $row[] = ($aRow['status']);
-    $row[] = '<a href="editImportConfig.php?id=' . base64_encode($aRow['config_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
+    $row[] = '<a href="edit-instrument.php?id=' . base64_encode($aRow['config_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
     $output['aaData'][] = $row;
 }
 echo json_encode($output);

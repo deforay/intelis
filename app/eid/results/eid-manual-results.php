@@ -378,7 +378,6 @@ $lastUrl2 = '';
 		document.cookie = "status=" + $("#status").val();
 		$.unblockUI();
 	}
-	ß
 
 	function reset() {
 		document.cookie = "collectionDate=";

@@ -79,29 +79,46 @@ unset($_SESSION['controllertrack']);
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+                        <table aria-describedby="table" id="vlRequestDataTable"
+                            class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
                                 <tr>
                                     <th style="width: 13%;">No. of Results imported</th>
-                                    <th style="width: 11%;">No. of <?php echo $eidResults['positive']; ?></th>
-                                    <th style="width: 18%;">No. of <?php echo $eidResults['negative']; ?></th>
-                                    <th style="width: 18%;">No. of <?php echo $eidResults['indeterminate']; ?></th>
+                                    <th style="width: 11%;">No. of
+                                        <?php echo $eidResults['positive']; ?>
+                                    </th>
+                                    <th style="width: 18%;">No. of
+                                        <?php echo $eidResults['negative']; ?>
+                                    </th>
+                                    <th style="width: 18%;">No. of
+                                        <?php echo $eidResults['indeterminate']; ?>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><?php echo (isset($tsResult[0]['totalCount'])) ? $tsResult[0]['totalCount'] : 0; ?></td>
-                                    <td><?php echo (isset($tsResult[0]['positive'])) ? $tsResult[0]['positive'] : 0; ?></td>
-                                    <td><?php echo (isset($tsResult[0]['negative'])) ? $tsResult[0]['negative'] : 0; ?></td>
-                                    <td><?php echo (isset($tsResult[0]['indeterminate'])) ? $tsResult[0]['indeterminate'] : 0; ?></td>
+                                    <td>
+                                        <?php echo (isset($tsResult[0]['totalCount'])) ? $tsResult[0]['totalCount'] : 0; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo (isset($tsResult[0]['positive'])) ? $tsResult[0]['positive'] : 0; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo (isset($tsResult[0]['negative'])) ? $tsResult[0]['negative'] : 0; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo (isset($tsResult[0]['indeterminate'])) ? $tsResult[0]['indeterminate'] : 0; ?>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                    <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:30px;width: 75%;">
+                    <table aria-describedby="table" class="table" aria-hidden="true"
+                        style="margin-left:1%;margin-top:30px;width: 75%;">
                         <tr>
                             <td>
-                                <a href="/eid/results/eid-print-results.php" class="btn btn-success btn-sm">Continue </a>
+                                <a href="/eid/results/eid-print-results.php" class="btn btn-success btn-sm">Continue
+                                </a>
                             </td>
                         </tr>
 
@@ -124,13 +141,13 @@ unset($_SESSION['controllertrack']);
         $path = '/eid/results/generate-result-pdf.php';
         ?>
         $.post("<?php echo $path; ?>", {
-                source: 'print',
-                id: ''
-            },
-            function(data) {
+            source: 'print',
+            id: ''
+        },
+            function (data) {
                 if (data == "" || data == null || data == undefined) {
                     $.unblockUI();
-                    alert('Unable to generate download');
+                    alert("<?= _("Unable to generate download"); ?>");
                 } else {
                     $.unblockUI();
                     window.open('/download.php?f=' + data, '_blank');

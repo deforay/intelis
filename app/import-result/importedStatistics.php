@@ -7,14 +7,14 @@ use App\Services\CommonService;
 
 require_once APPLICATION_PATH . '/header.php';
 
-//global config
-$cSampleQuery = "SELECT * FROM global_config";
-$cSampleResult = $db->query($cSampleQuery);
-$arr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($cSampleResult); $i++) {
-  $arr[$cSampleResult[$i]['name']] = $cSampleResult[$i]['value'];
-}
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+$arr = $general->getGlobalConfig();
 
 $importedBy = $_SESSION['userId'];
 
@@ -27,11 +27,7 @@ $tResult = $db->rawQueryOne($tQuery, array($_SESSION['userId']));
 
 $module = $tResult['module'];
 
-/** @var MysqliDb $db */
-$db = ContainerRegistry::get('db');
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 
 if ($module == 'vl') {
   require_once(APPLICATION_PATH . '/import-result/import-stats-vl.php');

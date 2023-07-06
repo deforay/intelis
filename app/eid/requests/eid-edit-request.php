@@ -127,7 +127,7 @@ if (isset($eidInfo['sample_received_at_vl_lab_datetime']) && trim($eidInfo['samp
     $eidInfo['sample_received_at_vl_lab_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $sampleCollectionDate = '';
-    $eidInfo['sample_collection_date'] = '';
+    $eidInfo['sample_received_at_vl_lab_datetime'] = '';
 }
 if (isset($eidInfo['sample_tested_datetime']) && trim($eidInfo['sample_tested_datetime']) != '' && $eidInfo['sample_tested_datetime'] != '0000-00-00 00:00:00') {
     $sampleCollectionDate = $eidInfo['sample_tested_datetime'];
@@ -135,7 +135,7 @@ if (isset($eidInfo['sample_tested_datetime']) && trim($eidInfo['sample_tested_da
     $eidInfo['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $sampleCollectionDate = '';
-    $eidInfo['sample_collection_date'] = '';
+    $eidInfo['sample_tested_datetime'] = '';
 }
 
 if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approved_datetime']) != '' && $eidInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {

@@ -26,9 +26,9 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
      $excel = new Spreadsheet();
      $output = [];
      $sheet = $excel->getActiveSheet();
-     $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient ART no.", "Patient's Name", "Patient phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
+     $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient ART no.", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
      if ($sarr['sc_user_type'] == 'standalone') {
-          $headings = array('Sample Code', "Facility Name", "Patient ART no.", "Patient's Name", "Patient phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
+          $headings = array('Sample Code', "Facility Name", "Patient ART no.", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
      }
      if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
           if (($key = array_search("Patient's Name", $headings)) !== false) {
@@ -113,11 +113,11 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
           $sampleTestDate = '';
           if ($aRow['sample_collection_date'] != null && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", $aRow['sample_collection_date']);
-               $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
+               $sampleCollectionDate = date("d-m-Y", strtotime($expStr[0]));
           }
           if ($aRow['sample_tested_datetime'] != null && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", $aRow['sample_tested_datetime']);
-               $sampleTestDate =  date("d-m-Y", strtotime($expStr[0]));
+               $sampleTestDate = date("d-m-Y", strtotime($expStr[0]));
           }
 
           if ($aRow['patient_first_name'] != '') {

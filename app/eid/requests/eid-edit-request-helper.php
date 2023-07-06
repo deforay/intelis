@@ -233,6 +233,12 @@ try {
 		$_POST['status'] = $_POST['oldStatus'];
 	}
 
+	if (isset($_POST['approvedOnDateTime']) && trim($_POST['approvedOnDateTime']) != "") {
+		$approvedOnDateTime = explode(" ", $_POST['approvedOnDateTime']);
+		$_POST['approvedOnDateTime'] = DateUtility::isoDateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
+	} else {
+		$_POST['approvedOnDateTime'] = null;
+	}
 
 	$eidData = array(
 		'facility_id' => $_POST['facilityId'] ?? null,
