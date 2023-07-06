@@ -87,10 +87,10 @@ try {
             }
         }
 
-        $_SESSION['alertMsg'] = _("Result Import configuration initited for ") . $_POST['configurationName'] . _(". Please proceed to write the import logic in the file ") . $_POST['configurationFile'] . _(" present in import-configs folder");
+        $_SESSION['alertMsg'] = _("Result Import configuration initited for ") . $_POST['configurationName'] . _(". Please proceed to write the import logic in the file ") . $_POST['configurationFile'] . _(" present in instruments folder");
     }
     error_log($db->getLastError());
-    header("Location:importConfig.php");
+    header("Location:/instruments/instruments.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

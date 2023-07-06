@@ -6,8 +6,6 @@ use App\Registries\ContainerRegistry;
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
-
-
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources
 						WHERE funding_source_status='active'
@@ -306,7 +304,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 
 									<div class="col-md-4 col-md-4">
 										<label for="labId">Testing Lab <span class="mandatory">*</span></label>
-										<select name="labId" id="labId" class="form-control isRequired" title="Please choose lab" onchange="autoFillFocalDetails();" style="width:100%;">
+										<select name="labId" id="labId" class="form-control isRequired" title="Please choose lab" style="width:100%;">
 											<option value="">-- Select --</option>
 											<?php foreach ($lResult as $labName) { ?>
 												<option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>" <?php echo (isset($vlQueryInfo['lab_id']) && $vlQueryInfo['lab_id'] == $labName['facility_id']) ? 'selected="selected"' : ''; ?>><?= $labName['facility_name']; ?></option>
@@ -331,7 +329,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for="dob">Date of Birth </label>
-											<input type="text" name="dob" id="dob" class="form-control date" placeholder="Enter DOB" title="Enter dob" value="<?= ($vlQueryInfo['patient_dob']); ?>" onchange="getAge();checkARTInitiationDate();" />
+											<input type="text" name="dob" id="dob" class="form-control date" placeholder="Enter DOB" title="Enter dob" value="<?= ($vlQueryInfo['patient_dob']); ?>"/>
 										</div>
 									</div>
 									<div class="col-xs-3 col-md-3">
@@ -427,7 +425,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											<div class="col-xs-3 col-md-3">
 												<div class="form-group">
 													<label for="">Date of Treatment Initiation</label>
-													<input type="text" class="form-control date" name="dateOfArtInitiation" id="dateOfArtInitiation" placeholder="Date Of Treatment Initiated" title="Date Of treatment initiated" value="<?php echo $vlQueryInfo['treatment_initiated_date']; ?>" style="width:100%;" onchange="checkARTInitiationDate();">
+													<input type="text" class="form-control date" name="dateOfArtInitiation" id="dateOfArtInitiation" placeholder="Date Of Treatment Initiated" title="Date Of treatment initiated" value="<?php echo $vlQueryInfo['treatment_initiated_date']; ?>" style="width:100%;">
 												</div>
 											</div>
 											<div class="col-xs-3 col-md-3">
@@ -664,7 +662,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												<!-- <div class="col-md-4">
 													<label for="labId" class="col-lg-5 control-label">Lab Name </label>
 													<div class="col-lg-7">
-														<select name="labId" id="labId" class="select2 form-control labSection" title="Please choose lab" onchange="autoFillFocalDetails();">
+														<select name="labId" id="labId" class="select2 form-control labSection" title="Please choose lab">
 															<option value="">-- Select --</option>
 															<?php foreach ($lResult as $labName) { ?>
 																<option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>" <?php echo (isset($vlQueryInfo['lab_id']) && $vlQueryInfo['lab_id'] == $labName['facility_id']) ? 'selected="selected"' : ''; ?>><?= $labName['facility_name']; ?></option>
@@ -997,7 +995,6 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		});
 
 
-		autoFillFocalDetails();
 		$('#fName').select2({
 			width: '100%',
 			placeholder: "Select Clinic/Health Center"
@@ -1028,7 +1025,6 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		$('#province').select2({
 			placeholder: "Province"
 		});
-		//getAge();
 
 		getfacilityProvinceDetails($("#fName").val());
 
@@ -1478,14 +1474,6 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		} else {
 			$('#patientPhoneNumber').removeClass('isRequired');
 		}
-	}
-
-	function autoFillFocalDetails() {
-		// labId = $("#labId").val();
-		// if ($.trim(labId) != '') {
-		// 	$("#vlFocalPerson").val($('#labId option:selected').attr('data-focalperson')).trigger('change');
-		// 	$("#vlFocalPersonPhoneNumber").val($('#labId option:selected').attr('data-focalphone'));
-		// }
 	}
 
 	function calculateLogValue(obj) {
