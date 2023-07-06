@@ -53,7 +53,7 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
-
+$global = $general->getGlobalConfig();
 $state = $geolocationService->getProvinces("yes");
 $healthFacilites = $facilitiesService->getHealthFacilities('vl');
 
@@ -521,13 +521,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
 ?>
 		<script src="/assets/js/DYMO.Label.Framework.js"></script>
-		<script src="/configs/dymo-format.js"></script>
+		<script src="/uploads/barcode-formats/dymo-format.js"></script>
 		<script src="/assets/js/dymo-print.js"></script>
 	<?php
 	} else if ($global['bar_code_printing'] == 'zebra-printer') {
 	?>
-		<script src="/assets/js/zebra-browserprint.js.js"></script>
-		<script src="/configs/zebra-format.js"></script>
+		<script src="/assets/js/zebra-browserprint.js"></script>
+		<script src="/uploads/barcode-formats/zebra-format.js"></script>
 		<script src="/assets/js/zebra-print.js"></script>
 <?php
 	}
