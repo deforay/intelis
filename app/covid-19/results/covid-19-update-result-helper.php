@@ -57,6 +57,13 @@ try {
 		$_POST['reviewedOn'] = null;
 	}
 
+	if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
+		$approvedOn = explode(" ", $_POST['approvedOn']);
+		$_POST['approvedOn'] = DateUtility::isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
+	} else {
+		$_POST['approvedOn'] = null;
+	}
+
 	$covid19Data = array(
 		'sample_received_at_vl_lab_datetime' => $_POST['sampleReceivedDate'],
 		'lab_id' => $_POST['labId'] ?? null,

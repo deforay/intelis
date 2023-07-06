@@ -194,7 +194,7 @@ if (!empty($sWhere)) {
           if ($_POST['status'] == 'no_result') {
                $statusCondition = ' (vl.result is NULL OR vl.result ="") AND vl.result_status != ' . SAMPLE_STATUS_REJECTED;
           } elseif ($_POST['status'] == 'result') {
-               $statusCondition = ' (vl.result is NOT NULL AND vl.result !="" AND vl.result_status !=' . SAMPLE_STATUS_REJECTED . ')';
+               $statusCondition = ' (vl.result is NOT NULL AND vl.result !="" OR vl.result_status !=' . SAMPLE_STATUS_REJECTED . ')';
           } else {
                $statusCondition = ' vl.result_status = ' . SAMPLE_STATUS_REJECTED;
           }

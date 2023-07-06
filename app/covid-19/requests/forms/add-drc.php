@@ -504,7 +504,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row" style="width:15% !important">Date d'apparition des symptômes </th>
+                                        <th scope="row" style="width:15% !important">Date d'apparition des symptômes<span class="mandatory">*</span>  </th>
                                         <td style="width:35% !important;">
                                             <input class="form-control date symptomSpecificFields" type="text" name="dateOfSymptomOnset" id="dateOfSymptomOnset" placeholder="Date d'apparition des symptômes" title="Date d'apparition des symptômes" />
                                         </td>

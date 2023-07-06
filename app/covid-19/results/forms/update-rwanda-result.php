@@ -548,6 +548,16 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                             <td><input type="text" value="<?php echo $covid19Info['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
                                         </tr>
                                         <tr>
+                                            <th scope="row">Approved By</th>
+                                            <td>
+                                                <select name="approvedBy" id="approvedBy" class="select2 form-control isRequired" title="Please choose approved by" style="width: 100%;">
+                                                    <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['result_approved_by'], '-- Select --'); ?>
+                                                </select>
+                                            </td>
+                                            <th scope="row">Approved On</th>
+                                            <td><input type="text" value="<?php echo $covid19Info['result_approved_datetime']; ?>" name="approvedOn" id="approvedOn" class="dateTime disabled-field form-control isRequired" placeholder="Approved on" title="Please enter the Approved on" /></td>
+                                        </tr>
+                                        <tr>
                                             <th scope="row">Is Result Authorized ?</th>
                                             <td>
                                                 <select name="isResultAuthorized" id="isResultAuthorized" class="disabled-field form-control isRequired" title="Is Result authorized ?" style="width:100%">
@@ -557,11 +567,15 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 </select>
                                             </td>
                                             <th scope="row">Authorized By</th>
-                                            <td><input type="text" value="<?php echo $covid19Info['authorized_by']; ?>" name="authorizedBy" id="authorizedBy" class="disabled-field form-control isRequired" placeholder="Authorized By" /></td>
+                                            <td>
+                                                <select name="authorizedBy" id="authorizedBy" class="form-control" title="Please choose authorized by" style="width: 100%;">
+                                                    <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['authorized_by'], '-- Select --'); ?>
+                                                </select>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <th scope="row">Authorized on</th>
-                                            <td><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date isRequired" placeholder="Authorized on" /></td>
+                                            <td><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['authorized_on']); ?>" name="authorizedOn" id="authorizedOn" class="form-control date isRequired" placeholder="Authorized on" /></td>
                                             <th scope="row"></th>
                                             <td></td>
                                         </tr>
@@ -716,7 +730,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
             $('#authorizedBy,#authorizedOn').removeClass('isRequired');
         } else {
             $('#isResultAuthorized').val('yes');
-            $('#authorizedBy,#authorizedOn').addClass('isRequired');
+            checkIsResultAuthorized();
         }
         $("#provinceCode").val($("#province").find(":selected").attr("data-code"));
         $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));

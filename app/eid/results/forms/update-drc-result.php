@@ -47,7 +47,13 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
 
 $eidInfo['mother_treatment'] = explode(",", $eidInfo['mother_treatment']);
 $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
-
+$sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'active'");
+if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approved_datetime']) != '' && $eidInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
+    $expStr = explode(" ", $eidInfo['result_approved_datetime']);
+    $eidInfo['result_approved_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+} else {
+    $eidInfo['result_approved_datetime'] = '';
+}
 ?>
 
 <div class="content-wrapper">
@@ -383,10 +389,10 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 									<th scope="row" style="width:14%;"> Type d'échantillon</th>
 									<td style="width:35%;">
 										<select name="specimenType" id="specimenType" class="form-control" title="Veuillez choisir le type d'échantillon" style="width:100%">
-											<option value="">-- Selecione --</option>
-											<?php foreach ($sampleResult as $name) { ?>
-												<option value="<?php echo $name['sample_id']; ?>" <?php echo ($eidInfo['specimen_type'] == $name['sample_id']) ? "selected='selected'" : ""; ?>><?= $name['sample_name']; ?></option>
-											<?php } ?>
+										<option value="">-- Selecione --</option>
+												<?php foreach ($sampleResult as $name) { ?>
+													<option value="<?php echo $name['sample_id']; ?>" <?php echo ($eidInfo['specimen_type'] == $name['sample_id']) ? "selected='selected'" : ""; ?>><?= $name['sample_name']; ?></option>
+												<?php } ?>
 										</select>
 									</td>
 								</tr>
@@ -433,12 +439,12 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 								<tr>
 									<th scope="row">Résultat test rapide</th>
 									<td>
-										<select class="form-control" name="rapidTestResult" id="rapidTestResult">
-											<option value=''> -- Sélectionner -- </option>
-											<option value="positive" <?php echo ($eidInfo['rapid_test_result'] == 'positive') ? "selected='selected'" : ""; ?>> Positif </option>
-											<option value="negative" <?php echo ($eidInfo['rapid_test_result'] == 'negative') ? "selected='selected'" : ""; ?>> Négatif </option>
-											<option value="indeterminate" <?php echo ($eidInfo['rapid_test_result'] == 'indeterminate') ? "selected='selected'" : ""; ?>> Indéterminé </option>
-										</select>
+									<select class="form-control" name="rapidTestResult" id="rapidTestResult">
+												<option value=''> -- Sélectionner -- </option>
+												<?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
+													<option value="<?php echo $eidResultKey; ?>" <?php echo ($eidInfo['rapid_test_result'] == $eidResultKey) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?> </option>
+												<?php } ?>
+											</select>
 									</td>
 								</tr>
 							</table>
@@ -526,6 +532,18 @@ $eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
 											</td>
 											<th scope="row">Date de Revu</th>
 											<td><input type="text" value="<?= DateUtility::humanReadableDateFormat($eidInfo['result_reviewed_datetime']); ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Date de revu" title="Date de revu" /></td>
+										</tr>
+										<tr>
+											<th scope="row">Approuvé le</th>
+											<td>
+												<input type="text" name="approvedOn" id="approvedOn" value="<?php echo $eidInfo['result_approved_datetime']; ?>" class="dateTime form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+											</td>
+											<th scope="row">Approuvé par</th>
+											<td>
+												<select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
+													<?= $general->generateSelectOptions($userInfo, $eidInfo['result_approved_by'], '-- Select --'); ?>
+												</select>
+											</td>
 										</tr>
 										<tr class="change-reason">
 											<th scope="row" class="change-reason" style="display: none;">Raison du changement <span class="mandatory">*</span></th>

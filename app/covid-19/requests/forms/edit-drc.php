@@ -537,7 +537,7 @@ if (!empty($patientData)) {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row" style="width:15% !important">Date d'apparition des symptômes </th>
+                                        <th scope="row" style="width:15% !important">Date d'apparition des symptômes <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
                                             <input class="form-control date symptomSpecificFields" type="text" name="dateOfSymptomOnset" id="dateOfSymptomOnset" placeholder="Date d'apparition des symptômes" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['date_of_symptom_onset']); ?> " />
                                         </td>
@@ -932,9 +932,9 @@ if (!empty($patientData)) {
                                                 </table>
                                             </td>
                                         </tr>
-                                        <?php $otherDiseases = (isset($covid19Info['result']) && $covid19Info['result'] != 'positive') ? 'display' : 'none'; ?>
+                                        <?php //$otherDiseases = (isset($covid19Info['result']) && $covid19Info['result'] != 'positive') ? 'display' : 'none'; ?>
                                         <tr>
-                                            <th scope="row" class="other-diseases" style="display: <?php echo $otherDiseases; ?>;"><label for="otherDiseases">Autres maladies<span class="mandatory">*</span></label></th>
+                                       <!--     <th scope="row" class="other-diseases" style="display: <?php echo $otherDiseases; ?>;"><label for="otherDiseases">Autres maladies<span class="mandatory">*</span></label></th>
                                             <td class="other-diseases" style="display: <?php echo $otherDiseases; ?>;">
                                                 <select name="otherDiseases" id="otherDiseases" class="form-control" title="Autres maladies">
                                                     <option value="">--Select--</option>
@@ -952,7 +952,7 @@ if (!empty($patientData)) {
                                                         <option value="B/Vic" <?php echo ($covid19Info['other_diseases'] == 'B/Vic') ? "selected='selected'" : ""; ?>>B/Vic</option>
                                                     </optgroup>
                                                 </select>
-                                            </td>
+                                            </td>-->
                                             <th scope="row" class="change-reason" style="display: none;">Raison du changement<span class="mandatory">*</span></th>
                                             <td class="change-reason" style="display: none;"><textarea name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Raison du changement" title="Raison du changement"></textarea></td>
                                         </tr>
