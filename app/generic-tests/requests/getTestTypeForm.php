@@ -127,13 +127,11 @@ if ($n > 0) {
                     $fieldDiv .= '<label class="col-lg-5 control-label labels" for="' . $testAttribute['field_id'] . '">' . $testAttribute['field_name'] . $mandatory . '</label>';
                     $fieldDiv .= '<div class="col-lg-7">';
                 } elseif ($testAttribute['section'] == 'facilitySection') {
-                    $fieldDiv .= "<div class='col-xs-4 col-md-4  $sectionClass'>";
-                    $fieldDiv .= "<div class='form-group'>";
-                    $fieldDiv .= '<label class="control-label labels" for="' . $testAttribute['field_id'] . '">' . $testAttribute['field_name'] . $mandatory . '</label><br>';
+                    $fieldDiv .= "<div class='col-md-6 $sectionClass'>";
+                    $fieldDiv .= '<label class="col-lg-5 control-label labels" for="' . $testAttribute['field_id'] . '">' . $testAttribute['field_name'] . $mandatory . '</label><br>';
                 } else {
-                    $fieldDiv .= "<div class='col-xs-3 col-md-3  $sectionClass'>";
-                    $fieldDiv .= "<div class='form-group'>";
-                    $fieldDiv .= '<label class="control-label labels" for="' . $testAttribute['field_id'] . '">' . $testAttribute['field_name'] . $mandatory . '</label>';
+                    $fieldDiv .= "<div class='col-md-6 $sectionClass'>";
+                    $fieldDiv .= '<label class="col-lg-5 control-label labels" for="' . $testAttribute['field_id'] . '">' . $testAttribute['field_name'] . $mandatory . '</label>';
                 }
                 $fieldDiv .= getField($testAttribute, $testAttributeId, $value, $inputClass, $isRequired, $fieldType, $disabled, $inputWidth);
                 $fieldDiv .= '</div>';
