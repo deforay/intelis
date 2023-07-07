@@ -16,19 +16,21 @@ $db = ContainerRegistry::get('db');
 /** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);
 
-$sql = "SELECT vl_sample_id,
-                result_value_absolute_decimal,
-                result_value_text,
-                result,
-                result_status
-		FROM form_vl
-		WHERE (
-                (result_status = " . SAMPLE_STATUS\REJECTED . "
-                    OR result_status = " . SAMPLE_STATUS\ACCEPTED . ")
-                OR result is not null
-            )
-        AND vl_result_category is null
-        ";
+$sql = sprintf(
+    "SELECT vl_sample_id,
+            result_value_absolute_decimal,
+            result_value_text,
+            result,
+            result_status
+    FROM form_vl
+    WHERE (
+            (result_status = %d OR result_status = %d)
+            OR result is not null
+        )
+    AND vl_result_category is null",
+    SAMPLE_STATUS\REJECTED,
+    SAMPLE_STATUS\ACCEPTED
+);
 
 $result = $db->rawQuery($sql);
 

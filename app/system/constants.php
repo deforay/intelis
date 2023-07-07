@@ -3,7 +3,6 @@
 // Application version
 const VERSION = '5.1.9';
 
-
 // Application environment
 defined('APPLICATION_ENV')
     || define('APPLICATION_ENV', getenv('APPLICATION_ENV') ?: 'production');
