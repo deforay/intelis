@@ -22,9 +22,9 @@ try {
 
     $sarr = $general->getSystemConfig();
     /* Status definition */
-    $status = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
+    $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
     if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
-        $status = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+        $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
     }
     $query = "SELECT sample_code, remote_sample_code, facility_id, sample_batch_id, result, result_status, vl_sample_id FROM form_vl";
     if ($_POST['bulkIds'] && is_array($_POST['vlId'])) {

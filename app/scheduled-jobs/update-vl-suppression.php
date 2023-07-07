@@ -23,8 +23,8 @@ $sql = "SELECT vl_sample_id,
                 result_status
 		FROM form_vl
 		WHERE (
-                (result_status = " . SAMPLE_STATUS_REJECTED . "
-                    OR result_status = " . SAMPLE_STATUS_ACCEPTED . ")
+                (result_status = " . SAMPLE_STATUS\REJECTED . "
+                    OR result_status = " . SAMPLE_STATUS\ACCEPTED . ")
                 OR result is not null
             )
         AND vl_result_category is null
@@ -42,9 +42,9 @@ foreach ($result as $aRow) {
         $dataToUpdate = [];
         $dataToUpdate['vl_result_category'] = $vlResultCategory;
         if ($vlResultCategory == 'failed' || $vlResultCategory == 'invalid') {
-            $dataToUpdate['result_status'] = SAMPLE_STATUS_TEST_FAILED;
+            $dataToUpdate['result_status'] = SAMPLE_STATUS\TEST_FAILED;
         } elseif ($vlResultCategory == 'rejected') {
-            $dataToUpdate['result_status'] = SAMPLE_STATUS_REJECTED;
+            $dataToUpdate['result_status'] = SAMPLE_STATUS\REJECTED;
         }
         $res = $db->update("form_vl", $dataToUpdate);
     }

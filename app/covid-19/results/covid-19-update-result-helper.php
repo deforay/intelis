@@ -103,7 +103,7 @@ try {
 	}
 	if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
 		$covid19Data['result'] = null;
-		$covid19Data['result_status'] = SAMPLE_STATUS_REJECTED;
+		$covid19Data['result_status'] = SAMPLE_STATUS\REJECTED;
 	}
 	if (isset($_POST['deletedRow']) && trim($_POST['deletedRow']) != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
 		$deleteRows = explode(',', $_POST['deletedRow']);
@@ -145,7 +145,7 @@ try {
 		$covid19Data['sample_tested_datetime'] = null;
 	}
 	/* echo "<pre>";
-	   print_r($covid19Data);die; */
+		  print_r($covid19Data);die; */
 	$db = $db->where('covid19_id', $_POST['covid19SampleId']);
 	$id = $db->update($tableName, $covid19Data);
 	if ($id === true) {

@@ -996,7 +996,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                         </div>
                                         <?php
                                         $styleStatus = '';
-                                        if ((($_SESSION['accessType'] == 'collection-site') && $genericResultInfo['result_status'] == SAMPLE_STATUS_RECEIVED_AT_CLINIC)) {
+                                        if ((($_SESSION['accessType'] == 'collection-site') && $genericResultInfo['result_status'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC)) {
                                             $styleStatus = "display:none";
                                             ?>
                                             <input type="hidden" name="status" value="<?= htmlspecialchars($genericResultInfo['result_status']); ?>" />

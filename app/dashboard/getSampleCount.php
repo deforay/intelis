@@ -68,9 +68,9 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
 
 if ($systemType != 'remoteuser') {
     if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
-        $whereCondition = " AND eid.result_status != " . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+        $whereCondition = " AND eid.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
     } else {
-        $whereCondition = " AND vl.result_status != " . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+        $whereCondition = " AND vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
     }
 } else {
     $whereCondition = "";
@@ -461,8 +461,8 @@ $tableResult = $db->rawQuery($sQuery);
                 }
                 ?>]
 
-                }],
+                    }],
         colors: ['#f36a5a']
-            });
+                });
     <?php } ?>
 </script>

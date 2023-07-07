@@ -190,14 +190,14 @@ try {
 		$motherVlResult = null;
 	}
 
-	$status = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
+	$status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 	if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
-		$status = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+		$status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 	}
 
 	if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
 		$_POST['result'] = null;
-		$status = SAMPLE_STATUS_REJECTED;
+		$status = SAMPLE_STATUS\REJECTED;
 	}
 
 	if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {

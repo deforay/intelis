@@ -832,7 +832,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													</div>
 												</div>
 												<?php $styleStatus = '';
-												if ((($_SESSION['accessType'] == 'collection-site') && $vlQueryInfo['result_status'] == SAMPLE_STATUS_RECEIVED_AT_CLINIC) || ($sCode != '')) {
+												if ((($_SESSION['accessType'] == 'collection-site') && $vlQueryInfo['result_status'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) || ($sCode != '')) {
 													$styleStatus = "display:none"; ?>
 													<input type="hidden" name="status" value="<?= ($vlQueryInfo['result_status']); ?>" />
 												<?php } ?>

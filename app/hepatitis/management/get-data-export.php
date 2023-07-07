@@ -272,7 +272,7 @@ if (isset($_POST['patientId']) && trim($_POST['patientId']) != '') {
 if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
      $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
 }
-$sWhere[] = ' vl.result_status != ' . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+$sWhere[] = ' vl.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 
 
 if (!empty($_SESSION['facilityMap'])) {

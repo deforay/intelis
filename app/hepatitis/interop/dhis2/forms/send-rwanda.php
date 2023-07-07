@@ -13,7 +13,7 @@ $dhis2 = new Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 $hepatitisService = ContainerRegistry::get(HepatitisService::class);
 
 $query = "SELECT * FROM form_hepatitis WHERE (source_of_request LIKE 'dhis2' OR unique_id like 'dhis2%') AND result_status = 7 AND (result_sent_to_source is null or result_sent_to_source NOT LIKE 'sent')";
-//$query = "SELECT * FROM form_hepatitis WHERE source_of_request LIKE 'dhis2' AND result_status = " . SAMPLE_STATUS_ACCEPTED;// AND result_sent_to_source NOT LIKE 'sent'";
+//$query = "SELECT * FROM form_hepatitis WHERE source_of_request LIKE 'dhis2' AND result_status = " . SAMPLE_STATUS\ACCEPTED;// AND result_sent_to_source NOT LIKE 'sent'";
 $formResults = $db->rawQuery($query);
 //var_dump($formResults);die;
 $counter = 0;

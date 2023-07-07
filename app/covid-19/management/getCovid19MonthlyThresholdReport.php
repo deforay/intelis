@@ -178,7 +178,7 @@ if (!empty($sWhere)) {
           $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
      }
 }
-$sWhere[] = ' vl.result!="" AND vl.result_status != ' . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+$sWhere[] = ' vl.result!="" AND vl.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 
 $sWhere[] = " tl.test_type = 'covid19'";
 

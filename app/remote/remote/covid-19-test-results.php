@@ -102,7 +102,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
         // unset($lab['last_modified_by']);
         // unset($lab['request_created_datetime']);
 
-        if ($lab['result_status'] != SAMPLE_STATUS_ACCEPTED && $lab['result_status'] != SAMPLE_STATUS_REJECTED) {
+        if ($lab['result_status'] != SAMPLE_STATUS\ACCEPTED && $lab['result_status'] != SAMPLE_STATUS\REJECTED) {
             unset($lab['result']);
             unset($lab['is_sample_rejected']);
             unset($lab['reason_for_sample_rejection']);
@@ -157,14 +157,16 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
         $db = $db->where('covid19_id', $covid19Id);
         $db->delete("covid19_tests");
         foreach ($testResults as $testId => $test) {
-            $db->insert("covid19_tests", array(
-                "covid19_id" => $test['covid19_id'],
-                "test_name" => $test['test_name'],
-                "facility_id" => $test['facility_id'],
-                "sample_tested_datetime" => $test['sample_tested_datetime'],
-                "testing_platform" => $test['testing_platform'],
-                "result" => $test['result']
-            )
+            $db->insert(
+                "covid19_tests",
+                array(
+                    "covid19_id" => $test['covid19_id'],
+                    "test_name" => $test['test_name'],
+                    "facility_id" => $test['facility_id'],
+                    "sample_tested_datetime" => $test['sample_tested_datetime'],
+                    "testing_platform" => $test['testing_platform'],
+                    "result" => $test['result']
+                )
             );
         }
     }

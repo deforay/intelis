@@ -43,10 +43,10 @@ try {
     }
 
 
-    $resultStatus = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
+    $resultStatus = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 
     if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
-        $resultStatus = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+        $resultStatus = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
     }
 
     //add province
@@ -125,7 +125,7 @@ try {
     if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
         $vl_result_category = 'rejected';
         $isRejected = true;
-        $resultStatus = SAMPLE_STATUS_REJECTED;
+        $resultStatus = SAMPLE_STATUS\REJECTED;
         $_POST['vlResult'] = null;
         $_POST['vlLog'] = null;
     }
@@ -135,7 +135,7 @@ try {
     if (!empty($_POST['vlResult'])) {
 
         $_POST['result'] = $_POST['vlResult'];
-        $resultStatus = SAMPLE_STATUS_PENDING_APPROVAL; // Awaiting Approval
+        $resultStatus = SAMPLE_STATUS\PENDING_APPROVAL; // Awaiting Approval
 
         if (in_array(strtolower($_POST['vlResult']), ['bdl', 'below detection level'])) {
             $finalResult = $_POST['vlResult'] = $_POST['vlResult'] ?? 'Below Detection Level';
@@ -145,17 +145,17 @@ try {
             $finalResult = $_POST['vlResult'] = $_POST['vlResult'] ?? 'Failed';
             $_POST['vlLog'] = null;
             $_POST['hivDetection'] = null;
-            $resultStatus = SAMPLE_STATUS_TEST_FAILED; // Invalid/Failed
+            $resultStatus = SAMPLE_STATUS\TEST_FAILED; // Invalid/Failed
         } elseif (in_array(strtolower($_POST['vlResult']), ['error', 'err'])) {
             $finalResult = $_POST['vlResult'] = $_POST['vlResult'] ?? 'Error';
             $_POST['vlLog'] = null;
             $_POST['hivDetection'] = null;
-            $resultStatus = SAMPLE_STATUS_TEST_FAILED; // Invalid/Failed
+            $resultStatus = SAMPLE_STATUS\TEST_FAILED; // Invalid/Failed
         } elseif (in_array(strtolower($_POST['vlResult']), ['no result', 'no'])) {
             $finalResult = $_POST['vlResult'] = $_POST['vlResult'] ?? 'No Result';
             $_POST['vlLog'] = null;
             $_POST['hivDetection'] = null;
-            $resultStatus = SAMPLE_STATUS_NO_RESULT; // No Result
+            $resultStatus = SAMPLE_STATUS\NO_RESULT; // No Result
         } else {
 
             $interpretedResults = $vlService->interpretViralLoadResult($_POST['vlResult']);
@@ -169,7 +169,7 @@ try {
             $txtVal = $interpretedResults['txtVal'] ?? null;
         }
     } elseif (!empty($_POST['vlLog'])) {
-        $resultStatus = SAMPLE_STATUS_PENDING_APPROVAL; // Awaiting Approval
+        $resultStatus = SAMPLE_STATUS\PENDING_APPROVAL; // Awaiting Approval
         $finalResult = $_POST['result'] = pow(10, $_POST['vlLog']);
     }
 
@@ -326,9 +326,9 @@ try {
 
     $vlData['vl_result_category'] = $vlService->getVLResultCategory($vlData['result_status'], $vlData['result']);
     if ($vlData['vl_result_category'] == 'failed' || $vlData['vl_result_category'] == 'invalid') {
-        $vlData['result_status'] = SAMPLE_STATUS_TEST_FAILED;
+        $vlData['result_status'] = SAMPLE_STATUS\TEST_FAILED;
     } elseif ($vlData['vl_result_category'] == 'rejected') {
-        $vlData['result_status'] = SAMPLE_STATUS_REJECTED;
+        $vlData['result_status'] = SAMPLE_STATUS\REJECTED;
     }
 
 

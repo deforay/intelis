@@ -88,7 +88,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
 $systemType = $general->getSystemConfig('sc_user_type');
 
 if ($systemType != 'remoteuser') {
-    $whereCondition = " result_status!= " . SAMPLE_STATUS_RECEIVED_AT_CLINIC . "  AND ";
+    $whereCondition = " result_status!= " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "  AND ";
 } else {
     $whereCondition = "";
     if (!empty($_SESSION['facilityMap'])) {
@@ -492,9 +492,9 @@ if ($table == "form_covid19") {
                 }
                 ?>]
 
-                                                                                                                                                                                                                                                                    }],
+                                                                                                                                                                                                                                                                        }],
         colors: ['#2ab4c0'],
-                                                                                                                                                                                                                                                                });
+                                                                                                                                                                                                                                                                    });
     <?php }
     //waiting result
     if ($waitingTotal > 0) { ?>
@@ -615,9 +615,9 @@ if ($table == "form_covid19") {
                         }
                         ?>]
 
-                                                                                                                                                                                                                                                                    }],
+                                                                                                                                                                                                                                                                        }],
         colors: ['#7cb72a']
-                                                                                                                                                                                                                                                                });
+                                                                                                                                                                                                                                                                    });
     <?php }
 
     if ($rejectedTotal > 0) { ?>

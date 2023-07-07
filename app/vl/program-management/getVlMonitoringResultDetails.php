@@ -193,9 +193,9 @@ if (isset($_POST['state']) && trim($_POST['state']) != '') {
 }
 
 if (!empty($sWhere)) {
-     $sWhere[] = ' vl.result!="" AND vl.result_status != ' . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+     $sWhere[] = ' vl.result!="" AND vl.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 } else {
-     $sWhere[] = ' WHERE vl.result!="" AND vl.result_status != ' . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+     $sWhere[] = ' WHERE vl.result!="" AND vl.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 }
 
 if (!empty($_SESSION['facilityMap'])) {

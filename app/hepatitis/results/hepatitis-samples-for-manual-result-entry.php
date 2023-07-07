@@ -181,11 +181,11 @@ if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
 
 if (isset($_POST['status']) && trim($_POST['status']) != '') {
      if ($_POST['status'] == 'no_result') {
-          $statusCondition = ' (vl.hcv_vl_count is NULL OR vl.hcv_vl_count  ="" OR vl.hbv_vl_count is NULL OR vl.hbv_vl_count  ="") AND vl.result_status != ' . SAMPLE_STATUS_REJECTED;
+          $statusCondition = ' (vl.hcv_vl_count is NULL OR vl.hcv_vl_count  ="" OR vl.hbv_vl_count is NULL OR vl.hbv_vl_count  ="") AND vl.result_status != ' . SAMPLE_STATUS\REJECTED;
      } else if ($_POST['status'] == 'result') {
-          $statusCondition = ' ((vl.hcv_vl_count is NOT NULL OR vl.hcv_vl_count  !="" OR vl.hbv_vl_count is NOT NULL OR vl.hbv_vl_count  !="") AND vl. != ' . SAMPLE_STATUS_REJECTED . ')';
+          $statusCondition = ' ((vl.hcv_vl_count is NOT NULL OR vl.hcv_vl_count  !="" OR vl.hbv_vl_count is NOT NULL OR vl.hbv_vl_count  !="") AND vl. != ' . SAMPLE_STATUS\REJECTED . ')';
      } else {
-          $statusCondition = ' vl.result_status = ' . SAMPLE_STATUS_REJECTED;
+          $statusCondition = ' vl.result_status = ' . SAMPLE_STATUS\REJECTED;
      }
      $sWhere[] = $statusCondition;
 }

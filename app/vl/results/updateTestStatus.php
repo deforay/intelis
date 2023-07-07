@@ -55,9 +55,9 @@ try {
         $vlService = ContainerRegistry::get(VlService::class);
         $status['vl_result_category'] = $vlService->getVLResultCategory($status['result_status'], $vlRow['result']);
         if ($status['vl_result_category'] == 'failed' || $status['vl_result_category'] == 'invalid') {
-            $status['result_status'] = SAMPLE_STATUS_TEST_FAILED;
+            $status['result_status'] = SAMPLE_STATUS\TEST_FAILED;
         } elseif ($vldata['vl_result_category'] == 'rejected') {
-            $status['result_status'] = SAMPLE_STATUS_REJECTED;
+            $status['result_status'] = SAMPLE_STATUS\REJECTED;
         }
 
         // echo "<pre>";print_r($status);die;

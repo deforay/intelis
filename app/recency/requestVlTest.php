@@ -87,7 +87,7 @@ try {
         $data['recency_vl'] = 'yes';
         $data['reason_for_vl_testing'] = 9999; // 9999 is Recency Test in r_vl_test_reasons table
         $data['vlsm_country_id'] = $general->getGlobalConfig('vl_form');
-        $data['result_status'] = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+        $data['result_status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
         $data['patient_dob'] = date('Y-m-d', strtotime($result[9]));
         $data['patient_age_in_years'] = $result[10];
         $data['patient_gender'] = $result[11];

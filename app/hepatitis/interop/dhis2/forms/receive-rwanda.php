@@ -264,7 +264,7 @@ foreach ($trackedEntityInstances as $tracker) {
         $formData['province_id'] = !empty($prov['geo_id']) ? $prov['geo_id'] : 1;
 
         $formData['specimen_type'] = 1; // Always Whole Blood
-        $formData['result_status'] = SAMPLE_STATUS_RECEIVED_AT_CLINIC; // Registered on STS but not in Testing Lab
+        $formData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC; // Registered on STS but not in Testing Lab
 
         $formData['social_category'] = (!empty($formData['social_category']) ? $dhis2SocialCategoryOptions[$formData['social_category']] : null);
         $formData['patient_gender'] = (!empty($formData['patient_gender']) ? $dhis2GenderOptions[$formData['patient_gender']] : null);

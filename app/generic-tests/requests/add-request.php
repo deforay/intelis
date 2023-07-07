@@ -265,7 +265,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                   <div class="form-group">
                                                        <label for="fName">Clinic/Health Center <span class="mandatory">*</span></label><br>
                                                        <select class="form-control isRequired select2" id="fName" name="fName" title="Please select clinic/health center name" style="width:100%;" onchange="getfacilityProvinceDetails(this);fillFacilityDetails();setSampleDispatchDate();">
-                                                            <?php echo $facility;  ?>
+                                                            <?php echo $facility; ?>
                                                        </select>
                                                   </div>
                                              </div>
@@ -292,7 +292,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                             <option value=""> -- Select -- </option>
                                                             <?php
                                                             foreach ($implementingPartnerList as $implementingPartner) {
-                                                            ?>
+                                                                 ?>
                                                                  <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
                                                             <?php } ?>
                                                        </select>
@@ -305,7 +305,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                             <option value=""> -- Select -- </option>
                                                             <?php
                                                             foreach ($fundingSourceList as $fundingSource) {
-                                                            ?>
+                                                                 ?>
                                                                  <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
                                                             <?php } ?>
                                                        </select>
@@ -537,7 +537,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                                 } ?>
                                                                            </optgroup>
                                                                       <?php }
-                                                                      if ($_SESSION['instanceType'] != 'vluser') {  ?>
+                                                                      if ($_SESSION['instanceType'] != 'vluser') { ?>
                                                                            <option value="other">Other (Please Specify) </option>
                                                                       <?php } ?>
                                                                  </select>
@@ -753,17 +753,17 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 <?php
 if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
      if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
-?>
+          ?>
           <script src="/assets/js/DYMO.Label.Framework.js"></script>
           <script src="/uploads/barcode-formats/dymo-format.js"></script>
           <script src="/assets/js/dymo-print.js"></script>
      <?php
      } else if ($global['bar_code_printing'] == 'zebra-printer') {
-     ?>
-          <script src="/assets/js/zebra-browserprint.js.js"></script>
-          <script src="/uploads/barcode-formats/zebra-format.js"></script>
-          <script src="/assets/js/zebra-print.js"></script>
-<?php
+          ?>
+               <script src="/assets/js/zebra-browserprint.js.js"></script>
+               <script src="/uploads/barcode-formats/zebra-format.js"></script>
+               <script src="/assets/js/zebra-print.js"></script>
+     <?php
      }
 }
 ?>
@@ -1582,7 +1582,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          if (typeof(data.otherSection) != "undefined" && data.otherSection !== null && data.otherSection.length > 0) {
                               $("#otherSection").html(data.otherSection);
                          }
-                         checkNum();
+
                          $('.dateTime').datetimepicker({
                               changeMonth: true,
                               changeYear: true,
@@ -1626,24 +1626,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
      }
 
-     function checkNum() {
-          jQuery(".checkNum,.forceNumeric").keydown(function(e) {
-               // Allow: backspace, delete, tab, escape, enter and .
-               if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
-                    // Allow: Ctrl+A
-                    (e.keyCode == 65 && e.ctrlKey === true) ||
-                    // Allow: home, end, left, right
-                    (e.keyCode >= 35 && e.keyCode <= 39)) {
-                    // let it happen, don't do anything
-                    return;
-               }
-               // Ensure that it is a number and stop the keypress
-               if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-                    e.preventDefault();
-               }
-          });
-     }
-
      function getTestTypeConfigList(testTypeId) {
 
           $.post("/includes/get-test-type-config.php", {
@@ -1669,30 +1651,30 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     <td class="text-center">${testCounter}</td>
                     <td>
                     <select class="form-control test-name-table-input" id="testName${testCounter}" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
-                   ${testMethods}
-                </select>
-                <input type="text" name="testNameOther[]" id="testNameOther${testCounter}" class="form-control testNameOther${testCounter}" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
-            </td>
-            <td><input type="text" name="testDate[]" id="testDate${testCounter}" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ${testCounter}" /></td>
-            <td><select name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
-            <td class="kitlabels" style="display: none;"><input type="text" name="lotNo[]" id="lotNo${testCounter}" class="form-control kit-fields${testCounter}" placeholder="Kit lot no" title="Please enter the kit lot no. for row ${testCounter}" style="display:none;"/></td>
-            <td class="kitlabels" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control expDate kit-fields${testCounter}" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" style="display:none;"/></td>
-            <td>
-               <input type="text" id="testResult${testCounter}" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
-            </td>
-            <td class="testResultUnit">
-            <select class="form-control resultUnit" id="testResultUnit${testCounter}" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+                         ${testMethods}
+                         </select>
+                         <input type="text" name="testNameOther[]" id="testNameOther${testCounter}" class="form-control testNameOther${testCounter}" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
+                    </td>
+                    <td><input type="text" name="testDate[]" id="testDate${testCounter}" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ${testCounter}" /></td>
+                    <td><select name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
+                    <td class="kitlabels" style="display: none;"><input type="text" name="lotNo[]" id="lotNo${testCounter}" class="form-control kit-fields${testCounter}" placeholder="Kit lot no" title="Please enter the kit lot no. for row ${testCounter}" style="display:none;"/></td>
+                    <td class="kitlabels" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control expDate kit-fields${testCounter}" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" style="display:none;"/></td>
+                    <td>
+                         <input type="text" id="testResult${testCounter}" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
+                    </td>
+                    <td class="testResultUnit">
+                    <select class="form-control resultUnit" id="testResultUnit${testCounter}" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
                <option value="">--Select--</option>
                <?php foreach ($testResultUnits as $key => $unit) { ?>
-               <option value="<?php echo $key; ?>"><?php echo $unit; ?></option>
+                    <option value="<?php echo $key; ?>"><?php echo $unit; ?></option>
                <?php } ?>
-            </select>
-            </td>
-            <td style="vertical-align:middle;text-align: center;width:100px;">
-                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><em class="fa-solid fa-plus"></em></a>&nbsp;
-                <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
-            </td>
-        </tr>`;
+                    </select>
+                    </td>
+                    <td style="vertical-align:middle;text-align: center;width:100px;">
+                         <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><em class="fa-solid fa-plus"></em></a>&nbsp;
+                         <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+                    </td>
+               </tr>`;
           $("#testKitNameTable").append(rowString);
 
           $('.date').datepicker({

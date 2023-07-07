@@ -268,7 +268,7 @@ if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 6) {
      $sWhere[] = ' vl.sample_received_at_vl_lab_datetime is not null AND vl.sample_received_at_vl_lab_datetime not like ""';
 }
 if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 7) {
-     $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . SAMPLE_STATUS_ACCEPTED;
+     $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . SAMPLE_STATUS\ACCEPTED;
 }
 if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == "sent") {
      $sWhere[] = ' vl.result_sent_to_source is not null and vl.result_sent_to_source = "sent"';
@@ -298,8 +298,8 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
           $sFilter = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
      }
 } elseif (!$_POST['hidesrcofreq']) {
-     $sWhere[] = ' vl.result_status != ' . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
-     $sFilter = ' AND result_status != ' . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+     $sWhere[] = ' vl.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+     $sFilter = ' AND result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 }
 if (!empty($sWhere)) {
      $_SESSION['eidRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);

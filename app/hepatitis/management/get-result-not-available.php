@@ -122,7 +122,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*
                     LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
                     INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
-                    WHERE vl.result_status != " . SAMPLE_STATUS_REJECTED . "
+                    WHERE vl.result_status != " . SAMPLE_STATUS\REJECTED . "
                     AND vl.sample_code is NOT NULL
                     AND (vl.hcv_vl_result IS NULL OR vl.hcv_vl_result='') AND (vl.hbv_vl_result IS NULL OR vl.hbv_vl_result='')";
 $start_date = '';

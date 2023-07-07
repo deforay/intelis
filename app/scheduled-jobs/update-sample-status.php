@@ -40,14 +40,14 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $status) {
         if (empty($expiryDays)) {
             $expiryDays = 365 * 2; // by default, we consider samples more than 2 years as expired
         }
-        $db->where("result_status != " . SAMPLE_STATUS_REJECTED); // not rejected
-        $db->where("result_status != " . SAMPLE_STATUS_ACCEPTED); // not approved
-        $db->where("result_status != " . SAMPLE_STATUS_EXPIRED); // not expired
+        $db->where("result_status != " . SAMPLE_STATUS\REJECTED); // not rejected
+        $db->where("result_status != " . SAMPLE_STATUS\ACCEPTED); // not approved
+        $db->where("result_status != " . SAMPLE_STATUS\EXPIRED); // not expired
         $db->where("(DATEDIFF(CURRENT_DATE, `sample_collection_date`)) > " . $expiryDays);
         $db->update(
             $tableName[$module],
             [
-                "result_status" => SAMPLE_STATUS_EXPIRED,
+                "result_status" => SAMPLE_STATUS\EXPIRED,
                 "locked" => "yes"
             ]
         );
@@ -56,7 +56,7 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $status) {
         //LOCKING SAMPLES
         $lockExpiryDays = $general->getGlobalConfig($module . '_sample_lock_after_days');
         if ($lockExpiryDays != null && $lockExpiryDays >= 0) {
-            $db->where("(result_status = " . SAMPLE_STATUS_REJECTED . " OR result_status = " . SAMPLE_STATUS_ACCEPTED . ")"); // Samples that are Accepted, Rejected
+            $db->where("(result_status = " . SAMPLE_STATUS\REJECTED . " OR result_status = " . SAMPLE_STATUS\ACCEPTED . ")"); // Samples that are Accepted, Rejected
             $db->where("locked NOT LIKE 'yes'");
             $db->where("(DATEDIFF(CURRENT_DATE, `last_modified_datetime`)) > " . $lockExpiryDays);
             $db->update($tableName[$module], array("locked" => "yes"));

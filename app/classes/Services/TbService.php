@@ -198,17 +198,17 @@ class TbService extends AbstractTestService
                     $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
                     $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
                     $tesRequestData['remote_sample'] = 'yes';
-                    $tesRequestData['result_status'] = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+                    $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
                     if ($accessType === 'testing-lab') {
                         $tesRequestData['sample_code'] = $sampleData['sampleCode'];
-                        $tesRequestData['result_status'] = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
+                        $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
                     }
                 } else {
                     $tesRequestData['sample_code'] = $sampleData['sampleCode'];
                     $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
                     $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
                     $tesRequestData['remote_sample'] = 'no';
-                    $tesRequestData['result_status'] = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
+                    $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
                 }
                 $formAttributes = [
                     'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
