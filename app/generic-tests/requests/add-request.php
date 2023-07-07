@@ -73,45 +73,6 @@ $suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatme
 $suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQuery);*/
 $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_units", array("unit_id", "unit_name"), true, "unit_status='active'");
 
-?>
-<style>
-     .ui_tpicker_second_label {
-          display: none !important;
-     }
-
-     .ui_tpicker_second_slider {
-          display: none !important;
-     }
-
-     .ui_tpicker_millisec_label {
-          display: none !important;
-     }
-
-     .ui_tpicker_millisec_slider {
-          display: none !important;
-     }
-
-     .ui_tpicker_microsec_label {
-          display: none !important;
-     }
-
-     .ui_tpicker_microsec_slider {
-          display: none !important;
-     }
-
-     .ui_tpicker_timezone_label {
-          display: none !important;
-     }
-
-     .ui_tpicker_timezone {
-          display: none !important;
-     }
-
-     .ui_tpicker_time_input {
-          width: 100%;
-     }
-</style>
-<?php
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
 $fundingSourceList = $db->query($fundingSourceQry);
@@ -180,6 +141,47 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
      .row {
           margin-top: 6px;
      }
+     .ui_tpicker_second_label {
+          display: none !important;
+     }
+
+     .ui_tpicker_second_slider {
+          display: none !important;
+     }
+
+     .ui_tpicker_millisec_label {
+          display: none !important;
+     }
+
+     .ui_tpicker_millisec_slider {
+          display: none !important;
+     }
+
+     .ui_tpicker_microsec_label {
+          display: none !important;
+     }
+
+     .ui_tpicker_microsec_slider {
+          display: none !important;
+     }
+
+     .ui_tpicker_timezone_label {
+          display: none !important;
+     }
+
+     .ui_tpicker_timezone {
+          display: none !important;
+     }
+
+     .ui_tpicker_time_input {
+          width: 100%;
+     }
+     .facilitySectionInput, .patientSectionInput, #otherSection .col-md-6 {
+          margin: 3px 0px;
+     }
+     .facilitySectionInput, .patientSectionInput .select2, #otherSection .col-md-6 .select2 {
+          margin: 3px 0px;
+     }
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -205,37 +207,37 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                    <div class="box-header with-border">
                                         <h3 class="box-title">Clinic Information: (To be filled by requesting Clinican/Nurse)</h3>
                                    </div>
-                                   <div class="box-body row">
-                                        <div class="col-xs-4 col-md-4">
-                                             <div class="form-group">
-                                                  <label for="testType">Test Type</label><br>
-                                                  <select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:90% !important;" onchange="getTestTypeForm()">
-                                                       <option value=""> -- Select -- </option>
-                                                       <?php foreach ($testTypeResult as $testType) { ?>
-                                                            <option value="<?php echo $testType['test_type_id'] ?>" data-short="<?php echo $testType['test_short_code']; ?>"><?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?></option>
-                                                       <?php } ?>
-                                                  </select>
+                                   <div class="">
+                                        <div class="row">
+                                             <div class="col-md-6">
+                                                  <label class="col-lg-5" for="testType">Test Type <span class="mandatory">*</span></label>
+                                                  <div class="col-lg-7">
+                                                       <select class="form-control isRequired" name="testType" id="testType" title="Please choose test type" onchange="getTestTypeForm()">
+                                                            <option value=""> -- Select -- </option>
+                                                            <?php foreach ($testTypeResult as $testType) { ?>
+                                                                 <option value="<?php echo $testType['test_type_id'] ?>" data-short="<?php echo $testType['test_short_code']; ?>"><?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?></option>
+                                                            <?php } ?>
+                                                       </select>
+                                                  </div>
                                              </div>
-                                        </div>
-                                        <div class="col-xs-4 col-md-4 requestForm" style="display:none;">
-                                             <div class="form-group">
-                                                  <label for="sampleCode">Sample ID <span class="mandatory">*</span></label>
-                                                  <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" style="width:100%;" readonly onblur="checkSampleNameValidation('form_generic','<?php echo $sampleCode; ?>',this.id,null,'This sample number already exists.Try another number',null)" />
+                                             <div class="col-md-6 requestForm" style="display:none;">
+                                                  <label class="col-lg-5" for="sampleCode">Sample ID <span class="mandatory">*</span></label>
+                                                  <div class="col-lg-7">
+                                                       <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" style="width:100%;" readonly onblur="checkSampleNameValidation('form_generic','<?php echo $sampleCode; ?>',this.id,null,'This sample number already exists.Try another number',null)" />
+                                                  </div>
                                              </div>
-                                        </div>
-                                        <div class="col-xs-4 col-md-4 requestForm" style="display:none;">
-                                             <div class="form-group">
+                                            <!--  <div class="col-lg-4 requestForm" style="display:none;">
                                                   <label for="sampleReordered">
-                                                       <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" title="Please indicate if this is a reordered sample"> Sample Reordered
+                                                       <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" title="Please indicate if this is a reordered sample" style="border-radius: 10px;"> Sample Reordered
                                                   </label>
-                                             </div>
+                                             </div> -->
                                         </div>
                                    </div>
-                                   <div class="box-body requestForm" style="display:none;">
+                                   <div class="requestForm" style="display:none;">
                                         <div class="row">
                                              <!-- BARCODESTUFF START -->
                                              <?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") { ?>
-                                                  <div class="col-xs-4 col-md-4 pull-right">
+                                                  <div class="col-md-6 pull-right">
                                                        <div class="form-group">
                                                             <label for="sampleCode">Print Barcode Label<span class="mandatory">*</span> </label>
                                                             <input type="checkbox" class="" id="printBarCode" name="printBarCode" checked />
@@ -245,34 +247,49 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                              <!-- BARCODESTUFF END -->
                                         </div>
                                         <div class="row">
-                                             <div class="col-xs-4 col-md-4">
-                                                  <div class="form-group">
-                                                       <label for="province">State/Province <span class="mandatory">*</span></label><br>
+                                             <div class="col-md-6">
+                                                  <label class="col-lg-5" for="province">State/Province <span class="mandatory">*</span></label>
+                                                  <div class="col-lg-7">
                                                        <select class="form-control isRequired" name="province" id="province" title="Please choose state" style="width:100%;" onchange="getProvinceDistricts(this);">
                                                             <?php echo $province; ?>
                                                        </select>
                                                   </div>
                                              </div>
-                                             <div class="col-xs-4 col-md-4">
-                                                  <div class="form-group">
-                                                       <label for="district">District/County <span class="mandatory">*</span></label><br>
+                                             <div class="col-md-6">
+                                                  <label class="col-lg-5" for="district">District/County <span class="mandatory">*</span></label>
+                                                  <div class="col-lg-7">
                                                        <select class="form-control isRequired" name="district" id="district" title="Please choose county" style="width:100%;" onchange="getFacilities(this);">
                                                             <option value=""> -- Select -- </option>
                                                        </select>
                                                   </div>
                                              </div>
-                                             <div class="col-xs-4 col-md-4">
-                                                  <div class="form-group">
-                                                       <label for="fName">Clinic/Health Center <span class="mandatory">*</span></label><br>
+                                        </div>
+                                        <div class="row">
+                                             <div class="col-md-6">
+                                                  <label class="col-lg-5" for="fName">Clinic/Health Center <span class="mandatory">*</span></label>
+                                                  <div class="col-lg-7">
                                                        <select class="form-control isRequired select2" id="fName" name="fName" title="Please select clinic/health center name" style="width:100%;" onchange="getfacilityProvinceDetails(this);fillFacilityDetails();setSampleDispatchDate();">
                                                             <?php echo $facility; ?>
                                                        </select>
                                                   </div>
                                              </div>
-                                             <div class="col-xs-3 col-md-3" style="display:none;">
-                                                  <div class="form-group">
-                                                       <label for="fCode">Clinic/Health Center Code </label>
+                                             <div class="col-md-6" style="display:none;">
+                                                  <label class="col-lg-5" for="fCode">Clinic/Health Center Code </label>
+                                                  <div class="col-lg-7">
                                                        <input type="text" class="form-control" style="width:100%;" name="fCode" id="fCode" placeholder="Clinic/Health Center Code" title="Please enter clinic/health center code">
+                                                  </div>
+                                             </div>
+                                             <div class="col-md-6">
+                                                  <label class="col-lg-5" for="implementingPartner">Implementing Partner</label>
+                                                  <div class="col-lg-7">
+                                                       <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
+                                                            <option value=""> -- Select -- </option>
+                                                            <?php
+                                                            foreach ($implementingPartnerList as $implementingPartner) {
+                                                                 ?>
+                                                                 <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
+                                                            <?php } ?>
+                                                       </select>
                                                   </div>
                                              </div>
                                         </div>
@@ -285,22 +302,9 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                              <div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:none;"></div>
                                         </div>
                                         <div class="row">
-                                             <div class="col-xs-4 col-md-4">
-                                                  <div class="form-group">
-                                                       <label for="implementingPartner">Implementing Partner</label><br>
-                                                       <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
-                                                            <option value=""> -- Select -- </option>
-                                                            <?php
-                                                            foreach ($implementingPartnerList as $implementingPartner) {
-                                                                 ?>
-                                                                 <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
-                                                            <?php } ?>
-                                                       </select>
-                                                  </div>
-                                             </div>
-                                             <div class="col-xs-4 col-md-4">
-                                                  <div class="form-group">
-                                                       <label for="fundingSource">Funding Source</label><br>
+                                             <div class="col-md-6">
+                                                  <label class="col-lg-5" for="fundingSource">Funding Source</label>
+                                                  <div class="col-lg-7">
                                                        <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
                                                             <option value=""> -- Select -- </option>
                                                             <?php
@@ -311,10 +315,9 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                        </select>
                                                   </div>
                                              </div>
-
-                                             <div class="col-xs-4 col-md-4">
-                                                  <div class="form-group">
-                                                       <label for="labId">Testing Lab <span class="mandatory">*</span></label><br>
+                                             <div class="col-md-6">
+                                                  <label class="col-lg-5" for="labId">Testing Lab <span class="mandatory">*</span></label>
+                                                  <div class="col-lg-7">
                                                        <select name="labId" id="labId" class="select2 form-control isRequired" title="Please choose lab" onchange="autoFillFocalDetails();setSampleDispatchDate();" style="width:100%;">
                                                             <option value="">-- Select --</option>
                                                             <?php foreach ($lResult as $labName) { ?>
@@ -335,41 +338,43 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                    </div>
                                    <div class="box-body">
                                         <div class="row">
-                                             <div class="col-xs-3 col-md-3">
-                                                  <div class="form-group">
-                                                       <label for="artNo">Patient ID <span class="mandatory">*</span></label>
+                                             <div class="col-md-6">
+                                                  <label class="col-lg-5" for="artNo">Patient ID <span class="mandatory">*</span></label>
+                                                  <div class="col-lg-7">
                                                        <input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter patient ID" title="Enter patient ID" onchange="checkPatientDetails('form_generic','patient_id',this,null)" />
                                                   </div>
                                              </div>
-                                             <div class="col-xs-3 col-md-3">
-                                                  <div class="form-group">
-                                                       <label for="dob">Date of Birth </label>
+                                             <div class="col-md-6">
+                                                  <label class="col-lg-5" for="dob">Date of Birth </label>
+                                                  <div class="col-lg-7">
                                                        <input type="text" name="dob" id="dob" class="form-control date" placeholder="Enter DOB" title="Enter dob" onchange="getAge();" />
-                                                  </div>
-                                             </div>
-                                             <div class="col-xs-3 col-md-3">
-                                                  <div class="form-group">
-                                                       <label for="ageInYears">If DOB unknown, Age in Years </label>
-                                                       <input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="3" placeholder="Age in Years" title="Enter age in years" />
-                                                  </div>
-                                             </div>
-                                             <div class="col-xs-3 col-md-3">
-                                                  <div class="form-group">
-                                                       <label for="ageInMonths">If Age
-                                                            < 1, Age in Months </label> <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" />
                                                   </div>
                                              </div>
                                         </div>
                                         <div class="row">
-                                             <div class="col-xs-3 col-md-3">
-                                                  <div class="form-group">
-                                                       <label for="patientFirstName">Patient Name (First Name, Last Name) <span class="mandatory">*</span></label>
+                                             <div class="col-md-6">
+                                                  <label class="col-lg-5" for="ageInYears">If DOB unknown, Age in Years </label>
+                                                  <div class="col-lg-7">
+                                                       <input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="3" placeholder="Age in Years" title="Enter age in years" />
+                                                  </div>
+                                             </div>
+                                             <div class="col-md-6">
+                                                  <label class="col-lg-5" for="ageInMonths">If Age < 1, Age in Months </label> 
+                                                  <div class="col-lg-7">
+                                                       <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" />
+                                                  </div>
+                                             </div>
+                                        </div>
+                                        <div class="row">
+                                             <div class="col-md-6">
+                                                  <label class="col-lg-5" for="patientFirstName">Patient Name (First Name, Last Name) <span class="mandatory">*</span></label>
+                                                  <div class="col-lg-7">
                                                        <input type="text" name="patientFirstName" id="patientFirstName" class="form-control isRequired" placeholder="Enter Patient Name" title="Enter patient name" />
                                                   </div>
                                              </div>
-                                             <div class="col-xs-3 col-md-3">
-                                                  <div class="form-group">
-                                                       <label for="gender">Gender</label><br>
+                                             <div class="col-md-6">
+                                                  <label class="col-lg-5" for="gender">Gender</label>
+                                                  <div class="col-lg-5">
                                                        <label class="radio-inline" style="margin-left:0px;">
                                                             <input type="radio" class="" id="genderMale" name="gender" value="male" title="Please check gender">Male
                                                        </label>
@@ -381,9 +386,11 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                        </label>
                                                   </div>
                                              </div>
-                                             <div class="col-xs-3 col-md-3">
-                                                  <div class="form-group">
-                                                       <label for="gender">Patient consent to receive SMS?</label><br>
+                                        </div>
+                                        <div class="row ">
+                                             <div class="col-md-6">
+                                                  <label class="col-lg-5" for="gender">Patient consent to receive SMS?</label>
+                                                  <div class="col-lg-7">
                                                        <label class="radio-inline" style="margin-left:0px;">
                                                             <input type="radio" class="" id="receivesmsYes" name="receiveSms" value="yes" title="Patient consent to receive SMS" onclick="checkPatientReceivesms(this.value);"> Yes
                                                        </label>
@@ -392,17 +399,17 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                        </label>
                                                   </div>
                                              </div>
-                                             <div class="col-xs-3 col-md-3">
-                                                  <div class="form-group">
-                                                       <label for="patientPhoneNumber">Phone Number</label>
+                                             <div class="col-md-6">
+                                                  <label class="col-lg-5" for="patientPhoneNumber">Phone Number</label>
+                                                  <div class="col-lg-7">
                                                        <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control forceNumeric" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" />
                                                   </div>
                                              </div>
                                         </div>
-                                        <div class="row ">
-                                             <div class="col-xs-3 col-md-3 femaleSection">
-                                                  <div class="form-group">
-                                                       <label for="patientPregnant">Is Patient Pregnant? </label><br>
+                                        <div class="row">
+                                             <div class="col-md-6 femaleSection">
+                                                  <label class="col-lg-5" for="patientPregnant">Is Patient Pregnant? </label>
+                                                  <div class="col-lg-7">
                                                        <label class="radio-inline">
                                                             <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Please check one"> Yes
                                                        </label>
@@ -411,9 +418,9 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                        </label>
                                                   </div>
                                              </div>
-                                             <div class="col-xs-3 col-md-3 femaleSection">
-                                                  <div class="form-group">
-                                                       <label for="breastfeeding">Is Patient Breastfeeding? </label><br>
+                                             <div class="col-md-6 femaleSection">
+                                                  <label class="col-lg-5" for="breastfeeding">Is Patient Breastfeeding? </label>
+                                                  <div class="col-lg-7">
                                                        <label class="radio-inline">
                                                             <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Please check one"> Yes
                                                        </label>
@@ -422,14 +429,15 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                        </label>
                                                   </div>
                                              </div>
-                                             <div class="col-xs-3 col-md-3" style="display:none;" id="patientSection">
-                                                  <div class="form-group">
-                                                       <label for="">How long has this patient been on treatment ? </label>
+                                        </div>
+                                        <div class="row ">
+                                             <div class="col-md-6" style="display:none;" id="patientSection">
+                                                  <label class="col-lg-5" for="treatPeriod">How long has this patient been on treatment ? </label>
+                                                  <div class="col-lg-7">
                                                        <input type="text" class="form-control" id="treatPeriod" name="treatPeriod" placeholder="Enter Treatment Period" title="Please enter how long has this patient been on treatment" />
                                                   </div>
                                              </div>
                                         </div>
-                                        <!-- <div id="patientSection"></div> -->
                                    </div>
                                    <div class="box box-primary">
                                         <div class="box-header with-border">
@@ -437,21 +445,23 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                         </div>
                                         <div class="box-body">
                                              <div class="row">
-                                                  <div class="col-xs-3 col-md-3">
-                                                       <div class="form-group">
-                                                            <label for="">Date of Sample Collection <span class="mandatory">*</span></label>
+                                                  <div class="col-md-6">
+                                                       <label class="col-lg-5" for="sampleCollectionDate">Date of Sample Collection <span class="mandatory">*</span></label>
+                                                       <div class="col-lg-7">
                                                             <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" onchange="checkSampleReceviedDate();checkSampleTestingDate();generateSampleCode();setSampleDispatchDate();">
                                                        </div>
                                                   </div>
-                                                  <div class="col-xs-3 col-md-3">
-                                                       <div class="form-group">
-                                                            <label for="">Sample Dispatched On <span class="mandatory">*</span></label>
+                                                  <div class="col-md-6">
+                                                       <label class="col-lg-5" for="sampleDispatchedDate">Sample Dispatched On <span class="mandatory">*</span></label>
+                                                       <div class="col-lg-7">
                                                             <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="Sample Dispatched On" title="Please select sample dispatched on">
                                                        </div>
                                                   </div>
-                                                  <div class="col-xs-3 col-md-3" id="specimenSection">
-                                                       <div class="form-group">
-                                                            <label for="specimenType">Sample Type <span class="mandatory">*</span></label>
+                                             </div>
+                                             <div class="row">
+                                                  <div class="col-md-6" id="specimenSection">
+                                                       <label class="col-lg-5" for="specimenType">Sample Type <span class="mandatory">*</span></label>
+                                                       <div class="col-lg-7">
                                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose sample type">
                                                                  <option value=""> -- Select -- </option>
                                                                  <?php foreach ($sResult as $name) { ?>
@@ -809,15 +819,15 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.ui-datepicker-calendar').show();
           });
           $("#testType").select2({
-               width: '285px',
+               width: '100%',
                placeholder: "<?php echo _("Select Test Type"); ?>"
           });
           $('#labId').select2({
-               width: '285px',
+               width: '100%',
                placeholder: "Select Testing Lab"
           });
           $('#fName').select2({
-               width: '285px',
+               width: '100%',
                placeholder: "Select Clinic/Health Center"
           });
           $('#reviewedBy').select2({
@@ -834,23 +844,23 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                placeholder: "Select Approved By"
           });
           $('#facilityId').select2({
-               width: '285px',
+               width: '100%',
                placeholder: "Select Clinic/Health Center"
           });
           $('#district').select2({
-               width: '285px',
+               width: '100%',
                placeholder: "District"
           });
           $('#province').select2({
-               width: '285px',
+               width: '100%',
                placeholder: "Province"
           });
           $('#implementingPartner').select2({
-               width: '285px',
+               width: '100%',
                placeholder: "Implementing Partner"
           });
           $('#fundingSource').select2({
-               width: '285px',
+               width: '100%',
                placeholder: "Funding Source"
           });
 
@@ -1598,7 +1608,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               $('.ui-datepicker-calendar').show();
                          });
                          $(".dynamicFacilitySelect2").select2({
-                              width: '285px',
+                              width: '100%',
                               placeholder: "<?php echo _("Select any one of the option"); ?>"
                          });
                          $(".dynamicSelect2").select2({

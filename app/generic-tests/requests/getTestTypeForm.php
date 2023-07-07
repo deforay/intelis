@@ -59,7 +59,7 @@ function getDropDownField($testAttribute, $value, $inputClass, $isRequired, $fie
         $fieldName .= '[]';
     }
     $field = sprintf(
-        '<select name="%s" id="%s" class="form-control %s%s%s%s" title="Please select the option" %s style="width:%s;">',
+        '<div class="col-lg-7"><select name="%s" id="%s" class="form-control %s%s%s%s" title="Please select the option" %s style="width:%s;">',
         $fieldName,
         $testAttribute['field_id'],
         $inputClass,
@@ -78,7 +78,7 @@ function getDropDownField($testAttribute, $value, $inputClass, $isRequired, $fie
         }
         $field .= '<option value="' . trim($option) . '" ' . $selected . '>' . ($option) . '</option>';
     }
-    $field .= '</select>';
+    $field .= '</select></div>';
     return $field;
 }
 
@@ -89,7 +89,7 @@ function getField($testAttribute, $testAttributeId, $value, $inputClass, $isRequ
         $field .= getDropDownField($testAttribute, $value, $inputClass, $isRequired, $fieldType, $disabled, $inputWidth);
     } else {
         $field = sprintf(
-            '<input type="text" class="form-control %s%s%s" placeholder="%s" id="%s" name="dynamicFields[%s]" value="%s" %s style="width:%s;">',
+            '<div class="col-lg-7"><input type="text" class="form-control %s%s%s" placeholder="%s" id="%s" name="dynamicFields[%s]" value="%s" %s style="width:%s;"></div>',
             $isRequired,
             $fieldType,
             $disabled,
@@ -125,7 +125,7 @@ if ($n > 0) {
                 }
 
                 $inputClass = $testAttribute['section'] == 'facilitySection' ? " dynamicFacilitySelect2 " : " dynamicSelect2 ";
-                $inputWidth = $testAttribute['section'] == 'facilitySection' ? "285px !important;" : "100%;";
+                $inputWidth = $testAttribute['section'] == 'facilitySection' ? "100% !important;" : "100%;";
 
                 $fieldDiv = '';
 
@@ -134,16 +134,14 @@ if ($n > 0) {
                     $fieldDiv .= '<label class="col-lg-5 control-label labels" for="' . $testAttribute['field_id'] . '">' . $testAttribute['field_name'] . $mandatory . '</label>';
                     $fieldDiv .= '<div class="col-lg-7">';
                 } elseif ($testAttribute['section'] == 'facilitySection') {
-                    $fieldDiv .= '<div class="col-xs-4 col-md-4 ' . $testAttribute['section'] . 'Input">';
-                    $fieldDiv .= '<div class="form-group">';
-                    $fieldDiv .= '<label class="control-label labels" for="' . $testAttribute['field_id'] . '">' . $testAttribute['field_name'] . $mandatory . '</label><br>';
+                    $fieldDiv .= '<div class="col-md-6 ' . $testAttribute['section'] . 'Input">';
+                    $fieldDiv .= '<label class="col-lg-5 control-label labels" for="' . $testAttribute['field_id'] . '">' . $testAttribute['field_name'] . $mandatory . '</label>';
                 } else {
-                    $fieldDiv .= '<div class="col-xs-3 col-md-3 ' . $testAttribute['section'] . 'Input">';
-                    $fieldDiv .= '<div class="form-group">';
-                    $fieldDiv .= '<label class="control-label labels" for="' . $testAttribute['field_id'] . '">' . $testAttribute['field_name'] . $mandatory . '</label>';
+                    $fieldDiv .= '<div class="col-md-6 ' . $testAttribute['section'] . 'Input">';
+                    $fieldDiv .= '<label class="col-lg-5 control-label labels" for="' . $testAttribute['field_id'] . '">' . $testAttribute['field_name'] . $mandatory . '</label>';
                 }
                 $fieldDiv .= getField($testAttribute, $testAttributeId, $value, $inputClass, $isRequired, $fieldType, $disabled, $inputWidth);
-                $fieldDiv .= '</div></div>';
+                $fieldDiv .= '</div>';
 
                 $result[$testAttribute['section']][] = $fieldDiv;
                 $i++;
@@ -178,11 +176,10 @@ if ($n > 0) {
                     $title = '<div class="box-header with-border"><h3 class="box-title">' . $testAttribute['section_name'] . '</h3></div>';
 
                     // Grouping Other Sections via array
-                    $fieldDiv = '<div class="col-xs-3 col-md-3">';
-                    $fieldDiv .= '<div class="form-group">';
-                    $fieldDiv .= '<label>' . $testAttribute['field_name'] . $mandatory . '</label>';
+                    $fieldDiv = '<div class="col-md-6">';
+                    $fieldDiv .= '<label class="col-lg-5" for="'.$testAttributeId.'">' . $testAttribute['field_name'] . $mandatory . '</label>';
                     $fieldDiv .= getField($testAttribute, $testAttributeId, $value, $inputClass, $isRequired, $fieldType, $disabled, $inputWidth);
-                    $fieldDiv .= '</div></div>';
+                    $fieldDiv .= '</div>';
                     $content[trim(strtolower($testAttribute['section_name']))] .= $fieldDiv;
 
                     $others[$s[trim(strtolower($testAttribute['section_name']))]] = $title . '<div class="box-body"><div class="row">' . $content[trim(strtolower($testAttribute['section_name']))] . '</div></div>';
