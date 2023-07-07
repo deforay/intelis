@@ -654,7 +654,7 @@ $sFormat = '';
                                              <input type="hidden" name="vlSampleId" id="vlSampleId" value="" />
                                              <input type="hidden" name="provinceId" id="provinceId" />
                                              <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;"><?= _('Save and Next'); ?></a>
-                                             <a href="vlRequest.php" class="btn btn-default"> <?= _('Cancel'); ?></a>
+                                             <a href="/vl/requests/vl-requests.php" class="btn btn-default"> <?= _('Cancel'); ?></a>
                                         </div>
                                         <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
                                         <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
@@ -667,17 +667,17 @@ $sFormat = '';
 <?php
 if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
      if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
-?>
+          ?>
           <script src="/assets/js/DYMO.Label.Framework.js"></script>
           <script src="/uploads/barcode-formats/dymo-format.js"></script>
           <script src="/assets/js/dymo-print.js"></script>
      <?php
      } else if ($global['bar_code_printing'] == 'zebra-printer') {
-     ?>
-          <script src="/assets/js/zebra-browserprint.js.js"></script>
-          <script src="/uploads/barcode-formats/zebra-format.js"></script>
-          <script src="/assets/js/zebra-print.js"></script>
-<?php
+          ?>
+               <script src="/assets/js/zebra-browserprint.js.js"></script>
+               <script src="/uploads/barcode-formats/zebra-format.js"></script>
+               <script src="/assets/js/zebra-print.js"></script>
+     <?php
      }
 }
 ?>

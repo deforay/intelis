@@ -883,7 +883,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 								<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode($vlQueryInfo['reason_for_vl_result_changes']); ?>" />
 								<input type="hidden" name="oldStatus" value="<?= ($vlQueryInfo['result_status']); ?>" />
 								<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
-								<a href="vlRequest.php" class="btn btn-default"> Cancel</a>
+								<a href="/vl/requests/vl-requests.php" class="btn btn-default"> Cancel</a>
 							</div>
 				</form>
 			</div>

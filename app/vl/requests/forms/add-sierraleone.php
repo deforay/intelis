@@ -847,7 +847,7 @@ $sFormat = '';
                                              <?php } ?>
                                              <input type="hidden" name="vlSampleId" id="vlSampleId" value="" />
                                              <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;">Save and Next</a>
-                                             <a href="vlRequest.php" class="btn btn-default"> Cancel</a>
+                                             <a href="/vl/requests/vl-requests.php" class="btn btn-default"> Cancel</a>
                                         </div>
                                    </div>
                               </div>
@@ -864,17 +864,17 @@ $sFormat = '';
 <?php
 if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
      if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
-?>
+          ?>
           <script src="/assets/js/DYMO.Label.Framework.js"></script>
           <script src="/uploads/barcode-formats/dymo-format.js"></script>
           <script src="/assets/js/dymo-print.js"></script>
      <?php
      } else if ($global['bar_code_printing'] == 'zebra-printer') {
-     ?>
-          <script src="/assets/js/zebra-browserprint.js.js"></script>
-          <script src="/uploads/barcode-formats/zebra-format.js"></script>
-          <script src="/assets/js/zebra-print.js"></script>
-<?php
+          ?>
+               <script src="/assets/js/zebra-browserprint.js.js"></script>
+               <script src="/uploads/barcode-formats/zebra-format.js"></script>
+               <script src="/assets/js/zebra-print.js"></script>
+     <?php
      }
 }
 ?>

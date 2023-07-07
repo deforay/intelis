@@ -27,18 +27,10 @@ $result = array_fill_keys($sections, []);
 
 $testResultsAttribute = json_decode($testTypeResult[0]['test_results_config'], true);
 
-$facilityForm = [];
-$patientForm = [];
-$specimenForm = [];
-$labForm = [];
-$resultForm = [];
-$otherForm = [];
-$others = [];
+$othersSectionFields = [];
 $otherSection = [];
 $content = [];
 $n = count($testAttr);
-
-
 
 function getFieldType($fieldType)
 {
@@ -129,16 +121,19 @@ if ($n > 0) {
 
                 $fieldDiv = '';
 
+                $sectionClass = $testAttribute['section'] . 'Input';
                 if ($testAttribute['section'] == 'labSection') {
-                    $fieldDiv .= '<div class="col-md-6 ' . $testAttribute['section'] . 'Input">';
+                    $fieldDiv .= "<div class='col-md-6 $sectionClass'>";
                     $fieldDiv .= '<label class="col-lg-5 control-label labels" for="' . $testAttribute['field_id'] . '">' . $testAttribute['field_name'] . $mandatory . '</label>';
                     $fieldDiv .= '<div class="col-lg-7">';
                 } elseif ($testAttribute['section'] == 'facilitySection') {
-                    $fieldDiv .= '<div class="col-md-6 ' . $testAttribute['section'] . 'Input">';
-                    $fieldDiv .= '<label class="col-lg-5 control-label labels" for="' . $testAttribute['field_id'] . '">' . $testAttribute['field_name'] . $mandatory . '</label>';
+                    $fieldDiv .= "<div class='col-xs-4 col-md-4  $sectionClass'>";
+                    $fieldDiv .= "<div class='form-group'>";
+                    $fieldDiv .= '<label class="control-label labels" for="' . $testAttribute['field_id'] . '">' . $testAttribute['field_name'] . $mandatory . '</label><br>';
                 } else {
-                    $fieldDiv .= '<div class="col-md-6 ' . $testAttribute['section'] . 'Input">';
-                    $fieldDiv .= '<label class="col-lg-5 control-label labels" for="' . $testAttribute['field_id'] . '">' . $testAttribute['field_name'] . $mandatory . '</label>';
+                    $fieldDiv .= "<div class='col-xs-3 col-md-3  $sectionClass'>";
+                    $fieldDiv .= "<div class='form-group'>";
+                    $fieldDiv .= '<label class="control-label labels" for="' . $testAttribute['field_id'] . '">' . $testAttribute['field_name'] . $mandatory . '</label>';
                 }
                 $fieldDiv .= getField($testAttribute, $testAttributeId, $value, $inputClass, $isRequired, $fieldType, $disabled, $inputWidth);
                 $fieldDiv .= '</div>';
@@ -182,17 +177,14 @@ if ($n > 0) {
                     $fieldDiv .= '</div>';
                     $content[trim(strtolower($testAttribute['section_name']))] .= $fieldDiv;
 
-                    $others[$s[trim(strtolower($testAttribute['section_name']))]] = $title . '<div class="box-body"><div class="row">' . $content[trim(strtolower($testAttribute['section_name']))] . '</div></div>';
+                    $othersSectionFields[$s[trim(strtolower($testAttribute['section_name']))]] = $title . '<div class="box-body"><div class="row">' . $content[trim(strtolower($testAttribute['section_name']))] . '</div></div>';
                     $i++;
                 }
             }
 
-            $key = 0;
-            foreach ($others as $form) {
-                $otherForm[$key] = "<div class='box box-primary' style='margin-top: 0px; margin-left: -1px;'>" . $form . "</div></div>";
-                $key++;
+            foreach ($othersSectionFields as $otherFormFields) {
+                $result['otherSection'][] = "<div class='box box-primary' style='margin-top: 0px; margin-left: -1px;'>" . $otherFormFields . "</div></div>";
             }
-            $result['otherSection'] = $otherForm;
         }
     }
 }
@@ -238,8 +230,7 @@ if (!empty($testResultsAttribute)) {
     $resultSection .= '<tr><th scope="row" colspan="5" class="text-right final-result-row">Result Interpretation</th>';
     $resultSection .= '<td><input type="text" placeholder="Interpretation result" title="Please enter the result interpretation" class="form-control" id="resultInterpretation" value="' . $resultInterpretation . '" name="resultInterpretation"></input>';
     $resultSection .= '<input type="hidden" id="resultType" name="resultType" class="form-control result-text" value="' . $testResultsAttribute['result_type'] . '"></td></tr>';
-    $resultForm[] = $resultSection;
+    $result['result'][] = $resultSection;
 }
-$result['result'] = $resultForm;
 
 echo json_encode($result);

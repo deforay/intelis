@@ -338,7 +338,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                                      } ?>
                                                                                 </optgroup>
                                                                            <?php }
-                                                                           if ($sarr['sc_user_type'] != 'vluser') {  ?>
+                                                                           if ($sarr['sc_user_type'] != 'vluser') { ?>
                                                                                 <!-- <option value="other">Other</option> -->
                                                                            <?php } ?>
                                                                       </select>
@@ -531,7 +531,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                  </div>
                                                             </div>
 
-                                                            <?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) {  ?>
+                                                            <?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) { ?>
                                                                  <div class="row">
                                                                       <div class="col-md-6">
                                                                            <div class="form-group">
@@ -544,7 +544,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                            </div>
                                                                       </div>
                                                                  </div>
-                                                            <?php }  ?>
+                                                            <?php } ?>
                                                             <hr>
                                                             <div class="row">
                                                                  <div class="col-md-4">
@@ -653,7 +653,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                                                } ?>
                                                                                           </optgroup>
                                                                                      <?php }
-                                                                                     if ($sarr['sc_user_type'] != 'vluser') {  ?>
+                                                                                     if ($sarr['sc_user_type'] != 'vluser') { ?>
                                                                                           <option value="other">Other (Please Specify) </option>
                                                                                      <?php } ?>
                                                                                 </select>
@@ -746,7 +746,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                   <input type="hidden" name="oldStatus" value="<?= ($vlQueryInfo['result_status']); ?>" />
                                                   <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
                                                   <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
-                                                  <a href="vlRequest.php" class="btn btn-default"> Cancel</a>
+                                                  <a href="/vl/requests/vl-requests.php" class="btn btn-default"> Cancel</a>
                                              </div>
                     </form>
                </div>
