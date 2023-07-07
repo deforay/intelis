@@ -4831,3 +4831,8 @@ ALTER TABLE `audit_form_vl` CHANGE `patient_first_name` `patient_first_name` VAR
 
 -- Amit 06-Jul-2023 version 5.1.9
 UPDATE `system_config` SET `value` = '5.1.9' WHERE `system_config`.`name` = 'sc_version';
+
+
+-- Jeyabanu 07-Jul-2023
+ALTER TABLE `form_tb` ADD `requesting_clinician` VARCHAR(100) NULL DEFAULT NULL AFTER `facility_id`;
+ALTER TABLE `audit_form_tb` ADD `requesting_clinician` VARCHAR(100) NULL DEFAULT NULL AFTER `facility_id`;

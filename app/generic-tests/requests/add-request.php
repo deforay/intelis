@@ -1482,8 +1482,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     sampleCodeFormat: $("#" + sampleCodeFormat).val(),
                     countryId: countryId,
                     sampleCollectionDate: $("#" + sampleCollectionDate).val(),
-                    provinceCode: provinceCode,
-                    provinceId: provinceId,
+                    provinceCode: $("#province").find(":selected").attr("data-code"),
+                    provinceId: $("#province").find(":selected").attr("data-province-id"),
                     testType: $('#testType').find(':selected').data('short')
                },
                function(data) {
