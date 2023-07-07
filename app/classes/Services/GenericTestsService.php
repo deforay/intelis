@@ -137,6 +137,7 @@ class GenericTestsService extends AbstractTestService
                     'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
                     'ip_address' => $this->commonService->getClientIpAddress()
                 ];
+
                 $tesRequestData['form_attributes'] = json_encode($formAttributes);
                 $this->db->insert("form_generic", $tesRequestData);
                 $id = $this->db->getInsertId();
