@@ -171,11 +171,11 @@ if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
 }
 if (isset($_POST['status']) && trim($_POST['status']) != '') {
      if ($_POST['status'] == 'no_result') {
-          $statusCondition = ' (vl.result is NULL OR vl.result ="") AND vl.result_status != ' . SAMPLE_STATUS_REJECTED;
+          $statusCondition = '  (vl.result is NULL OR vl.result ="")  AND vl.result_status != ' . SAMPLE_STATUS\REJECTED;
      } else if ($_POST['status'] == 'result') {
-          $statusCondition = ' (vl.result is NOT NULL AND vl.result !="" AND vl. != ' . SAMPLE_STATUS_REJECTED . ')';
+          $statusCondition = ' (vl.result is NOT NULL AND vl.result !="")  OR vl.result_status = ' . SAMPLE_STATUS\REJECTED;
      } else {
-          $statusCondition = ' vl.result_status = ' . SAMPLE_STATUS_REJECTED;
+          $statusCondition = ' vl.result_status= ' . SAMPLE_STATUS\REJECTED;
      }
      $sWhere[] = $statusCondition;
 }
@@ -194,7 +194,7 @@ if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
      }
 } else {
 
-     $sWhere[] = " vl.result_status != " . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+     $sWhere[] = " vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 }
 if ($_SESSION['instanceType'] == 'remoteuser') {
      //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";

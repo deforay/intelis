@@ -89,10 +89,10 @@ try {
     }
 
     $isRejected = false;
-    $resultStatus = SAMPLE_STATUS_PENDING_APPROVAL; // Awaiting Approval
+    $resultStatus = SAMPLE_STATUS\PENDING_APPROVAL; // Awaiting Approval
     if (isset($_POST['noResult']) && $_POST['noResult'] === 'yes') {
         $isRejected = true;
-        $resultStatus = SAMPLE_STATUS_REJECTED; // Rejected
+        $resultStatus = SAMPLE_STATUS\REJECTED; // Rejected
     }
 
     $reasonForChanges = '';
@@ -158,7 +158,7 @@ try {
 
 
     if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
-        $vldata['result_status'] = SAMPLE_STATUS_REJECTED;
+        $vldata['result_status'] = SAMPLE_STATUS\REJECTED;
     }
 
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['noResult'] == 'no' || $_POST['noResult'] == '')) {

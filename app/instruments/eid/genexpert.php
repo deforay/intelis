@@ -157,7 +157,7 @@ try {
             ];
 
             if (empty($data['result'])) {
-                $data['result_status'] = SAMPLE_STATUS_ON_HOLD; // 1= Hold
+                $data['result_status'] = SAMPLE_STATUS\ON_HOLD; // 1= Hold
             }
 
             if (empty($batchCode)) {

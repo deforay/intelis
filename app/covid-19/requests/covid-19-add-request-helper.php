@@ -101,16 +101,16 @@ try {
 		$sampleCodeKey = 'sample_code_key';
 	}
 
-	$status = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
+	$status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 	if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
-		$status = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+		$status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 	}
 
 	$resultSentToSource = null;
 
 	if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
 		$_POST['result'] = null;
-		$status = SAMPLE_STATUS_REJECTED;
+		$status = SAMPLE_STATUS\REJECTED;
 		$resultSentToSource = 'pending';
 	}
 	if (!empty($_POST['patientDob'])) {
@@ -258,19 +258,19 @@ try {
 	}
 
 	//if (isset($_POST['asymptomatic']) && $_POST['asymptomatic'] != "yes") {
-		$db = $db->where('covid19_id', $_POST['covid19SampleId']);
-		$db->delete("covid19_patient_symptoms");
-		if (!empty($_POST['symptomDetected']) || (!empty($_POST['symptom']))) {
-			for ($i = 0; $i < count($_POST['symptomDetected']); $i++) {
-				$symptomData = [];
-				$symptomData["covid19_id"] = $_POST['covid19SampleId'];
-				$symptomData["symptom_id"] = $_POST['symptomId'][$i];
-				$symptomData["symptom_detected"] = $_POST['symptomDetected'][$i];
-				$symptomData["symptom_details"] = (!empty($_POST['symptomDetails'][$_POST['symptomId'][$i]])) ? json_encode($_POST['symptomDetails'][$_POST['symptomId'][$i]]) : null;
-				//var_dump($symptomData);
-				$db->insert("covid19_patient_symptoms", $symptomData);
-			}
+	$db = $db->where('covid19_id', $_POST['covid19SampleId']);
+	$db->delete("covid19_patient_symptoms");
+	if (!empty($_POST['symptomDetected']) || (!empty($_POST['symptom']))) {
+		for ($i = 0; $i < count($_POST['symptomDetected']); $i++) {
+			$symptomData = [];
+			$symptomData["covid19_id"] = $_POST['covid19SampleId'];
+			$symptomData["symptom_id"] = $_POST['symptomId'][$i];
+			$symptomData["symptom_detected"] = $_POST['symptomDetected'][$i];
+			$symptomData["symptom_details"] = (!empty($_POST['symptomDetails'][$_POST['symptomId'][$i]])) ? json_encode($_POST['symptomDetails'][$_POST['symptomId'][$i]]) : null;
+			//var_dump($symptomData);
+			$db->insert("covid19_patient_symptoms", $symptomData);
 		}
+	}
 	//}
 
 	$db = $db->where('covid19_id', $_POST['covid19SampleId']);

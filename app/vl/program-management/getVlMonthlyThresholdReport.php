@@ -187,9 +187,9 @@ if (!empty($sWhere)) {
      }
 }
 if ($sWhere != '') {
-     $sWhere = $sWhere . ' AND vl.result!="" AND vl.result_status != ' . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+     $sWhere = $sWhere . ' AND vl.result!="" AND vl.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 } else {
-     $sWhere = $sWhere . ' where vl.result!="" AND vl.result_status != ' . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+     $sWhere = $sWhere . ' where vl.result!="" AND vl.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 }
 
 // HAVING COUNT(c2.sid) >= 2)

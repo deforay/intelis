@@ -196,20 +196,20 @@ try {
 
 
 	if (($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site')) {
-		$status = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+		$status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 	}
 
 	if (!empty($_POST['oldStatus'])) {
 		$status = $_POST['oldStatus'];
 	}
 
-	if ($sarr['sc_user_type'] == 'vluser' && $_POST['oldStatus'] == SAMPLE_STATUS_RECEIVED_AT_CLINIC) {
-		$status = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
+	if ($sarr['sc_user_type'] == 'vluser' && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
+		$status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 	}
 
 	if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
 		$_POST['result'] = null;
-		$status = SAMPLE_STATUS_REJECTED;
+		$status = SAMPLE_STATUS\REJECTED;
 	}
 
 	if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
@@ -224,10 +224,10 @@ try {
 	} else {
 		$_POST['resultDispatchedOn'] = null;
 	}
-	if ($sarr['sc_user_type'] == 'remoteuser' && $_POST['oldStatus'] == SAMPLE_STATUS_RECEIVED_AT_CLINIC) {
-		$_POST['status'] = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
-	} elseif ($sarr['sc_user_type'] == 'vluser' && $_POST['oldStatus'] == SAMPLE_STATUS_RECEIVED_AT_CLINIC) {
-		$_POST['status'] = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
+	if ($sarr['sc_user_type'] == 'remoteuser' && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
+		$_POST['status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+	} elseif ($sarr['sc_user_type'] == 'vluser' && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
+		$_POST['status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 	}
 	if ($_POST['status'] == '') {
 		$_POST['status'] = $_POST['oldStatus'];
@@ -338,7 +338,7 @@ try {
 		'tested_by' => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] : null,
 		'lab_tech_comments' => (isset($_POST['labTechCmt']) && $_POST['labTechCmt'] != '') ? $_POST['labTechCmt'] : null,
 		'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] : null,
-		'result_approved_datetime' => $_POST['approvedOnDateTime'] ?? null,
+		'result_approved_datetime' => $_POST['approvedOn'] ?? null,
 		'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : null,
 		'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
 		'reason_for_changing' => (!empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,

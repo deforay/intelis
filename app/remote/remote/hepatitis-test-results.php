@@ -94,7 +94,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
         // unset($lab['last_modified_by']);
         // unset($lab['request_created_datetime']);
 
-        if ($lab['result_status'] != SAMPLE_STATUS_ACCEPTED && $lab['result_status'] != SAMPLE_STATUS_REJECTED) {
+        if ($lab['result_status'] != SAMPLE_STATUS\ACCEPTED && $lab['result_status'] != SAMPLE_STATUS\REJECTED) {
             unset($lab['result']);
             unset($lab['is_sample_rejected']);
             unset($lab['reason_for_sample_rejection']);

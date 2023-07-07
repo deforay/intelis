@@ -200,7 +200,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
 
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">INFORMATION PATIENT</h3>&nbsp;&nbsp;&nbsp;
-                                    <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Code du patient" title="Please enter code du patient" />&nbsp;&nbsp;
+                                    <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Code du patient" title="<?= _("Please enter the Patient ID"); ?>" />&nbsp;&nbsp;
                                     <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
@@ -504,7 +504,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row" style="width:15% !important">Date d'apparition des symptômes </th>
+                                        <th scope="row" style="width:15% !important">Date d'apparition des symptômes<span class="mandatory">*</span>  </th>
                                         <td style="width:35% !important;">
                                             <input class="form-control date symptomSpecificFields" type="text" name="dateOfSymptomOnset" id="dateOfSymptomOnset" placeholder="Date d'apparition des symptômes" title="Date d'apparition des symptômes" />
                                         </td>
@@ -568,7 +568,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                             <br>
                                                             <?php
                                                             if ($symptomId == 13) {
-                                                            ?>
+                                                                ?>
                                                                 <label class="diarrhée-sub" for="symptomDetails14" style="margin-left:0;display:none;">Si oui:<br> Sanglante?</label>
                                                                 <select name="symptomDetails[13][]" class="form-control diarrhée-sub" style="width:100%;display:none;">
                                                                     <option value="">-- Sélectionner --</option>
@@ -1302,11 +1302,11 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
             $(".submitButton").hide();
             <?php
             if ($arr['covid19_sample_code'] == 'auto' || $arr['covid19_sample_code'] == 'YY' || $arr['covid19_sample_code'] == 'MMYY') {
-            ?>
+                ?>
                 insertSampleCode('addCovid19RequestForm', 'covid19SampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 3, 'sampleCollectionDate');
             <?php
             } else {
-            ?>
+                ?>
                 document.getElementById('addCovid19RequestForm').submit();
             <?php
             } ?>

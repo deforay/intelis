@@ -206,25 +206,25 @@ foreach ($rResult as $key => $aRow) {
     $params = array($aRow['sample_collection_date'], $aRow['lab_id'], $aRow['source_of_request']);
     if (isset($aRow['samples']) && $aRow['samples'] > 0) {
         $samples = $params;
-        $samples[] = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+        $samples[] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
         $samplesParams = implode("##", $samples);
     }
 
     if (isset($aRow['noOfSampleReceivedAtLab']) && $aRow['noOfSampleReceivedAtLab'] > 0) {
         $register = $params;
-        $register[] = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
+        $register[] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
         $registerParams = implode("##", $register);
     }
 
     if (isset($aRow['samplesWithResults']) && $aRow['samplesWithResults'] > 0) {
         $tested = $params;
-        $tested[] = SAMPLE_STATUS_ACCEPTED;
+        $tested[] = SAMPLE_STATUS\ACCEPTED;
         $testedParams = implode("##", $tested);
     }
 
     if (isset($aRow['rejected']) && $aRow['rejected'] > 0) {
         $rejected = $params;
-        $rejected[] = SAMPLE_STATUS_REJECTED;
+        $rejected[] = SAMPLE_STATUS\REJECTED;
         $rejectedParams = implode("##", $rejected);
     }
 

@@ -100,7 +100,7 @@ if (!empty($whereCondition))
     $sWhere[] = $whereCondition;
 $sWhere[] = $genericWhere;
 if ($_SESSION['instanceType'] != 'remoteuser') {
-    $sWhere[] = ' result_status !=  ' . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+    $sWhere[] = ' result_status !=  ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 }
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
@@ -371,7 +371,7 @@ foreach ($tatResult as $sRow) {
                     data: [<?php echo implode(",", $result['avgResultPrinted']); ?>],
                     color: '#0f3f6e',
                 },
-                        <?php
+                                <?php
                 }
                 if (isset($result['sampleReceivedDiff'])) {
                     ?> {
@@ -381,7 +381,7 @@ foreach ($tatResult as $sRow) {
                     data: [<?php echo implode(",", $result['sampleReceivedDiff']); ?>],
                     color: '#edb47c',
                 },
-                        <?php
+                                <?php
                 }
                 if (isset($result['sampleReceivedTested'])) {
                     ?> {
@@ -391,7 +391,7 @@ foreach ($tatResult as $sRow) {
                     data: [<?php echo implode(",", $result['sampleReceivedTested']); ?>],
                     color: '#0f3f6e',
                 },
-                        <?php
+                                <?php
                 }
                 if (isset($result['sampleTestedDiff'])) {
                     ?> {
@@ -401,7 +401,7 @@ foreach ($tatResult as $sRow) {
                     data: [<?php echo implode(",", $result['sampleTestedDiff']); ?>],
                     color: '#ed7c7d',
                 },
-                        <?php
+                                <?php
                 }
                 if (isset($result['sampleReceivedPrinted'])) {
                     ?> {
@@ -411,7 +411,7 @@ foreach ($tatResult as $sRow) {
                     data: [<?php echo implode(",", $result['sampleReceivedPrinted']); ?>],
                     color: '#000',
                 },
-                        <?php
+                                <?php
                 }
                 ?>
             ],

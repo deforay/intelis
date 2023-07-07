@@ -197,9 +197,9 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 								</div>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
-										<th scope="row"><label for="patientId">Unique ART Number</label></th>
+										<th scope="row"><label for="patientId">Unique ART Number<span class="mandatory">*</span></label></th>
 										<td>
-											<input type="text" class="form-control" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
+											<input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
 										</td>
 										<th scope="row"><label for="firstName">First Name <span class="mandatory">*</span> </label></th>
 										<td>
@@ -211,13 +211,13 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										<td>
 											<input type="text" class="form-control " id="lastName" name="lastName" placeholder="Last name" title="Please enter Last name" style="width:100%;" onchange="" />
 										</td>
-										<th scope="row"><label for="patientDob">Date of Birth </label></th>
+										<th scope="row"><label for="patientDob">Date of Birth <span class="mandatory">*</span></label></th>
 										<td>
-											<input type="text" class="form-control" id="patientDob" name="patientDob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
+											<input type="text" class="form-control isRequired" id="patientDob" name="patientDob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
 										</td>
 									</tr>
 									<tr>
-										<th scope="row">Age (years)</th>
+										<th scope="row">Age (years)<span class="mandatory">*</span></th>
 										<td><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="patientAge" name="patientAge" placeholder="Patient Age (in years)" title="Patient Age" style="width:100%;" onchange="" /></td>
 										<th scope="row"><label for="patientGender">Gender <span class="mandatory">*</span> </label></th>
 										<td>
@@ -229,6 +229,14 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 											</select>
 										</td>
 									</tr>
+
+									<tr>
+										<th scope="row">Complete Address<span class="mandatory">*</span></th>
+										<td><input type="text" class="form-control isRequired" id="patientAddress" name="patientAddress" placeholder="Patient Complete Address" title="Patient Complete Address" style="width:100%;" onchange="" /></td>
+										<th scope="row">Telephone</th>
+										<td><input type="text" class="form-control" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Patient phone number" title="Patient phone number" style="width:100%;" onchange="" /></td>
+									</tr>
+
 									<tr>
 										<th scope="row"><label for="typeOfPatient">Type of patient<span class="mandatory">*</span> </label></th>
 										<td>
@@ -311,18 +319,18 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										</td>
 									</tr>
 									<tr>
-										<th scope="row"><label for="hivStatus">HIV Status</label></th>
+										<th scope="row"><label for="hivStatus">HIV Status<span class="mandatory">*</span></label></th>
 										<td>
-											<select class="form-control" name="hivStatus" id="hivStatus" title="Please select HIV Status">
+											<select class="form-control isRequired" name="hivStatus" id="hivStatus" title="Please select HIV Status">
 												<option value=''> -- Select -- </option>
 												<option value='yes'> Yes </option>
 												<option value='no'> No </option>
 												<option value='unknown'> Unknown </option>
 											</select>
 										</td>
-										<th scope="row"><label for="previouslyTreatedForTB">Previously treated for TB? </label></th>
+										<th scope="row"><label for="previouslyTreatedForTB">Previously treated for TB? <span class="mandatory">*</span></label></th>
 										<td>
-											<select class="form-control" name="previouslyTreatedForTB" id="previouslyTreatedForTB" title="Please select options">
+											<select class="form-control isRequired" name="previouslyTreatedForTB" id="previouslyTreatedForTB" title="Please select options">
 												<option value=''> -- Select -- </option>
 												<option value='yes'> Yes </option>
 												<option value='no'> No </option>
@@ -365,10 +373,10 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 											</select>
 										</td>
 										<th scope="row">
-											<label class="label-control" for="testTypeRequested">Test(s) requested </label>
+											<label class="label-control" for="testTypeRequested">Test(s) requested  <span class="mandatory">*</span></label>
 										</th>
 										<td>
-											<select name="testTypeRequested[]" id="testTypeRequested" class="select2 form-control" title="Please choose type of test request" style="width:100%" multiple>
+											<select name="testTypeRequested[]" id="testTypeRequested" class="select2 form-control isRequired" title="Please choose type of test request" style="width:100%" multiple>
 												<optgroup label="Microscopy">
 													<option value="ZN">ZN</option>
 													<option value="FM">FM</option>
@@ -387,38 +395,38 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 									<tr>
 										<th scope="row">
 											<label class="label-control" for="testTypeRequested">
-												Number of sputum samples sent with this form
+												Number of sputum samples sent with this form<span class="mandatory">*</span>
 											</label>
 										</th>
 										<td>
-											<input type="text" class="form-control forceNumeric" id="numberOfSputumSamples" name="numberOfSputumSamples" placeholder="Enter Number Of Sputum Samples" title="Please enter the Number Of Sputum Samples" />
+											<input type="text" class="form-control forceNumeric isRequired" id="numberOfSputumSamples" name="numberOfSputumSamples" placeholder="Enter Number Of Sputum Samples" title="Please enter the Number Of Sputum Samples" />
 										</td>
 										<th scope="row">
 											<label class="label-control" for="testTypeRequested">
-												Date of collection of first sputum samples
+												Date of collection of first sputum samples<span class="mandatory">*</span>
 											</label>
 										</th>
 										<td>
-											<input type="text" class="form-control" id="firstSputumSamplesCollectionDate" name="firstSputumSamplesCollectionDate" placeholder="Enter the Collection Of First Sputum Samples" title="Please enter the collection Of First Sputum Samples" style="width:100%;" />
+											<input type="text" class="form-control isRequired" id="firstSputumSamplesCollectionDate" name="firstSputumSamplesCollectionDate" placeholder="Enter the Collection Of First Sputum Samples" title="Please enter the collection Of First Sputum Samples" style="width:100%;" />
 										</td>
 									</tr>
 									<tr>
 										<th scope="row">
 											<label class="label-control">
-												Name of signature of person requesting examination
+												Name of signature of person requesting examination<span class="mandatory">*</span>
 											</label>
 										</th>
 										<td>
-											<input type="text" class="form-control" id="sampleRequestorName" name="sampleRequestorName" placeholder="Enter Name" title="Please enter the Name" />
+											<input type="text" class="form-control isRequired" id="sampleRequestorName" name="sampleRequestorName" placeholder="Enter Name" title="Please enter the Name" />
 										</td>
 
 									</tr>
 								</table>
 							</div>
 						</div>
-						<?php if ($usersService->isAllowed('tb/results/tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
+						<?php if ($usersService->isAllowed('/tb/results/tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
 
-							<div class="box box-primary">
+							<div class="box box-primary">	
 								<div class="box-body">
 									<div class="box-header with-border">
 										<h3 class="box-title">Results (To be completed in the Laboratory) </h3>
@@ -546,7 +554,13 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 											<th scope="row"><label class="label-control" for="approvedOn">Approved on</label></th>
 											<td><input type="text" name="approvedOn" id="approvedOn" class="dateTime form-control" placeholder="Approved on" title="Please enter the approved on" /></td>
 										</tr>
+										<tr>
+											<th scope="row"><label class="label-control" for="labComments">Lab Comments</label></th>
 
+											<td>
+											<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments"></textarea>
+											</td>
+										</tr>
 									</table>
 								</div>
 							</div>

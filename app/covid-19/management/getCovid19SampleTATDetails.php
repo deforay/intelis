@@ -108,7 +108,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 		$sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 	}
 } else {
-	$sWhere[] = " vl.result_status != " . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+	$sWhere[] = " vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 }
 $start_date = '';
 $end_date = '';
@@ -205,7 +205,7 @@ $rUser = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	$rUser = $rUser . $whereCondition;
 } else {
-	$rUser = " vl.result_status != " . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+	$rUser = " vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 }
 $aResultFilterTotal = $db->rawQuery("select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime from form_covid19 as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) !='1970-01-01' )
                         AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' )

@@ -279,7 +279,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                         </div>
 
 
-                        <?php if ($usersService->isAllowed('hepatitis-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if ($usersService->isAllowed('/hepatitis/results/hepatitis-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
@@ -583,6 +583,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             checkIsResultAuthorized();
         });
         checkIsResultAuthorized();
+        var hepatitisTestTypeVal = $('#hepatitisTestType').val();
+        if(hepatitisTestTypeVal != ''){
+            hepatitisTestTypeFn(hepatitisTestTypeVal);
+        }
     });
 
     function checkIsResultAuthorized() {

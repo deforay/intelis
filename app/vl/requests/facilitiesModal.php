@@ -36,9 +36,11 @@ $type = $_GET['type'];
   <section class="content-header">
     <div class="pull-left" style="font-size:22px;">Search Clinics</div>
     <?php if ($type == 'all') { ?>
-      <div class="pull-right"><a class="btn btn-primary" href="javascript:void(0);" onclick="showModal('addFacilityModal.php?type=all',900,520);" style="margin-bottom:20px;">Add Clinic</a></div>
+      <div class="pull-right"><a class="btn btn-primary" href="javascript:void(0);"
+          onclick="showModal('addFacilityModal.php?type=all',900,520);" style="margin-bottom:20px;">Add Clinic</a></div>
     <?php } else { ?>
-      <div class="pull-right"><a class="btn btn-primary" href="javascript:void(0);" onclick="showModal('addFacilityModal.php?type=lab',900,520);" style="margin-bottom:20px;">Add Clinic</a></div>
+      <div class="pull-right"><a class="btn btn-primary" href="javascript:void(0);"
+          onclick="showModal('addFacilityModal.php?type=lab',900,520);" style="margin-bottom:20px;">Add Clinic</a></div>
     <?php } ?>
   </section>
   <!-- Main content -->
@@ -50,42 +52,50 @@ $type = $_GET['type'];
             <tr>
               <td><strong>Hub&nbsp;:</strong></td>
               <td>
-                <input type="text" id="hub" name="hub" class="form-control" placeholder="Enter Hub" style="background:#fff;" />
+                <input type="text" id="hub" name="hub" class="form-control" placeholder="Enter Hub"
+                  style="background:#fff;" />
               </td>
               <td>&nbsp;<strong>District/County&nbsp;:</strong></td>
               <td>
-                <input type="text" id="district" name="district" class="form-control" placeholder="Enter District/County" />
+                <input type="text" id="district" name="district" class="form-control"
+                  placeholder="Enter District/County" />
               </td>
             </tr>
             <tr>
               <td><strong>Province/State&nbsp;:</strong></td>
               <td>
-                <input type="text" id="state" name="state" class="form-control" placeholder="Enter Province/State" style="background:#fff;" />
+                <input type="text" id="state" name="state" class="form-control" placeholder="Enter Province/State"
+                  style="background:#fff;" />
               </td>
               <td>&nbsp;<strong>Clinic Type&nbsp;:</strong></td>
               <td>
                 <?php
                 if ($type == 'all') {
-                ?>
-                  <select class="form-control" id="facilityTypeName" name="facilityTypeName" title="Please select clinic type">
+                  ?>
+                  <select class="form-control" id="facilityTypeName" name="facilityTypeName"
+                    title="Please select clinic type">
                     <option value=""> -- Select -- </option>
                     <?php
                     foreach ($fResult as $name) {
-                    ?>
-                      <option value="<?php echo $name['facility_type_id']; ?>"><?php echo ($name['facility_type_name']); ?></option>
-                    <?php
+                      ?>
+                      <option value="<?php echo $name['facility_type_id']; ?>"><?php echo ($name['facility_type_name']); ?>
+                      </option>
+                      <?php
                     }
                     ?>
                   </select>
                 <?php } else { ?>
-                  <input type="text" id="fName" name="fName" class="form-control" readonly="readonly" value="Lab" style="background:#fff;" />
+                  <input type="text" id="fName" name="fName" class="form-control" readonly="readonly" value="Lab"
+                    style="background:#fff;" />
                   <input type="hidden" id="facilityTypeName" name="facilityTypeName" value="2" />
                 <?php } ?>
               </td>
             </tr>
             <tr>
-              <td colspan="4">&nbsp;<input type="button" onclick="searchFacilityData();" value="Search" class="btn btn-success btn-sm">
-                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
+              <td colspan="4">&nbsp;<input type="button" onclick="searchFacilityData();" value="Search"
+                  class="btn btn-success btn-sm">
+                &nbsp;<button class="btn btn-danger btn-sm"
+                  onclick="document.location.href = document.location"><span>Reset</span></button>
 
               </td>
             </tr>
@@ -93,10 +103,13 @@ $type = $_GET['type'];
           </table>
           <!-- /.box-header -->
           <div class="box-body">
-            <table aria-describedby="table" id="facilityModalDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+            <table aria-describedby="table" id="facilityModalDataTable" class="table table-bordered table-striped"
+              aria-hidden="true">
               <thead>
                 <tr>
-                  <th style="width:10%;">Select</th>
+                  <th style="width:10%;">
+                    <?= _("Select"); ?>
+                  </th>
                   <th>Facility Code</th>
                   <th>Facility Name</th>
                   <th>Facility Type</th>
@@ -121,8 +134,12 @@ $type = $_GET['type'];
   <!-- /.content -->
 </div>
 <div id="dDiv" class="dialog">
-  <div style="text-align:center"><span onclick="closeModal();" style="float:right;clear:both;" class="closeModal"></span></div>
-  <iframe id="dFrame" src="" title="LIS Content" style="border:none;" scrolling="yes" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0"><?= _("Unable to load this page or resource"); ?></iframe>
+  <div style="text-align:center"><span onclick="closeModal();" style="float:right;clear:both;"
+      class="closeModal"></span></div>
+  <iframe id="dFrame" src="" title="LIS Content" style="border:none;" scrolling="yes" marginwidth="0" marginheight="0"
+    frameborder="0" vspace="0" hspace="0">
+    <?= _("Unable to load this page or resource"); ?>
+  </iframe>
 </div>
 <!-- Bootstrap 3.3.6 -->
 <script src="/assets/js/bootstrap.min.js"></script>
@@ -131,7 +148,7 @@ $type = $_GET['type'];
 <script src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script>
   var oTable = null;
-  $(document).ready(function() {
+  $(document).ready(function () {
     oTable = $('#facilityModalDataTable').dataTable({
       "oLanguage": {
         "sLengthMenu": "_MENU_ records per page"
@@ -143,18 +160,18 @@ $type = $_GET['type'];
 
       "bRetrieve": true,
       "aoColumns": [{
-          "sClass": "center",
-          "bSortable": false
-        },
-        {
-          "sClass": "center"
-        },
-        {
-          "sClass": "center"
-        },
-        {
-          "sClass": "center"
-        }
+        "sClass": "center",
+        "bSortable": false
+      },
+      {
+        "sClass": "center"
+      },
+      {
+        "sClass": "center"
+      },
+      {
+        "sClass": "center"
+      }
       ],
       "aaSorting": [
         [1, "asc"]
@@ -162,7 +179,7 @@ $type = $_GET['type'];
       "bProcessing": true,
       "bServerSide": true,
       "sAjaxSource": "getFacilitiesModalDetails.php",
-      "fnServerData": function(sSource, aoData, fnCallback) {
+      "fnServerData": function (sSource, aoData, fnCallback) {
         aoData.push({
           "name": "hub",
           "value": $("#hub").val()

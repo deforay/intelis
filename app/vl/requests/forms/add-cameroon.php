@@ -153,7 +153,7 @@ $sFormat = '';
                                                   <div class="">
                                                        <label for="fName"><?= _('Clinic/Health Center'); ?> <span class="mandatory">*</span></label>
                                                        <select class="form-control isRequired" id="fName" name="fName" title="<?= _('Please select a clinic/health center name'); ?>" style="width:100%;" onchange="fillFacilityDetails();">
-                                                            <?php echo $facility;  ?>
+                                                            <?php echo $facility; ?>
                                                        </select>
                                                   </div>
                                              </div>
@@ -300,7 +300,7 @@ $sFormat = '';
                                                                  <option value=""> <?= _('-- Select --'); ?> </option>
                                                                  <?php
                                                                  $selected = '';
-                                                                 if (count($sResult) == 1){
+                                                                 if (count($sResult) == 1) {
                                                                       $selected = "selected='selected'";
                                                                  }
                                                                  foreach ($sResult as $name) { ?>
@@ -363,7 +363,7 @@ $sFormat = '';
                                                                     <option value=""> <?= _("<?= _('-- Select --'); ?>"); ?> </option>
                                                                     <?php
                                                                     foreach ($vlTestReasonResult as $tReason) {
-                                                                    ?>
+                                                                         ?>
                                                                         <option value="<?php echo $tReason['test_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $tReason['test_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ($tReason['test_reason_name']); ?></option>
                                                                     <?php } ?>
                                                                     <option value="other">Other</option>
@@ -458,7 +458,7 @@ $sFormat = '';
 
                                                        </div>
 
-                                                       <?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) {  ?>
+                                                       <?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) { ?>
                                                             <div class="row">
                                                                  <div class="col-md-6">
                                                                       <div class="form-group">
@@ -471,7 +471,7 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                             </div>
-                                                       <?php }  ?>
+                                                       <?php } ?>
                                                        <hr>
 
                                                   </div>
@@ -521,9 +521,9 @@ $sFormat = '';
                                                                       <label class="col-lg-5 control-label" for="noResult"><?= _('Sample Rejection'); ?> </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="noResult" id="noResult" class="form-control" title="<?= _('Please check if sample is rejected or not'); ?>">
-                                                                                <option value=""><?=_('-- Select --'); ?></option>
+                                                                                <option value=""><?= _('-- Select --'); ?></option>
                                                                                 <option value="yes"> <?= _('Yes'); ?> </option>
-                                                                                <option value="no"> <?= _('No'); ?> </option> 
+                                                                                <option value="no"> <?= _('No'); ?> </option>
                                                                            </select>
                                                                       </div>
                                                                  </div>
@@ -537,7 +537,7 @@ $sFormat = '';
                                                                                      <optgroup label="<?php echo ($type['rejection_type']); ?>">
                                                                                           <?php foreach ($rejectionResult as $reject) {
                                                                                                if ($type['rejection_type'] == $reject['rejection_type']) {
-                                                                                          ?>
+                                                                                                    ?>
                                                                                                     <option value="<?php echo $reject['rejection_reason_id']; ?>"><?= $reject['rejection_reason_name']; ?></option>
                                                                                           <?php }
                                                                                           } ?>
@@ -623,7 +623,7 @@ $sFormat = '';
                                                        </div>
                                                   </div>
                                              </div>
-                                             <?php } 
+                                             <?php }
                                              ?>
                                         </div>
                                         <div class="box-footer">
@@ -654,7 +654,7 @@ $sFormat = '';
                                              <input type="hidden" name="vlSampleId" id="vlSampleId" value="" />
                                              <input type="hidden" name="provinceId" id="provinceId" />
                                              <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;"><?= _('Save and Next'); ?></a>
-                                             <a href="vlRequest.php" class="btn btn-default"> <?= _('Cancel');?></a>
+                                             <a href="vlRequest.php" class="btn btn-default"> <?= _('Cancel'); ?></a>
                                         </div>
                                         <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
                                         <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
@@ -708,16 +708,16 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               if (data != "0") {
                                    obj = $.parseJSON(data);
                                    if (obj.no_of_req_time != null && obj.no_of_req_time > 0) {
-                                        $("#artNoGroup").html('<small style="color:red">No. of times Test Requested for this Patient : ' + obj.no_of_req_time + '</small>');
+                                        $("#artNoGroup").html("<small style='color: red'><?= _("No. of times Test Requested for this Patient"); ?> : " + obj.no_of_req_time + "</small>");
                                    }
                                    if (obj.request_created_datetime != null) {
-                                        $("#artNoGroup").append('<br><small style="color:red">Last Test Request Added On VLSM : ' + obj.request_created_datetime + '</small>');
+                                        $("#artNoGroup").append("<br><small style='color:red'><?= _("Last Test Request Added On LIS/STS"); ?> : " + obj.request_created_datetime + "</small>");
                                    }
                                    if (obj.sample_collection_date != null) {
-                                        $("#artNoGroup").append('<br><small style="color:red">Sample Collection Date for Last Request : ' + obj.sample_collection_date + '</small>');
+                                        $("#artNoGroup").append("<br><small style='color:red'><?= _("Sample Collection Date for Last Request"); ?> : " + obj.sample_collection_date + "</small>");
                                    }
                                    if (obj.no_of_tested_time != null && obj.no_of_tested_time > 0) {
-                                        $("#artNoGroup").append('<br><small style="color:red">Total No. of times Patient tested for VL : ' + obj.no_of_tested_time + '</small>');
+                                        $("#artNoGroup").append("<br><small style='color:red'><?= _("Total No. of times Patient tested for HIV VL"); ?> : " + obj.no_of_tested_time + "</small >");
                                    }
                               } else {
                                    if (artNo.length < 10) {

@@ -129,7 +129,7 @@ if ($sarr['sc_user_type'] == 'remoteuser') {
 	}
 	$sQuery = $sQuery . $whereCondition;
 } else {
-	$sQuery = $sQuery . " AND vl.result_status != " . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+	$sQuery = $sQuery . " AND vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 }
 $start_date = '';
 $end_date = '';

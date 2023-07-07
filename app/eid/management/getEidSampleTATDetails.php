@@ -125,7 +125,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 		$sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 	}
 } else {
-	$sWhere[] = " vl.result_status != " . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+	$sWhere[] = " vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 }
 $start_date = '';
 $end_date = '';
@@ -213,7 +213,7 @@ $rUser = '';
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	$rUser = $rUser . $whereCondition;
 } else {
-	$rUser = " AND vl.result_status != " . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+	$rUser = " AND vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 }
 
 $rResult = $db->rawQuery($sQuery);

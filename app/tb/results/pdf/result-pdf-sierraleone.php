@@ -344,7 +344,24 @@ if (!empty($requestResult)) {
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">REASON FOR REQUEST</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;"></td>';
         $html .= '</tr>';
-        $typeOfPatient = json_decode($result['patient_type']);
+        $typeOfPatient = implode(',',json_decode($result['patient_type']));
+        $testsRequested = implode(',',json_decode($result['tests_requested']));
+        $testReason = json_decode($result['reason_for_tb_test']);
+        $reason = "";
+        $valuesOfReasonArr = [];
+        if(isset($testReason->reason->followup) && ($testReason->reason->followup=="yes"))
+        {
+            $reason = "Follow Up";
+            $valuesOfReasonArr = array_keys((array)$testReason->elaboration->followup);
+
+        }
+            elseif(isset($testReason->reason->diagnosis) && $testReason->reason->diagnosis=="yes")
+            {
+                $reason = "Diagnosis";
+                $valuesOfReasonArr = array_keys((array)$testReason->elaboration->diagnosis);
+            }
+            $valuesOfReason = implode(',',$valuesOfReasonArr);
+           
         $html .= '<tr>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">TB PATIENT CATEGORY</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . (str_replace("-", " ", $typeOfPatient)) . '</td>';
@@ -367,6 +384,18 @@ if (!empty($requestResult)) {
         $html .= '</tr>';
 
         $html .= '<tr>';
+        $html .= '<td colspan="4" style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-top:1px solid #67b3ff;border-bottom:1px solid #67b3ff;">CLINICAL DETAILS</td>';
+        $html .= '</tr>';
+
+        $html .= '<tr>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">CLINICIAN\'S NAME </td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;"> </td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">FACILITY</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;"></td>';
+
+        $html .= '</tr>';
+
+        $html .= '<tr>';
         $html .= '<td colspan="4" style="line-height:17px;font-size:13px;font-weight:bold;text-align:left;border-top:1px solid #67b3ff;border-bottom:1px solid #67b3ff;">SPECIMEN DETAILS</td>';
         $html .= '</tr>';
 
@@ -375,7 +404,13 @@ if (!empty($requestResult)) {
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $result['sample_name'] . '</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">COLLECTED</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
+        $html .= '</tr>';
 
+        $html .= '<tr>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">TESTS REQUESTED </td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $testsRequested . '</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">REASON FOR TEST</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $reason . "<br> (" .$valuesOfReason. ')</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';

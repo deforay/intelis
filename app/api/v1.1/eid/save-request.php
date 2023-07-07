@@ -227,23 +227,23 @@ try {
             }
         }
 
-        $status = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
+        $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
         if ($roleUser['access_type'] != 'testing-lab') {
-            $status = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+            $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
         }
 
         if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
             $data['result'] = null;
-            $status = SAMPLE_STATUS_REJECTED;
+            $status = SAMPLE_STATUS\REJECTED;
         } elseif (
             isset($globalConfig['eid_auto_approve_api_results']) &&
             $globalConfig['eid_auto_approve_api_results'] == "yes" &&
             (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") &&
             (!empty($data['result']))
         ) {
-            $status = SAMPLE_STATUS_ACCEPTED;
+            $status = SAMPLE_STATUS\ACCEPTED;
         } elseif ((isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") && (!empty($data['result']))) {
-            $status = SAMPLE_STATUS_PENDING_APPROVAL;
+            $status = SAMPLE_STATUS\PENDING_APPROVAL;
         }
 
         if (isset($data['approvedOn']) && trim($data['approvedOn']) != "") {

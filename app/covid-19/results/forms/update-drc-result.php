@@ -105,6 +105,7 @@ foreach ($zResult as $row) {
     $patienZones[$row['patient_zone']] = $row['patient_zone'];
 }
 $patienZones["other"] = "Other";
+$sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'active'");
 
 ?>
 
@@ -519,6 +520,17 @@ $patienZones["other"] = "Other";
                                 </tr>
                                 <tr>
                                     <th scope="row" colspan="4" style="width:15% !important">Symptômes <span class="mandatory">*</span> </th>
+                                </tr>
+                                <tr>
+                                <th scope="row" style="width:15% !important"><label for="asymptomatic">Asymptomatic <span class="mandatory">*</span></label></th>
+                                        <td style="width:35% !important;">
+                                            <select name="asymptomatic" id="asymptomatic" class="form-control isRequired" title="Asymptomatic" onchange="asymptomaticFn(this.value);">
+                                                <option value="">--Select--</option>
+                                                <option value="yes" <?php echo ($covid19Info['asymptomatic'] == 'yes') ? "selected='selected'" : ""; ?>>Oui</option>
+                                                <option value="no" <?php echo ($covid19Info['asymptomatic'] == 'no') ? "selected='selected'" : ""; ?>>Non</option>
+                                                <option value="unknown" <?php echo ($covid19Info['asymptomatic'] == 'unknown') ? "selected='selected'" : ""; ?>>Inconnu</option>
+                                            </select>
+                                        </td>
                                 </tr>
                                 <tr>
                                     <td colspan="4">

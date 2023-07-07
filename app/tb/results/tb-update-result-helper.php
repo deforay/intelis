@@ -94,16 +94,16 @@ try {
         $sampleCodeKey = 'sample_code_key';
     }
 
-    $status = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
+    $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
     if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
-        $status = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+        $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
     }
 
     $resultSentToSource = null;
 
     if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
         $_POST['result'] = null;
-        $status = SAMPLE_STATUS_REJECTED;
+        $status = SAMPLE_STATUS\REJECTED;
         $resultSentToSource = 'pending';
     }
     if (!empty($_POST['patientDob'])) {
@@ -146,7 +146,7 @@ try {
         //'tests_requested'                     => !empty($_POST['testTypeRequested']) ? json_encode($_POST['testTypeRequested']) : null,
         //'specimen_type'                       => !empty($_POST['specimenType']) ? $_POST['specimenType'] : null,
         //  'sample_collection_date'              => !empty($_POST['sampleCollectionDate']) ? $_POST['sampleCollectionDate'] : null,
-        'result_date'                         => !empty($_POST['resultDate']) ? $_POST['resultDate'] : null,
+        'result_date' => !empty($_POST['resultDate']) ? $_POST['resultDate'] : null,
         'sample_received_at_lab_datetime' => !empty($_POST['sampleReceivedDate']) ? $_POST['sampleReceivedDate'] : null,
         'is_sample_rejected' => !empty($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : null,
         'result' => !empty($_POST['result']) ? $_POST['result'] : null,

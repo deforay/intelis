@@ -191,9 +191,9 @@ try {
                     $data['vl_result_category'] = $vlService->getVLResultCategory($data['result_status'], $data['result']);
 
                     if ($data['vl_result_category'] == 'failed' || $data['vl_result_category'] == 'invalid') {
-                        $data['result_status'] = SAMPLE_STATUS_TEST_FAILED;
+                        $data['result_status'] = SAMPLE_STATUS\TEST_FAILED;
                     } elseif ($vldata['vl_result_category'] == 'rejected') {
-                        $data['result_status'] = SAMPLE_STATUS_REJECTED;
+                        $data['result_status'] = SAMPLE_STATUS\REJECTED;
                     }
 
                     $data['sample_code'] = $rResult[0]['sample_code'];
@@ -299,9 +299,9 @@ try {
             $data['vl_result_category'] = $vlService->getVLResultCategory($data['result_status'], $data['result']);
 
             if ($data['vl_result_category'] == 'failed' || $data['vl_result_category'] == 'invalid') {
-                $data['result_status'] = SAMPLE_STATUS_TEST_FAILED;
+                $data['result_status'] = SAMPLE_STATUS\TEST_FAILED;
             } elseif ($data['vl_result_category'] == 'rejected') {
-                $data['result_status'] = SAMPLE_STATUS_REJECTED;
+                $data['result_status'] = SAMPLE_STATUS\REJECTED;
             }
 
             //get bacth code

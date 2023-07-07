@@ -53,7 +53,7 @@ $sQuery = "SELECT DATE_FORMAT(DATE(vl.sample_tested_datetime), '%Y-%b') as month
                 INNER JOIN form_vl as vl ON vl.lab_id=tl.facility_id
                 LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id  ";
 
-$sWhere = ' WHERE vl.result_status != ' . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+$sWhere = ' WHERE vl.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 
 if (!empty($_POST['facilityName'])) {
     $fac = $_POST['facilityName'];

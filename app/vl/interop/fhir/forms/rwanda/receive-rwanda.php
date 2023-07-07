@@ -265,7 +265,7 @@ foreach ($entries as $entry) {
             $formData[$basedOnServiceRequest]['vlsm_country_id'] = 7; // RWANDA
             $formData[$basedOnServiceRequest]['last_modified_datetime'] = DateUtility::getCurrentDateTime();
             $formData[$basedOnServiceRequest]['source_of_request'] = 'fhir';
-            $formData[$basedOnServiceRequest]['result_status'] = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
+            $formData[$basedOnServiceRequest]['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
             $formData[$basedOnServiceRequest]['sample_type'] = 1;
 
             //echo "<strong>Specimen Type: </strong>" .  ($specimenParsed->getType()->getCoding()[0]->getCode()) . "<br>";

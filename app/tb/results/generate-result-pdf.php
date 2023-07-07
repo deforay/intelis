@@ -93,7 +93,7 @@ if (isset($_POST['id']) && trim($_POST['id']) != '') {
 } else {
     $searchQuery = $allQuery;
 }
-// echo($searchQuery);die;
+
 $requestResult = $db->query($searchQuery);
 /* Test Results */
 if (isset($_POST['type']) && $_POST['type'] == "qr") {
@@ -275,6 +275,7 @@ if (!empty($requestResult)) {
                 break;
             }
         }
+       
         if (isset($result['report_format']) && $result['report_format'] != "") {
             $formats = json_decode($result['report_format'], true);
             if (file_exists($formats['tb'])) {
@@ -317,6 +318,7 @@ if (!empty($requestResult)) {
             exit(0);
         }
     }
+    echo $pages; die;
     if (!empty($pages)) {
         $resultPdf = new PdfConcatenateHelper();
         $resultPdf->setFiles($pages);

@@ -105,16 +105,16 @@ try {
         $sampleCodeKey = 'sample_code_key';
     }
 
-    $status = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
+    $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
     if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
-        $status = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+        $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
     }
 
     $resultSentToSource = null;
 
     if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
         $_POST['result'] = null;
-        $status = SAMPLE_STATUS_REJECTED;
+        $status = SAMPLE_STATUS\REJECTED;
         $resultSentToSource = 'pending';
     }
     if (!empty($_POST['patientDob'])) {
@@ -165,6 +165,8 @@ try {
         'patient_dob' => !empty($_POST['patientDob']) ? $_POST['patientDob'] : null,
         'patient_gender' => !empty($_POST['patientGender']) ? $_POST['patientGender'] : null,
         'patient_age' => !empty($_POST['patientAge']) ? $_POST['patientAge'] : null,
+        'patient_phone' => !empty($_POST['patientPhoneNumber']) ? $_POST['patientPhoneNumber'] : null,
+		'patient_address' => !empty($_POST['patientAddress']) ? $_POST['patientAddress'] : null,
         'reason_for_tb_test' => !empty($reason) ? json_encode($reason) : null,
         'hiv_status' => !empty($_POST['hivStatus']) ? $_POST['hivStatus'] : null,
         'previously_treated_for_tb' => !empty($_POST['previouslyTreatedForTB']) ? $_POST['previouslyTreatedForTB'] : null,
@@ -199,6 +201,7 @@ try {
         'last_modified_by' => $_SESSION['userId'],
         'last_modified_datetime' => DateUtility::getCurrentDateTime(),
         'request_created_by' => $_SESSION['userId'],
+        'lab_tech_comments' => !empty($_POST['labComments']) ? $_POST['labComments'] : '',
         'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId'],
         'source_of_request' => "web"
     );

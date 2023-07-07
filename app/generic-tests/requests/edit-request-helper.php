@@ -164,7 +164,7 @@ try {
      if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
           $vl_result_category = 'rejected';
           $isRejected = true;
-          $vldata['result_status'] = SAMPLE_STATUS_REJECTED;
+          $vldata['result_status'] = SAMPLE_STATUS\REJECTED;
      }
 
      $reasonForChanges = '';

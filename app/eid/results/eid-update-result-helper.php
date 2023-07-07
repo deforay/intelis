@@ -87,7 +87,7 @@ try {
 
   if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
     $eidData['result'] = null;
-    $eidData['result_status'] = SAMPLE_STATUS_REJECTED;
+    $eidData['result_status'] = SAMPLE_STATUS\REJECTED;
   }
 
   //var_dump($eidData);die;

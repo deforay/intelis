@@ -146,7 +146,7 @@ if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
      $sWhere[] = ' vl.lab_id IN ' . $out;
 }
 
-$sWhere[] = '  vl.result_status != ' . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+$sWhere[] = '  vl.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 
 
 if (!empty($_SESSION['facilityMap'])) {

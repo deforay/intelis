@@ -194,9 +194,9 @@ if (!empty($sWhere)) {
      }
 }
 if ($sWhere != '') {
-     $sWhere = $sWhere . '  AND vl.result_status != ' . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+     $sWhere = $sWhere . '  AND vl.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 } else {
-     $sWhere = $sWhere . ' WHERE vl.result_status != ' . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+     $sWhere = $sWhere . ' WHERE vl.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 }
 
 if (!empty($_SESSION['facilityMap'])) {

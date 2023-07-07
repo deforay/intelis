@@ -93,7 +93,7 @@ try {
             $lab['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
 
-            if ($lab['result_status'] != SAMPLE_STATUS_ACCEPTED && $lab['result_status'] != SAMPLE_STATUS_REJECTED) {
+            if ($lab['result_status'] != SAMPLE_STATUS\ACCEPTED && $lab['result_status'] != SAMPLE_STATUS\REJECTED) {
                 unset($lab['result']);
                 unset($lab['result_value_log']);
                 unset($lab['result_value_absolute']);

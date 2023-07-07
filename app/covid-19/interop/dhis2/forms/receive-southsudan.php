@@ -227,9 +227,9 @@ foreach ($trackedEntityInstances as $tracker) {
         }
 
 
-        $status = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
+        $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
         if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
-            $status = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+            $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
         }
 
         $formData['result_status'] = $status;

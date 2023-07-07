@@ -44,10 +44,10 @@ try {
     }
 
 
-    $resultStatus = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
+    $resultStatus = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 
     if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
-        $resultStatus = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+        $resultStatus = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
     }
     $countryFormId = $_POST['countryFormId'] ?? '';
     //add province
@@ -171,7 +171,7 @@ try {
     if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
         $vl_result_category = 'rejected';
         $isRejected = true;
-        $resultStatus = SAMPLE_STATUS_REJECTED;
+        $resultStatus = SAMPLE_STATUS\REJECTED;
         $_POST['result'] = '';
         $_POST['vlLog'] = '';
     }

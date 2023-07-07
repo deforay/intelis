@@ -188,11 +188,11 @@ if (!empty($sWhere)) {
      }
      if (isset($_POST['status']) && trim($_POST['status']) != '') {
           if ($_POST['status'] == 'no_result') {
-               $statusCondition = ' AND (vl.result is NULL OR vl.result ="") AND vl.result_status != ' . SAMPLE_STATUS_REJECTED;
+               $statusCondition = ' AND (vl.result is NULL OR vl.result ="") AND vl.result_status != ' . SAMPLE_STATUS\REJECTED;
           } else if ($_POST['status'] == 'result') {
-               $statusCondition = ' AND (vl.result is NOT NULL AND vl.result !="" AND vl. != ' . SAMPLE_STATUS_REJECTED . ')';
+               $statusCondition = ' AND (vl.result is NOT NULL AND vl.result !="" AND vl. != ' . SAMPLE_STATUS\REJECTED . ')';
           } else {
-               $statusCondition = ' AND vl.result_status = ' . SAMPLE_STATUS_REJECTED;
+               $statusCondition = ' AND vl.result_status = ' . SAMPLE_STATUS\REJECTED;
           }
           $sWhere = $sWhere . $statusCondition;
      }
@@ -238,22 +238,22 @@ if (!empty($sWhere)) {
      if (isset($_POST['status']) && trim($_POST['status']) != '') {
           if (isset($setWhr)) {
                if ($_POST['status'] == 'no_result') {
-                    $statusCondition = ' AND  (vl.result is NULL OR vl.result ="")  AND vl.result_status = ' . SAMPLE_STATUS_REJECTED;
+                    $statusCondition = ' AND  (vl.result is NULL OR vl.result ="")  AND vl.result_status = ' . SAMPLE_STATUS\REJECTED;
                } else if ($_POST['status'] == 'result') {
-                    $statusCondition = ' AND (vl.result is NOT NULL AND vl.result !=""  AND vl.result_status != ' . SAMPLE_STATUS_REJECTED . ')';
+                    $statusCondition = ' AND (vl.result is NOT NULL AND vl.result !=""  AND vl.result_status != ' . SAMPLE_STATUS\REJECTED . ')';
                } else {
-                    $statusCondition = ' AND vl.result_status = ' . SAMPLE_STATUS_REJECTED;
+                    $statusCondition = ' AND vl.result_status = ' . SAMPLE_STATUS\REJECTED;
                }
                $sWhere = $sWhere . $statusCondition;
           } else {
                $setWhr = 'where';
                $sWhere = ' WHERE ' . $sWhere;
                if ($_POST['status'] == 'no_result') {
-                    $statusCondition = '  (vl.result is NULL OR vl.result ="")  AND vl.result_status = ' . SAMPLE_STATUS_REJECTED;
+                    $statusCondition = '  (vl.result is NULL OR vl.result ="")  AND vl.result_status = ' . SAMPLE_STATUS\REJECTED;
                } else if ($_POST['status'] == 'result') {
-                    $statusCondition = ' (vl.result is NOT NULL AND vl.result !=""  AND vl.result_status != ' . SAMPLE_STATUS_REJECTED . ')';
+                    $statusCondition = ' (vl.result is NOT NULL AND vl.result !=""  AND vl.result_status != ' . SAMPLE_STATUS\REJECTED . ')';
                } else {
-                    $statusCondition = ' vl.result_status = ' . SAMPLE_STATUS_REJECTED;
+                    $statusCondition = ' vl.result_status = ' . SAMPLE_STATUS\REJECTED;
                }
                $sWhere = $sWhere . $statusCondition;
           }
@@ -292,11 +292,11 @@ if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
      $dWhere = "WHERE ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
 } else {
      if (trim($sWhere) != '') {
-          $sWhere = $sWhere . "  AND vl.result_status != " . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+          $sWhere = $sWhere . "  AND vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
      } else {
-          $sWhere = "WHERE vl.result_status != " . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+          $sWhere = "WHERE vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
      }
-     $dWhere = "WHERE vl.result_statu != " . SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+     $dWhere = "WHERE vl.result_statu != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 }
 if ($_SESSION['instanceType'] == 'remoteuser') {
      //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";

@@ -39,7 +39,7 @@ try {
 
 	if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
 		$covid19Data['result'] = null;
-		$covid19Data['result_status'] = SAMPLE_STATUS_REJECTED;
+		$covid19Data['result_status'] = SAMPLE_STATUS\REJECTED;
 	}
 	if (isset($_POST['deletedRow']) && trim($_POST['deletedRow']) != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
 		$deleteRows = explode(',', $_POST['deletedRow']);

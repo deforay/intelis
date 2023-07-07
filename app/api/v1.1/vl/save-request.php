@@ -221,9 +221,9 @@ try {
             }
         }
 
-        $status = SAMPLE_STATUS_RECEIVED_AT_TESTING_LAB;
+        $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
         if ($roleUser['access_type'] != 'testing-lab') {
-            $status = SAMPLE_STATUS_RECEIVED_AT_CLINIC;
+            $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
         }
 
 
@@ -241,7 +241,7 @@ try {
 
         if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
             $finalResult = null;
-            $status = SAMPLE_STATUS_REJECTED;
+            $status = SAMPLE_STATUS\REJECTED;
         } elseif (isset($data['vlResult']) && trim($data['vlResult']) != '') {
             if (in_array(strtolower($data['vlResult']), ['fail', 'failed', 'failure', 'error', 'err'])) {
                 //Result is saved as entered
@@ -258,12 +258,12 @@ try {
                 $absVal = $interpretedResults['absVal'];
                 $txtVal = $interpretedResults['txtVal'];
             }
-            $status = SAMPLE_STATUS_PENDING_APPROVAL;
+            $status = SAMPLE_STATUS\PENDING_APPROVAL;
             if (
                 isset($globalConfig['vl_auto_approve_api_results']) &&
                 $globalConfig['vl_auto_approve_api_results'] == "yes"
             ) {
-                $status = SAMPLE_STATUS_ACCEPTED;
+                $status = SAMPLE_STATUS\ACCEPTED;
             }
         }
 
@@ -401,9 +401,9 @@ try {
 
         $vlFulldata['vl_result_category'] = $vlService->getVLResultCategory($vlFulldata['result_status'], $vlFulldata['result']);
         if ($vlFulldata['vl_result_category'] == 'failed' || $vlFulldata['vl_result_category'] == 'invalid') {
-            $vlFulldata['result_status'] = SAMPLE_STATUS_TEST_FAILED;
+            $vlFulldata['result_status'] = SAMPLE_STATUS\TEST_FAILED;
         } elseif ($vlFulldata['vl_result_category'] == 'rejected') {
-            $vlFulldata['result_status'] = SAMPLE_STATUS_REJECTED;
+            $vlFulldata['result_status'] = SAMPLE_STATUS\REJECTED;
         }
 
         $id = false;

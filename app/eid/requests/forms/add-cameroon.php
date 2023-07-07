@@ -710,7 +710,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             <?php
             } else {
             ?>
-                //document.getElementById('addEIDRequestForm').submit();
+                document.getElementById('addEIDRequestForm').submit();
             <?php
             } ?>
         }
