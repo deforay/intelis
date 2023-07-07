@@ -4648,6 +4648,7 @@ ALTER TABLE `privileges` ADD `display_order` INT NULL DEFAULT NULL AFTER `displa
 ALTER TABLE `privileges` ADD `show_mode` VARCHAR (32) NULL DEFAULT 'always' AFTER `display_order`;
 
 DELETE FROM `privileges` WHERE `privilege_name` = '/vl/requests/patientList.php';
+DELETE FROM `privileges` WHERE `privilege_name` like '%vlRequestRwdForm.php';
 DELETE FROM `privileges` WHERE `privilege_name` = '/vl/requests/sendRequestToMail.php';
 DELETE FROM `privileges` WHERE `privilege_name` = '/vl/requests/vlRequestMailConfirm.php';
 DELETE FROM `privileges` WHERE `privilege_name` = '/vl/requests/vlResultMailConfirm.php';

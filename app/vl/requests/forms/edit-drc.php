@@ -863,7 +863,7 @@ $aResult = $db->query($aQuery);
 							value="<?php echo $arr['vl_form']; ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);"
 							onclick="validateNow();return false;">Save</a>
-						<a href="vlRequest.php" class="btn btn-default"> Cancel</a>
+						<a href="/vl/requests/vl-requests.php" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->
 				</form>

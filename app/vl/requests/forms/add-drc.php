@@ -768,7 +768,7 @@ $sFormat = '';
 							value="<?php echo $arr['sample_code']; ?>" />
 						<input type="hidden" name="countryFormId" id="countryFormId"
 							value="<?php echo $arr['vl_form']; ?>" />
-						<a href="vlRequest.php" class="btn btn-default"> Cancel</a>
+						<a href="/vl/requests/vl-requests.php" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->
 				</form>

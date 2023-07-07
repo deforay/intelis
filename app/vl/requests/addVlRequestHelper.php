@@ -399,11 +399,11 @@ try {
         if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
             header("Location:addVlRequest.php");
         } else {
-            header("Location:vlRequest.php");
+            header("Location:/vl/requests/vl-requests.php");
         }
     } else {
         $_SESSION['alertMsg'] = _("Please try again later");
-        header("Location:vlRequest.php");
+        header("Location:/vl/requests/vl-requests.php");
     }
 } catch (Exception $exc) {
     error_log($exc->getMessage());

@@ -342,7 +342,7 @@ if ($priInfo) {
 													$allowChecked = "";
 												}
 												echo "<div class='col-lg-3' style='margin-top:5px;border:1px solid #eee;padding:10px;'>
-                                  <strong>" . ($privilege['display_name']) . "</strong>
+                                  <strong>" . _($privilege['display_name']) . "</strong>
                                   <br>
 
 								  <div class='switch-field' style='margin: 30px 0 36px 90px;'>

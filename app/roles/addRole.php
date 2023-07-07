@@ -317,17 +317,17 @@ $rInfo = $db->query($resourcesQuery);
 											?>
 											<small class="toggler">
 												<h4 style="font-weight: bold;">
-													<?= $mRes[1]; ?>
+													<?= _($mRes[1]); ?>
 												</h4>
 												<div class="switch-field pull-right">
 													<input type='radio' class='' id='all<?= $mRes[0]; ?>'
 														name='<?= $mRes[1]; ?>'
 														onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",true);'>
-													<label for='all<?= $mRes[0]; ?>'><?php echo _("All"); ?></label>
+													<label for='all<?= $mRes[0]; ?>'><?= _("All"); ?></label>
 													<input type='radio' class='' id='none<?= $mRes[0]; ?>'
 														name='<?= $mRes[1]; ?>'
 														onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",false);'>
-													<label for='none<?= $mRes[0]; ?>'><?php echo _("None"); ?></label>
+													<label for='none<?= $mRes[0]; ?>'><?= _("None"); ?></label>
 												</div>
 											</small>
 											<?php
@@ -352,7 +352,7 @@ $rInfo = $db->query($resourcesQuery);
 											echo "<td style='text-align:center;vertical-align:middle;' class='privilegesNode' id='" . $mRes[0] . "'>";
 											foreach ($pInfo as $privilege) {
 												echo "<div class='col-lg-3' style='margin-top:5px;border:1px solid #eee;padding:10px;'>
-                                  <strong>" . ($privilege['display_name']) . "</strong>
+                                  <strong>" . _($privilege['display_name']) . "</strong>
                                   <br>
 
 								  <div class='switch-field' style='margin: 30px 0 36px 90px;'>
