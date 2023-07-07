@@ -191,6 +191,10 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										<td>
 											<input type="text" value="<?php echo $tbInfo['request_created_datetime']; ?>" class="date-time form-control" id="requestedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date of request date" style="width:100%;" />
 										</td>
+										<th scope="row"><label for="requestingClinician">Clinician Name </label></th>
+										<td>
+											<input type="text" class="form-control" value="<?php echo $tbInfo['requesting_clinician']; ?>" id="requestingClinician" name="requestingClinician" placeholder="<?= _("Enter clinician name"); ?>" title="Enter clinician name" style="width:100%;" />
+										</td>
 										<td><label class="label-control" for="referringUnit">Referring Unit </label></td>
 										<td>
 											<select class="form-control " name="referringUnit" id="referringUnit" title="Please choose referring unit" style="width:100%;" onchange="showOther(this.value, 'typeOfReferringUnit');">

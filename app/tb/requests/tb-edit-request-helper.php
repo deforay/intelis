@@ -152,6 +152,7 @@ try {
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => $_POST['formId'],
         'facility_id' => !empty($_POST['facilityId']) ? $_POST['facilityId'] : null,
+        'requesting_clinician' => !empty($_POST['requestingClinician']) ? $_POST['requestingClinician'] : null,
         'specimen_quality' => !empty($_POST['testNumber']) ? $_POST['testNumber'] : null,
         'province_id' => !empty($_POST['provinceId']) ? $_POST['provinceId'] : null,
         'lab_id' => !empty($_POST['labId']) ? $_POST['labId'] : null,
