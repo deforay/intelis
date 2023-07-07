@@ -174,6 +174,8 @@ try {
         'patient_dob' => !empty($_POST['patientDob']) ? $_POST['patientDob'] : null,
         'patient_gender' => !empty($_POST['patientGender']) ? $_POST['patientGender'] : null,
         'patient_age' => !empty($_POST['patientAge']) ? $_POST['patientAge'] : null,
+        'patient_phone' => !empty($_POST['patientPhoneNumber']) ? $_POST['patientPhoneNumber'] : null,
+		'patient_address' => !empty($_POST['patientAddress']) ? $_POST['patientAddress'] : null,
         'reason_for_tb_test' => !empty($reason) ? json_encode($reason) : null,
         'hiv_status' => !empty($_POST['hivStatus']) ? $_POST['hivStatus'] : null,
         'previously_treated_for_tb' => !empty($_POST['previouslyTreatedForTB']) ? $_POST['previouslyTreatedForTB'] : null,
@@ -209,6 +211,7 @@ try {
         'sample_registered_at_lab' => DateUtility::getCurrentDateTime(),
         'last_modified_by' => $_SESSION['userId'],
         'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+        'lab_tech_comments' => !empty($_POST['labComments']) ? $_POST['labComments'] : '',
         'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId']
     );
 

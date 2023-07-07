@@ -229,9 +229,9 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 								</div>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
-										<th scope="row"><label for="patientId">Unique ART Number</label></th>
+										<th scope="row"><label for="patientId">Unique ART Number<span class="mandatory">*</span></label></th>
 										<td>
-											<input type="text" value="<?php echo $tbInfo['patient_id']; ?>" class="form-control" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
+											<input type="text" value="<?php echo $tbInfo['patient_id']; ?>" class="form-control isRequired" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
 										</td>
 										<th scope="row"><label for="firstName">First Name <span class="mandatory">*</span> </label></th>
 										<td>
@@ -243,13 +243,13 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										<td>
 											<input type="text" value="<?php echo $tbInfo['patient_surname']; ?>" class="form-control " id="lastName" name="lastName" placeholder="Last name" title="Please enter Last name" style="width:100%;" onchange="" />
 										</td>
-										<th scope="row"><label for="patientDob">Date of Birth </label></th>
+										<th scope="row"><label for="patientDob">Date of Birth<span class="mandatory">*</span> </label></th>
 										<td>
 											<input type="text" value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['patient_dob']); ?>" class="form-control" id="patientDob" name="patientDob" placeholder="Date of Birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInYears();" />
 										</td>
 									</tr>
 									<tr>
-										<th scope="row">Age (years)</th>
+										<th scope="row">Age (years)<span class="mandatory">*</span></th>
 										<td><input type="number" value="<?php echo $tbInfo['patient_age']; ?>" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="patientAge" name="patientAge" placeholder="Patient Age (in years)" title="Patient Age" style="width:100%;" onchange="" /></td>
 										<th scope="row"><label for="patientGender">Gender <span class="mandatory">*</span> </label></th>
 										<td>
@@ -260,6 +260,12 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 												<option value='other' <?php echo (isset($tbInfo['patient_gender']) && $tbInfo['patient_gender'] == 'other') ? "selected='selected'" : ""; ?>> Other </option>
 											</select>
 										</td>
+									</tr>
+									<tr>
+										<th scope="row">Complete Address<span class="mandatory">*</span></th>
+										<td><input type="text" class="form-control isRequired" id="patientAddress" name="patientAddress" placeholder="Patient Complete Address" title="Patient Complete Address" style="width:100%;" onchange="" value="<?php echo ($tbInfo['patient_address']); ?>" /></td>
+										<th scope="row">Telephone</th>
+										<td><input type="text" class="form-control" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Patient phone number" title="Patient phone number" style="width:100%;" onchange="" value="<?php echo ($tbInfo['patient_phone']); ?>" /></td>
 									</tr>
 									<tr>
 										<th scope="row"><label for="typeOfPatient">Type of patient<span class="mandatory">*</span> </label></th>
@@ -278,7 +284,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										</td>
 									</tr>
 									<tr>
-										<th scope="row" colspan="4">Reason for Examination</th>
+										<th scope="row" colspan="4">Reason for Examination<span class="mandatory">*</span></th>
 									</tr>
 									<tr style=" border: 1px solid #8080804f; ">
 										<td>
@@ -338,18 +344,18 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										</td>
 									</tr>
 									<tr>
-										<th scope="row"><label for="hivStatus">HIV Status</label></th>
+										<th scope="row"><label for="hivStatus">HIV Status<span class="mandatory">*</span></label></th>
 										<td>
-											<select class="form-control" name="hivStatus" id="hivStatus" title="Please select HIV Status">
+											<select class="form-control isRequired" name="hivStatus" id="hivStatus" title="Please select HIV Status">
 												<option value=''> -- Select -- </option>
 												<option value='yes' <?php echo (isset($tbInfo['hiv_status']) && $tbInfo['hiv_status'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
 												<option value='no' <?php echo (isset($tbInfo['hiv_status']) && $tbInfo['hiv_status'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
 												<option value='unknown' <?php echo (isset($tbInfo['hiv_status']) && $tbInfo['hiv_status'] == 'unknown') ? "selected='selected'" : ""; ?>> Unknown </option>
 											</select>
 										</td>
-										<th scope="row"><label for="previouslyTreatedForTB">Previously treated for TB? </label></th>
+										<th scope="row"><label for="previouslyTreatedForTB">Previously treated for TB? <span class="mandatory">*</span></label></th>
 										<td>
-											<select class="form-control" name="previouslyTreatedForTB" id="previouslyTreatedForTB" title="Please select options">
+											<select class="form-control isRequired" name="previouslyTreatedForTB" id="previouslyTreatedForTB" title="Please select options">
 												<option value=''> -- Select -- </option>
 												<option value='yes' <?php echo (isset($tbInfo['previously_treated_for_tb']) && $tbInfo['previously_treated_for_tb'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
 												<option value='no' <?php echo (isset($tbInfo['previously_treated_for_tb']) && $tbInfo['previously_treated_for_tb'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
@@ -393,10 +399,10 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 											</select>
 										</td>
 										<th scope="row">
-											<label class="label-control" for="testTypeRequested">Test(s) requested </label>
+											<label class="label-control" for="testTypeRequested">Test(s) requested<span class="mandatory">*</span> </label>
 										</th>
 										<td>
-											<select name="testTypeRequested[]" id="testTypeRequested" class="select2 form-control" title="Please choose type of test request" style="width:100%" multiple>
+											<select name="testTypeRequested[]" id="testTypeRequested" class="select2 form-control isRequired" title="Please choose type of test request" style="width:100%" multiple>
 												<optgroup label="Microscopy">
 													<option value="ZN" <?php echo (isset($testTypeRequested) && in_array("ZN", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>ZN</option>
 													<option value="FM" <?php echo (isset($testTypeRequested) && in_array("FM", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>FM</option>
@@ -415,29 +421,29 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 									<tr>
 										<th scope="row">
 											<label class="label-control" for="testTypeRequested">
-												Number of sputum samples sent with this form
+												Number of sputum samples sent with this form<span class="mandatory">*</span>
 											</label>
 										</th>
 										<td>
-											<input type="text" value="<?php echo $tbInfo['number_of_sputum_samples']; ?>" class="form-control forceNumeric" id="numberOfSputumSamples" name="numberOfSputumSamples" placeholder="Enter Number Of Sputum Samples" title="Please enter the Number Of Sputum Samples" />
+											<input type="text" value="<?php echo $tbInfo['number_of_sputum_samples']; ?>" class="form-control forceNumeric isRequired" id="numberOfSputumSamples" name="numberOfSputumSamples" placeholder="Enter Number Of Sputum Samples" title="Please enter the Number Of Sputum Samples" />
 										</td>
 										<th scope="row">
 											<label class="label-control" for="testTypeRequested">
-												Date of collection of first sputum samples
+												Date of collection of first sputum samples<span class="mandatory">*</span>
 											</label>
 										</th>
 										<td>
-											<input type="text" class="form-control" value="<?php echo $tbInfo['first_sputum_samples_collection_date']; ?>" id="firstSputumSamplesCollectionDate" name="firstSputumSamplesCollectionDate" placeholder="Enter the Collection Of First Sputum Samples" title="Please enter the collection Of First Sputum Samples" style="width:100%;" />
+											<input type="text" class="form-control isRequired" value="<?php echo $tbInfo['first_sputum_samples_collection_date']; ?>" id="firstSputumSamplesCollectionDate" name="firstSputumSamplesCollectionDate" placeholder="Enter the Collection Of First Sputum Samples" title="Please enter the collection Of First Sputum Samples" style="width:100%;" />
 										</td>
 									</tr>
 									<tr>
 										<th scope="row">
 											<label class="label-control">
-												Name of signature of person requesting examination
+												Name of signature of person requesting examination<span class="mandatory">*</span>
 											</label>
 										</th>
 										<td>
-											<input type="text" class="form-control" value="<?php echo $tbInfo['sample_requestor_name']; ?>" id="sampleRequestorName" name="sampleRequestorName" placeholder="Enter Name" title="Please enter the Name" />
+											<input type="text" class="form-control isRequired" value="<?php echo $tbInfo['sample_requestor_name']; ?>" id="sampleRequestorName" name="sampleRequestorName" placeholder="Enter Name" title="Please enter the Name" />
 										</td>
 									</tr>
 								</table>
@@ -601,6 +607,13 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 											</td>
 											<th scope="row"><label class="label-control" for="approvedOn">Approved on</label></th>
 											<td><input type="text" value="<?php echo $tbInfo['result_approved_datetime']; ?>" name="approvedOn" id="approvedOn" class="date-time form-control" placeholder="Approved on" title="Please enter the approved on" /></td>
+										</tr>
+										<tr>
+											<th scope="row"><label class="label-control" for="labComments">Lab Comments</label></th>
+
+											<td>
+											<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments"><?php echo trim($tbInfo['lab_tech_comments']); ?></textarea>
+											</td>
 										</tr>
 
 									</table>

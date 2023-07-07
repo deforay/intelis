@@ -243,6 +243,12 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										</td>
 									</tr>
 									<tr>
+										<th scope="row">Complete Address<span class="mandatory">*</span></th>
+										<td><input type="text" class="form-control isRequired" id="patientAddress" name="patientAddress" placeholder="Patient Complete Address" title="Patient Complete Address" style="width:100%;" onchange="" value="<?php echo ($tbInfo['patient_address']); ?>" /></td>
+										<th scope="row">Telephone</th>
+										<td><input type="text" class="form-control" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Patient phone number" title="Patient phone number" style="width:100%;" onchange="" value="<?php echo ($tbInfo['patient_phone']); ?>" /></td>
+									</tr>
+									<tr>
 										<th scope="row"><label for="typeOfPatient">Type of patient </label></th>
 										<td>
 											<select class="select2 form-control" name="typeOfPatient[]" id="typeOfPatient" title="Please select the type of patient" multiple>
