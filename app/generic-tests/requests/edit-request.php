@@ -399,6 +399,8 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 										 </select>
 									 </div>
 								</div>
+							</div>
+							<div class="row requestForm" style="display:none;">
 								<div class="col-md-6">
 									<label class="col-lg-5" for="sampleCode">Sample ID <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
@@ -413,16 +415,15 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 											style="width:100%;">
 									</div>
 								</div>
-								<!-- <div class="col-md-6">
-									<div class="form-group">
-										<label class="col-lg-5" for="sampleReordered">
+								<div class="col-md-6">
+									<label class="col-lg-5" for="sampleReordered"> Sample Reordered</label>
+									<div class="col-lg-7">
 										<input type="checkbox" class="" id="sampleReordered" name="sampleReordered"
 											value="yes" <?php echo (trim($genericResultInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?>
-											title="Please indicate if this is a reordered sample"> Sample
-										Reordered
-									</label>
+											title="Please indicate if this is a reordered sample">
+									
 									</div>
-								</div> -->
+								</div>
 							</div>
 							<div class="requestForm" style="display:none;">
 								<div class="row">

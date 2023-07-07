@@ -220,46 +220,6 @@ if (!empty($patientFullName)) {
 }
 $testResultUnits = $genericTestsService->getTestResultUnit($genericResultInfo['test_type']);
 
-?>
-<style>
-    .ui_tpicker_second_label {
-        display: none !important;
-    }
-
-    .ui_tpicker_second_slider {
-        display: none !important;
-    }
-
-    .ui_tpicker_millisec_label {
-        display: none !important;
-    }
-
-    .ui_tpicker_millisec_slider {
-        display: none !important;
-    }
-
-    .ui_tpicker_microsec_label {
-        display: none !important;
-    }
-
-    .ui_tpicker_microsec_slider {
-        display: none !important;
-    }
-
-    .ui_tpicker_timezone_label {
-        display: none !important;
-    }
-
-    .ui_tpicker_timezone {
-        display: none !important;
-    }
-
-    .ui_tpicker_time_input {
-        width: 100%;
-    }
-</style>
-<?php
-
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
 $fundingSourceList = $db->query($fundingSourceQry);
@@ -406,6 +366,47 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
     #sampleCode {
         background-color: #fff;
     }
+    .ui_tpicker_second_label {
+        display: none !important;
+    }
+
+    .ui_tpicker_second_slider {
+        display: none !important;
+    }
+
+    .ui_tpicker_millisec_label {
+        display: none !important;
+    }
+
+    .ui_tpicker_millisec_slider {
+        display: none !important;
+    }
+
+    .ui_tpicker_microsec_label {
+        display: none !important;
+    }
+
+    .ui_tpicker_microsec_slider {
+        display: none !important;
+    }
+
+    .ui_tpicker_timezone_label {
+        display: none !important;
+    }
+
+    .ui_tpicker_timezone {
+        display: none !important;
+    }
+
+    .ui_tpicker_time_input {
+        width: 100%;
+    }
+    .facilitySectionInput, .patientSectionInput, #otherSection .col-md-6 {
+        margin: 3px 0px;
+    }
+    .facilitySectionInput, .patientSectionInput .select2, #otherSection .col-md-6 .select2 {
+        margin: 3px 0px;
+    }
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -438,9 +439,9 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                     Clinican/Nurse)</h3>
                             </div>
                             <div class="row">
-                                <div class="col-xs-4 col-md-4">
-                                    <div class="form-group">
-                                        <label for="testType">Test Type</label>
+                                <div class="col-md-6">
+                                    <label class="col-lg-5" for="testType">Test Type</label>
+                                    <div class="col-lg-7">
                                         <select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getTestTypeForm()">
                                             <option value=""> -- Select --</option>
                                             <?php foreach ($testTypeResult as $testType) { ?>
@@ -450,55 +451,52 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                     </div>
                                 </div>
                             </div>
-                            <div class="box-body requestForm" style="display:none;">
+                            <div class="requestForm" style="display:none;">
                                 <div class="row">
-                                    <div class="col-xs-4 col-md-4">
-                                        <div class="form-group">
-                                            <label for="sampleCode">Sample ID <span class="mandatory">*</span></label>
+                                    <div class="col-md-6">
+                                        <label class="col-lg-5" for="sampleCode">Sample ID <span class="mandatory">*</span></label>
+                                        <div class="col-lg-7">
                                             <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" readonly="readonly" title="Please enter sample id" value="<?php echo $genericResultInfo[$sampleCode]; ?>" style="width:100%;" onchange="checkSampleNameValidation('form_generic','<?php echo $sampleCode; ?>',this.id,'<?php echo "sample_id##" . $genericResultInfo["sample_id"]; ?>','This sample number already exists.Try another number',null)" />
                                             <input type="hidden" name="sampleCodeCol" value="<?= htmlspecialchars($genericResultInfo['sample_code']); ?>" style="width:100%;">
                                         </div>
                                     </div>
-                                    <div class="col-xs-4 col-md-4">
-                                        <div class="form-group">
-                                            <label for="sampleReordered">
-                                                <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim($genericResultInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> title="Please indicate if this is a reordered sample"> Sample
-                                                Reordered
-                                            </label>
+                                    <div class="col-md-6">
+                                        <label class="col-lg-5" for="sampleReordered">Sample Reordered</label>
+                                        <div class="col-lg-7">
+                                            <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim($genericResultInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> title="Please indicate if this is a reordered sample">
                                         </div>
                                     </div>
-
-
                                 </div>
                                 <div class="row">
-                                    <div class="col-xs-4 col-md-4">
-                                        <div class="form-group">
-                                            <label for="province">State/Province <span class="mandatory">*</span></label>
+                                    <div class="col-md-6">
+                                        <label class="col-lg-5" for="province">State/Province <span class="mandatory">*</span></label>
+                                        <div class="col-lg-7">
                                             <select class="form-control isRequired" name="province" id="province" title="Please choose state" style="width:100%;" onchange="getProvinceDistricts(this);">
                                                 <?php echo $province; ?>
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-xs-4 col-md-4">
-                                        <div class="form-group">
-                                            <label for="district">District/County <span class="mandatory">*</span></label>
+                                    <div class="col-md-6">
+                                        <label class="col-lg-5" for="district">District/County <span class="mandatory">*</span></label>
+                                        <div class="col-lg-7">
                                             <select class="form-control isRequired" name="district" id="district" title="Please choose county" style="width:100%;" onchange="getFacilities(this);">
                                                 <option value=""> -- Select --</option>
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-xs-4 col-md-4">
-                                        <div class="form-group">
-                                            <label for="fName">Clinic/Health Center <span class="mandatory">*</span></label>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label  class="col-lg-5" for="fName">Clinic/Health Center <span class="mandatory">*</span></label>
+                                        <div class="col-lg-7">
                                             <select class="form-control isRequired" id="fName" name="fName" title="Please select clinic/health center name" style="width:100%;" onchange="fillFacilityDetails(this);">
-
                                                 <?= $facility; ?>
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-xs-3 col-md-3" style="display:none;">
-                                        <div class="form-group">
-                                            <label for="fCode">Clinic/Health Center Code </label>
+                                    <div class="col-md-6" style="display:none;">
+                                        <label class="col-lg-5" for="fCode">Clinic/Health Center Code </label>
+                                        <div class="col-lg-7">
                                             <input type="text" class="form-control" style="width:100%;" name="fCode" id="fCode" placeholder="Clinic/Health Center Code" title="Please enter clinic/health center code" value="<?php echo $facilityResult[0]['facility_code']; ?>">
                                         </div>
                                     </div>
@@ -517,12 +515,10 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                     </div>
                                     <div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;"><?php echo ($facilityResult[0]['contact_person']); ?></div>
                                 </div>
-
-
                                 <div class="row">
-                                    <div class="col-xs-4 col-md-4">
-                                        <div class="form-group">
-                                            <label for="implementingPartner">Implementing Partner</label>
+                                    <div class="col-md-6">
+                                        <label class="col-lg-5" for="implementingPartner">Implementing Partner</label>
+                                        <div class="col-lg-7">
                                             <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
                                                 <option value=""> -- Select --</option>
                                                 <?php
@@ -533,9 +529,9 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-xs-4 col-md-4">
-                                        <div class="form-group">
-                                            <label for="fundingSource">Funding Source</label>
+                                    <div class="col-md-6">
+                                        <label class="col-lg-5" for="fundingSource">Funding Source</label>
+                                        <div class="col-lg-7">
                                             <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
                                                 <option value=""> -- Select --</option>
                                                 <?php
@@ -556,41 +552,41 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                             </div>
                             <div class="box-body">
                                 <div class="row">
-                                    <div class="col-xs-3 col-md-3">
-                                        <div class="form-group">
-                                            <label for="artNo">Patient ID <span class="mandatory">*</span></label>
+                                    <div class="col-md-6">
+                                        <label class="col-lg-5" for="artNo">Patient ID <span class="mandatory">*</span></label>
+                                        <div class="col-lg-7">
                                             <input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter Patient ID" title="Enter patient id" value="<?= htmlspecialchars($genericResultInfo['patient_id']); ?>" />
                                         </div>
                                     </div>
-                                    <div class="col-xs-3 col-md-3">
-                                        <div class="form-group">
-                                            <label for="dob">Date of Birth </label>
+                                    <div class="col-md-6">
+                                        <label class="col-lg-5" for="dob">Date of Birth </label>
+                                        <div class="col-lg-7">
                                             <input type="text" name="dob" id="dob" class="form-control date" placeholder="Enter DOB" title="Enter dob" value="<?= htmlspecialchars($genericResultInfo['patient_dob']); ?>" onchange="getAge();" />
                                         </div>
                                     </div>
-                                    <div class="col-xs-3 col-md-3">
-                                        <div class="form-group">
-                                            <label for="ageInYears">If DOB unknown, Age in Years </label>
+                                    <div class="col-md-6">
+                                        <label class="col-lg-5" for="ageInYears">If DOB unknown, Age in Years </label>
+                                        <div class="col-lg-7">
                                             <input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="3" placeholder="Age in Years" title="Enter age in years" value="<?= htmlspecialchars($genericResultInfo['patient_age_in_years']); ?>" />
                                         </div>
                                     </div>
-                                    <div class="col-xs-3 col-md-3">
-                                        <div class="form-group">
-                                            <label for="ageInMonths">If Age
-                                                < 1, Age in Months </label> <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" value="<?= htmlspecialchars($genericResultInfo['patient_age_in_months']); ?>" />
+                                    <div class="col-md-6">
+                                        <label class="col-lg-5" for="ageInMonths">If Age < 1, Age in Months </label> 
+                                        <div class="col-lg-7">
+                                            <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" value="<?= htmlspecialchars($genericResultInfo['patient_age_in_months']); ?>" />
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-xs-3 col-md-3">
-                                        <div class="form-group">
-                                            <label for="patientFirstName">Patient Name (First Name, Last Name) <span class="mandatory">*</span></label>
+                                    <div class="col-md-6">
+                                        <label class="col-lg-5" for="patientFirstName">Patient Name (First Name, Last Name) <span class="mandatory">*</span></label>
+                                        <div class="col-lg-7">
                                             <input type="text" name="patientFirstName" id="patientFirstName" class="form-control isRequired" placeholder="Enter Patient Name" title="Enter patient name" value="<?php echo $patientFullName; ?>" />
                                         </div>
                                     </div>
-                                    <div class="col-xs-3 col-md-3">
-                                        <div class="form-group">
-                                            <label for="gender">Gender</label><br>
+                                    <div class="col-md-6">
+                                        <label class="col-lg-5" for="gender">Gender</label><br>
+                                        <div class="col-lg-7">
                                             <label class="radio-inline" style="margin-left:0px;">
                                                 <input type="radio" class="" id="genderMale" name="gender" value="male" title="Please check gender" <?php echo ($genericResultInfo['patient_gender'] == 'male') ? "checked='checked'" : "" ?>>
                                                 Male
@@ -605,9 +601,9 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                             </label>
                                         </div>
                                     </div>
-                                    <div class="col-xs-3 col-md-3">
-                                        <div class="form-group">
-                                            <label for="gender">Patient consent to receive SMS?</label><br>
+                                    <div class="col-md-6">
+                                        <label class="col-lg-5" for="gender">Patient consent to receive SMS?</label><br>
+                                        <div class="col-lg-7">
                                             <label class="radio-inline" style="margin-left:0px;">
                                                 <input type="radio" class="" id="receivesmsYes" name="receiveSms" value="yes" title="Patient consent to receive SMS" onclick="checkPatientReceivesms(this.value);" <?php echo ($genericResultInfo['consent_to_receive_sms'] == 'yes') ? "checked='checked'" : "" ?>>
                                                 Yes
@@ -618,17 +614,17 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                             </label>
                                         </div>
                                     </div>
-                                    <div class="col-xs-3 col-md-3">
-                                        <div class="form-group">
-                                            <label for="patientPhoneNumber">Phone Number</label>
+                                    <div class="col-md-6">
+                                        <label class="col-lg-5" for="patientPhoneNumber">Phone Number</label>
+                                        <div class="col-lg-7">
                                             <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control forceNumeric" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" value="<?= htmlspecialchars($genericResultInfo['patient_mobile_number']); ?>" />
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row ">
-                                    <div class="col-xs-3 col-md-3 femaleSection" style="display:<?php echo ($genericResultInfo['patient_gender'] == 'female' || $genericResultInfo['patient_gender'] == '' || $genericResultInfo['patient_gender'] == null) ? "" : "none" ?>" ;>
-                                        <div class="form-group">
-                                            <label for="patientPregnant">Is Patient Pregnant? </label><br>
+                                    <div class="col-md-6 femaleSection" style="display:<?php echo ($genericResultInfo['patient_gender'] == 'female' || $genericResultInfo['patient_gender'] == '' || $genericResultInfo['patient_gender'] == null) ? "" : "none" ?>" ;>
+                                        <label class="col-lg-5" for="patientPregnant">Is Patient Pregnant? </label><br>
+                                        <div class="col-lg-7">
                                             <label class="radio-inline">
                                                 <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Please check one" <?php echo ($genericResultInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>>
                                                 Yes
@@ -639,9 +635,9 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                             </label>
                                         </div>
                                     </div>
-                                    <div class="col-xs-3 col-md-3 femaleSection" style="display:<?php echo ($genericResultInfo['patient_gender'] == 'female' || $genericResultInfo['patient_gender'] == '' || $genericResultInfo['patient_gender'] == null) ? "" : "none" ?>" ;>
-                                        <div class="form-group">
-                                            <label for="breastfeeding">Is Patient Breastfeeding? </label><br>
+                                    <div class="col-md-6 femaleSection" style="display:<?php echo ($genericResultInfo['patient_gender'] == 'female' || $genericResultInfo['patient_gender'] == '' || $genericResultInfo['patient_gender'] == null) ? "" : "none" ?>" ;>
+                                        <label class="col-lg-5" for="breastfeeding">Is Patient Breastfeeding? </label><br>
+                                        <div class="col-lg-7">
                                             <label class="radio-inline">
                                                 <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Please check one" <?php echo ($genericResultInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>>
                                                 Yes
@@ -652,9 +648,9 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                             </label>
                                         </div>
                                     </div>
-                                    <div class="col-xs-3 col-md-3" style="display:none;">
-                                        <div class="form-group">
-                                            <label for="">How long has this patient been on treatment ? </label>
+                                    <div class="col-md-6" style="display:none;">
+                                        <label class="col-lg-5" for="">How long has this patient been on treatment ? </label>
+                                        <div class="col-lg-7">
                                             <input type="text" class="form-control" id="treatPeriod" name="treatPeriod" placeholder="Enter Treatment Period" title="Please enter how long has this patient been on treatment" value="<?= htmlspecialchars($genericResultInfo['treatment_initiation']); ?>" />
                                         </div>
                                     </div>
@@ -668,21 +664,21 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                             </div>
                             <div class="box-body">
                                 <div class="row">
-                                    <div class="col-xs-3 col-md-3">
-                                        <div class="form-group">
-                                            <label for="">Date of Sample Collection <span class="mandatory">*</span></label>
+                                    <div class="col-md-6">
+                                        <label class="col-lg-5" for="">Date of Sample Collection <span class="mandatory">*</span></label>
+                                        <div class="col-lg-7">
                                             <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" value="<?php echo $genericResultInfo['sample_collection_date']; ?>" onchange="checkSampleReceviedDate();checkSampleTestingDate();">
                                         </div>
                                     </div>
-                                    <div class="col-xs-3 col-md-3">
-                                        <div class="form-group">
-                                            <label for="">Sample Dispatched On <span class="mandatory">*</span></label>
+                                    <div class="col-md-6">
+                                        <label class="col-lg-5" for="">Sample Dispatched On <span class="mandatory">*</span></label>
+                                        <div class="col-lg-7">
                                             <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="Sample Dispatched On" title="Please select sample dispatched on" value="<?php echo $genericResultInfo['sample_dispatched_datetime']; ?>">
                                         </div>
                                     </div>
-                                    <div class="col-xs-3 col-md-3">
-                                        <div class="form-group">
-                                            <label for="specimenType">Sample Type <span class="mandatory">*</span></label>
+                                    <div class="col-md-6">
+                                        <label class="col-lg-5" for="specimenType">Sample Type <span class="mandatory">*</span></label>
+                                        <div class="col-lg-7">
                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose sample type">
                                                 <option value=""> -- Select --</option>
                                                 <?php foreach ($sResult as $name) { ?>
@@ -706,8 +702,8 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                 </div>
                                 <div class="box-body labSectionBody">
                                     <div class="row">
-                                        <div class="col-md-4">
-                                            <label for="labId" class="col-lg-5 control-label">Lab Name </label>
+                                        <div class="col-md-6">
+                                            <label class="col-lg-5" for="labId" class="col-lg-5 control-label">Lab Name </label>
                                             <div class="col-lg-7">
                                                 <select name="labId" id="labId" class="select2 form-control labSection" title="Please choose lab" onchange="autoFillFocalDetails();">
                                                     <option value="">-- Select --</option>
@@ -717,8 +713,8 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <label for="vlFocalPerson" class="col-lg-5 control-label"> Focal
+                                        <div class="col-md-6">
+                                            <label class="col-lg-5" for="vlFocalPerson" class="col-lg-5 control-label"> Focal
                                                 Person </label>
                                             <div class="col-lg-7">
                                                 <select class="form-control ajax-select2" id="vlFocalPerson" name="vlFocalPerson" title="Please enter Focal Person">
@@ -726,14 +722,16 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label class="col-lg-5" for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">
                                                 Focal Person Phone Number</label>
                                             <div class="col-lg-7">
                                                 <input type="text" class="form-control forceNumeric labSection" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter focal person phone number" value="<?= htmlspecialchars($genericResultInfo['testing_lab_focal_person_phone_number']); ?>" />
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <label class="col-lg-5 control-label" for="sampleReceivedAtHubOn">Date
                                                 Sample Received at Hub (PHL) </label>
                                             <div class="col-lg-7">
@@ -742,8 +740,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                         </div>
                                     </div>
                                     <div class="row">
-
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <label class="col-lg-5 control-label" for="sampleReceivedDate">Date
                                                 Sample Received at Testing Lab </label>
                                             <div class="col-lg-7">
@@ -751,8 +748,8 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                             </div>
                                         </div>
 
-                                        <div class="col-md-4">
-                                            <label for="testPlatform" class="col-lg-5 control-label"> Testing
+                                        <div class="col-md-6">
+                                            <label class="col-lg-5" for="testPlatform" class="col-lg-5 control-label"> Testing
                                                 Platform <span class="mandatory result-span">*</span></label>
                                             <div class="col-lg-7">
                                                 <select name="testPlatform" id="testPlatform" class="form-control isRequired result-optional labSection" title="Please choose VL Testing Platform">
@@ -763,7 +760,9 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
                                             <label class="col-lg-5 control-label" for="noResult">Sample Rejection
                                                 <span class="mandatory result-span">*</span></label>
                                             <div class="col-lg-7">
@@ -778,9 +777,20 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                                 </select>
                                             </div>
                                         </div>
+                                        <?php if (count($reasonForFailure) > 0) { ?>
+                                            <div class="col-md-6 labSection" style="<?php echo (!isset($genericResultInfo['result']) || $genericResultInfo['result'] == 'Failed') ? '' : 'display: none;'; ?>">
+                                                <label class="col-lg-5 control-label" for="reasonForFailure">Reason
+                                                    for Failure </label>
+                                                <div class="col-lg-7">
+                                                    <select name="reasonForFailure" id="reasonForFailure" class="form-control vlResult" title="Please choose reason for failure" style="width: 100%;">
+                                                        <?= $general->generateSelectOptions($reasonForFailure, $genericResultInfo['reason_for_failure'], '-- Select --'); ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        <?php } ?>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-4 rejectionReason" style="display:<?php echo ($genericResultInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
+                                        <div class="col-md-6 rejectionReason" style="display:<?php echo ($genericResultInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
                                             <label class="col-lg-5 control-label" for="rejectionReason">Rejection
                                                 Reason </label>
                                             <div class="col-lg-7">
@@ -803,7 +813,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                                 <input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
                                             </div>
                                         </div>
-                                        <div class="col-md-4 rejectionReason" style="margin-top: 10px;display:<?php echo ($genericResultInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
+                                        <div class="col-md-6 rejectionReason" style="margin-top: 10px;display:<?php echo ($genericResultInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
                                             <label class="col-lg-5 control-label" for="rejectionDate">Rejection
                                                 Date </label>
                                             <div class="col-lg-7">
@@ -813,25 +823,14 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                     </div>
 
                                     <div class="row">
-                                        <?php if (count($reasonForFailure) > 0) { ?>
-                                            <div class="col-md-4 labSection" style="<?php echo (!isset($genericResultInfo['result']) || $genericResultInfo['result'] == 'Failed') ? '' : 'display: none;'; ?>">
-                                                <label class="col-lg-5 control-label" for="reasonForFailure">Reason
-                                                    for Failure </label>
-                                                <div class="col-lg-7">
-                                                    <select name="reasonForFailure" id="reasonForFailure" class="form-control vlResult" title="Please choose reason for failure" style="width: 100%;">
-                                                        <?= $general->generateSelectOptions($reasonForFailure, $genericResultInfo['reason_for_failure'], '-- Select --'); ?>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        <?php } ?>
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <label class="col-lg-5 control-label" for="sampleTestingDateAtLab">Sample
                                                 Testing Date <span class="mandatory result-span">*</span></label>
                                             <div class="col-lg-7">
                                                 <input type="text" class="form-control isRequired dateTime result-fieldsform-control result-fields labSection <?php echo ($genericResultInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($genericResultInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $genericResultInfo['sample_tested_datetime']; ?>" onchange="checkSampleTestingDate();" />
                                             </div>
                                         </div>
-                                        <div class="col-md-4 vlResult" style="margin-top: 10px;">
+                                        <div class="col-md-6 vlResult" style="margin-top: 10px;">
                                             <label class="col-lg-5 control-label" for="resultDispatchedOn">Date
                                                 Results Dispatched </label>
                                             <div class="col-lg-7">
@@ -972,7 +971,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-4" style="margin-top: 10px;">
+                                        <div class="col-md-6" style="margin-top: 10px;">
                                             <label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="mandatory review-approve-span" style="display: <?php echo ($genericResultInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
                                             <div class="col-lg-7">
                                                 <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
@@ -980,13 +979,15 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <label class="col-lg-5 control-label" for="reviewedOn">Reviewed On <span class="mandatory review-approve-span" style="display: <?php echo ($genericResultInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
                                             <div class="col-lg-7">
                                                 <input type="text" value="<?php echo $genericResultInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
                                             <label class="col-lg-5 control-label" for="testedBy">Tested By </label>
                                             <div class="col-lg-7">
                                                 <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by">
@@ -1003,10 +1004,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                         <?php
                                         }
                                         ?>
-
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4" style="margin-top: 10px;">
+                                        <div class="col-md-6" style="margin-top: 10px;">
                                             <label class="col-lg-5 control-label" for="approvedBy">Approved By <span class="mandatory review-approve-span" style="display: <?php echo ($genericResultInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
                                             <div class="col-lg-7">
                                                 <select name="approvedBy" id="approvedBy" class="form-control labSection" title="Please choose approved by">
@@ -1014,14 +1012,14 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                    </div>  
+                                    <div class="row">
+                                        <div class="col-md-6">
                                             <label class="col-lg-5 control-label" for="approvedOn">Approved On <span class="mandatory review-approve-span" style="display: <?php echo ($genericResultInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
                                             <div class="col-lg-7">
                                                 <input type="text" value="<?php echo $genericResultInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOn" name="approvedOn" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
                                         <div class="col-md-6">
                                             <label class="col-lg-5 control-label" for="labComments">Lab Tech.
                                                 Comments </label>
@@ -1029,6 +1027,8 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                                 <textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments" style="width:100%"><?php echo trim($genericResultInfo['lab_tech_comments']); ?></textarea>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="row">
                                         <div class="col-md-6 reasonForResultChanges" style="display:none;">
                                             <label class="col-lg-6 control-label" for="reasonForResultChanges">Reason
                                                 For Changes in Result<span class="mandatory">*</span></label>

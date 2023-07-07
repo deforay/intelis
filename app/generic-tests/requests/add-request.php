@@ -207,30 +207,34 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                    <div class="box-header with-border">
                                         <h3 class="box-title">Clinic Information: (To be filled by requesting Clinican/Nurse)</h3>
                                    </div>
-                                   <div class="">
-                                        <div class="row">
-                                             <div class="col-md-6">
-                                                  <label class="col-lg-5" for="testType">Test Type <span class="mandatory">*</span></label>
-                                                  <div class="col-lg-7">
-                                                       <select class="form-control isRequired" name="testType" id="testType" title="Please choose test type" onchange="getTestTypeForm()">
-                                                            <option value=""> -- Select -- </option>
-                                                            <?php foreach ($testTypeResult as $testType) { ?>
-                                                                 <option value="<?php echo $testType['test_type_id'] ?>" data-short="<?php echo $testType['test_short_code']; ?>"><?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?></option>
-                                                            <?php } ?>
-                                                       </select>
-                                                  </div>
+                                   <div class="row">
+                                        <div class="col-md-6">
+                                             <label class="col-lg-5" for="testType">Test Type <span class="mandatory">*</span></label>
+                                             <div class="col-lg-7">
+                                                  <select class="form-control isRequired" name="testType" id="testType" title="Please choose test type" onchange="getTestTypeForm()">
+                                                       <option value=""> -- Select -- </option>
+                                                       <?php foreach ($testTypeResult as $testType) { ?>
+                                                            <option value="<?php echo $testType['test_type_id'] ?>" data-short="<?php echo $testType['test_short_code']; ?>"><?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?></option>
+                                                       <?php } ?>
+                                                  </select>
                                              </div>
-                                             <div class="col-md-6 requestForm" style="display:none;">
-                                                  <label class="col-lg-5" for="sampleCode">Sample ID <span class="mandatory">*</span></label>
-                                                  <div class="col-lg-7">
-                                                       <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" style="width:100%;" readonly onblur="checkSampleNameValidation('form_generic','<?php echo $sampleCode; ?>',this.id,null,'This sample number already exists.Try another number',null)" />
-                                                  </div>
+                                        </div>
+                                   </div>
+                                   <div class="row requestForm" style="display:none;">
+                                        <div class="col-md-6">
+                                             <label class="col-lg-5" for="sampleCode">Sample ID <span class="mandatory">*</span></label>
+                                             <div class="col-lg-7">
+                                                  <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" style="width:100%;" readonly onblur="checkSampleNameValidation('form_generic','<?php echo $sampleCode; ?>',this.id,null,'This sample number already exists.Try another number',null)" />
                                              </div>
-                                            <!--  <div class="col-lg-4 requestForm" style="display:none;">
-                                                  <label for="sampleReordered">
-                                                       <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" title="Please indicate if this is a reordered sample" style="border-radius: 10px;"> Sample Reordered
-                                                  </label>
-                                             </div> -->
+                                        </div>
+                                        <div class="col-md-6">
+                                             <label class="col-lg-5" for="sampleReordered"> Sample Reordered</label>
+                                             <div class="col-lg-7">
+                                                  <input type="checkbox" class="" id="sampleReordered" name="sampleReordered"
+                                                       value="yes" <?php echo (trim($genericResultInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?>
+                                                       title="Please indicate if this is a reordered sample">
+                                             
+                                             </div>
                                         </div>
                                    </div>
                                    <div class="requestForm" style="display:none;">
