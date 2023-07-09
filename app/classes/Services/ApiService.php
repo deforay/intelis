@@ -234,101 +234,112 @@ class ApiService
 
     public function getProvinceDetails($user = null, $onlyActive = false, $updatedDateTime = null)
     {
-        /** @var FacilitiesService $facilitiesService */
-        $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+        return once(function () use ($user, $onlyActive, $updatedDateTime) {
+            /** @var FacilitiesService $facilitiesService */
+            $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-        $query = "SELECT f.facility_id, f.facility_name, f.facility_code, gd.geo_id, gd.geo_name, f.facility_district, f.facility_type
-                    from geographical_divisions AS gd
+            $query = "SELECT f.facility_id,
+                            f.facility_name,
+                            f.facility_code,
+                            gd.geo_id,
+                            gd.geo_name,
+                            f.facility_district,
+                            f.facility_type
+                    FROM geographical_divisions AS gd
                     LEFT JOIN facility_details as f ON gd.geo_id=f.facility_state_id";
-        $where = [];
-        if (!empty($user)) {
-            $facilityMap = $facilitiesService->getUserFacilityMap($user);
-            if (!empty($facilityMap)) {
-                $where[] = " f.facility_id IN (" . $facilityMap . ")";
+            $where = [];
+            if (!empty($user)) {
+                $facilityMap = $facilitiesService->getUserFacilityMap($user);
+                if (!empty($facilityMap)) {
+                    $where[] = " f.facility_id IN (" . $facilityMap . ")";
+                }
             }
-        }
 
-        if ($onlyActive) {
-            $where[] = " f.status like 'active'";
-        }
+            if ($onlyActive) {
+                $where[] = " f.status like 'active'";
+            }
 
-        if ($updatedDateTime) {
-            $where[] = " gd.updated_datetime >= '$updatedDateTime'";
-        }
-        $whereStr = "";
-        if (!empty($where)) {
-            $whereStr = " WHERE " . implode(" AND ", $where);
-        }
-        $query .= $whereStr . ' GROUP BY geo_name ORDER BY geo_name ASC';
-        $result = $this->db->rawQuery($query);
-        foreach ($result as $key => $row) {
-            $condition1 = " facility_state like '" . $row['geo_name'] . "%'";
+            if ($updatedDateTime) {
+                $where[] = " gd.updated_datetime >= '$updatedDateTime'";
+            }
+            $whereStr = "";
+            if (!empty($where)) {
+                $whereStr = " WHERE " . implode(" AND ", $where);
+            }
+            $query .= $whereStr . ' GROUP BY geo_name ORDER BY geo_name ASC';
+            $result = $this->db->rawQuery($query);
+            foreach ($result as $key => $row) {
+                $condition1 = " facility_state like '" . $row['geo_name'] . "%'";
 
-            $response[$key]['value'] = $row['geo_id'];
-            $response[$key]['show'] = $row['geo_name'];
-            // $response[$key]['district'] = $row['facility_district'];
-            $response[$key]['districtDetails'] = $this->getSubFields('facility_details', 'facility_district', 'facility_district', $condition1);
-        }
-        return $response;
+                $response[$key]['value'] = $row['geo_id'];
+                $response[$key]['show'] = $row['geo_name'];
+                $response[$key]['districtDetails'] = $this->getSubFields('facility_details', 'facility_district', 'facility_district', $condition1);
+            }
+            return $response;
+        });
     }
 
     public function getDistrictDetails($user = null, $onlyActive = false, $updatedDateTime = null)
     {
-        /** @var FacilitiesService $facilitiesService */
-        $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+        return once(function () use ($user, $onlyActive, $updatedDateTime) {
+            /** @var FacilitiesService $facilitiesService */
+            $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-        $query = "SELECT f.facility_id, f.facility_name, f.facility_code, gd.geo_id, gd.geo_name, f.facility_district
-                    from geographical_divisions AS gd
+            $query = "SELECT f.facility_id, f.facility_name,
+                    f.facility_code,
+                    gd.geo_id,
+                    gd.geo_name,
+                    f.facility_district
+                    FROM geographical_divisions AS gd
                     LEFT JOIN facility_details as f ON gd.geo_id=f.facility_state_id";
-        $where = [];
-        if (!empty($user)) {
-            $facilityMap = $facilitiesService->getUserFacilityMap($user);
-            if (!empty($facilityMap)) {
-                $where[] = " f.facility_id IN (" . $facilityMap . ")";
+            $where = [];
+            if (!empty($user)) {
+                $facilityMap = $facilitiesService->getUserFacilityMap($user);
+                if (!empty($facilityMap)) {
+                    $where[] = " f.facility_id IN (" . $facilityMap . ")";
+                }
             }
-        }
 
-        if ($onlyActive) {
-            $where[] = " f.status like 'active'";
-        }
+            if ($onlyActive) {
+                $where[] = " f.status like 'active'";
+            }
 
-        if ($updatedDateTime) {
-            $where[] = " gd.updated_datetime >= '$updatedDateTime'";
-        }
-        $whereStr = "";
-        if (!empty($where)) {
-            $whereStr = " WHERE " . implode(" AND ", $where);
-        }
-        $query .= $whereStr . ' GROUP BY facility_district ORDER BY facility_district ASC';
-        // die($query);
-        $result = $this->db->rawQuery($query);
-        $response = [];
-        foreach ($result as $key => $row) {
-            $condition1 = " facility_district like '" . $row['facility_district'] . "%'";
-            $condition2 = " geo_name like '" . $row['geo_name'] . "%'";
+            if ($updatedDateTime) {
+                $where[] = " gd.updated_datetime >= '$updatedDateTime'";
+            }
+            $whereStr = "";
+            if (!empty($where)) {
+                $whereStr = " WHERE " . implode(" AND ", $where);
+            }
+            $query .= $whereStr . ' GROUP BY facility_district ORDER BY facility_district ASC';
+            // die($query);
+            $result = $this->db->rawQuery($query);
+            $response = [];
+            foreach ($result as $key => $row) {
+                $condition1 = " facility_district like '" . $row['facility_district'] . "%'";
+                $condition2 = " geo_name like '" . $row['geo_name'] . "%'";
 
-            $response[$key]['value'] = $row['facility_district'];
-            $response[$key]['show'] = $row['facility_district'];
-            $response[$key]['facilityDetails'] = $this->getSubFields('facility_details', 'facility_id', 'facility_name', $condition1);
-            $response[$key]['provinceDetails'] = $this->getSubFields('geographical_divisions', 'geo_id', 'geo_name', $condition2);
-            /* $response[$key]['facilityId']   = $row['facility_id'];
-            $response[$key]['facilityName'] = $row['facility_name'].' ('.$row['facility_code'].')';
-            $response[$key]['provinceId']   = $row['province_id'];
-            $response[$key]['province']     = $row['province_name']; */
-        }
-        return $response;
+                $response[$key]['value'] = $row['facility_district'];
+                $response[$key]['show'] = $row['facility_district'];
+                $response[$key]['facilityDetails'] = $this->getSubFields('facility_details', 'facility_id', 'facility_name', $condition1);
+                $response[$key]['provinceDetails'] = $this->getSubFields('geographical_divisions', 'geo_id', 'geo_name', $condition2);
+            }
+            return $response;
+        });
     }
 
     public function getSubFields($tableName, $primary, $name, $condition)
     {
-        $query = "SELECT $primary, $name from $tableName where $condition group by $name";
-        $result = $this->db->rawQuery($query);
-        $response = [];
-        foreach ($result as $key => $row) {
-            $response[$key]['value'] = $row[$primary];
-            $response[$key]['show'] = $row[$name];
-        }
-        return $response;
+        return once(function () use ($tableName, $primary, $name, $condition) {
+            $query = "SELECT $primary, $name from $tableName where $condition group by $name";
+            $result = $this->db->rawQuery($query);
+            $response = [];
+            foreach ($result as $key => $row) {
+                $response[$key]['value'] = $row[$primary];
+                $response[$key]['show'] = $row[$name];
+            }
+            return $response;
+        });
     }
 
     public function addApiTracking($user, $records, $type, $testType, $url = null, $params = null, $format = null)
