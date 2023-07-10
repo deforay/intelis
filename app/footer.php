@@ -219,6 +219,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 			let currentPaths = Utilities.splitPath(url).map(path => btoa(path));
 			currentMenuItem = $('a[data-inner-pages]').filter(function () {
 				const innerPages = $(this).data('inner-pages').split(';');
+				console.log(innerPages);
 				return currentPaths.some(path => innerPages.includes(path));
 			});
 		}

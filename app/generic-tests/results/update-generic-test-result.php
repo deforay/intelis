@@ -543,7 +543,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row" id="clinicDynamicForm"></div>
+                                <div class="row" id="facilitySection"></div>
                             </div>
                         </div>
                         <div class="box box-primary requestForm disabledForm">
@@ -648,14 +648,13 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                             </label>
                                         </div>
                                     </div>
-                                    <div class="col-md-6" style="display:none;">
+                                    <div class="col-md-6" style="display:none;" id="patientSection">
                                         <label class="col-lg-5" for="">How long has this patient been on treatment ? </label>
                                         <div class="col-lg-7">
                                             <input type="text" class="form-control" id="treatPeriod" name="treatPeriod" placeholder="Enter Treatment Period" title="Please enter how long has this patient been on treatment" value="<?= htmlspecialchars($genericResultInfo['treatment_initiation']); ?>" />
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row" id="patientDynamicForm"></div>
                             </div>
                         </div>
                         <div class="box box-primary disabledForm">
@@ -676,7 +675,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                             <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="Sample Dispatched On" title="Please select sample dispatched on" value="<?php echo $genericResultInfo['sample_dispatched_datetime']; ?>">
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6" id="specimenSection">
                                         <label class="col-lg-5" for="specimenType">Sample Type <span class="mandatory">*</span></label>
                                         <div class="col-lg-7">
                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose sample type">
@@ -688,14 +687,10 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row" id="specimenDynamicForm"></div>
                             </div>
                         </div>
+                        <div id="otherSection"></div>
                         <div class="box box-primary">
-                            <div class="box-body">
-                                <div class="row" id="othersDynamicForm"></div>
-                            </div>
-
                             <?php if ($usersService->isAllowed('/vl/results/vlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                 <div class="box-header with-border">
                                     <h3 class="box-title">Laboratory Information</h3>
@@ -1042,7 +1037,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
                                             <div class="col-md-12"><?php echo $rch; ?></div>
                                         </div>
                                     <?php } ?>
-                                    <div class="row" id="lapDynamicForm"></div>
+                                    <div class="row" id="labSection"></div>
                                 </div>
                             <?php } ?>
                         </div>
@@ -1067,883 +1062,922 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 <script type="text/javascript" src="/assets/js/datalist-css.min.js"></script>
 
 <script>
-    let provinceName = true;
-    let facilityName = true;
-    let testCounter = <?php echo (!empty($genericTestInfo)) ? (count($genericTestInfo)) : 0; ?>;
-    let __clone = null;
-    let reason = null;
-    let resultValue = null;
-    $(document).ready(function() {
+	let provinceName = true;
+	let facilityName = true;
+	let testCounter = <?php echo (!empty($genericTestInfo)) ? (count($genericTestInfo)) : 1; ?>;
+	let __clone = null;
+	let reason = null;
+	let resultValue = null;
+	$(document).ready(function () {
 
-        var testType = $("#testType").val();
-        getSampleTypeList(testType);
+		var testType = $("#testType").val();
+		getTestTypeConfigList(testType);
 
-        $('.date').datepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
-        $('.dateTime').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            onChangeMonthYear: function(year, month, widget) {
-                setTimeout(function() {
-                    $('.ui-datepicker-calendar').show();
-                });
-            },
-            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
-        $('.date').mask('99-aaa-9999');
-        $('.dateTime').mask('99-aaa-9999 99:99');
+		$('.date').datepicker({
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: 'dd-M-yy',
+			timeFormat: "HH:mm",
+			maxDate: "Today",
+			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+		}).click(function () {
+			$('.ui-datepicker-calendar').show();
+		});
+		$('.dateTime').datetimepicker({
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: 'dd-M-yy',
+			timeFormat: "HH:mm",
+			maxDate: "Today",
+			onChangeMonthYear: function (year, month, widget) {
+				setTimeout(function () {
+					$('.ui-datepicker-calendar').show();
+				});
+			},
+			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+		}).click(function () {
+			$('.ui-datepicker-calendar').show();
+		});
+		$('.date').mask('99-aaa-9999');
+		$('.dateTime').mask('99-aaa-9999 99:99');
 
-        $('.result-focus').change(function(e) {
-            var status = false;
-            $(".result-focus").each(function(index) {
-                if ($(this).val() != "") {
-                    status = true;
-                }
-            });
-            if (status) {
-                $('.change-reason').show();
-                $('#reasonForResultChanges').addClass('isRequired');
-            } else {
-                $('.change-reason').hide();
-                $('#reasonForResultChanges').removeClass('isRequired');
-            }
-        });
+		$('.result-focus').change(function (e) {
+			var status = false;
+			$(".result-focus").each(function (index) {
+				if ($(this).val() != "") {
+					status = true;
+				}
+			});
+			if (status) {
+				$('.change-reason').show();
+				$('#reasonForResultChanges').addClass('isRequired');
+			} else {
+				$('.change-reason').hide();
+				$('#reasonForResultChanges').removeClass('isRequired');
+			}
+		});
 
+		$("#labId,#fName,#sampleCollectionDate").on('change', function () {
 
-        $("#labId,#fName,#sampleCollectionDate").on('change', function() {
+			if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $(
+				"#sampleDispatchedDate").val() == "") {
+				$('#sampleDispatchedDate').val($('#sampleCollectionDate').val());
+			}
+			if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $(
+				"#sampleReceivedDate").val() == "") {
+				$('#sampleReceivedDate').val($('#sampleCollectionDate').val());
+				$('#sampleReceivedAtHubOn').val($('#sampleCollectionDate').val());
+			}
+		});
 
-            if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
-                $('#sampleDispatchedDate').val($('#sampleCollectionDate').val());
-            }
-            if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleReceivedDate").val() == "") {
-                $('#sampleReceivedDate').val($('#sampleCollectionDate').val());
-                $('#sampleReceivedAtHubOn').val($('#sampleCollectionDate').val());
-            }
-        });
-
-
-        $('#sampleCollectionDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
-            onSelect: function(date) {
-                var dt2 = $('#sampleDispatchedDate');
-                var startDate = $(this).datetimepicker('getDate');
-                var minDate = $(this).datetimepicker('getDate');
-                dt2.datetimepicker('setDate', minDate);
-                startDate.setDate(startDate.getDate() + 1000000);
-                dt2.datetimepicker('option', 'maxDate', "Today");
-                dt2.datetimepicker('option', 'minDate', minDate);
-                dt2.datetimepicker('option', 'minDateTime', minDate);
-                dt2.val($(this).val());
-            }
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
-
-
-        var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
-        var collectDate = $("#sampleCollectionDate").toString();
-        var dispatchDate = $("#sampleDispatchedDate").toString();
-        if ($("#sampleDispatchedDate").val() == "" || (collectDate >= dispatchDate))
-            $("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
-
-        $('#sampleDispatchedDate').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm",
-            minDate: minDate,
-            startDate: minDate,
-        });
+		$('#sampleCollectionDate').datetimepicker({
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: 'dd-M-yy',
+			timeFormat: "HH:mm",
+			maxDate: "Today",
+			// yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
+			onSelect: function (date) {
+				var dt2 = $('#sampleDispatchedDate');
+				var startDate = $(this).datetimepicker('getDate');
+				var minDate = $(this).datetimepicker('getDate');
+				dt2.datetimepicker('setDate', minDate);
+				startDate.setDate(startDate.getDate() + 1000000);
+				dt2.datetimepicker('option', 'maxDate', "Today");
+				dt2.datetimepicker('option', 'minDate', minDate);
+				dt2.datetimepicker('option', 'minDateTime', minDate);
+				dt2.val($(this).val());
+			}
+		}).click(function () {
+			$('.ui-datepicker-calendar').show();
+		});
 
 
-        autoFillFocalDetails();
-        $('#fName').select2({
-            width: '100%',
-            placeholder: "Select Clinic/Health Center"
-        });
-        $('#labId').select2({
-            width: '100%',
-            placeholder: "Select Testing Lab"
-        });
-        $('#reviewedBy').select2({
-            width: '100%',
-            placeholder: "Select Reviewed By"
-        });
-        $('#testedBy').select2({
-            width: '100%',
-            placeholder: "Select Tested By"
-        });
+		var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
+		var collectDate = $("#sampleCollectionDate").toString();
+		var dispatchDate = $("#sampleDispatchedDate").toString();
+		if ($("#sampleDispatchedDate").val() == "" || (collectDate >= dispatchDate))
+			$("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
 
-        $('#approvedBy').select2({
-            width: '100%',
-            placeholder: "Select Approved By"
-        });
-        $('#facilityId').select2({
-            placeholder: "Select Clinic/Health Center"
-        });
-        $('#district').select2({
-            placeholder: "District"
-        });
-        $('#province').select2({
-            placeholder: "Province"
-        });
-        //getAge();
-        getTestTypeForm();
+		$('#sampleDispatchedDate').datetimepicker({
+			changeMonth: true,
+			changeYear: true,
+			dateFormat: 'dd-M-yy',
+			timeFormat: "HH:mm",
+			minDate: minDate,
+			startDate: minDate,
+		});
 
-        getfacilityProvinceDetails($("#fName").val());
 
-        setTimeout(function() {
-            $("#vlResult").trigger('change');
-            $("#noResult").trigger('change');
-            // just triggering sample collection date is enough,
-            // it will automatically do everything that labId and fName changes will do
-            $("#sampleCollectionDate").trigger('change');
-            __clone = $(".labSectionBody").clone();
-            reason = ($("#reasonForResultChanges").length) ? $("#reasonForResultChanges").val() : '';
-            resultValue = $("#vlResult").val();
+		autoFillFocalDetails();
+		$('#fName').select2({
+			width: '100%',
+			placeholder: "Select Clinic/Health Center"
+		});
+		$("#testType").select2({
+			width: '100%',
+			placeholder: "<?php echo _("Select Test Type"); ?>"
+		});
+		$('#labId').select2({
+			width: '100%',
+			placeholder: "Select Testing Lab"
+		});
+		$('#reviewedBy').select2({
+			width: '100%',
+			placeholder: "Select Reviewed By"
+		});
+		$('#testedBy').select2({
+			width: '100%',
+			placeholder: "Select Tested By"
+		});
 
-            $(".labSection").on("change", function() {
-                if ($.trim(resultValue) != '') {
-                    if ($(".labSection").serialize() === $(__clone).serialize()) {
-                        $(".reasonForResultChanges").css("display", "none");
-                        $("#reasonForResultChanges").removeClass("isRequired");
-                    } else {
-                        $(".reasonForResultChanges").css("display", "block");
-                        $("#reasonForResultChanges").addClass("isRequired");
-                    }
-                }
-            });
+		$('#approvedBy').select2({
+			width: '100%',
+			placeholder: "Select Approved By"
+		});
+		$('#facilityId').select2({
+			width: '100%',
+			placeholder: "Select Clinic/Health Center"
+		});
+		$('#district').select2({
+			width: '100%',
+			placeholder: "District"
+		});
+		$('#province').select2({
+			width: '100%',
+			placeholder: "Province"
+		});
+		$('#implementingPartner').select2({
+			width: '100%',
+			placeholder: "Implementing Partner"
+		});
+		$('#fundingSource').select2({
+			width: '100%',
+			placeholder: "Funding Source"
+		});
+		//getAge();
+		getTestTypeForm();
 
-        }, 500);
+		getfacilityProvinceDetails($("#fName").val());
 
-        checkPatientReceivesms('<?php echo $genericResultInfo['consent_to_receive_sms']; ?>');
+		setTimeout(function () {
+			$("#vlResult").trigger('change');
+			$("#noResult").trigger('change');
+			// just triggering sample collection date is enough,
+			// it will automatically do everything that labId and fName changes will do
+			$("#sampleCollectionDate").trigger('change');
+			__clone = $(".labSectionBody").clone();
+			reason = ($("#reasonForResultChanges").length) ? $("#reasonForResultChanges").val() : '';
+			resultValue = $("#vlResult").val();
 
-        $("#reqClinician").select2({
-            placeholder: "Enter Request Clinician name",
-            minimumInputLength: 0,
-            width: '100%',
-            allowClear: true,
-            id: function(bond) {
-                return bond._id;
-            },
-            ajax: {
-                placeholder: "Type one or more character tp search",
-                url: "/includes/get-data-list.php",
-                dataType: 'json',
-                delay: 250,
-                data: function(params) {
-                    return {
-                        fieldName: 'request_clinician_name',
-                        tableName: 'form_generic',
-                        q: params.term, // search term
-                        page: params.page
-                    };
-                },
-                processResults: function(data, params) {
-                    params.page = params.page || 1;
-                    return {
-                        results: data.result,
-                        pagination: {
-                            more: (params.page * 30) < data.total_count
-                        }
-                    };
-                },
-                //cache: true
-            },
-            escapeMarkup: function(markup) {
-                return markup;
-            }
-        });
+			$(".labSection").on("change", function () {
+				if ($.trim(resultValue) != '') {
+					if ($(".labSection").serialize() === $(__clone).serialize()) {
+						$(".reasonForResultChanges").css("display", "none");
+						$("#reasonForResultChanges").removeClass("isRequired");
+					} else {
+						$(".reasonForResultChanges").css("display", "block");
+						$("#reasonForResultChanges").addClass("isRequired");
+					}
+				}
+			});
 
-        $("#reqClinician").change(function() {
-            $.blockUI();
-            var search = $(this).val();
-            if ($.trim(search) != '') {
-                $.get("/includes/get-data-list.php", {
-                        fieldName: 'request_clinician_name',
-                        tableName: 'form_generic',
-                        returnField: 'request_clinician_phone_number',
-                        limit: 1,
-                        q: search,
-                    },
-                    function(data) {
-                        if (data != "") {
-                            $("#reqClinicianPhoneNumber").val(data);
-                        }
-                    });
-            }
-            $.unblockUI();
-        });
+		}, 500);
 
-        $("#vlFocalPerson").select2({
-            placeholder: "Enter Request Focal name",
-            minimumInputLength: 0,
-            width: '100%',
-            allowClear: true,
-            id: function(bond) {
-                return bond._id;
-            },
-            ajax: {
-                placeholder: "Type one or more character tp search",
-                url: "/includes/get-data-list.php",
-                dataType: 'json',
-                delay: 250,
-                data: function(params) {
-                    return {
-                        fieldName: 'testing_lab_focal_person',
-                        tableName: 'form_generic',
-                        q: params.term, // search term
-                        page: params.page
-                    };
-                },
-                processResults: function(data, params) {
-                    params.page = params.page || 1;
-                    return {
-                        results: data.result,
-                        pagination: {
-                            more: (params.page * 30) < data.total_count
-                        }
-                    };
-                },
-                //cache: true
-            },
-            escapeMarkup: function(markup) {
-                return markup;
-            }
-        });
+		checkPatientReceivesms('<?php echo $genericResultInfo['consent_to_receive_sms']; ?>');
 
-        $("#vlFocalPerson").change(function() {
-            $.blockUI();
-            var search = $(this).val();
-            if ($.trim(search) != '') {
-                $.get("/includes/get-data-list.php", {
-                        fieldName: 'testing_lab_focal_person',
-                        tableName: 'form_generic',
-                        returnField: 'testing_lab_focal_person_phone_number',
-                        limit: 1,
-                        q: search,
-                    },
-                    function(data) {
-                        if (data != "") {
-                            $("#vlFocalPersonPhoneNumber").val(data);
-                        }
-                    });
-            }
-            $.unblockUI();
-        });
+		$("#reqClinician").select2({
+			placeholder: "Enter Request Clinician name",
+			minimumInputLength: 0,
+			width: '100%',
+			allowClear: true,
+			id: function (bond) {
+				return bond._id;
+			},
+			ajax: {
+				placeholder: "Type one or more character tp search",
+				url: "/includes/get-data-list.php",
+				dataType: 'json',
+				delay: 250,
+				data: function (params) {
+					return {
+						fieldName: 'request_clinician_name',
+						tableName: 'form_generic',
+						q: params.term, // search term
+						page: params.page
+					};
+				},
+				processResults: function (data, params) {
+					params.page = params.page || 1;
+					return {
+						results: data.result,
+						pagination: {
+							more: (params.page * 30) < data.total_count
+						}
+					};
+				},
+				//cache: true
+			},
+			escapeMarkup: function (markup) {
+				return markup;
+			}
+		});
 
-        $('#vlResult').on('change', function() {
-            if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'error') {
-                if ($(this).val().trim().toLowerCase() == 'failed') {
-                    $('.reasonForFailure').show();
-                    $('#reasonForFailure').addClass('isRequired');
-                }
-            } else {
-                $('.reasonForFailure').hide();
-                $('#reasonForFailure').removeClass('isRequired');
-            }
-        });
+		$("#reqClinician").change(function () {
+			$.blockUI();
+			var search = $(this).val();
+			if ($.trim(search) != '') {
+				$.get("/includes/get-data-list.php", {
+					fieldName: 'request_clinician_name',
+					tableName: 'form_generic',
+					returnField: 'request_clinician_phone_number',
+					limit: 1,
+					q: search,
+				},
+					function (data) {
+						if (data != "") {
+							$("#reqClinicianPhoneNumber").val(data);
+						}
+					});
+			}
+			$.unblockUI();
+		});
+
+		$("#vlFocalPerson").select2({
+			placeholder: "Enter Request Focal name",
+			minimumInputLength: 0,
+			width: '100%',
+			allowClear: true,
+			id: function (bond) {
+				return bond._id;
+			},
+			ajax: {
+				placeholder: "Type one or more character tp search",
+				url: "/includes/get-data-list.php",
+				dataType: 'json',
+				delay: 250,
+				data: function (params) {
+					return {
+						fieldName: 'testing_lab_focal_person',
+						tableName: 'form_generic',
+						q: params.term, // search term
+						page: params.page
+					};
+				},
+				processResults: function (data, params) {
+					params.page = params.page || 1;
+					return {
+						results: data.result,
+						pagination: {
+							more: (params.page * 30) < data.total_count
+						}
+					};
+				},
+				//cache: true
+			},
+			escapeMarkup: function (markup) {
+				return markup;
+			}
+		});
+
+		$("#vlFocalPerson").change(function () {
+			$.blockUI();
+			var search = $(this).val();
+			if ($.trim(search) != '') {
+				$.get("/includes/get-data-list.php", {
+					fieldName: 'testing_lab_focal_person',
+					tableName: 'form_generic',
+					returnField: 'testing_lab_focal_person_phone_number',
+					limit: 1,
+					q: search,
+				},
+					function (data) {
+						if (data != "") {
+							$("#vlFocalPersonPhoneNumber").val(data);
+						}
+					});
+			}
+			$.unblockUI();
+		});
+
+		$('#vlResult').on('change', function () {
+			if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() ==
+				'error') {
+				if ($(this).val().trim().toLowerCase() == 'failed') {
+					$('.reasonForFailure').show();
+					$('#reasonForFailure').addClass('isRequired');
+				}
+			} else {
+				$('.reasonForFailure').hide();
+				$('#reasonForFailure').removeClass('isRequired');
+			}
+		});
 
         $('.disabledForm input, .disabledForm select , .disabledForm textarea').attr('disabled', true);
         $('.disabledForm input, .disabledForm select , .disabledForm textarea').removeClass("isRequired");
+	});
 
+	function checkSampleReceviedAtHubDate() {
+		var sampleCollectionDate = $("#sampleCollectionDate").val();
+		var sampleReceivedAtHubOn = $("#sampleReceivedAtHubOn").val();
+		if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedAtHubOn) != '') {
+
+			date1 = new Date(sampleCollectionDate);
+			date2 = new Date(sampleReceivedAtHubOn);
+
+			if (date2.getTime() < date1.getTime()) {
+				alert("<?= _("Sample Received at Hub Date cannot be earlier than Sample Collection Date"); ?>");
+				$("#sampleReceivedAtHubOn").val("");
+			}
+		}
+	}
+
+	function checkSampleReceviedDate() {
+		var sampleCollectionDate = $("#sampleCollectionDate").val();
+		var sampleReceivedDate = $("#sampleReceivedDate").val();
+		if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedDate) != '') {
+
+			date1 = new Date(sampleCollectionDate);
+			date2 = new Date(sampleReceivedDate);
+
+			if (date2.getTime() < date1.getTime()) {
+				alert("<?= _("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date"); ?>");
+				$("#sampleReceivedDate").val("");
+			}
+		}
+	}
+
+	function checkSampleTestingDate() {
+		var sampleCollectionDate = $("#sampleCollectionDate").val();
+		var sampleTestingDate = $("#sampleTestingDateAtLab").val();
+		if ($.trim(sampleCollectionDate) != '' && $.trim(sampleTestingDate) != '') {
+
+			date1 = new Date(sampleCollectionDate);
+			date2 = new Date(sampleTestingDate);
+
+			if (date2.getTime() < date1.getTime()) {
+				alert("<?= _("Sample Testing Date cannot be earlier than Sample Collection Date"); ?>");
+				$("#sampleTestingDateAtLab").val("");
+			}
+		}
+	}
+
+	function checkSampleNameValidation(tableName, fieldName, id, fnct, alrt) {
+		if ($.trim($("#" + id).val()) != '') {
+			$.blockUI();
+			$.post("/vl/requests/checkSampleDuplicate.php", {
+				tableName: tableName,
+				fieldName: fieldName,
+				value: $("#" + id).val(),
+				fnct: fnct,
+				format: "html"
+			},
+				function (data) {
+					if (data != 0) {
+						<?php if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?>
+							alert(alrt);
+							$("#" + id).val('');
+						<?php } else { ?>
+							data = data.split("##");
+							document.location.href = "editVlRequest.php?id=" + data[0] + "&c=" + data[1];
+						<?php } ?>
+					}
+				});
+			$.unblockUI();
+		}
+	}
+
+	function getAge() {
+		let dob = $("#dob").val();
+		if ($.trim(dob) != '') {
+			let age = Utilities.getAgeFromDob(dob);
+			$("#ageInYears").val("");
+			$("#ageInMonths").val("");
+			if (age.years >= 1) {
+				$("#ageInYears").val(age.years);
+			} else {
+				$("#ageInMonths").val(age.months);
+			}
+		}
+	}
+
+	function clearDOB(val) {
+		if ($.trim(val) != "") {
+			$("#dob").val("");
+		}
+	}
+
+
+	function showPatientList() {
+		$("#showEmptyResult").hide();
+		if ($.trim($("#artPatientNo").val()) != '') {
+			$.post("/vl/requests/search-patients.php", {
+				artPatientNo: $.trim($("#artPatientNo").val())
+			},
+				function (data) {
+					if (data >= '1') {
+						showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
+					} else {
+						$("#showEmptyResult").show();
+					}
+				});
+		}
+	}
+
+	function getfacilityProvinceDetails(obj) {
+		$.blockUI();
+		//check facility name`
+		var cName = $("#fName").val();
+		var pName = $("#province").val();
+		if (cName != '' && provinceName && facilityName) {
+			provinceName = false;
+		}
+		if (cName != '' && facilityName) {
+			$.post("/includes/siteInformationDropdownOptions.php", {
+				cName: cName,
+				testType: 'generic-tests'
+			},
+				function (data) {
+					if (data != "") {
+						details = data.split("###");
+						$("#province").html(details[0]);
+						$("#district").html(details[1]);
+					}
+				});
+		} else if (pName == '' && cName == '') {
+			provinceName = true;
+			facilityName = true;
+			$("#province").html("<?php echo $province; ?>");
+			$("#fName").html("<?php echo $facility; ?>");
+		}
+		$.unblockUI();
+	}
+
+	function getProvinceDistricts(obj) {
+		$.blockUI();
+		var cName = $("#fName").val();
+		var pName = $("#province").val();
+		if (pName != '' && provinceName && facilityName) {
+			facilityName = false;
+		}
+		if ($.trim(pName) != '') {
+			//if (provinceName) {
+			$.post("/includes/siteInformationDropdownOptions.php", {
+				pName: pName,
+				testType: 'generic-tests'
+			},
+				function (data) {
+					if (data != "") {
+						details = data.split("###");
+						$("#fName").html(details[0]);
+						$("#district").html(details[1]);
+						$("#fCode").val('');
+						$(".facilityDetails").hide();
+						$(".facilityEmails").html('');
+						$(".facilityMobileNumbers").html('');
+						$(".facilityContactPerson").html('');
+					}
+				});
+			//}
+		} else if (pName == '' && cName == '') {
+			provinceName = true;
+			facilityName = true;
+			$("#province").html("<?php echo $province; ?>");
+			$("#fName").html(
+				"<option data-code='' data-emails='' data-mobile-nos='' data-contact-person='' value=''> -- Select -- </option>"
+			);
+		}
+		$.unblockUI();
+	}
+
+	function getFacilities(obj) {
+		//alert(obj);
+		$.blockUI();
+		var dName = $("#district").val();
+		var cName = $("#fName").val();
+		if (dName != '') {
+			$.post("/includes/siteInformationDropdownOptions.php", {
+				dName: dName,
+				cliName: cName,
+				fType: 2,
+				testType: 'generic-tests'
+			},
+				function (data) {
+					if (data != "") {
+						details = data.split("###");
+						$("#fName").html(details[0]);
+						//$("#labId").html(details[1]);
+						$(".facilityDetails").hide();
+						$(".facilityEmails").html('');
+						$(".facilityMobileNumbers").html('');
+						$(".facilityContactPerson").html('');
+					}
+				});
+		}
+		$.unblockUI();
+	}
+
+	function getfacilityProvinceDetails(obj) {
+		$.blockUI();
+		//check facility name
+		var cName = $("#fName").val();
+		var pName = $("#province").val();
+		if (cName != '' && provinceName && facilityName) {
+			provinceName = false;
+		}
+		if (cName != '' && facilityName) {
+			$.post("/includes/siteInformationDropdownOptions.php", {
+				cName: cName,
+				testType: 'generic-tests'
+			},
+				function (data) {
+					if (data != "") {
+						details = data.split("###");
+						$("#province").html(details[0]);
+						$("#district").html(details[1]);
+						$("#clinicianName").val(details[2]);
+					}
+				});
+		} else if (pName == '' && cName == '') {
+			provinceName = true;
+			facilityName = true;
+			$("#province").html("<?php echo $province; ?>");
+			$("#facilityId").html("<?php echo $facility; ?>");
+		}
+		$.unblockUI();
+	}
+
+	function fillFacilityDetails(obj) {
+		getfacilityProvinceDetails(obj)
+		$("#fCode").val($('#fName').find(':selected').data('code'));
+		var femails = $('#fName').find(':selected').data('emails');
+		var fmobilenos = $('#fName').find(':selected').data('mobile-nos');
+		var fContactPerson = $('#fName').find(':selected').data('contact-person');
+		if ($.trim(femails) != '' || $.trim(fmobilenos) != '' || fContactPerson != '') {
+			$(".facilityDetails").show();
+		} else {
+			$(".facilityDetails").hide();
+		}
+		($.trim(femails) != '') ? $(".femails").show() : $(".femails").hide();
+		($.trim(femails) != '') ? $(".facilityEmails").html(femails) : $(".facilityEmails").html('');
+		($.trim(fmobilenos) != '') ? $(".fmobileNumbers").show() : $(".fmobileNumbers").hide();
+		($.trim(fmobilenos) != '') ? $(".facilityMobileNumbers").html(fmobilenos) : $(".facilityMobileNumbers").html('');
+		($.trim(fContactPerson) != '') ? $(".fContactPerson").show() : $(".fContactPerson").hide();
+		($.trim(fContactPerson) != '') ? $(".facilityContactPerson").html(fContactPerson) : $(".facilityContactPerson").html(
+			'');
+	}
+	$("input:radio[name=gender]").click(function () {
+		if ($(this).val() == 'male' || $(this).val() == 'not_recorded') {
+			$('.femaleSection').hide();
+			$('input[name="breastfeeding"]').prop('checked', false);
+			$('input[name="patientPregnant"]').prop('checked', false);
+		} else if ($(this).val() == 'female') {
+			$('.femaleSection').show();
+		}
+	});
+	$("#sampleTestingDateAtLab").change(function () {
+		if ($(this).val() != "") {
+			$(".result-fields").attr("disabled", false);
+			$(".result-fields").addClass("isRequired");
+			$(".result-span").show();
+			$('.vlResult').css('display', 'block');
+			$('.rejectionReason').hide();
+			$('#rejectionReason').removeClass('isRequired');
+			$('#rejectionDate').removeClass('isRequired');
+			$('#rejectionReason').val('');
+			$(".review-approve-span").hide();
+			$("#noResult").trigger('change');
+		}
+	});
+	$("#noResult").on("change", function () {
+
+		if ($(this).val() == 'yes') {
+			$('.rejectionReason').show();
+			$('.vlResult').css('display', 'none');
+			$("#sampleTestingDateAtLab, #vlResult").val("");
+			$(".result-fields").val("");
+			$(".result-fields").attr("disabled", true);
+			$(".result-fields").removeClass("isRequired");
+			$(".result-span").hide();
+			$(".review-approve-span").show();
+			$('#rejectionReason').addClass('isRequired');
+			$('#rejectionDate').addClass('isRequired');
+			$('#reviewedBy').addClass('isRequired');
+			$('#reviewedOn').addClass('isRequired');
+			$('#approvedBy').addClass('isRequired');
+			$('#approvedOn').addClass('isRequired');
+			$(".result-optional").removeClass("isRequired");
+			$("#reasonForFailure").removeClass('isRequired');
+		} else if ($(this).val() == 'no') {
+			$(".result-fields").attr("disabled", false);
+			$(".result-fields").addClass("isRequired");
+			$(".result-span").show();
+			$(".review-approve-span").show();
+			$('.vlResult').css('display', 'block');
+			$('.rejectionReason').hide();
+			$('#rejectionReason').removeClass('isRequired');
+			$('#rejectionDate').removeClass('isRequired');
+			$('#rejectionReason').val('');
+			$('#reviewedBy').addClass('isRequired');
+			$('#reviewedOn').addClass('isRequired');
+			$('#approvedBy').addClass('isRequired');
+			$('#approvedOn').addClass('isRequired');
+		} else {
+			$(".result-fields").attr("disabled", false);
+			$(".result-fields").removeClass("isRequired");
+			$(".result-optional").removeClass("isRequired");
+			$(".result-span").show();
+			$('.vlResult').css('display', 'block');
+			$('.rejectionReason').hide();
+			$(".result-span").hide();
+			$(".review-approve-span").hide();
+			$('#rejectionReason').removeClass('isRequired');
+			$('#rejectionDate').removeClass('isRequired');
+			$('#rejectionReason').val('');
+			$('#reviewedBy').removeClass('isRequired');
+			$('#reviewedOn').removeClass('isRequired');
+			$('#approvedBy').removeClass('isRequired');
+			$('#approvedOn').removeClass('isRequired');
+		}
+	});
+
+
+	$('#testingPlatform').on("change", function () {
+		$(".vlResult").show();
+		//$('#vlResult, #noResult').addClass('isRequired');
+		$("#noResult").val("");
+		//$("#noResult").trigger("change");
+	});
+
+
+	function checkRejectionReason() {
+		var rejectionReason = $("#rejectionReason").val();
+		if (rejectionReason == "other") {
+			$("#newRejectionReason").show();
+			$("#newRejectionReason").addClass("isRequired");
+		} else {
+			$("#newRejectionReason").hide();
+			$("#newRejectionReason").removeClass("isRequired");
+			$('#newRejectionReason').val("");
+		}
+	}
+
+	function validateNow() {
+		flag = deforayValidator.init({
+			formId: 'vlRequestFormRwd'
+		});
+
+		/* $('.isRequired').each(function() {
+			($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
+		}); */
+		if (flag) {
+			$.blockUI();
+			document.getElementById('vlRequestFormRwd').submit();
+		}
+	}
+
+	function checkPatientReceivesms(val) {
+		if (val == 'yes') {
+			$('#patientPhoneNumber').addClass('isRequired');
+		} else {
+			$('#patientPhoneNumber').removeClass('isRequired');
+		}
+	}
+
+	function autoFillFocalDetails() {
+		// labId = $("#labId").val();
+		// if ($.trim(labId) != '') {
+		//     $("#vlFocalPerson").val($('#labId option:selected').attr('data-focalperson')).trigger('change');
+		//     $("#vlFocalPersonPhoneNumber").val($('#labId option:selected').attr('data-focalphone'));
+		// }
+	}
+
+	function getTestTypeForm() {
+		removeDynamicForm();
+		var testType = $("#testType").val();
+		getTestTypeConfigList(testType);
+		if (testType != "") {
+			$(".requestForm").show();
+			$.post("/generic-tests/requests/getTestTypeForm.php", {
+				testType: testType,
+				result: $('#result').val() ? $('#result').val() : '<?php echo $genericResultInfo['result']; ?>',
+				testTypeForm: '<?php echo base64_encode($genericResultInfo['test_type_form']); ?>',
+				resultInterpretation: '<?php echo $genericResultInfo['final_result_interpretation']; ?>',
+				resultUnit: '<?php echo $genericResultInfo['result_unit']; ?>',
+			},
+				function (data) {
+					data = JSON.parse(data);
+					if (typeof (data.facilitySection) != "undefined" && data.facilitySection !== null && data.facilitySection.length > 0) {
+						$("#facilitySection").html(data.facilitySection);
+					}
+					if (typeof (data.patientSection) != "undefined" && data.patientSection !== null && data.patientSection.length > 0) {
+						$("#patientSection").after(data.patientSection);
+					}
+					if (typeof (data.labSection) != "undefined" && data.labSection !== null && data.labSection.length > 0) {
+						$("#labSection").html(data.labSection);
+					}
+					if (typeof (data.result) != "undefined" && data.result !== null && data.result.length > 0) {
+						$("#resultSection").html(data.result);
+					} else {
+						$('#resultSection').hide();
+					}
+					if (typeof (data.specimenSection) != "undefined" && data.specimenSection !== null && data.specimenSection.length > 0) {
+						$("#specimenSection").after(data.specimenSection);
+					}
+					if (typeof (data.otherSection) != "undefined" && data.otherSection !== null && data.otherSection.length > 0) {
+						$("#otherSection").html(data.otherSection);
+					}
+					$('.dateTime').datetimepicker({
+						changeMonth: true,
+						changeYear: true,
+						dateFormat: 'dd-M-yy',
+						timeFormat: "HH:mm",
+						maxDate: "Today",
+						onChangeMonthYear: function (year, month, widget) {
+							setTimeout(function () {
+								$('.ui-datepicker-calendar').show();
+							});
+						}
+					}).click(function () {
+						$('.ui-datepicker-calendar').show();
+					});
+					$(".dynamicFacilitySelect2").select2({
+						width: '100%',
+						placeholder: "<?php echo _("Select any one of the option"); ?>"
+					});
+					$(".dynamicSelect2").select2({
+						width: '100%',
+						placeholder: "<?php echo _("Select any one of the option"); ?>"
+					});
+					if ($('#resultType').val() == 'qualitative') {
+						$('.final-result-row').attr('colspan', 4)
+						$('.testResultUnit').hide();
+					} else {
+						$('.final-result-row').attr('colspan', 5)
+						$('.testResultUnit').show();
+					}
+                    $('.disabledForm input, .disabledForm select , .disabledForm textarea').attr('disabled', true);
+                    $('.disabledForm input, .disabledForm select , .disabledForm textarea').removeClass("isRequired");
+				});
+		} else {
+			removeDynamicForm();
+		}
+	}
+
+	function removeDynamicForm() {
+		$(".facilitySection").html('');
+		$(".patientSectionInput").remove();
+		$("#labSection").html('');
+		$(".specimenSectionInput").remove();
+		$("#otherSection").html('');
+		$(".requestForm").hide();
+	}
+
+
+	function getTestTypeConfigList(testTypeId) {
+
+		$.post("/includes/get-test-type-config.php", {
+			testTypeId: testTypeId,
+			sampleTypeId: '<?php echo $genericResultInfo['sample_type']; ?>',
+			testReasonId: '<?php echo $genericResultInfo['reason_for_testing']; ?>',
+			//testMethodId: '< ?php echo $genericResultInfo['reason_for_testing']; ?>'
+		},
+			function (data) {
+				Obj = $.parseJSON(data);
+				if (data != "") {
+					$("#specimenType").html(Obj['sampleTypes']);
+					$("#reasonForTesting").html(Obj['testReasons']);
+
+					if ($("#testName1").val() == '')
+						$("#testName1").html(Obj['testMethods']);
+					if ($("#testResultUnit1").val() == '')
+						$("#testResultUnit1").html(Obj['testResultUnits']);
+					if ($("#finalTestResultUnit").val() == '')
+						$("#finalTestResultUnit").html(Obj['testResultUnits']);
+
+				}
+			});
+	}
+
+	function addTestRow() {
+		testCounter++;
+		testMethods = $("#testName1").html();
+		let rowString = `<tr>
+					<td class="text-center">${testCounter}</td>
+					<td>
+					<select class="form-control test-name-table-input" id="testName${testCounter}" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
+					${testMethods}
+				</select>
+				<input type="text" name="testNameOther[]" id="testNameOther${testCounter}" class="form-control testNameOther${testCounter}" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
+			</td>
+			<td><input type="text" name="testDate[]" id="testDate${testCounter}" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ${testCounter}" /></td>
+			<td><select name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
+			<td class="kitlabels" style="display: none;"><input type="text" name="lotNo[]" id="lotNo${testCounter}" class="form-control kit-fields${testCounter}" placeholder="Kit lot no" title="Please enter the kit lot no. for row ${testCounter}" style="display:none;"/></td>
+			<td class="kitlabels" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control expDate kit-fields${testCounter}" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" style="display:none;"/></td>
+			<td>
+			   <input type="text" id="testResult${testCounter}" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
+			</td>
+			<td class="testResultUnit">
+			<select class="form-control" id="testResultUnit${testCounter}" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+					<option value="">--Select--</option>
+					<?php
+					foreach ($testResultUnits as $unit) {
+						?>
+						<option value="<?php echo $unit['unit_id']; ?>"><?php echo $unit['unit_name']; ?></option>
+						<?php
+					}
+					?>
+			</select>
+			</td>
+			<td style="vertical-align:middle;text-align: center;width:100px;">
+				<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><em class="fa-solid fa-plus"></em></a>&nbsp;
+				<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+			</td>
+		</tr>`;
+
+		$("#testKitNameTable").append(rowString);
+		$("#testName" + testCounter).val("");
+		$('.date').datepicker({
+			changeMonth: true,
+			changeYear: true,
+			onSelect: function () {
+				$(this).change();
+			},
+			dateFormat: 'dd-M-yy',
+			timeFormat: "HH:mm",
+			maxDate: "Today",
+			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+		}).click(function () {
+				$('.ui-datepicker-calendar').show();
     });
 
-    function checkSampleReceviedAtHubDate() {
-        var sampleCollectionDate = $("#sampleCollectionDate").val();
-        var sampleReceivedAtHubOn = $("#sampleReceivedAtHubOn").val();
-        if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedAtHubOn) != '') {
+	$('.expDate').datepicker({
+		changeMonth: true,
+		changeYear: true,
+		onSelect: function () {
+			$(this).change();
+		},
+		dateFormat: 'dd-M-yy',
+		timeFormat: "HH:mm",
+		// minDate: "Today",
+		yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+		}).click(function () {
+			$('.ui-datepicker-calendar').show();
+		});
 
-            date1 = new Date(sampleCollectionDate);
-            date2 = new Date(sampleReceivedAtHubOn);
+	$('.dateTime').datetimepicker({
+		changeMonth: true,
+		changeYear: true,
+		dateFormat: 'dd-M-yy',
+		timeFormat: "HH:mm",
+		maxDate: "Today",
+		onChangeMonthYear: function (year, month, widget) {
+			setTimeout(function () {
+				$('.ui-datepicker-calendar').show();
+			});
+		}
+	}).click(function () {
+		$('.ui-datepicker-calendar').show();
+	});
 
-            if (date2.getTime() < date1.getTime()) {
-                alert("<?= _("Sample Received at Hub Date cannot be earlier than Sample Collection Date"); ?>");
-                $("#sampleReceivedAtHubOn").val("");
-            }
-        }
-    }
+	if ($('.kitlabels').is(':visible') == true) {
+		$('.kitlabels').show();
+	}
+	if ($('#resultType').val() == 'qualitative') {
+		$('.final-result-row').attr('colspan', 4)
+		$('.testResultUnit').hide();
+	} else {
+		$('.final-result-row').attr('colspan', 5)
+		$('.testResultUnit').show();
+	}
+	}
 
-    function checkSampleReceviedDate() {
-        var sampleCollectionDate = $("#sampleCollectionDate").val();
-        var sampleReceivedDate = $("#sampleReceivedDate").val();
-        if ($.trim(sampleCollectionDate) != '' && $.trim(sampleReceivedDate) != '') {
+	function removeTestRow(el) {
+		$(el).fadeOut("slow", function () {
+			el.parentNode.removeChild(el);
+			rl = document.getElementById("testKitNameTable").rows.length;
+			if (rl == 0) {
+				testCounter = 0;
+				addTestRow();
+			}
+		});
+	}
 
-            date1 = new Date(sampleCollectionDate);
-            date2 = new Date(sampleReceivedDate);
-
-            if (date2.getTime() < date1.getTime()) {
-                alert("<?= _("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date"); ?>");
-                $("#sampleReceivedDate").val("");
-            }
-        }
-    }
-
-    function checkSampleTestingDate() {
-        var sampleCollectionDate = $("#sampleCollectionDate").val();
-        var sampleTestingDate = $("#sampleTestingDateAtLab").val();
-        if ($.trim(sampleCollectionDate) != '' && $.trim(sampleTestingDate) != '') {
-
-            date1 = new Date(sampleCollectionDate);
-            date2 = new Date(sampleTestingDate);
-
-            if (date2.getTime() < date1.getTime()) {
-                alert("<?= _("Sample Testing Date cannot be earlier than Sample Collection Date"); ?>");
-                $("#sampleTestingDateAtLab").val("");
-            }
-        }
-    }
-
-    function checkSampleNameValidation(tableName, fieldName, id, fnct, alrt) {
-        if ($.trim($("#" + id).val()) != '') {
-            $.blockUI();
-            $.post("/vl/requests/checkSampleDuplicate.php", {
-                    tableName: tableName,
-                    fieldName: fieldName,
-                    value: $("#" + id).val(),
-                    fnct: fnct,
-                    format: "html"
-                },
-                function(data) {
-                    if (data != 0) {
-                        <?php if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?>
-                            alert(alrt);
-                            $("#" + id).val('');
-                        <?php } else { ?>
-                            data = data.split("##");
-                            document.location.href = "editVlRequest.php?id=" + data[0] + "&c=" + data[1];
-                        <?php } ?>
-                    }
-                });
-            $.unblockUI();
-        }
-    }
-
-    function getAge() {
-        let dob = $("#dob").val();
-        if ($.trim(dob) != '') {
-            let age = Utilities.getAgeFromDob(dob);
-            $("#ageInYears").val("");
-            $("#ageInMonths").val("");
-            if (age.years >= 1) {
-                $("#ageInYears").val(age.years);
-            } else {
-                $("#ageInMonths").val(age.months);
-            }
-        }
-    }
-
-    function clearDOB(val) {
-        if ($.trim(val) != "") {
-            $("#dob").val("");
-        }
-    }
-
-    function showPatientList() {
-        $("#showEmptyResult").hide();
-        if ($.trim($("#artPatientNo").val()) != '') {
-            $.post("/vl/requests/search-patients.php", {
-                    artPatientNo: $.trim($("#artPatientNo").val())
-                },
-                function(data) {
-                    if (data >= '1') {
-                        showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
-                    } else {
-                        $("#showEmptyResult").show();
-                    }
-                });
-        }
-    }
-
-    function getfacilityProvinceDetails(obj) {
-        $.blockUI();
-        //check facility name`
-        var cName = $("#fName").val();
-        var pName = $("#province").val();
-        if (cName != '' && provinceName && facilityName) {
-            provinceName = false;
-        }
-        if (cName != '' && facilityName) {
-            $.post("/includes/siteInformationDropdownOptions.php", {
-                    cName: cName,
-                    testType: 'generic-tests'
-                },
-                function(data) {
-                    if (data != "") {
-                        details = data.split("###");
-                        $("#province").html(details[0]);
-                        $("#district").html(details[1]);
-                    }
-                });
-        } else if (pName == '' && cName == '') {
-            provinceName = true;
-            facilityName = true;
-            $("#province").html("<?php echo $province; ?>");
-            $("#fName").html("<?php echo $facility; ?>");
-        }
-        $.unblockUI();
-    }
-
-
-    function getProvinceDistricts(obj) {
-        $.blockUI();
-        var cName = $("#fName").val();
-        var pName = $("#province").val();
-        if (pName != '' && provinceName && facilityName) {
-            facilityName = false;
-        }
-        if ($.trim(pName) != '') {
-            //if (provinceName) {
-            $.post("/includes/siteInformationDropdownOptions.php", {
-                    pName: pName,
-                    testType: 'generic-tests'
-                },
-                function(data) {
-                    if (data != "") {
-                        details = data.split("###");
-                        $("#fName").html(details[0]);
-                        $("#district").html(details[1]);
-                        $("#fCode").val('');
-                        $(".facilityDetails").hide();
-                        $(".facilityEmails").html('');
-                        $(".facilityMobileNumbers").html('');
-                        $(".facilityContactPerson").html('');
-                    }
-                });
-            //}
-        } else if (pName == '' && cName == '') {
-            provinceName = true;
-            facilityName = true;
-            $("#province").html("<?php echo $province; ?>");
-            $("#fName").html("<option data-code='' data-emails='' data-mobile-nos='' data-contact-person='' value=''> -- Select -- </option>");
-        }
-        $.unblockUI();
-    }
-
-    function getFacilities(obj) {
-        //alert(obj);
-        $.blockUI();
-        var dName = $("#district").val();
-        var cName = $("#fName").val();
-        if (dName != '') {
-            $.post("/includes/siteInformationDropdownOptions.php", {
-                    dName: dName,
-                    cliName: cName,
-                    fType: 2,
-                    testType: 'generic-tests'
-                },
-                function(data) {
-                    if (data != "") {
-                        details = data.split("###");
-                        $("#fName").html(details[0]);
-                        //$("#labId").html(details[1]);
-                        $(".facilityDetails").hide();
-                        $(".facilityEmails").html('');
-                        $(".facilityMobileNumbers").html('');
-                        $(".facilityContactPerson").html('');
-                    }
-                });
-        }
-        $.unblockUI();
-    }
-
-    function getfacilityProvinceDetails(obj) {
-        $.blockUI();
-        //check facility name
-        var cName = $("#fName").val();
-        var pName = $("#province").val();
-        if (cName != '' && provinceName && facilityName) {
-            provinceName = false;
-        }
-        if (cName != '' && facilityName) {
-            $.post("/includes/siteInformationDropdownOptions.php", {
-                    cName: cName,
-                    testType: 'generic-tests'
-                },
-                function(data) {
-                    if (data != "") {
-                        details = data.split("###");
-                        $("#province").html(details[0]);
-                        $("#district").html(details[1]);
-                        $("#clinicianName").val(details[2]);
-                    }
-                });
-        } else if (pName == '' && cName == '') {
-            provinceName = true;
-            facilityName = true;
-            $("#province").html("<?php echo $province; ?>");
-            $("#facilityId").html("<?php echo $facility; ?>");
-        }
-        $.unblockUI();
-    }
-
-    function fillFacilityDetails(obj) {
-        getfacilityProvinceDetails(obj)
-        $("#fCode").val($('#fName').find(':selected').data('code'));
-        var femails = $('#fName').find(':selected').data('emails');
-        var fmobilenos = $('#fName').find(':selected').data('mobile-nos');
-        var fContactPerson = $('#fName').find(':selected').data('contact-person');
-        if ($.trim(femails) != '' || $.trim(fmobilenos) != '' || fContactPerson != '') {
-            $(".facilityDetails").show();
-        } else {
-            $(".facilityDetails").hide();
-        }
-        ($.trim(femails) != '') ? $(".femails").show(): $(".femails").hide();
-        ($.trim(femails) != '') ? $(".facilityEmails").html(femails): $(".facilityEmails").html('');
-        ($.trim(fmobilenos) != '') ? $(".fmobileNumbers").show(): $(".fmobileNumbers").hide();
-        ($.trim(fmobilenos) != '') ? $(".facilityMobileNumbers").html(fmobilenos): $(".facilityMobileNumbers").html('');
-        ($.trim(fContactPerson) != '') ? $(".fContactPerson").show(): $(".fContactPerson").hide();
-        ($.trim(fContactPerson) != '') ? $(".facilityContactPerson").html(fContactPerson): $(".facilityContactPerson").html('');
-    }
-
-    $("input:radio[name=gender]").click(function() {
-        if ($(this).val() == 'male' || $(this).val() == 'not_recorded') {
-            $('.femaleSection').hide();
-            $('input[name="breastfeeding"]').prop('checked', false);
-            $('input[name="patientPregnant"]').prop('checked', false);
-        } else if ($(this).val() == 'female') {
-            $('.femaleSection').show();
-        }
-    });
-    $("#sampleTestingDateAtLab").change(function() {
-        if ($(this).val() != "") {
-            $(".result-fields").attr("disabled", false);
-            $(".result-fields").addClass("isRequired");
-            $(".result-span").show();
-            $('.vlResult').css('display', 'block');
-            $('.rejectionReason').hide();
-            $('#rejectionReason').removeClass('isRequired');
-            $('#rejectionDate').removeClass('isRequired');
-            $('#rejectionReason').val('');
-            $(".review-approve-span").hide();
-            $("#noResult").trigger('change');
-        }
-    });
-    $("#noResult").on("change", function() {
-
-        if ($(this).val() == 'yes') {
-            $('.rejectionReason').show();
-            $('.vlResult').css('display', 'none');
-            $("#sampleTestingDateAtLab, #vlResult").val("");
-            $(".result-fields").val("");
-            $(".result-fields").attr("disabled", true);
-            $(".result-fields").removeClass("isRequired");
-            $(".result-span").hide();
-            $(".review-approve-span").show();
-            $('#rejectionReason').addClass('isRequired');
-            $('#rejectionDate').addClass('isRequired');
-            $('#reviewedBy').addClass('isRequired');
-            $('#reviewedOn').addClass('isRequired');
-            $('#approvedBy').addClass('isRequired');
-            $('#approvedOn').addClass('isRequired');
-            $(".result-optional").removeClass("isRequired");
-            $("#reasonForFailure").removeClass('isRequired');
-        } else if ($(this).val() == 'no') {
-            $(".result-fields").attr("disabled", false);
-            $(".result-fields").addClass("isRequired");
-            $(".result-span").show();
-            $(".review-approve-span").show();
-            $('.vlResult').css('display', 'block');
-            $('.rejectionReason').hide();
-            $('#rejectionReason').removeClass('isRequired');
-            $('#rejectionDate').removeClass('isRequired');
-            $('#rejectionReason').val('');
-            $('#reviewedBy').addClass('isRequired');
-            $('#reviewedOn').addClass('isRequired');
-            $('#approvedBy').addClass('isRequired');
-            $('#approvedOn').addClass('isRequired');
-        } else {
-            $(".result-fields").attr("disabled", false);
-            $(".result-fields").removeClass("isRequired");
-            $(".result-optional").removeClass("isRequired");
-            $(".result-span").show();
-            $('.vlResult').css('display', 'block');
-            $('.rejectionReason').hide();
-            $(".result-span").hide();
-            $(".review-approve-span").hide();
-            $('#rejectionReason').removeClass('isRequired');
-            $('#rejectionDate').removeClass('isRequired');
-            $('#rejectionReason').val('');
-            $('#reviewedBy').removeClass('isRequired');
-            $('#reviewedOn').removeClass('isRequired');
-            $('#approvedBy').removeClass('isRequired');
-            $('#approvedOn').removeClass('isRequired');
-        }
-    });
-
-
-    $('#testingPlatform').on("change", function() {
-        $(".vlResult").show();
-        $("#noResult").val("");
-    });
-
-
-    function checkRejectionReason() {
-        var rejectionReason = $("#rejectionReason").val();
-        if (rejectionReason == "other") {
-            $("#newRejectionReason").show();
-            $("#newRejectionReason").addClass("isRequired");
-        } else {
-            $("#newRejectionReason").hide();
-            $("#newRejectionReason").removeClass("isRequired");
-            $('#newRejectionReason').val("");
-        }
-    }
-
-    function validateNow() {
-        flag = deforayValidator.init({
-            formId: 'vlRequestFormRwd'
-        });
-
-        /* $('.isRequired').each(function() {
-            ($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
-        }); */
-        if (flag) {
-            $.blockUI();
-            document.getElementById('vlRequestFormRwd').submit();
-        }
-    }
-
-    function checkPatientReceivesms(val) {
-        if (val == 'yes') {
-            $('#patientPhoneNumber').addClass('isRequired');
-        } else {
-            $('#patientPhoneNumber').removeClass('isRequired');
-        }
-    }
-
-    function autoFillFocalDetails() {
-        // labId = $("#labId").val();
-        // if ($.trim(labId) != '') {
-        // 	$("#vlFocalPerson").val($('#labId option:selected').attr('data-focalperson')).trigger('change');
-        // 	$("#vlFocalPersonPhoneNumber").val($('#labId option:selected').attr('data-focalphone'));
-        // }
-    }
-
-    function getTestTypeForm() {
-        removeDynamicForm();
-        var testType = $("#testType").val();
-        if (testType != "") {
-            $(".requestForm").show();
-            $.post("/generic-tests/requests/getTestTypeForm.php", {
-                    testType: testType,
-                    result: $('#result').val() ? $('#result').val() : '<?php echo $genericResultInfo['result']; ?>',
-                    testTypeForm: '<?php echo base64_encode($genericResultInfo['test_type_form']); ?>',
-                    resultInterpretation: '<?php echo $genericResultInfo['final_result_interpretation']; ?>',
-                },
-                function(data) {
-                    data = JSON.parse(data);
-                    if (typeof(data.facilitySection) != "undefined" && data.facilitySection !== null && data.facilitySection.length > 0) {
-                        $("#facilitySection").html(data.facilitySection);
-                    }
-                    if (typeof(data.patientSection) != "undefined" && data.patientSection !== null && data.patientSection.length > 0) {
-                        $("#patientSection").after(data.patientSection);
-                    }
-                    if (typeof(data.labSection) != "undefined" && data.labSection !== null && data.labSection.length > 0) {
-                        $("#labSection").html(data.labSection);
-                    }
-                    if (typeof(data.result) != "undefined" && data.result !== null && data.result.length > 0) {
-                        $("#resultSection").html(data.result);
-                    } else {
-                        $('#resultSection').hide()
-                    }
-                    if (typeof(data.specimenSection) != "undefined" && data.specimenSection !== null && data.specimenSection.length > 0) {
-                        $("#specimenSection").after(data.specimenSection);
-                    }
-                    if (typeof(data.otherSection) != "undefined" && data.otherSection !== null && data.otherSection.length > 0) {
-                        $("#otherSection").html(data.otherSection);
-                    }
-                    $('.date').datepicker({
-                        changeMonth: true,
-                        changeYear: true,
-                        dateFormat: 'dd-M-yy',
-                        timeFormat: "hh:mm",
-                        maxDate: "Today",
-                        yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-                    }).click(function() {
-                        $('.ui-datepicker-calendar').show();
-                    });
-                    $(".dynamicFacilitySelect2").select2({
-                        width: '285px',
-                        placeholder: "<?php echo _("Select any one of the option"); ?>"
-                    });
-                    $(".dynamicSelect2").select2({
-                        width: '100%',
-                        placeholder: "<?php echo _("Select any one of the option"); ?>"
-                    });
-                    if($('#resultType').val() == 'qualitative'){
-                        $('.final-result-row').attr('colspan',4)
-                        $('.testResultUnit').hide();
-                    }else{
-                        $('.final-result-row').attr('colspan',5)
-                        $('.testResultUnit').show();
-                    }
-                });
-        } else {
-            removeDynamicForm();
-        }
-    }
-
-    function removeDynamicForm() {
-        $(".facilitySection").html('');
-        $(".patientSectionInput").remove();
-        $("#labSection").html('');
-        $(".specimenSectionInput").remove();
-        $("#otherSection").html('');
-        $(".requestForm").hide();
-    }
-
-    function getSampleTypeList(testTypeId) {
-        $.post("/includes/get-sample-type.php", {
-                testTypeId: testTypeId,
-                sampleTypeId: '<?php echo $genericResultInfo['sample_type']; ?>'
-            },
-            function(data) {
-                if (data != "") {
-                    $("#specimenType").html(data);
-                }
-            });
-    }
-
-    function addTestRow() {
-        let rowString = `<tr>
-                    <td class="text-center">${testCounter}</td>
-                    <td>
-                    <select class="form-control test-name-table-input" id="testName${testCounter}" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
-                    <option value="">-- Select --</option>
-                    <option value="Real Time RT-PCR">Real Time RT-PCR</option>
-                    <option value="RDT-Antibody">RDT-Antibody</option>
-                    <option value="RDT-Antigen">RDT-Antigen</option>
-                    <option value="GeneXpert">GeneXpert</option>
-                    <option value="ELISA">ELISA</option>
-                    <option value="other">Others</option>
-                </select>
-                <input type="text" name="testNameOther[]" id="testNameOther${testCounter}" class="form-control testNameOther${testCounter}" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
-            </td>
-            <td><input type="text" name="testDate[]" id="testDate${testCounter}" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ${testCounter}" /></td>
-            <td><select name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
-            <td class="kitlabels" style="display: none;"><input type="text" name="lotNo[]" id="lotNo${testCounter}" class="form-control kit-fields${testCounter}" placeholder="Kit lot no" title="Please enter the kit lot no. for row ${testCounter}" style="display:none;"/></td>
-            <td class="kitlabels" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control expDate kit-fields${testCounter}" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" style="display:none;"/></td>
-            <td>
-               <input type="text" id="testResult${testCounter}" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
-            </td>
-            <td class="testResultUnit">
-            <select class="form-control" id="testResultUnit${testCounter}" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
-                    <option value="">--Select--</option>
-                    <?php
-                    foreach ($testResultUnits as $unit) {
-                        ?>
-                        <option value="<?php echo $unit['unit_id']; ?>"><?php echo $unit['unit_name']; ?></option>
-                        <?php
-                    }
-                    ?>
-            </select>
-            <td style="vertical-align:middle;text-align: center;width:100px;">
-                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><em class="fa-solid fa-plus"></em></a>&nbsp;
-                <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
-            </td>
-        </tr>`;
-        $("#testKitNameTable").append(rowString);
-
-        $('.date').datepicker({
-            changeMonth: true,
-            changeYear: true,
-            onSelect: function() {
-                $(this).change();
-            },
-            dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
-
-        $('.expDate').datepicker({
-            changeMonth: true,
-            changeYear: true,
-            onSelect: function() {
-                $(this).change();
-            },
-            dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm",
-            // minDate: "Today",
-            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
-
-        $('.dateTime').datetimepicker({
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm",
-            maxDate: "Today",
-            onChangeMonthYear: function(year, month, widget) {
-                setTimeout(function() {
-                    $('.ui-datepicker-calendar').show();
-                });
-            }
-        }).click(function() {
-            $('.ui-datepicker-calendar').show();
-        });
-
-        if ($('.kitlabels').is(':visible') == true) {
-            $('.kitlabels').show();
-        }
-        if($('#resultType').val() == 'qualitative'){
-            $('.final-result-row').attr('colspan',4)
-            $('.testResultUnit').hide();
-        }else{
-            $('.final-result-row').attr('colspan',5)
-            $('.testResultUnit').show();
-        }
-    }
-
-    function removeTestRow(el) {
-        $(el).fadeOut("slow", function() {
-            el.parentNode.removeChild(el);
-            rl = document.getElementById("testKitNameTable").rows.length;
-            if (rl == 0) {
-                testCounter = 0;
-                addTestRow();
-            }
-        });
-    }
-
-    function updateInterpretationResult(obj) {
-        if (obj.value) {
-            $.post("/generic-tests/requests/get-result-interpretation.php", {
-                    result: obj.value,
-                    resultType: $('#resultType').val(),
-                    testType: $('#testType').val()
-                },
-                function(interpretation) {
-                    if (interpretation != "") {
-                        $('#resultInterpretation').val(interpretation);
-                    } else {
-                        $('#resultInterpretation').val('');
-                    }
-                });
-        }
-    }
+	function updateInterpretationResult(obj) {
+		if (obj.value) {
+			$.post("get-result-interpretation.php", {
+				result: obj.value,
+				resultType: $('#resultType').val(),
+				testType: $('#testType').val()
+			},
+				function (interpretation) {
+					if (interpretation != "") {
+						$('#resultInterpretation').val(interpretation);
+					} else {
+						$('#resultInterpretation').val('');
+					}
+				});
+		}
+	}
 </script>
 <?php require_once APPLICATION_PATH . '/footer.php';
