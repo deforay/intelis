@@ -1109,7 +1109,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 				}
 			});
 			if (status) {
-				$('.change-reason').show();
+				$('.reasonForResultChanges').show();
 				$('#reasonForResultChanges').addClass('isRequired');
 			} else {
 				$('.change-reason').hide();
