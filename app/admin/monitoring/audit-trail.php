@@ -115,11 +115,11 @@ $resultColumn = getColumns($db, $tableName);
 								</td>
 								<td>&nbsp;<strong><?php echo _("Sample Code"); ?>&nbsp;:</strong></td>
 								<td>
-									<input type="text" value="<?= htmlspecialchars($_POST['sampleCode']);  ?>" name="sampleCode" id="sampleCode" class="form-control" />
+									<input type="text" value="<?= htmlspecialchars($_POST['sampleCode']); ?>" name="sampleCode" id="sampleCode" class="form-control" />
 								</td>
 							<tr>
 								<td colspan="4">&nbsp;<input type="submit" value="<?php echo _("Submit"); ?>" class="btn btn-success btn-sm">
-									&nbsp;<button type="reset" class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
+									&nbsp;<button type="reset" class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _('Reset'); ?></span></button>
 								</td>
 							</tr>
 						</table>
@@ -131,7 +131,7 @@ $resultColumn = getColumns($db, $tableName);
 			if (!empty($sampleCode)) {
 				$posts = getColumnValues($db, $tableName, $sampleCode);
 
-			?>
+				?>
 				<div class="col-xs-12">
 					<div class="box">
 						<!-- /.box-header -->
@@ -143,10 +143,10 @@ $resultColumn = getColumns($db, $tableName);
 									//echo '<pre>'; print_r($resultColumn); die;
 									$i = 0;
 									foreach ($resultColumn as $col) {
-									?>
+										?>
 										<option value="<?php echo $i; ?>"><?php echo $col['COLUMN_NAME']; ?></option>
 									<?php
-										$i++;
+									$i++;
 									}
 									?>
 								</select>
@@ -159,7 +159,7 @@ $resultColumn = getColumns($db, $tableName);
 											$colArr = [];
 											foreach ($resultColumn as $col) {
 												$colArr[] = $col['COLUMN_NAME'];
-											?>
+												?>
 												<th>
 													<?php
 													echo $col['COLUMN_NAME'];
@@ -172,7 +172,7 @@ $resultColumn = getColumns($db, $tableName);
 										<?php
 
 										for ($i = 0; $i < count($posts); $i++) {
-										?>
+											?>
 											<tr>
 												<?php
 												for ($j = 0; $j < count($colArr); $j++) {
@@ -182,7 +182,7 @@ $resultColumn = getColumns($db, $tableName);
 													} else {
 														echo '<td>' . $posts[$i][$colArr[$j]] . '</td>';
 													}
-												?>
+													?>
 												<?php }
 												?>
 											</tr>
@@ -202,7 +202,7 @@ $resultColumn = getColumns($db, $tableName);
 											$resultColumn = getColumns($db, $tableName2);
 											$posts = getColumnValues($db, $tableName2, $sampleCode);
 											foreach ($resultColumn as $col) {
-											?>
+												?>
 												<th>
 													<?php
 													echo $col['COLUMN_NAME'];
@@ -214,11 +214,11 @@ $resultColumn = getColumns($db, $tableName);
 									<tbody>
 										<?php
 										for ($i = 0; $i < count($posts); $i++) {
-										?>
+											?>
 											<tr>
 												<?php
 												for ($j = 3; $j < count($colArr); $j++) {
-												?>
+													?>
 													<td>
 														<?php
 														echo $posts[$i][$colArr[$j]];

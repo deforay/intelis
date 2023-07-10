@@ -18,10 +18,16 @@ $sResult = $db->rawQuery($sQuery);
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("VL Control Report"); ?></h1>
+    <h1><em class="fa-solid fa-pen-to-square"></em>
+      <?php echo _("VL Control Report"); ?>
+    </h1>
     <ol class="breadcrumb">
-      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-      <li class="active"><?php echo _("VL Control Report"); ?></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em>
+          <?php echo _("Home"); ?>
+        </a></li>
+      <li class="active">
+        <?php echo _("VL Control Report"); ?>
+      </li>
     </ol>
   </section>
   <!-- Main content -->
@@ -29,27 +35,39 @@ $sResult = $db->rawQuery($sQuery);
     <div class="row">
       <div class="col-xs-12">
         <div class="box">
-          <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:80%;">
+          <table aria-describedby="table" class="table" aria-hidden="true"
+            style="margin-left:1%;margin-top:20px;width:80%;">
             <tr>
-              <td><strong><?php echo _("Sample Tested Date"); ?>&nbsp;</strong><span class="mandatory">*</span></td>
-              <td><input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Tested Date'); ?>" readonly style="width:220px;background:#fff;" /></td>
-              <td><strong><?php echo _("Control Type"); ?>&nbsp;</strong><span class="mandatory">*</span></td>
+              <td><strong>
+                  <?php echo _("Sample Tested Date"); ?>&nbsp;
+                </strong><span class="mandatory">*</span></td>
+              <td><input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control"
+                  placeholder="<?php echo _('Select Tested Date'); ?>" readonly style="width:220px;background:#fff;" />
+              </td>
+              <td><strong>
+                  <?php echo _("Control Type"); ?>&nbsp;
+                </strong><span class="mandatory">*</span></td>
               <td>
                 <select id="cType" name="cType" class="form-control" title="<?php echo _('Choose control type'); ?>">
-                  <option value=""><?php echo _("-- Select --"); ?></option>
+                  <option value="">
+                    <?php echo _("-- Select --"); ?>
+                  </option>
                   <?php
                   foreach ($sResult as $control) {
-                  ?>
+                    ?>
                     <option value="<?php echo $control['r_sample_control_name']; ?>"><?php echo $control['r_sample_control_name']; ?></option>
-                  <?php
+                    <?php
                   }
                   ?>
                 </select>
               </td>
             </tr>
             <tr>
-              <td colspan="6">&nbsp;<input type="button" onclick="loadControlChart();" value="<?php echo _('Search'); ?>" class="btn btn-success btn-sm">
-                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
+              <td colspan="6">&nbsp;<input type="button" onclick="loadControlChart();" value="<?= _('Search'); ?>"
+                  class="btn btn-success btn-sm">
+                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
+                    <?= _('Reset'); ?>
+                  </span></button>
               </td>
             </tr>
           </table>
@@ -75,32 +93,32 @@ $sResult = $db->rawQuery($sQuery);
 <script type="text/javascript">
   var startDate = "";
   var endDate = "";
-  $(document).ready(function() {
+  $(document).ready(function () {
     $('#sampleTestDate').daterangepicker({
-        locale: {
-          cancelLabel: "<?= _("Clear"); ?>",
-          format: 'DD-MMM-YYYY',
-          separator: ' to ',
-        },
-        showDropdowns: true,
-        alwaysShowCalendars: false,
-        startDate: moment().subtract(28, 'days'),
-        endDate: moment(),
-        maxDate: moment(),
-        ranges: {
-          'Today': [moment(), moment()],
-          'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-          'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-          'This Month': [moment().startOf('month'), moment().endOf('month')],
-          'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-          'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-          'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-          'Last 120 Days': [moment().subtract(119, 'days'), moment()],
-          'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-          'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
-        }
+      locale: {
+        cancelLabel: "<?= _("Clear"); ?>",
+        format: 'DD-MMM-YYYY',
+        separator: ' to ',
       },
-      function(start, end) {
+      showDropdowns: true,
+      alwaysShowCalendars: false,
+      startDate: moment().subtract(28, 'days'),
+      endDate: moment(),
+      maxDate: moment(),
+      ranges: {
+        'Today': [moment(), moment()],
+        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+        'This Month': [moment().startOf('month'), moment().endOf('month')],
+        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+        'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+        'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+        'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+        'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
+      }
+    },
+      function (start, end) {
         startDate = start.format('YYYY-MM-DD');
         endDate = end.format('YYYY-MM-DD');
       });
@@ -112,10 +130,10 @@ $sResult = $db->rawQuery($sQuery);
     if ($("#sampleTestDate").val() != '' && $("#cType").val() != '') {
       $.blockUI();
       $.post("/vl/program-management/getControlChart.php", {
-          sampleTestDate: $("#sampleTestDate").val(),
-          cType: $("#cType").val()
-        },
-        function(data) {
+        sampleTestDate: $("#sampleTestDate").val(),
+        cType: $("#cType").val()
+      },
+        function (data) {
           $("#chart").html(data);
         });
       $.unblockUI();

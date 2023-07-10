@@ -101,7 +101,7 @@ foreach ($rejectionTypeResult as $type) {
                   <option value=""> -- Select -- </option>
                   <?php
                   foreach ($batResult as $code) {
-                  ?>
+                    ?>
                     <option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
                   <?php
                   }
@@ -117,7 +117,7 @@ foreach ($rejectionTypeResult as $type) {
                   <option value=""> <?php echo _("-- Select --"); ?> </option>
                   <?php
                   foreach ($fResult as $name) {
-                  ?>
+                    ?>
                     <option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
                   <?php
                   }
@@ -134,7 +134,7 @@ foreach ($rejectionTypeResult as $type) {
             </tr>
             <tr>
               <td colspan="3">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
-                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
+                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _('Reset'); ?></span></button>
 
               </td>
             </tr>
@@ -166,7 +166,7 @@ foreach ($rejectionTypeResult as $type) {
                   <th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()" /></th>
                   <th><?php echo _("Sample Code"); ?></th>
                   <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-                    <th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
+                    <th><?php echo _("Remote Sample Code"); ?></th>
                   <?php } ?>
                   <th scope="row"><?php echo _("Sample Collection Date"); ?></th>
                   <th><?php echo _("Batch Code"); ?></th>

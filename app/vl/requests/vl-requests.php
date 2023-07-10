@@ -529,10 +529,10 @@ foreach ($srcResults as $list) {
 
 						<tr>
 							<td colspan="2"><input type="button" onclick="searchVlRequestData();"
-									value="<?php echo _('Search'); ?>" class="btn btn-default btn-sm">
+									value="<?= _('Search'); ?>" class="btn btn-default btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm"
 									onclick="document.location.href = document.location"><span>
-										<?php echo _("Reset"); ?>
+										<?= _('Reset'); ?>
 									</span></button>
 								&nbsp;<button class="btn btn-danger btn-sm"
 									onclick="hideAdvanceSearch('advanceFilter','filter');"><span>
@@ -710,12 +710,11 @@ foreach ($srcResults as $list) {
 									</th>
 									<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 										<th>
-											<?php echo _("Remote Sample"); ?> <br />Code
+											<?php echo _("Remote Sample Code"); ?>
 										</th>
 									<?php } ?>
 									<th>
-										<?php echo _("Sample Collection"); ?><br />
-										<?php echo _("Date"); ?>
+										<?php echo _("Sample Collection Date"); ?>
 									</th>
 									<th>
 										<?php echo _("Batch Code"); ?>
@@ -813,17 +812,17 @@ foreach ($srcResults as $list) {
 <?php
 if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
 	if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
-?>
+		?>
 		<script src="/assets/js/DYMO.Label.Framework.js"></script>
 		<script src="/uploads/barcode-formats/dymo-format.js"></script>
 		<script src="/assets/js/dymo-print.js"></script>
-	<?php
+		<?php
 	} else if ($global['bar_code_printing'] == 'zebra-printer') {
-	?>
-		<script src="/assets/js/zebra-browserprint.js"></script>
-		<script src="/uploads/barcode-formats/zebra-format.js"></script>
-		<script src="/assets/js/zebra-print.js"></script>
-<?php
+		?>
+			<script src="/assets/js/zebra-browserprint.js"></script>
+			<script src="/uploads/barcode-formats/zebra-format.js"></script>
+			<script src="/assets/js/zebra-print.js"></script>
+			<?php
 	}
 }
 ?>

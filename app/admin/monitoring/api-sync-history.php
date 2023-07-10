@@ -30,10 +30,16 @@ foreach ($syncedTypeResults as $synced) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid  fa-circle-nodes"></em> <?php echo _("API History"); ?></h1>
+		<h1><em class="fa-solid  fa-circle-nodes"></em>
+			<?php echo _("API History"); ?>
+		</h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("API History"); ?></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em>
+					<?php echo _("Home"); ?>
+				</a></li>
+			<li class="active">
+				<?php echo _("API History"); ?>
+			</li>
 		</ol>
 	</section>
 
@@ -42,61 +48,103 @@ foreach ($syncedTypeResults as $synced) {
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table aria-describedby="table" class="table" aria-hidden="true" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table aria-describedby="table" class="table" aria-hidden="true" cellspacing="3"
+						style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
-							<td><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></td>
+							<td><strong>
+									<?= _('Date Range'); ?>&nbsp;:
+								</strong></td>
 							<td>
-								<input type="text" id="dateRange" name="dateRange" class="form-control daterangefield" placeholder="<?php echo _('Enter date range'); ?>" style="width:220px;background:#fff;" />
+								<input type="text" id="dateRange" name="dateRange" class="form-control daterangefield"
+									placeholder="<?php echo _('Enter date range'); ?>"
+									style="width:220px;background:#fff;" />
 							</td>
-							<td><strong><?php echo _("Test Type"); ?>&nbsp;:</strong></td>
+							<td><strong>
+									<?php echo _("Test Type"); ?>&nbsp;:
+								</strong></td>
 							<td>
-								<select id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
-									<option value=""><?php echo _("-- Select --"); ?></option>
+								<select id="testType" name="testType" class="form-control"
+									placeholder="<?php echo _('Please select the Test types'); ?>">
+									<option value="">
+										<?php echo _("-- Select --"); ?>
+									</option>
 									<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
-										<option value="vl"><?php echo _("Viral Load"); ?></option>
+										<option value="vl">
+											<?php echo _("Viral Load"); ?>
+										</option>
 									<?php }
 									if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) { ?>
-										<option value="eid"><?php echo _("Early Infant Diagnosis"); ?></option>
+										<option value="eid">
+											<?php echo _("Early Infant Diagnosis"); ?>
+										</option>
 									<?php }
 									if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) { ?>
-										<option value="covid19"><?php echo _("Covid-19"); ?></option>
+										<option value="covid19">
+											<?php echo _("Covid-19"); ?>
+										</option>
 									<?php }
 									if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) { ?>
-										<option value='hepatitis'><?php echo _("Hepatitis"); ?></option>
+										<option value='hepatitis'>
+											<?php echo _("Hepatitis"); ?>
+										</option>
 									<?php }
 									if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
-										<option value='tb'><?php echo _("TB"); ?></option>
+										<option value='tb'>
+											<?php echo _("TB"); ?>
+										</option>
 									<?php } ?>
 								</select>
 							</td>
-							<td><strong><?php echo _("API Type"); ?>&nbsp;:</strong></td>
+							<td><strong>
+									<?php echo _("API Type"); ?>&nbsp;:
+								</strong></td>
 							<td>
-								<select style="width:220px;" class="form-control select2" id="syncedType" name="syncedType" title="<?php echo _('Please select the API type'); ?>">
+								<select style="width:220px;" class="form-control select2" id="syncedType"
+									name="syncedType" title="<?php echo _('Please select the API type'); ?>">
 									<?php echo $general->generateSelectOptions($syncedType, null, '--Select--'); ?>
 								</select>
 							</td>
 						</tr>
 						<tr>
-							<td><button onclick="oTable.fnDraw();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Search"); ?></span></button></td>
+							<td><button onclick="oTable.fnDraw();" value="Search" class="btn btn-primary btn-sm"><span>
+										<?php echo _("Search"); ?>
+									</span></button></td>
 						</tr>
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="vlRequestDataTable"
+							class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th><?php echo _("Transaction ID"); ?></th>
-									<th><?php echo _("Number of Records Synced"); ?></th>
-									<th><?php echo _("Sync Type"); ?></th>
-									<th><?php echo _("Test Type"); ?></th>
-									<th><?php echo _("URL"); ?></th>
-									<th><?php echo _("Synced On"); ?></th>
-									<th><?php echo _("Action"); ?></th>
+									<th>
+										<?php echo _("Transaction ID"); ?>
+									</th>
+									<th>
+										<?php echo _("Number of Records Synced"); ?>
+									</th>
+									<th>
+										<?php echo _("Sync Type"); ?>
+									</th>
+									<th>
+										<?php echo _("Test Type"); ?>
+									</th>
+									<th>
+										<?php echo _("URL"); ?>
+									</th>
+									<th>
+										<?php echo _("Synced On"); ?>
+									</th>
+									<th>
+										<?php echo _("Action"); ?>
+									</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="7" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+									<td colspan="7" class="dataTables_empty">
+										<?php echo _("Loading data from server"); ?>
+									</td>
 								</tr>
 							</tbody>
 						</table>
@@ -114,7 +162,7 @@ foreach ($syncedTypeResults as $synced) {
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
 	var oTable = null;
-	$(document).ready(function() {
+	$(document).ready(function () {
 		loadVlRequestData();
 		$('#dateRange').daterangepicker({
 			locale: {
@@ -172,7 +220,7 @@ foreach ($syncedTypeResults as $synced) {
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "/admin/monitoring/get-api-sync-history-list.php",
-			"fnServerData": function(sSource, aoData, fnCallback) {
+			"fnServerData": function (sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "dateRange",
 					"value": $("#dateRange").val()

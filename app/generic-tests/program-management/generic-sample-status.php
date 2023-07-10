@@ -51,10 +51,16 @@ $batResult = $db->rawQuery($batQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-book"></em> <?php echo _("Lab Tests Sample Status Report"); ?></h1>
+		<h1><em class="fa-solid fa-book"></em>
+			<?php echo _("Lab Tests Sample Status Report"); ?>
+		</h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Lab Tests Sample Status Report"); ?></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em>
+					<?php echo _("Home"); ?>
+				</a></li>
+			<li class="active">
+				<?php echo _("Lab Tests Sample Status Report"); ?>
+			</li>
 		</ol>
 	</section>
 
@@ -63,16 +69,26 @@ $batResult = $db->rawQuery($batQuery);
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box" id="filterDiv">
-					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table aria-describedby="table" class="table" aria-hidden="true"
+						style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
-							<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
+							<td><strong>
+									<?php echo _("Sample Collection Date"); ?>&nbsp;:
+								</strong></td>
 							<td>
-								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate"
+									class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>"
+									readonly style="width:220px;background:#fff;" />
 							</td>
-							<td>&nbsp;<strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
+							<td>&nbsp;<strong>
+									<?php echo _("Batch Code"); ?>&nbsp;:
+								</strong></td>
 							<td>
-								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
-									<option value=""> <?php echo _("-- Select --"); ?> </option>
+								<select class="form-control" id="batchCode" name="batchCode"
+									title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
+									<option value="">
+										<?php echo _("-- Select --"); ?>
+									</option>
 									<?php foreach ($batResult as $code) { ?>
 										<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
 									<?php } ?>
@@ -80,32 +96,51 @@ $batResult = $db->rawQuery($batQuery);
 							</td>
 						</tr>
 						<tr>
-							<td>&nbsp;<strong><?php echo _("Sample Type"); ?>&nbsp;:</strong></td>
+							<td>&nbsp;<strong>
+									<?php echo _("Sample Type"); ?>&nbsp;:
+								</strong></td>
 							<td>
-								<select style="width:220px;" class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
+								<select style="width:220px;" class="form-control" id="sampleType" name="sampleType"
+									title="<?php echo _('Please select sample type'); ?>">
 									<?= $general->generateSelectOptions($sampleTypeResults, null, "-- Select --") ?>
 								</select>
 							</td>
-							<td>&nbsp;<strong><?php echo _("Testing Lab"); ?> &nbsp;:</strong></td>
+							<td>&nbsp;<strong>
+									<?php echo _("Testing Lab"); ?> &nbsp;:
+								</strong></td>
 							<td>
-								<select class="form-control" id="labName" name="labName" title="<?php echo _('Please select facility name'); ?>">
+								<select class="form-control" id="labName" name="labName"
+									title="<?php echo _('Please select facility name'); ?>">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
 						</tr>
 						<tr>
-							<td><strong><?php echo _("Select Sample Received Date At Lab"); ?> :</strong></td>
+							<td><strong>
+									<?php echo _("Select Sample Received Date At Lab"); ?> :
+								</strong></td>
 							<td>
-								<input type="text" id="sampleReceivedDateAtLab" name="sampleReceivedDateAtLab" class="form-control" placeholder="<?php echo _('Select Sample Received Date At Lab'); ?>" readonly style="background:#fff;" />
+								<input type="text" id="sampleReceivedDateAtLab" name="sampleReceivedDateAtLab"
+									class="form-control"
+									placeholder="<?php echo _('Select Sample Received Date At Lab'); ?>" readonly
+									style="background:#fff;" />
 							</td>
-							<td><strong><?php echo _("Sample Tested Date"); ?> :</strong></td>
+							<td><strong>
+									<?php echo _("Sample Tested Date"); ?> :
+								</strong></td>
 							<td>
-								<input type="text" id="sampleTestedDate" name="sampleTestedDate" class="form-control" placeholder="<?php echo _('Select Tested Date'); ?>" readonly style="background:#fff;" />
+								<input type="text" id="sampleTestedDate" name="sampleTestedDate" class="form-control"
+									placeholder="<?php echo _('Select Tested Date'); ?>" readonly
+									style="background:#fff;" />
 							</td>
 						</tr>
 						<tr>
-							<td colspan="4">&nbsp;<input type="button" onclick="searchResultData(),searchVlTATData();" value="<?php echo _('Search'); ?>" class="btn btn-success btn-sm">
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
+							<td colspan="4">&nbsp;<input type="button" onclick="searchResultData(),searchVlTATData();"
+									value="<?= _('Search'); ?>" class="btn btn-success btn-sm">
+								&nbsp;<button class="btn btn-danger btn-sm"
+									onclick="document.location.href = document.location"><span>
+										<?= _('Reset'); ?>
+									</span></button>
 							</td>
 						</tr>
 
@@ -120,23 +155,43 @@ $batResult = $db->rawQuery($batQuery);
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-body">
-						<button class="btn btn-success pull-right" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> Export to excel</button>
-						<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+						<button class="btn btn-success pull-right" type="button" onclick="exportInexcel()"><em
+								class="fa-solid fa-cloud-arrow-down"></em> Export to excel</button>
+						<table aria-describedby="table" id="vlRequestDataTable"
+							class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th><?php echo _("Sample ID"); ?></th>
-									<th><?php echo _("Remote Sample Code"); ?></th>
-									<th><?php echo _("External Sample Code"); ?></th>
-									<th scope="row"><?php echo _("Sample Collection Date"); ?></th>
-									<th><?php echo _("Sample Dispatch Date"); ?></th>
-									<th><?php echo _("Sample Received Date in Lab"); ?></th>
-									<th scope="row"><?php echo _("Sample Test Date"); ?></th>
-									<th><?php echo _("Sample Print Date"); ?></th>
+									<th>
+										<?php echo _("Sample ID"); ?>
+									</th>
+									<th>
+										<?php echo _("Remote Sample Code"); ?>
+									</th>
+									<th>
+										<?php echo _("External Sample Code"); ?>
+									</th>
+									<th scope="row">
+										<?php echo _("Sample Collection Date"); ?>
+									</th>
+									<th>
+										<?php echo _("Sample Dispatch Date"); ?>
+									</th>
+									<th>
+										<?php echo _("Sample Received Date in Lab"); ?>
+									</th>
+									<th scope="row">
+										<?php echo _("Sample Test Date"); ?>
+									</th>
+									<th>
+										<?php echo _("Sample Print Date"); ?>
+									</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+									<td colspan="6" class="dataTables_empty">
+										<?php echo _("Loading data from server"); ?>
+									</td>
 								</tr>
 							</tbody>
 						</table>
@@ -158,7 +213,7 @@ $batResult = $db->rawQuery($batQuery);
 <script src="/assets/js/accessibility.js"></script>
 <script>
 	let searchExecuted = false;
-	$(function() {
+	$(function () {
 		$("#labName").select2({
 			placeholder: "<?php echo _("Select Testing Lab"); ?>"
 		});
@@ -183,14 +238,14 @@ $batResult = $db->rawQuery($batQuery);
 				'Last 180 Days': [moment().subtract(179, 'days'), moment()],
 				'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
 			}
-		}, function(start, end) {
+		}, function (start, end) {
 			startDate = start.format('YYYY-MM-DD');
 			endDate = end.format('YYYY-MM-DD');
 		});
 		searchResultData();
 		loadVlTATData();
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').val("");
-		$("#filterDiv input, #filterDiv select").on("change", function() {
+		$("#filterDiv input, #filterDiv select").on("change", function () {
 			searchExecuted = false;
 		});
 	});
@@ -199,14 +254,14 @@ $batResult = $db->rawQuery($batQuery);
 		searchExecuted = true;
 		$.blockUI();
 		$.post("/generic-tests/program-management/get-sample-status.php", {
-				sampleCollectionDate: $("#sampleCollectionDate").val(),
-				sampleReceivedDateAtLab: $("#sampleReceivedDateAtLab").val(),
-				sampleTestedDate: $("#sampleTestedDate").val(),
-				batchCode: $("#batchCode").val(),
-				labName: $("#labName").val(),
-				sampleType: $("#sampleType").val()
-			},
-			function(data) {
+			sampleCollectionDate: $("#sampleCollectionDate").val(),
+			sampleReceivedDateAtLab: $("#sampleReceivedDateAtLab").val(),
+			sampleTestedDate: $("#sampleTestedDate").val(),
+			batchCode: $("#batchCode").val(),
+			labName: $("#labName").val(),
+			sampleType: $("#sampleType").val()
+		},
+			function (data) {
 				if (data != '') {
 					$("#pieChartDiv").html(data);
 				}
@@ -234,29 +289,29 @@ $batResult = $db->rawQuery($batQuery);
 			"iDisplayLength": 10,
 			"bRetrieve": true,
 			"aoColumns": [{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
 			],
 			"aaSorting": [
 				[0, "asc"]
@@ -264,7 +319,7 @@ $batResult = $db->rawQuery($batQuery);
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "/generic-tests/program-management/get-sample-tat-details.php",
-			"fnServerData": function(sSource, aoData, fnCallback) {
+			"fnServerData": function (sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "batchCode",
 					"value": $("#batchCode").val()
@@ -308,14 +363,14 @@ $batResult = $db->rawQuery($batQuery);
 		$.blockUI();
 		oTable.fnDraw();
 		$.post("/generic-tests/program-management/generic-sample-tat-details-export-in-excel.php", {
-				Sample_Collection_Date: $("#sampleCollectionDate").val(),
-				sampleReceivedDateAtLab: $("#sampleReceivedDateAtLab").val(),
-				sampleTestedDate: $("#sampleTestedDate").val(),
-				Batch_Code: $("#batchCode  option:selected").text(),
-				Sample_Type: $("#sampleType  option:selected").text(),
-				Lab_Name: $("#labName option:selected").text(),
-			},
-			function(data) {
+			Sample_Collection_Date: $("#sampleCollectionDate").val(),
+			sampleReceivedDateAtLab: $("#sampleReceivedDateAtLab").val(),
+			sampleTestedDate: $("#sampleTestedDate").val(),
+			Batch_Code: $("#batchCode  option:selected").text(),
+			Sample_Type: $("#sampleType  option:selected").text(),
+			Lab_Name: $("#labName option:selected").text(),
+		},
+			function (data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
 					alert("<?php echo _("Unable to generate excel"); ?>");

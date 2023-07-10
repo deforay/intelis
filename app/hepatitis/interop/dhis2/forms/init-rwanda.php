@@ -83,7 +83,7 @@ foreach ($initOptionSets as $t => $id) {
 
 
 // Adding Facilities - We will only run this once
-// https://hmis.moh.gov.rw/hepatitis/api/organisationUnits?filter=level:eq:6&paging=false&
+// /hepatitis/api/organisationUnits?filter=level:eq:6&paging=false&
 
 
 $data[] = "filter=level:eq:6";
@@ -101,7 +101,7 @@ foreach ($response['organisationUnits'] as $facility) {
     // $db->orWhere("facility_name", $facility['name']);
     // $facilityResult = $db->getOne("facility_details");
 
-    
+
 
     $facilityData = array(
         'facility_name' => $facility['name'],
