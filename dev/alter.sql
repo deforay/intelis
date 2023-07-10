@@ -4328,8 +4328,8 @@ INSERT INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `
 (87, 'genericTests', 'no', 'Manage Batch', '/batch/batches.php?type=generic-tests', '/batch/add-batch.php?type=generic-tests,/batch/edit-batch.php?type=generic-tests,/batch/add-batch-position.php?type=generic-tests,/batch/edit-batch-position.php?type=generic-tests', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu batchGenericCodeMenu', 61, 87, 'active', NULL),
 (88, 'genericTests', 'no', 'Lab Test Manifest', '/specimen-referral-manifest/view-manifests.php?t=generic-tests', '/specimen-referral-manifest/add-manifest.php?t=generic-tests,/specimen-referral-manifest/edit-manifest.php?t=generic-tests,/specimen-referral-manifest/move-manifest.php?t=generic-tests', 'sts', 'fa-solid fa-caret-right', 'no', 'allMenu specimenGenericReferralManifestListMenu', 61, 88, 'active', NULL),
 (89, 'genericTests', 'no', 'Enter Result Manually', '/generic-tests/results/generic-test-results.php', '/generic-tests/results/update-generic-test-result.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestResultMenu', 62, 88, 'active', NULL),
-(90, 'genericTests', 'no', 'Failed/Hold Samples', '/generic-tests/results/generic-failed-results.php', '/generic-tests/results/update-generic-test-result.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericFailedResultMenu', 62, 88, 'active', NULL),
-(91, 'genericTests', 'no', 'Manage Results Status', '/generic-tests/results/generic-result-approval.php', '/generic-tests/results/update-generic-test-result.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericResultApprovalMenu', 62, 88, 'active', NULL),
+(90, 'genericTests', 'no', 'Failed/Hold Samples', '/generic-tests/results/generic-failed-results.php', null, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericFailedResultMenu', 62, 88, 'active', NULL),
+(91, 'genericTests', 'no', 'Manage Results Status', '/generic-tests/results/generic-result-approval.php', null, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericResultApprovalMenu', 62, 88, 'active', NULL),
 (92, 'genericTests', 'no', 'Sample Status Report', '/generic-tests/program-management/generic-sample-status.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericStatusReportMenu', 62, 88, 'active', NULL),
 (93, 'genericTests', 'no', 'Export Results', '/generic-tests/program-management/generic-export-data.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericExportMenu', 63, 89, 'active', NULL),
 (94, 'genericTests', 'no', 'Print Result', '/generic-tests/results/generic-print-result.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericPrintResultMenu', 63, 90, 'active', NULL),
@@ -4833,7 +4833,12 @@ ALTER TABLE `audit_form_vl` CHANGE `patient_first_name` `patient_first_name` VAR
 -- Amit 06-Jul-2023 version 5.1.9
 UPDATE `system_config` SET `value` = '5.1.9' WHERE `system_config`.`name` = 'sc_version';
 
-
 -- Jeyabanu 07-Jul-2023
 ALTER TABLE `form_tb` ADD `requesting_clinician` VARCHAR(100) NULL DEFAULT NULL AFTER `facility_id`;
 ALTER TABLE `audit_form_tb` ADD `requesting_clinician` VARCHAR(100) NULL DEFAULT NULL AFTER `facility_id`;
+
+-- Amit 07-Jul-2023
+ALTER TABLE `failed_result_retest_tracker` CHANGE `update_by` `updated_by` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+
+-- Amit 10-Jul-2023
+UPDATE s_app_menu set s_app_menu.inner_pages = null where s_app_menu.link like '%/generic-result-approval.php' or  s_app_menu.link like '%/generic-failed-results.php';

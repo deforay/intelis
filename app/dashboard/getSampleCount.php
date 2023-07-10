@@ -204,7 +204,7 @@ $tableResult = $db->rawQuery($sQuery);
                 </select>
             </th>
             <td colspan="3" style=" display: grid; ">&nbsp;<input type="button" onclick="fetchByFacility();"
-                    value="<?php echo _('Search'); ?>" class="searchBtn btn btn-success btn-sm">
+                    value="<?= _('Search'); ?>" class="searchBtn btn btn-success btn-sm">
             </td>
         </tr>
     </table>
@@ -461,8 +461,8 @@ $tableResult = $db->rawQuery($sQuery);
                 }
                 ?>]
 
-                    }],
+                        }],
         colors: ['#f36a5a']
-                });
+                    });
     <?php } ?>
 </script>

@@ -87,7 +87,7 @@ try {
             }
         }
 
-        $_SESSION['alertMsg'] = _("Result Import configuration initited for ") . $_POST['configurationName'] . _(". Please proceed to write the import logic in the file ") . $_POST['configurationFile'] . _(" present in instruments folder");
+        $_SESSION['alertMsg'] = _("Result Import configuration initited for ") . $_POST['configurationName'] . _("Please proceed to write the import logic in the file ") . $_POST['configurationFile'] . _(" present in instruments folder");
     }
     error_log($db->getLastError());
     header("Location:/instruments/instruments.php");

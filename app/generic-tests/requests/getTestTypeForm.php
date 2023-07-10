@@ -6,6 +6,11 @@ use App\Services\GenericTestsService;
 /** @var GenericTestsService $genericTestsService */
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
+
 $testTypeForm = [];
 if (!empty($_POST['testTypeForm'])) {
     $testTypeForm = json_decode(base64_decode($_POST['testTypeForm']), true);
@@ -18,19 +23,17 @@ $resultInterpretation = $_POST['resultInterpretation'] ?? "";
 $testResultUnits = $genericTestsService->getTestResultUnit($_POST['testType']);
 
 $testTypeQuery = "SELECT * FROM r_test_types WHERE test_type_id= ?";
-$testTypeResult = $db->rawQuery($testTypeQuery, [$_POST['testType']]);
-$testAttr = json_decode($testTypeResult[0]['test_form_config'], true);
+$testTypeResult = $db->rawQueryOne($testTypeQuery, [$_POST['testType']]);
+$testTypeAttributes = json_decode($testTypeResult['test_form_config'], true);
 
 
 $sections = ['facilitySection', 'patientSection', 'specimenSection', 'labSection', 'otherSection', 'result'];
 $result = array_fill_keys($sections, []);
 
-$testResultsAttribute = json_decode($testTypeResult[0]['test_results_config'], true);
+$testResultsAttribute = json_decode($testTypeResult['test_results_config'], true);
 
 $othersSectionFields = [];
 $otherSection = [];
-$content = [];
-$n = count($testAttr);
 
 function getFieldType($fieldType)
 {
@@ -51,7 +54,9 @@ function getDropDownField($testAttribute, $value, $inputClass, $isRequired, $fie
         $fieldName .= '[]';
     }
     $field = sprintf(
-        '<div class="col-lg-7"><select name="%s" id="%s" class="form-control %s%s%s%s" title="Please select the option" %s style="width:%s;">',
+        '<div class="col-lg-7">
+            <select name="%s" id="%s" class="form-control %s%s%s%s"
+                title="Please select the option" %s style="width:%s;">',
         $fieldName,
         $testAttribute['field_id'],
         $inputClass,
@@ -74,14 +79,20 @@ function getDropDownField($testAttribute, $value, $inputClass, $isRequired, $fie
     return $field;
 }
 
-function getField($testAttribute, $testAttributeId, $value, $inputClass, $isRequired, $fieldType, $disabled, $inputWidth)
+function getField($testAttribute, $testAttributeId, $value, $inputClass, $sectionClass, $isRequired, $fieldType, $disabled, $inputWidth)
 {
+    $fieldDiv = "<div class='col-md-6 $sectionClass'>";
+    $fieldDiv .= '<label class="col-lg-5 control-label labels" for="' . $testAttributeId . '">' . $testAttribute['field_name'] . $mandatory . '</label>';
+
     $field = '';
     if ($testAttribute['field_type'] == 'dropdown' || $testAttribute['field_type'] == 'multiple') {
         $field .= getDropDownField($testAttribute, $value, $inputClass, $isRequired, $fieldType, $disabled, $inputWidth);
     } else {
         $field = sprintf(
-            '<div class="col-lg-7"><input type="text" class="form-control %s%s%s" placeholder="%s" id="%s" name="dynamicFields[%s]" value="%s" %s style="width:%s;"></div>',
+            '<div class="col-lg-7">
+                <input type="text" class="form-control %s%s%s"
+                    placeholder="%s" id="%s" name="dynamicFields[%s]"
+                    value="%s" %s style="width:%s;"></div>',
             $isRequired,
             $fieldType,
             $disabled,
@@ -95,14 +106,16 @@ function getField($testAttribute, $testAttributeId, $value, $inputClass, $isRequ
     }
     $field .= '<input type="hidden" class="form-control" name="testTypeId[]" value="' . $testAttributeId . '">';
 
-    return $field;
+    $fieldDiv .= $field;
+    $fieldDiv .= '</div>';
+    return $fieldDiv;
 }
 
-if ($n > 0) {
+if (!empty($testTypeAttributes)) {
     $i = 1;
     $arraySection = ['facilitySection', 'patientSection', 'specimenSection', 'labSection'];
-    foreach ($testAttr as $key => $testAttributeDetails) {
-        if (in_array($key, $arraySection)) {
+    foreach ($testTypeAttributes as $currentSectionName => $testAttributeDetails) {
+        if (in_array($currentSectionName, $arraySection)) {
             foreach ($testAttributeDetails as $testAttributeId => $testAttribute) {
                 $isRequired = $testAttribute['mandatory_field'] === 'yes' ? 'isRequired' : '';
                 $mandatory = $testAttribute['mandatory_field'] === 'yes' ? '<span class="mandatory">*</span>' : '';
@@ -119,30 +132,20 @@ if ($n > 0) {
                 $inputClass = $testAttribute['section'] == 'facilitySection' ? " dynamicFacilitySelect2 " : " dynamicSelect2 ";
                 $inputWidth = $testAttribute['section'] == 'facilitySection' ? "100% !important;" : "100%;";
 
-                $fieldDiv = '';
+
 
                 $sectionClass = $testAttribute['section'] . 'Input';
-                if ($testAttribute['section'] == 'labSection') {
-                    $fieldDiv .= "<div class='col-md-6 $sectionClass'>";
-                    $fieldDiv .= '<label class="col-lg-5 control-label labels" for="' . $testAttribute['field_id'] . '">' . $testAttribute['field_name'] . $mandatory . '</label>';
-                    $fieldDiv .= '<div class="col-lg-7">';
-                } elseif ($testAttribute['section'] == 'facilitySection') {
-                    $fieldDiv .= "<div class='col-md-6 $sectionClass'>";
-                    $fieldDiv .= '<label class="col-lg-5 control-label labels" for="' . $testAttribute['field_id'] . '">' . $testAttribute['field_name'] . $mandatory . '</label><br>';
-                } else {
-                    $fieldDiv .= "<div class='col-md-6 $sectionClass'>";
-                    $fieldDiv .= '<label class="col-lg-5 control-label labels" for="' . $testAttribute['field_id'] . '">' . $testAttribute['field_name'] . $mandatory . '</label>';
-                }
-                $fieldDiv .= getField($testAttribute, $testAttributeId, $value, $inputClass, $isRequired, $fieldType, $disabled, $inputWidth);
-                $fieldDiv .= '</div>';
 
-                $result[$testAttribute['section']][] = $fieldDiv;
+                $result[$testAttribute['section']][] = getField($testAttribute, $testAttributeId, $value, $inputClass, $sectionClass, $isRequired, $fieldType, $disabled, $inputWidth);
                 $i++;
             }
         } else {
             //Othersection code
-            foreach ($testAttributeDetails as $testAttributeKey => $otherAttributeDetails) {
-                foreach ($otherAttributeDetails as $testAttributeId => $testAttribute) {
+            foreach ($testAttributeDetails as $currentSectionName => $otherSectionFields) {
+                $counter = 0;
+                $divContent = '';
+                foreach ($otherSectionFields as $testAttributeId => $testAttribute) {
+                    $counter++;
                     $isRequired = $testAttribute['mandatory_field'] === 'yes' ? 'isRequired' : '';
                     $mandatory = $testAttribute['mandatory_field'] === 'yes' ? '<span class="mandatory">*</span>' : '';
                     $value = $testTypeForm[$testAttributeId] ?? '';
@@ -166,18 +169,26 @@ if ($n > 0) {
                         $s[trim(strtolower($testAttribute['section_name']))] = $i;
                         $otherSection[] = $testAttribute['section_name'];
                     }
-                    $title = '<div class="box-header with-border"><h3 class="box-title">' . $testAttribute['section_name'] . '</h3></div>';
+                    $title = '<div class="box-header with-border"><h3 class="box-title">' . $currentSectionName . '</h3></div>';
 
                     // Grouping Other Sections via array
-                    $fieldDiv = '<div class="col-md-6">';
-                    $fieldDiv .= '<label class="col-lg-5" for="'.$testAttributeId.'">' . $testAttribute['field_name'] . $mandatory . '</label>';
-                    $fieldDiv .= getField($testAttribute, $testAttributeId, $value, $inputClass, $isRequired, $fieldType, $disabled, $inputWidth);
-                    $fieldDiv .= '</div>';
-                    $content[trim(strtolower($testAttribute['section_name']))] .= $fieldDiv;
+                    $sectionClass = $currentSectionName . 'Input';
+                    $fieldDiv = getField($testAttribute, $testAttributeId, $value, $inputClass, $sectionClass, $isRequired, $fieldType, $disabled, $inputWidth);
+                    if ($counter % 2 == 0) {
+                        $fieldDiv .= '</div><div class="row">';
+                    }
 
-                    $othersSectionFields[$s[trim(strtolower($testAttribute['section_name']))]] = $title . '<div class="box-body"><div class="row">' . $content[trim(strtolower($testAttribute['section_name']))] . '</div></div>';
+                    $divContent .= $fieldDiv;
                     $i++;
                 }
+                $startSection = '<div class="box-body"><div class="row">';
+                $endSection = '</div></div>';
+
+                $othersSectionFields[$currentSectionName] =
+                    $title .
+                    $startSection .
+                    $divContent .
+                    $endSection;
             }
 
             foreach ($othersSectionFields as $otherFormFields) {

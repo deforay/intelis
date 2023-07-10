@@ -85,8 +85,9 @@ $url = "/api/trackedEntityInstances.json";
 
 $jsonResponse = $dhis2->get($url, $data);
 
-if ($jsonResponse == '' || $jsonResponse == '[]' || empty($jsonResponse))
+if ($jsonResponse == '' || $jsonResponse == '[]' || empty($jsonResponse)) {
     die('No Response from API');
+}
 
 $options = [
     'pointer' => '/trackedEntityInstances',
@@ -109,21 +110,24 @@ foreach ($trackedEntityInstances as $tracker) {
 
         $screeningEventIds = array_keys($allProgramStages, $programStages['labRequest']); // screening programStage
 
-        if (count($screeningEventIds) == 0)
-            continue 2; // if no screening stage, skip this tracker entirely
+        if (count($screeningEventIds) == 0) {
+            continue 2;
+            // if no screening stage, skip this tracker entirely
+        }
 
-        $enrollmentDate = explode("T", $enrollments['enrollmentDate']);
-        $enrollmentDate = $enrollmentDate[0];
+        $enrollmentDate = strstr($enrollments['enrollmentDate'], 'T', true);
 
         $eventsData = [];
         foreach ($enrollments['events'] as $event) {
 
-            if ($event['programStage'] != $programStages['labRequest'])
+            if ($event['programStage'] != $programStages['labRequest']) {
                 continue;
+            }
 
             foreach ($event['dataValues'] as $dV) {
-                if (empty($eventsDataElementMapping[$dV['dataElement']]))
+                if (empty($eventsDataElementMapping[$dV['dataElement']])) {
                     continue;
+                }
                 $eventsData["dhis2::" . $tracker['trackedEntityInstance'] . "::" . $event['event']][$eventsDataElementMapping[$dV['dataElement']]] = $dV['value'];
             }
         }
@@ -131,8 +135,9 @@ foreach ($trackedEntityInstances as $tracker) {
 
     $attributesData = [];
     foreach ($tracker['attributes'] as $trackerAttr) {
-        if (empty($attributesDataElementMapping[$trackerAttr['attribute']]))
+        if (empty($attributesDataElementMapping[$trackerAttr['attribute']])) {
             continue;
+        }
         $attributesData[$attributesDataElementMapping[$trackerAttr['attribute']]] = $trackerAttr['value'];
     }
 

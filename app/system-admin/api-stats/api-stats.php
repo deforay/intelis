@@ -8,10 +8,16 @@ require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1> <em class="fa-solid fa-gears"></em> <?php echo _("API Stats"); ?></h1>
+    <h1> <em class="fa-solid fa-gears"></em>
+      <?php echo _("API Stats"); ?>
+    </h1>
     <ol class="breadcrumb">
-      <li><a href="/system-admin/edit-config/index.php"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-      <li class="active"><?php echo _("API Stats"); ?></li>
+      <li><a href="/system-admin/edit-config/index.php"><em class="fa-solid fa-chart-pie"></em>
+          <?php echo _("Home"); ?>
+        </a></li>
+      <li class="active">
+        <?php echo _("API Stats"); ?>
+      </li>
     </ol>
   </section>
 
@@ -24,21 +30,36 @@ require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
         <div class="box">
           <!-- /.box-header -->
           <div class="box-body">
-            <table aria-describedby="table" id="apiStatsDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+            <table aria-describedby="table" id="apiStatsDataTable" class="table table-bordered table-striped"
+              aria-hidden="true">
               <thead>
                 <tr>
-                  <th><?php echo _("Requested On"); ?></th>
-                  <th><?php echo _("Number of Records"); ?></th>
-                  <th><?php echo _("Request Type"); ?></th>
-                  <th><?php echo _("Test_Type"); ?></th>
-                  <th><?php echo _("Api Url"); ?></th>
-                  <th><?php echo _("Date Format"); ?></th>
+                  <th>
+                    <?php echo _("Requested On"); ?>
+                  </th>
+                  <th>
+                    <?php echo _("Number of Records"); ?>
+                  </th>
+                  <th>
+                    <?php echo _("Request Type"); ?>
+                  </th>
+                  <th>
+                    <?php echo _("Test Type"); ?>
+                  </th>
+                  <th>
+                    <?php echo _("Api URL"); ?>
+                  </th>
+                  <th>
+                    <?php echo _("Date Format"); ?>
+                  </th>
 
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+                  <td colspan="6" class="dataTables_empty">
+                    <?php echo _("Loading data from server"); ?>
+                  </td>
                 </tr>
               </tbody>
 
@@ -57,7 +78,7 @@ require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
 <script>
   var oTable = null;
 
-  $(document).ready(function() {
+  $(document).ready(function () {
     $.blockUI();
     oTable = $('#apiStatsDataTable').dataTable({
       "oLanguage": {
@@ -70,23 +91,23 @@ require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
 
       "bRetrieve": true,
       "aoColumns": [{
-          "sClass": "center"
-        },
-        {
-          "sClass": "center"
-        },
-        {
-          "sClass": "center"
-        },
-        {
-          "sClass": "center"
-        },
-        {
-          "sClass": "center"
-        },
-        {
-          "sClass": "center"
-        },
+        "sClass": "center"
+      },
+      {
+        "sClass": "center"
+      },
+      {
+        "sClass": "center"
+      },
+      {
+        "sClass": "center"
+      },
+      {
+        "sClass": "center"
+      },
+      {
+        "sClass": "center"
+      },
       ],
       "aaSorting": [
         [0, "desc"]
@@ -94,7 +115,7 @@ require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
       "bProcessing": true,
       "bServerSide": true,
       "sAjaxSource": "getApiStatsDetails.php",
-      "fnServerData": function(sSource, aoData, fnCallback) {
+      "fnServerData": function (sSource, aoData, fnCallback) {
         $.ajax({
           "dataType": 'json',
           "type": "POST",

@@ -356,21 +356,6 @@ $sFormat = '';
                                                                  <input type="text" class="form-control" style="width:100%;" name="currentArvProtocol" id="currentArvProtocol" placeholder="<?= _('Current ARV Protocol'); ?>" title="<?= _('Please enter current ARV protocol'); ?>">
                                                             </div>
                                                        </div>
-                                                       <!--  <div class="col-xs-3 col-md-3">
-                                                            <div class="form-group">
-                                                                 <label for="arvAdherence"><?= _('Reason of Request of the Viral Load'); ?></label>
-                                                                 <select name="reasonForVLTesting" id="reasonForVLTesting" class="form-control" title="<?= _('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
-                                                                    <option value=""> <?= _("<?= _('-- Select --'); ?>"); ?> </option>
-                                                                    <?php
-                                                                    foreach ($vlTestReasonResult as $tReason) {
-                                                                         ?>
-                                                                        <option value="<?php echo $tReason['test_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $tReason['test_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ($tReason['test_reason_name']); ?></option>
-                                                                    <?php } ?>
-                                                                    <option value="other">Other</option>
-                                                                </select>
-                                                                <input type="text" class="form-control" name="newreasonForVLTesting" id="newreasonForVLTesting" placeholder="<?= _('Enter new reason of testing'); ?>" title="<?= _('Enter new reason of testing'); ?>" style="width:100%; display:none;">
-                                                            </div>
-                                                       </div>-->
                                                   </div>
                                              </div>
                                              <div class="box box-primary">

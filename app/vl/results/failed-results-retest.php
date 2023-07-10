@@ -1,12 +1,9 @@
 <?php
 
-
-// echo "<pre>";print_r($_POST['bulkIds']);die;
-
+use App\Utilities\DateUtility;
+use App\Services\CommonService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Utilities\DateUtility;
 
 try {
     /** @var MysqliDb $db */
@@ -26,7 +23,13 @@ try {
     if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
         $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
     }
-    $query = "SELECT sample_code, remote_sample_code, facility_id, sample_batch_id, result, result_status, vl_sample_id FROM form_vl";
+    $query = "SELECT sample_code,
+                    remote_sample_code,
+                    facility_id,
+                    sample_batch_id,
+                    result,
+                    result_status,
+                    vl_sample_id FROM form_vl";
     if ($_POST['bulkIds'] && is_array($_POST['vlId'])) {
         $query .= " WHERE vl_sample_id IN (" . implode(",", $_POST['vlId']) . ")";
     } else {
@@ -41,7 +44,7 @@ try {
     }
     $id = $db->update(
         "form_vl",
-        array(
+        [
             "result_value_log" => null,
             "result_value_absolute" => null,
             "result_value_text" => null,
@@ -49,7 +52,7 @@ try {
             "result" => null,
             "sample_batch_id" => null,
             "result_status" => $status
-        )
+        ]
     );
 
     if ($id === true && !empty($response)) {
@@ -57,18 +60,18 @@ try {
             if (isset($result['vl_sample_id']) && $result['vl_sample_id'] != "") {
                 $db->insert(
                     'failed_result_retest_tracker',
-                    array(
-                        'test_type_pid' => (isset($result['vl_sample_id']) && $result['vl_sample_id'] != "") ? $result['vl_sample_id'] : null,
+                    [
+                        'test_type_pid' => $result['vl_sample_id'] ?? null,
                         'test_type' => 'vl',
-                        'sample_code' => (isset($result['sample_code']) && $result['sample_code'] != "") ? $result['sample_code'] : null,
-                        'remote_sample_code' => (isset($result['remote_sample_code']) && $result['remote_sample_code'] != "") ? $result['remote_sample_code'] : null,
-                        'batch_id' => (isset($result['sample_batch_id']) && $result['sample_batch_id'] != "") ? $result['sample_batch_id'] : null,
-                        'facility_id' => (isset($result['facility_id']) && $result['facility_id'] != "") ? $result['facility_id'] : null,
-                        'result' => (isset($result['result']) && $result['result'] != "") ? $result['result'] : null,
-                        'result_status' => (isset($result['result_status']) && $result['result_status'] != "") ? $result['result_status'] : null,
+                        'sample_code' => $result['sample_code'] ?? null,
+                        'remote_sample_code' => $result['remote_sample_code'] ?? null,
+                        'batch_id' => $result['sample_batch_id'] ?? null,
+                        'facility_id' => $result['facility_id'] ?? null,
+                        'result' => $result['result'] ?? null,
+                        'result_status' => $result['result_status'] ?? null,
                         'updated_datetime' => DateUtility::getCurrentDateTime(),
-                        'update_by' => $_SESSION['userId']
-                    )
+                        'updated_by' => $_SESSION['userId']
+                    ]
                 );
             }
         }

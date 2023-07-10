@@ -79,10 +79,18 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><em class="fa-solid fa-sync"></em> <?php echo _("Lab Sync Details for ") ?><span style="font-weight: 500;"><?php echo $labInfo['facility_name']; ?></span></h1>
+        <h1><em class="fa-solid fa-sync"></em>
+            <?php echo _("Lab Sync Details for ") ?><span style="font-weight: 500;">
+                <?php echo $labInfo['facility_name']; ?>
+            </span>
+        </h1>
         <ol class="breadcrumb">
-            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-            <li class="active"><?php echo _("Lab Sync Details"); ?></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em>
+                    <?php echo _("Home"); ?>
+                </a></li>
+            <li class="active">
+                <?php echo _("Lab Sync Details"); ?>
+            </li>
         </ol>
     </section>
 
@@ -91,55 +99,87 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
-                    <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+                    <table aria-describedby="table" class="table" aria-hidden="true"
+                        style="margin-left:1%;margin-top:20px;width:98%;">
                         <tr>
-                            <td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+                            <td><strong>
+                                    <?php echo _("Province/State"); ?>&nbsp;:
+                                </strong></td>
                             <td>
-                                <select name="province" id="province" onchange="getDistrictByProvince(this.value)" class="form-control" title="<?php echo _('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
+                                <select name="province" id="province" onchange="getDistrictByProvince(this.value)"
+                                    class="form-control" title="<?php echo _('Please choose Province/State/Region'); ?>"
+                                    onkeyup="searchVlRequestData()">
                                     <?= $general->generateSelectOptions($stateNameList, null, _("-- Select --")); ?>
                                 </select>
                             </td>
-                            <td><strong><?php echo _("District/County"); ?> :</strong></td>
+                            <td><strong>
+                                    <?php echo _("District/County"); ?> :
+                                </strong></td>
                             <td>
-                                <select class="form-control" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>">
+                                <select class="form-control" id="district" name="district"
+                                    title="<?php echo _('Please select Province/State'); ?>">
                                 </select>
                             </td>
                         </tr>
                         <tr>
-                            <td><strong><?php echo _("Facility Name"); ?>&nbsp;:</strong></td>
+                            <td><strong>
+                                    <?php echo _("Facility Name"); ?>&nbsp;:
+                                </strong></td>
                             <td>
-                                <select class="form-control select2" id="facilityName" name="facilityName" title="<?php echo _('Please select the Lab name'); ?>">
+                                <select class="form-control select2" id="facilityName" name="facilityName"
+                                    title="<?php echo _('Please select the Lab name'); ?>">
                                     <?php echo $general->generateSelectOptions($facilityNameList, null, '--Select--'); ?>
                                 </select>
                             </td>
                             <td>
-                                <strong><?php echo _("Test Type"); ?>&nbsp;:</strong>
+                                <strong>
+                                    <?php echo _("Test Type"); ?>&nbsp;:
+                                </strong>
                             </td>
                             <td>
-                                <select id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
+                                <select id="testType" name="testType" class="form-control"
+                                    placeholder="<?php echo _('Please select the Test types'); ?>">
                                     <?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
-                                        <option value="vl"><?php echo _("Viral Load"); ?></option>
+                                        <option value="vl">
+                                            <?php echo _("Viral Load"); ?>
+                                        </option>
                                     <?php }
                                     if (!empty($activeModules) && in_array('eid', $activeModules)) { ?>
-                                        <option value="eid"><?php echo _("Early Infant Diagnosis"); ?></option>
+                                        <option value="eid">
+                                            <?php echo _("Early Infant Diagnosis"); ?>
+                                        </option>
                                     <?php }
                                     if (!empty($activeModules) && in_array('covid19', $activeModules)) { ?>
-                                        <option value="covid19"><?php echo _("Covid-19"); ?></option>
+                                        <option value="covid19">
+                                            <?php echo _("Covid-19"); ?>
+                                        </option>
                                     <?php }
                                     if (!empty($activeModules) && in_array('hepatitis', $activeModules)) { ?>
-                                        <option value='hepatitis'><?php echo _("Hepatitis"); ?></option>
+                                        <option value='hepatitis'>
+                                            <?php echo _("Hepatitis"); ?>
+                                        </option>
                                     <?php }
                                     if (!empty($activeModules) && in_array('tb', $activeModules)) { ?>
-                                        <option value='tb'><?php echo _("TB"); ?></option>
+                                        <option value='tb'>
+                                            <?php echo _("TB"); ?>
+                                        </option>
                                     <?php } ?>
                                 </select>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="4">
-                                &nbsp;<a class="btn btn-success pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportSyncStatus();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp; <?php echo _("Export Excel"); ?></a>
-                                &nbsp;<button class="btn btn-danger pull-right" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
-                                <input type="button" onclick="loadData();" value="<?php echo _('Search'); ?>" class="btn btn-default pull-right">
+                                &nbsp;<a class="btn btn-success pull-right" style="margin-right:5px;"
+                                    href="javascript:void(0);" onclick="exportSyncStatus();"><em
+                                        class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
+                                    <?php echo _("Export Excel"); ?>
+                                </a>
+                                &nbsp;<button class="btn btn-danger pull-right"
+                                    onclick="document.location.href = document.location"><span>
+                                        <?= _('Reset'); ?>
+                                    </span></button>
+                                <input type="button" onclick="loadData();" value="<?= _('Search'); ?>"
+                                    class="btn btn-default pull-right">
                             </td>
                         </tr>
                     </table>
@@ -148,26 +188,45 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
                         <table aria-describedby="table" class="table table-bordered table-striped" style="width: 70%;">
                             <tr>
                                 <th scope="row">Last Request Sent from STS :</th>
-                                <td align="left"><?php echo $labInfo['request']; ?></td>
+                                <td align="left">
+                                    <?php echo $labInfo['request']; ?>
+                                </td>
                                 <th scope="row">Last Result Received from Lab</th>
-                                <td align="left"><?php echo $labInfo['results']; ?></td>
+                                <td align="left">
+                                    <?php echo $labInfo['results']; ?>
+                                </td>
                             </tr>
                         </table>
                         <hr>
-                        <table aria-describedby="table" id="syncStatusDataTable" class="table table-bordered table-striped table-hover" aria-hidden="true">
+                        <table aria-describedby="table" id="syncStatusDataTable"
+                            class="table table-bordered table-striped table-hover" aria-hidden="true">
                             <thead>
                                 <tr>
-                                    <th class="center" scope="col"><?php echo _("Facility Name"); ?></th>
-                                    <th class="center" scope="col"><?php echo _("Test Type"); ?></th>
-                                    <th class="center" scope="col"><?php echo _("Province"); ?></th>
-                                    <th class="center" scope="col"><?php echo _("District"); ?></th>
-                                    <th class="center" scope="col"><?php echo _("Last Request Sent from STS"); ?></th>
-                                    <th class="center" scope="col"><?php echo _("Last Result Received From Lab"); ?></th>
+                                    <th class="center" scope="col">
+                                        <?php echo _("Facility Name"); ?>
+                                    </th>
+                                    <th class="center" scope="col">
+                                        <?php echo _("Test Type"); ?>
+                                    </th>
+                                    <th class="center" scope="col">
+                                        <?php echo _("Province"); ?>
+                                    </th>
+                                    <th class="center" scope="col">
+                                        <?php echo _("District"); ?>
+                                    </th>
+                                    <th class="center" scope="col">
+                                        <?php echo _("Last Request Sent from STS"); ?>
+                                    </th>
+                                    <th class="center" scope="col">
+                                        <?php echo _("Last Result Received From Lab"); ?>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody id="syncStatusTable">
                                 <tr>
-                                    <td colspan="6" class="dataTables_empty"><?php echo _("No data available"); ?></td>
+                                    <td colspan="6" class="dataTables_empty">
+                                        <?php echo _("No data available"); ?>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -185,7 +244,7 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
     var oTable = 0;
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('#facilityName').select2({
             width: '100%',
             placeholder: "Select Facility Name"
@@ -201,7 +260,7 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
             placeholder: "Select District"
         });
         loadData();
-        $('#syncStatusDataTable tbody').on('click', 'tr', function() {
+        $('#syncStatusDataTable tbody').on('click', 'tr', function () {
             let url = $(this).attr('data-url');
             let facilityId = $(this).attr('data-facilityId');
             let labId = $(this).attr('data-labId');
@@ -213,13 +272,13 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
     function loadData() {
         $.blockUI();
         $.post("/admin/monitoring/get-sync-status-details.php", {
-                labId: '<?php echo $_GET['labId']; ?>',
-                testType: $('#testType').val(),
-                province: $('#province').val(),
-                district: $('#district').val(),
-                facilityName: $('#facilityName').val()
-            },
-            function(data) {
+            labId: '<?php echo $_GET['labId']; ?>',
+            testType: $('#testType').val(),
+            province: $('#province').val(),
+            district: $('#district').val(),
+            facilityName: $('#facilityName').val()
+        },
+            function (data) {
                 $("#syncStatusTable").html(data);
                 if (oTable == 0) {
                     $('#syncStatusDataTable').dataTable({
@@ -234,10 +293,10 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
     function getDistrictByProvince(provinceId) {
         $("#district").html('');
         $.post("/common/get-by-province-id.php", {
-                provinceId: provinceId,
-                districts: true,
-            },
-            function(data) {
+            provinceId: provinceId,
+            districts: true,
+        },
+            function (data) {
                 Obj = $.parseJSON(data);
                 $("#district").html(Obj['districts']);
             });
@@ -246,7 +305,7 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
     function exportSyncStatus() {
         // $.blockUI();
         $.post("generate-lab-sync-status-details-report.php", {},
-            function(data) {
+            function (data) {
                 $.unblockUI();
                 if (data === "" || data === null || data === undefined) {
                     alert("<?php echo _("Unable to generate the excel file"); ?>");

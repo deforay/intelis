@@ -70,7 +70,7 @@ try {
                         'result' => (isset($result['result']) && $result['result'] != "") ? $result['result'] : null,
                         'result_status' => (isset($result['result_status']) && $result['result_status'] != "") ? $result['result_status'] : null,
                         'updated_datetime' => DateUtility::getCurrentDateTime(),
-                        'update_by' => $_SESSION['userId']
+                        'updated_by' => $_SESSION['userId']
                     )
                 );
             }
