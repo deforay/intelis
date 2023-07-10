@@ -87,7 +87,7 @@ $state = $geolocationService->getProvinces("yes");
                                                             <option value=""> <?php echo _("-- Select --"); ?> </option>
                                                             <?php
                                                             foreach ($batResult as $code) {
-                                                            ?>
+                                                                ?>
                                                                 <option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
                                                             <?php
                                                             }
@@ -139,7 +139,7 @@ $state = $geolocationService->getProvinces("yes");
                                                 </tr>
                                                 <tr>
                                                     <td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
-                                                        &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
+                                                        &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _('Reset'); ?></span></button>
                                                         &nbsp;<button class="btn btn-default btn-sm" onclick="convertSearchResultToPdf('');"><span><?php echo _("Result PDF"); ?></span></button>
                                                         &nbsp;<button class="btn btn-primary btn-sm" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
                                                     </td>
@@ -201,7 +201,7 @@ $state = $geolocationService->getProvinces("yes");
                                                         <th><input type="checkbox" id="checkRowsData" onclick="toggleAllVisible()" /></th>
                                                         <th><?php echo _("Sample Code"); ?></th>
                                                         <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-                                                            <th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
+                                                            <th><?php echo _("Remote Sample Code"); ?></th>
                                                         <?php } ?>
                                                         <th><?php echo _("Patient ID"); ?></th>
                                                         <th><?php echo _("Patient Name"); ?></th>
@@ -238,7 +238,7 @@ $state = $geolocationService->getProvinces("yes");
                                                             <option value=""> <?php echo _("-- Select --"); ?> </option>
                                                             <?php
                                                             foreach ($batResult as $code) {
-                                                            ?>
+                                                                ?>
                                                                 <option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
                                                             <?php
                                                             }
@@ -291,7 +291,7 @@ $state = $geolocationService->getProvinces("yes");
                                                 </tr>
                                                 <tr>
                                                     <td colspan="6">&nbsp;<input type="button" onclick="searchPrintedVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
-                                                        &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
+                                                        &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _('Reset'); ?></span></button>
                                                         &nbsp;<button class="btn btn-default btn-sm" onclick="convertSearchResultToPdf('','printData');"><span><?php echo _("Result PDF"); ?></span></button>
                                                         &nbsp;<button class="btn btn-primary btn-sm" onclick="$('#printShowhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
                                                     </td>
@@ -352,7 +352,7 @@ $state = $geolocationService->getProvinces("yes");
                                                         <th><input type="checkbox" id="checkPrintedRowsData" onclick="toggleAllPrintedVisible()" /></th>
                                                         <th><?php echo _("Sample Code"); ?></th>
                                                         <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-                                                            <th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
+                                                            <th><?php echo _("Remote Sample Code"); ?></th>
                                                         <?php } ?>
                                                         <th><?php echo _("Patient ID"); ?></th>
                                                         <th><?php echo _("Patient Name"); ?></th>

@@ -143,7 +143,7 @@ foreach ($srcResults as $list) {
                                     <option value=""> <?php echo _("-- Select --"); ?> </option>
                                     <?php
                                     foreach ($batResult as $code) {
-                                    ?>
+                                        ?>
                                         <option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
                                     <?php
                                     }
@@ -156,7 +156,7 @@ foreach ($srcResults as $list) {
                                     <option value=""> <?php echo _("-- Select --"); ?> </option>
                                     <?php
                                     foreach ($fundingSourceList as $fundingSource) {
-                                    ?>
+                                        ?>
                                         <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
                                     <?php } ?>
                                 </select>
@@ -170,7 +170,7 @@ foreach ($srcResults as $list) {
                                     <option value=""> <?php echo _("-- Select --"); ?> </option>
                                     <?php
                                     foreach ($implementingPartnerList as $implementingPartner) {
-                                    ?>
+                                        ?>
                                         <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
                                     <?php } ?>
                                 </select>
@@ -273,7 +273,7 @@ foreach ($srcResults as $list) {
                         </tr>
                         <tr>
                             <td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-default btn-sm">
-                                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
+                                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _('Reset'); ?></span></button>
                                 &nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span><?php echo _("Hide Advanced Search Options"); ?></span></button>
                             </td>
                             <td colspan="4">
@@ -310,9 +310,9 @@ foreach ($srcResults as $list) {
                                     <!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
                                     <th><?php echo _("Sample Code"); ?></th>
                                     <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-                                        <th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
+                                        <th><?php echo _("Remote Sample Code"); ?></th>
                                     <?php } ?>
-                                    <th><?php echo _("Sample Collection"); ?><br /> <?php echo _("Date"); ?></th>
+                                    <th><?php echo _("Sample Collection Date"); ?></th>
                                     <th><?php echo _("Batch Code"); ?></th>
                                     <th scope="row"><?php echo _("Testing Lab"); ?></th>
                                     <th scope="row"><?php echo _("Facility Name"); ?></th>
@@ -340,24 +340,24 @@ foreach ($srcResults as $list) {
                         </table>
                         <?php
                         if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') {
-                        ?>
+                            ?>
 
-                            <div id="printer_data_loading" style="display:none"><span id="loading_message"><?php echo _("Loading Printer Details"); ?>...</span><br />
-                                <div class="progress" style="width:100%">
-                                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-                                    </div>
-                                </div>
-                            </div> <!-- /printer_data_loading -->
-                            <div id="printer_details" style="display:none">
-                                <span id="selected_printer"><?php echo _("No printer selected"); ?>!</span>
-                                <button type="button" class="btn btn-success" onclick="changePrinter()"><?php echo _("Change/Retry"); ?></button>
-                            </div><br /> <!-- /printer_details -->
-                            <div id="printer_select" style="display:none">
-                                <?php echo _("Zebra Printer Options"); ?><br />
-                                <?php echo _("Printer"); ?>: <select id="printers"></select>
-                            </div> <!-- /printer_select -->
+                                        <div id="printer_data_loading" style="display:none"><span id="loading_message"><?php echo _("Loading Printer Details"); ?>...</span><br />
+                                            <div class="progress" style="width:100%">
+                                                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                                                </div>
+                                            </div>
+                                        </div> <!-- /printer_data_loading -->
+                                        <div id="printer_details" style="display:none">
+                                            <span id="selected_printer"><?php echo _("No printer selected"); ?>!</span>
+                                            <button type="button" class="btn btn-success" onclick="changePrinter()"><?php echo _("Change/Retry"); ?></button>
+                                        </div><br /> <!-- /printer_details -->
+                                        <div id="printer_select" style="display:none">
+                                            <?php echo _("Zebra Printer Options"); ?><br />
+                                            <?php echo _("Printer"); ?>: <select id="printers"></select>
+                                        </div> <!-- /printer_select -->
 
-                        <?php
+                                    <?php
                         }
                         ?>
 
@@ -379,17 +379,17 @@ foreach ($srcResults as $list) {
 <?php
 if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
     if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
-?>
+        ?>
         <script src="/assets/js/DYMO.Label.Framework.js"></script>
         <script src="/uploads/barcode-formats/dymo-format.js"></script>
         <script src="/assets/js/dymo-print.js"></script>
     <?php
     } else if ($global['bar_code_printing'] == 'zebra-printer') {
-    ?>
-        <script src="/assets/js/zebra-browserprint.js.js"></script>
-        <script src="/uploads/barcode-formats/zebra-format.js"></script>
-        <script src="/assets/js/zebra-print.js"></script>
-<?php
+        ?>
+            <script src="/assets/js/zebra-browserprint.js.js"></script>
+            <script src="/uploads/barcode-formats/zebra-format.js"></script>
+            <script src="/assets/js/zebra-print.js"></script>
+    <?php
     }
 }
 ?>
