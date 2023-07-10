@@ -588,7 +588,23 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     provinceName = true;
     facilityName = true;
     machineName = true;
-
+    function checkPatientDetails(tableName, fieldName, obj, fnct) {
+        //if ($.trim(obj.value).length == 10) {
+        if ($.trim(obj.value) != '') {
+            $.post("/includes/checkDuplicate.php", {
+                tableName: tableName,
+                fieldName: fieldName,
+                value: obj.value,
+                fnct: fnct,
+                format: "html"
+            },
+                function (data) {
+                    if (data === '1') {
+                        showModal('patientModal.php?artNo=' + obj.value, 900, 520);
+                    }
+                });
+        }
+    }
     function getfacilityDetails(obj) {
 
         $.blockUI();

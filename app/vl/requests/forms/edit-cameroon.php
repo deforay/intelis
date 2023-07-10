@@ -330,7 +330,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                              <h3 class="box-title"><?= _('Sample Information'); ?></h3>
                                         </div>
                                         <div class="box-body">
-                                                <div class="row">
+                                                  <div class="row">
                                                     <div class="col-md-3">
                                                        <div class="form-group">
                                                             <label for=""><?= _('Date of Sample Collection'); ?> <span class="mandatory">*</span></label>
@@ -371,7 +371,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                 </div>
                                                             </div>
                                                        </div>
-                                        </div>
+                                             </div>
                                         <div class="box box-primary">
                                              <div class="box-header with-border">
                                                   <h3 class="box-title"><?= _('Treatment Information'); ?></h3>
@@ -888,7 +888,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                facilityName = true;
                $("#province").html("<?php echo $province; ?>");
                $("#district").html("<option value=''> <?= _('-- Select --'); ?> </option>");
-               $("#fName").html("<?php echo $facility; ?>");
+               $("#fName").html("<?php echo addslashes($facility); ?>");
                $("#fName").select2("val", "");
           }
           $.unblockUI();
@@ -944,7 +944,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                provinceName = true;
                facilityName = true;
                $("#province").html("<?php echo $province; ?>");
-               $("#facilityId").html("<?php echo $facility; ?>");
+               $("#facilityId").html("<?php echo addslashes($facility); ?>");
           }
           $.unblockUI();
      }
