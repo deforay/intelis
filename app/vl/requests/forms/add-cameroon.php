@@ -136,7 +136,7 @@ $sFormat = '';
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="">
                                                        <label for="province"><?= _('Province'); ?> <span class="mandatory">*</span></label>
-                                                       <select class="form-control isRequired" name="province" id="province" title="<?= _('Please choose a province'); ?>" style="width:100%;" onchange="getProvinceDistricts(this);">
+                                                       <select class="form-control isRequired" name="province" id="province" title="<?= _('Please choose a province'); ?>" style="width:100%;" onchange="getfacilityDetails(this);">
                                                             <?php echo $province; ?>
                                                        </select>
                                                   </div>
@@ -144,7 +144,7 @@ $sFormat = '';
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="">
                                                        <label for="district"><?= _('District'); ?> <span class="mandatory">*</span></label>
-                                                       <select class="form-control isRequired" name="district" id="district" title="<?= _('Please choose a district'); ?>" style="width:100%;" onchange="getFacilities(this);">
+                                                       <select class="form-control isRequired" name="district" id="district" title="<?= _('Please choose a district'); ?>" style="width:100%;" onchange="getfacilityDistrictwise(this);">
                                                             <option value=""> <?= _('-- Select --'); ?> </option>
                                                        </select>
                                                   </div>
@@ -152,7 +152,7 @@ $sFormat = '';
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="">
                                                        <label for="fName"><?= _('Clinic/Health Center'); ?> <span class="mandatory">*</span></label>
-                                                       <select class="form-control isRequired" id="fName" name="fName" title="<?= _('Please select a clinic/health center name'); ?>" style="width:100%;" onchange="fillFacilityDetails();">
+                                                       <select class="form-control isRequired" id="fName" name="fName" title="<?= _('Please select a clinic/health center name'); ?>" style="width:100%;" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
                                                             <?php echo $facility; ?>
                                                        </select>
                                                   </div>
@@ -639,7 +639,7 @@ $sFormat = '';
                                              <input type="hidden" name="vlSampleId" id="vlSampleId" value="" />
                                              <input type="hidden" name="provinceId" id="provinceId" />
                                              <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;"><?= _('Save and Next'); ?></a>
-                                             <a href="/vl/requests/vl-requests.php" class="btn btn-default"> <?= _('Cancel'); ?></a>
+                                             <a href="vlRequest.php" class="btn btn-default"> <?= _('Cancel'); ?></a>
                                         </div>
                                         <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
                                         <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
@@ -652,17 +652,17 @@ $sFormat = '';
 <?php
 if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
      if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
-          ?>
+?>
           <script src="/assets/js/DYMO.Label.Framework.js"></script>
           <script src="/uploads/barcode-formats/dymo-format.js"></script>
           <script src="/assets/js/dymo-print.js"></script>
      <?php
      } else if ($global['bar_code_printing'] == 'zebra-printer') {
-          ?>
-               <script src="/assets/js/zebra-browserprint.js.js"></script>
-               <script src="/uploads/barcode-formats/zebra-format.js"></script>
-               <script src="/assets/js/zebra-print.js"></script>
-     <?php
+     ?>
+          <script src="/assets/js/zebra-browserprint.js.js"></script>
+          <script src="/uploads/barcode-formats/zebra-format.js"></script>
+          <script src="/assets/js/zebra-print.js"></script>
+<?php
      }
 }
 ?>
@@ -795,42 +795,64 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      }
 
-     function getProvinceDistricts(obj) {
+     function getfacilityDetails(obj) {
+
           $.blockUI();
           var cName = $("#fName").val();
           var pName = $("#province").val();
           if (pName != '' && provinceName && facilityName) {
-               facilityName = false;
+          facilityName = false;
           }
-          if (pName != '') {
-               //if (provinceName) {
-               $.post("/includes/siteInformationDropdownOptions.php", {
-                         pName: pName,
-                         testType: 'vl'
-                    },
-                    function(data) {
-                         if (data != "") {
-                              details = data.split("###");
-                              $("#district").html(details[1]);
-                              $("#fName").html("<option data-code='' data-emails='' data-mobile-nos='' data-contact-person='' value=''> <?= _('-- Select --'); ?> </option>");
-                              $(".facilityDetails").hide();
-                              $(".facilityEmails").html('');
-                              $(".facilityMobileNumbers").html('');
-                              $(".facilityContactPerson").html('');
-                         }
-                    });
-               //}
-               generateSampleCode();
+          if ($.trim(pName) != '') {
+          //if (provinceName) {
+          $.post("/includes/siteInformationDropdownOptions.php", {
+                    pName: pName,
+                    testType: 'eid'
+               },
+               function(data) {
+                    if (data != "") {
+                         details = data.split("###");
+                         $("#fName").html(details[0]);
+                         $("#district").html(details[1]);
+                         //$("#clinicianName").val(details[2]);
+                    }
+               });
+          //}
+          generateSampleCode();
           } else if (pName == '') {
-               provinceName = true;
-               facilityName = true;
-               $("#province").html("<?php echo $province; ?>");
-               $("#district").html("<option value=''> <?= _('-- Select --'); ?> </option>");
-               $("#fName").html("<?php echo $facility; ?>");
-               $("#fName").select2("val", "");
+          provinceName = true;
+          facilityName = true;
+          $("#province").html("<?php echo $province; ?>");
+          $("#fName").html("<?php echo addslashes($facility); ?>");
+          $("#fName").select2("val", "");
+          $("#district").html("<option value=''> -- Select -- </option>");
           }
           $.unblockUI();
-     }
+          }
+
+
+     function getfacilityDistrictwise(obj) {
+        $.blockUI();
+        var dName = $("#district").val();
+        var cName = $("#fName").val();
+        if (dName != '') {
+            $.post("/includes/siteInformationDropdownOptions.php", {
+                    dName: dName,
+                    cliName: cName,
+                    testType: 'eid'
+                },
+                function(data) {
+                    if (data != "") {
+                        details = data.split("###");
+                        $("#fName").html(details[0]);
+                    }
+                });
+        } else {
+            $("#fName").html("<option value=''> -- Select -- </option>");
+        }
+        $.unblockUI();
+    }
+
 
      function generateSampleCode() {
           var pName = $("#province").val();
@@ -851,30 +873,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      }
 
-     function getFacilities(obj) {
-          $.blockUI();
-          var dName = $("#district").val();
-          var cName = $("#fName").val();
-          if (dName != '') {
-               $.post("/includes/siteInformationDropdownOptions.php", {
-                         dName: dName,
-                         cliName: cName,
-                         testType: 'vl'
-                    },
-                    function(data) {
-                         if (data != "") {
-                              details = data.split("###");
-                              $("#fName").html(details[0]);
-                              //$("#labId").html(details[1]);
-                              $(".facilityDetails").hide();
-                              $(".facilityEmails").html('');
-                              $(".facilityMobileNumbers").html('');
-                              $(".facilityContactPerson").html('');
-                         }
-                    });
-          }
-          $.unblockUI();
-     }
+   
 
      function fillFacilityDetails() {
           $.blockUI();
@@ -901,7 +900,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                provinceName = true;
                facilityName = true;
                $("#province").html("<?php echo $province; ?>");
-               $("#fName").html("<?php echo $facility; ?>");
+               $("#fName").html("<?php echo addslashes($facility); ?>");
           }
           $.unblockUI();
           $("#fCode").val($('#fName').find(':selected').data('code'));

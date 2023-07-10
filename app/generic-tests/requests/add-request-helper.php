@@ -301,7 +301,7 @@ try {
     }
 
 
-    $vldata['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vldata['patient_art_no']);
+    $vldata['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vldata['patient_id']);
     $id = 0;
 
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['noResult'] == 'no' || $_POST['noResult'] == '')) {

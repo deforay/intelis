@@ -196,7 +196,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 								<div class="col-md-3">
 									<input type="checkbox" onclick="fnShowHide(this.value);"
 										value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>"
-										data-showhide="patient_art_no" class="showhideCheckBox" /> <label
+										data-showhide="patient_id" class="showhideCheckBox" /> <label
 										for="iCol<?php echo $i; ?>"><?php echo _("Patient ID"); ?></label>
 								</div>
 								<div class="col-md-3">
