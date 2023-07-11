@@ -22,8 +22,8 @@ $_POST = $request->getParsedBody();
 $facilityInfo = $facilitiesService->getAllFacilities();
 
 $cDate = date('Y-m-d');
-$end_date = date('Y-m-d');
-$start_date = date('Y-m-d', strtotime('-7 days'));
+$endDate = date('Y-m-d');
+$startDate = date('Y-m-d', strtotime('-7 days'));
 
 $systemType = $general->getSystemConfig('sc_user_type');
 if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
@@ -92,16 +92,12 @@ if ($systemType != 'remoteuser') {
     }
 }
 
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-    $s_c_date = explode("to", $_POST['sampleCollectionDate']);
-    //print_r($s_c_date);die;
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-    }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-    }
-}
+$sampleCollectionDate = explode("to", $_POST['sampleCollectionDate'] ?? '');
+$sampleCollectionDate = array_map('trim', $sampleCollectionDate);
+
+$startDate = !empty($sampleCollectionDate[0]) ? DateUtility::isoDateFormat($sampleCollectionDate[0]) : null;
+$endDate = !empty($sampleCollectionDate[1]) ? DateUtility::isoDateFormat($sampleCollectionDate[1]) : null;
+
 if ($table == "form_eid") {
     $sQuery = "SELECT
 		eid.facility_id,f.facility_code,f.facility_state,f.facility_district,f.facility_name,
@@ -135,8 +131,8 @@ if ($table == "form_eid") {
 			WHEN (result_printed_datetime not like '' AND result_printed_datetime is not NULL AND DATE(result_printed_datetime) NOT LIKE '0000-00-00 00:00:00') THEN 1
 				ELSE 0
 			END) AS printCount
-		FROM " . $table . " as eid JOIN facility_details as f ON f.facility_id=eid.facility_id";
-    $sQuery = $sQuery . ' WHERE DATE(eid.sample_collection_date) >= "' . $start_date . '" AND DATE(eid.sample_collection_date) <= "' . $end_date . '"';
+		FROM $table as eid JOIN facility_details as f ON f.facility_id=eid.facility_id";
+    $sQuery = $sQuery . ' WHERE DATE(eid.sample_collection_date) >= "' . $startDate . '" AND DATE(eid.sample_collection_date) <= "' . $endDate . '"';
     $sQuery = $sQuery . $whereCondition;
     $sQuery = $sQuery . ' GROUP BY eid.facility_id';
 } else {
@@ -176,20 +172,15 @@ if ($table == "form_eid") {
                     WHEN (result_printed_datetime not like '' AND result_printed_datetime is not NULL AND DATE(result_printed_datetime) NOT LIKE '0000-00-00 00:00:00') THEN 1
                         ELSE 0
                     END) AS printCount
-                FROM " . $table . " as vl JOIN facility_details as f ON f.facility_id=vl.facility_id";
-    $sQuery = $sQuery . ' where DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+                FROM $table as vl JOIN facility_details as f ON f.facility_id=vl.facility_id";
+    $sQuery = $sQuery . ' where DATE(vl.sample_collection_date) >= "' . $startDate . '" AND DATE(vl.sample_collection_date) <= "' . $endDate . '"';
     $sQuery = $sQuery . $whereCondition . $recencyWhere;
     $sQuery = $sQuery . ' GROUP BY vl.facility_id';
 }
-//echo $sQuery; die;
+
 $tableResult = $db->rawQuery($sQuery);
 ?>
 
-<style>
-    # <?php echo $requestCountDataTable; ?>thead th {
-        vertical-align: middle;
-    }
-</style>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
     <table aria-describedby="table" class="table collectionTable" cellpadding="1" cellspacing="3" style="margin-top:0px;width: 98%;margin-bottom: 0px;">
         <tr>
@@ -214,7 +205,6 @@ $tableResult = $db->rawQuery($sQuery);
                 <small class="font-purple-soft">
                     <?php echo _("SAMPLES REGISTERED BY COLLECTION POINT"); ?>
                 </small><br>
-                <!-- <small class="font-purple-soft" style="font-size:0.75em;">(LAST 6 MONTHS)</small> -->
             </div>
             <div class="icon">
                 <em class="fa-solid fa-chart-pie"></em>
@@ -228,7 +218,7 @@ $tableResult = $db->rawQuery($sQuery);
 <div class="col-xs-12">
     <div class="box">
         <div class="box-body">
-            <table aria-describedby="table" id="<?php echo $requestCountDataTable; ?>" class="table table-bordered table-striped table-hover">
+            <table aria-describedby="table" id="<?php echo $requestCountDataTable; ?>" class="table table-bordered table-striped table-hover requestCountDataTable">
                 <thead>
                     <tr>
                         <th scope="row">
@@ -268,31 +258,31 @@ $tableResult = $db->rawQuery($sQuery);
                         foreach ($tableResult as $tableRow) { ?>
                             <tr>
                                 <td>
-                                    <?= ($tableRow['facility_name']); ?>
+                                    <?= $tableRow['facility_name'] ?? 0; ?>
                                 </td>
                                 <td>
-                                    <?= $tableRow['totalCount']; ?>
+                                    <?= $tableRow['totalCount'] ?? 0; ?>
                                 </td>
                                 <td>
-                                    <?= $tableRow['registerCount']; ?>
+                                    <?= $tableRow['registerCount'] ?? 0; ?>
                                 </td>
                                 <td>
-                                    <?= $tableRow['pendingCount']; ?>
+                                    <?= $tableRow['pendingCount'] ?? 0; ?>
                                 </td>
                                 <td>
-                                    <?= $tableRow['acceptCount']; ?>
+                                    <?= $tableRow['acceptCount'] ?? 0; ?>
                                 </td>
                                 <td>
-                                    <?= $tableRow['rejectCount']; ?>
+                                    <?= $tableRow['rejectCount'] ?? 0; ?>
                                 </td>
                                 <td>
-                                    <?= $tableRow['invalidCount']; ?>
+                                    <?= $tableRow['invalidCount'] ?? 0; ?>
                                 </td>
                                 <td>
-                                    <?= $tableRow['reorderCount']; ?>
+                                    <?= $tableRow['reorderCount'] ?? 0; ?>
                                 </td>
                                 <td>
-                                    <?= $tableRow['printCount']; ?>
+                                    <?= $tableRow['printCount'] ?? 0; ?>
                                 </td>
                             </tr>
                     <?php
@@ -379,22 +369,11 @@ $tableResult = $db->rawQuery($sQuery);
                 var sum = column
                     .data()
                     .reduce(function(a, b) {
-                        //return parseInt(a, 10) + parseInt(b, 10);
                         return intVal(a) + intVal(b);
                     }, 0);
 
 
-                //console.log(sum);
-
                 $(api.column(index).footer()).html(sum);
-                // $( api.column( 1 ).footer() ).html(registerCount);
-                // $( api.column( 2 ).footer() ).html(reorderCount);
-                // $( api.column( 3 ).footer() ).html(sentToLabCount);
-                // $( api.column( 4 ).footer() ).html(rejectCount);
-                // $( api.column( 5 ).footer() ).html(pendingCount);
-                // $( api.column( 6 ).footer() ).html(invalidCount);
-                // $( api.column( 7 ).footer() ).html(acceptCount);
-                // $( api.column( 8 ).footer() ).html(printCount);
 
             });
         } catch (e) {
