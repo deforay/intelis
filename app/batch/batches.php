@@ -120,6 +120,9 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 							<thead>
 								<tr>
 									<th scope="col"><?php echo _("Batch Code"); ?></th>
+									<?php if (!empty($_GET['type']) && $_GET['type'] == 'generic-tests') { ?>
+										<th scope="col"><?php echo _("Test Type"); ?></th>
+									<?php }?>
 									<th scope="col"><?php echo _("No. of Samples"); ?></th>
 									<th scope="col"><?php echo _("No. of Samples Tested"); ?></th>
 									<th scope="col"><?php echo _("Last Tested Date"); ?></th>
@@ -167,6 +170,12 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 			"aoColumns": [{
 					"sClass": "center"
 				},
+				<?php if (!empty($_GET['type']) && $_GET['type'] == 'generic-tests') { ?>
+					{
+					"sClass": "center",
+					"bSortable": false
+				},
+				<?php } ?>
 				{
 					"sClass": "center",
 					"bSortable": false

@@ -66,7 +66,7 @@ $batchQuery = "SELECT * from batch_details as b_d
                     LEFT JOIN instruments as i_c ON i_c.config_id=b_d.machine
                     WHERE batch_id=?";
 $batchInfo = $db->rawQuery($batchQuery, [$id]);
-$bQuery = "SELECT vl.sample_code,vl.sample_batch_id,
+$bQuery = "(SELECT vl.sample_code,vl.sample_batch_id,
                     vl.$refPrimaryColumn,vl.facility_id,
                     vl.result,vl.result_status,
                     f.facility_name,f.facility_code
@@ -85,7 +85,7 @@ $bQuery = "SELECT vl.sample_code,vl.sample_batch_id,
 						$bQuery .= " AND vl.test_type = ?";
 					}
 
-                    $bQuery .= " UNION
+                    $bQuery .= ") UNION
 
                     (SELECT vl.sample_code,vl.sample_batch_id,
                         vl.$refPrimaryColumn,vl.facility_id,
