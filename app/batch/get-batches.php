@@ -123,8 +123,11 @@ if (isset($_POST['testType']) && ($_POST['testType'] != "")) {
  * Get data to display
  */
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS  SUM(CASE WHEN vl.sample_tested_datetime is not null THEN 1 ELSE 0 END) as `testcount`,
-                MAX(vl.sample_tested_datetime) as last_tested_date,
-                b.request_created_datetime,
+                MAX(vl.sample_tested_datetime) as last_tested_date,";
+                if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
+                    $sQuery .= " vl.test_type, ";
+                }
+                $sQuery .= " b.request_created_datetime,
                 b.batch_code,
                 b.batch_id,
                 COUNT(vl.sample_code) AS total_samples
@@ -166,20 +169,30 @@ if (isset($_SESSION['privileges']) && (in_array('/batch/edit-batch.php?type=' . 
     $pdf = true;
     $editPosition = true;
 }
-
+if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
+    $testTypeInfo = $general->getDataByTableAndFields("r_test_types", array("test_type_id", "test_standard_name", "test_loinc_code"), false, "test_status='active'");
+    $testTypes = [];
+    foreach($testTypeInfo as $tests){
+        $testTypes[$tests['test_type_id']] = $tests['test_standard_name'];
+    }
+}
 foreach ($rResult as $aRow) {
     $createdDate = "";
     $deleteBatch = '';
     $edit = '';
     if ($editBatch) {
         if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
-            $edit = '<a href="edit-batch.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '&testType=' . base64_encode($_POST['testType']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>&nbsp;';
+            $edit = '<a href="edit-batch.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '&testType=' . base64_encode($aRow['test_type']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>&nbsp;';
         } else {
             $edit = '<a href="edit-batch.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>&nbsp;';
         }
     }
     if ($editPosition) {
-        $editPosition = '<a href="edit-batch-position.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _("Edit Position") . '"><em class="fa-solid fa-arrow-down-1-9"></em> ' . _("Edit Position") . '</a>';
+        if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
+            $editPosition = '<a href="edit-batch-position.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '&testType=' . base64_encode($aRow['test_type']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _("Edit Position") . '"><em class="fa-solid fa-arrow-down-1-9"></em> ' . _("Edit Position") . '</a>';
+        } else {
+            $editPosition = '<a href="edit-batch-position.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _("Edit Position") . '"><em class="fa-solid fa-arrow-down-1-9"></em> ' . _("Edit Position") . '</a>';
+        }
     }
     if ($pdf) {
         $printBarcode = '<a href="generate-batch-pdf.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" target="_blank"  rel="noopener" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _("Print Batch PDF") . '"><em class="fa-solid fa-barcode"></em> ' . _("Print Batch PDF") . '</a>';
@@ -201,6 +214,9 @@ foreach ($rResult as $aRow) {
 
     $row = [];
     $row[] = ($aRow['batch_code']);
+    if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
+        $row[] = $testTypes[$aRow['test_type']];
+    }
     $row[] = $aRow['total_samples'];
     $row[] = $aRow['testcount'];
     $row[] = $lastDate;

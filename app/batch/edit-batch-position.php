@@ -54,7 +54,7 @@ if (isset($_GET['type'])) {
 }
 $_GET['type'] = ($_GET['type'] == 'covid19') ? 'covid-19' : $_GET['type'];
 $title = _($title . " | Edit Batch Position");
-
+$testType = (isset($_GET['testType'])) ? base64_decode($_GET['testType']) : null;
 
 
 
@@ -101,7 +101,10 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 		$displayOrder[] = $jsonToArray[$index];
 		$xplodJsonToArray = explode("_", $jsonToArray[$index]);
 		if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
-			$sampleQuery = "SELECT sample_code from " . $refTable . " where " . $refPrimaryColumn . "=$xplodJsonToArray[1]";
+			$sampleQuery = "SELECT sample_code from " . $refTable . " where " . $refPrimaryColumn . "= $xplodJsonToArray[1]";
+			if (isset($_GET['type']) && $_GET['type'] == 'generic-tests'){
+				$sampleQuery .= " AND test_type = $testType";
+			}
 			$sampleResult = $db->query($sampleQuery);
 			$label = $sampleResult[0]['sample_code'];
 		} else {
