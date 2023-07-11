@@ -71,7 +71,7 @@ $state = $geolocationService->getProvinces("yes");
                                                             <option value=""> <?php echo _("-- Select --"); ?> </option>
                                                             <?php
                                                             foreach ($batResult as $code) {
-                                                                ?>
+                                                            ?>
                                                                 <option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
                                                             <?php
                                                             }
@@ -220,7 +220,7 @@ $state = $geolocationService->getProvinces("yes");
                                                             <option value=""> <?php echo _("-- Select --"); ?> </option>
                                                             <?php
                                                             foreach ($batResult as $code) {
-                                                                ?>
+                                                            ?>
                                                                 <option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
                                                             <?php
                                                             }
@@ -253,7 +253,7 @@ $state = $geolocationService->getProvinces("yes");
                                                             <?= $facilitiesDropdown; ?>
                                                         </select>
                                                     </td>
-                                                    <td><strong><?php echo _("Testing Las"); ?> :</strong></td>
+                                                    <td><strong><?php echo _("Testing Labs"); ?> :</strong></td>
                                                     <td>
                                                         <select class="form-control" id="printLabId" name="labId" title="<?php echo _('Please select testing labs'); ?>" multiple="multiple" style="width:220px;">
                                                             <?= $labsDropdown; ?>

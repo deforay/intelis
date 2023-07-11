@@ -487,14 +487,14 @@ if ($table == "form_covid19") {
                 showInLegend: false,
                 name: 'Samples',
                 data: [<?php
-                foreach ($tResult as $tRow) {
-                    echo ($tRow['total']) . ",";
-                }
-                ?>]
+                        foreach ($tResult as $tRow) {
+                            echo ($tRow['total']) . ",";
+                        }
+                        ?>]
 
-                                                                                                                                                                                                                                                                        }],
-        colors: ['#2ab4c0'],
-                                                                                                                                                                                                                                                                    });
+            }],
+            colors: ['#2ab4c0'],
+        });
     <?php }
     //waiting result
     if ($waitingTotal > 0) { ?>
@@ -514,110 +514,110 @@ if ($table == "form_covid19") {
             },
             xAxis: {
                 categories: [<?php
-                foreach ($waitingResult as $total) {
-                    echo "'" . ($total['date']) . "',";
-                }
-                ?>],
-            crosshair: true,
-            scrollbar: {
-                enabled: true
+                                foreach ($waitingResult as $total) {
+                                    echo "'" . ($total['date']) . "',";
+                                }
+                                ?>],
+                crosshair: true,
+                scrollbar: {
+                    enabled: true
+                },
             },
-        },
             yAxis: {
-            min: 0,
-            title: {
-                text: null
-            }
-        },
+                min: 0,
+                title: {
+                    text: null
+                }
+            },
             tooltip: {
-            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
-            footerFormat: '</table>',
-            shared: true,
-            useHTML: true
-        },
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
             plotOptions: {
-            column: {
-                pointPadding: 0.2,
-                borderWidth: 0,
-                cursor: 'pointer',
-            }
-        },
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0,
+                    cursor: 'pointer',
+                }
+            },
             series: [{
                 showInLegend: false,
                 name: 'Samples',
                 data: [<?php
-                foreach ($waitingResult as $total) {
-                    echo ($total[0]['total']) . ",";
-                }
-                ?>]
+                        foreach ($waitingResult as $total) {
+                            echo ($total[0]['total']) . ",";
+                        }
+                        ?>]
 
             }],
-    colors: ['#8877a9']
+            colors: ['#8877a9']
         });
     <?php }
     if ($acceptedTotal > 0) {
-        ?>
+    ?>
 
-                $('#<?php echo $samplesTestedChart; ?>').highcharts({
-                    chart: {
-                        type: 'column',
-                        height: 150
-                    },
-                    title: {
-                        text: ''
-                    },
-                    subtitle: {
-                        text: ''
-                    },
-                    credits: {
-                        enabled: false
-                    },
-                    xAxis: {
-                        categories: [<?php
-                        foreach ($acceptedResult as $tRow) {
-                            echo "'" . ($tRow['date']) . "',";
-                        }
-                        ?>],
-                    crosshair: true,
-                    scrollbar: {
-                        enabled: true
-                    },
+        $('#<?php echo $samplesTestedChart; ?>').highcharts({
+            chart: {
+                type: 'column',
+                height: 150
+            },
+            title: {
+                text: ''
+            },
+            subtitle: {
+                text: ''
+            },
+            credits: {
+                enabled: false
+            },
+            xAxis: {
+                categories: [<?php
+                                foreach ($acceptedResult as $tRow) {
+                                    echo "'" . ($tRow['date']) . "',";
+                                }
+                                ?>],
+                crosshair: true,
+                scrollbar: {
+                    enabled: true
                 },
-                    yAxis: {
-                    min: 0,
-                    title: {
-                        text: null
-                    }
-                },
-                    tooltip: {
-                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                        '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
-                    footerFormat: '</table>',
-                    shared: true,
-                    useHTML: true
-                },
-                    plotOptions: {
-                    column: {
-                        pointPadding: 0.2,
-                        borderWidth: 0,
-                        cursor: 'pointer',
-                    }
-                },
-                    series: [{
-                        showInLegend: false,
-                        name: 'Samples',
-                        data: [<?php
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: null
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0,
+                    cursor: 'pointer',
+                }
+            },
+            series: [{
+                showInLegend: false,
+                name: 'Samples',
+                data: [<?php
                         foreach ($acceptedResult as $tRow) {
                             echo ($tRow['total']) . ",";
                         }
                         ?>]
 
-                                                                                                                                                                                                                                                                        }],
-        colors: ['#7cb72a']
-                                                                                                                                                                                                                                                                    });
+            }],
+            colors: ['#7cb72a']
+        });
     <?php }
 
     if ($rejectedTotal > 0) { ?>
@@ -637,47 +637,47 @@ if ($table == "form_covid19") {
             },
             xAxis: {
                 categories: [<?php
-                foreach ($rejectedResult as $tRow) {
-                    echo "'" . ($tRow['date']) . "',";
-                }
-                ?>],
-            crosshair: true,
-            scrollbar: {
-                enabled: true
+                                foreach ($rejectedResult as $tRow) {
+                                    echo "'" . ($tRow['date']) . "',";
+                                }
+                                ?>],
+                crosshair: true,
+                scrollbar: {
+                    enabled: true
+                },
             },
-        },
             yAxis: {
-            min: 0,
-            title: {
-                text: null
-            }
-        },
+                min: 0,
+                title: {
+                    text: null
+                }
+            },
             tooltip: {
-            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
-            footerFormat: '</table>',
-            shared: true,
-            useHTML: true
-        },
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
             plotOptions: {
-            column: {
-                pointPadding: 0.2,
-                borderWidth: 0,
-                cursor: 'pointer',
-            }
-        },
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0,
+                    cursor: 'pointer',
+                }
+            },
             series: [{
                 showInLegend: false,
                 name: "<?php echo _("Samples"); ?>",
                 data: [<?php
-                foreach ($rejectedResult as $tRow) {
-                    echo ($tRow['total']) . ",";
-                }
-                ?>]
+                        foreach ($rejectedResult as $tRow) {
+                            echo ($tRow['total']) . ",";
+                        }
+                        ?>]
 
             }],
-    colors: ['#5C9BD1']
+            colors: ['#5C9BD1']
         });
     <?php }
     //}
@@ -722,7 +722,7 @@ if ($table == "form_covid19") {
             },
 
             tooltip: {
-                formatter: function () {
+                formatter: function() {
                     return '<strong>' + this.x + '</strong><br/>' +
                         this.series.name + ': ' + this.y + '<br/>' +
                         'Total: ' + this.point.stackTotal;
@@ -743,32 +743,32 @@ if ($table == "form_covid19") {
                 name: 'Sample',
                 showInLegend: false,
                 data: [{
-                    y: <?php echo (isset($aggregateResult['tested'])) ? $aggregateResult['tested'] : 0; ?>,
+                        y: <?php echo (isset($aggregateResult['tested'])) ? $aggregateResult['tested'] : 0; ?>,
                         color: '#039BE6'
-    },
-    {
-        y: <?php echo (isset($aggregateResult['rejected'])) ? $aggregateResult['rejected'] : 0; ?>,
-            color: '#492828'
-    },
-    {
-        y: <?php echo (isset($aggregateResult['hold'])) ? $aggregateResult['hold'] : 0; ?>,
-            color: '#60d18f'
-    },
-    {
-        y: <?php echo (isset($aggregateResult['registeredAtTestingLab'])) ? $aggregateResult['registeredAtTestingLab'] : 0; ?>,
-            color: '#ff1900'
-    },
-    {
-        y: <?php echo (isset($aggregateResult['awaitingApproval'])) ? $aggregateResult['awaitingApproval'] : 0; ?>,
-            color: '#395B64'
-    },
-    {
-        y: <?php echo (isset($aggregateResult['registeredAtCollectionPoint'])) ? $aggregateResult['registeredAtCollectionPoint'] : 0; ?>,
-            color: '#2C3333'
-    }
+                    },
+                    {
+                        y: <?php echo (isset($aggregateResult['rejected'])) ? $aggregateResult['rejected'] : 0; ?>,
+                        color: '#492828'
+                    },
+                    {
+                        y: <?php echo (isset($aggregateResult['hold'])) ? $aggregateResult['hold'] : 0; ?>,
+                        color: '#60d18f'
+                    },
+                    {
+                        y: <?php echo (isset($aggregateResult['registeredAtTestingLab'])) ? $aggregateResult['registeredAtTestingLab'] : 0; ?>,
+                        color: '#ff1900'
+                    },
+                    {
+                        y: <?php echo (isset($aggregateResult['awaitingApproval'])) ? $aggregateResult['awaitingApproval'] : 0; ?>,
+                        color: '#395B64'
+                    },
+                    {
+                        y: <?php echo (isset($aggregateResult['registeredAtCollectionPoint'])) ? $aggregateResult['registeredAtCollectionPoint'] : 0; ?>,
+                        color: '#2C3333'
+                    }
                 ],
-    stack: 'total',
-        color: 'red',
+                stack: 'total',
+                color: 'red',
             }]
         });
     <?php } ?>
