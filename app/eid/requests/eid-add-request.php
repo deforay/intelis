@@ -94,6 +94,7 @@ require($fileArray[$arr['vl_form']]);
         if ($('#isSampleRejected').val() == "yes") {
             $('.rejected').show();
             $('#sampleRejectionReason').addClass('isRequired');
+            $('#rejectionDate').addClass('isRequired');
             $('#sampleTestedDateTime,#result').val('');
             $('#sampleTestedDateTime,#result').removeClass('isRequired');
             $(".result-optional").removeClass("isRequired");
@@ -102,6 +103,7 @@ require($fileArray[$arr['vl_form']]);
             $('.rejected').hide();
             $('#sampleRejectionReason').val('');
             $('#sampleRejectionReason').removeClass('isRequired');
+            $('#rejectionDate').removeClass('isRequired');
             $('#sampleTestedDateTime').addClass('isRequired');
             $('#result').addClass('isRequired');
         } else {
