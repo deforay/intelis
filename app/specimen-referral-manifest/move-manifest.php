@@ -157,9 +157,9 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                     title="Please choose test type" style="width:100%;"
                                     onchange="getManifestCodeForm(this.value)">
                                     <option value=""> -- Select -- </option>
-                                    <?php foreach ($testTypeResult as $testType) { ?>
-                                        <option value="<?php echo $testType['test_type_id']; ?>"><?php echo $testType['test_standard_name'] ?></option>
-                                    <?php } ?>
+									<?php foreach ($testTypeResult as $testType) { ?>
+										<option value="<?php echo $testType['test_type_id'] ?>"><?php echo $testType['test_standard_name'] ?></option>
+									<?php } ?>
                                 </select>
                             </div>
                         </div>
@@ -319,7 +319,10 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
     }
 
     $(document).ready(function () {
-
+        $("#testType").select2({
+			width: '100%',
+			placeholder: "<?php echo _("Select Test Type"); ?>"
+		});
         $('#daterange').daterangepicker({
             locale: {
                 cancelLabel: "<?= _("Clear"); ?>",

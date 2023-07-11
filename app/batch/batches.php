@@ -99,7 +99,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 									</div>
 								</div>
 								<div class="col-xs-6 col-md-6">
-									<div class="box-header with-border batchDiv" <?php echo $genericHide; ?>>
+									<div class="box-header with-border">
 										<?php if (isset($_SESSION['privileges']) && in_array("/batch/add-batch.php?type=" . $_GET['type'], $_SESSION['privileges'])) { ?>
 											<a href="add-batch.php?type=<?php echo $_GET['type']; ?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Create New Batch"); ?></a>
 										<?php } ?>
@@ -108,14 +108,14 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 							</div>
 						</div>
 					<?php } else { ?>
-						<div class="box-header with-border batchDiv" <?php echo $genericHide; ?>>
+						<div class="box-header with-border">
 							<?php if (isset($_SESSION['privileges']) && in_array("/batch/add-batch.php?type=" . $_GET['type'], $_SESSION['privileges'])) { ?>
 								<a href="add-batch.php?type=<?php echo $_GET['type']; ?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Create New Batch"); ?></a>
 							<?php } ?>
 						</div>
 					<?php } ?>
 					<!-- /.box-header -->
-					<div class="box-body batchDiv" <?php echo $genericHide; ?>>
+					<div class="box-body">
 						<table aria-describedby="table" id="batchCodeDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
@@ -149,6 +149,10 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 <script>
 	var oTable = null;
 	$(document).ready(function() {
+		$("#testType").select2({
+			width: '100%',
+			placeholder: "<?php echo _("Select Test Type"); ?>"
+		});
 		$.blockUI();
 		oTable = $('#batchCodeDataTable').dataTable({
 			"oLanguage": {
@@ -234,12 +238,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 
 	function getBatchForm(obj) {
 		if (obj.value != "") {
-			$(".batchDiv").show();
 			oTable.fnDraw();
-			$('.batchAlert').hide();
-		} else {
-			$(".batchDiv").hide();
-			$('.batchAlert').show();
 		}
 	}
 </script>

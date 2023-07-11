@@ -127,8 +127,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                     style="width:100%;" onchange="getBatchForm(this)">
                                     <option value=""> -- Select -- </option>
                                     <?php foreach ($testTypeResult as $testType) { ?>
-                                        <option value="<?php echo $testType['test_type_id']; ?>"><?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?>
-                                        </option>
+                                        <option value="<?php echo $testType['test_type_id']; ?>"><?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?></option>
                                     <?php } ?>
                                 </select>
                                 <span class="batchAlert" style="font-size:1.1em;color: red;">Choose test type to add
@@ -309,6 +308,10 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
     noOfSamples = 0;
     sortedTitle = [];
     $(document).ready(function () {
+        $("#testType").select2({
+			width: '100%',
+			placeholder: "<?php echo _("Select Test Type"); ?>"
+		});
         $('#search').multiselect({
             search: {
                 left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
