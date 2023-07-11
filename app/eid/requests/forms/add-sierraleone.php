@@ -659,7 +659,7 @@ $aResult = $db->query($aQuery);
                                             <td style="width:25%;">
                                                 <input type="text"
                                                     value="<?php DateUtility::humanReadableDateFormat(DateUtility::getCurrentDateTime()); ?>"
-                                                    class="form-control dateTime" id="approvedOn" name="approvedOn"
+                                                    class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime"
                                                     placeholder="<?= _("Please enter date"); ?>" <?php echo $labFieldDisabled; ?>style="width:100%;"
                                                     title="Please select approved on" />
                                             </td>

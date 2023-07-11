@@ -209,7 +209,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                                     </tr>
                                     <tr>
-                                        <th scope="row"><?= _('Prophylactic ARV given to child'); ?></th>
+                                        <th scope="row"><?= _('Prophylactic ARV given to child'); ?><span class="mandatory">*</span></th>
                                         <td>
                                             <select class="form-control isRequired" name="childProphylacticArv" id="childProphylacticArv" title="<?= _('Prophylactic ARV given to child'); ?>" onchange="showOtherARV();">
                                                 <option value=''> <?= _('-- Select --'); ?> </option>
