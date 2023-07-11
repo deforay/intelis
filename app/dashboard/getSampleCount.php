@@ -63,6 +63,11 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $primaryKey = "tb_id";
     $unique = "Test6";
     $samplesCollectionChart = "tbSamplesCollectionChart";
+} elseif (isset($_POST['type']) && trim($_POST['type']) == 'generic-tests') {
+    $table = "form_generic";
+    $primaryKey = "sample_id";
+    $unique = "Test7";
+    $samplesCollectionChart = "genericSamplesCollectionChart";
 }
 
 

@@ -25,17 +25,10 @@ if (!empty($_SESSION['facilityMap'])) {
     $whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 }
 
-if (isset($_POST['type']) && trim($_POST['type']) == 'generic') {
-    $genericWhere = " reason_for_testing = 9999 ";
-    $sampleStatusOverviewContainer = "genericSampleStatusOverviewContainer";
-    $samplesVlOverview = "genericSmplesVlOverview";
-    $labAverageTat = "genericLabAverageTat";
-} else {
-    $genericWhere = " reason_for_testing != 9999 ";
-    $sampleStatusOverviewContainer = "genericSampleStatusOverviewContainer";
-    $samplesVlOverview = "genericSmplesVlOverview";
-    $labAverageTat = "genericLabAverageTat";
-}
+$genericWhere = " reason_for_testing != 9999 ";
+$sampleStatusOverviewContainer = "genericSampleStatusOverviewContainer";
+$samplesVlOverview = "genericSmplesVlOverview";
+$labAverageTat = "genericLabAverageTat";
 
 $table = "form_generic";
 $tsQuery = "SELECT * FROM `r_sample_status` ORDER BY `status_id`";

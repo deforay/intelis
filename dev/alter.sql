@@ -4842,3 +4842,6 @@ ALTER TABLE `failed_result_retest_tracker` CHANGE `update_by` `updated_by` VARCH
 
 -- Amit 10-Jul-2023
 UPDATE s_app_menu set s_app_menu.inner_pages = null where s_app_menu.link like '%/generic-result-approval.php' or  s_app_menu.link like '%/generic-failed-results.php';
+
+-- Thana 11-Jul-2023
+UPDATE `s_app_menu` SET `parent_id` = '63' WHERE `s_app_menu`.`id` = 92;

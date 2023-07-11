@@ -74,28 +74,24 @@ require_once APPLICATION_PATH . '/header.php';
 							onclick="generateDashboard('vl');">
 							<?= _("HIV Viral Load Tests"); ?>
 						</a></li>
-				<?php } ?>
-				<?php if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true && array_intersect($_SESSION['modules'], array('eid'))) { ?>
+				<?php } if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true && array_intersect($_SESSION['modules'], array('eid'))) { ?>
 					<li><a href="#eidDashboard" data-name="eid" data-toggle="tab" onclick="generateDashboard('eid');">
 							<?= _("EID Tests"); ?>
 						</a></li>
-				<?php } ?>
-				<?php if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true && array_intersect($_SESSION['modules'], array('covid19'))) { ?>
+				<?php } if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true && array_intersect($_SESSION['modules'], array('covid19'))) { ?>
 					<li><a href="#covid19Dashboard" data-name="covid19" data-toggle="tab"
 							onclick="generateDashboard('covid19');">
 							<?= _("Covid-19 Tests"); ?>
 						</a></li>
-				<?php } ?>
-				<?php if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true && array_intersect($_SESSION['modules'], array('hepatitis'))) { ?>
+				<?php } if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true && array_intersect($_SESSION['modules'], array('hepatitis'))) { ?>
 					<li><a href="#hepatitisDashboard" data-toggle="tab" onclick="generateDashboard('hepatitis');">
 							<?= _("Hepatitis Tests"); ?>
 						</a></li>
-				<?php } ?>
-				<?php if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true && array_intersect($_SESSION['modules'], array('tb'))) { ?>
+				<?php } if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true && array_intersect($_SESSION['modules'], array('tb'))) { ?>
 					<li><a href="#tbDashboard" data-toggle="tab" onclick="generateDashboard('tb');">TB Tests</a></li>
-				<?php } ?>
-				<?php
-				if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] === true) { ?>
+				<?php } if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true && array_intersect($_SESSION['modules'], array('generic-tests'))) { ?>
+					<li><a href="#genericTestsDashboard" data-toggle="tab" onclick="generateDashboard('generic-tests');">Other Lab Tests</a></li>
+				<?php } if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] === true) { ?>
 					<li><a href="#recencyDashboard" data-name="recency" data-toggle="tab"
 							onclick="generateDashboard('recency')">
 							<?= _("Confirmation Tests for Recency"); ?>
@@ -369,7 +365,7 @@ require_once APPLICATION_PATH . '/header.php';
 					</div>
 
 				<?php } ?>
-				<!-- COVID-19 END -->
+				<!-- Hepatitis END -->
 
 				<!-- TB START-->
 				<?php if (
@@ -426,6 +422,61 @@ require_once APPLICATION_PATH . '/header.php';
 				<?php } ?>
 				<!-- TB END -->
 
+				<!-- OTHER LAB TESTS START-->
+				<?php if (
+					isset(SYSTEM_CONFIG['modules']['generic-tests']) &&
+					SYSTEM_CONFIG['modules']['generic-tests'] === true && array_intersect($_SESSION['modules'], array('generic-tests'))
+				) { ?>
+
+					<div class="tab-pane fade in" id="genericTestsDashboard">
+						<!-- OTHER LAB TESTS content -->
+						<section class="content">
+							<div id="contCovid"> </div>
+							<!-- Small boxes (Stat box) -->
+							<div class="row" style="padding-top:10px;padding-bottom:20px;">
+								<div class="col-lg-7">
+									<form autocomplete="off">
+										<table aria-describedby="table" class="table searchTable"
+											style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
+											<tr>
+												<th scope="row" style="vertical-align:middle;"><strong>
+														<?= _('Date Range'); ?>&nbsp;:
+													</strong></th>
+												<td>
+													<input type="text" id="genericTestsSampleCollectionDate"
+														name="genericTestsSampleCollectionDate" id="genericTestsSampleCollectionDate" class="form-control"
+														placeholder="<?= _('Select Sample Collection daterange'); ?>"
+														style="width:220px;background:#fff;" />
+												</td>
+												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('generic-tests')"
+														value="<?= _('Search'); ?>"
+														class="searchBtn btn btn-success btn-sm">
+													&nbsp;<button class="btn btn-danger btn-sm"
+														onclick="resetSearchVlRequestData('generic-tests');"><span>
+															<?= _('Reset'); ?>
+														</span></button>
+												</td>
+											</tr>
+										</table>
+									</form>
+								</div>
+							</div>
+							<div class="row generic-tests">
+								<div class="searchVlRequestDataDiv" id="genericTestsSampleResultDetails"></div>
+								<div class="box-body sampleCountsDatatableDiv" id="genericTestsNoOfSampleCount"></div>
+								<div class="samplePieChartDiv" id="genericTestsPieChartDiv"></div>
+							</div>
+
+							<!-- /.row -->
+							<!-- Main row -->
+							<!-- /.row (main row) -->
+						</section>
+						<!-- /. OTHER LAB TESTS content -->
+					</div>
+
+				<?php } ?>
+				<!-- OTHER LAB TESTS END -->
+
 			</div>
 		</div>
 	</section>
@@ -462,7 +513,7 @@ require_once APPLICATION_PATH . '/header.php';
 		$("#myTabContent div:first-child").addClass("active");
 		// $("#myTabContent div:first-child table.searchTable .searchBtn").trigger("click");
 
-		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate,#tbSampleCollectionDate').daterangepicker({
+		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate,#tbSampleCollectionDate,#genericTestsSampleCollectionDate').daterangepicker({
 			locale: {
 				cancelLabel: "<?= _("Clear"); ?>",
 				format: 'DD-MMM-YYYY',
@@ -611,6 +662,17 @@ require_once APPLICATION_PATH . '/header.php';
 						$("#tbSampleResultDetails").html(data);
 					}
 				});
+		} else if (requestType == 'generic-tests') {
+			console.log($("#genericTestsSampleCollectionDate").val());
+			currentXHR = $.post("/dashboard/getSampleResult.php", {
+				sampleCollectionDate: $("#genericTestsSampleCollectionDate").val(),
+				type: 'generic-tests'
+			},
+				function (data) {
+					if (data != '') {
+						$("#genericTestsSampleResultDetails").html(data);
+					}
+				});
 		}
 
 		return currentXHR;
@@ -648,13 +710,22 @@ require_once APPLICATION_PATH . '/header.php';
 						$("#eidNoOfSampleCount").html(data);
 					}
 				});
+		} else if (requestType == 'generic-tests') {
+			currentXHR = $.post("/dashboard/getSampleCount.php", {
+				sampleCollectionDate: $("#genericTestsSampleCollectionDate").val(),
+				type: 'generic-tests'
+			},
+				function (data) {
+					if (data != '') {
+						$("#genericTestsNoOfSampleCount").html(data);
+					}
+				});
 		}
 
 		return currentXHR;
 	}
 
 	function getSamplesOverview(requestType) {
-
 		if (requestType == 'vl') {
 			currentXHR = $.post("/vl/program-management/getSampleStatus.php", {
 				sampleCollectionDate: $("#vlSampleCollectionDate").val(),
@@ -725,13 +796,27 @@ require_once APPLICATION_PATH . '/header.php';
 						$(".labAverageTatDiv").css("display", "none");
 					}
 				});
+		} else if (requestType == 'generic-tests') {
+			currentXHR = $.post("/generic-tests/program-management/get-sample-status.php", {
+				sampleCollectionDate: $("#genericTestsSampleCollectionDate").val(),
+				batchCode: '',
+				facilityName: '',
+				sampleType: '',
+				type: 'generic-tests'
+			},
+				function (data) {
+					if ($.trim(data) != '') {
+						$("#genericTestsPieChartDiv").html(data);
+						$(".labAverageTatDiv").css("display", "none");
+					}
+				});
 		}
 
 		return currentXHR;
 	}
 
 	function resetSearchVlRequestData(requestType) {
-		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#recencySampleCollectionDate', '#tbSampleCollectionDate').daterangepicker({
+		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#recencySampleCollectionDate,#tbSampleCollectionDate,#genericTestsSampleCollectionDate').daterangepicker({
 			locale: {
 				cancelLabel: "<?= _("Clear"); ?>",
 				format: 'DD-MMM-YYYY',
@@ -750,11 +835,10 @@ require_once APPLICATION_PATH . '/header.php';
 				'This Month': [moment().startOf('month'), moment().endOf('month')],
 				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
 			}
-		},
-			function (start, end) {
+		},function (start, end) {
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
-			});
+		});
 		generateDashboard(requestType);
 	}
 
