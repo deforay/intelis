@@ -60,6 +60,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$testType = (isset($_GET['testType'])) ? base64_decode($_GET['testType']) : null;
 
 $batchQuery = "SELECT * from batch_details as b_d
                     LEFT JOIN instruments as i_c ON i_c.config_id=b_d.machine
@@ -78,9 +79,13 @@ $bQuery = "SELECT vl.sample_code,vl.sample_batch_id,
                                 OR vl.reason_for_sample_rejection =''
                                 OR vl.reason_for_sample_rejection = 0)
                     AND vl.sample_code NOT LIKE ''
-                    AND vl.sample_batch_id = ?
+                    AND vl.sample_batch_id = ?";
 
-                    UNION
+					if (isset($_GET['type']) && $_GET['type'] == 'generic-tests'){
+						$bQuery .= " AND vl.test_type = ?";
+					}
+
+                    $bQuery .= " UNION
 
                     (SELECT vl.sample_code,vl.sample_batch_id,
                         vl.$refPrimaryColumn,vl.facility_id,
@@ -98,7 +103,7 @@ $bQuery = "SELECT vl.sample_code,vl.sample_batch_id,
                         AND (vl.result is NULL or vl.result = '')
                         AND vl.sample_code!=''
                         ORDER BY vl.last_modified_datetime ASC)";
-$result = $db->rawQuery($bQuery, [$id]);
+$result = $db->rawQuery($bQuery, [$id, $testType]);
 $testPlatformResult = $general->getTestingPlatforms($_GET['type']);
 
 ?>
@@ -404,7 +409,7 @@ $testPlatformResult = $general->getTestingPlatforms($_GET['type']);
 				sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
 				type: '<?php echo $_GET['type']; ?>',
 				batchId: $("#batchId").val(),
-				testType: '<?php echo base64_decode($_GET['testType']); ?>',
+				testType: '<?php echo $testType; ?>',
 				fName: fName
 			},
 			function(data) {
