@@ -45,43 +45,11 @@ $sampleStatusColors[8] = "#7f22e8"; // Sent to Lab
 $sampleStatusColors[9] = "#4BC0D9"; // Sample Registered at Health Center
 
 //date
-$start_date = '';
-$end_date = '';
+[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-    $s_c_date = explode("to", $_POST['sampleCollectionDate']);
-    //print_r($s_c_date);die;
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-    }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-    }
-}
+[$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
 
-$labStartDate = '';
-$labEndDate = '';
-if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
-    $s_c_date = explode("to", $_POST['sampleReceivedDateAtLab']);
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $labStartDate = DateUtility::isoDateFormat(trim($s_c_date[0]));
-    }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $labEndDate = DateUtility::isoDateFormat(trim($s_c_date[1]));
-    }
-}
-
-$testedStartDate = '';
-$testedEndDate = '';
-if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
-    $s_c_date = explode("to", $_POST['sampleTestedDate']);
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $testedStartDate = DateUtility::isoDateFormat(trim($s_c_date[0]));
-    }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $testedEndDate = DateUtility::isoDateFormat(trim($s_c_date[1]));
-    }
-}
+[$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 $tQuery = "SELECT COUNT(hepatitis_id) as total,status_id,status_name
                 FROM form_hepatitis as vl
                 JOIN r_sample_status as ts ON ts.status_id=vl.result_status

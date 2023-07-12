@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2023-07-11 17:21+0530\n"
-"PO-Revision-Date: 2023-07-11 17:24+0530\n"
+"PO-Revision-Date: 2023-07-12 23:39+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -7203,8 +7203,7 @@ msgstr "Mettre à jour la demande"
 #: hepatitis/results/hepatitis-samples-for-manual-result-entry.php:257
 #: tb/requests/get-request-list.php:345
 #: tb/results/tb-samples-for-manual-result-entry.php:247
-#: vl/requests/get-request-list.php:424
-#: vl/results/get-manual-results.php:324
+#: vl/requests/get-request-list.php:424 vl/results/get-manual-results.php:324
 #: vl/results/getVlTestResultDetails.php:331
 msgid "Locked"
 msgstr "Verrouillé"
@@ -7894,7 +7893,7 @@ msgstr "Nombre d'échantillons"
 
 #: dashboard/getSampleResult.php:399
 msgid "(LAST 6 MONTHS)"
-msgstr "Âge en mois"
+msgstr "(6 DERNIERS MOIS)"
 
 #: dashboard/getSampleResult.php:415
 msgid "OVERALL SAMPLE STATUS"

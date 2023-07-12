@@ -75,29 +75,9 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
         $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
     }
 }
-$labStartDate = '';
-$labEndDate = '';
-if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
-    $s_c_date = explode("to", $_POST['sampleReceivedDateAtLab']);
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $labStartDate = DateUtility::isoDateFormat(trim($s_c_date[0]));
-    }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $labEndDate = DateUtility::isoDateFormat(trim($s_c_date[1]));
-    }
-}
+[$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
 
-$testedStartDate = '';
-$testedEndDate = '';
-if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
-    $s_c_date = explode("to", $_POST['sampleTestedDate']);
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $testedStartDate = DateUtility::isoDateFormat(trim($s_c_date[0]));
-    }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $testedEndDate = DateUtility::isoDateFormat(trim($s_c_date[1]));
-    }
-}
+[$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 $tQuery = "SELECT COUNT(vl_sample_id) as total,status_id,status_name
     FROM " . $table . " as vl
     JOIN r_sample_status as ts ON ts.status_id=vl.result_status
@@ -278,16 +258,16 @@ foreach ($tatResult as $sRow) {
     <?php
     if (!empty($tResult)) {
         $total = 0;
-        ?>
+    ?>
         var _value = [
             <?php foreach ($tResult as $tRow) {
                 $total += $tRow['total']; ?> {
-                name: '<?php echo ($tRow['status_name']); ?>',
-                y: <?php echo ($tRow['total']); ?>,
-                color: '<?php echo $sampleStatusColors[$tRow['status_id']]; ?>',
-                url: '/dashboard/vlTestResultStatus.php?id=<?php echo base64_encode($tRow['status_id']); ?>&d=<?php echo base64_encode($_POST['sampleCollectionDate']); ?>'
-            },
-        <?php } ?>
+                    name: '<?php echo ($tRow['status_name']); ?>',
+                    y: <?php echo ($tRow['total']); ?>,
+                    color: '<?php echo $sampleStatusColors[$tRow['status_id']]; ?>',
+                    url: '/dashboard/vlTestResultStatus.php?id=<?php echo base64_encode($tRow['status_id']); ?>&d=<?php echo base64_encode($_POST['sampleCollectionDate']); ?>'
+                },
+            <?php } ?>
         ];
         $('#<?php echo $sampleStatusOverviewContainer; ?>').highcharts({
             chart: {
@@ -329,7 +309,7 @@ foreach ($tatResult as $sRow) {
                 colorByPoint: false,
                 point: {
                     events: {
-                        click: function (e) {
+                        click: function(e) {
                             //console.log(e.point.url);
                             window.open(e.point.url, '_blank');
                             e.preventDefault();
@@ -340,16 +320,16 @@ foreach ($tatResult as $sRow) {
             }]
         });
 
-        <?php
+    <?php
 
     }
 
     if (isset($vlSuppressionResult) && (isset($vlSuppressionResult['highVL']) || isset($vlSuppressionResult['lowVL']))) {
 
-        ?>
-            Highcharts.setOptions({
-                colors: ['#FF0000', '#50B432']
-            });
+    ?>
+        Highcharts.setOptions({
+            colors: ['#FF0000', '#50B432']
+        });
         $('#<?php echo $samplesVlOverview; ?>').highcharts({
             chart: {
                 plotBackgroundColor: null,
@@ -386,12 +366,12 @@ foreach ($tatResult as $sRow) {
             series: [{
                 colorByPoint: true,
                 data: [{
-                    name: '<?php echo $highVL; ?>',
-                    y: <?php echo (isset($vlSuppressionResult['highVL']) && $vlSuppressionResult['highVL'] > 0) > 0 ? $vlSuppressionResult['highVL'] : 0; ?>
+                        name: '<?php echo $highVL; ?>',
+                        y: <?php echo (isset($vlSuppressionResult['highVL']) && $vlSuppressionResult['highVL'] > 0) > 0 ? $vlSuppressionResult['highVL'] : 0; ?>
                     },
-    {
-        name: '<?php echo $lowVL; ?>',
-            y: <?php echo (isset($vlSuppressionResult['lowVL']) && $vlSuppressionResult['lowVL'] > 0) > 0 ? $vlSuppressionResult['lowVL'] : 0; ?>
+                    {
+                        name: '<?php echo $lowVL; ?>',
+                        y: <?php echo (isset($vlSuppressionResult['lowVL']) && $vlSuppressionResult['lowVL'] > 0) > 0 ? $vlSuppressionResult['lowVL'] : 0; ?>
                     },
                 ]
             }]
@@ -399,131 +379,131 @@ foreach ($tatResult as $sRow) {
     <?php
     }
     if (!empty($result)) {
-        ?>
-            $('#<?php echo $labAverageTat; ?>').highcharts({
-                chart: {
-                    type: 'line'
-                },
-                title: {
-                    text: "<?php echo _("Laboratory Turnaround Time"); ?>"
-                },
-                exporting: {
-                    chartOptions: {
-                        subtitle: {
-                            text: "<?php echo _("Laboratory Turnaround Time"); ?>",
-                        }
-                    }
-                },
-                credits: {
-                    enabled: false
-                },
-                xAxis: {
-                    //categories: ["21 Mar", "22 Mar", "23 Mar", "24 Mar", "25 Mar", "26 Mar", "27 Mar"]
-                    categories: [<?php
-                    if (!empty($result['date'])) {
-                        foreach ($result['date'] as $date) {
-                            echo "'" . $date . "',";
-                        }
-                    }
-                    ?>]
-    },
-    yAxis: [{
-        title: {
-            text: "<?php echo _("Average TAT in Days"); ?>"
-        },
-        labels: {
-            formatter: function () {
-                return this.value;
-            }
-        }
-    }, { // Secondary yAxis
-        gridLineWidth: 0,
-        title: {
-            text: "<?php echo _("No. of Tests"); ?>"
-        },
-        labels: {
-            format: '{value}'
-        },
-        opposite: true
-    }],
-        plotOptions: {
-        line: {
-            dataLabels: {
-                enabled: true
+    ?>
+        $('#<?php echo $labAverageTat; ?>').highcharts({
+            chart: {
+                type: 'line'
             },
-            cursor: 'pointer',
-                point: {
-                events: {
-                    click: function(e) {
-                        //doLabTATRedirect(e.point.category);
+            title: {
+                text: "<?php echo _("Laboratory Turnaround Time"); ?>"
+            },
+            exporting: {
+                chartOptions: {
+                    subtitle: {
+                        text: "<?php echo _("Laboratory Turnaround Time"); ?>",
                     }
                 }
-            }
-        },
-        series: {
-            dataLabels: {
-                enabled: true
-            }
-        }
-    },
+            },
+            credits: {
+                enabled: false
+            },
+            xAxis: {
+                //categories: ["21 Mar", "22 Mar", "23 Mar", "24 Mar", "25 Mar", "26 Mar", "27 Mar"]
+                categories: [<?php
+                                if (!empty($result['date'])) {
+                                    foreach ($result['date'] as $date) {
+                                        echo "'" . $date . "',";
+                                    }
+                                }
+                                ?>]
+            },
+            yAxis: [{
+                title: {
+                    text: "<?php echo _("Average TAT in Days"); ?>"
+                },
+                labels: {
+                    formatter: function() {
+                        return this.value;
+                    }
+                }
+            }, { // Secondary yAxis
+                gridLineWidth: 0,
+                title: {
+                    text: "<?php echo _("No. of Tests"); ?>"
+                },
+                labels: {
+                    format: '{value}'
+                },
+                opposite: true
+            }],
+            plotOptions: {
+                line: {
+                    dataLabels: {
+                        enabled: true
+                    },
+                    cursor: 'pointer',
+                    point: {
+                        events: {
+                            click: function(e) {
+                                //doLabTATRedirect(e.point.category);
+                            }
+                        }
+                    }
+                },
+                series: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
 
-    series: [{
-        type: 'column',
-        name: "<?php echo _("No. of Samples Tested"); ?>",
-        data: [<?php echo implode(",", $result['totalSamples']); ?>],
-        color: '#7CB5ED',
-        yAxis: 1
-    },
+            series: [{
+                    type: 'column',
+                    name: "<?php echo _("No. of Samples Tested"); ?>",
+                    data: [<?php echo implode(",", $result['totalSamples']); ?>],
+                    color: '#7CB5ED',
+                    yAxis: 1
+                },
                 <?php
                 if (isset($result['avgResultPrinted'])) {
-                    ?> {
-                    connectNulls: false,
-                    showInLegend: true,
-                    name: "<?php echo _("Result - Printed"); ?>",
-                    data: [<?php echo implode(",", $result['avgResultPrinted']); ?>],
-                    color: '#0f3f6e',
-                },
-                        <?php
+                ?> {
+                        connectNulls: false,
+                        showInLegend: true,
+                        name: "<?php echo _("Result - Printed"); ?>",
+                        data: [<?php echo implode(",", $result['avgResultPrinted']); ?>],
+                        color: '#0f3f6e',
+                    },
+                <?php
                 }
                 if (isset($result['sampleReceivedDiff'])) {
-                    ?> {
-                    connectNulls: false,
-                    showInLegend: true,
-                    name: "<?php echo _("Collected - Received at Lab"); ?>",
-                    data: [<?php echo implode(",", $result['sampleReceivedDiff']); ?>],
-                    color: '#edb47c',
-                },
-                        <?php
+                ?> {
+                        connectNulls: false,
+                        showInLegend: true,
+                        name: "<?php echo _("Collected - Received at Lab"); ?>",
+                        data: [<?php echo implode(",", $result['sampleReceivedDiff']); ?>],
+                        color: '#edb47c',
+                    },
+                <?php
                 }
                 if (isset($result['sampleReceivedTested'])) {
-                    ?> {
-                    connectNulls: false,
-                    showInLegend: true,
-                    name: "<?php echo _("Received - Tested"); ?>",
-                    data: [<?php echo implode(",", $result['sampleReceivedTested']); ?>],
-                    color: '#0f3f6e',
-                },
-                        <?php
+                ?> {
+                        connectNulls: false,
+                        showInLegend: true,
+                        name: "<?php echo _("Received - Tested"); ?>",
+                        data: [<?php echo implode(",", $result['sampleReceivedTested']); ?>],
+                        color: '#0f3f6e',
+                    },
+                <?php
                 }
                 if (isset($result['sampleTestedDiff'])) {
-                    ?> {
-                    connectNulls: false,
-                    showInLegend: true,
-                    name: "<?php echo _("Collected - Tested"); ?>",
-                    data: [<?php echo implode(",", $result['sampleTestedDiff']); ?>],
-                    color: '#ed7c7d',
-                },
-                        <?php
+                ?> {
+                        connectNulls: false,
+                        showInLegend: true,
+                        name: "<?php echo _("Collected - Tested"); ?>",
+                        data: [<?php echo implode(",", $result['sampleTestedDiff']); ?>],
+                        color: '#ed7c7d',
+                    },
+                <?php
                 }
                 if (isset($result['sampleReceivedPrinted'])) {
-                    ?> {
-                    connectNulls: false,
-                    showInLegend: true,
-                    name: "<?php echo _("Collected - Printed"); ?>",
-                    data: [<?php echo implode(",", $result['sampleReceivedPrinted']); ?>],
-                    color: '#000',
-                },
-                        <?php
+                ?> {
+                        connectNulls: false,
+                        showInLegend: true,
+                        name: "<?php echo _("Collected - Printed"); ?>",
+                        data: [<?php echo implode(",", $result['sampleReceivedPrinted']); ?>],
+                        color: '#000',
+                    },
+                <?php
                 }
                 ?>
             ],
