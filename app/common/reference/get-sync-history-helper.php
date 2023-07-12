@@ -94,7 +94,7 @@ $sQuery = "SELECT tar.*, l.facility_name as labName FROM $tableName AS tar
             WHERE request_type IN('results', 'requests')";
 
 if (!empty($sWhere)) {
-    $sWhere = ' WHERE ' . $sWhere;
+    $sWhere = ' AND ' . $sWhere;
     $sQuery = $sQuery . ' ' . $sWhere;
 }
 
