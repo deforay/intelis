@@ -305,10 +305,10 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
-		$(".select2").select2();
+		/*$(".select2").select2();
 		$(".select2").select2({
 			tags: true
-		});
+		});*/
 
 		$('.search').multiSelect({
 			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
@@ -414,6 +414,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 
 			$.post("/specimen-referral-manifest/get-samples-for-manifest.php", {
 					module: $("#module").val(),
+					testType: $("#testType").val(),
 					testingLab: $('#testingLab').val(),
 					facility: $('#facility').val(),
 					daterange: $('#daterange').val(),
