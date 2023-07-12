@@ -519,7 +519,7 @@ $aResult = $db->query($aQuery);
 										<td style="width: 35%;">
 											<input type="text" class="form-control" name="newreasonForVLTesting"
 												id="newreasonForVLTesting" placeholder="Virale Demande Raison"
-												title="Please enter virale demande raison" style="width:100%;">
+												title="Please enter virale demande raison" style="width:100%;" value="<?php echo $vlQueryInfo['reason_for_vl_testing_other']; ?>">
 										</td>
 									</tr>
 									<tr>
@@ -905,6 +905,7 @@ $aResult = $db->query($aQuery);
 			minDate: minDate,
 			startDate: minDate,
 		});
+		checkreasonForVLTesting();
 	});
 
 
