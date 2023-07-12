@@ -464,7 +464,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 											<input type="text" class="form-control" name="newVlTestReason"
 												id="newVlTestReason" placeholder="Virale Demande Raison"
 												title="Please enter virale demande raison" <?php echo $disable; ?>
-												style="width:100%;">
+												style="width:100%;" value="<?php echo $vlQueryInfo['reason_for_vl_testing_other']; ?>">
 										</td>
 									</tr>
 									<tr>
@@ -814,7 +814,16 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 			// $(".vlResult, .vlLog").show();
 			// $("#vlResult").addClass('isRequired');
 		}
+		checkreasonForVLTesting();
 	});
+	function checkreasonForVLTesting() {
+		var reasonForVLTesting = $("#vlTestReason").val();
+		if (reasonForVLTesting == "other") {
+			$(".newVlTestReason").show();
+		} else {
+			$(".newVlTestReason").hide();
+		}
+	}
 
 	function checkTestStatus() {
 		var status = $("#noResult").val();
