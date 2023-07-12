@@ -34,7 +34,9 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sCode = 'sample_code';
 }
 
-$module = (!empty($_POST['testType'])) ? $_POST['testType'] : $_POST['module'];
+$module = (!empty($_POST['module'])) ? $_POST['module'] : "";
+$testType = (!empty($_POST['testType'])) ? $_POST['testType'] : "";
+
 $query = "";
 if ($module == 'vl') {
 	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.vl_sample_id FROM form_vl as vl ";
@@ -80,6 +82,10 @@ if (!empty($_POST['operator'])) {
 	$where[] = " (request_created_by like '" . $_POST['operator'] . "'  OR (request_created_by like '' OR request_created_by is null OR request_created_by = 0))";
 }
 
+if (!empty($_POST['testType'])) {
+	$where[] = " test_type = " . $_POST['testType'] ;
+}
+
 if (!empty($_POST['sampleType']) && ($module == 'vl' || $module == 'generic-tests')) {
 	$where[] = " (sample_type IN(" . $_POST['sampleType'] . ")  OR (sample_type like '' OR sample_type is null OR sample_type = 0))";
 } else if (isset($_POST['sampleType']) && $_POST['sampleType'] != "" && $module != 'vl') {
@@ -89,7 +95,7 @@ if (!empty($where)) {
 	$query .= " where " . implode(" AND ", $where);
 }
 $query .= " ORDER BY vl.request_created_datetime ASC";
-// die($query);
+ //die($query);
 $result = $db->rawQuery($query);
 
 ?>

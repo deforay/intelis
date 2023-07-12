@@ -4845,3 +4845,13 @@ UPDATE s_app_menu set s_app_menu.inner_pages = null where s_app_menu.link like '
 
 -- Thana 11-Jul-2023
 UPDATE `s_app_menu` SET `parent_id` = '63' WHERE `s_app_menu`.`id` = 92;
+
+-- Jeyabanu 12-Jul-2023
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Generic Sample Code Format', 'generic_sample_code', 'MMYY', 'generic-tests', 'yes', '2021-11-02 17:48:32', NULL, 'active');
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Generic Minimum Length', 'generic_min_length', NULL, 'generic-tests', 'yes', '2021-11-02 18:16:53', NULL, 'active'), ('Generic Maximum Length', 'generic_max_length', NULL, 'generic-tests', 'yes', '2021-11-02 18:16:53', NULL, 'active');
+
+UPDATE `global_config` SET `category` = 'generic-tests' WHERE `global_config`.`name` = 'generic_interpret_and_convert_results';
+
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Sample Lock Expiry Days', 'generic_sample_lock_after_days', NULL, 'generic-tests', 'yes', '2021-11-02 17:48:32', NULL, 'active'),
+('Auto Approve API Results', 'generic_auto_approve_api_results', NULL, 'generic-tests', 'yes', '2021-11-02 17:48:32', NULL, 'active'),
+('Lab Tests Show Participant Name in Manifest', 'generic_show_participant_name_in_manifest', NULL, 'generic-tests', 'yes', '2021-11-02 17:48:32', NULL, 'active');
