@@ -103,12 +103,16 @@ if ($module == 'vl') {
 	$tbService = ContainerRegistry::get(TbService::class);
 	$sampleTypes = $tbService->getTbSampleTypes();
 } elseif ($module == 'generic-tests') {
+	$testTypeQuery = "SELECT test_type FROM form_generic WHERE sample_package_id = ?";
+	$testType = $db->rawQueryOne($testTypeQuery, [$id]);
+
 	$query = "SELECT vl.sample_code,
 				vl.remote_sample_code,
 				vl.sample_id,vl.sample_package_id
 				FROM form_generic as vl
-				WHERE (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes')  ";
+				WHERE (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=" . $id . ") AND (remote_sample = 'yes')  AND vl.lab_id=".$pResult['lab_id']." AND vl.test_type=".$testType['test_type'];
 	$m = ($module == 'GEN') ? 'generic-tests' : $module;
+	
 	/** @var GenericTestsService $genService */
 	$genService = ContainerRegistry::get(GenericTestsService::class);
 	$sampleTypes = $genService->getGenericSampleTypes();
@@ -120,13 +124,15 @@ if (!empty($_SESSION['facilityMap'])) {
 	$query = $query . " AND facility_id IN(" . $_SESSION['facilityMap'] . ")";
 }
 
-$query = $query . " ORDER BY vl.request_created_datetime ASC";
 
+
+$query = $query . " ORDER BY vl.request_created_datetime ASC";
+//echo $query; die;
 $result = $db->rawQuery($query);
 
 $global = $general->getGlobalConfig();
-
-
+$testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
+$testTypeResult = $db->rawQuery($testTypeQuery);
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
 <style>
@@ -179,6 +185,22 @@ $global = $general->getGlobalConfig();
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
+			<?php 
+				if ($module == 'generic-tests') { ?>
+					<div class="row">
+						<div class="col-xs-4 col-md-4">
+							<div class="form-group" style="margin-left:30px; margin-top:30px;">
+								<label for="testType">Test Type</label>
+								<select disabled="disabled" class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getManifestCodeForm(this.value)">
+									<option value=""> -- Select -- </option>
+									<?php foreach ($testTypeResult as $testTypeInfo) { ?>
+										<option value="<?php echo $testTypeInfo['test_type_id'] ?>" <?php echo ($testType['test_type']==$testTypeInfo['test_type_id']) ? "selected='selected'" : ""; ?>><?php echo $testTypeInfo['test_standard_name'] ?></option>
+									<?php } ?>
+								</select>
+							</div>
+						</div>
+					</div>
+				<?php } ?>
 				<!-- form start -->
 				<form class="form-horizontal" method="post" name="editSpecimenReferralManifestForm"
 					id="editSpecimenReferralManifestForm" autocomplete="off"
@@ -371,7 +393,7 @@ $global = $general->getGlobalConfig();
 
 	//$("#auditRndNo").multiselect({height: 100,minWidth: 150});
 	$(document).ready(function () {
-
+		//getSampleCodeDetails();
 		$('#daterange').daterangepicker({
 			locale: {
 				cancelLabel: "<?= _("Clear"); ?>",
@@ -503,6 +525,7 @@ $global = $general->getGlobalConfig();
 
 			$.post("/specimen-referral-manifest/get-samples-for-manifest.php", {
 				module: $("#module").val(),
+				testType: $("#testType").val(),
 				testingLab: $('#testingLab').val(),
 				facility: $('#facility').val(),
 				daterange: $('#daterange').val(),
