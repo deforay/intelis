@@ -61,8 +61,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='addImportConfigForm' id='addImportConfigForm'
-					autocomplete="off" action="add-instrument-helper.php">
+				<form class="form-horizontal" method='post' name='addImportConfigForm' id='addImportConfigForm' autocomplete="off" action="add-instrument-helper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
@@ -71,19 +70,13 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 										<?php echo _("Instrument Name"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="configurationName"
-											name="configurationName"
-											placeholder='<?php echo _("eg. Roche or Abbott"); ?>'
-											title='<?php echo _("Please enter instrument name"); ?>'
-											onblur="checkNameValidation('instruments','machine_name',this,null,'<?php echo _('This instrument name already exists.Try another name'); ?>',null);setConfigFileName();"
-											onkeypress="setConfigFileName();" />
+										<input type="text" class="form-control isRequired" id="configurationName" name="configurationName" placeholder='<?php echo _("eg. Roche or Abbott"); ?>' title='<?php echo _("Please enter instrument name"); ?>' onblur="checkNameValidation('instruments','machine_name',this,null,'<?php echo _('This instrument name already exists.Try another name'); ?>',null);setConfigFileName();" onkeypress="setConfigFileName();" />
 									</div>
 								</div>
 							</div>
 						</div>
 						<?php if (isset($vlsmSystemConfig['sc_user_type']) && $vlsmSystemConfig['sc_user_type'] == 'vluser') { ?>
-							<input type="hidden" value="<?php echo $general->getSystemConfig('sc_testing_lab_id'); ?>"
-								name="testingLab" />
+							<input type="hidden" value="<?php echo $general->getSystemConfig('sc_testing_lab_id'); ?>" name="testingLab" />
 						<?php } else { ?>
 							<div class="row">
 								<div class="col-md-6">
@@ -92,8 +85,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 											<?php echo _("Testing Lab"); ?> <span class="mandatory">*</span>
 										</label>
 										<div class="col-lg-7">
-											<select class="form-control select2" id="testingLab" name="testingLab"
-												title="Please select the testing lab">
+											<select class="form-control select2" id="testingLab" name="testingLab" title="Please select the testing lab">
 												<?php echo $general->generateSelectOptions($labNameList, null, '--Select--'); ?>
 											</select>
 										</div>
@@ -108,8 +100,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 										<?php echo _("Supported Tests"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<select multiple class="form-control" id="supportedTests"
-											name="supportedTests[]">
+										<select multiple class="form-control" id="supportedTests" name="supportedTests[]">
 											<?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
 												<option value='vl'>
 													<?php echo _("Viral Load"); ?>
@@ -152,11 +143,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 										<?php echo _("Instrument File"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="configurationFile"
-											name="configurationFile"
-											placeholder='<?php echo _("eg. roche.php or abbott.php"); ?>'
-											title='<?php echo _("Please enter machine name"); ?>'
-											onblur='checkNameValidation("instruments","import_machine_file_name",this,null,"<?php echo _("This file name already exists.Try another name"); ?>",null)' />
+										<input type="text" class="form-control isRequired" id="configurationFile" name="configurationFile" placeholder='<?php echo _("eg. roche.php or abbott.php"); ?>' title='<?php echo _("Please enter machine name"); ?>' onblur='checkNameValidation("instruments","import_machine_file_name",this,null,"<?php echo _("This file name already exists.Try another name"); ?>",null)' />
 									</div>
 								</div>
 							</div>
@@ -168,9 +155,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 										<?php echo _("Lower Limit"); ?>
 									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control forceNumeric" id="lowerLimit"
-											name="lowerLimit" placeholder='<?php echo _("eg. 20"); ?>'
-											title='<?php echo _("Please enter lower limit"); ?>' />
+										<input type="text" class="form-control forceNumeric" id="lowerLimit" name="lowerLimit" placeholder='<?php echo _("eg. 20"); ?>' title='<?php echo _("Please enter lower limit"); ?>' />
 									</div>
 								</div>
 							</div>
@@ -182,9 +167,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 										<?php echo _("Higher Limit"); ?>
 									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control forceNumeric" id="higherLimit"
-											name="higherLimit" placeholder='<?php echo _("eg. 10000000"); ?>'
-											title='<?php echo _("Please enter lower limit"); ?>' />
+										<input type="text" class="form-control forceNumeric" id="higherLimit" name="higherLimit" placeholder='<?php echo _("eg. 10000000"); ?>' title='<?php echo _("Please enter lower limit"); ?>' />
 									</div>
 								</div>
 							</div>
@@ -193,14 +176,10 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="maxNOfSamplesInBatch" class="col-lg-4 control-label">
-										<?php echo _("Maximum No. of Samples In a Batch"); ?> <span
-											class="mandatory">*</span>
+										<?php echo _("Maximum No. of Samples In a Batch"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control forceNumeric isRequired"
-											id="maxNOfSamplesInBatch" name="maxNOfSamplesInBatch"
-											placeholder='<?php echo _("Max. no of samples"); ?>'
-											title='<?php echo _("Please enter max no of samples in a row"); ?>' />
+										<input type="text" class="form-control forceNumeric isRequired" id="maxNOfSamplesInBatch" name="maxNOfSamplesInBatch" placeholder='<?php echo _("Max. no of samples"); ?>' title='<?php echo _("Please enter max no of samples in a row"); ?>' />
 									</div>
 								</div>
 							</div>
@@ -213,9 +192,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 											<?php echo _("Low VL Result Text"); ?>
 										</label>
 										<div class="col-lg-7">
-											<textarea class="form-control" id="lowVlResultText" name="lowVlResultText"
-												placeholder='<?php echo _("Comma separated Low Viral Load Result Text for eg. Target Not Detected, TND, < 20, < 40"); ?>'
-												title='<?php echo _("Low Viral Load Result Text for eg. Target Not Detected, TND, < 20, < 40"); ?>'></textarea>
+											<textarea class="form-control" id="lowVlResultText" name="lowVlResultText" placeholder='<?php echo _("Comma separated Low Viral Load Result Text for eg. Target Not Detected, TND, < 20, < 40"); ?>' title='<?php echo _("Low Viral Load Result Text for eg. Target Not Detected, TND, < 20, < 40"); ?>'></textarea>
 										</div>
 									</div>
 								</div>
@@ -226,9 +203,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 						</div> -->
 						<?php if (SYSTEM_CONFIG['modules']['vl'] || SYSTEM_CONFIG['modules']['eid'] || SYSTEM_CONFIG['modules']['covid19']) { ?>
 							<div class="box-body">
-								<table aria-describedby="table" border="0"
-									class="user-access table table-striped table-bordered table-condensed"
-									style="width:100%;display:none;">
+								<table aria-describedby="table" border="0" class="user-access table table-striped table-bordered table-condensed" style="width:100%;display:none;">
 									<thead>
 										<tr>
 											<th style="text-align:center;">
@@ -246,18 +221,15 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 										<?php if (SYSTEM_CONFIG['modules']['vl']) { ?>
 											<tr class="vl-access user-access-form" style="display: none;">
 												<td style="text-align:center;">
-													<?php echo _("VL"); ?><input type="hidden" name="userTestType[]"
-														id="userTestTypeVl" value="vl" />
+													<?php echo _("VL"); ?><input type="hidden" name="userTestType[]" id="userTestTypeVl" value="vl" />
 												</td>
 												<td>
-													<select name="reviewedBy[]" id="reviewedByVl" class="form-control select2"
-														title='<?php echo _("Please enter Reviewed By for VL Test"); ?>'>
+													<select name="reviewedBy[]" id="reviewedByVl" class="form-control select2" title='<?php echo _("Please enter Reviewed By for VL Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByVl" class="form-control select2"
-														title='<?php echo _("Please enter Approved By for VL Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByVl" class="form-control select2" title='<?php echo _("Please enter Approved By for VL Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
@@ -266,18 +238,15 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 										if (SYSTEM_CONFIG['modules']['eid']) { ?>
 											<tr class="eid-access user-access-form" style="display: none;">
 												<td style="text-align:center;">
-													<?php echo _("EID"); ?><input type="hidden" name="userTestType[]"
-														id="userTestTypeEid" value="eid" />
+													<?php echo _("EID"); ?><input type="hidden" name="userTestType[]" id="userTestTypeEid" value="eid" />
 												</td>
 												<td>
-													<select name="reviewedBy[]" id="reviewedByEid" class="form-control select2"
-														title='<?php echo _("Please enter Reviewed By for EID Test"); ?>'>
+													<select name="reviewedBy[]" id="reviewedByEid" class="form-control select2" title='<?php echo _("Please enter Reviewed By for EID Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByEid" class="form-control select2"
-														title='<?php echo _("Please enter Approved By for EID Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByEid" class="form-control select2" title='<?php echo _("Please enter Approved By for EID Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
@@ -286,20 +255,15 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 										if (SYSTEM_CONFIG['modules']['covid19']) { ?>
 											<tr class="covid19-access user-access-form" style="display: none;">
 												<td style="text-align:center;">
-													<?php echo _("Covid-19"); ?><input type="hidden" name="userTestType[]"
-														id="userTestTypeCovid19" value="covid19" />
+													<?php echo _("Covid-19"); ?><input type="hidden" name="userTestType[]" id="userTestTypeCovid19" value="covid19" />
 												</td>
 												<td>
-													<select name="reviewedBy[]" id="reviewedByCovid19"
-														class="form-control select2"
-														title='<?php echo _("Please enter Reviewed By for Covid19 Test"); ?>'>
+													<select name="reviewedBy[]" id="reviewedByCovid19" class="form-control select2" title='<?php echo _("Please enter Reviewed By for Covid19 Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByCovid19"
-														class="form-control select2"
-														title='<?php echo _("Please enter Approved By for Covid19 Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByCovid19" class="form-control select2" title='<?php echo _("Please enter Approved By for Covid19 Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
@@ -308,20 +272,15 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 										if (SYSTEM_CONFIG['modules']['hepatitis']) { ?>
 											<tr class="hepatitis-access user-access-form" style="display: none;">
 												<td style="text-align:center;">
-													<?php echo _("Hepatitis"); ?><input type="hidden" name="userTestType[]"
-														id="userTestTypeHepatitis" value="hepatitis" />
+													<?php echo _("Hepatitis"); ?><input type="hidden" name="userTestType[]" id="userTestTypeHepatitis" value="hepatitis" />
 												</td>
 												<td>
-													<select name="reviewedBy[]" id="reviewedByHepatitis"
-														class="form-control select2"
-														title='<?php echo _("Please enter Reviewed By for Hepatitis Test"); ?>'>
+													<select name="reviewedBy[]" id="reviewedByHepatitis" class="form-control select2" title='<?php echo _("Please enter Reviewed By for Hepatitis Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByHepatitis"
-														class="form-control select2"
-														title='<?php echo _("Please enter Approved By for Hepatitis Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByHepatitis" class="form-control select2" title='<?php echo _("Please enter Approved By for Hepatitis Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
@@ -330,18 +289,15 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 										if (SYSTEM_CONFIG['modules']['tb']) { ?>
 											<tr class="tb-access user-access-form" style="display: none;">
 												<td style="text-align:center;">
-													<?php echo _("TB"); ?><input type="hidden" name="userTestType[]"
-														id="userTestTypeTb" value="tb" />
+													<?php echo _("TB"); ?><input type="hidden" name="userTestType[]" id="userTestTypeTb" value="tb" />
 												</td>
 												<td>
-													<select name="reviewedBy[]" id="reviewedByTb" class="form-control select2"
-														title='<?php echo _("Please enter Reviewed By for TB Test"); ?>'>
+													<select name="reviewedBy[]" id="reviewedByTb" class="form-control select2" title='<?php echo _("Please enter Reviewed By for TB Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
 												<td>
-													<select name="approvedBy[]" id="approvedByTb" class="form-control select2"
-														title='<?php echo _("Please enter Approved By for TB Test"); ?>'>
+													<select name="approvedBy[]" id="approvedByTb" class="form-control select2" title='<?php echo _("Please enter Approved By for TB Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, null, '--Select--'); ?>
 													</select>
 												</td>
@@ -351,9 +307,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 								</table>
 								<br>
 								<hr>
-								<table aria-describedby="table" border="0"
-									class="table table-striped table-bordered table-condensed" aria-hidden="true"
-									style="width:100%;">
+								<table aria-describedby="table" border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
 									<thead>
 										<tr>
 											<th style="text-align:center;">
@@ -374,136 +328,76 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 										<?php if (SYSTEM_CONFIG['modules']['vl']) { ?>
 											<tr id="vlTable" class="ctlCalibrator">
 												<td align="left" style="text-align:center;">
-													<?php echo _("VL"); ?><input type="hidden" name="testType[]" id="testType1"
-														value="vl" />
+													<?php echo _("VL"); ?><input type="hidden" name="testType[]" id="testType1" value="vl" />
 												</td>
-												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1"
-														class="form-control"
-														placeholder='<?php echo _("No of In-House Controls in vl"); ?>'
-														title='<?php echo _("Please enter No of In-House Controls in vl"); ?>' />
+												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder='<?php echo _("No of In-House Controls in vl"); ?>' title='<?php echo _("Please enter No of In-House Controls in vl"); ?>' />
 												</td>
-												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1"
-														class="form-control"
-														placeholder='<?php echo _("No of Manufacturer Controls in vl"); ?>'
-														title='<?php echo _("Please enter No of Manufacturer Controls in vl"); ?>' />
+												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder='<?php echo _("No of Manufacturer Controls in vl"); ?>' title='<?php echo _("Please enter No of Manufacturer Controls in vl"); ?>' />
 												</td>
-												<td><input type="text" name="noCalibrators[]" id="noCalibrators1"
-														class="form-control"
-														placeholder='<?php echo _("No of Calibrators in vl"); ?>'
-														title='<?php echo _("Please enter No of Calibrators in vl"); ?>' /></td>
+												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder='<?php echo _("No of Calibrators in vl"); ?>' title='<?php echo _("Please enter No of Calibrators in vl"); ?>' /></td>
 											</tr>
 										<?php }
 										if (SYSTEM_CONFIG['modules']['eid']) { ?>
 											<tr id="eidTable" class="ctlCalibrator">
 												<td align="left" style="text-align:center;">
-													<?php echo _("EID"); ?><input type="hidden" name="testType[]" id="testType1"
-														value="eid" />
+													<?php echo _("EID"); ?><input type="hidden" name="testType[]" id="testType1" value="eid" />
 												</td>
-												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1"
-														class="form-control"
-														placeholder='<?php echo _("No of In-House Controls in eid"); ?>'
-														title='<?php echo _("Please enter No of In-House Controls in eid"); ?>' />
+												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder='<?php echo _("No of In-House Controls in EID"); ?>' title='<?php echo _("Please enter No of In-House Controls in EID"); ?>' />
 												</td>
-												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1"
-														class="form-control"
-														placeholder='<?php echo _("No of Manufacturer Controls in eid"); ?>'
-														title='<?php echo _("Please enter No of Manufacturer Controls in eid"); ?>' />
+												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder='<?php echo _("No of Manufacturer Controls in EID"); ?>' title='<?php echo _("Please enter No of Manufacturer Controls in EID"); ?>' />
 												</td>
-												<td><input type="text" name="noCalibrators[]" id="noCalibrators1"
-														class="form-control"
-														placeholder='<?php echo _("No of Calibrators in eid"); ?>'
-														title='<?php echo _("Please enter No of Calibrators in eid"); ?>' />
+												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder='<?php echo _("No of Calibrators in EID"); ?>' title='<?php echo _("Please enter No of Calibrators in EID"); ?>' />
 												</td>
 											</tr>
 										<?php }
 										if (SYSTEM_CONFIG['modules']['covid19']) { ?>
 											<tr id="covid19Table" class="ctlCalibrator">
 												<td align="left" style="text-align:center;">
-													<?php echo _("Covid-19"); ?><input type="hidden" name="testType[]"
-														id="testType1" value="covid19" />
+													<?php echo _("Covid-19"); ?><input type="hidden" name="testType[]" id="testType1" value="covid19" />
 												</td>
-												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1"
-														class="form-control"
-														placeholder='<?php echo _("No of In-House Controls in covid-19"); ?>'
-														title='<?php echo _("Please enter No of In-House Controls in covid-19"); ?>' />
+												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder='<?php echo _("No of In-House Controls in covid-19"); ?>' title='<?php echo _("Please enter No of In-House Controls in covid-19"); ?>' />
 												</td>
-												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1"
-														class="form-control"
-														placeholder='<?php echo _("No of Manufacturer Controls in covid-19"); ?>'
-														title='<?php echo _("Please enter No of Manufacturer Controls in covid-19"); ?>' />
+												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder='<?php echo _("No of Manufacturer Controls in covid-19"); ?>' title='<?php echo _("Please enter No of Manufacturer Controls in covid-19"); ?>' />
 												</td>
-												<td><input type="text" name="noCalibrators[]" id="noCalibrators1"
-														class="form-control"
-														placeholder='<?php echo _("No of Calibrators in covid-19"); ?>'
-														title='<?php echo _("Please enter No of Calibrators in covid-19"); ?>' />
+												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder='<?php echo _("No of Calibrators in covid-19"); ?>' title='<?php echo _("Please enter No of Calibrators in covid-19"); ?>' />
 												</td>
 											</tr>
 										<?php }
 										if (SYSTEM_CONFIG['modules']['hepatitis']) { ?>
 											<tr id="hepatitisTable" class="ctlCalibrator">
 												<td align="left" style="text-align:center;">
-													<?php echo _("Hepatitis"); ?><input type="hidden" name="testType[]"
-														id="testType1" value="hepatitis" />
+													<?php echo _("Hepatitis"); ?><input type="hidden" name="testType[]" id="testType1" value="hepatitis" />
 												</td>
-												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1"
-														class="form-control"
-														placeholder='<?php echo _("No of In-House Controls in Hepatitis"); ?>'
-														title='<?php echo _("Please enter No of In-House Controls in Hepatitis"); ?>' />
+												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder='<?php echo _("No of In-House Controls in Hepatitis"); ?>' title='<?php echo _("Please enter No of In-House Controls in Hepatitis"); ?>' />
 												</td>
-												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1"
-														class="form-control"
-														placeholder='<?php echo _("No of Manufacturer Controls in Hepatitis"); ?>'
-														title='<?php echo _("Please enter No of Manufacturer Controls in Hepatitis"); ?>' />
+												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder='<?php echo _("No of Manufacturer Controls in Hepatitis"); ?>' title='<?php echo _("Please enter No of Manufacturer Controls in Hepatitis"); ?>' />
 												</td>
-												<td><input type="text" name="noCalibrators[]" id="noCalibrators1"
-														class="form-control"
-														placeholder='<?php echo _("No of Calibrators in Hepatitis"); ?>'
-														title='<?php echo _("Please enter No of Calibrators in Hepatitis"); ?>' />
+												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder='<?php echo _("No of Calibrators in Hepatitis"); ?>' title='<?php echo _("Please enter No of Calibrators in Hepatitis"); ?>' />
 												</td>
 											</tr>
 										<?php }
 										if (SYSTEM_CONFIG['modules']['tb']) { ?>
 											<tr id="tbTable" class="ctlCalibrator">
 												<td align="left" style="text-align:center;">
-													<?php echo _("TB"); ?><input type="hidden" name="testType[]" id="testType1"
-														value="tb" />
+													<?php echo _("TB"); ?><input type="hidden" name="testType[]" id="testType1" value="tb" />
 												</td>
-												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1"
-														class="form-control"
-														placeholder='<?php echo _("No of In-House Controls in TB"); ?>'
-														title='<?php echo _("Please enter No of In-House Controls in TB"); ?>' />
+												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder='<?php echo _("No of In-House Controls in TB"); ?>' title='<?php echo _("Please enter No of In-House Controls in TB"); ?>' />
 												</td>
-												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1"
-														class="form-control"
-														placeholder='<?php echo _("No of Manufacturer Controls in TB"); ?>'
-														title='<?php echo _("Please enter No of Manufacturer Controls in TB"); ?>' />
+												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder='<?php echo _("No of Manufacturer Controls in TB"); ?>' title='<?php echo _("Please enter No of Manufacturer Controls in TB"); ?>' />
 												</td>
-												<td><input type="text" name="noCalibrators[]" id="noCalibrators1"
-														class="form-control"
-														placeholder='<?php echo _("No of Calibrators in TB"); ?>'
-														title='<?php echo _("Please enter No of Calibrators in TB"); ?>' /></td>
+												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder='<?php echo _("No of Calibrators in TB"); ?>' title='<?php echo _("Please enter No of Calibrators in TB"); ?>' /></td>
 											</tr>
 										<?php }
 										if (SYSTEM_CONFIG['modules']['generic-tests']) { ?>
 											<tr id="generic-testsTable" class="ctlCalibrator">
 												<td align="left" style="text-align:center;">
-													<?php echo _("Lab Tests"); ?><input type="hidden" name="testType[]"
-														id="testType1" value="generic-tests" />
+													<?php echo _("Lab Tests"); ?><input type="hidden" name="testType[]" id="testType1" value="generic-tests" />
 												</td>
-												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1"
-														class="form-control"
-														placeholder='<?php echo _("No of In-House Controls in Lab Tests"); ?>'
-														title='<?php echo _("Please enter No of In-House Controls in Lab Tests"); ?>' />
+												<td><input type="text" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder='<?php echo _("No of In-House Controls in Lab Tests"); ?>' title='<?php echo _("Please enter No of In-House Controls in Lab Tests"); ?>' />
 												</td>
-												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1"
-														class="form-control"
-														placeholder='<?php echo _("No of Manufacturer Controls in Lab Tests"); ?>'
-														title='<?php echo _("Please enter No of Manufacturer Controls in Lab Tests"); ?>' />
+												<td><input type="text" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder='<?php echo _("No of Manufacturer Controls in Lab Tests"); ?>' title='<?php echo _("Please enter No of Manufacturer Controls in Lab Tests"); ?>' />
 												</td>
-												<td><input type="text" name="noCalibrators[]" id="noCalibrators1"
-														class="form-control"
-														placeholder='<?php echo _("No of Calibrators in Lab Tests"); ?>'
-														title='<?php echo _("Please enter No of Calibrators in Lab Tests"); ?>' />
+												<td><input type="text" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder='<?php echo _("No of Calibrators in Lab Tests"); ?>' title='<?php echo _("Please enter No of Calibrators in Lab Tests"); ?>' />
 												</td>
 											</tr>
 										<?php } ?>
@@ -517,9 +411,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 							</h3>
 						</div>
 						<div class="box-body">
-							<table aria-describedby="table" border="0"
-								class="table table-striped table-bordered table-condensed" aria-hidden="true"
-								style="width:100%;">
+							<table aria-describedby="table" border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
 								<thead>
 									<tr>
 										<th style="text-align:center;">
@@ -542,49 +434,29 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 								<tbody id="machineTable">
 									<tr>
 										<td>
-											<input type="text" name="configMachineName[]" id="configMachineName1"
-												class="form-control configMachineName isRequired"
-												placeholder='<?php echo _("Machine Name"); ?>'
-												title='<?php echo _("Please enter machine name"); ?>'
-												onblur="checkDublicateName(this, 'configMachineName');" />
+											<input type="text" name="configMachineName[]" id="configMachineName1" class="form-control configMachineName isRequired" placeholder='<?php echo _("Machine Name"); ?>' title='<?php echo _("Please enter machine name"); ?>' onblur="checkDublicateName(this, 'configMachineName');" />
 										</td>
 										<td>
-											<input type="text" name="dateFormat[]" id="dateFormat1" class="form-control"
-												placeholder='<?php echo _("Date Format"); ?>'
-												title='<?php echo _("Please enter date format"); ?>'
-												value='d/m/Y H:i' />
+											<input type="text" name="dateFormat[]" id="dateFormat1" class="form-control" placeholder='<?php echo _("Date Format"); ?>' title='<?php echo _("Please enter date format"); ?>' value='d/m/Y H:i' />
 										</td>
 										<td>
-											<input type="text" name="fileName[]" id="fileName1" class="form-control"
-												placeholder='<?php echo _("File Name"); ?>'
-												title='<?php echo _("Please enter file name"); ?>'
-												onblur="checkDublicateName(this, 'fileName');" />
+											<input type="text" name="fileName[]" id="fileName1" class="form-control" placeholder='<?php echo _("File Name"); ?>' title='<?php echo _("Please enter file name"); ?>' onblur="checkDublicateName(this, 'fileName');" />
 										</td>
 										<td>
 											<div class="col-md-3">
-												<input type="checkbox" id="pocdevice1" name="pocdevice[]" value=""
-													onclick="getLatiLongi(1);">
+												<input type="checkbox" id="pocdevice1" name="pocdevice[]" value="" onclick="getLatiLongi(1);">
 											</div>
 											<div class="latLong1 " style="display:none">
 												<div class="col-md-4">
-													<input type="text" name="latitude[]" id="latitude1"
-														class="form-control " placeholder='<?php echo _("Latitude"); ?>'
-														data-placement="bottom" title='<?php echo _("Latitude"); ?>' />
+													<input type="text" name="latitude[]" id="latitude1" class="form-control " placeholder='<?php echo _("Latitude"); ?>' data-placement="bottom" title='<?php echo _("Latitude"); ?>' />
 												</div>
 												<div class="col-md-4">
-													<input type="text" name="longitude[]" id="longitude1"
-														class="form-control "
-														placeholder='<?php echo _("Longitude"); ?>'
-														data-placement="bottom" title='<?php echo _("Longitude"); ?>' />
+													<input type="text" name="longitude[]" id="longitude1" class="form-control " placeholder='<?php echo _("Longitude"); ?>' data-placement="bottom" title='<?php echo _("Longitude"); ?>' />
 												</div>
 											</div>
 										</td>
 										<td align="center" style="vertical-align:middle;">
-											<a class="btn btn-xs btn-primary" href="javascript:void(0);"
-												onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a
-												class="btn btn-xs btn-default" href="javascript:void(0);"
-												onclick="removeAttributeRow(this.parentNode.parentNode);"><em
-													class="fa-solid fa-minus"></em></a>
+											<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
 										</td>
 									</tr>
 								</tbody>
@@ -616,7 +488,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 <script type="text/javascript">
 	tableRowId = 2;
 
-	$(document).ready(function () {
+	$(document).ready(function() {
 		$(".select2").select2({
 			width: '100%',
 			placeholder: '<?php echo _("Select the options"); ?>'
@@ -627,11 +499,11 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 		});
 		$('input').tooltip();
 
-		$('#supportedTests').on('select2:select', function (e) {
+		$('#supportedTests').on('select2:select', function(e) {
 			var data = $('#supportedTests').val();
 			console.log(data);
 			$(".ctlCalibrator, .lowVlResultText, .user-access-form").hide();
-			$.each(data, function (key, value) {
+			$.each(data, function(key, value) {
 				if (value != "") {
 					$(".user-access").show();
 				}
@@ -656,13 +528,13 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 
 	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
 		$.post("/includes/checkDuplicate.php", {
-			tableName: tableName,
-			fieldName: fieldName,
-			value: obj.value.trim(),
-			fnct: fnct,
-			format: "html"
-		},
-			function (data) {
+				tableName: tableName,
+				fieldName: fieldName,
+				value: obj.value.trim(),
+				fnct: fnct,
+				format: "html"
+			},
+			function(data) {
 				if (data === '1') {
 					alert(alrt);
 					document.getElementById(obj.id).value = "";
@@ -670,7 +542,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 			});
 	}
 
-	$("input[type='radio']").click(function () {
+	$("input[type='radio']").click(function() {
 		var id = $(this).attr('id');
 		if (id == 'logAndAbsoluteInSameColumnYes') {
 			$("#absRow").hide();
@@ -738,7 +610,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 	}
 
 	function removeAttributeRow(el) {
-		$(el).fadeOut("slow", function () {
+		$(el).fadeOut("slow", function() {
 			el.parentNode.removeChild(el);
 			rl = document.getElementById("machineTable").rows.length;
 			if (rl == 0) {

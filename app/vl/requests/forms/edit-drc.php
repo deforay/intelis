@@ -293,34 +293,46 @@ $aResult = $db->query($aQuery);
 								</div>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
-										<td style="width:10%;"><label for="">Date de naissance </label></td>
-										<td style="width:15%;">
+										<td style="width: 15%; !important;"><label for="artNo">Code du patient <span class="mandatory">*</span></label>
+										</td>
+										<td style="width: 35%; !important;">
+											<input type="text" class="form-control isRequired" id="artNo" name="artNo"
+												placeholder="Code du patient"
+												title="<?= _("Please enter the Patient ID"); ?>"
+												value="<?= ($vlQueryInfo['patient_art_no']); ?>" style="width:100%;" />
+										</td>
+										<td style="width: 15%; !important;"><label for="">Date de naissance </label></td>
+										<td style="width: 35%; !important;">
 											<input type="text" class="form-control date" id="dob" name="dob"
 												placeholder="<?= _("Please enter date"); ?>"
 												title="Please select date de naissance"
 												onchange="getAge();checkARTInitiationDate();"
 												value="<?= ($vlQueryInfo['patient_dob']); ?>" style="width:100%;" />
 										</td>
-										<td style="width:6%;"><label for="ageInYears">Âge en années <span
+									</tr>
+									<tr>
+										<td style="width: 15%; !important;"><label for="ageInYears">Âge en années <span
 													class="mandatory">*</span></label></td>
-										<td style="width:19%;">
+										<td style="width: 35%; !important;">
 											<input type="text" class="form-control forceNumeric isRequired"
 												id="ageInYears" name="ageInYears" placeholder="Aannées"
 												title="<?= _("Please enter Patient age") ?>"
 												value="<?= ($vlQueryInfo['patient_age_in_years']); ?>"
 												onchange="clearDOB(this.value);" style="width:100%;" />
 										</td>
-										<td style="width:10%;"><label for="ageInMonths">Âge en mois </label></td>
-										<td style="width:15%;">
+										<td style="width: 15%; !important;"><label for="ageInMonths">Âge en mois </label></td>
+										<td style="width: 35%; !important;">
 											<input type="text" class="form-control forceNumeric" id="ageInMonths"
 												name="ageInMonths" placeholder="Mois" title="Please enter àge en mois"
 												value="<?= ($vlQueryInfo['patient_age_in_months']); ?>"
 												onchange="clearDOB(this.value);" style="width:100%;" />
 										</td>
-										<td style="width:10%;text-align:center;"><label for="sex">Sexe </label></td>
-										<td style="width:15%;">
+									</tr>
+									<tr>
+										<td style="width: 15%; !important;"><label for="sex">Sexe </label></td>
+										<td style="width: 35%; !important;">
 											<label class="radio-inline"
-												style="padding-left:12px !important;margin-left:0;">M</label>
+												style="padding-left:12px !important;margin-left:0;">&nbsp;&nbsp;M</label>
 											<label class="radio-inline"
 												style="width:4%;padding-bottom:22px;margin-left:0;">
 												<input type="radio" class="" id="genderMale" name="gender" value="male"
@@ -334,48 +346,8 @@ $aResult = $db->query($aQuery);
 													value="female" title="<?= _("Please select a gender"); ?>" <?php echo (trim($vlQueryInfo['patient_gender']) == "female") ? 'checked="checked"' : ''; ?>>
 											</label>
 										</td>
-									</tr>
-									<tr>
-										<td><label for="artNo">Code du patient <span class="mandatory">*</span></label>
-										</td>
-										<td>
-											<input type="text" class="form-control isRequired" id="artNo" name="artNo"
-												placeholder="Code du patient"
-												title="<?= _("Please enter the Patient ID"); ?>"
-												value="<?= ($vlQueryInfo['patient_art_no']); ?>" style="width:100%;" />
-										</td>
-										<td colspan="2"><label for="isPatientNew">Si S/ARV </label>
-											<label class="radio-inline"
-												style="padding-left:17px !important;margin-left:0;">Oui</label>
-											<label class="radio-inline"
-												style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="isPatientNewYes" name="isPatientNew"
-													<?php echo ($vlQueryInfo['is_patient_new'] == 'yes') ? 'checked="checked"' : ''; ?> value="yes"
-													title="Please check Si S/ ARV">
-											</label>
-											<label class="radio-inline"
-												style="padding-left:17px !important;margin-left:0;">Non</label>
-											<label class="radio-inline"
-												style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="isPatientNewNo" name="isPatientNew"
-													<?php echo ($vlQueryInfo['is_patient_new'] == 'no') ? 'checked="checked"' : ''; ?> value="no">
-											</label>
-										</td>
-										<td class="du"><label for="">Date du début des ARV </label></td>
-										<td class="du">
-											<input type="text" class="form-control date" id="dateOfArtInitiation"
-												name="dateOfArtInitiation" placeholder="<?= _("Please enter date"); ?>"
-												title="Please enter date du début des ARV"
-												value="<?php echo $vlQueryInfo['treatment_initiated_date']; ?>"
-												onchange="checkARTInitiationDate();checkLastVLTestDate();"
-												style="width:100%;" />&nbsp;(Jour/Mois/Année)
-										</td>
-										<td></td>
-										<td></td>
-									</tr>
-									<tr>
-										<td><label>Régime ARV en cours </label></td>
-										<td>
+										<td style="width: 15%; !important;"><label>Régime ARV en cours </label></td>
+										<td style="width: 35%; !important;">
 											<select class="form-control" name="artRegimen" id="artRegimen"
 												title="Please choose régime ARV en cours"
 												onchange="checkARTRegimenValue();" style="width:100%;">
@@ -393,25 +365,51 @@ $aResult = $db->query($aQuery);
 												title="Please enter régime ARV"
 												style="width:100%;margin-top:1vh;display:none;">
 										</td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
 									</tr>
 									<tr>
-										<td colspan="4">
+										<td style="width: 15%; !important;"><label for="isPatientNew">Si S/ARV </label></td>
+										<td style="width: 35%; !important;">
+											<label class="radio-inline"
+												style="padding-left:17px !important;margin-left:0;">Oui</label>
+											<label class="radio-inline"
+												style="width:4%;padding-bottom:22px;margin-left:0;">
+												<input type="radio" class="" id="isPatientNewYes" name="isPatientNew"
+													<?php echo ($vlQueryInfo['is_patient_new'] == 'yes') ? 'checked="checked"' : ''; ?> value="yes"
+													title="Please check Si S/ ARV">
+											</label>
+											<label class="radio-inline"
+												style="padding-left:17px !important;margin-left:0;">Non</label>
+											<label class="radio-inline"
+												style="width:4%;padding-bottom:22px;margin-left:0;">
+												<input type="radio" class="" id="isPatientNewNo" name="isPatientNew"
+													<?php echo ($vlQueryInfo['is_patient_new'] == 'no') ? 'checked="checked"' : ''; ?> value="no">
+											</label>
+										</td>
+										<td style="width: 15%; !important;" class="du"><label for="">Date du début des ARV </label></td>
+										<td style="width: 35%; !important;" class="du">
+											<input type="text" class="form-control date" id="dateOfArtInitiation"
+												name="dateOfArtInitiation" placeholder="<?= _("Please enter date"); ?>"
+												title="Please enter date du début des ARV"
+												value="<?php echo $vlQueryInfo['treatment_initiated_date']; ?>"
+												onchange="checkARTInitiationDate();checkLastVLTestDate();"
+												style="width:100%;" />&nbsp;(Jour/Mois/Année)
+										</td>
+									</tr>
+									<tr>
+										<td style="width: 15%;">
 											<label for="hasChangedRegimen">Ce patient a-t-il déjà changé de régime de
-												traitement? </label>
-											<br><label class="radio-inline">&nbsp;&nbsp;&nbsp;&nbsp;Oui </label>
+												traitement? </label></td>
+										<td style="width: 35%;">
+											<br><label class="radio-inline" 
+											           style="padding-left:17px !important;margin-left:0;">Oui </label>
 											<label class="radio-inline"
 												style="width:4%;padding-bottom:22px;margin-left:0;">
 												<input type="radio" class="" id="changedRegimenYes"
 													name="hasChangedRegimen" value="yes"
 													title="Please check any of one option" <?php echo (trim($vlQueryInfo['has_patient_changed_regimen']) == "yes") ? 'checked="checked"' : ''; ?>>
 											</label>
-											<label class="radio-inline">Non </label>
+											<label class="radio-inline" 
+											       style="padding-left:17px !important;margin-left:0;">Non </label>
 											<label class="radio-inline"
 												style="width:4%;padding-bottom:22px;margin-left:0;">
 												<input type="radio" class="" id="changedRegimenNo"
@@ -419,38 +417,32 @@ $aResult = $db->query($aQuery);
 													title="Please check any of one option" <?php echo (trim($vlQueryInfo['has_patient_changed_regimen']) == "no") ? 'checked="checked"' : ''; ?>>
 											</label>
 										</td>
-										<td colspan="2"><label for="reasonForArvRegimenChange" class="arvChangedElement"
-												style="display:<?php echo (trim($vlQueryInfo['has_patient_changed_regimen']) == "yes") ? '' : 'none'; ?>;">Motif
+									</tr>
+									<tr class="arvChangedElement" style="display:<?php echo (trim($vlQueryInfo['has_patient_changed_regimen']) == "yes") ? '' : 'none'; ?>;">
+										<td style="width: 15%;"><label for="reasonForArvRegimenChange" class="arvChangedElement">Motif
 												de changement de régime ARV </label></td>
-										<td colspan="2">
+										<td style="width: 35%;">
 											<input type="text" class="form-control arvChangedElement"
 												id="reasonForArvRegimenChange" name="reasonForArvRegimenChange"
 												placeholder="Motif de changement de régime ARV"
 												title="Please enter motif de changement de régime ARV"
 												value="<?php echo $vlQueryInfo['reason_for_regimen_change']; ?>"
-												style="width:100%;display:<?php echo (trim($vlQueryInfo['has_patient_changed_regimen']) == "yes") ? '' : 'none'; ?>;" />
+												style="width:100%;" />
 										</td>
-									</tr>
-									<tr class="arvChangedElement"
-										style="display:<?php echo (trim($vlQueryInfo['has_patient_changed_regimen']) == "yes") ? '' : 'none'; ?>;">
-										<td><label for="">Date du changement de régime ARV </label></td>
-										<td colspan="3">
-											<input type="text" class="form-control date" id="dateOfArvRegimenChange"
+										<td style="width: 15%;"><label for="" class="arvChangedElement">Date du changement de régime ARV </label></td>
+										<td style="width: 35%;">
+											<input type="text" class="form-control date arvChangedElement" id="dateOfArvRegimenChange"
 												name="dateOfArvRegimenChange"
 												placeholder="<?= _("Please enter date"); ?>"
 												title="Please enter date du changement de régime ARV"
 												value="<?php echo $vlQueryInfo['regimen_change_date']; ?>"
 												style="width:100%;" />&nbsp;(Jour/Mois/Année)
 										</td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
 									</tr>
 									<tr>
-										<td><label for="reasonForRequest">Motif de la demande <span
+										<td style="width: 15%;"><label for="reasonForRequest">Motif de la demande <span
 													class="mandatory">*</span></label></td>
-										<td colspan="3">
+										<td style="width: 35%;">
 											<select name="reasonForVLTesting" id="reasonForVLTesting"
 												class="form-control isRequired"
 												title="Please choose motif de la demande"
@@ -464,102 +456,18 @@ $aResult = $db->query($aQuery);
 												<?php } ?>
 											</select>
 										</td>
-										<td style="text-align:center;"><label for="viralLoadNo">Charge virale N </label>
+										<td style="width: 15%;"><label for="viralLoadNo">Charge virale N </label>
 										</td>
-										<td colspan="3">
+										<td style="width: 35%;">
 											<input type="text" class="form-control" id="viralLoadNo" name="viralLoadNo"
 												placeholder="Charge virale N" title="Please enter charge virale N"
 												value="<?php echo $vlQueryInfo['vl_test_number']; ?>"
 												style="width:100%;" />
 										</td>
 									</tr>
-									<tr class="newreasonForVLTesting" style="display:none;">
-										<td><label for="newreasonForVLTesting">Autre, à préciser <span
-													class="mandatory">*</span></label></td>
-										<td colspan="3">
-											<input type="text" class="form-control" name="newreasonForVLTesting"
-												id="newreasonForVLTesting" placeholder="Virale Demande Raison"
-												title="Please enter virale demande raison" style="width:100%;">
-										</td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-									</tr>
-									<tr id="femaleElements">
-										<td><strong>Si Femme : </strong></td>
-										<td colspan="2">
-											<label for="breastfeeding">allaitante?</label>
-											<label class="radio-inline"
-												style="padding-left:17px !important;margin-left:0;">Oui</label>
-											<label class="radio-inline"
-												style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="breastfeedingYes" name="breastfeeding"
-													<?php echo (trim($vlQueryInfo['is_patient_breastfeeding']) == "yes") ? 'checked="checked"' : ''; ?> value="yes"
-													title="Please check Si allaitante">
-											</label>
-											<label class="radio-inline"
-												style="padding-left:0px !important;margin-left:0;">Non</label>
-											<label class="radio-inline"
-												style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="breastfeedingNo" name="breastfeeding"
-													<?php echo (trim($vlQueryInfo['is_patient_breastfeeding']) == "no") ? 'checked="checked"' : ''; ?> value="no">
-											</label>
-										</td>
-										<td colspan="5"><label for="patientPregnant">Ou enceinte ? </label>
-											<label class="radio-inline"
-												style="padding-left:17px !important;margin-left:0;">Oui</label>
-											<label class="radio-inline"
-												style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="pregYes" name="patientPregnant" <?php echo (trim($vlQueryInfo['is_patient_pregnant']) == "yes") ? 'checked="checked"' : ''; ?> value="yes"
-													title="Please check Si Ou enceinte ">
-											</label>
-											<label class="radio-inline"
-												style="padding-left:0px !important;margin-left:0;">Non</label>
-											<label class="radio-inline"
-												style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="pregNo" name="patientPregnant" <?php echo (trim($vlQueryInfo['is_patient_pregnant']) == "no") ? 'checked="checked"' : ''; ?> value="no">
-											</label>&nbsp;&nbsp;&nbsp;&nbsp;
-											<label for="trimester">Si Femme enceinte </label>
-											<label class="radio-inline"
-												style="padding-left:17px !important;margin-left:0;">Trimestre 1</label>
-											<label class="radio-inline"
-												style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" id="trimester1" name="trimester" <?php echo (trim($vlQueryInfo['pregnancy_trimester']) == "1") ? 'checked="checked"' : ''; ?> value="1"
-													title="Please check trimestre">
-											</label>
-											<label class="radio-inline"
-												style="padding-left:0px !important;margin-left:0;">Trimestre 2</label>
-											<label class="radio-inline"
-												style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" id="trimester2" name="trimester" <?php echo (trim($vlQueryInfo['pregnancy_trimester']) == "2") ? 'checked="checked"' : ''; ?> value="2">
-											</label>
-											<label class="radio-inline"
-												style="padding-left:0px !important;margin-left:0;">Trimestre 3</label>
-											<label class="radio-inline"
-												style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" id="trimester3" name="trimester" <?php echo (trim($vlQueryInfo['pregnancy_trimester']) == "3") ? 'checked="checked"' : ''; ?> value="3">
-											</label>
-										</td>
-									</tr>
 									<tr>
-										<td><label for="lastViralLoadResult">Résultat dernière charge virale </label>
-										</td>
-										<td colspan="3">
-											<input type="text" class="form-control" id="lastViralLoadResult"
-												name="lastViralLoadResult" placeholder="Résultat dernière charge virale"
-												title="Please enter résultat dernière charge virale"
-												value="<?php echo $vlQueryInfo['last_viral_load_result']; ?>"
-												style="width:100%;" />
-										</td>
-										<td>copies/ml</td>
-										<td></td>
-										<td></td>
-										<td></td>
-									</tr>
-									<tr>
-										<td><label for="">Date dernière charge virale (demande) </label></td>
-										<td colspan="3">
+										<td style="width: 15%;"><label for="">Date dernière charge virale (demande) </label></td>
+										<td style="width: 35%;">
 											<input type="text" class="form-control date" id="lastViralLoadTestDate"
 												name="lastViralLoadTestDate"
 												placeholder="<?= _("Please enter date"); ?>"
@@ -567,10 +475,52 @@ $aResult = $db->query($aQuery);
 												value="<?php echo $vlQueryInfo['last_viral_load_date']; ?>"
 												onchange="checkLastVLTestDate();" style="width:100%;" />
 										</td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
+										<td style="width: 15%;"><label for="lastViralLoadResult">Résultat dernière charge virale </label>
+										</td>
+										<td style="width: 35%;">
+											<input type="text" class="form-control" id="lastViralLoadResult"
+												name="lastViralLoadResult" placeholder="Résultat dernière charge virale"
+												title="Please enter résultat dernière charge virale"
+												value="<?php echo $vlQueryInfo['last_viral_load_result']; ?>"
+												style="width:100%;" />copies/ml
+										</td>
+									</tr>
+									<tr id="femaleElements">
+										<td style="width:10%; !important;"><strong>Si Femme : </strong></td>
+										<td colspan="1">
+											<label for="breastfeeding">allaitante ?</label>
+											<select class="form-control" id="breastfeeding" name="breastfeeding" title="Please check Si allaitante">
+												<option value=""> -- Select -- </option>
+												<option id="breastfeedingYes" <?php echo (trim($vlQueryInfo['is_patient_breastfeeding']) == "yes") ? 'selected="selected"' : ''; ?> value="yes">Oui</option>
+												<option id="breastfeedingNo" <?php echo (trim($vlQueryInfo['is_patient_breastfeeding']) == "no") ? 'selected="selected"' : ''; ?> value="no">Non</option>
+											</select>
+										</td>
+										<td colspan="1">
+											<label for="patientPregnant">Ou enceinte ?</label>
+											<select class="form-control" id="pregnant" name="patientPregnant" title="Please check Si Ou enceinte ">
+												<option value=""> -- Select -- </option>
+												<option id="pregYes" <?php echo (trim($vlQueryInfo['is_patient_pregnant']) == "yes") ? 'selected="selected"' : ''; ?> value="yes">Oui</option>
+												<option id="pregNo" <?php echo (trim($vlQueryInfo['is_patient_pregnant']) == "no") ? 'selected="selected"' : ''; ?> value="no">Non</option>
+											</select>
+										</td>
+										<td colspan="1">
+											<label for="trimester">Si Femme enceinte :</label>
+											<select class="form-control" id="trimester" name="trimester" title="Please check trimestre">
+												<option value=""> -- Select -- </option>
+												<option id="trimester1" <?php echo (trim($vlQueryInfo['pregnancy_trimester']) == "1") ? 'selected="selected"' : ''; ?> value="1">Trimestre 1</option>
+												<option id="trimester2" <?php echo (trim($vlQueryInfo['pregnancy_trimester']) == "2") ? 'selected="selected"' : ''; ?> value="2">Trimestre 2</option>
+												<option id="trimester3" <?php echo (trim($vlQueryInfo['pregnancy_trimester']) == "3") ? 'selected="selected"' : ''; ?> value="3">Trimestre 3</option>
+											</select>
+										</td>
+									</tr>
+									<tr class="newreasonForVLTesting" style="display:none;">
+										<td style="width: 15%;"><label for="newreasonForVLTesting">Autre, à préciser <span
+													class="mandatory">*</span></label></td>
+										<td style="width: 35%;">
+											<input type="text" class="form-control" name="newreasonForVLTesting"
+												id="newreasonForVLTesting" placeholder="Virale Demande Raison"
+												title="Please enter virale demande raison" style="width:100%;" value="<?php echo $vlQueryInfo['reason_for_vl_testing_other']; ?>">
+										</td>
 									</tr>
 									<tr>
 										<td colspan="8"><label class="radio-inline" style="margin:0;padding:0;">A
@@ -955,6 +905,7 @@ $aResult = $db->query($aQuery);
 			minDate: minDate,
 			startDate: minDate,
 		});
+		checkreasonForVLTesting();
 	});
 
 

@@ -10,8 +10,8 @@ $primaryKey = "api_track_id";
  * you want to insert a non-database field (for example a counter or static image)
  */
 
-$aColumns = array('api_params', "DATE_FORMAT(requested_on,'%d-%b-%Y')", 'number_of_records', 'request_type');
-$oColumns = array('api_params', 'requested_on', 'number_of_records', 'request_type');
+$aColumns = array('l.facility_name', "DATE_FORMAT(requested_on,'%d-%b-%Y')", 'number_of_records', 'request_type');
+$oColumns = array('l.facility_name', 'requested_on', 'number_of_records', 'request_type');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -90,11 +90,11 @@ for ($i = 0; $i < count($aColumns); $i++) {
  */
 
 $sQuery = "SELECT tar.*, l.facility_name as labName FROM $tableName AS tar
-            LEFT JOIN facility_details as l ON l.facility_id=tar.api_params
+            LEFT JOIN facility_details as l ON l.facility_id=tar.facility_id
             WHERE request_type IN('results', 'requests')";
 
 if (!empty($sWhere)) {
-    $sWhere = ' WHERE ' . $sWhere;
+    $sWhere = ' AND ' . $sWhere;
     $sQuery = $sQuery . ' ' . $sWhere;
 }
 
@@ -110,7 +110,7 @@ if (isset($sLimit) && isset($sOffset)) {
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 
-$aResultFilterTotal = $db->rawQuery("SELECT * FROM $tableName $sWhere order by $sOrder");
+$aResultFilterTotal = $db->rawQuery("SELECT * FROM $tableName as tar LEFT JOIN facility_details as l ON l.facility_id=tar.facility_id $sWhere order by $sOrder");
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */

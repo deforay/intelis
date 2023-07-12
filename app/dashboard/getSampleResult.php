@@ -83,10 +83,17 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $samplesRejectedChart = "tbSamplesRejectedChart";
     $samplesWaitingChart = "tbSamplesWaitingChart";
     $samplesOverviewChart = "tbSamplesOverviewChart";
+} elseif (isset($_POST['type']) && trim($_POST['type']) == 'generic-tests') {
+    $table = "form_generic";
+    $primaryKey = "sample_id";
+    $samplesReceivedChart = "genericTestsSamplesReceivedChart";
+    $samplesTestedChart = "genericTestsSamplesTestedChart";
+    $samplesRejectedChart = "genericTestsSamplesRejectedChart";
+    $samplesWaitingChart = "genericTestsSamplesWaitingChart";
+    $samplesOverviewChart = "genericTestsSamplesOverviewChart";
 }
 
 $systemType = $general->getSystemConfig('sc_user_type');
-
 if ($systemType != 'remoteuser') {
     $whereCondition = " result_status!= " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "  AND ";
 } else {
@@ -167,6 +174,15 @@ if ($table == "form_eid") {
                         AND (vl.is_sample_rejected like 'no'
                                 OR vl.is_sample_rejected is null
                                 OR vl.is_sample_rejected = '' )";
+} elseif ($table == "form_generic") {
+    $waitingQuery = "SELECT COUNT(sample_id) as total
+                        FROM $table as generic
+                        LEFT JOIN facility_details as f ON f.facility_id=generic.facility_id
+                        WHERE $whereCondition (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
+                        AND (generic.result is null or generic.result = '')
+                        AND (generic.is_sample_rejected like 'no'
+                                    OR generic.is_sample_rejected is null
+                                    OR generic.is_sample_rejected like '' )";
 }
 
 $waitingResult[$i] = $db->rawQuery($waitingQuery); //waiting result
@@ -191,6 +207,9 @@ if ($table == "form_eid") {
 } elseif ($table == "form_tb") {
     $accessionQuery = 'SELECT DATE(tb.sample_collection_date) as `collection_date`, COUNT(tb_id) as `count` FROM ' . $table . ' as tb LEFT JOIN facility_details as f ON f.facility_id=tb.facility_id WHERE ' . $whereCondition . ' DATE(tb.sample_collection_date) <= "' . $cDate . '" AND DATE(tb.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
     $primaryKey = "tb_id";
+} elseif ($table == "form_generic") {
+    $accessionQuery = 'SELECT DATE(generic.sample_collection_date) as `collection_date`, COUNT(sample_id) as `count` FROM ' . $table . ' as generic LEFT JOIN facility_details as f ON f.facility_id=generic.facility_id WHERE ' . $whereCondition . ' DATE(generic.sample_collection_date) <= "' . $cDate . '" AND DATE(generic.sample_collection_date) >= "' . $lastSevenDay . '" GROUP BY `collection_date` order by `collection_date`';
+    $primaryKey = "sample_id";
 } else {
     if ($whereCondition == "") {
         $vlWhereCondition = $recencyWhere . " AND ";
@@ -237,6 +256,8 @@ if ($table == "form_eid") {
     $sampleTestedQuery = 'SELECT DATE(req.sample_tested_datetime) as `test_date`, COUNT(hepatitis_id) as `count` FROM ' . $table . ' as req JOIN facility_details as f ON f.facility_id=req.facility_id  INNER JOIN facility_details as l_f ON req.lab_id=l_f.facility_id WHERE (result_status = 7) AND ' . $whereCondition . ' DATE(req.sample_tested_datetime) <= "' . $cDate . '" AND DATE(req.sample_tested_datetime) >= "' . $lastSevenDay . '" group by `test_date` order by `test_date`';
 } elseif ($table == "form_tb") {
     $sampleTestedQuery = 'SELECT DATE(tb.sample_tested_datetime) as `test_date`, COUNT(tb_id) as `count` FROM ' . $table . ' as tb JOIN facility_details as f ON f.facility_id=tb.facility_id  INNER JOIN facility_details as l_f ON tb.lab_id=l_f.facility_id WHERE (result_status = 7) AND ' . $whereCondition . ' DATE(tb.sample_tested_datetime) <= "' . $cDate . '" AND DATE(tb.sample_tested_datetime) >= "' . $lastSevenDay . '" group by `test_date` order by `test_date`';
+} elseif ($table == "form_generic") {
+    $sampleTestedQuery = 'SELECT DATE(generic.sample_tested_datetime) as `test_date`, COUNT(sample_id) as `count` FROM ' . $table . ' as generic JOIN facility_details as f ON f.facility_id=generic.facility_id  INNER JOIN facility_details as l_f ON generic.lab_id=l_f.facility_id WHERE (result_status = 7) AND ' . $whereCondition . ' DATE(generic.sample_tested_datetime) <= "' . $cDate . '" AND DATE(generic.sample_tested_datetime) >= "' . $lastSevenDay . '" group by `test_date` order by `test_date`';
 } else {
     if ($whereCondition == "") {
         $vlWhereCondition = $recencyWhere . " AND ";
@@ -245,7 +266,6 @@ if ($table == "form_eid") {
     }
     $sampleTestedQuery = "SELECT DATE(vl.sample_tested_datetime) as `test_date`, COUNT(vl_sample_id) as `count` FROM $table as vl LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id WHERE (result_status = 7) AND $vlWhereCondition DATE(vl.sample_tested_datetime) BETWEEN '$lastSevenDay' AND '$cDate' GROUP BY `sample_tested_datetime` ORDER BY `sample_tested_datetime`";
 }
-
 $tRes = $db->rawQuery($sampleTestedQuery); //overall result
 $acceptedResult = [];
 $acceptedTotal = 0;
@@ -263,6 +283,8 @@ if ($table == "form_eid") {
     $sampleRejectedQuery = 'SELECT DATE(req.sample_collection_date) as `collection_date`, COUNT(hepatitis_id) as `count` FROM ' . $table . ' as req JOIN facility_details as f ON f.facility_id=req.facility_id  INNER JOIN facility_details as l_f ON req.lab_id=l_f.facility_id WHERE (result_status = 4) AND  ' . $whereCondition . ' DATE(req.sample_collection_date) <= "' . $cDate . '" AND DATE(req.sample_collection_date) >= "' . $lastSevenDay . '" group by `collection_date` order by `collection_date`';
 } elseif ($table == "form_tb") {
     $sampleRejectedQuery = 'SELECT DATE(tb.sample_collection_date) as `collection_date`, COUNT(tb_id) as `count` FROM ' . $table . ' as tb JOIN facility_details as f ON f.facility_id=tb.facility_id  INNER JOIN facility_details as l_f ON tb.lab_id=l_f.facility_id WHERE (result_status = 4) AND  ' . $whereCondition . ' DATE(tb.sample_collection_date) <= "' . $cDate . '" AND DATE(tb.sample_collection_date) >= "' . $lastSevenDay . '" group by `collection_date` order by `collection_date`';
+} elseif ($table == "form_generic") {
+    $sampleRejectedQuery = 'SELECT DATE(generic.sample_collection_date) as `collection_date`, COUNT(sample_id) as `count` FROM ' . $table . ' as generic JOIN facility_details as f ON f.facility_id=generic.facility_id  INNER JOIN facility_details as l_f ON generic.lab_id=l_f.facility_id WHERE (result_status = 4) AND  ' . $whereCondition . ' DATE(generic.sample_collection_date) <= "' . $cDate . '" AND DATE(generic.sample_collection_date) >= "' . $lastSevenDay . '" group by `collection_date` order by `collection_date`';
 } else {
     if ($whereCondition == "") {
         $vlWhereCondition = $recencyWhere . " AND ";
@@ -487,14 +509,14 @@ if ($table == "form_covid19") {
                 showInLegend: false,
                 name: 'Samples',
                 data: [<?php
-                foreach ($tResult as $tRow) {
-                    echo ($tRow['total']) . ",";
-                }
-                ?>]
+                        foreach ($tResult as $tRow) {
+                            echo ($tRow['total']) . ",";
+                        }
+                        ?>]
 
-                                                                                                                                                                                                                                                                        }],
-        colors: ['#2ab4c0'],
-                                                                                                                                                                                                                                                                    });
+            }],
+            colors: ['#2ab4c0'],
+        });
     <?php }
     //waiting result
     if ($waitingTotal > 0) { ?>
@@ -514,110 +536,110 @@ if ($table == "form_covid19") {
             },
             xAxis: {
                 categories: [<?php
-                foreach ($waitingResult as $total) {
-                    echo "'" . ($total['date']) . "',";
-                }
-                ?>],
-            crosshair: true,
-            scrollbar: {
-                enabled: true
+                                foreach ($waitingResult as $total) {
+                                    echo "'" . ($total['date']) . "',";
+                                }
+                                ?>],
+                crosshair: true,
+                scrollbar: {
+                    enabled: true
+                },
             },
-        },
             yAxis: {
-            min: 0,
-            title: {
-                text: null
-            }
-        },
+                min: 0,
+                title: {
+                    text: null
+                }
+            },
             tooltip: {
-            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
-            footerFormat: '</table>',
-            shared: true,
-            useHTML: true
-        },
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
             plotOptions: {
-            column: {
-                pointPadding: 0.2,
-                borderWidth: 0,
-                cursor: 'pointer',
-            }
-        },
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0,
+                    cursor: 'pointer',
+                }
+            },
             series: [{
                 showInLegend: false,
                 name: 'Samples',
                 data: [<?php
-                foreach ($waitingResult as $total) {
-                    echo ($total[0]['total']) . ",";
-                }
-                ?>]
+                        foreach ($waitingResult as $total) {
+                            echo ($total[0]['total']) . ",";
+                        }
+                        ?>]
 
             }],
-    colors: ['#8877a9']
+            colors: ['#8877a9']
         });
     <?php }
     if ($acceptedTotal > 0) {
-        ?>
+    ?>
 
-                $('#<?php echo $samplesTestedChart; ?>').highcharts({
-                    chart: {
-                        type: 'column',
-                        height: 150
-                    },
-                    title: {
-                        text: ''
-                    },
-                    subtitle: {
-                        text: ''
-                    },
-                    credits: {
-                        enabled: false
-                    },
-                    xAxis: {
-                        categories: [<?php
-                        foreach ($acceptedResult as $tRow) {
-                            echo "'" . ($tRow['date']) . "',";
-                        }
-                        ?>],
-                    crosshair: true,
-                    scrollbar: {
-                        enabled: true
-                    },
+        $('#<?php echo $samplesTestedChart; ?>').highcharts({
+            chart: {
+                type: 'column',
+                height: 150
+            },
+            title: {
+                text: ''
+            },
+            subtitle: {
+                text: ''
+            },
+            credits: {
+                enabled: false
+            },
+            xAxis: {
+                categories: [<?php
+                                foreach ($acceptedResult as $tRow) {
+                                    echo "'" . ($tRow['date']) . "',";
+                                }
+                                ?>],
+                crosshair: true,
+                scrollbar: {
+                    enabled: true
                 },
-                    yAxis: {
-                    min: 0,
-                    title: {
-                        text: null
-                    }
-                },
-                    tooltip: {
-                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                        '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
-                    footerFormat: '</table>',
-                    shared: true,
-                    useHTML: true
-                },
-                    plotOptions: {
-                    column: {
-                        pointPadding: 0.2,
-                        borderWidth: 0,
-                        cursor: 'pointer',
-                    }
-                },
-                    series: [{
-                        showInLegend: false,
-                        name: 'Samples',
-                        data: [<?php
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: null
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0,
+                    cursor: 'pointer',
+                }
+            },
+            series: [{
+                showInLegend: false,
+                name: 'Samples',
+                data: [<?php
                         foreach ($acceptedResult as $tRow) {
                             echo ($tRow['total']) . ",";
                         }
                         ?>]
 
-                                                                                                                                                                                                                                                                        }],
-        colors: ['#7cb72a']
-                                                                                                                                                                                                                                                                    });
+            }],
+            colors: ['#7cb72a']
+        });
     <?php }
 
     if ($rejectedTotal > 0) { ?>
@@ -637,47 +659,47 @@ if ($table == "form_covid19") {
             },
             xAxis: {
                 categories: [<?php
-                foreach ($rejectedResult as $tRow) {
-                    echo "'" . ($tRow['date']) . "',";
-                }
-                ?>],
-            crosshair: true,
-            scrollbar: {
-                enabled: true
+                                foreach ($rejectedResult as $tRow) {
+                                    echo "'" . ($tRow['date']) . "',";
+                                }
+                                ?>],
+                crosshair: true,
+                scrollbar: {
+                    enabled: true
+                },
             },
-        },
             yAxis: {
-            min: 0,
-            title: {
-                text: null
-            }
-        },
+                min: 0,
+                title: {
+                    text: null
+                }
+            },
             tooltip: {
-            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
-            footerFormat: '</table>',
-            shared: true,
-            useHTML: true
-        },
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
             plotOptions: {
-            column: {
-                pointPadding: 0.2,
-                borderWidth: 0,
-                cursor: 'pointer',
-            }
-        },
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0,
+                    cursor: 'pointer',
+                }
+            },
             series: [{
                 showInLegend: false,
                 name: "<?php echo _("Samples"); ?>",
                 data: [<?php
-                foreach ($rejectedResult as $tRow) {
-                    echo ($tRow['total']) . ",";
-                }
-                ?>]
+                        foreach ($rejectedResult as $tRow) {
+                            echo ($tRow['total']) . ",";
+                        }
+                        ?>]
 
             }],
-    colors: ['#5C9BD1']
+            colors: ['#5C9BD1']
         });
     <?php }
     //}
@@ -722,7 +744,7 @@ if ($table == "form_covid19") {
             },
 
             tooltip: {
-                formatter: function () {
+                formatter: function() {
                     return '<strong>' + this.x + '</strong><br/>' +
                         this.series.name + ': ' + this.y + '<br/>' +
                         'Total: ' + this.point.stackTotal;
@@ -743,32 +765,32 @@ if ($table == "form_covid19") {
                 name: 'Sample',
                 showInLegend: false,
                 data: [{
-                    y: <?php echo (isset($aggregateResult['tested'])) ? $aggregateResult['tested'] : 0; ?>,
+                        y: <?php echo (isset($aggregateResult['tested'])) ? $aggregateResult['tested'] : 0; ?>,
                         color: '#039BE6'
-    },
-    {
-        y: <?php echo (isset($aggregateResult['rejected'])) ? $aggregateResult['rejected'] : 0; ?>,
-            color: '#492828'
-    },
-    {
-        y: <?php echo (isset($aggregateResult['hold'])) ? $aggregateResult['hold'] : 0; ?>,
-            color: '#60d18f'
-    },
-    {
-        y: <?php echo (isset($aggregateResult['registeredAtTestingLab'])) ? $aggregateResult['registeredAtTestingLab'] : 0; ?>,
-            color: '#ff1900'
-    },
-    {
-        y: <?php echo (isset($aggregateResult['awaitingApproval'])) ? $aggregateResult['awaitingApproval'] : 0; ?>,
-            color: '#395B64'
-    },
-    {
-        y: <?php echo (isset($aggregateResult['registeredAtCollectionPoint'])) ? $aggregateResult['registeredAtCollectionPoint'] : 0; ?>,
-            color: '#2C3333'
-    }
+                    },
+                    {
+                        y: <?php echo (isset($aggregateResult['rejected'])) ? $aggregateResult['rejected'] : 0; ?>,
+                        color: '#492828'
+                    },
+                    {
+                        y: <?php echo (isset($aggregateResult['hold'])) ? $aggregateResult['hold'] : 0; ?>,
+                        color: '#60d18f'
+                    },
+                    {
+                        y: <?php echo (isset($aggregateResult['registeredAtTestingLab'])) ? $aggregateResult['registeredAtTestingLab'] : 0; ?>,
+                        color: '#ff1900'
+                    },
+                    {
+                        y: <?php echo (isset($aggregateResult['awaitingApproval'])) ? $aggregateResult['awaitingApproval'] : 0; ?>,
+                        color: '#395B64'
+                    },
+                    {
+                        y: <?php echo (isset($aggregateResult['registeredAtCollectionPoint'])) ? $aggregateResult['registeredAtCollectionPoint'] : 0; ?>,
+                        color: '#2C3333'
+                    }
                 ],
-    stack: 'total',
-        color: 'red',
+                stack: 'total',
+                color: 'red',
             }]
         });
     <?php } ?>
