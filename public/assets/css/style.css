@@ -81,6 +81,10 @@ form table tr td>label,
     font-weight: bold !important;
 }
 
+.requestCountDataTable thead th,
+.requestCountDataTable tbody td {
+    vertical-align: middle !important;
+}
 
 .resultInputContainer {
     position: relative;

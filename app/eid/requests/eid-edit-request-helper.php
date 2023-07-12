@@ -51,11 +51,11 @@ try {
 		$_POST['sampleDispatchedDate'] = null;
 	}
 
-	if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
-		$approvedOn = explode(" ", $_POST['approvedOn']);
-		$_POST['approvedOn'] = DateUtility::isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
+	if (isset($_POST['approvedOnDateTime']) && trim($_POST['approvedOnDateTime']) != "") {
+		$approvedOnDateTime = explode(" ", $_POST['approvedOnDateTime']);
+		$_POST['approvedOnDateTime'] = DateUtility::isoDateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
 	} else {
-		$_POST['approvedOn'] = null;
+		$_POST['approvedOnDateTime'] = null;
 	}
 
 
@@ -338,7 +338,7 @@ try {
 		'tested_by' => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] : null,
 		'lab_tech_comments' => (isset($_POST['labTechCmt']) && $_POST['labTechCmt'] != '') ? $_POST['labTechCmt'] : null,
 		'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] : null,
-		'result_approved_datetime' => $_POST['approvedOn'] ?? null,
+		'result_approved_datetime' => $_POST['approvedOnDateTime'] ?? null,
 		'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : null,
 		'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
 		'reason_for_changing' => (!empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,

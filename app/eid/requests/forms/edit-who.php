@@ -620,7 +620,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             <td style="width:25%;">
                                                 <input type="text"
                                                     value="<?php echo $eidInfo['result_approved_datetime']; ?>"
-                                                    class="form-control dateTime" id="approvedOn" name="approvedOn"
+                                                    class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime"
                                                     placeholder="<?= _("Please enter date"); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;"
                                                     title="Please select approved on" />
                                             </td>

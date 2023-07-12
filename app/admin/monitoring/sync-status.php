@@ -61,10 +61,16 @@ $activeModules = SystemService::getActiveModules();
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><em class="fa-solid fa-traffic-light"></em> <?php echo _("Lab Sync Status"); ?></h1>
+        <h1><em class="fa-solid fa-traffic-light"></em>
+            <?php echo _("Lab Sync Status"); ?>
+        </h1>
         <ol class="breadcrumb">
-            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-            <li class="active"><?php echo _("Lab Sync Status"); ?></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em>
+                    <?php echo _("Home"); ?>
+                </a></li>
+            <li class="active">
+                <?php echo _("Lab Sync Status"); ?>
+            </li>
         </ol>
     </section>
 
@@ -73,24 +79,35 @@ $activeModules = SystemService::getActiveModules();
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
-                    <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+                    <table aria-describedby="table" class="table" aria-hidden="true"
+                        style="margin-left:1%;margin-top:20px;width:98%;">
                         <tr>
-                            <td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+                            <td><strong>
+                                    <?php echo _("Province/State"); ?>&nbsp;:
+                                </strong></td>
                             <td>
-                                <select name="province" id="province" onchange="getDistrictByProvince(this.value)" class="form-control" title="<?php echo _('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
+                                <select name="province" id="province" onchange="getDistrictByProvince(this.value)"
+                                    class="form-control" title="<?php echo _('Please choose Province/State/Region'); ?>"
+                                    onkeyup="searchVlRequestData()">
                                     <?= $general->generateSelectOptions($stateNameList, null, _("-- Select --")); ?>
                                 </select>
                             </td>
-                            <td><strong><?php echo _("District/County"); ?> :</strong></td>
+                            <td><strong>
+                                    <?php echo _("District/County"); ?> :
+                                </strong></td>
                             <td>
-                                <select class="form-control" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>">
+                                <select class="form-control" id="district" name="district"
+                                    title="<?php echo _('Please select Province/State'); ?>">
                                 </select>
                             </td>
                         </tr>
                         <tr>
-                            <td><strong><?php echo _("Lab Name"); ?>&nbsp;:</strong></td>
+                            <td><strong>
+                                    <?php echo _("Lab Name"); ?>&nbsp;:
+                                </strong></td>
                             <td>
-                                <select class="form-control select2" id="labName" name="labName" title="<?php echo _('Please select the Lab name'); ?>">
+                                <select class="form-control select2" id="labName" name="labName"
+                                    title="<?php echo _('Please select the Lab name'); ?>">
                                     <?php echo $general->generateSelectOptions($labNameList, null, '--Select--'); ?>
                                 </select>
                             </td>
@@ -121,28 +138,49 @@ $activeModules = SystemService::getActiveModules();
                         </tr>
                         <tr>
                             <td colspan="4">
-                                &nbsp;<a class="btn btn-success pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportSyncStatus();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp; <?php echo _("Export Excel"); ?></a>
-                                &nbsp;<button class="btn btn-danger pull-right" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
-                                <input type="button" onclick="loadData();" value="<?php echo _('Search'); ?>" class="btn btn-default pull-right">
+                                &nbsp;<a class="btn btn-success pull-right" style="margin-right:5px;"
+                                    href="javascript:void(0);" onclick="exportSyncStatus();"><em
+                                        class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
+                                    <?php echo _("Export Excel"); ?>
+                                </a>
+                                &nbsp;<button class="btn btn-danger pull-right"
+                                    onclick="document.location.href = document.location"><span>
+                                        <?= _('Reset'); ?>
+                                    </span></button>
+                                <input type="button" onclick="loadData();" value="<?= _('Search'); ?>"
+                                    class="btn btn-default pull-right">
                             </td>
                         </tr>
                     </table>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table aria-describedby="table" id="syncStatusDataTable" class="table table-bordered table-striped table-hover" aria-hidden="true">
+                        <table aria-describedby="table" id="syncStatusDataTable"
+                            class="table table-bordered table-striped table-hover" aria-hidden="true">
                             <thead>
                                 <tr>
-                                    <th class="center"><?php echo _("Lab Name"); ?></th>
+                                    <th class="center">
+                                        <?php echo _("Lab Name"); ?>
+                                    </th>
                                     <!-- <th><?php echo _("Request Type"); ?></th> -->
-                                    <th class="center"><?php echo _("Last Synced on"); ?></th>
-                                    <th class="center"><?php echo _("Last Results Sync from Lab"); ?></th>
-                                    <th class="center"><?php echo _("Last Requests Sync from STS"); ?></th>
-                                    <th class="center"><?php echo _("Version"); ?></th>
+                                    <th class="center">
+                                        <?php echo _("Last Synced on"); ?>
+                                    </th>
+                                    <th class="center">
+                                        <?php echo _("Last Results Sync from Lab"); ?>
+                                    </th>
+                                    <th class="center">
+                                        <?php echo _("Last Requests Sync from STS"); ?>
+                                    </th>
+                                    <th class="center">
+                                        <?php echo _("Version"); ?>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody id="syncStatusTable">
                                 <tr>
-                                    <td colspan="4" class="dataTables_empty"><?php echo _("No data available"); ?></td>
+                                    <td colspan="4" class="dataTables_empty">
+                                        <?php echo _("No data available"); ?>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -160,7 +198,7 @@ $activeModules = SystemService::getActiveModules();
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
     var oTable = null;
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('#labName').select2({
             width: '100%',
             placeholder: "Select Testing Lab"
@@ -177,7 +215,7 @@ $activeModules = SystemService::getActiveModules();
         });
         loadData();
 
-        $('#syncStatusDataTable tbody').on('click', 'tr', function() {
+        $('#syncStatusDataTable tbody').on('click', 'tr', function () {
             let facilityId = $(this).attr('data-facilityId');
             let link = "lab-sync-details.php?labId=" + facilityId;
             window.open(link);
@@ -187,12 +225,12 @@ $activeModules = SystemService::getActiveModules();
     function loadData() {
         $.blockUI();
         $.post("/admin/monitoring/get-sync-status.php", {
-                province: $('#province').val(),
-                district: $('#district').val(),
-                labName: $('#labName').val(),
-                testType: $('#testType').val()
-            },
-            function(data) {
+            province: $('#province').val(),
+            district: $('#district').val(),
+            labName: $('#labName').val(),
+            testType: $('#testType').val()
+        },
+            function (data) {
                 $("#syncStatusTable").html(data);
                 //$('#syncStatusDataTable').dataTable();
                 $.unblockUI();
@@ -207,10 +245,10 @@ $activeModules = SystemService::getActiveModules();
     function getDistrictByProvince(provinceId) {
         $("#district").html('');
         $.post("/common/get-by-province-id.php", {
-                provinceId: provinceId,
-                districts: true,
-            },
-            function(data) {
+            provinceId: provinceId,
+            districts: true,
+        },
+            function (data) {
                 Obj = $.parseJSON(data);
                 $("#district").html(Obj['districts']);
             });
@@ -219,7 +257,7 @@ $activeModules = SystemService::getActiveModules();
     function exportSyncStatus() {
         $.blockUI();
         $.post("generate-lab-sync-status-report.php", {},
-            function(data) {
+            function (data) {
                 $.unblockUI();
                 if (data === "" || data === null || data === undefined) {
                     alert("<?php echo _("Unable to generate the excel file"); ?>");

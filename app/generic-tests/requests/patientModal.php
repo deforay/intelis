@@ -21,7 +21,7 @@ $testType = urldecode($_GET['testType']);
 
 
 $db->join("facility_details fd", "fd.facility_id=vl.facility_id", "LEFT");
-$db->where("patient_art_no LIKE ?", ["%$artNo%"]);
+$db->where("patient_id LIKE ?", ["%$artNo%"]);
 $db->orWhere("patient_first_name LIKE ?", ["%$artNo%"]);
 $db->orWhere("patient_middle_name LIKE ?", ["%$artNo%"]);
 $db->orWhere("patient_last_name LIKE ?", ["%$artNo%"]);

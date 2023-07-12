@@ -169,7 +169,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                         <th scope="row"><?= ('Infant Age (months)'); ?></th>
                                         <td><input type="number" max=24 maxlength="2" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="<?= ('Age'); ?>" title="<?= ('Age'); ?>" style="width:100%;" onchange="" value="<?= htmlspecialchars($eidInfo['child_age']); ?>" /></td>
                                         <th scope="row"><?= ('Weight of the day'); ?></th>
-                                        <td><input type="text" class="form-control forceNumeric" id="infantWeight" name="infantWeight" placeholder="<?= ('Infant weight of the day in Kg'); ?>" title="<?= ('Infant weight of the day'); ?>" style="width:100%;" value="<?= $eidInfo['child_weight']; ?>" /></td>
+                                        <td><input type="text" class="form-control forceNumeric" id="childWeight" name="childWeight" placeholder="<?= ('Infant weight of the day in Kg'); ?>" title="<?= ('Infant weight of the day'); ?>" style="width:100%;" value="<?= $eidInfo['child_weight']; ?>" /></td>
                                     </tr>
                                     <tr>
                                         <th scope="row"><?= ('Caretaker phone number'); ?></th>
@@ -180,7 +180,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
 
                                     </tr>
                                     <tr>
-                                    <th scope="row"><?= _('Prophylactic ARV given to child'); ?></th>
+                                    <th scope="row"><?= _('Prophylactic ARV given to child'); ?><span class="mandatory">*</span></th>
                                         <td>
                                             <select class="form-control isRequired" name="childProphylacticArv" id="childProphylacticArv" title="<?= _('Prophylactic ARV given to child'); ?>" onchange="showOtherARV();">
                                                 <option value=''> <?= _('-- Select --'); ?> </option>

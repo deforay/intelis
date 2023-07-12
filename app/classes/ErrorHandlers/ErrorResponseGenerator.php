@@ -48,6 +48,11 @@ class ErrorResponseGenerator
                 'stacktrace' => $exception->getTraceAsString()
             ]);
 
+            if (APPLICATION_ENV == 'production') {
+                $errorMessage =
+                    _('Sorry, something went wrong. Please try again later.');
+            }
+
             if (strpos($request->getUri()->getPath(), '/api/') === 0) {
                 $responseBody = json_encode([
                     'error' => [

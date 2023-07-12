@@ -69,29 +69,41 @@ require_once APPLICATION_PATH . '/header.php';
 	<section class="content-header">
 		<div class="bs-example bs-example-tabs">
 			<ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
-				<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true && array_intersect($_SESSION['modules'], array('vl'))) {  ?>
-					<li class="active"><a href="#vlDashboard" data-name="vl" data-toggle="tab" onclick="generateDashboard('vl');"><?php echo _("Viral Load Tests"); ?></a></li>
-				<?php } ?>
-				<?php if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true  && array_intersect($_SESSION['modules'], array('eid'))) {  ?>
-					<li><a href="#eidDashboard" data-name="eid" data-toggle="tab" onclick="generateDashboard('eid');"><?php echo _("EID Tests"); ?></a></li>
-				<?php } ?>
-				<?php if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true && array_intersect($_SESSION['modules'], array('covid19'))) {  ?>
-					<li><a href="#covid19Dashboard" data-name="covid19" data-toggle="tab" onclick="generateDashboard('covid19');"><?php echo _("Covid-19 Tests"); ?></a></li>
-				<?php } ?>
-				<?php if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true && array_intersect($_SESSION['modules'], array('hepatitis'))) {  ?>
-					<li><a href="#hepatitisDashboard" data-toggle="tab" onclick="generateDashboard('hepatitis');"><?php echo _("Hepatitis Tests"); ?></a></li>
-				<?php } ?>
-				<?php if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true && array_intersect($_SESSION['modules'], array('tb'))) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true && array_intersect($_SESSION['modules'], array('vl'))) { ?>
+					<li class="active"><a href="#vlDashboard" data-name="vl" data-toggle="tab"
+							onclick="generateDashboard('vl');">
+							<?= _("HIV Viral Load Tests"); ?>
+						</a></li>
+				<?php } if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true && array_intersect($_SESSION['modules'], array('eid'))) { ?>
+					<li><a href="#eidDashboard" data-name="eid" data-toggle="tab" onclick="generateDashboard('eid');">
+							<?= _("EID Tests"); ?>
+						</a></li>
+				<?php } if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true && array_intersect($_SESSION['modules'], array('covid19'))) { ?>
+					<li><a href="#covid19Dashboard" data-name="covid19" data-toggle="tab"
+							onclick="generateDashboard('covid19');">
+							<?= _("Covid-19 Tests"); ?>
+						</a></li>
+				<?php } if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true && array_intersect($_SESSION['modules'], array('hepatitis'))) { ?>
+					<li><a href="#hepatitisDashboard" data-toggle="tab" onclick="generateDashboard('hepatitis');">
+							<?= _("Hepatitis Tests"); ?>
+						</a></li>
+				<?php } if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true && array_intersect($_SESSION['modules'], array('tb'))) { ?>
 					<li><a href="#tbDashboard" data-toggle="tab" onclick="generateDashboard('tb');">TB Tests</a></li>
+				<?php } if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true && array_intersect($_SESSION['modules'], array('generic-tests'))) { ?>
+					<li><a href="#genericTestsDashboard" data-toggle="tab" onclick="generateDashboard('generic-tests');">Other Lab Tests</a></li>
+				<?php } if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] === true) { ?>
+					<li><a href="#recencyDashboard" data-name="recency" data-toggle="tab"
+							onclick="generateDashboard('recency')">
+							<?= _("Confirmation Tests for Recency"); ?>
+						</a></li>
 				<?php } ?>
-				<?php
-				if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] === true) {  ?>
-					<li><a href="#recencyDashboard" data-name="recency" data-toggle="tab" onclick="generateDashboard('recency')"><?php echo _("Confirmation Tests for Recency"); ?></a></li>
-				<?php }  ?>
 			</ul>
 			<div id="myTabContent" class="tab-content">
 
-				<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true && array_intersect($_SESSION['modules'], array('vl'))) {  ?>
+				<?php if (
+					isset(SYSTEM_CONFIG['modules']['vl'])
+					&& SYSTEM_CONFIG['modules']['vl'] === true && array_intersect($_SESSION['modules'], array('vl'))
+				) { ?>
 					<div class="tab-pane fade in active" id="vlDashboard">
 						<!-- VL content -->
 						<section class="content">
@@ -101,14 +113,25 @@ require_once APPLICATION_PATH . '/header.php';
 							<div class="row" style="padding-top:10px;padding-bottom:20px;">
 								<div class="col-lg-7">
 									<form autocomplete="off">
-										<table aria-describedby="table" class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
+										<table aria-describedby="table" class="table searchTable"
+											style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
-												<th scope="row" style="vertical-align:middle;"><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></th>
+												<th scope="row" style="vertical-align:middle;"><strong>
+														<?= _("Date Range"); ?>&nbsp;:
+													</strong></th>
 												<td>
-													<input type="text" id="vlSampleCollectionDate" name="vlSampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
+													<input type="text" id="vlSampleCollectionDate"
+														name="vlSampleCollectionDate" class="form-control"
+														placeholder="<?= _('Select Sample Collection daterange'); ?>"
+														style="width:220px;background:#fff;" />
 												</td>
-												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('vl');" value="<?php echo _('Search'); ?>" class="searchBtn btn btn-success btn-sm">
-													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('vl');"><span><?php echo _("Reset"); ?></span></button>
+												<td colspan="3">&nbsp;<input type="button"
+														onclick="generateDashboard('vl');" value="<?= _('Search'); ?>"
+														class="searchBtn btn btn-success btn-sm">
+													&nbsp;<button class="btn btn-danger btn-sm"
+														onclick="resetSearchVlRequestData('vl');"><span>
+															<?= _("Reset"); ?>
+														</span></button>
 												</td>
 											</tr>
 										</table>
@@ -133,7 +156,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 				<?php } ?>
 
-				<?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] === true) {  ?>
+				<?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] === true) { ?>
 					<div class="tab-pane fade in" id="recencyDashboard">
 						<!-- VL content -->
 						<section class="content">
@@ -141,14 +164,25 @@ require_once APPLICATION_PATH . '/header.php';
 							<div class="row" style="padding-top:10px;padding-bottom:20px;">
 								<div class="col-lg-7">
 									<form autocomplete="off">
-										<table aria-describedby="table" class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
+										<table aria-describedby="table" class="table searchTable"
+											style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
-												<th scope="row" style="vertical-align:middle;"><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></th>
+												<th scope="row" style="vertical-align:middle;"><strong>
+														<?= _('Date Range'); ?>&nbsp;:
+													</strong></th>
 												<td>
-													<input type="text" id="recencySampleCollectionDate" name="recencySampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
+													<input type="text" id="recencySampleCollectionDate"
+														name="recencySampleCollectionDate" class="form-control"
+														placeholder="<?= _('Select Collection Date'); ?>"
+														style="width:220px;background:#fff;" />
 												</td>
-												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('recency')" value="<?php echo _('Search'); ?>" class="searchBtn btn btn-success btn-sm">
-													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('recency');"><span><?php echo _("Reset"); ?></span></button>
+												<td colspan="3">&nbsp;<input type="button"
+														onclick="generateDashboard('recency')" value="<?= _('Search'); ?>"
+														class="searchBtn btn btn-success btn-sm">
+													&nbsp;<button class="btn btn-danger btn-sm"
+														onclick="resetSearchVlRequestData('recency');"><span>
+															<?= _('Reset'); ?>
+														</span></button>
 												</td>
 											</tr>
 										</table>
@@ -170,7 +204,10 @@ require_once APPLICATION_PATH . '/header.php';
 					</div>
 				<?php } ?>
 				<!-- EID START-->
-				<?php if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true  && array_intersect($_SESSION['modules'], array('eid'))) {  ?>
+				<?php if (
+					isset(SYSTEM_CONFIG['modules']['eid']) &&
+					SYSTEM_CONFIG['modules']['eid'] === true && array_intersect($_SESSION['modules'], array('eid'))
+				) { ?>
 
 					<div class="tab-pane fade in" id="eidDashboard">
 						<!-- EID content -->
@@ -180,14 +217,25 @@ require_once APPLICATION_PATH . '/header.php';
 							<div class="row" style="padding-top:10px;padding-bottom:20px;">
 								<div class="col-lg-7">
 									<form autocomplete="off">
-										<table aria-describedby="table" class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
+										<table aria-describedby="table" class="table searchTable"
+											style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
-												<th scope="row" style="vertical-align:middle;"><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></th>
+												<th scope="row" style="vertical-align:middle;"><strong>
+														<?= _('Date Range'); ?>&nbsp;:
+													</strong></th>
 												<td>
-													<input type="text" id="eidSampleCollectionDate" name="eidSampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
+													<input type="text" id="eidSampleCollectionDate"
+														name="eidSampleCollectionDate" class="form-control"
+														placeholder="<?= _('Select Sample Collection daterange'); ?>"
+														style="width:220px;background:#fff;" />
 												</td>
-												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('eid')" value="<?php echo _('Search'); ?>" class="searchBtn btn btn-success btn-sm">
-													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('eid');"><span><?php echo _("Reset"); ?></span></button>
+												<td colspan="3">&nbsp;<input type="button"
+														onclick="generateDashboard('eid')" value="<?= _('Search'); ?>"
+														class="searchBtn btn btn-success btn-sm">
+													&nbsp;<button class="btn btn-danger btn-sm"
+														onclick="resetSearchVlRequestData('eid');"><span>
+															<?= _('Reset'); ?>
+														</span></button>
 												</td>
 											</tr>
 										</table>
@@ -210,7 +258,10 @@ require_once APPLICATION_PATH . '/header.php';
 				<?php } ?>
 				<!-- EID END -->
 				<!-- COVID-19 START-->
-				<?php if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true && array_intersect($_SESSION['modules'], array('covid19'))) {  ?>
+				<?php if (
+					isset(SYSTEM_CONFIG['modules']['covid19']) &&
+					SYSTEM_CONFIG['modules']['covid19'] === true && array_intersect($_SESSION['modules'], array('covid19'))
+				) { ?>
 
 					<div class="tab-pane fade in" id="covid19Dashboard">
 						<!-- COVID-19 content -->
@@ -220,14 +271,25 @@ require_once APPLICATION_PATH . '/header.php';
 							<div class="row" style="padding-top:10px;padding-bottom:20px;">
 								<div class="col-lg-7">
 									<form autocomplete="off">
-										<table aria-describedby="table" class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
+										<table aria-describedby="table" class="table searchTable"
+											style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
-												<th scope="row" style="vertical-align:middle;"><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></th>
+												<th scope="row" style="vertical-align:middle;"><strong>
+														<?= _('Date Range'); ?>&nbsp;:
+													</strong></th>
 												<td>
-													<input type="text" id="covid19SampleCollectionDate" name="covid19SampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
+													<input type="text" id="covid19SampleCollectionDate"
+														name="covid19SampleCollectionDate" class="form-control"
+														placeholder="<?= _('Select Sample Collection daterange'); ?>"
+														style="width:220px;background:#fff;" />
 												</td>
-												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('covid19')" value="<?php echo _('Search'); ?>" class="searchBtn btn btn-success btn-sm">
-													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('covid19');"><span><?php echo _("Reset"); ?></span></button>
+												<td colspan="3">&nbsp;<input type="button"
+														onclick="generateDashboard('covid19')" value="<?= _('Search'); ?>"
+														class="searchBtn btn btn-success btn-sm">
+													&nbsp;<button class="btn btn-danger btn-sm"
+														onclick="resetSearchVlRequestData('covid19');"><span>
+															<?= _('Reset'); ?>
+														</span></button>
 												</td>
 											</tr>
 										</table>
@@ -251,7 +313,10 @@ require_once APPLICATION_PATH . '/header.php';
 				<!-- COVID-19 END -->
 
 				<!-- Hepatitis START-->
-				<?php if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true && array_intersect($_SESSION['modules'], array('hepatitis'))) {  ?>
+				<?php if (
+					isset(SYSTEM_CONFIG['modules']['hepatitis']) &&
+					SYSTEM_CONFIG['modules']['hepatitis'] === true && array_intersect($_SESSION['modules'], array('hepatitis'))
+				) { ?>
 
 					<div class="tab-pane fade in" id="hepatitisDashboard">
 						<!-- COVID-19 content -->
@@ -261,14 +326,25 @@ require_once APPLICATION_PATH . '/header.php';
 							<div class="row" style="padding-top:10px;padding-bottom:20px;">
 								<div class="col-lg-7">
 									<form autocomplete="off">
-										<table aria-describedby="table" class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
+										<table aria-describedby="table" class="table searchTable"
+											style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
-												<th scope="row" style="vertical-align:middle;"><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></th>
+												<th scope="row" style="vertical-align:middle;"><strong>
+														<?= _('Date Range'); ?>&nbsp;:
+													</strong></th>
 												<td>
-													<input type="text" id="hepatitisSampleCollectionDate" name="hepatitisSampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
+													<input type="text" id="hepatitisSampleCollectionDate"
+														name="hepatitisSampleCollectionDate" class="form-control"
+														placeholder="<?= _('Select Sample Collection daterange'); ?>"
+														style="width:220px;background:#fff;" />
 												</td>
-												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('hepatitis')" value="<?php echo _('Search'); ?>" class="searchBtn btn btn-success btn-sm">
-													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('hepatitis');"><span><?php echo _("Reset"); ?></span></button>
+												<td colspan="3">&nbsp;<input type="button"
+														onclick="generateDashboard('hepatitis')" value="<?= _('Search'); ?>"
+														class="searchBtn btn btn-success btn-sm">
+													&nbsp;<button class="btn btn-danger btn-sm"
+														onclick="resetSearchVlRequestData('hepatitis');"><span>
+															<?= _('Reset'); ?>
+														</span></button>
 												</td>
 											</tr>
 										</table>
@@ -289,10 +365,13 @@ require_once APPLICATION_PATH . '/header.php';
 					</div>
 
 				<?php } ?>
-				<!-- COVID-19 END -->
+				<!-- Hepatitis END -->
 
 				<!-- TB START-->
-				<?php if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true && array_intersect($_SESSION['modules'], array('tb'))) {  ?>
+				<?php if (
+					isset(SYSTEM_CONFIG['modules']['tb']) &&
+					SYSTEM_CONFIG['modules']['tb'] === true && array_intersect($_SESSION['modules'], array('tb'))
+				) { ?>
 
 					<div class="tab-pane fade in" id="tbDashboard">
 						<!-- TB content -->
@@ -302,14 +381,25 @@ require_once APPLICATION_PATH . '/header.php';
 							<div class="row" style="padding-top:10px;padding-bottom:20px;">
 								<div class="col-lg-7">
 									<form autocomplete="off">
-										<table aria-describedby="table" class="table searchTable" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
+										<table aria-describedby="table" class="table searchTable"
+											style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
-												<th scope="row" style="vertical-align:middle;"><strong><?php echo _("Date Range"); ?>&nbsp;:</strong></th>
+												<th scope="row" style="vertical-align:middle;"><strong>
+														<?= _('Date Range'); ?>&nbsp;:
+													</strong></th>
 												<td>
-													<input type="text" id="tbSampleCollectionDate" name="tbSampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
+													<input type="text" id="tbSampleCollectionDate"
+														name="tbSampleCollectionDate" class="form-control"
+														placeholder="<?= _('Select Sample Collection daterange'); ?>"
+														style="width:220px;background:#fff;" />
 												</td>
-												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('tb')" value="<?php echo _('Search'); ?>" class="searchBtn btn btn-success btn-sm">
-													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('tb');"><span><?php echo _("Reset"); ?></span></button>
+												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('tb')"
+														value="<?= _('Search'); ?>"
+														class="searchBtn btn btn-success btn-sm">
+													&nbsp;<button class="btn btn-danger btn-sm"
+														onclick="resetSearchVlRequestData('tb');"><span>
+															<?= _('Reset'); ?>
+														</span></button>
 												</td>
 											</tr>
 										</table>
@@ -332,6 +422,61 @@ require_once APPLICATION_PATH . '/header.php';
 				<?php } ?>
 				<!-- TB END -->
 
+				<!-- OTHER LAB TESTS START-->
+				<?php if (
+					isset(SYSTEM_CONFIG['modules']['generic-tests']) &&
+					SYSTEM_CONFIG['modules']['generic-tests'] === true && array_intersect($_SESSION['modules'], array('generic-tests'))
+				) { ?>
+
+					<div class="tab-pane fade in" id="genericTestsDashboard">
+						<!-- OTHER LAB TESTS content -->
+						<section class="content">
+							<div id="contCovid"> </div>
+							<!-- Small boxes (Stat box) -->
+							<div class="row" style="padding-top:10px;padding-bottom:20px;">
+								<div class="col-lg-7">
+									<form autocomplete="off">
+										<table aria-describedby="table" class="table searchTable"
+											style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
+											<tr>
+												<th scope="row" style="vertical-align:middle;"><strong>
+														<?= _('Date Range'); ?>&nbsp;:
+													</strong></th>
+												<td>
+													<input type="text" id="genericTestsSampleCollectionDate"
+														name="genericTestsSampleCollectionDate" id="genericTestsSampleCollectionDate" class="form-control"
+														placeholder="<?= _('Select Sample Collection daterange'); ?>"
+														style="width:220px;background:#fff;" />
+												</td>
+												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('generic-tests')"
+														value="<?= _('Search'); ?>"
+														class="searchBtn btn btn-success btn-sm">
+													&nbsp;<button class="btn btn-danger btn-sm"
+														onclick="resetSearchVlRequestData('generic-tests');"><span>
+															<?= _('Reset'); ?>
+														</span></button>
+												</td>
+											</tr>
+										</table>
+									</form>
+								</div>
+							</div>
+							<div class="row generic-tests">
+								<div class="searchVlRequestDataDiv" id="genericTestsSampleResultDetails"></div>
+								<div class="box-body sampleCountsDatatableDiv" id="genericTestsNoOfSampleCount"></div>
+								<div class="samplePieChartDiv" id="genericTestsPieChartDiv"></div>
+							</div>
+
+							<!-- /.row -->
+							<!-- Main row -->
+							<!-- /.row (main row) -->
+						</section>
+						<!-- /. OTHER LAB TESTS content -->
+					</div>
+
+				<?php } ?>
+				<!-- OTHER LAB TESTS END -->
+
 			</div>
 		</div>
 	</section>
@@ -345,7 +490,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 
 <script>
-	$.fn.isInViewport = function() {
+	$.fn.isInViewport = function () {
 		var elementTop = $(this).offset().top;
 		var elementBottom = elementTop + $(this).outerHeight();
 
@@ -360,7 +505,7 @@ require_once APPLICATION_PATH . '/header.php';
 	let samplePieChartCounter = 0;
 	let currentXHR = null;
 
-	$(function() {
+	$(function () {
 
 
 		$(".searchVlRequestDataDiv").html('<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 bluebox" style="cursor:pointer;"> <span class="dashloader"></span></div> </div> <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2" style="cursor:pointer;"><span class="dashloader"></span> </div> </div> <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 " style="cursor:pointer;"> <span class="dashloader"></span></div> </div> <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 " style="cursor:pointer;"> <span class="dashloader"></span></div> </div> <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 bluebox" style="cursor:pointer;"> <span class="dashloader"></span></div> </div>');
@@ -368,27 +513,27 @@ require_once APPLICATION_PATH . '/header.php';
 		$("#myTabContent div:first-child").addClass("active");
 		// $("#myTabContent div:first-child table.searchTable .searchBtn").trigger("click");
 
-		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate,#tbSampleCollectionDate').daterangepicker({
-				locale: {
-					cancelLabel: "<?= _("Clear"); ?>",
-					format: 'DD-MMM-YYYY',
-					separator: ' to ',
-				},
-				showDropdowns: true,
-				alwaysShowCalendars: false,
-				startDate: moment().subtract(28, 'days'),
-				endDate: moment(),
-				maxDate: moment(),
-				ranges: {
-					'Today': [moment(), moment()],
-					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-				}
+		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate,#tbSampleCollectionDate,#genericTestsSampleCollectionDate').daterangepicker({
+			locale: {
+				cancelLabel: "<?= _("Clear"); ?>",
+				format: 'DD-MMM-YYYY',
+				separator: ' to ',
 			},
-			function(start, end) {
+			showDropdowns: true,
+			alwaysShowCalendars: false,
+			startDate: moment().subtract(28, 'days'),
+			endDate: moment(),
+			maxDate: moment(),
+			ranges: {
+				'Today': [moment(), moment()],
+				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+				'This Month': [moment().startOf('month'), moment().endOf('month')],
+				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+			}
+		},
+			function (start, end) {
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
@@ -401,21 +546,21 @@ require_once APPLICATION_PATH . '/header.php';
 		samplePieChartCounter = 0;
 
 		$.when(
-				searchVlRequestData(currentRequestType),
-			)
-			.done(function() {
+			searchVlRequestData(currentRequestType),
+		)
+			.done(function () {
 				$.unblockUI();
 				$(window).scroll();
 			});
 
 
-		$(window).on('beforeunload', function() {
+		$(window).on('beforeunload', function () {
 			if (currentXHR !== null && currentXHR !== undefined) {
 				currentXHR.abort();
 			}
 		});
 
-		$(window).on('resize scroll', function() {
+		$(window).on('resize scroll', function () {
 
 			if (sampleCountsDatatableCounter == 0) {
 				if ($("." + currentRequestType + " .sampleCountsDatatableDiv").isInViewport()) {
@@ -423,9 +568,9 @@ require_once APPLICATION_PATH . '/header.php';
 					// $.blockUI();
 					$.when(
 						getNoOfSampleCount(currentRequestType),
-					).done(function() {
+					).done(function () {
 						getSamplesOverview(currentRequestType);
-					}).done(function() {
+					}).done(function () {
 						$.unblockUI();
 					});
 				}
@@ -459,62 +604,73 @@ require_once APPLICATION_PATH . '/header.php';
 		//$.blockUI();
 		if (requestType == 'vl') {
 			currentXHR = $.post("/dashboard/getSampleResult.php", {
-					sampleCollectionDate: $("#vlSampleCollectionDate").val(),
-					type: 'vl'
-				},
-				function(data) {
+				sampleCollectionDate: $("#vlSampleCollectionDate").val(),
+				type: 'vl'
+			},
+				function (data) {
 					if (data != '') {
 						$("#vlSampleResultDetails").html(data);
 					}
 				});
 		} else if (requestType == 'recency') {
 			currentXHR = $.post("/dashboard/getSampleResult.php", {
-					sampleCollectionDate: $("#recencySampleCollectionDate").val(),
-					type: 'recency'
-				},
-				function(data) {
+				sampleCollectionDate: $("#recencySampleCollectionDate").val(),
+				type: 'recency'
+			},
+				function (data) {
 					if (data != '') {
 						$("#recencySampleResultDetails").html(data);
 					}
 				});
 		} else if (requestType == 'eid') {
 			currentXHR = $.post("/dashboard/getSampleResult.php", {
-					sampleCollectionDate: $("#eidSampleCollectionDate").val(),
-					type: 'eid'
-				},
-				function(data) {
+				sampleCollectionDate: $("#eidSampleCollectionDate").val(),
+				type: 'eid'
+			},
+				function (data) {
 					if (data != '') {
 						$("#eidSampleResultDetails").html(data);
 					}
 				});
 		} else if (requestType == 'covid19') {
 			currentXHR = $.post("/dashboard/getSampleResult.php", {
-					sampleCollectionDate: $("#covid19SampleCollectionDate").val(),
-					type: 'covid19'
-				},
-				function(data) {
+				sampleCollectionDate: $("#covid19SampleCollectionDate").val(),
+				type: 'covid19'
+			},
+				function (data) {
 					if (data != '') {
 						$("#covid19SampleResultDetails").html(data);
 					}
 				});
 		} else if (requestType == 'hepatitis') {
 			currentXHR = $.post("/dashboard/getSampleResult.php", {
-					sampleCollectionDate: $("#hepatitisSampleCollectionDate").val(),
-					type: 'hepatitis'
-				},
-				function(data) {
+				sampleCollectionDate: $("#hepatitisSampleCollectionDate").val(),
+				type: 'hepatitis'
+			},
+				function (data) {
 					if (data != '') {
 						$("#hepatitisSampleResultDetails").html(data);
 					}
 				});
 		} else if (requestType == 'tb') {
 			currentXHR = $.post("/dashboard/getSampleResult.php", {
-					sampleCollectionDate: $("#tbSampleCollectionDate").val(),
-					type: 'tb'
-				},
-				function(data) {
+				sampleCollectionDate: $("#tbSampleCollectionDate").val(),
+				type: 'tb'
+			},
+				function (data) {
 					if (data != '') {
 						$("#tbSampleResultDetails").html(data);
+					}
+				});
+		} else if (requestType == 'generic-tests') {
+			console.log($("#genericTestsSampleCollectionDate").val());
+			currentXHR = $.post("/dashboard/getSampleResult.php", {
+				sampleCollectionDate: $("#genericTestsSampleCollectionDate").val(),
+				type: 'generic-tests'
+			},
+				function (data) {
+					if (data != '') {
+						$("#genericTestsSampleResultDetails").html(data);
 					}
 				});
 		}
@@ -526,32 +682,42 @@ require_once APPLICATION_PATH . '/header.php';
 	function getNoOfSampleCount(requestType) {
 		if (requestType == 'vl') {
 			currentXHR = $.post("/dashboard/getSampleCount.php", {
-					sampleCollectionDate: $("#vlSampleCollectionDate").val(),
-					type: 'vl'
-				},
-				function(data) {
+				sampleCollectionDate: $("#vlSampleCollectionDate").val(),
+				type: 'vl'
+			},
+				function (data) {
 					if (data != '') {
 						$("#vlNoOfSampleCount").html(data);
 					}
 				});
 		} else if (requestType == 'recency') {
 			currentXHR = $.post("/dashboard/getSampleCount.php", {
-					sampleCollectionDate: $("#recencySampleCollectionDate").val(),
-					type: 'recency'
-				},
-				function(data) {
+				sampleCollectionDate: $("#recencySampleCollectionDate").val(),
+				type: 'recency'
+			},
+				function (data) {
 					if (data != '') {
 						$("#recencyNoOfSampleCount").html(data);
 					}
 				});
 		} else if (requestType == 'eid') {
 			currentXHR = $.post("/dashboard/getSampleCount.php", {
-					sampleCollectionDate: $("#eidSampleCollectionDate").val(),
-					type: 'eid'
-				},
-				function(data) {
+				sampleCollectionDate: $("#eidSampleCollectionDate").val(),
+				type: 'eid'
+			},
+				function (data) {
 					if (data != '') {
 						$("#eidNoOfSampleCount").html(data);
+					}
+				});
+		} else if (requestType == 'generic-tests') {
+			currentXHR = $.post("/dashboard/getSampleCount.php", {
+				sampleCollectionDate: $("#genericTestsSampleCollectionDate").val(),
+				type: 'generic-tests'
+			},
+				function (data) {
+					if (data != '') {
+						$("#genericTestsNoOfSampleCount").html(data);
 					}
 				});
 		}
@@ -560,16 +726,15 @@ require_once APPLICATION_PATH . '/header.php';
 	}
 
 	function getSamplesOverview(requestType) {
-
 		if (requestType == 'vl') {
 			currentXHR = $.post("/vl/program-management/getSampleStatus.php", {
-					sampleCollectionDate: $("#vlSampleCollectionDate").val(),
-					batchCode: '',
-					facilityName: '',
-					sampleType: '',
-					type: 'vl'
-				},
-				function(data) {
+				sampleCollectionDate: $("#vlSampleCollectionDate").val(),
+				batchCode: '',
+				facilityName: '',
+				sampleType: '',
+				type: 'vl'
+			},
+				function (data) {
 					if ($.trim(data) != '') {
 						$("#vlPieChartDiv").html(data);
 						$(".labAverageTatDiv").css("display", "none");
@@ -577,13 +742,13 @@ require_once APPLICATION_PATH . '/header.php';
 				});
 		} else if (requestType == 'recency') {
 			currentXHR = $.post("/vl/program-management/getSampleStatus.php", {
-					sampleCollectionDate: $("#recencySampleCollectionDate").val(),
-					batchCode: '',
-					facilityName: '',
-					sampleType: '',
-					type: 'recency'
-				},
-				function(data) {
+				sampleCollectionDate: $("#recencySampleCollectionDate").val(),
+				batchCode: '',
+				facilityName: '',
+				sampleType: '',
+				type: 'recency'
+			},
+				function (data) {
 					if ($.trim(data) != '') {
 						$("#recencyPieChartDiv").html(data);
 						$(".labAverageTatDiv").css("display", "none");
@@ -591,13 +756,13 @@ require_once APPLICATION_PATH . '/header.php';
 				});
 		} else if (requestType == 'eid') {
 			currentXHR = $.post("/eid/management/getSampleStatus.php", {
-					sampleCollectionDate: $("#eidSampleCollectionDate").val(),
-					batchCode: '',
-					facilityName: '',
-					sampleType: '',
-					type: 'eid'
-				},
-				function(data) {
+				sampleCollectionDate: $("#eidSampleCollectionDate").val(),
+				batchCode: '',
+				facilityName: '',
+				sampleType: '',
+				type: 'eid'
+			},
+				function (data) {
 					if ($.trim(data) != '') {
 						$("#eidPieChartDiv").html(data);
 						$(".labAverageTatDiv").css("display", "none");
@@ -605,13 +770,13 @@ require_once APPLICATION_PATH . '/header.php';
 				});
 		} else if (requestType == 'covid19') {
 			currentXHR = $.post("/covid-19/management/getSampleStatus.php", {
-					sampleCollectionDate: $("#covid19SampleCollectionDate").val(),
-					batchCode: '',
-					facilityName: '',
-					sampleType: '',
-					type: 'covid19'
-				},
-				function(data) {
+				sampleCollectionDate: $("#covid19SampleCollectionDate").val(),
+				batchCode: '',
+				facilityName: '',
+				sampleType: '',
+				type: 'covid19'
+			},
+				function (data) {
 					if ($.trim(data) != '') {
 						$("#covid19PieChartDiv").html(data);
 						$(".labAverageTatDiv").css("display", "none");
@@ -619,15 +784,29 @@ require_once APPLICATION_PATH . '/header.php';
 				});
 		} else if (requestType == 'tb') {
 			currentXHR = $.post("/tb/management/getSampleStatus.php", {
-					sampleCollectionDate: $("#tbSampleCollectionDate").val(),
-					batchCode: '',
-					facilityName: '',
-					sampleType: '',
-					type: 'tb'
-				},
-				function(data) {
+				sampleCollectionDate: $("#tbSampleCollectionDate").val(),
+				batchCode: '',
+				facilityName: '',
+				sampleType: '',
+				type: 'tb'
+			},
+				function (data) {
 					if ($.trim(data) != '') {
 						$("#tbPieChartDiv").html(data);
+						$(".labAverageTatDiv").css("display", "none");
+					}
+				});
+		} else if (requestType == 'generic-tests') {
+			currentXHR = $.post("/generic-tests/program-management/get-sample-status.php", {
+				sampleCollectionDate: $("#genericTestsSampleCollectionDate").val(),
+				batchCode: '',
+				facilityName: '',
+				sampleType: '',
+				type: 'generic-tests'
+			},
+				function (data) {
+					if ($.trim(data) != '') {
+						$("#genericTestsPieChartDiv").html(data);
 						$(".labAverageTatDiv").css("display", "none");
 					}
 				});
@@ -637,30 +816,29 @@ require_once APPLICATION_PATH . '/header.php';
 	}
 
 	function resetSearchVlRequestData(requestType) {
-		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#recencySampleCollectionDate', '#tbSampleCollectionDate').daterangepicker({
-				locale: {
-					cancelLabel: "<?= _("Clear"); ?>",
-					format: 'DD-MMM-YYYY',
-					separator: ' to ',
-				},
-				showDropdowns: true,
-				alwaysShowCalendars: false,
-				startDate: moment().subtract(28, 'days'),
-				endDate: moment(),
-				maxDate: moment(),
-				ranges: {
-					'Today': [moment(), moment()],
-					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-				}
+		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#recencySampleCollectionDate,#tbSampleCollectionDate,#genericTestsSampleCollectionDate').daterangepicker({
+			locale: {
+				cancelLabel: "<?= _("Clear"); ?>",
+				format: 'DD-MMM-YYYY',
+				separator: ' to ',
 			},
-			function(start, end) {
+			showDropdowns: true,
+			alwaysShowCalendars: false,
+			startDate: moment().subtract(28, 'days'),
+			endDate: moment(),
+			maxDate: moment(),
+			ranges: {
+				'Today': [moment(), moment()],
+				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+				'This Month': [moment().startOf('month'), moment().endOf('month')],
+				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+			}
+		},function (start, end) {
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
-			});
+		});
 		generateDashboard(requestType);
 	}
 
@@ -668,16 +846,16 @@ require_once APPLICATION_PATH . '/header.php';
 		// $.blockUI();
 
 		$.post("/eid/management/getEidMonthlyThresholdReport.php", {
-				targetType: '1',
-				sampleTestDate: $("#vlSampleCollectionDate").val(),
-			},
-			function(data) {
+			targetType: '1',
+			sampleTestDate: $("#vlSampleCollectionDate").val(),
+		},
+			function (data) {
 				var data = JSON.parse(data);
 				// console.log(data['aaData'].length);
 				if (data['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span>' + data['aaData'].length + ' <?php echo _("EID testing lab(s) did not meet the monthly test target"); ?>. </span><a href="/eid/management/eidTestingTargetReport.php" target="_blank"> <?php echo _("more"); ?> </a>\
+							<span>' + data['aaData'].length + ' <?= _("EID testing lab(s) did not meet the monthly test target"); ?>. </span><a href="/eid/management/eidTestingTargetReport.php" target="_blank"> <?= _("more"); ?> </a>\
 							</div>';
 					$("#contEid").html(div);
 				}
@@ -692,16 +870,16 @@ require_once APPLICATION_PATH . '/header.php';
 		// $.blockUI();
 
 		$.post("/vl/program-management/getVlMonthlyThresholdReport.php", {
-				targetType: '1',
-				sampleTestDate: $("#vlSampleCollectionDate").val(),
-			},
-			function(data) {
+			targetType: '1',
+			sampleTestDate: $("#vlSampleCollectionDate").val(),
+		},
+			function (data) {
 				var data = JSON.parse(data);
 				// console.log(data['aaData'].length);
 				if (data['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span>' + data['aaData'].length + ' <?php echo _("VL testing lab(s) did not meet the monthly test target"); ?>. </span><a href="/vl/program-management/vlTestingTargetReport.php" target="_blank"> <?php echo _("more"); ?> </a>\
+							<span>' + data['aaData'].length + ' <?= _("VL testing lab(s) did not meet the monthly test target"); ?>. </span><a href="/vl/program-management/vlTestingTargetReport.php" target="_blank"> <?= _("more"); ?> </a>\
 							</div>';
 					$("#cont").html(div);
 				}
@@ -716,15 +894,15 @@ require_once APPLICATION_PATH . '/header.php';
 		// $.blockUI();
 
 		$.post("/vl/program-management/getSuppressedTargetReport.php", {
-				targetType: '1',
-				sampleTestDate: $("#vlSampleCollectionDate").val(),
-			},
-			function(data) {
+			targetType: '1',
+			sampleTestDate: $("#vlSampleCollectionDate").val(),
+		},
+			function (data) {
 				// console.log(data)
 				if (data == 1) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span> <?php echo _("VL testing lab(s) did not meet suppression targets"); ?> </span><a href="/vl/program-management/vlSuppressedTargetReport.php" target="_blank"> <?php echo _("more"); ?> </a>\
+							<span> <?= _("VL testing lab(s) did not meet suppression targets"); ?> </span><a href="/vl/program-management/vlSuppressedTargetReport.php" target="_blank"> <?= _("more"); ?> </a>\
 							</div>';
 					$("#contVl").html(div);
 				}
@@ -739,16 +917,16 @@ require_once APPLICATION_PATH . '/header.php';
 		// $.blockUI();
 
 		$.post("/covid-19/management/getCovid19MonthlyThresholdReport.php", {
-				targetType: '1',
-				sampleTestDate: $("#vlSampleCollectionDate").val(),
-			},
-			function(data) {
+			targetType: '1',
+			sampleTestDate: $("#vlSampleCollectionDate").val(),
+		},
+			function (data) {
 				var data = JSON.parse(data);
 				// console.log(data['aaData'].length);
 				if (data['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span >' + data['aaData'].length + ' <?php echo _("Covid-19 testing lab(s) did not meet the monthly test target"); ?>.  </span><a href="/covid-19/management/covid19TestingTargetReport.php" target="_blank"> <?php echo _("more"); ?> </a>\
+							<span >' + data['aaData'].length + ' <?= _("Covid-19 testing lab(s) did not meet the monthly test target"); ?>.  </span><a href="/covid-19/management/covid19TestingTargetReport.php" target="_blank"> <?= _("more"); ?> </a>\
 							</div>';
 					$("#contCovid").html(div);
 				}
@@ -763,16 +941,16 @@ require_once APPLICATION_PATH . '/header.php';
 		// $.blockUI();
 
 		$.post("/hepatitis/management/get-hepatitis-monthly-threshold-report.php", {
-				targetType: '1',
-				sampleTestDate: $("#vlSampleCollectionDate").val(),
-			},
-			function(data) {
+			targetType: '1',
+			sampleTestDate: $("#vlSampleCollectionDate").val(),
+		},
+			function (data) {
 				var data = JSON.parse(data);
 				// console.log(data['aaData'].length);
 				if (data['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-				<span >' + data['aaData'].length + ' <?php echo _("Hepatitis testing lab(s) did not meet the monthly test target"); ?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?php echo _("more"); ?> </a>\
+				<span >' + data['aaData'].length + ' <?= _("Hepatitis testing lab(s) did not meet the monthly test target"); ?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?= _("more"); ?> </a>\
 				</div>';
 					$("#contCovid").html(div);
 				}
@@ -784,16 +962,16 @@ require_once APPLICATION_PATH . '/header.php';
 		// $.blockUI();
 
 		$.post("/tb/management/get-tb-monthly-threshold-report.php", {
-				targetType: '1',
-				sampleTestDate: $("#tbSampleCollectionDate").val(),
-			},
-			function(data) {
+			targetType: '1',
+			sampleTestDate: $("#tbSampleCollectionDate").val(),
+		},
+			function (data) {
 				var data = JSON.parse(data);
 				// console.log(data['aaData'].length);
 				if (data['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-				<span >' + data['aaData'].length + ' <?php echo _("TB testing lab(s) did not meet the monthly test target"); ?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?php echo _("more"); ?> </a>\
+				<span >' + data['aaData'].length + ' <?= _("TB testing lab(s) did not meet the monthly test target"); ?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?= _("more"); ?> </a>\
 				</div>';
 					$("#contCovid").html(div);
 				}

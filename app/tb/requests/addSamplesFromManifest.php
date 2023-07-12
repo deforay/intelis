@@ -53,9 +53,9 @@ require_once APPLICATION_PATH . '/header.php';
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>
 									<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-										<th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
+										<th><?php echo _("Remote Sample Code"); ?></th>
 									<?php } ?>
-									<th><?php echo _("Sample Collection"); ?><br /> <?php echo _("Date"); ?></th>
+									<th><?php echo _("Sample Collection Date"); ?></th>
 									<th><?php echo _("Batch Code"); ?></th>
 									<th scope="row"><?php echo _("Facility Name"); ?></th>
 									<th><?php echo _("Patient ID"); ?></th>
@@ -91,17 +91,17 @@ require_once APPLICATION_PATH . '/header.php';
 <?php
 if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
 	if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
-?>
+		?>
 		<script src="/assets/js/DYMO.Label.Framework.js"></script>
 		<script src="/uploads/barcode-formats/dymo-format.js"></script>
 		<script src="/assets/js/dymo-print.js"></script>
 	<?php
 	} else if ($global['bar_code_printing'] == 'zebra-printer') {
-	?>
-		<script src="/assets/js/zebra-browserprint.js.js"></script>
-		<script src="/uploads/barcode-formats/zebra-format.js"></script>
-		<script src="/assets/js/zebra-print.js"></script>
-<?php
+		?>
+			<script src="/assets/js/zebra-browserprint.js.js"></script>
+			<script src="/uploads/barcode-formats/zebra-format.js"></script>
+			<script src="/assets/js/zebra-print.js"></script>
+	<?php
 	}
 }
 ?>

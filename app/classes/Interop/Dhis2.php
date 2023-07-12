@@ -6,6 +6,7 @@ namespace App\Interop;
 class Dhis2
 {
 	private string $dhis2url;
+	private string $currentRequestUrl;
 	private string $username;
 	private string $password;
 	private string $contentType;
@@ -16,7 +17,6 @@ class Dhis2
 	{
 		// ensuring there is no trailing slash
 		$this->dhis2url = rtrim($dhis2url, '/');
-
 		// Dhis2 Credentials
 		$this->username = $username;
 		$this->password = $password;
@@ -27,10 +27,10 @@ class Dhis2
 		//$urlParams[] = "authOnly=true";
 		$response = $this->get("/api/33/system/ping");
 		if ($response) {
-			$this->authenticated  = true;
+			$this->authenticated = true;
 			return $this;
 		} else {
-			$this->authenticated  = false;
+			$this->authenticated = false;
 			return false;
 		}
 	}
@@ -57,14 +57,15 @@ class Dhis2
 	// Returns all orgs if $orgUnitID is not specified
 	public function getOrgUnits($orgUnitID = null)
 	{
-		if (!$this->authenticated) return false;
+		if (!$this->authenticated)
+			return false;
 
 		$urlParams[] = "paging=false";
 
 		if ($orgUnitID == null) {
 			$path = "/api/organisationUnits";
 		} else {
-			$path =  "/api/organisationUnits/" . $orgUnitID;
+			$path = "/api/organisationUnits/" . $orgUnitID;
 		}
 
 
@@ -74,15 +75,16 @@ class Dhis2
 	// Returns all programs if programId is not specified
 	public function getPrograms($orgUnitID, $programId = null)
 	{
-		if (!$this->authenticated || empty($orgUnitID)) return false;
+		if (!$this->authenticated || empty($orgUnitID))
+			return false;
 
 		$urlParams[] = "paging=false";
 
 		if ($programId == null) {
 			$urlParams[] = "fields=programs[:all]";
-			$path =  "/api/organisationUnits/$orgUnitID";
+			$path = "/api/organisationUnits/$orgUnitID";
 		} else {
-			$path =  "/api/$orgUnitID/programs/$programId";
+			$path = "/api/$orgUnitID/programs/$programId";
 		}
 
 		return $this->get($path, $urlParams);
@@ -92,16 +94,17 @@ class Dhis2
 	public function getDataSets($orgUnitID, $dataSetId = "")
 	{
 
-		if (!$this->authenticated || empty($orgUnitID)) return false;
+		if (!$this->authenticated || empty($orgUnitID))
+			return false;
 
 
 		$urlParams[] = "paging=false";
 
 		if ($dataSetId == null) {
 			$urlParams[] = "fields=dataSets[:all]";
-			$path =  "/api/organisationUnits/$orgUnitID";
+			$path = "/api/organisationUnits/$orgUnitID";
 		} else {
-			$path =  "/api/$orgUnitID/dataSets/$dataSetId";
+			$path = "/api/$orgUnitID/dataSets/$dataSetId";
 		}
 
 		return $this->get($path, $urlParams);
@@ -111,43 +114,41 @@ class Dhis2
 	public function getDataElements($dataSetID)
 	{
 
-		if (!$this->authenticated || empty($dataSetID)) return false;
+		if (!$this->authenticated || empty($dataSetID))
+			return false;
 
 		$urlParams[] = "paging=false";
 		$urlParams[] = "filter=dataSetElements.dataSet.id:eq:" . $dataSetID;
-		$path =  "/api/dataElements";
+		$path = "/api/dataElements";
 
 		return $this->get($path, $urlParams);
+	}
+
+	public function setCurrentRequestUrl($url)
+	{
+		$this->currentRequestUrl = $url;
+	}
+
+	public function getCurrentRequestUrl()
+	{
+		return $this->currentRequestUrl;
 	}
 
 	//Get all data set elements combo for specified data set element
 	public function getDataElementsCombo($dataElementID)
 	{
 
-		if (!$this->authenticated || empty($dataElementID)) return false;
+		if (!$this->authenticated || empty($dataElementID)) {
+			return false;
+		}
 
 		$urlParams[] = "paging=false";
 		$urlParams[] = "fields=categoryCombo[:all,categoryOptionCombos[:all]]";
-		$path =  "/api/dataElements/$dataElementID";
+		$path = "/api/dataElements/$dataElementID";
 
 		return $this->get($path, $urlParams);
 	}
 
-
-	// Send data value sets to Dhis2
-	/*
-	$dataValues is an array containing dateElement and value
-	$dataValues = [
-		[
-			"dataElement" => "X1g4CrwfVFj",
-			"value" => "90"
-		],
-		[
-			"dataElement" => "EsEyXHADpbX",
-			"value" => "70"
-		]
-	];
-	*/
 	public function sendDataValueSets($orgUnitId, $dataSetId, $period, $completeDate, $dataValues)
 	{
 
@@ -174,7 +175,8 @@ class Dhis2
 	public function getDataValueSets($orgUnitId, $dataSetId, $period = null, $startDate = null, $endDate = null)
 	{
 
-		if (empty($orgUnitId) || empty($dataSetId)) return false;
+		if (empty($orgUnitId) || empty($dataSetId))
+			return false;
 
 		$urlParams[] = "dataSet=$dataSetId";
 		$urlParams[] = "orgUnit=$orgUnitId";
@@ -208,6 +210,8 @@ class Dhis2
 
 		$url = $this->dhis2url . $path . $urlParams;
 
+		$this->setCurrentRequestUrl($url);
+
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type:" . $this->getContentType()));
@@ -224,7 +228,8 @@ class Dhis2
 	// Send POST request to DHIS2
 	public function post($path, $data, $urlParams = [])
 	{
-		if (!$this->authenticated || empty($path) || empty($data)) return false;
+		if (!$this->authenticated || empty($path) || empty($data))
+			return false;
 
 		if (!empty($urlParams)) {
 			$urlParams = '?' . implode("&", $urlParams);
@@ -232,8 +237,12 @@ class Dhis2
 			$urlParams = "";
 		}
 
+		$url = $this->dhis2url . $path . $urlParams;
+
+		$this->setCurrentRequestUrl($url);
+
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $this->dhis2url . $path . $urlParams);
+		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type:" . $this->getContentType()));
 		curl_setopt($ch, CURLOPT_POST, 1);

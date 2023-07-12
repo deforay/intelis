@@ -190,7 +190,7 @@ $state = $geolocationService->getProvinces("yes");
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
 									<?php
 									foreach ($fundingSourceList as $fundingSource) {
-									?>
+										?>
 										<option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
 									<?php } ?>
 								</select>
@@ -201,7 +201,7 @@ $state = $geolocationService->getProvinces("yes");
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
 									<?php
 									foreach ($implementingPartnerList as $implementingPartner) {
-									?>
+										?>
 										<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
 									<?php } ?>
 								</select>
@@ -270,7 +270,7 @@ $state = $geolocationService->getProvinces("yes");
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Batch Code"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_art_no" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Patient ID"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Patient ID"); ?></label>
 								</div>
 								<div class="col-md-3">
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_first_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Patient's Name"); ?></label> <br>
@@ -319,7 +319,7 @@ $state = $geolocationService->getProvinces("yes");
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>
 									<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-										<th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
+										<th><?php echo _("Remote Sample Code"); ?></th>
 									<?php } ?>
 									<th><?php echo _("Batch Code"); ?></th>
 									<th><?php echo _("Patient ID"); ?></th>
@@ -468,11 +468,11 @@ $state = $geolocationService->getProvinces("yes");
 			"aoColumns": [{
 					"sClass": "center"
 				}, <?php
-					if ($_SESSION['instanceType'] != 'standalone') {
+				if ($_SESSION['instanceType'] != 'standalone') {
 					?> {
 						"sClass": "center"
 					}, <?php
-					} ?> {
+				} ?> {
 						"sClass": "center"
 				},
 				{

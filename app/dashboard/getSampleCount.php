@@ -22,8 +22,8 @@ $_POST = $request->getParsedBody();
 $facilityInfo = $facilitiesService->getAllFacilities();
 
 $cDate = date('Y-m-d');
-$end_date = date('Y-m-d');
-$start_date = date('Y-m-d', strtotime('-7 days'));
+$endDate = date('Y-m-d');
+$startDate = date('Y-m-d', strtotime('-7 days'));
 
 $systemType = $general->getSystemConfig('sc_user_type');
 if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
@@ -63,6 +63,11 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $primaryKey = "tb_id";
     $unique = "Test6";
     $samplesCollectionChart = "tbSamplesCollectionChart";
+} elseif (isset($_POST['type']) && trim($_POST['type']) == 'generic-tests') {
+    $table = "form_generic";
+    $primaryKey = "sample_id";
+    $unique = "Test7";
+    $samplesCollectionChart = "genericSamplesCollectionChart";
 }
 
 
@@ -87,16 +92,12 @@ if ($systemType != 'remoteuser') {
     }
 }
 
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-    $s_c_date = explode("to", $_POST['sampleCollectionDate']);
-    //print_r($s_c_date);die;
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-    }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-    }
-}
+$sampleCollectionDate = explode("to", $_POST['sampleCollectionDate'] ?? '');
+$sampleCollectionDate = array_map('trim', $sampleCollectionDate);
+
+$startDate = !empty($sampleCollectionDate[0]) ? DateUtility::isoDateFormat($sampleCollectionDate[0]) : null;
+$endDate = !empty($sampleCollectionDate[1]) ? DateUtility::isoDateFormat($sampleCollectionDate[1]) : null;
+
 if ($table == "form_eid") {
     $sQuery = "SELECT
 		eid.facility_id,f.facility_code,f.facility_state,f.facility_district,f.facility_name,
@@ -130,8 +131,8 @@ if ($table == "form_eid") {
 			WHEN (result_printed_datetime not like '' AND result_printed_datetime is not NULL AND DATE(result_printed_datetime) NOT LIKE '0000-00-00 00:00:00') THEN 1
 				ELSE 0
 			END) AS printCount
-		FROM " . $table . " as eid JOIN facility_details as f ON f.facility_id=eid.facility_id";
-    $sQuery = $sQuery . ' WHERE DATE(eid.sample_collection_date) >= "' . $start_date . '" AND DATE(eid.sample_collection_date) <= "' . $end_date . '"';
+		FROM $table as eid JOIN facility_details as f ON f.facility_id=eid.facility_id";
+    $sQuery = $sQuery . ' WHERE DATE(eid.sample_collection_date) >= "' . $startDate . '" AND DATE(eid.sample_collection_date) <= "' . $endDate . '"';
     $sQuery = $sQuery . $whereCondition;
     $sQuery = $sQuery . ' GROUP BY eid.facility_id';
 } else {
@@ -171,40 +172,29 @@ if ($table == "form_eid") {
                     WHEN (result_printed_datetime not like '' AND result_printed_datetime is not NULL AND DATE(result_printed_datetime) NOT LIKE '0000-00-00 00:00:00') THEN 1
                         ELSE 0
                     END) AS printCount
-                FROM " . $table . " as vl JOIN facility_details as f ON f.facility_id=vl.facility_id";
-    $sQuery = $sQuery . ' where DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+                FROM $table as vl JOIN facility_details as f ON f.facility_id=vl.facility_id";
+    $sQuery = $sQuery . ' where DATE(vl.sample_collection_date) >= "' . $startDate . '" AND DATE(vl.sample_collection_date) <= "' . $endDate . '"';
     $sQuery = $sQuery . $whereCondition . $recencyWhere;
     $sQuery = $sQuery . ' GROUP BY vl.facility_id';
 }
-//echo $sQuery; die;
+
 $tableResult = $db->rawQuery($sQuery);
 ?>
 
-<style>
-    #
-
-    <?php echo $requestCountDataTable; ?>
-    thead th {
-        vertical-align: middle;
-    }
-</style>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-    <table aria-describedby="table" class="table collectionTable" cellpadding="1" cellspacing="3"
-        style="margin-top:0px;width: 98%;margin-bottom: 0px;">
+    <table aria-describedby="table" class="table collectionTable" cellpadding="1" cellspacing="3" style="margin-top:0px;width: 98%;margin-bottom: 0px;">
         <tr>
             <th style="vertical-align:middle;padding-left: 0px;"><strong>
                     <?php echo _("Collection Point"); ?>&nbsp;:
                 </strong>
-                <select id="facilityId<?php echo $unique; ?>" name="facilityId" class="form-control" multiple
-                    title="<?php echo _('Select facility name to filter'); ?>" style="width:220px;background:#fff;">
+                <select id="facilityId<?php echo $unique; ?>" name="facilityId" class="form-control" multiple title="<?php echo _('Select facility name to filter'); ?>" style="width:220px;background:#fff;">
                     <?php foreach ($facilityInfo as $facility) { ?>
                         <option vlaue="<?php echo $facility['facility_id']; ?>"><?php echo $facility['facility_name']; ?>
                         </option>
                     <?php } ?>
                 </select>
             </th>
-            <td colspan="3" style=" display: grid; ">&nbsp;<input type="button" onclick="fetchByFacility();"
-                    value="<?php echo _('Search'); ?>" class="searchBtn btn btn-success btn-sm">
+            <td colspan="3" style=" display: grid; ">&nbsp;<input type="button" onclick="fetchByFacility();" value="<?= _('Search'); ?>" class="searchBtn btn btn-success btn-sm">
             </td>
         </tr>
     </table>
@@ -215,7 +205,6 @@ $tableResult = $db->rawQuery($sQuery);
                 <small class="font-purple-soft">
                     <?php echo _("SAMPLES REGISTERED BY COLLECTION POINT"); ?>
                 </small><br>
-                <!-- <small class="font-purple-soft" style="font-size:0.75em;">(LAST 6 MONTHS)</small> -->
             </div>
             <div class="icon">
                 <em class="fa-solid fa-chart-pie"></em>
@@ -229,8 +218,7 @@ $tableResult = $db->rawQuery($sQuery);
 <div class="col-xs-12">
     <div class="box">
         <div class="box-body">
-            <table aria-describedby="table" id="<?php echo $requestCountDataTable; ?>"
-                class="table table-bordered table-striped table-hover">
+            <table aria-describedby="table" id="<?php echo $requestCountDataTable; ?>" class="table table-bordered table-striped table-hover requestCountDataTable">
                 <thead>
                     <tr>
                         <th scope="row">
@@ -270,34 +258,34 @@ $tableResult = $db->rawQuery($sQuery);
                         foreach ($tableResult as $tableRow) { ?>
                             <tr>
                                 <td>
-                                    <?= ($tableRow['facility_name']); ?>
+                                    <?= $tableRow['facility_name'] ?? 0; ?>
                                 </td>
                                 <td>
-                                    <?= $tableRow['totalCount']; ?>
+                                    <?= $tableRow['totalCount'] ?? 0; ?>
                                 </td>
                                 <td>
-                                    <?= $tableRow['registerCount']; ?>
+                                    <?= $tableRow['registerCount'] ?? 0; ?>
                                 </td>
                                 <td>
-                                    <?= $tableRow['pendingCount']; ?>
+                                    <?= $tableRow['pendingCount'] ?? 0; ?>
                                 </td>
                                 <td>
-                                    <?= $tableRow['acceptCount']; ?>
+                                    <?= $tableRow['acceptCount'] ?? 0; ?>
                                 </td>
                                 <td>
-                                    <?= $tableRow['rejectCount']; ?>
+                                    <?= $tableRow['rejectCount'] ?? 0; ?>
                                 </td>
                                 <td>
-                                    <?= $tableRow['invalidCount']; ?>
+                                    <?= $tableRow['invalidCount'] ?? 0; ?>
                                 </td>
                                 <td>
-                                    <?= $tableRow['reorderCount']; ?>
+                                    <?= $tableRow['reorderCount'] ?? 0; ?>
                                 </td>
                                 <td>
-                                    <?= $tableRow['printCount']; ?>
+                                    <?= $tableRow['printCount'] ?? 0; ?>
                                 </td>
                             </tr>
-                            <?php
+                    <?php
                         }
                     } ?>
                 </tbody>
@@ -322,30 +310,30 @@ $tableResult = $db->rawQuery($sQuery);
     function fetchByFacility() {
         $.blockUI();
         $.post("/dashboard/get-collection-samples.php", {
-            table: '<?php echo $table; ?>',
-            primaryKey: '<?php echo $primaryKey; ?>',
-            facilityId: $('#facilityId<?php echo $unique; ?>').val(),
-            cDate: <?php echo $cDate; ?>,
-            sampleCollectionDate: '<?php echo htmlspecialchars($_POST['sampleCollectionDate']); ?>',
-        },
-            function (data) {
+                table: '<?php echo $table; ?>',
+                primaryKey: '<?php echo $primaryKey; ?>',
+                facilityId: $('#facilityId<?php echo $unique; ?>').val(),
+                cDate: <?php echo $cDate; ?>,
+                sampleCollectionDate: '<?php echo htmlspecialchars($_POST['sampleCollectionDate']); ?>',
+            },
+            function(data) {
                 $("#collectionSite<?php echo $unique; ?>").html(data);
             });
         $.unblockUI();
     }
-    $(document).ready(function () {
+    $(document).ready(function() {
         $('#facilityId<?php echo $unique; ?>').select2({
             width: '100%',
             placeholder: "<?= _("Select Collection Point(s)"); ?>"
         });
     });
-    $(function () {
+    $(function() {
         var table = $("#<?php echo $requestCountDataTable; ?>").DataTable({
-            "initComplete": function (settings, json) {
+            "initComplete": function(settings, json) {
                 var api = this.api();
                 CalculateTableSummary(this, 'all');
             },
-            "footerCallback": function (row, data, start, end, display) {
+            "footerCallback": function(row, data, start, end, display) {
                 var filter = $("#<?php echo $requestCountDataTable; ?>_filter .input-sm").val();
                 if (filter != '') {
                     var page = 'current';
@@ -364,39 +352,28 @@ $tableResult = $db->rawQuery($sQuery);
     function CalculateTableSummary(table, page) {
         try {
 
-            var intVal = function (i) {
+            var intVal = function(i) {
                 return typeof i === 'string' ?
                     i.replace(/[\$,]/g, '') * 1 :
                     typeof i === 'number' ?
-                        i : 0;
+                    i : 0;
             };
 
 
             var api = table.api();
-            api.columns(".sum").eq(0).each(function (index) {
+            api.columns(".sum").eq(0).each(function(index) {
                 var column = api.column(index, {
                     page: page
                 });
 
                 var sum = column
                     .data()
-                    .reduce(function (a, b) {
-                        //return parseInt(a, 10) + parseInt(b, 10);
+                    .reduce(function(a, b) {
                         return intVal(a) + intVal(b);
                     }, 0);
 
 
-                //console.log(sum);
-
                 $(api.column(index).footer()).html(sum);
-                // $( api.column( 1 ).footer() ).html(registerCount);
-                // $( api.column( 2 ).footer() ).html(reorderCount);
-                // $( api.column( 3 ).footer() ).html(sentToLabCount);
-                // $( api.column( 4 ).footer() ).html(rejectCount);
-                // $( api.column( 5 ).footer() ).html(pendingCount);
-                // $( api.column( 6 ).footer() ).html(invalidCount);
-                // $( api.column( 7 ).footer() ).html(acceptCount);
-                // $( api.column( 8 ).footer() ).html(printCount);
 
             });
         } catch (e) {
@@ -422,10 +399,10 @@ $tableResult = $db->rawQuery($sQuery);
             },
             xAxis: {
                 categories: [<?php
-                foreach ($tableResult as $tRow) {
-                    echo "'" . addslashes($tRow['facility_name']) . "',";
-                }
-                ?>],
+                                foreach ($tableResult as $tRow) {
+                                    echo "'" . addslashes($tRow['facility_name']) . "',";
+                                }
+                                ?>],
                 crosshair: true,
                 scrollbar: {
                     enabled: true
@@ -456,13 +433,13 @@ $tableResult = $db->rawQuery($sQuery);
                 showInLegend: false,
                 name: 'Samples',
                 data: [<?php
-                foreach ($tableResult as $tRow) {
-                    echo ($tRow['totalCount']) . ",";
-                }
-                ?>]
+                        foreach ($tableResult as $tRow) {
+                            echo ($tRow['totalCount']) . ",";
+                        }
+                        ?>]
 
-                    }],
-        colors: ['#f36a5a']
-                });
+            }],
+            colors: ['#f36a5a']
+        });
     <?php } ?>
 </script>

@@ -169,7 +169,7 @@ $state = $geolocationService->getProvinces("yes");
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
 									<?php
 									foreach ($batResult as $code) {
-									?>
+										?>
 										<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
 									<?php
 									}
@@ -182,7 +182,7 @@ $state = $geolocationService->getProvinces("yes");
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
 									<?php
 									foreach ($fundingSourceList as $fundingSource) {
-									?>
+										?>
 										<option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
 									<?php } ?>
 								</select>
@@ -193,7 +193,7 @@ $state = $geolocationService->getProvinces("yes");
 									<option value=""> <?php echo _("-- Select --"); ?> </option>
 									<?php
 									foreach ($implementingPartnerList as $implementingPartner) {
-									?>
+										?>
 										<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
 									<?php } ?>
 								</select>
@@ -298,7 +298,7 @@ $state = $geolocationService->getProvinces("yes");
 								<tr>
 									<th><?php echo _("Sample Code"); ?></th>
 									<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-										<th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
+										<th><?php echo _("Remote Sample Code"); ?></th>
 									<?php } ?>
 									<th><?php echo _("Batch Code"); ?></th>
 									<th><?php echo _("Child's ID"); ?></th>

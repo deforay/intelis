@@ -122,24 +122,24 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 			<div class="col-xs-12">
 				<div class="box">
 					<table aria-describedby="table" class="table" aria-hidden="true"
-						style="margin-left:1%;margin-top:20px;width:50%;margin-bottom: 0px;">
+						style="margin-left:1%;margin-top:20px;width:70%;margin-bottom: 0px;">
 						<tr>
-							<td><strong>
+							<td style="width: 15%;"><strong>
 									<?php echo _("Test Type"); ?>&nbsp;:
 								</strong></td>
-							<td>
+							<td style="width: 60%;">
 								<select class="form-control" name="testType" id="testType"
 									title="Please choose test type" style="width:100%;">
 									<option value=""> -- Select -- </option>
 									<?php foreach ($testTypeResult as $testType) { ?>
-										<option value="<?php echo $testType['test_type_id'] ?>"><?php echo $testType['test_standard_name'] ?></option>
+										<option value="<?php echo $testType['test_type_id'] ?>" data-short="<?php echo $testType['test_short_code']; ?>"><?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?></option>
 									<?php } ?>
 								</select>
 							</td>
-							<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();"
-									value="<?php echo _('Search'); ?>" class="btn btn-default btn-sm">
+							<td style="width: 25%;">&nbsp;<input type="button" onclick="searchVlRequestData();"
+									value="<?= _('Search'); ?>" class="btn btn-default btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="reset();"><span>
-										<?php echo _("Reset"); ?>
+										<?= _('Reset'); ?>
 									</span></button>
 							</td>
 						</tr>
@@ -163,15 +163,14 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 									</th>
 									<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 										<th>
-											<?php echo _("Remote Sample"); ?> <br />Code
+											<?php echo _("Remote Sample Code"); ?>
 										</th>
 									<?php } ?>
 									<th>
 										<?php echo _("Test Type"); ?>
 									</th>
 									<th>
-										<?php echo _("Sample Collection"); ?><br />
-										<?php echo _("Date"); ?>
+										<?php echo _("Sample Collection Date"); ?>
 									</th>
 									<th>
 										<?php echo _("Batch Code"); ?>
@@ -297,6 +296,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			echo "printBarcodeLabel('" . htmlspecialchars($_GET['s']) . "','" . htmlspecialchars($_GET['f']) . "');";
 		}
 		?>
+		$("#testType").select2({
+			width: '100%',
+			placeholder: "<?php echo _("Select Test Type"); ?>"
+		});
 		$("#facilityName").select2({
 			placeholder: "<?php echo _("Select Facilities"); ?>"
 		});

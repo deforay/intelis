@@ -299,7 +299,7 @@ try {
           $covid19Data['sample_tested_datetime'] = null;
      }
 
-     $vldata['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vldata['patient_art_no']);
+     $vldata['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vldata['patient_id']);
      $db = $db->where('sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $vldata);
      error_log($db->getLastError());

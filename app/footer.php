@@ -210,28 +210,24 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 	$(document).ready(function () {
 
-
 		$(".allMenu").removeClass('active');
 
 		let url = window.location.pathname + window.location.search;
 		let currentMenuItem = $('a[href="' + url + '"]');
-		if (currentMenuItem.length == 0) {
+
+		if (!currentMenuItem.length) {
 			let currentPaths = Utilities.splitPath(url).map(path => btoa(path));
 			currentMenuItem = $('a[data-inner-pages]').filter(function () {
-				const innerPages = $(this).data('inner-pages').split(';');
-				return currentPaths.some(path => innerPages.includes(path));
+				return currentPaths.some(path => $(this).data('inner-pages').split(';').includes(path));
 			});
 		}
 
-		if (currentMenuItem.length > 0) {
+		if (currentMenuItem.length) {
 			currentMenuItem.parent().addClass('active');
-			currentMenuItem.parents('li.treeview').addClass('active');
-			if (currentMenuItem.parents('li.treeview')) {
-				const treeview = currentMenuItem.parents('li.treeview')[0];
-				const offset = treeview ? treeview.offsetTop : 0;
-				if (offset > 200) {
-					$('.main-sidebar').scrollTop(offset);
-				}
+			let treeview = currentMenuItem.parents('li.treeview').addClass('active')[0];
+			let offset = treeview ? treeview.offsetTop : 0;
+			if (offset > 200) {
+				$('.main-sidebar').scrollTop(offset);
 			}
 		}
 

@@ -52,10 +52,16 @@ $batchResult = $db->rawQuery($batchQuery);
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1> <?php echo _("E-mail Test Result"); ?></h1>
+    <h1>
+      <?php echo _("E-mail Test Result"); ?>
+    </h1>
     <ol class="breadcrumb">
-      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-      <li class="active"><?php echo _("E-mail Test Result"); ?></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em>
+          <?php echo _("Home"); ?>
+        </a></li>
+      <li class="active">
+        <?php echo _("E-mail Test Result"); ?>
+      </li>
     </ol>
   </section>
 
@@ -64,19 +70,26 @@ $batchResult = $db->rawQuery($batchQuery);
 
     <div class="box box-default">
       <div class="box-header with-border">
-        <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
+        <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
+          <?php echo _("indicates required field"); ?> &nbsp;
+        </div>
       </div>
       <!-- /.box-header -->
       <div class="box-body">
         <!-- form start -->
-        <form class="form-horizontal" method="post" name="mailForm" id="mailForm" autocomplete="off" action="vlResultMailConfirm.php">
+        <form class="form-horizontal" method="post" name="mailForm" id="mailForm" autocomplete="off"
+          action="vlResultMailConfirm.php">
           <div class="box-body">
             <div class="row">
               <div class="col-md-9">
                 <div class="form-group">
-                  <label for="subject" class="col-lg-3 control-label"><?php echo _("Subject"); ?> <span class="mandatory">*</span></label>
+                  <label for="subject" class="col-lg-3 control-label">
+                    <?php echo _("Subject"); ?> <span class="mandatory">*</span>
+                  </label>
                   <div class="col-lg-9">
-                    <input type="text" id="subject" name="subject" class="form-control isRequired" placeholder="<?php echo _('Subject'); ?>" title="<?php echo _('Please enter subject'); ?>" value="Viral Load Test Results" />
+                    <input type="text" id="subject" name="subject" class="form-control isRequired"
+                      placeholder="<?php echo _('Subject'); ?>" title="<?php echo _('Please enter subject'); ?>"
+                      value="Viral Load Test Results" />
                   </div>
                 </div>
               </div>
@@ -84,14 +97,21 @@ $batchResult = $db->rawQuery($batchQuery);
             <div class="row">
               <div class="col-md-9">
                 <div class="form-group">
-                  <label for="facility" class="col-lg-3 control-label"><?php echo _("Facility Name (To)"); ?><span class="mandatory">*</span></label>
+                  <label for="facility" class="col-lg-3 control-label">
+                    <?php echo _("Facility Name (To)"); ?><span class="mandatory">*</span>
+                  </label>
                   <div class="col-lg-9">
-                    <select class="form-control isRequired" id="facility" name="facility" title="<?php echo _('Please select facility name'); ?>">
+                    <select class="form-control isRequired" id="facility" name="facility"
+                      title="<?php echo _('Please select facility name'); ?>">
                       <option></option>
                       <?php
                       foreach ($facilityResult as $facility) { ?>
                         ?>
-                        <option data-name="<?php echo $facility['facility_name']; ?>" data-email="<?php echo $facility['facility_emails']; ?>" data-report-email="<?php echo $facility['report_email']; ?>" data-id="<?= $facility['facility_id'] ?>" value="<?php echo base64_encode($facility['facility_id']); ?>"><?php echo ($facility['facility_name']); ?></option>
+                        <option data-name="<?php echo $facility['facility_name']; ?>"
+                          data-email="<?php echo $facility['facility_emails']; ?>"
+                          data-report-email="<?php echo $facility['report_email']; ?>"
+                          data-id="<?= $facility['facility_id'] ?>"
+                          value="<?php echo base64_encode($facility['facility_id']); ?>"><?php echo ($facility['facility_name']); ?></option>
                       <?php } ?>
                     </select>
                   </div>
@@ -104,9 +124,13 @@ $batchResult = $db->rawQuery($batchQuery);
             <div class="row">
               <div class="col-md-9">
                 <div class="form-group">
-                  <label for="message" class="col-lg-3 control-label"><?php echo _("Message"); ?> <span class="mandatory">*</span></label>
+                  <label for="message" class="col-lg-3 control-label">
+                    <?php echo _("Message"); ?> <span class="mandatory">*</span>
+                  </label>
                   <div class="col-lg-9">
-                    <textarea id="message" name="message" class="form-control isRequired" rows="6" placeholder="<?php echo _('Message'); ?>" title="<?php echo _('Please enter message'); ?>"></textarea>
+                    <textarea id="message" name="message" class="form-control isRequired" rows="6"
+                      placeholder="<?php echo _('Message'); ?>"
+                      title="<?php echo _('Please enter message'); ?>"></textarea>
                   </div>
                 </div>
               </div>
@@ -116,111 +140,179 @@ $batchResult = $db->rawQuery($batchQuery);
                 <br>
                 <br>
                 <br>
-                <h4><?php echo _("Please use the following to filter the samples you wish to email"); ?></h4>
-                <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:90%;">
+                <h4>
+                  <?php echo _("Please use the following to filter the samples you wish to email"); ?>
+                </h4>
+                <table aria-describedby="table" class="table" aria-hidden="true"
+                  style="margin-left:1%;margin-top:20px;width:90%;">
                   <tr>
-                    <td>&nbsp;<strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
+                    <td>&nbsp;<strong>
+                        <?php echo _("Sample Collection Date"); ?>&nbsp;:
+                      </strong></td>
                     <td>
-                      <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:275px;background:#fff;" />
+                      <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control"
+                        placeholder="<?php echo _('Select Collection Date'); ?>" readonly
+                        style="width:275px;background:#fff;" />
                     </td>
-                    <td>&nbsp;<strong><?php echo _("Sample Type"); ?>&nbsp;:</strong></td>
+                    <td>&nbsp;<strong>
+                        <?php echo _("Sample Type"); ?>&nbsp;:
+                      </strong></td>
                     <td>
-                      <select class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
-                        <option value=""> <?php echo _("-- Select --"); ?> </option>
+                      <select class="form-control" id="sampleType" name="sampleType"
+                        title="<?php echo _('Please select sample type'); ?>">
+                        <option value="">
+                          <?php echo _("-- Select --"); ?>
+                        </option>
                         <?php
                         foreach ($sTypeResult as $type) {
-                        ?>
+                          ?>
                           <option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
-                        <?php
+                          <?php
                         }
                         ?>
                       </select>
                     </td>
                   </tr>
                   <tr>
-                    <td>&nbsp;<strong><?php echo _("Facility Name"); ?>&nbsp;:</strong></td>
+                    <td>&nbsp;<strong>
+                        <?php echo _("Facility Name"); ?>&nbsp;:
+                      </strong></td>
                     <td>
-                      <select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>">
+                      <select style="width: 275px;" class="form-control" id="facilityName" name="facilityName"
+                        title="<?php echo _('Please select facility name'); ?>">
                         <?= $facilitiesDropdown; ?>
                       </select>
                     </td>
                     <td><strong>Gender&nbsp;:</strong></td>
                     <td>
-                      <select name="gender" id="gender" class="form-control" title="Please choose gender" onchange="enablePregnant(this);">
-                        <option value=""> <?php echo _("-- Select --"); ?> </option>
-                        <option value="male"><?php echo _("Male"); ?></option>
-                        <option value="female"><?php echo _("Female"); ?></option>
-                        <option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
+                      <select name="gender" id="gender" class="form-control" title="Please choose gender"
+                        onchange="enablePregnant(this);">
+                        <option value="">
+                          <?php echo _("-- Select --"); ?>
+                        </option>
+                        <option value="male">
+                          <?php echo _("Male"); ?>
+                        </option>
+                        <option value="female">
+                          <?php echo _("Female"); ?>
+                        </option>
+                        <option value="not_recorded">
+                          <?php echo _("Not Recorded"); ?>
+                        </option>
                       </select>
                     </td>
                   </tr>
                   <tr>
-                    <td><strong class="showPregnant"><?php echo _("Pregnant"); ?>&nbsp;:</strong></td>
+                    <td><strong class="showPregnant">
+                        <?php echo _("Pregnant"); ?>&nbsp;:
+                      </strong></td>
                     <td>
-                      <input type="radio" name="pregnant" title="<?php echo _('Please choose type'); ?>" class="pregnant showPregnant" id="prgYes" value="yes" disabled="disabled" />&nbsp;&nbsp;<?php echo _("Yes"); ?>
-                      <input type="radio" name="pregnant" title="<?php echo _('Please choose type'); ?>" class="pregnant showPregnant" id="prgNo" value="no" disabled="disabled" />&nbsp;&nbsp;<?php echo _("No"); ?>
+                      <input type="radio" name="pregnant" title="<?php echo _('Please choose type'); ?>"
+                        class="pregnant showPregnant" id="prgYes" value="yes" disabled="disabled" />&nbsp;&nbsp;<?php echo _("Yes"); ?>
+                      <input type="radio" name="pregnant" title="<?php echo _('Please choose type'); ?>"
+                        class="pregnant showPregnant" id="prgNo" value="no" disabled="disabled" />&nbsp;&nbsp;<?php echo _("No"); ?>
                     </td>
-                    <td class=""><strong><?php echo _("Urgency"); ?>&nbsp;:</strong></td>
+                    <td class=""><strong>
+                        <?php echo _("Urgency"); ?>&nbsp;:
+                      </strong></td>
                     <td class="">
-                      <input type="radio" name="urgency" title="<?php echo _('Please choose urgency type'); ?>" class="urgent" id="urgentYes" value="normal" />&nbsp;&nbsp;<?php echo _("Normal"); ?>
-                      <input type="radio" name="urgency" title="<?php echo _('Please choose urgency type'); ?>" class="urgent" id="urgentYes" value="urgent" />&nbsp;&nbsp;<?php echo _("Urgent"); ?>
+                      <input type="radio" name="urgency" title="<?php echo _('Please choose urgency type'); ?>"
+                        class="urgent" id="urgentYes" value="normal" />&nbsp;&nbsp;<?php echo _("Normal"); ?>
+                      <input type="radio" name="urgency" title="<?php echo _('Please choose urgency type'); ?>"
+                        class="urgent" id="urgentYes" value="urgent" />&nbsp;&nbsp;<?php echo _("Urgent"); ?>
                     </td>
                   </tr>
                   <tr>
-                    <td>&nbsp;<strong><?php echo _("Province/State"); ?> &nbsp;:</strong></td>
+                    <td>&nbsp;<strong>
+                        <?php echo _("Province/State"); ?> &nbsp;:
+                      </strong></td>
                     <td>
-                      <select name="state" id="state" class="form-control" title="<?php echo _('Please choose province/state'); ?>" onchange="getProvinceDistricts();" style="width:275px;">
-                        <option value=""> <?php echo _("-- Select --"); ?> </option>
+                      <select name="state" id="state" class="form-control"
+                        title="<?php echo _('Please choose province/state'); ?>" onchange="getProvinceDistricts();"
+                        style="width:275px;">
+                        <option value="">
+                          <?php echo _("-- Select --"); ?>
+                        </option>
                         <?php
                         foreach ($pdResult as $province) {
-                        ?>
+                          ?>
                           <option value="<?php echo $province['geo_name']; ?>"><?= $province['geo_name']; ?></option>
                         <?php } ?>
                       </select>
                     </td>
-                    <td>&nbsp;<strong><?php echo _("District/County"); ?>&nbsp;:</strong></td>
+                    <td>&nbsp;<strong>
+                        <?php echo _("District/County"); ?>&nbsp;:
+                      </strong></td>
                     <td>
-                      <select name="district" id="district" class="form-control" title="<?php echo _('Please choose district/county'); ?>">
-                        <option value=""> <?php echo _("-- Select --"); ?> </option>
+                      <select name="district" id="district" class="form-control"
+                        title="<?php echo _('Please choose district/county'); ?>">
+                        <option value="">
+                          <?php echo _("-- Select --"); ?>
+                        </option>
                       </select>
                     </td>
                   </tr>
                   <tr>
-                    <td class=""><strong><?php echo _("Batch"); ?>&nbsp;:</strong></td>
+                    <td class=""><strong>
+                        <?php echo _("Batch"); ?>&nbsp;:
+                      </strong></td>
                     <td>
-                      <select name="batch" id="batch" class="form-control" title="<?php echo _('Please choose batch'); ?>" style="width:275px;" multiple="multiple">
-                        <option value=""> <?php echo _("-- Select --"); ?> </option>
+                      <select name="batch" id="batch" class="form-control"
+                        title="<?php echo _('Please choose batch'); ?>" style="width:275px;" multiple="multiple">
+                        <option value="">
+                          <?php echo _("-- Select --"); ?>
+                        </option>
                         <?php
                         foreach ($batchResult as $batch) {
-                        ?>
+                          ?>
                           <option value="<?php echo $batch['batch_id']; ?>"><?php echo $batch['batch_code']; ?></option>
                         <?php } ?>
                       </select>
                     </td>
-                    <td class=""><strong><?php echo _("Sample Status"); ?>&nbsp;:</strong></td>
+                    <td class=""><strong>
+                        <?php echo _("Sample Status"); ?>&nbsp;:
+                      </strong></td>
                     <td>
-                      <select name="sampleStatus" id="sampleStatus" class="form-control" title="<?php echo _('Please choose sample status'); ?>">
-                        <option value=""> <?php echo _("-- Select --"); ?> </option>
-                        <option value="7"><?php echo _("Accepted"); ?></option>
-                        <option value="4"><?php echo _("Rejected"); ?></option>
+                      <select name="sampleStatus" id="sampleStatus" class="form-control"
+                        title="<?php echo _('Please choose sample status'); ?>">
+                        <option value="">
+                          <?php echo _("-- Select --"); ?>
+                        </option>
+                        <option value="7">
+                          <?php echo _("Accepted"); ?>
+                        </option>
+                        <option value="4">
+                          <?php echo _("Rejected"); ?>
+                        </option>
                       </select>
                     </td>
                   </tr>
                   <tr>
-                    <td class=""><strong><?php echo _("Mail Sent Status"); ?>&nbsp;:</strong></td>
+                    <td class=""><strong>
+                        <?php echo _("Mail Sent Status"); ?>&nbsp;:
+                      </strong></td>
                     <td>
-                      <select name="sampleMailSentStatus" id="sampleMailSentStatus" class="form-control" title="<?php echo _('Please choose sample mail sent status'); ?>" style="width:275px;">
-                        <option value="no"><?php echo _("Samples Not yet Mailed"); ?></option>
-                        <option value=""><?php echo _("All Samples"); ?></option>
-                        <option value="yes"><?php echo _("Already Mailed Samples"); ?></option>
+                      <select name="sampleMailSentStatus" id="sampleMailSentStatus" class="form-control"
+                        title="<?php echo _('Please choose sample mail sent status'); ?>" style="width:275px;">
+                        <option value="no">
+                          <?php echo _("Samples Not yet Mailed"); ?>
+                        </option>
+                        <option value="">
+                          <?php echo _("All Samples"); ?>
+                        </option>
+                        <option value="yes">
+                          <?php echo _("Already Mailed Samples"); ?>
+                        </option>
                       </select>
                     </td>
                     <td></td>
                     <td></td>
                   </tr>
                   <tr>
-                    <td colspan="4" style="text-align:center;">&nbsp;<input type="button" class="btn btn-success btn-sm" onclick="getSampleDetails();" value="<?php echo _('Search'); ?>" />
-                      &nbsp;<input type="button" class="btn btn-danger btn-sm" value="<?php echo _('Reset'); ?>" onclick="document.location.href = document.location;" />
+                    <td colspan="4" style="text-align:center;">&nbsp;<input type="button" class="btn btn-success btn-sm"
+                        onclick="getSampleDetails();" value="<?= _('Search'); ?>" />
+                      &nbsp;<input type="button" class="btn btn-danger btn-sm" value="<?= _('Reset'); ?>"
+                        onclick="document.location.href = document.location;" />
                     </td>
                   </tr>
                 </table>
@@ -228,17 +320,27 @@ $batchResult = $db->rawQuery($batchQuery);
             </div>
             <div class="row">
               <div class="col-md-4"></div>
-              <div class="col-md-8"><strong><?php echo _("Please select maximum 100 samples"); ?></strong></div>
+              <div class="col-md-8"><strong>
+                  <?php echo _("Please select maximum 100 samples"); ?>
+                </strong></div>
             </div>
             <div class="row" id="sampleDetails">
               <div class="col-md-9">
                 <div class="form-group">
-                  <label for="sample" class="col-lg-3 control-label"><?php echo _("Choose Sample(s)"); ?> <span class="mandatory">*</span></label>
+                  <label for="sample" class="col-lg-3 control-label">
+                    <?php echo _("Choose Sample(s)"); ?> <span class="mandatory">*</span>
+                  </label>
                   <div class="col-lg-9">
                     <div style="width:100%;margin:0 auto;clear:both;">
-                      <a href="#" id="select-all-sample" style="float:left" class="btn btn-info btn-xs"><?php echo _("Select All"); ?>&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href="#" id="deselect-all-sample" style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;<?php echo _("Deselect All"); ?></a>
+                      <a href="#" id="select-all-sample" style="float:left" class="btn btn-info btn-xs">
+                        <?php echo _("Select All"); ?>&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em>
+                      </a> <a href="#" id="deselect-all-sample" style="float:right" class="btn btn-danger btn-xs"><em
+                          class="fa-solid fa-chevron-left"></em>&nbsp;
+                        <?php echo _("Deselect All"); ?>
+                      </a>
                     </div><br /><br />
-                    <select id="sample" name="sample[]" multiple="multiple" class="search isRequired" title="<?php echo _('Please select sample(s)'); ?>"></select>
+                    <select id="sample" name="sample[]" multiple="multiple" class="search isRequired"
+                      title="<?php echo _('Please select sample(s)'); ?>"></select>
                   </div>
                 </div>
               </div>
@@ -256,8 +358,13 @@ $batchResult = $db->rawQuery($batchQuery);
             <input type="hidden" id="toEmail" name="toEmail" />
             <input type="hidden" id="reportEmail" name="reportEmail" />
             <input type="hidden" name="pdfFile" id="pdfFile" />
-            <a href="/vl/result-mail/testResultEmailConfig.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>&nbsp;
-            <a class="btn btn-primary" id="requestSubmit" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Next"); ?> <em class="fa-solid fa-chevron-right"></em></a>
+            <a href="/vl/result-mail/testResultEmailConfig.php" class="btn btn-default">
+              <?php echo _("Cancel"); ?>
+            </a>&nbsp;
+            <a class="btn btn-primary" id="requestSubmit" href="javascript:void(0);"
+              onclick="validateNow();return false;">
+              <?php echo _("Next"); ?> <em class="fa-solid fa-chevron-right"></em>
+            </a>
           </div>
           <!-- /.box-footer -->
         </form>
@@ -279,7 +386,7 @@ $batchResult = $db->rawQuery($batchQuery);
   var startDate = "";
   var endDate = "";
   let samplesData = null;
-  $(document).ready(function() {
+  $(document).ready(function () {
     document.getElementById('message').value = "<?php echo _("Hi"); ?>, \n<?php echo _("PFA the viral load test results"); ?>. \n\n<?php echo _("Thanks"); ?>";
     $('#facility').select2({
       placeholder: "<?php echo _("Select Facility"); ?>"
@@ -291,26 +398,26 @@ $batchResult = $db->rawQuery($batchQuery);
       placeholder: "<?php echo _("Select Batches"); ?>"
     });
     $('#sampleCollectionDate').daterangepicker({
-        locale: {
-          cancelLabel: "<?= _("Clear"); ?>",
-          format: 'DD-MMM-YYYY',
-          separator: ' to ',
-        },
-        showDropdowns: true,
-        alwaysShowCalendars: false,
-        startDate: moment().subtract(28, 'days'),
-        endDate: moment(),
-        maxDate: moment(),
-        ranges: {
-          'Today': [moment(), moment()],
-          'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-          'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-          'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-          'This Month': [moment().startOf('month'), moment().endOf('month')],
-          'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-        }
+      locale: {
+        cancelLabel: "<?= _("Clear"); ?>",
+        format: 'DD-MMM-YYYY',
+        separator: ' to ',
       },
-      function(start, end) {
+      showDropdowns: true,
+      alwaysShowCalendars: false,
+      startDate: moment().subtract(28, 'days'),
+      endDate: moment(),
+      maxDate: moment(),
+      ranges: {
+        'Today': [moment(), moment()],
+        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+        'This Month': [moment().startOf('month'), moment().endOf('month')],
+        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+      }
+    },
+      function (start, end) {
         startDate = start.format('YYYY-MM-DD');
         endDate = end.format('YYYY-MM-DD');
       });
@@ -319,7 +426,7 @@ $batchResult = $db->rawQuery($batchQuery);
     $('.search').multiSelect({
       selectableHeader: '<input type="text" class="search-input form-control" autocomplete="off" placeholder="<?php echo _("Enter Sample Code"); ?>">',
       selectionHeader: '<input type="text" class="search-input form-control" autocomplete="off" placeholder="<?php echo _("Enter Sample Code"); ?>">',
-      afterInit: function(ms) {
+      afterInit: function (ms) {
         var that = this,
           $selectableSearch = that.$selectableUl.prev(),
           $selectionSearch = that.$selectionUl.prev(),
@@ -327,7 +434,7 @@ $batchResult = $db->rawQuery($batchQuery);
           selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
 
         that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-          .on('keydown', function(e) {
+          .on('keydown', function (e) {
             if (e.which === 40) {
               that.$selectableUl.focus();
               return false;
@@ -335,14 +442,14 @@ $batchResult = $db->rawQuery($batchQuery);
           });
 
         that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-          .on('keydown', function(e) {
+          .on('keydown', function (e) {
             if (e.which == 40) {
               that.$selectionUl.focus();
               return false;
             }
           });
       },
-      afterSelect: function() {
+      afterSelect: function () {
         //button disabled
         if (this.qs2.cache().matchedResultsCount > noOfAllowedSamples) {
           $("#errorMsg").html("<strong><?php echo _("You have selected"); ?> " + this.qs2.cache().matchedResultsCount + " <?php echo _("Samples out of the maximum allowed"); ?> " + noOfAllowedSamples + " <?php echo _("samples"); ?></strong>");
@@ -352,7 +459,7 @@ $batchResult = $db->rawQuery($batchQuery);
         this.qs1.cache();
         this.qs2.cache();
       },
-      afterDeselect: function() {
+      afterDeselect: function () {
         if (this.qs2.cache().matchedResultsCount > noOfAllowedSamples) {
           $("#errorMsg").html("<strong><?php echo _("You have selected"); ?> " + this.qs2.cache().matchedResultsCount + " <?php echo _("Samples out of the maximum allowed"); ?> " + noOfAllowedSamples + " <?php echo _("samples"); ?></strong>");
           $("#requestSubmit").attr("disabled", true);
@@ -367,11 +474,11 @@ $batchResult = $db->rawQuery($batchQuery);
       }
     });
 
-    $('#select-all-sample').click(function() {
+    $('#select-all-sample').click(function () {
       $('#sample').multiSelect('select_all');
       return false;
     });
-    $('#deselect-all-sample').click(function() {
+    $('#deselect-all-sample').click(function () {
       $('#sample').multiSelect('deselect_all');
       return false;
     });
@@ -411,20 +518,20 @@ $batchResult = $db->rawQuery($batchQuery);
     var sampleMailSentStatus = $('#sampleMailSentStatus').val();
     var type = $('#type').val();
     $.post("/mail/getRequestSampleCodeDetails.php", {
-        facility: facilityName,
-        sType: sTypeName,
-        sampleCollectionDate: $("#sampleCollectionDate").val(),
-        gender: gender,
-        pregnant: pregnant,
-        urgent: urgent,
-        state: state,
-        district: district,
-        batch: batch,
-        status: status,
-        mailSentStatus: sampleMailSentStatus,
-        type: type
-      },
-      function(data) {
+      facility: facilityName,
+      sType: sTypeName,
+      sampleCollectionDate: $("#sampleCollectionDate").val(),
+      gender: gender,
+      pregnant: pregnant,
+      urgent: urgent,
+      state: state,
+      district: district,
+      batch: batch,
+      status: status,
+      mailSentStatus: sampleMailSentStatus,
+      type: type
+    },
+      function (data) {
         if ($.trim(data) !== "") {
           $("#sampleDetails").html(data);
         }
@@ -437,11 +544,11 @@ $batchResult = $db->rawQuery($batchQuery);
     //var sample = $("#sample").val();
     var id = samplesData.toString();
     $.post("/vl/results/generate-result-pdf.php", {
-        source: 'print',
-        id: id,
-        resultMail: 'resultMail'
-      },
-      function(data) {
+      source: 'print',
+      id: id,
+      resultMail: 'resultMail'
+    },
+      function (data) {
         if (data === "" || data === null || data === undefined) {
           $.unblockUI();
           alert("<?php echo _("Cannot generate Result PDF for samples without result."); ?>");
@@ -453,7 +560,7 @@ $batchResult = $db->rawQuery($batchQuery);
       });
   }
 
-  $('#facility').change(function(e) {
+  $('#facility').change(function (e) {
     if ($(this).val() == '') {
       $('.emailSection').html('');
       $('#toName').val('');
@@ -482,10 +589,10 @@ $batchResult = $db->rawQuery($batchQuery);
     var pName = $("#state").val();
     if ($.trim(pName) != '') {
       $.post("/includes/siteInformationDropdownOptions.php", {
-          pName: pName,
-          testType: 'vl'
-        },
-        function(data) {
+        pName: pName,
+        testType: 'vl'
+      },
+        function (data) {
           if ($.trim(data) != "") {
             details = data.split("###");
             $("#district").html(details[1]);

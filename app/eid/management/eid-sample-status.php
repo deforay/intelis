@@ -100,7 +100,7 @@ $batResult = $db->rawQuery($batQuery);
 						</tr>
 						<tr>
 							<td colspan="4">&nbsp;<input type="button" onclick="searchResultData(),searchVlTATData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset"); ?></span></button>
+								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _('Reset'); ?></span></button>
 							</td>
 						</tr>
 

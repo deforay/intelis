@@ -9,6 +9,26 @@ use App\Abstracts\AbstractTestService;
 
 class HepatitisService extends AbstractTestService
 {
+    public array $suppressedArray = [
+        'hiv-1 not detected',
+        'target not detected',
+        'tnd',
+        'not detected',
+        'below detection limit',
+        'below detection level',
+        'bdl',
+        'suppressed',
+        '< 20',
+        '<20',
+        '< 40',
+        '<40',
+        '< 839',
+        '<839',
+        '-1.00',
+        '< titer min',
+        'negative',
+        'negat'
+    ];
 
     protected string $table = 'form_hepatitis';
     protected string $shortCode = 'HEP';

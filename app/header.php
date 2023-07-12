@@ -2,11 +2,11 @@
 
 use App\Services\UsersService;
 use App\Services\CommonService;
+use App\Services\AppMenuService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
-use App\Services\AppMenuService;
 
 $applicationConfig = ContainerRegistry::get('applicationConfig');
 
@@ -99,8 +99,7 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery.fastconfirm.css" />
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/components-rounded.min.css">
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/select2.live.min.css" />
-	<link rel="stylesheet" media="all" type="text/css"
-		href="/assets/css/style.css?v=<?= filemtime(WEB_ROOT . "/assets/css/style.css") ?>" />
+	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/style.css?v=<?= filemtime(WEB_ROOT . "/assets/css/style.css") ?>" />
 	<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 	<script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="/assets/js/deforayModal.js"></script>
@@ -142,11 +141,9 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 				<div class="navbar-custom-menu">
 					<ul class="nav navbar-nav">
 						<?php if (!empty(SYSTEM_CONFIG['recency']['crosslogin']) && SYSTEM_CONFIG['recency']['crosslogin'] === true && !empty(SYSTEM_CONFIG['recency']['url'])) {
-							?>
+						?>
 							<li class="user-menu">
-								<a onclick="setCrossLogin();"
-									href="<?= rtrim(SYSTEM_CONFIG['recency']['url'], "/") . '/login?u=' . base64_encode($_SESSION['loginId']) . '&t=' . ($_SESSION['crossLoginPass']) . '&name=' . base64_encode($_SESSION['userName']); ?>"
-									class="btn btn-link"><span class="fa-solid fa-arrow-up-right-from-square"></span>
+								<a onclick="setCrossLogin();" href="<?= rtrim(SYSTEM_CONFIG['recency']['url'], "/") . '/login?u=' . base64_encode($_SESSION['loginId']) . '&t=' . ($_SESSION['crossLoginPass']) . '&name=' . base64_encode($_SESSION['userName']); ?>" class="btn btn-link"><span class="fa-solid fa-arrow-up-right-from-square"></span>
 									Recency</a>
 							</li>
 						<?php } ?>
@@ -157,13 +154,12 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 								<span class="hidden-xs">
 									<?= $_SESSION['userName'] ?? ''; ?>
 								</span>
-								<span class="fa-solid fa-circle is-remote-server-reachable"
-									style="font-size:1em;display:none;"></span>
+								<span class="fa-solid fa-circle is-remote-server-reachable" style="font-size:1em;display:none;"></span>
 							</a>
 							<ul class="dropdown-menu">
 								<?php
 								if (!empty($arr['edit_profile']) && $arr['edit_profile'] == 'yes') {
-									?>
+								?>
 									<li class="user-footer">
 										<a href="/users/editProfile.php" class="">
 											<?= _("Edit Profile"); ?>
@@ -204,7 +200,7 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 						if ($menu['is_header'] == 'yes') {
 							echo '<li class="header">' . $menu['display_text'];
 						} else {
-							?>
+					?>
 
 							<li class="<?= $classNames; ?>">
 								<a href="<?= $menu['link'] ?>">
@@ -219,14 +215,14 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 									<?php } ?>
 								</a>
 							<?php } ?>
-						<?php if ($menu['has_children'] == "yes") {
-							if ($menu['is_header'] == 'no') { ?>
-								<ul class="treeview-menu">
+							<?php if ($menu['has_children'] == "yes") {
+								if ($menu['is_header'] == 'no') { ?>
+									<ul class="treeview-menu">
 									<?php
-							}
+								}
 
-							foreach ($menu['children'] as $subMenu) {
-								?>
+								foreach ($menu['children'] as $subMenu) {
+									?>
 										<?php if ($subMenu['has_children'] == 'yes' && !empty($subMenu['children'])) { ?>
 											<li class="sub-menu-li <?= $subMenu['additional_class_names'] ?> ">
 												<a href="<?= $subMenu['link']; ?>">
@@ -248,7 +244,7 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 																$dataInnerPages = implode(';', array_map('base64_encode', $dataInnerPages));
 																$innerPages = 'data-inner-pages="' . $dataInnerPages . '"';
 															}
-															?>
+														?>
 															<li class="sub-menu-li-ul-li <?= $childMenu['additional_class_names'] ?>">
 																<a class="menu-item" href="<?= $childMenu['link'] ?>" <?= $innerPages; ?>>
 																	<span class="<?= $childMenu['icon'] ?>"></span>
@@ -257,25 +253,25 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 																	</span>
 																</a>
 															</li>
-															<?php
+														<?php
 														}
 														?>
 													</ul>
 												<?php } ?>
 											</li>
-											<?php
+									<?php
 										}
-							} ?>
-							<?php if ($menu['is_header'] == 'no') { ?>
-								</ul>
+									} ?>
+									<?php if ($menu['is_header'] == 'no') { ?>
+									</ul>
+								<?php } ?>
 							<?php } ?>
-						<?php } ?>
 
-						</li>
+							</li>
 
-					<?php }
+						<?php }
 
-					?>
+						?>
 				</ul>
 
 			</section>
@@ -286,8 +282,7 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 			<div style="text-align:center">
 				<span onclick="closeModal();" style="float:right;clear:both;" class="closeModal"></span>
 			</div>
-			<iframe id="dFrame" src="" title="LIS Content" style="border:none;" scrolling="yes" marginwidth="0"
-				marginheight="0" frameborder="0" vspace="0" hspace="0">
+			<iframe id="dFrame" src="" title="LIS Content" style="border:none;" scrolling="yes" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0">
 				<?= _("Unable to load this page or resource"); ?>
 			</iframe>
 		</div>

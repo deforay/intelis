@@ -66,10 +66,16 @@
             <h3 style="color:#555;font-weight:bold;font-size:1.4em;">
               <?= _("Error Code") . " : " . $httpCode; ?>
             </h3>
-            <small><?= _("Please contact the System Admin for further support."); ?></small>
+            <small>
+              <?= _("Please contact the System Admin for further support."); ?>
+            </small>
             <br>
             <br>
-            <small><a href="/"><?= _("Go to Dashboard"); ?></a></small>
+            <small>
+              <a href="/">
+                <?= _("Go to Dashboard"); ?>
+              </a>
+            </small>
 
           </div>
         </div>
@@ -78,7 +84,10 @@
   </div>
 
   <footer class="main-footer" style="margin:0;min-height:100px !important;text-align:center;">
-    <small>This project is supported by the U.S. President's Emergency Plan for AIDS Relief (PEPFAR) through the U.S. Centers for Disease Control and Prevention (CDC).</small>
+    <small>
+      <?= _("This project is supported by the U.S. President's Emergency Plan for AIDS Relief (PEPFAR) through the U.S.
+		Centers for Disease Control and Prevention (CDC)."); ?>
+    </small>
   </footer>
   </div>
 </body>

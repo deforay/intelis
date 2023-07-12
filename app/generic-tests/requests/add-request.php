@@ -591,7 +591,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                  <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
                                                             </div>
                                                        </div>
-                                                       <!--  <?php if (count($reasonForFailure) > 0) { ?>
+                                                    <?php if (count($reasonForFailure) > 0) { ?>
                                                             <div class="col-md-6" style="display: none;">
                                                                  <label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
                                                                  <div class="col-lg-7">
@@ -600,7 +600,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                       </select>
                                                                  </div>
                                                             </div>
-                                                       <?php } ?>-->
+                                                       <?php } ?>
                                                   </div>
                                                   <div class="row">
                                                        <div class="col-md-12">

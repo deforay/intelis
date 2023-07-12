@@ -118,7 +118,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
                         </tr>
                         <tr>
                             <td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-default btn-sm">
-                                &nbsp;<button class="btn btn-danger btn-sm" onclick="reset();"><span><?php echo _("Reset"); ?></span></button>
+                                &nbsp;<button class="btn btn-danger btn-sm" onclick="reset();"><span><?= _('Reset'); ?></span></button>
                                 &nbsp;<button class="btn btn-primary btn-sm" onclick="$('#showhide').fadeToggle();return false;"><span><?php echo _("Manage Columns"); ?></span></button>
                             </td>
                         </tr>
@@ -182,7 +182,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
                                 <tr>
                                     <th><?php echo _("Sample Code"); ?></th>
                                     <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-                                        <th><?php echo _("Remote Sample"); ?> <br /><?php echo _("Code"); ?></th>
+                                        <th><?php echo _("Remote Sample Code"); ?></th>
                                     <?php } ?>
                                     <th><?php echo _("Batch Code"); ?></th>
                                     <th scope="row"><?php echo _("Facility Name"); ?></th>
@@ -252,11 +252,11 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
             });
         <?php
         if (!isset($_COOKIE['collectionDate']) || $_COOKIE['collectionDate'] == '') {
-        ?>
+            ?>
             $('#sampleCollectionDate').val("");
         <?php
         } else if (($lastUrl1 != '' || $lastUrl2 != '') && isset($_COOKIE['collectionDate'])) { ?>
-            $('#sampleCollectionDate').val("<?= ($_COOKIE['collectionDate']); ?>");
+                $('#sampleCollectionDate').val("<?= ($_COOKIE['collectionDate']); ?>");
         <?php } ?>
 
         loadVlRequestData();
