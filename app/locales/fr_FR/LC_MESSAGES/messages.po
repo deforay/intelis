@@ -2878,7 +2878,7 @@ msgstr "Envoie de résultats par email"
 #: system/translate-strings.php:99 tb/requests/get-request-list.php:342
 #: users/getUserDetails.php:145 vl/reference/get-vl-results-helper.php:145
 #: vl/reference/get-vl-test-failure-reasons-helper.php:152
-#: vl/requests/getVlRequestDetails.php:422
+#: vl/requests/get-request-list.php:422
 #: vl/result-mail/testResultEmailConfig.php:23
 msgid "Edit"
 msgstr "Modifier"
@@ -7203,7 +7203,7 @@ msgstr "Mettre à jour la demande"
 #: hepatitis/results/hepatitis-samples-for-manual-result-entry.php:257
 #: tb/requests/get-request-list.php:345
 #: tb/results/tb-samples-for-manual-result-entry.php:247
-#: vl/requests/getVlRequestDetails.php:424
+#: vl/requests/get-request-list.php:424
 #: vl/results/get-manual-results.php:324
 #: vl/results/getVlTestResultDetails.php:331
 msgid "Locked"
@@ -7212,21 +7212,21 @@ msgstr "Verrouillé"
 #: covid-19/requests/get-request-list.php:394
 #: eid/requests/get-request-list.php:399
 #: hepatitis/requests/get-request-list.php:393
-#: tb/requests/get-request-list.php:353 vl/requests/getVlRequestDetails.php:435
+#: tb/requests/get-request-list.php:353 vl/requests/get-request-list.php:435
 msgid "Sync this sample"
 msgstr "Synchroniser cet échantillon"
 
 #: covid-19/requests/get-request-list.php:394
 #: eid/requests/get-request-list.php:399
 #: hepatitis/requests/get-request-list.php:393
-#: tb/requests/get-request-list.php:353 vl/requests/getVlRequestDetails.php:435
+#: tb/requests/get-request-list.php:353 vl/requests/get-request-list.php:435
 msgid "Sync"
 msgstr "Synchroniser"
 
 #: covid-19/requests/get-request-list.php:402
 #: eid/requests/get-request-list.php:407
 #: hepatitis/requests/get-request-list.php:401
-#: tb/requests/get-request-list.php:361 vl/requests/getVlRequestDetails.php:430
+#: tb/requests/get-request-list.php:361 vl/requests/get-request-list.php:430
 msgid "Barcode"
 msgstr "Code barre"
 

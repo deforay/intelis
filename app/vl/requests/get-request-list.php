@@ -72,7 +72,7 @@ if (isset($_POST['iSortCol_0'])) {
      }
      $sOrder = substr_replace($sOrder, "", -2);
 }
-//echo '<pre>'; print_r($sOrder); die;
+
 /*
 * Filtering
 * NOTE this does not match the built-in DataTables filtering which does it
@@ -150,7 +150,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                vl.result_printed_datetime,
                vl.last_modified_datetime,
                vl.result_status,
-               UPPER(s.sample_name) as sample_name,
+               s.sample_name as sample_name,
                b.batch_code,
                ts.status_name,
                f.facility_name,
@@ -401,7 +401,7 @@ foreach ($rResult as $aRow) {
      $sync = '';
      $barcode = '';
 
-     $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
+     $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
      $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
 
      $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_art_no']));

@@ -107,10 +107,9 @@ if (!empty($sOrder)) {
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//die($sQuery);
-// echo $sQuery;
+
 $rResult = $db->rawQuery($sQuery);
-// print_r($rResult);
+
 /* Data set length after filtering */
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];

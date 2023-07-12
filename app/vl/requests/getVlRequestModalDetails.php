@@ -218,7 +218,7 @@ foreach ($rResult as $aRow) {
     }
     $patientDetails = $aRow['patient_art_no'] . "##" . $aRow['sample_code'] . "##" . $aRow['patient_other_id'] . "##" . $aRow['patient_first_name'] . "##" . $aRow['patient_dob'] . "##" . $aRow['patient_gender'] . "##" . $aRow['patient_age_in_years'] . "##" . $aRow['patient_mobile_number'] . "##" . $aRow['patient_location'];
     if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-        $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
+        $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
     } else {
         $aRow['sample_collection_date'] = '';
     }

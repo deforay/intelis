@@ -120,7 +120,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                     f.facility_code,
                     f.facility_state,
                     f.facility_district,
-                    UPPER(s.sample_name) as sample_name,
+                    s.sample_name as sample_name,
                     u_d.user_name as reviewedBy,
                     a_u_d.user_name as approvedBy,
                     rs.rejection_reason_name,

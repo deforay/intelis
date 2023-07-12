@@ -145,16 +145,6 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 $sTestDate = '';
 $eTestDate = '';
-// if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-//      $s_t_date = explode("to", $_POST['sampleTestDate']);
-//      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-//           $sTestDate = \App\Utilities\DateUtility::isoDateFormat(trim($s_t_date[0]));
-//      }
-//      if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-//           $eTestDate = \App\Utilities\DateUtility::isoDateFormat(trim($s_t_date[1]));
-//      }
-// }
-
 
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
      if (trim($start_date) == trim($end_date)) {
@@ -163,14 +153,6 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
           $sWhere[] = '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
      }
 }
-// if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-//      if (trim($sTestDate) == trim($eTestDate)) {
-//           $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
-//      } else {
-//           $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
-//      }
-// }
-
 if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
      $sWhere[] = ' vl.lab_id = "' . $_POST['facilityName'] . '"';
 }
@@ -207,18 +189,8 @@ if (!empty($sOrder)) {
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-// die($sQuery);
+
 $rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering */
-
-// $aResultFilterTotal = $db->rawQuery($sQuery);
-// $iFilteredTotal = count($aResultFilterTotal);
-
-// /* Total data set length */
-// $aResultTotal =  $db->rawQuery($sQuery);
-// // $aResultTotal = $countResult->fetch_row();
-// $iTotal = count($aResultTotal);
-
 
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];

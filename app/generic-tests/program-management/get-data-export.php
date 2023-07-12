@@ -371,7 +371,7 @@ foreach ($rResult as $aRow) {
      $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
      $row[] = ($aRow['facility_name']);
      $row[] = ($aRow['lab_name']);
-     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
+     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
      $row[] = ($aRow['sample_type_name']);
      $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
      $row[] = $aRow['result'];

@@ -170,7 +170,7 @@ if (isset($_SESSION['privileges']) && (in_array("/generic-tests/requests/edit-re
 foreach ($rResult as $aRow) {
      $edit = '';
 
-     $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
+     $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
      $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
 
      $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_id']));

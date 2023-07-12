@@ -40,7 +40,7 @@ INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
 LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
 LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.sample_type
 LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
-where (vl.sample_collection_date is not null AND vl.sample_collection_date not like ''
+WHERE (vl.sample_collection_date is not null AND vl.sample_collection_date not like ''
 AND DATE(vl.sample_collection_date) > '1970-01-01') AND (vl.sample_tested_datetime is not null
 AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01'
 AND DATE(vl.sample_tested_datetime) NOT LIKE '0000-00-00') AND vl.result is not null AND vl.result != ''";
@@ -106,9 +106,7 @@ foreach ($rResult as $aRow) {
 	$row = [];
 	//sample collecion date
 	$sampleCollectionDate = '';
-	if ($aRow['sample_collection_date'] != null && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-		$sampleCollectionDate =  DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
-	}
+	$sampleCollectionDate =  DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 	if ($aRow['sample_dispatched_datetime'] != null && trim($aRow['sample_dispatched_datetime']) != '' && $aRow['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
 		$sampleDispatchedDate = DateUtility::humanReadableDateFormat($aRow['sample_dispatched_datetime']);
 	}
@@ -117,16 +115,8 @@ foreach ($rResult as $aRow) {
 	} else {
 		$sampleRecievedDate = '';
 	}
-	if (isset($aRow['sample_tested_datetime']) && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-		$testDate = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
-	} else {
-		$testDate = '';
-	}
-	if (isset($aRow['result_printed_datetime']) && trim($aRow['result_printed_datetime']) != '' && $aRow['result_printed_datetime'] != '0000-00-00 00:00:00') {
-		$printDate = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
-	} else {
-		$printDate = '';
-	}
+	$testDate = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
+	$printDate = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 
 
 	$row[] = $aRow['sample_code'];

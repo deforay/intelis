@@ -160,7 +160,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['number_of_days_sick'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['date_of_symptom_onset']);
     $row[] = DateUtility::humanReadableDateFormat($aRow['date_of_initial_consultation']);
-    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
     $row[] = ($aRow['test_reason_name']);
     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
     $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime']);

@@ -104,7 +104,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 		$row[] = $aRow['has_infant_stopped_breastfeeding'];
 		$row[] = $aRow['pcr_test_performed_before'];
 		$row[] = $aRow['previous_pcr_result'];
-		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
+		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 		$row[] = $aRow['sample_name'] ?: null;
 		$row[] = $sampleRejection;
 		$row[] = $aRow['rejection_reason'];

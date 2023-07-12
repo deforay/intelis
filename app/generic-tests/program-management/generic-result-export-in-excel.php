@@ -155,7 +155,7 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 		//sample collecion date
 		$sampleCollectionDate = '';
 		if (!empty($aRow['sample_collection_date'])) {
-			$sampleCollectionDate =  DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
+			$sampleCollectionDate =  DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 		}
 		//requested date
 		$requestedDate = '';

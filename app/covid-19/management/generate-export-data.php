@@ -203,7 +203,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		$row[] = ($aRow['patient_province']);
 		$row[] = ($aRow['patient_district']);
 		$row[] = ($aRow['patient_city']);
-		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
+		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 		$row[] = ($aRow['test_reason_name']);
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
 		$row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime']);

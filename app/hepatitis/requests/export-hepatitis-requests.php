@@ -101,7 +101,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
         $row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
         $row[] = ($aRow['patient_age'] != null && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
         $row[] = $gender;
-        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
         $row[] = $sampleRejection;
         $row[] = $aRow['rejection_reason'];
         $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
