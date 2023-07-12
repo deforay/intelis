@@ -109,17 +109,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
           */
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
-$start_date = '';
-$end_date = '';
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-     }
-}
+[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
      if (trim($start_date) == trim($end_date)) {

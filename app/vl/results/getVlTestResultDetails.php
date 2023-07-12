@@ -175,16 +175,7 @@ $start_date = '';
 $end_date = '';
 $t_start_date = '';
 $t_end_date = '';
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
-     //print_r($s_c_date);die;
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-     }
-}
+[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
      $s_t_date = explode("to", $_POST['sampleTestDate']);

@@ -123,17 +123,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, f.*, l.facility_name as lab_name, rt
           LEFT JOIN r_tb_results as rtbr ON rtbr.result_id=vl.result
           LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
-$start_date = '';
-$end_date = '';
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-     }
-}
+[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
 $labStartDate = '';
 $labEndDate = '';

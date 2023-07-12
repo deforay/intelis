@@ -142,17 +142,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                     LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
                     LEFT JOIN r_vl_test_reasons as tr ON tr.test_reason_id=vl.reason_for_vl_testing";
 
-$start_date = '';
-$end_date = '';
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-     }
-}
+[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 $sTestDate = '';
 $eTestDate = '';
 // if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
