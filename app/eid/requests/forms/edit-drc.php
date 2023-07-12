@@ -207,43 +207,42 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 									</tr>
 								</table>
 								<br><br>
-								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
+								<div class="box-header with-border">
+									<h4>1. Données démographiques mère / enfant </h4><br>
+									<h4 class="box-title">Information sur le patient </h4>&nbsp;&nbsp;&nbsp;
+										<input style="width:30%;font-size: smaller;" type="text"
+											name="artPatientNo" id="artPatientNo" placeholder="Code du patient"
+											title="<?= _("Please enter the Patient ID"); ?>" />&nbsp;&nbsp;
+										<a style="margin-top:-0.35%;font-weight:500;" href="javascript:void(0);"
+											class="btn btn-default btn-sm"
+											onclick="showPatientList($('#artPatientNo').val(),0);"><em
+												class="fa-solid fa-magnifying-glass"></em>Search</a><span
+											id="showEmptyResult"
+											style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No
+												Patient Found</strong></span>
+								</div>
+							    <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
-										<th scope="row" colspan=8>
-											<h4>1. Données démographiques mère / enfant </h4><br>
-											<h4 class="box-title">Information sur le patient &nbsp;&nbsp;&nbsp;
-												<input style="width:30%;font-size: smaller;" type="text"
-													name="artPatientNo" id="artPatientNo" placeholder="Code du patient"
-													title="<?= _("Please enter the Patient ID"); ?>" />&nbsp;&nbsp;
-												<a style="margin-top:-0.35%;font-weight:500;" href="javascript:void(0);"
-													class="btn btn-default btn-sm"
-													onclick="showPatientList($('#artPatientNo').val(),0);"><em
-														class="fa-solid fa-magnifying-glass"></em>Search</a><span
-													id="showEmptyResult"
-													style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No
-														Patient Found</strong></span>
-											</h4>
-										</th>
-									</tr>
-									<tr>
-										<th scope="row" colspan=8>
+										<th scope="row">
 											<h5 style="font-weight:bold;font-size:1.1em;">ID de la mère</h5>
 										</th>
 									</tr>
 									<tr>
-										<th scope="row"><label for="mothersId">Code (si applicable) </label></th>
-										<td>
+										<th scope="row" style="width:15%;"><label for="mothersId">Code (si applicable) </label></th>
+										<td style="width:35%;">
 											<input type="text" class="form-control " id="mothersId" name="mothersId"
 												placeholder="Code du mère" title="Please enter code du mère"
 												style="width:100%;"
 												value="<?= htmlspecialchars($eidInfo['mother_id']); ?>" />
 										</td>
-										<th scope="row"><label for="mothersName">Nom </label></th>
-										<td>
+										<th scope="row" style="width:15%;"><label for="mothersName">Nom </label></th>
+										<td style="width:35%;">
 											<input type="text" class="form-control " id="mothersName" name="mothersName"
 												placeholder="Nom du mère" title="Please enter nom du mère"
 												style="width:100%;" value="<?php echo $eidInfo['mother_name'] ?>" />
 										</td>
+									</tr>
+								    <tr>
 										<th scope="row"><label for="mothersDob">Date de naissance </label></th>
 										<td>
 											<input type="text" class="form-control date" id="mothersDob"
@@ -266,7 +265,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 									</tr>
 
 									<tr>
-										<th scope="row" colspan=8>
+										<th scope="row">
 											<h5 style="font-weight:bold;font-size:1.1em;">ID de l'enfant </h5>
 										</th>
 									</tr>
@@ -285,6 +284,8 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 												placeholder="Nom" title="Please enter nom du enfant" style="width:100%;"
 												value="<?= htmlspecialchars($eidInfo['child_name']); ?>" />
 										</td>
+									</tr>
+									<tr>
 										<th scope="row"><label for="childDob">Date de naissance </label></th>
 										<td>
 											<input type="text" class="form-control date" id="childDob" name="childDob"
@@ -311,12 +312,6 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 												class="form-control " id="childAge" name="childAge"
 												placeholder="Age en mois" title="Age en mois" style="width:100%;"
 												onchange="$('#childDob').val('')" /></td>
-										<th scope="row"></th>
-										<td></td>
-										<th scope="row"></th>
-										<td></td>
-										<th scope="row"></th>
-										<td></td>
 										<th scope="row"></th>
 										<td></td>
 									</tr>
@@ -497,7 +492,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 										</td>
 									</tr>
 									<tr>
-										<th scope="row" style="width:14%;"> Type d'échantillon</th>
+										<th scope="row" style="width:15%;"> Type d'échantillon</th>
 										<td style="width:35%;">
 											<select name="specimenType" id="specimenType" class="form-control"
 												title="Veuillez choisir le type d'échantillon" style="width:100%">
@@ -508,8 +503,8 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 											</select>
 										</td>
 
-										<th scope="row">Nom du demandeur</th>
-										<td>
+										<th scope="row" style="width:15%;">Nom du demandeur</th>
+										<td style="width:35%;">
 											<input class="form-control" type="text" name="sampleRequestorName"
 												id="sampleRequestorName" placeholder="Nom du demandeur"
 												value="<?= htmlspecialchars($eidInfo['sample_requestor_name']); ?>" />
@@ -580,16 +575,16 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 									</div>
 									<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 										<tr>
-											<th scope="row"><label for="">Date de réception de l'échantillon </label></th>
-											<td>
+											<th scope="row" style="width:15%;"><label for="">Date de réception de l'échantillon </label></th>
+											<td style="width:35%;">
 												<input type="text" class="form-control dateTime" id="sampleReceivedDate"
 													name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>"
 													title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?>
 													value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>"
 													style="width:100%;" />
 											</td>
-											<td><label for="labId">Nom du Laboratoire </label> </td>
-											<td>
+											<th scope="row" style="width:15%;"><label for="labId">Nom du Laboratoire </label> </th>
+											<td style="width:35%;">
 												<select name="labId" id="labId" class="form-control"
 													title="Nom du Laboratoire" style="width:100%;">
 													<?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Sélectionner --'); ?>
@@ -632,20 +627,18 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 													class="form-control date" type="text" name="rejectionDate"
 													id="rejectionDate" placeholder="Date de rejet"
 													title="Veuillez choisir la date rejetée" /></td>
-											<td></td>
+											<th scope="row"></th>
 											<td></td>
 										</tr>
 										<tr>
-											<td style="width:25%;"><label for="">Test effectué le </label></td>
-											<td style="width:25%;">
+											<th scope="row"><label for="">Test effectué le </label></th>
+											<td >
 												<input type="text" class="form-control dateTime" id="sampleTestedDateTime"
 													name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>"
 													title="Test effectué le" <?php echo $labFieldDisabled; ?>
 													value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>"
 													style="width:100%;" />
 											</td>
-
-
 											<th scope="row">Résultat</th>
 											<td>
 												<select class="form-control result-focus" name="result" id="result">

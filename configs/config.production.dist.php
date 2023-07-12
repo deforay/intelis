@@ -22,9 +22,9 @@ $systemConfig['instanceName'] = '';
 
 
 // Database Settings
-$systemConfig['database']['host']       = 'localhoost';
-$systemConfig['database']['username']   = 'root';
-$systemConfig['database']['password']   = 'zaq12345';
+$systemConfig['database']['host']       = '';
+$systemConfig['database']['username']   = '';
+$systemConfig['database']['password']   = '';
 $systemConfig['database']['db']         = 'vlsm';
 $systemConfig['database']['port']       = 3306;
 $systemConfig['database']['charset']    = 'utf8mb4';

@@ -123,7 +123,7 @@ class ApiService
 
         if (!$module && $facilityType == 1) {
             if (!empty($activeModule)) {
-                $where[] = " hf.test_type IN (" . $activeModule . ")";
+                $where[] = " hf.test_type IN ('" . $activeModule . "')";
             }
         }
 
