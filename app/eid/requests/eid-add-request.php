@@ -269,6 +269,17 @@ require($fileArray[$arr['vl_form']]);
         var dateOfBirth = moment($("#childDob").val(), "DD-MMM-YYYY");
         $("#childAge").val(moment().diff(dateOfBirth, 'months'));
     }
+
+    function showModal(url, w, h) {
+        showdefModal('dDiv', w, h);
+        document.getElementById('dFrame').style.height = h + 'px';
+        document.getElementById('dFrame').style.width = w + 'px';
+        document.getElementById('dFrame').src = url;
+    }
+    function closeModal() {
+        document.getElementById('dFrame').src = "";
+        hidedefModal('dDiv');
+    }
 </script>
 
 
