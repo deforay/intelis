@@ -109,88 +109,62 @@ for ($i = 0; $i < count($aColumns); $i++) {
      }
 }
 
-/*
- * SQL queries
- * Get data to display
- */
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.vl_sample_id,
-vl.sample_code,
-vl.remote_sample,
-vl.remote_sample_code,
-b.batch_code,
-vl.sample_collection_date,
-vl.sample_tested_datetime,
-vl.patient_art_no,
-vl.patient_first_name,
-vl.patient_middle_name,
-vl.patient_last_name,
-f.facility_name,
-f.facility_district,
-f.facility_state,
-testingLab.facility_name as lab_name,
-UPPER(s.sample_name) as sample_name,
-vl.result,
-vl.reason_for_vl_testing,
-vl.last_modified_datetime,
-vl.vl_test_platform,
-vl.result_status,
-vl.requesting_vl_service_sector,
-vl.request_clinician_name,
-vl.requesting_phone,
-vl.patient_responsible_person,
-vl.patient_mobile_number,
-vl.consent_to_receive_sms,
-vl.result_value_log,
-vl.last_vl_date_routine,
-vl.last_vl_date_ecd,
-vl.last_vl_date_failure,
-vl.last_vl_date_failure_ac,
-vl.last_vl_date_cf,
-vl.last_vl_date_if,
-vl.lab_technician,
-vl.patient_gender,
-vl.locked,
-ts.status_name,
-vl.result_approved_datetime,
-vl.result_reviewed_datetime,
-vl.sample_received_at_hub_datetime,
-vl.sample_received_at_vl_lab_datetime,
-vl.result_dispatched_datetime,
-vl.result_printed_datetime,
-vl.result_approved_by
-FROM form_vl as vl
-LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
-LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id
-LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
-INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
+               vl.sample_code,
+               vl.remote_sample,
+               vl.remote_sample_code,
+               b.batch_code,
+               vl.sample_collection_date,
+               vl.sample_tested_datetime,
+               vl.patient_art_no,
+               vl.patient_first_name,
+               vl.patient_middle_name,
+               vl.patient_last_name,
+               f.facility_name,
+               f.facility_district,
+               f.facility_state,
+               testingLab.facility_name as lab_name,
+               s.sample_name as sample_name,
+               vl.result,
+               vl.reason_for_vl_testing,
+               vl.last_modified_datetime,
+               vl.vl_test_platform,
+               vl.result_status,
+               vl.requesting_vl_service_sector,
+               vl.request_clinician_name,
+               vl.requesting_phone,
+               vl.patient_responsible_person,
+               vl.patient_mobile_number,
+               vl.consent_to_receive_sms,
+               vl.result_value_log,
+               vl.last_vl_date_routine,
+               vl.last_vl_date_ecd,
+               vl.last_vl_date_failure,
+               vl.last_vl_date_failure_ac,
+               vl.last_vl_date_cf,
+               vl.last_vl_date_if,
+               vl.lab_technician,
+               vl.patient_gender,
+               vl.locked,
+               ts.status_name,
+               vl.result_approved_datetime,
+               vl.result_reviewed_datetime,
+               vl.sample_received_at_hub_datetime,
+               vl.sample_received_at_vl_lab_datetime,
+               vl.result_dispatched_datetime,
+               vl.result_printed_datetime,
+               vl.result_approved_by
+               FROM form_vl as vl
+               LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+               LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+               LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id
+               LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
+               INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
 
-$start_date = '';
-$end_date = '';
-$t_start_date = '';
-$t_end_date = '';
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
-     //print_r($s_c_date);die;
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-     }
-}
+[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+[$t_start_date, $t_end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
 
-if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-     $s_t_date = explode("to", $_POST['sampleTestDate']);
-     //print_r($s_t_date);die;
-     if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $t_start_date = DateUtility::isoDateFormat(trim($s_t_date[0]));
-     }
-     if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $t_end_date = DateUtility::isoDateFormat(trim($s_t_date[1]));
-     }
-}
 
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
      $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
@@ -286,14 +260,13 @@ if (!empty($sOrder)) {
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-// error_log($sQuery);
+
 
 $rResult = $db->rawQuery($sQuery);
 
 
 /* Data set length after filtering */
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-//$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 $iTotal = $aResultFilterTotal['totalCount'];
 
 $_SESSION['vlResultQueryCount'] = $iTotal;

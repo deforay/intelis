@@ -99,10 +99,21 @@ for ($i = 0; $i < count($aColumns); $i++) {
  * SQL queries
  * Get data to display
  */
-$sQuery = "select SQL_CALC_FOUND_ROWS vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime,vl.request_created_by,vl." . $sampleCode . " from form_covid19 as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) !='1970-01-01')
-                        AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01')
-                        AND vl.result is not null
-                        AND vl.result != ''";
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.sample_collection_date,
+					vl.sample_tested_datetime,
+					vl.sample_received_at_vl_lab_datetime,
+					vl.result_printed_datetime,
+					vl.result_mail_datetime,
+					vl.request_created_by,
+					vl.$sampleCode
+					FROM form_covid19 as vl
+					INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+					LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+					LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+					WHERE (vl.sample_collection_date > '1970-01-01')
+					AND (vl.sample_tested_datetime > '1970-01-01')
+					AND vl.result is not null
+					AND vl.result != ''";
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	if (!empty($_SESSION['facilityMap'])) {
 		$sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
@@ -110,52 +121,20 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 } else {
 	$sWhere[] = " vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 }
-$start_date = '';
-$end_date = '';
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-	$s_c_date = explode("to", $_POST['sampleCollectionDate']);
-	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-		$start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-	}
-	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-		$end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-	}
-}
 
-$labStartDate = '';
-$labEndDate = '';
-if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
-	$s_c_date = explode("to", $_POST['sampleReceivedDateAtLab']);
-	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-		$labStartDate = DateUtility::isoDateFormat(trim($s_c_date[0]));
-	}
-	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-		$labEndDate = DateUtility::isoDateFormat(trim($s_c_date[1]));
-	}
-}
+[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+[$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
+[$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 
-$testedStartDate = '';
-$testedEndDate = '';
-if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
-	$s_c_date = explode("to", $_POST['sampleTestedDate']);
-	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-		$testedStartDate = DateUtility::isoDateFormat(trim($s_c_date[0]));
-	}
-	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-		$testedEndDate = DateUtility::isoDateFormat(trim($s_c_date[1]));
-	}
-}
 $seWhere = [];
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
 	$seWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-	if ($start_date != '0000-00-00') {
-		if (trim($start_date) == trim($end_date)) {
-			$seWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
-		} else {
-			$seWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-		}
+	if (trim($start_date) == trim($end_date)) {
+		$seWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
+	} else {
+		$seWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
 	}
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
@@ -167,12 +146,10 @@ if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateA
 }
 
 if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
-	if ($testedStartDate != '0000-00-00') {
-		if (trim($testedStartDate) == trim($testedEndDate)) {
-			$seWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $testedStartDate . '"';
-		} else {
-			$seWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
-		}
+	if (trim($testedStartDate) == trim($testedEndDate)) {
+		$seWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $testedStartDate . '"';
+	} else {
+		$seWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
 	}
 }
 if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
@@ -198,7 +175,7 @@ if (!empty($sOrder)) {
 if (isset($sLimit) && isset($sOffset)) {
 	$sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//echo $sQuery; die();
+
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 $rUser = '';
@@ -207,13 +184,9 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 } else {
 	$rUser = " vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 }
-$aResultFilterTotal = $db->rawQuery("select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_vl_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime from form_covid19 as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date is not null AND vl.sample_collection_date not like '' AND DATE(vl.sample_collection_date) !='1970-01-01' )
-                        AND (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '' AND DATE(vl.sample_tested_datetime) !='1970-01-01' )
-                        AND vl.result is not null
-                        AND vl.result != '' AND $saWhere $rUser");
-$iFilteredTotal = count($aResultFilterTotal);
 
-$iTotal = count($aResultFilterTotal);
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 /*
  * Output
@@ -227,7 +200,7 @@ $output = array(
 
 foreach ($rResult as $aRow) {
 	if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-		$aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
+		$aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 	} else {
 		$aRow['sample_collection_date'] = '';
 	}

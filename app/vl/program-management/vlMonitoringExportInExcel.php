@@ -63,19 +63,10 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
         SUM(CASE WHEN (is_patient_breastfeeding = 'yes' AND vl_result_category = 'not suppressed') THEN 1 ELSE 0 END) AS gtPatientBreastFeeding1000
 		FROM form_vl as vl JOIN facility_details as f ON vl.facility_id=f.facility_id
         WHERE IFNULL(reason_for_vl_testing, 0)  != 9999";
-    $start_date = '';
-    $end_date = '';
-    if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-        $s_c_date = explode("to", $_POST['sampleCollectionDate']);
-        if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-            $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-        }
-        if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-            $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-        }
-    }
-    $sTestDate = '';
-    $eTestDate = '';
+
+    [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+    [$sTestDate, $sTestDate] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
+
     $sWhere = '';
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
         if (trim($start_date) == trim($end_date)) {

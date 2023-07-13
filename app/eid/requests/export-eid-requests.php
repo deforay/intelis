@@ -101,7 +101,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['has_infant_stopped_breastfeeding'];
     $row[] = $aRow['pcr_test_performed_before'];
     $row[] = $aRow['previous_pcr_result'];
-    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
     $row[] = $sampleRejection;
     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
     $row[] = $eidResults[$aRow['result']] ?? $aRow['result'];

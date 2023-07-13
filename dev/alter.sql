@@ -4330,7 +4330,7 @@ INSERT INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `
 (89, 'genericTests', 'no', 'Enter Result Manually', '/generic-tests/results/generic-test-results.php', '/generic-tests/results/update-generic-test-result.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestResultMenu', 62, 88, 'active', NULL),
 (90, 'genericTests', 'no', 'Failed/Hold Samples', '/generic-tests/results/generic-failed-results.php', null, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericFailedResultMenu', 62, 88, 'active', NULL),
 (91, 'genericTests', 'no', 'Manage Results Status', '/generic-tests/results/generic-result-approval.php', null, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericResultApprovalMenu', 62, 88, 'active', NULL),
-(92, 'genericTests', 'no', 'Sample Status Report', '/generic-tests/program-management/generic-sample-status.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericStatusReportMenu', 62, 88, 'active', NULL),
+(92, 'genericTests', 'no', 'Sample Status Report', '/generic-tests/program-management/generic-sample-status.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericStatusReportMenu', 63, 88, 'active', NULL),
 (93, 'genericTests', 'no', 'Export Results', '/generic-tests/program-management/generic-export-data.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericExportMenu', 63, 89, 'active', NULL),
 (94, 'genericTests', 'no', 'Print Result', '/generic-tests/results/generic-print-result.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericPrintResultMenu', 63, 90, 'active', NULL),
 (95, 'genericTests', 'no', 'Sample Rejection Report', '/generic-tests/program-management/sample-rejection-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericSampleRejectionReport', 63, 91, 'active', NULL),
@@ -4855,3 +4855,7 @@ UPDATE `global_config` SET `category` = 'generic-tests' WHERE `global_config`.`n
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Sample Lock Expiry Days', 'generic_sample_lock_after_days', NULL, 'generic-tests', 'yes', '2021-11-02 17:48:32', NULL, 'active'),
 ('Auto Approve API Results', 'generic_auto_approve_api_results', NULL, 'generic-tests', 'yes', '2021-11-02 17:48:32', NULL, 'active'),
 ('Lab Tests Show Participant Name in Manifest', 'generic_show_participant_name_in_manifest', NULL, 'generic-tests', 'yes', '2021-11-02 17:48:32', NULL, 'active');
+
+-- Thana 12-Jul-2023
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'vl-reports', '/vl/program-management/high-vl-virologic-failure-report.php', 'High VL and Virologic Failure Report', NULL, 'always');
+INSERT INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'vl', 'no', 'High VL and Virologic Failure Report', '/vl/program-management/high-vl-virologic-failure-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu highVlVirologicFailureReportMenu', '71', '', 'active', CURRENT_TIMESTAMP);

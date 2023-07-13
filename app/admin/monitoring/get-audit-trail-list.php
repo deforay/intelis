@@ -93,21 +93,13 @@ $aWhere = '';
 $sQuery = '';
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS a.*, r.display_name,
-               DATE_FORMAT(a.date_time,'%d-%b-%Y %H:%i:%s') AS createdOn FROM activity_log as a
-          LEFT JOIN resources as r ON a.resource = r.resource_id";
+               DATE_FORMAT(a.date_time,'%d-%b-%Y %H:%i:%s') AS createdOn
+               FROM activity_log as a
+               LEFT JOIN resources as r ON a.resource = r.resource_id";
 
-//echo $sQuery;die;
-$start_date = '';
-$end_date = '';
-if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
-     $s_c_date = explode("to", $_POST['dateRange']);
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-     }
-}
+
+[$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '');
+
 if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
      $sWhere[] = ' DATE(date_time) BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
 }
@@ -123,7 +115,6 @@ if (!empty($sWhere)) {
      $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
 }
 
-//$sQuery = $sQuery . ' GROUP BY action';
 if (!empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
@@ -132,7 +123,7 @@ $_SESSION['auditLogQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//echo $sQuery;die;
+
 $rResult = $db->rawQuery($sQuery);
 
 /* Data set length after filtering */

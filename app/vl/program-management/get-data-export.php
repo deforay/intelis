@@ -107,10 +107,6 @@ for ($i = 0; $i < count($aColumns); $i++) {
      }
 }
 
-/*
-          * SQL queries
-          * Get data to display
-          */
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         vl.vl_sample_id,
                         vl.sample_code,
@@ -145,7 +141,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         vl.result_printed_datetime,
                         vl.last_modified_datetime,
                         vl.result_status,
-                        UPPER(s.sample_name) as sample_name,
+                        s.sample_name as sample_name,
                         b.batch_code,
                         ts.status_name,
                         f.facility_name,
@@ -176,17 +172,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 //echo $sQuery;die;
 /* Sample collection date filter */
-$start_date = '';
-$end_date = '';
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-     }
-}
+[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 /* Sample recevied date filter */
 $sSampleReceivedDate = '';
 $eSampleReceivedDate = '';
@@ -392,7 +378,7 @@ foreach ($rResult as $aRow) {
      $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
      $row[] = ($aRow['facility_name']);
      $row[] = ($aRow['lab_name']);
-     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
+     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
      $row[] = ($aRow['sample_name']);
      $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
      $row[] = $aRow['result'];

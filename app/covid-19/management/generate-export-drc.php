@@ -225,7 +225,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         $row[] = $aRow['number_of_days_sick'];
         $row[] = DateUtility::humanReadableDateFormat($aRow['date_of_symptom_onset']);
         $row[] = DateUtility::humanReadableDateFormat($aRow['date_of_initial_consultation']);
-        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
         $row[] = ($aRow['test_reason_name']);
         $row[] = $subReasonsList;
         $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);

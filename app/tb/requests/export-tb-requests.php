@@ -101,7 +101,7 @@ foreach ($rResult as $aRow) {
     $row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
     $row[] = ($aRow['patient_age'] != null && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
     $row[] = $aRow['patient_gender'];
-    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
     $row[] = $aRow['test_reason_name'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
     $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime']);

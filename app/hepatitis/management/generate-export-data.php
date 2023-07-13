@@ -86,7 +86,7 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQ
 		$aRow['patient_age'] ??= 0;
 		$row[] = ($aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
 		$row[] = $gender;
-		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
+		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 		$row[] = $sampleRejection;
 		$row[] = $aRow['rejection_reason'];
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);

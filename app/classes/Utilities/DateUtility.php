@@ -7,10 +7,6 @@ use DateTimeImmutable;
 
 class DateUtility
 {
-    public function __construct()
-    {
-    }
-
     // Function to get the verify if date is in Y-m-d or specified format
     public static function isDateFormatValid($date, $format = 'Y-m-d', $strict = true): bool
     {
@@ -158,5 +154,19 @@ class DateUtility
         }
 
         return false;
+    }
+
+    public static function convertDateRange(?string $dateRange): array
+    {
+        if (empty($dateRange)) {
+            return ['', ''];
+        }
+        $dates = explode("to", $dateRange ?? '');
+        $dates = array_map('trim', $dates);
+
+        $startDate = !empty($dates[0]) ? self::isoDateFormat($dates[0]) : '';
+        $endDate = !empty($dates[1]) ? self::isoDateFormat($dates[1]) : '';
+
+        return [$startDate, $endDate];
     }
 }

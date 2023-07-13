@@ -111,7 +111,7 @@ foreach ($rResult as $aRow) {
 	$aRow['patient_age_in_years'] ??= 0;
 	$row[] = ($aRow['patient_age_in_years'] > 0) ? $aRow['patient_age_in_years'] : 0;
 	$row[] = $gender;
-	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
+	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 	$row[] = $aRow['sample_name'] ?? null;
 	$row[] = DateUtility::humanReadableDateFormat($aRow['treatment_initiated_date']);
 	$row[] = $aRow['current_regimen'];

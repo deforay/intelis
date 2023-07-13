@@ -72,7 +72,7 @@ if (isset($_POST['iSortCol_0'])) {
      }
      $sOrder = substr_replace($sOrder, "", -2);
 }
-//echo '<pre>'; print_r($sOrder); die;
+
 /*
 * Filtering
 * NOTE this does not match the built-in DataTables filtering which does it
@@ -94,11 +94,13 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
           for ($i = 0; $i < $colSize; $i++) {
                if ($i < $colSize - 1) {
-                    if (!empty($aColumns[$i]))
+                    if (!empty($aColumns[$i])) {
                          $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
+                    }
                } else {
-                    if (!empty($aColumns[$i]))
+                    if (!empty($aColumns[$i])) {
                          $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
+                    }
                }
           }
           $sWhereSub .= ")";
@@ -113,78 +115,85 @@ for ($i = 0; $i < count($aColumns); $i++) {
      }
 }
 
-/*
- * SQL queries
- * Get data to display
- */
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS
-                    vl.*,
-                    s.sample_name,
-                    b.batch_code,
-                    ts.status_name,
-                    f.facility_name,
-                    l.facility_name as lab_name,
-                    f.facility_code,
-                    f.facility_state,
-                    f.facility_district,
-                    fs.funding_source_name,
-                    i.i_partner_name
+               vl.vl_sample_id,
+               vl.sample_code,
+               vl.remote_sample_code,
+               vl.patient_art_no,
+               vl.patient_first_name,
+               vl.patient_middle_name,
+               vl.patient_last_name,
+               vl.patient_dob,
+               vl.patient_gender,
+               vl.patient_age_in_years,
+               vl.sample_collection_date,
+               vl.treatment_initiated_date,
+               vl.date_of_initiation_of_current_regimen,
+               vl.test_requested_on,
+               vl.sample_tested_datetime,
+               vl.arv_adherance_percentage,
+               vl.is_sample_rejected,
+               vl.reason_for_sample_rejection,
+               vl.result_value_log,
+               vl.result_value_absolute,
+               vl.result,
+               vl.current_regimen,
+               vl.is_patient_pregnant,
+               vl.is_patient_breastfeeding,
+               vl.request_clinician_name,
+               vl.lab_tech_comments,
+               vl.sample_received_at_hub_datetime,
+               vl.sample_received_at_vl_lab_datetime,
+               vl.result_dispatched_datetime,
+               vl.request_created_datetime,
+               vl.result_printed_datetime,
+               vl.last_modified_datetime,
+               vl.result_status,
+               s.sample_name as sample_name,
+               b.batch_code,
+               ts.status_name,
+               f.facility_name,
+               testingLab.facility_name as lab_name,
+               f.facility_code,
+               f.facility_state,
+               f.facility_district,
+               u_d.user_name as reviewedBy,
+               a_u_d.user_name as approvedBy,
+               rs.rejection_reason_name,
+               tr.test_reason_name,
+               r_f_s.funding_source_name,
+               r_i_p.i_partner_name,
+               rs.rejection_reason_name as rejection_reason
 
-                    FROM form_vl as vl
+               FROM form_vl as vl
 
-                    LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-                    LEFT JOIN facility_details as l ON vl.lab_id=l.facility_id
-                    LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
-                    LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
-                    LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
-                    LEFT JOIN r_funding_sources as fs ON fs.funding_source_id=vl.funding_source
-                    LEFT JOIN r_implementation_partners as i ON i.i_partner_id=vl.implementing_partner";
+               LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+               LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id
+               LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
+               LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+               LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+               LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
+               LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by
+               LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
+               LEFT JOIN r_vl_test_reasons as tr ON tr.test_reason_id=vl.reason_for_vl_testing
+               LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source
+               LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 
-$start_date = '';
-$end_date = '';
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-     }
-}
 
-$labStartDate = '';
-$labEndDate = '';
-if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
-     $s_c_date = explode("to", $_POST['sampleReceivedDateAtLab']);
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $labStartDate = DateUtility::isoDateFormat(trim($s_c_date[0]));
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $labEnddate = DateUtility::isoDateFormat(trim($s_c_date[1]));
-     }
-}
+[$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+[$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
+[$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 
-$testedStartDate = '';
-$testedEndDate = '';
-if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
-     $s_c_date = explode("to", $_POST['sampleTestedDate']);
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $testedStartDate = DateUtility::isoDateFormat(trim($s_c_date[0]));
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $testedEndDate = DateUtility::isoDateFormat(trim($s_c_date[1]));
-     }
-}
 
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
      $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-     if (trim($start_date) == trim($end_date)) {
-          $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
+     if (trim($startDate) == trim($endDate)) {
+          $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $startDate . '"';
      } else {
-          $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+          $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $startDate . '" AND DATE(vl.sample_collection_date) <= "' . $endDate . '"';
      }
 }
 
@@ -392,7 +401,7 @@ foreach ($rResult as $aRow) {
      $sync = '';
      $barcode = '';
 
-     $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
+     $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
      $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
 
      $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_art_no']));

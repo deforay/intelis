@@ -95,20 +95,10 @@ $sQuery = '';
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS a.* FROM $tableName as a";
 
-//echo $sQuery;die;
-$start_date = '';
-$end_date = '';
+[$startDate, $endDate] = DateUtility::convertDateRange($_POST['dateRange'] ?? '');
+
 if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
-     $s_c_date = explode("to", $_POST['dateRange']);
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-     }
-}
-if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
-     $sWhere[] = ' DATE(a.requested_on) >= "' . $start_date . '" AND DATE(a.requested_on) <= "' . $end_date . '"';
+     $sWhere[] = ' DATE(a.requested_on) >= "' . $startDate . '" AND DATE(a.requested_on) <= "' . $endDate . '"';
 }
 
 if (isset($_POST['syncedType']) && trim($_POST['syncedType']) != '') {
@@ -131,7 +121,7 @@ $_SESSION['auditLogQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-// echo $sQuery;die;
+
 $rResult = $db->rawQuery($sQuery);
 
 /* Data set length after filtering */

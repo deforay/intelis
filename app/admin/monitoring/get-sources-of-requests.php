@@ -145,18 +145,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS l.facility_name as 'labname',
         FROM $table as vl
         LEFT JOIN facility_details as l ON vl.lab_id = l.facility_id";
 
-//echo $sQuery;die;
-$start_date = '';
-$end_date = '';
-if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
-    $s_c_date = explode("to", $_POST['dateRange']);
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-    }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-    }
-}
+[$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '');
 
 $sWhere[] = " (lab_id is not null AND lab_id not like '' AND lab_id > 0) ";
 

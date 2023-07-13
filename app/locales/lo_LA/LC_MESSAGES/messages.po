@@ -3602,7 +3602,7 @@ msgstr "ເມືອງຜູ້ປ່ວຍ/ບ້ານ"
 #: facilities/getFacilityDetails.php:146 hepatitis/requests/get-request-list.php:403
 #: instruments/get-instruments.php:132 roles/getRoleDetails.php:138
 #: tb/requests/get-request-list.php:385 users/getUserDetails.php:146
-#: vl/batch/getBatchCodeDetails.php:203 vl/requests/getVlRequestDetails.php:474
+#: vl/batch/getBatchCodeDetails.php:203 vl/requests/get-request-list.php:474
 #: vl/result-mail/testResultEmailConfig.php:23
 msgid "Edit"
 msgstr "ແກ້ໄຂ"
@@ -3613,25 +3613,25 @@ msgstr "ແກ້ໄຂ"
 #: hepatitis/requests/get-request-list.php:406
 #: hepatitis/results/hepatitis-samples-for-manual-result-entry.php:324
 #: tb/requests/get-request-list.php:388 tb/results/tb-samples-for-manual-result-entry.php:312
-#: vl/requests/getVlRequestDetails.php:477 vl/results/getVlTestResultDetails.php:460
+#: vl/requests/get-request-list.php:477 vl/results/getVlTestResultDetails.php:460
 msgid "Locked"
 msgstr "ລັອກ"
 
 #: covid-19/requests/get-request-list.php:306 eid/requests/get-request-list.php:428
 #: hepatitis/requests/get-request-list.php:413 tb/requests/get-request-list.php:396
-#: vl/requests/getVlRequestDetails.php:489
+#: vl/requests/get-request-list.php:489
 msgid "Sync this sample"
 msgstr "Sync ຕົວຢ່າງນີ້"
 
 #: covid-19/requests/get-request-list.php:306 eid/requests/get-request-list.php:428
 #: hepatitis/requests/get-request-list.php:413 tb/requests/get-request-list.php:396
-#: vl/requests/getVlRequestDetails.php:489
+#: vl/requests/get-request-list.php:489
 msgid "Sync"
 msgstr "Sync"
 
 #: covid-19/requests/get-request-list.php:314 eid/requests/get-request-list.php:436
 #: hepatitis/requests/get-request-list.php:421 tb/requests/get-request-list.php:404
-#: vl/requests/getVlRequestDetails.php:484
+#: vl/requests/get-request-list.php:484
 msgid "Barcode"
 msgstr "Barcode"
 

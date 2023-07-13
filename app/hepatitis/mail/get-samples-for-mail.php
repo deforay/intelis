@@ -32,17 +32,7 @@ $batch = $_POST['batch'];
 $mailSentStatus = $_POST['mailSentStatus'];
 $type = $_POST['type'];
 //print_r($_POST);die;
-$start_date = '';
-$end_date = '';
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-  $s_c_date = explode("to", $_POST['sampleCollectionDate']);
-  if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-    $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-  }
-  if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-    $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-  }
-}
+[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
 $query = "SELECT hepatitis.sample_code,hepatitis.hepatitis_id,hepatitis.facility_id,f.facility_name,f.facility_code FROM form_hepatitis as hepatitis LEFT JOIN facility_details as f ON hepatitis.facility_id=f.facility_id where ((hepatitis.result_status = 7 AND ((hepatitis.hcv_vl_result is NOT NULL AND hepatitis.hcv_vl_result !='') OR (hepatitis.hbv_vl_result is NOT NULL AND hepatitis.hbv_vl_result !=''))) OR (hepatitis.result_status = 4 AND ((hepatitis.hcv_vl_result is NULL AND hepatitis.hcv_vl_result ='') OR (hepatitis.hbv_vl_result is NULL AND hepatitis.hbv_vl_result =''))))";
 if (isset($facility) && !empty(array_filter($facility))) {

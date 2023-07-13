@@ -80,7 +80,7 @@ if (isset($_SESSION['covid19TATQuery']) && trim($_SESSION['covid19TATQuery']) !=
       $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
     }
     if (isset($aRow['sample_received_at_vl_lab_datetime']) && trim($aRow['sample_received_at_vl_lab_datetime']) != '' && $aRow['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
-      $sampleRecievedDate = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+      $sampleRecievedDate = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime'] ?? '');
     } else {
       $sampleRecievedDate = '';
     }

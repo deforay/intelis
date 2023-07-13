@@ -111,7 +111,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		$aRow['patient_age'] ??= 0;
 		$row[] = ($aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
 		$row[] = $gender;
-		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
+		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 		/* To get Symptoms and Comorbidities details */
 		$row[] = implode(',', $sysmtomsArr);
 		$row[] = implode(',', $comorbiditiesArr);

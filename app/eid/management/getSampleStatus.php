@@ -70,29 +70,9 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 	}
 }
 
-$labStartDate = '';
-$labEndDate = '';
-if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
-	$s_c_date = explode("to", $_POST['sampleReceivedDateAtLab']);
-	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-		$labStartDate = DateUtility::isoDateFormat(trim($s_c_date[0]));
-	}
-	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-		$labEndDate = DateUtility::isoDateFormat(trim($s_c_date[1]));
-	}
-}
+[$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
 
-$testedStartDate = '';
-$testedEndDate = '';
-if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
-	$s_c_date = explode("to", $_POST['sampleTestedDate']);
-	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-		$testedStartDate = DateUtility::isoDateFormat(trim($s_c_date[0]));
-	}
-	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-		$testedEndDate = DateUtility::isoDateFormat(trim($s_c_date[1]));
-	}
-}
+[$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 $sWhere = [];
 if (!empty($whereCondition))
 	$sWhere[] = $whereCondition;

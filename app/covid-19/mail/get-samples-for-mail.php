@@ -22,20 +22,18 @@ $district = $_POST['district'];
 $batch = $_POST['batch'];
 $mailSentStatus = $_POST['mailSentStatus'];
 $type = $_POST['type'];
-//print_r($_POST);die;
-$start_date = '';
-$end_date = '';
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-  $s_c_date = explode("to", $_POST['sampleCollectionDate']);
-  if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-    $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-  }
-  if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-    $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-  }
-}
 
-$query = "SELECT vl.sample_code,vl.covid19_id,vl.facility_id,f.facility_name,f.facility_code FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = '')))";
+[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+
+$query = "SELECT vl.sample_code,
+                vl.covid19_id,
+                vl.facility_id,
+                f.facility_name,
+                f.facility_code
+                FROM form_covid19 as vl
+                LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+                WHERE ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='')
+                OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = '')))";
 if (isset($facility) && !empty(array_filter($facility))) {
   $query = $query . " AND vl.facility_id IN (" . implode(',', $facility) . ")";
 }

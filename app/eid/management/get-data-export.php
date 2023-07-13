@@ -120,7 +120,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                     f.facility_code,
                     f.facility_state,
                     f.facility_district,
-                    UPPER(s.sample_name) as sample_name,
+                    s.sample_name as sample_name,
                     u_d.user_name as reviewedBy,
                     a_u_d.user_name as approvedBy,
                     rs.rejection_reason_name,
@@ -145,16 +145,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
 /* Sample collection date filter */
 $start_date = '';
 $end_date = '';
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
-     //print_r($s_c_date);die;
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-     }
-}
+[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 $sReceivedDate = '';
 $eReceivedDate = '';
 if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
