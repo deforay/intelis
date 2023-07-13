@@ -150,6 +150,7 @@ $sQuery = "SELECT
                vl.result_printed_datetime,
                vl.last_modified_datetime,
                vl.result_status,
+               vl.locked,
                s.sample_name as sample_name,
                b.batch_code,
                ts.status_name,
@@ -355,11 +356,11 @@ if (!empty($sOrder)) {
      $_SESSION['vlRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
-$_SESSION['vlRequestSearchResultQuery'] = $sQuery;
+$_SESSION['vlRequestQuery'] = $sQuery;
 
 [$rResult, $iTotal] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
 
-$_SESSION['vlRequestSearchResultQueryCount'] = $iTotal;
+$_SESSION['vlRequestQueryCount'] = $iTotal;
 
 /*
  * Output

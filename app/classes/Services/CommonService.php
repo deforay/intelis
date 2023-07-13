@@ -28,7 +28,7 @@ class CommonService
     {
         try {
             // Prepare and execute the main query
-            if (!empty($limit) && !empty($offset)) {
+            if (isset($limit) && isset($offset)) {
                 $sql = $sql . " LIMIT $offset,$limit ";
             }
             $queryResult = $this->db->rawQuery($sql, $params);
@@ -36,7 +36,6 @@ class CommonService
             // Prepare and execute the count query
             $countSql = preg_replace('/SELECT.*? FROM/si', 'SELECT COUNT(*) FROM', $sql, 1);
             $count = $this->db->rawQueryOne($countSql)['COUNT(*)'];
-
             return [$queryResult, $count];
         } catch (Exception $e) {
             throw new SystemException($e->getMessage());

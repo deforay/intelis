@@ -18,7 +18,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $dateTimeUtil = new DateUtility();
 
-$sQuery = $_SESSION['vlRequestSearchResultQuery'];
+$sQuery = $_SESSION['vlRequestQuery'];
 $rResult = $db->rawQuery($sQuery);
 
 
@@ -136,7 +136,7 @@ foreach ($rResult as $aRow) {
 	$no++;
 }
 
-if (isset($_SESSION['vlRequestSearchResultQueryCount']) && $_SESSION['vlRequestSearchResultQueryCount'] > 75000) {
+if (isset($_SESSION['vlRequestQueryCount']) && $_SESSION['vlRequestQueryCount'] > 75000) {
 
 	$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VL-REQUESTS-' . date('d-M-Y-H-i-s') . '.csv';
 	$file = new SplFileObject($fileName, 'w');
