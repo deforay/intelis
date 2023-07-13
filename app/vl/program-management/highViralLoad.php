@@ -94,7 +94,7 @@ $state = $geolocationService->getProvinces("yes");
 														</strong></td>
 													<td>
 														<input type="text" id="hvlSampleTestDate"
-															name="hvlSampleTestDate" class="form-control stDate"
+															name="hvlSampleTestDate" class="form-control highViralLoadReportFilter stDate"
 															placeholder="<?php echo _('Select Sample Test Date'); ?>"
 															readonly style="width:170px;background:#fff;"
 															onchange="setSampleTestDate(this)" />
@@ -103,7 +103,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _("Batch Code"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control" id="hvlBatchCode"
+														<select class="form-control highViralLoadReportFilter" id="hvlBatchCode"
 															name="hvlBatchCode"
 															title="<?php echo _('Please select batch code'); ?>"
 															style="width:170px;">
@@ -123,7 +123,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _("Sample Type"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select style="width:170px;" class="form-control"
+														<select style="width:170px;" class="form-control highViralLoadReportFilter"
 															id="hvlSampleType" name="sampleType"
 															title="<?php echo _('Please select sample type'); ?>">
 															<option value="">
@@ -144,7 +144,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _("Province/State"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control select2-element" id="state"
+														<select class="form-control highViralLoadReportFilter select2-element" id="state"
 															onchange="getByProvince('district','hvlFacilityName',this.value)"
 															name="state"
 															title="<?php echo _('Please select Province/State'); ?>">
@@ -156,7 +156,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _("District/County"); ?> :
 														</strong></td>
 													<td>
-														<select class="form-control select2-element" id="district"
+														<select class="form-control highViralLoadReportFilter select2-element" id="district"
 															name="district"
 															title="<?php echo _('Please select Province/State'); ?>"
 															onchange="getByDistrict('hvlFacilityName',this.value)">
@@ -166,7 +166,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _("Facility Name & Code"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control" id="hvlFacilityName"
+														<select class="form-control highViralLoadReportFilter" id="hvlFacilityName"
 															name="hvlFacilityName"
 															title="<?php echo _('Please select facility name'); ?>"
 															multiple="multiple" style="width:170px;">
@@ -185,7 +185,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _("Contact Status"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control" id="hvlContactStatus"
+														<select class="form-control highViralLoadReportFilter" id="hvlContactStatus"
 															name="hvlContactStatus"
 															title="<?php echo _('Please select contact status'); ?>"
 															style="width:170px;">
@@ -207,7 +207,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _("Gender"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select name="hvlGender" id="hvlGender" class="form-control"
+														<select name="hvlGender" id="hvlGender" class="form-control highViralLoadReportFilter"
 															title="<?php echo _('Please choose gender'); ?>"
 															style="width:170px;"
 															onchange="hideFemaleDetails(this.value,'hvlPatientPregnant','hvlPatientBreastfeeding');">
@@ -230,7 +230,7 @@ $state = $geolocationService->getProvinces("yes");
 														</strong></td>
 													<td>
 														<select name="hvlPatientPregnant" id="hvlPatientPregnant"
-															class="form-control"
+															class="form-control highViralLoadReportFilter"
 															title="<?php echo _('Please choose pregnant option'); ?>">
 															<option value="">
 																<?php echo _("-- Select --"); ?>
@@ -251,7 +251,7 @@ $state = $geolocationService->getProvinces("yes");
 														</strong></td>
 													<td>
 														<select name="hvlPatientBreastfeeding"
-															id="hvlPatientBreastfeeding" class="form-control"
+															id="hvlPatientBreastfeeding" class="form-control highViralLoadReportFilter"
 															title="<?php echo _('Please choose option'); ?>">
 															<option value="">
 																<?php echo _("-- Select --"); ?>
@@ -268,7 +268,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _("Export with Patient Name"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select name="patientInfo" id="patientInfo" class="form-control"
+														<select name="patientInfo" id="patientInfo" class="form-control highViralLoadReportFilter"
 															title="<?php echo _('Please choose community sample'); ?>"
 															style="width:170px;">
 															<option value="yes">
@@ -285,7 +285,7 @@ $state = $geolocationService->getProvinces("yes");
 															onclick="searchVlRequestData();" value="<?= _('Search'); ?>"
 															class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm"
-															onclick="document.location.href = document.location"><span>
+															onclick="resetFilters('highViralLoadReportFilter');"><span>
 																<?= _('Reset'); ?>
 															</span></button>
 														<button class="btn btn-success btn-sm" type="button"
@@ -352,7 +352,7 @@ $state = $geolocationService->getProvinces("yes");
 												<tr>
 													<td><strong><?php echo _("Facility Name"); ?> :<span class="mandatory result-span">*</span></strong></td>
 													<td>
-														<select class="form-control" id="vfVlnsfacilityName" name="vfVlnsfacilityName" title="<?php echo _('Please select facility name'); ?>" style="width:220px;">
+														<select class="form-control vfvlnsfilters" id="vfVlnsfacilityName" name="vfVlnsfacilityName" title="<?php echo _('Please select facility name'); ?>" style="width:220px;">
 															<option value=""><?php echo _('-- Select --');?></option>
 															<?php foreach ($fResult as $name) { ?>
 																<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
@@ -361,19 +361,17 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 													<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
 													<td>
-														<input type="text" id="vfVlnsSampleCollectionDate" name="vfVlnsSampleCollectionDate" class="form-control daterangefield" placeholder="<?php echo _('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
+														<input type="text" id="vfVlnsSampleCollectionDate" name="vfVlnsSampleCollectionDate" class="form-control vfvlnsfilters daterangefield" placeholder="<?php echo _('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
 													</td>
 													<td><strong><?php echo _("Sample Tested Date"); ?>&nbsp;:</strong></td>
 													<td>
-														<input type="text" id="vfVlnsSampleTestDate" name="vfVlnsSampleTestDate" class="form-control daterangefield" placeholder="<?php echo _('Select Tested Date'); ?>" style="width:220px;background:#fff;" />
+														<input type="text" id="vfVlnsSampleTestDate" name="vfVlnsSampleTestDate" class="form-control vfvlnsfilters daterangefield" placeholder="<?php echo _('Select Tested Date'); ?>" style="width:220px;background:#fff;" />
 													</td>
 												</tr>
 												<tr>
 													<td colspan="6">
-														&nbsp;<button onclick="vfVlnsExportInexcel();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Generate report"); ?></span></button>
-
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Clear Search"); ?></span></button>
-
+														&nbsp;<button onclick="vfVlnsExportInexcel();" value="Search" class="btn btn-success btn-sm"><em class="fa-solid fa-cloud-arrow-down"></em><span><?php echo _(" Generate/Download report"); ?></span></button>
+														&nbsp;<button class="btn btn-danger btn-sm" onclick="resetFilters('vfvlnsfilters');"><span><?php echo _("Reset"); ?></span></button>
 													</td>
 												</tr>
 											</table>
@@ -388,7 +386,7 @@ $state = $geolocationService->getProvinces("yes");
 													<td>
 														<input type="text" id="rjtSampleTestDate"
 															name="rjtSampleTestDate"
-															class="form-control stDate daterange"
+															class="form-control sampleRjtReportFilter stDate daterange"
 															placeholder="<?php echo _('Select Sample Test Date'); ?>"
 															readonly style="width:170px;background:#fff;"
 															onchange="setSampleTestDate(this)" />
@@ -397,7 +395,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _("Batch Code"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control" id="rjtBatchCode"
+														<select class="form-control sampleRjtReportFilter" id="rjtBatchCode"
 															name="rjtBatchCode"
 															title="<?php echo _('Please select batch code'); ?>"
 															style="width:170px;">
@@ -417,7 +415,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _("Sample Type"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select style="width:170px;" class="form-control"
+														<select style="width:170px;" class="form-control sampleRjtReportFilter"
 															id="rjtSampleType" name="sampleType"
 															title="<?php echo _('Please select sample type'); ?>">
 															<option value="">
@@ -438,7 +436,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _("Province/State"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control select2-element" id="rjtState"
+														<select class="form-control sampleRjtReportFilter select2-element" id="rjtState"
 															onchange="getByProvince('rjtDistrict','rjtFacilityName',this.value)"
 															name="rjtState"
 															title="<?php echo _('Please select Province/State'); ?>">
@@ -450,7 +448,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _("District/County"); ?> :
 														</strong></td>
 													<td>
-														<select class="form-control select2-element" id="rjtDistrict"
+														<select class="form-control sampleRjtReportFilter select2-element" id="rjtDistrict"
 															name="rjtDistrict"
 															title="<?php echo _('Please select Province/State'); ?>"
 															onchange="getByDistrict('rjtFacilityName',this.value)">
@@ -460,7 +458,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _("Facility Name & Code"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control" id="rjtFacilityName"
+														<select class="form-control sampleRjtReportFilter" id="rjtFacilityName"
 															name="facilityName"
 															title="<?php echo _('Please select facility name'); ?>"
 															multiple="multiple" style="width:170px;">
@@ -483,7 +481,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _("Gender"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select name="rjtGender" id="rjtGender" class="form-control"
+														<select name="rjtGender" id="rjtGender" class="form-control sampleRjtReportFilter"
 															title="<?php echo _('Please choose gender'); ?>"
 															style="width:170px;"
 															onchange="hideFemaleDetails(this.value,'rjtPatientPregnant','rjtPatientBreastfeeding');">
@@ -506,7 +504,7 @@ $state = $geolocationService->getProvinces("yes");
 														</strong></td>
 													<td>
 														<select name="rjtPatientPregnant" id="rjtPatientPregnant"
-															class="form-control"
+															class="form-control sampleRjtReportFilter"
 															title="<?php echo _('Please choose pregnant option'); ?>">
 															<option value="">
 																<?php echo _("-- Select --"); ?>
@@ -524,7 +522,7 @@ $state = $geolocationService->getProvinces("yes");
 														</strong></td>
 													<td>
 														<select name="rjtPatientBreastfeeding"
-															id="rjtPatientBreastfeeding" class="form-control"
+															id="rjtPatientBreastfeeding" class="form-control sampleRjtReportFilter"
 															title="<?php echo _('Please choose option'); ?>">
 															<option value="">
 																<?php echo _("-- Select --"); ?>
@@ -545,7 +543,7 @@ $state = $geolocationService->getProvinces("yes");
 														</strong></td>
 													<td colspan="3">
 														<select name="rejectionReason" id="rejectionReason"
-															class="form-control" title="Please choose reason"
+															class="form-control sampleRjtReportFilter" title="Please choose reason"
 															onchange="checkRejectionReason();">
 															<option value="">-- Select --</option>
 															<?php foreach ($rejectionTypeResult as $type) { ?>
@@ -570,7 +568,7 @@ $state = $geolocationService->getProvinces("yes");
 														</strong></td>
 													<td>
 														<select name="patientRejectedInfo" id="patientRejectedInfo"
-															class="form-control"
+															class="form-control sampleRjtReportFilter"
 															title="<?php echo _('Please choose community sample'); ?>"
 															style="width:170px;">
 															<option value="yes">
@@ -587,7 +585,7 @@ $state = $geolocationService->getProvinces("yes");
 															onclick="searchVlRequestData();" value="<?= _('Search'); ?>"
 															class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm"
-															onclick="document.location.href = document.location"><span>
+															onclick="resetFilters('sampleRjtReportFilter');"><span>
 																<?= _('Reset'); ?>
 															</span></button>
 														<button class="btn btn-success btn-sm" type="button"
@@ -649,7 +647,7 @@ $state = $geolocationService->getProvinces("yes");
 													<td>
 														<input type="text" id="noResultSampleTestDate"
 															name="noResultSampleTestDate"
-															class="form-control stDate daterange"
+															class="form-control notAvailReportFilter stDate daterange"
 															placeholder="<?php echo _('Select Sample Collection Date'); ?>"
 															readonly style="width:170px;background:#fff;"
 															onchange="setSampleTestDate(this)" />
@@ -658,7 +656,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _("Batch Code"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control" id="noResultBatchCode"
+														<select class="form-control notAvailReportFilter" id="noResultBatchCode"
 															name="noResultBatchCode"
 															title="<?php echo _('Please select batch code'); ?>"
 															style="width:170px;">
@@ -678,7 +676,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _("Sample Type"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select style="width:170px;" class="form-control"
+														<select style="width:170px;" class="form-control notAvailReportFilter"
 															id="noResultSampleType" name="sampleType"
 															title="<?php echo _('Please select sample type'); ?>">
 															<option value="">
@@ -699,7 +697,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _("Province/State"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control select2-element" id="noResultState"
+														<select class="form-control notAvailReportFilter select2-element" id="noResultState"
 															onchange="getByProvince('noResultDistrict','noResultFacilityName',this.value)"
 															name="rjtState"
 															title="<?php echo _('Please select Province/State'); ?>">
@@ -711,7 +709,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _("District/County"); ?> :
 														</strong></td>
 													<td>
-														<select class="form-control select2-element"
+														<select class="form-control notAvailReportFilter select2-element"
 															id="noResultDistrict" name="noResultDistrict"
 															title="<?php echo _('Please select Province/State'); ?>"
 															onchange="getByDistrict('noResultFacilityName',this.value)">
@@ -721,7 +719,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _("Facility Name & Code"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control" id="noResultFacilityName"
+														<select class="form-control notAvailReportFilter" id="noResultFacilityName"
 															name="facilityName"
 															title="<?php echo _('Please select facility name'); ?>"
 															multiple="multiple" style="width:170px;">
@@ -745,7 +743,7 @@ $state = $geolocationService->getProvinces("yes");
 														</strong></td>
 													<td>
 														<select name="noResultGender" id="noResultGender"
-															class="form-control"
+															class="form-control notAvailReportFilter"
 															title="<?php echo _('Please choose gender'); ?>"
 															style="width:170px;"
 															onchange="hideFemaleDetails(this.value,'noResultPatientPregnant','noResultPatientBreastfeeding');">
@@ -768,7 +766,7 @@ $state = $geolocationService->getProvinces("yes");
 														</strong></td>
 													<td>
 														<select name="noResultPatientPregnant"
-															id="noResultPatientPregnant" class="form-control"
+															id="noResultPatientPregnant" class="form-control notAvailReportFilter"
 															title="<?php echo _('Please choose pregnant option'); ?>">
 															<option value="">
 																<?php echo _("-- Select --"); ?>
@@ -786,7 +784,7 @@ $state = $geolocationService->getProvinces("yes");
 														</strong></td>
 													<td>
 														<select name="noResultPatientBreastfeeding"
-															id="noResultPatientBreastfeeding" class="form-control"
+															id="noResultPatientBreastfeeding" class="form-control notAvailReportFilter"
 															title="<?php echo _('Please choose option'); ?>">
 															<option value="">
 																<?php echo _("-- Select --"); ?>
@@ -806,7 +804,7 @@ $state = $geolocationService->getProvinces("yes");
 														</strong></td>
 													<td>
 														<select name="patientNtAvailInfo" id="patientNtAvailInfo"
-															class="form-control"
+															class="form-control notAvailReportFilter"
 															title="<?php echo _('Please choose community sample'); ?>"
 															style="width:170px;">
 															<option value="yes">
@@ -823,7 +821,7 @@ $state = $geolocationService->getProvinces("yes");
 															onclick="searchVlRequestData();" value="<?= _('Search'); ?>"
 															class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm"
-															onclick="document.location.href = document.location"><span>
+															onclick="resetFilters('notAvailReportFilter');"><span>
 																<?= _('Reset'); ?>
 															</span></button>
 														<button class="btn btn-success btn-sm" type="button"
@@ -884,7 +882,7 @@ $state = $geolocationService->getProvinces("yes");
 														</strong></td>
 													<td>
 														<input type="text" id="sampleCollectionDate"
-															name="sampleCollectionDate" class="form-control"
+															name="sampleCollectionDate" class="form-control incompleteFormReportFilter"
 															placeholder="<?php echo _('Select Sample Collection Date'); ?>"
 															readonly style="width:170px;background:#fff;" />
 													</td>
@@ -892,7 +890,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _("Fields"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control" id="formField" name="formField"
+														<select class="form-control incompleteFormReportFilter" id="formField" name="formField"
 															multiple="multiple"
 															title="<?php echo _('Please fields'); ?>"
 															style="width:170px;">
@@ -939,7 +937,7 @@ $state = $geolocationService->getProvinces("yes");
 														</strong></td>
 													<td>
 														<select name="patientVlQualityInfo" id="patientVlQualityInfo"
-															class="form-control"
+															class="form-control incompleteFormReportFilter"
 															title="<?php echo _('Please choose community sample'); ?>"
 															style="width:170px;">
 															<option value="yes">
@@ -957,7 +955,7 @@ $state = $geolocationService->getProvinces("yes");
 															onclick="searchVlRequestData();" value="<?= _('Search'); ?>"
 															class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm"
-															onclick="document.location.href = document.location"><span>
+															onclick="resetFilters('incompleteFormReportFilter');"><span>
 																<?= _('Reset'); ?>
 															</span></button>
 														<button class="btn btn-success btn-sm" type="button"
@@ -1085,13 +1083,42 @@ $state = $geolocationService->getProvinces("yes");
 				'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
 			}
 		},
-			function (start, end) {
-				startDate = start.format('YYYY-MM-DD');
-				endDate = end.format('YYYY-MM-DD');
-			});
+		function (start, end) {
+			startDate = start.format('YYYY-MM-DD');
+			endDate = end.format('YYYY-MM-DD');
+		});
+		$('#vfVlnsSampleCollectionDate').daterangepicker({
+			locale: {
+				cancelLabel: "<?= _("Clear"); ?>",
+				format: 'DD-MMM-YYYY',
+				separator: ' to ',
+			},
+			showDropdowns: true,
+			alwaysShowCalendars: false,
+			startDate: moment().subtract(180, 'days'),
+			endDate: moment(),
+			maxDate: moment(),
+			ranges: {
+				'Today': [moment(), moment()],
+				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+				'This Month': [moment().startOf('month'), moment().endOf('month')],
+				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+				'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+				'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+				'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+				'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
+			}
+		},
+		function (start, end) {
+			startDate = start.format('YYYY-MM-DD');
+			endDate = end.format('YYYY-MM-DD');
+		});
 		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate,#vfVlnsSampleCollectionDate,#vfVlnsSampleTestDate').on('cancel.daterangepicker', function (ev, picker) {
 			$(this).val('');
 		});
+		$('#vfVlnsSampleTestDate').val('');
 		highViralLoadReport();
 		sampleRjtReport();
 		notAvailReport();
@@ -1109,7 +1136,7 @@ $state = $geolocationService->getProvinces("yes");
 			return false;
         }
         $.blockUI();
-        $.post('export-vl-vlns-reports.php', {
+        $.post('/vl/program-management/export-virologic-failure-report.php', {
             sampleCollectionDate: $('#vfVlnsSampleCollectionDate').val(),
             sampleTestDate: $('#vfVlnsSampleTestDate').val(),
             facilityName: $('#vfVlnsfacilityName').val(),
@@ -1676,6 +1703,11 @@ $state = $geolocationService->getProvinces("yes");
 				Obj = $.parseJSON(data);
 				$("#" + facilityId).html(Obj['facilities']);
 			});
+	}
+
+	function resetFilters(filtersClass){
+		$('.'+filtersClass).val('');
+		$('.'+filtersClass).val(null).trigger('change');
 	}
 </script>
 <?php

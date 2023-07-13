@@ -34,9 +34,7 @@ $styleArray = array(
           ),
      )
 );
-$sQuery = "SELECT 
-                SQL_CALC_FOUND_ROWS 
-                vl.patient_art_no, 
+$sQuery = "SELECT vl.patient_art_no, 
                 f.facility_name, 
                 f.facility_code, 
                 vl.patient_age_in_years, 
