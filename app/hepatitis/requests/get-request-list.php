@@ -117,8 +117,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
  */
 $aWhere = '';
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS
-               vl.*,
+$sQuery = "SELECT vl.*,
                b.batch_code,
                ts.status_name,
                f.facility_name,
@@ -298,23 +297,17 @@ if (!empty($sOrder)) {
 }
 $_SESSION['hepatitisRequestSearchResultQuery'] = $sQuery;
 
-if (isset($sLimit) && isset($sOffset)) {
-     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-}
-$rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering */
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
 
-$_SESSION['hepatitisRequestSearchResultQueryCount'] = $iTotal;
+$_SESSION['hepatitisRequestSearchResultQueryCount'] = $resultCount;
 
 /*
  * Output
  */
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
-     "iTotalRecords" => $iTotal,
-     "iTotalDisplayRecords" => $iFilteredTotal,
+     "iTotalRecords" => $resultCount,
+     "iTotalDisplayRecords" => $resultCount,
      "aaData" => array()
 );
 $editRequest = false;

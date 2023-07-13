@@ -122,8 +122,7 @@ if (isset($_POST['testType']) && ($_POST['testType'] != "")) {
  * SQL queries
  * Get data to display
  */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS
-                SUM(CASE WHEN vl.sample_tested_datetime is not null THEN 1 ELSE 0 END) as `testcount`,
+$sQuery = "SELECT SUM(CASE WHEN vl.sample_tested_datetime is not null THEN 1 ELSE 0 END) as `testcount`,
                 MAX(vl.sample_tested_datetime) as last_tested_date,";
 if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
     $sQuery .= " vl.test_type, ";
@@ -144,23 +143,15 @@ if (!empty($sOrder)) {
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }
 
-if (isset($sLimit) && isset($sOffset)) {
-    $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-}
-// echo $sQuery;die;
-$rResult = $db->rawQuery($sQuery);
-
-/* Data set length after filtering */
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
 
 /*
  * Output
  */
 $output = array(
     "sEcho" => intval($_POST['sEcho']),
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
+    "iTotalRecords" => $resultCount,
+    "iTotalDisplayRecords" => $resultCount,
     "aaData" => array()
 );
 $editBatch = $delete = $pdf = $editPosition = false;

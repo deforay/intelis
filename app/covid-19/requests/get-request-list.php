@@ -8,21 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
      session_start();
 }
 
-$formConfigQuery = "SELECT * FROM global_config";
-$configResult = $db->query($formConfigQuery);
-$gconfig = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($configResult); $i++) {
-     $gconfig[$configResult[$i]['name']] = $configResult[$i]['value'];
-}
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
+$gconfig = $general->getGlobalConfig();
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -42,7 +28,7 @@ $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_coll
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
-} else if ($sarr['sc_user_type'] == 'standalone') {
+} else if ($_SESSION['instnceType'] == 'standalone') {
      if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
           unset($aColumns[$key]);
           $aColumns = array_values($aColumns);
@@ -126,7 +112,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
  * Get data to display
  */
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, f.*,  ts.status_name, b.batch_code, r.result as resultTxt,
+$sQuery = "SELECT vl.*, f.*,  ts.status_name, b.batch_code, r.result as resultTxt,
           rtr.test_reason_name,
           rst.sample_name,
           f.facility_name,
@@ -300,24 +286,18 @@ if (!empty($sOrder)) {
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
 $_SESSION['covid19RequestSearchResultQuery'] = $sQuery;
-if (isset($sLimit) && isset($sOffset)) {
-     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-}
-// die($sQuery);
-$rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering */
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
-$_SESSION['covid19RequestSearchResultQueryCount'] = $iTotal;
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+
+$_SESSION['covid19RequestSearchResultQueryCount'] = $resultCount;
 
 /*
  * Output
  */
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
-     "iTotalRecords" => $iTotal,
-     "iTotalDisplayRecords" => $iFilteredTotal,
+     "iTotalRecords" => $resultCount,
+     "iTotalDisplayRecords" => $resultCount,
      "aaData" => array()
 );
 $editRequest = false;
@@ -326,7 +306,7 @@ if (isset($_SESSION['privileges']) && (in_array("/covid-19/requests/covid-19-edi
      $editRequest = true;
      $syncRequest = true;
 }
-// echo "<pre>";print_r($rResult);die;
+
 foreach ($rResult as $aRow) {
      $vlResult = '';
      $edit = '';
