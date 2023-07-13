@@ -358,17 +358,17 @@ if (!empty($sOrder)) {
 }
 $_SESSION['vlRequestQuery'] = $sQuery;
 
-[$rResult, $iTotal] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
 
-$_SESSION['vlRequestQueryCount'] = $iTotal;
+$_SESSION['vlRequestQueryCount'] = $resultCount;
 
 /*
  * Output
  */
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
-     "iTotalRecords" => $iTotal,
-     "iTotalDisplayRecords" => $iTotal,
+     "iTotalRecords" => $resultCount,
+     "iTotalDisplayRecords" => $resultCount,
      "aaData" => array()
 );
 $editRequest = false;
