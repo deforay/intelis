@@ -4855,7 +4855,3 @@ UPDATE `global_config` SET `category` = 'generic-tests' WHERE `global_config`.`n
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Sample Lock Expiry Days', 'generic_sample_lock_after_days', NULL, 'generic-tests', 'yes', '2021-11-02 17:48:32', NULL, 'active'),
 ('Auto Approve API Results', 'generic_auto_approve_api_results', NULL, 'generic-tests', 'yes', '2021-11-02 17:48:32', NULL, 'active'),
 ('Lab Tests Show Participant Name in Manifest', 'generic_show_participant_name_in_manifest', NULL, 'generic-tests', 'yes', '2021-11-02 17:48:32', NULL, 'active');
-
--- Thana 12-Jul-2023
--- INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'vl-reports', '/vl/program-management/high-vl-virologic-failure-report.php', 'High VL and Virologic Failure Report', NULL, 'always');
--- INSERT INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'vl', 'no', 'High VL and Virologic Failure Report', '/vl/program-management/high-vl-virologic-failure-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu highVlVirologicFailureReportMenu', '71', '', 'active', CURRENT_TIMESTAMP);
