@@ -358,7 +358,7 @@ $state = $geolocationService->getProvinces("yes");
 													<td>
 														<input type="text" id="vfVlnsSampleTestDate" name="vfVlnsSampleTestDate" class="form-control daterangefield" placeholder="<?php echo _('Select Tested Date'); ?>" style="width:220px;background:#fff;" />
 													</td>
-													<td><strong><?php echo _("Facility Name"); ?> :</strong></td>
+													<td><strong><?php echo _("Facility Name"); ?> :<span class="mandatory result-span">*</span></strong></td>
 													<td>
 														<select class="form-control" id="vfVlnsfacilityName" name="vfVlnsfacilityName" title="<?php echo _('Please select facility name'); ?>" style="width:220px;">
 															<option value=""><?php echo _('-- Select --');?></option>

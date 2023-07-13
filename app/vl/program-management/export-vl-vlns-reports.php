@@ -159,8 +159,8 @@ $vlnsColNo = 1;
 $excel = new Spreadsheet();
 $vfSheet = $excel->getActiveSheet();
 $vlnsSheet = $excel->createSheet();
-$vfSheet->setTitle('VF');
-$vlnsSheet->setTitle('VLNS');
+$vfSheet->setTitle('Virologic Failure');
+$vlnsSheet->setTitle('VL - Not Suppressed');
 foreach ($headings as $field => $value) {
      $vfSheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($value));
      $colNo++;
