@@ -40,10 +40,6 @@ $state = $geolocationService->getProvinces("yes");
 	.select2-selection__choice {
 		color: #000000 !important;
 	}
-
-	.center {
-		/*text-align:left;*/
-	}
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -74,6 +70,9 @@ $state = $geolocationService->getProvinces("yes");
 									<ul id="myTab" class="nav nav-tabs">
 										<li class="active"><a href="#highViralLoadReport" data-toggle="tab">
 												<?php echo _("High Viral Load Report"); ?>
+											</a></li>
+										<li><a href="#highVlVirologicFailureReport" data-toggle="tab">
+												<?php echo _("High VL and Virologic Failure Report"); ?>
 											</a></li>
 										<li><a href="#sampleRjtReport" data-toggle="tab">
 												<?php echo _("Sample Rejection Report"); ?>
@@ -174,13 +173,9 @@ $state = $geolocationService->getProvinces("yes");
 															<option value="">
 																<?php echo _("-- Select --"); ?>
 															</option>
-															<?php
-															foreach ($fResult as $name) {
-																?>
+															<?php foreach ($fResult as $name) { ?>
 																<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
-																<?php
-															}
-															?>
+															<?php } ?>
 														</select>
 													</td>
 
@@ -350,6 +345,37 @@ $state = $geolocationService->getProvinces("yes");
 														</td>
 													</tr>
 												</tbody>
+											</table>
+										</div>
+										<div class="tab-pane fade" id="highVlVirologicFailureReport">
+											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+												<tr>
+													<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
+													<td>
+														<input type="text" id="vfVlnsSampleCollectionDate" name="vfVlnsSampleCollectionDate" class="form-control daterangefield" placeholder="<?php echo _('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
+													</td>
+													<td><strong><?php echo _("Sample Tested Date"); ?>&nbsp;:</strong></td>
+													<td>
+														<input type="text" id="vfVlnsSampleTestDate" name="vfVlnsSampleTestDate" class="form-control daterangefield" placeholder="<?php echo _('Select Tested Date'); ?>" style="width:220px;background:#fff;" />
+													</td>
+													<td><strong><?php echo _("Facility Name"); ?> :</strong></td>
+													<td>
+														<select class="form-control" id="vfVlnsfacilityName" name="vfVlnsfacilityName" title="<?php echo _('Please select facility name'); ?>" style="width:220px;">
+															<option value=""><?php echo _('-- Select --');?></option>
+															<?php foreach ($fResult as $name) { ?>
+																<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
+															<?php } ?>
+														</select>
+													</td>
+												</tr>
+												<tr>
+													<td colspan="6">
+														&nbsp;<button onclick="vfVlnsExportInexcel();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Generate report"); ?></span></button>
+
+														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Clear Search"); ?></span></button>
+
+													</td>
+												</tr>
 											</table>
 										</div>
 										<div class="tab-pane fade" id="sampleRjtReport">
@@ -1032,7 +1058,10 @@ $state = $geolocationService->getProvinces("yes");
 			width: '170px',
 			placeholder: "<?php echo _("Select Fields"); ?>"
 		});
-		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate').daterangepicker({
+		$("#vfVlnsfacilityName").select2({
+            placeholder: "<?php echo _("Select Facilities"); ?>"
+        });
+		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate,#vfVlnsSampleCollectionDate,#vfVlnsSampleTestDate').daterangepicker({
 			locale: {
 				cancelLabel: "<?= _("Clear"); ?>",
 				format: 'DD-MMM-YYYY',
@@ -1060,7 +1089,7 @@ $state = $geolocationService->getProvinces("yes");
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
-		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate').on('cancel.daterangepicker', function (ev, picker) {
+		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate,#vfVlnsSampleCollectionDate,#vfVlnsSampleTestDate').on('cancel.daterangepicker', function (ev, picker) {
 			$(this).val('');
 		});
 		highViralLoadReport();
@@ -1073,6 +1102,29 @@ $state = $geolocationService->getProvinces("yes");
 		});
 
 	});
+
+	function vfVlnsExportInexcel() {
+        if($('#vfVlnsfacilityName').val() == "" || $('#vfVlnsfacilityName').val() == null){
+            alert("Please choose facility name.")
+			return false;
+        }
+        $.blockUI();
+        $.post('export-vl-vlns-reports.php', {
+            sampleCollectionDate: $('#vfVlnsSampleCollectionDate').val(),
+            sampleTestDate: $('#vfVlnsSampleTestDate').val(),
+            facilityName: $('#vfVlnsfacilityName').val(),
+            withAlphaNum: 'yes',
+            },
+            function(data) {
+                if (data == "" || data == null || data == undefined) {
+                    $.unblockUI();
+                    alert("<?php echo _("No data found!"); ?>.");
+                } else {
+                    $.unblockUI();
+                    window.open('/download.php?f=' + data, '_blank');
+                }
+            });
+    }
 
 	function highViralLoadReport() {
 		$.blockUI();

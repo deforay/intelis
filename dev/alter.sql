@@ -4859,3 +4859,7 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remot
 -- Thana 12-Jul-2023
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'vl-reports', '/vl/program-management/high-vl-virologic-failure-report.php', 'High VL and Virologic Failure Report', NULL, 'always');
 INSERT INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'vl', 'no', 'High VL and Virologic Failure Report', '/vl/program-management/high-vl-virologic-failure-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu highVlVirologicFailureReportMenu', '71', '', 'active', CURRENT_TIMESTAMP);
+-- Thana 13-Jul-2023
+DELETE FROM s_app_menu WHERE `s_app_menu`.`id` = 176;
+
+

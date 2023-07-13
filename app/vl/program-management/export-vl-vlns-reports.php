@@ -20,19 +20,19 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var DateUtility $dateTimeUtil */
 $dateTimeUtil = new DateUtility();
 $styleArray = array(
-    'font' => array(
-         'bold' => true,
-         'size' => '13',
-    ),
-    'alignment' => array(
-         'horizontal' => Alignment::HORIZONTAL_CENTER,
-         'vertical' => Alignment::VERTICAL_CENTER,
-    ),
-    'borders' => array(
-         'outline' => array(
-              'style' => Border::BORDER_THIN,
-         ),
-    )
+     'font' => array(
+          'bold' => true,
+          'size' => '13',
+     ),
+     'alignment' => array(
+          'horizontal' => Alignment::HORIZONTAL_CENTER,
+          'vertical' => Alignment::VERTICAL_CENTER,
+     ),
+     'borders' => array(
+          'outline' => array(
+               'style' => Border::BORDER_THIN,
+          ),
+     )
 );
 $sQuery = "SELECT 
                 SQL_CALC_FOUND_ROWS 
@@ -99,8 +99,8 @@ if (!empty($_SESSION['facilityMap'])) {
 }
 
 if (!empty($sWhere)) {
-    $sWhere = implode(" AND ", $sWhere);
-    $sQuery = $sQuery . ' WHERE ' . $sWhere;
+     $sWhere = implode(" AND ", $sWhere);
+     $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }
 $sQuery = $sQuery . ' ORDER BY patient_art_no asc, sample_collection_date asc';
 // die($sQuery);
@@ -111,79 +111,92 @@ $vlnsData = [];
 $patientIds = [];
 $output = [];
 $headings = array(
-    'Patient ID',
-    'Facility Name',
-    'Facility Code',
-    'Age',
-    'Gender',
-    'Pregnant',
-    'Breastfeeding',
-    'Regimen',
-    'VL Result'
+     'Patient ID',
+     'Facility Name',
+     'Facility Code',
+     'Age',
+     'Gender',
+     'Pregnant',
+     'Breastfeeding',
+     'Regimen',
+     'VL Result'
 );
 // Separate the data into two arrays
 $vfData = [];
 $vlnsData = [];
 $patientIds = [];
-
+if(!$rResult){
+     return null;
+}
 foreach ($rResult as $aRow) {
-    $patientId = $aRow['patient_art_no'];
-    $vfData[] = $aRow;
-    $vlnsData[] = $aRow;
-    // Check if patient id already there in array
-    if (in_array($patientId, $patientIds)) {
-        // If there we remove vlsndata for this dublication
-        foreach ($vlnsData as $key => $vlnsDataRow) {
-            if ($vlnsDataRow['patient_art_no'] === $patientId) {
-                unset($vlnsData[$key]);
-            }
-        }
-    }else{
-        $patientIds[] = $patientId;
-    } 
+     $patientId = $aRow['patient_art_no'];
+     $vfData[] = $aRow;
+     $vlnsData[] = $aRow;
+     // Check if patient id already there in array
+     if (in_array($patientId, $patientIds)) {
+          // If there we remove vlsndata for this dublication
+          foreach ($vlnsData as $key => $vlnsDataRow) {
+               if ($vlnsDataRow['patient_art_no'] === $patientId) {
+                    unset($vlnsData[$key]);
+               }
+          }
+     } else {
+          $patientIds[] = $patientId;
+     }
 }
 foreach ($vlnsData as $key => $vlnsDataRow) {
-    foreach ($vfData as $key => $vfDataRow) {
-        if ($vfDataRow['patient_art_no'] === $vlnsDataRow['patient_art_no']) {
-            unset($vfData[$key]);
-        }
-    }
+     foreach ($vfData as $key => $vfDataRow) {
+          if ($vfDataRow['patient_art_no'] === $vlnsDataRow['patient_art_no']) {
+               unset($vfData[$key]);
+          }
+     }
 }
 
 $vfData = array_combine(range(1, count($vfData)), array_values($vfData));
 $vlnsData = array_combine(range(1, count($vlnsData)), array_values($vlnsData));
 $colNo = 1;
+$vlnsColNo = 1;
 $excel = new Spreadsheet();
 $vfSheet = $excel->getActiveSheet();
+$vlnsSheet = $excel->createSheet();
 $vfSheet->setTitle('VF');
+$vlnsSheet->setTitle('VLNS');
 foreach ($headings as $field => $value) {
-    $vfSheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($value));
-    $colNo++;
+     $vfSheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($value));
+     $colNo++;
+     $vlnsSheet->setCellValue(Coordinate::stringFromColumnIndex($vlnsColNo) . '1', html_entity_decode($value));
+     $vlnsColNo++;
 }
 $vfSheet->getStyle('A1:I1')->applyFromArray($styleArray);
 foreach ($vfData as $rowNo => $rowData) {
-    $colNo = 1;
-    $rRowCount = $rowNo + 1;
-    foreach ($rowData as $field => $value) {
-        $vfSheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode(ucwords($value)));
-        $colNo++;
-    }
-}
-$colNo = 1;
-$vlnsSheet = $excel->createSheet();
-$vlnsSheet->setTitle('VLNS');
-foreach ($headings as $field => $value) {
-    $vlnsSheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($value));
-    $colNo++;
+     // Merge cells with the same Patient ID
+     $currentPatientId = null;
+     $startRow = null;
+     $colNo = 1;
+     $rRowCount = $rowNo + 1;
+     foreach ($rowData as $field => $value) {
+          $vfSheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode(ucwords($value)));
+          $colNo++;
+          if ($rowData['patient_art_no'] !== $currentPatientId) {
+               if ($startRow !== null) {
+                   // Merge the cells of the previous Patient ID
+                   $newSpreadsheet->getActiveSheet()->mergeCells('A' . $startRow . ':A' . ($index));
+               }
+               $currentPatientId = $rowData['patient_art_no'];
+               $startRow = $index + 2; // +2 because Excel rows are 1-indexed and the header row
+          }
+     }
+     // Merge the cells of the last Patient ID
+     $vfSheet->mergeCells('A' . $startRow . ':A' . (count($vfData) + 1));
 }
 $vlnsSheet->getStyle('A1:I1')->applyFromArray($styleArray);
 foreach ($vlnsData as $rowNo => $rowData) {
-    $colNo = 1;
-    $rRowCount = $rowNo + 1;
-    foreach ($rowData as $field => $value) {
-        $vlnsSheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode(ucwords($value)));
-        $colNo++;
-    }
+     $colNo = 1;
+     $rRowCount = $rowNo + 1;
+     foreach ($rowData as $field => $value) {
+          $vlnsSheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode(ucwords($value)));
+          $colNo++;
+     }
 }
 $writer = IOFactory::createWriter($excel, 'Xlsx');
 $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-HIGH-VL-AND-VIROLOGIC-FAILURE-REPORT' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(5) . '.xlsx';
