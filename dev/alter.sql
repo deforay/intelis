@@ -4855,3 +4855,6 @@ UPDATE `global_config` SET `category` = 'generic-tests' WHERE `global_config`.`n
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Sample Lock Expiry Days', 'generic_sample_lock_after_days', NULL, 'generic-tests', 'yes', '2021-11-02 17:48:32', NULL, 'active'),
 ('Auto Approve API Results', 'generic_auto_approve_api_results', NULL, 'generic-tests', 'yes', '2021-11-02 17:48:32', NULL, 'active'),
 ('Lab Tests Show Participant Name in Manifest', 'generic_show_participant_name_in_manifest', NULL, 'generic-tests', 'yes', '2021-11-02 17:48:32', NULL, 'active');
+
+-- Amit 13-Jul-2023 version 5.2.0
+UPDATE `system_config` SET `value` = '5.2.0' WHERE `system_config`.`name` = 'sc_version';
