@@ -163,7 +163,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
 							<br><br>
 							<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 								<tr>
-									<th scope="row">
+									<th scope="row" colspan="2">
 										<h4>1. Données démographiques mère / enfant</h4>
 									</th>
 								</tr>

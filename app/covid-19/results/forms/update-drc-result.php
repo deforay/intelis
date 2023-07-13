@@ -532,7 +532,7 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                                             </select>
                                         </td>
                                 </tr>
-                                <tr>
+                                <tr class="symptoms" style="display: <?php echo ($covid19Info['asymptomatic'] == 'yes') ? "none" : "contents"; ?>;">
                                     <td colspan="4">
                                         <table aria-describedby="table" id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true">
                                             <?php $index = 0;
