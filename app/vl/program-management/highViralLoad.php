@@ -350,14 +350,6 @@ $state = $geolocationService->getProvinces("yes");
 										<div class="tab-pane fade" id="highVlVirologicFailureReport">
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 												<tr>
-													<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
-													<td>
-														<input type="text" id="vfVlnsSampleCollectionDate" name="vfVlnsSampleCollectionDate" class="form-control daterangefield" placeholder="<?php echo _('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
-													</td>
-													<td><strong><?php echo _("Sample Tested Date"); ?>&nbsp;:</strong></td>
-													<td>
-														<input type="text" id="vfVlnsSampleTestDate" name="vfVlnsSampleTestDate" class="form-control daterangefield" placeholder="<?php echo _('Select Tested Date'); ?>" style="width:220px;background:#fff;" />
-													</td>
 													<td><strong><?php echo _("Facility Name"); ?> :<span class="mandatory result-span">*</span></strong></td>
 													<td>
 														<select class="form-control" id="vfVlnsfacilityName" name="vfVlnsfacilityName" title="<?php echo _('Please select facility name'); ?>" style="width:220px;">
@@ -366,6 +358,14 @@ $state = $geolocationService->getProvinces("yes");
 																<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
 															<?php } ?>
 														</select>
+													</td>
+													<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
+													<td>
+														<input type="text" id="vfVlnsSampleCollectionDate" name="vfVlnsSampleCollectionDate" class="form-control daterangefield" placeholder="<?php echo _('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
+													</td>
+													<td><strong><?php echo _("Sample Tested Date"); ?>&nbsp;:</strong></td>
+													<td>
+														<input type="text" id="vfVlnsSampleTestDate" name="vfVlnsSampleTestDate" class="form-control daterangefield" placeholder="<?php echo _('Select Tested Date'); ?>" style="width:220px;background:#fff;" />
 													</td>
 												</tr>
 												<tr>
