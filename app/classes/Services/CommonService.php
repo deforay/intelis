@@ -24,6 +24,27 @@ class CommonService
         $this->db = $db ?? ContainerRegistry::get('db');
     }
 
+    public function getQueryResultAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null): array
+    {
+        try {
+            // Prepare and execute the main query
+            if (!empty($limit) && !empty($offset)) {
+                $sql = $sql . " LIMIT $offset,$limit ";
+            }
+            $queryResult = $this->db->rawQuery($sql, $params);
+
+            // Prepare and execute the count query
+            $countSql = preg_replace('/SELECT.*? FROM/si', 'SELECT COUNT(*) FROM', $sql, 1);
+            $count = $this->db->rawQueryOne($countSql)['COUNT(*)'];
+
+            return [$queryResult, $count];
+        } catch (Exception $e) {
+            throw new SystemException($e->getMessage());
+        }
+    }
+
+
+
     public function generateRandomString($length = 32): string
     {
         // Ensure $length is always even
@@ -164,11 +185,11 @@ class CommonService
 
         $cipher = sodium_bin2base64(
             $nonce .
-            sodium_crypto_secretbox(
-                $message,
-                $nonce,
-                $key
-            ),
+                sodium_crypto_secretbox(
+                    $message,
+                    $nonce,
+                    $key
+                ),
             SODIUM_BASE64_VARIANT_URLSAFE
         );
         sodium_memzero($message);

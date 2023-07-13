@@ -116,7 +116,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
 }
 
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS
+$sQuery = "SELECT
                vl.vl_sample_id,
                vl.sample_code,
                vl.remote_sample_code,
@@ -184,6 +184,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
 [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
 [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
+[$sPrintDate, $ePrintDate] = DateUtility::convertDateRange($_POST['printDate'] ?? '');
 
 
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
@@ -220,17 +221,7 @@ if (isset($_POST['vLoad']) && trim($_POST['vLoad']) != '') {
           $sWhere[] = "  vl.vl_result_category like 'not suppressed' AND vl.vl_result_category is NOT NULL ";
      }
 }
-$sPrintDate = '';
-$ePrintDate = '';
-if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
-     $s_p_date = explode("to", $_POST['printDate']);
-     if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sPrintDate = DateUtility::isoDateFormat(trim($s_p_date[0]));
-     }
-     if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $ePrintDate = DateUtility::isoDateFormat(trim($s_p_date[1]));
-     }
-}
+
 if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
      $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
 }
@@ -365,16 +356,8 @@ if (!empty($sOrder)) {
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
 $_SESSION['vlRequestSearchResultQuery'] = $sQuery;
-if (isset($sLimit) && isset($sOffset)) {
-     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-}
-//die($sQuery);
-$rResult = $db->rawQuery($sQuery);
 
-/* Data set length after filtering */
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-//$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
-$iTotal = $aResultFilterTotal['totalCount'];
+[$rResult, $iTotal] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
 
 $_SESSION['vlRequestSearchResultQueryCount'] = $iTotal;
 

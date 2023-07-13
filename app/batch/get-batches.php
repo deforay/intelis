@@ -122,12 +122,13 @@ if (isset($_POST['testType']) && ($_POST['testType'] != "")) {
  * SQL queries
  * Get data to display
  */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS  SUM(CASE WHEN vl.sample_tested_datetime is not null THEN 1 ELSE 0 END) as `testcount`,
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS
+                SUM(CASE WHEN vl.sample_tested_datetime is not null THEN 1 ELSE 0 END) as `testcount`,
                 MAX(vl.sample_tested_datetime) as last_tested_date,";
-                if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
-                    $sQuery .= " vl.test_type, ";
-                }
-                $sQuery .= " b.request_created_datetime,
+if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
+    $sQuery .= " vl.test_type, ";
+}
+$sQuery .= " b.request_created_datetime,
                 b.batch_code,
                 b.batch_id,
                 COUNT(vl.sample_code) AS total_samples
@@ -172,7 +173,7 @@ if (isset($_SESSION['privileges']) && (in_array('/batch/edit-batch.php?type=' . 
 if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
     $testTypeInfo = $general->getDataByTableAndFields("r_test_types", array("test_type_id", "test_standard_name", "test_loinc_code"), false, "test_status='active'");
     $testTypes = [];
-    foreach($testTypeInfo as $tests){
+    foreach ($testTypeInfo as $tests) {
         $testTypes[$tests['test_type_id']] = $tests['test_standard_name'];
     }
 }
