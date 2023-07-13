@@ -5,11 +5,6 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Utilities\DateUtility;
 
-if (session_status() == PHP_SESSION_NONE) {
-     session_start();
-}
-
-
 
 /** @var EidService $eidService */
 $eidService = ContainerRegistry::get(EidService::class);
@@ -121,7 +116,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
  */
 $aWhere = '';
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, f.*,
+$sQuery = "SELECT vl.*, f.*,
      b.batch_code,
      ts.status_name,
      f.facility_name,
@@ -301,25 +296,18 @@ if (!empty($sOrder)) {
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
 $_SESSION['eidRequestSearchResultQuery'] = $sQuery;
-if (isset($sLimit) && isset($sOffset)) {
-     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-}
-// die($sQuery);
-$rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering */
-/* Data set length after filtering */
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
-$_SESSION['eidRequestSearchResultQueryCount'] = $iTotal;
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+
+$_SESSION['eidRequestSearchResultQueryCount'] = $resultCount;
 
 /*
  * Output
  */
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
-     "iTotalRecords" => $iTotal,
-     "iTotalDisplayRecords" => $iFilteredTotal,
+     "iTotalRecords" => $resultCount,
+     "iTotalDisplayRecords" => $resultCount,
      "aaData" => array()
 );
 $editRequest = false;

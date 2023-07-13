@@ -102,8 +102,8 @@ for ($i = 0; $i < count($aColumns); $i++) {
 * Get data to display
 */
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS
-          vl.*,ty.test_standard_name,
+$sQuery = "SELECT vl.*,
+          ty.test_standard_name,
           s.sample_type_name,
           b.batch_code,
           ts.status_name,
@@ -140,26 +140,19 @@ if (!empty($sOrder)) {
      $_SESSION['vlRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
-$_SESSION['vlRequestSearchResultQuery'] = $sQuery;
-if (isset($sLimit) && isset($sOffset)) {
-     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-}
-// die($sQuery);
-$rResult = $db->rawQuery($sQuery);
+$_SESSION['genericRequestQuery'] = $sQuery;
 
-/* Data set length after filtering */
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $aResultFilterTotal['totalCount'];
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
 
-$_SESSION['vlRequestSearchResultQueryCount'] = $iTotal;
+$_SESSION['genericRequestQueryCount'] = $resultCount;
 
 /*
 * Output
 */
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
-     "iTotalRecords" => $iTotal,
-     "iTotalDisplayRecords" => $iTotal,
+     "iTotalRecords" => $resultCount,
+     "iTotalDisplayRecords" => $resultCount,
      "aaData" => array()
 );
 

@@ -116,7 +116,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
 }
 
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS
+$sQuery = "SELECT
                vl.vl_sample_id,
                vl.sample_code,
                vl.remote_sample_code,
@@ -150,6 +150,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                vl.result_printed_datetime,
                vl.last_modified_datetime,
                vl.result_status,
+               vl.locked,
                s.sample_name as sample_name,
                b.batch_code,
                ts.status_name,
@@ -184,6 +185,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
 [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
 [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
+[$sPrintDate, $ePrintDate] = DateUtility::convertDateRange($_POST['printDate'] ?? '');
 
 
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
@@ -220,17 +222,7 @@ if (isset($_POST['vLoad']) && trim($_POST['vLoad']) != '') {
           $sWhere[] = "  vl.vl_result_category like 'not suppressed' AND vl.vl_result_category is NOT NULL ";
      }
 }
-$sPrintDate = '';
-$ePrintDate = '';
-if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
-     $s_p_date = explode("to", $_POST['printDate']);
-     if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sPrintDate = DateUtility::isoDateFormat(trim($s_p_date[0]));
-     }
-     if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $ePrintDate = DateUtility::isoDateFormat(trim($s_p_date[1]));
-     }
-}
+
 if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
      $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
 }
@@ -364,27 +356,19 @@ if (!empty($sOrder)) {
      $_SESSION['vlRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
-$_SESSION['vlRequestSearchResultQuery'] = $sQuery;
-if (isset($sLimit) && isset($sOffset)) {
-     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-}
-//die($sQuery);
-$rResult = $db->rawQuery($sQuery);
+$_SESSION['vlRequestQuery'] = $sQuery;
 
-/* Data set length after filtering */
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-//$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
-$iTotal = $aResultFilterTotal['totalCount'];
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
 
-$_SESSION['vlRequestSearchResultQueryCount'] = $iTotal;
+$_SESSION['vlRequestQueryCount'] = $resultCount;
 
 /*
  * Output
  */
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
-     "iTotalRecords" => $iTotal,
-     "iTotalDisplayRecords" => $iTotal,
+     "iTotalRecords" => $resultCount,
+     "iTotalDisplayRecords" => $resultCount,
      "aaData" => array()
 );
 $editRequest = false;
