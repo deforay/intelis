@@ -126,10 +126,10 @@ for ($i = 0; $i < count($aColumns); $i++) {
  * SQL queries
  * Get data to display
  */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*
-                f.*
-                s.*
-                fd.facility_name as labName
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,
+                f.*,
+                s.*,
+                fd.facility_name as labName,
                 ts.status_name FROM form_eid as vl
                 LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
                 LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id
@@ -138,21 +138,12 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*
                 INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
                 WHERE vl.result_status != " . SAMPLE_STATUS\REJECTED . "
                 AND vl.sample_code is NOT NULL AND (vl.result IS NULL OR vl.result='')";
-$start_date = '';
-$end_date = '';
 if (isset($_POST['noResultBatchCode']) && trim($_POST['noResultBatchCode']) != '') {
     $sWhere[] = ' b.batch_code LIKE "%' . $_POST['noResultBatchCode'] . '%"';
 }
 
+[$start_date, $end_date] = DateUtility::convertDateRange($_POST['noResultSampleTestDate'] ?? '');
 if (isset($_POST['noResultSampleTestDate']) && trim($_POST['noResultSampleTestDate']) != '') {
-    $s_c_date = explode("to", $_POST['noResultSampleTestDate']);
-    //print_r($s_c_date);die;
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-    }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-    }
     if (trim($start_date) == trim($end_date)) {
         $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
     } else {
@@ -189,11 +180,9 @@ if (!empty($_SESSION['facilityMap'])) {
 
 if (!empty($sWhere)) {
     $sWhere = ' AND ' . implode(' AND ', $sWhere);
-} else {
-    $sWhere = "";
+    $sQuery = $sQuery . ' ' . $sWhere;
 }
 
-$sQuery = $sQuery . ' ' . $sWhere;
 $sQuery = $sQuery . ' group by vl.eid_id';
 if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
@@ -205,7 +194,6 @@ if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
 
-// echo $sQuery;die;
 $rResult = $db->rawQuery($sQuery);
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
