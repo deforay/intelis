@@ -383,7 +383,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 			</div>
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-inline" method="post" name="vlRequestFormRwd" id="vlRequestFormRwd" autocomplete="off" action="edit-request-helper.php">
+				<form class="form-inline" method="post" name="vlRequestFormRwd" id="vlRequestFormRwd" autocomplete="off" action="update-generic-test-result-helper.php">
 					<div class="box-body">
 						<div class="box box-primary disabledForm">
 							<div class="box-header with-border">
@@ -1102,7 +1102,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 				}
 			});
 			if (status) {
-				$('.reasonForResultChanges').show();
+				$('.change-reason').show();
 				$('#reasonForResultChanges').addClass('isRequired');
 			} else {
 				$('.change-reason').hide();
@@ -1958,10 +1958,10 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 
 	function updateInterpretationResult(obj) {
 		if (obj.value) {
-			$.post("get-result-interpretation.php", {
+			$.post("/generic-tests/requests/get-result-interpretation.php", {
 					result: obj.value,
 					resultType: $('#resultType').val(),
-					testType: $('#testType').val()
+					testType: $('#testType').val() 
 				},
 				function(interpretation) {
 					if (interpretation != "") {

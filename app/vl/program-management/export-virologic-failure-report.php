@@ -47,48 +47,27 @@ $sQuery = "SELECT vl.patient_art_no,
             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id";
 
 $sWhere[] =  " vl.vl_result_category = 'not suppressed' AND vl.patient_age_in_years IS NOT NULL AND vl.patient_gender IS NOT NULL AND vl.current_regimen IS NOT NULL ";
-/* Sample collection date filter */
-$start_date = '';
-$end_date = '';
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-     }
-}
-/* Sample type filter */
+
+/* Facility filter */
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
      $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
-/* Sample test date filter */
-$sTestDate = '';
-$eTestDate = '';
-if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-     $s_t_date = explode("to", $_POST['sampleTestDate']);
-     if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = DateUtility::isoDateFormat(trim($s_t_date[0]));
-     }
-     if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = DateUtility::isoDateFormat(trim($s_t_date[1]));
-     }
-}
-
-/* Assign date time filters */
+/* Sample collection date filter */
+$sampleCollectionDate = $dateTimeUtil->convertDateRange($_POST['sampleCollectionDate']);
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-     if (trim($start_date) == trim($end_date)) {
-          $sWhere[] =  '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
+     if (trim($sampleCollectionDate[0]) == trim($sampleCollectionDate[1])) {
+          $sWhere[] =  '  DATE(vl.sample_collection_date) = "' . $sampleCollectionDate[0] . '"';
      } else {
-          $sWhere[] =  '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+          $sWhere[] =  '  DATE(vl.sample_collection_date) >= "' . $sampleCollectionDate[0] . '" AND DATE(vl.sample_collection_date) <= "' . $sampleCollectionDate[1] . '"';
      }
 }
+/* Sample test date filter */
+$sampleTestDate = $dateTimeUtil->convertDateRange($_POST['sampleTestDate']);
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-     if (trim($sTestDate) == trim($eTestDate)) {
-          $sWhere[] = '  DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
+     if (trim($sampleTestDate[0]) == trim($sampleTestDate[1])) {
+          $sWhere[] = '  DATE(vl.sample_tested_datetime) = "' . $sampleTestDate[0] . '"';
      } else {
-          $sWhere[] =  '  DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
+          $sWhere[] =  '  DATE(vl.sample_tested_datetime) >= "' . $sampleTestDate[0] . '" AND DATE(vl.sample_tested_datetime) <= "' . $sampleTestDate[1] . '"';
      }
 }
 

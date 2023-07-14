@@ -122,12 +122,12 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 			<div class="col-xs-12">
 				<div class="box">
 					<table aria-describedby="table" class="table" aria-hidden="true"
-						style="margin-left:1%;margin-top:20px;width:70%;margin-bottom: 0px;">
+						style="margin-left:1%;margin-top:20px;width:100%;margin-bottom: 0px;">
 						<tr>
-							<td style="width: 15%;"><strong>
+							<td style="width: 10%;"><strong>
 									<?php echo _("Test Type"); ?>&nbsp;:
 								</strong></td>
-							<td style="width: 60%;">
+							<td style="width: 50%;">
 								<select class="form-control" name="testType" id="testType"
 									title="Please choose test type" style="width:100%;">
 									<option value=""> -- Select -- </option>
@@ -136,22 +136,18 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 									<?php } ?>
 								</select>
 							</td>
-							<td style="width: 25%;">&nbsp;<input type="button" onclick="searchVlRequestData();"
+							<td style="width: 15%;">&nbsp;<input type="button" onclick="searchVlRequestData();"
 									value="<?= _('Search'); ?>" class="btn btn-default btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="reset();"><span>
 										<?= _('Reset'); ?>
 									</span></button>
 							</td>
+							<td style="width: 25%;"><a class="btn btn-success btn-sm" href="/generic-tests/requests/add-request.php"><em class="fa-solid fa-add"></em>&nbsp;&nbsp;Add Request</a><a class="btn btn-success btn-sm" href="javascript:void(0);" onclick="exportTestRequests();"><em class="fa-solid fa-cloud-arrow-down"></em>&nbsp;&nbsp;Export Requests</a></td>
 						</tr>
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table class="table" aria-hidden="true">
-							<tr>
-								<td><a class="btn btn-success btn-sm pull-right" style="margin-right:5px;"
-										href="/generic-tests/requests/add-request.php"><em
-											class="fa-solid fa-add"></em>&nbsp;&nbsp;Add Request</a></td>
-							</tr>
+						<table class="table pull-right" aria-hidden="true" style="margin-right:5px;">
 						</table>
 						<table aria-describedby="table" id="RequestDataTable" class="table table-bordered table-striped"
 							aria-hidden="true">
@@ -530,7 +526,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		}
 		$.blockUI();
 		$.post("/generic-tests/requests/export-generic-tests-requests.php", {
-			reqSampleType: $('#requestSampleType').val(),
 			patientInfo: $('#patientInfo').val(),
 		},
 			function (data) {
