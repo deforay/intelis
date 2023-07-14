@@ -147,29 +147,8 @@ $sQuery = "SELECT vl.*,
                LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-$labStartDate = '';
-$labEndDate = '';
-if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
-     $s_c_date = explode("to", $_POST['sampleReceivedDateAtLab']);
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $labStartDate = DateUtility::isoDateFormat(trim($s_c_date[0]));
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $labEnddate = DateUtility::isoDateFormat(trim($s_c_date[1]));
-     }
-}
-
-$testedStartDate = '';
-$testedEndDate = '';
-if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
-     $s_c_date = explode("to", $_POST['sampleTestedDate']);
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $testedStartDate = DateUtility::isoDateFormat(trim($s_c_date[0]));
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $testedEndDate = DateUtility::isoDateFormat(trim($s_c_date[1]));
-     }
-}
+[$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
+[$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
      $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';

@@ -143,55 +143,15 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                     LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source
                     LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 /* Sample collection date filter */
-$start_date = '';
-$end_date = '';
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-$sReceivedDate = '';
-$eReceivedDate = '';
-if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
-     $s_t_date = explode("to", $_POST['sampleReceivedDate']);
-     if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sReceivedDate = DateUtility::isoDateFormat(trim($s_t_date[0]));
-     }
-     if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eReceivedDate = DateUtility::isoDateFormat(trim($s_t_date[1]));
-     }
-}
-$sResultDispatchedDate = '';
-$eResultDispatchedDate = '';
-if (isset($_POST['resultDispatchedOn']) && trim($_POST['resultDispatchedOn']) != '') {
-     $s_t_date = explode("to", $_POST['resultDispatchedOn']);
-     if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sResultDispatchedDate = DateUtility::isoDateFormat(trim($s_t_date[0]));
-     }
-     if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eResultDispatchedDate = DateUtility::isoDateFormat(trim($s_t_date[1]));
-     }
-}
-/* Sample test date filter */
-$sTestDate = '';
-$eTestDate = '';
-if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-     $s_t_date = explode("to", $_POST['sampleTestDate']);
-     if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = DateUtility::isoDateFormat(trim($s_t_date[0]));
-     }
-     if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = DateUtility::isoDateFormat(trim($s_t_date[1]));
-     }
-}
+/* Sample Received date filter */
+[$sReceivedDate, $eReceivedDate] = DateUtility::convertDateRange($_POST['sampleReceivedDate'] ?? '');
+/* Result dispatch date filter */
+[$sResultDispatchedDate, $eResultDispatchedDate] = DateUtility::convertDateRange($_POST['resultDispatchedOn'] ?? '');
+/* Sample tested date filter */
+[$sTestDate, $eTestDate] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
 /* Print date filter */
-$sPrintDate = '';
-$ePrintDate = '';
-if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
-     $s_p_date = explode("to", $_POST['printDate']);
-     if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sPrintDate = DateUtility::isoDateFormat(trim($s_p_date[0]));
-     }
-     if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $ePrintDate = DateUtility::isoDateFormat(trim($s_p_date[1]));
-     }
-}
+[$sPrintDate, $ePrintDate] = DateUtility::convertDateRange($_POST['printDate'] ?? '');
 /* Sample type filter */
 if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
      $sWhere[] =  ' vl.specimen_type IN (' . $_POST['sampleType'] . ')';

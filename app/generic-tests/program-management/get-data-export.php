@@ -172,21 +172,10 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                         LEFT JOIN r_generic_test_reasons as tr ON tr.test_reason_id=vl.reason_for_testing
                         LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source
                         LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
-//echo $sQuery;die;
 /* Sample collection date filter */
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 /* Sample recevied date filter */
-$sSampleReceivedDate = '';
-$eSampleReceivedDate = '';
-if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
-     $s_p_date = explode("to", $_POST['sampleReceivedDate']);
-     if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sSampleReceivedDate = DateUtility::isoDateFormat(trim($s_p_date[0]));
-     }
-     if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $eSampleReceivedDate = DateUtility::isoDateFormat(trim($s_p_date[1]));
-     }
-}
+[$sSampleReceivedDate, $eSampleReceivedDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 /* Sample type filter */
 if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
      $sWhere[] =  ' vl.sample_type IN (' . $_POST['sampleType'] . ')';

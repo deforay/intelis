@@ -98,7 +98,12 @@ try {
 
                 $v = $testResultsService->removeCntrlCharsAndEncode($v);
 
-                if ($v == "End Time" || $v == "Heure de fin") {
+                if ($v == "Status") {
+                    $status = $testResultsService->removeCntrlCharsAndEncode($record[1]);
+                    if (!empty($status) && $status == "Incomplete") {
+                        continue 2;
+                    }
+                } elseif ($v == "End Time" || $v == "Heure de fin") {
                     $testedOn = $testResultsService->removeCntrlCharsAndEncode($record[1]);
                     $timestamp = DateTimeImmutable::createFromFormat("!$dateFormat", $testedOn);
                     if (!empty($timestamp)) {
@@ -114,7 +119,7 @@ try {
                 } elseif ($v == "Sample ID" || $v == "N° Id de l'échantillon") {
                     $sampleCode = $testResultsService->removeCntrlCharsAndEncode($record[1]);
                     if (empty($sampleCode)) {
-                        continue;
+                        continue 2;
                     }
                     $infoFromFile[$sampleCode]['sampleCode'] = $sampleCode;
                     $infoFromFile[$sampleCode]['testedOn'] = $testedOn;

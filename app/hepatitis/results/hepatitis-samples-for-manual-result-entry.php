@@ -145,10 +145,6 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,b.*,ts.*,f.facility_name,
           LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
           LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
           LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by";
-$start_date = '';
-$end_date = '';
-$t_start_date = '';
-$t_end_date = '';
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {

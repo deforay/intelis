@@ -124,30 +124,10 @@ $sQuery = "SELECT vl.*, f.*, l.facility_name as lab_name, rtbr.result as lamResu
           LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+[$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
+[$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 
-$labStartDate = '';
-$labEndDate = '';
-if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
-     $s_c_date = explode("to", $_POST['sampleReceivedDateAtLab']);
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $labStartDate = DateUtility::isoDateFormat(trim($s_c_date[0]));
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $labEnddate = DateUtility::isoDateFormat(trim($s_c_date[1]));
-     }
-}
-
-$testedStartDate = '';
-$testedEndDate = '';
-if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
-     $s_c_date = explode("to", $_POST['sampleTestedDate']);
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $testedStartDate = DateUtility::isoDateFormat(trim($s_c_date[0]));
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $testedEndDate = DateUtility::isoDateFormat(trim($s_c_date[1]));
-     }
-}
+[$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
      $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
@@ -160,7 +140,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      }
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
-     if (trim($labStartDate) == trim($labEnddate)) {
+     if (trim($labStartDate) == trim($labEndDate)) {
           $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $labStartDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $labEnddate . '"';

@@ -141,47 +141,13 @@ $sQuery = "SELECT vl.*,
                LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source
                LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 /* Sample collection date filter */
-$start_date = '';
-$end_date = '';
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 /* Sample recieved date filter */
-$rstart_date = '';
-$rend_date = '';
-if (isset($_POST['sampleRecievedDate']) && trim($_POST['sampleRecievedDate']) != '') {
-     $s_r_date = explode("to", $_POST['sampleRecievedDate']);
-     //print_r($s_r_date);die;
-     if (isset($s_r_date[0]) && trim($s_r_date[0]) != "") {
-          $rstart_date = DateUtility::isoDateFormat(trim($s_r_date[0]));
-     }
-     if (isset($s_r_date[1]) && trim($s_r_date[1]) != "") {
-          $rend_date = DateUtility::isoDateFormat(trim($s_r_date[1]));
-     }
-}
+[$rstart_date, $rend_date] = DateUtility::convertDateRange($_POST['sampleRecievedDate'] ?? '');
 /* Sample tested date filter */
-$sTestDate = '';
-$eTestDate = '';
-if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-     $s_t_date = explode("to", $_POST['sampleTestDate']);
-     if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = DateUtility::isoDateFormat(trim($s_t_date[0]));
-     }
-     if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = DateUtility::isoDateFormat(trim($s_t_date[1]));
-     }
-}
+[$sTestDate, $eTestDate] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
 /* Sample print date filter */
-$sPrintDate = '';
-$ePrintDate = '';
-if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
-     $s_p_date = explode("to", $_POST['printDate']);
-     if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sPrintDate = DateUtility::isoDateFormat(trim($s_p_date[0]));
-     }
-     if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $ePrintDate = DateUtility::isoDateFormat(trim($s_p_date[1]));
-     }
-}
-
+[$sPrintDate, $ePrintDate] = DateUtility::convertDateRange($_POST['printDate'] ?? '');
 if (isset($_POST['state']) && trim($_POST['state']) != '') {
      $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
 }

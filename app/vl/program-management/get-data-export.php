@@ -173,17 +173,7 @@ $sQuery = "SELECT vl.vl_sample_id,
 /* Sample collection date filter */
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 /* Sample recevied date filter */
-$sSampleReceivedDate = '';
-$eSampleReceivedDate = '';
-if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
-     $s_p_date = explode("to", $_POST['sampleReceivedDate']);
-     if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
-          $sSampleReceivedDate = DateUtility::isoDateFormat(trim($s_p_date[0]));
-     }
-     if (isset($s_p_date[1]) && trim($s_p_date[1]) != "") {
-          $eSampleReceivedDate = DateUtility::isoDateFormat(trim($s_p_date[1]));
-     }
-}
+[$sSampleReceivedDate, $eSampleReceivedDate] = DateUtility::convertDateRange($_POST['sampleReceivedDate'] ?? '');
 /* Sample type filter */
 if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
      $sWhere[] =  ' vl.sample_type IN (' . $_POST['sampleType'] . ')';
