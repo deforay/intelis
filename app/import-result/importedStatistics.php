@@ -14,12 +14,11 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$arr = $general->getGlobalConfig();
+$allowImportingNonMatchingSamples = $general->getGlobalConfig('import_non_matching_sample');
 
 $importedBy = $_SESSION['userId'];
 
-$import_decided = (isset($arr['import_non_matching_sample']) && $arr['import_non_matching_sample'] == 'no') ? 'INNER JOIN' : 'LEFT JOIN';
-
+$joinTypeWithTestTable = !empty($allowImportingNonMatchingSamples) && $allowImportingNonMatchingSamples == 'no' ? 'INNER JOIN' : 'LEFT JOIN';
 
 $tQuery = "SELECT `module` FROM `temp_sample_import` WHERE `imported_by` =? limit 1";
 

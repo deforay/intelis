@@ -14,12 +14,12 @@ $tsQuery = "SELECT COUNT(temp_sample_id) AS totalCount,
             SUM(CASE WHEN tsr.result = 'positive' THEN 1 ELSE 0 END) AS positive,
             SUM(CASE WHEN tsr.result = 'negative' THEN 1 ELSE 0 END) AS negative,
             SUM(CASE WHEN tsr.result = 'indeterminate' THEN 1 ELSE 0 END) AS indeterminate
-            FROM temp_sample_import as tsr $import_decided form_covid19 as vl ON vl.sample_code=tsr.sample_code
+            FROM temp_sample_import as tsr $joinTypeWithTestTable form_covid19 as vl ON vl.sample_code=tsr.sample_code
             WHERE  imported_by ='$importedBy' ";
 $tsResult = $db->rawQuery($tsQuery);
 
 //set print query
-$hQuery = "SELECT hsr.sample_code FROM hold_sample_import as hsr $import_decided form_covid19 as vl ON vl.sample_code=hsr.sample_code";
+$hQuery = "SELECT hsr.sample_code FROM hold_sample_import as hsr $joinTypeWithTestTable form_covid19 as vl ON vl.sample_code=hsr.sample_code";
 $hResult = $db->rawQuery($hQuery);
 $holdSample = [];
 if ($hResult) {
@@ -28,7 +28,7 @@ if ($hResult) {
     }
 }
 $saQuery = "SELECT tsr.sample_code
-            FROM temp_sample_import as tsr $import_decided form_covid19 as vl ON vl.sample_code=tsr.sample_code
+            FROM temp_sample_import as tsr $joinTypeWithTestTable form_covid19 as vl ON vl.sample_code=tsr.sample_code
                 WHERE  imported_by ='$importedBy' ";
 $saResult = $db->rawQuery($saQuery);
 $sampleCode = [];
@@ -82,8 +82,7 @@ unset($_SESSION['controllertrack']);
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table aria-describedby="table" id="vlRequestDataTable"
-                            class="table table-bordered table-striped" aria-hidden="true">
+                        <table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
                                 <tr>
                                     <th style="width: 13%;">No. of Results imported</th>
@@ -116,12 +115,10 @@ unset($_SESSION['controllertrack']);
                             </tbody>
                         </table>
                     </div>
-                    <table aria-describedby="table" class="table" aria-hidden="true"
-                        style="margin-left:1%;margin-top:30px;width: 75%;">
+                    <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:30px;width: 75%;">
                         <tr>
                             <td>
-                                <a href="/covid-19/results/covid-19-print-results.php"
-                                    class="btn btn-success btn-sm">Continue to Print Results</a>
+                                <a href="/covid-19/results/covid-19-print-results.php" class="btn btn-success btn-sm">Continue to Print Results</a>
                             </td>
                         </tr>
 
@@ -144,10 +141,10 @@ unset($_SESSION['controllertrack']);
         $path = '/covid-19/results/generate-result-pdf.php';
         ?>
         $.post("<?php echo $path; ?>", {
-            source: 'print',
-            id: ''
-        },
-            function (data) {
+                source: 'print',
+                id: ''
+            },
+            function(data) {
                 if (data == "" || data == null || data == undefined) {
                     $.unblockUI();
                     alert("<?= _("Unable to generate download"); ?>");

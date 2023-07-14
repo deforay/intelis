@@ -127,17 +127,7 @@ $sQuery = "SELECT vl.*, f.*, l.facility_name as lab_name, rtbr.result as lamResu
 [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
 [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 
-$testedStartDate = '';
-$testedEndDate = '';
-if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
-     $s_c_date = explode("to", $_POST['sampleTestedDate']);
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $testedStartDate = DateUtility::isoDateFormat(trim($s_c_date[0]));
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $testedEndDate = DateUtility::isoDateFormat(trim($s_c_date[1]));
-     }
-}
+[$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
      $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';

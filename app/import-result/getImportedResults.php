@@ -6,12 +6,6 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Utilities\DateUtility;
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-
-
-
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
@@ -49,10 +43,15 @@ if ($module == 'vl') {
 
 
 
-$configQuery = "SELECT `value` FROM global_config WHERE name ='import_non_matching_sample'";
-$configResult = $db->query($configQuery);
-//$import_decided = (isset($configResult[0]['value']) && $configResult[0]['value'] == 'no')?'INNER JOIN':'LEFT JOIN';
-$import_decided = 'LEFT JOIN';
+$allowImportingNonMatchingSamples = $general->getGlobalConfig('import_non_matching_sample');
+if (!empty($allowImportingNonMatchingSamples) && $allowImportingNonMatchingSamples == 'no') {
+    $sql = "DELETE t
+            FROM temp_sample_import t
+            LEFT JOIN $mainTableName f ON t.sample_code = f.sample_code
+            WHERE t.imported_by = ? AND f.sample_code IS NULL;";
+    $db->rawQuery($sql, [$importedBy]);
+}
+$joinTypeWithTestTable = 'LEFT JOIN';
 
 $dtsQuery = "SELECT SQL_CALC_FOUND_ROWS tsr.temp_sample_id,
                 tsr.module,tsr.sample_code,tsr.sample_details,
@@ -67,24 +66,23 @@ $dtsQuery = "SELECT SQL_CALC_FOUND_ROWS tsr.temp_sample_id,
                     rsrr.rejection_reason_name,
                     tsr.sample_type,tsr.result,
                     tsr.result_status,ts.status_name
-                    FROM temp_sample_import as tsr $import_decided $mainTableName as vl
-                    ON vl.sample_code=tsr.sample_code
+                    FROM temp_sample_import as tsr
+                    $joinTypeWithTestTable $mainTableName as vl ON vl.sample_code=tsr.sample_code
                     LEFT JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                     LEFT JOIN $rejectionTableName as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
                     INNER JOIN r_sample_status as ts ON ts.status_id=tsr.result_status";
 
-if (isset($configResult[0]['value']) && $configResult[0]['value'] == 'no') {
+if (isset($allowImportingNonMatchingSamples) && $allowImportingNonMatchingSamples == 'no') {
     //check matched samples avaiable or not
     $sampleQuery = "SELECT tsr.temp_sample_id,vl.sample_collection_date
-    FROM temp_sample_import as tsr $import_decided $mainTableName as vl
+    FROM temp_sample_import as tsr
+    $joinTypeWithTestTable $mainTableName as vl
     ON vl.sample_code=tsr.sample_code";
     $sampleResultResult = $db->rawQuery($sampleQuery);
-    if (count($sampleResultResult) > 0) {
-        // Do Nothing
-    } else {
+    if (empty($sampleResultResult)) {
         $db = $db->where('sample_type', 'S');
         $delId = $db->delete($tableName);
-        $import_decided = 'LEFT JOIN';
+        $joinTypeWithTestTable = 'LEFT JOIN';
         $dtsQuery = "SELECT
                     SQL_CALC_FOUND_ROWS tsr.temp_sample_id,tsr.sample_code,
                     tsr.sample_details,tsr.result_value_absolute,
@@ -95,8 +93,8 @@ if (isset($configResult[0]['value']) && $configResult[0]['value'] == 'no') {
                     tsr.lot_expiration_date,tsr.batch_code,
                     fd.facility_name,rsrr.rejection_reason_name,tsr.sample_type,
                     tsr.result,tsr.result_status,ts.status_name
-                    FROM temp_sample_import as tsr $import_decided
-                    $mainTableName as vl ON vl.sample_code=tsr.sample_code
+                    FROM temp_sample_import as tsr
+                    $joinTypeWithTestTable $mainTableName as vl ON vl.sample_code=tsr.sample_code
                     LEFT JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                     LEFT JOIN $rejectionTableName as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
                     INNER JOIN r_sample_status as ts ON ts.status_id=tsr.result_status";

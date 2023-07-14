@@ -92,7 +92,7 @@ class UsersService
         // on the left put intermediate/inner file, on the right put the file
         // which has entry in privileges table.
         $sharedPrivileges = [
-            '/import-result/imported-results.php' => '/import-result/import-file.php',
+            '/import-result/imported-results.php' => '/import-result/import-file.php?t=vl',
             '/import-result/importedStatistics.php' => '/import-result/import-file.php',
             'mapTestType.php' => 'addFacility.php',
             'add-province.php' => 'province-details.php',
