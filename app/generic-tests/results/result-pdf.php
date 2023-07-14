@@ -319,7 +319,7 @@ if (!empty($requestResult)) {
 
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $patientFname . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['patient_id'] . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['test_reason_name']) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['test_reason']) . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;"></td>';
           $html .= '</tr>';
           $html .= '</table>';
