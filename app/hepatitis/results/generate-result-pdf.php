@@ -132,7 +132,7 @@ class MYPDF extends TCPDF
 				if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
 					$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
 					$this->Image($imageFilePath, 16, 13, 15, '', '', '', 'T');
-				} else if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+				} elseif (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
 					$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
 					$this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T');
 				}
@@ -142,13 +142,10 @@ class MYPDF extends TCPDF
 				$this->Image($imageFilePath, 180, 13, 15, '', '', '', 'T');
 			}
 
-			// $this->SetFont('helvetica', 'B', 7);
-			// $this->writeHTMLCell(30,0,16,28,$this->text, 0, 0, 0, true, 'A', true);(this two lines comment out for drc)
 			$this->SetFont('helvetica', '', 14);
 			$this->writeHTMLCell(0, 0, 10, 9, 'MINISTERE DE LA SANTE PUBLIQUE', 0, 0, 0, true, 'C');
 			if ($this->text != '') {
 				$this->SetFont('helvetica', '', 12);
-				//        $this->writeHTMLCell(0,0,10,16,'PROGRAMME NATIONAL DE LUTTE CONTRE LE SIDA ET IST', 0, 0, 0, true, 'C', true);
 				$this->writeHTMLCell(0, 0, 10, 16, strtoupper($this->text), 0, 0, 0, true, 'C');
 				$thirdHeading = '23';
 				$fourthHeading = '28';
