@@ -198,15 +198,13 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
           $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $startDate . '" AND DATE(vl.sample_collection_date) <= "' . $endDate . '"';
      }
 }
-
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
-     if (trim($labStartDate) == trim($labEnddate)) {
+     if (trim($labStartDate) == trim($labEndDate)) {
           $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) like "' . $labStartDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $labEnddate . '"';
      }
 }
-
 if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
      if (trim($testedStartDate) == trim($testedEndDate)) {
           $sWhere[] = ' DATE(vl.sample_tested_datetime) like "' . $testedStartDate . '"';
@@ -357,7 +355,6 @@ if (!empty($sOrder)) {
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
 $_SESSION['vlRequestQuery'] = $sQuery;
-
 [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
 
 $_SESSION['vlRequestQueryCount'] = $resultCount;

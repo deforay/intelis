@@ -144,8 +144,7 @@ $sQuery = "SELECT vl.*, f.*,
 
 //echo $sQuery;die;
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-[$labStartDate, $labStartDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
-
+[$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
 [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
@@ -160,7 +159,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 }
 
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
-     if (trim($labStartDate) == trim($labEnddate)) {
+     if (trim($labStartDate) == trim($labEndDate)) {
           $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) = "' . $labStartDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $labEnddate . '"';

@@ -4859,3 +4859,6 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remot
 -- Amit 13-Jul-2023 version 5.2.0
 UPDATE `system_config` SET `value` = '5.2.0' WHERE `system_config`.`name` = 'sc_version';
 DELETE FROM `resources` WHERE `resource_id` = 'import-results';
+
+-- Jeyabanu 14-Jul-2023
+ALTER TABLE `privileges` ADD `shared_privileges` JSON NULL DEFAULT NULL AFTER `privilege_name`;

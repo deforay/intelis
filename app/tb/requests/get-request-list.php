@@ -124,8 +124,8 @@ $sQuery = "SELECT vl.*, f.*, l.facility_name as lab_name, rtbr.result as lamResu
           LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-
-[$labStartDate, $labStartDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
+[$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
+[$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 
 [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 
@@ -140,7 +140,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
      }
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
-     if (trim($labStartDate) == trim($labEnddate)) {
+     if (trim($labStartDate) == trim($labEndDate)) {
           $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $labStartDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $labEnddate . '"';

@@ -171,23 +171,10 @@ LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
 INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
 
-$start_date = '';
-$end_date = '';
 $t_start_date = '';
 $t_end_date = '';
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-
-if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-     $s_t_date = explode("to", $_POST['sampleTestDate']);
-     //print_r($s_t_date);die;
-     if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $t_start_date = DateUtility::isoDateFormat(trim($s_t_date[0]));
-     }
-     if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $t_end_date = DateUtility::isoDateFormat(trim($s_t_date[1]));
-     }
-}
-
+[$t_start_date, $t_end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
      $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }

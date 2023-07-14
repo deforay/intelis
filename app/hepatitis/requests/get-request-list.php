@@ -147,7 +147,7 @@ $sQuery = "SELECT vl.*,
                LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-[$labStartDate, $labStartDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
+[$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
 [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {

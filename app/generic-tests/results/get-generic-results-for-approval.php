@@ -118,14 +118,11 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM form_generic as vl
           LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id=vl.implementing_partner";
 
 //echo $sQuery;die;
-$start_date = '';
-$end_date = '';
-[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-
 
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
      $sWhere[] =  '  b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
 }
+[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
      if (trim($start_date) == trim($end_date)) {
           $sWhere[] = '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
