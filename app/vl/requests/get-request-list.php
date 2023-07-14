@@ -402,7 +402,7 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['batch_code'];
      $row[] = $aRow['patient_art_no'];
      $row[] = trim(implode(" ", array($patientFname, $patientMname, $patientLname)));
-     $row[] = $aRow['lab_name']);
+     $row[] = $aRow['lab_name'];
      $row[] = $aRow['facility_name'];
      $row[] = $aRow['facility_state'];
      $row[] = $aRow['facility_district'];
