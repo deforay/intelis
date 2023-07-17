@@ -46,6 +46,10 @@ if (!empty($text) && $text != "") {
 if(!empty($_GET['status'])){
     $cQuery .= " AND " . $_GET['status'] . " like 'active' ";
 }
+
+if(!empty($_GET['group'])){
+    $cQuery .= " GROUP BY '" . $_GET['group'] . "'";
+}
 if (!empty($limit) && $limit > 0) {
     $cQuery .= " limit " . $limit;
 }
