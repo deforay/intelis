@@ -46,7 +46,7 @@ try {
     if ($_POST['value'] != '') {
         for ($i = 0; $i < count($id); $i++) {
             $sQuery = "SELECT * FROM temp_sample_import
-                        WHERE imported_by = ? AND temp_sample_id= ?";
+                        WHERE  imported_by = ? AND temp_sample_id= ?";
             $rResult = $db->rawQuery($sQuery, [$importedBy, $id[$i]]);
             $fileName = $rResult[0]['import_machine_file_name'];
 
