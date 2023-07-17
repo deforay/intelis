@@ -286,10 +286,46 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		if (empty($_SESSION['instanceFacilityName'])) {
 			?> showModal('/addInstanceDetails.php', 900, 420);
 		<?php } ?>
-
-
 	});
 
+	function editableSelect(id, _fieldName, table, _placeholder){
+		$("#" + id).select2({
+			placeholder: _placeholder,
+			minimumInputLength: 0,
+			width: '100%',
+			allowClear: true,
+			id: function(bond) {
+				return bond._id;
+			},
+			ajax: {
+				placeholder: "Type one or more character to search",
+				url: "/includes/get-data-list-for-generic.php",
+				dataType: 'json',
+				delay: 250,
+				data: function(params) {
+					return {
+						fieldName : _fieldName,
+						tableName: table,
+						q: params.term, // search term
+						page: params.page
+					};
+				},
+				processResults: function(data, params) {
+					params.page = params.page || 1;
+					return {
+						results: data.result,
+						pagination: {
+							more: (params.page * 30) < data.total_count
+						}
+					};
+				},
+				//cache: true
+			},
+			escapeMarkup: function(markup) {
+				return markup;
+			}
+		});
+	}
 </script>
 </body>
 

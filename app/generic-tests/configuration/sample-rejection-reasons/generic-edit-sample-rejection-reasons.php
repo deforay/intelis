@@ -50,7 +50,7 @@ $rsnInfo = $db->query($rsnQuery);
 								<div class="form-group">
 									<label for="rejectionType" class="col-lg-4 control-label">Rejection Type</label>
 									<div class="col-lg-7">
-										<select class="form-control select2 isRequired" id="rejectionType" name="rejectionType" placeholder="Rejection Type" title="Please enter Rejection Type">
+										<select class="form-control select2 editableSelect" id="rejectionType" name="rejectionType" placeholder="Rejection Type" title="Please enter Rejection Type">
 											<?= $general->generateSelectOptions($rejReaons, strtolower($rsnInfo[0]['rejection_type']), '-- Select --'); ?>
 										</select>
 									</div>
@@ -103,6 +103,7 @@ $rsnInfo = $db->query($rsnQuery);
 		$(".select2").select2({
 			tags: true
 		});
+		editableSelect('rejectionType', 'rejection_type', 'r_generic_sample_rejection_reasons', 'Rejection type');
 	});
 
 	function validateNow() {

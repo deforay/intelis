@@ -608,7 +608,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 													title="Veuillez choisir la raison du rejet" <?php echo $labFieldDisabled; ?> <option value="">-- Sélectionner --</option>
 													<option value="">-- Sélectionner --</option>
 													<?php foreach ($rejectionTypeResult as $type) { ?>
-														<optgroup label="<?php echo ($type['rejection_type']); ?>">
+														<optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
 															<?php
 															foreach ($rejectionResult as $reject) {
 																if ($type['rejection_type'] == $reject['rejection_type']) { ?>

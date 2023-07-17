@@ -2,7 +2,6 @@
 
 
 require_once APPLICATION_PATH . '/header.php';
-$rejReaons = $general->getRejectionReasons('vl');
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -38,10 +37,9 @@ $rejReaons = $general->getRejectionReasons('vl');
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="rejectionType" class="col-lg-4 control-label"><?php echo _("Rejection Type"); ?></label>
+									<label for="rejectionType" class="col-lg-4 control-label"><?php echo _("Rejection Type"); ?> <em class="fas fa-edit"></em> </label>
 									<div class="col-lg-7">
-										<select class="form-control select2" id="rejectionType" name="rejectionType" placeholder="<?php echo _('Rejection Type'); ?>" title="<?php echo _('Please enter Rejection Type'); ?>">
-											<?= $general->generateSelectOptions($rejReaons, null, _("-- Select --")); ?>
+										<select class="form-control select2 editableSelect" id="rejectionType" name="rejectionType" placeholder="<?php echo _('Rejection Type'); ?>" title="<?php echo _('Please enter Rejection Type'); ?>">
 										</select>
 									</div>
 								</div>
@@ -93,6 +91,7 @@ $rejReaons = $general->getRejectionReasons('vl');
 		$(".select2").select2({
 			tags: true
 		});
+		editableSelect('rejectionType', 'rejection_type', 'r_vl_sample_rejection_reasons', 'Rejection type');
 	});
 
 	function validateNow() {
