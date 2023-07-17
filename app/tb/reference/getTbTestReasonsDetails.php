@@ -1,8 +1,14 @@
 <?php
+use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
+use App\Utilities\DateUtility;
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 $tableName = "r_tb_test_reasons";
 $primaryKey = "test_reason_id";
@@ -92,7 +98,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * Get data to display
         */
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM r_tb_test_reasons";
+$sQuery = "SELECT * FROM r_tb_test_reasons";
 
 if (!empty($sWhere)) {
     $sWhere = ' where ' . count($sWhere);
@@ -107,22 +113,16 @@ if (!empty($sOrder)) {
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//die($sQuery);
-// echo $sQuery;
-$rResult = $db->rawQuery($sQuery);
-// print_r($rResult);
-/* Data set length after filtering */
 
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
 
 /*
          * Output
         */
 $output = array(
     "sEcho" => intval($_POST['sEcho']),
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
+    "iTotalRecords" => $resultCount,
+    "iTotalDisplayRecords" => $resultCount,
     "aaData" => array()
 );
 

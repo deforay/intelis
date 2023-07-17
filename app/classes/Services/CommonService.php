@@ -39,12 +39,14 @@ class CommonService
                 $queryResult = $this->db->rawQuery($sql, $params);
                 $count = count($queryResult);
             }
+            if($count==""){
+                $count=0;
+            }
             return [$queryResult, $count];
         } catch (Exception $e) {
             throw new SystemException($e->getMessage());
         }
     }
-
 
 
 

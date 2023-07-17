@@ -126,7 +126,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * SQL queries
           * Get data to display
           */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS
+$sQuery = "SELECT 
           vl.tb_id,
           vl.sample_code,
           vl.remote_sample_code,
@@ -273,24 +273,17 @@ if (!empty($sOrder)) {
 
 $_SESSION['tbResultQuery'] = $sQuery;
 
-if (isset($sLimit) && isset($sOffset)) {
-     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-}
-$rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering */
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
 
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
-
-$_SESSION['tbResultQueryCount'] = $iTotal;
+$_SESSION['tbResultQueryCount'] = $resultCount;
 
 /*
           * Output
           */
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
-     "iTotalRecords" => $iTotal,
-     "iTotalDisplayRecords" => $iFilteredTotal,
+     "iTotalRecords" => $resultCount,
+     "iTotalDisplayRecords" => $resultCount,
      "aaData" => array()
 );
 

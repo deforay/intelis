@@ -128,7 +128,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * Get data to display
           */
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, f.*, ts.status_name, b.batch_code
+$sQuery = "SELECT vl.*, f.*, ts.status_name, b.batch_code
             FROM form_tb as vl
             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
             LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
@@ -199,23 +199,14 @@ $_SESSION['tbRequestSearchResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//echo $sQuery; die;
-$rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering
-$aResultFilterTotal = $db->rawQuery("SELECT vl.tb_id FROM form_tb as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere");
-$iFilteredTotal = count($aResultFilterTotal);
 
-/* Total data set length
-$aResultTotal =  $db->rawQuery("SELECT COUNT(tb_id) as total FROM form_tb as vl  " . $sFilter);
-$iTotal = $aResultTotal[0]['total'];*/
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
 
-$_SESSION['tbRequestSearchResultQueryCount'] = $iTotal;
+$_SESSION['tbRequestSearchResultQueryCount'] = $resultCount;
 $output = array(
     "sEcho" => intval($_POST['sEcho']),
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
+    "iTotalRecords" => $resultCount,
+    "iTotalDisplayRecords" => $resultCount,
     "aaData" => array()
 );
 $editRequest = false;

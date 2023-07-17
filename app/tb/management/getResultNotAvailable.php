@@ -113,7 +113,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
  * SQL queries
  * Get data to display
  */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,
+$sQuery = "SELECT vl.*,
             f.*, s.*, 
             fd.facility_name as labName,
             ts.status_name FROM form_tb as vl
@@ -174,30 +174,24 @@ if (!empty($sWhere)) {
     $sWhere = ' AND ' . implode(" AND ", $sWhere);
     $sQuery = $sQuery . $sWhere;
 }
-$sQuery = $sQuery . ' group by vl.tb_id';
+
 if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }
 $_SESSION['resultNotAvailable'] = $sQuery;
 
-if (isset($sLimit) && isset($sOffset)) {
-    $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-}
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
 
-// echo $sQuery;die;
-$rResult = $db->rawQuery($sQuery);
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
-$_SESSION['resultNotAvailableCount'] = $iTotal;
+$_SESSION['resultNotAvailableCount'] = $resultCount;
 
 /*
  * Output
  */
 $output = array(
     "sEcho" => intval($_POST['sEcho']),
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
+    "iTotalRecords" => $resultCount,
+    "iTotalDisplayRecords" => $resultCount,
     "aaData" => array()
 );
 
