@@ -147,6 +147,7 @@ class ApiService
         }
         $query .= $whereStr . ' GROUP BY facility_name ORDER BY facility_name ASC ';
         $result = $this->db->rawQuery($query);
+        $response = [];
         foreach ($result as $key => $row) {
             // $condition1 = " province_name like '" . $row['province_name'] . "%'";
             // $condition2 = " (facility_state like '" . $row['province_name'] . "%' OR facility_district_id like )";
@@ -193,8 +194,9 @@ class ApiService
         }
 
         if (!$module) {
+            $$activeModule = str_replace(",", "','", $activeModule);
             if (!empty($activeModule)) {
-                $where[] = " tl.test_type IN (" . $activeModule . ")";
+                $where[] = " tl.test_type IN ('" . $activeModule . "')";
             }
         }
 

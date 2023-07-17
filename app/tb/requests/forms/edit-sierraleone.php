@@ -513,7 +513,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 												<select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the reason for rejection">
 													<option value="">-- Select --</option>
 													<?php foreach ($rejectionTypeResult as $type) { ?>
-														<optgroup label="<?php echo ($type['rejection_type']); ?>">
+														<optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
 															<?php
 															foreach ($rejectionResult as $reject) {
 																if ($type['rejection_type'] == $reject['rejection_type']) { ?>

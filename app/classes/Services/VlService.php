@@ -130,7 +130,6 @@ class VlService extends AbstractTestService
     {
         return once(function () use ($result, $unit, $defaultLowVlResultText) {
             $finalResult = $vlResult = trim(htmlspecialchars_decode($result));
-            //$vlResult = strtolower($vlResult);
             $vlResult = str_ireplace(['c/ml', 'cp/ml', 'copies/ml', 'cop/ml', 'copies'], '', $vlResult);
             $vlResult = str_ireplace('-', '', $vlResult);
             $vlResult = trim(str_ireplace(['hiv1 detected', 'hiv1 notdetected'], '', $vlResult));
@@ -177,8 +176,8 @@ class VlService extends AbstractTestService
             $result = "Target Not Detected";
         }
 
-        $result = strtolower($result);
-        switch ($result) {
+        $strToLowerresult = strtolower($result);
+        switch ($strToLowerresult) {
             case 'bdl':
             case '< 839':
                 $vlResult = $txtVal = 'Below Detection Limit';

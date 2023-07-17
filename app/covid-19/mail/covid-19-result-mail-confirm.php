@@ -85,7 +85,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($_POST['
       $pdf->setPageOrientation('L');
       // set document information
       $pdf->SetCreator(PDF_CREATOR);
-      $pdf->SetTitle('Vl Result Mail');
+      $pdf->SetTitle('Result Mail');
       //$pdf->SetSubject('TCPDF Tutorial');
       //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
 
@@ -121,7 +121,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($_POST['
       for ($f = 0; $f < count($filedGroup); $f++) {
          if ($filedGroup[$f] == 'Province') {
             $filedGroup[$f] = 'Province/State';
-         } else if ($filedGroup[$f] == 'District Name') {
+         } elseif ($filedGroup[$f] == 'District Name') {
             $filedGroup[$f] = 'District/County';
          }
          $pdfContent .= '<td style="border:1px solid #333;"><strong>' . $filedGroup[$f] . '</strong></td>';

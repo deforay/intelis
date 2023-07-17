@@ -34,10 +34,11 @@ try {
     $instanceResult = $db->query($instanceQuery);
     $result = '';
     $id = explode(",", $_POST['value']);
+    $totalIds = count($id);
     $status = explode(",", $_POST['status']);
     $rejectedReasonId = explode(",", $_POST['rejectReasonId']);
     if ($_POST['value'] != '') {
-        for ($i = 0; $i < count($id); $i++) {
+        for ($i = 0; $i < $totalIds; $i++) {
             $sQuery = "SELECT * FROM temp_sample_import WHERE imported_by =? AND temp_sample_id= ?";
             $rResult = $db->rawQuery($sQuery, [$importedBy, $id[$i]]);
             $fileName = $rResult[0]['import_machine_file_name'];

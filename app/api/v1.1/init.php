@@ -124,6 +124,33 @@ $data['nationalityList'] = $nationalityList;
 $data['labTechniciansList'] = $app->generateSelectOptions($labTechniciansList);
 $data['sampleStatusList'] = $app->generateSelectOptions($statusList);
 
+$rejectionReason = [];
+$modules = SYSTEM_CONFIG['modules'];
+unset($modules['common']);
+
+foreach($modules as $module=>$status){
+    if($status){
+        $module = ($module == 'generic-tests')?'generic':$module;
+    
+        $condition = " rejection_reason_status ='active' ";
+        if ($updatedDateTime) {
+            $condition .= " AND updated_datetime >= '$updatedDateTime'";
+        }
+        $rejectionTypeResult = $general->getDataByTableAndFields('r_'.$module.'_sample_rejection_reasons', array('rejection_type'), false, $condition, 'rejection_type');
+        foreach ($rejectionTypeResult as $key => $type) {
+            $rejectionReason[$module][$key]['show'] = ucwords($type['rejection_type']);
+            $condition = " rejection_reason_status ='active' AND rejection_type LIKE '". $type['rejection_type'] ."'";
+            if ($updatedDateTime) {
+                $condition .= " AND updated_datetime >= '$updatedDateTime'";
+            }
+            $rejectionResult = $general->getDataByTableAndFields('r_'.$module.'_sample_rejection_reasons', array('rejection_reason_id', 'rejection_reason_name'), false, $condition);
+            foreach ($rejectionResult as $subKey => $reject) {
+                $rejectionReason[$module][$key]['reasons'][$subKey]['value'] = $reject['rejection_reason_id'];
+                $rejectionReason[$module][$key]['reasons'][$subKey]['show'] = ($reject['rejection_reason_name']);
+            }
+        }
+    }
+}
 if (
     isset($applicationConfig['modules']['covid19'])
     && $applicationConfig['modules']['covid19'] === true
@@ -210,32 +237,7 @@ if (
     $data['covid19']['qualityList'] = $qualityList;
 
     /* Rejected Reason*/
-    $rejectionTypeQuery = "SELECT DISTINCT rejection_type
-                            FROM r_covid19_sample_rejection_reasons
-                            WHERE rejection_reason_status ='active' ";
-    if ($updatedDateTime) {
-        $rejectionTypeQuery .= " AND updated_datetime >= '$updatedDateTime'";
-    }
-    $rejectionTypeQuery .= " GROUP BY rejection_type";
-    $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
-    $rejectionReason = [];
-    foreach ($rejectionTypeResult as $key => $type) {
-        $rejectionReason[$key]['show'] = ($type['rejection_type']);
-        $rejectionQuery = "SELECT rejection_reason_id,
-                                rejection_reason_name
-                                FROM r_covid19_sample_rejection_reasons
-                                WHERE rejection_reason_status = 'active'
-                                AND rejection_type LIKE ? ";
-        if ($updatedDateTime) {
-            $rejectionQuery .= " AND updated_datetime >= '$updatedDateTime'";
-        }
-        $rejectionResult = $db->rawQuery($rejectionQuery, [$type['rejection_type']]);
-        foreach ($rejectionResult as $subKey => $reject) {
-            $rejectionReason[$key]['reasons'][$subKey]['value'] = $reject['rejection_reason_id'];
-            $rejectionReason[$key]['reasons'][$subKey]['show'] = ($reject['rejection_reason_name']);
-        }
-    }
-    $data['covid19']['rejectedReasonList'] = $rejectionReason;
+    $data['covid19']['rejectedReasonList'] = $rejectionReason['covid19'];
 
     /* Testing Platform Details */
     $testPlatformList = [];
@@ -297,29 +299,7 @@ if (isset($applicationConfig['modules']['eid']) && $applicationConfig['modules']
     $data['eid']['specimenTypeList'] = $app->generateSelectOptions($eidService->getEidSampleTypes($updatedDateTime));
 
     /* Rejected Reason*/
-    $rejectionTypeQuery = "SELECT DISTINCT rejection_type
-                                    FROM r_eid_sample_rejection_reasons
-                                    WHERE rejection_reason_status ='active' GROUP BY rejection_type";
-    if ($updatedDateTime) {
-        $rejectionQuery .= " AND updated_datetime >= '$updatedDateTime'";
-    }
-    $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
-    $rejectionReason = [];
-    foreach ($rejectionTypeResult as $key => $type) {
-        $rejectionReason[$key]['show'] = ($type['rejection_type']);
-        $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name
-                                FROM r_eid_sample_rejection_reasons
-                                WHERE rejection_reason_status = 'active' AND rejection_type LIKE ? ";
-        if ($updatedDateTime) {
-            $rejectionQuery .= " AND updated_datetime >= '$updatedDateTime'";
-        }
-        $rejectionResult = $db->rawQuery($rejectionQuery, [$type['rejection_type']]);
-        foreach ($rejectionResult as $subKey => $reject) {
-            $rejectionReason[$key]['reasons'][$subKey]['value'] = $reject['rejection_reason_id'];
-            $rejectionReason[$key]['reasons'][$subKey]['show'] = ($reject['rejection_reason_name']);
-        }
-    }
-    $data['eid']['rejectedReasonList'] = $rejectionReason;
+    $data['eid']['rejectedReasonList'] = $rejectionReason['eid'];
 
     /* Testing Platform Details */
     $testPlatformList = [];
@@ -366,31 +346,7 @@ if (isset($applicationConfig['modules']['vl']) && $applicationConfig['modules'][
     ];
 
     /* Rejected Reason*/
-    $rejectionTypeQuery = "SELECT DISTINCT rejection_type
-                                FROM r_vl_sample_rejection_reasons
-                                WHERE rejection_reason_status ='active' ";
-    if ($updatedDateTime) {
-        $rejectionQuery .= " AND updated_datetime >= '$updatedDateTime'";
-    }
-    $rejectionQuery .= " GROUP BY rejection_type";
-    $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
-    $rejectionReason = [];
-    foreach ($rejectionTypeResult as $key => $type) {
-        $rejectionReason[$key]['show'] = ($type['rejection_type']);
-        $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name
-                                FROM r_vl_sample_rejection_reasons
-                                WHERE rejection_reason_status = 'active'
-                                AND rejection_type LIKE ? ";
-        if ($updatedDateTime) {
-            $rejectionQuery .= " AND updated_datetime >= '$updatedDateTime'";
-        }
-        $rejectionResult = $db->rawQuery($rejectionQuery, [$type['rejection_type']]);
-        foreach ($rejectionResult as $subKey => $reject) {
-            $rejectionReason[$key]['reasons'][$subKey]['value'] = $reject['rejection_reason_id'];
-            $rejectionReason[$key]['reasons'][$subKey]['show'] = ($reject['rejection_reason_name']);
-        }
-    }
-    $data['vl']['rejectedReasonList'] = $rejectionReason;
+    $data['vl']['rejectedReasonList'] = $rejectionReason['vl'];
 
     /* Testing Platform Details */
     $testPlatformList = [];
@@ -420,31 +376,7 @@ if (isset($applicationConfig['modules']['tb']) && $applicationConfig['modules'][
     $data['tb']['specimenTypeList'] = $app->generateSelectOptions($tbService->getTbSampleTypes($updatedDateTime));
 
     /* Rejected Reason*/
-    $rejectionTypeQuery = "SELECT DISTINCT rejection_type
-                                FROM r_tb_sample_rejection_reasons
-                                WHERE rejection_reason_status ='active' ";
-    if ($updatedDateTime) {
-        $rejectionTypeQuery .= " AND updated_datetime >= '$updatedDateTime'";
-    }
-    $rejectionTypeQuery .= " GROUP BY rejection_type";
-    $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
-    $rejectionReason = [];
-    foreach ($rejectionTypeResult as $key => $type) {
-        $rejectionReason[$key]['show'] = ($type['rejection_type']);
-        $rejectionQuery = "SELECT rejection_reason_id, rejection_reason_name
-                                FROM r_tb_sample_rejection_reasons
-                                WHERE rejection_reason_status = 'active'\
-                                AND rejection_type LIKE ? ";
-        if ($updatedDateTime) {
-            $rejectionQuery .= " AND updated_datetime >= '$updatedDateTime'";
-        }
-        $rejectionResult = $db->rawQuery($rejectionQuery, [$type['rejection_type']]);
-        foreach ($rejectionResult as $subKey => $reject) {
-            $rejectionReason[$key]['reasons'][$subKey]['value'] = $reject['rejection_reason_id'];
-            $rejectionReason[$key]['reasons'][$subKey]['show'] = ($reject['rejection_reason_name']);
-        }
-    }
-    $data['tb']['rejectedReasonList'] = $rejectionReason;
+    $data['tb']['rejectedReasonList'] = $rejectionReason['tb'];
 
     /* Testing Platform Details */
     $testPlatformList = [];

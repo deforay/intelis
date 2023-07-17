@@ -115,9 +115,9 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testMethod" class="col-lg-4 control-label"><?php echo _("Test Methods"); ?> <span class="mandatory">*</span></label>
+									<label for="testMethod" class="col-lg-4 control-label"><?php echo _("Test Methods"); ?> <span class="mandatory">*</span> <em class="fas fa-edit"></em></label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name='testMethod[]' id='testMethod' title="<?php echo _('Please select the test methods'); ?>" multiple>
+										<select class="form-control isRequired editableSelect" name='testMethod[]' id='testMethod' title="<?php echo _('Please select the test methods'); ?>" multiple>
 
 										</select>
 									</div>
@@ -125,9 +125,9 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testCategory" class="col-lg-4 control-label"><?php echo _("Test Category"); ?> <span class="mandatory">*</span></label>
+									<label for="testCategory" class="col-lg-4 control-label"><?php echo _("Test Category"); ?> <span class="mandatory">*</span> <em class="fas fa-edit"></em></label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name='testCategory' id='testCategory' title="<?php echo _('Please select the test categories'); ?>">
+										<select class="form-control isRequired editableSelect" name='testCategory' id='testCategory' title="<?php echo _('Please select the test categories'); ?>">
 
 										</select>
 									</div>
@@ -148,9 +148,9 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testingReason" class="col-lg-4 control-label"><?php echo _("Reasons for Testing"); ?> <span class="mandatory">*</span></label>
+									<label for="testingReason" class="col-lg-4 control-label"><?php echo _("Reasons for Testing"); ?> <span class="mandatory">*</span> <em class="fas fa-edit"></em></label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name='testingReason[]' id='testingReason' title="<?php echo _('Please select the testing reason'); ?>" multiple>
+										<select class="form-control isRequired editableSelect" name='testingReason[]' id='testingReason' title="<?php echo _('Please select the testing reason'); ?>" multiple>
 
 										</select>
 									</div>
@@ -161,9 +161,9 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testFailureReason" class="col-lg-4 control-label"><?php echo _("Test Failure Reasons"); ?> <span class="mandatory">*</span></label>
+									<label for="testFailureReason" class="col-lg-4 control-label"><?php echo _("Test Failure Reasons"); ?> <span class="mandatory">*</span> <em class="fas fa-edit"></em></label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name='testFailureReason[]' id='testFailureReason' title="<?php echo _('Please select the test failure reason'); ?>" multiple>
+										<select class="form-control isRequired editableSelect" name='testFailureReason[]' id='testFailureReason' title="<?php echo _('Please select the test failure reason'); ?>" multiple>
 
 										</select>
 									</div>
@@ -171,9 +171,9 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="rejectionReason" class="col-lg-4 control-label"><?php echo _("Sample Rejection Reasons"); ?> <span class="mandatory">*</span></label>
+									<label for="rejectionReason" class="col-lg-4 control-label"><?php echo _("Sample Rejection Reasons"); ?> <span class="mandatory">*</span> <em class="fas fa-edit"></em></label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name='rejectionReason[]' id='rejectionReason' title="<?php echo _('Please select the sample rejection reason'); ?>" multiple>
+										<select class="form-control isRequired editableSelect" name='rejectionReason[]' id='rejectionReason' title="<?php echo _('Please select the sample rejection reason'); ?>" multiple>
 
 										</select>
 									</div>

@@ -780,7 +780,7 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                                             <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Raison du rejet">
                                                 <option value="">-- Sélectionner --</option>
                                                 <?php foreach ($rejectionTypeResult as $type) { ?>
-                                                    <optgroup label="<?php echo ($type['rejection_type']); ?>">
+                                                    <optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
                                                         <?php
                                                         foreach ($rejectionResult as $reject) {
                                                             if ($type['rejection_type'] == $reject['rejection_type']) { ?>

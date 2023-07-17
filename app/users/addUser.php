@@ -343,7 +343,7 @@ $ftResult = $db->rawQuery($fQuery);
                const validImageTypes = ['image/jpg', 'image/jpeg', 'image/png'];
                if (!validImageTypes.includes(fileType)) {
                     $('#userSignature').val('');
-                    alert('<?php echo _("Invalid file type. Please upload correct image format like JPG or JPEG or PNG"); ?>');
+                    alert('<?php echo addslashes(_("Invalid file type. Please upload correct image format like JPG or JPEG or PNG")); ?>');
                     return false;
                }
           });

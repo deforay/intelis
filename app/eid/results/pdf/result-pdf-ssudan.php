@@ -351,22 +351,6 @@ if (!empty($requestResult)) {
         $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $sampleDispatchDate . " " . $sampleDispatchTime . '</td>';
         $html .= '</tr>';
 
-        // $html .= '<tr>';
-        // $html .= '<td colspan="3" style="line-height:5px;"></td>';
-        // $html .= '</tr>';
-        // $html .= '<tr>';
-        // $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE REJECTION STATUS</td>';
-        // $html .= '</tr>';
-        // // $html .= '<tr>';
-        // // $html .= '<td colspan="3" style="line-height:10px;"></td>';
-        // // $html .= '</tr>';
-        // $html .= '<tr>';
-        // $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ((!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') ? 'Rejected' : 'Not Rejected') . '</td>';
-        // $html .= '</tr>';
-        // $html .= '<tr>';
-        // $html .= '<td colspan="3" style="line-height:5px;"></td>';
-        // $html .= '</tr>';
-
         $html .= '<tr>';
         $html .= '<td colspan="3">';
         $html .= '<br><br><table style="padding:4px 2px 2px 2px;">';
@@ -378,12 +362,11 @@ if (!empty($requestResult)) {
         }
 
         $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:40px;font-size:18px;font-weight:normal;">&nbsp;&nbsp;Result &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $finalResult . '</td><td >' . $smileyContent . '</td></tr>';
-        //$html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:70px;font-size:18px;font-weight:normal;">&nbsp;&nbsp;Result &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . ($result['result']) . '</td><td >' . $smileyContent . '</td></tr>';
+
         if ($result['reason_for_sample_rejection'] != '') {
             $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Rejection Reason&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
         }
 
-        // $html .= '<tr><td colspan="3"></td></tr>';
         $html .= '</table>';
         $html .= '</td>';
         $html .= '</tr>';

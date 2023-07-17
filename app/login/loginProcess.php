@@ -149,7 +149,7 @@ try {
             if (!empty($_SESSION['facilityMap'])) {
                 $provinceResult = $db->rawQuery("SELECT DISTINCT f.facility_state_id
                                                     FROM facility_details as f
-                                                WHERE f.facility_id IN (" . $_SESSION['facilityMap'] . ")");
+                                                    WHERE f.facility_id IN (" . $_SESSION['facilityMap'] . ")");
                 $_SESSION['mappedProvinces'] = implode(',', array_column($provinceResult, 'facility_state_id'));
             }
             $_SESSION['crossLoginPass'] = null;

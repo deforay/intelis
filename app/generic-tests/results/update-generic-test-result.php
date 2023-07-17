@@ -750,7 +750,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 													<select name="rejectionReason" id="rejectionReason" class="form-control labSection" title="Please choose reason" onchange="checkRejectionReason();">
 														<option value="">-- Select --</option>
 														<?php foreach ($rejectionTypeResult as $type) { ?>
-															<optgroup label="<?php echo ($type['rejection_type']); ?>">
+															<optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
 																<?php
 																foreach ($rejectionResult as $reject) {
 																	if ($type['rejection_type'] == $reject['rejection_type']) { ?>

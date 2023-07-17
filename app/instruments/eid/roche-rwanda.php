@@ -276,7 +276,7 @@ try {
     $resource = 'import-results-manually';
     $general->activityLog($eventType, $action, $resource);
 
-    header("Location:/import-result/imported-results.php");
+    header("Location:/import-result/imported-results.php?t=$type");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

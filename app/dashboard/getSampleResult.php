@@ -93,8 +93,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $samplesOverviewChart = "genericTestsSamplesOverviewChart";
 }
 
-$systemType = $general->getSystemConfig('sc_user_type');
-if ($systemType != 'remoteuser') {
+if ($_SESSION['instanceType'] != 'remoteuser') {
     $whereCondition = " result_status!= " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "  AND ";
 } else {
     $whereCondition = "";

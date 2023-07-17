@@ -37,7 +37,7 @@ $rejectionResult = $db->rawQuery($rejectionQuery);
 
 $rejectionReason = '<option value="">-- Select sample rejection reason --</option>';
 foreach ($rejectionTypeResult as $type) {
-  $rejectionReason .= '<optgroup label="' . ($type['rejection_type']) . '">';
+  $rejectionReason .= '<optgroup label="' . strtoupper($type['rejection_type']) . '">';
   foreach ($rejectionResult as $reject) {
     if ($type['rejection_type'] == $reject['rejection_type']) {
       $rejectionReason .= '<option value="' . $reject['rejection_reason_id'] . '">' . ($reject['rejection_reason_name']) . '</option>';

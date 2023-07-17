@@ -678,17 +678,22 @@ class CommonService
         return 'JSON_SET(COALESCE(' . $column . ', "{}")' . $setString . ')';
     }
 
-    public function getDataByTableAndFields($table, $fields, $option = true, $condition = null)
+    public function getDataByTableAndFields($table, $fields = array(), $option = true, $condition = null, $group = null)
     {
 
         $query = "SELECT " . implode(",", $fields) . " FROM " . $table;
         if ($condition) {
             $query .= " WHERE " . $condition;
         }
-
+        
+        if ($group) {
+            $query .= " GROUP BY " . $group;
+        }
+        $response = array();
         $results = $this->db->rawQuery($query);
         if ($option) {
             foreach ($results as $row) {
+                $fields[1] = $fields[1] ?? $fields[0];
                 $response[$row[$fields[0]]] = $row[$fields[1]];
             }
         } else {
