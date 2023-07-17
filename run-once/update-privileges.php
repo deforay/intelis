@@ -1,12 +1,25 @@
 <?php
+
 use App\Registries\ContainerRegistry;
+
+require_once(__DIR__ . '/../bootstrap.php');
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
 $sharedPrivileges = [
-    '/import-result/imported-results.php' => '/import-result/import-file.php',
-    '/import-result/importedStatistics.php' => '/import-result/import-file.php',
+    '/import-result/imported-results.php?t=vl' => '/import-result/import-file.php?t=vl',
+    '/import-result/imported-results.php?t=eid' => '/import-result/import-file.php?t=eid',
+    '/import-result/imported-results.php?t=covid19' => '/import-result/import-file.php?t=covid19',
+    '/import-result/imported-results.php?t=hepatitis' => '/import-result/import-file.php?t=hepatitis',
+    '/import-result/imported-results.php?t=tb' => '/import-result/import-file.php?t=tb',
+    '/import-result/imported-results.php?t=generic-tests' => '?t=generic-tests',
+    '/import-result/importedStatistics.php?t=vl' => '/import-result/import-file.php?t=vl',
+    '/import-result/importedStatistics.php?t=eid' => '/import-result/import-file.php?t=eid',
+    '/import-result/importedStatistics.php?t=covid19' => '/import-result/import-file.php?t=covid19',
+    '/import-result/importedStatistics.php?t=hepatitis' => '/import-result/import-file.php?t=hepatitis',
+    '/import-result/importedStatistics.php?t=tb' => '/import-result/import-file.php?t=tb',
+    '/import-result/importedStatistics.php?t=generic-tests' => '?t=generic-tests',
     'mapTestType.php' => 'addFacility.php',
     'add-province.php' => 'province-details.php',
     'edit-province.php' => 'province-details.php',
@@ -182,15 +195,20 @@ $sharedTbPrivileges = [
 ];
 $sharedPrivileges = array_merge($sharedPrivileges, $sharedTbPrivileges);
 
-$sharedPrivilegeArray = array();
-$existingValArr = array();
-foreach($sharedPrivileges as $key=>$value)
-{
-	if(!in_array($value,$existingValArr)){
-		$sharedPrivilegeArray = array_keys($sharedPrivileges,$value);
-		$sharedPrivilegeJson = json_encode($sharedPrivilegeArray);
-		$sql = "UPDATE `privileges` set `shared_privileges` = '$sharedPrivilegeJson' where privilege_name = '$value'";
-		$db->rawQuery($sql);
-		array_push($existingValArr,$value);
-	}
+$sql = "UPDATE `privileges` SET `shared_privileges` = NULL";
+$db->rawQuery($sql);
+
+
+$privilegesToUpdate = [];
+foreach ($sharedPrivileges as $key => $value) {
+    if (!isset($privilegesToUpdate[$value])) {
+        $privilegesToUpdate[$value] = [];
+    }
+    $privilegesToUpdate[$value][] = $key;
+}
+
+foreach ($privilegesToUpdate as $privilegeName => $sharedPrivileges) {
+    $sharedPrivilegesJson = json_encode($sharedPrivileges);
+    $sql = "UPDATE `privileges` SET `shared_privileges` = ? WHERE privilege_name = ?";
+    $db->rawQuery($sql, [$sharedPrivilegesJson, $privilegeName]);
 }
