@@ -683,7 +683,7 @@ class CommonService
         if ($condition) {
             $query .= " WHERE " . $condition;
         }
-
+        $response = array();
         $results = $this->db->rawQuery($query);
         if ($option) {
             foreach ($results as $row) {

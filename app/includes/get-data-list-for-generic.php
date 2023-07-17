@@ -16,9 +16,9 @@ $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 
 $text = '';
-$fieldId = $_GET['fieldId'];
-$field = $_GET['fieldName'];
-$table = $_GET['tableName'];
+$fieldId = $_GET['fieldId'] ?? null;
+$field = $_GET['fieldName'] ?? null;
+$table = $_GET['tableName'] ?? null;
 $returnField = (!empty($_GET['returnField'])) ? $_GET['returnField'] : null;
 $limit = (!empty($_GET['limit'])) ? $_GET['limit'] : null;
 $text = (!empty($_GET['q'])) ? $_GET['q'] : null;
