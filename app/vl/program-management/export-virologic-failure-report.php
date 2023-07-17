@@ -79,7 +79,7 @@ if (!empty($sWhere)) {
      $sWhere = implode(" AND ", $sWhere);
      $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }
-$sQuery = $sQuery . ' ORDER BY patient_art_no asc, sample_collection_date asc';
+$sQuery = $sQuery . ' ORDER BY f.facility_name asc, patient_art_no asc, sample_collection_date asc';
 // die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 // Separate the data into two arrays

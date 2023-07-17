@@ -543,7 +543,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                  <select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" onchange="checkRejectionReason();">
                                                                       <option value="">-- Select --</option>
                                                                       <?php foreach ($rejectionTypeResult as $type) { ?>
-                                                                           <optgroup label="<?php echo ($type['rejection_type']); ?>">
+                                                                           <optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
                                                                                 <?php foreach ($rejectionResult as $reject) {
                                                                                      if ($type['rejection_type'] == $reject['rejection_type']) { ?>
                                                                                           <option value="<?php echo $reject['rejection_reason_id']; ?>"><?= $reject['rejection_reason_name']; ?></option>
