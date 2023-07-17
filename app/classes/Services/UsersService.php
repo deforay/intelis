@@ -92,8 +92,18 @@ class UsersService
         // on the left put intermediate/inner file, on the right put the file
         // which has entry in privileges table.
         $sharedPrivileges = [
-            '/import-result/imported-results.php' => '/import-result/import-file.php?t=vl',
-            '/import-result/importedStatistics.php' => '/import-result/import-file.php',
+            '/import-result/imported-results.php?t=vl' => '/import-result/import-file.php?t=vl',
+            '/import-result/imported-results.php?t=eid' => '/import-result/import-file.php?t=eid',
+            '/import-result/imported-results.php?t=covid19' => '/import-result/import-file.php?t=covid19',
+            '/import-result/imported-results.php?t=hepatitis' => '/import-result/import-file.php?t=hepatitis',
+            '/import-result/imported-results.php?t=tb' => '/import-result/import-file.php?t=tb',
+            '/import-result/imported-results.php?t=generic-tests' => '?t=generic-tests',
+            '/import-result/importedStatistics.php?t=vl' => '/import-result/import-file.php?t=vl',
+            '/import-result/importedStatistics.php?t=eid' => '/import-result/import-file.php?t=eid',
+            '/import-result/importedStatistics.php?t=covid19' => '/import-result/import-file.php?t=covid19',
+            '/import-result/importedStatistics.php?t=hepatitis' => '/import-result/import-file.php?t=hepatitis',
+            '/import-result/importedStatistics.php?t=tb' => '/import-result/import-file.php?t=tb',
+            '/import-result/importedStatistics.php?t=generic-tests' => '?t=generic-tests',
             'mapTestType.php' => 'addFacility.php',
             'add-province.php' => 'province-details.php',
             'edit-province.php' => 'province-details.php',

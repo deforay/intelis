@@ -18,7 +18,6 @@ if (!empty($tResult['sample_review_by'])) {
 }
 
 $module = $tResult['module'];
-// echo "<pre>";print_r($module);die;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -29,35 +28,51 @@ $arr = $general->getGlobalConfig();
 $errorInImport = false;
 if ($module == 'vl') {
 
-	$rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_vl_sample_rejection_reasons WHERE rejection_reason_status ='active'";
+	$rejectionTypeQuery = "SELECT DISTINCT rejection_type
+							FROM r_vl_sample_rejection_reasons
+							WHERE rejection_reason_status ='active'";
 	$rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 
 	//sample rejection reason
-	$rejectionQuery = "SELECT * FROM r_vl_sample_rejection_reasons where rejection_reason_status = 'active'";
+	$rejectionQuery = "SELECT *
+							FROM r_vl_sample_rejection_reasons
+							WHERE rejection_reason_status = 'active'";
 	$rejectionResult = $db->rawQuery($rejectionQuery);
 } else if ($module == 'eid') {
 
-	$rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_eid_sample_rejection_reasons WHERE rejection_reason_status ='active'";
+	$rejectionTypeQuery = "SELECT DISTINCT rejection_type
+								FROM r_eid_sample_rejection_reason
+								WHERE rejection_reason_status ='active'";
 	$rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 
 	//sample rejection reason
-	$rejectionQuery = "SELECT * FROM r_eid_sample_rejection_reasons where rejection_reason_status = 'active'";
+	$rejectionQuery = "SELECT *
+						FROM r_eid_sample_rejection_reasons
+						WHERE rejection_reason_status = 'active'";
 	$rejectionResult = $db->rawQuery($rejectionQuery);
 } else if ($module == 'covid19' || $module == 'covid-19') {
 
-	$rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_covid19_sample_rejection_reasons WHERE rejection_reason_status ='active'";
+	$rejectionTypeQuery = "SELECT DISTINCT rejection_type
+								FROM r_covid19_sample_rejection_reasons
+								WHERE rejection_reason_status ='active'";
 	$rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 
 	//sample rejection reason
-	$rejectionQuery = "SELECT * FROM r_covid19_sample_rejection_reasons where rejection_reason_status = 'active'";
+	$rejectionQuery = "SELECT *
+						FROM r_covid19_sample_rejection_reasons
+						WHERE rejection_reason_status = 'active'";
 	$rejectionResult = $db->rawQuery($rejectionQuery);
 } else if ($module == 'hepatitis') {
 
-	$rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_hepatitis_sample_rejection_reasons WHERE rejection_reason_status ='active'";
+	$rejectionTypeQuery = "SELECT DISTINCT rejection_type
+								FROM r_hepatitis_sample_rejection_reasons
+								WHERE rejection_reason_status ='active'";
 	$rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 
 	//sample rejection reason
-	$rejectionQuery = "SELECT * FROM r_hepatitis_sample_rejection_reasons where rejection_reason_status = 'active'";
+	$rejectionQuery = "SELECT *
+						FROM r_hepatitis_sample_rejection_reasons
+						WHERE rejection_reason_status = 'active'";
 	$rejectionResult = $db->rawQuery($rejectionQuery);
 } else {
 	$errorInImport = true;
@@ -276,7 +291,7 @@ foreach ($rejectionTypeResult as $type) {
 								<td style=" width: 10%; ">
 									<br>
 									<input type="hidden" name="print" id="print" />
-									<input type="hidden" name="module" id="module" value="<?= htmlspecialchars($module); ?>" />
+									<input type="hidden" name="module" id="module" value="<?= ($module); ?>" />
 									<input type="button" onclick="submitTestStatus();" value="<?= _("Save"); ?>" class="btn btn-success btn-sm">
 								</td>
 							</tr>
@@ -395,7 +410,7 @@ foreach ($rejectionTypeResult as $type) {
 				var oSettings = this.fnSettings();
 				var iTotalRecords = oSettings.fnRecordsTotal();
 				if (iTotalRecords == 0) {
-					window.location.href = "/import-result/importedStatistics.php";
+					window.location.href = "/import-result/importedStatistics.php?t=<?= $module; ?>";
 				}
 			},
 			"bProcessing": true,
@@ -544,7 +559,7 @@ foreach ($rejectionTypeResult as $type) {
 							convertSearchResultToPdf('');
 						}
 						if (data == 'importedStatistics.php') {
-							window.location.href = "/import-result/importedStatistics.php";
+							window.location.href = "/import-result/importedStatistics.php?t=<?= $module; ?>";
 						}
 						oTable.fnDraw();
 						selectedTests = [];
