@@ -313,7 +313,7 @@ $state = $geolocationService->getProvinces("yes");
 										<div class="tab-pane fade" id="highVlVirologicFailureReport">
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 												<tr>
-													<td><strong><?php echo _("Facility Name"); ?> :<span class="mandatory result-span">*</span></strong></td>
+													<td><strong><?php echo _("Facility Name"); ?> :</strong></td>
 													<td>
 														<select class="form-control vfvlnsfilters" id="vfVlnsfacilityName" name="vfVlnsfacilityName" title="<?php echo _('Please select facility name'); ?>" style="width:220px;">
 															<option value=""><?php echo _('-- Select --'); ?></option>
@@ -1002,10 +1002,6 @@ $state = $geolocationService->getProvinces("yes");
 	});
 
 	function vfVlnsExportInexcel() {
-		if ($('#vfVlnsfacilityName').val() == "" || $('#vfVlnsfacilityName').val() == null) {
-			alert("Please choose facility name.")
-			return false;
-		}
 		$.blockUI();
 		$.post('/vl/program-management/export-virologic-failure-report.php', {
 				sampleCollectionDate: $('#vfVlnsSampleCollectionDate').val(),
