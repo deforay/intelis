@@ -60,7 +60,7 @@ try {
 
                 $result = $general->getDataFromOneFieldAndValue('r_covid19_results', 'result', $rowData['AI']);
                 $resultStatus = $general->getDataFromOneFieldAndValue('r_sample_status', 'status_name', $rowData['AM']);
-                $labTechnician = $usersService->addUserIfNotExists($rowData['AP']);
+                $labTechnician = $usersService->getOrCreateUser($rowData['AP']);
 
                 if (trim($rowData['S']) != '') {
                     $sampleCollectionDate = date('Y-m-d H:i:s', strtotime($rowData['S']));

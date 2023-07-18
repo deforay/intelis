@@ -188,7 +188,7 @@ try {
 
                 /** @var UsersService $usersService */
                 $usersService = ContainerRegistry::get(UsersService::class);
-                $data['sample_review_by'] = $usersService->addUserIfNotExists($d['reviewBy']);
+                $data['sample_review_by'] = $usersService->getOrCreateUser($d['reviewBy']);
             }
 
             $query = "SELECT facility_id, vl_sample_id, result

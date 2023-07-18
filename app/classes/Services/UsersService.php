@@ -165,7 +165,7 @@ class UsersService
         return $this->getAllUsers($facilityMap, 'active', null, $updatedDateTime);
     }
 
-    public function addUserIfNotExists($name, $status = 'inactive', $role = 4)
+    public function getOrCreateUser($name, $status = 'inactive', $role = 4)
     {
         $uQuery = "SELECT `user_id`
                     FROM $this->table
@@ -210,7 +210,7 @@ class UsersService
     public function generateAuthToken($size = 8): string
     {
         return base64_encode($this->commonService->generateUUID() .
-            "-" . $this->commonService->generateRandomString($size));
+            "-" . $this->commonService->generateRandomString($size ?? 8));
     }
 
     public function getUserByUserId(?string $userId = null): ?array

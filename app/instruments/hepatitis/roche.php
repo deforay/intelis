@@ -232,7 +232,7 @@ try {
 
                 /** @var UsersService $usersService */
                 $usersService = ContainerRegistry::get(UsersService::class);
-                $data['sample_review_by'] = $usersService->addUserIfNotExists($d['reviewBy']);
+                $data['sample_review_by'] = $usersService->getOrCreateUser($d['reviewBy']);
             }
 
             $query = "SELECT facility_id,hepatitis_id,hcv_vl_count,hbv_vl_count,hepatitis_test_type, result_status FROM form_hepatitis WHERE sample_code='" . $sampleCode . "'";
