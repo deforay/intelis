@@ -291,7 +291,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
                 $colNo++;
             }
         }
-        $writer = IOFactory::createWriter($excel, 'Xlsx');
+        $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
         $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'Covid-19-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
         $writer->save($filename);
         echo base64_encode($filename);

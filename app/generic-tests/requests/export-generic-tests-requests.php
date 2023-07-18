@@ -286,7 +286,7 @@ if (isset($_SESSION['genericRequestQuery']) && trim($_SESSION['genericRequestQue
 				$colNo++;
 			}
 		}
-		$writer = IOFactory::createWriter($excel, 'Xlsx');
+		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-LAB-TESTS-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(5) . '.xlsx';
 		$writer->save($filename);
 		echo base64_encode($filename);

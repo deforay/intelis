@@ -154,7 +154,7 @@ if (isset($_SESSION['highTbResult']) && trim($_SESSION['highTbResult']) != "") {
                     $colNo++;
                }
           }
-          $writer = IOFactory::createWriter($excel, 'Xlsx');
+          $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-High-TB-Report' . date('d-M-Y-H-i-s') . '.xlsx';
           $writer->save($fileName);
           echo base64_encode($fileName);

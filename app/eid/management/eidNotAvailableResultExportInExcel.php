@@ -124,7 +124,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
             $colNo++;
         }
     }
-    $writer = IOFactory::createWriter($excel, 'Xlsx');
+    $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
     $filename = 'VLSM-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
     $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
     echo $filename;

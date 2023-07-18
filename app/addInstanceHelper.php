@@ -4,7 +4,8 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Utilities\DateUtility;
 use App\Utilities\ImageResizeUtility;
-
+use App\Utilities\MiscUtility;
+use Whoops\Util\Misc;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -77,9 +78,9 @@ try {
     if ($id === true) {
       $_SESSION['instanceFacilityName'] = $_POST['fName'];
       if (isset($_FILES['logo']['name']) && $_FILES['logo']['name'] != "") {
-        if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo")) {
-          mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo", 0777, true);
-        }
+
+        MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo");
+
         $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['logo']['name'], PATHINFO_EXTENSION));
         $string = $general->generateRandomString(6) . ".";
         $imageName = "logo" . $string . $extension;

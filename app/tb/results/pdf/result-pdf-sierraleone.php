@@ -89,11 +89,8 @@ $resultFilename = '';
 
 if (!empty($requestResult)) {
     $_SESSION['rVal'] = $general->generateRandomString(6);
-    $pathFront = (TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal']);
-    if (!file_exists($pathFront) && !is_dir($pathFront)) {
-        mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'], 0777, true);
-        $pathFront = realpath(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
-    }
+    $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
+    \App\Utilities\MiscUtility::makeDirectory($pathFront);
     $pages = [];
     $page = 1;
     foreach ($requestResult as $result) {
@@ -344,24 +341,20 @@ if (!empty($requestResult)) {
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">REASON FOR REQUEST</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;"></td>';
         $html .= '</tr>';
-        $typeOfPatient = implode(',',json_decode($result['patient_type']));
-        $testsRequested = implode(',',json_decode($result['tests_requested']));
+        $typeOfPatient = implode(',', json_decode($result['patient_type']));
+        $testsRequested = implode(',', json_decode($result['tests_requested']));
         $testReason = json_decode($result['reason_for_tb_test']);
         $reason = "";
         $valuesOfReasonArr = [];
-        if(isset($testReason->reason->followup) && ($testReason->reason->followup=="yes"))
-        {
+        if (isset($testReason->reason->followup) && ($testReason->reason->followup == "yes")) {
             $reason = "Follow Up";
             $valuesOfReasonArr = array_keys((array)$testReason->elaboration->followup);
-
+        } elseif (isset($testReason->reason->diagnosis) && $testReason->reason->diagnosis == "yes") {
+            $reason = "Diagnosis";
+            $valuesOfReasonArr = array_keys((array)$testReason->elaboration->diagnosis);
         }
-            elseif(isset($testReason->reason->diagnosis) && $testReason->reason->diagnosis=="yes")
-            {
-                $reason = "Diagnosis";
-                $valuesOfReasonArr = array_keys((array)$testReason->elaboration->diagnosis);
-            }
-            $valuesOfReason = implode(',',$valuesOfReasonArr);
-           
+        $valuesOfReason = implode(',', $valuesOfReasonArr);
+
         $html .= '<tr>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">TB PATIENT CATEGORY</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . (str_replace("-", " ", $typeOfPatient)) . '</td>';
@@ -389,9 +382,9 @@ if (!empty($requestResult)) {
 
         $html .= '<tr>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">CLINICIAN\'S NAME </td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;"> '.$result['requesting_clinician'].'</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;"> ' . $result['requesting_clinician'] . '</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">FACILITY</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">'.$result['facility_name'].'</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $result['facility_name'] . '</td>';
 
         $html .= '</tr>';
 
@@ -410,7 +403,7 @@ if (!empty($requestResult)) {
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">TESTS REQUESTED </td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $testsRequested . '</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">REASON FOR TEST</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $reason . "<br> (" .$valuesOfReason. ')</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $reason . "<br> (" . $valuesOfReason . ')</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';

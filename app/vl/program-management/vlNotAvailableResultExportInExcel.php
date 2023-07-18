@@ -41,9 +41,9 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
     }
     if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
         if (($key = array_search("Patient Name", $headings)) !== false) {
-             unset($headings[$key]);
+            unset($headings[$key]);
         }
-   }
+    }
     $colNo = 1;
 
     $styleArray = array(
@@ -156,7 +156,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
                 $colNo++;
             }
         }
-        $writer = IOFactory::createWriter($excel, 'Xlsx');
+        $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
         $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
         $writer->save($filename);
         echo base64_encode($filename);

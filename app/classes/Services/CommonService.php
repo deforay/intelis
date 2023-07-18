@@ -606,12 +606,9 @@ class CommonService
 
 
             $folderPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api';
-            if (!file_exists($folderPath . DIRECTORY_SEPARATOR . 'requests')) {
-                mkdir($folderPath . DIRECTORY_SEPARATOR . 'requests', 0777, true);
-            }
-            if (!file_exists($folderPath . DIRECTORY_SEPARATOR . 'responses')) {
-                mkdir($folderPath . DIRECTORY_SEPARATOR . 'responses', 0777, true);
-            }
+
+            MiscUtility::makeDirectory($folderPath . DIRECTORY_SEPARATOR . 'requests');
+            MiscUtility::makeDirectory($folderPath . DIRECTORY_SEPARATOR . 'responses');
 
             if (!empty($requestData) && $requestData != '[]') {
                 MiscUtility::zipJson($requestData, "$folderPath/requests/$transactionId.json");
@@ -657,6 +654,9 @@ class CommonService
      */
     public function jsonToSetString(string $json, string $column, array $newData = []): string
     {
+        if (!$this->isJSON($json)) {
+            $json = '[]';
+        }
         $data = json_decode($json, true);
         $setString = '';
 

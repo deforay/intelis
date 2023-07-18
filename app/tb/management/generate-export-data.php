@@ -186,7 +186,7 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 				$colNo++;
 			}
 		}
-		$writer = IOFactory::createWriter($excel, 'Xlsx');
+		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-TB-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
 		$writer->save($filename);
 		echo $filename;

@@ -151,7 +151,7 @@ if (isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm']) 
                     $colNo++;
                }
           }
-          $writer = IOFactory::createWriter($excel, 'Xlsx');
+          $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
           $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Data-Quality-report' . date('d-M-Y-H-i-s') . '.xlsx';
           $writer->save($filename);
           echo base64_encode($filename);

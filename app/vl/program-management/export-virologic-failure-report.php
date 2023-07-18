@@ -96,7 +96,7 @@ $vfData = [];
 $vlnsData = [];
 $patientIds = [];
 $output = [];
-$headings = array(
+$headings = [
      'Patient ID',
      'Facility Name',
      'Facility Code',
@@ -106,7 +106,7 @@ $headings = array(
      'Breastfeeding',
      'Regimen',
      'VL Result'
-);
+];
 // Separate the data into two arrays
 $vfData = [];
 $vlnsData = [];
@@ -213,7 +213,7 @@ foreach (range('A', 'I') as $columnID) {
      $vlnsSheet->getColumnDimension($columnID)->setAutoSize(true);
 }
 
-$writer = IOFactory::createWriter($excel, 'Xlsx');
+$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-HIGH-VL-AND-VIROLOGIC-FAILURE-REPORT-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(5) . '.xlsx';
 $writer->save($filename);
 echo base64_encode($filename);
