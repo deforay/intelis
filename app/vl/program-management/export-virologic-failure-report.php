@@ -32,21 +32,16 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var DateUtility $dateTimeUtil */
 $dateTimeUtil = new DateUtility();
-$headerStyleArray = array(
-     'font' => array(
+$headerStyleArray = [
+     'font' => [
           'bold' => true,
           'size' => '13',
-     ),
-     'alignment' => array(
+     ],
+     'alignment' => [
           'horizontal' => Alignment::HORIZONTAL_CENTER,
           'vertical' => Alignment::VERTICAL_CENTER,
-     ),
-     'borders' => array(
-          'outline' => array(
-               'style' => Border::BORDER_THIN,
-          ),
-     )
-);
+     ]
+];
 $sQuery = "SELECT
                vl.patient_art_no,
                f.facility_name,
