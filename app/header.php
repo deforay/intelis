@@ -222,46 +222,52 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 								}
 
 								foreach ($menu['children'] as $subMenu) {
+									$subMenuHasChildren = false;
+									if ($subMenu['has_children'] == 'yes' && !empty($subMenu['children'])) {
+										$subMenuHasChildren = true;
+									}
 									?>
-										<?php if ($subMenu['has_children'] == 'yes' && !empty($subMenu['children'])) { ?>
-											<li class="sub-menu-li <?= $subMenu['additional_class_names'] ?> ">
-												<a href="<?= $subMenu['link']; ?>">
-													<span class="<?= $subMenu['icon'] ?>"></span>
-													<span>
-														<?= _($subMenu['display_text']); ?>
-													</span>
+
+										<li class="sub-menu-li <?= $subMenu['additional_class_names'] ?> ">
+											<a href="<?= $subMenu['link']; ?>">
+												<span class="<?= $subMenu['icon'] ?>"></span>
+												<span>
+													<?= _($subMenu['display_text']); ?>
+												</span>
+												<?php if ($subMenuHasChildren) { ?>
 													<span class="pull-right-container">
 														<span class="fa-solid fa-angle-left pull-right"></span>
 													</span>
-												</a>
-												<?php if (!empty($subMenu['children'])) { ?>
-													<ul class="sub-menu-li-ul treeview-menu">
-														<?php
-														foreach ($subMenu['children'] as $childMenu) {
-															$innerPages = '';
-															if (!empty($childMenu['inner_pages'])) {
-																$dataInnerPages = explode(',', $childMenu['inner_pages']);
-																$dataInnerPages = implode(';', array_map('base64_encode', $dataInnerPages));
-																$innerPages = 'data-inner-pages="' . $dataInnerPages . '"';
-															}
-														?>
-															<li class="sub-menu-li-ul-li <?= $childMenu['additional_class_names'] ?>">
-																<a class="menu-item" href="<?= $childMenu['link'] ?>" <?= $innerPages; ?>>
-																	<span class="<?= $childMenu['icon'] ?>"></span>
-																	<span class="inner-menu-item-text">
-																		<?= _($childMenu['display_text']); ?>
-																	</span>
-																</a>
-															</li>
-														<?php
-														}
-														?>
-													</ul>
 												<?php } ?>
-											</li>
+											</a>
+											<?php if ($subMenuHasChildren) { ?>
+												<ul class="sub-menu-li-ul treeview-menu">
+													<?php
+													foreach ($subMenu['children'] as $childMenu) {
+														$innerPages = '';
+														if (!empty($childMenu['inner_pages'])) {
+															$dataInnerPages = explode(',', $childMenu['inner_pages']);
+															$dataInnerPages = implode(';', array_map('base64_encode', $dataInnerPages));
+															$innerPages = 'data-inner-pages="' . $dataInnerPages . '"';
+														}
+													?>
+														<li class="sub-menu-li-ul-li <?= $childMenu['additional_class_names'] ?>">
+															<a class="menu-item" href="<?= $childMenu['link'] ?>" <?= $innerPages; ?>>
+																<span class="<?= $childMenu['icon'] ?>"></span>
+																<span class="inner-menu-item-text">
+																	<?= _($childMenu['display_text']); ?>
+																</span>
+															</a>
+														</li>
+													<?php
+													}
+													?>
+												</ul>
+											<?php } ?>
+										</li>
 									<?php
-										}
-									} ?>
+
+								} ?>
 									<?php if ($menu['is_header'] == 'no') { ?>
 									</ul>
 								<?php } ?>

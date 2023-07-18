@@ -27,7 +27,6 @@ class UsersService
 
     public function isAllowed($currentRequest, $privileges = null): bool
     {
-
         $sessionKey = base64_encode(is_string($currentRequest) ? $currentRequest : $currentRequest->getUri());
 
         // If the result is already stored in the session, return it
@@ -38,36 +37,7 @@ class UsersService
         $privileges = $privileges ?? $_SESSION['privileges'] ?? null;
         $isAllowed = false;
         if (!empty($privileges) && !empty($currentRequest)) {
-
-            if ($currentRequest instanceof ServerRequest) {
-                $uri = $currentRequest->getUri();
-                $path = $uri->getPath();
-                $query = $uri->getQuery();
-                // Clean up the URI Path for double slashes or dots
-                $path = preg_replace('/([\/.])\1+/', '$1', $path);
-                $baseFileName = basename($path);
-                $currentRequest = $path . ($query ? '?' . $query : '');
-            } else {
-                $parsedInput = parse_url($currentRequest);
-                $path = $parsedInput['path'];
-                $baseFileName = basename($path);
-            }
-
-            $urlParts = parse_url($currentRequest);
-            $requestArray = [$currentRequest, $baseFileName, $path];
-
-            if (isset($urlParts['query'])) {
-                $queryParams = [];
-                parse_str($urlParts['query'], $queryParams);
-
-                $pathWithoutQuery = $urlParts['path'];
-
-                while (count($queryParams) > 0) {
-                    array_pop($queryParams);
-                    $requestArray[] = $pathWithoutQuery . (count($queryParams) > 0 ? '?' . http_build_query($queryParams) : '');
-                }
-            }
-
+            $requestArray = $this->getRequestArray($currentRequest);
             foreach ($requestArray as $requestUrl) {
                 if (isset($privileges[$requestUrl])) {
                     $isAllowed = true;
@@ -79,6 +49,40 @@ class UsersService
         return $isAllowed;
     }
 
+    private function getRequestArray($currentRequest)
+    {
+        if ($currentRequest instanceof ServerRequest) {
+            $uri = $currentRequest->getUri();
+            $path = $uri->getPath();
+            $query = $uri->getQuery();
+            // Clean up the URI Path for double slashes or dots
+            $path = preg_replace('/([\\/\\.])\\1+/', '$1', $path);
+            $baseFileName = basename($path);
+            $currentRequest = $path . ($query ? '?' . $query : '');
+        } else {
+            $parsedInput = parse_url($currentRequest);
+            $path = $parsedInput['path'];
+            $baseFileName = basename($path);
+        }
+
+        $urlParts = parse_url($currentRequest);
+        $requestArray = [$currentRequest, $baseFileName, $path];
+
+        if (isset($urlParts['query'])) {
+            $queryParams = [];
+            parse_str($urlParts['query'], $queryParams);
+
+            $pathWithoutQuery = $urlParts['path'];
+
+            while (count($queryParams) > 0) {
+                array_pop($queryParams);
+                $requestArray[] = $pathWithoutQuery . (count($queryParams) > 0 ? '?' . http_build_query($queryParams) : '');
+            }
+        }
+
+        return array_unique($requestArray, SORT_REGULAR);
+    }
+
     public function getAllPrivileges(?array $privileges = []): array
     {
         $privileges = !empty($privileges) ? $privileges : array_flip($_SESSION['privileges']);
@@ -88,15 +92,14 @@ class UsersService
 
     public function getSharedPrivileges(): array
     {
-
         $sql = "SELECT privilege_name, shared_privileges FROM privileges";
         $results = $this->db->rawQuery($sql);
         $sharedPrivileges = [];
-    
+
         // Fetch each row from the result set
         foreach ($results as $row) {
             $privileges = json_decode($row['shared_privileges'], true);
-    
+
             foreach ($privileges as $privilege) {
                 $sharedPrivileges[$privilege] = $row['privilege_name'];
             }
@@ -232,7 +235,7 @@ class UsersService
             if (!empty($token)) {
                 $this->db->where('api_token', $token);
                 $this->db->where('status', 'active');
-                $result = $this->db->getOne($this->table, ['user_id']);
+                $result = $this->db->getOne($this->table, 'user_id');
             }
             return !empty($result);
         });
