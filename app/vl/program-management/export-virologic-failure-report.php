@@ -9,7 +9,20 @@ use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
-ini_set('memory_limit', -1);
+
+// Define the style array for border
+$styleArray = [
+     'borders' => [
+          'allBorders' => [
+               'borderStyle' => Border::BORDER_THIN,
+               'color' => ['argb' => '000000'],
+          ],
+     ],
+     'alignment' => [
+          'horizontal' => Alignment::HORIZONTAL_CENTER,
+          'vertical' => Alignment::VERTICAL_CENTER,
+     ],
+];
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -19,7 +32,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var DateUtility $dateTimeUtil */
 $dateTimeUtil = new DateUtility();
-$styleArray = array(
+$headerStyleArray = array(
      'font' => array(
           'bold' => true,
           'size' => '13',
@@ -34,17 +47,18 @@ $styleArray = array(
           ),
      )
 );
-$sQuery = "SELECT vl.patient_art_no, 
-                f.facility_name, 
-                f.facility_code, 
-                vl.patient_age_in_years, 
-                vl.patient_gender, 
-                vl.is_patient_pregnant, 
-                vl.is_patient_breastfeeding,
-                vl.current_regimen, 
-                vl.result 
-            FROM form_vl as vl 
-            LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id";
+$sQuery = "SELECT
+               vl.patient_art_no,
+               f.facility_name,
+               f.facility_code,
+               vl.patient_age_in_years,
+               vl.patient_gender,
+               vl.is_patient_pregnant,
+               vl.is_patient_breastfeeding,
+               vl.current_regimen,
+               vl.result
+          FROM form_vl as vl
+          LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id";
 
 $sWhere[] =  " vl.vl_result_category = 'not suppressed' AND vl.patient_age_in_years IS NOT NULL AND vl.patient_gender IS NOT NULL AND vl.current_regimen IS NOT NULL ";
 
@@ -79,8 +93,8 @@ if (!empty($sWhere)) {
      $sWhere = implode(" AND ", $sWhere);
      $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }
-$sQuery = $sQuery . ' ORDER BY f.facility_name asc, patient_art_no asc, sample_collection_date asc';
-// die($sQuery);
+$sQuery = $sQuery . " ORDER BY f.facility_name asc, patient_art_no asc, sample_collection_date asc";
+
 $rResult = $db->rawQuery($sQuery);
 // Separate the data into two arrays
 $vfData = [];
@@ -102,7 +116,7 @@ $headings = array(
 $vfData = [];
 $vlnsData = [];
 $patientIds = [];
-if(!$rResult){
+if (!$rResult) {
      return null;
 }
 foreach ($rResult as $aRow) {
@@ -134,8 +148,9 @@ $vlnsData = array_combine(range(1, count($vlnsData)), array_values($vlnsData));
 $colNo = 1;
 $vlnsColNo = 1;
 $excel = new Spreadsheet();
-$vfSheet = $excel->getActiveSheet();
-$vlnsSheet = $excel->createSheet();
+$vlnsSheet = $excel->getActiveSheet();
+$vfSheet = $excel->createSheet();
+
 $vfSheet->setTitle('Virologic Failure');
 $vlnsSheet->setTitle('VL - Not Suppressed');
 foreach ($headings as $field => $value) {
@@ -144,38 +159,66 @@ foreach ($headings as $field => $value) {
      $vlnsSheet->setCellValue(Coordinate::stringFromColumnIndex($vlnsColNo) . '1', html_entity_decode($value));
      $vlnsColNo++;
 }
-$vfSheet->getStyle('A1:I1')->applyFromArray($styleArray);
+$vfSheet->getStyle('A1:I1')->applyFromArray($headerStyleArray);
+$currentPatientId = null;
+$startRow = 2; // Start from the second row as the first row is the header
 foreach ($vfData as $rowNo => $rowData) {
-     // Merge cells with the same Patient ID
-     $currentPatientId = null;
-     $startRow = null;
      $colNo = 1;
-     $rRowCount = $rowNo + 1;
+     $rRowCount = $rowNo + 1; // +2 because Excel rows are 1-indexed and the header row
      foreach ($rowData as $field => $value) {
-          $vfSheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode(ucwords($value)));
+          $vfSheet->setCellValue(
+               Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+               html_entity_decode($value)
+          );
           $colNo++;
-          if ($rowData['patient_art_no'] !== $currentPatientId) {
-               if ($startRow !== null) {
-                   // Merge the cells of the previous Patient ID
-                   $newSpreadsheet->getActiveSheet()->mergeCells('A' . $startRow . ':A' . ($index));
-               }
-               $currentPatientId = $rowData['patient_art_no'];
-               $startRow = $index + 2; // +2 because Excel rows are 1-indexed and the header row
-          }
      }
-     // Merge the cells of the last Patient ID
-     $vfSheet->mergeCells('A' . $startRow . ':A' . (count($vfData) + 1));
+     // If the patient ID changes, merge the cells of the previous patient and update the start row and current patient ID
+     if ($rowData['patient_art_no'] !== $currentPatientId && $currentPatientId !== null) {
+          $vfSheet->mergeCells('A' . $startRow . ':A' . ($rRowCount - 1));
+          $startRow = $rRowCount;
+     }
+     $currentPatientId = $rowData['patient_art_no'];
 }
-$vlnsSheet->getStyle('A1:I1')->applyFromArray($styleArray);
+// Merge the cells of the last patient
+$vfSheet->mergeCells('A' . $startRow . ':A' . $rRowCount);
+
+
+// Get the highest row and column numbers
+$highestRow = $vfSheet->getHighestRow(); // e.g. 10
+$highestCol = $vfSheet->getHighestColumn(); // e.g 'F'
+
+// Apply the border style to all cells
+$vfSheet->getStyle('A1:' . $highestCol . $highestRow)->applyFromArray($styleArray);
+
+foreach (range('A', 'I') as $columnID) {
+     $vfSheet->getColumnDimension($columnID)->setAutoSize(true);
+}
+
+$vlnsSheet->getStyle('A1:I1')->applyFromArray($headerStyleArray);
 foreach ($vlnsData as $rowNo => $rowData) {
      $colNo = 1;
      $rRowCount = $rowNo + 1;
      foreach ($rowData as $field => $value) {
-          $vlnsSheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode(ucwords($value)));
+          $vlnsSheet->setCellValue(
+               Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+               html_entity_decode($value)
+          );
           $colNo++;
      }
 }
+
+
+// Get the highest row and column numbers
+$highestRow = $vlnsSheet->getHighestRow(); // e.g. 10
+$highestCol = $vlnsSheet->getHighestColumn(); // e.g 'F'
+
+$vlnsSheet->getStyle('A1:' . $highestCol . $highestRow)->applyFromArray($styleArray);
+
+foreach (range('A', 'I') as $columnID) {
+     $vlnsSheet->getColumnDimension($columnID)->setAutoSize(true);
+}
+
 $writer = IOFactory::createWriter($excel, 'Xlsx');
-$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-HIGH-VL-AND-VIROLOGIC-FAILURE-REPORT' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(5) . '.xlsx';
+$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-HIGH-VL-AND-VIROLOGIC-FAILURE-REPORT-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(5) . '.xlsx';
 $writer->save($filename);
 echo base64_encode($filename);

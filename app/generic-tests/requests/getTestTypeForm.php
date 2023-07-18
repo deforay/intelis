@@ -79,7 +79,7 @@ function getDropDownField($testAttribute, $value, $inputClass, $isRequired, $fie
     return $field;
 }
 
-function getField($testAttribute, $testAttributeId, $value, $inputClass, $sectionClass, $isRequired, $fieldType, $disabled, $inputWidth)
+function getField($testAttribute, $testAttributeId, $value, $inputClass, $sectionClass, $isRequired, $fieldType, $disabled, $inputWidth, $mandatory)
 {
     $fieldDiv = "<div class='col-md-6 $sectionClass'>";
     $fieldDiv .= '<label class="col-lg-5 control-label labels" for="' . $testAttributeId . '">' . $testAttribute['field_name'] . $mandatory . '</label>';
@@ -136,7 +136,7 @@ if (!empty($testTypeAttributes)) {
 
                 $sectionClass = $testAttribute['section'] . 'Input';
 
-                $result[$testAttribute['section']][] = getField($testAttribute, $testAttributeId, $value, $inputClass, $sectionClass, $isRequired, $fieldType, $disabled, $inputWidth);
+                $result[$testAttribute['section']][] = getField($testAttribute, $testAttributeId, $value, $inputClass, $sectionClass, $isRequired, $fieldType, $disabled, $inputWidth, $mandatory);
                 $i++;
             }
         } else {
@@ -173,7 +173,7 @@ if (!empty($testTypeAttributes)) {
 
                     // Grouping Other Sections via array
                     $sectionClass = $currentSectionName . 'Input';
-                    $fieldDiv = getField($testAttribute, $testAttributeId, $value, $inputClass, $sectionClass, $isRequired, $fieldType, $disabled, $inputWidth);
+                    $fieldDiv = getField($testAttribute, $testAttributeId, $value, $inputClass, $sectionClass, $isRequired, $fieldType, $disabled, $inputWidth, $mandatory);
                     if ($counter % 2 == 0) {
                         $fieldDiv .= '</div><div class="row">';
                     }
@@ -232,7 +232,6 @@ if (!empty($testResultsAttribute)) {
     foreach ($testResultUnits as $unit) {
         $selected = isset($_POST['resultUnit']) && $_POST['resultUnit'] == $unit['unit_id'] ? "selected='selected'" : "";
         $resultSection .= '<option value="' . $unit['unit_id'] . '" ' . $selected . '>' . $unit['unit_name'] . '</option>';
-
     }
 
     $resultSection .= '</select></td></tr>';

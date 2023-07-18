@@ -2,16 +2,17 @@
 
 // this file is included in /hepatitis/interop/dhis2/hepatitis-receive.php
 
-
 use App\Interop\Dhis2;
-use App\Registries\ContainerRegistry;
+use JsonMachine\Items;
+use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\HepatitisService;
-use App\Utilities\DateUtility;
-use JsonMachine\Items;
+use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
 $dhis2 = new Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
+
+$syncType = 'DHIS2-Hepatitis-Receive';
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -27,12 +28,26 @@ $hepatitisService = ContainerRegistry::get(HepatitisService::class);
 
 $vlsmSystemConfig = $general->getSystemConfig();
 
+$instanceId = $general->getInstanceId();
+
+$lastSyncDateTime = $general->getLastApiSyncByType($syncType);
+
+if ($lastSyncDateTime !== null) {
+    $currentDateTime = new DateTime();
+    $lastSync = new DateTime($lastSyncDateTime);
+    $interval = $currentDateTime->diff($lastSync);
+    $diffInHours = $interval->h + $interval->d * 24;
+    $durationToSync = ($diffInHours + 2) . 'h';
+} else {
+    $durationToSync = '6h';
+}
+
 $receivedCounter = 0;
 $processedCounter = 0;
 
 $data = [];
 //$data[] = "lastUpdatedDuration=180m";
-$data[] = "lastUpdatedDuration=5d";
+$data[] = "lastUpdatedDuration=$durationToSync";
 $data[] = "ou=Hjw70Lodtf2"; // Rwanda
 $data[] = "ouMode=DESCENDANTS";
 $data[] = "program=LEhPhsbgfFB";
@@ -57,12 +72,12 @@ $trackedEntityInstances = Items::fromString($jsonResponse, $options);
 $dhis2GenderOptions = ['Male' => 'male', '1' => 'male', 'Female' => 'female', '2' => 'female'];
 $dhis2SocialCategoryOptions = ['1' => 'A', '2' => 'B', '3' => 'C', '4' => 'D'];
 
-$dhis2VlTestReasonOptions = array(
+$dhis2VlTestReasonOptions = [
     'I_VL001' => 'Initial HBV VL',
     'HBV_F0012' => 'Follow up HBV VL',
     'SVR12_HCV01' => 'SVR12 HCV VL',
     'SVR12_HCV02' => 'SVR12 HCV VL - Second Line'
-);
+];
 
 $attributesDataElementMapping = [
     'iwzGzKTlYGR' => 'external_sample_code',
@@ -98,8 +113,6 @@ $eventsDataElementMapping = [
 ];
 
 
-$instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
-
 $version = $general->getSystemConfig('sc_version');
 
 foreach ($trackedEntityInstances as $tracker) {
@@ -122,7 +135,6 @@ foreach ($trackedEntityInstances as $tracker) {
         }
 
         $enrollmentDate = strstr($enrollments['enrollmentDate'], 'T', true);
-
 
         $eventsData = [];
         $screeningEventData = [];
@@ -149,7 +161,6 @@ foreach ($trackedEntityInstances as $tracker) {
                 }
             }
         }
-
     }
 
     $screeningStageData = [];
@@ -248,9 +259,7 @@ foreach ($trackedEntityInstances as $tracker) {
         $formData['social_category'] = $dhis2SocialCategoryOptions[$formData['social_category']] ?? null;
         $formData['patient_gender'] = $dhis2GenderOptions[$formData['patient_gender']] ?? null;
 
-
         $formData['reason_for_hepatitis_test'] = $formData['reason_for_hepatitis_test'] ?? 1;
-
 
         //Initial HBV OR HCV VL
         if ($formData['reason_for_vl_test'] == 'I_VL001') {
@@ -263,7 +272,6 @@ foreach ($trackedEntityInstances as $tracker) {
             }
         } else {
             $formData['reason_for_vl_test'] = $dhis2VlTestReasonOptions[$formData['reason_for_vl_test']] ?? null;
-
         }
 
         $formData['request_created_datetime'] = DateUtility::getCurrentDateTime();
@@ -297,7 +305,7 @@ foreach ($trackedEntityInstances as $tracker) {
 
 
 
-        $formData['vlsm_instance_id'] = $instanceResult['vlsm_instance_id'];
+        $formData['vlsm_instance_id'] = $instanceId;
         $formData['vlsm_country_id'] = 7; // RWANDA
         $formData['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
@@ -329,7 +337,7 @@ $general->addApiTracking(
     $transactionId,
     'vlsm-system',
     $processedCounter,
-    'DHIS2-Hepatitis-Receive',
+    $syncType,
     'hepatitis',
     $dhis2->getCurrentRequestUrl(),
     $jsonResponse,

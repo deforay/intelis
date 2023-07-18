@@ -11,6 +11,9 @@ $dhis2 = new Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
 /** @var HepatitisService $hepatitisService */
 $hepatitisService = ContainerRegistry::get(HepatitisService::class);
 
+
+$syncType = 'DHIS2-Hepatitis-Send';
+
 $query = "SELECT * FROM form_hepatitis
           WHERE (source_of_request LIKE 'dhis2' OR unique_id like 'dhis2%')
           AND (result_sent_to_source is null or result_sent_to_source NOT LIKE 'sent')
@@ -240,7 +243,7 @@ $general->addApiTracking(
   $transactionId,
   'vlsm-system',
   $processedCounter,
-  'DHIS2-Hepatitis-Send',
+  $syncType,
   'hepatitis',
   $dhis2->getCurrentRequestUrl(),
   $payload,
