@@ -1,4 +1,9 @@
 -- Viral Load
+DROP TABLE IF EXISTS `audit_form_vl`;
+DROP TABLE IF EXISTS `audit_form_eid`;
+DROP TABLE IF EXISTS `audit_form_covid19`;
+DROP TABLE IF EXISTS `audit_form_hepatitis`;
+
 
 CREATE TABLE `audit_form_vl` SELECT * from `form_vl` WHERE 1=0;
 

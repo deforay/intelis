@@ -60,7 +60,7 @@ try {
                 $rejectionReason    = $general->getDataFromOneFieldAndValue('r_covid19_sample_rejection_reasons', 'rejection_reason_name', $rowData['BA']);
                 $result             = $general->getDataFromOneFieldAndValue('r_covid19_results', 'result', $rowData['BK']);
                 $resultStatus       = $general->getDataFromOneFieldAndValue('r_sample_status', 'status_name', $rowData['BO']);
-                $labTechnician      = $usersService->addUserIfNotExists($rowData['BR']);
+                $labTechnician      = $usersService->getOrCreateUser($rowData['BR']);
 
                 $instanceId = $general->getInstanceId();
 
