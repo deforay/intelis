@@ -107,6 +107,7 @@ sudo service apache2 restart;
 sudo update-alternatives --set php /usr/bin/php7.4;
 sudo update-alternatives --set phar /usr/bin/phar7.4;
 sudo update-alternatives --set phar.phar /usr/bin/phar.phar7.4;
+echo "apc.enable_cli=1" | sudo tee -a /etc/php/7.4/cli/php.ini;
 sudo service apache2 restart;
 ```
 
