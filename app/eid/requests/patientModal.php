@@ -18,8 +18,8 @@ $db->join("facility_details fd", "fd.facility_id=vl.facility_id", "LEFT");
 $db->where("child_id LIKE ?", ["%$artNo%"]);
 $db->orWhere("child_name LIKE ?", ["%$artNo%"]);
 $db->orWhere("child_surname LIKE ?", ["%$artNo%"]);
-$db->orderBy("sample_tested_datetime", "DESC");
-$db->orderBy("sample_collection_date", "DESC");
+$db->orderBy("sample_tested_datetime");
+$db->orderBy("sample_collection_date");
 
 $pResult = $db->get("form_eid vl", 25, "fd.facility_id,
             fd.facility_name,

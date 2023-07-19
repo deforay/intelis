@@ -18,7 +18,7 @@ $resultFilename = '';
 if (!empty($requestResult)) {
     $_SESSION['rVal'] = $general->generateRandomString(6);
     $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
-    \App\Utilities\MiscUtility::makeDirectory($pathFront);
+    MiscUtility::makeDirectory($pathFront);
     //$pathFront = $pathFront;
     $pages = [];
     $page = 1;
