@@ -108,7 +108,7 @@ $addedRecords = $_GET['total']-$_GET['notAdded'];
 											name="facilitiesInfo" placeholder="<?php echo _('Facility Name'); ?>"
 											title="<?php echo _('Please upload file'); ?>"
 											onblur='checkNameValidation("facility_details","facility_name",this,null,"<?php echo _("The facility name that you entered already exists.Enter another name"); ?>",null)' />
-                                            <a class="text-primary" style="text-decoration:underline;" href="files/Facilities_Bulk_Upload_Excel_Format.ods" download>Click here to download the Excel format for uploading facilities</a>
+                                            <a class="text-primary" style="text-decoration:underline;" href="files/Facilities_Bulk_Upload_Excel_Format.xlsx" download>Click here to download the Excel format for uploading facilities</a>
 									</div>
 								</div>
 							</div>
