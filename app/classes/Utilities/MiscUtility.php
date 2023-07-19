@@ -154,5 +154,12 @@ class MiscUtility
         return in_array($mime, $allowedMimeTypes) ? $mime : false;
     }
 
+    public static function makeDirectory($path, $mode = 0777, $recursive = true): bool
+    {
+        if (is_dir($path)) {
+            return true;
+        }
 
+        return mkdir($path, $mode, $recursive);
+    }
 }

@@ -56,7 +56,7 @@ if (isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples']) !=
                $colNo++;
           }
      }
-     $writer = IOFactory::createWriter($excel, 'Xlsx');
+     $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
      $filename = 'LAB-TESTS-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
      $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
      echo $filename;

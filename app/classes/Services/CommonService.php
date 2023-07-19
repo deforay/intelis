@@ -39,8 +39,8 @@ class CommonService
                 $queryResult = $this->db->rawQuery($sql, $params);
                 $count = count($queryResult);
             }
-            if($count==""){
-                $count=0;
+            if ($count == "") {
+                $count = 0;
             }
             return [$queryResult, $count];
         } catch (Exception $e) {
@@ -589,6 +589,15 @@ class CommonService
             (json_last_error() == JSON_ERROR_NONE);
     }
 
+    public function getLastApiSyncByType(string $syncType): ?string
+    {
+        $lastSyncQuery = "SELECT MAX(`requested_on`) AS `dateTime`
+                            FROM `track_api_requests`
+                            WHERE `request_type` = ?";
+        $dateTime = $this->db->rawQueryOne($lastSyncQuery, [$syncType]);
+        return $dateTime['dateTime'] ?? null;
+    }
+
     public function addApiTracking($transactionId, $user, $numberOfRecords, $requestType, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $labId = null, $facilityId = null)
     {
         try {
@@ -597,12 +606,9 @@ class CommonService
 
 
             $folderPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api';
-            if (!file_exists($folderPath . DIRECTORY_SEPARATOR . 'requests')) {
-                mkdir($folderPath . DIRECTORY_SEPARATOR . 'requests', 0777, true);
-            }
-            if (!file_exists($folderPath . DIRECTORY_SEPARATOR . 'responses')) {
-                mkdir($folderPath . DIRECTORY_SEPARATOR . 'responses', 0777, true);
-            }
+
+            MiscUtility::makeDirectory($folderPath . DIRECTORY_SEPARATOR . 'requests');
+            MiscUtility::makeDirectory($folderPath . DIRECTORY_SEPARATOR . 'responses');
 
             if (!empty($requestData) && $requestData != '[]') {
                 MiscUtility::zipJson($requestData, "$folderPath/requests/$transactionId.json");
@@ -648,6 +654,9 @@ class CommonService
      */
     public function jsonToSetString(string $json, string $column, array $newData = []): string
     {
+        if (!$this->isJSON($json)) {
+            $json = '[]';
+        }
         $data = json_decode($json, true);
         $setString = '';
 
@@ -685,7 +694,7 @@ class CommonService
         if ($condition) {
             $query .= " WHERE " . $condition;
         }
-        
+
         if ($group) {
             $query .= " GROUP BY " . $group;
         }

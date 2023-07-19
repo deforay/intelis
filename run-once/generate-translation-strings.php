@@ -7,10 +7,6 @@ require_once(__DIR__ . '/../bootstrap.php');
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 $tablesToTranslate = [
     's_app_menu' => [
         'name_column' => 'display_text',

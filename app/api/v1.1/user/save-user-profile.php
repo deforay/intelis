@@ -2,6 +2,7 @@
 
 use App\Services\ApiService;
 use App\Services\UsersService;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
@@ -108,9 +109,7 @@ try {
 
         $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
 
-        if (!file_exists($signatureImagePath) && !is_dir($signatureImagePath)) {
-            mkdir($signatureImagePath, 0777, true);
-        }
+        MiscUtility::makeDirectory($signatureImagePath);
 
         $imageName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename($_FILES['sign']['name'])));
         $imageName = str_replace(" ", "-", $imageName);

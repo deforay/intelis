@@ -238,11 +238,8 @@ class MYPDF extends TCPDF
 $resultFilename = '';
 if (!empty($requestResult)) {
     $_SESSION['rVal'] = $general->generateRandomString(6);
-    $pathFront = (TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal']);
-    if (!file_exists($pathFront) && !is_dir($pathFront)) {
-        mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'], 0777, true);
-        $pathFront = realpath(TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal']);
-    }
+    $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
+    \App\Utilities\MiscUtility::makeDirectory($pathFront);
     $pages = [];
     $page = 1;
 
@@ -275,7 +272,7 @@ if (!empty($requestResult)) {
                 break;
             }
         }
-       
+
         if (isset($result['report_format']) && $result['report_format'] != "") {
             $formats = json_decode($result['report_format'], true);
             if (file_exists($formats['tb'])) {
@@ -318,7 +315,8 @@ if (!empty($requestResult)) {
             exit(0);
         }
     }
-    echo $pages; die;
+    echo $pages;
+    die;
     if (!empty($pages)) {
         $resultPdf = new PdfConcatenateHelper();
         $resultPdf->setFiles($pages);

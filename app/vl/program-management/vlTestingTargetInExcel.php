@@ -132,7 +132,7 @@ if (isset($_SESSION['vlMonitoringThresholdReportQuery']) && trim($_SESSION['vlMo
         }
     }
 
-    $writer = IOFactory::createWriter($excel, 'Xlsx');
+    $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
     $filename = 'VLSM-Vl-Testing-Target-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
     $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
     echo $filename;

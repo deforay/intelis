@@ -167,7 +167,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 				$colNo++;
 			}
 		}
-		$writer = IOFactory::createWriter($excel, 'Xlsx');
+		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-EID-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
 		$writer->save($filename);
 		echo base64_encode($filename);

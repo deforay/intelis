@@ -134,7 +134,7 @@ if ($table == "form_eid") {
 		FROM $table as eid JOIN facility_details as f ON f.facility_id=eid.facility_id";
     $sQuery = $sQuery . ' WHERE DATE(eid.sample_collection_date) >= "' . $startDate . '" AND DATE(eid.sample_collection_date) <= "' . $endDate . '"';
     $sQuery = $sQuery . $whereCondition;
-    $sQuery = $sQuery . ' GROUP BY eid.facility_id';
+    $sQuery = $sQuery . ' GROUP BY eid.facility_id ORDER BY totalCount DESC';
 } else {
     $sQuery = "SELECT
                 vl.facility_id,
@@ -175,7 +175,7 @@ if ($table == "form_eid") {
                 FROM $table as vl JOIN facility_details as f ON f.facility_id=vl.facility_id";
     $sQuery = $sQuery . ' where DATE(vl.sample_collection_date) >= "' . $startDate . '" AND DATE(vl.sample_collection_date) <= "' . $endDate . '"';
     $sQuery = $sQuery . $whereCondition . $recencyWhere;
-    $sQuery = $sQuery . ' GROUP BY vl.facility_id';
+    $sQuery = $sQuery . ' GROUP BY vl.facility_id ORDER BY totalCount DESC';
 }
 
 $tableResult = $db->rawQuery($sQuery);

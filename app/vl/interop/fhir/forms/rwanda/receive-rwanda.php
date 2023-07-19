@@ -72,8 +72,7 @@ $formData = [];
 
 $bundleId = (string) $metaResource->getId()->getValue();
 
-$instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
-$instanceId = $instanceResult['vlsm_instance_id'];
+$instanceId = $general->getInstanceId();
 $taskAttributes = $serviceAttributes = [];
 
 // echo ("No. of entries in this bundle: " . count($entries) . "\n\n\n");

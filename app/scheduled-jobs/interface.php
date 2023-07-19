@@ -175,9 +175,9 @@ if (!empty($interfaceData)) {
             if (strpos(strtolower($result['tested_by']), '^') !== false) {
                 $operatorArray = explode("^", $result['tested_by']);
                 $tester = $operatorArray[0];
-                $testedByUserId = $usersService->addUserIfNotExists($tester);
+                $testedByUserId = $usersService->getOrCreateUser($tester);
             } else {
-                $testedByUserId = $usersService->addUserIfNotExists($result['tested_by']);
+                $testedByUserId = $usersService->getOrCreateUser($result['tested_by']);
             }
 
             $data = [
@@ -332,7 +332,7 @@ if (!empty($interfaceData)) {
                 $hepatitisResult = $interpretedResults['result'];
             }
 
-            $userId = $usersService->addUserIfNotExists($result['tested_by']);
+            $userId = $usersService->getOrCreateUser($result['tested_by']);
 
             $data = [
                 'lab_id' => $labId,

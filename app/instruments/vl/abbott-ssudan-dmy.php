@@ -262,7 +262,7 @@ try {
 
                 /** @var UsersService $usersService */
                 $usersService = ContainerRegistry::get(UsersService::class);
-                $data['sample_review_by'] = $usersService->addUserIfNotExists($d['reviewBy']);
+                $data['sample_review_by'] = $usersService->getOrCreateUser($d['reviewBy']);
             }
 
             $query = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal FROM form_vl WHERE result_printed_datetime is null AND sample_code='" . $sampleCode . "'";

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
+use Laminas\Diactoros\ServerRequest;
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -18,7 +19,7 @@ $generic = ContainerRegistry::get(GenericTestsService::class);
 $db = ContainerRegistry::get('db');
 
 // Sanitized values from $request object
-/** @var \Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;

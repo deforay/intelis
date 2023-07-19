@@ -182,7 +182,7 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
                     $colNo++;
                }
           }
-          $writer = IOFactory::createWriter($excel, 'Xlsx');
+          $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
           $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-High-Viral-Load-Report' . date('d-M-Y-H-i-s') . '.xlsx';
           $writer->save($filename);
           echo base64_encode($filename);

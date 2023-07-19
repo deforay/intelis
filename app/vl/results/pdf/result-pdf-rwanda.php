@@ -11,7 +11,7 @@ use App\Registries\ContainerRegistry;
 $resultFilename = '';
 if (!empty($requestResult)) {
      $_SESSION['rVal'] = $general->generateRandomString(6);
-     $pathFront = (TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal']);
+     $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
      if (!file_exists($pathFront) && !is_dir($pathFront)) {
           mkdir($pathFront, 0777, true);
      }

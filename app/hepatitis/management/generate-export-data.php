@@ -151,7 +151,7 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQ
 				$colNo++;
 			}
 		}
-		$writer = IOFactory::createWriter($excel, 'Xlsx');
+		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Hepatitis-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
 		$writer->save($fileName);
 		echo base64_encode($fileName);

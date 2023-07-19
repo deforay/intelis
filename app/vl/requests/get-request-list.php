@@ -270,7 +270,7 @@ if (isset($_POST['state']) && trim($_POST['state']) != '') {
 
 if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result') {
      $sWhere[] = ' vl.result != "" ';
-} else if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'noresult') {
+} elseif (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'noresult') {
      $sWhere[] = ' (vl.result IS NULL OR vl.result = "") ';
 }
 if (isset($_POST['srcOfReq']) && trim($_POST['srcOfReq']) != '') {
@@ -299,7 +299,7 @@ if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == "sent") {
      $sWhere[] = ' vl.result_sent_to_source is not null and vl.result_sent_to_source = "sent"';
 }
 if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
-     $sWhere[] = ' vl.patient_art_no like "%' . $_POST['patientId'] . '%"';
+     $sWhere[] = ' vl.patient_art_no like "' . $_POST['patientId'] . '"';
 }
 if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
      $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";

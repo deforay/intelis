@@ -13,8 +13,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 
 
-$instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
-$instanceId = $instanceResult['vlsm_instance_id'];
+$instanceId = $general->getInstanceId();
 
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();

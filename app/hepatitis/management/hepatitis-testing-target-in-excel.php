@@ -111,7 +111,7 @@ if (isset($_SESSION['hepatitisMonitoringThresholdReportQuery']) && trim($_SESSIO
             }
         }
     }
-    $writer = IOFactory::createWriter($excel, 'Xlsx');
+    $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
     $filename = 'VLSM-hepatitis-Testing-Target-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
     $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
     echo $filename;
