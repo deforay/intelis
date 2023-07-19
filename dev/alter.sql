@@ -1781,14 +1781,14 @@ ALTER TABLE `eid_form` ADD `locked` VARCHAR(50) NOT NULL DEFAULT 'no' AFTER `res
 ALTER TABLE `form_covid19` ADD `locked` VARCHAR(50) NOT NULL DEFAULT 'no' AFTER `result_status`;
 
 -- Prasath 04-Nov-2020
-ALter table import_config_machines add column poc_device Varchar(255) NULL;
-ALter table import_config_machines add column latitude Varchar(255) NULL;
-ALter table import_config_machines add column longitude Varchar(255) NULL;
+ALTER TABLE import_config_machines add column poc_device VARCHAR(255) NULL;
+ALTER TABLE import_config_machines add column latitude VARCHAR(255) NULL;
+ALTER TABLE import_config_machines add column longitude VARCHAR(255) NULL;
 -- Thana 05-Nov-2020
 ALTER TABLE `import_config_machines` ADD `updated_datetime` DATETIME NULL DEFAULT NULL AFTER `longitude`;
 
 -- Prasath M 06-Nov-2020
-ALTER TABLE `testing_labs` ADD `monthly_target`Varchar(255) NULL DEFAULT NULL ;
+ALTER TABLE `testing_labs` ADD `monthly_target`VARCHAR(255) NULL DEFAULT NULL ;
 
 -- Thana 09-Nov-2020
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'vl-reports', 'vlMonthlyThresholdReport.php', 'Monthly Threshold Report'), (NULL, 'eid-management', 'eidMonthlyThresholdReport.PHP', 'Monthly Threshold Report'), (NULL, 'covid-19-management', 'covid19MonthlyThresholdReport.PHP', 'Monthly Threshold Report');
@@ -1887,7 +1887,7 @@ CREATE TABLE `form_hepatitis` (
  KEY `last_modified_datetime` (`last_modified_datetime`),
  KEY `sample_code_key` (`sample_code_key`),
  KEY `remote_sample_code_key` (`remote_sample_code_key`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- Module Hepatitis Start
 -- Thana 12-Nov-2020
@@ -1917,7 +1917,7 @@ CREATE TABLE `r_hepatitis_risk_factors` (
  `riskfactor_status` varchar(45) DEFAULT NULL,
  `updated_datetime` datetime DEFAULT NULL,
  PRIMARY KEY (`riskfactor_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `r_hepatitis_comorbidities` (`comorbidity_id`, `comorbidity_name`, `comorbidity_status`, `updated_datetime`) VALUES (NULL, 'Diabetes', 'active', '2020-11-17 16:32:11'), (NULL, 'Chronic renal failure', 'active', '2020-11-17 16:32:11'), (NULL, 'Cancer', 'active', '2020-11-17 16:32:11'), (NULL, 'HIV infection', 'active', '2020-11-17 16:32:11'), (NULL, 'Cardiovascular disease', 'active', '2020-11-17 16:32:11'), (NULL, 'HPV', 'active', '2020-11-17 16:32:11');
 
@@ -1928,14 +1928,14 @@ CREATE TABLE `hepatitis_patient_comorbidities` (
  `comorbidity_id` int NOT NULL,
  `comorbidity_detected` varchar(255) NOT NULL,
  PRIMARY KEY (`hepatitis_id`,`comorbidity_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `hepatitis_risk_factors` (
  `hepatitis_id` int NOT NULL,
  `riskfactors_id` int NOT NULL,
  `riskfactors_detected` varchar(255) NOT NULL,
  PRIMARY KEY (`hepatitis_id`,`riskfactors_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Hepatitis Sample Code Format', 'hepatitis_sample_code', 'MMYY', 'hepatitis', 'yes', '2020-11-17 18:47:05', NULL, 'active'), ('Hepatitis Sample Code Prefix', 'hepatitis_sample_code_prefix', 'HEP', 'hepatitis', 'yes', '2020-11-17 18:47:05', NULL, 'active');
 
@@ -4871,3 +4871,6 @@ UPDATE `s_app_menu` SET `inner_pages` = '/import-result/imported-results.php?t=c
 UPDATE `s_app_menu` SET `inner_pages` = '/import-result/imported-results.php?t=hepatitis,/import-result/importedStatistics.php?t=hepatitis' WHERE `link` like '/import-result/import-file.php?t=hepatitis';
 UPDATE `s_app_menu` SET `inner_pages` = '/import-result/imported-results.php?t=tb,/import-result/importedStatistics.php?t=tb' WHERE `link` like '/import-result/import-file.php?t=tb';
 UPDATE `s_app_menu` SET `inner_pages` = '/import-result/imported-results.php?t=genetic-tests,/import-result/importedStatistics.php?t=genetic-tests' WHERE `link` like '/import-result/import-file.php?t=genetic-tests';
+
+-- Jeyabanu 19-Jul-2023
+INSERT INTO `resources` (`resource_id`, `resource_name`, `display_name`) VALUES ('facilities', 'upload-facilities.php', 'Upload Facilities');

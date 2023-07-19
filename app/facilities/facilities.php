@@ -140,10 +140,10 @@ $state = $geolocationService->getProvinces("yes");
           </span>
           <div class="box-header with-border">
             <?php if (isset($_SESSION['privileges']) && in_array("addFacility.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?>
-              <a href="addFacility.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Facility"); ?></a>
+              <a href="upload-facilities.php" class="btn btn-primary pull-right" > <em class="fa-solid fa-plus"></em> <?php echo _("Bulk Upload"); ?></a>
+              <a href="addFacility.php" class="btn btn-primary pull-right" style="margin-right: 10px;"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Facility"); ?></a>
               <a href="mapTestType.php?type=testing-labs" class="btn btn-primary pull-right" style="margin-right: 10px;"> <em class="fa-solid fa-plus"></em> <?php echo _("Manage Testing Lab"); ?></a>
               <a href="mapTestType.php?type=health-facilities" class="btn btn-primary pull-right" style="margin-right: 10px;"> <em class="fa-solid fa-plus"></em> <?php echo _("Manage Health Facilities"); ?></a>
-
             <?php } ?>
             &nbsp;<button id="filter" class="btn btn-primary btn-sm pull-right" style="margin-right:5px;line-height: 2;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?php echo _("Show Advanced Search Options"); ?></span></button>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->

@@ -25,8 +25,8 @@ $db->where("patient_id LIKE ?", ["%$artNo%"]);
 $db->orWhere("patient_first_name LIKE ?", ["%$artNo%"]);
 $db->orWhere("patient_middle_name LIKE ?", ["%$artNo%"]);
 $db->orWhere("patient_last_name LIKE ?", ["%$artNo%"]);
-$db->orderBy("sample_tested_datetime", "DESC");
-$db->orderBy("sample_collection_date", "DESC");
+$db->orderBy("sample_tested_datetime");
+$db->orderBy("sample_collection_date");
 
 $pResult = $db->get("form_generic vl", 25, "fd.facility_id,
             fd.facility_name,
