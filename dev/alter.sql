@@ -4871,3 +4871,6 @@ UPDATE `s_app_menu` SET `inner_pages` = '/import-result/imported-results.php?t=c
 UPDATE `s_app_menu` SET `inner_pages` = '/import-result/imported-results.php?t=hepatitis,/import-result/importedStatistics.php?t=hepatitis' WHERE `link` like '/import-result/import-file.php?t=hepatitis';
 UPDATE `s_app_menu` SET `inner_pages` = '/import-result/imported-results.php?t=tb,/import-result/importedStatistics.php?t=tb' WHERE `link` like '/import-result/import-file.php?t=tb';
 UPDATE `s_app_menu` SET `inner_pages` = '/import-result/imported-results.php?t=genetic-tests,/import-result/importedStatistics.php?t=genetic-tests' WHERE `link` like '/import-result/import-file.php?t=genetic-tests';
+
+-- Jeyabanu 19-Jul-2023
+INSERT INTO `resources` (`resource_id`, `resource_name`, `display_name`) VALUES ('facilities', 'upload-facilities.php', 'Upload Facilities');

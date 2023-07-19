@@ -278,4 +278,64 @@ class FacilitiesService
             }
         });
     }
+
+    public function getOrCreateProvince(string $provinceName, string $provinceCode = null): int {
+
+        // check if there is a province matching the input params, if yes then return province id
+        $this->db->where("geo_name ='$provinceName'");
+        if($provinceCode!="")
+        {
+            $this->db->where("geo_code ='$provinceCode'");
+        }
+        $provinceInfo = $this->db->getOne('geographical_divisions');
+        
+        if(isset($provinceInfo['geo_id']) && $provinceInfo['geo_id']!="")
+        {
+            return $provinceInfo['geo_id'];
+        }
+        else
+        {
+             // if not then insert and return the new province id
+             $data = array(
+                'geo_name' => $provinceName,
+                'geo_status' => 'active',
+                'updated_datetime' => DateUtility::getCurrentDateTime(),
+            );
+            $this->db->insert('geographical_divisions', $data);
+            $lastInsertId = $this->db->getInsertId();
+            return $lastInsertId;
+        }
+      
+       }
+
+       public function getOrCreateDistrict(string $districtName, string $districtCode = null, int $provinceId): int{
+
+        // check if there is a district matching the input params, if yes then return province id
+        $this->db->where("geo_name ='$districtName' AND geo_parent = $provinceId");
+        if($districtCode!="")
+        {
+            $this->db->where("geo_code ='$districtCode'");
+        }
+        $districtInfo = $this->db->getOne('geographical_divisions');
+        
+        if(isset($districtInfo['geo_id']) && $districtInfo['geo_id']!="")
+        {
+            return $districtInfo['geo_id'];
+        }
+        else
+        {
+             // if not then insert and return the new province id
+             $data = array(
+                'geo_name' => $districtName,
+                'geo_parent' => $provinceId,
+                'geo_status' => 'active',
+                'updated_datetime' => DateUtility::getCurrentDateTime(),
+            );
+            $this->db->insert('geographical_divisions', $data);
+            $lastInsertId = $this->db->getInsertId();
+            return $lastInsertId;
+        }
+       }
+       
+       
 }
