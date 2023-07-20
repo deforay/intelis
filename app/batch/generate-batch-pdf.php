@@ -89,7 +89,7 @@ $barcodeFormat = $globalConfig['barcode_format'] ?? 'C39';
 
 $barcodeFormat = isset($barcodeFormat) && $barcodeFormat != null ? $barcodeFormat : 'C39';
 
-if ($id > 0) {
+if (!empty($id)) {
 
     MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "barcode");
 

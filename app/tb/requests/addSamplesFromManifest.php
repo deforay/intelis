@@ -42,7 +42,7 @@ require_once APPLICATION_PATH . '/header.php';
 							<td style="width:50%;vertical-align:middle;"><input type="text" name="testDate" id="testDate" class="form-control dateTime" placeholder="Sample Received at Testing Lab" title="Please select when the samples were received at the Testing Lab" readonly /></td>
 
 							<td style="width:100%;" colspan="3">
-								<a class="btn btn-success btn-sm pull-right activateSample" style="display:none;margin-right:5px;" href="javascript:void(0);" onclick="activeSampleCode();"><em class="fa-solid fa-square-check"></em> <?php echo _("Activate Samples"); ?></a>
+								<a class="btn btn-success btn-sm pull-right activateSample" style="display:none;margin-right:5px;" href="javascript:void(0);" onclick="activateSamplesFromManifest();"><em class="fa-solid fa-square-check"></em> <?php echo _("Activate Samples"); ?></a>
 							</td>
 						</tr>
 					</table>
@@ -91,17 +91,17 @@ require_once APPLICATION_PATH . '/header.php';
 <?php
 if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
 	if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
-		?>
+?>
 		<script src="/assets/js/DYMO.Label.Framework.js"></script>
 		<script src="/uploads/barcode-formats/dymo-format.js"></script>
 		<script src="/assets/js/dymo-print.js"></script>
 	<?php
 	} else if ($global['bar_code_printing'] == 'zebra-printer') {
-		?>
-			<script src="/assets/js/zebra-browserprint.js.js"></script>
-			<script src="/uploads/barcode-formats/zebra-format.js"></script>
-			<script src="/assets/js/zebra-print.js"></script>
-	<?php
+	?>
+		<script src="/assets/js/zebra-browserprint.js.js"></script>
+		<script src="/uploads/barcode-formats/zebra-format.js"></script>
+		<script src="/assets/js/zebra-print.js"></script>
+<?php
 	}
 }
 ?>
@@ -239,13 +239,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		}
 	<?php } ?>
 
-	function activeSampleCode() {
+	function activateSamplesFromManifest() {
 		if ($("#testDate").val() == "") {
 			alert("<?= _("Please select when the samples were received at the Testing Lab"); ?>");
 			return false;
 		}
 		$.blockUI();
-		$.post("/tb/requests/addSamplesByPackageHelper.php", {
+		$.post("/tb/requests/activate-samples-from-manifest.php", {
 				sampleId: $("#sampleId").val(),
 				testDate: $("#testDate").val()
 			},

@@ -41,22 +41,17 @@ $batResult = $db->rawQuery($batQuery);
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table aria-describedby="table" class="table" aria-hidden="true"
-						style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: block;">
+					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: block;">
 						<tr>
 							<td style="width:20%;vertical-align:middle;"><strong>
 									<?php echo _("Enter Sample Manifest Code"); ?> :
 								</strong></td>
 							<td style="width:70%;vertical-align:middle;">
-								<input type="text" id="samplePackageCode" name="samplePackageCode" class="form-control"
-									placeholder="<?php echo _('Sample Manifest Code'); ?>"
-									title="<?php echo _('Please enter the sample manifest code'); ?>"
-									style="background:#fff;" />
+								<input type="text" id="samplePackageCode" name="samplePackageCode" class="form-control" placeholder="<?php echo _('Sample Manifest Code'); ?>" title="<?php echo _('Please enter the sample manifest code'); ?>" style="background:#fff;" />
 								<input type="hidden" id="sampleId" name="sampleId" />
 							</td>
 							<td style="width:10%;">
-								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;"
-									onclick="getSampleCode();return false;"><span>
+								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="getSampleCode();return false;"><span>
 										<?php echo _("Submit"); ?>
 									</span></button>
 							</td>
@@ -65,23 +60,17 @@ $batResult = $db->rawQuery($batQuery);
 							<th scope="row" style="width:20%;vertical-align:middle;">
 								<?php echo _("Sample Received at Testing Lab"); ?> :
 							</th>
-							<td style="width:70%;vertical-align:middle;"><input type="text" name="testDate"
-									id="testDate" class="form-control dateTime"
-									placeholder="Sample Received at Testing Lab"
-									title="Please select when the samples were received at the Testing Lab" readonly />
+							<td style="width:70%;vertical-align:middle;"><input type="text" name="testDate" id="testDate" class="form-control dateTime" placeholder="Sample Received at Testing Lab" title="Please select when the samples were received at the Testing Lab" readonly />
 							</td>
 
 							<td style="width:10%;">
-								<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;"
-									href="javascript:void(0);" onclick="activeSampleCode();"><em
-										class="fa-solid fa-square-check"></em> Activate Samples</a>
+								<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="activateSamplesFromManifest();"><em class="fa-solid fa-square-check"></em> Activate Samples</a>
 							</td>
 						</tr>
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body table-responsive">
-						<table aria-describedby="table" id="vlManifestDataTable"
-							class="table table-bordered table-striped table-vcenter">
+						<table aria-describedby="table" id="vlManifestDataTable" class="table table-bordered table-striped table-vcenter">
 							<thead>
 								<tr>
 									<th>
@@ -168,37 +157,37 @@ $batResult = $db->rawQuery($batQuery);
 			"bStateSave": true,
 			"bRetrieve": true,
 			"aoColumns": [{
-				"sClass": "center"
-			},
-				<?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
 					"sClass": "center"
 				},
+				<?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
+						"sClass": "center"
+					},
 				<?php } ?> {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}
 			],
 			"aaSorting": [
 				[<?php echo ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'vluser') ? 11 : 10 ?>, "desc"]
 			],
-			"fnDrawCallback": function () {
+			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
 				len = checkBoxes.length;
 				for (c = 0; c < len; c++) {
@@ -210,7 +199,7 @@ $batResult = $db->rawQuery($batQuery);
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "/vl/requests/getManifestInGridHelper.php",
-			"fnServerData": function (sSource, aoData, fnCallback) {
+			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "samplePackageCode",
 					"value": $("#samplePackageCode").val()
@@ -232,9 +221,9 @@ $batResult = $db->rawQuery($batQuery);
 			$.blockUI();
 			loadVlRequestData();
 			$.post("/vl/requests/getRemoteManifestHelper.php", {
-				samplePackageCode: $("#samplePackageCode").val()
-			},
-				function (data) {
+					samplePackageCode: $("#samplePackageCode").val()
+				},
+				function(data) {
 					$.unblockUI();
 					console.log(data);
 					if (data != "") {
@@ -262,22 +251,22 @@ $batResult = $db->rawQuery($batQuery);
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {
 				var jqxhr = $.ajax({
-					url: "/scheduled-jobs/remote/requestsSync.php?manifestCode=" + manifestCode + "&forceSyncModule=" + forceSyncModule,
-				})
-					.done(function (data) {
+						url: "/scheduled-jobs/remote/requestsSync.php?manifestCode=" + manifestCode + "&forceSyncModule=" + forceSyncModule,
+					})
+					.done(function(data) {
 						//console.log(data);
 						//alert( "success" );
 					})
-					.fail(function () {
+					.fail(function() {
 						$.unblockUI();
 						// alert("Unable to do STS Sync. Please contact technical team for assistance.");
 					})
-					.always(function () {
+					.always(function() {
 						$.unblockUI();
 						$.post("/vl/requests/getRemoteManifestHelper.php", {
-							samplePackageCode: $("#samplePackageCode").val()
-						},
-							function (data) {
+								samplePackageCode: $("#samplePackageCode").val()
+							},
+							function(data) {
 								$.unblockUI();
 								if (data != "") {
 									$('.activateSample').show();
@@ -290,33 +279,33 @@ $batResult = $db->rawQuery($batQuery);
 		}
 	<?php } ?>
 
-		function activeSampleCode() {
-			if ($("#testDate").val() == "") {
-				alert("<?= _("Please select when the samples were received at the Testing Lab"); ?>");
-				return false;
-			}
-			$.blockUI();
-			$.post("/vl/requests/addSamplesByPackageHelper.php", {
+	function activateSamplesFromManifest() {
+		if ($("#testDate").val() == "") {
+			alert("<?= _("Please select when the samples were received at the Testing Lab"); ?>");
+			return false;
+		}
+		$.blockUI();
+		$.post("/vl/requests/activate-samples-from-manifest.php", {
 				sampleId: $("#sampleId").val(),
 				testDate: $("#testDate").val()
 			},
-				function (data) {
-					if (data > 0) {
-						alert('<?php echo _("Samples from this Manifest have been activated"); ?>');
-						$('.activateSample').hide();
-					}
-					oTable.fnDraw();
-					$.unblockUI();
-				});
-		}
-	$(document).ready(function () {
+			function(data) {
+				if (data > 0) {
+					alert('<?php echo _("Samples from this Manifest have been activated"); ?>');
+					$('.activateSample').hide();
+				}
+				oTable.fnDraw();
+				$.unblockUI();
+			});
+	}
+	$(document).ready(function() {
 		$('.dateTime').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
 			dateFormat: 'dd-M-yy',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
-			onSelect: function (date) {
+			onSelect: function(date) {
 				var dt2 = $('#sampleDispatchedDate');
 				var startDate = $(this).datetimepicker('getDate');
 				var minDate = $(this).datetimepicker('getDate');
