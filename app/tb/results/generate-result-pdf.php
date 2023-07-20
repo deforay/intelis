@@ -239,7 +239,7 @@ $resultFilename = '';
 if (!empty($requestResult)) {
     $_SESSION['rVal'] = $general->generateRandomString(6);
     $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
-    \App\Utilities\MiscUtility::makeDirectory($pathFront);
+    MiscUtility::makeDirectory($pathFront);
     $pages = [];
     $page = 1;
 
@@ -315,8 +315,6 @@ if (!empty($requestResult)) {
             exit(0);
         }
     }
-    echo $pages;
-    die;
     if (!empty($pages)) {
         $resultPdf = new PdfConcatenateHelper();
         $resultPdf->setFiles($pages);

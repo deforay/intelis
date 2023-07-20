@@ -203,7 +203,7 @@ $_SESSION['highViralResult'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//echo($sQuery);
+echo($sQuery);
 $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
 

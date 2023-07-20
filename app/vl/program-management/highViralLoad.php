@@ -313,6 +313,22 @@ $state = $geolocationService->getProvinces("yes");
 										<div class="tab-pane fade" id="highVlVirologicFailureReport">
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 												<tr>
+													<td><strong>
+															<?php echo _("Province/State"); ?>&nbsp;:
+														</strong></td>
+													<td>
+														<select class="form-control vfvlnsfilters select2-element" id="vfVlnsState" onchange="getByProvince('vfVlnsDistrict','vfVlnsfacilityName',this.value)" name="vfVlnsState" title="<?php echo _('Please select Province/State'); ?>">
+															<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+														</select>
+													</td>
+
+													<td><strong>
+															<?php echo _("District/County"); ?> :
+														</strong></td>
+													<td>
+														<select class="form-control vfvlnsfilters select2-element" id="vfVlnsDistrict" name="vfVlnsDistrict" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict('vfVlnsfacilityName',this.value)">
+														</select>
+													</td>
 													<td><strong><?php echo _("Facility Name"); ?> :</strong></td>
 													<td>
 														<select class="form-control vfvlnsfilters" id="vfVlnsfacilityName" name="vfVlnsfacilityName" title="<?php echo _('Please select facility name'); ?>" style="width:220px;">
@@ -322,6 +338,8 @@ $state = $geolocationService->getProvinces("yes");
 															<?php } ?>
 														</select>
 													</td>
+												</tr>
+												<tr>
 													<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
 													<td>
 														<input type="text" id="vfVlnsSampleCollectionDate" name="vfVlnsSampleCollectionDate" class="form-control vfvlnsfilters daterangefield" placeholder="<?php echo _('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
@@ -1006,6 +1024,8 @@ $state = $geolocationService->getProvinces("yes");
 		$.post('/vl/program-management/export-virologic-failure-report.php', {
 				sampleCollectionDate: $('#vfVlnsSampleCollectionDate').val(),
 				sampleTestDate: $('#vfVlnsSampleTestDate').val(),
+				state: $('#vfVlnsState').val(),
+				district: $('#vfVlnsDistrict').val(),
 				facilityName: $('#vfVlnsfacilityName').val(),
 				withAlphaNum: 'yes',
 			},
@@ -1543,6 +1563,7 @@ $state = $geolocationService->getProvinces("yes");
 	}
 
 	function getByProvince(districtId, facilityId, provinceId) {
+		$.blockUI();
 		$("#" + districtId).html('');
 		$("#" + facilityId).html('');
 		$.post("/common/get-by-province-id.php", {
@@ -1552,6 +1573,7 @@ $state = $geolocationService->getProvinces("yes");
 				facilityCode: true
 			},
 			function(data) {
+				$.unblockUI();
 				Obj = $.parseJSON(data);
 				$("#" + districtId).html(Obj['districts']);
 				$("#" + facilityId).html(Obj['facilities']);

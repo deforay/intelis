@@ -25,9 +25,9 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 $state = $geolocationService->getProvinces("yes");
 ?>
 <style>
-  select {
+  /* select {
     width: 400px !important
-  }
+  } */
 
   .select2-element {
     width: 300px;
