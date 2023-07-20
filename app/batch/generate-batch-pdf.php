@@ -3,6 +3,7 @@
 use App\Services\BatchService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 /** @var MysqliDb $db */
@@ -75,6 +76,8 @@ if (isset($_GET['type'])) {
             $worksheetName = 'Lab Test Worksheet';
             $showPatientName = true;
             break;
+        default:
+            throw new SystemException('Unsupported Test Type');
     }
 }
 

@@ -2,6 +2,7 @@
 
 use App\Services\BatchService;
 use App\Services\CommonService;
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 /** @var CommonService $general */
@@ -50,6 +51,8 @@ if (isset($_GET['type'])) {
 			$refTable = "form_generic";
 			$refPrimaryColumn = "sample_id";
 			break;
+		default:
+			throw new SystemException('Unsupported Test Type');
 	}
 }
 $_GET['type'] = ($_GET['type'] == 'covid19') ? 'covid-19' : $_GET['type'];
@@ -102,7 +105,7 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 		$xplodJsonToArray = explode("_", $jsonToArray[$index]);
 		if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
 			$sampleQuery = "SELECT sample_code from " . $refTable . " where " . $refPrimaryColumn . "= $xplodJsonToArray[1]";
-			if (isset($_GET['type']) && $_GET['type'] == 'generic-tests'){
+			if (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
 				$sampleQuery .= " AND test_type = $testType";
 			}
 			$sampleResult = $db->query($sampleQuery);
@@ -180,8 +183,7 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 			<div class="box-body">
 				<!-- <pre><?php print_r($configControl); ?></pre> -->
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='editBatchControlsPosition'
-					id='editBatchControlsPosition' autocomplete="off" action="save-batch-position-helper.php">
+				<form class="form-horizontal" method='post' name='editBatchControlsPosition' id='editBatchControlsPosition' autocomplete="off" action="save-batch-position-helper.php">
 					<div class="box-body">
 						<div class="row" id="displayOrderDetails">
 							<div class="col-md-8">
@@ -196,11 +198,9 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 					<!-- /.box-body -->
 					<div class="box-footer">
 						<input type="hidden" name="type" id="type" value="<?php echo $_GET['type']; ?>" />
-						<input type="hidden" name="sortOrders" id="sortOrders"
-							value="<?php echo implode(",", $displayOrder); ?>" />
+						<input type="hidden" name="sortOrders" id="sortOrders" value="<?php echo implode(",", $displayOrder); ?>" />
 						<input type="hidden" name="batchId" id="batchId" value="<?php echo htmlspecialchars($id); ?>" />
-						<a class="btn btn-primary" href="javascript:void(0);"
-							onclick="validateNow();return false;">Submit</a>
+						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
 						<a href="batches.php?type=<?php echo $_GET['type']; ?>" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->
@@ -216,7 +216,7 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 </div>
 <script>
 	sortedTitle = [];
-	$(document).ready(function () {
+	$(document).ready(function() {
 		function cleanArray(actual) {
 			var newArray = [];
 			for (var i = 0; i < actual.length; i++) {
@@ -230,7 +230,7 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 		$("#sortableRow").sortable({
 			opacity: 0.6,
 			cursor: 'move',
-			update: function () {
+			update: function() {
 				sortedTitle = cleanArray($(this).sortable("toArray"));
 				$("#sortOrders").val("");
 				$("#sortOrders").val(sortedTitle);

@@ -1,5 +1,7 @@
 <?php
+
 use App\Services\BatchService;
+use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
@@ -37,7 +39,11 @@ try {
             }
         }
         $labelOrder = json_encode($orderArray, JSON_FORCE_OBJECT);
-        $data = array('label_order' => $labelOrder);
+        $data = [
+            'label_order' => $labelOrder,
+            'last_modified_by' => $_SESSION['userId'],
+            'last_modified_datetime' => DateUtility::getCurrentDateTime()
+        ];
         $db = $db->where('batch_id', $_POST['batchId']);
         $db->update($tableName, $data);
         $_SESSION['alertMsg'] = "Batch position saved";
