@@ -81,7 +81,7 @@ if ($priInfo) {
 	}
 
 	.switch-field input:checked+label {
-		background-color: #87CEFA;
+		/*background-color: #87CEFA;*/
 		box-shadow: none;
 	}
 
@@ -313,23 +313,30 @@ if ($priInfo) {
 											$pInfo = $db->rawQuery($pQuery, [$mRes[0]]);
 											echo "<tr class=''>";
 											echo "<td style='text-align:center;vertical-align:middle;' class='privilegesNode' id='" . $mRes[0] . "'>";
+											$style = "";
 											foreach ($pInfo as $privilege) {
-												if (in_array($privilege['privilege_id'], $priId)) {
-													$allowChecked = " checked='' ";
-													$denyChecked = "";
-												} else {
-													$denyChecked = " checked='' ";
-													$allowChecked = "";
-												}
-												echo "<div class='col-lg-3' style='margin-top:5px;border:1px solid #eee;padding:10px;'>
-                                  <strong>" . _($privilege['display_name']) . "</strong>
-                                  <br>
+											if (in_array($privilege['privilege_id'], $priId)) {
+												$allowChecked = " checked='' ";
+												$denyChecked = "";
+												$allowStyle = " style='background-color:#398439'";
+												$denyStyle = "";
+											} else {
+												$denyChecked = " checked='' ";
+												$allowChecked = "";
+												$denyStyle = " style='background-color:#d9534f'";
+												$allowStyle = "";
+											}
+											echo $style; 
+											echo "<div class='col-lg-3' style='margin-top:5px;border:1px solid #eee;padding:10px;'>
+											<strong>" . _($privilege['display_name']) . "</strong>
+											<br>
 
-								  <div class='switch-field' style='margin: 30px 0 36px 90px;'>
-								  <input type='radio' class='cekAll layCek'  name='resource[" . $privilege['privilege_id'] . "]" . "' value='allow' id='radio-one" . $privilege['privilege_id'] . "' $allowChecked><label for='radio-one" . $privilege['privilege_id'] . "'>Yes</label>
-								  <input type='radio' class='unCekAll layCek'  name='resource[" . $privilege['privilege_id'] . "]" . "' value='deny' id='radio-two" . $privilege['privilege_id'] . "' $denyChecked> <label for='radio-two" . $privilege['privilege_id'] . "'> No</label>
-                            </div>
-                                </div>";
+											<div class='switch-field' style='margin: 30px 0 36px 90px;'>
+												<input type='radio' class='cekAll layCek' name='resource[" . $privilege['privilege_id'] . "]" . "' value='allow' id='radio-one" . $privilege['privilege_id'] . "' $allowChecked ><label for='radio-one" . $privilege['privilege_id'] . "' $allowStyle class='allow'>Yes</label>
+												<input type='radio' class='unCekAll layCek' name='resource[" . $privilege['privilege_id'] . "]" . "' value='deny' id='radio-two" . $privilege['privilege_id'] . "' $denyChecked > <label for='radio-two" . $privilege['privilege_id'] . "' $denyStyle class='deny'> No</label>
+											</div>
+											</div>";
+
 											}
 											echo "</td></tr>";
 											$i++;
@@ -376,24 +383,60 @@ if ($priInfo) {
 		}
 	}
 
-	$("#cekAllPrivileges").click(function() {
+	$("#cekAllPrivileges").click(function () {
 		$('.unCekAll').prop('checked', false);
 		$('.cekAll').prop('checked', true);
+		$('.unCekAll').next('label').css('background-color','#e4e4e4');
+		$('.cekAll').next('label').css('background-color','#398439');
+		$(this).next('label').css('background-color','#398439');
+		$("#unCekAllPrivileges").next('label').css('background-color','#e4e4e4');
 	});
 
-	$("#unCekAllPrivileges").click(function() {
+	$("#unCekAllPrivileges").click(function () {
 		$('.cekAll').prop('checked', false);
 		$('.unCekAll').prop('checked', true);
+		$('.unCekAll').next('label').css('background-color','#d9534f');
+		$('.cekAll').next('label').css('background-color','#e4e4e4');
+		$(this).next('label').css('background-color','#d9534f');
+		$("#cekAllPrivileges").next('label').css('background-color','#e4e4e4');
 
 	});
+
+
+	$('.switch-field input').click(function() {
+	val = $(this).val();
+		if(val=="deny")
+		{
+			$(this).closest('.switch-field').find('.unCekAll').next('label').css('background-color','#d9534f');
+			$(this).closest('.switch-field').find('.cekAll').next('label').css('background-color','#e4e4e4');
+		}
+		else if(val=="allow")
+		{
+			$(this).closest('.switch-field').find('.unCekAll').next('label').css('background-color','#e4e4e4');
+			$(this).closest('.switch-field').find('.cekAll').next('label').css('background-color','#398439');
+		}
+	});
+
+
+
 
 	function togglePrivilegesForThisResource(obj, checked) {
 		if (checked == true) {
 			$("#" + obj).find('.cekAll').prop('checked', true);
 			$("#" + obj).find('.unCekAll').prop('checked', false);
+			$("#" + obj).find('.unCekAll').next('label').css('background-color','#e4e4e4');
+			$("#" + obj).find('.cekAll').next('label').css('background-color','#398439');
+			$("#all" + obj).next('label').css('background-color','#398439');
+			$("#none" + obj).next('label').css('background-color','#e4e4e4');
+
 		} else if (checked == false) {
 			$("#" + obj).find('.cekAll').prop('checked', false);
 			$("#" + obj).find('.unCekAll').prop('checked', true);
+			$("#" + obj).find('.unCekAll').next('label').css('background-color','#d9534f');
+			$("#" + obj).find('.cekAll').next('label').css('background-color','#e4e4e4');
+			$("#all" + obj).next('label').css('background-color','#e4e4e4');
+			$("#none" + obj).next('label').css('background-color','#d9534f');
+
 		}
 	}
 
