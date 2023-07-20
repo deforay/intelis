@@ -1,4 +1,6 @@
 <?php
+
+use App\Exceptions\SystemException;
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
@@ -59,6 +61,8 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
 	$worksheetName = 'Lab Test Worksheet';
 	$showPatientName = true;
 	$genericHide = "style='display:none;'";
+} else {
+	throw new SystemException('Invalid test type - ' . $_GET['type'], 500);
 }
 $title = _($_title . " | Batches");
 
@@ -126,7 +130,6 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 									<th scope="col"><?php echo _("No. of Samples"); ?></th>
 									<th scope="col"><?php echo _("No. of Samples Tested"); ?></th>
 									<th scope="col"><?php echo _("Tested Date"); ?></th>
-									<th scope="col"><?php echo _("Batch Created On"); ?></th>
 									<th scope="col"><?php echo _("Last Modified On"); ?></th>
 									<?php if (isset($_SESSION['privileges']) && in_array("/batch/edit-batch.php?type=" . $_GET['type'], $_SESSION['privileges'])) { ?>
 										<th scope="col"><?php echo _("Action"); ?></th>
@@ -188,10 +191,6 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 					"bSortable": false
 				},
 				{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
 					"sClass": "center"
 				},
 				<?php if (isset($_SESSION['privileges']) && in_array("/batch/edit-batch.php?type=" . $_GET['type'], $_SESSION['privileges'])) { ?> {
@@ -201,7 +200,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 				<?php } ?>
 			],
 			"aaSorting": [
-				[5, "desc"]
+				[4, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,

@@ -52,7 +52,7 @@ if (isset($_GET['type'])) {
 			$refPrimaryColumn = "sample_id";
 			break;
 		default:
-			throw new SystemException('Unsupported Test Type');
+			throw new SystemException('Invalid test type - ' . $_GET['type'], 500);
 	}
 }
 $_GET['type'] = ($_GET['type'] == 'covid19') ? 'covid-19' : $_GET['type'];

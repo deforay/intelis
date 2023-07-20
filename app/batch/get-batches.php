@@ -44,8 +44,8 @@ if (isset($_POST['type']) && $_POST['type'] == 'vl') {
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
  * you want to insert a non-database field (for example a counter or static image)
  */
-$aColumns = array('b.batch_code', 'total_samples', 'testcount', "DATE_FORMAT(last_tested_date,'%d-%b-%Y')", "DATE_FORMAT(b.request_created_datetime,'%d-%b-%Y %H:%i:%s')", "DATE_FORMAT(b.last_modified_datetime,'%d-%b-%Y %H:%i:%s')");
-$orderColumns = array('b.batch_code', 'total_samples', 'testcount', 'last_tested_date', 'b.request_created_datetime', 'b.last_modified_datetime');
+$aColumns = array('b.batch_code', 'total_samples', 'testcount', "DATE_FORMAT(last_tested_date,'%d-%b-%Y')", "DATE_FORMAT(b.last_modified_datetime,'%d-%b-%Y %H:%i:%s')");
+$orderColumns = array('b.batch_code', 'total_samples', 'testcount', 'last_tested_date', 'b.last_modified_datetime');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -212,7 +212,6 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['total_samples'];
     $row[] = $aRow['testcount'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['last_tested_date'] ?? '', true);
-    $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'] ?? '', true);
     $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '', true);
 
     if ($editBatch || $editPosition || $pdf || (($aRow['total_samples'] == 0 || $aRow['testcount'] == 0) && $delete)) {

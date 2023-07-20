@@ -51,7 +51,7 @@ if (isset($_POST['type'])) {
             $refPrimaryColumn = "sample_id";
             break;
         default:
-            throw new SystemException('Unsupported Test Type');
+            throw new SystemException('Invalid test type - ' . $_POST['type'], 500);
     }
 }
 
