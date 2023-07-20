@@ -53,8 +53,9 @@ if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']
 	$reportFormats['generic-tests'] = $general->activeReportFormats('generic-tests');
 }
 $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
-
+if(isset($_GET['total'])){
 $addedRecords = $_GET['total']-$_GET['notAdded'];
+}
 ?>
 <style>
 	.ms-choice {
@@ -97,8 +98,12 @@ $addedRecords = $_GET['total']-$_GET['notAdded'];
 						<div class="row">
 							<div class="col-md-6">
 								<?php if(isset($_GET['total'])){ ?>
-									<span style="margin-left:74px; color:green;">Total Records : <?= $_GET['total']; ?>  |  Facilities Added : <?= $addedRecords; ?>  |  Facilities Not Added : <?= $_GET['notAdded']; ?></span><br><br>
+									<span style="margin-left:74px; color:green;">Total Records : <?= $_GET['total']; ?>  |  Facilities Added : <?= $addedRecords; ?>  |  Facilities Not Added : <?= $_GET['notAdded']; ?></span>
+								<?php	if($_GET['notAdded']>0){ ?>
+                        		<a class="text-success" style="text-decoration:underline;margin-left:74px; margin-bottom:10px;" href="/temporary/INCORRECT-FACILITY-ROWS.xlsx" download>Download the Excel sheet of incorrect rows of facilities</a><br><br>
+									<?php } ?>
 								<?php } ?>
+								
 								<div class="form-group">
 									<label for="facilityName" class="col-lg-4 control-label">
 										<?php echo _("Upload File"); ?> <span class="mandatory">*</span>

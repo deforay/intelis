@@ -4873,4 +4873,4 @@ UPDATE `s_app_menu` SET `inner_pages` = '/import-result/imported-results.php?t=t
 UPDATE `s_app_menu` SET `inner_pages` = '/import-result/imported-results.php?t=genetic-tests,/import-result/importedStatistics.php?t=genetic-tests' WHERE `link` like '/import-result/import-file.php?t=genetic-tests';
 
 -- Jeyabanu 19-Jul-2023
-INSERT INTO `resources` (`resource_id`, `resource_name`, `display_name`) VALUES ('facilities', 'upload-facilities.php', 'Upload Facilities');
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`,`show_mode`) VALUES ( 'facilities', 'upload-facilities.php', 'Upload Facilities','always');

@@ -6,6 +6,9 @@ use App\Services\UsersService;
 use App\Services\FacilitiesService;
 use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -30,9 +33,14 @@ try {
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName = $ranNumber . "." . $extension;
 
+    $excel = new Spreadsheet();
+	$sheet = $excel->getActiveSheet();
+    
+	
     if (!file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request") && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request")) {
         mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request", 0777, true);
     }
+
     if (move_uploaded_file($_FILES['facilitiesInfo']['tmp_name'], TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName)) {
 
         $file_info = new finfo(FILEINFO_MIME); // object oriented approach!
@@ -45,8 +53,18 @@ try {
         $resultArray = array_slice($sheetData, 1);
         $total = count($resultArray);
         $facilityNotAdded = [];
+
+        $column_header=["Facility Name*","Facility Code*","External Facility Code","Province/State*","District/County*","Facility Type*    (1-Health Facility,2-Testing Lab,3-Collection Site)","Address","Email","Phone Number","Latitude"	,"Longitude" ];
+        $j=1;
+        foreach($column_header as $x_value) {
+                $sheet->setCellValueByColumnAndRow($j,1,$x_value);
+                $j=$j+1;
+                
+            }
+       
         foreach ($resultArray as $rowIndex => $rowData) {
-           // echo '<pre>'; print_r($rowData); die;
+        $rowCount = 1;
+        $colNo = 1;
             if (!empty($rowData['A'])) {
                 $sampleCode         = $general->getDataFromOneFieldAndValue('form_covid19', 'sample_code', $rowData['A']);
                 $provinceId         = $general->getDataFromOneFieldAndValue('geographical_divisions', 'geo_name', $rowData['D']);
@@ -83,18 +101,44 @@ try {
         
             if((isset($facilityCheck['facility_id']) && $facilityCheck['facility_id']!="") || (isset($facilityCodeCheck['facility_id']) && $facilityCodeCheck['facility_id']!=""))
             { 
-                array_push($facilityNotAdded,$rowData['A']);
+                array_push($facilityNotAdded,$rowData);
+              
             }
             else{
                 $db->insert('facility_details', $data);
                 error_log($db->getLastError());
             }
         }
+      // echo '<pre>'; print_r($facilityNotAdded); die;
+       for($i=0;$i<count($facilityNotAdded);$i++)
+        {
+
+        //set value for indi cell
+        $row=$facilityNotAdded[$i];
+
+        $j=1;
+
+            foreach($row as $x => $x_value) {
+                $sheet->setCellValueByColumnAndRow($j,$i+2,$x_value);
+                $j=$j+1;
+            }
+
+        }
+        
         $notAdded = count($facilityNotAdded);
+      
+        $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
+        $filename = 'INCORRECT-FACILITY-ROWS.xlsx';
+        $path = TEMP_PATH . DIRECTORY_SEPARATOR . $filename;
+        $writer->save($path);
+      //  rename($path, "/var/www/vlsm/app/facilities/files/$filename");
+
+      //  move_uploaded_file($path, '/var/www/vlsm/app/facilities/files/' . $filename);
+       // $link = "files/$filename";
 
     }
         $_SESSION['alertMsg'] = _("Facility details added successfully");
-		header("Location:/facilities/upload-facilities.php?total=$total&notAdded=$notAdded");
+		header("Location:/facilities/upload-facilities.php?total=$total&notAdded=$notAdded&link=$filename");
 }catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
