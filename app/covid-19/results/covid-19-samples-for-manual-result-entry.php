@@ -158,7 +158,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,b.*,ts.*,f.facility_name,
           LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by";
 
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-     //$sWhere = ' WHERE ' . $sWhere;
+//$sWhere = ' WHERE ' . $sWhere;
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
      $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
@@ -239,7 +239,7 @@ $output = array(
      "sEcho" => intval($_POST['sEcho']),
      "iTotalRecords" => $iTotal,
      "iTotalDisplayRecords" => $iFilteredTotal,
-     "aaData" => array()
+     "aaData" => []
 );
 
 foreach ($rResult as $aRow) {

@@ -110,12 +110,12 @@ if (isset($sLimit) && isset($sOffset)) {
 // echo $sQuery;
 $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
-/* Data set length after filtering 
+/* Data set length after filtering
 
 $aResultFilterTotal = $db->rawQuery("SELECT * FROM $tableName $sWhere order by $sOrder");
 $iFilteredTotal = count($aResultFilterTotal);
 
-/* Total data set length 
+/* Total data set length
 $aResultTotal =  $db->rawQuery("select COUNT($primaryKey) as total FROM $tableName");
 // $aResultTotal = $countResult->fetch_row();
 //print_r($aResultTotal);
@@ -131,7 +131,7 @@ $output = array(
     "sEcho" => intval($_POST['sEcho']),
     "iTotalRecords" => $iTotal,
     "iTotalDisplayRecords" => $iFilteredTotal,
-    "aaData" => array()
+    "aaData" => []
 );
 
 foreach ($rResult as $aRow) {

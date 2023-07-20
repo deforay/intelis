@@ -227,7 +227,7 @@ $output = array(
     "sEcho" => intval($_POST['sEcho']),
     "iTotalRecords" => $iTotal,
     "iTotalDisplayRecords" => $iFilteredTotal,
-    "aaData" => array()
+    "aaData" => []
 );
 $editRequest = false;
 if (isset($_SESSION['privileges']) && (in_array("/eid/requests/eid-edit-request.php", $_SESSION['privileges']))) {

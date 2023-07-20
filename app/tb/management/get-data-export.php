@@ -126,7 +126,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * SQL queries
           * Get data to display
           */
-$sQuery = "SELECT 
+$sQuery = "SELECT
           vl.tb_id,
           vl.sample_code,
           vl.remote_sample_code,
@@ -284,7 +284,7 @@ $output = array(
      "sEcho" => intval($_POST['sEcho']),
      "iTotalRecords" => $resultCount,
      "iTotalDisplayRecords" => $resultCount,
-     "aaData" => array()
+     "aaData" => []
 );
 
 foreach ($rResult as $aRow) {

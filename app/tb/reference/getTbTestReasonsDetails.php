@@ -1,4 +1,5 @@
 <?php
+
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Utilities\DateUtility;
@@ -123,7 +124,7 @@ $output = array(
     "sEcho" => intval($_POST['sEcho']),
     "iTotalRecords" => $resultCount,
     "iTotalDisplayRecords" => $resultCount,
-    "aaData" => array()
+    "aaData" => []
 );
 
 foreach ($rResult as $aRow) {

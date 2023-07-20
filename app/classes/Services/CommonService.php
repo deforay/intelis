@@ -652,9 +652,9 @@ class CommonService
      * @param array $newData An optional array of new key-value pairs to add to the JSON
      * @return string The string that can be used with JSON_SET()
      */
-    public function jsonToSetString(string $json, string $column, array $newData = []): string
+    public function jsonToSetString(?string $json, string $column, array $newData = []): string
     {
-        if (!$this->isJSON($json)) {
+        if (empty($json) || !$this->isJSON($json)) {
             $json = '[]';
         }
         $data = json_decode($json, true);
@@ -687,7 +687,7 @@ class CommonService
         return 'JSON_SET(COALESCE(' . $column . ', "{}")' . $setString . ')';
     }
 
-    public function getDataByTableAndFields($table, $fields = array(), $option = true, $condition = null, $group = null)
+    public function getDataByTableAndFields($table, $fields = [], $option = true, $condition = null, $group = null)
     {
 
         $query = "SELECT " . implode(",", $fields) . " FROM " . $table;
@@ -698,7 +698,7 @@ class CommonService
         if ($group) {
             $query .= " GROUP BY " . $group;
         }
-        $response = array();
+        $response = [];
         $results = $this->db->rawQuery($query);
         if ($option) {
             foreach ($results as $row) {

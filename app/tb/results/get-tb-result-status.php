@@ -205,7 +205,7 @@ $output = array(
     "sEcho" => intval($_POST['sEcho']),
     "iTotalRecords" => $resultCount,
     "iTotalDisplayRecords" => $resultCount,
-    "aaData" => array()
+    "aaData" => []
 );
 $vlRequest = false;
 $vlView = false;

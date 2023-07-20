@@ -112,7 +112,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
  * Get data to display
  */
 $aWhere = '';
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS *, ts.status_name FROM form_vl as vl
+$sQuery = "SELECT *, ts.status_name FROM form_vl as vl
                     LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
                     LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
                     INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
@@ -139,24 +139,19 @@ if (!empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
-if (isset($sLimit) && isset($sOffset)) {
-     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-}
-// die($sQuery);
+
 $rResult = $db->rawQuery($sQuery);
 
-/* Data set length after filtering */
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
 
 /*
  * Output
  */
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
-     "iTotalRecords" => $iTotal,
-     "iTotalDisplayRecords" => $iFilteredTotal,
-     "aaData" => array()
+     "iTotalRecords" => $resultCount,
+     "iTotalDisplayRecords" => $resultCount,
+     "aaData" => []
 );
 
 foreach ($rResult as $aRow) {

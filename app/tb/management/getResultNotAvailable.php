@@ -114,7 +114,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
  * Get data to display
  */
 $sQuery = "SELECT vl.*,
-            f.*, s.*, 
+            f.*, s.*,
             fd.facility_name as labName,
             ts.status_name FROM form_tb as vl
             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
@@ -192,7 +192,7 @@ $output = array(
     "sEcho" => intval($_POST['sEcho']),
     "iTotalRecords" => $resultCount,
     "iTotalDisplayRecords" => $resultCount,
-    "aaData" => array()
+    "aaData" => []
 );
 
 foreach ($rResult as $aRow) {

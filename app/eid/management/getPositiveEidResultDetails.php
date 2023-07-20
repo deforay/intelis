@@ -131,7 +131,7 @@ if (isset($_POST['hvlBatchCode']) && trim($_POST['hvlBatchCode']) != '') {
 	    $sWhere = $sWhere.' AND contact_complete_status = "'.$_POST['hvlContactStatus'].'"';
 		}
 	} */
-    
+
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['hvlSampleTestDate'] ?? '');
 if (isset($_POST['hvlSampleTestDate']) && trim($_POST['hvlSampleTestDate']) != '') {
     if (trim($start_date) == trim($end_date)) {
@@ -210,7 +210,7 @@ $output = array(
     "sEcho" => intval($_POST['sEcho']),
     "iTotalRecords" => $iTotal,
     "iTotalDisplayRecords" => $iFilteredTotal,
-    "aaData" => array()
+    "aaData" => []
 );
 
 foreach ($rResult as $aRow) {

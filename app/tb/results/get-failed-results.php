@@ -207,7 +207,7 @@ $output = array(
     "sEcho" => intval($_POST['sEcho']),
     "iTotalRecords" => $resultCount,
     "iTotalDisplayRecords" => $resultCount,
-    "aaData" => array()
+    "aaData" => []
 );
 $editRequest = false;
 if (isset($_SESSION['privileges']) && (in_array("tb-edit-request.php", $_SESSION['privileges']))) {

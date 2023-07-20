@@ -221,7 +221,7 @@ $output = array(
      "sEcho" => intval($_POST['sEcho']),
      // "iTotalRecords" => $cnt,
      // "iTotalDisplayRecords" => $iFilteredTotal,
-     "aaData" => array()
+     "aaData" => []
 );
 //  print_r($sQuery);die;
 $cnt = 0;

@@ -160,7 +160,7 @@ $output = array(
     "sEcho" => intval($_POST['sEcho']),
     "iTotalRecords" => $resultCount,
     "iTotalDisplayRecords" => $resultCount,
-    "aaData" => array()
+    "aaData" => []
 );
 $editBatch = $delete = $pdf = $editPosition = false;
 if (isset($_SESSION['privileges']) && (in_array('/batch/edit-batch.php?type=' . $_POST['type'], $_SESSION['privileges']))) {

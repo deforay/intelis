@@ -16,7 +16,7 @@ if (empty($_POST)) {
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
-$listData = array();
+$listData = [];
 
 
 if (isset($_POST['testTypeId'])) {

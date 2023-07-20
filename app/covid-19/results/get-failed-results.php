@@ -213,7 +213,7 @@ $output = array(
     "sEcho" => intval($_POST['sEcho']),
     "iTotalRecords" => $iTotal,
     "iTotalDisplayRecords" => $iFilteredTotal,
-    "aaData" => array()
+    "aaData" => []
 );
 $editRequest = false;
 if (isset($_SESSION['privileges']) && (in_array("/covid-19/requests/covid-19-edit-request.php", $_SESSION['privileges']))) {

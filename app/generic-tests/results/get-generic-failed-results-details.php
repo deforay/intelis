@@ -198,7 +198,7 @@ $output = array(
     "sEcho" => intval($_POST['sEcho']),
     "iTotalRecords" => $iTotal,
     "iTotalDisplayRecords" => $iTotal,
-    "aaData" => array()
+    "aaData" => []
 );
 $editRequest = false;
 if (isset($_SESSION['privileges']) && (in_array("/vl/requests/editVlRequest.php", $_SESSION['privileges']))) {

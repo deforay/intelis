@@ -231,12 +231,12 @@ if ($priInfo) {
 							<div class="form-group" style="padding-left:138px;">
 								<div class="switch-field">
 
-									<input type="radio" class='layCek' id="cekAllPrivileges" name='cekUnCekAll' value="yes" /></a>
-									<label for="cekAllPrivileges">
+									<input type="radio" class='layCek' id="allowAllPrivileges" name="allPrivilegesRadio" value="yes" /></a>
+									<label for="allowAllPrivileges">
 										<?php echo _("Select All"); ?>
 									</label>
-									<input type="radio" class='layCek' name='cekUnCekAll' id="unCekAllPrivileges" name="switch-one" value="no" /></a>
-									<label for="unCekAllPrivileges">
+									<input type="radio" class='layCek' name="allPrivilegesRadio" id="denyAllPrivileges" name="switch-one" value="no" /></a>
+									<label for="denyAllPrivileges">
 										<?php echo _("Unselect All"); ?>
 									</label>
 								</div>
@@ -248,12 +248,13 @@ if ($priInfo) {
 
 									foreach ($rInfo as $moduleRow) {
 										$moduleName = ($moduleRow['module'] == 'generic-tests') ? "Lab Tests" : $moduleRow['module'];
-										if ($a == 0)
-											$cls = "active";
-										else
-											$cls = "";
+										if ($a == 0) {
+											$liClass = "active";
+										} else {
+											$liClass = "";
+										}
 									?>
-										<li class="<?= $cls; ?>"><a href="#<?= $moduleRow['module']; ?>" data-toggle="tab" class="bg-primary"><?php echo strtoupper($moduleName); ?> </a></li>
+										<li class="<?= $liClass; ?>"><a href="#<?= $moduleRow['module']; ?>" data-toggle="tab" class="bg-primary"><?php echo strtoupper($moduleName); ?> </a></li>
 									<?php
 										$a++;
 									} ?>
@@ -315,19 +316,19 @@ if ($priInfo) {
 											echo "<td style='text-align:center;vertical-align:middle;' class='privilegesNode' id='" . $mRes[0] . "'>";
 											$style = "";
 											foreach ($pInfo as $privilege) {
-											if (in_array($privilege['privilege_id'], $priId)) {
-												$allowChecked = " checked='' ";
-												$denyChecked = "";
-												$allowStyle = " style='background-color:#398439'";
-												$denyStyle = "";
-											} else {
-												$denyChecked = " checked='' ";
-												$allowChecked = "";
-												$denyStyle = " style='background-color:#d9534f'";
-												$allowStyle = "";
-											}
-											echo $style; 
-											echo "<div class='col-lg-3' style='margin-top:5px;border:1px solid #eee;padding:10px;'>
+												if (in_array($privilege['privilege_id'], $priId)) {
+													$allowChecked = " checked='' ";
+													$denyChecked = "";
+													$allowStyle = " style='background-color:#398439'";
+													$denyStyle = "";
+												} else {
+													$denyChecked = " checked='' ";
+													$allowChecked = "";
+													$denyStyle = " style='background-color:#d9534f'";
+													$allowStyle = "";
+												}
+												echo $style;
+												echo "<div class='col-lg-3' style='margin-top:5px;border:1px solid #eee;padding:10px;'>
 											<strong>" . _($privilege['display_name']) . "</strong>
 											<br>
 
@@ -336,7 +337,6 @@ if ($priInfo) {
 												<input type='radio' class='unCekAll layCek' name='resource[" . $privilege['privilege_id'] . "]" . "' value='deny' id='radio-two" . $privilege['privilege_id'] . "' $denyChecked > <label for='radio-two" . $privilege['privilege_id'] . "' $denyStyle class='deny'> No</label>
 											</div>
 											</div>";
-
 											}
 											echo "</td></tr>";
 											$i++;
@@ -383,37 +383,34 @@ if ($priInfo) {
 		}
 	}
 
-	$("#cekAllPrivileges").click(function () {
+	$("#allowAllPrivileges").click(function() {
 		$('.unCekAll').prop('checked', false);
 		$('.cekAll').prop('checked', true);
-		$('.unCekAll').next('label').css('background-color','#e4e4e4');
-		$('.cekAll').next('label').css('background-color','#398439');
-		$(this).next('label').css('background-color','#398439');
-		$("#unCekAllPrivileges").next('label').css('background-color','#e4e4e4');
+		$('.unCekAll').next('label').css('background-color', '#e4e4e4');
+		$('.cekAll').next('label').css('background-color', '#398439');
+		$(this).next('label').css('background-color', '#398439');
+		$("#denyAllPrivileges").next('label').css('background-color', '#e4e4e4');
 	});
 
-	$("#unCekAllPrivileges").click(function () {
+	$("#denyAllPrivileges").click(function() {
 		$('.cekAll').prop('checked', false);
 		$('.unCekAll').prop('checked', true);
-		$('.unCekAll').next('label').css('background-color','#d9534f');
-		$('.cekAll').next('label').css('background-color','#e4e4e4');
-		$(this).next('label').css('background-color','#d9534f');
-		$("#cekAllPrivileges").next('label').css('background-color','#e4e4e4');
+		$('.unCekAll').next('label').css('background-color', '#d9534f');
+		$('.cekAll').next('label').css('background-color', '#e4e4e4');
+		$(this).next('label').css('background-color', '#d9534f');
+		$("#allowAllPrivileges").next('label').css('background-color', '#e4e4e4');
 
 	});
 
 
 	$('.switch-field input').click(function() {
-	val = $(this).val();
-		if(val=="deny")
-		{
-			$(this).closest('.switch-field').find('.unCekAll').next('label').css('background-color','#d9534f');
-			$(this).closest('.switch-field').find('.cekAll').next('label').css('background-color','#e4e4e4');
-		}
-		else if(val=="allow")
-		{
-			$(this).closest('.switch-field').find('.unCekAll').next('label').css('background-color','#e4e4e4');
-			$(this).closest('.switch-field').find('.cekAll').next('label').css('background-color','#398439');
+		val = $(this).val();
+		if (val == "deny") {
+			$(this).closest('.switch-field').find('.unCekAll').next('label').css('background-color', '#d9534f');
+			$(this).closest('.switch-field').find('.cekAll').next('label').css('background-color', '#e4e4e4');
+		} else if (val == "allow") {
+			$(this).closest('.switch-field').find('.unCekAll').next('label').css('background-color', '#e4e4e4');
+			$(this).closest('.switch-field').find('.cekAll').next('label').css('background-color', '#398439');
 		}
 	});
 
@@ -424,18 +421,18 @@ if ($priInfo) {
 		if (checked == true) {
 			$("#" + obj).find('.cekAll').prop('checked', true);
 			$("#" + obj).find('.unCekAll').prop('checked', false);
-			$("#" + obj).find('.unCekAll').next('label').css('background-color','#e4e4e4');
-			$("#" + obj).find('.cekAll').next('label').css('background-color','#398439');
-			$("#all" + obj).next('label').css('background-color','#398439');
-			$("#none" + obj).next('label').css('background-color','#e4e4e4');
+			$("#" + obj).find('.unCekAll').next('label').css('background-color', '#e4e4e4');
+			$("#" + obj).find('.cekAll').next('label').css('background-color', '#398439');
+			$("#all" + obj).next('label').css('background-color', '#398439');
+			$("#none" + obj).next('label').css('background-color', '#e4e4e4');
 
 		} else if (checked == false) {
 			$("#" + obj).find('.cekAll').prop('checked', false);
 			$("#" + obj).find('.unCekAll').prop('checked', true);
-			$("#" + obj).find('.unCekAll').next('label').css('background-color','#d9534f');
-			$("#" + obj).find('.cekAll').next('label').css('background-color','#e4e4e4');
-			$("#all" + obj).next('label').css('background-color','#e4e4e4');
-			$("#none" + obj).next('label').css('background-color','#d9534f');
+			$("#" + obj).find('.unCekAll').next('label').css('background-color', '#d9534f');
+			$("#" + obj).find('.cekAll').next('label').css('background-color', '#e4e4e4');
+			$("#all" + obj).next('label').css('background-color', '#e4e4e4');
+			$("#none" + obj).next('label').css('background-color', '#d9534f');
 
 		}
 	}

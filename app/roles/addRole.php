@@ -113,8 +113,7 @@ $rInfo = $db->query($resourcesQuery);
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='roleAddForm' id='roleAddForm' autocomplete="off"
-					action="addRolesHelper.php">
+				<form class="form-horizontal" method='post' name='roleAddForm' id='roleAddForm' autocomplete="off" action="addRolesHelper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
@@ -123,10 +122,7 @@ $rInfo = $db->query($resourcesQuery);
 										<?php echo _("Role Name"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="roleName" name="roleName"
-											placeholder="<?php echo _('Role Name'); ?>"
-											title="<?php echo _('Please enter a name for this role'); ?>"
-											onblur='checkNameValidation("roles","role_name",this,null,"<?php echo _("This role name that you entered already exists.Try another role name"); ?>",null)' />
+										<input type="text" class="form-control isRequired" id="roleName" name="roleName" placeholder="<?php echo _('Role Name'); ?>" title="<?php echo _('Please enter a name for this role'); ?>" onblur='checkNameValidation("roles","role_name",this,null,"<?php echo _("This role name that you entered already exists.Try another role name"); ?>",null)' />
 									</div>
 								</div>
 							</div>
@@ -136,10 +132,7 @@ $rInfo = $db->query($resourcesQuery);
 										<?php echo _("Role Code"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="roleCode" name="roleCode"
-											placeholder="<?php echo _('Role Code'); ?>"
-											title="<?php echo _('Please enter role code'); ?>"
-											onblur='checkNameValidation("roles","role_code",this,null,"<?php echo _("This role code that you entered already exists.Try another role code"); ?>",null)' />
+										<input type="text" class="form-control isRequired" id="roleCode" name="roleCode" placeholder="<?php echo _('Role Code'); ?>" title="<?php echo _('Please enter role code'); ?>" onblur='checkNameValidation("roles","role_code",this,null,"<?php echo _("This role code that you entered already exists.Try another role code"); ?>",null)' />
 									</div>
 								</div>
 							</div>
@@ -151,8 +144,7 @@ $rInfo = $db->query($resourcesQuery);
 										<?php echo _("Landing Page"); ?>
 									</label>
 									<div class="col-lg-7">
-										<select class="form-control " name='landingPage' id='landingPage'
-											title="<?php echo _('Please select landing page'); ?>">
+										<select class="form-control " name='landingPage' id='landingPage' title="<?php echo _('Please select landing page'); ?>">
 											<option value="">
 												<?php echo _("-- Select --"); ?>
 											</option>
@@ -207,8 +199,7 @@ $rInfo = $db->query($resourcesQuery);
 										<?php echo _("Status"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name='status' id='status'
-											title="<?php echo _('Please select the status'); ?>">
+										<select class="form-control isRequired" name='status' id='status' title="<?php echo _('Please select the status'); ?>">
 											<option value="">
 												<?php echo _("-- Select --"); ?>
 											</option>
@@ -230,8 +221,7 @@ $rInfo = $db->query($resourcesQuery);
 										<?php echo _("Access Type"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name='accessType' id='accessType'
-											title="<?php echo _('Please select access type'); ?>">
+										<select class="form-control isRequired" name='accessType' id='accessType' title="<?php echo _('Please select access type'); ?>">
 											<option value="">
 												<?php echo _("-- Select --"); ?>
 											</option>
@@ -260,14 +250,12 @@ $rInfo = $db->query($resourcesQuery);
 							<div class="form-group" style="padding-left:138px;">
 								<div class="switch-field">
 
-									<input type="radio" class='layCek' id="cekAllPrivileges" name='cekUnCekAll'
-										value="yes" /></a>
-									<label for="cekAllPrivileges">
+									<input type="radio" class='layCek' id="allowAllPrivileges" name="allPrivilegesRadio" value="yes" /></a>
+									<label for="allowAllPrivileges">
 										<?php echo _("Select All"); ?>
 									</label>
-									<input type="radio" class='layCek' name='cekUnCekAll' id="unCekAllPrivileges"
-										name="switch-one" value="no" /></a>
-									<label for="unCekAllPrivileges">
+									<input type="radio" class='layCek' name="allPrivilegesRadio" id="denyAllPrivileges" name="switch-one" value="no" /></a>
+									<label for="denyAllPrivileges">
 										<?php echo _("Unselect All"); ?>
 									</label>
 								</div>
@@ -279,14 +267,14 @@ $rInfo = $db->query($resourcesQuery);
 
 									foreach ($rInfo as $moduleRow) {
 										$moduleName = ($moduleRow['module'] == 'generic-tests') ? "Lab Tests" : $moduleRow['module'];
-										if ($a == 0)
-											$cls = "active";
-										else
-											$cls = "";
-										?>
-										<li class="<?= $cls; ?>"><a href="#<?= $moduleRow['module']; ?>" data-toggle="tab"
-												class="bg-primary"><?php echo strtoupper($moduleName); ?> </a></li>
-										<?php
+										if ($a == 0) {
+											$liClass = "active";
+										} else {
+											$liClass = "";
+										}
+									?>
+										<li class="<?= $liClass; ?>"><a href="#<?= $moduleRow['module']; ?>" data-toggle="tab" class="bg-primary"><?php echo strtoupper($moduleName); ?> </a></li>
+									<?php
 										$a++;
 									}
 									?>
@@ -313,23 +301,19 @@ $rInfo = $db->query($resourcesQuery);
 
 											echo "<tr>";
 											echo "<th>";
-											?>
+									?>
 											<small class="toggler">
 												<h4 style="font-weight: bold;">
 													<?= _($mRes[1]); ?>
 												</h4>
 												<div class="switch-field pull-right">
-													<input type='radio' class='' id='all<?= $mRes[0]; ?>'
-														name='<?= $mRes[1]; ?>'
-														onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",true);'>
+													<input type='radio' class='' id='all<?= $mRes[0]; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",true);'>
 													<label for='all<?= $mRes[0]; ?>'><?= _("All"); ?></label>
-													<input type='radio' class='' id='none<?= $mRes[0]; ?>'
-														name='<?= $mRes[1]; ?>'
-														onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",false);'>
+													<input type='radio' class='' id='none<?= $mRes[0]; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",false);'>
 													<label for='none<?= $mRes[0]; ?>'><?= _("None"); ?></label>
 												</div>
 											</small>
-											<?php
+									<?php
 											echo "</th>";
 											echo "</tr>";
 
@@ -394,6 +378,10 @@ $rInfo = $db->query($resourcesQuery);
 
 
 <script type="text/javascript">
+	$(document).ready(function() {
+		$("#denyAllPrivileges").trigger('click');
+	});
+
 	function validateNow() {
 		flag = deforayValidator.init({
 			formId: 'roleAddForm'
@@ -405,36 +393,33 @@ $rInfo = $db->query($resourcesQuery);
 		}
 	}
 
-	$("#cekAllPrivileges").click(function () {
+	$("#allowAllPrivileges").click(function() {
 		$('.unCekAll').prop('checked', false);
 		$('.cekAll').prop('checked', true);
-		$('.unCekAll').next('label').css('background-color','#e4e4e4');
-		$('.cekAll').next('label').css('background-color','#398439');
-		$(this).next('label').css('background-color','#398439');
-		$("#unCekAllPrivileges").next('label').css('background-color','#e4e4e4');
+		$('.unCekAll').next('label').css('background-color', '#e4e4e4');
+		$('.cekAll').next('label').css('background-color', '#398439');
+		$(this).next('label').css('background-color', '#398439');
+		$("#denyAllPrivileges").next('label').css('background-color', '#e4e4e4');
 	});
 
-	$("#unCekAllPrivileges").click(function () {
+	$("#denyAllPrivileges").click(function() {
 		$('.cekAll').prop('checked', false);
 		$('.unCekAll').prop('checked', true);
-		$('.unCekAll').next('label').css('background-color','#d9534f');
-		$('.cekAll').next('label').css('background-color','#e4e4e4');
-		$(this).next('label').css('background-color','#d9534f');
-		$("#cekAllPrivileges").next('label').css('background-color','#e4e4e4');
+		$('.unCekAll').next('label').css('background-color', '#d9534f');
+		$('.cekAll').next('label').css('background-color', '#e4e4e4');
+		$(this).next('label').css('background-color', '#d9534f');
+		$("#allowAllPrivileges").next('label').css('background-color', '#e4e4e4');
 
 	});
 
 	$('.switch-field input').click(function() {
-	val = $(this).val();
-		if(val=="deny")
-		{
-			$(this).closest('.switch-field').find('.unCekAll').next('label').css('background-color','#d9534f');
-			$(this).closest('.switch-field').find('.cekAll').next('label').css('background-color','#e4e4e4');
-		}
-		else if(val=="allow")
-		{
-			$(this).closest('.switch-field').find('.unCekAll').next('label').css('background-color','#e4e4e4');
-			$(this).closest('.switch-field').find('.cekAll').next('label').css('background-color','#398439');
+		val = $(this).val();
+		if (val == "deny") {
+			$(this).closest('.switch-field').find('.unCekAll').next('label').css('background-color', '#d9534f');
+			$(this).closest('.switch-field').find('.cekAll').next('label').css('background-color', '#e4e4e4');
+		} else if (val == "allow") {
+			$(this).closest('.switch-field').find('.unCekAll').next('label').css('background-color', '#e4e4e4');
+			$(this).closest('.switch-field').find('.cekAll').next('label').css('background-color', '#398439');
 		}
 	});
 
@@ -443,18 +428,18 @@ $rInfo = $db->query($resourcesQuery);
 		if (checked == true) {
 			$("#" + obj).find('.cekAll').prop('checked', true);
 			$("#" + obj).find('.unCekAll').prop('checked', false);
-			$("#" + obj).find('.unCekAll').next('label').css('background-color','#e4e4e4');
-			$("#" + obj).find('.cekAll').next('label').css('background-color','#398439');
-			$("#all" + obj).next('label').css('background-color','#398439');
-			$("#none" + obj).next('label').css('background-color','#e4e4e4');
+			$("#" + obj).find('.unCekAll').next('label').css('background-color', '#e4e4e4');
+			$("#" + obj).find('.cekAll').next('label').css('background-color', '#398439');
+			$("#all" + obj).next('label').css('background-color', '#398439');
+			$("#none" + obj).next('label').css('background-color', '#e4e4e4');
 
 		} else if (checked == false) {
 			$("#" + obj).find('.cekAll').prop('checked', false);
 			$("#" + obj).find('.unCekAll').prop('checked', true);
-			$("#" + obj).find('.unCekAll').next('label').css('background-color','#d9534f');
-			$("#" + obj).find('.cekAll').next('label').css('background-color','#e4e4e4');
-			$("#all" + obj).next('label').css('background-color','#e4e4e4');
-			$("#none" + obj).next('label').css('background-color','#d9534f');
+			$("#" + obj).find('.unCekAll').next('label').css('background-color', '#d9534f');
+			$("#" + obj).find('.cekAll').next('label').css('background-color', '#e4e4e4');
+			$("#all" + obj).next('label').css('background-color', '#e4e4e4');
+			$("#none" + obj).next('label').css('background-color', '#d9534f');
 
 		}
 	}
@@ -466,13 +451,13 @@ $rInfo = $db->query($resourcesQuery);
 		removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
 		$.post("/includes/checkDuplicate.php", {
-			tableName: tableName,
-			fieldName: fieldName,
-			value: removeDots.trim(),
-			fnct: fnct,
-			format: "html"
-		},
-			function (data) {
+				tableName: tableName,
+				fieldName: fieldName,
+				value: removeDots.trim(),
+				fnct: fnct,
+				format: "html"
+			},
+			function(data) {
 				if (data === '1') {
 					alert(alrt);
 					document.getElementById(obj.id).value = "";

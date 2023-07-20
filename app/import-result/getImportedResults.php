@@ -241,7 +241,7 @@ $output = array(
     "sEcho" => intval($_POST['sEcho']),
     "iTotalRecords" => $iTotal,
     "iTotalDisplayRecords" => $iFilteredTotal,
-    "aaData" => array()
+    "aaData" => []
 );
 $refno = abs($sampleTypeTotal - $totalControls);
 foreach ($rResult as $aRow) {

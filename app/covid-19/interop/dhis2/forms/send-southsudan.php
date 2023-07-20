@@ -147,7 +147,7 @@ foreach ($formResults as $row) {
     "programStage" => $programStages['labReception'],
     "status" => "ACTIVE",
     "trackedEntityInstance" => $trackedEntityInstance,
-    "dataValues" => array()
+    "dataValues" => []
   );
 
 
@@ -191,7 +191,7 @@ foreach ($formResults as $row) {
       "programStage" => $programStages['labProcessingAndResults'],
       "status" => "ACTIVE",
       "trackedEntityInstance" => $trackedEntityInstance,
-      "dataValues" => array()
+      "dataValues" => []
     );
     if (!empty($dataValues)) {
       $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
@@ -225,7 +225,7 @@ foreach ($formResults as $row) {
     "programStage" => $programStages['finalTestResult'],
     "status" => "ACTIVE",
     "trackedEntityInstance" => $trackedEntityInstance,
-    "dataValues" => array()
+    "dataValues" => []
   );
 
 

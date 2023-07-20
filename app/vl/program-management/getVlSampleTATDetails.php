@@ -187,7 +187,7 @@ $output = array(
 	"sEcho" => intval($_POST['sEcho']),
 	"iTotalRecords" => $iTotal,
 	"iTotalDisplayRecords" => $iFilteredTotal,
-	"aaData" => array()
+	"aaData" => []
 );
 
 foreach ($rResult as $aRow) {
