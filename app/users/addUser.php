@@ -185,7 +185,7 @@ $ftResult = $db->rawQuery($fQuery);
                                              <div class="col-lg-7">
                                                   <input type="password" class="form-control ppwd isRequired" id="password" name="password" placeholder="<?php echo _('Password'); ?>" title="<?php echo _('Please enter the password'); ?>" maxlength="16" /><br>
                                                   <button type="button" id="generatePassword" onclick="passwordType();" class="btn btn-default"><strong>Generate Random Password</strong></button><br>
-                                                  <code><?= _("Password must be at least 12 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?></code>
+                                                  <code><?= _("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?></code>
                                              </div>
                                         </div>
                                    </div>
@@ -394,9 +394,9 @@ $ftResult = $db->rawQuery($fQuery);
 
      function checkPasswordLength() {
           var pwd = $('#confirmPassword').val();
-          var regex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9!@#\$%\^\&*\)\(+=. _-]+){12,}$/;
+          var regex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9!@#\$%\^\&*\)\(+=. _-]+){8,}$/;
           if (regex.test(pwd) == false) {
-               alert("<?= _("Password must be at least 12 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?>");
+               alert("<?= _("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?>");
                $('.ppwd').focus();
           }
           return regex.test(pwd);
