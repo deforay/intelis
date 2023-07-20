@@ -99,7 +99,7 @@ $addedRecords = $_GET['total']-$_GET['notAdded'];
 							<div class="col-md-6">
 								<?php if(isset($_GET['total'])){ ?>
 									<span style="margin-left:74px; color:green;">Total Records : <?= $_GET['total']; ?>  |  Facilities Added : <?= $addedRecords; ?>  |  Facilities Not Added : <?= $_GET['notAdded']; ?></span>
-								<?php	if($_GET['notAdded']>0){ ?>
+								<?php	if($_GET['notAdded'] > 0){ ?>
                         		<a class="text-success" style="text-decoration:underline;margin-left:74px; margin-bottom:10px;" href="/temporary/INCORRECT-FACILITY-ROWS.xlsx" download>Download the Excel sheet of incorrect rows of facilities</a><br><br>
 									<?php } ?>
 								<?php } ?>
