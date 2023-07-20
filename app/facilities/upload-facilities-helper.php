@@ -41,7 +41,6 @@ try {
 
     if (move_uploaded_file($_FILES['facilitiesInfo']['tmp_name'], TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName)) {
 
-
         $spreadsheet = IOFactory::load(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName);
         $sheetData   = $spreadsheet->getActiveSheet();
         $sheetData   = $sheetData->toArray(null, true, true, true);
@@ -49,7 +48,7 @@ try {
         $resultArray = array_slice($sheetData, 1);
         $total = count($resultArray);
         $facilityNotAdded = [];
-
+       
         $column_header=["Facility Name*","Facility Code*","External Facility Code","Province/State*","District/County*","Facility Type*    (1-Health Facility,2-Testing Lab,3-Collection Site)","Address","Email","Phone Number","Latitude"	,"Longitude" ];
         $j=1;
         foreach($column_header as $heading) {
@@ -59,13 +58,16 @@ try {
             }
        
         foreach ($resultArray as $rowIndex => $rowData) {
-        $rowCount = 1;
-        $colNo = 1;
-            if (!empty($rowData['A'])) {
-                $sampleCode         = $general->getDataFromOneFieldAndValue('form_covid19', 'sample_code', $rowData['A']);
-                $provinceId         = $general->getDataFromOneFieldAndValue('geographical_divisions', 'geo_name', $rowData['D']);
-                $facility           = $general->getDataFromOneFieldAndValue('facility_details', 'facility_name', $rowData['F']);
+          //  echo $rowData['A']; die;
+            if(empty($rowData['A']) || empty($rowData['B']) || empty($rowData['D']) || empty($rowData['E']) || empty($rowData['F'])){
+                $_SESSION['alertMsg'] = _("Please enter all the mandatory fields in excel sheet");
+                header("Location:/facilities/upload-facilities.php");
+                die;
             }
+            if ( !in_array($rowData['F'], ['1','2','3'], true ) ) {
+                $rowData['F'] = '1';
+            }                
+           
             $instanceId = '';
             if (isset($_SESSION['instanceId'])) {
                 $instanceId = $_SESSION['instanceId'];
@@ -76,6 +78,7 @@ try {
 
             $provinceId = $facilityService->getOrCreateProvince($rowData['D']);
             $districtId = $facilityService->getOrCreateDistrict($rowData['E'],null,$provinceId);
+            
             $data = array(
                 'facility_name' => $rowData['A'],
                 'facility_code' => !empty($rowData['B']) ? $rowData['B'] : null,
