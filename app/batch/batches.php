@@ -122,11 +122,12 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 									<th scope="col"><?php echo _("Batch Code"); ?></th>
 									<?php if (!empty($_GET['type']) && $_GET['type'] == 'generic-tests') { ?>
 										<th scope="col"><?php echo _("Test Type"); ?></th>
-									<?php }?>
+									<?php } ?>
 									<th scope="col"><?php echo _("No. of Samples"); ?></th>
 									<th scope="col"><?php echo _("No. of Samples Tested"); ?></th>
-									<th scope="col"><?php echo _("Last Tested Date"); ?></th>
-									<th scope="col"><?php echo _("Created On"); ?></th>
+									<th scope="col"><?php echo _("Tested Date"); ?></th>
+									<th scope="col"><?php echo _("Batch Created On"); ?></th>
+									<th scope="col"><?php echo _("Last Modified On"); ?></th>
 									<?php if (isset($_SESSION['privileges']) && in_array("/batch/edit-batch.php?type=" . $_GET['type'], $_SESSION['privileges'])) { ?>
 										<th scope="col"><?php echo _("Action"); ?></th>
 									<?php } ?>
@@ -170,12 +171,14 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if (!empty($_GET['type']) && $_GET['type'] == 'generic-tests') { ?>
-					{
+				<?php if (!empty($_GET['type']) && $_GET['type'] == 'generic-tests') { ?> {
+						"sClass": "center",
+						"bSortable": false
+					},
+				<?php } ?> {
 					"sClass": "center",
 					"bSortable": false
 				},
-				<?php } ?>
 				{
 					"sClass": "center",
 					"bSortable": false
@@ -198,11 +201,11 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 				<?php } ?>
 			],
 			"aaSorting": [
-				[4, "desc"]
+				[5, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "get-batches.php",
+			"sAjaxSource": "/batch/get-batches.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "type",

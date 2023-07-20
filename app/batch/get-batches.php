@@ -1,8 +1,8 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -44,8 +44,8 @@ if (isset($_POST['type']) && $_POST['type'] == 'vl') {
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
  * you want to insert a non-database field (for example a counter or static image)
  */
-$aColumns = array('b.batch_code', 'total_samples', 'testcount', "DATE_FORMAT(last_tested_date,'%d-%b-%Y')", "DATE_FORMAT(b.last_modified_datetime,'%d-%b-%Y %H:%i:%s')");
-$orderColumns = array('b.batch_code', 'total_samples', 'testcount', 'last_tested_date', 'b.last_modified_datetime');
+$aColumns = array('b.batch_code', 'total_samples', 'testcount', "DATE_FORMAT(last_tested_date,'%d-%b-%Y')", "DATE_FORMAT(b.request_created_datetime,'%d-%b-%Y %H:%i:%s')", "DATE_FORMAT(b.last_modified_datetime,'%d-%b-%Y %H:%i:%s')");
+$orderColumns = array('b.batch_code', 'total_samples', 'testcount', 'last_tested_date', 'b.request_created_datetime', 'b.last_modified_datetime');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -122,22 +122,30 @@ if (isset($_POST['testType']) && ($_POST['testType'] != "")) {
  * SQL queries
  * Get data to display
  */
-$sQuery = "SELECT SUM(CASE WHEN vl.sample_tested_datetime is not null THEN 1 ELSE 0 END) as `testcount`,
-                MAX(vl.sample_tested_datetime) as last_tested_date,";
+
+$testTypeCol = "";
+
 if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
-    $sQuery .= " vl.test_type, ";
+    $testTypeCol = " vl.test_type, ";
 }
-$sQuery .= " b.request_created_datetime,
+
+$sQuery = "SELECT SUM(CASE WHEN vl.sample_tested_datetime is not null THEN 1 ELSE 0 END) as `testcount`,
+                MAX(vl.sample_tested_datetime) as last_tested_date,
+                $testTypeCol
+                b.request_created_datetime,
+                b.last_modified_datetime,
                 b.batch_code,
                 b.batch_id,
                 COUNT(vl.sample_code) AS total_samples
-                FROM $refTable vl, batch_details b";
+                FROM batch_details b
+                INNER JOIN $refTable vl ON vl.sample_batch_id = b.batch_id";
 
 if (!empty($sWhere)) {
     $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
 }
 
 $sQuery = $sQuery . ' GROUP BY b.batch_id';
+
 if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . ' order by ' . $sOrder;
@@ -169,7 +177,6 @@ if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
     }
 }
 foreach ($rResult as $aRow) {
-    $createdDate = "";
     $deleteBatch = '';
     $edit = '';
     if ($editBatch) {
@@ -189,20 +196,13 @@ foreach ($rResult as $aRow) {
     if ($pdf) {
         $printBarcode = '<a href="generate-batch-pdf.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" target="_blank"  rel="noopener" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _("Print Batch PDF") . '"><em class="fa-solid fa-barcode"></em> ' . _("Print Batch PDF") . '</a>';
     }
-    if (trim($aRow['request_created_datetime']) != "" && $aRow['request_created_datetime'] != '0000-00-00 00:00:00') {
-        $createdDate = date("d-M-Y H:i:s", strtotime($aRow['request_created_datetime']));
-    }
 
     if (($aRow['total_samples'] == 0 || $aRow['testcount'] == 0) && $delete) {
         $deleteBatch = '<a href="javascript:void(0);" class="btn btn-danger btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _("Delete") . '" onclick="deleteBatchCode(\'' . base64_encode($aRow['batch_id']) . '\',\'' . $aRow['batch_code'] . '\');"><em class="fa-solid fa-xmark"></em> ' . _("Delete") . '</a>';
     }
 
     $date = '';
-    $lastDate = null;
-    if ($aRow['last_tested_date'] != '0000-00-00 00:00:00' && $aRow['last_tested_date'] != null) {
-        $exp = explode(" ", $aRow['last_tested_date']);
-        $lastDate = DateUtility::humanReadableDateFormat($exp[0]);
-    }
+    $lastDate = DateUtility::humanReadableDateFormat($aRow['last_tested_date'] ?? '');
 
     $row = [];
     $row[] = ($aRow['batch_code']);
@@ -211,12 +211,9 @@ foreach ($rResult as $aRow) {
     }
     $row[] = $aRow['total_samples'];
     $row[] = $aRow['testcount'];
-    $row[] = $lastDate;
-    $row[] = $createdDate;
-    //    $row[] = '<select class="form-control" name="status" id=' . $aRow['batch_id'] . ' title="Please select status" onchange="updateStatus(this.id,this.value)">
-    //		    <option value="pending" ' . ($aRow['batch_status'] == "pending" ? "selected=selected" : "") . '>Pending</option>
-    //		    <option value="completed" ' . ($aRow['batch_status'] == "completed" ? "selected=selected" : "") . '>Completed</option>
-    //	    </select>';
+    $row[] = DateUtility::humanReadableDateFormat($aRow['last_tested_date'] ?? '', true);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'] ?? '', true);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '', true);
 
     if ($editBatch || $editPosition || $pdf || (($aRow['total_samples'] == 0 || $aRow['testcount'] == 0) && $delete)) {
         $row[] = $edit . '&nbsp;' . $printBarcode . '&nbsp;' . $editPosition . '&nbsp;' . $deleteBatch;

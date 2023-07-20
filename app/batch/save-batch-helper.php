@@ -110,6 +110,8 @@ try {
                     'position_type' => $_POST['positions'],
                     'test_type' => $_POST['type'],
                     'created_by' => $_SESSION['userId'],
+                    'last_modified_by' => $_SESSION['userId'],
+                    'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                     'request_created_datetime' => DateUtility::getCurrentDateTime()
                 );
 
