@@ -53,8 +53,8 @@ if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']
 	$reportFormats['generic-tests'] = $general->activeReportFormats('generic-tests');
 }
 $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
-if(isset($_GET['total'])){
-$addedRecords = $_GET['total']-$_GET['notAdded'];
+if (isset($_GET['total'])) {
+	$addedRecords = $_GET['total'] - $_GET['notAdded'];
 }
 ?>
 <style>
@@ -92,64 +92,60 @@ $addedRecords = $_GET['total']-$_GET['notAdded'];
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='uploadFacilityForm' id='uploadFacilityForm'
-					autocomplete="off" enctype="multipart/form-data" action="upload-facilities-helper.php">
+				<form class="form-horizontal" method='post' name='uploadFacilityForm' id='uploadFacilityForm' autocomplete="off" enctype="multipart/form-data" action="upload-facilities-helper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
-								<?php if(isset($_GET['total'])){ ?>
-									<span style="margin-left:74px; color:green;">Total Records : <?= $_GET['total']; ?>  |  Facilities Added : <?= $addedRecords; ?>  |  Facilities Not Added : <?= $_GET['notAdded']; ?></span>
-								<?php	if($_GET['notAdded'] > 0){ ?>
-                        		<a class="text-success" style="text-decoration:underline;margin-left:74px; margin-bottom:10px;" href="/temporary/INCORRECT-FACILITY-ROWS.xlsx" download>Download the Excel sheet of incorrect rows of facilities</a><br><br>
+								<?php if (isset($_GET['total'])) { ?>
+									<span style="margin-left:74px; color:green;">Total Records : <?= $_GET['total']; ?> | Facilities Added : <?= $addedRecords; ?> | Facilities Not Added : <?= $_GET['notAdded']; ?></span>
+									<?php if ($_GET['notAdded'] > 0) { ?>
+										<a class="text-success" style="text-decoration:underline;margin-left:74px; margin-bottom:10px;" href="/temporary/INCORRECT-FACILITY-ROWS.xlsx" download>Download the Excel sheet of incorrect rows of facilities</a><br><br>
 									<?php } ?>
 								<?php } ?>
-								
+
 								<div class="form-group">
 									<label for="facilityName" class="col-lg-4 control-label">
 										<?php echo _("Upload File"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<input type="file" class="form-control isRequired" id="facilitiesInfo"
-											name="facilitiesInfo" placeholder="<?php echo _('Facility Name'); ?>"
-											title="<?php echo _('Please upload file'); ?>"
-											onblur='checkNameValidation("facility_details","facility_name",this,null,"<?php echo _("The facility name that you entered already exists.Enter another name"); ?>",null)' />
-                                            <a class="text-primary" style="text-decoration:underline;" href="files/Facilities_Bulk_Upload_Excel_Format.xlsx" download>Click here to download the Excel format for uploading facilities</a>
+										<input type="file" class="form-control isRequired" id="facilitiesInfo" name="facilitiesInfo" placeholder="<?php echo _('Facility Name'); ?>" title="<?php echo _('Please upload file'); ?>" onblur='checkNameValidation("facility_details","facility_name",this,null,"<?php echo _("The facility name that you entered already exists.Enter another name"); ?>",null)' />
+										<a class="text-primary" style="text-decoration:underline;" href="/files/facilities/Facilities_Bulk_Upload_Excel_Format.xlsx" download>Click here to download the Excel format for uploading facilities</a>
 									</div>
 								</div>
 							</div>
-							
+
 						</div>
 
-					
-							</div>
-						
-						</div>
-						<!-- /.box-body -->
-						<div class="box-footer">
-							<input type="hidden" name="selectedUser" id="selectedUser" />
-							<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">
-								<?php echo _("Submit"); ?>
-							</a>
-							<a href="facilities.php" class="btn btn-default">
-								<?php echo _("Cancel"); ?>
-							</a>
-						</div>
-						<!-- /.box-footer -->
-				</form>
-				<!-- /.row -->
+
+					</div>
+
 			</div>
+			<!-- /.box-body -->
+			<div class="box-footer">
+				<input type="hidden" name="selectedUser" id="selectedUser" />
+				<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">
+					<?php echo _("Submit"); ?>
+				</a>
+				<a href="facilities.php" class="btn btn-default">
+					<?php echo _("Cancel"); ?>
+				</a>
+			</div>
+			<!-- /.box-footer -->
+			</form>
+			<!-- /.row -->
 		</div>
-		<!-- /.box -->
+</div>
+<!-- /.box -->
 
-	</section>
-	<!-- /.content -->
+</section>
+<!-- /.content -->
 </div>
 <script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
 <script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 
 <script type="text/javascript">
-	$(document).ready(function () {
+	$(document).ready(function() {
 		$("#testType").multipleSelect({
 			placeholder: '<?php echo _("Select Test Type"); ?>',
 			width: '100%'
@@ -163,7 +159,7 @@ $addedRecords = $_GET['total']-$_GET['notAdded'];
 			width: '100%'
 		});
 
-		$("#stateId").change(function () {
+		$("#stateId").change(function() {
 			if ($(this).val() == 'other') {
 				$('#provinceNew').show();
 			} else {
@@ -174,9 +170,9 @@ $addedRecords = $_GET['total']-$_GET['notAdded'];
 			var pName = $(this).val();
 			if ($.trim(pName) != '') {
 				$.post("/includes/siteInformationDropdownOptions.php", {
-					pName: pName,
-				},
-					function (data) {
+						pName: pName,
+					},
+					function(data) {
 						if (data != "") {
 							details = data.split("###");
 							$("#districtId").html(details[1]);
@@ -187,7 +183,7 @@ $addedRecords = $_GET['total']-$_GET['notAdded'];
 			$.unblockUI();
 		});
 
-		$("#districtId").change(function () {
+		$("#districtId").change(function() {
 			if ($(this).val() == 'other') {
 				$('#districtNew').show();
 			} else {
@@ -200,7 +196,7 @@ $addedRecords = $_GET['total']-$_GET['notAdded'];
 
 	function validateNow() {
 		var selVal = [];
-		$('#search_to option').each(function (i, selected) {
+		$('#search_to option').each(function(i, selected) {
 			selVal[i] = $(selected).val();
 		});
 		$("#selectedUser").val(selVal);
@@ -237,13 +233,13 @@ $addedRecords = $_GET['total']-$_GET['notAdded'];
 		removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
 		$.post("/includes/checkDuplicate.php", {
-			tableName: tableName,
-			fieldName: fieldName,
-			value: removeDots.trim(),
-			fnct: fnct,
-			format: "html"
-		},
-			function (data) {
+				tableName: tableName,
+				fieldName: fieldName,
+				value: removeDots.trim(),
+				fnct: fnct,
+				format: "html"
+			},
+			function(data) {
 				if (data === '1') {
 					alert(alrt);
 					document.getElementById(obj.id).value = "";
@@ -251,7 +247,7 @@ $addedRecords = $_GET['total']-$_GET['notAdded'];
 			});
 	}
 
-	$('#state').on('change', function () {
+	$('#state').on('change', function() {
 		if (this.value == 'other') {
 			$('#provinceNew').show();
 			$('#provinceNew').addClass('isRequired');
@@ -263,7 +259,7 @@ $addedRecords = $_GET['total']-$_GET['notAdded'];
 		}
 	});
 
-	$('#facilityType').on('change', function () {
+	$('#facilityType').on('change', function() {
 		if (this.value == '2') {
 			$("#allowResultUpload option[value=yes]").attr('selected', 'selected');
 			$("#allowResultUpload option[value='']").removeAttr('selected', 'selected');
@@ -282,9 +278,9 @@ $addedRecords = $_GET['total']-$_GET['notAdded'];
 	function getFacilityUser() {
 		if ($("#facilityType").val() == '1' || $("#facilityType").val() == '4') {
 			$.post("/facilities/getFacilityMapUser.php", {
-				fType: $("#facilityType").val()
-			},
-				function (data) {
+					fType: $("#facilityType").val()
+				},
+				function(data) {
 					$("#userDetails").html(data);
 				});
 		} else {
@@ -341,9 +337,9 @@ $addedRecords = $_GET['total']-$_GET['notAdded'];
 
 		if ($("#testType").val() != '') {
 			$.post("/facilities/getSampleType.php", {
-				testType: $("#testType").val()
-			},
-				function (data) {
+					testType: $("#testType").val()
+				},
+				function(data) {
 					$("#sampleType").html(data);
 				});
 		} else {
@@ -387,7 +383,7 @@ $addedRecords = $_GET['total']-$_GET['notAdded'];
 	}
 
 	function removeNewRow(el) {
-		$(el).fadeOut("slow", function () {
+		$(el).fadeOut("slow", function() {
 			el.parentNode.removeChild(el);
 			rl = document.getElementById("signDetails").rows.length;
 			if (rl == 0) {
