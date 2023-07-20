@@ -2,7 +2,9 @@
 
 use App\Services\BatchService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 /** @var MysqliDb $db */
@@ -75,24 +77,24 @@ if (isset($_GET['type'])) {
             $worksheetName = 'Lab Test Worksheet';
             $showPatientName = true;
             break;
+        default:
+            throw new SystemException('Invalid test type - ' . $_GET['type'], 500);
     }
 }
 
+$globalConfig = $general->getGlobalConfig();
 
-$barcodeFormat = $general->getGlobalConfig('barcode_format');
+
+$barcodeFormat = $globalConfig['barcode_format'] ?? 'C39';
 
 $barcodeFormat = isset($barcodeFormat) && $barcodeFormat != null ? $barcodeFormat : 'C39';
 
-if ($id > 0) {
+if (!empty($id)) {
 
-    if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "barcode") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "barcode")) {
-        mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "barcode", 0777, true);
-    }
-    $lQuery = "SELECT * from global_config where name='logo'";
-    $lResult = $db->query($lQuery);
+    MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "barcode");
 
-    $tQuery = "SELECT * from global_config where name='header'";
-    $tResult = $db->query($tQuery);
+    $logo = $globalConfig['logo'] ?? '';
+    $headerText = $globalConfig['header'] ?? '';
 
     $bQuery = "SELECT * FROM batch_details as b_d
                     LEFT JOIN instruments as i_c ON i_c.config_id=b_d.machine
@@ -192,7 +194,7 @@ if ($id > 0) {
         // create new PDF document
         $pdf = new BatchPdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-        $pdf->setHeading($lResult[0]['value'], $tResult[0]['value'], $bResult[0]['batch_code'], $resulted, $reviewed, $bResult[0]['user_name'], $worksheetName);
+        $pdf->setHeading($logo, $headerText, $bResult[0]['batch_code'], $resulted, $reviewed, $bResult[0]['user_name'], $worksheetName);
 
         // set document information
         $pdf->SetCreator(PDF_CREATOR);
@@ -291,9 +293,6 @@ if ($id > 0) {
                 $sampleCounter = $alphaNumeric[0];
             }
             for ($j = 0; $j < count($jsonToArray); $j++) {
-                // if($pdf->getY()>=250){
-                //     $pdf->AddPage();
-                // }
                 if (isset($bResult[0]['position_type']) && $bResult[0]['position_type'] == 'alpha-numeric') {
                     $xplodJsonToArray = explode("_", $jsonToArray[$alphaNumeric[$j]]);
                     if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
@@ -304,7 +303,6 @@ if ($id > 0) {
                         }
                         $sampleResult = $db->rawQuery($sampleQuery, [$xplodJsonToArray[1]]);
 
-                        // $params = $pdf->serializeTCPDFtagParameters(array($sampleResult[0]['sample_code'], $barcodeFormat, '', '', '', 7, 0.25, array('border' => false, 'align' => 'C', 'padding' => 1, 'fgcolor' => array(0, 0, 0), 'bgcolor' => array(255, 255, 255), 'text' => false, 'font' => 'helvetica', 'fontsize' => 7, 'stretchtext' => 2), 'N'));
                         $lotDetails = '';
                         $lotExpirationDate = '';
                         if (isset($sampleResult[0]['lot_expiration_date']) && $sampleResult[0]['lot_expiration_date'] != '' && $sampleResult[0]['lot_expiration_date'] != null && $sampleResult[0]['lot_expiration_date'] != '0000-00-00') {
@@ -474,10 +472,7 @@ if ($id > 0) {
             }
             $j = 0;
             foreach ($result as $sample) {
-                // if($pdf->getY()>=250){
-                //   $pdf->AddPage();
-                // }
-                // $params = $pdf->serializeTCPDFtagParameters(array($sample['sample_code'], $barcodeFormat, '', '', '', 7, 0.25, array('border' => false, 'align' => 'C', 'padding' => 1, 'fgcolor' => array(0, 0, 0), 'bgcolor' => array(255, 255, 255), 'text' => false, 'font' => 'helvetica', 'fontsize' => 7, 'stretchtext' => 2), 'N'));
+
                 $lotDetails = '';
                 $lotExpirationDate = '';
                 if (isset($sample['lot_expiration_date']) && $sample['lot_expiration_date'] != '' && $sample['lot_expiration_date'] != null && $sample['lot_expiration_date'] != '0000-00-00') {

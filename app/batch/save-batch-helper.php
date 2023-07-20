@@ -3,6 +3,7 @@
 use App\Services\BatchService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
@@ -49,6 +50,8 @@ if (isset($_POST['type'])) {
             $refTable = "form_generic";
             $refPrimaryColumn = "sample_id";
             break;
+        default:
+            throw new SystemException('Invalid test type - ' . $_POST['type'], 500);
     }
 }
 
@@ -59,17 +62,17 @@ try {
     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != "") {
         if (!empty($_POST['batchId'])) {
             $id = intval($_POST['batchId']);
-            $data = array(
+            $data = [
                 'batch_code' => $_POST['batchCode'],
                 'position_type' => $_POST['positions'],
                 'machine' => $_POST['machine'],
                 'last_modified_by' => $_SESSION['userId'],
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
-            );
+            ];
             $db = $db->where('batch_id', $id);
             $db->update($tableName1, $data);
             if ($id > 0) {
-                $value = array('sample_batch_id' => null);
+                $value = ['sample_batch_id' => null];
                 $db = $db->where('sample_batch_id', $id);
                 $db->update($refTable, $value);
                 $xplodResultSample = [];
@@ -79,12 +82,12 @@ try {
                 $sample = [];
                 //Mergeing disabled samples into existing samples
                 if (!empty($_POST['sampleCode'])) {
-                    if (count($xplodResultSample) > 0) {
+                    if (!empty($xplodResultSample)) {
                         $sample = array_unique(array_merge($_POST['sampleCode'], $xplodResultSample));
                     } else {
                         $sample = $_POST['sampleCode'];
                     }
-                } elseif (count($xplodResultSample) > 0) {
+                } elseif (!empty($xplodResultSample)) {
                     $sample = $xplodResultSample;
                 }
 
@@ -103,15 +106,17 @@ try {
                 $_SESSION['alertMsg'] = "Something went wrong. Please try again later.";
                 header("Location:batches.php?type=" . $_POST['type']);
             } else {
-                $data = array(
+                $data = [
                     'machine' => $_POST['platform'],
                     'batch_code' => $_POST['batchCode'],
                     'batch_code_key' => $_POST['batchCodeKey'],
                     'position_type' => $_POST['positions'],
                     'test_type' => $_POST['type'],
                     'created_by' => $_SESSION['userId'],
+                    'last_modified_by' => $_SESSION['userId'],
+                    'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                     'request_created_datetime' => DateUtility::getCurrentDateTime()
-                );
+                ];
 
                 $db->insert($tableName1, $data);
                 $lastId = $db->getInsertId();

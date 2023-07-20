@@ -126,24 +126,23 @@ $data['sampleStatusList'] = $app->generateSelectOptions($statusList);
 
 $rejectionReason = [];
 $modules = SYSTEM_CONFIG['modules'];
-unset($modules['common']);
 
-foreach($modules as $module=>$status){
-    if($status){
-        $module = ($module == 'generic-tests')?'generic':$module;
-    
+foreach ($modules as $module => $status) {
+    if ($status) {
+        $module = ($module == 'generic-tests') ? 'generic' : $module;
+
         $condition = " rejection_reason_status ='active' ";
         if ($updatedDateTime) {
             $condition .= " AND updated_datetime >= '$updatedDateTime'";
         }
-        $rejectionTypeResult = $general->getDataByTableAndFields('r_'.$module.'_sample_rejection_reasons', array('rejection_type'), false, $condition, 'rejection_type');
+        $rejectionTypeResult = $general->getDataByTableAndFields('r_' . $module . '_sample_rejection_reasons', array('rejection_type'), false, $condition, 'rejection_type');
         foreach ($rejectionTypeResult as $key => $type) {
             $rejectionReason[$module][$key]['show'] = ucwords($type['rejection_type']);
-            $condition = " rejection_reason_status ='active' AND rejection_type LIKE '". $type['rejection_type'] ."'";
+            $condition = " rejection_reason_status ='active' AND rejection_type LIKE '" . $type['rejection_type'] . "'";
             if ($updatedDateTime) {
                 $condition .= " AND updated_datetime >= '$updatedDateTime'";
             }
-            $rejectionResult = $general->getDataByTableAndFields('r_'.$module.'_sample_rejection_reasons', array('rejection_reason_id', 'rejection_reason_name'), false, $condition);
+            $rejectionResult = $general->getDataByTableAndFields('r_' . $module . '_sample_rejection_reasons', array('rejection_reason_id', 'rejection_reason_name'), false, $condition);
             foreach ($rejectionResult as $subKey => $reject) {
                 $rejectionReason[$module][$key]['reasons'][$subKey]['value'] = $reject['rejection_reason_id'];
                 $rejectionReason[$module][$key]['reasons'][$subKey]['show'] = ($reject['rejection_reason_name']);
@@ -414,7 +413,8 @@ if ($status) {
 }
 $payload = json_encode($payload);
 $trackId = $general->addApiTracking(
-    $transactionId, $user['user_id'],
+    $transactionId,
+    $user['user_id'],
     1,
     'init',
     'common',

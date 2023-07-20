@@ -1,4 +1,6 @@
 <?php
+
+use App\Exceptions\SystemException;
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
@@ -59,6 +61,8 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
 	$worksheetName = 'Lab Test Worksheet';
 	$showPatientName = true;
 	$genericHide = "style='display:none;'";
+} else {
+	throw new SystemException('Invalid test type - ' . $_GET['type'], 500);
 }
 $title = _($_title . " | Batches");
 
@@ -122,11 +126,11 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 									<th scope="col"><?php echo _("Batch Code"); ?></th>
 									<?php if (!empty($_GET['type']) && $_GET['type'] == 'generic-tests') { ?>
 										<th scope="col"><?php echo _("Test Type"); ?></th>
-									<?php }?>
+									<?php } ?>
 									<th scope="col"><?php echo _("No. of Samples"); ?></th>
 									<th scope="col"><?php echo _("No. of Samples Tested"); ?></th>
-									<th scope="col"><?php echo _("Last Tested Date"); ?></th>
-									<th scope="col"><?php echo _("Created On"); ?></th>
+									<th scope="col"><?php echo _("Tested Date"); ?></th>
+									<th scope="col"><?php echo _("Last Modified On"); ?></th>
 									<?php if (isset($_SESSION['privileges']) && in_array("/batch/edit-batch.php?type=" . $_GET['type'], $_SESSION['privileges'])) { ?>
 										<th scope="col"><?php echo _("Action"); ?></th>
 									<?php } ?>
@@ -170,13 +174,11 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 			"aoColumns": [{
 					"sClass": "center"
 				},
-				<?php if (!empty($_GET['type']) && $_GET['type'] == 'generic-tests') { ?>
-					{
-					"sClass": "center",
-					"bSortable": false
-				},
-				<?php } ?>
-				{
+				<?php if (!empty($_GET['type']) && $_GET['type'] == 'generic-tests') { ?> {
+						"sClass": "center",
+						"bSortable": false
+					},
+				<?php } ?> {
 					"sClass": "center",
 					"bSortable": false
 				},
@@ -202,7 +204,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 			],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "get-batches.php",
+			"sAjaxSource": "/batch/get-batches.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "type",
