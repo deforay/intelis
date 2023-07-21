@@ -21,7 +21,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
 } elseif (isset($_GET['type']) && $_GET['type'] == 'tb') {
     $title = "TB";
 } elseif (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
-    $title = "Lab Tests";
+    $title = "Other Lab Tests";
     $genericHide = "display:none;";
 }
 

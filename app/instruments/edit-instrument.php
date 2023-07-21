@@ -158,7 +158,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 												<option value='tb' <?php echo (in_array('tb', $sInfo['supported_tests'])) ? "selected='selected'" : ''; ?>><?php echo _("TB"); ?></option>
 											<?php }
 											if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) { ?>
-												<option value='generic-tests' <?php echo (in_array('generic-tests', $sInfo['supported_tests'])) ? "selected='selected'" : ''; ?>><?php echo _("Lab Tests"); ?></option>
+												<option value='generic-tests' <?php echo (in_array('generic-tests', $sInfo['supported_tests'])) ? "selected='selected'" : ''; ?>><?php echo _("Other Lab Tests"); ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -402,20 +402,20 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 											<tr class="generic-access user-access-form"
 												style="<?php echo in_array('generic', $sInfo['supported_tests']) ? "" : "display:none;"; ?>">
 												<td align="left" style="text-align:center;">
-													<?php echo _("Lab Tests"); ?><input type="hidden" name="userTestType[]"
+													<?php echo _("Other Lab Tests"); ?><input type="hidden" name="userTestType[]"
 														id="testType1" value="generic-tests" />
 												</td>
 												<td>
 													<select name="reviewedBy[]" id="reviewedByGeneric"
 														class="form-control user-generic select2"
-														title='<?php echo _("Please enter Reviewed By for Lab Test"); ?>'>
+														title='<?php echo _("Please enter Reviewed By for Other Lab Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, $sInfo['reviewed_by']['generic-tests'], '--Select--'); ?>
 													</select>
 												</td>
 												<td>
 													<select name="approvedBy[]" id="approvedByGeneric"
 														class="form-control user-generic select2"
-														title='<?php echo _("Please enter Approved By for Lab Test"); ?>'>
+														title='<?php echo _("Please enter Approved By for Other Lab Test"); ?>'>
 														<?php echo $general->generateSelectOptions($userList, $sInfo['approved_by']['generic-tests'], '--Select--'); ?>
 													</select>
 												</td>
@@ -581,27 +581,27 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 										if (SYSTEM_CONFIG['modules']['generic-tests']) { ?>
 											<tr id="generic-testsTable" class="ctlCalibrator" <?php echo $genericTests; ?>>
 												<td align="left" style="text-align:center;">
-													<?php echo _("Lab Tests"); ?><input type="hidden" name="testType[]"
+													<?php echo _("Other Lab Tests"); ?><input type="hidden" name="testType[]"
 														id="testType1" value="generic-tests" />
 												</td>
 												<td><input type="text"
 														value="<?php echo $configControl['generic-tests']['noHouseCtrl']; ?>"
 														name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control"
-														placeholder='<?php echo _("No of In-House Controls in Lab Tests"); ?>'
-														title='<?php echo _("Please enter No of In-House Controls in Lab Tests"); ?>' />
+														placeholder='<?php echo _("No of In-House Controls in Other Lab Tests"); ?>'
+														title='<?php echo _("Please enter No of In-House Controls in Other Lab Tests"); ?>' />
 												</td>
 												<td><input type="text"
 														value="<?php echo $configControl['generic-tests']['noManufacturerCtrl']; ?>"
 														name="noManufacturerCtrl[]" id="noManufacturerCtrl1"
 														class="form-control"
-														placeholder='<?php echo _("No of Manufacturer Controls in Lab Tests"); ?>'
-														title='<?php echo _("Please enter No of Manufacturer Controls in Lab Tests"); ?>' />
+														placeholder='<?php echo _("No of Manufacturer Controls in Other Lab Tests"); ?>'
+														title='<?php echo _("Please enter No of Manufacturer Controls in Other Lab Tests"); ?>' />
 												</td>
 												<td><input type="text"
 														value="<?php echo $configControl['generic-tests']['noCalibrators']; ?>"
 														name="noCalibrators[]" id="noCalibrators1" class="form-control"
-														placeholder='<?php echo _("No of Calibrators in Lab Tests"); ?>'
-														title='<?php echo _("Please enter No of Calibrators in Lab Tests"); ?>' />
+														placeholder='<?php echo _("No of Calibrators in Other Lab Tests"); ?>'
+														title='<?php echo _("Please enter No of Calibrators in Other Lab Tests"); ?>' />
 												</td>
 											</tr>
 										<?php } ?>

@@ -405,7 +405,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 												<?php }
 												if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) { ?>
 													<option value='generic-tests'>
-														<?php echo _("Lab Tests"); ?>
+														<?php echo _("Other Lab Tests"); ?>
 													</option>
 												<?php } ?>
 											</select>
@@ -699,7 +699,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 													<?php }
 													if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) { ?>
 														<option value='generic-tests'>
-															<?php echo _("Lab Tests"); ?>
+															<?php echo _("Other Lab Tests"); ?>
 														</option>
 													<?php } ?>
 												</select>
@@ -938,7 +938,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 					testOrg = 'TB';
 					var extraDiv = '<td></td>';
 				} else if (testType[i] == 'generic-tests') {
-					testOrg = 'Lab Tests';
+					testOrg = 'Other Lab Tests';
 					var extraDiv = '<td></td>';
 				}
 				div += '<tr><td>' + testOrg + '<input type="hidden" name="testData[]" id ="testData' + i + '" value="' + testType[i] + '" /></td>';

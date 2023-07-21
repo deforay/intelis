@@ -46,14 +46,14 @@ $state = $geolocationService->getProvinces("yes");
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1><em class="fa-solid fa-print"></em>
-			<?php echo _("Print Lab Tests Results"); ?>
+			<?php echo _("Print Other Lab Tests Results"); ?>
 		</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em>
 					<?php echo _("Home"); ?>
 				</a></li>
 			<li class="active">
-				<?php echo _("Print Lab Tests Results"); ?>
+				<?php echo _("Print Other Lab Tests Results"); ?>
 			</li>
 		</ol>
 	</section>

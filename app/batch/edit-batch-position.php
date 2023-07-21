@@ -47,7 +47,7 @@ if (isset($_GET['type'])) {
 			$refPrimaryColumn = "tb_id";
 			break;
 		case 'generic-tests':
-			$title = "Lab Tests";
+			$title = "Other Lab Tests";
 			$refTable = "form_generic";
 			$refPrimaryColumn = "sample_id";
 			break;

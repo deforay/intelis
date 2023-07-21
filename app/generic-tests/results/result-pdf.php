@@ -104,10 +104,10 @@ if (!empty($requestResult)) {
           } else {
                $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $arr['logo'];
           }
-          $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'LAB TESTS PATIENT REPORT', null, $result['test_standard_name']);
+          $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'OTHER LAB TESTS PATIENT REPORT', null, $result['test_standard_name']);
           // set document information
           $pdf->SetCreator('VLSM');
-          $pdf->SetTitle('LAB TESTS PATIENT REPORT');
+          $pdf->SetTitle('OTHER LAB TESTS PATIENT REPORT');
           //$pdf->SetSubject('TCPDF Tutorial');
           //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
 

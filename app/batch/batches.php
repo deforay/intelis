@@ -52,7 +52,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
 	$worksheetName = 'TB Test Worksheet';
 	$showPatientName = true;
 } elseif (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
-	$_title = "Lab Tests";
+	$_title = "Other Lab Tests";
 	$refTable = "form_generic";
 	$refPrimaryColumn = "sample_id";
 	$patientIdColumn = 'patient_id';

@@ -1,5 +1,5 @@
 <?php
-$title = _("Sample Types");
+$title = _("Other Lab Tests Sample Types");
 require_once APPLICATION_PATH . '/header.php';
 
 use App\Services\UsersService;
@@ -13,7 +13,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-gears"></em> <?php echo _("Sample Types"); ?></h1>
+		<h1><em class="fa-solid fa-gears"></em> <?php echo _("Other Lab Tests Sample Types"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
 			<li class="active"><?php echo _("Sample Types"); ?></li>

@@ -8,7 +8,7 @@ use App\Services\GenericTestsService;
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-$title = _("Lab Tests | Sample Status Report");
+$title = _("Other Lab Tests | Sample Status Report");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -52,14 +52,14 @@ $batResult = $db->rawQuery($batQuery);
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1><em class="fa-solid fa-book"></em>
-			<?php echo _("Lab Tests Sample Status Report"); ?>
+			<?php echo _("Other Lab Tests Sample Status Report"); ?>
 		</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em>
 					<?php echo _("Home"); ?>
 				</a></li>
 			<li class="active">
-				<?php echo _("Lab Tests Sample Status Report"); ?>
+				<?php echo _("Other Lab Tests Sample Status Report"); ?>
 			</li>
 		</ol>
 	</section>

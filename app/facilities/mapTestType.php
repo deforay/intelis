@@ -72,7 +72,7 @@ require_once APPLICATION_PATH . '/header.php';
 														<option value='tb'><?php echo _("TB"); ?></option>
 													<?php }
 													if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) { ?>
-														<option value='generic-tests'><?php echo _("Lab Tests"); ?></option>
+														<option value='generic-tests'><?php echo _("Other Lab Tests"); ?></option>
 													<?php } ?>
 												</select>
 											</div>

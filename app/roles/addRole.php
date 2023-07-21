@@ -270,7 +270,7 @@ $rInfo = $db->query($resourcesQuery);
 									$a = 0;
 
 									foreach ($rInfo as $moduleRow) {
-										$moduleName = ($moduleRow['module'] == 'generic-tests') ? "Lab Tests" : $moduleRow['module'];
+										$moduleName = ($moduleRow['module'] == 'generic-tests') ? "Other Lab Tests" : $moduleRow['module'];
 										if ($a == 0) {
 											$liClass = "active";
 										} else {

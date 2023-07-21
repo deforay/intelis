@@ -1155,7 +1155,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 						if (SYSTEM_CONFIG['modules']['generic-tests']) { ?>
 							<div class="panel panel-default">
 								<div class="panel-heading">
-									<h3 class="panel-title"><?php echo _("Generic Lab Tests Settings"); ?></h3>
+									<h3 class="panel-title"><?php echo _("Other Lab Tests Settings"); ?></h3>
 								</div>
 								<div class="panel-body">
 									<div class="row">
@@ -1245,7 +1245,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 											<div class="form-group">
 												<label for="generic_auto_approve_api_results" class="col-lg-2 control-label"><?php echo _("Auto Approve API Results"); ?></label>
 												<div class="col-lg-4">
-													<select id="generic_auto_approve_api_results" name="generic_auto_approve_api_results" type="text" class="form-control readPage" title="<?php echo _('Please select Lab Tests Auto Approve API Results'); ?>">
+													<select id="generic_auto_approve_api_results" name="generic_auto_approve_api_results" type="text" class="form-control readPage" title="<?php echo _('Please select Other Lab Tests Auto Approve API Results'); ?>">
 														<option value=""><?php echo _("--Select--"); ?></option>
 														<option value="yes" <?php echo (isset($arr['generic_auto_approve_api_results']) && $arr['generic_auto_approve_api_results'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes"); ?></option>
 														<option value="no" <?php echo (isset($arr['generic_auto_approve_api_results']) && $arr['generic_auto_approve_api_results'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No"); ?></option>
@@ -1257,9 +1257,9 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="generic_show_participant_name_in_manifest" class="col-lg-2 control-label"><?php echo _("Lab Tests Show Participant Name in Manifest"); ?></label>
+												<label for="generic_show_participant_name_in_manifest" class="col-lg-2 control-label"><?php echo _("Other Lab Tests Show Participant Name in Manifest"); ?></label>
 												<div class="col-lg-4">
-													<select id="generic_show_participant_name_in_manifest" name="generic_show_participant_name_in_manifest" type="text" class="form-control readPage" title="<?php echo _('Please select Lab Tests Participant Name in Manifest'); ?>">
+													<select id="generic_show_participant_name_in_manifest" name="generic_show_participant_name_in_manifest" type="text" class="form-control readPage" title="<?php echo _('Please select Other Lab Tests Participant Name in Manifest'); ?>">
 														<option value=""><?php echo _("--Select--"); ?></option>
 														<option value="yes" <?php echo (isset($arr['generic_show_participant_name_in_manifest']) && $arr['generic_show_participant_name_in_manifest'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _("Yes"); ?></option>
 														<option value="no" <?php echo (isset($arr['generic_show_participant_name_in_manifest']) && $arr['generic_show_participant_name_in_manifest'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _("No"); ?></option>

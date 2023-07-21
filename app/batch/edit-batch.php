@@ -37,7 +37,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
 	$refTable = "form_tb";
 	$refPrimaryColumn = "tb_id";
 } elseif (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
-	$title = "Lab Tests";
+	$title = "Other Lab Tests";
 	$refTable = "form_generic";
 	$refPrimaryColumn = "sample_id";
 }

@@ -205,7 +205,7 @@ foreach ($rResult as $aRow) {
         $disable = "disabled";
     }
     if ($module == 'generic-tests') {
-        $aRow['module'] = "LAB TESTS ";
+        $aRow['module'] = "OTHER LAB TESTS ";
     }
     $row = [];
 
