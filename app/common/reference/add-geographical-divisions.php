@@ -38,7 +38,7 @@ foreach ($geoParentInfo as $type) {
                                 <div class="form-group">
                                     <label for="geoName" class="col-lg-4 control-label"><?php echo _("Geographical Division Name"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="geoName" name="geoName" placeholder="<?php echo _('Geographical Division Name'); ?>" title="<?php echo _('Please enter Geographical Division name'); ?>" onblur='checkNameValidation("geographical_divisions","geo_name",this,null,"<?php echo _("The Geographical Division name that you entered already exists.Enter another name"); ?>",null)' />
+                                        <input type="text" class="form-control isRequired" id="geoName" name="geoName" placeholder="<?php echo _('Geographical Division Name'); ?>" title="<?php echo _('Please enter Geographical Division name'); ?>" onblur='checkNameValidation("geographical_divisions","geo_name",this,null,"<?php echo _("The Geographical Division name that you entered already exists. Please enter another name"); ?>",null)' />
                                     </div>
                                 </div>
                             </div>
@@ -46,7 +46,7 @@ foreach ($geoParentInfo as $type) {
                                 <div class="form-group">
                                     <label for="geoCode" class="col-lg-4 control-label"><?php echo _("Geographical Division Code"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="geoCode" name="geoCode" placeholder="<?php echo _('Geographical Division code'); ?>" title="<?php echo _('Please enter Geographical Division code'); ?>" onblur='checkNameValidation("geographical_divisions","geo_code",this,null,"<?php echo _("The Geographical Division code that you entered already exists.Enter another code"); ?>",null)' />
+                                        <input type="text" class="form-control isRequired" id="geoCode" name="geoCode" placeholder="<?php echo _('Geographical Division code'); ?>" title="<?php echo _('Please enter Geographical Division code'); ?>" onblur='checkNameValidation("geographical_divisions","geo_code",this,null,"<?php echo _("The Geographical Division code that you entered already exists. Please enter another code"); ?>",null)' />
                                     </div>
                                 </div>
                             </div>
