@@ -176,7 +176,7 @@ $pResult = $db->rawQuery($pQuery);
 	});
 
 	function getPatientDetails(pDetails) {
-		window.parent.Utilities.closeModal();
+		window.parent.closeModal();
 		window.parent.setPatientDetails(pDetails);
 	}
 </script>

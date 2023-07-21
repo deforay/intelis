@@ -28,13 +28,12 @@ $request = MiscUtility::getJsonFromZip($folder . DIRECTORY_SEPARATOR . 'requests
 $response = MiscUtility::getJsonFromZip($folder . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip', $result['transaction_id'] . '.json');
 
 ?>
-<script src="/assets/js/bootstrap.min.js"></script>
+
 <link rel="stylesheet" media="all" type="text/css" href="/assets/css/fonts.css" />
 <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
 <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
 <link rel="stylesheet" href="/assets/css/skins/_all-skins.min.css">
-<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
-<script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -63,9 +62,10 @@ $response = MiscUtility::getJsonFromZip($folder . DIRECTORY_SEPARATOR . 'respons
             </div>
     </section>
 </div>
-<script src="/assets/js/main.js"></script>
-<script src="/assets/js/app.min.js"></script>
-<script src="/assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/assets/js/main.js"></script>
+<script type="text/javascript" src="/assets/js/app.min.js"></script>
 <script>
     function openTab(active, inactive) {
         $('#' + active).show();

@@ -99,7 +99,7 @@
 <!-- DataTables -->
 <script type="text/javascript">
   <?php if (isset($_SESSION['success']) && trim($_SESSION['success']) != "") { ?>
-    window.parent.Utilities.closeModal();
+    window.parent.closeModal();
     window.parent.alert("<?php echo $_SESSION['alertMsg']; ?>");
     <?php $_SESSION['alertMsg'] = '';
     unset($_SESSION['alertMsg']);

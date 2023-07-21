@@ -212,7 +212,7 @@ $pResult = $db->get("form_vl vl", 25, "fd.facility_id,
 	});
 
 	function getPatientDetails(pDetails) {
-		window.parent.Utilities.closeModal();
+		window.parent.closeModal();
 		window.parent.setPatientDetails(pDetails);
 	}
 </script>

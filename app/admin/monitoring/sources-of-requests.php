@@ -313,7 +313,7 @@ $activeModules = SystemService::getActiveModules();
 
     function viewMore(url) {
         params = $("#dateRange").val() + '##' + $("#labName").val() + '##' + $("#srcRequest").val();
-        Utilities.showModal(url + '?id=' + btoa(params), 1200, 720);
+        showModal(url + '?id=' + btoa(params), 1200, 720);
     }
 </script>
 <?php
