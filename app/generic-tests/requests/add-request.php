@@ -1448,7 +1448,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     },
                     function(data) {
                          if (data >= '1') {
-                              Utilities.showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()) + '&testType=' + $.trim($("#testType").val()), 900, 520);
+                              showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()) + '&testType=' + $.trim($("#testType").val()), 900, 520);
                          } else {
                               $("#showEmptyResult").show();
                          }
@@ -1468,7 +1468,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     },
                     function(data) {
                          if (data === '1') {
-                              Utilities.showModal('patientModal.php?artNo=' + obj.value + '&testType=' + $.trim($("#testType").val()), 900, 520);
+                              showModal('patientModal.php?artNo=' + obj.value + '&testType=' + $.trim($("#testType").val()), 900, 520);
                          }
                     });
           }

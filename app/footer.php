@@ -20,7 +20,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		Centers for Disease Control and Prevention (CDC)."); ?>
 	</small>
 	<?php if (!empty($supportEmail)) { ?>
-		<small><a href="javascript:void(0);" onclick="Utilities.showModal('/support/index.php?fUrl=<?php echo htmlspecialchars($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>', 900, 520);">Support</a></small>
+		<small><a href="javascript:void(0);" onclick="showModal('/support/index.php?fUrl=<?php echo htmlspecialchars($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>', 900, 520);">Support</a></small>
 	<?php } ?>
 	<small class="pull-right" style="font-weight:bold;">&nbsp;&nbsp;
 		<?php echo "v" . VERSION; ?>
@@ -283,7 +283,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		// if instance facility name is not set, let us show the modal
 
 		if (empty($_SESSION['instanceFacilityName'])) {
-		?> Utilities.showModal('/addInstanceDetails.php', 900, 420);
+		?> showModal('/addInstanceDetails.php', 900, 420);
 		<?php } ?>
 	});
 

@@ -248,7 +248,7 @@ $batResult = $db->rawQuery($batQuery);
   }
 
   function getPatient(ptDetails) {
-    window.parent.Utilities.closeModal();
+    window.parent.closeModal();
     window.parent.setPatientDetails(ptDetails);
   }
 </script>

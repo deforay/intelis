@@ -36,9 +36,9 @@ $type = $_GET['type'];
   <section class="content-header">
     <div class="pull-left" style="font-size:22px;">Search Clinics</div>
     <?php if ($type == 'all') { ?>
-      <div class="pull-right"><a class="btn btn-primary" href="javascript:void(0);" onclick="Utilities.showModal('addFacilityModal.php?type=all',900,520);" style="margin-bottom:20px;">Add Clinic</a></div>
+      <div class="pull-right"><a class="btn btn-primary" href="javascript:void(0);" onclick="showModal('addFacilityModal.php?type=all',900,520);" style="margin-bottom:20px;">Add Clinic</a></div>
     <?php } else { ?>
-      <div class="pull-right"><a class="btn btn-primary" href="javascript:void(0);" onclick="Utilities.showModal('addFacilityModal.php?type=lab',900,520);" style="margin-bottom:20px;">Add Clinic</a></div>
+      <div class="pull-right"><a class="btn btn-primary" href="javascript:void(0);" onclick="showModal('addFacilityModal.php?type=lab',900,520);" style="margin-bottom:20px;">Add Clinic</a></div>
     <?php } ?>
   </section>
   <!-- Main content -->
@@ -200,12 +200,12 @@ $type = $_GET['type'];
   });
 
   function getFacility(fDetails) {
-    window.parent.Utilities.closeModal();
+    window.parent.closeModal();
     window.parent.setFacilityDetails(fDetails);
   }
 
   function getFacilityLab(fDetails) {
-    window.parent.Utilities.closeModal();
+    window.parent.closeModal();
     window.parent.setFacilityLabDetails(fDetails);
   }
 

@@ -1464,7 +1464,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 				},
 				function(data) {
 					if (data >= '1') {
-						Utilities.showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
+						showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
 					} else {
 						$("#showEmptyResult").show();
 					}

@@ -143,7 +143,7 @@
                 },
                 function(data) {
                     if (data >= '1') {
-                        Utilities.showModal('/vl/requests/patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
+                        showModal('/vl/requests/patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
                     } else {
                         $("#showEmptyResult").show();
                     }
@@ -163,7 +163,7 @@
                 },
                 function(data) {
                     if (data === '1') {
-                        Utilities.showModal('patientModal.php?artNo=' + obj.value, 900, 520);
+                        showModal('patientModal.php?artNo=' + obj.value, 900, 520);
                     }
                 });
         }
