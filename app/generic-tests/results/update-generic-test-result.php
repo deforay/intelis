@@ -295,6 +295,9 @@ $testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY
 $testTypeResult = $db->rawQuery($testTypeQuery);
 
 $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
+
+$reasonForChangeArr = explode('##',$genericResultInfo['reason_for_test_result_changes']);
+$reasonForChange = $reasonForChangeArr[1];
 ?><!-- Content Wrapper. Contains page content -->
 <style>
 	.table>tbody>tr>td {
@@ -1014,11 +1017,11 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 											</div>
 										</div>
 										<div class="row">
-											<div class="col-md-6 change-reason" style="display:none;">
+											<div class="col-md-6 change-reason" style="display:<?php echo (empty($reasonForChange)) ? "none" : "block"; ?>;">
 												<label class="col-lg-5 control-label" for="reasonForResultChanges">Reason
 													For Changes in Result<span class="mandatory">*</span></label>
 												<div class="col-lg-7">
-													<textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="Enter Reason For Result Changes" title="Please enter reason for result changes" style="width:100%;"></textarea>
+													<textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="Enter Reason For Result Changes" title="Please enter reason for result changes" style="width:100%;"><?= $reasonForChange; ?></textarea>
 												</div>
 											</div>
 										</div>
