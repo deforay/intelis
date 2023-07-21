@@ -20,8 +20,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		Centers for Disease Control and Prevention (CDC)."); ?>
 	</small>
 	<?php if (!empty($supportEmail)) { ?>
-		<small><a href="javascript:void(0);"
-				onclick="showModal('/support/index.php?fUrl=<?php echo htmlspecialchars($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>', 900, 520);">Support</a></small>
+		<small><a href="javascript:void(0);" onclick="Utilities.showModal('/support/index.php?fUrl=<?php echo htmlspecialchars($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>', 900, 520);">Support</a></small>
 	<?php } ?>
 	<small class="pull-right" style="font-weight:bold;">&nbsp;&nbsp;
 		<?php echo "v" . VERSION; ?>
@@ -36,7 +35,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 				</a>&nbsp;&nbsp;
 			</small>
 		</div>
-		<?php
+	<?php
 	}
 	$lastSync = '';
 
@@ -111,17 +110,17 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 					message: "<h3><?= _("Preparing for STS sync."); ?><br><?= _("Please wait..."); ?></h3>"
 				});
 				var jqxhr = $.ajax({
-					url: "/scheduled-jobs/remote/commonDataSync.php",
-				})
-					.done(function (data) {
+						url: "/scheduled-jobs/remote/commonDataSync.php",
+					})
+					.done(function(data) {
 						//console.log(data);
 						//alert( "success" );
 					})
-					.fail(function () {
+					.fail(function() {
 						$.unblockUI();
 						alert("<?= _("Unable to do STS Sync. Please contact technical team for assistance."); ?>");
 					})
-					.always(function () {
+					.always(function() {
 						$.unblockUI();
 						syncResults();
 					});
@@ -135,17 +134,17 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 			if (remoteSync) {
 				var jqxhr = $.ajax({
-					url: "/scheduled-jobs/remote/requestsSync.php",
-				})
-					.done(function (data) {
+						url: "/scheduled-jobs/remote/requestsSync.php",
+					})
+					.done(function(data) {
 						//console.log(data);
 						//alert( "success" );
 					})
-					.fail(function () {
+					.fail(function() {
 						$.unblockUI();
 						alert("<?= _("Unable to do STS Sync. Please contact technical team for assistance."); ?>");
 					})
-					.always(function () {
+					.always(function() {
 						$.unblockUI();
 						//syncResults();
 					});
@@ -160,17 +159,17 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 			if (remoteSync) {
 				var jqxhr = $.ajax({
-					url: "/scheduled-jobs/remote/resultsSync.php",
-				})
-					.done(function (data) {
+						url: "/scheduled-jobs/remote/resultsSync.php",
+					})
+					.done(function(data) {
 						//console.log(data);
 						//alert( "success" );
 					})
-					.fail(function () {
+					.fail(function() {
 						$.unblockUI();
 						alert("<?= _("Unable to do STS Sync. Please contact technical team for assistance."); ?>");
 					})
-					.always(function () {
+					.always(function() {
 						$.unblockUI();
 						syncRequests();
 					});
@@ -180,35 +179,35 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 
 
-		function screenshot(supportId, attached) {
-			if (supportId != "" && attached == 'yes') {
-				closeModal();
-				html2canvas(document.querySelector("#lis-body")).then(canvas => {
-					dataURL = canvas.toDataURL();
-					$.blockUI();
-					$.post("/support/saveScreenshot.php", {
+	function screenshot(supportId, attached) {
+		if (supportId != "" && attached == 'yes') {
+			closeModal();
+			html2canvas(document.querySelector("#lis-body")).then(canvas => {
+				dataURL = canvas.toDataURL();
+				$.blockUI();
+				$.post("/support/saveScreenshot.php", {
 						image: dataURL,
 						supportId: supportId
 					},
-						function (data) {
-							$.unblockUI();
-							alert("<?= _("Thank you.Your message has been submitted."); ?>");
-						});
-				});
-			} else {
-				closeModal();
-				$.blockUI();
-				$.post("/support/saveScreenshot.php", {
-					supportId: supportId
-				},
-					function (data) {
+					function(data) {
 						$.unblockUI();
 						alert("<?= _("Thank you.Your message has been submitted."); ?>");
 					});
-			}
+			});
+		} else {
+			closeModal();
+			$.blockUI();
+			$.post("/support/saveScreenshot.php", {
+					supportId: supportId
+				},
+				function(data) {
+					$.unblockUI();
+					alert("<?= _("Thank you.Your message has been submitted."); ?>");
+				});
 		}
+	}
 
-	$(document).ready(function () {
+	$(document).ready(function() {
 
 		$(".allMenu").removeClass('active');
 
@@ -217,7 +216,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 		if (!currentMenuItem.length) {
 			let currentPaths = Utilities.splitPath(url).map(path => btoa(path));
-			currentMenuItem = $('a[data-inner-pages]').filter(function () {
+			currentMenuItem = $('a[data-inner-pages]').filter(function() {
 				return currentPaths.some(path => $(this).data('inner-pages').split(';').includes(path));
 			});
 		}
@@ -237,13 +236,13 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 				$.ajax({
 					url: '/scheduled-jobs/remote/getLastSyncTime.php',
 					cache: false,
-					success: function (lastSyncDateString) {
+					success: function(lastSyncDateString) {
 						if (lastSyncDateString != null && lastSyncDateString != undefined) {
 							$('.lastSyncDateTime').html(lastSyncDateString);
 							$('.syncHistoryDiv').show();
 						}
 					},
-					error: function (data) { }
+					error: function(data) {}
 				});
 				setTimeout(getLastSyncDateTime, 15 * 60 * 1000);
 			})();
@@ -253,11 +252,11 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 				$.ajax({
 					url: '<?= SYSTEM_CONFIG['remoteURL'] ?? null; ?>' + '/api/version.php',
 					cache: false,
-					success: function (data) {
+					success: function(data) {
 						$('.is-remote-server-reachable').fadeIn(1000);
 						$('.is-remote-server-reachable').css('color', '#4dbc3c');
 					},
-					error: function () {
+					error: function() {
 						$('.is-remote-server-reachable').fadeIn(1000);
 						$('.is-remote-server-reachable').css('color', 'red');
 					}
@@ -269,26 +268,26 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		<?php
 		$alertMsg = $_SESSION['alertMsg'] ?? '';
 		if ($alertMsg !== '') {
-			?>
-				alert("<?php echo $alertMsg; ?>");
+		?>
+			alert("<?php echo $alertMsg; ?>");
 		<?php
-		unset($_SESSION['alertMsg']);
+			unset($_SESSION['alertMsg']);
 		}
 		unset($_SESSION['alertMsg']);
 
 		$isLogged = $_SESSION['logged'] ?? '';
 		if ($isLogged !== '') {
-			?>
-				setCrossLogin();
+		?>
+			setCrossLogin();
 		<?php }
 		// if instance facility name is not set, let us show the modal
-		
+
 		if (empty($_SESSION['instanceFacilityName'])) {
-			?> showModal('/addInstanceDetails.php', 900, 420);
+		?> Utilities.showModal('/addInstanceDetails.php', 900, 420);
 		<?php } ?>
 	});
 
-	function editableSelect(id, _fieldName, table, _placeholder){
+	function editableSelect(id, _fieldName, table, _placeholder) {
 		$("#" + id).select2({
 			placeholder: _placeholder,
 			minimumInputLength: 0,
@@ -304,7 +303,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 				delay: 250,
 				data: function(params) {
 					return {
-						fieldName : _fieldName,
+						fieldName: _fieldName,
 						tableName: table,
 						q: params.term, // search term
 						page: params.page

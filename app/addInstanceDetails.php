@@ -68,7 +68,7 @@
                     <td style="display:none">
                       <div class="fileinput fileinput-new" data-provides="fileinput">
                         <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
-                          
+
                         </div>
                         <div>
                           <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span>
@@ -99,7 +99,7 @@
 <!-- DataTables -->
 <script type="text/javascript">
   <?php if (isset($_SESSION['success']) && trim($_SESSION['success']) != "") { ?>
-    window.parent.closeModal();
+    window.parent.Utilities.closeModal();
     window.parent.alert("<?php echo $_SESSION['alertMsg']; ?>");
     <?php $_SESSION['alertMsg'] = '';
     unset($_SESSION['alertMsg']);

@@ -1469,7 +1469,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 				},
 				function(data) {
 					if (data >= '1') {
-						showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
+						Utilities.showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
 					} else {
 						$("#showEmptyResult").show();
 					}
@@ -1961,7 +1961,7 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 			$.post("/generic-tests/requests/get-result-interpretation.php", {
 					result: obj.value,
 					resultType: $('#resultType').val(),
-					testType: $('#testType').val() 
+					testType: $('#testType').val()
 				},
 				function(interpretation) {
 					if (interpretation != "") {

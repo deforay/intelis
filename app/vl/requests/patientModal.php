@@ -87,8 +87,7 @@ $pResult = $db->get("form_vl vl", 25, "fd.facility_id,
 				<div class="box">
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="patientModalDataTable"
-							class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="patientModalDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th style="width:10%;">
@@ -150,11 +149,10 @@ $pResult = $db->get("form_vl vl", 25, "fd.facility_id,
 											)
 										);
 
-										?>
+								?>
 
 										<tr>
-											<td><input type="radio" id="patient<?php echo $patient['vl_sample_id']; ?>"
-													name="patient" value='
+											<td><input type="radio" id="patient<?php echo $patient['vl_sample_id']; ?>" name="patient" value='
 <?php echo $patientDetails; ?>' onclick="getPatientDetails(this.value);"></td>
 											<td>
 												<?php echo $patient['patient_art_no']; ?>
@@ -181,7 +179,7 @@ $pResult = $db->get("form_vl vl", 25, "fd.facility_id,
 												<?php echo $patient['result']; ?>
 											</td>
 										</tr>
-										<?php
+								<?php
 									}
 								}
 								?>
@@ -203,7 +201,7 @@ $pResult = $db->get("form_vl vl", 25, "fd.facility_id,
 <script src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script>
-	$(document).ready(function () {
+	$(document).ready(function() {
 		$('#patientModalDataTable').DataTable({
 			"aaSorting": [
 				[1, 'asc'],
@@ -214,7 +212,7 @@ $pResult = $db->get("form_vl vl", 25, "fd.facility_id,
 	});
 
 	function getPatientDetails(pDetails) {
-		parent.closeModal();
+		window.parent.Utilities.closeModal();
 		window.parent.setPatientDetails(pDetails);
 	}
 </script>

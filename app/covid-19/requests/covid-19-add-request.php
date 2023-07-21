@@ -156,25 +156,25 @@ require($fileArray[$arr['vl_form']]);
         });
 
 
-         $('#sampleCollectionDate').datetimepicker({
-             changeMonth: true,
-             changeYear: true,
-             dateFormat: 'dd-M-yy',
-             timeFormat: "HH:mm",
-             maxDate: "Today",
-             onChangeMonthYear: function(year, month, widget) {
-                 setTimeout(function() {
-                     $('.ui-datepicker-calendar').show();
-                 });
-             },
-             onSelect: function(e) {
-                 $('#sampleReceivedDate').val('');
-                 $('#sampleReceivedDate').datetimepicker('option', 'minDate', e);
-             },
-             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-         }).click(function() {
-             $('.ui-datepicker-calendar').show();
-         });
+        $('#sampleCollectionDate').datetimepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd-M-yy',
+            timeFormat: "HH:mm",
+            maxDate: "Today",
+            onChangeMonthYear: function(year, month, widget) {
+                setTimeout(function() {
+                    $('.ui-datepicker-calendar').show();
+                });
+            },
+            onSelect: function(e) {
+                $('#sampleReceivedDate').val('');
+                $('#sampleReceivedDate').datetimepicker('option', 'minDate', e);
+            },
+            yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
+        }).click(function() {
+            $('.ui-datepicker-calendar').show();
+        });
 
         $('#sampleReceivedDate').datetimepicker({
             changeMonth: true,
@@ -251,7 +251,7 @@ require($fileArray[$arr['vl_form']]);
                 },
                 function(data) {
                     if (data >= '1') {
-                        showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
+                        Utilities.showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
                     } else {
                         $("#showEmptyResult").show();
                     }

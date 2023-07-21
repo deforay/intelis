@@ -14,8 +14,6 @@ function getEl(x) {
     return document.getElementById(x);
 }
 
-
-
 var timer = null;
 function goingDown(elm, toTop) {
     var top = parseInt(elm.offsetTop);
@@ -82,41 +80,46 @@ var wid = 0;
 var hit = 0;
 
 function showdefModal(obl, wd, ht) {
-    wid = wd;
-    hit = ht;
-    var h = 'hidden';
-    var b = 'block';
-    var p = 'px';
-
-    if (!getEl('ol') || !getEl('mbd')) {
+    if (!document.getElementById('ol') || !document.getElementById('mbd')) {
         initmb();
     }
 
-    var obol = getEl('ol');
-    var obbxd = getEl('mbd');
-    obbxd.innerHTML = getEl(obl).innerHTML;
-    obol.style.height = jQuery(document).height() + p;
-    obol.style.width = document.body.offsetWidth + p;
-    //obol.style.top = posTop() + p;
-    //obol.style.left = posLeft() + p;
-    obol.style.display = b;
-    var tp = posTop() + ((pageHeight() - ht) / 2) - 12;
-    var lt = posLeft() + ((pageWidth() - wd) / 2) - 12;
-    var obbx = getEl('mbox');
-    obbx.style.top = (tp < 0 ? 0 : tp) + p;
-    obbx.style.left = (lt < 0 ? 0 : lt) + p;
-    obbx.style.width = wd + p;
-    obbx.style.height = ht + p;
-    obbx.style.display = b;
-    return false;
+    var obol = document.getElementById('ol');
+    var obbxd = document.getElementById('mbd');
+    obbxd.innerHTML = document.getElementById(obl).innerHTML;
+
+    // Make the overlay cover the entire viewport and stay fixed when scrolling
+    obol.style.position = 'fixed';
+    obol.style.top = '0';
+    obol.style.bottom = '0';
+    obol.style.left = '0';
+    obol.style.right = '0';
+    obol.style.display = 'block';
+
+    var obbx = document.getElementById('mbox');
+    obbx.style.display = 'block';
+    obbx.style.width = wd + 'px';
+    obbx.style.height = ht + 'px';
+
+    // Center the modal using CSS
+    obbx.style.position = 'fixed';
+    obbx.style.top = '50%';
+    obbx.style.left = '50%';
+    obbx.style.transform = 'translate(-50%, -50%)';
+
+    // Disable scrolling on the body
+    document.body.style.overflow = 'hidden';
 }
+
+
 function hidedefModal() {
-    var v = 'visible';
-    var n = 'none';
-    getEl('ol').style.display = n;
-    getEl('mbox').style.display = n;
-    document.onkeypress = ''
+    document.getElementById('ol').style.display = 'none';
+    document.getElementById('mbox').style.display = 'none';
+
+    // Re-enable scrolling on the body
+    document.body.style.overflow = '';
 }
+
 function initmb() {
 
     if (jQuery("#ol").length > 0 && jQuery("#mbox").length > 0) {

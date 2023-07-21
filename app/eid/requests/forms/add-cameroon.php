@@ -105,7 +105,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </tr>
                                     <tr>
                                         <td><label for="province"><?= _('Province'); ?> </label><span class="mandatory">*</span><br>
-                                            <select class="form-control isRequired" name="province" id="province" title="<?= _('Please choose province'); ?>" onchange="getfacilityDetails(this);" >
+                                            <select class="form-control isRequired" name="province" id="province" title="<?= _('Please choose province'); ?>" onchange="getfacilityDetails(this);">
                                                 <?php echo $province; ?>
                                             </select>
                                         </td>
@@ -121,7 +121,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                         <td>
                                             <label for="fCode"><?= _('Clinic/Health Center Code'); ?> </label><br>
-                                           <input type="text" class="form-control" style="width:100%;" name="fCode" id="fCode" placeholder="<?= _('Clinic/Health Center Code'); ?>" title="<?= _('Please enter clinic/health center code'); ?>">
+                                            <input type="text" class="form-control" style="width:100%;" name="fCode" id="fCode" placeholder="<?= _('Clinic/Health Center Code'); ?>" title="<?= _('Please enter clinic/health center code'); ?>">
                                         </td>
                                     </tr>
                                     <tr>
@@ -205,7 +205,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td><input type="text" class="form-control " id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="<?= ('Caretaker Phone Number'); ?>" title="<?= ('Caretaker Phone Number'); ?>" style="width:100%;" /></td>
 
                                         <th scope="row"><?= _('Infant caretaker address'); ?></th>
-                                        <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="<?= _('Caretaker Address'); ?>" title="<?= ('Caretaker Address'); ?>" style="width:100%;" ></textarea></td>
+                                        <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="<?= _('Caretaker Address'); ?>" title="<?= ('Caretaker Address'); ?>" style="width:100%;"></textarea></td>
 
                                     </tr>
                                     <tr>
@@ -222,7 +222,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                         <th scope="row"><?= _('Date of Initiation'); ?></th>
                                         <td>
-                                            <input type="text" class="form-control date" name="childTreatmentInitiationDate" id="childTreatmentInitiationDate" placeholder="<?= _('Enter date of initiation'); ?>"/>
+                                            <input type="text" class="form-control date" name="childTreatmentInitiationDate" id="childTreatmentInitiationDate" placeholder="<?= _('Enter date of initiation'); ?>" />
                                         </td>
                                     </tr>
 
@@ -280,27 +280,27 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value="TELE (TDF+TC+EFV)"><?= _('TELE (TDF+TC+EFV)'); ?> </option>
                                                 <option value="other"><?= _('Other'); ?></option>
                                             </select>
-                                            <input type="text" class="form-control" name="motherArvProtocolOther" id="motherArvProtocolOther" style="display:none;"/>
+                                            <input type="text" class="form-control" name="motherArvProtocolOther" id="motherArvProtocolOther" style="display:none;" />
 
-                                      </td>
+                                        </td>
                                         <th scope="row"><?= _('Date of Initiation'); ?></th>
                                         <td>
-                                            <input type="text" class="form-control date" name="motherTreatmentInitiationDate" id="motherTreatmentInitiationDate"  placeholder="<?= _('Enter date of initiation'); ?>"/>
+                                            <input type="text" class="form-control date" name="motherTreatmentInitiationDate" id="motherTreatmentInitiationDate" placeholder="<?= _('Enter date of initiation'); ?>" />
                                         </td>
                                     </tr>
                                 </table>
-                                    <br>
+                                <br>
                                 <hr style="border: 1px solid #ccc;">
 
                                 <div class="box-header with-border">
                                     <h3 class="box-title"><?= _("CLINICAL INFORMATION"); ?></h3>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                <tr>
+                                    <tr>
                                         <th scope="row" style="width:16% !important"><?= _('Is the child symptomatic?'); ?> <span class="mandatory">*</span></th>
                                         <td style="width:30% !important">
                                             <select class="form-control isRequired" name="isChildSymptomatic" id="isChildSymptomatic">
-                                            <option value=''> <?= _('-- Select --'); ?> </option>
+                                                <option value=''> <?= _('-- Select --'); ?> </option>
                                                 <option value="yes"> <?= _('Yes'); ?> </option>
                                                 <option value="no"> <?= _('No'); ?> </option>
                                             </select>
@@ -309,9 +309,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td style="width:30% !important">
                                             <input type="text" class="form-control date" name="dateOfWeaning" id="dateOfWeaning" title="<?= _('Enter date of weaning'); ?>" placeholder="<?= _('Enter date of weaning'); ?>" />
                                         </td>
-                                </tr>
-                                <tr>
-                                <th scope="row" style="width:16% !important"><?= _('Was the child breastfed?'); ?> </th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" style="width:16% !important"><?= _('Was the child breastfed?'); ?> </th>
                                         <td style="width:30% !important">
                                             <select class="form-control" name="wasChildBreastfed" id="wasChildBreastfed">
                                                 <option value=''> <?= _('-- Select --'); ?> </option>
@@ -320,7 +320,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value="unknown"> <?= _('Unknown'); ?> </option>
                                             </select>
                                         </td>
-                                <th scope="row" style="width:16% !important"><?= _('If Yes,'); ?> </th>
+                                        <th scope="row" style="width:16% !important"><?= _('If Yes,'); ?> </th>
                                         <td style="width:30% !important">
                                             <select class="form-control" name="choiceOfFeeding" id="choiceOfFeeding">
                                                 <option value=''> <?= _('-- Select --'); ?> </option>
@@ -329,42 +329,42 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value="Exclusive formula feeding"><?= _('Exclusive formula feeding'); ?></option>
                                             </select>
                                         </td>
-                                </tr>
-                                <tr>
-                                <th scope="row" style="width:16% !important"><?= _('Is the child on Cotrim?'); ?> </th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" style="width:16% !important"><?= _('Is the child on Cotrim?'); ?> </th>
                                         <td style="width:30% !important">
                                             <select class="form-control" name="isChildOnCotrim" id="isChildOnCotrim">
-                                            <option value=''> <?= _('-- Select --'); ?> </option>
+                                                <option value=''> <?= _('-- Select --'); ?> </option>
                                                 <option value="yes"> <?= _('Yes'); ?> </option>
                                                 <option value="no"> <?= _('No'); ?> </option>
                                             </select>
                                         </td>
-                                <th scope="row" style="width:16% !important"><?= _('If Yes, Date of Initiation'); ?> </th>
+                                        <th scope="row" style="width:16% !important"><?= _('If Yes, Date of Initiation'); ?> </th>
                                         <td style="width:30% !important">
-                                        <input type="text" class="form-control date" name="childStartedCotrimDate" id="childStartedCotrimDate" title="<?= _('Enter date of Initiation'); ?>" placeholder="<?= _('Enter date of Initiation'); ?>" />
+                                            <input type="text" class="form-control date" name="childStartedCotrimDate" id="childStartedCotrimDate" title="<?= _('Enter date of Initiation'); ?>" placeholder="<?= _('Enter date of Initiation'); ?>" />
 
                                         </td>
-                                </tr>
-                                <tr>
-                                <th scope="row" style="width:16% !important"><?= _('Is the child on ART?'); ?> </th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" style="width:16% !important"><?= _('Is the child on ART?'); ?> </th>
                                         <td style="width:30% !important">
                                             <select class="form-control" name="infantArtStatus" id="infantArtStatus">
-                                            <option value=''> <?= _('-- Select --'); ?> </option>
+                                                <option value=''> <?= _('-- Select --'); ?> </option>
                                                 <option value="yes"> <?= _('Yes'); ?> </option>
                                                 <option value="no"> <?= _('No'); ?> </option>
                                             </select>
                                         </td>
-                                <th scope="row" style="width:16% !important"><?= _('If Yes, Date of Initiation'); ?> </th>
+                                        <th scope="row" style="width:16% !important"><?= _('If Yes, Date of Initiation'); ?> </th>
                                         <td style="width:30% !important">
-                                        <input type="text" class="form-control date" name="childStartedArtDate" id="childStartedArtDate" title="<?= _('Enter date of Initiation'); ?>" placeholder="<?= _('Enter date of Initiation'); ?>" />
+                                            <input type="text" class="form-control date" name="childStartedArtDate" id="childStartedArtDate" title="<?= _('Enter date of Initiation'); ?>" placeholder="<?= _('Enter date of Initiation'); ?>" />
 
                                         </td>
-                                </tr>
+                                    </tr>
                                     <tr>
                                         <th scope="row"><?= _('Stopped breastfeeding ?'); ?></th>
                                         <td>
                                             <select class="form-control" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
-                                            <option value=''> <?= _('-- Select --'); ?> </option>
+                                                <option value=''> <?= _('-- Select --'); ?> </option>
                                                 <option value="yes"> <?= _('Yes'); ?> </option>
                                                 <option value="no"> <?= _('No'); ?> </option>
                                                 <option value="unknown"> <?= _('Unknown'); ?> </option>
@@ -394,7 +394,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                                     <tr>
 
-                                    <th scope="row"><?= _('Previous PCR test Result'); ?></th>
+                                        <th scope="row"><?= _('Previous PCR test Result'); ?></th>
                                         <td>
                                             <select class="form-control" name="prePcrTestResult" id="prePcrTestResult">
                                                 <option value=''> <?= _('-- Select --'); ?> </option>
@@ -422,7 +422,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value="1st Test for sick child"><?= _('1st Test for sick child'); ?></option>
                                                 <option value="Repeat Testing for 6 weeks after weaning"><?= _('Repeat Testing for 6 weeks after weaning'); ?></option>
                                                 <option value="Repeat Testing due to loss of 1st sample"><?= _('Repeat Testing due to loss of 1st sample'); ?></option>
-                                                <option value="Repeat due to clinical suspicion following negative 1st test"><?= _('Repeat due to clinical suspicion following negative 1st test');?></option>
+                                                <option value="Repeat due to clinical suspicion following negative 1st test"><?= _('Repeat due to clinical suspicion following negative 1st test'); ?></option>
                                             </select>
                                         </td>
                                         <th scope="row"><?= _('Point of Entry'); ?></th>
@@ -436,7 +436,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value="EPI(PE)"> <?= _('EPI(PE)'); ?> </option>
                                                 <option value="other"><?= _('Other'); ?></option>
                                             </select>
-                                            <input type="text" name="labTestingPointOther" id="labTestingPointOther" class="form-control" title="<?= _('Please specify other point of entry') ?>" placeholder="<?= _('Please specify other point of entry') ?>" style="display:none;"/>
+                                            <input type="text" name="labTestingPointOther" id="labTestingPointOther" class="form-control" title="<?= _('Please specify other point of entry') ?>" placeholder="<?= _('Please specify other point of entry') ?>" style="display:none;" />
                                         </td>
                                     </tr>
                                 </table>
@@ -492,9 +492,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <th scope="row"><?= _('Is Sample Rejected?'); ?></th>
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">
-                                                <option value=''> <?= _('-- Select --'); ?> </option>
-                                                <option value="yes"> <?= _('Yes'); ?> </option>
-                                                <option value="no"> <?= _('No'); ?> </option>
+                                                    <option value=''> <?= _('-- Select --'); ?> </option>
+                                                    <option value="yes"> <?= _('Yes'); ?> </option>
+                                                    <option value="no"> <?= _('No'); ?> </option>
                                                 </select>
                                             </td>
 
@@ -588,23 +588,25 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     provinceName = true;
     facilityName = true;
     machineName = true;
+
     function checkPatientDetails(tableName, fieldName, obj, fnct) {
         //if ($.trim(obj.value).length == 10) {
         if ($.trim(obj.value) != '') {
             $.post("/includes/checkDuplicate.php", {
-                tableName: tableName,
-                fieldName: fieldName,
-                value: obj.value,
-                fnct: fnct,
-                format: "html"
-            },
-                function (data) {
+                    tableName: tableName,
+                    fieldName: fieldName,
+                    value: obj.value,
+                    fnct: fnct,
+                    format: "html"
+                },
+                function(data) {
                     if (data === '1') {
-                        showModal('patientModal.php?artNo=' + obj.value, 900, 520);
+                        Utilities.showModal('patientModal.php?artNo=' + obj.value, 900, 520);
                     }
                 });
         }
     }
+
     function getfacilityDetails(obj) {
 
         $.blockUI();
@@ -755,57 +757,46 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     }
 
     function fillFacilityDetails() {
-          $.blockUI();
-          //check facility name
+        $.blockUI();
+        //check facility name
 
-          $.unblockUI();
-          $("#fCode").val($('#facilityId').find(':selected').data('code'));
+        $.unblockUI();
+        $("#fCode").val($('#facilityId').find(':selected').data('code'));
 
-     }
-function showOtherARV()
-{
-    arv = $("#childProphylacticArv").val();
-    if(arv=="other")
-    {
-        $("#childProphylacticArvOther").show();
-        $("#childProphylacticArvOther").addClass('isRequired');
     }
-    else
-    {
-        $("#childProphylacticArvOther").removeClass('isRequired');
-        $("#childProphylacticArvOther").hide();
-    }
-}
 
-function showArvProtocolOtherOption()
-{
-    arvMother = $("#motherArvProtocol").val();
-    if(arvMother=="other")
-    {
-        $("#motherArvProtocolOther").show();
-        $("#motherArvProtocolOther").addClass('isRequired');
+    function showOtherARV() {
+        arv = $("#childProphylacticArv").val();
+        if (arv == "other") {
+            $("#childProphylacticArvOther").show();
+            $("#childProphylacticArvOther").addClass('isRequired');
+        } else {
+            $("#childProphylacticArvOther").removeClass('isRequired');
+            $("#childProphylacticArvOther").hide();
+        }
     }
-    else
-    {
-        $("#motherArvProtocolOther").removeClass('isRequired');
-        $("#motherArvProtocolOther").hide();
-    }
-}
 
-function showTestingPointOther()
-{
-    entryPoint = $("#labTestingPoint").val();
-    if(entryPoint=="other")
-    {
-        $("#labTestingPointOther").show();
-        $("#labTestingPointOther").addClass('isRequired');
+    function showArvProtocolOtherOption() {
+        arvMother = $("#motherArvProtocol").val();
+        if (arvMother == "other") {
+            $("#motherArvProtocolOther").show();
+            $("#motherArvProtocolOther").addClass('isRequired');
+        } else {
+            $("#motherArvProtocolOther").removeClass('isRequired');
+            $("#motherArvProtocolOther").hide();
+        }
     }
-    else
-    {
-        $("#labTestingPointOther").removeClass('isRequired');
-        $("#labTestingPointOther").hide();
+
+    function showTestingPointOther() {
+        entryPoint = $("#labTestingPoint").val();
+        if (entryPoint == "other") {
+            $("#labTestingPointOther").show();
+            $("#labTestingPointOther").addClass('isRequired');
+        } else {
+            $("#labTestingPointOther").removeClass('isRequired');
+            $("#labTestingPointOther").hide();
+        }
     }
-}
 
     $(document).ready(function() {
         autoSelectSingleOption('facilityId');

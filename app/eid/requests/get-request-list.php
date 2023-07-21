@@ -339,8 +339,6 @@ foreach ($rResult as $aRow) {
      $row[] = ucwords($eidResults[$aRow['result']] ?? $aRow['result']);
      $row[] = $aRow['last_modified_datetime'];
      $row[] = ($aRow['status_name']);
-     //$printBarcode='<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="View" onclick="printBarcode(\''.base64_encode($aRow['eid_id']).'\');"><em class="fa-solid fa-barcode"></em> Print Barcode</a>';
-     //$enterResult='<a href="javascript:void(0);" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result" onclick="showModal(\'updateVlResult.php?id=' . base64_encode($aRow['eid_id']) . '\',900,520);"> Result</a>';
 
      if ($editRequest) {
           $edit = '<a href="eid-edit-request.php?id=' . base64_encode($aRow['eid_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';

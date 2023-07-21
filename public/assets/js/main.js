@@ -77,6 +77,18 @@ class Utilities {
             $('#' + selectId).val(nonEmptyOptions.val()).trigger('change');
         }
     }
+    static showModal(url, w, h) {
+        // $('html, body').css('overflow-x', 'hidden');
+        // $('html, body').css('overflow-y', 'hidden');
+        showdefModal('dDiv', w, h);
+        document.getElementById('dFrame').style.height = h + 'px';
+        document.getElementById('dFrame').style.width = w + 'px';
+        document.getElementById('dFrame').src = url;
+    }
+    static closeModal() {
+        document.getElementById('dFrame').src = "";
+        hidedefModal('dDiv');
+    }
 }
 
 class StorageHelper {

@@ -272,13 +272,6 @@ $pResult = $db->rawQuery($pQuery);
       });
   }
 
-  function showModal(url, w, h) {
-    showdefModal('dDiv', w, h);
-    document.getElementById('dFrame').style.height = h + 'px';
-    document.getElementById('dFrame').style.width = w + 'px';
-    document.getElementById('dFrame').src = url;
-  }
-
   function goBack() {
     window.parent.location.href = window.parent.location.href;
   }

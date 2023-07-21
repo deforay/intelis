@@ -88,8 +88,7 @@ $pResult = $db->get("form_generic vl", 25, "fd.facility_id,
 				<div class="box">
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="patientModalDataTable"
-							class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="patientModalDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th style="width:10%;">
@@ -142,9 +141,7 @@ $pResult = $db->get("form_generic vl", 25, "fd.facility_id,
 										); ?>
 
 										<tr>
-											<td><input type="radio" id="patient<?php echo $patient['sample_id']; ?>"
-													name="patient" value='<?php echo $patientDetails; ?>'
-													onclick="getPatientDetails(this.value);"></td>
+											<td><input type="radio" id="patient<?php echo $patient['sample_id']; ?>" name="patient" value='<?php echo $patientDetails; ?>' onclick="getPatientDetails(this.value);"></td>
 											<td>
 												<?= $patient['patient_id']; ?>
 											</td>
@@ -167,7 +164,7 @@ $pResult = $db->get("form_generic vl", 25, "fd.facility_id,
 												<?php echo DateUtility::humanReadableDateFormat($patient['sample_tested_datetime']); ?>
 											</td>
 										</tr>
-										<?php
+								<?php
 									}
 								}
 								?>
@@ -189,7 +186,7 @@ $pResult = $db->get("form_generic vl", 25, "fd.facility_id,
 <script src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script>
-	$(document).ready(function () {
+	$(document).ready(function() {
 		$('#patientModalDataTable').DataTable({
 			"aaSorting": [
 				[1, 'asc'],
@@ -200,7 +197,7 @@ $pResult = $db->get("form_generic vl", 25, "fd.facility_id,
 	});
 
 	function getPatientDetails(pDetails) {
-		parent.closeModal();
+		window.parent.Utilities.closeModal();
 		window.parent.setPatientDetails(pDetails);
 	}
 </script>

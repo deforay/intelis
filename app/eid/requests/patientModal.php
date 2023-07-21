@@ -81,8 +81,7 @@ $pResult = $db->get("form_eid vl", 25, "fd.facility_id,
 				<div class="box">
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="patientModalDataTable"
-							class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="patientModalDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th style="width:10%;">
@@ -116,7 +115,7 @@ $pResult = $db->get("form_eid vl", 25, "fd.facility_id,
 									if (!in_array($value, $artNoList)) {
 										$artNoList[] = $value;
 										//$patientDetails = $patient['child_name'] . "##" . $patient['child_surname'] . "##" . $patient['child_gender'] . "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['child_dob']) . "##" . $patient['child_age'] . "##" . $patient['caretaker_phone_number'] .  "##" . $patient['child_id'] .  "##" . $patient['mother_id'] .  "##" . $patient['caretaker_address'] .  "##" . $patient['mother_name'] .  "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['mother_dob']) .  "##" . $patient['mother_marital_status'];
-								
+
 										$patientDetails = json_encode(
 											array(
 												"name" => $patient['child_name'] . " " . $patient['child_surname'],
@@ -132,11 +131,9 @@ $pResult = $db->get("form_eid vl", 25, "fd.facility_id,
 												"mother_marital_status" => $patient['mother_marital_status'],
 											)
 										);
-										?>
+								?>
 										<tr>
-											<td><input type="radio" id="patient<?php echo $patient['eid_id']; ?>" name="patient"
-													value='<?php echo $patientDetails; ?>'
-													onclick="getPatientDetails(this.value);"></td>
+											<td><input type="radio" id="patient<?php echo $patient['eid_id']; ?>" name="patient" value='<?php echo $patientDetails; ?>' onclick="getPatientDetails(this.value);"></td>
 											<td>
 												<?php echo $patient['child_id']; ?>
 											</td>
@@ -156,7 +153,7 @@ $pResult = $db->get("form_eid vl", 25, "fd.facility_id,
 												<?= DateUtility::humanReadableDateFormat($patient['request_created_datetime'], true); ?>
 											</td>
 										</tr>
-										<?php
+								<?php
 									}
 								}
 								?>
@@ -178,7 +175,7 @@ $pResult = $db->get("form_eid vl", 25, "fd.facility_id,
 <script src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script>
-	$(document).ready(function () {
+	$(document).ready(function() {
 		$('#patientModalDataTable').DataTable({
 			"aaSorting": [
 				[1, 'asc'],
@@ -189,7 +186,7 @@ $pResult = $db->get("form_eid vl", 25, "fd.facility_id,
 	});
 
 	function getPatientDetails(pDetails) {
-		parent.closeModal();
+		window.parent.Utilities.closeModal();
 		window.parent.setPatientDetails(pDetails);
 	}
 </script>

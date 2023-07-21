@@ -323,7 +323,7 @@ require($fileArray[$arr['vl_form']]);
                 },
                 function(data) {
                     if (data >= '1') {
-                        showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
+                        Utilities.showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
                     } else {
                         $("#showEmptyResult").show();
                     }

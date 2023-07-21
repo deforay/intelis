@@ -62,8 +62,7 @@ $pResult = $db->rawQuery($pQuery);
 				<div class="box">
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="patientModalDataTable"
-							class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="patientModalDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th style="width:10%;">
@@ -121,12 +120,10 @@ $pResult = $db->rawQuery($pQuery);
 												"external_sample_code" => $patient['external_sample_code'],
 											)
 										);
-										?>
+								?>
 
 										<tr>
-											<td><input type="radio" id="patient<?php echo $patient['covid19_id']; ?>"
-													name="patient" value='<?php echo $patientDetails; ?>'
-													onclick="getPatientDetails(this.value);"></td>
+											<td><input type="radio" id="patient<?php echo $patient['covid19_id']; ?>" name="patient" value='<?php echo $patientDetails; ?>' onclick="getPatientDetails(this.value);"></td>
 											<td>
 												<?= $patient['patient_id']; ?>
 											</td>
@@ -148,7 +145,7 @@ $pResult = $db->rawQuery($pQuery);
 
 
 										</tr>
-										<?php
+								<?php
 									}
 								}
 								?>
@@ -169,7 +166,7 @@ $pResult = $db->rawQuery($pQuery);
 <script src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script>
-	$(document).ready(function () {
+	$(document).ready(function() {
 		$('#patientModalDataTable').DataTable({
 			"aaSorting": [
 				[1, 'asc'],
@@ -179,7 +176,7 @@ $pResult = $db->rawQuery($pQuery);
 	});
 
 	function getPatientDetails(pDetails) {
-		parent.closeModal();
+		window.parent.Utilities.closeModal();
 		window.parent.setPatientDetails(pDetails);
 	}
 </script>

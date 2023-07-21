@@ -141,6 +141,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
      .row {
           margin-top: 6px;
      }
+
      .ui_tpicker_second_label {
           display: none !important;
      }
@@ -176,10 +177,16 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
      .ui_tpicker_time_input {
           width: 100%;
      }
-     .facilitySectionInput, .patientSectionInput, #otherSection .col-md-6 {
+
+     .facilitySectionInput,
+     .patientSectionInput,
+     #otherSection .col-md-6 {
           margin: 3px 0px;
      }
-     .facilitySectionInput, .patientSectionInput .select2, #otherSection .col-md-6 .select2 {
+
+     .facilitySectionInput,
+     .patientSectionInput .select2,
+     #otherSection .col-md-6 .select2 {
           margin: 3px 0px;
      }
 </style>
@@ -230,10 +237,8 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                         <div class="col-md-6">
                                              <label class="col-lg-5" for="sampleReordered"> Sample Reordered</label>
                                              <div class="col-lg-7">
-                                                  <input type="checkbox" class="" id="sampleReordered" name="sampleReordered"
-                                                       value="yes" <?php echo (trim($genericResultInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?>
-                                                       title="Please indicate if this is a reordered sample">
-                                             
+                                                  <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim($genericResultInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> title="Please indicate if this is a reordered sample">
+
                                              </div>
                                         </div>
                                    </div>
@@ -290,7 +295,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                             <option value=""> -- Select -- </option>
                                                             <?php
                                                             foreach ($implementingPartnerList as $implementingPartner) {
-                                                                 ?>
+                                                            ?>
                                                                  <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
                                                             <?php } ?>
                                                        </select>
@@ -313,7 +318,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                             <option value=""> -- Select -- </option>
                                                             <?php
                                                             foreach ($fundingSourceList as $fundingSource) {
-                                                                 ?>
+                                                            ?>
                                                                  <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
                                                             <?php } ?>
                                                        </select>
@@ -363,10 +368,10 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                   </div>
                                              </div>
                                              <div class="col-md-6">
-                                                  <label class="col-lg-5" for="ageInMonths">If Age < 1, Age in Months </label> 
-                                                  <div class="col-lg-7">
-                                                       <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" />
-                                                  </div>
+                                                  <label class="col-lg-5" for="ageInMonths">If Age < 1, Age in Months </label>
+                                                            <div class="col-lg-7">
+                                                                 <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" />
+                                                            </div>
                                              </div>
                                         </div>
                                         <div class="row">
@@ -591,7 +596,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                                  <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
                                                             </div>
                                                        </div>
-                                                    <?php if (count($reasonForFailure) > 0) { ?>
+                                                       <?php if (count($reasonForFailure) > 0) { ?>
                                                             <div class="col-md-6" style="display: none;">
                                                                  <label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
                                                                  <div class="col-lg-7">
@@ -767,17 +772,17 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 <?php
 if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
      if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
-          ?>
+?>
           <script src="/assets/js/DYMO.Label.Framework.js"></script>
           <script src="/uploads/barcode-formats/dymo-format.js"></script>
           <script src="/assets/js/dymo-print.js"></script>
      <?php
      } else if ($global['bar_code_printing'] == 'zebra-printer') {
-          ?>
-               <script src="/assets/js/zebra-browserprint.js.js"></script>
-               <script src="/uploads/barcode-formats/zebra-format.js"></script>
-               <script src="/assets/js/zebra-print.js"></script>
-     <?php
+     ?>
+          <script src="/assets/js/zebra-browserprint.js.js"></script>
+          <script src="/uploads/barcode-formats/zebra-format.js"></script>
+          <script src="/assets/js/zebra-print.js"></script>
+<?php
      }
 }
 ?>
@@ -1443,7 +1448,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     },
                     function(data) {
                          if (data >= '1') {
-                              showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()) + '&testType=' + $.trim($("#testType").val()), 900, 520);
+                              Utilities.showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()) + '&testType=' + $.trim($("#testType").val()), 900, 520);
                          } else {
                               $("#showEmptyResult").show();
                          }
@@ -1463,7 +1468,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     },
                     function(data) {
                          if (data === '1') {
-                              showModal('patientModal.php?artNo=' + obj.value + '&testType=' + $.trim($("#testType").val()), 900, 520);
+                              Utilities.showModal('patientModal.php?artNo=' + obj.value + '&testType=' + $.trim($("#testType").val()), 900, 520);
                          }
                     });
           }
@@ -1620,11 +1625,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               placeholder: "<?php echo _("Select any one of the option"); ?>"
                          });
 
-                         if($('#resultType').val() == 'qualitative'){
-                              $('.final-result-row').attr('colspan',4)
+                         if ($('#resultType').val() == 'qualitative') {
+                              $('.final-result-row').attr('colspan', 4)
                               $('.testResultUnit').hide();
-                         }else{
-                              $('.final-result-row').attr('colspan',5)
+                         } else {
+                              $('.final-result-row').attr('colspan', 5)
                               $('.testResultUnit').show();
                          }
                     });
@@ -1738,11 +1743,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.kitlabels').show();
           }
 
-          if($('#resultType').val() == 'qualitative'){
-               $('.final-result-row').attr('colspan',4)
+          if ($('#resultType').val() == 'qualitative') {
+               $('.final-result-row').attr('colspan', 4)
                $('.testResultUnit').hide();
-          }else{
-               $('.final-result-row').attr('colspan',5)
+          } else {
+               $('.final-result-row').attr('colspan', 5)
                $('.testResultUnit').show();
           }
      }
@@ -1773,16 +1778,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          }
                     });
           }
-     }
-     function showModal(url, w, h) {
-          showdefModal('dDiv', w, h);
-          document.getElementById('dFrame').style.height = h + 'px';
-          document.getElementById('dFrame').style.width = w + 'px';
-          document.getElementById('dFrame').src = url;
-     }
-     function closeModal() {
-          document.getElementById('dFrame').src = "";
-          hidedefModal('dDiv');
      }
 </script>
 
