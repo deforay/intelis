@@ -50,7 +50,7 @@ $sResult = $general->fetchDataFromTable('r_vl_sample_type', $condition);
 
 //get vltest reason details
 $testReason = $general->fetchDataFromTable('r_vl_test_reasons');
-$pdResult = $general->fetchDataFromTable('geographical_divisions');
+$pdResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 0 AND geo_status='active'");
 //get suspected treatment failure at
 $suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatment_failure_at FROM form_vl where vlsm_country_id='" . $arr['vl_form'] . "'";
 $suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQuery);

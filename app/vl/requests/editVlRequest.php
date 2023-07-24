@@ -60,9 +60,7 @@ $statusQuery = "SELECT * FROM r_sample_status
                     WHERE `status` = 'active' AND status_id NOT IN(9,8)";
 $statusResult = $db->rawQuery($statusQuery);
 
-$pdQuery = "SELECT * FROM geographical_divisions
-               WHERE geo_parent = 0 and geo_status='active'";
-$pdResult = $db->query($pdQuery);
+$pdResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 0 AND geo_status='active'");
 
 $sQuery = "SELECT * FROM r_vl_sample_type
                WHERE status='active'";

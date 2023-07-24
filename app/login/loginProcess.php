@@ -176,11 +176,14 @@ try {
                     $modules[$id['module']] = $id['module'];
                 }
             }
+            $_SESSION['modules'] = $modules;
+            $_SESSION['privileges'] = $usersService->getAllPrivileges($privileges);
+
 
             $_SESSION['landingPage'] = $redirect = !empty($userRow['landing_page']) ? $userRow['landing_page'] : '/dashboard/index.php';
 
-            $_SESSION['privileges'] = $usersService->getAllPrivileges($privileges);
-            $_SESSION['modules'] = $modules;
+
+
 
             if (!empty($_SESSION['forcePasswordReset']) && $_SESSION['forcePasswordReset'] == 1) {
                 $redirect = "/users/editProfile.php";

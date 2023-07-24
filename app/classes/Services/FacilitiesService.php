@@ -128,10 +128,11 @@ class FacilitiesService
             $this->db->where("user_id", $userId);
             $response = $this->db->getValue("user_facility_map", "facility_id", null);
             if ($this->db->count > 0) {
-                return implode(",", $response);
+                $userfacilityMap = implode(",", $response);
             } else {
-                return null;
+                $userfacilityMap = null;
             }
+            return $userfacilityMap;
         });
     }
 
@@ -279,24 +280,21 @@ class FacilitiesService
         });
     }
 
-    public function getOrCreateProvince(string $provinceName, string $provinceCode = null): int {
+    public function getOrCreateProvince(string $provinceName, string $provinceCode = null): int
+    {
 
         // check if there is a province matching the input params, if yes then return province id
         $this->db->where("geo_name ='$provinceName'");
-        if($provinceCode!="")
-        {
+        if ($provinceCode != "") {
             $this->db->where("geo_code ='$provinceCode'");
         }
         $provinceInfo = $this->db->getOne('geographical_divisions');
-        
-        if(isset($provinceInfo['geo_id']) && $provinceInfo['geo_id']!="")
-        {
+
+        if (isset($provinceInfo['geo_id']) && $provinceInfo['geo_id'] != "") {
             return $provinceInfo['geo_id'];
-        }
-        else
-        {
-             // if not then insert and return the new province id
-             $data = array(
+        } else {
+            // if not then insert and return the new province id
+            $data = array(
                 'geo_name' => $provinceName,
                 'geo_status' => 'active',
                 'updated_datetime' => DateUtility::getCurrentDateTime(),
@@ -305,27 +303,23 @@ class FacilitiesService
             $lastInsertId = $this->db->getInsertId();
             return $lastInsertId;
         }
-      
-       }
+    }
 
-       public function getOrCreateDistrict(string $districtName, string $districtCode = null, int $provinceId): int{
+    public function getOrCreateDistrict(string $districtName, string $districtCode = null, int $provinceId): int
+    {
 
         // check if there is a district matching the input params, if yes then return province id
         $this->db->where("geo_name ='$districtName' AND geo_parent = $provinceId");
-        if($districtCode!="")
-        {
+        if ($districtCode != "") {
             $this->db->where("geo_code ='$districtCode'");
         }
         $districtInfo = $this->db->getOne('geographical_divisions');
-        
-        if(isset($districtInfo['geo_id']) && $districtInfo['geo_id']!="")
-        {
+
+        if (isset($districtInfo['geo_id']) && $districtInfo['geo_id'] != "") {
             return $districtInfo['geo_id'];
-        }
-        else
-        {
-             // if not then insert and return the new province id
-             $data = array(
+        } else {
+            // if not then insert and return the new province id
+            $data = array(
                 'geo_name' => $districtName,
                 'geo_parent' => $provinceId,
                 'geo_status' => 'active',
@@ -335,7 +329,5 @@ class FacilitiesService
             $lastInsertId = $this->db->getInsertId();
             return $lastInsertId;
         }
-       }
-       
-       
+    }
 }

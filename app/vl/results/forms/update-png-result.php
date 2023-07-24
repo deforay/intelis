@@ -19,7 +19,6 @@ $rKey = '';
 $sampleCodeKey = 'sample_code_key';
 $sampleCode = 'sample_code';
 $prefix = $arr['sample_code_prefix'];
-$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	$rKey = 'R';
 	$sampleCodeKey = 'remote_sample_code_key';
@@ -28,18 +27,6 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 		$sampleCode = 'remote_sample_code';
 	} else {
 		$sampleCode = 'sample_code';
-	}
-	//check user exist in user_facility_map table
-	$chkUserFcMapQry = "SELECT user_id FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
-	$chkUserFcMapResult = $db->query($chkUserFcMapQry);
-	if ($chkUserFcMapResult) {
-		$pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code
-					FROM geographical_divisions as gd
-					JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id
-					JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id
-					where gd.geo_parent = 0
-					AND gd.geo_status='active'
-					AND vlfm.user_id='" . $_SESSION['userId'] . "'";
 	}
 }
 //sample rejection reason
@@ -59,8 +46,7 @@ $aResult = $db->query($aQuery);
 $sQuery = "SELECT * from r_vl_sample_type where status='active'";
 $sResult = $db->query($sQuery);
 
-$pdResult = $db->query($pdQuery);
-
+$province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 //facility details
 $facilityQuery = "SELECT * FROM facility_details where facility_id= ? AND status='active'";
 $facilityResult = $db->rawQuery($facilityQuery, array($vlQueryInfo['facility_id']));

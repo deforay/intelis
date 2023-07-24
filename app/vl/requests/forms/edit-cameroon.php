@@ -27,7 +27,7 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
      }
 }
 //check remote user
-$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
+
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
      if (!empty($vlQueryInfo['remote_sample']) && $vlQueryInfo['remote_sample'] == 'yes') {
@@ -35,25 +35,11 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
      } else {
           $sampleCode = 'sample_code';
      }
-     //check user exist in user_facility_map table
-     $chkUserFcMapQry = "Select user_id from user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-     $chkUserFcMapResult = $db->query($chkUserFcMapQry);
-     if ($chkUserFcMapResult) {
-          $pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code
-                         FROM geographical_divisions as gd
-                         JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id
-                         JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id
-                         WHERE gd.geo_parent = 0 AND gd.geo_status='active'
-                         AND vlfm.user_id='" . $_SESSION['userId'] . "'";
-     }
 } else {
      $sampleCode = 'sample_code';
 }
-$pdResult = $db->query($pdQuery);
-$province = "<option value=''> <?= _('-- Select --'); ?> </option>";
-foreach ($pdResult as $provinceName) {
-     $province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
-}
+
+$province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], '<?= _("-- Select --"); ?>');
 //regimen heading
 $artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
@@ -151,10 +137,10 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                        <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
                                                             <label for="sampleCode"><?= _('Sample ID'); ?> </label><br>
                                                             <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?php echo $vlQueryInfo[$sampleCode]; ?></span>
-                                                                 <input type="hidden" class="<?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" value="<?php echo $vlQueryInfo[$sampleCode]; ?>" />
+                                                            <input type="hidden" class="<?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" value="<?php echo $vlQueryInfo[$sampleCode]; ?>" />
                                                        <?php } else { ?>
                                                             <label for="sampleCode"><?= _('Sample ID'); ?> <span class="mandatory">*</span></label>
-                                                            <input type="text" value="<?= ($vlQueryInfo['sample_code']); ?>"  class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" readonly="readonly" <?php echo $maxLength; ?> placeholder="<?= _('Enter Sample ID'); ?>" title="<?= _('Please enter sample id'); ?>" style="width:100%;" onblur="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'This sample code already exists. Try another',null)" />
+                                                            <input type="text" value="<?= ($vlQueryInfo['sample_code']); ?>" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" readonly="readonly" <?php echo $maxLength; ?> placeholder="<?= _('Enter Sample ID'); ?>" title="<?= _('Please enter sample id'); ?>" style="width:100%;" onblur="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'This sample code already exists. Try another',null)" />
                                                        <?php } ?>
                                                   </div>
                                              </div>
@@ -249,7 +235,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="ageInMonths"><?= _('If Age
-                                                            < 1, Age in Month(s)'); ?> </label> <input type="text" name="ageInMonths" id="ageInMonths"  value="<?= $vlQueryInfo['patient_age_in_months'] ?>" class="form-control forceNumeric" maxlength="2" placeholder="<?= _('Age in Month(s)'); ?>" title="<?= _('Enter age in months'); ?>" />
+                                                            < 1, Age in Month(s)'); ?> </label> <input type="text" name="ageInMonths" id="ageInMonths" value="<?= $vlQueryInfo['patient_age_in_months'] ?>" class="form-control forceNumeric" maxlength="2" placeholder="<?= _('Age in Month(s)'); ?>" title="<?= _('Enter age in months'); ?>" />
                                                   </div>
                                              </div>
                                         </div>
@@ -257,7 +243,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="patientFirstName"><?= _('Patient First Name'); ?> </label>
-                                                       <input type="text" name="patientFirstName" id="patientFirstName"  value="<?= $vlQueryInfo['patient_first_name'] ?>" class="form-control" placeholder="<?= _('Enter Patient First Name'); ?>" title="<?= _('Enter patient First name'); ?>" />
+                                                       <input type="text" name="patientFirstName" id="patientFirstName" value="<?= $vlQueryInfo['patient_first_name'] ?>" class="form-control" placeholder="<?= _('Enter Patient First Name'); ?>" title="<?= _('Enter patient First name'); ?>" />
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -289,55 +275,55 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 
                                         </div>
                                         <div class="row femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "" : "none" ?>" ;>
-                                                       <div class="col-xs-3 col-md-3">
-                                                            <div class="form-group">
-                                                                 <label for="patientPregnant"><?= _('Is Patient Pregnant?'); ?> <span class="mandatory">*</span></label><br>
-                                                                 <label class="radio-inline">
-                                                                 <input type="radio" class="<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "isRequired" : ""; ?>" id="pregYes" name="patientPregnant" value="yes" title="<?= _('Please check if patient is pregnant'); ?>" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>> <?= _('Yes'); ?>
-                                                                 </label>
-                                                                 <label class="radio-inline">
-                                                                 <input type="radio" class="" id="pregNo" name="patientPregnant" value="no" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'no') ? "checked='checked'" : "" ?>> <?= _('No'); ?>
-                                                                 </label>
-                                                            </div>
-                                                       </div>
-                                                       <div class="col-xs-3 col-md-3">
-                                                            <div class="form-group">
-                                                                 <label for="patientPregnant"><?= _('If Yes, Number of weeks of pregnancy?'); ?> </label>
-                                                                <input type="text" class="forceNumeric form-control" id="noOfPregnancyWeeks" name="noOfPregnancyWeeks" value="<?= ($vlQueryInfo['no_of_pregnancy_weeks']); ?>" title="<?= _('Number of weeks of pregnancy'); ?>" placeholder="<?= _('Number of weeks of pregnancy'); ?>">
-                                                            </div>
-                                                       </div>
-                                                       <div class="col-xs-3 col-md-3">
-                                                            <div class="form-group">
-                                                                 <label for="breastfeeding"><?= _('Is Patient Breastfeeding?'); ?> <span class="mandatory">*</span></label><br>
-                                                                 <label class="radio-inline">
-                                                                 <input type="radio" class="<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "isRequired" : ""; ?>" id="breastfeedingYes" name="breastfeeding" value="yes" title="<?= _('Please check if patient is breastfeeding'); ?>" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>> <?= _('Yes'); ?>
-                                                                 </label>
-                                                                 <label class="radio-inline">
-                                                                 <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'no') ? "checked='checked'" : "" ?>> <?= _('No'); ?>
-                                                                 </label>
-                                                            </div>
-                                                       </div>
-                                                       <div class="col-xs-3 col-md-3">
-                                                            <div class="form-group">
-                                                                 <label for="patientPregnant"><?= _('If Yes, For how many weeks?'); ?> </label>
-                                                                <input type="text" class="forceNumeric form-control" id="noOfBreastfeedingWeeks" name="noOfBreastfeedingWeeks" value="<?= ($vlQueryInfo['no_of_breastfeeding_weeks']); ?>" title="<?= _('Number of weeks of breastfeeding'); ?>" placeholder="<?= _('Number of weeks of breastfeeding'); ?>">
-                                                            </div>
-                                                       </div>
+                                             <div class="col-xs-3 col-md-3">
+                                                  <div class="form-group">
+                                                       <label for="patientPregnant"><?= _('Is Patient Pregnant?'); ?> <span class="mandatory">*</span></label><br>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "isRequired" : ""; ?>" id="pregYes" name="patientPregnant" value="yes" title="<?= _('Please check if patient is pregnant'); ?>" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>> <?= _('Yes'); ?>
+                                                       </label>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="pregNo" name="patientPregnant" value="no" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'no') ? "checked='checked'" : "" ?>> <?= _('No'); ?>
+                                                       </label>
                                                   </div>
+                                             </div>
+                                             <div class="col-xs-3 col-md-3">
+                                                  <div class="form-group">
+                                                       <label for="patientPregnant"><?= _('If Yes, Number of weeks of pregnancy?'); ?> </label>
+                                                       <input type="text" class="forceNumeric form-control" id="noOfPregnancyWeeks" name="noOfPregnancyWeeks" value="<?= ($vlQueryInfo['no_of_pregnancy_weeks']); ?>" title="<?= _('Number of weeks of pregnancy'); ?>" placeholder="<?= _('Number of weeks of pregnancy'); ?>">
+                                                  </div>
+                                             </div>
+                                             <div class="col-xs-3 col-md-3">
+                                                  <div class="form-group">
+                                                       <label for="breastfeeding"><?= _('Is Patient Breastfeeding?'); ?> <span class="mandatory">*</span></label><br>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "isRequired" : ""; ?>" id="breastfeedingYes" name="breastfeeding" value="yes" title="<?= _('Please check if patient is breastfeeding'); ?>" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>> <?= _('Yes'); ?>
+                                                       </label>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'no') ? "checked='checked'" : "" ?>> <?= _('No'); ?>
+                                                       </label>
+                                                  </div>
+                                             </div>
+                                             <div class="col-xs-3 col-md-3">
+                                                  <div class="form-group">
+                                                       <label for="patientPregnant"><?= _('If Yes, For how many weeks?'); ?> </label>
+                                                       <input type="text" class="forceNumeric form-control" id="noOfBreastfeedingWeeks" name="noOfBreastfeedingWeeks" value="<?= ($vlQueryInfo['no_of_breastfeeding_weeks']); ?>" title="<?= _('Number of weeks of breastfeeding'); ?>" placeholder="<?= _('Number of weeks of breastfeeding'); ?>">
+                                                  </div>
+                                             </div>
+                                        </div>
                                    </div>
                                    <div class="box box-primary">
                                         <div class="box-header with-border">
                                              <h3 class="box-title"><?= _('Sample Information'); ?></h3>
                                         </div>
                                         <div class="box-body">
-                                                  <div class="row">
-                                                    <div class="col-md-3">
+                                             <div class="row">
+                                                  <div class="col-md-3">
                                                        <div class="form-group">
                                                             <label for=""><?= _('Date of Sample Collection'); ?> <span class="mandatory">*</span></label>
                                                             <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _('Sample Collection Date'); ?>" title="<?= _('Please select sample collection date'); ?>" value="<?php echo $vlQueryInfo['sample_collection_date']; ?>" onchange="checkSampleReceviedDate();checkSampleTestingDate();">
                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
+                                                  </div>
+                                                  <div class="col-md-3">
                                                        <div class="form-group">
                                                             <label for="specimenType"><?= _('Sample Type'); ?> <span class="mandatory">*</span></label>
                                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="<?= _('Please choose sample type'); ?>">
@@ -349,29 +335,29 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                  }
                                                                  foreach ($sResult as $name) { ?>
                                                                       <option <?= $selected; ?> <?php if ($name['sample_id'] == $vlQueryInfo['sample_type'])
-                                                                              echo "selected='selected'";
-                                                                         else
-                                                                              echo ""; ?> value="<?php echo $name['sample_id']; ?>"><?= $name['sample_name']; ?></option>
+                                                                                                         echo "selected='selected'";
+                                                                                                    else
+                                                                                                         echo ""; ?> value="<?php echo $name['sample_id']; ?>"><?= $name['sample_name']; ?></option>
                                                                  <?php } ?>
                                                             </select>
                                                        </div>
                                                   </div>
 
-                                                            <div class="col-md-3">
-                                                            <div class="form-group">
-                                                                 <label for="reqClinician" class=""><?= _('Name of health personnel collecting sample'); ?></label>
+                                                  <div class="col-md-3">
+                                                       <div class="form-group">
+                                                            <label for="reqClinician" class=""><?= _('Name of health personnel collecting sample'); ?></label>
 
-                                                                      <input type="text" class="form-control" id="reqClinician" name="reqClinician" value="<?= $vlQueryInfo['request_clinician_name']; ?>" placeholder="<?= _('Request Clinician name'); ?>" title="<?= _('Please enter request clinician'); ?>" />
-                                                                      </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                            <div class="form-group">
-                                                                <label for="reqClinicianPhoneNumber" class=""><?= _('Contact Number'); ?> </label>
-                                                                      <input type="text" class="form-control forceNumeric" id="reqClinicianPhoneNumber" value="<?= $vlQueryInfo['request_clinician_phone_number']; ?>" name="reqClinicianPhoneNumber" maxlength="15" placeholder="<?= _('Phone Number'); ?>" title="<?= _('Please enter request clinician phone number'); ?>" />
-                                                                </div>
-                                                            </div>
+                                                            <input type="text" class="form-control" id="reqClinician" name="reqClinician" value="<?= $vlQueryInfo['request_clinician_name']; ?>" placeholder="<?= _('Request Clinician name'); ?>" title="<?= _('Please enter request clinician'); ?>" />
                                                        </div>
+                                                  </div>
+                                                  <div class="col-md-3">
+                                                       <div class="form-group">
+                                                            <label for="reqClinicianPhoneNumber" class=""><?= _('Contact Number'); ?> </label>
+                                                            <input type="text" class="form-control forceNumeric" id="reqClinicianPhoneNumber" value="<?= $vlQueryInfo['request_clinician_phone_number']; ?>" name="reqClinicianPhoneNumber" maxlength="15" placeholder="<?= _('Phone Number'); ?>" title="<?= _('Please enter request clinician phone number'); ?>" />
+                                                       </div>
+                                                  </div>
                                              </div>
+                                        </div>
                                         <div class="box box-primary">
                                              <div class="box-header with-border">
                                                   <h3 class="box-title"><?= _('Treatment Information'); ?></h3>
@@ -386,14 +372,14 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                        </div>
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
-                                                            <label for="lineOfTreatment" class="labels"><?= _('Line of Treatment'); ?> </label>
-                                                            <select class="form-control" name="lineOfTreatment" id="lineOfTreatment" title="<?= _('Line Of Treatment'); ?>">
-                                                                <option value="">--Select--</option>
-                                                                <option value="1" <?php echo ($vlQueryInfo['line_of_treatment'] == '1') ? "selected='selected' " : "" ?>><?= _('1st Line'); ?></option>
-                                                                <option value="2" <?php echo ($vlQueryInfo['line_of_treatment'] == '2') ? "selected='selected' " : "" ?>><?= _('2nd Line'); ?></option>
-                                                                <option value="3" <?php echo ($vlQueryInfo['line_of_treatment'] == '3') ? "selected='selected' " : "" ?>><?= _('3rd Line'); ?></option>
-                                                                <option value="n/a" <?php echo ($vlQueryInfo['line_of_treatment'] == 'n/a') ? "selected='selected' " : "" ?>><?= _('N/A'); ?></option>
-                                                            </select>
+                                                                 <label for="lineOfTreatment" class="labels"><?= _('Line of Treatment'); ?> </label>
+                                                                 <select class="form-control" name="lineOfTreatment" id="lineOfTreatment" title="<?= _('Line Of Treatment'); ?>">
+                                                                      <option value="">--Select--</option>
+                                                                      <option value="1" <?php echo ($vlQueryInfo['line_of_treatment'] == '1') ? "selected='selected' " : "" ?>><?= _('1st Line'); ?></option>
+                                                                      <option value="2" <?php echo ($vlQueryInfo['line_of_treatment'] == '2') ? "selected='selected' " : "" ?>><?= _('2nd Line'); ?></option>
+                                                                      <option value="3" <?php echo ($vlQueryInfo['line_of_treatment'] == '3') ? "selected='selected' " : "" ?>><?= _('3rd Line'); ?></option>
+                                                                      <option value="n/a" <?php echo ($vlQueryInfo['line_of_treatment'] == 'n/a') ? "selected='selected' " : "" ?>><?= _('N/A'); ?></option>
+                                                                 </select>
                                                             </div>
                                                        </div>
                                                        <div class="col-xs-3 col-md-3">
@@ -402,14 +388,14 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                  <input type="text" class="form-control" style="width:100%;" value="<?php echo ($vlQueryInfo['current_arv_protocol']); ?>" name="currentArvProtocol" id="currentArvProtocol" placeholder="<?= _('Current ARV Protocol'); ?>" title="<?= _('Please enter current ARV protocol'); ?>">
                                                             </div>
                                                        </div>
-                                                     <!--  <div class="col-xs-3 col-md-3">
+                                                       <!--  <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
                                                                  <label for="arvAdherence"><?= _('Reason of Request of the Viral Load'); ?></label>
                                                                  <select name="reasonForVLTesting" id="reasonForVLTesting" class="form-control" title="<?= _('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
                                                                     <option value="">  <?= _("-- Select --"); ?>  </option>
                                                                     <?php
-                                                                    foreach ($vlTestReasonResult as $tReason) {
-                                                                         ?>
+                                                                      foreach ($vlTestReasonResult as $tReason) {
+                                                                      ?>
                                                                         <option value="<?php echo $tReason['test_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $tReason['test_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ($tReason['test_reason_name']); ?></option>
                                                                     <?php } ?>
                                                                     <option value="other">Other</option>
@@ -429,21 +415,20 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                  <div class="form-group">
                                                                       <div class="col-lg-12">
                                                                            <label class="radio-inline">
-                                                                           <?php
-                                                                           $vlTestReasonQueryRow = "SELECT * from r_vl_test_reasons where test_reason_id='" . trim($vlQueryInfo['reason_for_vl_testing']) . "' OR test_reason_name = '" . trim($vlQueryInfo['reason_for_vl_testing']) . "'";
-                                                                           $vlTestReasonResultRow = $db->query($vlTestReasonQueryRow);
-                                                                           $checked = '';
-                                                                           $display = '';
-                                                                           $vlValue = '';
-                                                                           if (trim($vlQueryInfo['reason_for_vl_testing']) == 'controlVlTesting' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'controlVlTesting') {
-                                                                                $checked = 'checked="checked"';
-                                                                                $display = 'block';
-
-                                                                           } else {
+                                                                                <?php
+                                                                                $vlTestReasonQueryRow = "SELECT * from r_vl_test_reasons where test_reason_id='" . trim($vlQueryInfo['reason_for_vl_testing']) . "' OR test_reason_name = '" . trim($vlQueryInfo['reason_for_vl_testing']) . "'";
+                                                                                $vlTestReasonResultRow = $db->query($vlTestReasonQueryRow);
                                                                                 $checked = '';
-                                                                                $display = 'none';
-                                                                           }
-                                                                           ?>
+                                                                                $display = '';
+                                                                                $vlValue = '';
+                                                                                if (trim($vlQueryInfo['reason_for_vl_testing']) == 'controlVlTesting' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'controlVlTesting') {
+                                                                                     $checked = 'checked="checked"';
+                                                                                     $display = 'block';
+                                                                                } else {
+                                                                                     $checked = '';
+                                                                                     $display = 'none';
+                                                                                }
+                                                                                ?>
                                                                                 <input type="radio" class="isRequired" id="rmTesting" name="reasonForVLTesting" value="controlVlTesting" title="<?= _('Please check viral load indication testing type'); ?>" <?php echo $checked; ?> onclick="showTesting('rmTesting');">
                                                                                 <strong><?= _('Control VL Testing'); ?></strong>
                                                                            </label>
@@ -451,13 +436,13 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                  </div>
                                                             </div>
                                                        </div>
-                                                       <div class="row rmTesting hideTestData well"  style="display:<?php echo $display; ?>;">
+                                                       <div class="row rmTesting hideTestData well" style="display:<?php echo $display; ?>;">
                                                             <div class="col-md-6">
                                                                  <label class="col-lg-5 control-label"><?= _('Types Of Control VL Testing'); ?></label>
                                                                  <div class="col-lg-7">
 
                                                                       <select name="controlVlTestingType" id="controlVlType" class="form-control" title="<?= _('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
-                                                                           <option value="">  <?= _("-- Select --"); ?>  </option>
+                                                                           <option value=""> <?= _("-- Select --"); ?> </option>
                                                                            <option value="6 Months" <?php echo ($vlQueryInfo['control_vl_testing_type'] == '6 Months') ? "selected='selected' " : "" ?>><?= _('6 Months'); ?></option>
                                                                            <option value="12 Months" <?php echo ($vlQueryInfo['control_vl_testing_type'] == '12 Months') ? "selected='selected' " : "" ?>><?= _('12 Months'); ?></option>
                                                                            <option value="24 Months" <?php echo ($vlQueryInfo['control_vl_testing_type'] == '24 Months') ? "selected='selected' " : "" ?>><?= _('24 Months'); ?></option>
@@ -477,19 +462,18 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                  <div class="form-group">
                                                                       <div class="col-lg-12">
                                                                            <label class="radio-inline">
-                                                                           <?php
-                                                                           $checked = '';
-                                                                           $display = '';
-                                                                           $vlValue = '';
-                                                                           if (trim($vlQueryInfo['reason_for_vl_testing']) == 'coinfection' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'coinfection') {
-                                                                                $checked = 'checked="checked"';
-                                                                                $display = 'block';
-
-                                                                           } else {
+                                                                                <?php
                                                                                 $checked = '';
-                                                                                $display = 'none';
-                                                                           }
-                                                                           ?>
+                                                                                $display = '';
+                                                                                $vlValue = '';
+                                                                                if (trim($vlQueryInfo['reason_for_vl_testing']) == 'coinfection' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'coinfection') {
+                                                                                     $checked = 'checked="checked"';
+                                                                                     $display = 'block';
+                                                                                } else {
+                                                                                     $checked = '';
+                                                                                     $display = 'none';
+                                                                                }
+                                                                                ?>
                                                                                 <input type="radio" class="" id="suspendTreatment" name="reasonForVLTesting" value="coinfection" title="Please check viral load indication testing type" <?= $checked; ?> onclick="showTesting('suspendTreatment');">
                                                                                 <strong><?= _('Co-infection'); ?></strong>
                                                                            </label>
@@ -501,11 +485,11 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                             <div class="col-md-6">
                                                                  <label class="col-lg-5 control-label"><?= _('Types of Co-infection'); ?></label>
                                                                  <div class="col-lg-7">
-                                                                 <select name="coinfectionType" id="coinfectionType" class="form-control" title="<?= _('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
-                                                                           <option value="">  <?= _("-- Select --"); ?>  </option>
+                                                                      <select name="coinfectionType" id="coinfectionType" class="form-control" title="<?= _('Please choose reason of request of VL'); ?>" onchange="checkreasonForVLTesting();">
+                                                                           <option value=""> <?= _("-- Select --"); ?> </option>
                                                                            <option value="Tuberculosis" <?php echo ($vlQueryInfo['coinfection_type'] == 'Tuberculosis') ? "selected='selected' " : "" ?>><?= _('Tuberculosis'); ?></option>
                                                                            <option value="Viral Hepatitis" <?php echo ($vlQueryInfo['coinfection_type'] == 'Viral Hepatitis') ? "selected='selected' " : "" ?>><?= _('Viral Hepatitis'); ?></option>
-                                                                    </select>
+                                                                      </select>
                                                                  </div>
                                                             </div>
 
@@ -515,19 +499,18 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                  <div class="form-group">
                                                                       <div class="col-lg-12">
                                                                            <label class="radio-inline">
-                                                                           <?php
-                                                                           $checked = '';
-                                                                           $display = '';
-                                                                           $vlValue = '';
-                                                                           if (trim($vlQueryInfo['reason_for_vl_testing']) == 'other' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'other') {
-                                                                                $checked = 'checked="checked"';
-                                                                                $display = 'block';
-
-                                                                           } else {
+                                                                                <?php
                                                                                 $checked = '';
-                                                                                $display = 'none';
-                                                                           }
-                                                                           ?>
+                                                                                $display = '';
+                                                                                $vlValue = '';
+                                                                                if (trim($vlQueryInfo['reason_for_vl_testing']) == 'other' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'other') {
+                                                                                     $checked = 'checked="checked"';
+                                                                                     $display = 'block';
+                                                                                } else {
+                                                                                     $checked = '';
+                                                                                     $display = 'none';
+                                                                                }
+                                                                                ?>
                                                                                 <input type="radio" class="" id="repeatTesting" name="reasonForVLTesting" value="other" title="<?= _('Please check reason for viral load request'); ?>" <?= $checked; ?> onclick="showTesting('repeatTesting');">
                                                                                 <strong><?= _('Other reasons') ?> </strong>
                                                                            </label>
@@ -624,7 +607,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                                      <optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
                                                                                           <?php foreach ($rejectionResult as $reject) {
                                                                                                if ($type['rejection_type'] == $reject['rejection_type']) {
-                                                                                                    ?>
+                                                                                          ?>
                                                                                                     <option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>> <?= $reject['rejection_reason_name']; ?></option>
                                                                                           <?php }
                                                                                           } ?>
@@ -676,9 +659,9 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="reviewedBy"><?= _('Reviewed By'); ?> </label>
                                                                       <div class="col-lg-7">
-                                                                      <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="<?= _('Please choose reviewed by'); ?>" style="width: 100%;">
-                                                                                     <?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '<?= _("-- Select --"); ?>'); ?>
-                                                                                </select>
+                                                                           <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="<?= _('Please choose reviewed by'); ?>" style="width: 100%;">
+                                                                                <?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '<?= _("-- Select --"); ?>'); ?>
+                                                                           </select>
                                                                       </div>
                                                                  </div>
 
@@ -694,10 +677,10 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                       <label class="col-lg-5 control-label" for="approvedBy"><?= _('Approved By'); ?> </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" <?php echo $labFieldDisabled; ?>>
-                                                                            <option value=""><?= _('-- Select --'); ?></option>
-                                                                                     <?php foreach ($userResult as $uName) { ?>
-                                                                                          <option value="<?php echo $uName['user_id']; ?>" <?php echo ($vlQueryInfo['result_approved_by'] == $uName['user_id']) ? "selected=selected" : ""; ?>><?php echo ($uName['user_name']); ?></option>
-                                                                                     <?php } ?>
+                                                                                <option value=""><?= _('-- Select --'); ?></option>
+                                                                                <?php foreach ($userResult as $uName) { ?>
+                                                                                     <option value="<?php echo $uName['user_id']; ?>" <?php echo ($vlQueryInfo['result_approved_by'] == $uName['user_id']) ? "selected=selected" : ""; ?>><?php echo ($uName['user_name']); ?></option>
+                                                                                <?php } ?>
                                                                            </select>
                                                                       </div>
                                                                  </div>
@@ -757,17 +740,17 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 <?php
 if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
      if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
-          ?>
+?>
           <script src="/assets/js/DYMO.Label.Framework.js"></script>
           <script src="/uploads/barcode-formats/dymo-format.js"></script>
           <script src="/assets/js/dymo-print.js"></script>
      <?php
      } else if ($global['bar_code_printing'] == 'zebra-printer') {
-          ?>
-               <script src="/assets/js/zebra-browserprint.js.js"></script>
-               <script src="/uploads/barcode-formats/zebra-format.js"></script>
-               <script src="/assets/js/zebra-print.js"></script>
-     <?php
+     ?>
+          <script src="/assets/js/zebra-browserprint.js.js"></script>
+          <script src="/uploads/barcode-formats/zebra-format.js"></script>
+          <script src="/assets/js/zebra-print.js"></script>
+<?php
      }
 }
 ?>

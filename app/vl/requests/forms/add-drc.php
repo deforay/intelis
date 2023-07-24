@@ -18,27 +18,16 @@ $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partn
 $implementingPartnerList = $db->query($implementingPartnerQry);
 //check remote user
 $rKey = '';
-$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sampleCodeKey = 'remote_sample_code_key';
 	$sampleCode = 'remote_sample_code';
-	//check user exist in user_facility_map table
-	$chkUserFcMapQry = "SELECT user_id from user_facility_map where user_id=?";
-	$chkUserFcMapResult = $db->rawQuery($chkUserFcMapQry, [$_SESSION['userId']]);
-	if ($chkUserFcMapResult) {
-		$pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
-	}
 	$rKey = 'R';
 } else {
 	$sampleCodeKey = 'sample_code_key';
 	$sampleCode = 'sample_code';
 	$rKey = '';
 }
-$pdResult = $db->query($pdQuery);
-$province = "<option value=''> -- Sélectionner -- </option>";
-foreach ($pdResult as $provinceName) {
-	$province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
-}
+$province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélectionner --');
 
 //get ART list

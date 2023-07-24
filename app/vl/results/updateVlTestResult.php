@@ -51,8 +51,7 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 $statusQuery = "SELECT * FROM r_sample_status where status = 'active' AND status_id NOT IN(9,8,6)";
 $statusResult = $db->rawQuery($statusQuery);
 
-$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
-$pdResult = $db->query($pdQuery);
+$pdResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 0 AND geo_status='active'");
 
 $sQuery = "SELECT * from r_vl_sample_type where status='active'";
 $sResult = $db->query($sQuery);

@@ -149,25 +149,28 @@ class CommonService
 
     public function fetchDataFromTable($tableName = null, $condition = null, $fieldName = null)
     {
-        if ($this->db == null || empty($tableName)) {
-            return false;
-        }
+        return once(function () use ($tableName, $condition, $fieldName) {
 
-        $fieldName = ($fieldName != null) ? $fieldName : '*';
+            if ($this->db == null || empty($tableName)) {
+                return false;
+            }
 
-        $configQuery = "SELECT $fieldName FROM $tableName";
+            $fieldName = ($fieldName != null) ? $fieldName : '*';
 
-        if ($condition != null) {
-            $configQuery .= " WHERE $condition ";
-        }
+            $configQuery = "SELECT $fieldName FROM $tableName";
 
-        if ($tableName == "testing_labs") {
-            $configQuery = "SELECT test_type, facility_id, updated_datetime, monthly_target, suppressed_monthly_target from $tableName";
             if ($condition != null) {
                 $configQuery .= " WHERE $condition ";
             }
-        }
-        return $this->db->query($configQuery);
+
+            if ($tableName == "testing_labs") {
+                $configQuery = "SELECT test_type, facility_id, updated_datetime, monthly_target, suppressed_monthly_target from $tableName";
+                if ($condition != null) {
+                    $configQuery .= " WHERE $condition ";
+                }
+            }
+            return $this->db->query($configQuery);
+        });
     }
 
     // checking if the provided field list has any empty or null values
@@ -268,6 +271,36 @@ class CommonService
         $this->db->insert('result_import_stats', $data);
     }
 
+    public function getUserMappedProvinces($facilityMap = null)
+    {
+        return once(function () use ($facilityMap) {
+            $facilityMap = $facilityMap ?? $_SESSION['facilityMap'];
+
+            $query = "SELECT gd.geo_name, gd.geo_id, gd.geo_code
+                        FROM geographical_divisions as gd";
+
+            if (!empty($facilityMap)) {
+                $query .= " JOIN facility_details as f ON f.facility_state_id=gd.geo_id
+                    WHERE gd.geo_parent = 0 AND
+                    gd.geo_status='active' AND
+                    f.facility_id IN (?)";
+                $result = $this->db->rawQuery($query, [$facilityMap]);
+            } else {
+                $query .= " WHERE gd.geo_parent = 0 AND gd.geo_status='active'";
+                $result = $this->db->rawQuery($query);
+            }
+
+            $options = array_map(function ($row) {
+                return "<option data-code='{$row['geo_code']}' data-province-id='{$row['geo_id']}' data-name='{$row['geo_name']}' value='{$row['geo_name']}##{$row['geo_code']}'> {$row['geo_name']} </option>";
+            }, $result);
+
+            array_unshift($options, "<option value=''>" . _("-- Select --") . " </option>");
+
+            return implode('', $options);
+        });
+    }
+
+
     public function generateSelectOptions($optionList, $selectedOptions = [], $emptySelectText = false)
     {
         return once(function () use ($optionList, $selectedOptions, $emptySelectText) {
@@ -296,7 +329,10 @@ class CommonService
 
     public function getLastModifiedDateTime($tableName, $modifiedDateTimeColName = 'updated_datetime')
     {
-        $query = "SELECT $modifiedDateTimeColName FROM $tableName ORDER BY $modifiedDateTimeColName DESC LIMIT 1";
+        $query = "SELECT $modifiedDateTimeColName
+                    FROM $tableName
+                    ORDER BY $modifiedDateTimeColName DESC
+                    LIMIT 1";
 
         $result = $this->db->rawQueryOne($query);
 

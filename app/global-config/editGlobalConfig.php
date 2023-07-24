@@ -1169,10 +1169,10 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 													$sPrefixMMYYDisplay = 'disabled="disabled"';
 													$sPrefixYYDisplay = 'disabled="disabled"';
 													if ($arr['generic_sample_code'] == 'MMYY') {
-														$sPrefixMMYY = $arr['generic_sample_code_prefix'];
+														$sPrefixMMYY = $arr['generic_sample_code_prefix'] ?? 'T';
 														$sPrefixMMYYDisplay = '';
 													} elseif ($arr['generic_sample_code'] == 'YY') {
-														$sPrefixYY = $arr['generic_sample_code_prefix'];
+														$sPrefixYY = $arr['generic_sample_code_prefix'] ?? 'T';
 														$sPrefixYYDisplay = '';
 													}
 													?>

@@ -21,8 +21,7 @@ $sTypeQuery = "SELECT * FROM r_covid19_sample_type where status='active'";
 $sTypeResult = $db->rawQuery($sTypeQuery);
 $facilityQuery = "SELECT * FROM facility_details where status='active'";
 $facilityResult = $db->rawQuery($facilityQuery);
-$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
-$pdResult = $db->query($pdQuery);
+$pdResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 0 AND geo_status='active'");
 $batchQuery = "SELECT * FROM batch_details";
 $batchResult = $db->rawQuery($batchQuery);
 ?>

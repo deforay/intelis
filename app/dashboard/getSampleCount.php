@@ -80,14 +80,11 @@ if ($systemType != 'remoteuser') {
 } else {
     $whereCondition = "";
     //get user facility map ids
-    $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-    $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
-    if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-        $userfacilityMapresult[0]['facility_id'] = rtrim($userfacilityMapresult[0]['facility_id'], ",");
+    if (!empty($_SESSION['facilityMap'])) {
         if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
-            $whereCondition = " AND eid.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
+            $whereCondition = " AND eid.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
         } else {
-            $whereCondition = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
+            $whereCondition = " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
         }
     }
 }
@@ -128,13 +125,13 @@ if ($table == "form_eid") {
 				ELSE 0
 			END) AS acceptCount,
 		SUM(CASE
-			WHEN (result_printed_datetime not like '' AND result_printed_datetime is not NULL AND DATE(result_printed_datetime) NOT LIKE '0000-00-00 00:00:00') THEN 1
+			WHEN (DATE(eid.result_printed_datetime) > '1970-01-01') THEN 1
 				ELSE 0
 			END) AS printCount
-		FROM $table as eid JOIN facility_details as f ON f.facility_id=eid.facility_id";
-    $sQuery = $sQuery . ' WHERE DATE(eid.sample_collection_date) >= "' . $startDate . '" AND DATE(eid.sample_collection_date) <= "' . $endDate . '"';
-    $sQuery = $sQuery . $whereCondition;
-    $sQuery = $sQuery . ' GROUP BY eid.facility_id ORDER BY totalCount DESC';
+		FROM $table as eid JOIN facility_details as f ON f.facility_id=eid.facility_id
+        WHERE DATE(eid.sample_collection_date) BETWEEN '$startDate' AND '$endDate'
+        $whereCondition
+        GROUP BY eid.facility_id ORDER BY totalCount DESC";
 } else {
     $sQuery = "SELECT
                 vl.facility_id,
@@ -169,13 +166,14 @@ if ($table == "form_eid") {
                         ELSE 0
                     END) AS acceptCount,
                 SUM(CASE
-                    WHEN (result_printed_datetime not like '' AND result_printed_datetime is not NULL AND DATE(result_printed_datetime) NOT LIKE '0000-00-00 00:00:00') THEN 1
+                    WHEN (DATE(vl.result_printed_datetime) > '1970-01-01') THEN 1
                         ELSE 0
                     END) AS printCount
-                FROM $table as vl JOIN facility_details as f ON f.facility_id=vl.facility_id";
-    $sQuery = $sQuery . ' where DATE(vl.sample_collection_date) >= "' . $startDate . '" AND DATE(vl.sample_collection_date) <= "' . $endDate . '"';
-    $sQuery = $sQuery . $whereCondition . $recencyWhere;
-    $sQuery = $sQuery . ' GROUP BY vl.facility_id ORDER BY totalCount DESC';
+                FROM $table as vl JOIN facility_details as f ON f.facility_id=vl.facility_id
+                WHERE DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'
+                $whereCondition
+                $recencyWhere
+                GROUP BY vl.facility_id ORDER BY totalCount DESC";
 }
 
 $tableResult = $db->rawQuery($sQuery);
@@ -211,7 +209,7 @@ $tableResult = $db->rawQuery($sQuery);
             </div>
         </div>
         <div id="collectionSite<?php echo $unique; ?>">
-            <div id="<?php echo $samplesCollectionChart; ?>" width="210" height="150" style="min-height:150px;"></div>
+            <div id="<?php echo $samplesCollectionChart; ?>" style="min-height:250px;"></div>
         </div>
     </div>
 </div>
@@ -386,7 +384,7 @@ $tableResult = $db->rawQuery($sQuery);
         $('#<?php echo $samplesCollectionChart; ?>').highcharts({
             chart: {
                 type: 'column',
-                height: 150
+                height: 350
             },
             title: {
                 text: ''
