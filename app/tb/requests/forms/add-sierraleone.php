@@ -377,7 +377,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 											</select>
 										</td>
 										<th scope="row">
-											<label class="label-control" for="testTypeRequested">Test(s) requested  <span class="mandatory">*</span></label>
+											<label class="label-control" for="testTypeRequested">Test(s) requested <span class="mandatory">*</span></label>
 										</th>
 										<td>
 											<select name="testTypeRequested[]" id="testTypeRequested" class="select2 form-control isRequired" title="Please choose type of test request" style="width:100%" multiple>
@@ -430,7 +430,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 						</div>
 						<?php if ($usersService->isAllowed('/tb/results/tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
 
-							<div class="box box-primary">	
+							<div class="box box-primary">
 								<div class="box-body">
 									<div class="box-header with-border">
 										<h3 class="box-title">Results (To be completed in the Laboratory) </h3>
@@ -562,7 +562,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 											<th scope="row"><label class="label-control" for="labComments">Lab Comments</label></th>
 
 											<td>
-											<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments"></textarea>
+												<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments"></textarea>
 											</td>
 										</tr>
 									</table>
@@ -705,8 +705,8 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 		var sDate = $("#sampleCollectionDate").val();
 		if (pName != '' && sDate != '') {
 			$.post("/tb/requests/generate-sample-code.php", {
-					sDate: sDate,
-					pName: pName
+					sampleCollectionDate: sDate,
+					provinceCode: pName
 				},
 				function(data) {
 					var sCodeKey = JSON.parse(data);

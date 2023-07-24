@@ -604,8 +604,8 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 		var sDate = $("#sampleCollectionDate").val();
 		if (pName != '' && sDate != '') {
 			$.post("/tb/requests/generate-sample-code.php", {
-					sDate: sDate,
-					pName: pName
+					sampleCollectionDate: sDate,
+					provinceCode: pName
 				},
 				function(data) {
 					var sCodeKey = JSON.parse(data);

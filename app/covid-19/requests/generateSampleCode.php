@@ -1,12 +1,8 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\Covid19Service;
+use App\Registries\ContainerRegistry;
 
-
-if (session_status() == PHP_SESSION_NONE) {
-  session_start();
-}
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -19,8 +15,12 @@ $covid19Service = ContainerRegistry::get(Covid19Service::class);
 $provinceCode = $_POST['provinceCode'] ?? $_POST['pName'] ?? null;
 $sampleCollectionDate = $_POST['sampleCollectionDate'] ?? $_POST['sDate'] ?? null;
 
-$sampleCodeParams = [];
-$sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
-$sampleCodeParams['provinceCode'] = $provinceCode;
+if (empty($sampleCollectionDate)) {
+  echo json_encode([]);
+} else {
+  $sampleCodeParams = [];
+  $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
+  $sampleCodeParams['provinceCode'] = $provinceCode;
 
-echo $covid19Service->getSampleCode($sampleCodeParams);
+  echo $covid19Service->getSampleCode($sampleCodeParams);
+}

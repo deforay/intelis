@@ -656,8 +656,8 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		var sDate = $("#sampleCollectionDate").val();
 		if (pName != '' && sDate != '') {
 			$.post("/tb/requests/generate-sample-code.php", {
-					sDate: sDate,
-					pName: pName
+					sampleCollectionDate: sDate,
+					provinceCode: pName
 				},
 				function(data) {
 					var sCodeKey = JSON.parse(data);

@@ -504,7 +504,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row" style="width:15% !important">Date d'apparition des symptômes<span class="mandatory">*</span>  </th>
+                                        <th scope="row" style="width:15% !important">Date d'apparition des symptômes<span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
                                             <input class="form-control date symptomSpecificFields" type="text" name="dateOfSymptomOnset" id="dateOfSymptomOnset" placeholder="Date d'apparition des symptômes" title="Date d'apparition des symptômes" />
                                         </td>
@@ -568,7 +568,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                             <br>
                                                             <?php
                                                             if ($symptomId == 13) {
-                                                                ?>
+                                                            ?>
                                                                 <label class="diarrhée-sub" for="symptomDetails14" style="margin-left:0;display:none;">Si oui:<br> Sanglante?</label>
                                                                 <select name="symptomDetails[13][]" class="form-control diarrhée-sub" style="width:100%;display:none;">
                                                                     <option value="">-- Sélectionner --</option>
@@ -1208,7 +1208,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
         var sDate = $("#sampleCollectionDate").val();
         if (pName != '' && sDate != '') {
             $.post("/covid-19/requests/generateSampleCode.php", {
-                    sDate: sDate,
+                    sampleCollectionDate: sDate,
                     pName: pName
                 },
                 function(data) {
@@ -1302,11 +1302,11 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
             $(".submitButton").hide();
             <?php
             if ($arr['covid19_sample_code'] == 'auto' || $arr['covid19_sample_code'] == 'YY' || $arr['covid19_sample_code'] == 'MMYY') {
-                ?>
+            ?>
                 insertSampleCode('addCovid19RequestForm', 'covid19SampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 3, 'sampleCollectionDate');
             <?php
             } else {
-                ?>
+            ?>
                 document.getElementById('addCovid19RequestForm').submit();
             <?php
             } ?>

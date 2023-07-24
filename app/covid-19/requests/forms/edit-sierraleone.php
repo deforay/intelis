@@ -261,7 +261,7 @@ $patientProvince = $patientProvinceInfo[0];
                                         <th scope="row">County</th>
                                         <td>
                                             <select class="form-control select2" name="patientDistrict" id="patientDistrict" title="Please Case County" style="width:100%;">
-                                            <?= $general->generateSelectOptions($provinceInfo, $patientProvince, '-- Select --'); ?>
+                                                <?= $general->generateSelectOptions($provinceInfo, $patientProvince, '-- Select --'); ?>
                                             </select>
                                         </td>
                                         <th scope="row">Payam</th>
@@ -381,10 +381,10 @@ $patientProvince = $patientProvinceInfo[0];
                                             <select class="form-control" name="testNumber" id="testNumber" title="Prélévement" style="width:100%;">
                                                 <option value="">--Select--</option>
                                                 <?php foreach (range(1, 5) as $element) {
-                                                    $selected="";
-                                                    if($element==$covid19Info['test_number'])
-                                                        $selected="selected='selected'";
-                                                    echo '<option value="' . $element . '" '.$selected.'>' . $element . '</option>';
+                                                    $selected = "";
+                                                    if ($element == $covid19Info['test_number'])
+                                                        $selected = "selected='selected'";
+                                                    echo '<option value="' . $element . '" ' . $selected . '>' . $element . '</option>';
                                                 } ?>
                                             </select>
                                         </td>
@@ -742,8 +742,8 @@ $patientProvince = $patientProvinceInfo[0];
         var sDate = $("#sampleCollectionDate").val();
         if (pName != '' && sDate != '') {
             $.post("/covid-19/requests/generateSampleCode.php", {
-                    sDate: sDate,
-                    pName: pName
+                    sampleCollectionDate: sDate,
+                    provinceCode: pName
                 },
                 function(data) {
                     var sCodeKey = JSON.parse(data);

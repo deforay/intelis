@@ -583,7 +583,7 @@ if (!empty($patientData)) {
                                                         $diarrhée = "diarrhée";
                                                         $display = (isset($covid19SelectedSymptoms[$symptomId]['value']) && $covid19SelectedSymptoms[$symptomId]['value'] == "yes") ? "" : 'display:none;';
                                                     }
-                                                    ?>
+                                                ?>
                                                     <tr class="row<?php echo $index; ?>">
                                                         <!-- <td style="display: flex;">
                                                             <label class="radio-inline" style="width:4%;margin-left:0;">
@@ -604,7 +604,7 @@ if (!empty($patientData)) {
                                                             <br>
                                                             <?php
                                                             if ($symptomId == 13) {
-                                                                ?>
+                                                            ?>
                                                                 <label class="diarrhée-sub" for="" style="margin-left:0;<?php echo $display; ?>">Si oui:<br> Sanglante?</label>
                                                                 <select name="symptomDetails[13][]" class="form-control diarrhée-sub" style="width:100%;<?php echo $display; ?>">
                                                                     <option value="">-- Sélectionner --</option>
@@ -932,9 +932,10 @@ if (!empty($patientData)) {
                                                 </table>
                                             </td>
                                         </tr>
-                                        <?php //$otherDiseases = (isset($covid19Info['result']) && $covid19Info['result'] != 'positive') ? 'display' : 'none'; ?>
+                                        <?php //$otherDiseases = (isset($covid19Info['result']) && $covid19Info['result'] != 'positive') ? 'display' : 'none';
+                                        ?>
                                         <tr>
-                                       <!--     <th scope="row" class="other-diseases" style="display: <?php echo $otherDiseases; ?>;"><label for="otherDiseases">Autres maladies<span class="mandatory">*</span></label></th>
+                                            <!--     <th scope="row" class="other-diseases" style="display: <?php echo $otherDiseases; ?>;"><label for="otherDiseases">Autres maladies<span class="mandatory">*</span></label></th>
                                             <td class="other-diseases" style="display: <?php echo $otherDiseases; ?>;">
                                                 <select name="otherDiseases" id="otherDiseases" class="form-control" title="Autres maladies">
                                                     <option value="">--Select--</option>
@@ -1288,8 +1289,8 @@ if (!empty($patientData)) {
         var sDate = $("#sampleCollectionDate").val();
         if (pName != '' && sDate != '') {
             $.post("/covid-19/requests/generateSampleCode.php", {
-                    sDate: sDate,
-                    pName: pName
+                    sampleCollectionDate: sDate,
+                    provinceCode: pName
                 },
                 function(data) {
                     var sCodeKey = JSON.parse(data);

@@ -15,9 +15,13 @@ $provinceCode = $_POST['pName'] ?? $_POST['provinceCode'] ?? null;
 $sampleCollectionDate = $_POST['sampleCollectionDate'] ?? $_POST['sDate'] ?? null;
 $testType = $_POST['testType'] ?? null;
 
-$sampleCodeParams = [];
-$sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
-$sampleCodeParams['provinceCode'] = $provinceCode;
-$sampleCodeParams['testType'] = $testType;
+if (empty($sampleCollectionDate) || empty($testType)) {
+    echo json_encode([]);
+} else {
+    $sampleCodeParams = [];
+    $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
+    $sampleCodeParams['provinceCode'] = $provinceCode;
+    $sampleCodeParams['testType'] = $testType;
 
-echo $genericTestsService->getSampleCode($sampleCodeParams);
+    echo $genericTestsService->getSampleCode($sampleCodeParams);
+}

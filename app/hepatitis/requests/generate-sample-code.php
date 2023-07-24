@@ -24,9 +24,13 @@ $sampleCollectionDate = $_POST['sampleCollectionDate'] ?? $_POST['sDate'] ?? nul
 $prefix = $_POST['prefix'] ?? null;
 
 
-$sampleCodeParams = [];
-$sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
-$sampleCodeParams['prefix'] = $_POST['prefix'] ?? null;
-$sampleCodeParams['provinceCode'] = $provinceCode;
+if (empty($sampleCollectionDate) || empty($prefix)) {
+  echo json_encode([]);
+} else {
+  $sampleCodeParams = [];
+  $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
+  $sampleCodeParams['prefix'] = $prefix;
+  $sampleCodeParams['provinceCode'] = $provinceCode;
 
-echo $hepatitisService->getSampleCode($sampleCodeParams);
+  echo $hepatitisService->getSampleCode($sampleCodeParams);
+}

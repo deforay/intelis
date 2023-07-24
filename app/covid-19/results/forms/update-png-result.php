@@ -765,7 +765,7 @@ $fundingSourceOptions = $general->generateSelectOptions($fundingSourceArray, $co
         var sDate = $("#sampleCollectionDate").val();
         if (pName != '' && sDate != '') {
             $.post("/covid-19/requests/generateSampleCode.php", {
-                    sDate: sDate,
+                    sampleCollectionDate: sDate,
                     pName: pName
                 },
                 function(data) {

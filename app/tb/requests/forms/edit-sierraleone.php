@@ -616,7 +616,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 											<th scope="row"><label class="label-control" for="labComments">Lab Comments</label></th>
 
 											<td>
-											<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments"><?php echo trim($tbInfo['lab_tech_comments']); ?></textarea>
+												<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments"><?php echo trim($tbInfo['lab_tech_comments']); ?></textarea>
 											</td>
 										</tr>
 
@@ -759,8 +759,8 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		var sDate = $("#sampleCollectionDate").val();
 		if (pName != '' && sDate != '') {
 			$.post("/tb/requests/generate-sample-code.php", {
-					sDate: sDate,
-					pName: pName
+					sampleCollectionDate: sDate,
+					provinceCode: pName
 				},
 				function(data) {
 					var sCodeKey = JSON.parse(data);

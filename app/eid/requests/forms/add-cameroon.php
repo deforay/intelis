@@ -647,7 +647,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         var sDate = $("#sampleCollectionDate").val();
         if (pName != '' && sDate != '') {
             $.post("/eid/requests/generateSampleCode.php", {
-                    sDate: sDate,
+                    sampleCollectionDate: sDate,
                     pName: pName
                 },
                 function(data) {

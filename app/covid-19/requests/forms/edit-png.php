@@ -306,13 +306,13 @@ $fundingSourceOptions = $general->generateSelectOptions($fundingSourceArray, $co
                                             <option value="asymptomatic" < ?php echo (isset($covid19Info['suspected_case']) && $covid19Info['suspected_case'] == 'asymptomatic') ? "selected='selected'" : ""; ?>>Asymptomatic</option>
                                             <option value="symptomatic" < ?php echo (isset($covid19Info['suspected_case']) && $covid19Info['suspected_case'] == 'symptomatic') ? "selected='selected'" : ""; ?>>Symptomatic</option>
                                             <option value="unknown" < ?php echo (isset($covid19Info['suspected_case']) && $covid19Info['suspected_case'] == 'unknown') ? "selected='selected'" : ""; ?>>Unknown</option>
-                                        </select>--> 
+                                        </select>-->
                                         <select name="asymptomatic" id="asymptomatic" class="form-control isRequired" title="Asymptomatic" onchange="asymptomaticFn(this.value);">
-                                                <option value="">--Select--</option>
-                                                <option value="yes" <?php echo (isset($covid19Info['asymptomatic']) && $covid19Info['asymptomatic'] == 'yes') ? "selected='selected'" : ""; ?>>Yes</option>
-                                                <option value="no" <?php echo (isset($covid19Info['asymptomatic']) && $covid19Info['asymptomatic'] == 'no') ? "selected='selected'" : ""; ?>>No</option>
-                                                <option value="unknown" <?php echo (isset($covid19Info['asymptomatic']) && $covid19Info['asymptomatic'] == 'unknown') ? "selected='selected'" : ""; ?>>Unknown</option>
-                                            </select>
+                                            <option value="">--Select--</option>
+                                            <option value="yes" <?php echo (isset($covid19Info['asymptomatic']) && $covid19Info['asymptomatic'] == 'yes') ? "selected='selected'" : ""; ?>>Yes</option>
+                                            <option value="no" <?php echo (isset($covid19Info['asymptomatic']) && $covid19Info['asymptomatic'] == 'no') ? "selected='selected'" : ""; ?>>No</option>
+                                            <option value="unknown" <?php echo (isset($covid19Info['asymptomatic']) && $covid19Info['asymptomatic'] == 'unknown') ? "selected='selected'" : ""; ?>>Unknown</option>
+                                        </select>
                                     </td>
                                     <th scope="row"><label for="dateOfSymptomOnset">Date of symptom onset</label></th>
                                     <td>
@@ -786,8 +786,8 @@ $fundingSourceOptions = $general->generateSelectOptions($fundingSourceArray, $co
         var sDate = $("#sampleCollectionDate").val();
         if (pName != '' && sDate != '') {
             $.post("/covid-19/requests/generateSampleCode.php", {
-                    sDate: sDate,
-                    pName: pName
+                    sampleCollectionDate: sDate,
+                    provinceCode: pName
                 },
                 function(data) {
                     var sCodeKey = JSON.parse(data);

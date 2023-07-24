@@ -478,7 +478,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <h3 class="box-title"> Reserved for Laboratory Use </h3>
                                     </div>
                                     <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                        <tr> 
+                                        <tr>
                                             <th scope="row"><label for="">Sample Received Date </label></th>
                                             <td>
                                                 <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
@@ -763,7 +763,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             $.blockUI();
             var provinceCode = ($("#province").find(":selected").attr("data-code") == null || $("#province").find(":selected").attr("data-code") == '') ? $("#province").find(":selected").attr("data-name") : $("#province").find(":selected").attr("data-code");
             sampleCodeGenerationEvent = $.post("/eid/requests/generateSampleCode.php", {
-                    sDate: sDate,
+                    sampleCollectionDate: sDate,
                     autoTyp: 'auto2',
                     provinceCode: provinceCode,
                     'sampleFrom': 'png',
@@ -787,7 +787,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     //     if (pName != '' && sDate != '') {
     //         provinceCode
     //         $.post("/eid/requests/generateSampleCode.php", {
-    //                 sDate: sDate,
+    //                 sampleCollectionDate: sDate,
     //                 pName: pName,
     //                 autoTyp: 'auto2',
     //                 //provinceCode: $("#province").find(":selected").attr("data-code"),

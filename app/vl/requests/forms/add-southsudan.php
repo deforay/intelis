@@ -154,7 +154,7 @@ $sFormat = '';
                                              <div class="col-xs-4 col-md-4">
                                                   <div class="form-group">
                                                        <label for="fName">Clinic/Health Center <span class="mandatory">*</span></label>
-                                                       <select class="form-control isRequired select2" id="fName" name="fName" title="Please select clinic/health center name" style="width:100%;" onchange="getfacilityProvinceDetails(this);fillFacilityDetails();setSampleDispatchDate();">
+                                                       <select class="form-control isRequired select2" id="fName" name="fName" title="Please select clinic/health center name" style="width:100%;" onchange="getfacilityProvinceDetails(this);fillFacilityDetails();setSampleDispatchDate();generateSampleCode();">
                                                             <?php echo $facility; ?>
                                                        </select>
                                                   </div>
@@ -182,7 +182,7 @@ $sFormat = '';
                                                             <option value=""> -- Select -- </option>
                                                             <?php
                                                             foreach ($implementingPartnerList as $implementingPartner) {
-                                                                 ?>
+                                                            ?>
                                                                  <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
                                                             <?php } ?>
                                                        </select>
@@ -195,7 +195,7 @@ $sFormat = '';
                                                             <option value=""> -- Select -- </option>
                                                             <?php
                                                             foreach ($fundingSourceList as $fundingSource) {
-                                                                 ?>
+                                                            ?>
                                                                  <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
                                                             <?php } ?>
                                                        </select>
@@ -342,7 +342,7 @@ $sFormat = '';
                                                                                 <?php
                                                                                 foreach ($aResult as $regimen) {
                                                                                      if ($heading['headings'] == $regimen['headings']) {
-                                                                                          ?>
+                                                                                ?>
                                                                                           <option value="<?php echo $regimen['art_code']; ?>"><?php echo $regimen['art_code']; ?></option>
                                                                                 <?php
                                                                                      }
@@ -601,7 +601,7 @@ $sFormat = '';
                                                                                      <optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
                                                                                           <?php foreach ($rejectionResult as $reject) {
                                                                                                if ($type['rejection_type'] == $reject['rejection_type']) {
-                                                                                                    ?>
+                                                                                          ?>
                                                                                                     <option value="<?php echo $reject['rejection_reason_id']; ?>"><?= $reject['rejection_reason_name']; ?></option>
                                                                                           <?php }
                                                                                           } ?>
@@ -772,17 +772,17 @@ $sFormat = '';
 <?php
 if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
      if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
-          ?>
+?>
           <script src="/assets/js/DYMO.Label.Framework.js"></script>
           <script src="/uploads/barcode-formats/dymo-format.js"></script>
           <script src="/assets/js/dymo-print.js"></script>
      <?php
      } else if ($global['bar_code_printing'] == 'zebra-printer') {
-          ?>
-               <script src="/assets/js/zebra-browserprint.js.js"></script>
-               <script src="/uploads/barcode-formats/zebra-format.js"></script>
-               <script src="/assets/js/zebra-print.js"></script>
-     <?php
+     ?>
+          <script src="/assets/js/zebra-browserprint.js.js"></script>
+          <script src="/uploads/barcode-formats/zebra-format.js"></script>
+          <script src="/assets/js/zebra-print.js"></script>
+<?php
      }
 }
 ?>
@@ -1097,12 +1097,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function generateSampleCode() {
-          var pName = $("#province").val();
           var sDate = $("#sampleCollectionDate").val();
           $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
-          if (pName != '' && sDate != '') {
+          if (sDate != '') {
                $.post("/vl/requests/generateSampleCode.php", {
-                         sDate: sDate
+                         sampleCollectionDate: sDate
                     },
                     function(data) {
                          var sCodeKey = JSON.parse(data);

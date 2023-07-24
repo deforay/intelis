@@ -12,11 +12,17 @@ $tbService = ContainerRegistry::get(TbService::class);
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
-$province = $_POST['provinceCode'] ?? $_POST['pName'] ?? null;
+
+$provinceCode = $_POST['provinceCode'] ?? $_POST['pName'] ?? null;
 $sampleCollectionDate = $_POST['sampleCollectionDate'] ?? $_POST['sDate'] ?? null;
 
-$sampleCodeParams = [];
-$sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
-$sampleCodeParams['provinceCode'] = $provinceCode;
+if (empty($sampleCollectionDate)) {
+    echo json_encode([]);
+} else {
 
-echo $tbService->getSampleCode($sampleCodeParams);
+    $sampleCodeParams = [];
+    $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
+    $sampleCodeParams['provinceCode'] = $provinceCode;
+
+    echo $tbService->getSampleCode($sampleCodeParams);
+}

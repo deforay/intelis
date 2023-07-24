@@ -544,8 +544,8 @@ foreach ($fResult as $fDetails) {
         var sDate = $("#sampleCollectionDate").val();
         if (pName != '' && sDate != '') {
             $.post("/covid-19/requests/generateSampleCode.php", {
-                    sDate: sDate,
-                    pName: pName
+                    sampleCollectionDate: sDate,
+                    provinceCode: pName
                 },
                 function(data) {
                     var sCodeKey = JSON.parse(data);

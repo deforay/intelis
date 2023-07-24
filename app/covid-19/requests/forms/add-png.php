@@ -291,18 +291,18 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <table aria-describedby="table" id="responseTable" class="table table-bordered" aria-hidden="true">
                                     <th scope="row"><label for="suspectedCase">Is Patient Asymptomatic</label></th>
                                     <td>
-                                       <!-- <select name="suspectedCase" id="suspectedCase" class="form-control" title="Please choose suspected case">
+                                        <!-- <select name="suspectedCase" id="suspectedCase" class="form-control" title="Please choose suspected case">
                                             <option value="">--Select--</option>
                                             <option value="asymptomatic">Asymptomatic</option>
                                             <option value="symptomatic">Symptomatic</option>
                                             <option value="unknown">Unknown</option>
                                         </select>-->
                                         <select name="asymptomatic" id="asymptomatic" class="form-control isRequired" title="Asymptomatic" onchange="asymptomaticFn(this.value);">
-                                                <option value="">--Select--</option>
-                                                <option value="yes">Yes</option>
-                                                <option value="no">No</option>
-                                                <option value="unknown">Unknown</option>
-                                            </select>
+                                            <option value="">--Select--</option>
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
+                                            <option value="unknown">Unknown</option>
+                                        </select>
                                     </td>
                                     <th scope="row"><label for="dateOfSymptomOnset">Date of symptom onset</label></th>
                                     <td>
@@ -733,8 +733,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         var sDate = $("#sampleCollectionDate").val();
         if (pName != '' && sDate != '') {
             $.post("/covid-19/requests/generateSampleCode.php", {
-                    sDate: sDate,
-                    pName: pName
+                    sampleCollectionDate: sDate,
+                    provinceCode: pName
                 },
                 function(data) {
                     var sCodeKey = JSON.parse(data);
@@ -817,7 +817,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         });
         $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
         provinceId = $("#province").find(":selected").attr("data-province-id");
-      
+
         if (flag) {
             $('.btn-disabled').attr('disabled', 'yes');
             $(".btn-disabled").prop("onclick", null).off("click");

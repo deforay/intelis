@@ -128,7 +128,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value=""> -- Select -- </option>
                                                 <?php
                                                 foreach ($implementingPartnerList as $implementingPartner) {
-                                                    ?>
+                                                ?>
                                                     <option value="<?php echo ($implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
                                                 <?php } ?>
                                             </select>
@@ -139,7 +139,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value=""> -- Select -- </option>
                                                 <?php
                                                 foreach ($fundingSourceList as $fundingSource) {
-                                                    ?>
+                                                ?>
                                                     <option value="<?php echo ($fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
                                                 <?php } ?>
                                             </select>
@@ -561,7 +561,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         var sDate = $("#sampleCollectionDate").val();
         if (pName != '' && sDate != '') {
             $.post("/eid/requests/generateSampleCode.php", {
-                    sDate: sDate,
+                    sampleCollectionDate: sDate,
                     pName: pName
                 },
                 function(data) {
@@ -638,11 +638,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             //$.blockUI();
             <?php
             if ($arr['eid_sample_code'] == 'auto' || $arr['eid_sample_code'] == 'YY' || $arr['eid_sample_code'] == 'MMYY') {
-                ?>
+            ?>
                 insertSampleCode('addEIDRequestForm', 'eidSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 3, 'sampleCollectionDate');
             <?php
             } else {
-                ?>
+            ?>
                 document.getElementById('addEIDRequestForm').submit();
             <?php
             } ?>

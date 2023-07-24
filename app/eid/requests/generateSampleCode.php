@@ -1,12 +1,7 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\EidService;
-
-
-if (session_status() == PHP_SESSION_NONE) {
-  session_start();
-}
+use App\Registries\ContainerRegistry;
 
 
 /** @var EidService $eidService */
@@ -19,25 +14,18 @@ $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
 
-$sampleCollectionDate = $province = '';
+$provinceCode = $_POST['provinceCode'] ?? $_POST['pName'] ?? null;
+$sampleCollectionDate = $_POST['sampleCollectionDate'] ?? $_POST['sDate'] ?? null;
 
-if (isset($_POST['provinceCode'])) {
-  $province = $_POST['provinceCode'];
-} else if (isset($_POST['pName'])) {
-  $province = $_POST['pName'];
+if (empty($sampleCollectionDate)) {
+  echo json_encode([]);
+} else {
+
+  $sampleFrom = $_POST['sampleFrom'] ?? '';
+
+  $sampleCodeParams = [];
+  $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
+  $sampleCodeParams['provinceCode'] = $provinceCode;
+
+  echo $eidService->getSampleCode($sampleCodeParams);
 }
-
-if (isset($_POST['sampleCollectionDate'])) {
-  $sampleCollectionDate = $_POST['sampleCollectionDate'];
-} else if (isset($_POST['sDate'])) {
-  $sampleCollectionDate = $_POST['sDate'];
-}
-
-$sampleFrom = $_POST['sampleFrom'] ?? '';
-
-$sampleCodeParams = [];
-$sampleCodeParams['sampleCollectionDate'] = $params['sampleCollectionDate'] ?? null;
-$sampleCodeParams['provinceCode'] = $province ?? null;
-$sampleCodeParams['provinceId'] = null;
-
-echo $eidService->getSampleCode($sampleCodeParams);

@@ -15,10 +15,14 @@ class EidService extends AbstractTestService
 
     public function getSampleCode($params)
     {
-        $globalConfig = $this->commonService->getGlobalConfig();
-        $params['sampleCodeFormat'] = $globalConfig['eid_sample_code'] ?? 'MMYY';
-        $params['prefix'] = $params['prefix'] ?? $globalConfig['eid_sample_code_prefix'] ?? $this->shortCode;
-        return $this->generateSampleCode($this->table, $params);
+        if (empty($params['sampleCollectionDate'])) {
+            return json_encode([]);
+        } else {
+            $globalConfig = $this->commonService->getGlobalConfig();
+            $params['sampleCodeFormat'] = $globalConfig['eid_sample_code'] ?? 'MMYY';
+            $params['prefix'] = $params['prefix'] ?? $globalConfig['eid_sample_code_prefix'] ?? $this->shortCode;
+            return $this->generateSampleCode($this->table, $params);
+        }
     }
 
 

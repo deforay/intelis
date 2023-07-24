@@ -570,7 +570,7 @@ $sFormat = '';
                                                                                      <optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
                                                                                           <?php foreach ($rejectionResult as $reject) {
                                                                                                if ($type['rejection_type'] == $reject['rejection_type']) {
-                                                                                                    ?>
+                                                                                          ?>
                                                                                                     <option value="<?php echo $reject['rejection_reason_id']; ?>"><?= $reject['rejection_reason_name']; ?></option>
                                                                                           <?php }
                                                                                           } ?>
@@ -702,17 +702,17 @@ $sFormat = '';
 <?php
 if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
      if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
-          ?>
+?>
           <script src="/assets/js/DYMO.Label.Framework.js"></script>
           <script src="/uploads/barcode-formats/dymo-format.js"></script>
           <script src="/assets/js/dymo-print.js"></script>
      <?php
      } else if ($global['bar_code_printing'] == 'zebra-printer') {
-          ?>
-               <script src="/assets/js/zebra-browserprint.js.js"></script>
-               <script src="/uploads/barcode-formats/zebra-format.js"></script>
-               <script src="/assets/js/zebra-print.js"></script>
-     <?php
+     ?>
+          <script src="/assets/js/zebra-browserprint.js.js"></script>
+          <script src="/uploads/barcode-formats/zebra-format.js"></script>
+          <script src="/assets/js/zebra-print.js"></script>
+<?php
      }
 }
 ?>
@@ -888,7 +888,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
           if (pName != '' && sDate != '') {
                $.post("/vl/requests/generateSampleCode.php", {
-                         sDate: sDate
+                         sampleCollectionDate: sDate
                     },
                     function(data) {
                          var sCodeKey = JSON.parse(data);

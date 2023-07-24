@@ -562,7 +562,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                                 <select class="form-control result-focus" name="result" id="result">
                                                     <option value=''> -- Select -- </option>
                                                     <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
-                                                        <option value="<?php echo $eidResultKey; ?>" <?php echo ($eidResultKey==$eidInfo['result']) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?> </option>
+                                                        <option value="<?php echo $eidResultKey; ?>" <?php echo ($eidResultKey == $eidInfo['result']) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?> </option>
                                                     <?php } ?>
                                                 </select>
                                             </td>
@@ -807,7 +807,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
         var sDate = $("#sampleCollectionDate").val();
         if (pName != '' && sDate != '') {
             $.post("/eid/requests/generateSampleCode.php", {
-                    sDate: sDate,
+                    sampleCollectionDate: sDate,
                     pName: pName,
                     autoTyp: 'auto2',
                     provinceCode: $("#province").find(":selected").attr("data-code"),

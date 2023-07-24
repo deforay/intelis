@@ -497,8 +497,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         var hepatitisTestType = $("#hepatitisTestType").val();
         if (pName != '' && sDate != '' && hepatitisTestType != '') {
             $.post("/hepatitis/requests/generate-sample-code.php", {
-                    sDate: sDate,
-                    pName: pName,
+                    sampleCollectionDate: sDate,
+                    provinceCode: pName,
                     prefix: hepatitisTestType
                 },
                 function(data) {

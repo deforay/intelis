@@ -37,10 +37,14 @@ class VlService extends AbstractTestService
 
     public function getSampleCode($params)
     {
-        $globalConfig = $this->commonService->getGlobalConfig();
-        $params['sampleCodeFormat'] = $globalConfig['sample_code'] ?? 'MMYY';
-        $params['prefix'] = $params['prefix'] ?? $globalConfig['sample_code_prefix'] ?? $this->shortCode;
-        return $this->generateSampleCode($this->table, $params);
+        if (empty($params['sampleCollectionDate'])) {
+            return json_encode([]);
+        } else {
+            $globalConfig = $this->commonService->getGlobalConfig();
+            $params['sampleCodeFormat'] = $globalConfig['sample_code'] ?? 'MMYY';
+            $params['prefix'] = $params['prefix'] ?? $globalConfig['sample_code_prefix'] ?? $this->shortCode;
+            return $this->generateSampleCode($this->table, $params);
+        }
     }
 
     public function getVlSampleTypesByName($name = "")
