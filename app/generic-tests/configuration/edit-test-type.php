@@ -886,7 +886,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 				format: "html"
 			},
 			function(data) {
-				$("#fieldId" + rowId).val(data);
+				$("#fieldId" + rowId).val("_"+data);
 			});
 	}
 

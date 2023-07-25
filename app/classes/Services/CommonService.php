@@ -703,8 +703,12 @@ class CommonService
                 $setString .= ', "$.' . $key . '", ' . ($value ? 'true' : 'false');
             } elseif (is_numeric($value)) {
                 $setString .= ', "$.' . $key . '", ' . $value;
-            } else {
+            }elseif(is_array($value)){
+                $setString .= ', "$.' . $key . '", "' . addslashes(implode(",", $value)) . '"';
+            }elseif(is_string($value)){
                 $setString .= ', "$.' . $key . '", "' . addslashes($value) . '"';
+            }else{
+                $setString .= ', "$.' . $key . '", "' . $value . '"';
             }
         }
 
@@ -715,8 +719,12 @@ class CommonService
                 $setString .= ', "$.' . $key . '", ' . ($value ? 'true' : 'false');
             } elseif (is_numeric($value)) {
                 $setString .= ', "$.' . $key . '", ' . $value;
-            } else {
+            }elseif(is_array($value)){
+                $setString .= ', "$.' . $key . '", "' . addslashes(implode(",", $value)) . '"';
+            }elseif(is_string($value)){
                 $setString .= ', "$.' . $key . '", "' . addslashes($value) . '"';
+            }else{
+                $setString .= ', "$.' . $key . '", "' . $value . '"';
             }
         }
 
