@@ -47,9 +47,9 @@ function getFieldType($fieldType)
     });
 }
 
-function getDropDownField($testAttribute, $value, $inputClass, $isRequired, $fieldType, $disabled, $inputWidth)
+function getDropDownField($testAttribute, $testAttributeId, $value, $inputClass, $isRequired, $fieldType, $disabled, $inputWidth)
 {
-    $fieldName = 'dynamicFields[' . $testAttribute['field_id'] . ']';
+    $fieldName = 'dynamicFields[' . $testAttributeId . ']';
     if ($testAttribute['field_type'] == 'multiple') {
         $fieldName .= '[]';
     }
@@ -58,7 +58,7 @@ function getDropDownField($testAttribute, $value, $inputClass, $isRequired, $fie
             <select name="%s" id="%s" class="form-control %s%s%s%s"
                 title="Please select the option" %s style="width:%s;">',
         $fieldName,
-        $testAttribute['field_id'],
+        $testAttributeId,
         $inputClass,
         $isRequired,
         $fieldType,
@@ -86,7 +86,7 @@ function getField($testAttribute, $testAttributeId, $value, $inputClass, $sectio
 
     $field = '';
     if ($testAttribute['field_type'] == 'dropdown' || $testAttribute['field_type'] == 'multiple') {
-        $field .= getDropDownField($testAttribute, $value, $inputClass, $isRequired, $fieldType, $disabled, $inputWidth);
+        $field .= getDropDownField($testAttribute, $testAttributeId, $value, $inputClass, $isRequired, $fieldType, $disabled, $inputWidth);
     } else {
         $field = sprintf(
             '<div class="col-lg-7">

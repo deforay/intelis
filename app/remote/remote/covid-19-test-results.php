@@ -129,7 +129,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
                     $lab['form_attributes'],
                     'form_attributes'
                 );
-                $lab['form_attributes'] = $db->func($formAttributes);
+                $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                 $db = $db->where('covid19_id', $sResult[0]['covid19_id']);
                 $id = $db->update('form_covid19', $lab);
             } else {
@@ -137,7 +137,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
                     $lab['form_attributes'],
                     'form_attributes'
                 );
-                $lab['form_attributes'] = $db->func($formAttributes);
+                $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                 $id = $db->insert('form_covid19', $lab);
             }
         } catch (Exception $e) {

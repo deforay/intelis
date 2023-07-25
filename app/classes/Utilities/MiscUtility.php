@@ -69,6 +69,32 @@ class MiscUtility
         return false;
     }
 
+    public static function isJSON($string): bool
+    {
+        return !empty($string) && is_string($string) &&
+            is_array(json_decode($string, true)) &&
+            (json_last_error() == JSON_ERROR_NONE);
+    }
+
+    public static function toJSON($data): ?string
+    {
+        if (!empty($data)) {
+            if (self::isJSON($data)) {
+                return $data;
+            } else {
+                $json = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                if ($json !== false) {
+                    return $json;
+                } else {
+                    error_log('Data could not be encoded as JSON: ' . json_last_error_msg());
+                }
+            }
+        }
+        return null;
+    }
+
+
+
     public static function prettyJson($json): string
     {
         if (is_array($json)) {

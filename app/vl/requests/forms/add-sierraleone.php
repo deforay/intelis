@@ -237,8 +237,8 @@ $sFormat = '';
                                         <div class="row">
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="patientFirstName">Patient Name (First Name, Last Name) <span class="mandatory">*</span></label>
-                                                       <input type="text" name="patientFirstName" id="patientFirstName" class="form-control isRequired" placeholder="Enter Patient Name" title="Enter patient name" />
+                                                       <label for="patientFirstName">Patient Name (First Name, Last Name) </label>
+                                                       <input type="text" name="patientFirstName" id="patientFirstName" class="form-control" placeholder="Enter Patient Name" title="Enter patient name" />
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">

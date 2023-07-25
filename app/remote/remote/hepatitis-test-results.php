@@ -121,7 +121,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
                     $lab['form_attributes'],
                     'form_attributes'
                 );
-                $lab['form_attributes'] = $db->func($formAttributes);
+                $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                 $db = $db->where('hepatitis_id', $sResult[0]['hepatitis_id']);
                 $db->update('form_hepatitis', $lab);
                 $id = $sResult[0]['hepatitis_id'];
@@ -130,7 +130,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
                     $lab['form_attributes'],
                     'form_attributes'
                 );
-                $lab['form_attributes'] = $db->func($formAttributes);
+                $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                 $db->insert('form_hepatitis', $lab);
                 $id = $db->getInsertId();
             }

@@ -333,7 +333,7 @@ try {
             'mobileAppVersion' => $appVersion,
             'deviceId' => $deviceId
         ];
-        $formAttributes = json_encode($formAttributes);
+        $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
 
         $eidData = [
             'vlsm_instance_id' => $instanceId,
@@ -402,7 +402,7 @@ try {
             'reason_for_sample_rejection' => $data['sampleRejectionReason'] ?? null,
             'rejection_on' => (isset($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($data['rejectionDate']) : null,
             'source_of_request' => $data['sourceOfRequest'] ?? "API",
-            'form_attributes' => $db->func($general->jsonToSetString($formAttributes, 'form_attributes'))
+            'form_attributes' => !empty($formAttributes) ? $db->func($formAttributes) : null
         ];
 
         if (!empty($rowData)) {

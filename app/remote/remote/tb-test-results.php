@@ -101,7 +101,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
                     $lab['form_attributes'],
                     'form_attributes'
                 );
-                $lab['form_attributes'] = $db->func($formAttributes);
+                $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                 $db = $db->where('tb_id', $sResult[0]['tb_id']);
                 $db->update('form_tb', $lab);
                 $id = $sResult[0]['tb_id'];
@@ -110,7 +110,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
                     $lab['form_attributes'],
                     'form_attributes'
                 );
-                $lab['form_attributes'] = $db->func($formAttributes);
+                $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                 $db->insert('form_tb', $lab);
                 $id = $db->getInsertId();
             }
