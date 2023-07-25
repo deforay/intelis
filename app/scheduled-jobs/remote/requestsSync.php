@@ -165,14 +165,14 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
                     'test_type_form',
                     $request['test_type_form'],
                 );
-                $request['test_type_form'] = $db->func($testTypeForm);
+                $request['test_type_form'] = !empty($testTypeForm) ? $db->func($testTypeForm) : null;
 
                 $formAttributes = $general->jsonToSetString(
                     $exsvlResult[0]['form_attributes'],
                     'form_attributes',
                     $request['form_attributes'],
                 );
-                $request['form_attributes'] = $db->func($formAttributes);
+                $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                 $db = $db->where('sample_id', $exsvlResult[0]['sample_id']);
                 $id = $db->update('form_generic', $request);
             } else {
@@ -183,14 +183,14 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
                         $request['test_type_form'],
                         'test_type_form'
                     );
-                    $request['test_type_form'] = $db->func($testTypeForm);
+                    $request['test_type_form'] = !empty($testTypeForm) ? $db->func($testTypeForm) : null;
 
                     $formAttributes = $general->jsonToSetString(
                         $request['form_attributes'],
                         'form_attributes',
                         ['syncTransactionId' => $transactionId]
                     );
-                    $request['form_attributes'] = $db->func($formAttributes);
+                    $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
 
                     $request['source_of_request'] = "vlsts";
                     //column data_sync value is 1 equal to data_sync done.value 0 is not done.
@@ -345,7 +345,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
                     'form_attributes',
                     ['syncTransactionId' => $transactionId]
                 );
-                $request['form_attributes'] = $db->func($formAttributes);
+                $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
 
                 $db = $db->where('vl_sample_id', $exsvlResult[0]['vl_sample_id']);
                 $id = $db->update('form_vl', $request);
@@ -359,7 +359,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
                         'form_attributes',
                         ['syncTransactionId' => $transactionId]
                     );
-                    $request['form_attributes'] = $db->func($formAttributes);
+                    $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                     //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['data_sync'] = 0;
                     $id = $db->insert('form_vl', $request);
@@ -480,7 +480,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
                     'form_attributes',
                     ['syncTransactionId' => $transactionId]
                 );
-                $request['form_attributes'] = $db->func($formAttributes);
+                $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                 $db = $db->where('eid_id', $exsvlResult[0]['eid_id']);
                 $id = $db->update('form_eid', $request);
             } else {
@@ -492,7 +492,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
                         'form_attributes',
                         ['syncTransactionId' => $transactionId]
                     );
-                    $request['form_attributes'] = $db->func($formAttributes);
+                    $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                     //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['data_sync'] = 0;
 
@@ -622,7 +622,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                     'form_attributes',
                     ['syncTransactionId' => $transactionId]
                 );
-                $request['form_attributes'] = $db->func($formAttributes);
+                $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
 
                 $db = $db->where('covid19_id', $exsvlResult[0]['covid19_id']);
                 $db->update('form_covid19', $request);
@@ -635,7 +635,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                         'form_attributes',
                         ['syncTransactionId' => $transactionId]
                     );
-                    $request['form_attributes'] = $db->func($formAttributes);
+                    $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                     //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['data_sync'] = 0;
                     $db->insert('form_covid19', $request);
@@ -821,7 +821,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
                     'form_attributes',
                     ['syncTransactionId' => $transactionId]
                 );
-                $request['form_attributes'] = $db->func($formAttributes);
+                $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
 
                 $db = $db->where('hepatitis_id', $exsvlResult[0]['hepatitis_id']);
                 $db->update('form_hepatitis', $request);
@@ -834,7 +834,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
                         'form_attributes',
                         ['syncTransactionId' => $transactionId]
                     );
-                    $request['form_attributes'] = $db->func($formAttributes);
+                    $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                     //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['data_sync'] = 0;
 
@@ -1010,7 +1010,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
                     'form_attributes',
                     ['syncTransactionId' => $transactionId]
                 );
-                $request['form_attributes'] = $db->func($formAttributes);
+                $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                 $db = $db->where('tb_id', $exsvlResult[0]['tb_id']);
                 $db->update('form_tb', $request);
                 $id = $exsvlResult[0]['tb_id'];
@@ -1023,7 +1023,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
                         'form_attributes',
                         ['syncTransactionId' => $transactionId]
                     );
-                    $request['form_attributes'] = $db->func($formAttributes);
+                    $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                     //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['data_sync'] = 0;
 

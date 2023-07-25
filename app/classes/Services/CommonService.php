@@ -618,13 +618,6 @@ class CommonService
         return $response;
     }
 
-    public function isJSON($string): bool
-    {
-        return is_string($string) &&
-            is_array(json_decode($string, true)) &&
-            (json_last_error() == JSON_ERROR_NONE);
-    }
-
     public function getLastApiSyncByType(string $syncType): ?string
     {
         $lastSyncQuery = "SELECT MAX(`requested_on`) AS `dateTime`
@@ -637,20 +630,17 @@ class CommonService
     public function addApiTracking($transactionId, $user, $numberOfRecords, $requestType, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $labId = null, $facilityId = null)
     {
         try {
-            $requestData = (!empty($requestData) && !$this->isJSON($requestData)) ? json_encode($requestData, JSON_UNESCAPED_SLASHES) : null;
-            $responseData = (!empty($responseData) && !$this->isJSON($responseData)) ? json_encode($responseData, JSON_UNESCAPED_SLASHES) : null;
 
+            $requestData = MiscUtility::toJSON($requestData);
+            $responseData = MiscUtility::toJSON($responseData);
 
             $folderPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api';
-
-            MiscUtility::makeDirectory($folderPath . DIRECTORY_SEPARATOR . 'requests');
-            MiscUtility::makeDirectory($folderPath . DIRECTORY_SEPARATOR . 'responses');
-
             if (!empty($requestData) && $requestData != '[]') {
+                MiscUtility::makeDirectory($folderPath . DIRECTORY_SEPARATOR . 'requests');
                 MiscUtility::zipJson($requestData, "$folderPath/requests/$transactionId.json");
             }
-
             if (!empty($responseData) && $responseData != '[]') {
+                MiscUtility::makeDirectory($folderPath . DIRECTORY_SEPARATOR . 'responses');
                 MiscUtility::zipJson($responseData, "$folderPath/responses/$transactionId.json");
             }
 
@@ -688,64 +678,37 @@ class CommonService
      * @param array $newData An optional array of new key-value pairs to add to the JSON
      * @return string The string that can be used with JSON_SET()
      */
-    public function jsonToSetString(?string $json, string $column, array $newData = []): string
+    public function jsonToSetString(?string $json, string $column, array $newData = []): ?string
     {
-        if (empty($json) || !$this->isJSON($json)) {
-            $json = '[]';
+        $data = [];
+        if (MiscUtility::isJSON($json)) {
+            $data = json_decode($json, true);
         }
-        $data = json_decode($json, true);
         $setString = '';
 
-        foreach ($data as $key => $value) {
+        foreach (array_merge($data, $newData) as $key => $value) {
+            $setString .= ', "$.' . $key . '", ';
             if (is_null($value)) {
-                $setString .= ', "$.' . $key . '", null';
+                $setString .= 'null';
             } elseif (is_bool($value)) {
-                $setString .= ', "$.' . $key . '", ' . ($value ? 'true' : 'false');
+                $setString .= $value ? 'true' : 'false';
             } elseif (is_numeric($value)) {
-                $setString .= ', "$.' . $key . '", ' . $value;
+                $setString .= $value;
+            } elseif (is_array($value)) {
+                $setString .= "'" . addslashes(json_encode($value)) . "'";
             } else {
-                $setString .= ', "$.' . $key . '", "' . addslashes($value) . '"';
+                $setString .= "'" . addslashes($value) . "'";
             }
         }
 
-        foreach ($newData as $key => $value) {
-            if (is_null($value)) {
-                $setString .= ', "$.' . $key . '", null';
-            } elseif (is_bool($value)) {
-                $setString .= ', "$.' . $key . '", ' . ($value ? 'true' : 'false');
-            } elseif (is_numeric($value)) {
-                $setString .= ', "$.' . $key . '", ' . $value;
-            } else {
-                $setString .= ', "$.' . $key . '", "' . addslashes($value) . '"';
-            }
-        }
-
-        return 'JSON_SET(COALESCE(' . $column . ', "{}")' . $setString . ')';
-    }
-
-    public function getDataByTableAndFields($table, $fields = [], $option = true, $condition = null, $group = null)
-    {
-
-        $query = "SELECT " . implode(",", $fields) . " FROM " . $table;
-        if ($condition) {
-            $query .= " WHERE " . $condition;
-        }
-
-        if ($group) {
-            $query .= " GROUP BY " . $group;
-        }
-        $response = [];
-        $results = $this->db->rawQuery($query);
-        if ($option) {
-            foreach ($results as $row) {
-                $fields[1] = $fields[1] ?? $fields[0];
-                $response[$row[$fields[0]]] = $row[$fields[1]];
-            }
+        if (empty($setString)) {
+            return null;
         } else {
-            $response = $results;
+            return 'JSON_SET(COALESCE(' . $column . ', "{}")' . $setString . ')';
         }
-        return $response;
     }
+
+
 
     public function stringToCamelCase($string, $character = "_", $capitalizeFirstCharacter = false)
     {

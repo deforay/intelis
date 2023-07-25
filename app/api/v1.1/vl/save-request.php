@@ -273,7 +273,8 @@ try {
             'mobileAppVersion' => $appVersion,
             'deviceId' => $deviceId
         ];
-        $formAttributes = json_encode($formAttributes);
+
+        $formAttributes = $general->jsonToSetString(json_encode($formAttributes), 'form_attributes');
 
 
         $vlFulldata = [
@@ -352,7 +353,7 @@ try {
             'result_reviewed_by' => $data['reviewedBy'] ?? null,
             'result_reviewed_datetime' => DateUtility::isoDateFormat($data['reviewedOn'] ?? '', true),
             'source_of_request' => $data['sourceOfRequest'] ?? "API",
-            'form_attributes' => $db->func($general->jsonToSetString($formAttributes, 'form_attributes'))
+            'form_attributes' => !empty($formAttributes) ? $db->func($formAttributes) : null
         ];
 
 
