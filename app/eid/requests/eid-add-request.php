@@ -3,6 +3,8 @@
 use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\UsersService;
+use App\Services\CommonService;
+
 
 
 $title = "EID | Add New Request";
@@ -33,6 +35,16 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var CommonService $commonService */
+$general = ContainerRegistry::get(CommonService::class);
+
+//Funding source list
+$fundingSourceList = $general->getFundingSources();
+
+//Implementing partner list
+$implementingPartnerList = $general->getImplementationPartners();
+
 $healthFacilities = $facilitiesService->getHealthFacilities('eid');
 $testingLabs = $facilitiesService->getTestingLabs('eid');
 $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);

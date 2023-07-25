@@ -5,10 +5,6 @@ use App\Registries\ContainerRegistry;
 use App\Services\TbService;
 
 
-
-//Funding source list
-$fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
-$fundingSourceList = $db->query($fundingSourceQry);
 // Nationality
 $nationalityQry = "SELECT * FROM `r_countries` ORDER BY `iso_name` ASC";
 $nationalityResult = $db->query($nationalityQry);
@@ -22,9 +18,7 @@ $testPlatformResult = $general->getTestingPlatforms('tb');
 foreach ($testPlatformResult as $row) {
 	$testPlatformList[$row['machine_name']] = $row['machine_name'];
 }
-//Implementing partner list
-$implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
-$implementingPartnerList = $db->query($implementingPartnerQry);
+
 
 $pQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pResult = $db->rawQuery($pQuery);

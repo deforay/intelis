@@ -116,6 +116,7 @@ if ($db->count > 0) {
   $data['testResults'] = $testResults;
 }
 $payload = json_encode($data);
+echo $payload; die;
 
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'generic-tests', $_SERVER['REQUEST_URI'], $origData, $payload, 'json', $labId);
 

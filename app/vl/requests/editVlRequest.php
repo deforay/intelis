@@ -4,6 +4,7 @@ use App\Services\VlService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Services\FacilitiesService;
+use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
 require_once APPLICATION_PATH . '/header.php';
@@ -22,8 +23,12 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);
 
+/** @var CommonService $commonService */
+$general = ContainerRegistry::get(CommonService::class);
+
 $healthFacilities = $facilitiesService->getHealthFacilities('vl');
 $testingLabs = $facilitiesService->getTestingLabs('vl');
+
 
 $reasonForFailure = $vlService->getReasonForFailure();
 if ($_SESSION['instanceType'] == 'remoteuser') {
@@ -129,6 +134,11 @@ if ($vlQueryInfo['patient_last_name'] != '') {
 }
 $patientFullName = trim($patientFirstName ?? ' ' . $patientMiddleName ?? ' ' . $patientLastName ?? '');
 
+//Funding source list
+$fundingSourceList = $general->getFundingSources();
+
+//Implementing partner list
+$implementingPartnerList = $general->getImplementationPartners();
 ?>
 <style>
      .ui_tpicker_second_label {

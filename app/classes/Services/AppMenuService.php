@@ -77,7 +77,6 @@ class AppMenuService
                 $response[$key] = $menu;
             }
         }
-
         return $response;
     }
 }

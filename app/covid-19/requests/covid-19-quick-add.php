@@ -3,6 +3,7 @@
 use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\UsersService;
+use App\Services\CommonService;
 
 
 $title = "COVID-19 | Add New Request";
@@ -42,6 +43,14 @@ require_once APPLICATION_PATH . '/header.php';
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
+/** @var CommonService $commonService */
+$general = ContainerRegistry::get(CommonService::class);
+
+//Funding source list
+$fundingSourceList = $general->getFundingSources();
+
+//Implementing partner list
+$implementingPartnerList = $general->getImplementationPartners();
 
 $labTechnicians = $usersService->getActiveUsers($_SESSION['facilityMap']);
 
