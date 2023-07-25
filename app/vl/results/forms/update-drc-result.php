@@ -14,7 +14,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 
-$facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], '-- Sélectionner --');
+$facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], _("-- Select --"));
 //Get selected state
 $stateQuery = "SELECT * FROM facility_details WHERE facility_id= ?";
 $stateResult = $db->rawQuery($stateQuery, [$vlQueryInfo['facility_id']]);
@@ -185,8 +185,8 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 								</div>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
-										<td style="width: 15%; !important;"><label for="patientArtNo">Code du patient </label></td>
-										<td style="width: 35%; !important;">
+										<td style="width: 15% !important;"><label for="patientArtNo">Code du patient </label></td>
+										<td style="width: 35% !important;">
 											<input type="text" class="form-control" id="patientArtNo" name="patientArtNo" placeholder="Code du patient" title="<?= _("Please enter the Patient ID"); ?>" <?php echo $disable; ?> value="<?= htmlspecialchars($vlQueryInfo['patient_art_no']); ?>" style="width:100%;" />
 										</td>
 										<td style="width:15%;"><label for="">Date de naissance </label></td>
@@ -237,7 +237,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 										<td style="width:15%;">
 											<label for="isPatientNew">Si S/ARV </label>
 										</td>
-										<td style="width: 35%; !important;">
+										<td style="width: 35% !important;">
 											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">Oui</label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
 												<input type="radio" class="" id="isPatientNewYes" name="isPatientNew" <?php echo ($vlQueryInfo['is_patient_new'] == 'yes') ? 'checked="checked"' : ''; ?> value="yes" <?php echo $disable; ?> title="Please check Si S/ARV">
@@ -247,17 +247,17 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 												<input type="radio" class="" id="isPatientNewNo" name="isPatientNew" <?php echo ($vlQueryInfo['is_patient_new'] == 'no') ? 'checked="checked"' : ''; ?> <?php echo $disable; ?> value="no">
 											</label>
 										</td>
-										<td style="width: 15%; !important;" class="du"><label for="">Date du début des ARV </label></td>
-										<td tyle="width: 35%; !important;" class="du">
+										<td style="width: 15% !important;" class="du"><label for="">Date du début des ARV </label></td>
+										<td tyle="width: 35% !important;" class="du">
 											<input type="text" class="form-control date" id="dateOfArtInitiation" name="dateOfArtInitiation" placeholder="<?= _("Please enter date"); ?>" title="Please enter date du début des ARV" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['treatment_initiated_date']; ?>" style="width:100%;" /> &nbsp;(Jour/Mois/Année) </span>
 										</td>
 									</tr>
 									<tr>
-										<td style="width: 15%; !important;">
+										<td style="width: 15% !important;">
 											<label for="hasChangedRegimen">Ce patient a-t-il déjà changé de régime de
 												traitement? </label>
 										</td>
-										<td style="width: 35%; !important;">
+										<td style="width: 35% !important;">
 											<label class="radio-inline">Oui </label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
 												<input type="radio" class="" id="changedRegimenYes" name="hasChangedRegimen" value="yes" title="Please check any of one option" <?php echo $disable; ?> <?php echo (trim($vlQueryInfo['has_patient_changed_regimen']) == "yes") ? 'checked="checked"' : ''; ?>>
@@ -269,19 +269,19 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 										</td>
 									</tr>
 									<tr class="arvChangedElement" style="display:<?php echo (trim($vlQueryInfo['has_patient_changed_regimen']) == "yes") ? '' : 'none'; ?>;">
-										<td style="width: 15%; !important;"><label for="reasonForArvRegimenChange" class="arvChangedElement">Motif
+										<td style="width: 15% !important;"><label for="reasonForArvRegimenChange" class="arvChangedElement">Motif
 												de changement de régime ARV </label></td>
-										<td style="width: 35%; !important;">
+										<td style="width: 35% !important;">
 											<input type="text" class="form-control arvChangedElement" id="reasonForArvRegimenChange" name="reasonForArvRegimenChange" placeholder="Motif de changement de régime ARV" title="Please enter motif de changement de régime ARV" value="<?php echo $vlQueryInfo['reason_for_regimen_change']; ?>" <?php echo $disable; ?> style="width:100%;" />
 										</td>
-										<td style="width: 15%; !important;"><label for="">Date du changement de régime ARV </label></td>
-										<td style="width: 35%; !important;">
+										<td style="width: 15% !important;"><label for="">Date du changement de régime ARV </label></td>
+										<td style="width: 35% !important;">
 											<input type="text" class="form-control date" id="dateOfArvRegimenChange" name="dateOfArvRegimenChange" placeholder="<?= _("Please enter date"); ?>" title="Please enter date du changement de régime ARV" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['regimen_change_date']; ?>" style="width:100%;" /> (Jour/Mois/Année)
 										</td>
 									</tr>
 									<tr>
-										<td style="width: 15%; !important;"><label for="reasonForRequest">Motif de la demande <span class="mandatory">*</span></label></td>
-										<td style="width: 35%; !important;">
+										<td style="width: 15% !important;"><label for="reasonForRequest">Motif de la demande <span class="mandatory">*</span></label></td>
+										<td style="width: 35% !important;">
 											<select name="vlTestReason" id="vlTestReason" class="form-control" title="Please choose motif de la demande" <?php echo $disable; ?>>
 												<option value=""> -- Sélectionner -- </option>
 												<?php
@@ -292,25 +292,25 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 												<option value="other">Autre</option>
 											</select>
 										</td>
-										<td style="width: 15%; !important;"><label for="viralLoadNo">Charge virale N </label>
+										<td style="width: 15% !important;"><label for="viralLoadNo">Charge virale N </label>
 										</td>
-										<td style="width: 35%; !important;">
+										<td style="width: 35% !important;">
 											<input type="text" class="form-control" id="viralLoadNo" name="viralLoadNo" placeholder="Charge virale N" title="Please enter charge virale N" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['vl_test_number']; ?>" style="width:100%;" />
 										</td>
 									</tr>
 									<tr>
-										<td style="width: 15%; !important;"><label for="lastViralLoadResult">Résultat dernière charge virale </label>
+										<td style="width: 15% !important;"><label for="lastViralLoadResult">Résultat dernière charge virale </label>
 										</td>
-										<td style="width: 35%; !important;">
+										<td style="width: 35% !important;">
 											<input type="text" class="form-control" id="lastViralLoadResult" name="lastViralLoadResult" placeholder="Résultat dernière charge virale" title="Please enter résultat dernière charge virale" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['last_viral_load_result']; ?>" style="width:100%;" />copies/ml
 										</td>
-										<td style="width: 15%; !important;"><label for="">Date dernière charge virale (demande) </label></td>
-										<td style="width: 35%; !important;">
+										<td style="width: 15% !important;"><label for="">Date dernière charge virale (demande) </label></td>
+										<td style="width: 35% !important;">
 											<input type="text" class="form-control date" id="lastViralLoadTestDate" name="lastViralLoadTestDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date dernière charge virale" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['last_viral_load_date']; ?>" style="width:100%;" />
 										</td>
 									</tr>
 									<tr id="femaleElements">
-										<td style="width:10%; !important;"><strong>Si Femme : </strong></td>
+										<td style="width:10% !important;"><strong>Si Femme : </strong></td>
 										<td colspan="1">
 											<label for="breastfeeding">allaitante ?</label>
 											<select class="form-control" id="breastfeeding" name="breastfeeding" title="Please check Si allaitante" <?php echo $disable; ?>>
@@ -339,8 +339,8 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 
 									</tr>
 									<tr class="newVlTestReason" style="display:none;">
-										<td style="width: 15%; !important;"><label for="newVlTestReason">Autre, à préciser <span class="mandatory">*</span></label></td>
-										<td style="width: 35%; !important;">
+										<td style="width: 15% !important;"><label for="newVlTestReason">Autre, à préciser <span class="mandatory">*</span></label></td>
+										<td style="width: 35% !important;">
 											<input type="text" class="form-control" name="newVlTestReason" id="newVlTestReason" placeholder="Virale Demande Raison" title="Please enter virale demande raison" <?php echo $disable; ?> style="width:100%;" value="<?php echo $vlQueryInfo['reason_for_vl_testing_other']; ?>">
 										</td>
 									</tr>
