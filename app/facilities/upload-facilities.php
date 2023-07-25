@@ -22,8 +22,7 @@ $_GET = $request->getQueryParams();
 
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
-$pQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
-$pResult = $db->rawQuery($pQuery);
+$pResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 0 AND geo_status='active'");
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);

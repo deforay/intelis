@@ -37,8 +37,7 @@ if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != "" && trim(
 }
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
-$pQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
-$pResult = $db->rawQuery($pQuery);
+$pResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 0 AND geo_status='active'");
 ?>
 <link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery-ui.min.css" />
 <!-- Bootstrap 3.3.6 -->

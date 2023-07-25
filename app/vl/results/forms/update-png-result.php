@@ -63,10 +63,7 @@ if (!isset($stateResult[0]['geo_code']) || $stateResult[0]['geo_code'] == '') {
 $districtQuery = "SELECT DISTINCT facility_district from facility_details where facility_state='" . $stateName . "'";
 $districtResult = $db->query($districtQuery);
 
-$province = "<option value=''> -- Select -- </option>";
-foreach ($pdResult as $provinceName) {
-	$province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
-}
+$province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 
 $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], '-- Selecione --');
 

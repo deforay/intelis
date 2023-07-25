@@ -6,9 +6,7 @@ use App\Services\Covid19Service;
 
 
 
-//Funding source list
-// $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
-// $fundingSourceList = $db->query($fundingSourceQry);
+
 // Nationality
 $nationalityQry = "SELECT * FROM `r_countries` ORDER BY `iso_name` ASC";
 $nationalityResult = $db->query($nationalityQry);
@@ -26,11 +24,7 @@ foreach ($testPlatformResult as $row) {
 // $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
 // $implementingPartnerList = $db->query($implementingPartnerQry);
 
-$pQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
-$pResult = $db->rawQuery($pQuery);
-
-
-
+$pResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 0 AND geo_status='active'");
 // Getting the list of Provinces, Districts and Facilities
 
 
