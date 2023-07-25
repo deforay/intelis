@@ -5,6 +5,7 @@ use App\Services\FacilitiesService;
 use App\Services\UsersService;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
 
 
 $title = "Enter VL Result";
@@ -20,6 +21,16 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 $vlService = ContainerRegistry::get(VlService::class);
+
+/** @var CommonService $commonService */
+$general = ContainerRegistry::get(CommonService::class);
+
+//Funding source list
+$fundingSourceList = $general->getFundingSources();
+
+//Implementing partner list
+$implementingPartnerList = $general->getImplementationPartners();
+
 $healthFacilities = $facilitiesService->getHealthFacilities('vl');
 $testingLabs = $facilitiesService->getTestingLabs('vl');
 $reasonForFailure = $vlService->getReasonForFailure();
@@ -208,6 +219,9 @@ if ($vlQueryInfo['patient_last_name'] != '') {
 }
 
 $patientFullName = trim(implode(" ", array($patientFirstName, $patientMiddleName, $patientLastName)));
+
+
+
 
 ?>
 <style>

@@ -52,12 +52,13 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, $facilit
 $testingLabs = $facilitiesService->getTestingLabs('hepatitis');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "-- Select --");
 $formId = $general->getGlobalConfig('vl_form');
+
 //Funding source list
-$fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
-$fundingSourceList = $db->query($fundingSourceQry);
+$fundingSourceList = $general->getFundingSources();
+
 //Implementing partner list
-$implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
-$implementingPartnerList = $db->query($implementingPartnerQry);
+$implementingPartnerList = $general->getImplementationPartners();
+
 $batQuery = "SELECT batch_code FROM batch_details WHERE test_type ='hepatitis' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
 

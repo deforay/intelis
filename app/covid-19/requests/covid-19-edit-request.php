@@ -1,7 +1,7 @@
 <?php
 
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
+use App\Services\CommonService; 
 use App\Services\FacilitiesService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -80,6 +80,12 @@ $covid19TestInfo = $db->rawQuery($covid19TestQuery, array($id));
 
 /** @var CommonService $commonService */
 $general = ContainerRegistry::get(CommonService::class);
+
+//Funding source list
+$fundingSourceList = $general->getFundingSources();
+
+//Implementing partner list
+$implementingPartnerList = $general->getImplementationPartners();
 
 $specimenTypeResult = $general->fetchDataFromTable('r_covid19_sample_type', "status = 'active'");
 

@@ -761,4 +761,18 @@ class CommonService
         $response = $this->db->rawQueryOne("SHOW KEYS FROM " . $table . " WHERE Key_name = 'PRIMARY';");
         return $response['Column_name'] ?? null;
     }
+
+    public function getImplementationPartners()
+    {
+        $this->db->where("i_partner_status", "active");
+        $this->db->orderBy('i_partner_name', "ASC");
+        return $this->db->get('r_implementation_partners');
+    }
+
+    public function getFundingSources()
+    {
+        $this->db->where("funding_source_status", "active");
+        $this->db->orderBy('funding_source_name', "ASC");
+        return $this->db->get('r_funding_sources');
+    }
 }

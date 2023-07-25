@@ -29,6 +29,12 @@ $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
+//Funding source list
+$fundingSourceList = $general->getFundingSources();
+
+//Implementing partner list
+$implementingPartnerList = $general->getImplementationPartners();
+
 $arr = $general->getGlobalConfig();
 
 $healthFacilities = $facilitiesService->getHealthFacilities('generic-tests');
@@ -72,13 +78,6 @@ $pdResult = $general->fetchDataFromTable('geographical_divisions');
 $suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatment_failure_at FROM form_generic where vlsm_country_id='" . $arr['vl_form'] . "'";
 $suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQuery);*/
 $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_units", array("unit_id", "unit_name"), true, "unit_status='active'");
-
-//Funding source list
-$fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
-$fundingSourceList = $db->query($fundingSourceQry);
-//Implementing partner list
-$implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
-$implementingPartnerList = $db->query($implementingPartnerQry);
 
 $lResult = $facilitiesService->getTestingLabs('generic-tests', true, true);
 

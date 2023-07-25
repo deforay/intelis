@@ -4,6 +4,7 @@ use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
 
 
 $title = _("Enter Covid-19 Result");
@@ -18,6 +19,15 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var CommonService $commonService */
+$general = ContainerRegistry::get(CommonService::class);
+
+//Funding source list
+$fundingSourceList = $general->getFundingSources();
+
+//Implementing partner list
+$implementingPartnerList = $general->getImplementationPartners();
 
 $healthFacilities = $facilitiesService->getHealthFacilities('covid19');
 $testingLabs = $facilitiesService->getTestingLabs('covid19');

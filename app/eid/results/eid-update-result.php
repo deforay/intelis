@@ -5,6 +5,7 @@ use App\Services\EidService;
 use App\Services\FacilitiesService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
 
 
 $title = "Enter EID Result";
@@ -74,6 +75,14 @@ $eidInfo = $db->rawQueryOne($eidQuery, array($id));
 $eidService = ContainerRegistry::get(EidService::class);
 $eidResults = $eidService->getEidResults();
 
+/** @var CommonService $commonService */
+$general = ContainerRegistry::get(CommonService::class);
+
+//Funding source list
+$fundingSourceList = $general->getFundingSources();
+
+//Implementing partner list
+$implementingPartnerList = $general->getImplementationPartners();
 
 $disable = "disabled = 'disabled'";
 

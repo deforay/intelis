@@ -3,6 +3,7 @@
 use App\Services\VlService;
 use App\Services\UsersService;
 use App\Services\FacilitiesService;
+use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
 
@@ -20,6 +21,10 @@ $vlService = ContainerRegistry::get(VlService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var CommonService $commonService */
+$general = ContainerRegistry::get(CommonService::class);
+
 
 $healthFacilities = $facilitiesService->getHealthFacilities('vl');
 $testingLabs = $facilitiesService->getTestingLabs('vl');
@@ -57,6 +62,13 @@ $suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQ
 
 //get vl test reason list
 $vlTestReasonResult = $vlService->getVlReasonsForTesting();
+
+//Funding source list
+$fundingSourceList = $general->getFundingSources();
+
+//Implementing partner list
+$implementingPartnerList = $general->getImplementationPartners();
+
 ?>
 <style>
     .ui_tpicker_second_label {
