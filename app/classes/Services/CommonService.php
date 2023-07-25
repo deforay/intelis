@@ -675,16 +675,20 @@ class CommonService
      *
      * @param string $json The JSON string to convert
      * @param string $column The name of the JSON column
-     * @param array $newData An optional array of new key-value pairs to add to the JSON
-     * @return string The string that can be used with JSON_SET()
+     * @param array|string $newData An optional array or JSON string of new key-value pairs to add to the JSON
+     * @return string|null The string that can be used with JSON_SET()
      */
-    public function jsonToSetString(?string $json, string $column, array $newData = []): ?string
+    public function jsonToSetString(?string $json, string $column, $newData = []): ?string
     {
         $data = [];
         if (MiscUtility::isJSON($json)) {
             $data = json_decode($json, true);
         }
         $setString = '';
+
+        if (is_string($newData)) {
+            $newData = json_decode($newData, true);
+        }
 
         foreach (array_merge($data, $newData) as $key => $value) {
             $setString .= ', "$.' . $key . '", ';
@@ -707,6 +711,7 @@ class CommonService
             return 'JSON_SET(COALESCE(' . $column . ', "{}")' . $setString . ')';
         }
     }
+
 
 
 

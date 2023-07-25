@@ -255,7 +255,8 @@ try {
           'last_modified_datetime' => DateUtility::getCurrentDateTime(),
           'manual_result_entry' => 'yes',
           'test_type' => $_POST['testType'],
-          'test_type_form' => json_encode($_POST['dynamicFields'])
+          'test_type_form' => json_encode($_POST['dynamicFields']),
+          'data_sync' => 0
      );
 
      // only if result status has changed, let us update
