@@ -32,8 +32,7 @@ foreach ($testPlatformResult as $row) {
 }
 
 
-$pQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
-$pResult = $db->rawQuery($pQuery);
+$pResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 0 AND geo_status='active'");
 
 // Getting the list of Provinces, Districts and Facilities
 

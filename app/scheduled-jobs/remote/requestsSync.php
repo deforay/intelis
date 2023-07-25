@@ -8,6 +8,7 @@ if (php_sapi_name() == 'cli') {
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
@@ -121,10 +122,11 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
 
             $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-            $exsvlQuery = "SELECT sample_id, sample_code
-                            FROM form_generic AS vl WHERE remote_sample_code=?";
-            $exsvlResult = $db->rawQuery($exsvlQuery, [$request['remote_sample_code']]);
-            if (!empty($exsvlResult)) {
+            $existingSampleQuery = "SELECT sample_id, sample_code, test_type_form
+                            FROM form_generic AS vl
+                            WHERE remote_sample_code=?";
+            $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code']]);
+            if (!empty($existingSampleResult)) {
 
                 $removeMoreKeys = array(
                     'sample_code',
@@ -161,19 +163,19 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
                 $request = array_diff_key($request, array_flip($removeMoreKeys));
 
                 $testTypeForm = $general->jsonToSetString(
-                    $exsvlResult[0]['test_type_form'],
+                    $existingSampleResult['test_type_form'],
                     'test_type_form',
                     $request['test_type_form'],
                 );
                 $request['test_type_form'] = !empty($testTypeForm) ? $db->func($testTypeForm) : null;
 
                 $formAttributes = $general->jsonToSetString(
-                    $exsvlResult[0]['form_attributes'],
+                    $existingSampleResult['form_attributes'],
                     'form_attributes',
                     $request['form_attributes'],
                 );
                 $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                $db = $db->where('sample_id', $exsvlResult[0]['sample_id']);
+                $db = $db->where('sample_id', $existingSampleResult['sample_id']);
                 $id = $db->update('form_generic', $request);
             } else {
                 $request['source_of_request'] = 'vlsts';
@@ -292,10 +294,10 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
 
             $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-            $exsvlQuery = "SELECT vl_sample_id, sample_code
+            $existingSampleQuery = "SELECT vl_sample_id, sample_code
                             FROM form_vl AS vl WHERE remote_sample_code=?";
-            $exsvlResult = $db->rawQuery($exsvlQuery, [$request['remote_sample_code']]);
-            if (!empty($exsvlResult)) {
+            $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code']]);
+            if (!empty($existingSampleResult)) {
 
                 $removeMoreKeys = array(
                     'sample_code',
@@ -347,7 +349,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
                 );
                 $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
 
-                $db = $db->where('vl_sample_id', $exsvlResult[0]['vl_sample_id']);
+                $db = $db->where('vl_sample_id', $existingSampleResult['vl_sample_id']);
                 $id = $db->update('form_vl', $request);
             } else {
                 $request['source_of_request'] = 'vlsts';
@@ -437,10 +439,10 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
             //$remoteSampleCodeList[] = $request['remote_sample_code'];
             $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-            $exsvlQuery = "SELECT eid_id,sample_code FROM form_eid AS vl
+            $existingSampleQuery = "SELECT eid_id,sample_code FROM form_eid AS vl
                             WHERE remote_sample_code=?";
-            $exsvlResult = $db->rawQuery($exsvlQuery, [$request['remote_sample_code']]);
-            if ($exsvlResult) {
+            $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code']]);
+            if ($existingSampleResult) {
 
                 $removeMoreKeys = array(
                     'sample_code',
@@ -481,7 +483,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
                     ['syncTransactionId' => $transactionId]
                 );
                 $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                $db = $db->where('eid_id', $exsvlResult[0]['eid_id']);
+                $db = $db->where('eid_id', $existingSampleResult['eid_id']);
                 $id = $db->update('form_eid', $request);
             } else {
                 if (!empty($request['sample_collection_date'])) {
@@ -575,10 +577,10 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
             $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
             //check exist remote
-            $exsvlQuery = "SELECT covid19_id,sample_code FROM form_covid19 AS vl
+            $existingSampleQuery = "SELECT covid19_id,sample_code FROM form_covid19 AS vl
                                 WHERE remote_sample_code=?";
-            $exsvlResult = $db->rawQuery($exsvlQuery, [$request['remote_sample_code']]);
-            if ($exsvlResult) {
+            $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code']]);
+            if ($existingSampleResult) {
 
                 $removeMoreKeys = array(
                     'sample_code',
@@ -624,9 +626,9 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                 );
                 $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
 
-                $db = $db->where('covid19_id', $exsvlResult[0]['covid19_id']);
+                $db = $db->where('covid19_id', $existingSampleResult['covid19_id']);
                 $db->update('form_covid19', $request);
-                $id = $exsvlResult[0]['covid19_id'];
+                $id = $existingSampleResult['covid19_id'];
             } else {
                 if (!empty($request['sample_collection_date'])) {
                     $request['source_of_request'] = "vlsts";
@@ -774,10 +776,10 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
             $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
             //check exist remote
-            $exsvlQuery = "SELECT hepatitis_id,sample_code FROM form_hepatitis AS vl
+            $existingSampleQuery = "SELECT hepatitis_id,sample_code FROM form_hepatitis AS vl
                 WHERE remote_sample_code=?";
-            $exsvlResult = $db->rawQuery($exsvlQuery, [$request['remote_sample_code']]);
-            if ($exsvlResult) {
+            $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code']]);
+            if ($existingSampleResult) {
 
                 $removeMoreKeys = array(
                     'sample_code',
@@ -823,9 +825,9 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
                 );
                 $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
 
-                $db = $db->where('hepatitis_id', $exsvlResult[0]['hepatitis_id']);
+                $db = $db->where('hepatitis_id', $existingSampleResult['hepatitis_id']);
                 $db->update('form_hepatitis', $request);
-                $id = $exsvlResult[0]['hepatitis_id'];
+                $id = $existingSampleResult['hepatitis_id'];
             } else {
                 if (!empty($request['sample_collection_date'])) {
                     $request['source_of_request'] = "vlsts";
@@ -963,10 +965,10 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
             $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
             //check exist remote
-            $exsvlQuery = "SELECT tb_id,sample_code FROM form_tb AS vl
+            $existingSampleQuery = "SELECT tb_id,sample_code FROM form_tb AS vl
                             WHERE remote_sample_code=?";
-            $exsvlResult = $db->rawQuery($exsvlQuery, [$request['remote_sample_code']]);
-            if ($exsvlResult) {
+            $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code']]);
+            if ($existingSampleResult) {
 
                 $removeMoreKeys = array(
                     'sample_code',
@@ -1011,9 +1013,9 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
                     ['syncTransactionId' => $transactionId]
                 );
                 $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                $db = $db->where('tb_id', $exsvlResult[0]['tb_id']);
+                $db = $db->where('tb_id', $existingSampleResult['tb_id']);
                 $db->update('form_tb', $request);
-                $id = $exsvlResult[0]['tb_id'];
+                $id = $existingSampleResult['tb_id'];
             } else {
                 if (!empty($request['sample_collection_date'])) {
 
