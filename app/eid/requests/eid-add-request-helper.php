@@ -154,6 +154,25 @@ try {
 		$_POST['dateOfWeaning'] = null;
 	}
 
+	if (!empty($_POST['newRejectionReason'])) {
+        $rejectionReasonQuery = "SELECT rejection_reason_id
+                    FROM r_vl_sample_rejection_reasons
+                    WHERE rejection_reason_name like ?";
+        $rejectionResult = $db->rawQueryOne($rejectionReasonQuery, [$_POST['newRejectionReason']]);
+        if (empty($rejectionResult)) {
+            $data = array(
+                'rejection_reason_name' => $_POST['newRejectionReason'],
+                'rejection_type' => 'general',
+                'rejection_reason_status' => 'active',
+                'updated_datetime' => DateUtility::getCurrentDateTime()
+            );
+            $id = $db->insert('r_vl_sample_rejection_reasons', $data);
+            $_POST['rejectionReason'] = $id;
+        } else {
+            $_POST['rejectionReason'] = $rejectionResult['rejection_reason_id'];
+        }
+    }
+
 
 	if (isset($_POST['newArtRegimen']) && trim($_POST['newArtRegimen']) != "") {
 		$artQuery = "SELECT art_id,art_code FROM r_vl_art_regimen where (art_code='" . $_POST['newArtRegimen'] . "' OR art_code='" . strtolower($_POST['newArtRegimen']) . "' OR art_code='" . (strtolower($_POST['newArtRegimen'])) . "')";

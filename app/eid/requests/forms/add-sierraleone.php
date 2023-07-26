@@ -466,10 +466,13 @@ $aResult = $db->query($aQuery);
                                             <th scope="row" class="rejected labels" style="display: none;">Reason for
                                                 Rejection</th>
                                             <td class="rejected" style="display: none;">
-                                                <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the reason for sample rejection">
+                                                <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the reason for sample rejection" onchange="checkRejectionReason();">
                                                     <option value=''> -- Select -- </option>
                                                     <?php echo $rejectionReason; ?>
+                                                    <option value="other">Other (Please Specify) </option>
                                                 </select>
+                                                <input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
+
                                             </td>
                                         </tr>
                                         <tr class="show-rejection rejected" style="display:none;">
@@ -909,4 +912,16 @@ $aResult = $db->query($aQuery);
                 }
             });
     }
+
+    function checkRejectionReason() {
+          var rejectionReason = $("#rejectionReason").val();
+          if (rejectionReason == "other") {
+               $("#newRejectionReason").show();
+               $("#newRejectionReason").addClass("isRequired");
+          } else {
+               $("#newRejectionReason").hide();
+               $("#newRejectionReason").removeClass("isRequired");
+               $('#newRejectionReason').val("");
+          }
+     }
 </script>

@@ -35,13 +35,13 @@ try {
     $sheet = $excel->getActiveSheet();
 
 
-    if (!file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request") && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request")) {
-        mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request", 0777, true);
+    if (!file_exists(TEMP_PATH . DIRECTORY_SEPARATOR ) && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR )) {
+        mkdir(TEMP_PATH . DIRECTORY_SEPARATOR , 0777, true);
     }
 
-    if (move_uploaded_file($_FILES['facilitiesInfo']['tmp_name'], TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName)) {
+    if (move_uploaded_file($_FILES['facilitiesInfo']['tmp_name'], TEMP_PATH . DIRECTORY_SEPARATOR  . $fileName)) {
 
-        $spreadsheet = IOFactory::load(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName);
+        $spreadsheet = IOFactory::load(TEMP_PATH . DIRECTORY_SEPARATOR . $fileName);
         $sheetData   = $spreadsheet->getActiveSheet();
         $sheetData   = $sheetData->toArray(null, true, true, true);
         $returnArray = [];
@@ -101,7 +101,7 @@ try {
                 array_push($facilityNotAdded, $rowData);
             } else {
                 $db->insert('facility_details', $data);
-                //error_log($db->getLastError());
+                error_log($db->getLastError());
             }
         }
         for ($i = 0; $i < count($facilityNotAdded); $i++) {

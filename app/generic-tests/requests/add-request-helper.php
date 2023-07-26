@@ -32,7 +32,6 @@ $fDetails = "facility_details";
 $vl_result_category = null;
 
 $systemType = $general->getSystemConfig('sc_user_type');
-// echo "<pre>";print_r($_POST);die;
 try {
 
     $validateField = array($_POST['sampleCode'], $_POST['sampleCollectionDate']);
