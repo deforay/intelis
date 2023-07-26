@@ -52,7 +52,7 @@ try {
         $column_header = ["Facility Name*", "Facility Code*", "External Facility Code", "Province/State*", "District/County*", "Facility Type*    (1-Health Facility,2-Testing Lab,3-Collection Site)", "Address", "Email", "Phone Number", "Latitude", "Longitude"];
         $j = 1;
         foreach ($column_header as $heading) {
-            $sheet->setCellValueByColumnAndRow($j, 1, $heading);
+            $sheet->setCellValue($j . '1', $heading);
             $j = $j + 1;
         }
 
@@ -112,7 +112,7 @@ try {
             $j = 1;
 
             foreach ($row as $value) {
-                $sheet->setCellValueByColumnAndRow($j, $i + 2, $value);
+                $sheet->setCellValue($j . ($i + 2), $heading);
                 $j = $j + 1;
             }
         }

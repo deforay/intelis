@@ -135,26 +135,23 @@ class MiscUtility
      */
     public static function zipJson($json, $fileName)
     {
-        if (empty($json) || empty($fileName)) {
-            return false;
+        $result = false;
+        if (!empty($json) && !empty($fileName)) {
+            $zip = new ZipArchive();
+            $zipPath = $fileName . '.zip';
+
+            if ($zip->open($zipPath, ZipArchive::CREATE) === true) {
+                $zip->addFromString(basename($fileName), $json);
+
+                if ($zip->status == ZIPARCHIVE::ER_OK) {
+                    $result = true;
+                }
+                $zip->close();
+            }
         }
-        $zip = new ZipArchive();
-        $zipPath = $fileName . '.zip';
-
-        if ($zip->open($zipPath, ZipArchive::CREATE) !== true) {
-            return false;
-        }
-        $zip->addFromString(basename($fileName), $json);
-
-        if (!$zip->status == ZIPARCHIVE::ER_OK) {
-            $zip->close();
-            return false;
-        }
-
-        $zip->close();
-
-        return true;
+        return $result;
     }
+
 
     public static function fileExists($filePath): bool
     {
