@@ -57,12 +57,14 @@ abstract class AbstractTestService
             $sampleCodeCol = 'remote_sample_code';
         }
 
-        $mnthYr = $month . $year;
+
 
         if ($sampleCodeFormat == 'MMYY') {
             $mnthYr = $month . $year;
         } elseif ($sampleCodeFormat == 'YY') {
             $mnthYr = $year;
+        }else{
+            $mnthYr = $month . $year;
         }
 
         $autoFormatedString = $year . $month . $day;

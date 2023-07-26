@@ -52,7 +52,7 @@ if ($mimeType === 'text/plain' || $mimeType === 'text/csv') {
 }
 
 header('Content-Description: File Transfer');
-header('Content-Type: ' . (($mimeType !== false && !empty($mimeType)) ? $mimeType : 'application/octet-stream'));
+header('Content-Type: ' . ((!empty($mimeType)) ? $mimeType : 'application/octet-stream'));
 header('Content-Security-Policy: default-src \'none\'; img-src \'self\'; script-src \'self\'; style-src \'self\'');
 header('Content-Disposition: ' . $disposition . '; filename=' . $filename);
 header('Content-Transfer-Encoding: binary');

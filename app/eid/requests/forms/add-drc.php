@@ -36,7 +36,7 @@ foreach ($pdResult as $provinceName) {
 	$province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
 }
 
-$facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélectionner --');
+$facility = $general->generateSelectOptions($healthFacilities, null, _("-- Select --"));
 
 ?>
 

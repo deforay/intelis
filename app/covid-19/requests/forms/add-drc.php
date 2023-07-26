@@ -46,7 +46,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 
-$facility = $general->generateSelectOptions($healthFacilities, null, '-- Sélectionner --');
+$facility = $general->generateSelectOptions($healthFacilities, null, _("-- Select --"));
 
 $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 // Province

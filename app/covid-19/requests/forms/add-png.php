@@ -1,12 +1,19 @@
 <?php
 // imported in covid-19-add-request.php based on country in global config
 
-use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
 use App\Services\Covid19Service;
+use App\Registries\ContainerRegistry;
 
 
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 /* To get testing platform names */
+
 $testPlatformResult = $general->getTestingPlatforms('covid19');
 // Nationality
 $nationalityQry = "SELECT * FROM `r_countries` ORDER BY `iso_name` ASC";
@@ -94,7 +101,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <?php } else { ?>
                                             <td><label for="sampleCode">EPID</label><span class="mandatory">*</span></td>
                                             <td>
-                                                <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly="readonly" placeholder="EPID #" title="Please fill facility name and sample collection date" style="width:100%;" onchange="checkSampleNameValidation('form_covid19','<?php echo $sampleCode; ?>',this.id,null,'The EPID #that you entered already exists. Please try another EPID #,null)" />
+                                                <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly="readonly" placeholder="EPID #" title="Please fill facility name and sample collection date" style="width:100%;" onchange="checkSampleNameValidation('form_covid19','<?php echo $sampleCode; ?>',this.id,null,'The EPID that you entered already exists. Please try another EPID',null);" />
                                             </td>
                                         <?php } ?>
                                         <td></td>
@@ -142,9 +149,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr>
                                         <td><label for="clinicianName">Clinician name</label> </td>
                                         <td>
-                                            <!-- <select name="clinicianName" id="clinicianName" class="form-control" title="Please select Clinician name" style="width:100%;">
-                                                <?= $general->generateSelectOptions($labTechniciansResults, $_SESSION['userId'], '-- Select --'); ?>
-                                                </select> -->
                                             <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Clinician name" title="Please enter Clinician name" style="width:100%;" />
                                         </td>
                                         <td><label for="clinicianPhone">Clinician phone</label></td>
