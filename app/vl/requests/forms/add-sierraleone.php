@@ -682,6 +682,8 @@ $sFormat = '';
                                                                            </select>
                                                                       </div>
                                                                  </div>
+                                                            </div>
+                                                            <div class="row">
                                                                  <div class="col-md-4 rejectionReason" style="display:none;">
                                                                       <label class="col-lg-5 control-label labels" for="rejectionReason">Rejection Reason </label>
                                                                       <div class="col-lg-7">
@@ -705,12 +707,30 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4 rejectionReason" style="display:none;">
+                                                                      <label class="col-lg-5 control-label labels" for="correctiveAction">Recommended Corrective Action </label>
+                                                                      <div class="col-lg-7">
+                                                                           <select name="correctiveAction" id="correctiveAction" class="form-control" title="Please choose Recommended corrective action">
+                                                                                <option value="">-- Select --</option>
+                                                                                          <?php foreach ($correctiveActions as $action) {
+                                                                                          ?>
+                                                                                               <option value="<?php echo $action['recommended_corrective_action_id']; ?>"><?= $action['recommended_corrective_action_name']; ?></option>
+                                                                                <?php }
+                                                                               ?>
+                                                                           </select>
+                                                                           <input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
+                                                                      </div>
+                                                                 </div>
+                                                                 <div class="col-md-4 rejectionReason" style="display:none;">
                                                                       <label class="col-lg-5 control-label labels" for="rejectionDate">Rejection Date </label>
                                                                       <div class="col-lg-7">
                                                                            <input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select rejection date" />
                                                                       </div>
                                                                  </div>
-                                                                 <div class="col-md-4 hivDetection" style="display: none;">
+                                                                 </div>
+                                                               
+                                                            </div>
+                                                            <div class="row">
+                                                            <div class="col-md-4 hivDetection" style="display: none;">
                                                                       <label for="hivDetection" class="col-lg-5 control-label labels">HIV Detection </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="hivDetection" id="hivDetection" class="form-control hivDetection" title="Please choose HIV detection">

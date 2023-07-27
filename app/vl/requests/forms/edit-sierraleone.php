@@ -821,6 +821,8 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 														</select>
 													</div>
 												</div>
+												</div>
+												<div class="row">
 												<div class="col-md-4 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
 													<label class="col-lg-5 control-label" for="rejectionReason">Rejection Reason </label>
 													<div class="col-lg-7">
@@ -843,11 +845,26 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 														<input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
 													</div>
 												</div>
+												<div class="col-md-4 rejectionReason" style="display:none;">
+                                                                      <label class="col-lg-5 control-label labels" for="correctiveAction">Recommended Corrective Action </label>
+                                                                      <div class="col-lg-7">
+                                                                           <select name="correctiveAction" id="correctiveAction" class="form-control" title="Please choose Recommended corrective action">
+                                                                                <option value="">-- Select --</option>
+                                                                                          <?php foreach ($correctiveActions as $action) {
+                                                                                          ?>
+                                                                                               <option value="<?php echo $action['recommended_corrective_action_id']; ?>" <?php echo ($vlQueryInfo['recommended_corrective_action'] == $action['recommended_corrective_action_id']) ? 'selected="selected"' : ''; ?>><?= $action['recommended_corrective_action_name']; ?></option>
+                                                                                <?php }
+                                                                               ?>
+                                                                           </select>
+                                                                           <input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
+                                                                      </div>
+                                                                 </div>
 												<div class="col-md-4 rejectionReason" style="margin-top: 10px;display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
 													<label class="col-lg-5 control-label" for="rejectionDate">Rejection Date </label>
 													<div class="col-lg-7">
 														<input value="<?php echo DateUtility::humanReadableDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select Sample Rejection Date" />
 													</div>
+												</div>
 												</div>
 												<div class="col-md-4 hivDetection" style="<?php echo (($isGeneXpert === false) || ($isGeneXpert === true && $vlQueryInfo['is_sample_rejected'] === 'yes')) ? 'display: none;' : ''; ?>">
 													<label for="hivDetection" class="col-lg-5 control-label">HIV Detection </label>

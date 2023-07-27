@@ -52,6 +52,9 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 $condition = "status = 'active'";
 $sResult = $general->fetchDataFromTable('r_vl_sample_type', $condition);
 
+//Recommended corrective actgions
+$condition = "status ='active'";
+$correctiveActions = $general->fetchDataFromTable('r_vl_recommended_corrective_actions', $condition);
 
 //get vltest reason details
 $testReason = $general->fetchDataFromTable('r_vl_test_reasons');

@@ -290,6 +290,7 @@ try {
         'reason_for_failure' => $_POST['reasonForFailure'] ?? null,
         'is_sample_rejected' => $_POST['noResult'] ?? null,
         'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && trim($_POST['rejectionReason']) != '') ? $_POST['rejectionReason'] : null,
+        'recommended_corrective_action' => (isset($_POST['correctiveAction']) && trim($_POST['correctiveAction']) != '') ? $_POST['correctiveAction'] : null,
         'rejection_on' => DateUtility::isoDateFormat($_POST['rejectionDate']),
         'result_value_absolute' => $absVal ?? null,
         'result_value_absolute_decimal' => $absDecimalVal ?? null,

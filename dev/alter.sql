@@ -4874,3 +4874,19 @@ UPDATE `s_app_menu` SET `inner_pages` = '/import-result/imported-results.php?t=g
 
 -- Jeyabanu 19-Jul-2023
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`,`show_mode`) VALUES ( 'facilities', 'upload-facilities.php', 'Upload Facilities','always');
+
+
+-- Jeyabanu 27-Jul-2023
+
+CREATE TABLE `r_vl_recommended_corrective_actions` (
+  `recommended_corrective_action_id` int NOT NULL AUTO_INCREMENT,
+  `recommended_corrective_action_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `data_sync` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`recommended_corrective_action_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+
+ALTER TABLE `form_vl` ADD `recommended_corrective_action` VARCHAR(256) NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `audit_form_vl` ADD `recommended_corrective_action` VARCHAR(256) NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;

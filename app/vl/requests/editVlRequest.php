@@ -65,6 +65,10 @@ $statusQuery = "SELECT * FROM r_sample_status
                     WHERE `status` = 'active' AND status_id NOT IN(9,8)";
 $statusResult = $db->rawQuery($statusQuery);
 
+//Recommended corrective actgions
+$condition = "status ='active'";
+$correctiveActions = $general->fetchDataFromTable('r_vl_recommended_corrective_actions', $condition);
+
 $pdResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 0 AND geo_status='active'");
 
 $sQuery = "SELECT * FROM r_vl_sample_type
