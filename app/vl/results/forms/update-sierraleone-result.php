@@ -989,11 +989,12 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		if ($(this).val() == 'yes') {
 			$('.rejectionReason').show();
 			$('.vlResult, .hivDetection').css('display', 'none');
-			$('.vlLog').css('display', 'none');
+			$('#vlLog').css('display', 'none');
 			$("#sampleTestingDateAtLab, #vlResult, .hivDetection").val("");
 			$(".result-fields").val("");
 			$(".result-fields").attr("disabled", true);
 			$(".result-fields").removeClass("isRequired");
+			$("#vlLog").removeClass("isRequired");
 			$(".result-span").hide();
 			$(".review-approve-span").show();
 			$('#rejectionReason').addClass('isRequired');
@@ -1001,6 +1002,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#reviewedBy').addClass('isRequired');
 			$('#reviewedOn').addClass('isRequired');
 			$('#hivDetection').removeClass('isRequired');
+			$('#resultDispatchedOn').removeClass('isRequired');
 			//$('#approvedBy').addClass('isRequired');
 			//$('#approvedOnDateTime').addClass('isRequired');
 			$(".result-optional").removeClass("isRequired");
@@ -1010,7 +1012,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$(".result-fields").addClass("isRequired");
 			$(".result-span").show();
 			$(".review-approve-span").show();
-			$('.vlResult,.vlLog').css('display', 'block');
+			$('.vlResult,#vlLog').css('display', 'block');
 			$('.rejectionReason').hide();
 			$('#rejectionReason').removeClass('isRequired');
 			$('#rejectionDate').removeClass('isRequired');

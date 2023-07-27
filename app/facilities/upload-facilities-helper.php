@@ -32,8 +32,8 @@ try {
     $fileName = $ranNumber . "." . $extension;
 
     $excel = new Spreadsheet();
-    $sheet = $excel->getActiveSheet();
-
+     $output = [];
+     $sheet = $excel->getActiveSheet();
 
     if (!file_exists(TEMP_PATH . DIRECTORY_SEPARATOR ) && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR )) {
         mkdir(TEMP_PATH . DIRECTORY_SEPARATOR , 0777, true);
@@ -49,15 +49,10 @@ try {
         $total = count($resultArray);
         $facilityNotAdded = [];
 
-        $column_header = ["Facility Name*", "Facility Code*", "External Facility Code", "Province/State*", "District/County*", "Facility Type*    (1-Health Facility,2-Testing Lab,3-Collection Site)", "Address", "Email", "Phone Number", "Latitude", "Longitude"];
-        $j = 1;
-        foreach ($column_header as $heading) {
-            $sheet->setCellValue($j . '1', $heading);
-            $j = $j + 1;
-        }
+       
 
         foreach ($resultArray as $rowIndex => $rowData) {
-            //  echo $rowData['A']; die;
+             
             if (empty($rowData['A']) || empty($rowData['B']) || empty($rowData['D']) || empty($rowData['E']) || empty($rowData['F'])) {
                 $_SESSION['alertMsg'] = _("Please enter all the mandatory fields in excel sheet");
                 header("Location:/facilities/upload-facilities.php");
@@ -100,28 +95,45 @@ try {
             if ((isset($facilityCheck['facility_id']) && $facilityCheck['facility_id'] != "") || (isset($facilityCodeCheck['facility_id']) && $facilityCodeCheck['facility_id'] != "")) {
                 array_push($facilityNotAdded, $rowData);
             } else {
-                $db->insert('facility_details', $data);
+                 $db->insert('facility_details', $data);
                 error_log($db->getLastError());
             }
         }
-        for ($i = 0; $i < count($facilityNotAdded); $i++) {
-
-            //set value for indi cell
-            $row = $facilityNotAdded[$i];
-
-            $j = 1;
-
-            foreach ($row as $value) {
-                $sheet->setCellValue($j . ($i + 2), $heading);
-                $j = $j + 1;
-            }
-        }
-
+        
         $notAdded = count($facilityNotAdded);
-        $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-        $filename = 'INCORRECT-FACILITY-ROWS.xlsx';
-        $path = TEMP_PATH . DIRECTORY_SEPARATOR . $filename;
-        $writer->save($path);
+        if($notAdded>0)
+        {
+            $column_header = ["Facility Name*", "Facility Code*", "External Facility Code", "Province/State*", "District/County*", "Facility Type* (1-Health Facility,2-Testing Lab,3-Collection Site)", "Address", "Email", "Phone Number", "Latitude", "Longitude"];
+            $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
+            ->setValueExplicit(html_entity_decode($nameValue));
+            $colNo=1;
+            foreach ($column_header as $value) {
+                    $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
+                        ->setValueExplicit(html_entity_decode($value));
+                    $colNo++;
+            }
+           
+            foreach ($facilityNotAdded as $rowNo => $dataValue) {
+                $colNo = 1;
+                $rRowCount = $rowNo+2;
+                foreach ($dataValue as $field => $value) {
+                     $sheet->setCellValue(
+                          Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+                          html_entity_decode($value)
+                     );
+                     $colNo++;
+                }
+           }
+
+            $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
+            $filename = 'INCORRECT-FACILITY-ROWS.xlsx';
+            $path = TEMP_PATH . DIRECTORY_SEPARATOR . $filename;
+            $writer->save($path);
+	    }
+    }
+    else
+    {
+    	echo "File not uploaded".$_FILES['facilitiesInfo']['error']; die;
     }
     $_SESSION['alertMsg'] = _("Bulk Facilities file uploaded successfully.");
     header("Location:/facilities/upload-facilities.php?total=$total&notAdded=$notAdded&link=$filename");
