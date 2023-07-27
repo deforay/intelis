@@ -71,22 +71,13 @@ class FacilitiesService
         return $this->db->getOne("facility_details");
     }
 
-    public function getFacilityByAttribute($attributeName, $attibuteValue)
+    public function getFacilityByAttribute($attributeName, $attributeValue)
     {
         $fQuery = "SELECT * FROM facility_details as f
                     WHERE f.facility_attributes->>\"$.$attributeName\" = ?
                     AND f.facility_attributes->>\"$.$attributeName\" is NOT NULL";
 
-        return $this->db->rawQueryOne($fQuery, array($attibuteValue));
-    }
-
-    public function getAllFacilitiesByAttribute($attributeName, $attibuteValue)
-    {
-        $fQuery = "SELECT * FROM facility_details as f
-                    WHERE f.facility_attributes->>\"$.$attributeName\" = ?
-                    AND f.facility_attributes->>\"$.$attributeName\" is NOT NULL";
-
-        return $this->db->rawQuery($fQuery, array($attibuteValue));
+        return $this->db->rawQueryOne($fQuery, [$attributeValue]);
     }
 
     public function getTestingPoints($facilityId)
@@ -305,7 +296,7 @@ class FacilitiesService
         }
     }
 
-    public function getOrCreateDistrict(string $districtName, string $districtCode = null, int $provinceId): int
+    public function getOrCreateDistrict(?string $districtName, ?string $districtCode = null, ?int $provinceId = null): int
     {
 
         // check if there is a district matching the input params, if yes then return province id
