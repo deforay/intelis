@@ -398,7 +398,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     <tr class="show-rejection rejected" style="display:none;">
                                         <th scope="row" class="rejected labels" style="display: none;">Reason for Rejection</th>
                                         <td class="rejected" style="display: none;">
-                                            <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please choose the rejection reason">
+                                            <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please choose the rejection reason" onchange="checkRejectionReason();">
                                                 <option value="">-- Select --</option>
                                                 <?php foreach ($rejectionTypeResult as $type) { ?>
                                                     <optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
@@ -694,4 +694,16 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                 }
             });
     }
+
+    function checkRejectionReason() {
+          var rejectionReason = $("#sampleRejectionReason").val();
+          if (rejectionReason == "other") {
+               $("#newRejectionReason").show();
+               $("#newRejectionReason").addClass("isRequired");
+          } else {
+               $("#newRejectionReason").hide();
+               $("#newRejectionReason").removeClass("isRequired");
+               $('#newRejectionReason').val("");
+          }
+     }
 </script>
