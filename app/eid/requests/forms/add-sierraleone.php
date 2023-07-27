@@ -914,7 +914,7 @@ $aResult = $db->query($aQuery);
     }
 
     function checkRejectionReason() {
-          var rejectionReason = $("#rejectionReason").val();
+          var rejectionReason = $("#sampleRejectionReason").val();
           if (rejectionReason == "other") {
                $("#newRejectionReason").show();
                $("#newRejectionReason").addClass("isRequired");

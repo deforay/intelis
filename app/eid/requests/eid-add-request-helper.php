@@ -156,7 +156,7 @@ try {
 
 	if (!empty($_POST['newRejectionReason'])) {
         $rejectionReasonQuery = "SELECT rejection_reason_id
-                    FROM r_vl_sample_rejection_reasons
+                    FROM r_eid_sample_rejection_reasons
                     WHERE rejection_reason_name like ?";
         $rejectionResult = $db->rawQueryOne($rejectionReasonQuery, [$_POST['newRejectionReason']]);
         if (empty($rejectionResult)) {
@@ -166,10 +166,10 @@ try {
                 'rejection_reason_status' => 'active',
                 'updated_datetime' => DateUtility::getCurrentDateTime()
             );
-            $id = $db->insert('r_vl_sample_rejection_reasons', $data);
-            $_POST['rejectionReason'] = $id;
+            $id = $db->insert('r_eid_sample_rejection_reasons', $data);
+            $_POST['sampleRejectionReason'] = $id;
         } else {
-            $_POST['rejectionReason'] = $rejectionResult['rejection_reason_id'];
+            $_POST['sampleRejectionReason'] = $rejectionResult['rejection_reason_id'];
         }
     }
 

@@ -131,7 +131,6 @@ if (!empty($sOrder)) {
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//die($sQuery);
 // echo $sQuery;
 $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
