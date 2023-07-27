@@ -107,7 +107,8 @@ try {
             $data = array(
                 'rejection_reason_name' => $_POST['newRejectionReason'],
                 'rejection_type' => 'general',
-                'rejection_reason_status' => 'active'
+                'rejection_reason_status' => 'active',
+                'updated_datetime' => DateUtility::getCurrentDateTime()
             );
             $id = $db->insert('r_vl_sample_rejection_reasons', $data);
             $_POST['rejectionReason'] = $id;

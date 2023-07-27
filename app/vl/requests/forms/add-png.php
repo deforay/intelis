@@ -311,7 +311,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 												<input type="radio" id="defaulter" name="reasonForVLTesting" value="VL (after 3 months EAC)" title="Check Defaulter/ LTFU/ Poor Adherer">VL (after 3 months EAC)
 											</label>&nbsp;&nbsp;
 										</td>
-										<!--<td colspan="3">
+										<td colspan="3">
 											<label for="other">Other</label><br />
 											<label class="radio-inline">
 												<input type="radio" id="other" name="reasonForVLTesting" value="Re-collection requested by lab" title="Please check Other">Re-collection requested by lab
@@ -320,7 +320,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											<label class="radio-inline">
 												<input type="text" class="form-control" id="reason" name="reason" placeholder="Enter Reason" title="Enter Reason" style="width:100%;" readonly />
 											</label>
-										</td>-->
+										</td>
 									</tr>
 									<tr>
 										<td colspan="2" style="font-size: 18px; font-weight: bold;">Section 5: Specimen
