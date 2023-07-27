@@ -98,9 +98,6 @@ $data = $sampleIds = $facilityIds = [];
 if ($db->count > 0) {
 
   $payload = $genericRemoteResult;
-  // foreach ($genericRemoteResult as $row) {
-  //   $payload[] = array_diff_key($row, array_flip($removeKeys));
-  // }
 
   $counter = $db->count;
 
@@ -109,7 +106,7 @@ if ($db->count > 0) {
 
   /** @var GenericTestsService $general */
   $generic = ContainerRegistry::get(GenericTestsService::class);
-  $testResults = $generic->getGenericTestsByFormId($sampleIds);
+  $testResults = $generic->getTestsByGenericSampleIds($sampleIds);
 
   $data = [];
   $data['result'] = $genericRemoteResult;

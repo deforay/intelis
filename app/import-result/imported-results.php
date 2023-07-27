@@ -623,7 +623,7 @@ foreach ($rejectionTypeResult as $type) {
 					},
 					function(data) {
 						if (data == 0) {
-							alert("<?= _("Something went wrong!Please try again"); ?>");
+							alert("<?= _("Something went wrong! Please try again"); ?>");
 							oTable.fnDraw();
 						}
 					});
