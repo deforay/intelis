@@ -410,7 +410,10 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                                         } ?>
                                                     </optgroup>
                                                 <?php } ?>
+                                                <option value="other">Other (Please Specify) </option>
                                             </select>
+                                            <input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
+
                                         </td>
                                         <th class="labels" scope="row">Rejection Date<span class="mandatory">*</span></th>
                                         <td><input value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date rejection-date isRequired" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please enter sample rejection date" /></td>

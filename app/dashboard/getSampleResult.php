@@ -263,8 +263,9 @@ if ($table == "form_eid") {
     } else {
         $vlWhereCondition = $recencyWhere . " AND " . $whereCondition;
     }
-    $sampleTestedQuery = "SELECT DATE(vl.sample_tested_datetime) as `test_date`, COUNT(vl_sample_id) as `count` FROM $table as vl LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id WHERE (result_status = 7) AND $vlWhereCondition DATE(vl.sample_tested_datetime) BETWEEN '$lastSevenDay' AND '$cDate' GROUP BY `sample_tested_datetime` ORDER BY `sample_tested_datetime`";
+    $sampleTestedQuery = "SELECT DATE(vl.sample_tested_datetime) as `test_date`, COUNT(vl_sample_id) as `count` FROM $table as vl LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id WHERE (result_status = 7) AND $vlWhereCondition DATE(vl.sample_tested_datetime) BETWEEN '$lastSevenDay' AND '$cDate' GROUP BY `test_date` ORDER BY `test_date`";
 }
+//echo $sampleTestedQuery; die;
 $tRes = $db->rawQuery($sampleTestedQuery); //overall result
 $acceptedResult = [];
 $acceptedTotal = 0;
