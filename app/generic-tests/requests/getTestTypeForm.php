@@ -34,8 +34,8 @@ $testResultsAttribute = json_decode($testTypeResult['test_results_config'], true
 
 $othersSectionFields = [];
 $otherSection = [];
-
-function getFieldType($fieldType)
+$s = [];
+function getClassNameFromFieldType($fieldType)
 {
     return once(function () use ($fieldType) {
         if ($fieldType == 'number') {
@@ -50,25 +50,30 @@ function getFieldType($fieldType)
 function getDropDownField($testAttribute, $testAttributeId, $value, $inputClass, $isRequired, $fieldType, $disabled, $inputWidth)
 {
     $fieldName = 'dynamicFields[' . $testAttributeId . ']';
-    if ($testAttribute['field_type'] == 'multiple') {
+    $isMultiple = $testAttribute['field_type'] == 'multiple' ? true : false;
+    $title = _("Please select an option");
+    if ($isMultiple) {
         $fieldName .= '[]';
+        $title = _("Please select one or more options");
     }
+
     $field = sprintf(
         '<div class="col-lg-7">
             <select name="%s" id="%s" class="form-control %s%s%s%s"
-                title="Please select the option" %s style="width:%s;">',
+                title="%s" %s style="width:%s;">',
         $fieldName,
         $testAttributeId,
         $inputClass,
         $isRequired,
         $fieldType,
         $disabled,
+        $title,
         $testAttribute['field_type'],
         $inputWidth
     );
-    $field .= '<option value="">-- Select --</option>';
+    $field .= '<option value="">' . _("-- Select --") . '</option>';
     foreach (explode(',', $testAttribute['dropdown_options']) as $option) {
-        if ($testAttribute['field_type'] == 'multiple') {
+        if ($isMultiple) {
             $selected = (!empty($value) && in_array(trim($option), $value)) ? "selected" : "";
         } else {
             $selected = (!empty($value) && $value == $option) ? "selected" : "";
@@ -120,7 +125,7 @@ if (!empty($testTypeAttributes)) {
                 $isRequired = $testAttribute['mandatory_field'] === 'yes' ? 'isRequired' : '';
                 $mandatory = $testAttribute['mandatory_field'] === 'yes' ? '<span class="mandatory">*</span>' : '';
                 $value = $testTypeForm[$testAttributeId] ?? '';
-                $fieldType = getFieldType($testAttribute['field_type']);
+                $fieldType = getClassNameFromFieldType($testAttribute['field_type']);
                 if (
                     !empty($_POST['formType']) &&
                     $_POST['formType'] == 'update-form' &&
@@ -132,8 +137,6 @@ if (!empty($testTypeAttributes)) {
                 $inputClass = $testAttribute['section'] == 'facilitySection' ? " dynamicFacilitySelect2 " : " dynamicSelect2 ";
                 $inputWidth = $testAttribute['section'] == 'facilitySection' ? "100% !important;" : "100%;";
 
-
-
                 $sectionClass = $testAttribute['section'] . 'Input';
 
                 $result[$testAttribute['section']][] = getField($testAttribute, $testAttributeId, $value, $inputClass, $sectionClass, $isRequired, $fieldType, $disabled, $inputWidth, $mandatory);
@@ -141,7 +144,7 @@ if (!empty($testTypeAttributes)) {
             }
         } else {
             //Othersection code
-            foreach ($testAttributeDetails as $currentSectionName => $otherSectionFields) {
+            foreach ($testAttributeDetails as $otherSectionName => $otherSectionFields) {
                 $counter = 0;
                 $divContent = '';
                 foreach ($otherSectionFields as $testAttributeId => $testAttribute) {
@@ -149,7 +152,7 @@ if (!empty($testTypeAttributes)) {
                     $isRequired = $testAttribute['mandatory_field'] === 'yes' ? 'isRequired' : '';
                     $mandatory = $testAttribute['mandatory_field'] === 'yes' ? '<span class="mandatory">*</span>' : '';
                     $value = $testTypeForm[$testAttributeId] ?? '';
-                    $fieldType = getFieldType($testAttribute['field_type']);
+                    $fieldType = getClassNameFromFieldType($testAttribute['field_type']);
                     if (
                         !empty($_POST['formType']) &&
                         $_POST['formType'] == 'update-form' &&
@@ -161,18 +164,20 @@ if (!empty($testTypeAttributes)) {
                     $inputClass = " dynamicSelect2 ";
                     $inputWidth = "100%;";
 
-                    if (in_array($testAttribute['section_name'], $otherSection)) {
-                        if (!isset($s[trim(strtolower($testAttribute['section_name']))])) {
-                            $s[trim(strtolower($testAttribute['section_name']))] = $i;
-                        }
-                    } else {
-                        $s[trim(strtolower($testAttribute['section_name']))] = $i;
+                    $sectionName = trim(strtolower($testAttribute['section_name']));
+
+                    if (!isset($s[$sectionName])) {
+                        $s[$sectionName] = $i;
+                    }
+
+                    if (!in_array($testAttribute['section_name'], $otherSection)) {
                         $otherSection[] = $testAttribute['section_name'];
                     }
-                    $title = '<div class="box-header with-border"><h3 class="box-title">' . $currentSectionName . '</h3></div>';
+
+                    $title = '<div class="box-header with-border"><h3 class="box-title">' . $otherSectionName . '</h3></div>';
 
                     // Grouping Other Sections via array
-                    $sectionClass = $currentSectionName . 'Input';
+                    $sectionClass = $otherSectionName . 'Input';
                     $fieldDiv = getField($testAttribute, $testAttributeId, $value, $inputClass, $sectionClass, $isRequired, $fieldType, $disabled, $inputWidth, $mandatory);
                     if ($counter % 2 == 0) {
                         $fieldDiv .= '</div><div class="row">';
@@ -184,7 +189,7 @@ if (!empty($testTypeAttributes)) {
                 $startSection = '<div class="box-body"><div class="row">';
                 $endSection = '</div></div>';
 
-                $othersSectionFields[$currentSectionName] =
+                $othersSectionFields[$otherSectionName] =
                     $title .
                     $startSection .
                     $divContent .

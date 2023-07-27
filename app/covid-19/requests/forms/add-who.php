@@ -27,7 +27,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     $rKey = '';
 }
 
-$province = $general->getUserMappedProvinces($_SESSION['userId'], $_SESSION['facilityMap']);
+$province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = "<option value=''> -- Select -- </option>";
 foreach ($fResult as $fDetails) {
     $facility .= "<option value='" . $fDetails['facility_id'] . "'>" . (addslashes($fDetails['facility_name'])) . "</option>";

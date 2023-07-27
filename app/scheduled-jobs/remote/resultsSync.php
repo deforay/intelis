@@ -73,7 +73,7 @@ try {
 
         /** @var GenericTestsService $genericService */
         $genericService = ContainerRegistry::get(GenericTestsService::class);
-        $testResults = $genericService->getGenericTestsByFormId($forms);
+        $testResults = $genericService->getTestsByGenericSampleIds($forms);
         $url = $remoteUrl . '/remote/remote/generic-test-results.php';
         $payload = [
             "labId" => $labId,

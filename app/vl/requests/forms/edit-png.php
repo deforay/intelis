@@ -458,7 +458,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim($vlQueryInfo['clinic_date']) != '
 												<input type="radio" id="defaulter" name="reasonForVLTesting" value="VL (after 3 months EAC)" title="Check Defaulter/ LTFU/ Poor Adherer" <?php echo ($vlQueryInfo['reason_testing_png'] == 'VL (after 3 months EAC)' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'VL (after 3 months EAC)') ? "checked='checked'" : "" ?>>VL (after 3 months EAC)
 											</label>&nbsp;&nbsp;
 										</td>
-										<!--<td colspan="3">
+										<td colspan="3">
 											<label for="other">Other</label><br />
 											<label class="radio-inline">
 												<input type="radio" id="other" name="reasonForVLTesting" value="Re-collection requested by lab" title="Please check Other" <?php echo ($vlQueryInfo['reason_testing_png'] == 'Re-collection requested by lab' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'Re-collection requested by lab') ? "checked='checked'" : "" ?>>Re-collection requested by lab
@@ -467,7 +467,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim($vlQueryInfo['clinic_date']) != '
 											<label class="radio-inline">
 												<input type="text" class="form-control" id="reason" name="reason" placeholder="Enter Reason" title="Enter Reason" style="width:100%;" <?php echo ($vlQueryInfo['reason_testing_png'] == 'Re-collection requested by lab' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'Re-collection requested by lab') ? "" : "readonly='readonly'" ?> value="<?php echo $vlQueryInfo['reason_for_vl_testing_other']; ?>" />
 											</label>
-										</td>-->
+										</td>
 									</tr>
 									<tr>
 										<td colspan="2" style="font-size: 18px; font-weight: bold;">Section 5: Specimen

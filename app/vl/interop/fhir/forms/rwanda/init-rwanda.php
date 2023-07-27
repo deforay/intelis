@@ -37,6 +37,8 @@ $parser = new PHPFHIRResponseParser();
 $metaResource = $parser->parse($json);
 
 $entries = $metaResource->getEntry();
+
+/** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 foreach ($entries as $entry) {

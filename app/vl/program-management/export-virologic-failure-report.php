@@ -144,7 +144,7 @@ foreach ($rResult as $aRow) {
           $patientIds[] = $patientId;
      }
 }
-foreach ($vlnsData as $key => $vlnsDataRow) {
+foreach ($vlnsData as $vlnsKey => $vlnsDataRow) {
      foreach ($vfData as $key => $vfDataRow) {
           if ($vfDataRow['patient_art_no'] === $vlnsDataRow['patient_art_no']) {
                unset($vfData[$key]);
