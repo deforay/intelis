@@ -8,8 +8,6 @@ if (session_status() == PHP_SESSION_NONE) {
 $params     = $_POST['facilityType'];
 $testType   = $_POST['testType'];
 
-
-
 if ($params == "testing-labs") {
     $facilityQuery = "SELECT facility_id, facility_name FROM facility_details WHERE status = 'active' and facility_type=2";
     $facilityResult = $db->rawQuery($facilityQuery);

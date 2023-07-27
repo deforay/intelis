@@ -858,16 +858,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
             var provinceCode = ($("#province").find(":selected").attr("data-code") == null || $("#province").find(":selected").attr("data-code") == '') ? $("#province").find(":selected").attr("data-name") : $("#province").find(":selected").attr("data-code");
 
-            <?php
-            if (isset($arr['eid_sample_code'])) {
-            ?>
+            <?php if (isset($arr['eid_sample_code'])) { ?>
                 insertSampleCode('addEIDRequestForm', 'eidSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', $("#formId").val(), 'sampleCollectionDate', provinceCode, provinceId);
-            <?php
-            } else {
-            ?>
+            <?php } else { ?>
                 document.getElementById('addEIDRequestForm').submit();
-            <?php
-            } ?>
+            <?php } ?>
         }
 
     }

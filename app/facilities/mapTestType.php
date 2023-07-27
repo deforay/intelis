@@ -81,10 +81,10 @@ require_once APPLICATION_PATH . '/header.php';
 								</div>
 
 								<div class="row">
-									<div class="col-md-7">
+									<div class="col-md-12">
 										<div class="form-group">
-											<label for="facilities" class="col-lg-4 control-label"><?php echo _("Select the"); ?> <?php echo str_replace("Manage", "", $title); ?> <?php echo _("for test type"); ?> </label>
-											<div class="col-lg-8">
+											<label for="facilities" style="margin-left: 30px;" class="control-label"><?php echo _("Select the"); ?> <?php echo str_replace("Manage", "", $title); ?> <?php echo _("for test type"); ?> </label>
+											<div class="col-lg-12">
 												<!--<div class="form-group">
 													<div class="col-md-12">
 														<div class="row">
@@ -122,9 +122,6 @@ require_once APPLICATION_PATH . '/header.php';
 											</div>
 										</div>
 									</div>
-
-
-
 								</div>
 							</div>
 						</div>
