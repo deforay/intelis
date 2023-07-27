@@ -415,10 +415,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                                             <th scope="row" class="show-rejection" style="display:none;">Reason for Rejection</th>
                                             <td class="show-rejection" style="display:none;">
-                                                <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the Reason for Rejection">
+                                                <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the Reason for Rejection" onchange="checkRejectionReason();">
                                                     <option value=''> -- Select -- </option>
                                                     <?php echo $rejectionReason; ?>
+                                                    <option value="other">Other (Please Specify) </option>
+
                                                 </select>
+                                                <input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
+
                                             </td>
                                         </tr>
                                         <tr class="show-rejection" style="display:none;">
@@ -1291,4 +1295,16 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             $('.testNameOther' + id).hide();
         }
     }
+
+    function checkRejectionReason() {
+          var rejectionReason = $("#sampleRejectionReason").val();
+          if (rejectionReason == "other") {
+               $("#newRejectionReason").show();
+               $("#newRejectionReason").addClass("isRequired");
+          } else {
+               $("#newRejectionReason").hide();
+               $("#newRejectionReason").removeClass("isRequired");
+               $('#newRejectionReason').val("");
+          }
+     }
 </script>

@@ -505,7 +505,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										<tr class="show-rejection" style="display:none;">
 											<th scope="row" class="show-rejection" style="display:none;"><label class="label-control" for="sampleRejectionReason">Reason for Rejection<span class="mandatory">*</span></label></th>
 											<td class="show-rejection" style="display:none;">
-												<select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the reason for rejection">
+												<select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the reason for rejection" onchange="checkRejectionReason();">
 													<option value="">-- Select --</option>
 													<?php foreach ($rejectionTypeResult as $type) { ?>
 														<optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
@@ -520,7 +520,11 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													if ($tbInfo['reason_for_sample_rejection'] == 9999) {
 														echo '<option value="9999" selected="selected">Unspecified</option>';
 													} ?>
+										<option value="other">Other (Please Specify) </option>
+
 												</select>
+												<input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
+
 											</td>
 											<th scope="row"><label class="label-control" for="rejectionDate">Rejection Date<span class="mandatory">*</span></label></th>
 											<td><input value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select rejection date" title="Please select the rejection date" /></td>
@@ -1016,4 +1020,16 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 			$('.' + show).addClass('hide-reasons');
 		}
 	}
+
+	function checkRejectionReason() {
+          var rejectionReason = $("#sampleRejectionReason").val();
+          if (rejectionReason == "other") {
+               $("#newRejectionReason").show();
+               $("#newRejectionReason").addClass("isRequired");
+          } else {
+               $("#newRejectionReason").hide();
+               $("#newRejectionReason").removeClass("isRequired");
+               $('#newRejectionReason').val("");
+          }
+     }
 </script>

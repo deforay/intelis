@@ -12,7 +12,7 @@ use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
-}
+} 
 
 
 /** @var MysqliDb $db */
@@ -86,6 +86,25 @@ try {
 		$_POST['arrivalDateTime'] = DateUtility::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
 	} else {
 		$_POST['arrivalDateTime'] = null;
+	}
+
+	if (!empty($_POST['newRejectionReason'])) {
+		$rejectionReasonQuery = "SELECT rejection_reason_id
+					FROM r_covid19_sample_rejection_reasons
+					WHERE rejection_reason_name like ?";
+		$rejectionResult = $db->rawQueryOne($rejectionReasonQuery, [$_POST['newRejectionReason']]);
+		if (empty($rejectionResult)) {
+			$data = array(
+				'rejection_reason_name' => $_POST['newRejectionReason'],
+				'rejection_type' => 'general',
+				'rejection_reason_status' => 'active',
+				'updated_datetime' => DateUtility::getCurrentDateTime()
+			);
+			$id = $db->insert('r_covid19_sample_rejection_reasons', $data);
+			$_POST['sampleRejectionReason'] = $id;
+		} else {
+			$_POST['sampleRejectionReason'] = $rejectionResult['rejection_reason_id'];
+		}
 	}
 
 

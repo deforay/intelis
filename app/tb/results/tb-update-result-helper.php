@@ -139,6 +139,25 @@ try {
         $_POST['resultDate'] = null;
     }
 
+    if (!empty($_POST['newRejectionReason'])) {
+		$rejectionReasonQuery = "SELECT rejection_reason_id
+					FROM r_tb_sample_rejection_reasons
+					WHERE rejection_reason_name like ?";
+		$rejectionResult = $db->rawQueryOne($rejectionReasonQuery, [$_POST['newRejectionReason']]);
+		if (empty($rejectionResult)) {
+			$data = array(
+				'rejection_reason_name' => $_POST['newRejectionReason'],
+				'rejection_type' => 'general',
+				'rejection_reason_status' => 'active',
+				'updated_datetime' => DateUtility::getCurrentDateTime()
+			);
+			$id = $db->insert('r_tb_sample_rejection_reasons', $data);
+			$_POST['sampleRejectionReason'] = $id;
+		} else {
+			$_POST['sampleRejectionReason'] = $rejectionResult['rejection_reason_id'];
+		}
+	}
+
     $tbData = array(
         //'specimen_quality'                    => !empty($_POST['testNumber']) ? $_POST['testNumber'] : null,
         'lab_id' => !empty($_POST['labId']) ? $_POST['labId'] : null,

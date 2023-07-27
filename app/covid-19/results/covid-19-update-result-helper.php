@@ -46,6 +46,25 @@ try {
 		$resultSentToSource = 'pending';
 	}
 
+	if (!empty($_POST['newRejectionReason'])) {
+		$rejectionReasonQuery = "SELECT rejection_reason_id
+					FROM r_covid19_sample_rejection_reasons
+					WHERE rejection_reason_name like ?";
+		$rejectionResult = $db->rawQueryOne($rejectionReasonQuery, [$_POST['newRejectionReason']]);
+		if (empty($rejectionResult)) {
+			$data = array(
+				'rejection_reason_name' => $_POST['newRejectionReason'],
+				'rejection_type' => 'general',
+				'rejection_reason_status' => 'active',
+				'updated_datetime' => DateUtility::getCurrentDateTime()
+			);
+			$id = $db->insert('r_covid19_sample_rejection_reasons', $data);
+			$_POST['sampleRejectionReason'] = $id;
+		} else {
+			$_POST['sampleRejectionReason'] = $rejectionResult['rejection_reason_id'];
+		}
+	}
+
 	if (!empty($_POST['result'])) {
 		$resultSentToSource = 'pending';
 	}
