@@ -352,7 +352,7 @@ if ($table == "form_covid19") {
                     <?= _("SAMPLES REGISTERED"); ?>
                 </small><br>
                 <small class="font-green-sharp" style="font-size:0.75em;">
-                    <?= _("in selected range"); ?>
+                    <?php echo _("In Selected Range"); ?>
                 </small>
             </div>
             <div class="icon font-green-sharp">
