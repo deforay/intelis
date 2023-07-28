@@ -73,7 +73,7 @@ $vlTestReasonResult = $db->query($vlTestReasonQuery);
 
 //Recommended corrective actgions
 $condition = "status ='active'";
-$correctiveActions = $general->fetchDataFromTable('r_vl_recommended_corrective_actions', $condition);
+$correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
 //get suspected treatment failure at
 $suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatment_failure_at FROM form_vl where vlsm_country_id='" . $arr['vl_form'] . "'";

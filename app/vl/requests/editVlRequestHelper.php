@@ -76,6 +76,12 @@ try {
           }
      }
 
+     if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
+          $_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($_POST['sampleReceivedDate'], true);
+      } else {
+          $_POST['sampleReceivedDate'] = null;
+      }
+
      //update facility code
      if (trim($_POST['fCode']) != '') {
           $fData = array('facility_code' => $_POST['fCode']);
@@ -90,8 +96,8 @@ try {
 
      $testingPlatform = null;
      if (isset($_POST['testingPlatform']) && trim($_POST['testingPlatform']) != '') {
-          $platForm = explode("##", $_POST['testingPlatform']);
-          $testingPlatform = $platForm[0];
+         $platForm = explode("##", $_POST['testingPlatform']);
+         $testingPlatform = $platForm[0];
      }
 
      if (!empty($_POST['newRejectionReason'])) {
@@ -269,7 +275,7 @@ try {
           'lab_id' => $_POST['labId'] ?? null,
           'vl_test_platform' => $testingPlatform ?? null,
           'sample_received_at_hub_datetime' => DateUtility::isoDateFormat($_POST['sampleReceivedAtHubOn'] ?? '', true),
-          'sample_received_at_vl_lab_datetime' => DateUtility::isoDateFormat($_POST['sampleReceivedDate'] ?? '', true),
+          'sample_received_at_vl_lab_datetime' => $_POST['sampleReceivedDate'],
           'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['sampleTestingDateAtLab'] ?? '', true),
           'result_dispatched_datetime' => DateUtility::isoDateFormat($_POST['resultDispatchedOn'] ?? '', true),
           'result_value_hiv_detection' => (isset($_POST['hivDetection']) && trim($_POST['hivDetection']) != '') ? $_POST['hivDetection'] : null,
@@ -298,6 +304,8 @@ try {
           'manual_result_entry' => 'yes',
           'last_modified_by' => $_SESSION['userId'] ?? $_POST['userId'] ?? null
      );
+
+    
 
      $vlData['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vlData['patient_art_no']);
 

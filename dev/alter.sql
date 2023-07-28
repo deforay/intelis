@@ -4878,15 +4878,18 @@ INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`,`show_
 
 -- Jeyabanu 27-Jul-2023
 
-CREATE TABLE `r_vl_recommended_corrective_actions` (
+CREATE TABLE `r_recommended_corrective_actions` (
   `recommended_corrective_action_id` int NOT NULL AUTO_INCREMENT,
+  `test_type` varchar(11) DEFAULT NULL,
   `recommended_corrective_action_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `data_sync` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`recommended_corrective_action_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
 
 ALTER TABLE `form_vl` ADD `recommended_corrective_action` VARCHAR(256) NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
 ALTER TABLE `audit_form_vl` ADD `recommended_corrective_action` VARCHAR(256) NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+
+INSERT INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'admin', 'no', 'Recommended Corrective Actions', '/vl/reference/vl-recommended-corrective-actions.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vl-recommended-corrective-actions', '10', '39', 'active', CURRENT_TIMESTAMP);

@@ -32,7 +32,8 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 
 $reasonForFailure = $vlService->getReasonForFailure();
 if ($_SESSION['instanceType'] == 'remoteuser') {
-     $labFieldDisabled = 'disabled="disabled"';
+   //  $labFieldDisabled = 'disabled="disabled"';
+   $labFieldDisabled = 'readonly="true"';
 }
 
 // Sanitized values from $request object
@@ -67,7 +68,7 @@ $statusResult = $db->rawQuery($statusQuery);
 
 //Recommended corrective actgions
 $condition = "status ='active'";
-$correctiveActions = $general->fetchDataFromTable('r_vl_recommended_corrective_actions', $condition);
+$correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
 $pdResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 0 AND geo_status='active'");
 

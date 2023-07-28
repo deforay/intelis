@@ -117,7 +117,7 @@ $aResult = $db->query($aQuery);
 
 										<td style=" display:<?php echo ($sCode == '') ? 'none' : ''; ?>"><label for="">Date de réception de léchantillon <span class="mandatory">*</span></label></td>
 										<td style=" display:<?php echo ($sCode == '') ? 'none' : ''; ?>">
-											<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate<?php echo ($sCode == '') ? 'Lab' : ''; ?>" name="sampleReceivedDate<?php echo ($sCode == '') ? 'Lab' : ''; ?>" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo ($vlQueryInfo['sample_received_at_vl_lab_datetime'] != '' && $vlQueryInfo['sample_received_at_vl_lab_datetime'] != null) ? $vlQueryInfo['sample_received_at_vl_lab_datetime'] : date('d-M-Y H:i:s'); ?>" style="width:100%;" />
+											<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo ($vlQueryInfo['sample_received_at_vl_lab_datetime'] != '' && $vlQueryInfo['sample_received_at_vl_lab_datetime'] != null) ? $vlQueryInfo['sample_received_at_vl_lab_datetime'] : date('d-M-Y H:i:s'); ?>" style="width:100%;" />
 										</td>
 
 
@@ -444,7 +444,7 @@ $aResult = $db->query($aQuery);
 										<tr style="<?php echo ($sCode != '') ? 'display:none' : ''; ?>">
 											<td><label for="">Date de réception de l'échantillon </label></td>
 											<td>
-												<input type="text" class="form-control dateTime" id="sampleReceivedDate<?php echo ($sCode != '') ? 'Lab' : ''; ?>" name="sampleReceivedDate<?php echo ($sCode != '') ? 'Lab' : ''; ?>" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo $vlQueryInfo['sample_received_at_vl_lab_datetime']; ?>" style="width:100%;" />
+												<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo $vlQueryInfo['sample_received_at_vl_lab_datetime']; ?>" style="width:100%;" />
 											</td>
 											<td><label for="labId">Nom du laboratoire </label> </td>
 											<td>
