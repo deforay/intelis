@@ -223,7 +223,12 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
 								</tr>
 								<tr>
 									<th scope="row">Age</th>
-									<td><input type="number" <?= htmlspecialchars($eidInfo['child_age']); ?> max=9 maxlength="1" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="" /></td>
+									<td><input type="number" value="<?= htmlspecialchars($eidInfo['child_age']); ?>"
+												maxlength="3"
+												oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))"
+												class="form-control " id="childAge" name="childAge"
+												placeholder="Age en mois" title="Age en mois" style="width:100%;"
+												onchange="$('#childDob').val('')" /></td>
 									<th scope="row"></th>
 									<td></td>
 								</tr>
@@ -435,7 +440,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
 					</div>
 
 					<form class="form-horizontal" method="post" name="editEIDRequestForm" id="editEIDRequestForm" autocomplete="off" action="eid-update-result-helper.php">
-						<?php if ($_SESSION['instanceType'] != 'remoteuser') { ?>
+						<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
 
 							<div class="box box-primary">
 								<div class="box-body">

@@ -114,15 +114,16 @@ if (!empty($requestResult)) {
         }
         //Set Age
         $age = 'Unknown';
-        if (isset($result['child_dob']) && trim($result['child_dob']) != '' && $result['child_dob'] != '0000-00-00') {
+        if (isset($result['child_age']) && trim($result['child_age']) != '' && trim($result['child_age']) > 0) {
+            $age = $result['child_age'];
+        }
+        elseif (isset($result['child_dob']) && trim($result['child_dob']) != '' && $result['child_dob'] != '0000-00-00') {
             $todayDate = strtotime(date('Y-m-d'));
             $dob = strtotime($result['child_dob']);
             $difference = $todayDate - $dob;
             $seconds_per_year = 60 * 60 * 24 * 365;
             $age = round($difference / $seconds_per_year);
-        } elseif (isset($result['child_age']) && trim($result['child_age']) != '' && trim($result['child_age']) > 0) {
-            $age = $result['child_age'];
-        }
+        } 
 
         if (isset($result['sample_collection_date']) && trim($result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['sample_collection_date']);
