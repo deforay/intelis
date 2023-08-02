@@ -14,6 +14,22 @@ class TestResultsService
     {
         $this->db = $db;
     }
+    public function clearPreviousImportsByUser($userId, $module = null)
+    {
+        $userId = $userId ?? $_SESSION['userId'];
+        $this->db->where('imported_by', $userId);
+        if (!empty($module)) {
+            $this->db->where('module', $module);
+        }
+        return $this->db->delete('temp_sample_import');
+    }
+
+    public function getMaxIDForHoldingSamples()
+    {
+        $bquery = "SELECT IFNULL(MAX(import_batch_tracking), 0) + 1 AS maxId FROM `hold_sample_import`";
+        $result = $this->db->rawQueryOne($bquery);
+        return $result['maxId'];
+    }
 
 
     // This function removes control characters from the strings in the CSV file.
@@ -59,5 +75,4 @@ class TestResultsService
             'dateFormat' => $testDateFormat,
         ];
     }
-
 }

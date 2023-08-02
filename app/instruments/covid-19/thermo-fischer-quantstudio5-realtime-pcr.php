@@ -2,10 +2,12 @@
 
 // File included in import-file-helper.php
 
-use App\Exceptions\SystemException;
-use App\Registries\ContainerRegistry;
+use App\Services\BatchService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Exceptions\SystemException;
+use App\Services\TestResultsService;
+use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 // Sanitized values from $request object
@@ -14,18 +16,12 @@ $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
 try {
+    /** @var TestResultsService $testResultsService */
+    $testResultsService = ContainerRegistry::get(TestResultsService::class);
 
-    $db = $db->where('imported_by', $_SESSION['userId']);
-    $db->delete('temp_sample_import');
-    //set session for controller track id in hold_sample_record table
-    $cQuery = "SELECT MAX(import_batch_tracking) FROM hold_sample_import";
-    $cResult = $db->query($cQuery);
-    if ($cResult[0]['MAX(import_batch_tracking)'] != '') {
-        $maxId = $cResult[0]['MAX(import_batch_tracking)'] + 1;
-    } else {
-        $maxId = 1;
-    }
-    $_SESSION['controllertrack'] = $maxId;
+    $testResultsService->clearPreviousImportsByUser($_SESSION['userId'], 'covid19');
+
+    $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
 
     $allowedExtensions = array(
         'xls',
@@ -41,28 +37,18 @@ try {
     $fileName = str_replace(" ", "-", $fileName);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName = $_POST['fileName'] . "." . $extension;
-    // $ranNumber = $general->generateRandomString(12);
-    // $fileName = $ranNumber . "." . $extension;
 
-    if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results")) {
-        mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results", 0777, true);
-    }
+
+
     $resultFile = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") . DIRECTORY_SEPARATOR . $fileName;
     if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
 
         $file_info = new finfo(FILEINFO_MIME); // object oriented approach!
         $mime_type = $file_info->buffer(file_get_contents($resultFile)); // e.g. gives "image/jpeg"
 
-        $bquery = "SELECT MAX(batch_code_key) FROM `batch_details`";
-        $bvlResult = $db->rawQuery($bquery);
-        if ($bvlResult[0]['MAX(batch_code_key)'] != '' && $bvlResult[0]['MAX(batch_code_key)'] != null) {
-            $maxBatchCodeKey = $bvlResult[0]['MAX(batch_code_key)'] + 1;
-            $maxBatchCodeKey = "00" . $maxBatchCodeKey;
-        } else {
-            $maxBatchCodeKey = '001';
-        }
-
-        $newBatchCode = date('Ymd') . $maxBatchCodeKey;
+        /** @var BatchService $batchService */
+        $batchService = ContainerRegistry::get(BatchService::class);
+        [$maxBatchCodeKey, $newBatchCode] = $batchService->createBatchCode();
 
         $m = 1;
         $skipTillRow = 47;
@@ -193,7 +179,7 @@ try {
             $query = "SELECT facility_id,covid19_id,result from form_covid19 where sample_code='" . $sampleCode . "'";
             $vlResult = $db->rawQuery($query);
 
-            if ($vlResult && $sampleCode != '') {
+            if (!empty($vlResult) && !empty($sampleCode)) {
                 if (!empty($vlResult[0]['result'])) {
                     $data['sample_details'] = 'Result already exists';
                 } else {
@@ -203,7 +189,7 @@ try {
             } else {
                 $data['sample_details'] = 'New Sample';
             }
-            //echo "<pre>";var_dump($data);echo "</pre>";continue;
+
             if ($sampleCode != '') {
                 $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();
                 $data['imported_by'] = $_SESSION['userId'];

@@ -4,6 +4,7 @@
 
 use League\Csv\Reader;
 use App\Services\VlService;
+use App\Services\BatchService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -31,17 +32,10 @@ $vlService = ContainerRegistry::get(VlService::class);
 try {
 
     $dateFormat = (!empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'm/d/Y H:i';
-    $db = $db->where('imported_by', $_SESSION['userId']);
-    $db->delete('temp_sample_import');
-    //set session for controller track id in hold_sample_record table
-    $cQuery = "SELECT MAX(import_batch_tracking) FROM hold_sample_import";
-    $cResult = $db->query($cQuery);
-    if ($cResult[0]['MAX(import_batch_tracking)'] != '') {
-        $maxId = $cResult[0]['MAX(import_batch_tracking)'] + 1;
-    } else {
-        $maxId = 1;
-    }
-    $_SESSION['controllertrack'] = $maxId;
+
+    $testResultsService->clearPreviousImportsByUser($_SESSION['userId'], 'vl');
+
+    $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
 
     $allowedExtensions = array(
         'csv',
@@ -72,16 +66,9 @@ try {
         $file_info = new finfo(FILEINFO_MIME); // object oriented approach!
         $mime_type = $file_info->buffer(file_get_contents($resultFile)); // e.g. gives "image/jpeg"
 
-        $bquery = "SELECT MAX(batch_code_key) FROM `batch_details`";
-        $bvlResult = $db->rawQuery($bquery);
-        if ($bvlResult[0]['MAX(batch_code_key)'] != '' && $bvlResult[0]['MAX(batch_code_key)'] != null) {
-            $maxBatchCodeKey = $bvlResult[0]['MAX(batch_code_key)'] + 1;
-            $maxBatchCodeKey = "00" . $maxBatchCodeKey;
-        } else {
-            $maxBatchCodeKey = '001';
-        }
-
-        $newBatchCode = date('Ymd') . $maxBatchCodeKey;
+        /** @var BatchService $batchService */
+        $batchService = ContainerRegistry::get(BatchService::class);
+        [$maxBatchCodeKey, $newBatchCode] = $batchService->createBatchCode();
 
         $m = 1;
         $skipTillRow = 47;

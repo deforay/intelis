@@ -1,7 +1,9 @@
 <?php
 
-use App\Registries\ContainerRegistry;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Exceptions\SystemException;
+use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -31,13 +33,14 @@ if (isset($directoryMap[$type])) {
     $directoryName = $directoryMap[$type];
     $machineImportScript = realpath(APPLICATION_PATH . DIRECTORY_SEPARATOR . "instruments") . DIRECTORY_SEPARATOR . $directoryName . DIRECTORY_SEPARATOR . $machineImportScript;
 } else {
-    echo "Invalid type";
-    exit();
+    throw new SystemException(_('Invalid Test Type'));
 }
 
+
+
 if (file_exists($machineImportScript)) {
+    MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results");
     require_once($machineImportScript);
 } else {
-    echo "Import Script not found";
-    exit();
+    throw new SystemException(_("Import Script not found"));
 }
