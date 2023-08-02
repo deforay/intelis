@@ -94,7 +94,7 @@ try {
         }
 
         if ($configId > 0 && !empty($_POST['testType'])) {
-            if (count($configControlInfo) > 0) {
+            if (!empty($configControlInfo)) {
                 foreach ($_POST['testType'] as $key => $val) {
                     $cQuery = "SELECT * FROM instrument_controls WHERE config_id= " . $configId . " AND test_type like '" . $val . "'";
                     $cResult = $db->rawQueryOne($cQuery);

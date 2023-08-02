@@ -4829,11 +4829,11 @@ UPDATE `privileges` SET `display_order` = '3' ,`privilege_name` ='/instruments/e
 
 --
 
-ALTER TABLE `form_vl` CHANGE `patient_first_name` `patient_first_name` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_middle_name` `patient_middle_name` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_last_name` `patient_last_name` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_vl` CHANGE `patient_first_name` `patient_first_name` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_middle_name` `patient_middle_name` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_last_name` `patient_last_name` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `form_vl` ADD INDEX(`patient_first_name`);
 ALTER TABLE `form_vl` ADD INDEX(`patient_middle_name`);
 ALTER TABLE `form_vl` ADD INDEX(`patient_last_name`);
-ALTER TABLE `audit_form_vl` CHANGE `patient_first_name` `patient_first_name` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_middle_name` `patient_middle_name` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_last_name` `patient_last_name` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_vl` CHANGE `patient_first_name` `patient_first_name` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_middle_name` `patient_middle_name` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `patient_last_name` `patient_last_name` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 
 
 -- Amit 06-Jul-2023 version 5.1.9
@@ -4897,7 +4897,7 @@ CREATE TABLE `r_recommended_corrective_actions` (
 ALTER TABLE `form_vl` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
 ALTER TABLE `audit_form_vl` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
 
-INSERT INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'admin', 'no', 'Recommended Corrective Actions', '/vl/reference/vl-recommended-corrective-actions.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vl-recommended-corrective-actions', '10', '39', 'active', CURRENT_TIMESTAMP);
+INSERT IGNORE INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'admin', 'no', 'Recommended Corrective Actions', '/vl/reference/vl-recommended-corrective-actions.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vl-recommended-corrective-actions', '10', '39', 'active', CURRENT_TIMESTAMP);
 
 
 -- Amit 01-Aug-2023
