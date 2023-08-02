@@ -4893,3 +4893,5 @@ ALTER TABLE `form_vl` ADD `recommended_corrective_action` VARCHAR(256) NULL DEFA
 ALTER TABLE `audit_form_vl` ADD `recommended_corrective_action` VARCHAR(256) NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
 
 INSERT INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'admin', 'no', 'Recommended Corrective Actions', '/vl/reference/vl-recommended-corrective-actions.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vl-recommended-corrective-actions', '10', '39', 'active', CURRENT_TIMESTAMP);
+
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'common-reference', '/common/reference/add-recommended-corrective-action.php?type=vl', NULL, NULL, NULL, 'always'), (NULL, 'common-reference', '/common/reference/edit-recommended-corrective-action.php?type=vl', NULL, 'Edit Corrective Action', NULL, 'always');

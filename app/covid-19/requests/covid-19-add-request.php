@@ -96,7 +96,6 @@ $fileArray = array(
 
 require($fileArray[$arr['vl_form']]);
 
-
 ?>
 
 <script>
