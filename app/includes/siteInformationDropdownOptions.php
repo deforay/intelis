@@ -51,7 +51,6 @@ $GLOBALS['facilityMap'] = $_SESSION['facilityMap'];
 // 	$GLOBALS['facilityMap'] = $facilitiesService->getUserFacilityMap($_SESSION['userId']);
 // }
 
-
 function getFacilitiesDropdown($provinceName = null, $districtRequested = null, $usersService = null): string
 {
 	$db = $GLOBALS['db'];
