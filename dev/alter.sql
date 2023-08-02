@@ -4238,6 +4238,7 @@ CREATE TABLE `s_app_menu` (
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+
 INSERT INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES
 (1, 'dashboard', 'no', 'DASHBOARD', '/dashboard/index.php', NULL, 'always', 'fa-solid fa-chart-pie', 'no', 'allMenu dashboardMenu', 0, 1, 'active', NULL),
 (2, 'admin', 'no', 'ADMIN', NULL, NULL, 'always', 'fa-solid fa-shield', 'yes', NULL, 0, 2, 'active', NULL),
@@ -4414,13 +4415,17 @@ INSERT INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `
 (173, 'tb', 'no', 'Export Results', '/tb/management/tb-export-data.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbExportResult', 83, 167, 'active', NULL),
 (174, 'tb', 'no', 'Sample Rejection Report', '/tb/management/tb-sample-rejection-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbSampleRejectionReport', 83, 168, 'active', NULL),
 (175, 'tb', 'no', 'Clinic Reports', '/tb/management/tb-clinic-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbClinicReport', 83, 169, 'active', NULL),
-(176, 'admin', 'no', 'Lab Sync Status', '/admin/monitoring/sync-status.php', NULL, 'always', 'fa-solid fa-traffic-light', 'no', 'allMenu treeview api-sync-status-menu', 7, 18, 'active', NULL);
+(176, 'admin', 'no', 'Lab Sync Status', '/admin/monitoring/sync-status.php', NULL, 'always', 'fa-solid fa-traffic-light', 'no', 'allMenu treeview api-sync-status-menu', 7, 18, 'active', NULL),
+(177, 'admin', 'no', 'Recommended Corrective Actions', '/vl/reference/vl-recommended-corrective-actions.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vl-recommended-corrective-actions', 10, 39, 'active', '2023-08-02 14:27:09');
+
 
 ALTER TABLE `s_app_menu`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `link` (`link`,`parent_id`);
 
 ALTER TABLE `s_app_menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=176;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=177;
+
 
 
 
@@ -4881,8 +4886,8 @@ INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`,`show_
 CREATE TABLE `r_recommended_corrective_actions` (
   `recommended_corrective_action_id` int NOT NULL AUTO_INCREMENT,
   `test_type` varchar(11) DEFAULT NULL,
-  `recommended_corrective_action_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `recommended_corrective_action_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `data_sync` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`recommended_corrective_action_id`)
