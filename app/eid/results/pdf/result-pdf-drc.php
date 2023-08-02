@@ -116,14 +116,13 @@ if (!empty($requestResult)) {
         $age = 'Unknown';
         if (isset($result['child_age']) && trim($result['child_age']) != '' && trim($result['child_age']) > 0) {
             $age = $result['child_age'];
-        }
-        elseif (isset($result['child_dob']) && trim($result['child_dob']) != '' && $result['child_dob'] != '0000-00-00') {
+        } elseif (isset($result['child_dob']) && trim($result['child_dob']) != '' && $result['child_dob'] != '0000-00-00') {
             $todayDate = strtotime(date('Y-m-d'));
             $dob = strtotime($result['child_dob']);
             $difference = $todayDate - $dob;
             $seconds_per_year = 60 * 60 * 24 * 365;
             $age = round($difference / $seconds_per_year);
-        } 
+        }
 
         if (isset($result['sample_collection_date']) && trim($result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", $result['sample_collection_date']);
@@ -231,7 +230,7 @@ if (!empty($requestResult)) {
         //$html .='<td colspan="3" style="line-height:10px;"></td>';
         //$html .='</tr>';
         $html .= '<tr>';
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Âge</td>';
+        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Âge en mois</td>';
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Sexe</td>';
         $implementationPartner = "Partnaire d'appui";
         $html .= '<td colspan="2" style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . $implementationPartner . '</td>';

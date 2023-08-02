@@ -1,6 +1,6 @@
 {
     "sonarlint.connectedMode.project": {
-        "connectionId": "deforay-sonarcloud",
+        "connectionId": "deforay-sonar",
         "projectKey": "deforay_vlsm"
     }
 }

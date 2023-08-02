@@ -33,8 +33,8 @@ class CommonService
                 $queryResult = $this->db->rawQuery($sql, $params);
 
                 // Prepare and execute the count query
-                $countSql = preg_replace('/SELECT.*? FROM/si', 'SELECT COUNT(*) FROM', $sql, 1);
-                $count = $this->db->rawQueryOne($countSql)['COUNT(*)'];
+                $countSql = preg_replace('/SELECT.*? FROM/si', 'SELECT COUNT(*) as qCount FROM', $sql, 1);
+                $count = $this->db->rawQueryOne($countSql)['qCount'];
             } else {
                 $queryResult = $this->db->rawQuery($sql, $params);
                 $count = count($queryResult);
