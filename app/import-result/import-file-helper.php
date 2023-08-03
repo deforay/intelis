@@ -1,12 +1,9 @@
 <?php
 
-use App\Registries\ContainerRegistry;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
-
-
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+use App\Exceptions\SystemException;
+use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -24,23 +21,26 @@ $arr = $general->getGlobalConfig();
 
 $type = $_POST['type'];
 
-//var_dump($machineImportScript);die;
+$directoryMap = [
+    'vl' => 'vl',
+    'eid' => 'eid',
+    'covid19' => 'covid-19',
+    'hepatitis' => 'hepatitis',
+    'tb' => 'tb',
+];
 
-if ($type == 'vl') {
-    $machineImportScript = realpath(APPLICATION_PATH . DIRECTORY_SEPARATOR . "instruments") . DIRECTORY_SEPARATOR . "vl" . DIRECTORY_SEPARATOR . $machineImportScript;
-} elseif ($type == 'eid') {
-    $machineImportScript = realpath(APPLICATION_PATH . DIRECTORY_SEPARATOR . "instruments") . DIRECTORY_SEPARATOR . "eid" . DIRECTORY_SEPARATOR . $machineImportScript;
-} elseif ($type == 'covid19') {
-    $machineImportScript = realpath(APPLICATION_PATH . DIRECTORY_SEPARATOR . "instruments") . DIRECTORY_SEPARATOR . "covid-19" . DIRECTORY_SEPARATOR . $machineImportScript;
-} elseif ($type == 'hepatitis') {
-    $machineImportScript = realpath(APPLICATION_PATH . DIRECTORY_SEPARATOR . "instruments") . DIRECTORY_SEPARATOR . "hepatitis" . DIRECTORY_SEPARATOR . $machineImportScript;
-} elseif ($type == 'tb') {
-    $machineImportScript = realpath(APPLICATION_PATH . DIRECTORY_SEPARATOR . "instruments") . DIRECTORY_SEPARATOR . "tb" . DIRECTORY_SEPARATOR . $machineImportScript;
+if (isset($directoryMap[$type])) {
+    $directoryName = $directoryMap[$type];
+    $machineImportScript = realpath(APPLICATION_PATH . DIRECTORY_SEPARATOR . "instruments") . DIRECTORY_SEPARATOR . $directoryName . DIRECTORY_SEPARATOR . $machineImportScript;
+} else {
+    throw new SystemException(_('Invalid Test Type'));
 }
 
-if (!empty($machineImportScript) && file_exists($machineImportScript)) {
+
+
+if (file_exists($machineImportScript)) {
+    MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results");
     require_once($machineImportScript);
 } else {
-    echo "Import Script not found";
-    exit();
+    throw new SystemException(_("Import Script not found"));
 }

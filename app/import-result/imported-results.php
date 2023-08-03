@@ -1,7 +1,7 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 require_once APPLICATION_PATH . '/header.php';
 $tsQuery = "SELECT * FROM r_sample_status";
@@ -17,7 +17,12 @@ if (!empty($tResult['sample_review_by'])) {
 	$reviewBy = $_SESSION['userId'];
 }
 
-$module = $tResult['module'];
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
+
+$module = $_GET['t'];
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');

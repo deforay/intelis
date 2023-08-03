@@ -1,8 +1,10 @@
 <?php
 
-use App\Exceptions\SystemException;
+use App\Services\BatchService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Exceptions\SystemException;
+use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
@@ -19,17 +21,13 @@ try {
     $general = ContainerRegistry::get(CommonService::class);
 
     $dateFormat = (!empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'd/m/Y H:i';
-    $db = $db->where('imported_by', $_SESSION['userId']);
-    $db->delete('temp_sample_import');
-    //set session for controller track id in hold_sample_record table
-    $cQuery  = "SELECT MAX(import_batch_tracking) FROM hold_sample_import";
-    $cResult = $db->query($cQuery);
-    if ($cResult[0]['MAX(import_batch_tracking)'] != '') {
-        $maxId = $cResult[0]['MAX(import_batch_tracking)'] + 1;
-    } else {
-        $maxId = 1;
-    }
-    $_SESSION['controllertrack'] = $maxId;
+
+    /** @var TestResultsService $testResultsService */
+    $testResultsService = ContainerRegistry::get(TestResultsService::class);
+
+    $testResultsService->clearPreviousImportsByUser($_SESSION['userId'], 'vl');
+
+    $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
 
     $allowedExtensions = array(
         'xls',
@@ -46,14 +44,10 @@ try {
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename($_FILES['resultFile']['name'])));
     $fileName          = str_replace(" ", "-", $fileName);
     $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    // $ranNumber         = $general->generateRandomString(12);
-    // $fileName          = $ranNumber . "." . $extension;
     $fileName          = $_POST['fileName'] . "." . $extension;
 
 
-    if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results")) {
-        mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results", 0777, true);
-    }
+
     $resultFile = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") . DIRECTORY_SEPARATOR . $fileName;
     if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
         //$file_info = new finfo(FILEINFO_MIME); // object oriented approach!
@@ -62,14 +56,13 @@ try {
         $objPHPExcel = IOFactory::load(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
         $sheetData   = $objPHPExcel->getActiveSheet();
 
-        $bquery    = "SELECT MAX(batch_code_key) FROM batch_details";
-        $bvlResult = $db->rawQuery($bquery);
-        if ($bvlResult[0]['MAX(batch_code_key)'] != '' && $bvlResult[0]['MAX(batch_code_key)'] != null) {
-            $maxBatchCodeKey = $bvlResult[0]['MAX(batch_code_key)'] + 1;
-            $maxBatchCodeKey = "00" . $maxBatchCodeKey;
-        } else {
-            $maxBatchCodeKey = '001';
-        }
+
+        /** @var BatchService $batchService */
+        $batchService = ContainerRegistry::get(BatchService::class);
+        [$maxBatchCodeKey, $newBatchCode] = $batchService->createBatchCode();
+
+
+
 
         $newBatchCode = date('Ymd') . $maxBatchCodeKey;
 
@@ -223,19 +216,27 @@ try {
                 $data['batch_code'] = $batchCode;
             }
 
-            $query    = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal FROM form_vl WHERE result_printed_datetime is null AND sample_code='" . $sampleCode . "'";
-            $vlResult = $db->rawQuery($query);
-            if ($vlResult && $sampleCode != '') {
-                if ($vlResult[0]['result_value_log'] != '' || $vlResult[0]['result_value_absolute'] != '' || $vlResult[0]['result_value_text'] != '' || $vlResult[0]['result_value_absolute_decimal'] != '') {
+            $query    = "SELECT facility_id,
+                                vl_sample_id,
+                                result,
+                                result_value_log,
+                                result_value_absolute,
+                                result_value_text,
+                                result_value_absolute_decimal
+                        FROM form_vl
+                        WHERE result_printed_datetime is null
+                        AND sample_code= ?";
+            $vlResult = $db->rawQueryOne($query, [$sampleCode]);
+            if (!empty($vlResult) && !empty($sampleCode)) {
+                if ($vlResult['result_value_log'] != '' || $vlResult['result_value_absolute'] != '' || $vlResult['result_value_text'] != '' || $vlResult['result_value_absolute_decimal'] != '') {
                     $data['sample_details'] = 'Result already exists';
                 } else {
                     $data['result_status'] = '7';
                 }
-                $data['facility_id'] = $vlResult[0]['facility_id'];
+                $data['facility_id'] = $vlResult['facility_id'];
             } else {
                 $data['sample_details'] = 'New Sample';
             }
-            //echo "<pre>";var_dump($data);echo "</pre>";continue;
             if ($sampleCode != '' || $batchCode != '' || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
                 $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();
                 $data['imported_by'] = $_SESSION['userId'];

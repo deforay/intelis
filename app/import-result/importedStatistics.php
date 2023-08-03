@@ -1,9 +1,8 @@
 <?php
 
-use App\Registries\ContainerRegistry;
+use App\Exceptions\SystemException;
 use App\Services\CommonService;
-
-
+use App\Registries\ContainerRegistry;
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -20,22 +19,25 @@ $importedBy = $_SESSION['userId'];
 
 $joinTypeWithTestTable = !empty($allowImportingNonMatchingSamples) && $allowImportingNonMatchingSamples == 'no' ? 'INNER JOIN' : 'LEFT JOIN';
 
-$tQuery = "SELECT `module` FROM `temp_sample_import` WHERE `imported_by` =? limit 1";
 
-$tResult = $db->rawQueryOne($tQuery, array($_SESSION['userId']));
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
 
-$module = $tResult['module'];
+$module = $_GET['t'];
 
+$importMap = [
+  'vl' => 'import-stats-vl.php',
+  'eid' => 'import-stats-eid.php',
+  'covid19' => 'import-stats-covid-19.php',
+  'hepatitis' => 'import-stats-hepatitis.php',
+];
 
-
-if ($module == 'vl') {
-  require_once(APPLICATION_PATH . '/import-result/import-stats-vl.php');
-} else if ($module == 'eid') {
-  require_once(APPLICATION_PATH . '/import-result/import-stats-eid.php');
-} else if ($module == 'covid19') {
-  require_once(APPLICATION_PATH . '/import-result/import-stats-covid-19.php');
-} else if ($module == 'hepatitis') {
-  require_once(APPLICATION_PATH . '/import-result/import-stats-hepatitis.php');
+if (isset($importMap[$module])) {
+  require_once(APPLICATION_PATH . '/import-result/' . $importMap[$module]);
+} else {
+  throw new SystemException(_('Invalid Test Type'));
 }
 
-require_once APPLICATION_PATH . '/footer.php';
+require_once(APPLICATION_PATH . '/footer.php');

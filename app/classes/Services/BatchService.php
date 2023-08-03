@@ -26,24 +26,16 @@ class BatchService
 
     public function createBatchCode()
     {
-        $batchQuery = 'SELECT MAX(batch_code_key)
+        $batchQuery = 'SELECT IFNULL(MAX(batch_code_key), 0) + 1 AS maxId
                         FROM batch_details as bd
                         WHERE DATE(bd.request_created_datetime) = CURRENT_DATE';
-        $batchResult = $this->db->query($batchQuery);
+        $batchResult = $this->db->rawQueryOne($batchQuery);
 
-        if (!empty($batchResult[0]['MAX(batch_code_key)'])) {
-            $code = $batchResult[0]['MAX(batch_code_key)'] + 1;
-            $length = strlen($code);
-            if ($length == 1) {
-                $code = "00" . $code;
-            } elseif ($length == 2) {
-                $code = "0" . $code;
-            }
-        } else {
-            $code = '001';
-        }
-        return $code;
+        $batchCode  = date('Ymd') . sprintf("%03s", $batchResult['maxId']);
+
+        return [$batchResult['maxId'], $batchCode];
     }
+
 
     public function excelColumnRange($lower, $upper): Generator
     {
@@ -52,5 +44,4 @@ class BatchService
             yield $i;
         }
     }
-
 }

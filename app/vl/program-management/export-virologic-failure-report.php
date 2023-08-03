@@ -44,17 +44,17 @@ $headerStyleArray = [
 ];
 $sQuery = "SELECT
                vl.patient_art_no,
-               DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y') as sampleDate, 
+               DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y') as sampleDate,
                f.facility_name,
                f.facility_code,
                vl.patient_age_in_years,
                vl.patient_gender,
                vl.is_patient_pregnant,
                vl.is_patient_breastfeeding,
-               DATE_FORMAT(vl.patient_art_date,'%d-%b-%Y') as artStartDate, 
+               DATE_FORMAT(vl.treatment_initiated_date,'%d-%b-%Y') as artStartDate,
                vl.current_regimen,
-               DATE_FORMAT(vl.date_of_initiation_of_current_regimen,'%d-%b-%Y') as regStartDate, 
-               vl.result 
+               DATE_FORMAT(vl.date_of_initiation_of_current_regimen,'%d-%b-%Y') as regStartDate,
+               vl.result
           FROM form_vl as vl
           LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id";
 

@@ -1,9 +1,11 @@
 <?php
 
-use App\Exceptions\SystemException;
-use App\Registries\ContainerRegistry;
+use App\Services\BatchService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Exceptions\SystemException;
+use App\Services\TestResultsService;
+use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 // Sanitized values from $request object
@@ -12,18 +14,12 @@ $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
 try {
-    $db->where('imported_by', $_SESSION['userId']);
-    $db->where('module', 'hepatitis');
-    $db->delete('temp_sample_import');
-    //set session for controller track id in hold_sample_record table
-    $cQuery = "SELECT MAX(import_batch_tracking) FROM hold_sample_import";
-    $cResult = $db->query($cQuery);
-    if ($cResult[0]['MAX(import_batch_tracking)'] != '') {
-        $maxId = $cResult[0]['MAX(import_batch_tracking)'] + 1;
-    } else {
-        $maxId = 1;
-    }
-    $_SESSION['controllertrack'] = $maxId;
+    /** @var TestResultsService $testResultsService */
+    $testResultsService = ContainerRegistry::get(TestResultsService::class);
+
+    $testResultsService->clearPreviousImportsByUser($_SESSION['userId'], 'hepatitis');
+
+    $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
 
     $allowedExtensions = array(
         'xls',
@@ -45,9 +41,7 @@ try {
     // $fileName          = $ranNumber . "." . $extension;
 
 
-    if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results")) {
-        mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results", 0777, true);
-    }
+
     $resultFile = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") . DIRECTORY_SEPARATOR . $fileName;
     if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
         //$file_info = new finfo(FILEINFO_MIME); // object oriented approach!
@@ -56,16 +50,9 @@ try {
         $objPHPExcel = IOFactory::load(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
         $sheetData = $objPHPExcel->getActiveSheet();
 
-        $bquery = "select MAX(batch_code_key) from batch_details";
-        $bvlResult = $db->rawQuery($bquery);
-        if ($bvlResult[0]['MAX(batch_code_key)'] != '' && $bvlResult[0]['MAX(batch_code_key)'] != null) {
-            $maxBatchCodeKey = $bvlResult[0]['MAX(batch_code_key)'] + 1;
-            $maxBatchCodeKey = "00" . $maxBatchCodeKey;
-        } else {
-            $maxBatchCodeKey = '001';
-        }
-
-        $newBatchCode = date('Ymd') . $maxBatchCodeKey;
+        /** @var BatchService $batchService */
+        $batchService = ContainerRegistry::get(BatchService::class);
+        [$maxBatchCodeKey, $newBatchCode] = $batchService->createBatchCode();
 
         $sheetData = $sheetData->toArray(null, true, true, true);
         $m = 0;
@@ -235,27 +222,22 @@ try {
                 $data['sample_review_by'] = $usersService->getOrCreateUser($d['reviewBy']);
             }
 
-            $query = "SELECT facility_id,hepatitis_id,hcv_vl_count,hbv_vl_count,hepatitis_test_type, result_status FROM form_hepatitis WHERE sample_code='" . $sampleCode . "'";
-            $hepResult = $db->rawQuery($query);
-
-            // $testType = strtolower($hepResult['hepatitis_test_type']);
-            // if ($testType == 'hbv') {
-            //     $resultField = "hbv_vl_count";
-            //     $otherField = "hcv_vl_count";
-            // } else if ($testType == 'hcv') {
-            //     $resultField = "hcv_vl_count";
-            //     $otherField = "hbv_vl_count";
-            // }
+            $query = "SELECT facility_id,
+                            hepatitis_id,
+                            hcv_vl_count,
+                            hbv_vl_count,
+                            hepatitis_test_type,
+                            result_status
+                        FROM form_hepatitis
+                        WHERE sample_code= ?";
+            $hepResult = $db->rawQueryOne($query, [$sampleCode]);
 
 
-
-
-            //echo "<pre>";var_dump($data);continue;
             if ($d['absVal'] != "") {
                 $data['result'] = $d['absVal'];
-            } else if ($d['logVal'] != "") {
+            } elseif ($d['logVal'] != "") {
                 $data['result'] = $d['logVal'];
-            } else if ($d['txtVal'] != "") {
+            } elseif ($d['txtVal'] != "") {
                 $data['result'] = $d['txtVal'];
             } else {
                 $data['result'] = null;
@@ -263,28 +245,30 @@ try {
 
 
             //insert sample controls
-            $scQuery = "SELECT r_sample_control_name FROM r_sample_controls WHERE r_sample_control_name='" . trim($d['sampleType']) . "'";
-            $scResult = $db->rawQuery($scQuery);
+            $scQuery = "SELECT r_sample_control_name
+                        FROM r_sample_controls
+                        WHERE r_sample_control_name= ?";
+            $scResult = $db->rawQueryOne($scQuery, [trim($d['sampleType'])]);
             if (!$scResult) {
                 $scData = array('r_sample_control_name' => trim($d['sampleType']));
                 $scId = $db->insert("r_sample_controls", $scData);
             }
-            if ($hepResult && $sampleCode != '') {
-                if ($hepResult[0]['result_value_log'] != '' || $hepResult[0]['result_value_absolute'] != '' || $hepResult[0]['result_value_text'] != '' || $hepResult[0]['result_value_absolute_decimal'] != '') {
+            if (!empty($hepResult) && !empty($sampleCode)) {
+                if ($hepResult['hcv_vl_count'] != '' || $hepResult['hbv_vl_count'] != '') {
                     $data['sample_details'] = 'Result already exists';
                 } else {
-                    if ($hepResult[0]['result_status'] != '') {
-                        $data['result_status'] = $hepResult[0]['result_status'];
+                    if ($hepResult['result_status'] != '') {
+                        $data['result_status'] = $hepResult['result_status'];
                     } else {
                         $data['result_status'] = '7';
                     }
                 }
-                $data['facility_id'] = $hepResult[0]['facility_id'];
+                $data['facility_id'] = $hepResult['facility_id'];
             } else {
                 $data['result_status'] = '7';
                 $data['sample_details'] = 'New Sample';
             }
-            //echo "<pre>";var_dump($data);echo "</pre>";continue;
+
             if ($sampleCode != '' || $batchCode != '' || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
                 $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();
                 $data['imported_by'] = $_SESSION['userId'];
