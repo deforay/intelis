@@ -305,7 +305,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 <option value="RDT-Antigen" <?php echo (isset($covid19Info['type_of_test_requested']) && $covid19Info['type_of_test_requested'] == 'RDT-Antigen') ? "selected='selected'" : ""; ?>><?= _("RDT-Antigen"); ?></option>
                                                 <option value="ELISA" <?php echo (isset($covid19Info['type_of_test_requested']) && $covid19Info['type_of_test_requested'] == 'ELISA') ? "selected='selected'" : ""; ?>><?= _("ELISA"); ?></option>
                                             </select>
-                                            </select>
                                         </td>
                                         <th scope="row"><?= _("Reason for Test Request"); ?> <span class="mandatory">*</span></th>
                                         <td>
@@ -404,7 +403,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 </select>
                                             </td>
 
-                                            <th scope="row" class="show-rejection" style="display:none;">Reason for Rejection</th>
+                                            <th scope="row" class="show-rejection" style="display:none;"><?= _("Reason for Rejection"); ?></th>
                                             <td class="show-rejection" style="display:none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="<?= _("Please select the Reason for Rejection"); ?>">
                                                     <option value=""><?= _("-- Select --"); ?></option>
@@ -483,7 +482,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                                 <option value="STANDARD™ Q COVID-19 Ag Test" <?php echo (isset($rows['testing_platform']) && $rows['testing_platform'] == 'STANDARD™ Q COVID-19 Ag Test') ? "selected='selected'" : ""; ?>><?= _("STANDARD™ Q COVID-19 Ag Test"); ?></option>
                                                                                 <option value="LumiraDx ™ SARS-CoV-2 Ag Test" <?php echo (isset($rows['testing_platform']) && $rows['testing_platform'] == 'LumiraDx ™ SARS-CoV-2 Ag Test') ? "selected='selected'" : ""; ?>><?= _("LumiraDx ™ SARS-CoV-2 Ag Test"); ?></option>
                                                                                 <option value="Sure Status® COVID-19 Antigen Card Test" <?php echo (isset($rows['testing_platform']) && $rows['testing_platform'] == 'Sure Status® COVID-19 Antigen Card Test') ? "selected='selected'" : ""; ?>><?= _("Sure Status® COVID-19 Antigen Card Test"); ?></option>
-                                                                                <option value="other" <?php echo (isset($show) && $show == 'block') ? "selected='selected'" : ""; ?>>Others</option>
+                                                                                <option value="other" <?php echo (isset($show) && $show == 'block') ? "selected='selected'" : ""; ?>><?= _("Others"); ?></option>
                                                                             <?php } else { ?>
                                                                             <?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'], '-- Select --');
                                                                             } ?>
