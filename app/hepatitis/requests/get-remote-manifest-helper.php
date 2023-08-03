@@ -16,7 +16,8 @@ $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
 $sampleData = [];
-$sampleQuery = 'SELECT hepatitis_id FROM form_hepatitis WHERE sample_code IS NULL AND (sample_package_code LIKE ? OR remote_sample_code LIKE ?)';
+$sampleQuery = 'SELECT hepatitis_id FROM form_hepatitis
+                    WHERE sample_code IS NULL AND (sample_package_code LIKE ? OR remote_sample_code LIKE ?)';
 $sampleResult = $db->rawQuery($sampleQuery, [$_POST['samplePackageCode'], $_POST['samplePackageCode']]);
 $sampleData = array_column($sampleResult, 'hepatitis_id');
 echo implode(',', $sampleData);

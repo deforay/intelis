@@ -40,14 +40,8 @@ $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name');
 
 if ($sarr['sc_user_type'] == 'standalone') {
-    if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
-        unset($aColumns[$key]);
-        $aColumns = array_values($aColumns);
-    }
-    if (($key = array_search('vl.remote_sample_code', $orderColumns)) !== false) {
-        unset($orderColumns[$key]);
-        $orderColumns = array_values($orderColumns);
-    }
+    $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
+    $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
 }
 
 /* Indexed column (used for fast and accurate table cardinality) */

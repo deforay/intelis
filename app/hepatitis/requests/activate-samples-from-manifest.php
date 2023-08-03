@@ -27,6 +27,7 @@ $placeholders = implode(', ', array_fill(0, count($queryParams), '?'));
 $sampleQuery = "SELECT hepatitis_id,
                 sample_collection_date,
                 sample_package_code,
+                hepatitis_test_type,
                 province_id,
                 sample_code
                 FROM form_hepatitis WHERE hepatitis_id IN ($placeholders)";

@@ -1,26 +1,9 @@
 <?php
 
-
-use App\Registries\ContainerRegistry;
+use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\HepatitisService;
-use App\Utilities\DateUtility;
-
-$formConfigQuery = "SELECT * FROM global_config";
-$configResult = $db->query($formConfigQuery);
-$gconfig = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($configResult); $i++) {
-     $gconfig[$configResult[$i]['name']] = $configResult[$i]['value'];
-}
-//system config
-$systemConfigQuery = "SELECT * FROM system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
+use App\Registries\ContainerRegistry;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -42,15 +25,9 @@ $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sam
 $orderColumns = array('vl.sample_code', 'vl.last_modified_datetime', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 if ($_SESSION['instanceType'] == 'remoteuser') {
      $sampleCode = 'remote_sample_code';
-} else if ($sarr['sc_user_type'] == 'standalone') {
-     if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
-          unset($aColumns[$key]);
-          $aColumns = array_values($aColumns);
-     }
-     if (($key = array_search('vl.remote_sample_code', $orderColumns)) !== false) {
-          unset($orderColumns[$key]);
-          $orderColumns = array_values($orderColumns);
-     }
+} elseif ($_SESSION['instanceType'] == 'standalone') {
+     $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
+     $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
 }
 
 
@@ -152,40 +129,21 @@ if (!empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
-if (isset($sLimit) && isset($sOffset)) {
-     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-}
-$rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering */
-$aResultFilterTotal = $db->rawQuery("SELECT vl.hepatitis_id,vl.facility_id,vl.patient_name,vl.result,f.facility_name,f.facility_code,vl.patient_id,vl.patient_name, vl.patient_surname,b.batch_code,vl.sample_batch_id,ts.status_name FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_hepatitis_sample_type as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere");
-$iFilteredTotal = count($aResultFilterTotal);
 
-/* Total data set length */
-$aResultTotal = $db->rawQuery("select COUNT(hepatitis_id) as total FROM form_hepatitis as vl where vlsm_country_id='" . $gconfig['vl_form'] . "'" . $sFilter);
-$iTotal = $aResultTotal[0]['total'];
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
 
 /*
  * Output
  */
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
-     "iTotalRecords" => $iTotal,
-     "iTotalDisplayRecords" => $iFilteredTotal,
+     "iTotalRecords" => $resultCount,
+     "iTotalDisplayRecords" => $resultCount,
      "aaData" => []
 );
 
 foreach ($rResult as $aRow) {
 
-     if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-          $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-     } else {
-          $aRow['sample_collection_date'] = '';
-     }
-     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-          $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
-     } else {
-          $aRow['last_modified_datetime'] = '';
-     }
 
      $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));
      $patientLname = ($general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']));
@@ -195,7 +153,7 @@ foreach ($rResult as $aRow) {
      if ($_SESSION['instanceType'] != 'standalone') {
           $row[] = $aRow['remote_sample_code'];
      }
-     $row[] = $aRow['sample_collection_date'];
+     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
      $row[] = $aRow['batch_code'];
      $row[] = ($aRow['facility_name']);
      $row[] = $aRow['patient_id'];
@@ -204,7 +162,7 @@ foreach ($rResult as $aRow) {
      $row[] = ($aRow['facility_district']);
      $row[] = $aRow['hcv_vl_count'];
      $row[] = $aRow['hbv_vl_count'];
-     $row[] = $aRow['last_modified_datetime'];
+     $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
      $row[] = ($aRow['status_name']);
 
      $output['aaData'][] = $row;

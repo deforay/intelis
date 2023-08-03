@@ -27,14 +27,8 @@ $primaryKey = "eid_id";
 $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.child_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.child_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name');
 if ($sarr['sc_user_type'] == 'standalone') {
-     if (($key = array_search('vl.remote_sample_code', $aColumns)) !== false) {
-          unset($aColumns[$key]);
-          $aColumns = array_values($aColumns);
-     }
-     if (($key = array_search('vl.remote_sample_code', $orderColumns)) !== false) {
-          unset($orderColumns[$key]);
-          $orderColumns = array_values($orderColumns);
-     }
+     $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
+     $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
 }
 
 /* Indexed column (used for fast and accurate table cardinality) */
