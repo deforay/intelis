@@ -530,9 +530,9 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                             </div>
                                                        </div>
                                                        <div class="col-md-6">
-                                                            <label class="col-lg-5 control-label labels" for="noResult">Sample Rejected? <span class="mandatory result-span">*</span></label>
+                                                            <label class="col-lg-5 control-label labels" for="isSampleRejected">Sample Rejected? <span class="mandatory result-span">*</span></label>
                                                             <div class="col-lg-7">
-                                                                 <select name="noResult" id="noResult" class="form-control" title="Please check if sample is rejected or not">
+                                                                 <select name="isSampleRejected" id="isSampleRejected" class="form-control" title="Please check if sample is rejected or not">
                                                                       <option value="">-- Select --</option>
                                                                       <option value="yes">Yes</option>
                                                                       <option value="no">No</option>
@@ -1118,7 +1118,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $(".review-approve-span").hide();
           }
      });
-     $("#noResult").on("change", function() {
+     $("#isSampleRejected").on("change", function() {
 
 
           if ($(this).val() == 'yes') {
@@ -1198,9 +1198,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
      $('#testingPlatform').on("change", function() {
           $(".vlResult").show();
-          //$('#vlResult, #noResult').addClass('isRequired');
-          $("#noResult").val("");
-          //$("#noResult").trigger("change");
+          //$('#vlResult, #isSampleRejected').addClass('isRequired');
+          $("#isSampleRejected").val("");
+          //$("#isSampleRejected").trigger("change");
      });
 
 

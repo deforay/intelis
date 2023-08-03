@@ -637,10 +637,10 @@ $disable = "disabled = 'disabled'";
 											</div>
 											<div class="row">
 												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="noResult">Sample
+													<label class="col-lg-5 control-label" for="isSampleRejected">Sample
 														Rejection </label>
 													<div class="col-lg-7">
-														<select name="noResult" id="noResult" class="form-control isRequired" title="Please check if sample is rejected or not">
+														<select name="isSampleRejected" id="isSampleRejected" class="form-control isRequired" title="Please check if sample is rejected or not">
 															<option value="">-- Select --</option>
 															<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
 															<option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>No</option>
@@ -816,7 +816,7 @@ $disable = "disabled = 'disabled'";
 		hivDetectionChange();
 	});
 
-	$("input:radio[name=noResult]").click(function() {
+	$("input:radio[name=isSampleRejected]").click(function() {
 		if ($(this).val() == 'yes') {
 			$('.rejectionReason').show();
 			$('.vlResult').css('display', 'none');
@@ -846,9 +846,6 @@ $disable = "disabled = 'disabled'";
 		} else {
 			$('#vlResult,#vlLog').attr('readonly', false);
 			$(".specialResults").not(this).attr('disabled', false);
-			if ($('#noResultNo').is(':checked')) {
-				$('#vlResult').addClass('isRequired');
-			}
 		}
 	});
 
@@ -948,7 +945,7 @@ $disable = "disabled = 'disabled'";
 		var str = str1[0];
 
 		$(".vlResult, .vlLog").show();
-		$("#noResult").val("");
+		$("#isSampleRejected").val("");
 		//Get VL results by platform id
 		var platformId = str1[3];
 		$("#possibleVlResults").html('');

@@ -472,7 +472,7 @@ $aResult = $db->query($aQuery);
 										<tr>
 											<td><label for="">Décision prise </label></td>
 											<td>
-												<select class="form-control" id="noResult" name="noResult" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
+												<select class="form-control" id="isSampleRejected" name="isSampleRejected" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
 													<option value=""> -- Sélectionner -- </option>
 													<option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>Echantillon accepté</option>
 													<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Echantillon rejeté</option>
@@ -799,7 +799,7 @@ $aResult = $db->query($aQuery);
 	}
 
 	function checkTestStatus() {
-		var status = $("#noResult").val();
+		var status = $("#isSampleRejected").val();
 		if (status == 'yes') {
 			$('#vlResult').attr('disabled', false);
 			$('#vlLog').attr('disabled', false);

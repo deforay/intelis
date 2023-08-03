@@ -521,13 +521,13 @@ if (isset($vlQueryInfo['clinic_date']) && trim($vlQueryInfo['clinic_date']) != '
 										<td colspan="6" style="font-size: 18px; font-weight: bold;">CPHL Use Only </td>
 									</tr>
 									<tr>
-										<td class="labels"><label for="noResult">Sample Quality</label></td>
+										<td class="labels"><label for="isSampleRejected">Sample Quality</label></td>
 										<td>
 											<label class="radio-inline">
-												<input type="radio" id="sampleQtyAccept" name="noResult" value="no" title="Check Sample Quality" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? "checked='checked'" : "" ?>>Accept
+												<input type="radio" id="sampleQtyAccept" name="isSampleRejected" value="no" title="Check Sample Quality" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? "checked='checked'" : "" ?>>Accept
 											</label>
 											<label class="radio-inline">
-												<input type="radio" id="sampleQtyReject" name="noResult" value="yes" title="Check Sample Quality" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "checked='checked'" : "" ?>>Reject
+												<input type="radio" id="sampleQtyReject" name="isSampleRejected" value="yes" title="Check Sample Quality" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "checked='checked'" : "" ?>>Reject
 											</label>
 										</td>
 										<td class="rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? "" : "none"; ?>">
@@ -1025,7 +1025,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim($vlQueryInfo['clinic_date']) != '
 			});
 	}
 
-	$("input:radio[name=noResult]").on("change", function() {
+	$("input:radio[name=isSampleRejected]").on("change", function() {
 		if ($(this).val() == 'yes') {
 			$(".rejectionReason,.vlresultequ").show();
 			$(".reasonequ,.vlResult").hide();

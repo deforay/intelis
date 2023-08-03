@@ -571,9 +571,9 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label labels" for="noResult">Sample Rejected? <span class="mandatory result-span">*</span></label>
+                                                                      <label class="col-lg-5 control-label labels" for="isSampleRejected">Sample Rejected? <span class="mandatory result-span">*</span></label>
                                                                       <div class="col-lg-7">
-                                                                           <select name="noResult" id="noResult" class="form-control isRequired" title="Please check if sample is rejected or not">
+                                                                           <select name="isSampleRejected" id="isSampleRejected" class="form-control isRequired" title="Please check if sample is rejected or not">
                                                                                 <option value="">-- Select --</option>
                                                                                 <option value="yes">Yes</option>
                                                                                 <option value="no">No</option>
@@ -1153,7 +1153,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $(".review-approve-span").hide();
           }
      });
-     $("#noResult").on("change", function() {
+     $("#isSampleRejected").on("change", function() {
 
           hivDetectionChange();
 
@@ -1214,7 +1214,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           if (this.value == null || this.value == '' || this.value == undefined) {
                return false;
           } else if (this.value === 'HIV-1 Not Detected') {
-               $("#noResult").val("no");
+               $("#isSampleRejected").val("no");
                $('#vlResult').attr('disabled', false);
                $('#vlLog').attr('disabled', false);
                $("#vlResult,#vlLog").val('');
@@ -1222,10 +1222,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $("#reasonForFailure").removeClass('isRequired');
                $('#vlResult').removeClass('isRequired');
           } else if (this.value === 'HIV-1 Detected') {
-               $("#noResult").val("no");
+               $("#isSampleRejected").val("no");
                $(".vlResult, .vlLog").show();
                $('#vlResult').addClass('isRequired');
-               $("#noResult").trigger("change");
+               $("#isSampleRejected").trigger("change");
           }
      });
 
@@ -1257,9 +1257,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
      $('#testingPlatform').on("change", function() {
           $(".vlResult, .vlLog").show();
-          //$('#vlResult, #noResult').addClass('isRequired');
-          $("#noResult").val("");
-          //$("#noResult").trigger("change");
+          //$('#vlResult, #isSampleRejected').addClass('isRequired');
+          $("#isSampleRejected").val("");
+          //$("#isSampleRejected").trigger("change");
           hivDetectionChange();
      });
 
@@ -1273,7 +1273,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
           var str1 = text.split("##");
           var str = str1[0];
-          if ((text == 'GeneXpert' || str.toLowerCase() == 'genexpert') && $('#noResult').val() != 'yes') {
+          if ((text == 'GeneXpert' || str.toLowerCase() == 'genexpert') && $('#isSampleRejected').val() != 'yes') {
                $('.hivDetection').prop('disabled', false);
                $('.hivDetection').show();
           } else {

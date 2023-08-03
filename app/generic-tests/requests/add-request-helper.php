@@ -167,7 +167,7 @@ try {
     }
 
     $isRejected = false;
-    if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
+    if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
         $vl_result_category = 'rejected';
         $isRejected = true;
         $resultStatus = SAMPLE_STATUS\REJECTED;
@@ -236,7 +236,7 @@ try {
         'sample_tested_datetime' => $_POST['sampleTestingDateAtLab'],
         'reason_for_testing' => (isset($_POST['reasonForTesting']) && $_POST['reasonForTesting'] != '') ? $_POST['reasonForTesting'] : null,
         'result_dispatched_datetime' => $_POST['resultDispatchedOn'],
-        'is_sample_rejected' => (isset($_POST['noResult']) && $_POST['noResult'] != '') ? $_POST['noResult'] : null,
+        'is_sample_rejected' => (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] != '') ? $_POST['isSampleRejected'] : null,
         'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] : null,
         'rejection_on' => (!empty($_POST['rejectionDate'])) ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
         'result' => $_POST['result'] ?: null,
@@ -303,7 +303,7 @@ try {
     $vldata['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vldata['patient_id']);
     $id = 0;
 
-    if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['noResult'] == 'no' || $_POST['noResult'] == '')) {
+    if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
         if (!empty($_POST['testName'])) {
             foreach ($_POST['testName'] as $testKey => $testKitName) {
                 if (!empty($testKitName)) {

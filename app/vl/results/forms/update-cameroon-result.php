@@ -637,9 +637,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											</div>
 											<div class="row">
 												<div class="col-md-6">
-													<label class="col-lg-5 control-label" for="noResult"><?= _('Sample Rejection'); ?><span class="mandatory">*</span> </label>
+													<label class="col-lg-5 control-label" for="isSampleRejected"><?= _('Sample Rejection'); ?><span class="mandatory">*</span> </label>
 													<div class="col-lg-7">
-														<select name="noResult" id="noResult" class="form-control" title="<?= _('Please check if sample is rejected or not'); ?>">
+														<select name="isSampleRejected" id="isSampleRejected" class="form-control" title="<?= _('Please check if sample is rejected or not'); ?>">
 															<option value=""><?= _('-- Select --'); ?></option>
 															<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>><?= _('Yes'); ?></option>
 															<option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>><?= _('No'); ?></option>
@@ -804,11 +804,11 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 
 		$('#sampleReceivedOn,#sampleTestingDateAtLab,#resultDispatchedOn').mask('99-aaa-9999 99:99');
 
-		//$("#hivDetection, #noResult").trigger('change');
+		//$("#hivDetection, #isSampleRejected").trigger('change');
 
 		setTimeout(function() {
 			$("#vlResult").trigger('change');
-			$("#hivDetection, #noResult").trigger('change');
+			$("#hivDetection, #isSampleRejected").trigger('change');
 			// just triggering sample collection date is enough,
 			// it will automatically do everything that labId and fName changes will do
 			$("#sampleCollectionDate").trigger('change');
@@ -845,10 +845,10 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('#rejectionDate').removeClass('isRequired');
 			$('#rejectionReason').val('');
 			$(".review-approve-span").hide();
-			$("#hivDetection, #noResult").trigger('change');
+			$("#hivDetection, #isSampleRejected").trigger('change');
 		}
 	});
-	$("#noResult").on("change", function() {
+	$("#isSampleRejected").on("change", function() {
 
 		hivDetectionChange();
 
@@ -924,7 +924,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		if (this.value == null || this.value == '' || this.value == undefined) {
 			return false;
 		} else if (this.value === 'HIV-1 Not Detected') {
-			$("#noResult").val("no");
+			$("#isSampleRejected").val("no");
 			$('#vlResult').attr('disabled', false);
 			$('#vlLog').attr('disabled', false);
 			$("#vlResult,#vlLog").val('');
@@ -932,18 +932,18 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$("#reasonForFailure").removeClass('isRequired');
 			$('#vlResult').removeClass('isRequired');
 		} else if (this.value === 'HIV-1 Detected') {
-			$("#noResult").val("no");
+			$("#isSampleRejected").val("no");
 			$(".vlResult, .vlLog").show();
-			$("#noResult").trigger("change");
+			$("#isSampleRejected").trigger("change");
 			$('#vlResult').addClass('isRequired');
 		}
 	});
 
 	$('#testingPlatform').on("change", function() {
 		$(".vlResult, .vlLog").show();
-		$('#vlResult, #noResult').addClass('isRequired');
-		//$("#noResult").val("");
-		$("#noResult").trigger("change");
+		$('#vlResult, #isSampleRejected').addClass('isRequired');
+		//$("#isSampleRejected").val("");
+		$("#isSampleRejected").trigger("change");
 		hivDetectionChange();
 	});
 
@@ -953,7 +953,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		if (!text) return;
 		var str1 = text.split("##");
 		var str = str1[0];
-		if ((text == 'GeneXpert' || str.toLowerCase() == 'genexpert') && $('#noResult').val() != 'yes') {
+		if ((text == 'GeneXpert' || str.toLowerCase() == 'genexpert') && $('#isSampleRejected').val() != 'yes') {
 			$('.hivDetection').prop('disabled', false);
 			$('.hivDetection').show();
 			$('#hivDetection').addClass('isRequired');

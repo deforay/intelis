@@ -296,7 +296,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 
 $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 
-$reasonForChangeArr = explode('##',$genericResultInfo['reason_for_test_result_changes']);
+$reasonForChangeArr = explode('##', $genericResultInfo['reason_for_test_result_changes']);
 $reasonForChange = $reasonForChangeArr[1];
 ?><!-- Content Wrapper. Contains page content -->
 <style>
@@ -732,10 +732,10 @@ $reasonForChange = $reasonForChangeArr[1];
 												</div>
 											</div>
 											<div class="col-md-6">
-												<label class="col-lg-5 control-label" for="noResult">Sample Rejection
+												<label class="col-lg-5 control-label" for="isSampleRejected">Sample Rejection
 													<span class="mandatory result-span">*</span></label>
 												<div class="col-lg-7">
-													<select name="noResult" id="noResult" class="form-control labSection" title="Please check if sample is rejected or not">
+													<select name="isSampleRejected" id="isSampleRejected" class="form-control labSection" title="Please check if sample is rejected or not">
 														<option value="">-- Select --</option>
 														<option value="yes" <?php echo ($genericResultInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>
 															Yes</option>
@@ -1218,7 +1218,7 @@ $reasonForChange = $reasonForChangeArr[1];
 
 		setTimeout(function() {
 			$("#vlResult").trigger('change');
-			$("#noResult").trigger('change');
+			$("#isSampleRejected").trigger('change');
 			// just triggering sample collection date is enough,
 			// it will automatically do everything that labId and fName changes will do
 			$("#sampleCollectionDate").trigger('change');
@@ -1642,10 +1642,10 @@ $reasonForChange = $reasonForChangeArr[1];
 			$('#rejectionDate').removeClass('isRequired');
 			$('#rejectionReason').val('');
 			$(".review-approve-span").hide();
-			$("#noResult").trigger('change');
+			$("#isSampleRejected").trigger('change');
 		}
 	});
-	$("#noResult").on("change", function() {
+	$("#isSampleRejected").on("change", function() {
 
 		if ($(this).val() == 'yes') {
 			$('.rejectionReason').show();
@@ -1700,9 +1700,9 @@ $reasonForChange = $reasonForChangeArr[1];
 
 	$('#testingPlatform').on("change", function() {
 		$(".vlResult").show();
-		//$('#vlResult, #noResult').addClass('isRequired');
-		$("#noResult").val("");
-		//$("#noResult").trigger("change");
+		//$('#vlResult, #isSampleRejected').addClass('isRequired');
+		$("#isSampleRejected").val("");
+		//$("#isSampleRejected").trigger("change");
 	});
 
 

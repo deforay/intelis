@@ -376,13 +376,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											<td colspan="6" style="font-size: 18px; font-weight: bold;">CPHL Use Only </td>
 										</tr>
 										<tr>
-											<td class="labels"><label for="noResult">Sample Quality</label></td>
+											<td class="labels"><label for="isSampleRejected">Sample Quality</label></td>
 											<td>
 												<label class="radio-inline">
-													<input type="radio" id="sampleQtyAccept" name="noResult" value="no" title="Check Sample Quality">Accept
+													<input type="radio" id="sampleQtyAccept" name="isSampleRejected" value="no" title="Check Sample Quality">Accept
 												</label>
 												<label class="radio-inline">
-													<input type="radio" id="sampleQtyReject" name="noResult" value="yes" title="Check Sample Quality">Reject
+													<input type="radio" id="sampleQtyReject" name="isSampleRejected" value="yes" title="Check Sample Quality">Reject
 												</label>
 											</td>
 											<td class="rejectionReason labels" style="display:none;"><label for="rejectionReason">Reason <span class="mandatory">*</span></label>
@@ -934,7 +934,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 		}
 	}
 
-	$("input:radio[name=noResult]").on("change", function() {
+	$("input:radio[name=isSampleRejected]").on("change", function() {
 		if ($(this).val() == 'yes') {
 			$(".rejectionReason,.vlresultequ").show();
 			$(".reasonequ,.vlResult").hide();

@@ -493,9 +493,9 @@ $sFormat = '';
                                                             </div>
                                                             <div class="row">
                                                                  <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label" for="noResult"><?= _('Sample Rejection'); ?> </label>
+                                                                      <label class="col-lg-5 control-label" for="isSampleRejected"><?= _('Sample Rejection'); ?> </label>
                                                                       <div class="col-lg-7">
-                                                                           <select name="noResult" id="noResult" class="form-control" title="<?= _('Please check if sample is rejected or not'); ?>">
+                                                                           <select name="isSampleRejected" id="isSampleRejected" class="form-control" title="<?= _('Please check if sample is rejected or not'); ?>">
                                                                                 <option value=""><?= _('-- Select --'); ?></option>
                                                                                 <option value="yes"> <?= _('Yes'); ?> </option>
                                                                                 <option value="no"> <?= _('No'); ?> </option>
@@ -747,7 +747,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           var str = str1[0];
 
           $(".vlResult, .vlLog").show();
-          $("#noResult").val("");
+          $("#isSampleRejected").val("");
           //Get VL results by platform id
           var platformId = str1[3];
           $("#possibleVlResults").html('');
@@ -923,7 +923,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      });
 
-     $("#noResult").change(function() {
+     $("#isSampleRejected").change(function() {
           console.log(this.value);
           if ($(this).val() == 'yes') {
                $('.rejectionReason').show();

@@ -436,7 +436,7 @@ $sFormat = '';
 										<tr>
 											<td style="width: 25%;"><label for="">Décision prise </label></td>
 											<td style="width: 25%;">
-												<select class="form-control" id="noResult" name="noResult" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
+												<select class="form-control" id="isSampleRejected" name="isSampleRejected" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
 													<option value=""> -- Sélectionner -- </option>
 													<option value="no">Echantillon accepté</option>
 													<option value="yes">Echantillon rejeté</option>
@@ -703,7 +703,7 @@ $sFormat = '';
 	}
 
 	function checkTestStatus() {
-		var status = $("#noResult").val();
+		var status = $("#isSampleRejected").val();
 		if (status == 'yes') {
 			$(".rejectionReason").show();
 			$(".resultSection").hide();
