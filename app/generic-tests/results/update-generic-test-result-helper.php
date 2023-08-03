@@ -90,7 +90,7 @@ try {
 
     $isRejected = false;
     $resultStatus = SAMPLE_STATUS\PENDING_APPROVAL; // Awaiting Approval
-    if (isset($_POST['noResult']) && $_POST['noResult'] === 'yes') {
+    if ($_POST['noResult'] ?? null === 'yes') {
         $isRejected = true;
         $resultStatus = SAMPLE_STATUS\REJECTED; // Rejected
     }

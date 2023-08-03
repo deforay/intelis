@@ -147,6 +147,28 @@ class CommonService
         });
     }
 
+    public function getDataByTableAndFields($table, $fields, $option = true, $condition = null)
+    {
+        if (!is_array($fields)) {
+            $fields = [$fields];
+        }
+
+        $query = "SELECT " . implode(",", $fields) . " FROM " . $table;
+        if ($condition) {
+            $query .= " WHERE " . $condition;
+        }
+
+        $results = $this->db->rawQuery($query);
+        if ($option) {
+            foreach ($results as $row) {
+                $response[$row[$fields[0]]] = $row[$fields[1]];
+            }
+        } else {
+            $response = $results;
+        }
+        return $response;
+    }
+
     public function fetchDataFromTable($tableName = null, $condition = null, $fieldName = null)
     {
         return once(function () use ($tableName, $condition, $fieldName) {

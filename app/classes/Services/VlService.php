@@ -130,6 +130,60 @@ class VlService extends AbstractTestService
         return $vlResultCategory;
     }
 
+    public function processViralLoadResultFromForm(array $params): array
+    {
+        $isRejected = false;
+        $finalResult = null;
+        $absDecimalVal = $absVal = $logVal = $txtVal = null;
+        $hivDetection = $params['hivDetection'] ?? null;
+        $resultStatus = null;
+
+        if ($params['noResult'] ?? null === 'yes') {
+            $isRejected = true;
+            $finalResult = $params['vlResult'] = $params['vlLog'] = null;
+            $resultStatus = SAMPLE_STATUS\REJECTED;
+        } elseif (!empty($params['vlResult'])) {
+            $resultStatus = SAMPLE_STATUS\PENDING_APPROVAL; // Awaiting Approval
+            //Result is saved as entered
+            $finalResult = $params['vlResult'];
+
+            if (in_array(strtolower($params['vlResult']), ['fail', 'failed', 'failure', 'error', 'err', 'invalid'])) {
+                $hivDetection = null;
+                $resultStatus = SAMPLE_STATUS\TEST_FAILED; // Invalid/Failed
+            } elseif (in_array(strtolower($params['vlResult']), ['no result', 'no'])) {
+                $hivDetection = null;
+                $resultStatus = SAMPLE_STATUS\NO_RESULT; // No Result
+            } else {
+
+                $interpretedResults = $this->interpretViralLoadResult($params['vlResult']);
+
+                $logVal = $interpretedResults['logVal'] ?? null;
+                $absDecimalVal = $interpretedResults['absDecimalVal'] ?? null;
+                $absVal = $interpretedResults['absVal'] ?? null;
+                $txtVal = $interpretedResults['txtVal'] ?? null;
+            }
+            $hivDetection = $hivDetection ?? '';
+            $finalResult = ($hivDetection != '') ? $hivDetection . ' ' . $finalResult : $finalResult;
+        } elseif (!empty($params['vlLog']) && is_numeric($params['vlLog'])) {
+            $resultStatus = SAMPLE_STATUS\PENDING_APPROVAL; // Awaiting Approval
+            $finalResult = pow(10, $params['vlLog']);
+            $hivDetection = $hivDetection ?? '';
+            $finalResult = ($hivDetection != '') ? $hivDetection . ' ' . $finalResult : $finalResult;
+        }
+
+
+        return [
+            'isRejected' => $isRejected,
+            'finalResult' => $finalResult,
+            'absDecimalVal' => $absDecimalVal,
+            'absVal' => $absVal,
+            'logVal' => $logVal,
+            'txtVal' => $txtVal,
+            'hivDetection' => $hivDetection,
+            'resultStatus' => $resultStatus,
+        ];
+    }
+
     public function interpretViralLoadResult($result, $unit = null, $defaultLowVlResultText = null): ?array
     {
         return once(function () use ($result, $unit, $defaultLowVlResultText) {

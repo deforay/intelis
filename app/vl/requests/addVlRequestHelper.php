@@ -104,14 +104,14 @@ try {
                     WHERE rejection_reason_name like ?";
         $rejectionResult = $db->rawQueryOne($rejectionReasonQuery, [$_POST['newRejectionReason']]);
         if (empty($rejectionResult)) {
-            $data = array(
+            $data = [
                 'rejection_reason_name' => $_POST['newRejectionReason'],
                 'rejection_type' => 'general',
                 'rejection_reason_status' => 'active',
                 'updated_datetime' => DateUtility::getCurrentDateTime()
-            );
+            ];
             $id = $db->insert('r_vl_sample_rejection_reasons', $data);
-            $_POST['rejectionReason'] = $id;
+            $_POST['rejectionReason'] = $db->getInsertId();
         } else {
             $_POST['rejectionReason'] = $rejectionResult['rejection_reason_id'];
         }
@@ -122,59 +122,17 @@ try {
         $_POST['vlResult'] = $_POST['finalViralLoadResult'] ?? $_POST['cphlvlResult'] ?? $_POST['vlResult'] ?? null;
     }
 
-    $isRejected = false;
-    if (isset($_POST['noResult']) && $_POST['noResult'] == 'yes') {
-        $vl_result_category = 'rejected';
-        $isRejected = true;
-        $resultStatus = SAMPLE_STATUS\REJECTED;
-        $_POST['vlResult'] = null;
-        $_POST['vlLog'] = null;
-    }
+    // Let us process the result entered by the user
+    $processedResults = $vlService->processViralLoadResultFromForm($_POST);
 
-
-    $_POST['result'] = null;
-    if (!empty($_POST['vlResult'])) {
-
-        $_POST['result'] = $_POST['vlResult'];
-        $resultStatus = SAMPLE_STATUS\PENDING_APPROVAL; // Awaiting Approval
-
-        if (in_array(strtolower($_POST['vlResult']), ['bdl', 'below detection level'])) {
-            $finalResult = $_POST['vlResult'] = $_POST['vlResult'] ?? 'Below Detection Level';
-            $_POST['vlResult'] = 'Below Detection Level';
-            $_POST['vlLog'] = null;
-        } elseif (in_array(strtolower($_POST['vlResult']), ['fail', 'failed', 'failure'])) {
-            $finalResult = $_POST['vlResult'] = $_POST['vlResult'] ?? 'Failed';
-            $_POST['vlLog'] = null;
-            $_POST['hivDetection'] = null;
-            $resultStatus = SAMPLE_STATUS\TEST_FAILED; // Invalid/Failed
-        } elseif (in_array(strtolower($_POST['vlResult']), ['error', 'err'])) {
-            $finalResult = $_POST['vlResult'] = $_POST['vlResult'] ?? 'Error';
-            $_POST['vlLog'] = null;
-            $_POST['hivDetection'] = null;
-            $resultStatus = SAMPLE_STATUS\TEST_FAILED; // Invalid/Failed
-        } elseif (in_array(strtolower($_POST['vlResult']), ['no result', 'no'])) {
-            $finalResult = $_POST['vlResult'] = $_POST['vlResult'] ?? 'No Result';
-            $_POST['vlLog'] = null;
-            $_POST['hivDetection'] = null;
-            $resultStatus = SAMPLE_STATUS\NO_RESULT; // No Result
-        } else {
-
-            $interpretedResults = $vlService->interpretViralLoadResult($_POST['vlResult']);
-
-            //Result is saved as entered
-            $finalResult = $_POST['vlResult'];
-
-            $logVal = $interpretedResults['logVal'] ?? null;
-            $absDecimalVal = $interpretedResults['absDecimalVal'] ?? null;
-            $absVal = $interpretedResults['absVal'] ?? null;
-            $txtVal = $interpretedResults['txtVal'] ?? null;
-        }
-    } elseif (!empty($_POST['vlLog'])) {
-        $resultStatus = SAMPLE_STATUS\PENDING_APPROVAL; // Awaiting Approval
-        $finalResult = $_POST['result'] = pow(10, $_POST['vlLog']);
-    }
-
-    $finalResult = (isset($_POST['hivDetection']) && $_POST['hivDetection'] != '') ? $_POST['hivDetection'] . ' ' . $finalResult : $finalResult;
+    $isRejected = $processedResults['isRejected'];
+    $finalResult = $processedResults['finalResult'];
+    $absDecimalVal = $processedResults['absDecimalVal'];
+    $absVal = $processedResults['absVal'];
+    $logVal = $processedResults['logVal'];
+    $txtVal = $processedResults['txtVal'];
+    $hivDetection = $processedResults['hivDetection'];
+    $resultStatus = $processedResults['resultStatus'] ?? $resultStatus;
 
     if ($_SESSION['instanceType'] == 'remoteuser') {
         $sampleCode = 'remote_sample_code';
@@ -204,7 +162,6 @@ try {
                 $_POST['reasonForVLTesting'] = $id;
             }
         }
-
     }
 
     if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
@@ -286,9 +243,9 @@ try {
         'sample_received_at_vl_lab_datetime' => DateUtility::isoDateFormat($_POST['sampleReceivedDate'], true),
         'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['sampleTestingDateAtLab'], true),
         'result_dispatched_datetime' => DateUtility::isoDateFormat($_POST['resultDispatchedOn'], true),
-        'result_value_hiv_detection' => (isset($_POST['hivDetection']) && trim($_POST['hivDetection']) != '') ? $_POST['hivDetection'] : null,
+        'result_value_hiv_detection' => $hivDetection,
         'reason_for_failure' => $_POST['reasonForFailure'] ?? null,
-        'is_sample_rejected' => $_POST['noResult'] ?? null,
+        'is_sample_rejected' => $isRejected,
         'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && trim($_POST['rejectionReason']) != '') ? $_POST['rejectionReason'] : null,
         'recommended_corrective_action' => (isset($_POST['correctiveAction']) && trim($_POST['correctiveAction']) != '') ? $_POST['correctiveAction'] : null,
         'rejection_on' => DateUtility::isoDateFormat($_POST['rejectionDate']),
@@ -327,11 +284,7 @@ try {
 
 
     $vlData['vl_result_category'] = $vlService->getVLResultCategory($vlData['result_status'], $vlData['result']);
-    if ($vlData['vl_result_category'] == 'failed' || $vlData['vl_result_category'] == 'invalid') {
-        $vlData['result_status'] = SAMPLE_STATUS\TEST_FAILED;
-    } elseif ($vlData['vl_result_category'] == 'rejected') {
-        $vlData['result_status'] = SAMPLE_STATUS\REJECTED;
-    }
+
 
 
 

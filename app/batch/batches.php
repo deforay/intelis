@@ -1,6 +1,8 @@
 <?php
 
+use App\Services\UsersService;
 use App\Exceptions\SystemException;
+use App\Registries\ContainerRegistry;
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
@@ -67,7 +69,13 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
 $title = _($_title . " | Batches");
 
 require_once APPLICATION_PATH . '/header.php';
-$testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
+
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
+
+$testTypeQuery = "SELECT * FROM r_test_types WHERE test_status='active' ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
 ?>
 
@@ -104,7 +112,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 								</div>
 								<div class="col-xs-6 col-md-6">
 									<div class="box-header with-border">
-										<?php if (isset($_SESSION['privileges']) && in_array("/batch/add-batch.php?type=" . $_GET['type'], $_SESSION['privileges'])) { ?>
+										<?php if ($usersService->isAllowed("/batch/add-batch.php?type=" . $_GET['type'])) { ?>
 											<a href="add-batch.php?type=<?php echo $_GET['type']; ?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Create New Batch"); ?></a>
 										<?php } ?>
 									</div>
@@ -113,7 +121,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 						</div>
 					<?php } else { ?>
 						<div class="box-header with-border">
-							<?php if (isset($_SESSION['privileges']) && in_array("/batch/add-batch.php?type=" . $_GET['type'], $_SESSION['privileges'])) { ?>
+							<?php if ($usersService->isAllowed("/batch/add-batch.php?type=" . $_GET['type'])) { ?>
 								<a href="add-batch.php?type=<?php echo $_GET['type']; ?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Create New Batch"); ?></a>
 							<?php } ?>
 						</div>
@@ -131,7 +139,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 									<th scope="col"><?php echo _("No. of Samples Tested"); ?></th>
 									<th scope="col"><?php echo _("Tested Date"); ?></th>
 									<th scope="col"><?php echo _("Last Modified On"); ?></th>
-									<?php if (isset($_SESSION['privileges']) && in_array("/batch/edit-batch.php?type=" . $_GET['type'], $_SESSION['privileges'])) { ?>
+									<?php if ($usersService->isAllowed("/batch/edit-batch.php?type=" . $_GET['type'])) { ?>
 										<th scope="col"><?php echo _("Action"); ?></th>
 									<?php } ?>
 								</tr>
@@ -193,11 +201,11 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 				{
 					"sClass": "center"
 				},
-				<?php if (isset($_SESSION['privileges']) && in_array("/batch/edit-batch.php?type=" . $_GET['type'], $_SESSION['privileges'])) { ?> {
-						"sClass": "center",
-						"bSortable": false
-					},
-				<?php } ?>
+				<?= $usersService->isAllowed("/batch/edit-batch.php?type=" . $_GET['type']) ?
+					'{
+					"sClass": "center",
+					"bSortable": false
+				},' : '' ?>
 			],
 			"aaSorting": [
 				[4, "desc"]

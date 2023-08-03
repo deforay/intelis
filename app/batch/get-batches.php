@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
@@ -17,6 +18,9 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 
 if (isset($_POST['type']) && $_POST['type'] == 'vl') {
@@ -163,7 +167,7 @@ $output = array(
     "aaData" => []
 );
 $editBatch = $delete = $pdf = $editPosition = false;
-if (isset($_SESSION['privileges']) && (in_array('/batch/edit-batch.php?type=' . $_POST['type'], $_SESSION['privileges']))) {
+if ($usersService->isAllowed("/batch/edit-batch.php?type=" . $_GET['type'])) {
     $editBatch = true;
     $delete = true;
     $pdf = true;
