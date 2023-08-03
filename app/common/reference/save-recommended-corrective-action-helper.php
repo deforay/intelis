@@ -17,8 +17,8 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$tableName = "r_funding_sources";
-$primaryKey = "funding_source_id";
+$tableName = "r_recommended_corrective_actions";
+$primaryKey = "r_recommended_corrective_action_id";
 
 try {
 	if (isset($_POST['fundingSrcName']) && trim($_POST['fundingSrcName']) != "") {

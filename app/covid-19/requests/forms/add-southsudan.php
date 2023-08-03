@@ -808,7 +808,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                     testType: 'covid19'
                 },
                 function(data) {
-                    alert(data);
                     if (data != "") {
                         details = data.split("###");
                         $("#facilityId").html(details[0]);
@@ -904,7 +903,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                     testType: 'covid19'
                 },
                 function(data) {
-                    alert(data);
                     if (data != "") {
                         details = data.split("###");
                         $("#facilityId").html(details[0]);

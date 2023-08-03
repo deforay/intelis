@@ -2,6 +2,8 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\UsersService;
+
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -17,6 +19,10 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
 $sarr = $general->getSystemConfig();
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -144,7 +150,7 @@ $output = array(
     "aaData" => []
 );
 $editRequest = false;
-if ($usersService->isAllowed("/vl/requests/editVlRequest.php")) {
+if ($usersService->isAllowed("/common/reference/edit-recommended-corrective-action.php?testType=vl")) {
      $editRequest = true;
 }
 foreach ($rResult as $aRow) {
@@ -154,7 +160,7 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['status']);
     
     if ($editRequest) {
-        $edit = '<a href="edit-recommended-corrective-actions.php?id=' . base64_encode($aRow[$primaryKey]) .  '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
+        $edit = '<a href="/common/reference/edit-recommended-corrective-action.php?testType=vl&id=' . base64_encode($aRow[$primaryKey]) .  '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
    }
 
    $actions = "";
