@@ -79,8 +79,8 @@ try {
     // Let us process the result entered by the user
     $processedResults = $vlService->processViralLoadResultFromForm($_POST);
 
-    $isRejected = $processedResults['isSampleRejected'];
-    $finalResult = $processedResults['vlLog'];
+    $isRejected = $processedResults['isRejected'];
+    $finalResult = $processedResults['finalResult'];
     $absDecimalVal = $processedResults['absDecimalVal'];
     $absVal = $processedResults['absVal'];
     $logVal = $processedResults['logVal'];
@@ -123,7 +123,8 @@ try {
         'result_value_absolute' => $absVal ?? null,
         'result_value_absolute_decimal' => $absDecimalVal ?? null,
         'result_value_text' => $txtVal ?? null,
-        'cphl_vl_result' => $finalResult ?? null,
+        //'cphl_vl_result' => $finalResult ?? null,
+        'cphl_vl_result' => $_POST['cphlVlResult'] ?? null,
         'result' => $finalResult ?? null,
         'result_value_log' => $logVal ?? null,
         'result_value_hiv_detection' => $hivDetection ?? null,
