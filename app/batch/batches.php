@@ -201,10 +201,10 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 				{
 					"sClass": "center"
 				}
-				<?= $usersService->isAllowed("/batch/edit-batch.php?type=" . $_GET['type']) ? ',{
-					"sClass": "center",
-					"bSortable": false
-				}' : ''; ?>
+				<?php
+				if ($usersService->isAllowed("/batch/edit-batch.php?type=" . $_GET['type'])) {
+					echo ',{"sClass": "center", "bSortable": false}';
+				} ?>
 			],
 			"aaSorting": [
 				[4, "desc"]
