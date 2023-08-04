@@ -1,6 +1,6 @@
 <?php
 $title = "Facility Map";
- 
+
 require_once APPLICATION_PATH . '/header.php';
 ?>
 <!-- Content Wrapper. Contains page content -->
@@ -27,7 +27,7 @@ require_once APPLICATION_PATH . '/header.php';
           </div>
           <!-- /.box-header -->
           <div class="box-body">
-            <table aria-describedby="table" id="facilityMapDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+            <table aria-describedby="table" id="facilityMapDataTable" class="table table-bordered table-striped" aria-hidden="true">
               <thead>
                 <tr>
                   <th>Viral Load Lab</th>

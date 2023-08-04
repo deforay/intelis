@@ -1,8 +1,18 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
 
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
+
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 $tableName = "testing_lab_health_facilities_map";
 $primaryKey = "facility_map_id";
@@ -108,31 +118,18 @@ if (!empty($sOrder)) {
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }
 
-if (isset($sLimit) && isset($sOffset)) {
-    $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-}
-//die($sQuery);
-//echo $sQuery;die;
 $rResult = $db->rawQuery($sQuery);
-// print_r($rResult);
-/* Data set length after filtering */
 
-$aResultFilterTotal = $db->rawQuery("SELECT vlfm.*,fd.facility_name,GROUP_CONCAT(DISTINCT fds.facility_name ORDER BY fds.facility_name ASC SEPARATOR ',') as healthCenterName FROM testing_lab_health_facilities_map as vlfm JOIN facility_details as fd ON fd.facility_id=vlfm.vl_lab_id JOIN facility_details as fds ON fds.facility_id=vlfm.facility_id $sWhere  group by vl_lab_id order by $sOrder");
-$iFilteredTotal = count($aResultFilterTotal);
 
-/* Total data set length */
-$aResultTotal = $db->rawQuery("SELECT vlfm.*,fd.facility_name,GROUP_CONCAT(DISTINCT fds.facility_name ORDER BY fds.facility_name ASC SEPARATOR ',') as healthCenterName FROM testing_lab_health_facilities_map as vlfm JOIN facility_details as fd ON fd.facility_id=vlfm.vl_lab_id JOIN facility_details as fds ON fds.facility_id=vlfm.facility_id group by vl_lab_id");
-// $aResultTotal = $countResult->fetch_row();
-//print_r($aResultTotal);
-$iTotal = count($aResultTotal);
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
 
 /*
  * Output
  */
 $output = array(
     "sEcho" => intval($_POST['sEcho']),
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
+    "iTotalRecords" => $resultCount,
+    "iTotalDisplayRecords" => $resultCount,
     "aaData" => []
 );
 
