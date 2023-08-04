@@ -1,9 +1,16 @@
 <?php
 
-$type = $_GET['type'];
-if ($type == 'health-facilities') {
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
+
+$mappingType = $_GET['type'] ?? 'health-facilities';
+$testType = $_GET['test'] ?? null;
+if ($mappingType == 'health-facilities') {
 	$title = "Manage Health Facilities";
-} else if ($type == 'testing-labs') {
+} elseif ($mappingType == 'testing-labs') {
 	$title = "Manage Testing Labs";
 }
 
@@ -54,7 +61,7 @@ require_once APPLICATION_PATH . '/header.php';
 										<div class="form-group">
 											<label for="testType" class="col-lg-4 control-label"><?php echo _("Test Type"); ?></label>
 											<div class="col-lg-8">
-												<select class="form-control" id="testType" name="testType" title="<?php echo _('Choose one test type'); ?>" onchange="selectedTestType(this.value);">
+												<select class="form-control" id="testType" name="testType" title="<?php echo _('Choose one test type'); ?>" onchange="selectedTestType();">
 													<option value=""><?php echo _("--Select--"); ?></option>
 													<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
 														<option value="vl"><?php echo _("Viral Load"); ?></option>
@@ -85,24 +92,7 @@ require_once APPLICATION_PATH . '/header.php';
 										<div class="form-group">
 											<label for="facilities" style="margin-left: 30px;" class="control-label"><?php echo _("Select the"); ?> <?php echo str_replace("Manage", "", $title); ?> <?php echo _("for test type"); ?> </label>
 											<div class="col-lg-12">
-												<!--<div class="form-group">
-													<div class="col-md-12">
-														<div class="row">
-															<div class="col-md-12" style="text-align:justify;">
-																<code>If any of the selected fields are incomplete, the Result PDF appears with a <strong>DRAFT</strong> watermark. Leave right block blank (Deselect All) to disable this.</code>
-															</div>
-														</div>
-														<div style="width:100%;margin:10px auto;clear:both;">
-															<a href="#" id="select-all-field" style="float:left;" class="btn btn-info btn-xs"><?php echo _("Select All"); ?>&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href="#" id="deselect-all-field" style="float:right;" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;<?php echo _("Deselect All"); ?></a>
-														</div><br /><br />
-														<select id="facilities" name="facilities[]" multiple="multiple" class="search">
-														</select>
-													</div>
-												</div>-->
-
-
 												<div class="col-md-5">
-													<!-- <div class="col-lg-5"> -->
 													<select name="facilities[]" id="search" class="form-control" size="8" multiple="multiple">
 
 													</select>
@@ -127,9 +117,8 @@ require_once APPLICATION_PATH . '/header.php';
 						</div>
 						<!-- /.box-body -->
 						<div class="box-footer">
-							<input type="hidden" name="facilityType" class="form-control" id="facilityType" value="<?php echo htmlspecialchars($type); ?>" />
-							<input type="hidden" name="mappedFacilities" id="mappedFacilities" value="" />
-							<input type="hidden" name="selectedSample" id="selectedSample" />
+							<input type="hidden" name="mappingType" class="form-control" id="mappingType" value="<?= $mappingType; ?>" />
+							<input type="hidden" name="selectedFacilities" id="selectedFacilities" />
 							<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
 							<a href="facilities.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
 						</div>
@@ -149,7 +138,11 @@ require_once APPLICATION_PATH . '/header.php';
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-		init();
+		let testType = "<?= !empty($testType) ? $testType : '' ?>";
+		if (testType != "") {
+			$("#testType").val(testType);
+			selectedTestType();
+		}
 		$('#search').multiselect({
 			search: {
 				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
@@ -164,14 +157,15 @@ require_once APPLICATION_PATH . '/header.php';
 
 	function validateNow() {
 
-		let mappedFacilities = JSON.stringify($("#search").val());
-		$("#mappedFacilities").val(mappedFacilities);
 		$("#search").val(""); // THIS IS IMPORTANT. TO REDUCE NUMBER OF PHP VARIABLES
 		var selVal = [];
 		$('#search_to option').each(function(i, selected) {
 			selVal[i] = $(selected).val();
 		});
-		$("#selectedSample").val(selVal);
+		let selectedFacilities = JSON.stringify(selVal);
+		console.log(selVal.length);
+		console.log(selectedFacilities);
+		$("#selectedFacilities").val(selectedFacilities);
 		flag = deforayValidator.init({
 			formId: 'facilityTestMapForm'
 		});
@@ -182,12 +176,12 @@ require_once APPLICATION_PATH . '/header.php';
 		}
 	}
 
-	function selectedTestType(val) {
+	function selectedTestType() {
 		$.blockUI({
 			message: '<h3><?php echo _("Trying to get mapped facilities"); ?> <br><?php echo _("Please wait"); ?>...</h3>'
 		});
 		$.post("getTestTypeFacilitiesHelper.php", {
-				facilityType: $('#facilityType').val(),
+				mappingType: "<?= $mappingType; ?>",
 				testType: $('#testType').val()
 			},
 			function(toAppend) {
@@ -201,45 +195,6 @@ require_once APPLICATION_PATH . '/header.php';
 					}
 				}
 			});
-	}
-
-	function init() {
-
-		/*	$('.search').multiSelect({
-				selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Field Name"); ?>'>",
-				selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _("Enter Field Name"); ?>'>",
-				afterInit: function(ms) {
-					var that = this,
-						$selectableSearch = that.$selectableUl.prev(),
-						$selectionSearch = that.$selectionUl.prev(),
-						selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
-						selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
-
-					that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-						.on('keydown', function(e) {
-							if (e.which === 40) {
-								that.$selectableUl.focus();
-								return false;
-							}
-						});
-
-					that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-						.on('keydown', function(e) {
-							if (e.which == 40) {
-								that.$selectionUl.focus();
-								return false;
-							}
-						});
-				},
-				afterSelect: function() {
-					this.qs1.cache();
-					this.qs2.cache();
-				},
-				afterDeselect: function() {
-					this.qs1.cache();
-					this.qs2.cache();
-				}
-			});*/
 	}
 </script>
 <?php

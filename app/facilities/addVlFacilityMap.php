@@ -3,12 +3,16 @@
 
 require_once APPLICATION_PATH . '/header.php';
 
-$vlfmQuery = "SELECT GROUP_CONCAT(DISTINCT vlfm.vl_lab_id SEPARATOR ',') as vlLabId FROM testing_lab_health_facilities_map as vlfm";
+$vlfmQuery = "SELECT DISTINCT vlfm.vl_lab_id FROM testing_lab_health_facilities_map as vlfm";
 $vlfmResult = $db->rawQuery($vlfmQuery);
-$fQuery = "SELECT * FROM facility_details where facility_type=2";
-if (isset($vlfmResult[0]['vlLabId'])) {
-  $fQuery = $fQuery . " AND facility_id NOT IN(" . $vlfmResult[0]['vlLabId'] . ")";
+
+$vlLabIds = array_column($vlfmResult, 'vl_lab_id');
+
+$fQuery = "SELECT * FROM facility_details WHERE facility_type=2";
+if (!empty($vlLabIds)) {
+  $fQuery .= " AND facility_id NOT IN (" . implode(',', $vlLabIds) . ")";
 }
+
 $fResult = $db->rawQuery($fQuery);
 $hcQuery = "SELECT * FROM facility_details where facility_type!=2";
 $hcResult = $db->rawQuery($hcQuery);

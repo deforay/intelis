@@ -161,20 +161,15 @@ if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
 if (isset($_POST['statusFilter']) && $_POST['statusFilter'] != '') {
     if ($_POST['statusFilter'] == 'approvedOrRejected') {
         $sWhere[] =  ' vl.result_status IN (4,7)';
-    } else if ($_POST['statusFilter'] == 'notApprovedOrRejected') {
-        //            $sWhere[] = ' vl.result_status NOT IN (4,7)';
+    } elseif ($_POST['statusFilter'] == 'notApprovedOrRejected') {
         $sWhere[] = ' vl.result_status IN (6,8)';
     }
 }
 
-if ($_SESSION['instanceType'] == 'remoteuser') {
-    //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";
-    $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-    $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
-    if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-        $sWhere[] = "  vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
-    }
+if ($_SESSION['instanceType'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
+    $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
+
 $sWhere[] =  ' vl.result not like "" AND vl.result is not null ';
 if (!empty($sWhere)) {
     $sWhere = ' WHERE ' . implode(' AND ', $sWhere);

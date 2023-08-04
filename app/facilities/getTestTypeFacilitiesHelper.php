@@ -1,28 +1,34 @@
 <?php
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+use App\Registries\ContainerRegistry;
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 
-$params     = $_POST['facilityType'];
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+$mappingType     = $_POST['mappingType'];
 $testType   = $_POST['testType'];
 
-if ($params == "testing-labs") {
+if ($mappingType == "testing-labs") {
     $facilityQuery = "SELECT facility_id, facility_name FROM facility_details WHERE status = 'active' and facility_type=2";
     $facilityResult = $db->rawQuery($facilityQuery);
 
     $db->where("test_type", $testType);
-    $mapResult = $db->getValue("testing_labs", "GROUP_CONCAT(DISTINCT facility_id SEPARATOR ',')");
-} else if ($params == "health-facilities") {
+    $mapResult = $db->get("testing_labs", null, "facility_id");
+} elseif ($mappingType == "health-facilities") {
     $facilityQuery = "SELECT facility_id, facility_name FROM facility_details WHERE status = 'active'";
     $facilityResult = $db->rawQuery($facilityQuery);
 
     $db->where("test_type", $testType);
-    $mapResult = $db->getValue("health_facilities", "GROUP_CONCAT(DISTINCT facility_id SEPARATOR ',')");
+    $mapResult = $db->get("health_facilities", null, "facility_id");
 }
 
-$mapResult = explode(",", $mapResult);
+$mapResult = array_column($mapResult, 'facility_id'); // Convert the result into a simple array
 $response = '';
 foreach ($facilityResult as $row) {
     $selectedText = '';

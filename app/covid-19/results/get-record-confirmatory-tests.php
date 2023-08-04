@@ -292,15 +292,11 @@ if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
      }
      $dWhere = "WHERE vl.result_statu != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 }
-if ($_SESSION['instanceType'] == 'remoteuser') {
-     //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";
-     //$dWhere = $dWhere." AND request_created_by='".$_SESSION['userId']."'";
-     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
-     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-          $sWhere = $sWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
-          $dWhere = $dWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
-     }
+
+
+if ($_SESSION['instanceType'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
+     $sWhere = $sWhere . " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
+     $dWhere = $dWhere . " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
 }
 $sQuery = $sQuery . ' ' . $sWhere . ' AND ct.result LIKE "positive" GROUP BY vl.covid19_id';
 $_SESSION['vlResultQuery'] = $sQuery;

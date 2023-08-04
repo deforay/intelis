@@ -17,7 +17,6 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
-$country = $general->getGlobalConfig('vl_form');
 
 $sarr = $general->getSystemConfig();
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -190,13 +189,8 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 if (isset($_POST['lab']) && trim($_POST['lab']) != '') {
   $sWhere[] =  "  vl.lab_id IN (" . $_POST['lab'] . ")";
 }
-if ($_SESSION['instanceType'] == 'remoteuser') {
-
-  $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-  $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
-  if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-    $sWhere[] =  "  vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")   ";
-  }
+if ($_SESSION['instanceType'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
+  $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
 
 if (!empty($sWhere)) {

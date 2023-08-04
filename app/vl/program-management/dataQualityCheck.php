@@ -128,10 +128,11 @@ if (isset($_POST['formField']) && trim($_POST['formField']) != '') {
           } else {
                $sWhereSub .= " AND (";
           }
-          if ($search == 'sample_collection_date')
+          if ($search == 'sample_collection_date') {
                $sWhereSub .=  'vl.' . $search . " IS NULL";
-          else
+          } else {
                $sWhereSub .= 'vl.' . $search . " ='' OR " . 'vl.' . $search . " IS NULL";
+          }
           $sWhereSub .= ")";
      }
      $sWhereSub .= ")";
@@ -139,15 +140,8 @@ if (isset($_POST['formField']) && trim($_POST['formField']) != '') {
 }
 
 
-$dWhere = '';
-if ($_SESSION['instanceType'] == 'remoteuser') {
-
-     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
-     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-          $sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")   ";
-          $dWhere = $dWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
-     }
+if ($_SESSION['instanceType'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
+     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
 
 if (!empty($sWhere)) {
@@ -165,19 +159,8 @@ if (!empty($sOrder)) {
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//echo $sQuery;die;
+
 $rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering */
-// $aResultFilterTotal = $db->rawQuery("SELECT vl.vl_sample_id,vl.facility_id,vl.patient_first_name,vl.result,f.facility_name,f.facility_code,vl.patient_art_no,s.sample_name,b.batch_code,vl.sample_batch_id,ts.status_name FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id $sWhere ORDER BY vl.last_modified_datetime DESC, $sOrder");
-// $iFilteredTotal = count($aResultFilterTotal);
-
-// /* Total data set length */
-// $aResultTotal =  $db->rawQuery("select COUNT(vl_sample_id) as total FROM form_vl as vl where vlsm_country_id='" . $gconfig['vl_form'] . "' $dWhere");
-// // $aResultTotal = $countResult->fetch_row();
-// //print_r($aResultTotal);
-// $iTotal = $aResultTotal[0]['total'];
-
-
 
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];

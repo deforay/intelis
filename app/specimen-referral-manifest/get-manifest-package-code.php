@@ -23,9 +23,6 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $sarr = $general->getSystemConfig();
 
 
-
-// $rpQuery="SELECT GROUP_CONCAT(DISTINCT rp.sample_id SEPARATOR ',') as sampleId FROM r_package_details_map as rp";
-// $rpResult = $db->rawQuery($rpQuery);
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sCode = 'remote_sample_code';
 } elseif ($sarr['sc_user_type'] == 'vluser' || $sarr['sc_user_type'] == 'standalone') {
@@ -44,7 +41,7 @@ if ($module == 'vl') {
 	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.hepatitis_id FROM package_details as p INNER JOIN form_hepatitis as vl ON vl.sample_package_code = p.package_code ";
 } elseif ($module == 'tb') {
 	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.tb_id FROM package_details as p INNER JOIN form_tb as vl ON vl.sample_package_code = p.package_code ";
-}elseif ($module == 'generic-tests') {
+} elseif ($module == 'generic-tests') {
 	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.sample_id FROM package_details as p INNER JOIN form_generic as vl ON vl.sample_package_code = p.package_code ";
 }
 $where = [];
@@ -81,7 +78,7 @@ if (!empty($where)) {
 	$query .= " where " . implode(" AND ", $where);
 }
 $query .= " GROUP BY p.package_code ORDER BY vl.request_created_datetime ASC";
- //die($query);
+//die($query);
 $result = $db->rawQuery($query);
 
 ?>
