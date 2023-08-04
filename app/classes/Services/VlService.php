@@ -132,14 +132,15 @@ class VlService extends AbstractTestService
 
     public function processViralLoadResultFromForm(array $params): array
     {
-        $isRejected = false;
-        $finalResult = $params['vlResult'];
+        $isRejected = 'no;
+        $finalResult = $params['vlResult'] ?? null;
         $absDecimalVal = $absVal = $logVal = $txtVal = null;
         $hivDetection = $params['hivDetection'] ?? null;
         $resultStatus = null;
 
-        if ($params['isSampleRejected'] ?? null === 'yes') {
-            $isRejected = true;
+       // if ($params['isSampleRejected'] ?? null === 'yes') {
+        if ($params['isSampleRejected'] == 'yes') {
+            $isRejected = 'yes';
             $finalResult = $params['vlResult'] = $params['vlLog'] = null;
             $resultStatus = SAMPLE_STATUS\REJECTED;
         } elseif (!empty($params['vlResult'])) {
@@ -164,6 +165,7 @@ class VlService extends AbstractTestService
             }
             $hivDetection = $hivDetection ?? '';
             $finalResult = ($hivDetection != '') ? $hivDetection . ' ' . $finalResult : $finalResult;
+           
         } elseif (!empty($params['vlLog']) && is_numeric($params['vlLog'])) {
             $resultStatus = SAMPLE_STATUS\PENDING_APPROVAL; // Awaiting Approval
             $finalResult = pow(10, $params['vlLog']);

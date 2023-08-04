@@ -79,6 +79,9 @@ if(isset($_GET['testType']) && !empty($_GET['testType'])){
 				{
 					"sClass": "center"
 				},
+				{
+					"sClass": "center"
+				},
 			],
 			"aaSorting": [
 				[0, "asc"]

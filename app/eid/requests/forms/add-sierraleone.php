@@ -476,6 +476,14 @@ $aResult = $db->query($aQuery);
                                             </td>
                                         </tr>
                                         <tr class="show-rejection rejected" style="display:none;">
+                                        <td class="labels">Recommended Corrective Action<span class="mandatory">*</span></td>
+                                            <td><select name="correctiveAction" id="correctiveAction" class="form-control" title="Please choose Recommended corrective action">
+                                                    <option value="">-- Select --</option>
+                                                    <?php foreach ($correctiveActions as $action) { ?>
+                                                    <option value="<?php echo $action['recommended_corrective_action_id']; ?>"><?= $action['recommended_corrective_action_name']; ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                            </td>
                                             <td class="labels">Rejection Date<span class="mandatory">*</span></td>
                                             <td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
                                             <td></td>

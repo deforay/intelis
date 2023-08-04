@@ -75,7 +75,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
         if ($sWhereSub == "") {
             $sWhereSub .= "(";
         } else {
-            $sWhereSub .= " AND (";
+            $sWhereSub .= " AND ("; 
         }
         $colSize = count($aColumns);
 
@@ -153,6 +153,7 @@ $editRequest = false;
 if ($usersService->isAllowed("/common/reference/edit-recommended-corrective-action.php?testType=vl")) {
      $editRequest = true;
 }
+//echo $editRequest; die;
 foreach ($rResult as $aRow) {
    
     $row = [];
@@ -167,6 +168,7 @@ foreach ($rResult as $aRow) {
    if ($editRequest) {
         $actions .= $edit;
    }
+   $row[] = $actions;
     $output['aaData'][] = $row;
 }
 

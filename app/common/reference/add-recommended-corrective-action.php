@@ -9,7 +9,7 @@ if(isset($_GET['testType']) && !empty($_GET['testType'])){
 	$testType = $_GET['testType'];
 }
 ?>
-<!-- Content Wrapper. Contains page content -->
+<!-- Content Wrapper. Contains page content --> 
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
