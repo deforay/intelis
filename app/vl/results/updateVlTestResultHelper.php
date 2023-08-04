@@ -79,8 +79,8 @@ try {
     // Let us process the result entered by the user
     $processedResults = $vlService->processViralLoadResultFromForm($_POST);
 
-    $isRejected = $processedResults['isRejected'];
-    $finalResult = $processedResults['finalResult'];
+    $isRejected = $processedResults['isSampleRejected'];
+    $finalResult = $processedResults['vlLog'];
     $absDecimalVal = $processedResults['absDecimalVal'];
     $absVal = $processedResults['absVal'];
     $logVal = $processedResults['logVal'];

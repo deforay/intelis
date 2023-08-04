@@ -139,8 +139,8 @@ class VlService extends AbstractTestService
         $resultStatus = null;
 
         if ($params['isSampleRejected'] ?? null === 'yes') {
-            $isRejected = true;
-            $finalResult = $params['vlResult'] = $params['vlLog'] = null;
+            $isRejected = 'no';
+            $finalResult = $params['vlResult'] ?? $params['vlLog'] ?? null;
             $resultStatus = SAMPLE_STATUS\REJECTED;
         } elseif (!empty($params['vlResult'])) {
             $resultStatus = SAMPLE_STATUS\PENDING_APPROVAL; // Awaiting Approval
