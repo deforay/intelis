@@ -133,7 +133,7 @@ class VlService extends AbstractTestService
     public function processViralLoadResultFromForm(array $params): array
     {
         $isRejected = false;
-        $finalResult = null;
+        $finalResult = $params['vlResult'];
         $absDecimalVal = $absVal = $logVal = $txtVal = null;
         $hivDetection = $params['hivDetection'] ?? null;
         $resultStatus = null;

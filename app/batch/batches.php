@@ -200,12 +200,11 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 				},
 				{
 					"sClass": "center"
-				},
-				<?= $usersService->isAllowed("/batch/edit-batch.php?type=" . $_GET['type']) ?
-					'{
+				}
+				<?= $usersService->isAllowed("/batch/edit-batch.php?type=" . $_GET['type']) ? ',{
 					"sClass": "center",
 					"bSortable": false
-				},' : '' ?>
+				}' : ''; ?>
 			],
 			"aaSorting": [
 				[4, "desc"]
