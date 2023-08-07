@@ -129,6 +129,7 @@ $sQuery = "SELECT
             f.facility_district,
             f.facility_name,
             lab.facility_name as lab_name,
+            lab.facility_code as fcode,
 
 		SUM(CASE
             WHEN (reason_for_sample_rejection IS NOT NULL AND reason_for_sample_rejection!= '' AND reason_for_sample_rejection!= 0) THEN 1
@@ -203,12 +204,12 @@ if (isset($_POST['reportedDate']) && trim($_POST['reportedDate']) != '') {
 }
 
 $sQuery = $sQuery . ' GROUP BY lab_name, vl.facility_id';
-//error_log($sQuery);
+
 $resultSet = $db->rawQuery($sQuery);
 
 $excelResultSet = [];
 foreach ($resultSet as $row) {
-    $excelResultSet[$row['lab_name']][] = $row;
+    $excelResultSet[$row['lab_name'].'-'.$row['fcode']][] = $row;
 }
 
 foreach ($excelResultSet as $vlLab => $labResult) {
@@ -216,7 +217,15 @@ foreach ($excelResultSet as $vlLab => $labResult) {
     $sheet = new Worksheet($excel, '');
     $excel->addSheet($sheet, $c);
     $vlLab = preg_replace('/\s+/', ' ', ($vlLab));
-    $sheet->setTitle($vlLab);
+    $labInfo = explode('-',$vlLab);
+
+    if(isset($labInfo[1]) && $labInfo[1]!=''){
+        $sheet->setTitle($labInfo[1]);
+    }
+    else{
+        $labName = substr($labInfo[1],0,31);
+        $sheet->setTitle($labName);
+    }
 
     $sheet->setCellValue('B1', html_entity_decode('Reported Date ', ENT_QUOTES, 'UTF-8'));
     $sheet->setCellValue('C1', html_entity_decode($_POST['reportedDate'], ENT_QUOTES, 'UTF-8'));
