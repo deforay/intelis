@@ -173,27 +173,7 @@ try {
 
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'generic-tests', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
 
-
-
-    $currentDateTime = DateUtility::getCurrentDateTime();
-    if (!empty($sampleCodes)) {
-        $sql = 'UPDATE form_generic SET data_sync = ?,
-                form_attributes = JSON_SET(COALESCE(form_attributes, "{}"), "$.remoteResultsSync", ?, "$.resultSyncTransactionId", ?)
-                WHERE sample_code IN ("' . implode('","', $sampleCodes) . '")';
-        $db->rawQuery($sql, array(1, $currentDateTime, $transactionId));
-    }
-
-    if (!empty($facilityIds)) {
-        $facilityIds = array_unique(array_filter($facilityIds));
-        $sql = 'UPDATE facility_details
-                        SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.remoteResultsSync", ?, "$.vlRemoteResultsSync", ?)
-                        WHERE facility_id IN (' . implode(",", $facilityIds) . ')';
-        $db->rawQuery($sql, array($currentDateTime, $currentDateTime));
-    }
-    $sql = 'UPDATE facility_details SET
-                facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastResultsSync", ?, "$.vlLastResultsSync", ?)
-                    WHERE facility_id = ?';
-    $db->rawQuery($sql, array($currentDateTime, $currentDateTime, $labId));
+    $general->updateResultSyncDateTime('generic', 'form_generic', $sampleCodes, $transactionId, $facilityIds, $labId);
 
     echo $payload;
 } catch (Exception $e) {

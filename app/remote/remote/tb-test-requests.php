@@ -59,26 +59,6 @@ $payload = json_encode($data);
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'tb', $_SERVER['REQUEST_URI'], $origData, $payload, 'json', $labId);
 
 
-$currentDateTime = DateUtility::getCurrentDateTime();
-if (!empty($sampleIds)) {
-    $sql = 'UPDATE form_tb SET data_sync = ?,
-                form_attributes = JSON_SET(COALESCE(form_attributes, "{}"), "$.remoteRequestsSync", ?, "$.requestSyncTransactionId", ?)
-                WHERE tb_id IN (' . implode(",", $sampleIds) . ')';
-    $db->rawQuery($sql, array(1, $currentDateTime, $transactionId));
-}
-
-if (!empty($facilityIds)) {
-    $facilityIds = array_unique(array_filter($facilityIds));
-    $sql = 'UPDATE facility_details
-                SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.remoteRequestsSync", ?, "$.tbRemoteRequestsSync", ?)
-                WHERE facility_id IN (' . implode(",", $facilityIds) . ')';
-    $db->rawQuery($sql, array($currentDateTime, $currentDateTime));
-}
-
-// Whether any data got synced or not, we will update sync datetime for the lab
-$sql = 'UPDATE facility_details
-          SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastRequestsSync", ?, "$.tbLastRequestsSync", ?)
-          WHERE facility_id = ?';
-$db->rawQuery($sql, array($currentDateTime, $currentDateTime, $labId));
+$general->updateTestRequestsSyncDateTime('tb', 'form_tb', 'tb_id', $sampleIds, $transactionId, $facilityIds, $labId);
 
 echo $payload;

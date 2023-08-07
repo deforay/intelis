@@ -239,33 +239,45 @@ try {
             $data['vlResult'] = 'Below Detection Level';
         }
 
-        if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
-            $finalResult = null;
-            $status = SAMPLE_STATUS\REJECTED;
-        } elseif (isset($data['vlResult']) && trim($data['vlResult']) != '') {
-            if (in_array(strtolower($data['vlResult']), ['fail', 'failed', 'failure', 'error', 'err'])) {
-                //Result is saved as entered
-                $finalResult = $data['vlResult'];
-                $status = 5; // Invalid/Failed
-            } else {
+        // if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
+        //     $finalResult = null;
+        //     $status = SAMPLE_STATUS\REJECTED;
+        // } elseif (isset($data['vlResult']) && trim($data['vlResult']) != '') {
+        //     if (in_array(strtolower($data['vlResult']), ['fail', 'failed', 'failure', 'error', 'err'])) {
+        //         //Result is saved as entered
+        //         $finalResult = $data['vlResult'];
+        //         $status = SAMPLE_STATUS\TEST_FAILED; // Invalid/Failed
+        //     } else {
 
-                $interpretedResults = $vlService->interpretViralLoadResult($data['vlResult']);
+        //         $interpretedResults = $vlService->interpretViralLoadResult($data['vlResult']);
 
-                //Result is saved as entered
-                $finalResult = $data['vlResult'];
-                $logVal = $interpretedResults['logVal'];
-                $absDecimalVal = $interpretedResults['absDecimalVal'];
-                $absVal = $interpretedResults['absVal'];
-                $txtVal = $interpretedResults['txtVal'];
-            }
-            $status = SAMPLE_STATUS\PENDING_APPROVAL;
-            if (
-                isset($globalConfig['vl_auto_approve_api_results']) &&
-                $globalConfig['vl_auto_approve_api_results'] == "yes"
-            ) {
-                $status = SAMPLE_STATUS\ACCEPTED;
-            }
-        }
+        //         //Result is saved as entered
+        //         $finalResult = $data['vlResult'];
+        //         $logVal = $interpretedResults['logVal'];
+        //         $absDecimalVal = $interpretedResults['absDecimalVal'];
+        //         $absVal = $interpretedResults['absVal'];
+        //         $txtVal = $interpretedResults['txtVal'];
+        //     }
+        //     $status = SAMPLE_STATUS\PENDING_APPROVAL;
+        //     if (
+        //         isset($globalConfig['vl_auto_approve_api_results']) &&
+        //         $globalConfig['vl_auto_approve_api_results'] == "yes"
+        //     ) {
+        //         $status = SAMPLE_STATUS\ACCEPTED;
+        //     }
+        // }
+
+        // Let us process the result entered by the user
+        $processedResults = $vlService->processViralLoadResultFromForm($data);
+
+        $isRejected = $processedResults['isRejected'];
+        $finalResult = $processedResults['finalResult'];
+        $absDecimalVal = $processedResults['absDecimalVal'];
+        $absVal = $processedResults['absVal'];
+        $logVal = $processedResults['logVal'];
+        $txtVal = $processedResults['txtVal'];
+        $hivDetection = $processedResults['hivDetection'];
+        $status = $processedResults['resultStatus'] ?? $status;
 
         $formAttributes = [
             'applicationVersion' => $version,
@@ -319,9 +331,9 @@ try {
             'sample_tested_datetime' => DateUtility::isoDateFormat($data['sampleTestedDateTime'] ?? '', true),
             'sample_dispatched_datetime' => DateUtility::isoDateFormat($data['sampleDispatchedOn'] ?? '', true),
             'result_dispatched_datetime' => DateUtility::isoDateFormat($data['resultDispatchedOn'] ?? '', true),
-            'result_value_hiv_detection' => $data['hivDetection'] ?? null,
+            'result_value_hiv_detection' => $hivDetection,
             'reason_for_failure' => $data['reasonForFailure'] ?? null,
-            'is_sample_rejected' => $data['isSampleRejected'] ?? null,
+            'is_sample_rejected' => $isRejected ?? null,
             'reason_for_sample_rejection' => $data['rejectionReason'] ?? null,
             'rejection_on' => DateUtility::isoDateFormat($data['rejectionDate'] ?? ''),
             'result_value_absolute' => $absVal ?? null,

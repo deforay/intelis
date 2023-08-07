@@ -133,7 +133,7 @@ class CommonService
 
             if (!empty($name)) {
                 $this->db->where('name', $name);
-                return $this->db->getValue("global_config", "value");
+                return $this->db->getValue("global_config", "value") ?? null;
             } else {
                 $garr = [];
                 $globalConfigResult = $this->db->get('global_config');
@@ -684,6 +684,42 @@ class CommonService
             error_log($exc->getTraceAsString());
             return 0;
         }
+    }
+
+    public function updateSyncDateTime($testType, $testTable, $columnForWhereCondition, $sampleIds, $transactionId, $facilityIds, $labId, $syncType): void
+    {
+        $currentDateTime = DateUtility::getCurrentDateTime();
+        $sampleIdsStr = is_array($sampleIds) ? implode(",", $sampleIds) : implode('","', $sampleIds);
+
+        if (!empty($sampleIds)) {
+            $sql = "UPDATE $testTable SET data_sync = 1,
+                form_attributes = JSON_SET(COALESCE(form_attributes, '{}'), '$.remote{$syncType}Sync', '$currentDateTime', '{$syncType}SyncTransactionId', '$transactionId')
+                WHERE $columnForWhereCondition IN ($sampleIdsStr)";
+            $this->db->rawQuery($sql);
+        }
+
+        if (!empty($facilityIds)) {
+            $facilityIdsStr = implode(",", array_unique(array_filter($facilityIds)));
+            $sql = "UPDATE facility_details
+                SET facility_attributes = JSON_SET(COALESCE(facility_attributes, '{}'), '$.remote{$syncType}Sync', '$currentDateTime', '$.{$testType}Remote{$syncType}Sync', '$currentDateTime')
+                WHERE facility_id IN ($facilityIdsStr)";
+            $this->db->rawQuery($sql);
+        }
+
+        $sql = "UPDATE facility_details
+            SET facility_attributes = JSON_SET(COALESCE(facility_attributes, '{}'), '$.last{$syncType}Sync', '$currentDateTime', '$.{$testType}Last{$syncType}Sync', '$currentDateTime')
+            WHERE facility_id = $labId";
+        $this->db->rawQuery($sql);
+    }
+
+    public function updateTestRequestsSyncDateTime($testType, $testTable, $testTablePrimaryKey, $sampleIds, $transactionId, $facilityIds, $labId): void
+    {
+        $this->updateSyncDateTime($testType, $testTable, $testTablePrimaryKey, $sampleIds, $transactionId, $facilityIds, $labId, 'Requests');
+    }
+
+    public function updateResultSyncDateTime($testType, $testTable, $sampleCodes, $transactionId, $facilityIds, $labId): void
+    {
+        $this->updateSyncDateTime($testType, $testTable, 'sample_code', $sampleCodes, $transactionId, $facilityIds, $labId, 'Results');
     }
 
     public function getBarcodeImageContent($code, $type = 'C39', $width = 2, $height = 30, $color = array(0, 0, 0)): string

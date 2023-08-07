@@ -50,7 +50,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]') {
     foreach ($parsedData as $name => $data) {
         if ($name === 'labId') {
             $labId = $data;
-        } else if ($name === 'result') {
+        } elseif ($name === 'result') {
             $resultData = $data;
         }
     }
@@ -153,26 +153,6 @@ $payload = json_encode($sampleCodes);
 
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'hepatitis', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
 
-
-$currentDateTime = DateUtility::getCurrentDateTime();
-if (!empty($sampleCodes)) {
-    $sql = 'UPDATE form_hepatitis SET data_sync = ?,
-                form_attributes = JSON_SET(COALESCE(form_attributes, "{}"), "$.remoteResultsSync", ?, "$.resultSyncTransactionId", ?)
-                WHERE sample_code IN ("' . implode('","', $sampleCodes) . '")';
-    $db->rawQuery($sql, array(1, $currentDateTime, $transactionId));
-}
-
-if (!empty($facilityIds) && !empty(array_unique(array_filter($facilityIds)))) {
-    $facilityIds = array_unique(array_filter($facilityIds));
-    $sql = 'UPDATE facility_details
-                    SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.remoteResultsSync", ?, "$.hepatitisRemoteResultsSync", ?)
-                    WHERE facility_id IN (' . implode(",", $facilityIds) . ')';
-    $db->rawQuery($sql, array($currentDateTime, $currentDateTime));
-}
-
-$sql = 'UPDATE facility_details SET
-            facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastResultsSync", ?, "$.hepatitisLastResultsSync", ?)
-                WHERE facility_id = ?';
-$db->rawQuery($sql, array($currentDateTime, $currentDateTime, $labId));
+$general->updateResultSyncDateTime('hepatitis', 'form_hepatitis', $sampleCodes, $transactionId, $facilityIds, $labId);
 
 echo $payload;
