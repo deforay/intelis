@@ -173,15 +173,13 @@ class VlService extends AbstractTestService
         }
 
         if (
-            !empty($params['api']) && $params['api'] == 'yes' &&
+            !empty($params['api']) &&
+            $params['api'] == 'yes' &&
             $resultStatus == SAMPLE_STATUS\PENDING_APPROVAL &&
-            $finalResult != null
+            !empty($finalResult) &&
+            $this->commonService->getGlobalConfig('vl_auto_approve_api_results') == 'yes'
         ) {
-            $autoApproveApiResults = $this->commonService->getGlobalConfig('vl_auto_approve_api_results');
-            $autoApproveApiResults = !empty($autoApproveApiResults) && $autoApproveApiResults == 'yes' ? true : false;
-            if ($autoApproveApiResults) {
-                $resultStatus = SAMPLE_STATUS\ACCEPTED;
-            }
+            $resultStatus = SAMPLE_STATUS\ACCEPTED;
         }
 
 

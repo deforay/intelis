@@ -133,7 +133,7 @@ class CommonService
 
             if (!empty($name)) {
                 $this->db->where('name', $name);
-                return $this->db->getValue("global_config", "value");
+                return $this->db->getValue("global_config", "value") ?? null;
             } else {
                 $garr = [];
                 $globalConfigResult = $this->db->get('global_config');
