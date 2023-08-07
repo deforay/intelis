@@ -39,6 +39,11 @@ foreach ($pdResult as $provinceName) {
     $province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
 }
 
+//Recommended corrective actions
+$condition = "status ='active' AND test_type='eid'";
+$correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
+
+
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
 $artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
 $artRegimenResult = $db->rawQuery($artRegimenQuery);
@@ -476,7 +481,7 @@ $aResult = $db->query($aQuery);
                                             </td>
                                         </tr>
                                         <tr class="show-rejection rejected" style="display:none;">
-                                        <td class="labels">Recommended Corrective Action<span class="mandatory">*</span></td>
+                                        <td class="labels">Recommended Corrective Action</td>
                                             <td><select name="correctiveAction" id="correctiveAction" class="form-control" title="Please choose Recommended corrective action">
                                                     <option value="">-- Select --</option>
                                                     <?php foreach ($correctiveActions as $action) { ?>

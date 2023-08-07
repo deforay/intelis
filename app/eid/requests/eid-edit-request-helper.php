@@ -340,6 +340,7 @@ try {
 		'lab_reception_person' => $_POST['labReceptionPerson'] ?? null,
 		'sample_tested_datetime' => $_POST['sampleTestedDateTime'] ?? null,
 		'is_sample_rejected' => $_POST['isSampleRejected'] ?? null,
+		'recommended_corrective_action' => $_POST['correctiveAction'] ?? null,
 		'result' => $_POST['result'] ?? null,
 		'test_1_date' => $_POST['test1Date'] ?? null,
 		'test_1_batch' => $_POST['test1Batch'] ?? null,

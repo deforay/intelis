@@ -30,7 +30,7 @@ if(isset($_GET['testType']) && !empty($_GET['testType'])){
             <!-- /.box-header -->
             <div class="box-body">
                 <!-- form start -->
-                <form class="form-horizontal" method='post' name='correctiveActionForm' id='correctiveActionForm' autocomplete="off" enctype="multipart/form-data" action="save-recommended-action-helper.php">
+                <form class="form-horizontal" method='post' name='correctiveActionForm' id='correctiveActionForm' autocomplete="off" enctype="multipart/form-data" action="save-recommended-corrective-action-helper.php">
                     <div class="box-body">
                         <div class="row">
                             <div class="col-md-6">
@@ -61,6 +61,9 @@ if(isset($_GET['testType']) && !empty($_GET['testType'])){
                         <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
                         <a href="recommended-corrective-actions.php?testType=<?= $testType; ?>" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
                     </div>
+                    <input type="hidden" class="form-control" id="testType" name="testType" value="<?= $testType; ?>" />
+
+                    
                     <!-- /.box-footer -->
                 </form>
                 <!-- /.row -->
@@ -94,7 +97,7 @@ if(isset($_GET['testType']) && !empty($_GET['testType'])){
         $.post("/includes/checkDuplicate.php", {
                 tableName: tableName,
                 fieldName: fieldName,
-                testType: <?= $testType; ?>
+                testType: '<?= $testType; ?>',
                 value: removeDots.trim(),
                 fnct: fnct,
                 format: "html"

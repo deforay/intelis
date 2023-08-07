@@ -4897,6 +4897,16 @@ CREATE TABLE `r_recommended_corrective_actions` (
 ALTER TABLE `form_vl` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
 ALTER TABLE `audit_form_vl` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
 
+ALTER TABLE `form_eid` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `audit_form_eid` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+
+ALTER TABLE `form_covid19` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `audit_form_covid19` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+
+ALTER TABLE `form_tb` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `audit_form_tb` ADD `recommended_corrective_action` INT NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+
+
 INSERT IGNORE INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'admin', 'no', 'Recommended Corrective Actions', '/vl/reference/vl-recommended-corrective-actions.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vl-recommended-corrective-actions', '10', '39', 'active', CURRENT_TIMESTAMP);
 
 
@@ -4906,3 +4916,5 @@ ALTER TABLE `audit_form_vl` CHANGE `unique_id` `unique_id` VARCHAR(256) CHARACTE
 
 -- Amit 2-Aug-2023 version 5.2.1
 UPDATE `system_config` SET `value` = '5.2.1' WHERE `system_config`.`name` = 'sc_version';
+
+

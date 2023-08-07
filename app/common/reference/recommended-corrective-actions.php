@@ -25,7 +25,7 @@ if(isset($_GET['testType']) && !empty($_GET['testType'])){
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if (isset($_SESSION['privileges']) && in_array("recommended-corrective-actions.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-							<a href="add-recommended-corrective-actions.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Recommended Corrective Actions"); ?></a>
+							<a href="add-recommended-corrective-action.php?testType=vl" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Recommended Corrective Actions"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
