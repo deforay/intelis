@@ -172,6 +172,18 @@ class VlService extends AbstractTestService
             $finalResult = ($hivDetection != '') ? $hivDetection . ' ' . $finalResult : $finalResult;
         }
 
+        if (
+            !empty($params['api']) && $params['api'] == 'yes' &&
+            $resultStatus == SAMPLE_STATUS\PENDING_APPROVAL &&
+            $finalResult != null
+        ) {
+            $autoApproveApiResults = $this->commonService->getGlobalConfig('vl_auto_approve_api_results');
+            $autoApproveApiResults = !empty($autoApproveApiResults) && $autoApproveApiResults == 'yes' ? true : false;
+            if ($autoApproveApiResults) {
+                $resultStatus = SAMPLE_STATUS\ACCEPTED;
+            }
+        }
+
 
         return [
             'isRejected' => $isRejected,
@@ -515,11 +527,9 @@ class VlService extends AbstractTestService
 
     public function getVlReasonsForTesting(): array
     {
-        $results = $this->db->rawQuery("SELECT test_reason_id,test_reason_name
+        return $this->db->rawQuery("SELECT test_reason_id,test_reason_name
                                             FROM r_vl_test_reasons
                                                 WHERE `test_reason_status` LIKE 'active'
                                                 AND (parent_reason IS NULL OR parent_reason = 0)");
-
-        return $results;
     }
 }
