@@ -97,10 +97,6 @@ $sampleIds = $facilityIds = [];
 if ($db->count > 0) {
 
   $payload = $vlRemoteResult;
-  // foreach ($vlRemoteResult as $row) {
-  //   $payload[] = array_diff_key($row, array_flip($removeKeys));
-  // }
-
   $counter = $db->count;
 
   $sampleIds = array_column($vlRemoteResult, 'vl_sample_id');
@@ -115,26 +111,6 @@ if ($db->count > 0) {
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'vl', $_SERVER['REQUEST_URI'], $origData, $payload, 'json', $labId);
 
 
-$currentDateTime = DateUtility::getCurrentDateTime();
-if (!empty($sampleIds)) {
-  $sql = 'UPDATE form_vl SET data_sync = ?,
-              form_attributes = JSON_SET(COALESCE(form_attributes, "{}"), "$.remoteRequestsSync", ?, "$.requestSyncTransactionId", ?)
-              WHERE vl_sample_id IN (' . implode(",", $sampleIds) . ')';
-  $db->rawQuery($sql, array(1, $currentDateTime, $transactionId));
-}
-
-if (!empty($facilityIds)) {
-  $facilityIds = array_unique(array_filter($facilityIds));
-  $sql = 'UPDATE facility_details
-            SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.remoteRequestsSync", ?, "$.vlRemoteRequestsSync", ?)
-            WHERE facility_id IN (' . implode(",", $facilityIds) . ')';
-  $db->rawQuery($sql, array($currentDateTime, $currentDateTime));
-}
-
-// Whether any data got synced or not, we will update sync datetime for the lab
-$sql = 'UPDATE facility_details
-        SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.lastRequestsSync", ?, "$.vlLastRequestsSync", ?)
-        WHERE facility_id = ?';
-$db->rawQuery($sql, array($currentDateTime, $currentDateTime, $labId));
+$general->updateTestRequestsSyncDateTime('vl', 'form_vl', 'vl_sample_id', $sampleIds, $transactionId, $facilityIds, $labId);
 
 echo $payload;
