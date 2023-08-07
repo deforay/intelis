@@ -167,7 +167,7 @@ $output = array(
     "aaData" => []
 );
 $editBatch = $delete = $pdf = $editPosition = false;
-if ($usersService->isAllowed("/batch/edit-batch.php?type=" . $_GET['type'])) {
+if ($usersService->isAllowed("/batch/edit-batch.php?type=" . $_POST['type'])) {
     $editBatch = true;
     $delete = true;
     $pdf = true;

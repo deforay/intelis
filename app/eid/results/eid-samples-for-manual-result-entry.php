@@ -177,25 +177,18 @@ if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
 
      $sWhere[] = " vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 }
-if ($_SESSION['instanceType'] == 'remoteuser') {
-     //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";
-     //$dWhere = $dWhere." AND request_created_by='".$_SESSION['userId']."'";
-     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
-     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-          $sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
-     }
+if ($_SESSION['instanceType'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
+     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
 
 if (!empty($sWhere)) {
-     $sWhere = ' where ' . implode(' AND ', $sWhere);
+     $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
 } else {
      $sWhere = "";
 }
 
 $sQuery = $sQuery . $sWhere;
 $_SESSION['vlResultQuery'] = $sQuery;
-//echo $_SESSION['vlResultQuery'];die;
 
 if (!empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);

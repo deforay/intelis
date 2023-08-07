@@ -38,12 +38,10 @@ if ($testType == "vl") {
 	$tableName = "form_hepatitis";
 	$primaryKey = "hepatitis_id";
 }
-//global config
-$configQuery = "SELECT `value` FROM global_config WHERE name ='vl_form'";
-$configResult = $db->rawQueryOne($configQuery);
-$country = $configResult['value'];
 
-$query = "SELECT vl.remote_sample_code,vl.$primaryKey,vl.facility_id FROM $tableName as vl WHERE (vl.result is NULL or vl.result = '') AND vlsm_country_id = $country AND (vl.remote_sample_code IS NOT NULL OR vl.remote_sample_code NOT LIKE '')";
+
+
+$query = "SELECT vl.remote_sample_code,vl.$primaryKey,vl.facility_id FROM $tableName as vl WHERE (vl.result is NULL or vl.result = '') AND (vl.remote_sample_code IS NOT NULL OR vl.remote_sample_code NOT LIKE '')";
 
 if (trim($lName) != '') {
 	$query = $query . " AND vl.lab_id='" . $lName . "'";

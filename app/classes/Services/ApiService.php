@@ -194,7 +194,7 @@ class ApiService
         }
 
         if (!$module) {
-            $$activeModule = str_replace(",", "','", $activeModule);
+            $activeModule = str_replace(",", "','", $activeModule);
             if (!empty($activeModule)) {
                 $where[] = " tl.test_type IN ('" . $activeModule . "')";
             }

@@ -221,12 +221,10 @@ if (isset($_POST['rejectedSamples']) && $_POST['rejectedSamples'] != "") {
      $sWhere[] = ' (vl.is_sample_rejected like "' . $_POST['rejectedSamples'] . '" OR vl.is_sample_rejected is null OR vl.is_sample_rejected like "")';
 }
 if ($_SESSION['instanceType'] == 'remoteuser') {
-     $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-     $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
-     if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-          $sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")  ";
+     if (!empty($_SESSION['facilityMap'])) {
+          $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
      }
-} else if (!$_POST['hidesrcofreq']) {
+} elseif (!$_POST['hidesrcofreq']) {
      $sWhere[] = 'vl.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 }
 if (!empty($sWhere)) {

@@ -52,20 +52,7 @@ if ($_SESSION['accessType'] == 'collection-site') {
     $rKey = '';
 }
 
-//check user exist in user_facility_map table
-$chkUserFcMapQry = "SELECT user_id FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
-
-$chkUserFcMapResult = $db->query($chkUserFcMapQry);
-if ($chkUserFcMapResult) {
-    $pQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
-}
-
-$pdResult = $db->query($pQuery);
-$province = "<option value=''> -- Select -- </option>";
-foreach ($pdResult as $provinceName) {
-    $province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
-}
-
+$province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
 ?>
@@ -95,7 +82,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                         <div class="box box-default">
                             <div class="box-body">
                                 <div class="box-header with-border sectionHeader">
-                                    <h3 class="box-title"><?= _("SITE INFORMATION") ;?></h3>
+                                    <h3 class="box-title"><?= _("SITE INFORMATION"); ?></h3>
                                 </div>
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;"><?= _("To be filled by requesting Clinician/Nurse"); ?></h3>
@@ -1015,7 +1002,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
-    
+
 
         $(".select2").select2();
         $(".select2").select2({

@@ -57,7 +57,7 @@ if (!empty(SYSTEM_CONFIG['interfacing']['sqlite3Path'])) {
 }
 
 //get the value from interfacing DB
-$interfaceQuery = "SELECT * FROM `orders` WHERE `result_status` = 1 AND `lims_sync_status`= 0";
+$interfaceQuery = "SELECT * FROM `orders` WHERE `result_status` = 1 AND `lims_sync_status`= 0 ORDER BY analysed_date_time ASC";
 if ($mysqlConnected) {
     $interfaceData = $db->connection('interface')->rawQuery($interfaceQuery);
 } elseif ($sqliteConnected) {

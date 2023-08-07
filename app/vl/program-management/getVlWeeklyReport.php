@@ -18,7 +18,7 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
-$country = $general->getGlobalConfig('vl_form');
+
 
 
 /** @var FacilitiesService $facilitiesService */

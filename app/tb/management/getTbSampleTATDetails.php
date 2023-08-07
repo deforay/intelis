@@ -116,16 +116,25 @@ for ($i = 0; $i < count($aColumns); $i++) {
  * SQL queries
  * Get data to display
  */
-$sQuery = "SELECT vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime,vl.request_created_by,vl." . $sampleCode . " from form_tb as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date > '1970-01-01')
+$sQuery = "SELECT vl.sample_collection_date,
+					vl.sample_tested_datetime,
+					vl.sample_received_at_lab_datetime,
+					vl.result_printed_datetime,
+					vl.result_mail_datetime,
+					vl.request_created_by,
+					vl.$sampleCode
+					FROM form_tb as vl
+					INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+					LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+					LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+					WHERE (vl.sample_collection_date > '1970-01-01')
                         AND (vl.sample_tested_datetime > '1970-01-01' )
                         AND vl.result is not null
                         AND vl.result != ''";
 if ($sarr['sc_user_type'] == 'remoteuser') {
 	$whereCondition = '';
-	$userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-	$userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
-	if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-		$whereCondition = " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")";
+	if (!empty($_SESSION['facilityMap'])) {
+		$whereCondition = " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 	}
 	$sQuery = $sQuery . $whereCondition;
 } else {

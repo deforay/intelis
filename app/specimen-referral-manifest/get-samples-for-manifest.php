@@ -20,17 +20,10 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-$sarr = $general->getSystemConfig();
-//global config
-$configQuery = "SELECT `value` FROM global_config WHERE name ='vl_form'";
-$configResult = $db->query($configQuery);
-$country = $configResult[0]['value'];
 
-// $rpQuery="SELECT GROUP_CONCAT(DISTINCT rp.sample_id SEPARATOR ',') as sampleId FROM r_package_details_map as rp";
-// $rpResult = $db->rawQuery($rpQuery);
 if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sCode = 'remote_sample_code';
-} else if ($sarr['sc_user_type'] == 'vluser' || $sarr['sc_user_type'] == 'standalone') {
+} else if ($_SESSION['instanceType'] == 'vluser' || $_SESSION['instanceType'] == 'standalone') {
 	$sCode = 'sample_code';
 }
 
@@ -83,7 +76,7 @@ if (!empty($_POST['operator'])) {
 }
 
 if (!empty($_POST['testType'])) {
-	$where[] = " test_type = " . $_POST['testType'] ;
+	$where[] = " test_type = " . $_POST['testType'];
 }
 
 if (!empty($_POST['sampleType']) && ($module == 'vl' || $module == 'generic-tests')) {
@@ -95,7 +88,7 @@ if (!empty($where)) {
 	$query .= " where " . implode(" AND ", $where);
 }
 $query .= " ORDER BY vl.request_created_datetime ASC";
- //die($query);
+//die($query);
 $result = $db->rawQuery($query);
 
 ?>

@@ -161,16 +161,8 @@ if (isset($_POST['hvlPatientPregnant']) && $_POST['hvlPatientPregnant'] != '') {
 if (isset($_POST['hvlPatientBreastfeeding']) && $_POST['hvlPatientBreastfeeding'] != '') {
     $sWhere[] = '  vl.is_patient_breastfeeding = "' . $_POST['hvlPatientBreastfeeding'] . '"';
 }
-$dWhere = '';
-if ($sarr['sc_user_type'] == 'remoteuser') {
-    //$sWhere = $sWhere." AND request_created_by='".$_SESSION['userId']."'";
-    //$dWhere = $dWhere." AND request_created_by='".$_SESSION['userId']."'";
-    $userfacilityMapQuery = "SELECT GROUP_CONCAT(DISTINCT facility_id ORDER BY facility_id SEPARATOR ',') as facility_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-    $userfacilityMapresult = $db->rawQuery($userfacilityMapQuery);
-    if ($userfacilityMapresult[0]['facility_id'] != null && $userfacilityMapresult[0]['facility_id'] != '') {
-        $sWhere[] = " vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ")   ";
-        $dWhere = $dWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
-    }
+if ($_SESSION['instanceType'] == 'remoteuser' && !empty($_SESSION['facilityMap'])) {
+    $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
 
 if (!empty($sWhere)) {
@@ -188,17 +180,9 @@ $_SESSION['highViralResult'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-// error_log($sQuery);
+
 $rResult = $db->rawQuery($sQuery);
-// print_r($rResult);
-/* Data set length after filtering */
 
-/*$aResultFilterTotal =$db->rawQuery("SELECT vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.result > $thresholdLimit $sWhere group by vl.eid_id order by $sOrder");
-        $iFilteredTotal = count($aResultFilterTotal);
-
-        /* Total data set length
-        $aResultTotal =  $db->rawQuery("select COUNT(eid_id) as total FROM form_eid as vl where result_status=7 AND result > $thresholdLimit AND vlsm_country_id='".$arr['vl_form']."' $dWhere");
-        $iTotal = $aResultTotal[0]['total'];*/
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 $_SESSION['highViralResultCount'] = $iTotal;

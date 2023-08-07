@@ -1,43 +1,41 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
-$params     = $_POST['facilityType'];
+$mappingType = $_POST['mappingType'];
 $testType   = $_POST['testType'];
-// print_r($_POST); die;
-if ($params == "testing-labs") {
+
+if ($mappingType == "testing-labs") {
     $tableName = "testing_labs";
 } else {
     $tableName = "health_facilities";
 }
 try {
-    $mappedFacility = explode(',', $_POST['selectedSample']);
-    // $_POST['mappedFacilities'] = json_decode($_POST['mappedFacilities'], true);
-    if (!empty($mappedFacility)) {
+    $mappedFacilities = json_decode($_POST['selectedFacilities'], true);
+    if (!empty($mappedFacilities)) {
 
         $db->where('test_type', $testType);
-        // $db->where('facility_id', $mappedFacility, 'NOT IN');
         $db->delete($tableName);
         $currentDateTime = DateUtility::getCurrentDateTime();
         $data = [];
-        foreach ($mappedFacility as $facility) {
-            $data[] = array(
+        foreach ($mappedFacilities as $facility) {
+            $data[] = [
                 'test_type'     => $testType,
                 'facility_id'   => $facility,
                 'updated_datetime'  => $currentDateTime
-            );
+            ];
         }
         $db->insertMulti($tableName, $data);
 
@@ -47,13 +45,15 @@ try {
             'updated_datetime'  => $currentDateTime
         );
 
-        $db->where('facility_id', $mappedFacility, 'IN');
+        $db->where('facility_id', $mappedFacilities, 'IN');
         $db->update($tableName, $data);
 
 
         $_SESSION['alertMsg'] = _("Facility Mapped to Selected Test Type successfully");
+    } else {
+        $_SESSION['alertMsg'] = _("No Facility Mapped to Selected Test Type");
     }
-    header("Location:facilities.php");
+    header("Location:/facilities/mapTestType.php?type=$mappingType&test=$testType");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

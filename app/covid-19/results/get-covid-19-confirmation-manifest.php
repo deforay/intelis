@@ -11,12 +11,9 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 $start_date = '';
 $end_date = '';
-//global config
-$configQuery = "SELECT `value` FROM global_config WHERE name ='vl_form'";
-$configResult = $db->query($configQuery);
-$country = $configResult[0]['value'];
 
-$query = "SELECT vl.sample_code,vl.covid19_id,vl.facility_id,vl.result_status,f.facility_name,f.facility_code FROM form_covid19 as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND vl.result = 'positive' AND vlsm_country_id = $country  AND (vl.positive_test_manifest_id IS NULL OR vl.positive_test_manifest_id = '') AND (vl.positive_test_manifest_code IS NULL OR vl.positive_test_manifest_code = '')";
+
+$query = "SELECT vl.sample_code,vl.covid19_id,vl.facility_id,vl.result_status,f.facility_name,f.facility_code FROM form_covid19 as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND vl.result = 'positive' AND (vl.positive_test_manifest_id IS NULL OR vl.positive_test_manifest_id = '') AND (vl.positive_test_manifest_code IS NULL OR vl.positive_test_manifest_code = '')";
 
 $query = $query . " ORDER BY vl.last_modified_datetime ASC";
 // echo $query;die;

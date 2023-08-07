@@ -23,7 +23,6 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$country = $general->getGlobalConfig('vl_form');
 $sarr = $general->getSystemConfig();
 
 if (isset($_POST['reportedDate']) && trim($_POST['reportedDate']) != '') {
