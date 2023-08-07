@@ -226,7 +226,7 @@ class VlService extends AbstractTestService
 
         // If result is numeric, then process it as a number
         if (is_numeric($result)) {
-            $this->interpretViralLoadNumericResult($result, $unit);
+            return $this->interpretViralLoadNumericResult($result, $unit);
         }
 
         $interpretAndConvertResult = $this->commonService->getGlobalConfig('vl_interpret_and_convert_results');
@@ -235,7 +235,7 @@ class VlService extends AbstractTestService
         $resultStatus = null;
 
         // Some machines and some countries prefer a default text result
-        $vlTextResult = !empty(trim($defaultLowVlResultText)) && trim($defaultLowVlResultText) != "" ? $defaultLowVlResultText : "Target Not Detected";
+        $vlDefaultTextResult = !empty(trim($defaultLowVlResultText)) && trim($defaultLowVlResultText) != "" ? $defaultLowVlResultText : "Target Not Detected";
 
         $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
 
@@ -254,7 +254,7 @@ class VlService extends AbstractTestService
             case 'target not detected':
             case 'not detected':
             case 'tnd':
-                $vlResult = $txtVal = $vlTextResult;
+                $vlResult = $txtVal = $vlDefaultTextResult;
                 break;
             case '< 2.00E+1':
             case '< titer min':
@@ -318,6 +318,11 @@ class VlService extends AbstractTestService
         // If result is blank, then return null
         if (empty($result)) {
             return null;
+        }
+
+        // If result is NOT numeric, then process it as a text result
+        if (!is_numeric($result)) {
+            return $this->interpretViralLoadTextResult($result, $unit);
         }
 
         $resultStatus = $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
