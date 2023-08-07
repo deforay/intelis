@@ -49,6 +49,8 @@ $tbReasonsForTesting = $tbService->getTbReasonsForTesting();
 $rKey = '';
 $sKey = '';
 $sFormat = '';
+$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
+
 if ($_SESSION['accessType'] == 'collection-site') {
 	$sampleCodeKey = 'remote_sample_code_key';
 	$sampleCode = 'remote_sample_code';
@@ -58,11 +60,17 @@ if ($_SESSION['accessType'] == 'collection-site') {
 	$sampleCode = 'sample_code';
 	$rKey = '';
 }
+	$pQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
 
-$province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
+$pdResult = $db->query($pQuery);
 
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
 $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+");
+
+//Recommended corrective actions
+$condition = "status ='active' AND test_type='tb'";
+$correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
+
 ?>
 
 <div class="content-wrapper">
@@ -478,9 +486,20 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 												<input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
 
 											</td>
-											<th scope="row"><label class="label-control" for="rejectionDate">Rejection Date<span class="mandatory">*</span></label></th>
-											<td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select rejection date" title="Please select the rejection date" /></td>
+											<th class="labels">Recommended Corrective Action</th>
+                                            <td><select name="correctiveAction" id="correctiveAction" class="form-control" title="Please choose Recommended corrective action">
+                                                    <option value="">-- Select --</option>
+                                                    <?php foreach ($correctiveActions as $action) { ?>
+                                                    <option value="<?php echo $action['recommended_corrective_action_id']; ?>"><?= $action['recommended_corrective_action_name']; ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                            </td>
 										</tr>
+										<tr class="show-rejection" style="display:none;">
+										<th scope="row"><label class="label-control" for="rejectionDate">Rejection Date<span class="mandatory">*</span></label></th>
+											<td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select rejection date" title="Please select the rejection date" /></td>
+
+													</tr>
 										<tr class="platform microscopy">
 											<td colspan="4">
 												<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">

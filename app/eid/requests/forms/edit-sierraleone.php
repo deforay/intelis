@@ -52,6 +52,11 @@ $artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
 $artRegimenResult = $db->rawQuery($artRegimenQuery);
 $aQuery = "SELECT * FROM r_vl_art_regimen where art_status ='active'";
 $aResult = $db->query($aQuery);
+
+//Recommended corrective actions
+$condition = "status ='active' AND test_type='eid'";
+$correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
+
 ?>
 
 
@@ -472,7 +477,19 @@ $aResult = $db->query($aQuery);
 
                                             </td>
                                         </tr>
+
                                         <tr class="rejected" style="display: none;">
+                                            <td class="rejected labels" style="display: none;">Recommended Corrective Action<span class="mandatory">*</span></td>
+                                            <td class="rejected" style="display: none;">
+                                                <select name="correctiveAction" id="correctiveAction" class="form-control" title="Please choose Recommended corrective action">
+															<option value="">-- Select --</option>
+															<?php foreach ($correctiveActions as $action) {
+															?>
+																<option value="<?php echo $action['recommended_corrective_action_id']; ?>" <?php echo ($vlQueryInfo['recommended_corrective_action'] == $action['recommended_corrective_action_id']) ? 'selected="selected"' : ''; ?>><?= $action['recommended_corrective_action_name']; ?></option>
+															<?php }
+															?>
+														</select>
+                                            </td>
 
                                             <td class="rejected labels" style="display: none;">Rejection Date<span class="mandatory">*</span></td>
                                             <td class="rejected" style="display: none;"><input value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>

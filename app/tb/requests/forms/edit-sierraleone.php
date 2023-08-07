@@ -106,6 +106,10 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		$attributes = json_decode($results['attributes'], true);
 	}
 }
+//Recommended corrective actions
+$condition = "status ='active' AND test_type='tb'";
+$correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
+
 
 ?>
 
@@ -526,10 +530,22 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 												<input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
 
 											</td>
-											<th scope="row"><label class="label-control" for="rejectionDate">Rejection Date<span class="mandatory">*</span></label></th>
-											<td><input value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select rejection date" title="Please select the rejection date" /></td>
+											<th class="labels">Recommended Corrective Action</th>
+                                            <td><select name="correctiveAction" id="correctiveAction" class="form-control" title="Please choose Recommended corrective action">
+                                                    <option value="">-- Select --</option>
+                                                    <?php foreach ($correctiveActions as $action) { ?>
+                                                    <option value="<?php echo $action['recommended_corrective_action_id']; ?>"><?= $action['recommended_corrective_action_name']; ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                            </td>
+											
 										</tr>
-										<tr class="platform microscopy" <?php echo (isset($attributes) && $attributes != "" && in_array("microscopy", $attributes)) ? 'style="display:none;"' : ''; ?>>
+										<tr class="show-rejection" style="display:none;">
+
+										<th scope="row"><label class="label-control" for="rejectionDate">Rejection Date<span class="mandatory">*</span></label></th>
+											<td><input value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select rejection date" title="Please select the rejection date" /></td>
+													</tr>
+											<tr class="platform microscopy" <?php echo (isset($attributes) && $attributes != "" && in_array("microscopy", $attributes)) ? 'style="display:none;"' : ''; ?>>
 											<td colspan="4">
 												<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
 													<thead>
