@@ -297,6 +297,7 @@ foreach ($rejectionTypeResult as $type) {
 														<th><?php echo _("Sample Collection Date"); ?></th>
 														<th><?php echo _("VL Lab Name"); ?></th>
 														<th><?php echo _("Rejection Reason"); ?></th>
+														<th><?php echo _("Recommended Corrective action"); ?></th>
 													</tr>
 												</thead>
 												<tbody>
@@ -660,9 +661,12 @@ foreach ($rejectionTypeResult as $type) {
 				{
 					"sClass": "center"
 				},
+				{
+					"sClass": "center"
+				},
 			],
 			"aaSorting": [
-				[<?= ($_SESSION['instanceType'] != 'standalone') ? 5 : 4; ?>, "desc"]
+				[<?= ($_SESSION['instanceType'] != 'standalone') ? 6 : 5; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,

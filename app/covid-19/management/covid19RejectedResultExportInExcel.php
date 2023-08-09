@@ -34,7 +34,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViral
      $excel = new Spreadsheet();
      $output = [];
      $sheet = $excel->getActiveSheet();
-     $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient's ID.", "Patient's Name", "Sample Collection Date", "Lab Name", "Rejection Reason");
+     $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient's ID.", "Patient's Name", "Sample Collection Date", "Lab Name", "Rejection Reason","Recommended Corrective Action");
      if ($_SESSION['instanceType'] == 'standalone') {
           if (($key = array_search("Remote Sample Code", $headings)) !== false) {
                unset($headings[$key]);
@@ -104,6 +104,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViral
           $row[] = $sampleCollectionDate;
           $row[] = $aRow['labName'];
           $row[] = $aRow['rejection_reason_name'];
+          $row[] = $aRow['recommended_corrective_action_name'];
           $output[] = $row;
      }
 

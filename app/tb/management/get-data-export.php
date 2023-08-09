@@ -153,7 +153,8 @@ $sQuery = "SELECT
           rs.rejection_reason_name,
           r_f_s.funding_source_name,
           r_i_p.i_partner_name ,
-          rs.rejection_reason_name as rejection_reason
+          rs.rejection_reason_name as rejection_reason,
+          r_c_a.recommended_corrective_action_name
 
           FROM form_tb as vl
           LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
@@ -166,6 +167,7 @@ $sQuery = "SELECT
           LEFT JOIN r_tb_test_reasons as rtr ON rtr.test_reason_id=vl.reason_for_tb_test
           LEFT JOIN r_tb_sample_type as rst ON rst.sample_id=vl.specimen_type
           LEFT JOIN r_tb_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
+          LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
           LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source
           LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 /* Sample collection date filter */

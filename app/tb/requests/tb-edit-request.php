@@ -150,6 +150,10 @@ if (isset($tbInfo['result_approved_datetime']) && trim($tbInfo['result_approved_
 } else {
     $tbInfo['result_approved_datetime'] = '';
 }
+//Recommended corrective actions
+$condition = "status ='active' AND test_type='tb'";
+$correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
+
 $fileArray = array(
     1 => 'forms/edit-southsudan.php',
     2 => 'forms/edit-sierraleone.php',

@@ -416,8 +416,13 @@ if (!empty($requestResult)) {
         $html .= '</tr>';
 
         if ($result['reason_for_sample_rejection'] != '') {
+            $corrective = '';
+            if($result["recommended_corrective_action_name"]!="")
+            {
+                 $corrective = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Recommended Corrective Action&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;'.$result["recommended_corrective_action_name"];
+            }
             $html .= '<tr>';
-            $html .= '<td colspan="4" style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">REJECTION REASON : <span style="font-weight:normal;">' . $result['rejection_reason_name'] . '</span></td>';
+            $html .= '<td colspan="4" style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">REJECTION REASON : <span style="font-weight:normal;">' . $result['rejection_reason_name'] .$corrective. '</span></td>';
             $html .= '</tr>';
         }
         if (trim($result['lab_tech_comments']) != '') {

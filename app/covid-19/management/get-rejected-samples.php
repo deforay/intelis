@@ -39,9 +39,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
         $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
     }
     //get value by rejection reason id
-    $vlQuery = "SELECT count(*) as `total`, vl.reason_for_sample_rejection,sr.rejection_reason_name,sr.rejection_type,sr.rejection_reason_code,fd.facility_name, lab.facility_name as `labname`
+    $vlQuery = "SELECT count(*) as `total`, vl.reason_for_sample_rejection,sr.rejection_reason_name,sr.rejection_type,sr.rejection_reason_code,fd.facility_name, lab.facility_name as `labname`, r_c_a.recommended_corrective_action_name
                 FROM form_covid19 as vl
                 INNER JOIN r_covid19_sample_rejection_reasons as sr ON sr.rejection_reason_id=vl.reason_for_sample_rejection
+                LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
                 INNER JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                 INNER JOIN facility_details as lab ON lab.facility_id=vl.lab_id";
     $sWhere[] = ' where vl.is_sample_rejected = "yes" AND DATE(vl.sample_collection_date) <= "' . $end_date . '" AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND reason_for_sample_rejection!="" AND reason_for_sample_rejection IS NOT NULL';
@@ -93,6 +94,7 @@ if (!empty($tableResult)) { ?>
             <th><?php echo _("Facility Name"); ?></th>
             <th><?php echo _("Rejection Reason"); ?></th>
             <th><?php echo _("Reason Category"); ?></th>
+            <th><?php echo _("Recommended Corrective Action"); ?></th>
             <th><?php echo _("No. of Samples"); ?></th>
         </tr>
     </thead>
@@ -106,6 +108,7 @@ if (!empty($tableResult)) { ?>
                     <td><?php echo ($tableRow['facility_name']); ?></td>
                     <td><?php echo ($tableRow['rejection_reason_name']); ?></td>
                     <td><?php echo strtoupper($tableRow['rejection_type']); ?></td>
+                    <td><?php echo ($tableRow['recommended_corrective_action_name']); ?></td>
                     <td><?php echo $tableRow['total']; ?></td>
                 </tr>
         <?php

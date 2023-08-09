@@ -86,6 +86,9 @@ foreach ($testPlatformResult as $row) {
 }
 
 $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'active'");
+//Recommended corrective actions
+$condition = "status ='active' AND test_type='eid'";
+$correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
 $fileArray = array(
     1 => 'forms/add-southsudan.php',

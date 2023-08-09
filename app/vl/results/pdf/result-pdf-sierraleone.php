@@ -146,7 +146,7 @@ if (!empty($requestResult)) {
           if (!isset($result['facility_district']) || trim($result['facility_district']) == '') {
                $result['facility_district'] = '';
           }
-          if (!isset($result['facility_name']) || trim($result['facility_name']) == '') {
+          if (!isset($result['facility_name']) || trim($result['facility_name']) == '') { 
                $result['facility_name'] = '';
           }
           if (!isset($result['labName']) || trim($result['labName']) == '') {
@@ -382,7 +382,12 @@ if (!empty($requestResult)) {
           }
           $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;">&nbsp;&nbsp;Viral Load Result (copies/ml)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars($result['result']) . '<br>' . $logValue . '</td><td >' . $smileyContent . '</td></tr>';
           if ($result['reason_for_sample_rejection'] != '') {
-               $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Rejection Reason&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
+               $corrective = '';
+               if($result["recommended_corrective_action_name"]!="")
+               {
+                    $corrective = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Recommended Corrective Action&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;'.$result["recommended_corrective_action_name"];
+               }
+               $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Rejection Reason&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . $corrective .'</td></tr>';
           }
           if (strpos(strtolower($result['vl_test_platform']), 'abbott') !== false) {
                $html .= '<tr>';

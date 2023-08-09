@@ -99,6 +99,11 @@ if (isset($eidInfo['result_dispatched_datetime']) && trim($eidInfo['result_dispa
 } else {
 	$eidInfo['result_dispatched_datetime'] = '';
 }
+
+//Recommended corrective actions
+$condition = "status ='active' AND test_type='eid'";
+$correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
+
 ?>
 
 <style>

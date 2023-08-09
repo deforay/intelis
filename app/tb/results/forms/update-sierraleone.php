@@ -416,8 +416,6 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													<option value="no" <?php echo (isset($tbInfo['is_sample_rejected']) && $tbInfo['is_sample_rejected'] == "no") ? "selected='selecetd'" : ""; ?>> No </option>
 												</select>
 											</td>
-										</tr>
-										<tr class="show-rejection" style="display:none;">
 											<th scope="row" class="show-rejection" style="display:none;"><label class="label-control" for="sampleRejectionReason">Reason for Rejection <span class="mandatory">*</span></label></th>
 											<td class="show-rejection" style="display:none;">
 												<select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the reason for rejection" onchange="checkRejectionReason();">
@@ -441,6 +439,17 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 												<input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
 
 											</td>
+										</tr>
+										<tr class="show-rejection" style="display:none;">
+								
+											<th class="labels">Recommended Corrective Action</th>
+                                            <td><select name="correctiveAction" id="correctiveAction" class="form-control" title="Please choose Recommended corrective action">
+                                                    <option value="">-- Select --</option>
+                                                    <?php foreach ($correctiveActions as $action) { ?>
+                                                    <option value="<?php echo $action['recommended_corrective_action_id']; ?>" <?php echo ($tbInfo['recommended_corrective_action'] == $action['recommended_corrective_action_id']) ? 'selected="selected"' : ''; ?>><?= $action['recommended_corrective_action_name']; ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                            </td>
 											<th scope="row"><label class="label-control" for="rejectionDate">Rejection Date<span class="mandatory">*</span></label></th>
 											<td><input value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select rejection date" title="Please select the rejection date" /></td>
 										</tr>

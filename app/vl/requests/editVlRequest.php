@@ -67,7 +67,7 @@ $statusQuery = "SELECT * FROM r_sample_status
 $statusResult = $db->rawQuery($statusQuery);
 
 //Recommended corrective actgions
-$condition = "status ='active'";
+$condition = "status ='active' AND test_type='vl'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
 $pdResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 0 AND geo_status='active'");

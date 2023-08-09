@@ -121,7 +121,8 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                     tr.test_reason_name,
                     r_f_s.funding_source_name,
                     r_i_p.i_partner_name,
-                    rs.rejection_reason_name as rejection_reason
+                    rs.rejection_reason_name as rejection_reason,
+                    r_c_a.recommended_corrective_action_name
 
                     FROM form_eid as vl
 
@@ -135,7 +136,8 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                     LEFT JOIN r_eid_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
                     LEFT JOIN r_eid_test_reasons as tr ON tr.test_reason_id=vl.reason_for_eid_test
                     LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source
-                    LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
+                    LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner
+                    LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action";
 /* Sample collection date filter */
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 /* Sample Received date filter */

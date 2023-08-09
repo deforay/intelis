@@ -35,9 +35,9 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 	$output = [];
 
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-		$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
+		$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Recommended Corrective Action","Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
 	} else {
-		$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Gender", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
+		$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Testing Lab Name", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Gender", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Recommended Corrective Action","Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
 	}
 	if ($_SESSION['instanceType'] == 'standalone' && ($key = array_search("Remote Sample Code", $headings)) !== false) {
 		unset($headings[$key]);
@@ -129,6 +129,7 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 		$row[] = ($aRow['sample_name']);
 		$row[] = $sampleRejection;
 		$row[] = $aRow['rejection_reason'];
+		$row[] = $aRow['recommended_corrective_action_name'];
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
 		$row[] = ($testPlatform);
 		$row[] = ($testMethod);
@@ -153,11 +154,13 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 		$file = null;
 		echo base64_encode($fileName);
 	} else {
-		$excel = new Spreadsheet();
-		$sheet = $excel->getActiveSheet();
-
 		$colNo = 1;
 		$nameValue = '';
+
+		$excel = new Spreadsheet();
+		$sheet = $excel->getActiveSheet();
+		$sheet->setTitle('VL Results');
+
 		foreach ($_POST as $key => $value) {
 			if (trim($value) != '' && trim($value) != '-- Select --') {
 				$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
@@ -178,6 +181,7 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 			}
 		}
 
+		//$start = (count($output)) + 2;
 		foreach ($output as $rowNo => $rowData) {
 			$colNo = 1;
 			$rRowCount = $rowNo + 4;
@@ -187,8 +191,8 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 			}
 		}
 		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-TB-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
+		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(5) . '.xlsx';
 		$writer->save($filename);
-		echo $filename;
+		echo base64_encode($filename);
 	}
 }

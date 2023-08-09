@@ -387,9 +387,16 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                             </td>
                                         </tr>
                                         <tr class="show-rejection" style="display:none;">
+                                        <th class="labels">Recommended Corrective Action</th>
+                                            <td><select name="correctiveAction" id="correctiveAction" class="form-control" title="Please choose Recommended corrective action">
+                                                    <option value="">-- Select --</option>
+                                                    <?php foreach ($correctiveActions as $action) { ?>
+                                                    <option value="<?php echo $action['recommended_corrective_action_id']; ?>"><?= $action['recommended_corrective_action_name']; ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                            </td>
                                             <th scope="row">Rejection Date<span class="mandatory">*</span></th>
                                             <td><input value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
-                                            <td></td>
                                             <td></td>
                                         </tr>
                                         <tr>

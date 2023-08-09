@@ -138,6 +138,11 @@ if (isset($countryResult) && sizeof($countryResult) > 0) {
     }
 }
 
+//Recommended corrective actions
+$condition = "status ='active' AND test_type='covid19'";
+$correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
+
+
 $fileArray = array(
     1 => 'forms/edit-southsudan.php',
     2 => 'forms/edit-sierraleone.php',

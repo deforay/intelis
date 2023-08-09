@@ -39,10 +39,6 @@ foreach ($pdResult as $provinceName) {
     $province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
 }
 
-//Recommended corrective actions
-$condition = "status ='active' AND test_type='eid'";
-$correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
-
 
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
 $artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";

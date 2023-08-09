@@ -38,9 +38,10 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
         $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
     }
     //get value by rejection reason id
-    $vlQuery = "select count(*) as `total`, vl.reason_for_sample_rejection,sr.rejection_reason_name,sr.rejection_type,sr.rejection_reason_code,fd.facility_name, lab.facility_name as `labname`
+    $vlQuery = "select count(*) as `total`, vl.reason_for_sample_rejection,sr.rejection_reason_name,sr.rejection_type,sr.rejection_reason_code,fd.facility_name, lab.facility_name as `labname`,r_c_a.recommended_corrective_action_name
                 FROM form_vl as vl
                 INNER JOIN r_vl_sample_rejection_reasons as sr ON sr.rejection_reason_id=vl.reason_for_sample_rejection
+                LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
                 INNER JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                 INNER JOIN facility_details as lab ON lab.facility_id=vl.lab_id";
     $sWhere[] = ' vl.is_sample_rejected = "yes" AND DATE(vl.sample_collection_date) <= "' . $end_date . '" AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND reason_for_sample_rejection!="" AND reason_for_sample_rejection IS NOT NULL';
@@ -51,7 +52,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     if (isset($_POST['labName']) && trim($_POST['labName']) != '') {
         $sWhere[] = ' vl.lab_id = "' . $_POST['labName'] . '"';
     }
-    if (is_array($_POST['clinicName']) && !empty($_POST['clinicName'])) {
+    if (isset($_POST['clinicName']) && is_array($_POST['clinicName']) && !empty($_POST['clinicName'])) {
         $sWhere[] = " vl.facility_id IN (" . implode(',', $_POST['clinicName']) . ")";
     }
     if (!empty($_SESSION['facilityMap'])) {
@@ -62,6 +63,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
         $sWhere = implode(' AND ', $sWhere);
     }
     $vlQuery = $vlQuery . ' where ' . $sWhere . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";
+    //echo $vlQuery; die;
     $_SESSION['rejectedSamples'] = $vlQuery;
     $tableResult = $db->rawQuery($vlQuery);
 
@@ -102,6 +104,9 @@ if (!empty($tableResult)) { ?>
                 <?php echo _("Reason Category"); ?>
             </th>
             <th>
+                <?php echo _("Recommended Corrective Action"); ?>
+            </th>
+            <th>
                 <?php echo _("No. of Samples"); ?>
             </th>
         </tr>
@@ -125,6 +130,9 @@ if (!empty($tableResult)) { ?>
                     </td>
                     <td>
                         <?php echo strtoupper($tableRow['rejection_type']); ?>
+                    </td>
+                    <td>
+                        <?php echo ($tableRow['recommended_corrective_action_name']); ?>
                     </td>
                     <td>
                         <?php echo $tableRow['total']; ?>

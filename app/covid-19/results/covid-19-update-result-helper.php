@@ -108,6 +108,7 @@ try {
 		'result_status' => 8,
 		'data_sync' => 0,
 		'reason_for_sample_rejection' => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
+		'recommended_corrective_action' => (isset($_POST['correctiveAction']) && trim($_POST['correctiveAction']) != '') ? $_POST['correctiveAction'] : null,
 		'last_modified_by' => $_SESSION['userId'],
 		'result_printed_datetime' => null,
 		'result_dispatched_datetime' => null,

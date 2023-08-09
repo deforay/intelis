@@ -568,6 +568,9 @@ $state = $geolocationService->getProvinces("yes");
 														<th>
 															<?php echo _("Rejection Reason"); ?>
 														</th>
+														<th>
+															<?php echo _("Recommended Corrective Action"); ?>
+														</th>
 													</tr>
 												</thead>
 												<tbody>
@@ -1182,9 +1185,12 @@ $state = $geolocationService->getProvinces("yes");
 				{
 					"sClass": "center"
 				},
+				{
+					"sClass": "center"
+				},
 			],
 			"aaSorting": [
-				[<?= ($_SESSION['instanceType'] != 'standalone') ? 5 : 4; ?>, "desc"]
+				[<?= ($_SESSION['instanceType'] != 'standalone') ? 6 : 5; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,

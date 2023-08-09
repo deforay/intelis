@@ -74,6 +74,9 @@ foreach ($rejectionTypeResult as $type) {
     }
     $rejectionReason .= '</optgroup>';
 }
+//Recommended corrective actions
+$condition = "status ='active' AND test_type='tb'";
+$correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
 $fileArray = array(
     1 => 'forms/add-southsudan.php',

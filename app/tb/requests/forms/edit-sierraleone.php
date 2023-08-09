@@ -534,7 +534,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
                                             <td><select name="correctiveAction" id="correctiveAction" class="form-control" title="Please choose Recommended corrective action">
                                                     <option value="">-- Select --</option>
                                                     <?php foreach ($correctiveActions as $action) { ?>
-                                                    <option value="<?php echo $action['recommended_corrective_action_id']; ?>"><?= $action['recommended_corrective_action_name']; ?></option>
+                                                    <option value="<?php echo $action['recommended_corrective_action_id']; ?>" <?php echo ($tbInfo['recommended_corrective_action'] == $action['recommended_corrective_action_id']) ? 'selected="selected"' : ''; ?>><?= $action['recommended_corrective_action_name']; ?></option>
                                                     <?php } ?>
                                                 </select>
                                             </td>

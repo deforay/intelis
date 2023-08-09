@@ -256,6 +256,7 @@ try {
 		'result_status' => $status,
 		'data_sync' => 0,
 		'reason_for_sample_rejection' => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
+		'recommended_corrective_action' => (isset($_POST['correctiveAction']) && trim($_POST['correctiveAction']) != '') ? $_POST['correctiveAction'] : null,
 		'request_created_datetime' => DateUtility::getCurrentDateTime(),
 		'sample_registered_at_lab' => DateUtility::getCurrentDateTime(),
 		'last_modified_datetime' => DateUtility::getCurrentDateTime(),

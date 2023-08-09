@@ -292,6 +292,8 @@ $state = $geolocationService->getProvinces("yes");
 														<th scope="row"><?php echo _("Sample Collection Date"); ?></th>
 														<th><?php echo _("VL Lab Name"); ?></th>
 														<th><?php echo _("Rejection Reason"); ?></th>
+														<th><?php echo _("Recommended Corrective Action"); ?></th>
+
 													</tr>
 												</thead>
 												<tbody>
@@ -634,6 +636,9 @@ $state = $geolocationService->getProvinces("yes");
 						"sClass": "center"
 					},
 				<?php } ?> {
+					"sClass": "center"
+				},
+				{
 					"sClass": "center"
 				},
 				{

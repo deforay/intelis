@@ -72,7 +72,7 @@ $vlTestReasonQuery = "SELECT * from r_vl_test_reasons where test_reason_status =
 $vlTestReasonResult = $db->query($vlTestReasonQuery);
 
 //Recommended corrective actgions
-$condition = "status ='active'";
+$condition = "status ='active' AND test_type='vl'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
 //get suspected treatment failure at

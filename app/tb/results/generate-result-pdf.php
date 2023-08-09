@@ -77,7 +77,9 @@ if (isset($_POST['id']) && trim($_POST['id']) != '') {
 				r_u_d.user_name as requestedBy,
 				rfs.funding_source_name,
 				rst.sample_name,
-				testres.test_reason_name as reasonForTesting
+				testres.test_reason_name as reasonForTesting,
+                r_c_a.recommended_corrective_action_name
+
 				FROM form_tb as tb
 				LEFT JOIN facility_details as f ON tb.facility_id=f.facility_id
 				LEFT JOIN facility_details as l ON l.facility_id=tb.lab_id
@@ -86,6 +88,7 @@ if (isset($_POST['id']) && trim($_POST['id']) != '') {
 				LEFT JOIN user_details as r_u_d ON r_u_d.user_id=tb.request_created_by
 				LEFT JOIN r_tb_test_reasons as testres ON testres.test_reason_id=tb.reason_for_tb_test
 				LEFT JOIN r_tb_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=tb.reason_for_sample_rejection
+                LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=tb.recommended_corrective_action
 				LEFT JOIN r_implementation_partners as rip ON rip.i_partner_id=tb.implementing_partner
 				LEFT JOIN r_funding_sources as rfs ON rfs.funding_source_id=tb.funding_source
 				LEFT JOIN r_tb_sample_type as rst ON rst.sample_id=tb.specimen_type

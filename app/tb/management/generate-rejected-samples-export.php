@@ -23,7 +23,7 @@ if (isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples']) !=
      $output = [];
      $excel = new Spreadsheet();
      $sheet = $excel->getActiveSheet();
-     $headings = array("Lab Name", "Facility Name", "Rejection Reason", "Reason Category", "No. of Samples");
+     $headings = array("Lab Name", "Facility Name", "Rejection Reason", "Reason Category","Recommended Corrective Action", "No. of Samples");
 
 
      $colNo = 1;
@@ -45,6 +45,7 @@ if (isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples']) !=
           $row[] = ($aRow['facility_name']);
           $row[] = ($aRow['rejection_reason_name']);
           $row[] = strtoupper($aRow['rejection_type']);
+          $row[] = ($aRow['recommended_corrective_action_name']);
           $row[] = $aRow['total'];
           $output[] = $row;
      }

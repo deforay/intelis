@@ -117,16 +117,6 @@ foreach ($rResult as $aRow) {
     $no++;
 }
 
-$start = (count($output)) + 2;
-foreach ($output as $rowNo => $rowData) {
-    $colNo = 1;
-    $rRowCount = $rowNo + 4;
-    foreach ($rowData as $field => $value) {
-        $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
-        $colNo++;
-    }
-}
-
 if (isset($_SESSION['tbRequestSearchResultQueryCount']) && $_SESSION['tbRequestSearchResultQueryCount'] > 75000) {
 
     $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-TB-Requests-' . date('d-M-Y-H-i-s') . '.csv';
@@ -141,9 +131,12 @@ if (isset($_SESSION['tbRequestSearchResultQueryCount']) && $_SESSION['tbRequestS
     echo base64_encode($fileName);
 } else {
 
-    $colNo = 1;
     $excel = new Spreadsheet();
     $sheet = $excel->getActiveSheet();
+
+
+    $colNo = 1;
+
     $nameValue = '';
     foreach ($_POST as $key => $value) {
         if (trim($value) != '' && trim($value) != '-- Select --') {
@@ -165,6 +158,14 @@ if (isset($_SESSION['tbRequestSearchResultQueryCount']) && $_SESSION['tbRequestS
         }
     }
 
+    foreach ($output as $rowNo => $rowData) {
+        $colNo = 1;
+        $rRowCount = $rowNo + 4;
+        foreach ($rowData as $field => $value) {
+            $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
+            $colNo++;
+        }
+    }
     $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
     $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-TB-Requests-' . date('d-M-Y-H-i-s') . '.xlsx';
     $writer->save($filename);

@@ -52,10 +52,6 @@ $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
 
-//Recommended corrective actions
-$condition = "status ='active' AND test_type='covid19'";
-$correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
-
 ?>
 
 <div class="content-wrapper">
@@ -429,7 +425,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 
                                             </td>
                                         </tr>
-                                        <tr class="show-rejection" style="display:none;">
+                                        <tr class="show-rejection" style="display:none;"> 
                                         <th class="labels">Recommended Corrective Action</th>
                                             <td><select name="correctiveAction" id="correctiveAction" class="form-control" title="Please choose Recommended corrective action">
                                                     <option value="">-- Select --</option>

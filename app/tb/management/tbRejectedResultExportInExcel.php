@@ -34,7 +34,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViral
      $excel = new Spreadsheet();
      $output = [];
      $sheet = $excel->getActiveSheet();
-     $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient's ID.", "Patient's Name", "Sample Collection Date", "Lab Name", "Rejection Reason");
+     $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient's ID.", "Patient's Name", "Sample Collection Date", "Lab Name", "Rejection Reason","Recommended Corrective Action");
      if ($sarr['sc_user_type'] == 'standalone') {
           if (($key = array_search("Remote Sample Code", $headings)) !== false) {
                unset($headings[$key]);
@@ -73,7 +73,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViral
                ->setValueExplicit(html_entity_decode($value));
           $colNo++;
      }
-     $sheet->getStyle('A3:H3')->applyFromArray($styleArray);
+     $sheet->getStyle('A3:I3')->applyFromArray($styleArray);
 
      foreach ($rResult as $aRow) {
           $row = [];
@@ -102,6 +102,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViral
           $row[] = $sampleCollectionDate;
           $row[] = $aRow['labName'];
           $row[] = $aRow['rejection_reason_name'];
+          $row[] = $aRow['recommended_corrective_action_name'];
           $output[] = $row;
      }
      if (isset($_SESSION['rejectedViralLoadResultCount']) && $_SESSION['rejectedViralLoadResultCount'] > 75000) {

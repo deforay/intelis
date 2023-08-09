@@ -67,9 +67,6 @@ $pdResult = $db->query($pQuery);
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
 $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+");
 
-//Recommended corrective actions
-$condition = "status ='active' AND test_type='tb'";
-$correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
 ?>
 

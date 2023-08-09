@@ -86,6 +86,10 @@ if (isset($vlQueryInfo['result_reviewed_datetime']) && trim($vlQueryInfo['result
 } else {
 	$vlQueryInfo['result_reviewed_datetime'] = '';
 }
+//Recommended corrective actions
+$condition = "status ='active' AND test_type='covid19'";
+$correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
+
 
 ?>
 <style>
