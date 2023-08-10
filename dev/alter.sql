@@ -4917,4 +4917,6 @@ ALTER TABLE `audit_form_vl` CHANGE `unique_id` `unique_id` VARCHAR(256) CHARACTE
 -- Amit 2-Aug-2023 version 5.2.1
 UPDATE `system_config` SET `value` = '5.2.1' WHERE `system_config`.`name` = 'sc_version';
 
-
+-- Jeyabanu 10-08-2023
+ALTER TABLE `user_details` ADD `user_country` VARCHAR(256) NULL DEFAULT NULL AFTER `role_id`;
+ALTER TABLE `user_details` ADD `user_default_time_zone` VARCHAR(256) NULL DEFAULT NULL AFTER `user_country`;
