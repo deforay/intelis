@@ -3,17 +3,31 @@
 $title = _("Recommended Corrective Action");
 
 require_once APPLICATION_PATH . '/header.php';
+
 $testType = 'vl';
 
 if(isset($_GET['testType']) && !empty($_GET['testType'])){
 	$testType = $_GET['testType'];
 }
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+
+if (!isset($id) || $id == "") {
+    $_SESSION['alertMsg'] = "Something went wrong in Implementation Partners edit page";
+    header("Location:recommended-corrective-actions.php?testType=".$testType);
+}
+$query = "SELECT * from r_recommended_corrective_actions where recommended_corrective_action_id = ?";
+$correctiveInfo = $db->rawQuery($query, [$id]);
 ?>
 <!-- Content Wrapper. Contains page content --> 
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><em class="fa-solid fa-gears"></em> <?php echo _("Add Recommended Corrective Action"); ?></h1>
+        <h1><em class="fa-solid fa-gears"></em> <?php echo _("Edit Recommended Corrective Action"); ?></h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
             <li class="active"><?php echo _("Recommended Corrective Action"); ?></li>
@@ -30,14 +44,14 @@ if(isset($_GET['testType']) && !empty($_GET['testType'])){
             <!-- /.box-header -->
             <div class="box-body">
                 <!-- form start -->
-                <form class="form-horizontal" method='post' name='correctiveActionForm' id='correctiveActionForm' autocomplete="off" enctype="multipart/form-data" action="save-recommended-action-helper.php">
+                <form class="form-horizontal" method='post' name='correctiveActionForm' id='correctiveActionForm' autocomplete="off" enctype="multipart/form-data" action="save-recommended-corrective-action-helper.php">
                     <div class="box-body">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="correctiveAction" class="col-lg-4 control-label"><?php echo _("Recommended Corrective Action Name"); ?><span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="correctiveAction" name="correctiveAction" placeholder="<?php echo _('Recommended Corrective Action Name'); ?>" title="<?php echo _('Please enter Recommended Corrective Action'); ?>" onblur='checkNameValidation("r_recommended_corrective_actions","recommended_corrective_action_name",this,' <?php echo "test_type##" . $testType; ?>',"<?php echo _("The Corrective action that you entered already exists.Enter another Corrective action"); ?>",null)' />
+                                        <input type="text" class="form-control isRequired" id="correctiveAction" name="correctiveAction" placeholder="<?php echo _('Recommended Corrective Action Name'); ?>" value="<?php echo $correctiveInfo[0]['recommended_corrective_action_name']; ?>" title="<?php echo _('Please enter Recommended Corrective Action'); ?>" onblur='checkNameValidation("r_recommended_corrective_actions","recommended_corrective_action_name",this,' <?php echo "test_type##" . $testType; ?>',"<?php echo _("The Corrective action that you entered already exists.Enter another Corrective action"); ?>",null)' />
                                     </div>
                                 </div>
                             </div>
@@ -47,8 +61,8 @@ if(isset($_GET['testType']) && !empty($_GET['testType'])){
                                     <div class="col-lg-7">
                                         <select class="form-control isRequired" id="correctiveActionStatus" name="correctiveActionStatus" title="<?php echo _('Please select corrective Action Status'); ?>">
                                             <option value=""><?php echo _("--Select--"); ?></option>
-                                            <option value="active"><?php echo _("Active"); ?></option>
-                                            <option value="inactive"><?php echo _("Inactive"); ?></option>
+                                            <option value="active" <?php echo ($correctiveInfo[0]['status']=='active') ? 'selected="selected"' : ''; ?>><?php echo _("Active"); ?></option>
+                                            <option value="inactive" <?php echo ($correctiveInfo[0]['status']=='inactive') ? 'selected="selected"' : ''; ?>><?php echo _("Inactive"); ?></option>
                                         </select>
                                     </div>
                                 </div>
@@ -62,7 +76,7 @@ if(isset($_GET['testType']) && !empty($_GET['testType'])){
                         <a href="recommended-corrective-actions.php?testType=<?= $testType; ?>" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
                     </div>
                     <input type="hidden" class="form-control" id="testType" name="testType" value="<?= $testType; ?>" />
-                    <input type="hidden" class="form-control" id="correctiveActionId" name="correctiveActionId" value="<?= $testType; ?>" />
+                    <input type="hidden" class="form-control" id="correctiveActionId" name="correctiveActionId" value="<?= $_GET['id']; ?>" />
 
                     
                     <!-- /.box-footer -->
