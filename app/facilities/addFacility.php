@@ -210,7 +210,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 										<?php echo _("Lab Manager"); ?>
 									</label>
 									<div class="col-lg-7">
-										<select name="contactPerson" id="contactPerson" class="select2 form-control" title="<?php echo _('Please choose the Lab Manager'); ?>" style="width: 100%;">
+										<select name="contactPerson" id="contactPerson" class="contactPerson form-control" title="<?php echo _('Please choose the Lab Manager'); ?>" style="width: 100% !important;">
 											<?= $general->generateSelectOptions($userInfo, null, _("-- Select --")); ?>
 										</select>
 									</div>
@@ -334,7 +334,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
-										<label for="testType" class="col-lg-4 control-label">
+										<label for="testType" class="col-lg-4 control-label test-type">
 											<?php echo _("Test Type"); ?>
 										</label>
 										<div class="col-lg-7">
@@ -694,10 +694,22 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 			placeholder: '<?php echo _("Select Test Type"); ?>',
 			width: '100%'
 		});
-		$(".select2").select2({
+		$("#contactPerson").select2({
 			placeholder: '<?php echo _("Select Lab Manager"); ?>',
-			width: '150px'
+			width: '100%'
 		});
+
+		$("#stateId").select2({
+			placeholder: '<?php echo _("Select Province"); ?>',
+			width: '100%'
+		});
+
+		$("#districtId").select2({
+			placeholder: '<?php echo _("Select District"); ?>',
+			width: '100%'
+		});
+
+		
 		$("#availablePlatforms").multipleSelect({
 			placeholder: '<?php echo _("Select Available Platforms"); ?>',
 			width: '100%'
@@ -840,6 +852,16 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 	function getTestType() {
 		var facility = $("#facilityType").val();
 		var testType = $("#testType").val();
+		if(facility=='2')
+		{
+			$("#testType").addClass('isRequired');
+			$(".test-type").append('<span class="mandatory">*</span>');
+		}
+		else
+		{
+			$("#testType").removeClass('isRequired');
+			$(".test-type").find('span').remove();
+		}
 		if (testType == 'tb') {
 			$('.availablePlatforms').show();
 		} else {

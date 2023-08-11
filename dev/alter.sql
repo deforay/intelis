@@ -4920,3 +4920,5 @@ UPDATE `system_config` SET `value` = '5.2.1' WHERE `system_config`.`name` = 'sc_
 -- Jeyabanu 10-08-2023
 ALTER TABLE `user_details` ADD `user_country` VARCHAR(256) NULL DEFAULT NULL AFTER `role_id`;
 ALTER TABLE `user_details` ADD `user_default_time_zone` VARCHAR(256) NULL DEFAULT NULL AFTER `user_country`;
+
+INSERT INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'admin', 'no', 'Recommended Corrective Actions', '/common/reference/recommended-corrective-actions.php?testType=eid', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-recommended-corrective-actions\r\n', '11', '40', 'active', CURRENT_TIMESTAMP), (NULL, 'admin', 'no', 'Recommended Corrective Actions', '/common/reference/recommended-corrective-actions.php?testType=eid', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-recommended-corrective-actions\r\n', '12', '41', 'active', CURRENT_TIMESTAMP);
