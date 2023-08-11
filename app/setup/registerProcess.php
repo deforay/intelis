@@ -3,6 +3,8 @@
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UsersService;
+use App\Services\SystemService;
+
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -10,10 +12,14 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 $tableName = "user_details";
+$configTableName = "global_config";
 $userName = ($_POST['userName']);
 $emailId = ($_POST['email']);
 $loginId = ($_POST['loginId']);
 $password = ($_POST['password']);
+$vlForm = ($_POST['vl_form']);
+$timeZone = ($_POST['default_time_zone']);
+$locale = ($_POST['app_locale']);
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -25,6 +31,14 @@ $userType = $general->getSystemConfig('sc_user_type');
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
+$activeModulesArr = SystemService::getActiveModules();
+
+
+function changeModuleWithQuotes($moduleArr)
+{
+    return "'$moduleArr'";
+}
 
 
 try {
@@ -40,11 +54,44 @@ try {
             'email'             => $emailId,
             'login_id'          => $loginId,
             'password'          => $userPassword,
+            'user_locale'       => $locale,
+            'user_default_time_zone' => $timeZone,
+            'user_country'      => $vlForm,
             'hash_algorithm'    => 'phb',
             'role_id'           => 1,
             'status'            => 'active'
         );
         $db->insert($tableName, $insertData);
+
+        if (isset($_POST['vl_form']) && trim($_POST['vl_form']) != "") {
+            $data = array('value' => trim($_POST['vl_form']));
+            $db = $db->where('name', 'vl_form');
+            $id = $db->update($configTableName, $data);
+        }
+
+        if (isset($_POST['default_time_zone']) && trim($_POST['default_time_zone']) != "") {
+            $data = array('value' => trim($_POST['default_time_zone']));
+            $db = $db->where('name', 'default_time_zone');
+            $id = $db->update($configTableName, $data);
+        }
+
+        if (isset($_POST['app_locale']) && trim($_POST['app_locale']) != "") {
+            $data = array('value' => trim($_POST['app_locale']));
+            $db = $db->where('name', 'app_locale');
+            $id = $db->update($configTableName, $data);
+        }
+
+        $modules = array_map("changeModuleWithQuotes",$activeModulesArr);
+
+        $activeModules = implode(",",$modules);
+
+        $privilegesSql = "SELECT p.privilege_id FROM privileges as p inner join resources as r on r.resource_id=p.resource_id WHERE r.module IN ($activeModules)";
+        $privileges = $db->query($privilegesSql);
+        foreach($privileges as $privilege)
+        {
+            $privilegeId = $privilege['privilege_id'];
+            $db->query("insert into roles_privileges_map(role_id,privilege_id) values (1,$privilegeId)");
+        }
 
         if (!empty(SYSTEM_CONFIG['remoteURL']) && $userType == 'vluser') {
             $insertData['userId'] = $userId;

@@ -1,6 +1,7 @@
 <?php
 
 use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
 
 if (session_status() == PHP_SESSION_NONE) {
   session_start();
@@ -11,6 +12,21 @@ if (session_status() == PHP_SESSION_NONE) {
 $db = ContainerRegistry::get('db');
 
 
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+// Get locale directory list
+$localeLists = $general->getLocaleList();
+
+$formQuery = "SELECT * FROM s_available_country_forms ORDER by form_name ASC";
+$formResult = $db->query($formQuery);
+
+$globalConfigQuery = "SELECT * from global_config";
+$configResult = $db->query($globalConfigQuery);
+$arr = [];
+// now we create an associative array so that we can easily create view variables
+for ($i = 0; $i < sizeof($configResult); $i++) {
+	$arr[$configResult[$i]['name']] = $configResult[$i]['value'];
+}
 
 $db->where("login_id", NULL, 'IS NOT');
 $count = $db->getValue("user_details", "count(*)");
@@ -98,6 +114,44 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-envelope"></em></span>
               <input id="login-email" type="text" class="form-control isRequired" name="email" value="" placeholder="<?= _("Email ID"); ?>" title="Please enter your email id">
+            </div>
+            <div style="margin-bottom: 5px" class="input-group">
+              <span class="input-group-addon"><em class="fa-solid fa-flag"></em></span>
+              <select class="form-control isRequired readPage select2" name="vl_form" id="vl_form" title="<?php echo _('Please select the viral load form'); ?>">
+												<option value=""><?= _("-- Choose Country of Installation --"); ?></option>
+                        <?php
+													foreach ($formResult as $val) {
+													?>
+														<option value="<?php echo $val['vlsm_country_id']; ?>" <?php echo ($val['vlsm_country_id'] == $arr['vl_form']) ? "selected='selected'" : "" ?>><?php echo $val['form_name']; ?></option>
+													<?php
+													}
+													?>
+												</select>
+            </div>
+            <div style="margin-bottom: 5px" class="input-group">
+              <span class="input-group-addon"><em class="fa-solid fa-clock"></em></span>
+              <select class="form-control readPage select2 isRequired" id="default_time_zone" name="default_time_zone" placeholder="<?php echo _('Timezone'); ?>" title="<?php echo _('Please choose Timezone'); ?>">
+													<option value=""><?= _("-- Choose Default Time Zone --"); ?></option>
+													<?php
+													$timezone_identifiers = DateTimeZone::listIdentifiers();
+
+													foreach ($timezone_identifiers as $value) {
+													?>
+														<option <?= ($arr['default_time_zone'] == $value ? 'selected=selected' : ''); ?> value='<?= $value; ?>'> <?= $value; ?></option>;
+													<?php
+													}
+
+													?>
+												</select>
+            </div>
+            <div style="margin-bottom: 5px" class="input-group">
+              <span class="input-group-addon"><em class="fa-solid fa-language"></em></span>
+                  <select class="form-control isRequired readPage" name="app_locale" id="app_locale" title="<?php echo _('Please select the VLSM Locale'); ?>">
+                        <option value=""><?= _("-- Choose User Locale --"); ?></option>
+                        <?php foreach ($localeLists as $locale) { ?>
+													<option value="<?php echo $locale; ?>" <?php echo (isset($arr['app_locale']) && $arr['app_locale'] == $locale) ? 'selected="selected"' : ''; ?>><?php echo $locale; ?></option>
+												<?php } ?>
+									</select>
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-right-to-bracket"></em></span>

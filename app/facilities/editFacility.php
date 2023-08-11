@@ -179,7 +179,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 								<div class="form-group">
 									<label for="facilityType" class="col-lg-4 control-label"><?php echo _("Facility Type"); ?> <span class="mandatory">*</span> </label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" id="facilityType" name="facilityType" title="<?php echo _('Please select facility type'); ?>" onchange="<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? 'getFacilityUser()' : ''; ?>getTestType(); showSignature(this.value);">
+										<select class="form-control isRequired" id="facilityType" name="facilityType" title="<?php echo _('Please select facility type'); ?>" onchange="<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? 'getFacilityUser();' : ''; ?>getTestType(); showSignature(this.value);">
 											<option value=""> <?php echo _("-- Select --"); ?> </option>
 											<?php
 											$k = 10;
@@ -352,7 +352,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testType" class="col-lg-4 control-label"><?php echo _("Test Type"); ?></label>
+									<label for="testType" class="col-lg-4 control-label test-type"><?php echo _("Test Type"); ?></label>
 									<div class="col-lg-7">
 										<select class="" id="testType" name="testType[]" title="<?php echo _('Choose one test type'); ?>" onchange="getTestType();" multiple>
 											<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
@@ -650,10 +650,22 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 			placeholder: '<?php echo _("Select Test Type"); ?>',
 			width: '100%'
 		});
-		$(".select2").select2({
+
+		$("#contactPerson").select2({
 			placeholder: '<?php echo _("Select Lab Manager"); ?>',
-			width: '150px'
+			width: '100%'
 		});
+
+		$("#stateId").select2({
+			placeholder: '<?php echo _("Select Province"); ?>',
+			width: '100%'
+		});
+
+		$("#districtId").select2({
+			placeholder: '<?php echo _("Select District"); ?>',
+			width: '100%'
+		});
+
 		$("#availablePlatforms").multipleSelect({
 			placeholder: '<?php echo _("Select Available Platforms"); ?>',
 			width: '100%'
@@ -773,12 +785,18 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 			$('.allowResultsUpload').show();
 			$('#allowResultUpload').addClass('isRequired');
 			$('#allowResultUpload').focus();
+
+			$("#testType").addClass('isRequired');
+				$(".test-type").append('<span class="mandatory">*</span>');
 		} else {
 			$("#allowResultUpload option[value=yes]").removeAttr('selected', 'selected');
 			$("#allowResultUpload option[value='']").attr('selected', 'selected');
 			$('.allowResultsUpload').hide();
 			$('#allowResultUpload').removeClass('isRequired');
 			$('#allowResultUpload').val('');
+
+			$("#testType").removeClass('isRequired');
+				$(".test-type").find('span').remove();
 		}
 	});
 
@@ -839,11 +857,13 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 		if (first == 1) {
 			var facility = $("#facilityType").val();
 			var testType = $("#testType").val();
+			
 			if (testType == 'tb') {
 				$('.availablePlatforms').show();
 			} else {
 				$('.availablePlatforms').hide();
 			}
+			
 			if (facility && (testType.length > 0) && facility == '2') {
 				var div = '<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" ><thead><th> <?php echo _("Test Type"); ?></th> <th> <?php echo _("Monthly Target"); ?> <span class="mandatory">*</span></th><th><?php echo _("Suppressed Monthly Target"); ?> <span class="mandatory">*</span></th> </thead><tbody>';
 				for (var i = 0; i < testType.length; i++) {

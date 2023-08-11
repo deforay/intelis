@@ -18,7 +18,7 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 
 $tableName = "r_recommended_corrective_actions";
-$primaryKey = "r_recommended_corrective_action_id";
+$primaryKey = "recommended_corrective_action_id";
 
 try {
 
@@ -30,8 +30,9 @@ try {
 			'status' 								=> $_POST['correctiveActionStatus'],
 			'updated_datetime'						=> DateUtility::getCurrentDateTime()
 		);
+		//	echo '<pre>'; print_r($_POST	); die;
 		if (isset($_POST['correctiveActionId']) && $_POST['correctiveActionId'] != "") {
-			$db = $db->where($primaryKey, base64_decode($_POST['correctiveActionId']));
+			$db->where($primaryKey, base64_decode($_POST['correctiveActionId']));
 			$lastId = $db->update($tableName, $data);
 		} else {
 			$data['data_sync'] = 0;
