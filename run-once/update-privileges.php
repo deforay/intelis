@@ -21,14 +21,12 @@ $sharedPrivileges = [
     '/import-result/importedStatistics.php?t=tb' => '/import-result/import-file.php?t=tb',
     '/import-result/importedStatistics.php?t=generic-tests' => '?t=generic-tests',
     'mapTestType.php' => 'addFacility.php',
-    'add-province.php' => 'province-details.php',
-    'edit-province.php' => 'province-details.php',
-    'implementation-partners.php' => 'province-details.php',
-    'add-implementation-partners.php' => 'province-details.php',
-    'edit-implementation-partners.php' => 'province-details.php',
-    'funding-sources.php' => 'province-details.php',
-    'add-funding-sources.php' => 'province-details.php',
-    'edit-funding-sources.php' => 'province-details.php'
+    'implementation-partners.php' => 'geographical-divisions-details.php',
+    'add-implementation-partners.php' => 'geographical-divisions-details.php',
+    'edit-implementation-partners.php' => 'geographical-divisions-details.php',
+    'funding-sources.php' => 'geographical-divisions-details.php',
+    'add-funding-sources.php' => 'geographical-divisions-details.php',
+    'edit-funding-sources.php' => 'geographical-divisions-details.php'
 ];
 
 //Generic Tests Module Shared Privileges

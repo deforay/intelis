@@ -4922,3 +4922,8 @@ ALTER TABLE `user_details` ADD `user_country` VARCHAR(256) NULL DEFAULT NULL AFT
 ALTER TABLE `user_details` ADD `user_default_time_zone` VARCHAR(256) NULL DEFAULT NULL AFTER `user_country`;
 
 INSERT INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'admin', 'no', 'Recommended Corrective Actions', '/common/reference/recommended-corrective-actions.php?testType=eid', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-recommended-corrective-actions\r\n', '11', '40', 'active', CURRENT_TIMESTAMP), (NULL, 'admin', 'no', 'Recommended Corrective Actions', '/common/reference/recommended-corrective-actions.php?testType=eid', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-recommended-corrective-actions\r\n', '12', '41', 'active', CURRENT_TIMESTAMP);
+
+UPDATE `privileges` SET `shared_privileges` = '[\"implementation-partners.php\", \"add-implementation-partners.php\", \"edit-implementation-partners.php\", \"funding-sources.php\", \"add-funding-sources.php\", \"edit-funding-sources.php\"]' WHERE `privileges`.`privilege_id` = 166;
+
+UPDATE `roles_privileges_map` SET `privilege_id`='166' WHERE `privilege_id`='139';
+DELETE FROM `privileges` WHERE `privileges`.`privilege_id` = '139';

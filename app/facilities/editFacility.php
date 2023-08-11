@@ -885,7 +885,17 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 					} else if (testType[i] == 'covid19') {
 						testOrg = '<?php echo _("Covid-19"); ?>';
 						var extraDiv = '<td></td>';
+					} else if (testType[i] == 'hepatitis') {
+						testOrg = 'Hepatitis';
+						var extraDiv = '<td></td>';
+					} else if (testType[i] == 'tb') {
+						testOrg = 'TB';
+						var extraDiv = '<td></td>';
+					} else if (testType[i] == 'generic-tests') {
+						testOrg = 'Other Lab Tests';
+						var extraDiv = '<td></td>';
 					}
+
 					div += '<tr><td>' + testOrg + '<input type="hidden" name="testData[]" id ="testData' + i + '" value="' + testType[i] + '" /></td>';
 					div += '<td><input type="text" class="" name="monTar[]" id ="monTar' + i + '" value="' + oldMonTar + '" title="<?php echo _('Please enter monthly target'); ?>"/></td>';
 					div += extraDiv;

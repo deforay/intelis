@@ -15,7 +15,7 @@ $covid19Results = $covid19Service->getCovid19Results();
 // Getting the list of Provinces, Districts and Facilities
 
 $rKey = '';
-$pdQuery = "SELECT * FROM province_details";
+$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0";
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
@@ -28,7 +28,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     $chkUserFcMapQry = "SELECT user_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
     $chkUserFcMapResult = $db->query($chkUserFcMapQry);
     if ($chkUserFcMapResult) {
-        $pdQuery = "SELECT * FROM province_details as pd JOIN facility_details as fd ON fd.facility_state=pd.province_name JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' group by province_name";
+        $pdQuery = "SELECT * from geographical_divisions as pd JOIN facility_details as fd ON fd.facility_state=pd.geo_name JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where user_id='" . $_SESSION['userId'] . "' AND pd.geo_parent=0 group by geo_name";
     }
     $rKey = 'R';
 } else {

@@ -12,7 +12,7 @@ $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
 if (!isset($id) || $id == "") {
     $_SESSION['alertMsg'] = "Something went wrong in Implementation Partners edit page";
-    header("Location:province-details.php");
+    header("Location:geographical-divisions-details.php");
 }
 $query = "SELECT * from r_implementation_partners where i_partner_id = ?";
 $partnerInfo = $db->rawQuery($query, array($id));
