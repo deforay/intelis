@@ -170,8 +170,6 @@ class ApiService
             if (!$module && $facilityType == 1) {
                 $response[$key]['test_type'] = $row['test_type'];
             }
-            // $response[$key]['provinceDetails'] = $this->getSubFields('province_details', 'province_id', 'province_name', $condition1);
-            // $response[$key]['districtDetails'] = $this->getSubFields('facility_details', 'facility_district', 'facility_district', $condition2);
         }
         return $response;
     }
