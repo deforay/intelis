@@ -132,7 +132,7 @@ $aResult = $db->query($aQuery);
                                                 <option value=""> -- Select -- </option>
                                                 <?php
                                                 foreach ($implementingPartnerList as $implementingPartner) {
-                                                    ?>
+                                                ?>
                                                     <option value="<?php echo ($implementingPartner['i_partner_id']); ?>" <?php echo ($eidInfo['implementing_partner'] == $implementingPartner['i_partner_id']) ? "selected='selected'" : ""; ?>><?= $implementingPartner['i_partner_name']; ?></option>
                                                 <?php } ?>
                                             </select>
@@ -143,7 +143,7 @@ $aResult = $db->query($aQuery);
                                                 <option value=""> -- Select -- </option>
                                                 <?php
                                                 foreach ($fundingSourceList as $fundingSource) {
-                                                    ?>
+                                                ?>
                                                     <option value="<?php echo ($fundingSource['funding_source_id']); ?>" <?php echo ($eidInfo['funding_source'] == $fundingSource['funding_source_id']) ? "selected='selected'" : ""; ?>><?= $fundingSource['funding_source_name']; ?></option>
                                                 <?php } ?>
                                             </select>
@@ -258,7 +258,7 @@ $aResult = $db->query($aQuery);
                                                         <?php
                                                         foreach ($aResult as $regimen) {
                                                             if ($heading['headings'] == $regimen['headings']) {
-                                                                ?>
+                                                        ?>
                                                                 <option value="<?php echo $regimen['art_code']; ?>" <?php echo ($eidInfo['mother_regimen'] == $regimen['art_code']) ? "selected='selected'" : "" ?>><?php echo $regimen['art_code']; ?></option>
                                                         <?php
                                                             }
@@ -413,7 +413,7 @@ $aResult = $db->query($aQuery);
                                         <td>
                                             <input class="form-control isRequired" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" value="<?= htmlspecialchars($eidInfo['sample_requestor_phone']); ?>" />
                                         </td>
-                                        <?php if ($usersService->isAllowed('/eid/results/eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                                        <?php if ($usersService->isAllowed('/eid/results/eid-manual-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                             <th scope="row">Sample Received Date (at Testing Lab) <span class="mandatory">*</span></th>
                                             <td>
                                                 <input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>" style="width:100%;" />
@@ -424,7 +424,7 @@ $aResult = $db->query($aQuery);
                                 </table>
                             </div>
                         </div>
-                        <?php if ($usersService->isAllowed('/eid/results/eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if ($usersService->isAllowed('/eid/results/eid-manual-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
@@ -478,13 +478,13 @@ $aResult = $db->query($aQuery);
                                             <td class="rejected labels" style="display: none;">Recommended Corrective Action</td>
                                             <td class="rejected" style="display: none;">
                                                 <select name="correctiveAction" id="correctiveAction" class="form-control" title="Please choose Recommended corrective action">
-															<option value="">-- Select --</option>
-															<?php foreach ($correctiveActions as $action) {
-															?>
-																<option value="<?php echo $action['recommended_corrective_action_id']; ?>" <?php echo ($eidInfo['recommended_corrective_action'] == $action['recommended_corrective_action_id']) ? 'selected="selected"' : ''; ?>><?= $action['recommended_corrective_action_name']; ?></option>
-															<?php }
-															?>
-														</select>
+                                                    <option value="">-- Select --</option>
+                                                    <?php foreach ($correctiveActions as $action) {
+                                                    ?>
+                                                        <option value="<?php echo $action['recommended_corrective_action_id']; ?>" <?php echo ($eidInfo['recommended_corrective_action'] == $action['recommended_corrective_action_id']) ? 'selected="selected"' : ''; ?>><?= $action['recommended_corrective_action_name']; ?></option>
+                                                    <?php }
+                                                    ?>
+                                                </select>
                                             </td>
 
                                             <td class="rejected labels" style="display: none;">Rejection Date<span class="mandatory">*</span></td>
@@ -940,14 +940,14 @@ $aResult = $db->query($aQuery);
     }
 
     function checkRejectionReason() {
-          var rejectionReason = $("#sampleRejectionReason").val();
-          if (rejectionReason == "other") {
-               $("#newRejectionReason").show();
-               $("#newRejectionReason").addClass("isRequired");
-          } else {
-               $("#newRejectionReason").hide();
-               $("#newRejectionReason").removeClass("isRequired");
-               $('#newRejectionReason').val("");
-          }
-     }
+        var rejectionReason = $("#sampleRejectionReason").val();
+        if (rejectionReason == "other") {
+            $("#newRejectionReason").show();
+            $("#newRejectionReason").addClass("isRequired");
+        } else {
+            $("#newRejectionReason").hide();
+            $("#newRejectionReason").removeClass("isRequired");
+            $('#newRejectionReason').val("");
+        }
+    }
 </script>

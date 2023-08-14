@@ -18,7 +18,7 @@ $specimenTypeResult = $eidObj->getEidSampleTypes();
 $rKey = '';
 $sKey = '';
 $sFormat = '';
-$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
+//$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 if ($_SESSION['accessType'] == 'collection-site') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
@@ -29,16 +29,19 @@ if ($_SESSION['accessType'] == 'collection-site') {
     $rKey = '';
 }
 //check user exist in user_facility_map table
-$chkUserFcMapQry = "Select user_id from user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-$chkUserFcMapResult = $db->query($chkUserFcMapQry);
-if ($chkUserFcMapResult) {
-    $pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
-}
-$pdResult = $db->query($pdQuery);
-$province = "<option value=''> -- Select -- </option>";
-foreach ($pdResult as $provinceName) {
-    $province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
-}
+// $chkUserFcMapQry = "Select user_id from user_facility_map where user_id='" . $_SESSION['userId'] . "'";
+// $chkUserFcMapResult = $db->query($chkUserFcMapQry);
+// if ($chkUserFcMapResult) {
+//     $pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
+// }
+// $pdResult = $db->query($pdQuery);
+// $province = "<option value=''> -- Select -- </option>";
+// foreach ($pdResult as $provinceName) {
+//     $province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
+// }
+
+
+$province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
 
@@ -367,7 +370,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" />
                                         </td>
-                                        <?php if ($usersService->isAllowed('/eid/results/eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                                        <?php if ($usersService->isAllowed('/eid/results/eid-manual-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                             <th scope="row" class="labels">Sample Received Date (at Testing Lab) <span class="mandatory">*</span></th>
                                             <td>
                                                 <input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample received date" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
@@ -377,7 +380,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 </table>
                             </div>
                         </div>
-                        <?php if ($usersService->isAllowed('/eid/results/eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if ($usersService->isAllowed('/eid/results/eid-manual-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">

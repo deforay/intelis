@@ -4927,3 +4927,9 @@ UPDATE `privileges` SET `shared_privileges` = '[\"implementation-partners.php\",
 
 UPDATE `roles_privileges_map` SET `privilege_id`='166' WHERE `privilege_id`='139';
 DELETE FROM `privileges` WHERE `privileges`.`privilege_id` = '139';
+
+
+-- Amit 14-Aug-2023
+ALTER TABLE `roles` ADD UNIQUE(`role_name`);
+ALTER TABLE `roles` ADD UNIQUE(`role_code`);
+

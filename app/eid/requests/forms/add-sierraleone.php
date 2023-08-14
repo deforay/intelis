@@ -425,7 +425,7 @@ $aResult = $db->query($aQuery);
                                         <td>
                                             <input class="form-control isRequired" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" />
                                         </td>
-                                        <?php if ($usersService->isAllowed('/eid/results/eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                                        <?php if ($usersService->isAllowed('/eid/results/eid-manual-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                             <th scope="row" class="labels">Sample Received Date (at Testing Lab) <span class="mandatory">*</span></th>
                                             <td>
                                                 <input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample received date" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
@@ -435,7 +435,7 @@ $aResult = $db->query($aQuery);
                                 </table>
                             </div>
                         </div>
-                        <?php if ($usersService->isAllowed('/eid/results/eid-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if ($usersService->isAllowed('/eid/results/eid-manual-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
@@ -477,11 +477,11 @@ $aResult = $db->query($aQuery);
                                             </td>
                                         </tr>
                                         <tr class="show-rejection rejected" style="display:none;">
-                                        <td class="labels">Recommended Corrective Action</td>
+                                            <td class="labels">Recommended Corrective Action</td>
                                             <td><select name="correctiveAction" id="correctiveAction" class="form-control" title="Please choose Recommended corrective action">
                                                     <option value="">-- Select --</option>
                                                     <?php foreach ($correctiveActions as $action) { ?>
-                                                    <option value="<?php echo $action['recommended_corrective_action_id']; ?>"><?= $action['recommended_corrective_action_name']; ?></option>
+                                                        <option value="<?php echo $action['recommended_corrective_action_id']; ?>"><?= $action['recommended_corrective_action_name']; ?></option>
                                                     <?php } ?>
                                                 </select>
                                             </td>
@@ -923,14 +923,14 @@ $aResult = $db->query($aQuery);
     }
 
     function checkRejectionReason() {
-          var rejectionReason = $("#sampleRejectionReason").val();
-          if (rejectionReason == "other") {
-               $("#newRejectionReason").show();
-               $("#newRejectionReason").addClass("isRequired");
-          } else {
-               $("#newRejectionReason").hide();
-               $("#newRejectionReason").removeClass("isRequired");
-               $('#newRejectionReason').val("");
-          }
-     }
+        var rejectionReason = $("#sampleRejectionReason").val();
+        if (rejectionReason == "other") {
+            $("#newRejectionReason").show();
+            $("#newRejectionReason").addClass("isRequired");
+        } else {
+            $("#newRejectionReason").hide();
+            $("#newRejectionReason").removeClass("isRequired");
+            $('#newRejectionReason').val("");
+        }
+    }
 </script>
