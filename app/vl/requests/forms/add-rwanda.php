@@ -805,10 +805,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     instrumentId: platformId,
                },
                function(data) {
-                    // alert(data);
+                    $("#vlResult").attr("disabled", false);
                     if (data != "") {
                          $("#possibleVlResults").html(data);
-                         $("#vlResult").attr("disabled", false);
                     }
                });
 
@@ -975,8 +974,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      });
 
-     $("#isSampleRejected").change(function() {
-          console.log(this.value);
+     $("#isSampleRejected").on("change", function() {
           if ($(this).val() == 'yes') {
                $('.rejectionReason').show();
                $('.vlResult').css('display', 'none');

@@ -826,9 +826,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                },
                function(data) {
                     // alert(data);
+                    $("#vlResult").attr("disabled", false);
                     if (data != "") {
                          $("#possibleVlResults").html(data);
-                         $("#vlResult").attr("disabled", false);
                     }
                });
 

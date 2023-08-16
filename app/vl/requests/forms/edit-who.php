@@ -1412,9 +1412,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			},
 			function(data) {
 				// alert(data);
+				$("#vlResult").attr("disabled", false);
 				if (data != "") {
 					$("#possibleVlResults").html(data);
-					$("#vlResult").attr("disabled", false);
 				}
 			});
 	}

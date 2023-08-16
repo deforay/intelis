@@ -1574,9 +1574,9 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 			},
 			function(data) {
 				// alert(data);
+				$("#vlResult").attr("disabled", false);
 				if (data != "") {
 					$("#possibleVlResults").html(data);
-					$("#vlResult").attr("disabled", false);
 				}
 			});
 	}

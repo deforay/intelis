@@ -807,9 +807,9 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                },
                function(data) {
                     // alert(data);
+                    $("#vlResult").attr("disabled", false);
                     if (data != "") {
                          $("#possibleVlResults").html(data);
-                         $("#vlResult").attr("disabled", false);
                     }
                });
 
@@ -946,7 +946,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
           }
      });
 
-     $("#isSampleRejected").change(function() {
+     $("#isSampleRejected").on("change", function() {
 
           if ($(this).val() == 'yes') {
                $('.rejectionReason').show();

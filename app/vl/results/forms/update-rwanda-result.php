@@ -637,13 +637,12 @@ $disable = "disabled = 'disabled'";
 											</div>
 											<div class="row">
 												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="isSampleRejected">Sample
-														Rejection </label>
+													<label class="col-lg-5 control-label" for="isSampleRejected"> Is Sample Rejected? </label>
 													<div class="col-lg-7">
 														<select name="isSampleRejected" id="isSampleRejected" class="form-control isRequired" title="Please check if sample is rejected or not">
 															<option value="">-- Select --</option>
-															<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
-															<option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>No</option>
+															<option value="yes" <?= ($vlQueryInfo['is_sample_rejected'] === 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
+															<option value="no" <?= ($vlQueryInfo['is_sample_rejected'] === 'no') ? 'selected="selected"' : ''; ?>>No</option>
 														</select>
 													</div>
 												</div>
@@ -678,12 +677,11 @@ $disable = "disabled = 'disabled'";
 													</div>
 												</div>
 												<div class="col-md-4 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
-													<label class="col-lg-5 control-label" for="vlResult">Viral Load
-														Result<span class="mandatory">*</span> (copiesl/ml) </label>
+													<label class="col-lg-5 control-label" for="vlResult">
+														Viral Load Result<span class="mandatory">*</span> (copies/ml) </label>
 													<div class="col-lg-7">
-														<input list="possibleVlResults" autocomplete="off" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= ($vlQueryInfo['result']); ?>" onchange="calculateLogValue(this)">
+														<input list="possibleVlResults" autocomplete="off" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= $vlQueryInfo['result']; ?>" onchange="calculateLogValue(this)">
 														<datalist id="possibleVlResults">
-
 														</datalist>
 													</div>
 												</div>
@@ -816,7 +814,7 @@ $disable = "disabled = 'disabled'";
 		hivDetectionChange();
 	});
 
-	$("input:radio[name=isSampleRejected]").click(function() {
+	$("#isSampleRejected").on("change", function() {
 		if ($(this).val() == 'yes') {
 			$('.rejectionReason').show();
 			$('.vlResult').css('display', 'none');
@@ -936,7 +934,7 @@ $disable = "disabled = 'disabled'";
 
 	function hivDetectionChange() {
 
-		var text = $('#testingPlatform').val();
+		let text = $('#testingPlatform').val();
 		if (!text) {
 			$("#vlResult").attr("disabled", true);
 			return;
@@ -953,10 +951,9 @@ $disable = "disabled = 'disabled'";
 				instrumentId: platformId,
 			},
 			function(data) {
-				// alert(data);
+				$("#vlResult").attr("disabled", false);
 				if (data != "") {
 					$("#possibleVlResults").html(data);
-					$("#vlResult").attr("disabled", false);
 				}
 			});
 

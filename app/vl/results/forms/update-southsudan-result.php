@@ -1168,7 +1168,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 				instrumentId: platformId,
 			},
 			function(data) {
-				// alert(data);
+				$("#vlResult").attr("disabled", false);
 				if (data != "") {
 					$("#possibleVlResults").html(data);
 				}

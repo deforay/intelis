@@ -175,7 +175,7 @@ $sFormat = '';
                                         <div class="row">
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="artNo"><?= _('Unique ART (TRACNET) No.'); ?> <span class="mandatory">*</span></label>
+                                                       <label for="artNo"><?= _('Patient ID'); ?> <span class="mandatory">*</span></label>
                                                        <input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="<?= _('Enter ART Number'); ?>" title="<?= _('Enter art number'); ?>" onchange="checkPatientDetails('form_vl','patient_art_no',this,null)" />
                                                        <span class="artNoGroup" id="artNoGroup"></span>
                                                   </div>
@@ -755,10 +755,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     instrumentId: platformId,
                },
                function(data) {
-                    // alert(data);
+                    $("#vlResult").attr("disabled", false);
                     if (data != "") {
                          $("#possibleVlResults").html(data);
-                         $("#vlResult").attr("disabled", false);
                     }
                });
 

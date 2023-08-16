@@ -55,8 +55,6 @@ try {
             'login_id'          => $loginId,
             'password'          => $userPassword,
             'user_locale'       => $locale,
-            'user_default_time_zone' => $timeZone,
-            'user_country'      => $vlForm,
             'hash_algorithm'    => 'phb',
             'role_id'           => 1,
             'status'            => 'active'
@@ -81,14 +79,13 @@ try {
             $id = $db->update($configTableName, $data);
         }
 
-        $modules = array_map("changeModuleWithQuotes",$activeModulesArr);
+        $modules = array_map("changeModuleWithQuotes", $activeModulesArr);
 
-        $activeModules = implode(",",$modules);
+        $activeModules = implode(",", $modules);
 
         $privilegesSql = "SELECT p.privilege_id FROM privileges as p inner join resources as r on r.resource_id=p.resource_id WHERE r.module IN ($activeModules)";
         $privileges = $db->query($privilegesSql);
-        foreach($privileges as $privilege)
-        {
+        foreach ($privileges as $privilege) {
             $privilegeId = $privilege['privilege_id'];
             $db->query("insert into roles_privileges_map(role_id,privilege_id) values (1,$privilegeId)");
         }
