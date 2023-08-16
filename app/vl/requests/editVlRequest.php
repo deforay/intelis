@@ -31,10 +31,6 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 
 
 $reasonForFailure = $vlService->getReasonForFailure();
-if ($_SESSION['instanceType'] == 'remoteuser') {
-   //  $labFieldDisabled = 'disabled="disabled"';
-   $labFieldDisabled = 'readonly="true"';
-}
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
