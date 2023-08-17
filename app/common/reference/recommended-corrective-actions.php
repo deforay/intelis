@@ -3,7 +3,14 @@ $title = _("Recommended Corrective Actions");
 
 require_once APPLICATION_PATH . '/header.php';
 $testType = 'eid';
-if(isset($_GET['testType']) && !empty($_GET['testType'])){
+
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
+
+if (isset($_GET['testType']) && !empty($_GET['testType'])) {
 	$testType = $_GET['testType'];
 }
 ?>
@@ -36,7 +43,7 @@ if(isset($_GET['testType']) && !empty($_GET['testType'])){
 									<th scope="row"><?php echo _("Recommended Corrective Action Name"); ?></th>
 									<th scope="row"><?php echo _("Status"); ?></th>
 									<?php if (isset($_SESSION['privileges']) && in_array("recommended-corrective-actions.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-									<th scope="row">Action</th>
+										<th scope="row">Action</th>
 									<?php } ?>
 								</tr>
 							</thead>
@@ -90,10 +97,10 @@ if(isset($_GET['testType']) && !empty($_GET['testType'])){
 			"bServerSide": true,
 			"sAjaxSource": "get-corrective-actions-helper.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
-                aoData.push({
-                    "name": "testType",
-                    "value": '<?= $testType; ?>'
-                });
+				aoData.push({
+					"name": "testType",
+					"value": '<?= $testType; ?>'
+				});
 				$.ajax({
 					"dataType": 'json',
 					"type": "POST",
@@ -105,8 +112,6 @@ if(isset($_GET['testType']) && !empty($_GET['testType'])){
 		});
 		$.unblockUI();
 	});
-
-
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';

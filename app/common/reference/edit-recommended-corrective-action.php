@@ -6,24 +6,26 @@ require_once APPLICATION_PATH . '/header.php';
 
 $testType = 'vl';
 
-if(isset($_GET['testType']) && !empty($_GET['testType'])){
-	$testType = $_GET['testType'];
-}
-
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
+
+
+if (isset($_GET['testType']) && !empty($_GET['testType'])) {
+    $testType = $_GET['testType'];
+}
+
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
 if (!isset($id) || $id == "") {
     $_SESSION['alertMsg'] = "Something went wrong in Implementation Partners edit page";
-    header("Location:recommended-corrective-actions.php?testType=".$testType);
+    header("Location:recommended-corrective-actions.php?testType=" . $testType);
 }
 $query = "SELECT * from r_recommended_corrective_actions where recommended_corrective_action_id = ?";
 $correctiveInfo = $db->rawQuery($query, [$id]);
 ?>
-<!-- Content Wrapper. Contains page content --> 
+<!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -61,8 +63,8 @@ $correctiveInfo = $db->rawQuery($query, [$id]);
                                     <div class="col-lg-7">
                                         <select class="form-control isRequired" id="correctiveActionStatus" name="correctiveActionStatus" title="<?php echo _('Please select corrective Action Status'); ?>">
                                             <option value=""><?php echo _("--Select--"); ?></option>
-                                            <option value="active" <?php echo ($correctiveInfo[0]['status']=='active') ? 'selected="selected"' : ''; ?>><?php echo _("Active"); ?></option>
-                                            <option value="inactive" <?php echo ($correctiveInfo[0]['status']=='inactive') ? 'selected="selected"' : ''; ?>><?php echo _("Inactive"); ?></option>
+                                            <option value="active" <?php echo ($correctiveInfo[0]['status'] == 'active') ? 'selected="selected"' : ''; ?>><?php echo _("Active"); ?></option>
+                                            <option value="inactive" <?php echo ($correctiveInfo[0]['status'] == 'inactive') ? 'selected="selected"' : ''; ?>><?php echo _("Inactive"); ?></option>
                                         </select>
                                     </div>
                                 </div>
@@ -78,7 +80,7 @@ $correctiveInfo = $db->rawQuery($query, [$id]);
                     <input type="hidden" class="form-control" id="testType" name="testType" value="<?= $testType; ?>" />
                     <input type="hidden" class="form-control" id="correctiveActionId" name="correctiveActionId" value="<?= $_GET['id']; ?>" />
 
-                    
+
                     <!-- /.box-footer -->
                 </form>
                 <!-- /.row -->

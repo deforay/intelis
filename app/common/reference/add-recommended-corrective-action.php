@@ -3,13 +3,20 @@
 $title = _("Recommended Corrective Action");
 
 require_once APPLICATION_PATH . '/header.php';
+
 $testType = 'vl';
 
-if(isset($_GET['testType']) && !empty($_GET['testType'])){
-	$testType = $_GET['testType'];
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
+
+if (isset($_GET['testType']) && !empty($_GET['testType'])) {
+    $testType = $_GET['testType'];
 }
 ?>
-<!-- Content Wrapper. Contains page content --> 
+<!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -63,7 +70,7 @@ if(isset($_GET['testType']) && !empty($_GET['testType'])){
                     </div>
                     <input type="hidden" class="form-control" id="testType" name="testType" value="<?= $testType; ?>" />
 
-                    
+
                     <!-- /.box-footer -->
                 </form>
                 <!-- /.row -->
