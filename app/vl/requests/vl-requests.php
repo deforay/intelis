@@ -476,10 +476,10 @@ foreach ($srcResults as $list) {
 								</strong></td>
 							<td>
 								<select name="rejectedSamples" id="rejectedSamples" class="form-control" title="<?php echo _('Please choose show rejected samples'); ?>" style="width:100%;">
-									<option value="yes">
+									<option value="yes" selected="selected">
 										<?php echo _("Yes"); ?>
 									</option>
-									<option value="no" selected="selected">
+									<option value="no">
 										<?php echo _("No"); ?>
 									</option>
 								</select>
