@@ -34,6 +34,13 @@ $sources = array(
 $activeModules = SystemService::getActiveModules();
 $state = $geolocationService->getProvinces("yes");
 
+
+// Src of alert req
+$sources = $general->getSourceOfRequest('form_vl');
+$srcOfReqList = [];
+foreach ($sources as $list) {
+	$srcOfReqList[$list['source_of_request']] = strtoupper($list['source_of_request']);
+}
 ?>
 <style>
     .select2-selection__choice {
@@ -121,7 +128,7 @@ $state = $geolocationService->getProvinces("yes");
                             </td>
 
                             <td>
-                                <select id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
+                                <select id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>" onchange="getSourceRequest(this.value);">
                                     <?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
                                         <option value="vl">
                                             <?php echo _("Viral Load"); ?>
@@ -149,16 +156,17 @@ $state = $geolocationService->getProvinces("yes");
                                     <?php } ?>
                                 </select>
                             </td>
-
+                          
                         </tr>
                         <tr>
-                            <td><strong>
+                        <td><strong>
                                     <?php echo _("Source of Request"); ?>&nbsp;:
                                 </strong></td>
                             <td>
-                                <select style="width:220px;" class="form-control" id="srcRequest" name="srcRequest" title="<?php echo _('Source of Requests'); ?>">
-                                    <?php echo $general->generateSelectOptions(array('api' => 'api', 'app' => 'app', 'web' => 'web', 'hl7' => 'hl7'), null, '--All--'); ?>
-                                </select>
+                            <select class="form-control" id="srcRequest" name="srcRequest"
+									title="<?php echo _('Please select source of request'); ?>">
+									<?= $general->generateSelectOptions($srcOfReqList, null, "--Select--"); ?>
+								</select>
                             </td>
                         </tr>
                         <tr>
@@ -260,8 +268,9 @@ $state = $geolocationService->getProvinces("yes");
 <script type="text/javascript">
     var oTable = null;
     $(document).ready(function() {
+        getSourceRequest('vl');
         getSourcesOfRequestReport();
-
+      
         $("#srcRequest").val('api');
         $('#labName').select2({
             placeholder: "Select Lab to filter"
@@ -280,7 +289,7 @@ $state = $geolocationService->getProvinces("yes");
             width: '200px',
             placeholder: "Select Name of the Clinic"
         });
-
+        
 
         $('#dateRange').daterangepicker({
                 locale: {
@@ -450,20 +459,33 @@ $state = $geolocationService->getProvinces("yes");
     }
 
     function exportTestRequests() {
+	
+		$.blockUI();
+		$.post("/admin/monitoring/export-samplewise-reports.php", {
+				reqSampleType: $('#requestSampleType').val(),
+				patientInfo: $('#patientInfo').val(),
+			},
+			function(data) {
+				$.unblockUI();
+				if (data === "" || data === null || data === undefined) {
+					alert("<?php echo _("Unable to generate the excel file"); ?>");
+				} else {
+					window.open('/download.php?d=a&f=' + data, '_blank');
+				}
+			});
+	}
 
+    function getSourceRequest(testType)
+    {
         $.blockUI();
-        $.post("/admin/monitoring/export-samplewise-reports.php", {
-                reqSampleType: $('#requestSampleType').val(),
-                patientInfo: $('#patientInfo').val(),
-            },
-            function(data) {
-                $.unblockUI();
-                if (data === "" || data === null || data === undefined) {
-                    alert("<?php echo _("Unable to generate the excel file"); ?>");
-                } else {
-                    window.open('/download.php?d=a&f=' + data, '_blank');
-                }
-            });
+        $("#srcRequest").html("");
+        $.post("/admin/monitoring/get-source-request-list.php", {
+                testType: testType,
+			},
+			function(data) {
+				$.unblockUI();
+				$("#srcRequest").html(data);
+			});
     }
 </script>
 <?php

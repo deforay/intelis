@@ -806,4 +806,12 @@ class CommonService
         $this->db->orderBy('funding_source_name', "ASC");
         return $this->db->get('r_funding_sources');
     }
+
+    public function getSourceOfRequest($table)
+    {
+        $srcQuery = "SELECT DISTINCT source_of_request from $table where source_of_request is not null AND source_of_request not like ''";
+        $srcResults = $this->db->rawQuery($srcQuery);
+        return $srcResults;
+    }
+
 }
