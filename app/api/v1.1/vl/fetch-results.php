@@ -222,6 +222,18 @@ try {
     // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
 
+    $remoteSampleCodes = array_column($rowData, 'remote_sample_code');
+    if (!empty($remoteSampleCodes)) {
+        // update result_sent_to_source_datetime where result_sent_to_source_datetime null and remote_sample_code in (remoteSampleCodes)
+        $db->where('remote_sample_code', $remoteSampleCodes, 'IN');
+        $db->where('result_sent_to_source_datetime', null);
+        $db->update('form_vl', [
+            'result_sent_to_source' => 'sent',
+            'result_dispatched_datetime' => DateUtility::getCurrentDateTime(),
+            'result_sent_to_source_datetime' => DateUtility::getCurrentDateTime()
+        ]);
+    }
+
     http_response_code(200);
     $payload = [
         'status' => 'success',

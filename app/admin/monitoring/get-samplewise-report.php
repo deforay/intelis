@@ -60,12 +60,16 @@ if (isset($testType) && $testType == 'tb') {
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
  * you want to insert a non-database field (for example a counter or static image)
  */
-$aColumns = array('l.facility_name','vl.external_sample_code','vl.request_created_datetime','vl.remote_sample_code',
-'vl.request_created_datetime','vl.sample_received_at_vl_lab_datetime','b.request_created_datetime','vl.result','vl.result_reviewed_datetime',
-'vl.result_approved_datetime','vl.result_sent_to_source_datetime','vl.last_modified_datetime');
-$orderColumns = array('l.facility_name','vl.external_sample_code','vl.request_created_datetime','vl.remote_sample_code',
-'vl.request_created_datetime','vl.sample_received_at_vl_lab_datetime','b.request_created_datetime','vl.result','vl.result_reviewed_datetime',
-'vl.result_approved_datetime','vl.result_sent_to_source_datetime','vl.last_modified_datetime');
+$aColumns = array(
+    'l.facility_name', 'vl.external_sample_code', 'vl.request_created_datetime', 'vl.remote_sample_code',
+    'vl.request_created_datetime', 'vl.sample_received_at_vl_lab_datetime', 'b.request_created_datetime', 'vl.result', 'vl.result_reviewed_datetime',
+    'vl.result_approved_datetime', 'vl.result_sent_to_source_datetime', 'vl.last_modified_datetime'
+);
+$orderColumns = array(
+    'l.facility_name', 'vl.external_sample_code', 'vl.request_created_datetime', 'vl.remote_sample_code',
+    'vl.request_created_datetime', 'vl.sample_received_at_vl_lab_datetime', 'b.request_created_datetime', 'vl.result', 'vl.result_reviewed_datetime',
+    'vl.result_approved_datetime', 'vl.result_sent_to_source_datetime', 'vl.last_modified_datetime'
+);
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -136,13 +140,23 @@ for ($i = 0; $i < count($aColumns); $i++) {
 $aWhere = '';
 $sQuery = '';
 
-$sQuery = "SELECT l.facility_name as 'labname',vl.external_sample_code,vl.request_created_datetime as request_created,vl.remote_sample_code,
-            vl.request_created_datetime,vl.sample_received_at_vl_lab_datetime,b.request_created_datetime as batch_request_created,vl.result,vl.result_reviewed_datetime,
-            vl.result_approved_datetime,vl.result_sent_to_source_datetime,vl.last_modified_datetime
+$sQuery = "SELECT l.facility_name as 'labname',
+                vl.external_sample_code,
+                vl.app_sample_code,
+                vl.result_tested_datetime,
+                vl.request_created_datetime as request_created,
+                vl.remote_sample_code,
+                vl.request_created_datetime,
+                vl.sample_received_at_vl_lab_datetime,
+                b.request_created_datetime as batch_request_created,
+                vl.result,vl.result_reviewed_datetime,
+                vl.result_approved_datetime,
+                vl.result_sent_to_source_datetime,
+                vl.last_modified_datetime
             FROM $table as vl
-        LEFT JOIN facility_details as l ON vl.lab_id = l.facility_id
-        LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-        LEFT JOIN batch_details as b ON vl.sample_batch_id=b.batch_id";
+            LEFT JOIN facility_details as l ON vl.lab_id = l.facility_id
+            LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+            LEFT JOIN batch_details as b ON vl.sample_batch_id=b.batch_id";
 
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '');
 
@@ -189,20 +203,20 @@ $calcValueQuery = "SELECT SUM(CASE WHEN (vl.request_created_datetime is not null
             SUM(CASE WHEN (vl.request_created_datetime is not null AND vl.request_created_datetime not like '') THEN 1 ELSE 0 END) AS 'totalSamplesAcknowledged',
             SUM(CASE WHEN (vl.sample_received_at_vl_lab_datetime is not null AND vl.sample_received_at_vl_lab_datetime not like '') THEN 1 ELSE 0 END) AS 'totalSamplesReceived',
             SUM(CASE WHEN (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '') THEN 1 ELSE 0 END) AS 'totalSamplesTested',
-            SUM(CASE WHEN (vl.result_dispatched_datetime is not null AND vl.result_dispatched_datetime not like '') THEN 1 ELSE 0 END) AS 'totalSamplesDispatched'
+            SUM(CASE WHEN ((vl.result_dispatched_datetime is not null AND vl.result_dispatched_datetime not like '') OR (vl.result_sent_to_source_datetime is not null AND vl.result_sent_to_source_datetime not like '')) THEN 1 ELSE 0 END) AS 'totalSamplesDispatched'
             FROM $table as vl
         LEFT JOIN facility_details as l ON vl.lab_id = l.facility_id
         LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
         LEFT JOIN batch_details as b ON vl.sample_batch_id=b.batch_id";
 
-        if (!empty($sWhere)) {
-            $calcValueQuery = $calcValueQuery . ' WHERE ' . implode(" AND ", $sWhere);
-        }
-        
-        if (!empty($sOrder)) {
-            $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
-            $calcValueQuery = $calcValueQuery . " ORDER BY " . $sOrder;
-        }
+if (!empty($sWhere)) {
+    $calcValueQuery = $calcValueQuery . ' WHERE ' . implode(" AND ", $sWhere);
+}
+
+if (!empty($sOrder)) {
+    $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+    $calcValueQuery = $calcValueQuery . " ORDER BY " . $sOrder;
+}
 $calculateFields = $db->rawQuery($calcValueQuery);
 
 
@@ -212,8 +226,8 @@ $calculateFields = $db->rawQuery($calcValueQuery);
  */
 $output = array(
     "sEcho" => intval($_POST['sEcho']),
-    "iTotalRecords" => count($rResult),
-    "iTotalDisplayRecords" => count($rResult),
+    "iTotalRecords" => $resultCount,
+    "iTotalDisplayRecords" => $resultCount,
     "calculation" => [],
     "aaData" => []
 );
@@ -230,17 +244,17 @@ foreach ($rResult as $key => $aRow) {
 
     $row = [];
     $row[] = $aRow['labname'];
-    $row[] = $aRow['external_sample_code'];
-    $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime']);
+    $row[] = $aRow['external_sample_code'] ?? $aRow['app_sample_code'];
+    $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
     $row[] = $aRow['remote_sample_code'];
-    $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime']);
-    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
-    $row[] = DateUtility::humanReadableDateFormat($aRow['batch_request_created']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime'], true);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['batch_request_created'], true);
     $row[] = $aRow['result'];
-    $row[] = DateUtility::humanReadableDateFormat($aRow['result_reviewed_datetime']);
-    $row[] = DateUtility::humanReadableDateFormat($aRow['result_approved_datetime']);
-    $row[] = DateUtility::humanReadableDateFormat($aRow['result_sent_to_source_datetime']);
-    $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['result_tested_datetime'], true);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['result_approved_datetime'], true);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['result_sent_to_source_datetime'], true);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
 
     $output['aaData'][] = $row;
 }

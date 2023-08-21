@@ -50,7 +50,12 @@ foreach ($sources as $list) {
     th {
         display: revert !important;
     }
-    .calc{ margin:10px; font-weight:bold; font-size:15px; }
+
+    .calc {
+        margin: 10px;
+        font-weight: bold;
+        font-size: 15px;
+    }
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -86,30 +91,30 @@ foreach ($sources as $list) {
                                     <?= _('Province/State'); ?>&nbsp;:
                                 </strong></td>
                             <td>
-                            <select class="form-control select2-element" id="state" onchange="getByProvince()" name="state" title="<?php echo _('Please select Province/State'); ?>" multiple="multiple">
-									<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
-							</select>
+                                <select class="form-control select2-element" id="state" onchange="getByProvince()" name="state" title="<?php echo _('Please select Province/State'); ?>" multiple="multiple">
+                                    <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+                                </select>
                             </td>
                             <td><strong>
                                     <?php echo _("District/County"); ?>&nbsp;:
                                 </strong>
                             </td>
                             <td>
-                            <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict(this.value)" multiple="multiple">
-								</select>
+                                <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict(this.value)" multiple="multiple">
+                                </select>
                             </td>
-                                </tr>
-                                <tr>
-                                <td><strong>
+                        </tr>
+                        <tr>
+                            <td><strong>
                                     <?php echo _("Name of the Clinic"); ?>&nbsp;:
                                 </strong>
-                                </td>
-                                    <td>
-                                    <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose health facility" style="width:100%;" onchange="getfacilityProvinceDetails(this);" multiple="multiple">
-                                                <?php echo $facility; ?>
-                                            </select>
-                                    </td>
-                                    <td><strong>
+                            </td>
+                            <td>
+                                <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose health facility" style="width:100%;" onchange="getfacilityProvinceDetails(this);" multiple="multiple">
+                                    <?php echo $facility; ?>
+                                </select>
+                            </td>
+                            <td><strong>
                                     <?php echo _("Name of the Testing Lab"); ?>&nbsp;:
                                 </strong></td>
                             <td>
@@ -117,11 +122,11 @@ foreach ($sources as $list) {
                                     <?php echo $general->generateSelectOptions($labNameList, null, '--Select--'); ?>
                                 </select>
                             </td>
-                                <td><strong>
-                                        <?php echo _("Test Type"); ?>&nbsp;:
-                                    </strong>
-                                </td>
-                           
+                            <td><strong>
+                                    <?php echo _("Test Type"); ?>&nbsp;:
+                                </strong>
+                            </td>
+
                             <td>
                                 <select id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>" onchange="getSourceRequest(this.value);">
                                     <?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
@@ -165,24 +170,37 @@ foreach ($sources as $list) {
                             </td>
                         </tr>
                         <tr>
-                          
+
                             <td><button onclick="searchRequestData();" value="Search" class="btn btn-primary btn-sm"><span>
                                         <?php echo _("Search"); ?>
                                     </span></button>
-                                    <button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
-                                </td>
+                                <button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
+                            </td>
                         </tr>
                     </table>
-                    <div class="calc" id="totalSamplesRequested"></div>
-                    <div class="calc" id="totalSamplesAck"></div>
-                    <div class="calc" id="totalSamplesReceived"></div>
-                    <div class="calc" id="totalSamplesTested"></div>
-                    <div class="calc" id="totalSamplesTrans"></div>
                     <!-- /.box-header -->
                     <div class="box-body">
-                    <a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportTestRequests();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
-										<?php echo _("Export To Excel"); ?>
-									</a>
+
+                        <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
+                            <tr>
+                                <th>No. of Samples Requested</th>
+                                <th>No. of Samples Acknowledged</th>
+                                <th>No. of Samples Received at Testing Lab</th>
+                                <th>No. of Samples Tested</th>
+                                <th>No. of Results Returned</th>
+                            </tr>
+                            <tr>
+                                <td id="totalSamplesRequested"></td>
+                                <td id="totalSamplesAck"></td>
+                                <td id="totalSamplesReceived"></td>
+                                <td id="totalSamplesTested"></td>
+                                <td id="totalSamplesTrans"></td>
+                            </tr>
+                        </table>
+
+                        <a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportTestRequests();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
+                            <?php echo _("Export To Excel"); ?>
+                        </a>
                         <table aria-describedby="table" id="samplewiseReport" class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
                                 <tr>
@@ -205,7 +223,7 @@ foreach ($sources as $list) {
                                         <?php echo _("Samples Received At Lab"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("Date Time of Sample added to Batch"); ?>
+                                        <?php echo _("Sample added to Batch on"); ?>
                                     </th>
                                     <th>
                                         <?php echo _("Test Result"); ?>
@@ -297,10 +315,10 @@ foreach ($sources as $list) {
                 endDate = end.format('YYYY-MM-DD');
             });
 
-            searchRequestData();
+        searchRequestData();
     });
 
-   
+
 
     function getSourcesOfRequestReport() {
 
@@ -316,40 +334,41 @@ foreach ($sources as $list) {
             //"bStateSave" : true,
             "bRetrieve": true,
             "aoColumns": [{
-                "sClass": "center"
-            },
-            {
-                "sClass": "center",
-            }, 
-            {
-                "sClass": "center",
-            }, 
-            {
-                "sClass": "center",
-            }, 
-            {
-                "sClass": "center",
-            }, 
-            {
-                "sClass": "center",
-            }, 
-            {
-                "sClass": "center",
-            }, 
-            {
-                "sClass": "center"
-            },{
-                "sClass": "center"
-            },
-            {
-                "sClass": "center"
-            },{
-                "sClass": "center"
-            },
-             {
-                "sClass": "center"
-            }],
-            "aaSorting": [0, "desc"],
+                    "sClass": "center"
+                },
+                {
+                    "sClass": "center",
+                },
+                {
+                    "sClass": "center",
+                },
+                {
+                    "sClass": "center",
+                },
+                {
+                    "sClass": "center",
+                },
+                {
+                    "sClass": "center",
+                },
+                {
+                    "sClass": "center",
+                },
+                {
+                    "sClass": "center"
+                }, {
+                    "sClass": "center"
+                },
+                {
+                    "sClass": "center"
+                }, {
+                    "sClass": "center"
+                },
+                {
+                    "sClass": "center"
+                }
+            ],
+            "aaSorting": [11, "desc"],
             "bProcessing": true,
             "bServerSide": true,
             "sAjaxSource": "/admin/monitoring/get-samplewise-report.php",
@@ -384,20 +403,20 @@ foreach ($sources as $list) {
                     "url": sSource,
                     "data": aoData,
                     "success": function(json) {
-                        $("#totalSamplesRequested").html("Total Number of Tests Requests Received :&nbsp;&nbsp;&nbsp;"+0);
-                        $("#totalSamplesAck").html("Total Number of Acknowledgement Sent :"+0);
-                        $("#totalSamplesReceived").html("Total Number of Samples Received : &nbsp;&nbsp;&nbsp;"+0);
-                        $("#totalSamplesTested").html("Total Number of Samples Tested :&nbsp;&nbsp;&nbsp;"+0);
-                        $("#totalSamplesTrans").html("Total Number of Samples Transmitted :&nbsp;&nbsp;&nbsp;"+0);
+                        $("#totalSamplesRequested").html("");
+                        $("#totalSamplesAck").html("");
+                        $("#totalSamplesReceived").html("");
+                        $("#totalSamplesTested").html("");
+                        $("#totalSamplesTrans").html("");
 
                         obj = json.calculation;
-                       if(obj!=""){
-                        $("#totalSamplesRequested").html("Total Number of Tests Requests Received :&nbsp;&nbsp;&nbsp;"+obj[0][0]);
-                        $("#totalSamplesAck").html("Total Number of Acknowledgement Sent :"+obj[0][1]);
-                        $("#totalSamplesReceived").html("Total Number of Samples Received : &nbsp;&nbsp;&nbsp;"+obj[0][2]);
-                        $("#totalSamplesTested").html("Total Number of Samples Tested :&nbsp;&nbsp;&nbsp;"+obj[0][3]);
-                        $("#totalSamplesTrans").html("Total Number of Samples Transmitted :&nbsp;&nbsp;&nbsp;"+obj[0][4]);
-                       }
+                        if (obj != "") {
+                            $("#totalSamplesRequested").html(obj[0][0]);
+                            $("#totalSamplesAck").html(obj[0][1]);
+                            $("#totalSamplesReceived").html(obj[0][2]);
+                            $("#totalSamplesTested").html(obj[0][3]);
+                            $("#totalSamplesTrans").html(obj[0][4]);
+                        }
                         fnCallback(json);
                     }
                 });
@@ -409,29 +428,29 @@ foreach ($sources as $list) {
 
     function getByProvince() {
         state = $('#state').val();
-		$("#district").html('');
-		$("#facilityId").html('');
-		$("#labName").html('');
-		$.post("/common/get-by-province-id.php", {
-			provinceId: state,
-			districts: true,
-			facilities: true,
-			labs: true,
-		},
-			function (data) {
-				Obj = $.parseJSON(data);
-				$("#district").append(Obj['districts']);
-				$("#facilityId").append(Obj['facilities']);
-				$("#labName").append(Obj['labs']);
-			});
+        $("#district").html('');
+        $("#facilityId").html('');
+        $("#labName").html('');
+        $.post("/common/get-by-province-id.php", {
+                provinceId: state,
+                districts: true,
+                facilities: true,
+                labs: true,
+            },
+            function(data) {
+                Obj = $.parseJSON(data);
+                $("#district").append(Obj['districts']);
+                $("#facilityId").append(Obj['facilities']);
+                $("#labName").append(Obj['labs']);
+            });
 
-	}
+    }
 
     function searchRequestData() {
-		$.blockUI();
-		oTable.fnDraw();
-		$.unblockUI();
-	}
+        $.blockUI();
+        oTable.fnDraw();
+        $.unblockUI();
+    }
 
     function exportTestRequests() {
 	

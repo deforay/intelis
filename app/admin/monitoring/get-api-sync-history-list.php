@@ -93,7 +93,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
 $aWhere = '';
 $sQuery = '';
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS a.* FROM $tableName as a";
+$sQuery = "SELECT a.* FROM $tableName as a";
 
 [$startDate, $endDate] = DateUtility::convertDateRange($_POST['dateRange'] ?? '');
 
@@ -118,23 +118,19 @@ if (!empty($sOrder)) {
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
 $_SESSION['auditLogQuery'] = $sQuery;
-if (isset($sLimit) && isset($sOffset)) {
-     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-}
+
 
 $rResult = $db->rawQuery($sQuery);
 
-/* Data set length after filtering */
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
 
 /*
 * Output
 */
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
-     "iTotalRecords" => $iTotal,
-     "iTotalDisplayRecords" => $iFilteredTotal,
+     "iTotalRecords" => $resultCount,
+     "iTotalDisplayRecords" => $resultCount,
      "aaData" => []
 );
 foreach ($rResult as $key => $aRow) {

@@ -365,7 +365,8 @@ try {
             'result_reviewed_by' => $data['reviewedBy'] ?? null,
             'result_reviewed_datetime' => DateUtility::isoDateFormat($data['reviewedOn'] ?? '', true),
             'source_of_request' => $data['sourceOfRequest'] ?? "API",
-            'form_attributes' => !empty($formAttributes) ? $db->func($formAttributes) : null
+            'form_attributes' => !empty($formAttributes) ? $db->func($formAttributes) : null,
+            'result_sent_to_source' => 'pending'
         ];
 
 
