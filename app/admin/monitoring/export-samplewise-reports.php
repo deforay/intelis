@@ -1,4 +1,7 @@
 <?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -6,6 +9,9 @@ use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+
 
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', -1);
@@ -24,6 +30,53 @@ $rResult = $db->rawQuery($sQuery);
 $headings = array('Name of the Clinic', 'External ID', "Electronic Test request Date and Time", "STS Sample Code", "Request Acknowledged Date Time", "Samples Received Date Time", "Date Time of Sample added to Batch", "Test Result", "Result Received/Entered Date and Time", "Result Approved Date and Time","Result Return Date and Time","Last Modified On");
 
 $output = [];
+
+
+	//$start = (count($output)) + 2;
+	$colNo = 1;
+    $styleArray = array(
+        'font' => array(
+            'bold' => true,
+            'size' => '13',
+        ),
+        'alignment' => array(
+            'horizontal' => Alignment::HORIZONTAL_CENTER,
+            'vertical' => Alignment::VERTICAL_CENTER,
+        ),
+        'borders' => array(
+            'outline' => array(
+                'style' => Border::BORDER_THIN,
+            ),
+        ),
+    );
+	$nameValue = '';
+	foreach ($_POST as $key => $value) {
+		if (trim($value) != '' && trim($value) != '-- Select --') {
+			$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
+		}
+	}
+
+	$excel = new Spreadsheet();
+	$sheet = $excel->getActiveSheet();
+	$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
+	
+		foreach ($headings as $field => $value) {
+			$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
+			$colNo++;
+		}
+
+        $sheet->getStyle('A3:A3')->applyFromArray($styleArray);
+        $sheet->getStyle('B3:B3')->applyFromArray($styleArray);
+        $sheet->getStyle('C3:C3')->applyFromArray($styleArray);
+        $sheet->getStyle('D3:D3')->applyFromArray($styleArray);
+        $sheet->getStyle('E3:E3')->applyFromArray($styleArray);
+        $sheet->getStyle('F3:F3')->applyFromArray($styleArray);
+        $sheet->getStyle('G3:G3')->applyFromArray($styleArray);
+        $sheet->getStyle('H3:H3')->applyFromArray($styleArray);
+        $sheet->getStyle('I3:I3')->applyFromArray($styleArray);
+        $sheet->getStyle('J3:J3')->applyFromArray($styleArray);
+        $sheet->getStyle('K3:K3')->applyFromArray($styleArray);
+        $sheet->getStyle('L3:L3')->applyFromArray($styleArray);
 
 
 $no = 1;
@@ -46,24 +99,6 @@ foreach ($rResult as $aRow) {
 	$no++;
 }
 
-	//$start = (count($output)) + 2;
-	$colNo = 1;
-
-	$nameValue = '';
-	foreach ($_POST as $key => $value) {
-		if (trim($value) != '' && trim($value) != '-- Select --') {
-			$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
-		}
-	}
-
-	$excel = new Spreadsheet();
-	$sheet = $excel->getActiveSheet();
-	$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
-	
-		foreach ($headings as $field => $value) {
-			$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
-			$colNo++;
-		}
 
 	foreach ($output as $rowNo => $rowData) {
 		$colNo = 1;
