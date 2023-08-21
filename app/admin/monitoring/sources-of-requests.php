@@ -172,6 +172,9 @@ $state = $geolocationService->getProvinces("yes");
                     <div class="calc" id="totalSamplesTrans"></div>
                     <!-- /.box-header -->
                     <div class="box-body">
+                    <a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportTestRequests();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
+										<?php echo _("Export To Excel"); ?>
+									</a>
                         <table aria-describedby="table" id="samplewiseReport" class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
                                 <tr>
@@ -371,13 +374,20 @@ $state = $geolocationService->getProvinces("yes");
                     "url": sSource,
                     "data": aoData,
                     "success": function(json) {
+                        $("#totalSamplesRequested").html("Total Number of Tests Requests Received :&nbsp;&nbsp;&nbsp;"+0);
+                        $("#totalSamplesAck").html("Total Number of Acknowledgement Sent :"+0);
+                        $("#totalSamplesReceived").html("Total Number of Samples Received : &nbsp;&nbsp;&nbsp;"+0);
+                        $("#totalSamplesTested").html("Total Number of Samples Tested :&nbsp;&nbsp;&nbsp;"+0);
+                        $("#totalSamplesTrans").html("Total Number of Samples Transmitted :&nbsp;&nbsp;&nbsp;"+0);
+
                         obj = json.calculation;
-                       
-                        $("#totalSamplesRequested").html("Total No. of EMR Requested :&nbsp;&nbsp;&nbsp;"+obj[0][0]);
-                        $("#totalSamplesAck").html("Total No. of Acknowledgement Sent :"+obj[0][1]);
-                        $("#totalSamplesReceived").html("Total No. of Samples Received : &nbsp;&nbsp;&nbsp;"+obj[0][2]);
-                        $("#totalSamplesTested").html("Total No. of Samples Tested :&nbsp;&nbsp;&nbsp;"+obj[0][3]);
-                        $("#totalSamplesTrans").html("Total No. of Samples Transmitted :&nbsp;&nbsp;&nbsp;"+obj[0][4]);
+                       if(obj!=""){
+                        $("#totalSamplesRequested").html("Total Number of Tests Requests Received :&nbsp;&nbsp;&nbsp;"+obj[0][0]);
+                        $("#totalSamplesAck").html("Total Number of Acknowledgement Sent :"+obj[0][1]);
+                        $("#totalSamplesReceived").html("Total Number of Samples Received : &nbsp;&nbsp;&nbsp;"+obj[0][2]);
+                        $("#totalSamplesTested").html("Total Number of Samples Tested :&nbsp;&nbsp;&nbsp;"+obj[0][3]);
+                        $("#totalSamplesTrans").html("Total Number of Samples Transmitted :&nbsp;&nbsp;&nbsp;"+obj[0][4]);
+                       }
                         fnCallback(json);
                     }
                 });
@@ -405,6 +415,23 @@ $state = $geolocationService->getProvinces("yes");
 				$("#labName").append(Obj['labs']);
 			});
 
+	}
+
+    function exportTestRequests() {
+	
+		$.blockUI();
+		$.post("/admin/monitoring/export-samplewise-reports.php", {
+				reqSampleType: $('#requestSampleType').val(),
+				patientInfo: $('#patientInfo').val(),
+			},
+			function(data) {
+				$.unblockUI();
+				if (data === "" || data === null || data === undefined) {
+					alert("<?php echo _("Unable to generate the excel file"); ?>");
+				} else {
+					window.open('/download.php?d=a&f=' + data, '_blank');
+				}
+			});
 	}
 </script>
 <?php

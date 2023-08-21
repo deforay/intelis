@@ -174,18 +174,19 @@ if (!empty($sWhere)) {
     $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
 }
 
-$sQuery = $sQuery . ' GROUP BY source_of_request, lab_id, DATE(vl.sample_collection_date)';
+$sQuery = $sQuery . ' GROUP BY source_of_request, lab_id, DATE(vl.request_created_datetime)';
 if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
-//echo $sQuery; die;
+
 $_SESSION['samplewiseReportsQuery'] = $sQuery;
+
 [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
 
 
 $calcValueQuery = "SELECT SUM(CASE WHEN (vl.test_requested_on is not null AND vl.test_requested_on not like '') THEN 1 ELSE 0 END) AS 'totalSamplesRequested',
-            SUM(CASE WHEN (vl.request_created_datetime is not null AND vl.request_created_datetime not like '') THEN 1 ELSE 0 END) AS 'totalSamplesAckknowledged',
+            SUM(CASE WHEN (vl.request_created_datetime is not null AND vl.request_created_datetime not like '') THEN 1 ELSE 0 END) AS 'totalSamplesAcknowledged',
             SUM(CASE WHEN (vl.sample_received_at_vl_lab_datetime is not null AND vl.sample_received_at_vl_lab_datetime not like '') THEN 1 ELSE 0 END) AS 'totalSamplesReceived',
             SUM(CASE WHEN (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '') THEN 1 ELSE 0 END) AS 'totalSamplesTested',
             SUM(CASE WHEN (vl.result_dispatched_datetime is not null AND vl.result_dispatched_datetime not like '') THEN 1 ELSE 0 END) AS 'totalSamplesDispatched'
@@ -193,7 +194,13 @@ $calcValueQuery = "SELECT SUM(CASE WHEN (vl.test_requested_on is not null AND vl
         LEFT JOIN facility_details as l ON vl.lab_id = l.facility_id
         LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
         LEFT JOIN batch_details as b ON vl.sample_batch_id=b.batch_id";
-//echo $calcValueQuery; die;
+
+        if (!empty($sWhere)) {
+            $calcValueQuery = $calcValueQuery . ' WHERE ' . implode(" AND ", $sWhere);
+        }
+        
+        $calcValueQuery = $calcValueQuery . ' GROUP BY source_of_request, lab_id, DATE(vl.request_created_datetime)';
+
 $calculateFields = $db->rawQuery($calcValueQuery);
 
 
@@ -211,7 +218,7 @@ $output = array(
 foreach ($calculateFields as $row) {
     $r = [];
     $r[] = $row['totalSamplesRequested'];
-    $r[] = $row['totalSamplesAckknowledged'];
+    $r[] = $row['totalSamplesAcknowledged'];
     $r[] = $row['totalSamplesReceived'];
     $r[] = $row['totalSamplesTested'];
     $r[] = $row['totalSamplesDispatched'];
