@@ -133,19 +133,19 @@ class GeoLocationsService
     {
 
         $response = [];
-
+        $provinceId = implode(',',$provinceId);
         if ($districts === true) {
-            $districtSql = "SELECT geo_id, geo_name from geographical_divisions WHERE geo_parent = $provinceId AND geo_status='active'";
+            $districtSql = "SELECT geo_id, geo_name from geographical_divisions WHERE geo_parent IN ($provinceId) AND geo_status='active'";
             $response['districts'] = $this->db->rawQuery($districtSql);
         }
 
         if ($facilities === true) {
-            $facilitySql = "SELECT facility_id, facility_name, facility_code from facility_details WHERE (facility_type = 1 or facility_type = 3) AND facility_state_id = $provinceId AND status='active'";
+            $facilitySql = "SELECT facility_id, facility_name, facility_code from facility_details WHERE (facility_type = 1 or facility_type = 3) AND facility_state_id IN ($provinceId) AND status='active'";
             $response['facilities'] = $this->db->rawQuery($facilitySql);
         }
 
         if ($labs === true) {
-            $facilitySql = "SELECT facility_id, facility_name from facility_details WHERE facility_type = 2  AND facility_state_id = $provinceId AND status='active'";
+            $facilitySql = "SELECT facility_id, facility_name from facility_details WHERE facility_type = 2  AND facility_state_id IN ($provinceId) AND status='active'";
             $response['labs'] = $this->db->rawQuery($facilitySql);
         }
 

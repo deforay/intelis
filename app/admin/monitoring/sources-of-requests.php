@@ -4,6 +4,8 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\SystemService;
+use App\Services\GeoLocationsService;
+
 
 $title = _("Sources of Requests");
 require_once APPLICATION_PATH . '/header.php';
@@ -13,6 +15,9 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var GeoLocationsService $geolocationService */
+$geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -27,6 +32,7 @@ $sources = array(
 );
 
 $activeModules = SystemService::getActiveModules();
+$state = $geolocationService->getProvinces("yes");
 
 ?>
 <style>
@@ -37,6 +43,7 @@ $activeModules = SystemService::getActiveModules();
     th {
         display: revert !important;
     }
+    .calc{ margin:10px; font-weight:bold; font-size:15px; }
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -69,8 +76,45 @@ $activeModules = SystemService::getActiveModules();
                                 <input type="text" id="dateRange" name="dateRange" class="form-control daterangefield" placeholder="<?php echo _('Enter date range'); ?>" style="width:220px;background:#fff;" />
                             </td>
                             <td><strong>
-                                    <?php echo _("Test Types"); ?>&nbsp;:
+                                    <?= _('Province/State'); ?>&nbsp;:
                                 </strong></td>
+                            <td>
+                            <select class="form-control select2-element" id="state" onchange="getByProvince()" name="state" title="<?php echo _('Please select Province/State'); ?>" multiple="multiple">
+									<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+							</select>
+                            </td>
+                            <td><strong>
+                                    <?php echo _("District/County"); ?>&nbsp;:
+                                </strong>
+                            </td>
+                            <td>
+                            <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict(this.value)" multiple="multiple">
+								</select>
+                            </td>
+                                </tr>
+                                <tr>
+                                <td><strong>
+                                    <?php echo _("Name of the Clinic"); ?>&nbsp;:
+                                </strong>
+                                </td>
+                                    <td>
+                                    <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose health facility" style="width:100%;" onchange="getfacilityProvinceDetails(this);" multiple="multiple">
+                                                <?php echo $facility; ?>
+                                            </select>
+                                    </td>
+                                    <td><strong>
+                                    <?php echo _("Name of the Testing Lab"); ?>&nbsp;:
+                                </strong></td>
+                            <td>
+                                <select style="width:220px;" class="form-control select2" id="labName" name="labName" title="<?php echo _('Please select the Lab name'); ?>" multiple="multiple">
+                                    <?php echo $general->generateSelectOptions($labNameList, null, '--Select--'); ?>
+                                </select>
+                            </td>
+                                <td><strong>
+                                        <?php echo _("Test Type"); ?>&nbsp;:
+                                    </strong>
+                                </td>
+                           
                             <td>
                                 <select id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
                                     <?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
@@ -100,17 +144,10 @@ $activeModules = SystemService::getActiveModules();
                                     <?php } ?>
                                 </select>
                             </td>
-                            <td><strong>
-                                    <?php echo _("Lab Name"); ?>&nbsp;:
-                                </strong></td>
-                            <td>
-                                <select style="width:220px;" class="form-control select2" id="labName" name="labName" title="<?php echo _('Please select the Lab name'); ?>">
-                                    <?php echo $general->generateSelectOptions($labNameList, null, '--Select--'); ?>
-                                </select>
-                            </td>
+                          
                         </tr>
                         <tr>
-                            <td><strong>
+                        <td><strong>
                                     <?php echo _("Source of Request"); ?>&nbsp;:
                                 </strong></td>
                             <td>
@@ -118,42 +155,61 @@ $activeModules = SystemService::getActiveModules();
                                     <?php echo $general->generateSelectOptions(array('api' => 'api', 'app' => 'app', 'web' => 'web', 'hl7' => 'hl7'), null, '--All--'); ?>
                                 </select>
                             </td>
+                        </tr>
+                        <tr>
+                          
                             <td><button onclick="oTable.fnDraw();" value="Search" class="btn btn-primary btn-sm"><span>
                                         <?php echo _("Search"); ?>
-                                    </span></button></td>
+                                    </span></button>
+                                    <button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
+                                </td>
                         </tr>
                     </table>
+                    <div class="calc" id="totalSamplesRequested"></div>
+                    <div class="calc" id="totalSamplesAck"></div>
+                    <div class="calc" id="totalSamplesReceived"></div>
+                    <div class="calc" id="totalSamplesTested"></div>
+                    <div class="calc" id="totalSamplesTrans"></div>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table aria-describedby="table" id="sampleReportsDataTable" class="table table-bordered table-striped" aria-hidden="true">
+                        <table aria-describedby="table" id="samplewiseReport" class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
                                 <tr>
                                     <th>
-                                        <?php echo _("Lab Name"); ?>
+                                        <?php echo _("Name of the Clinic"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("Test Type"); ?>
+                                        <?php echo _("External ID"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("No. of Samples Collected"); ?>
+                                        <?php echo _("Electronic Test request Date and Time"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("No. of Samples Received at the Testing Lab"); ?>
+                                        <?php echo _("STS Sample Code"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("No. of Samples with Test Result"); ?>
+                                        <?php echo _("Request Acknowledged Date Time"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("No. of Samples Rejected"); ?>
+                                        <?php echo _("Samples Received Date Time"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("No. of Results returned"); ?>
+                                        <?php echo _("Date Time of Sample added to Batch"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("Source of Request"); ?>
+                                        <?php echo _("Test Result"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("Last Request Created On"); ?>
+                                        <?php echo _("Result Received/Entered Date and Time"); ?>
+                                    </th>
+                                    <th>
+                                        <?php echo _("Result Approved Date and Time"); ?>
+                                    </th>
+                                    <th>
+                                        <?php echo _("Result Return Date and Time"); ?>
+                                    </th>
+                                    <th>
+                                        <?php echo _("Last Modified On"); ?>
                                     </th>
                                 </tr>
                             </thead>
@@ -180,12 +236,26 @@ $activeModules = SystemService::getActiveModules();
 <script type="text/javascript">
     var oTable = null;
     $(document).ready(function() {
+        getSourcesOfRequestReport();
+        $("#srcRequest").val('api');
         $('#labName').select2({
             placeholder: "Select Lab to filter"
         });
 
-        getSourcesOfRequestReport();
-        getSrcList();
+        $('#state').select2({
+            placeholder: "Select Province"
+        });
+
+        $('#district').select2({
+            width: '200px',
+            placeholder: "Select District"
+        });
+
+        $('#facilityId').select2({
+            width: '200px',
+            placeholder: "Select Name of the Clinic"
+        });
+        
 
         $('#dateRange').daterangepicker({
                 locale: {
@@ -214,24 +284,15 @@ $activeModules = SystemService::getActiveModules();
                 endDate = end.format('YYYY-MM-DD');
             });
 
-        $("#testType").change(function() {
-            getSrcList();
-        });
+   
     });
 
-    // function getSourcesOfRequestReport() {
-    //     if ($("#dateRange").val() == "" || $("#testType").val() == "") {
-    //         alert("Please select the date range and test type to see the source of requests");
-    //         return false;
-    //     } else {
-    //         oTable.fnDraw();
-    //     }
-    // }
+   
 
     function getSourcesOfRequestReport() {
 
         $.blockUI();
-        oTable = $('#sampleReportsDataTable').dataTable({
+        oTable = $('#samplewiseReport').dataTable({
             "oLanguage": {
                 "sLengthMenu": "_MENU_ records per page"
             },
@@ -243,33 +304,42 @@ $activeModules = SystemService::getActiveModules();
             "bRetrieve": true,
             "aoColumns": [{
                 "sClass": "center"
-            }, {
+            },
+            {
                 "sClass": "center",
-                "bSortable": false
-            }, {
+            }, 
+            {
                 "sClass": "center",
-                "bSortable": false
-            }, {
+            }, 
+            {
                 "sClass": "center",
-                "bSortable": false
-            }, {
+            }, 
+            {
                 "sClass": "center",
-                "bSortable": false
-            }, {
+            }, 
+            {
                 "sClass": "center",
-                "bSortable": false
-            }, {
+            }, 
+            {
                 "sClass": "center",
-                "bSortable": false
-            }, {
+            }, 
+            {
                 "sClass": "center"
-            }, {
+            },{
+                "sClass": "center"
+            },
+            {
+                "sClass": "center"
+            },{
+                "sClass": "center"
+            },
+             {
                 "sClass": "center"
             }],
             "aaSorting": [0, "desc"],
             "bProcessing": true,
             "bServerSide": true,
-            "sAjaxSource": "/admin/monitoring/get-sources-of-requests.php",
+            "sAjaxSource": "/admin/monitoring/get-samplewise-report.php",
             "fnServerData": function(sSource, aoData, fnCallback) {
                 aoData.push({
                     "name": "dateRange",
@@ -284,37 +354,58 @@ $activeModules = SystemService::getActiveModules();
                     "value": $("#labName").val()
                 });
                 aoData.push({
-                    "name": "srcRequest",
-                    "value": $("#srcRequest").val()
+                    "name": "state",
+                    "value": $("#state").val()
+                });
+                aoData.push({
+                    "name": "district",
+                    "value": $("#district").val()
+                });
+                aoData.push({
+                    "name": "facilityId",
+                    "value": $("#facilityId").val()
                 });
                 $.ajax({
                     "dataType": 'json',
                     "type": "POST",
                     "url": sSource,
                     "data": aoData,
-                    "success": fnCallback
+                    "success": function(json) {
+                        obj = json.calculation;
+                       
+                        $("#totalSamplesRequested").html("Total No. of EMR Requested :&nbsp;&nbsp;&nbsp;"+obj[0][0]);
+                        $("#totalSamplesAck").html("Total No. of Acknowledgement Sent :"+obj[0][1]);
+                        $("#totalSamplesReceived").html("Total No. of Samples Received : &nbsp;&nbsp;&nbsp;"+obj[0][2]);
+                        $("#totalSamplesTested").html("Total No. of Samples Tested :&nbsp;&nbsp;&nbsp;"+obj[0][3]);
+                        $("#totalSamplesTrans").html("Total No. of Samples Transmitted :&nbsp;&nbsp;&nbsp;"+obj[0][4]);
+                        fnCallback(json);
+                    }
                 });
             }
         });
         $.unblockUI();
     }
 
-    function getSrcList() {
-        $.post("/admin/monitoring/get-src-of-requests-list.php", {
-                testType: $("#testType").val(),
-                format: "html"
-            },
-            function(data) {
-                if (data != '') {
-                    $("#srcRequest").html(data);
-                }
-            });
-    }
 
-    function viewMore(url) {
-        params = $("#dateRange").val() + '##' + $("#labName").val() + '##' + $("#srcRequest").val();
-        showModal(url + '?id=' + btoa(params), 1200, 720);
-    }
+    function getByProvince() {
+        state = $('#state').val();
+		$("#district").html('');
+		$("#facilityId").html('');
+		$("#labName").html('');
+		$.post("/common/get-by-province-id.php", {
+			provinceId: state,
+			districts: true,
+			facilities: true,
+			labs: true,
+		},
+			function (data) {
+				Obj = $.parseJSON(data);
+				$("#district").append(Obj['districts']);
+				$("#facilityId").append(Obj['facilities']);
+				$("#labName").append(Obj['labs']);
+			});
+
+	}
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';

@@ -4918,21 +4918,46 @@ ALTER TABLE `audit_form_vl` CHANGE `unique_id` `unique_id` VARCHAR(256) CHARACTE
 UPDATE `system_config` SET `value` = '5.2.1' WHERE `system_config`.`name` = 'sc_version';
 
 -- Jeyabanu 10-08-2023
+ALTER TABLE `user_details` ADD `user_country` VARCHAR(256) NULL DEFAULT NULL AFTER `role_id`;
+ALTER TABLE `user_details` ADD `user_default_time_zone` VARCHAR(256) NULL DEFAULT NULL AFTER `user_country`;
 
 INSERT INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'admin', 'no', 'Recommended Corrective Actions', '/common/reference/recommended-corrective-actions.php?testType=eid', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-recommended-corrective-actions\r\n', '11', '40', 'active', CURRENT_TIMESTAMP), (NULL, 'admin', 'no', 'Recommended Corrective Actions', '/common/reference/recommended-corrective-actions.php?testType=eid', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-recommended-corrective-actions\r\n', '12', '41', 'active', CURRENT_TIMESTAMP);
 
-UPDATE `privileges`
-SET `shared_privileges` = '[\"implementation-partners.php\", \"add-implementation-partners.php\", \"edit-implementation-partners.php\", \"funding-sources.php\", \"add-funding-sources.php\", \"edit-funding-sources.php\"]'
-WHERE `privilege_name` = 'geographical-divisions-details.php';
+UPDATE `privileges` SET `shared_privileges` = '[\"implementation-partners.php\", \"add-implementation-partners.php\", \"edit-implementation-partners.php\", \"funding-sources.php\", \"add-funding-sources.php\", \"edit-funding-sources.php\"]' WHERE `privileges`.`privilege_id` = 166;
 
-UPDATE `roles_privileges_map`
-SET `privilege_id`= (SELECT privilege_id FROM privileges WHERE privilege_name = 'geographical-divisions-details.php')
-WHERE `privilege_id`=(SELECT privilege_id FROM privileges WHERE privilege_name = 'province-details.php');
+UPDATE `roles_privileges_map` SET `privilege_id`='166' WHERE `privilege_id`='139';
+DELETE FROM `privileges` WHERE `privileges`.`privilege_id` = '139';
 
-DELETE FROM `privileges` WHERE `privilege_name` = 'province-details.php';
+ALTER TABLE `form_vl` ADD `result_sent_to_source_datetime` DATETIME NULL DEFAULT NULL AFTER `result_sent_to_source`;
+ALTER TABLE `audit_form_vl` ADD `result_sent_to_source_datetime` DATETIME NULL DEFAULT NULL AFTER `result_sent_to_source`;
 
+ALTER TABLE `form_eid` ADD `external_sample_code` VARCHAR(256) NULL DEFAULT NULL AFTER `remote_sample_code`;
+ALTER TABLE `audit_form_eid` ADD `external_sample_code` VARCHAR(256) NULL DEFAULT NULL AFTER `remote_sample_code`;
 
--- Amit 14-Aug-2023
-ALTER TABLE `roles` ADD UNIQUE(`role_name`);
-ALTER TABLE `roles` ADD UNIQUE(`role_code`);
+ALTER TABLE `form_eid` ADD `test_requested_on` DATE NULL DEFAULT NULL AFTER `result_printed_datetime`;
+ALTER TABLE `audit_form_eid` ADD `test_requested_on` DATE NULL DEFAULT NULL AFTER `result_printed_datetime`;
+
+ALTER TABLE `form_covid19` ADD `test_requested_on` DATE NULL DEFAULT NULL AFTER `investigator_email`;
+ALTER TABLE `audit_form_covid19` ADD `test_requested_on` DATE NULL DEFAULT NULL AFTER `investigator_email`;
+
+ALTER TABLE `form_covid19` ADD `result_sent_to_source_datetime` DATETIME NULL DEFAULT NULL AFTER `result_sent_to_source`;
+ALTER TABLE `audit_form_covid19` ADD `result_sent_to_source_datetime` DATETIME NULL DEFAULT NULL AFTER `result_sent_to_source`;
+
+ALTER TABLE `form_hepatitis` ADD `test_requested_on` DATE NULL DEFAULT NULL AFTER `result_printed_datetime`;
+ALTER TABLE `audit_form_hepatitis` ADD `test_requested_on` DATE NULL DEFAULT NULL AFTER `result_printed_datetime`;
+
+ALTER TABLE `form_hepatitis` ADD `result_sent_to_source_datetime` DATETIME NULL DEFAULT NULL AFTER `result_sent_to_source`;
+ALTER TABLE `audit_form_hepatitis` ADD `result_sent_to_source_datetime` DATETIME NULL DEFAULT NULL AFTER `result_sent_to_source`;
+
+ALTER TABLE `form_tb` ADD `test_requested_on` DATE NULL DEFAULT NULL AFTER `result_printed_datetime`;
+ALTER TABLE `audit_form_tb` ADD `test_requested_on` DATE NULL DEFAULT NULL AFTER `result_printed_datetime`;
+
+ALTER TABLE `form_tb` ADD `result_sent_to_source_datetime` DATETIME NULL DEFAULT NULL AFTER `result_sent_to_source`;
+ALTER TABLE `audit_form_tb` ADD `result_sent_to_source_datetime` DATETIME NULL DEFAULT NULL AFTER `result_sent_to_source`;
+
+ALTER TABLE `form_tb` ADD `external_sample_code` VARCHAR(256) NULL DEFAULT NULL AFTER `sample_code`;
+ALTER TABLE `audit_form_tb` ADD `external_sample_code` VARCHAR(256) NULL DEFAULT NULL AFTER `sample_code`;
+
+ALTER TABLE `form_tb` CHANGE `sample_received_at_lab_datetime` `sample_received_at_vl_lab_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `audit_form_tb` CHANGE `sample_received_at_lab_datetime` `sample_received_at_vl_lab_datetime` DATETIME NULL DEFAULT NULL;
 
