@@ -200,34 +200,37 @@ $state = $geolocationService->getProvinces("yes");
                                         <?php echo _("Name of the Clinic"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("External ID"); ?>
+                                        <?php echo _("Name of the Testing Lab"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("Electronic Test request Date and Time"); ?>
+                                        <?php echo _("External Sample ID"); ?>
+                                    </th>
+                                    <th>
+                                        <?php echo _("Test requested On"); ?>
                                     </th>
                                     <th>
                                         <?php echo _("STS Sample Code"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("Request Acknowledged Date Time"); ?>
+                                        <?php echo _("Request Acknowledged On"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("Samples Received At Lab"); ?>
+                                        <?php echo _("Samples Received At Lab On"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("Sample added to Batch on"); ?>
+                                        <?php echo _("Sample added to Batch On"); ?>
                                     </th>
                                     <th>
                                         <?php echo _("Test Result"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("Result Received/Entered Date and Time"); ?>
+                                        <?php echo _("Sample Tested On"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("Result Approved Date and Time"); ?>
+                                        <?php echo _("Result Approved On"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("Result Return Date and Time"); ?>
+                                        <?php echo _("Result Returned On"); ?>
                                     </th>
                                     <th>
                                         <?php echo _("Last Modified On"); ?>
@@ -326,6 +329,9 @@ $state = $geolocationService->getProvinces("yes");
             "bRetrieve": true,
             "aoColumns": [{
                     "sClass": "center"
+                },
+                {
+                    "sClass": "center",
                 },
                 {
                     "sClass": "center",
