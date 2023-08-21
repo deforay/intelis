@@ -27,7 +27,7 @@ $dateTimeUtil = new DateUtility();
 $sQuery = $_SESSION['samplewiseReportsQuery'];
 $rResult = $db->rawQuery($sQuery);
 
-$headings = array('Name of the Clinic', 'External ID', "Electronic Test request Date and Time", "STS Sample Code", "Request Acknowledged Date Time", "Samples Received Date Time", "Date Time of Sample added to Batch", "Test Result", "Result Received/Entered Date and Time", "Result Approved Date and Time","Result Return Date and Time","Last Modified On");
+$headings = array('Name of the Clinic', 'External ID', "Electronic Test request Date and Time", "STS Sample Code", "Request Acknowledged Date Time", "Samples Received At Lab", "Date Time of Sample added to Batch", "Test Result", "Result Received/Entered Date and Time", "Result Approved Date and Time","Result Return Date and Time","Last Modified On");
 
 $output = [];
 
@@ -84,15 +84,15 @@ foreach ($rResult as $aRow) {
 	$row = [];
     $row[] = $aRow['labname'];
     $row[] = $aRow['external_sample_code'];
-    $row[] = DateUtility::humanReadableDateFormat($aRow['request_created']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime']);
     $row[] = $aRow['remote_sample_code'];
-    $row[] = $aRow['test_requested_on'];
-    $row[] = $aRow['sample_received_at_vl_lab_datetime'];
+    $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
     $row[] = DateUtility::humanReadableDateFormat($aRow['batch_request_created']);
     $row[] = $aRow['result'];
-    $row[] = $aRow['result_reviewed_datetime'];
-    $row[] = $aRow['result_approved_datetime'];
-    $row[] = $aRow['result_sent_to_source_datetime'];
+    $row[] = DateUtility::humanReadableDateFormat($aRow['result_reviewed_datetime']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['result_approved_datetime']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['result_sent_to_source_datetime']);
     $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime']);
 	
 	$output[] = $row;
