@@ -60,12 +60,16 @@ if (isset($testType) && $testType == 'tb') {
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
  * you want to insert a non-database field (for example a counter or static image)
  */
-$aColumns = array('l.facility_name','vl.external_sample_code','vl.request_created_datetime','vl.remote_sample_code',
-'vl.test_requested_on','vl.sample_received_at_vl_lab_datetime','b.request_created_datetime','vl.result','vl.result_reviewed_datetime',
-'vl.result_approved_datetime','vl.result_sent_to_source_datetime','vl.last_modified_datetime');
-$orderColumns = array('l.facility_name','vl.external_sample_code','vl.request_created_datetime','vl.remote_sample_code',
-'vl.test_requested_on','vl.sample_received_at_vl_lab_datetime','b.request_created_datetime','vl.result','vl.result_reviewed_datetime',
-'vl.result_approved_datetime','vl.result_sent_to_source_datetime','vl.last_modified_datetime');
+$aColumns = array(
+    'l.facility_name', 'vl.external_sample_code', 'vl.request_created_datetime', 'vl.remote_sample_code',
+    'vl.test_requested_on', 'vl.sample_received_at_vl_lab_datetime', 'b.request_created_datetime', 'vl.result', 'vl.result_reviewed_datetime',
+    'vl.result_approved_datetime', 'vl.result_sent_to_source_datetime', 'vl.last_modified_datetime'
+);
+$orderColumns = array(
+    'l.facility_name', 'vl.external_sample_code', 'vl.request_created_datetime', 'vl.remote_sample_code',
+    'vl.test_requested_on', 'vl.sample_received_at_vl_lab_datetime', 'b.request_created_datetime', 'vl.result', 'vl.result_reviewed_datetime',
+    'vl.result_approved_datetime', 'vl.result_sent_to_source_datetime', 'vl.last_modified_datetime'
+);
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -153,16 +157,16 @@ if (isset($_POST['labName']) && trim($_POST['labName']) != '') {
     $sWhere[] = ' vl.lab_id IN (' . $_POST['labName'] . ')';
 }
 if (isset($_POST['state']) && trim($_POST['state']) != '') {
-    $provinceId = implode(',',$_POST['state']);
-    $sWhere[] = ' f.facility_state_id  IN ('.$provinceId.')';
+    $provinceId = implode(',', $_POST['state']);
+    $sWhere[] = ' f.facility_state_id  IN (' . $provinceId . ')';
 }
 if (isset($_POST['district']) && trim($_POST['district']) != '') {
-    $districtId = implode(',',$_POST['district']);
-    $sWhere[] = ' f.facility_district_id  IN ('.$districtId.')';
+    $districtId = implode(',', $_POST['district']);
+    $sWhere[] = ' f.facility_district_id  IN (' . $districtId . ')';
 }
 if (isset($_POST['facilityId']) && trim($_POST['facilityId']) != '') {
-    $facilityId = implode(',',$_POST['facilityId']);
-    $sWhere[] = ' vl.facility_id  IN ('.$facilityId.')';
+    $facilityId = implode(',', $_POST['facilityId']);
+    $sWhere[] = ' vl.facility_id  IN (' . $facilityId . ')';
 }
 
 if (isset($_POST['srcRequest']) && trim($_POST['srcRequest']) != '') {
@@ -195,11 +199,11 @@ $calcValueQuery = "SELECT SUM(CASE WHEN (vl.test_requested_on is not null AND vl
         LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
         LEFT JOIN batch_details as b ON vl.sample_batch_id=b.batch_id";
 
-        if (!empty($sWhere)) {
-            $calcValueQuery = $calcValueQuery . ' WHERE ' . implode(" AND ", $sWhere);
-        }
-        
-        $calcValueQuery = $calcValueQuery . ' GROUP BY source_of_request, lab_id, DATE(vl.request_created_datetime)';
+if (!empty($sWhere)) {
+    $calcValueQuery = $calcValueQuery . ' WHERE ' . implode(" AND ", $sWhere);
+}
+
+$calcValueQuery = $calcValueQuery . ' GROUP BY source_of_request, lab_id, DATE(vl.request_created_datetime)';
 
 $calculateFields = $db->rawQuery($calcValueQuery);
 
@@ -225,7 +229,7 @@ foreach ($calculateFields as $row) {
     $output['calculation'][] = $r;
 }
 foreach ($rResult as $key => $aRow) {
-   
+
     $row = [];
     $row[] = $aRow['labname'];
     $row[] = $aRow['external_sample_code'];

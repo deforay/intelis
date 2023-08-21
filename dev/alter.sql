@@ -4923,10 +4923,15 @@ ALTER TABLE `user_details` ADD `user_default_time_zone` VARCHAR(256) NULL DEFAUL
 
 INSERT INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'admin', 'no', 'Recommended Corrective Actions', '/common/reference/recommended-corrective-actions.php?testType=eid', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-recommended-corrective-actions\r\n', '11', '40', 'active', CURRENT_TIMESTAMP), (NULL, 'admin', 'no', 'Recommended Corrective Actions', '/common/reference/recommended-corrective-actions.php?testType=eid', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-recommended-corrective-actions\r\n', '12', '41', 'active', CURRENT_TIMESTAMP);
 
-UPDATE `privileges` SET `shared_privileges` = '[\"implementation-partners.php\", \"add-implementation-partners.php\", \"edit-implementation-partners.php\", \"funding-sources.php\", \"add-funding-sources.php\", \"edit-funding-sources.php\"]' WHERE `privileges`.`privilege_id` = 166;
+UPDATE `privileges`
+SET `shared_privileges` = '[\"implementation-partners.php\", \"add-implementation-partners.php\", \"edit-implementation-partners.php\", \"funding-sources.php\", \"add-funding-sources.php\", \"edit-funding-sources.php\"]'
+WHERE `privilege_name` = 'geographical-divisions-details.php';
 
-UPDATE `roles_privileges_map` SET `privilege_id`='166' WHERE `privilege_id`='139';
-DELETE FROM `privileges` WHERE `privileges`.`privilege_id` = '139';
+UPDATE `roles_privileges_map`
+SET `privilege_id`= (SELECT privilege_id FROM privileges WHERE privilege_name = 'geographical-divisions-details.php')
+WHERE `privilege_id`=(SELECT privilege_id FROM privileges WHERE privilege_name = 'province-details.php');
+
+DELETE FROM `privileges` WHERE `privilege_name` = 'province-details.php';
 
 ALTER TABLE `form_vl` ADD `result_sent_to_source_datetime` DATETIME NULL DEFAULT NULL AFTER `result_sent_to_source`;
 ALTER TABLE `audit_form_vl` ADD `result_sent_to_source_datetime` DATETIME NULL DEFAULT NULL AFTER `result_sent_to_source`;

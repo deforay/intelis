@@ -48,7 +48,12 @@ class CommonService
         }
     }
 
-
+    /**
+     *
+     * @param int $length
+     * @return string
+     * @throws SystemException
+     */
 
     public function generateRandomString($length = 32): string
     {
