@@ -140,10 +140,12 @@ for ($i = 0; $i < count($aColumns); $i++) {
 $aWhere = '';
 $sQuery = '';
 
-$sQuery = "SELECT l.facility_name as 'labname',
+$sQuery = "SELECT
+                f.facility_name,
+                l.facility_name as 'labname',
                 vl.external_sample_code,
                 vl.app_sample_code,
-                vl.result_tested_datetime,
+                vl.sample_tested_datetime,
                 vl.request_created_datetime as request_created,
                 vl.remote_sample_code,
                 vl.request_created_datetime,
@@ -243,6 +245,7 @@ foreach ($calculateFields as $row) {
 foreach ($rResult as $key => $aRow) {
 
     $row = [];
+    $row[] = $aRow['f.facility_name'];
     $row[] = $aRow['labname'];
     $row[] = $aRow['external_sample_code'] ?? $aRow['app_sample_code'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
@@ -251,8 +254,8 @@ foreach ($rResult as $key => $aRow) {
     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime'], true);
     $row[] = DateUtility::humanReadableDateFormat($aRow['batch_request_created'], true);
     $row[] = $aRow['result'];
-    $row[] = DateUtility::humanReadableDateFormat($aRow['result_tested_datetime'], true);
-    $row[] = DateUtility::humanReadableDateFormat($aRow['result_approved_datetime'], true);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'], true);
+    $row[] = (!empty($aRow['sample_tested_datetime']) && !empty($aRow['result_approved_datetime'])) ? DateUtility::humanReadableDateFormat($aRow['result_approved_datetime'], true) : "";
     $row[] = DateUtility::humanReadableDateFormat($aRow['result_sent_to_source_datetime'], true);
     $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
 

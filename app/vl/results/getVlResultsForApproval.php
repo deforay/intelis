@@ -32,11 +32,11 @@ $systemType = $general->getSystemConfig('sc_user_type');
 $sampleCode = 'sample_code';
 $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
-if ($systemType == 'remoteuser') {
+if ($_SESSION['instanceType'] ==  'remoteuser') {
      $sampleCode = 'remote_sample_code';
-} else if ($systemType == 'standalone') {
-     $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-     $orderColumns = array('vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+} elseif ($_SESSION['instanceType'] ==  'standalone') {
+     $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
+     $orderColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
 }
 
 /* Indexed column (used for fast and accurate table cardinality) */
@@ -106,14 +106,15 @@ for ($i = 0; $i < count($aColumns); $i++) {
      }
 }
 
-/*
-          * SQL queries
-          * Get data to display
-          */
-//$sQuery="SELECT vl.vl_sample_id,vl.facility_id,vl.patient_name,f.facility_name,f.facility_code,art.art_code,s.sample_name FROM form_vl as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id  INNER JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id INNER JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type";
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id=vl.implementing_partner";
+$sQuery = "SELECT * FROM form_vl as vl
+               LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+               LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
+               LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+               LEFT JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id
+               LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+               LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id=vl.implementing_partner";
 
-//echo $sQuery;die;
+
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
 
@@ -136,8 +137,7 @@ if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
 if (isset($_POST['statusFilter']) && $_POST['statusFilter'] != '') {
      if ($_POST['statusFilter'] == 'approvedOrRejected') {
           $sWhere[] = ' vl.result_status IN (4,7)';
-     } else if ($_POST['statusFilter'] == 'notApprovedOrRejected') {
-          //$sWhere[] = ' vl.result_status NOT IN (4,7)';
+     } elseif ($_POST['statusFilter'] == 'notApprovedOrRejected') {
           $sWhere[] = ' vl.result_status IN (6,8)';
      }
 }
@@ -158,27 +158,15 @@ if (!empty($sOrder)) {
      $sQuery = $sQuery . ' order by ' . $sOrder;
 }
 
-if (isset($sLimit) && isset($sOffset)) {
-     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-}
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
 
-
-$rResult = $db->rawQuery($sQuery);
-// print_r($rResult);
-/* Data set length after filtering */
-
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
-
-/*
-          * Output
-          */
-$output = array(
+$output = [
      "sEcho" => intval($_POST['sEcho']),
-     "iTotalRecords" => $iTotal,
-     "iTotalDisplayRecords" => $iFilteredTotal,
+     "iTotalRecords" => $resultCount,
+     "iTotalDisplayRecords" => $resultCount,
      "aaData" => []
-);
+];
+
 $vlRequest = false;
 $vlView = false;
 if (isset($_SESSION['privileges']) && (in_array("/vl/requests/editVlRequest.php", $_SESSION['privileges']))) {
@@ -213,19 +201,14 @@ foreach ($rResult as $aRow) {
      if ($systemType != 'standalone') {
           $row[] = $aRow['remote_sample_code'];
      }
-     $row[] = $aRow['sample_collection_date'];
+     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
      $row[] = $aRow['batch_code'];
      $row[] = $aRow['patient_art_no'];
-     $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+     $row[] = $patientFname . " " . $patientMname . " " . $patientLname;
      $row[] = ($aRow['facility_name']);
      $row[] = ($aRow['sample_name']);
      $row[] = $aRow['result'];
-     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-          $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
-     } else {
-          $aRow['last_modified_datetime'] = '';
-     }
-     $row[] = $aRow['last_modified_datetime'];
+     $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
      $row[] = $status;
      //$row[] = '<a href="updateVlTestResult.php?id=' . base64_encode($aRow['vl_sample_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result"><em class="fa-solid fa-pen-to-square"></em> Result</a>';
 
