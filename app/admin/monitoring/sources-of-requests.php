@@ -34,6 +34,13 @@ $sources = array(
 $activeModules = SystemService::getActiveModules();
 $state = $geolocationService->getProvinces("yes");
 
+
+// Src of alert req
+$sources = $general->getSourceOfRequest('form_vl');
+$srcOfReqList = [];
+foreach ($sources as $list) {
+	$srcOfReqList[$list['source_of_request']] = strtoupper($list['source_of_request']);
+}
 ?>
 <style>
     .select2-selection__choice {
@@ -116,7 +123,7 @@ $state = $geolocationService->getProvinces("yes");
                                 </td>
                            
                             <td>
-                                <select id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
+                                <select id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>" onchange="getSourceRequest(this.value);">
                                     <?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
                                         <option value="vl">
                                             <?php echo _("Viral Load"); ?>
@@ -151,9 +158,10 @@ $state = $geolocationService->getProvinces("yes");
                                     <?php echo _("Source of Request"); ?>&nbsp;:
                                 </strong></td>
                             <td>
-                                <select style="width:220px;" class="form-control" id="srcRequest" name="srcRequest" title="<?php echo _('Source of Requests'); ?>">
-                                    <?php echo $general->generateSelectOptions(array('api' => 'api', 'app' => 'app', 'web' => 'web', 'hl7' => 'hl7'), null, '--All--'); ?>
-                                </select>
+                            <select class="form-control" id="srcRequest" name="srcRequest"
+									title="<?php echo _('Please select source of request'); ?>">
+									<?= $general->generateSelectOptions($srcOfReqList, null, "--Select--"); ?>
+								</select>
                             </td>
                         </tr>
                         <tr>
@@ -239,6 +247,7 @@ $state = $geolocationService->getProvinces("yes");
 <script type="text/javascript">
     var oTable = null;
     $(document).ready(function() {
+        getSourceRequest('vl');
         getSourcesOfRequestReport();
       
         $("#srcRequest").val('api');
@@ -440,6 +449,19 @@ $state = $geolocationService->getProvinces("yes");
 				}
 			});
 	}
+
+    function getSourceRequest(testType)
+    {
+        $.blockUI();
+        $("#srcRequest").html("");
+        $.post("/admin/monitoring/get-source-request-list.php", {
+                testType: testType,
+			},
+			function(data) {
+				$.unblockUI();
+				$("#srcRequest").html(data);
+			});
+    }
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';
