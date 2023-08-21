@@ -60,16 +60,12 @@ if (isset($testType) && $testType == 'tb') {
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
  * you want to insert a non-database field (for example a counter or static image)
  */
-$aColumns = array(
-    'l.facility_name', 'vl.external_sample_code', 'vl.request_created_datetime', 'vl.remote_sample_code',
-    'vl.test_requested_on', 'vl.sample_received_at_vl_lab_datetime', 'b.request_created_datetime', 'vl.result', 'vl.result_reviewed_datetime',
-    'vl.result_approved_datetime', 'vl.result_sent_to_source_datetime', 'vl.last_modified_datetime'
-);
-$orderColumns = array(
-    'l.facility_name', 'vl.external_sample_code', 'vl.request_created_datetime', 'vl.remote_sample_code',
-    'vl.test_requested_on', 'vl.sample_received_at_vl_lab_datetime', 'b.request_created_datetime', 'vl.result', 'vl.result_reviewed_datetime',
-    'vl.result_approved_datetime', 'vl.result_sent_to_source_datetime', 'vl.last_modified_datetime'
-);
+$aColumns = array('l.facility_name','vl.external_sample_code','vl.request_created_datetime','vl.remote_sample_code',
+'vl.request_created_datetime','vl.sample_received_at_vl_lab_datetime','b.request_created_datetime','vl.result','vl.result_reviewed_datetime',
+'vl.result_approved_datetime','vl.result_sent_to_source_datetime','vl.last_modified_datetime');
+$orderColumns = array('l.facility_name','vl.external_sample_code','vl.request_created_datetime','vl.remote_sample_code',
+'vl.request_created_datetime','vl.sample_received_at_vl_lab_datetime','b.request_created_datetime','vl.result','vl.result_reviewed_datetime',
+'vl.result_approved_datetime','vl.result_sent_to_source_datetime','vl.last_modified_datetime');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -141,7 +137,7 @@ $aWhere = '';
 $sQuery = '';
 
 $sQuery = "SELECT l.facility_name as 'labname',vl.external_sample_code,vl.request_created_datetime as request_created,vl.remote_sample_code,
-            vl.test_requested_on,vl.sample_received_at_vl_lab_datetime,b.request_created_datetime as batch_request_created,vl.result,vl.result_reviewed_datetime,
+            vl.request_created_datetime,vl.sample_received_at_vl_lab_datetime,b.request_created_datetime as batch_request_created,vl.result,vl.result_reviewed_datetime,
             vl.result_approved_datetime,vl.result_sent_to_source_datetime,vl.last_modified_datetime
             FROM $table as vl
         LEFT JOIN facility_details as l ON vl.lab_id = l.facility_id
@@ -178,18 +174,18 @@ if (!empty($sWhere)) {
     $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
 }
 
-$sQuery = $sQuery . ' GROUP BY source_of_request, lab_id, DATE(vl.request_created_datetime)';
+//$sQuery = $sQuery . ' GROUP BY source_of_request, lab_id, DATE(vl.request_created_datetime)';
 if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
-
+//echo $sQuery; die;
 $_SESSION['samplewiseReportsQuery'] = $sQuery;
 
 [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
 
 
-$calcValueQuery = "SELECT SUM(CASE WHEN (vl.test_requested_on is not null AND vl.test_requested_on not like '') THEN 1 ELSE 0 END) AS 'totalSamplesRequested',
+$calcValueQuery = "SELECT SUM(CASE WHEN (vl.request_created_datetime is not null AND vl.request_created_datetime not like '') THEN 1 ELSE 0 END) AS 'totalSamplesRequested',
             SUM(CASE WHEN (vl.request_created_datetime is not null AND vl.request_created_datetime not like '') THEN 1 ELSE 0 END) AS 'totalSamplesAcknowledged',
             SUM(CASE WHEN (vl.sample_received_at_vl_lab_datetime is not null AND vl.sample_received_at_vl_lab_datetime not like '') THEN 1 ELSE 0 END) AS 'totalSamplesReceived',
             SUM(CASE WHEN (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '') THEN 1 ELSE 0 END) AS 'totalSamplesTested',
@@ -199,12 +195,14 @@ $calcValueQuery = "SELECT SUM(CASE WHEN (vl.test_requested_on is not null AND vl
         LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
         LEFT JOIN batch_details as b ON vl.sample_batch_id=b.batch_id";
 
-if (!empty($sWhere)) {
-    $calcValueQuery = $calcValueQuery . ' WHERE ' . implode(" AND ", $sWhere);
-}
-
-$calcValueQuery = $calcValueQuery . ' GROUP BY source_of_request, lab_id, DATE(vl.request_created_datetime)';
-
+        if (!empty($sWhere)) {
+            $calcValueQuery = $calcValueQuery . ' WHERE ' . implode(" AND ", $sWhere);
+        }
+        
+        if (!empty($sOrder)) {
+            $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+            $calcValueQuery = $calcValueQuery . " ORDER BY " . $sOrder;
+        }
 $calculateFields = $db->rawQuery($calcValueQuery);
 
 
@@ -233,15 +231,15 @@ foreach ($rResult as $key => $aRow) {
     $row = [];
     $row[] = $aRow['labname'];
     $row[] = $aRow['external_sample_code'];
-    $row[] = DateUtility::humanReadableDateFormat($aRow['request_created']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime']);
     $row[] = $aRow['remote_sample_code'];
-    $row[] = $aRow['test_requested_on'];
-    $row[] = $aRow['sample_received_at_vl_lab_datetime'];
+    $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
     $row[] = DateUtility::humanReadableDateFormat($aRow['batch_request_created']);
     $row[] = $aRow['result'];
-    $row[] = $aRow['result_reviewed_datetime'];
-    $row[] = $aRow['result_approved_datetime'];
-    $row[] = $aRow['result_sent_to_source_datetime'];
+    $row[] = DateUtility::humanReadableDateFormat($aRow['result_reviewed_datetime']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['result_approved_datetime']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['result_sent_to_source_datetime']);
     $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime']);
 
     $output['aaData'][] = $row;

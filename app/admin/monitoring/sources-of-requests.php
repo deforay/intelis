@@ -158,7 +158,7 @@ $state = $geolocationService->getProvinces("yes");
                         </tr>
                         <tr>
                           
-                            <td><button onclick="oTable.fnDraw();" value="Search" class="btn btn-primary btn-sm"><span>
+                            <td><button onclick="searchRequestData();" value="Search" class="btn btn-primary btn-sm"><span>
                                         <?php echo _("Search"); ?>
                                     </span></button>
                                     <button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
@@ -194,7 +194,7 @@ $state = $geolocationService->getProvinces("yes");
                                         <?php echo _("Request Acknowledged Date Time"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("Samples Received Date Time"); ?>
+                                        <?php echo _("Samples Received At Lab"); ?>
                                     </th>
                                     <th>
                                         <?php echo _("Date Time of Sample added to Batch"); ?>
@@ -240,6 +240,7 @@ $state = $geolocationService->getProvinces("yes");
     var oTable = null;
     $(document).ready(function() {
         getSourcesOfRequestReport();
+      
         $("#srcRequest").val('api');
         $('#labName').select2({
             placeholder: "Select Lab to filter"
@@ -287,7 +288,7 @@ $state = $geolocationService->getProvinces("yes");
                 endDate = end.format('YYYY-MM-DD');
             });
 
-   
+            searchRequestData();
     });
 
    
@@ -415,6 +416,12 @@ $state = $geolocationService->getProvinces("yes");
 				$("#labName").append(Obj['labs']);
 			});
 
+	}
+
+    function searchRequestData() {
+		$.blockUI();
+		oTable.fnDraw();
+		$.unblockUI();
 	}
 
     function exportTestRequests() {
