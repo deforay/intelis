@@ -215,7 +215,7 @@ $state = $geolocationService->getProvinces("yes");
                                         <?php echo _("Samples Received At Lab"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("Date Time of Sample added to Batch"); ?>
+                                        <?php echo _("Sample added to Batch on"); ?>
                                     </th>
                                     <th>
                                         <?php echo _("Test Result"); ?>
