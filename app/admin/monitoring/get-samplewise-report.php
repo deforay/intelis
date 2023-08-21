@@ -14,7 +14,6 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $table = "form_vl";
-$primaryKey = "vl_sample_id";
 
 $testType = 'vl';
 
@@ -57,22 +56,25 @@ if (isset($testType) && $testType == 'tb') {
     $sampleReceivedfield = "sample_received_at_lab_datetime";
 }
 
-/* Array of database columns which should be read and sent back to DataTables. Use a space where
+/*
+ * Array of database columns which should be read and sent back to DataTables. Use a space where
  * you want to insert a non-database field (for example a counter or static image)
  */
-$aColumns = array(
-    'l.facility_name', 'vl.external_sample_code', 'vl.request_created_datetime', 'vl.remote_sample_code',
-    'vl.request_created_datetime', 'vl.sample_received_at_vl_lab_datetime', 'b.request_created_datetime', 'vl.result', 'vl.result_reviewed_datetime',
-    'vl.result_approved_datetime', 'vl.result_sent_to_source_datetime', 'vl.last_modified_datetime'
-);
-$orderColumns = array(
-    'l.facility_name', 'vl.external_sample_code', 'vl.request_created_datetime', 'vl.remote_sample_code',
-    'vl.request_created_datetime', 'vl.sample_received_at_vl_lab_datetime', 'b.request_created_datetime', 'vl.result', 'vl.result_reviewed_datetime',
-    'vl.result_approved_datetime', 'vl.result_sent_to_source_datetime', 'vl.last_modified_datetime'
-);
-
-/* Indexed column (used for fast and accurate table cardinality) */
-$sIndexColumn = $primaryKey;
+$orderColumns = $aColumns = [
+    'f.facility_name',
+    'l.facility_name',
+    'vl.external_sample_code',
+    'vl.request_created_datetime',
+    'vl.remote_sample_code',
+    'vl.request_created_datetime',
+    'vl.sample_received_at_vl_lab_datetime',
+    'b.request_created_datetime',
+    'vl.result',
+    'vl.sample_tested_datetime',
+    'vl.result_approved_datetime',
+    'vl.result_sent_to_source_datetime',
+    'vl.last_modified_datetime'
+];
 
 /*
  * Paging
