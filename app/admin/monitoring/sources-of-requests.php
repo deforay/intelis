@@ -365,7 +365,7 @@ $state = $geolocationService->getProvinces("yes");
                     "sClass": "center"
                 }
             ],
-            "aaSorting": [11, "desc"],
+            "aaSorting": [12, "desc"],
             "bProcessing": true,
             "bServerSide": true,
             "sAjaxSource": "/admin/monitoring/get-samplewise-report.php",
