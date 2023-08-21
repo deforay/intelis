@@ -208,37 +208,34 @@ foreach ($sources as $list) {
                                         <?php echo _("Name of the Clinic"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("Name of the Testing Lab"); ?>
+                                        <?php echo _("External ID"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("External Sample ID"); ?>
-                                    </th>
-                                    <th>
-                                        <?php echo _("Test requested On"); ?>
+                                        <?php echo _("Electronic Test request Date and Time"); ?>
                                     </th>
                                     <th>
                                         <?php echo _("STS Sample Code"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("Request Acknowledged On"); ?>
+                                        <?php echo _("Request Acknowledged Date Time"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("Samples Received At Lab On"); ?>
+                                        <?php echo _("Samples Received At Lab"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("Sample added to Batch On"); ?>
+                                        <?php echo _("Sample added to Batch on"); ?>
                                     </th>
                                     <th>
                                         <?php echo _("Test Result"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("Sample Tested On"); ?>
+                                        <?php echo _("Result Received/Entered Date and Time"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("Result Approved On"); ?>
+                                        <?php echo _("Result Approved Date and Time"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _("Result Returned On"); ?>
+                                        <?php echo _("Result Return Date and Time"); ?>
                                     </th>
                                     <th>
                                         <?php echo _("Last Modified On"); ?>
@@ -358,9 +355,6 @@ foreach ($sources as $list) {
                     "sClass": "center",
                 },
                 {
-                    "sClass": "center",
-                },
-                {
                     "sClass": "center"
                 }, {
                     "sClass": "center"
@@ -374,7 +368,7 @@ foreach ($sources as $list) {
                     "sClass": "center"
                 }
             ],
-            "aaSorting": [12, "desc"],
+            "aaSorting": [11, "desc"],
             "bProcessing": true,
             "bServerSide": true,
             "sAjaxSource": "/admin/monitoring/get-samplewise-report.php",

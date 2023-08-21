@@ -18,14 +18,6 @@ $primaryKey = "vl_sample_id";
 
 $testType = 'vl';
 
-$sources = array(
-    'vlsm' => 'VLSM',
-    'vlsts' => 'STS',
-    'app' => 'Tablet',
-    'api' => 'API',
-    'dhis2' => 'DHIS2'
-);
-$sampleReceivedfield = "sample_received_at_vl_lab_datetime";
 if (!empty($_POST['testType'])) {
     $testType = $_POST['testType'];
 }
@@ -54,7 +46,6 @@ if (isset($testType) && $testType == 'tb') {
     $url = "/tb/requests/tb-requests.php";
     $table = "form_tb";
     $testName = 'TB';
-    $sampleReceivedfield = "sample_received_at_lab_datetime";
 }
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -245,7 +236,7 @@ foreach ($calculateFields as $row) {
 foreach ($rResult as $key => $aRow) {
 
     $row = [];
-    $row[] = $aRow['f.facility_name'];
+    //$row[] = $aRow['f.facility_name'];
     $row[] = $aRow['labname'];
     $row[] = $aRow['external_sample_code'] ?? $aRow['app_sample_code'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
