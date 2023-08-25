@@ -68,7 +68,7 @@ foreach ($sampleResult as $sampleRow) {
         $hepatitisData['last_modified_datetime'] = DateUtility::getCurrentDateTime();
         if (!empty($_POST['testDate'])) {
             $hepatitisData['sample_tested_datetime'] = null;
-            $hepatitisData['sample_received_at_vl_lab_datetime'] = $_POST['testDate'];
+            $hepatitisData['sample_received_at_lab_datetime'] = $_POST['testDate'];
         }
         $hepatitisData['last_modified_by'] = $_SESSION['userId'];
         $hepatitisData['last_modified_datetime'] = DateUtility::getCurrentDateTime();

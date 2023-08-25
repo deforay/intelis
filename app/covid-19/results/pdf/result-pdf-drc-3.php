@@ -210,8 +210,8 @@ if (isset($result['sample_collection_date']) && trim($result['sample_collection_
 }
 $sampleReceivedDate = '';
 $sampleReceivedTime = '';
-if (isset($result['sample_received_at_vl_lab_datetime']) && trim($result['sample_received_at_vl_lab_datetime']) != '' && $result['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
-    $expStr = explode(" ", $result['sample_received_at_vl_lab_datetime']);
+if (isset($result['sample_received_at_lab_datetime']) && trim($result['sample_received_at_lab_datetime']) != '' && $result['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
+    $expStr = explode(" ", $result['sample_received_at_lab_datetime']);
     $sampleReceivedDate = DateUtility::humanReadableDateFormat($expStr[0]);
     $sampleReceivedTime = $expStr[1];
 } else if (isset($result['sample_registered_at_lab']) && trim($result['sample_registered_at_lab']) != '' && $result['sample_registered_at_lab'] != '0000-00-00 00:00:00') {

@@ -58,7 +58,7 @@ foreach ($formResults as $row) {
 
 
     $sampleCollectionDate = ((new DateTime($row['sample_collection_date']))->format("Y-m-d"));
-    $sampleReceivedDate = ((new DateTime($row['sample_received_at_vl_lab_datetime']))->format("Y-m-d"));
+    $sampleReceivedDate = ((new DateTime($row['sample_received_at_lab_datetime']))->format("Y-m-d"));
     $sampleTestedDate = ((new DateTime($row['sample_tested_datetime']))->format("Y-m-d"));
     $lastModifiedDateTime = ((new DateTime($row['last_modified_datetime']))->format("Y-m-d"));
 

@@ -382,7 +382,7 @@ try {
             'rapid_test_date' => $data['rapidtestDate'] ?? null,
             'rapid_test_result' => $data['rapidTestResult'] ?? null,
             'lab_reception_person' => $data['labReceptionPerson'] ?? null,
-            'sample_received_at_vl_lab_datetime' => $data['sampleReceivedDate'] ?? null,
+            'sample_received_at_lab_datetime' => $data['sampleReceivedDate'] ?? null,
             'eid_test_platform' => $data['eidPlatform'] ?? null,
             'import_machine_name' => $data['machineName'] ?? null,
             'sample_tested_datetime' => $data['sampleTestedDateTime'] ?? null,

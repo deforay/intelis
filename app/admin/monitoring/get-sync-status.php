@@ -17,7 +17,7 @@ $table = "form_vl";
 $primaryKey = "vl_sample_id";
 
 $testType = 'vl';
-$sampleReceivedfield = "sample_received_at_vl_lab_datetime";
+$sampleReceivedfield = "sample_received_at_lab_datetime";
 if (!empty($_POST['testType'])) {
     $testType = $_POST['testType'];
 }
@@ -46,7 +46,6 @@ if (isset($testType) && $testType == 'tb') {
 
     $table = "form_tb";
     $testName = 'TB';
-    $sampleReceivedfield = "sample_received_at_lab_datetime";
 }
 
 $sQuery = "SELECT f.facility_id, f.facility_name, tar.request_type, tar.requested_on, tar.test_type,

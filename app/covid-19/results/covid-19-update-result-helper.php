@@ -84,7 +84,7 @@ try {
 	}
 
 	$covid19Data = array(
-		'sample_received_at_vl_lab_datetime' => $_POST['sampleReceivedDate'],
+		'sample_received_at_lab_datetime' => $_POST['sampleReceivedDate'],
 		'lab_id' => $_POST['labId'] ?? null,
 		'sample_condition' => $_POST['specimenQuality'] ?? ($_POST['specimenQuality'] ?? null),
 		'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : null,

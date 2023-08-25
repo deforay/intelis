@@ -324,7 +324,7 @@ try {
             'lab_id' => $data['labId'] ?? null,
             'vl_test_platform' => $data['testingPlatform'] ?? null,
             'sample_received_at_hub_datetime' => DateUtility::isoDateFormat($data['sampleReceivedAtHubOn'] ?? '', true),
-            'sample_received_at_vl_lab_datetime' => DateUtility::isoDateFormat($data['sampleReceivedDate'] ?? '', true),
+            'sample_received_at_lab_datetime' => DateUtility::isoDateFormat($data['sampleReceivedDate'] ?? '', true),
             'sample_tested_datetime' => DateUtility::isoDateFormat($data['sampleTestedDateTime'] ?? '', true),
             'sample_dispatched_datetime' => DateUtility::isoDateFormat($data['sampleDispatchedOn'] ?? '', true),
             'result_dispatched_datetime' => DateUtility::isoDateFormat($data['resultDispatchedOn'] ?? '', true),

@@ -1382,7 +1382,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 															<option value="sample_code" <?php echo (in_array('sample_code', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Sample Code"); ?></option>
 															<option value="sample_collection_date" <?php echo (in_array('sample_collection_date', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Sample Collection Date"); ?></option>
 															<option value="patient_art_no" <?php echo (in_array('patient_art_no', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Patient ART No"); ?>.</option>
-															<option value="sample_received_at_vl_lab_datetime" <?php echo (in_array('sample_received_at_vl_lab_datetime', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Date Sample Received at Testing Lab"); ?></option>
+															<option value="sample_received_at_lab_datetime" <?php echo (in_array('sample_received_at_lab_datetime', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Date Sample Received at Testing Lab"); ?></option>
 															<option value="sample_tested_datetime" <?php echo (in_array('sample_tested_datetime', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Sample Tested Date"); ?></option>
 															<option value="sample_name" <?php echo (in_array('sample_name', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("Sample Type"); ?></option>
 															<option value="vl_test_platform" <?php echo (in_array('vl_test_platform', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _("VL Testing Platform"); ?></option>

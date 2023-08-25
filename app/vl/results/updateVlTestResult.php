@@ -137,11 +137,11 @@ if (isset($vlQueryInfo['sample_received_at_hub_datetime']) && trim($vlQueryInfo[
 }
 
 
-if (isset($vlQueryInfo['sample_received_at_vl_lab_datetime']) && trim($vlQueryInfo['sample_received_at_vl_lab_datetime']) != '' && $vlQueryInfo['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
-	$expStr = explode(" ", $vlQueryInfo['sample_received_at_vl_lab_datetime']);
-	$vlQueryInfo['sample_received_at_vl_lab_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+if (isset($vlQueryInfo['sample_received_at_lab_datetime']) && trim($vlQueryInfo['sample_received_at_lab_datetime']) != '' && $vlQueryInfo['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", $vlQueryInfo['sample_received_at_lab_datetime']);
+	$vlQueryInfo['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
-	$vlQueryInfo['sample_received_at_vl_lab_datetime'] = '';
+	$vlQueryInfo['sample_received_at_lab_datetime'] = '';
 }
 
 if (isset($vlQueryInfo['sample_tested_datetime']) && trim($vlQueryInfo['sample_tested_datetime']) != '' && $vlQueryInfo['sample_tested_datetime'] != '0000-00-00 00:00:00') {

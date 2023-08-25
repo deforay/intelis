@@ -68,7 +68,7 @@ $query = "SELECT
             lab_id,
             sample_code,
             remote_sample_code,
-            sample_received_at_vl_lab_datetime,
+            sample_received_at_lab_datetime,
             sample_condition,
             sample_collection_date,
             sample_tested_datetime,
@@ -120,7 +120,7 @@ foreach ($formResults as $row) {
 
   $dataValues = array(
     'f48odhAyNtd' => !isset($row['remote_sample_code']) ? $row['remote_sample_code'] : $row['sample_code'],
-    'lHekjJANaNi' => $row['sample_received_at_vl_lab_datetime'],
+    'lHekjJANaNi' => $row['sample_received_at_lab_datetime'],
     'P61FWjSAjjA' => ($row['sample_condition']),
     'LbIwAbaSV6r' => $sampleRejection[$row['is_sample_rejected']],
     'GeR4aHFlc1O' => $labTechnician['user_name'],

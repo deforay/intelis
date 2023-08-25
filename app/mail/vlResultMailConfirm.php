@@ -151,7 +151,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($selecte
                } elseif ($filedGroup[$f] == "Sample Collection Date") {
                   $field = 'sample_collection_date';
                } elseif ($filedGroup[$f] == "Sample Received Date") {
-                  $field = 'sample_received_at_vl_lab_datetime';
+                  $field = 'sample_received_at_lab_datetime';
                } elseif ($filedGroup[$f] == "Collected by (Initials)") {
                   $field = 'sample_collected_by';
                } elseif ($filedGroup[$f] == "Gender") {
@@ -227,7 +227,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($selecte
                $fValueResult = $db->rawQuery($fValueQuery);
                $fieldValue = '';
                if (!empty($fValueResult)) {
-                  if ($field == 'sample_collection_date' || $field == 'sample_received_at_vl_lab_datetime' || $field == 'sample_tested_datetime') {
+                  if ($field == 'sample_collection_date' || $field == 'sample_received_at_lab_datetime' || $field == 'sample_tested_datetime') {
                      if (isset($fValueResult[0][$field]) && trim($fValueResult[0][$field]) != '' && trim($fValueResult[0][$field]) != '0000-00-00 00:00:00') {
                         $fieldValue = DateUtility::humanReadableDateFormat($fValueResult[0][$field], true);
                      }

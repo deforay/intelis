@@ -190,9 +190,7 @@ if (!empty($sOrder)) {
     $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
 $_SESSION['tbRequestSearchResultQuery'] = $sQuery;
-if (isset($sLimit) && isset($sOffset)) {
-    $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-}
+
 
 [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
 

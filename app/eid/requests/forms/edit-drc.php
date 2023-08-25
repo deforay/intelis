@@ -568,7 +568,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 												<input type="text" class="form-control dateTime" id="sampleReceivedDate"
 													name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>"
 													title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?>
-													value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_received_at_vl_lab_datetime']) ?>"
+													value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_received_at_lab_datetime']) ?>"
 													style="width:100%;" />
 											</td>
 											<th scope="row" style="width:15%;"><label for="labId">Nom du Laboratoire </label> </th>

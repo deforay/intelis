@@ -416,7 +416,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         <tr>
                                             <th scope="row"><label for="">Sample Received Date <span class="mandatory">*</span></label></th>
                                             <td>
-                                                <input type="text" class="form-control isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['sample_received_at_vl_lab_datetime']) ?>" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['sample_received_at_lab_datetime']) ?>" onchange="" style="width:100%;" />
                                             </td>
                                             <td>Testing Lab <span class="mandatory">*</span></td>
                                             <td>

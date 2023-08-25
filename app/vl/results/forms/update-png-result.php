@@ -489,7 +489,7 @@ $disable = "disabled = 'disabled'";
 										</td>
 										<td class="receivedDate labels"><label for="sampleReceivedOn">Date Received</label></td>
 										<td>
-											<input type="text" class="form-control" name="sampleReceivedOn" id="sampleReceivedOn" placeholder="Received Date" title="Enter Received Date" style="width:100%;" value="<?php echo $vlQueryInfo['sample_received_at_vl_lab_datetime']; ?>">
+											<input type="text" class="form-control" name="sampleReceivedOn" id="sampleReceivedOn" placeholder="Received Date" title="Enter Received Date" style="width:100%;" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>">
 										</td>
 										<td class="techName labels"><label for="techName">Lab Tech. Name</label></td>
 										<td>

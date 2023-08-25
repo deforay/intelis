@@ -237,7 +237,7 @@ try {
 		'has_recent_travel_history' => !empty($_POST['hasRecentTravelHistory']) ? $_POST['hasRecentTravelHistory'] : null,
 		'travel_country_names' => !empty($_POST['countryName']) ? $_POST['countryName'] : null,
 		'travel_return_date' => !empty($_POST['returnDate']) ? DateUtility::isoDateFormat($_POST['returnDate']) : null,
-		'sample_received_at_vl_lab_datetime' => !empty($_POST['sampleReceivedDate']) ? $_POST['sampleReceivedDate'] : null,
+		'sample_received_at_lab_datetime' => !empty($_POST['sampleReceivedDate']) ? $_POST['sampleReceivedDate'] : null,
 		'sample_condition' => !empty($_POST['sampleCondition']) ? $_POST['sampleCondition'] : ($_POST['specimenQuality'] ?? null),
 		'is_sample_rejected' => !empty($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : null,
 		'result' => !empty($_POST['result']) ? $_POST['result'] : null,

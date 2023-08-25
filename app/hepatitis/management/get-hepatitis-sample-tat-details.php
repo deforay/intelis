@@ -42,8 +42,8 @@ if ($sarr['sc_user_type'] == 'remoteuser') {
 } else {
 	$sampleCode = 'sample_code';
 }
-$aColumns = array('vl.' . $sampleCode, "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_received_at_vl_lab_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_mail_datetime,'%d-%b-%Y')");
-$orderColumns = array('vl.' . $sampleCode, 'vl.sample_collection_date', 'vl.sample_received_at_vl_lab_datetime', 'vl.sample_tested_datetime', 'vl.result_printed_datetime', 'vl.result_mail_datetime');
+$aColumns = array('vl.' . $sampleCode, "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_received_at_lab_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_mail_datetime,'%d-%b-%Y')");
+$orderColumns = array('vl.' . $sampleCode, 'vl.sample_collection_date', 'vl.sample_received_at_lab_datetime', 'vl.sample_tested_datetime', 'vl.result_printed_datetime', 'vl.result_mail_datetime');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -118,7 +118,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
  */
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.sample_collection_date,
 				vl.sample_tested_datetime,
-				vl.sample_received_at_vl_lab_datetime,
+				vl.sample_received_at_lab_datetime,
 				vl.result_printed_datetime,
 				vl.result_mail_datetime,
 				vl.request_created_by,
@@ -158,9 +158,9 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
 	if (trim($labStartDate) == trim($labEndDate)) {
-		$sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) = "' . $labStartDate . '"';
+		$sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $labStartDate . '"';
 	} else {
-		$sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $labEndDate . '"';
+		$sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $labEndDate . '"';
 	}
 }
 
@@ -211,10 +211,10 @@ foreach ($rResult as $aRow) {
 	} else {
 		$aRow['sample_collection_date'] = '';
 	}
-	if (isset($aRow['sample_received_at_vl_lab_datetime']) && trim($aRow['sample_received_at_vl_lab_datetime']) != '' && $aRow['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
-		$aRow['sample_received_at_vl_lab_datetime'] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+	if (isset($aRow['sample_received_at_lab_datetime']) && trim($aRow['sample_received_at_lab_datetime']) != '' && $aRow['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
+		$aRow['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
 	} else {
-		$aRow['sample_received_at_vl_lab_datetime'] = '';
+		$aRow['sample_received_at_lab_datetime'] = '';
 	}
 	if (isset($aRow['sample_tested_datetime']) && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
 		$aRow['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
@@ -234,7 +234,7 @@ foreach ($rResult as $aRow) {
 	$row = [];
 	$row[] = $aRow[$sampleCode];
 	$row[] = $aRow['sample_collection_date'];
-	$row[] = $aRow['sample_received_at_vl_lab_datetime'];
+	$row[] = $aRow['sample_received_at_lab_datetime'];
 	$row[] = $aRow['sample_tested_datetime'];
 	$row[] = $aRow['result_printed_datetime'];
 	$row[] = $aRow['result_mail_datetime'];

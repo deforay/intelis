@@ -58,7 +58,7 @@ $orderColumns = $aColumns = [
     'vl.request_created_datetime',
     'vl.remote_sample_code',
     'vl.request_created_datetime',
-    'vl.sample_received_at_vl_lab_datetime',
+    'vl.sample_received_at_lab_datetime',
     'b.request_created_datetime',
     'vl.result',
     'vl.sample_tested_datetime',
@@ -142,7 +142,7 @@ $sQuery = "SELECT
                 vl.request_created_datetime as request_created,
                 vl.remote_sample_code,
                 vl.request_created_datetime,
-                vl.sample_received_at_vl_lab_datetime,
+                vl.sample_received_at_lab_datetime,
                 b.request_created_datetime as batch_request_created,
                 vl.result,vl.result_reviewed_datetime,
                 vl.result_approved_datetime,
@@ -196,7 +196,7 @@ $_SESSION['samplewiseReportsQuery'] = $sQuery;
 
 $calcValueQuery = "SELECT SUM(CASE WHEN (vl.request_created_datetime is not null AND vl.request_created_datetime not like '') THEN 1 ELSE 0 END) AS 'totalSamplesRequested',
             SUM(CASE WHEN (vl.request_created_datetime is not null AND vl.request_created_datetime not like '') THEN 1 ELSE 0 END) AS 'totalSamplesAcknowledged',
-            SUM(CASE WHEN (vl.sample_received_at_vl_lab_datetime is not null AND vl.sample_received_at_vl_lab_datetime not like '') THEN 1 ELSE 0 END) AS 'totalSamplesReceived',
+            SUM(CASE WHEN (vl.sample_received_at_lab_datetime is not null AND vl.sample_received_at_lab_datetime not like '') THEN 1 ELSE 0 END) AS 'totalSamplesReceived',
             SUM(CASE WHEN (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime not like '') THEN 1 ELSE 0 END) AS 'totalSamplesTested',
             SUM(CASE WHEN ((vl.result_dispatched_datetime is not null AND vl.result_dispatched_datetime not like '') OR (vl.result_sent_to_source_datetime is not null AND vl.result_sent_to_source_datetime not like '')) THEN 1 ELSE 0 END) AS 'totalSamplesDispatched'
             FROM $table as vl
@@ -212,6 +212,8 @@ if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
     $calcValueQuery = $calcValueQuery . " ORDER BY " . $sOrder;
 }
+$_SESSION['samplewiseReportsCalc'] = $calcValueQuery;
+
 $calculateFields = $db->rawQuery($calcValueQuery);
 
 
@@ -244,7 +246,7 @@ foreach ($rResult as $key => $aRow) {
     $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
     $row[] = $aRow['remote_sample_code'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
-    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime'], true);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'], true);
     $row[] = DateUtility::humanReadableDateFormat($aRow['batch_request_created'], true);
     $row[] = $aRow['result'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'], true);

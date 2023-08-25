@@ -90,7 +90,7 @@ try {
         vl.rapid_test_date                                   as rapidtestDate,
         vl.rapid_test_result                                 as rapidTestResult,
         vl.lab_reception_person                              as labReceptionPerson,
-        vl.sample_received_at_vl_lab_datetime                as sampleReceivedDate,
+        vl.sample_received_at_lab_datetime                as sampleReceivedDate,
         vl.eid_test_platform                                 as eidPlatform,
         vl.import_machine_name                               as machineName,
         vl.sample_tested_datetime                            as sampleTestedDateTime,

@@ -126,7 +126,7 @@ foreach ($rResult as $aRow) {
 	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
 	$row[] = $aRow['result'];
 	$row[] = $aRow['result_value_log'];
-	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime']);
+	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
 	$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
 	$row[] = $aRow['lab_tech_comments'];
 	$row[] = $aRow['funding_source_name'] ?? null;

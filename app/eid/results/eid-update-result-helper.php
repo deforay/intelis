@@ -77,7 +77,7 @@ try {
 }
 
   $eidData = array(
-    'sample_received_at_vl_lab_datetime' => $_POST['sampleReceivedDate'],
+    'sample_received_at_lab_datetime' => $_POST['sampleReceivedDate'],
     'eid_test_platform' => $_POST['eidPlatform'] ?? null,
     'import_machine_name' => $_POST['machineName'] ?? null,
     'sample_tested_datetime' => $_POST['sampleTestedDateTime'],
