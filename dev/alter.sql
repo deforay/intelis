@@ -4961,21 +4961,23 @@ ALTER TABLE `audit_form_tb` ADD `result_sent_to_source_datetime` DATETIME NULL D
 ALTER TABLE `form_tb` ADD `external_sample_code` VARCHAR(256) NULL DEFAULT NULL AFTER `sample_code`;
 ALTER TABLE `audit_form_tb` ADD `external_sample_code` VARCHAR(256) NULL DEFAULT NULL AFTER `sample_code`;
 
-ALTER TABLE `form_vl` CHANGE `sample_received_at_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
-ALTER TABLE `audit_form_vl` CHANGE `sample_received_at_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `form_vl` CHANGE `sample_received_at_vl_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `audit_form_vl` CHANGE `sample_received_at_vl_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
 
-ALTER TABLE `form_covid19` CHANGE `sample_received_at_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
-ALTER TABLE `audit_form_covid19` CHANGE `sample_received_at_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `form_covid19` CHANGE `sample_received_at_vl_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `audit_form_covid19` CHANGE `sample_received_at_vl_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
 
-ALTER TABLE `form_eid` CHANGE `sample_received_at_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
-ALTER TABLE `audit_form_eid` CHANGE `sample_received_at_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `form_eid` CHANGE `sample_received_at_vl_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `audit_form_eid` CHANGE `sample_received_at_vl_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
 
-ALTER TABLE `form_hepatitis` CHANGE `sample_received_at_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
-ALTER TABLE `audit_form_hepatitis` CHANGE `sample_received_at_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `form_hepatitis` CHANGE `sample_received_at_vl_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `audit_form_hepatitis` CHANGE `sample_received_at_vl_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
 
 
 -- Amit 24-Aug-2023
-UPDATE `privileges` SET `privilege_name` = '/batch/edit-batch.php?type=hepatitis' WHERE `privileges_name` like '%/batch/edit-batch.php?type=hepatitis';
+UPDATE `privileges`
+SET `privilege_name` = '/batch/edit-batch.php?type=hepatitis'
+WHERE `privilege_name` like '%/batch/edit-batch.php?type=hepatitis';
 
 
 -- Amit 25-Aug-2023
