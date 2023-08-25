@@ -4984,3 +4984,6 @@ WHERE `privilege_name` like '%/batch/edit-batch.php?type=hepatitis';
 UPDATE `r_sample_status` SET `status_name` = 'Expired' WHERE `r_sample_status`.`status_id` = 10;
 
 INSERT INTO `r_sample_status` (`status_id`, `status_name`, `status`) VALUES ('12', 'Cancelled', 'active');
+
+-- Thana 25-Aug-2023
+INSERT INTO `r_sample_status` (`status_id`, `status_name`, `status`) VALUES (NULL, 'Cancelled', 'active');
