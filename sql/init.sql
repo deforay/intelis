@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Aug 02, 2023 at 02:35 PM
+-- Generation Time: Aug 26, 2023 at 01:12 AM
 -- Server version: 5.7.39
 -- PHP Version: 7.4.33
 
@@ -137,6 +137,7 @@ CREATE TABLE `audit_form_covid19` (
   `investigator_name` text,
   `investigator_phone` text,
   `investigator_email` text,
+  `test_requested_on` date DEFAULT NULL,
   `clinician_name` text,
   `clinician_phone` mediumtext,
   `clinician_email` mediumtext,
@@ -182,6 +183,7 @@ CREATE TABLE `audit_form_covid19` (
   `source_of_request` text,
   `source_data_dump` mediumtext,
   `result_sent_to_source` mediumtext,
+  `result_sent_to_source_datetime` datetime DEFAULT NULL,
   `form_attributes` json DEFAULT NULL,
   `lot_expiration_date` date DEFAULT NULL,
   `is_result_mail_sent` varchar(255) DEFAULT 'no',
@@ -213,6 +215,7 @@ CREATE TABLE `audit_form_eid` (
   `remote_sample_code_key` int(11) DEFAULT NULL,
   `remote_sample_code_format` varchar(255) DEFAULT NULL,
   `remote_sample_code` varchar(500) DEFAULT NULL,
+  `external_sample_code` varchar(100) DEFAULT NULL,
   `sample_collection_date` datetime NOT NULL,
   `sample_dispatched_datetime` datetime DEFAULT NULL,
   `sample_received_at_hub_datetime` datetime DEFAULT NULL,
@@ -340,6 +343,7 @@ CREATE TABLE `audit_form_eid` (
   `import_machine_name` text,
   `import_machine_file_name` text,
   `result_printed_datetime` datetime DEFAULT NULL,
+  `test_requested_on` date DEFAULT NULL,
   `request_created_datetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `request_created_by` text,
   `sample_registered_at_lab` datetime DEFAULT NULL,
@@ -613,6 +617,7 @@ CREATE TABLE `audit_form_hepatitis` (
   `import_machine_file_name` varchar(255) DEFAULT NULL,
   `imported_date_time` datetime DEFAULT NULL,
   `result_printed_datetime` datetime DEFAULT NULL,
+  `test_requested_on` date DEFAULT NULL,
   `request_created_datetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `request_created_by` text,
   `sample_registered_at_lab` datetime DEFAULT NULL,
@@ -625,6 +630,7 @@ CREATE TABLE `audit_form_hepatitis` (
   `source_of_request` text,
   `source_data_dump` mediumtext,
   `result_sent_to_source` mediumtext,
+  `result_sent_to_source_datetime` datetime DEFAULT NULL,
   `form_attributes` json DEFAULT NULL,
   `lot_expiration_date` date DEFAULT NULL,
   `is_result_mail_sent` varchar(255) DEFAULT 'no',
@@ -651,6 +657,7 @@ CREATE TABLE `audit_form_tb` (
   `sample_code_key` int(11) NOT NULL,
   `sample_code_format` mediumtext,
   `sample_code` varchar(500) DEFAULT NULL,
+  `external_sample_code` varchar(100) DEFAULT NULL,
   `remote_sample` varchar(1000) NOT NULL DEFAULT 'no',
   `remote_sample_code_key` int(11) DEFAULT NULL,
   `remote_sample_code_format` mediumtext,
@@ -717,6 +724,7 @@ CREATE TABLE `audit_form_tb` (
   `import_machine_name` mediumtext,
   `import_machine_file_name` mediumtext,
   `result_printed_datetime` datetime DEFAULT NULL,
+  `test_requested_on` date DEFAULT NULL,
   `request_created_datetime` datetime DEFAULT NULL,
   `request_created_by` mediumtext,
   `sample_registered_at_lab` datetime DEFAULT NULL,
@@ -728,6 +736,7 @@ CREATE TABLE `audit_form_tb` (
   `source_of_request` varchar(50) DEFAULT NULL,
   `source_data_dump` mediumtext,
   `result_sent_to_source` mediumtext,
+  `result_sent_to_source_datetime` datetime DEFAULT NULL,
   `form_attributes` json DEFAULT NULL,
   `data_sync` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
@@ -933,6 +942,7 @@ CREATE TABLE `audit_form_vl` (
   `source_of_request` text,
   `source_data_dump` text,
   `result_sent_to_source` varchar(10) DEFAULT 'pending',
+  `result_sent_to_source_datetime` datetime DEFAULT NULL,
   `form_attributes` json DEFAULT NULL,
   `source` varchar(100) DEFAULT 'manual',
   `ward` varchar(100) DEFAULT NULL,
@@ -1309,6 +1319,7 @@ CREATE TABLE `form_covid19` (
   `investigator_name` text,
   `investigator_phone` text,
   `investigator_email` text,
+  `test_requested_on` date DEFAULT NULL,
   `clinician_name` text,
   `clinician_phone` mediumtext,
   `clinician_email` mediumtext,
@@ -1354,6 +1365,7 @@ CREATE TABLE `form_covid19` (
   `source_of_request` text,
   `source_data_dump` mediumtext,
   `result_sent_to_source` mediumtext,
+  `result_sent_to_source_datetime` datetime DEFAULT NULL,
   `form_attributes` json DEFAULT NULL,
   `lot_expiration_date` date DEFAULT NULL,
   `is_result_mail_sent` varchar(255) DEFAULT 'no',
@@ -1390,17 +1402,18 @@ DELIMITER ;
 
 CREATE TABLE `form_eid` (
   `eid_id` int(11) NOT NULL,
-  `unique_id` varchar(500) DEFAULT NULL,
-  `vlsm_instance_id` varchar(255) DEFAULT NULL,
+  `unique_id` varchar(256) DEFAULT NULL,
+  `vlsm_instance_id` varchar(100) NOT NULL,
   `vlsm_country_id` int(11) DEFAULT NULL,
   `sample_code_key` int(11) DEFAULT NULL,
-  `sample_code_format` varchar(255) DEFAULT NULL,
-  `sample_code` varchar(500) DEFAULT NULL,
+  `sample_code_format` varchar(100) DEFAULT NULL,
+  `sample_code` varchar(100) DEFAULT NULL,
   `sample_reordered` varchar(256) NOT NULL DEFAULT 'no',
   `remote_sample` varchar(255) NOT NULL DEFAULT 'no',
   `remote_sample_code_key` int(11) DEFAULT NULL,
-  `remote_sample_code_format` varchar(255) DEFAULT NULL,
-  `remote_sample_code` varchar(500) DEFAULT NULL,
+  `remote_sample_code_format` varchar(100) DEFAULT NULL,
+  `remote_sample_code` varchar(100) DEFAULT NULL,
+  `external_sample_code` varchar(256) DEFAULT NULL,
   `sample_collection_date` datetime NOT NULL,
   `sample_dispatched_datetime` datetime DEFAULT NULL,
   `sample_received_at_hub_datetime` datetime DEFAULT NULL,
@@ -1408,7 +1421,7 @@ CREATE TABLE `form_eid` (
   `sample_tested_datetime` datetime DEFAULT NULL,
   `funding_source` int(11) DEFAULT NULL,
   `implementing_partner` int(11) DEFAULT NULL,
-  `is_sample_rejected` varchar(255) DEFAULT NULL,
+  `is_sample_rejected` varchar(10) DEFAULT NULL,
   `test_1_date` date DEFAULT NULL,
   `test_1_batch` int(11) DEFAULT NULL,
   `test_1_assay` text,
@@ -1437,11 +1450,11 @@ CREATE TABLE `form_eid` (
   `mother_dob` date DEFAULT NULL,
   `mother_age_in_years` varchar(3) DEFAULT NULL,
   `mother_marital_status` varchar(10) DEFAULT NULL,
-  `child_id` varchar(32) DEFAULT NULL,
-  `child_name` varchar(64) DEFAULT NULL,
-  `child_surname` varchar(64) DEFAULT NULL,
+  `child_id` varchar(100) DEFAULT NULL,
+  `child_name` varchar(100) DEFAULT NULL,
+  `child_surname` varchar(100) DEFAULT NULL,
   `child_dob` date DEFAULT NULL,
-  `child_age` varchar(3) DEFAULT NULL,
+  `child_age` int(11) DEFAULT NULL,
   `child_gender` varchar(10) DEFAULT NULL,
   `child_weight` int(11) DEFAULT NULL,
   `child_prophylactic_arv` text,
@@ -1522,11 +1535,12 @@ CREATE TABLE `form_eid` (
   `approver_comments` text,
   `result_dispatched_datetime` datetime DEFAULT NULL,
   `result_mail_datetime` datetime DEFAULT NULL,
-  `app_sample_code` varchar(256) DEFAULT NULL,
-  `manual_result_entry` varchar(255) DEFAULT 'no',
+  `app_sample_code` varchar(100) DEFAULT NULL,
+  `manual_result_entry` varchar(10) DEFAULT NULL,
   `import_machine_name` text,
   `import_machine_file_name` text,
   `result_printed_datetime` datetime DEFAULT NULL,
+  `test_requested_on` date DEFAULT NULL,
   `request_created_datetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `request_created_by` text,
   `sample_registered_at_lab` datetime DEFAULT NULL,
@@ -1538,7 +1552,7 @@ CREATE TABLE `form_eid` (
   `lot_number` text,
   `source_of_request` text,
   `source_data_dump` mediumtext,
-  `result_sent_to_source` mediumtext,
+  `result_sent_to_source` varchar(10) DEFAULT 'pending',
   `form_attributes` json DEFAULT NULL,
   `lot_expiration_date` date DEFAULT NULL,
   `data_sync` int(11) NOT NULL DEFAULT '0'
@@ -1833,6 +1847,7 @@ CREATE TABLE `form_hepatitis` (
   `import_machine_file_name` varchar(255) DEFAULT NULL,
   `imported_date_time` datetime DEFAULT NULL,
   `result_printed_datetime` datetime DEFAULT NULL,
+  `test_requested_on` date DEFAULT NULL,
   `request_created_datetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `request_created_by` text,
   `sample_registered_at_lab` datetime DEFAULT NULL,
@@ -1845,6 +1860,7 @@ CREATE TABLE `form_hepatitis` (
   `source_of_request` text,
   `source_data_dump` mediumtext,
   `result_sent_to_source` mediumtext,
+  `result_sent_to_source_datetime` datetime DEFAULT NULL,
   `form_attributes` json DEFAULT NULL,
   `lot_expiration_date` date DEFAULT NULL,
   `is_result_mail_sent` varchar(255) DEFAULT 'no',
@@ -1887,6 +1903,7 @@ CREATE TABLE `form_tb` (
   `sample_code_key` int(11) NOT NULL,
   `sample_code_format` mediumtext,
   `sample_code` varchar(500) DEFAULT NULL,
+  `external_sample_code` varchar(100) DEFAULT NULL,
   `remote_sample` varchar(1000) NOT NULL DEFAULT 'no',
   `remote_sample_code_key` int(11) DEFAULT NULL,
   `remote_sample_code_format` mediumtext,
@@ -1953,6 +1970,7 @@ CREATE TABLE `form_tb` (
   `import_machine_name` mediumtext,
   `import_machine_file_name` mediumtext,
   `result_printed_datetime` datetime DEFAULT NULL,
+  `test_requested_on` date DEFAULT NULL,
   `request_created_datetime` datetime DEFAULT NULL,
   `request_created_by` mediumtext,
   `sample_registered_at_lab` datetime DEFAULT NULL,
@@ -1964,6 +1982,7 @@ CREATE TABLE `form_tb` (
   `source_of_request` varchar(50) DEFAULT NULL,
   `source_data_dump` mediumtext,
   `result_sent_to_source` mediumtext,
+  `result_sent_to_source_datetime` datetime DEFAULT NULL,
   `form_attributes` json DEFAULT NULL,
   `data_sync` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -2186,6 +2205,7 @@ CREATE TABLE `form_vl` (
   `source_of_request` text,
   `source_data_dump` text,
   `result_sent_to_source` varchar(10) DEFAULT 'pending',
+  `result_sent_to_source_datetime` datetime DEFAULT NULL,
   `form_attributes` json DEFAULT NULL,
   `source` varchar(100) DEFAULT 'manual',
   `ward` varchar(100) DEFAULT NULL,
@@ -2540,7 +2560,7 @@ CREATE TABLE `hold_sample_import` (
   `lab_id` int(11) DEFAULT NULL,
   `lab_contact_person` varchar(255) DEFAULT NULL,
   `lab_phone_number` varchar(255) DEFAULT NULL,
-  `sample_received_at_lab_datetime` varchar(255) DEFAULT NULL,
+  `sample_received_at_vl_lab_datetime` varchar(255) DEFAULT NULL,
   `sample_tested_datetime` varchar(255) DEFAULT NULL,
   `result_dispatched_datetime` varchar(255) DEFAULT NULL,
   `result_reviewed_datetime` varchar(255) DEFAULT NULL,
@@ -2892,7 +2912,6 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 (129, 'covid-19-reference', '/covid-19/reference/editCovid19SampleRejectionReason.php', NULL, 'Edit Sample Rejection Reason', NULL, 'always'),
 (130, 'vl-reference', '/vl/reference/vl-art-code-details.php', NULL, 'Manage VL Reference Tables', NULL, 'always'),
 (131, 'eid-reference', '/eid/reference/eid-sample-type.php', NULL, 'Manage EID Reference Tables', NULL, 'always'),
-(139, 'common-reference', 'province-details.php', NULL, 'Manage Common Reference Tables', NULL, 'always'),
 (140, 'vl-requests', '/vl/requests/edit-locked-vl-samples', NULL, 'Edit Locked VL Samples', 5, 'always'),
 (141, 'eid-requests', '/eid/requests/edit-locked-eid-samples', NULL, 'Edit Locked EID Samples', 5, 'always'),
 (142, 'covid-19-requests', '/covid-19/requests/edit-locked-covid19-samples', NULL, 'Edit Locked Covid-19 Samples', 5, 'always'),
@@ -2918,7 +2937,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 (180, 'covid-19-requests', '/covid-19/requests/addSamplesFromManifest.php', NULL, 'Add Samples from Manifest', 6, 'lis'),
 (181, 'covid-19-requests', '/covid-19/requests/covid-19-dhis2.php', NULL, 'DHIS2', NULL, 'always'),
 (182, 'covid-19-requests', '/covid-19/requests/covid-19-sync-request.php', NULL, 'Covid-19 Sync Request', NULL, 'always'),
-(183, 'common-reference', 'geographical-divisions-details.php', NULL, 'Manage Geographical Divisions', NULL, 'always'),
+(183, 'common-reference', 'geographical-divisions-details.php', '[\"implementation-partners.php\", \"add-implementation-partners.php\", \"edit-implementation-partners.php\", \"funding-sources.php\", \"add-funding-sources.php\", \"edit-funding-sources.php\"]', 'Manage Geographical Divisions', NULL, 'always'),
 (184, 'common-reference', 'add-geographical-divisions.php', NULL, 'Add Geographical Divisions', NULL, 'always'),
 (185, 'common-reference', 'edit-geographical-divisions.php', NULL, 'Edit Geographical Divisions', NULL, 'always'),
 (186, 'hepatitis-requests', '/hepatitis/requests/hepatitis-dhis2.php', NULL, 'DHIS2', NULL, 'always'),
@@ -3281,7 +3300,7 @@ INSERT INTO `roles_privileges_map` (`map_id`, `role_id`, `privilege_id`) VALUES
 (5025, 1, 219),
 (5026, 1, 224),
 (5027, 1, 185),
-(5028, 1, 139),
+(5028, 1, 183),
 (5029, 1, 183),
 (5030, 1, 220),
 (5031, 1, 187),
@@ -4352,8 +4371,9 @@ INSERT INTO `r_sample_status` (`status_id`, `status_name`, `status`) VALUES
 (7, 'Accepted', 'active'),
 (8, 'Awaiting Approval', 'active'),
 (9, 'Sample Currently Registered at Health Center', 'active'),
-(10, 'Sample Expired', 'active'),
-(11, 'No Result', 'active');
+(10, 'Expired', 'active'),
+(11, 'No Result', 'active'),
+(12, 'Cancelled', 'active');
 
 -- --------------------------------------------------------
 
@@ -4941,7 +4961,9 @@ INSERT INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `
 (174, 'tb', 'no', 'Sample Rejection Report', '/tb/management/tb-sample-rejection-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbSampleRejectionReport', 83, 168, 'active', NULL),
 (175, 'tb', 'no', 'Clinic Reports', '/tb/management/tb-clinic-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbClinicReport', 83, 169, 'active', NULL),
 (176, 'admin', 'no', 'Lab Sync Status', '/admin/monitoring/sync-status.php', NULL, 'always', 'fa-solid fa-traffic-light', 'no', 'allMenu treeview api-sync-status-menu', 7, 18, 'active', NULL),
-(177, 'admin', 'no', 'Recommended Corrective Actions', '/vl/reference/vl-recommended-corrective-actions.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vl-recommended-corrective-actions', 10, 39, 'active', '2023-08-02 14:27:09');
+(177, 'admin', 'no', 'Recommended Corrective Actions', '/vl/reference/vl-recommended-corrective-actions.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vl-recommended-corrective-actions', 10, 39, 'active', '2023-08-02 14:27:09'),
+(178, 'admin', 'no', 'Recommended Corrective Actions', '/common/reference/recommended-corrective-actions.php?testType=eid', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-recommended-corrective-actions\r\n', 11, 40, 'active', '2023-08-26 01:03:01'),
+(179, 'admin', 'no', 'Recommended Corrective Actions', '/common/reference/recommended-corrective-actions.php?testType=eid', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-recommended-corrective-actions\r\n', 12, 41, 'active', '2023-08-26 01:03:01');
 
 -- --------------------------------------------------------
 
@@ -5021,7 +5043,7 @@ CREATE TABLE `temp_sample_import` (
   `lab_id` int(11) DEFAULT NULL,
   `lab_contact_person` varchar(255) DEFAULT NULL,
   `lab_phone_number` varchar(255) DEFAULT NULL,
-  `sample_received_at_lab_datetime` varchar(255) DEFAULT NULL,
+  `sample_received_at_vl_lab_datetime` varchar(255) DEFAULT NULL,
   `sample_tested_datetime` varchar(255) DEFAULT NULL,
   `result_dispatched_datetime` varchar(255) DEFAULT NULL,
   `result_reviewed_datetime` varchar(255) DEFAULT NULL,
@@ -6488,7 +6510,7 @@ ALTER TABLE `r_sample_controls`
 -- AUTO_INCREMENT for table `r_sample_status`
 --
 ALTER TABLE `r_sample_status`
-  MODIFY `status_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `status_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `r_tb_sample_rejection_reasons`
@@ -6566,7 +6588,7 @@ ALTER TABLE `system_admin`
 -- AUTO_INCREMENT for table `s_app_menu`
 --
 ALTER TABLE `s_app_menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=178;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=180;
 
 --
 -- AUTO_INCREMENT for table `s_available_country_forms`

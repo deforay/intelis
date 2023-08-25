@@ -4919,7 +4919,7 @@ UPDATE `system_config` SET `value` = '5.2.1' WHERE `system_config`.`name` = 'sc_
 
 -- Jeyabanu 10-08-2023
 
-INSERT INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'admin', 'no', 'Recommended Corrective Actions', '/common/reference/recommended-corrective-actions.php?testType=eid', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-recommended-corrective-actions\r\n', '11', '40', 'active', CURRENT_TIMESTAMP), (NULL, 'admin', 'no', 'Recommended Corrective Actions', '/common/reference/recommended-corrective-actions.php?testType=eid', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-recommended-corrective-actions\r\n', '12', '41', 'active', CURRENT_TIMESTAMP);
+INSERT IGNORE INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'admin', 'no', 'Recommended Corrective Actions', '/common/reference/recommended-corrective-actions.php?testType=eid', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-recommended-corrective-actions\r\n', '11', '40', 'active', CURRENT_TIMESTAMP), (NULL, 'admin', 'no', 'Recommended Corrective Actions', '/common/reference/recommended-corrective-actions.php?testType=eid', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-recommended-corrective-actions\r\n', '12', '41', 'active', CURRENT_TIMESTAMP);
 
 UPDATE `privileges`
 SET `shared_privileges` = '[\"implementation-partners.php\", \"add-implementation-partners.php\", \"edit-implementation-partners.php\", \"funding-sources.php\", \"add-funding-sources.php\", \"edit-funding-sources.php\"]'
@@ -4984,6 +4984,20 @@ WHERE `privilege_name` like '%/batch/edit-batch.php?type=hepatitis';
 UPDATE `r_sample_status` SET `status_name` = 'Expired' WHERE `r_sample_status`.`status_id` = 10;
 
 INSERT INTO `r_sample_status` (`status_id`, `status_name`, `status`) VALUES ('12', 'Cancelled', 'active');
-
--- Thana 25-Aug-2023
-INSERT INTO `r_sample_status` (`status_id`, `status_name`, `status`) VALUES (NULL, 'Cancelled', 'active');
+ALTER TABLE `form_eid`
+CHANGE `unique_id` `unique_id` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `vlsm_instance_id` `vlsm_instance_id` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+CHANGE `remote_sample_code` `remote_sample_code` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+CHANGE `province_id` `province_id` INT NULL DEFAULT NULL,
+CHANGE `remote_sample_code_format` `remote_sample_code_format` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+CHANGE `sample_code_format` `sample_code_format` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+CHANGE `sample_code` `sample_code` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+CHANGE `child_name` `child_name` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+CHANGE `child_surname` `child_surname` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+CHANGE `child_id` `child_id` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+CHANGE `is_sample_rejected` `is_sample_rejected` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+CHANGE `request_created_datetime` `request_created_datetime` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+CHANGE `child_age` `child_age` INT NULL DEFAULT NULL,
+CHANGE `app_sample_code` `app_sample_code` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+CHANGE `locked` `locked` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no',
+CHANGE `manual_result_entry` `manual_result_entry` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+CHANGE `result_sent_to_source` `result_sent_to_source` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'pending';
