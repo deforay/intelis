@@ -5001,3 +5001,7 @@ CHANGE `app_sample_code` `app_sample_code` VARCHAR(100) CHARACTER SET utf8mb4 CO
 CHANGE `locked` `locked` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no',
 CHANGE `manual_result_entry` `manual_result_entry` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
 CHANGE `result_sent_to_source` `result_sent_to_source` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'pending';
+
+
+-- Amit 26-Aug-2023 version 5.2.2
+UPDATE `system_config` SET `value` = '5.2.2' WHERE `system_config`.`name` = 'sc_version';
