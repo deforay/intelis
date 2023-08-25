@@ -333,7 +333,6 @@ try {
     $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vlData);
 
-
     if ($id === true) {
         $_SESSION['alertMsg'] = _("VL request added successfully");
         $eventType = 'add-vl-request-sudan';

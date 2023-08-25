@@ -301,8 +301,8 @@ if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
 if (empty($_POST['recencySamples']) || $_POST['recencySamples'] === 'no') {
      $sWhere[] = " IFNULL(reason_for_vl_testing, 0)  != 9999 ";
 }
-if (isset($_POST['rejectedSamples']) && $_POST['rejectedSamples'] != "") {
-     $sWhere[] = ' (vl.is_sample_rejected like "' . $_POST['rejectedSamples'] . '" OR vl.is_sample_rejected is null OR vl.is_sample_rejected like "")';
+if (!empty($_POST['rejectedSamples']) && $_POST['rejectedSamples'] == 'no') {
+     $sWhere[] = " IFNULL(vl.is_sample_rejected, 'no') not like 'yes' ";
 }
 if (isset($_POST['requestCreatedDatetime']) && trim($_POST['requestCreatedDatetime']) != '') {
      $sRequestCreatedDatetime = '';
