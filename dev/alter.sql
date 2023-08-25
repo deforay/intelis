@@ -4934,8 +4934,8 @@ DELETE FROM `privileges` WHERE `privilege_name` = 'province-details.php';
 ALTER TABLE `form_vl` ADD `result_sent_to_source_datetime` DATETIME NULL DEFAULT NULL AFTER `result_sent_to_source`;
 ALTER TABLE `audit_form_vl` ADD `result_sent_to_source_datetime` DATETIME NULL DEFAULT NULL AFTER `result_sent_to_source`;
 
-ALTER TABLE `form_eid` ADD `external_sample_code` VARCHAR(256) NULL DEFAULT NULL AFTER `remote_sample_code`;
-ALTER TABLE `audit_form_eid` ADD `external_sample_code` VARCHAR(256) NULL DEFAULT NULL AFTER `remote_sample_code`;
+ALTER TABLE `form_eid` ADD `external_sample_code` VARCHAR(100) NULL DEFAULT NULL AFTER `remote_sample_code`;
+ALTER TABLE `audit_form_eid` ADD `external_sample_code` VARCHAR(100) NULL DEFAULT NULL AFTER `remote_sample_code`;
 
 ALTER TABLE `form_eid` ADD `test_requested_on` DATE NULL DEFAULT NULL AFTER `result_printed_datetime`;
 ALTER TABLE `audit_form_eid` ADD `test_requested_on` DATE NULL DEFAULT NULL AFTER `result_printed_datetime`;
@@ -4958,8 +4958,8 @@ ALTER TABLE `audit_form_tb` ADD `test_requested_on` DATE NULL DEFAULT NULL AFTER
 ALTER TABLE `form_tb` ADD `result_sent_to_source_datetime` DATETIME NULL DEFAULT NULL AFTER `result_sent_to_source`;
 ALTER TABLE `audit_form_tb` ADD `result_sent_to_source_datetime` DATETIME NULL DEFAULT NULL AFTER `result_sent_to_source`;
 
-ALTER TABLE `form_tb` ADD `external_sample_code` VARCHAR(256) NULL DEFAULT NULL AFTER `sample_code`;
-ALTER TABLE `audit_form_tb` ADD `external_sample_code` VARCHAR(256) NULL DEFAULT NULL AFTER `sample_code`;
+ALTER TABLE `form_tb` ADD `external_sample_code` VARCHAR(100) NULL DEFAULT NULL AFTER `sample_code`;
+ALTER TABLE `audit_form_tb` ADD `external_sample_code` VARCHAR(100) NULL DEFAULT NULL AFTER `sample_code`;
 
 ALTER TABLE `form_vl` CHANGE `sample_received_at_vl_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
 ALTER TABLE `audit_form_vl` CHANGE `sample_received_at_vl_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
