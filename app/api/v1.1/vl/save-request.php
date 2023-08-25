@@ -77,9 +77,6 @@ try {
 
     $db->startTransaction();
 
-    /* For API Tracking params */
-    $requestUrl = $_SERVER['HTTP_HOST'];
-    $requestUrl .= $_SERVER['REQUEST_URI'];
     $authToken = $general->getAuthorizationBearerToken();
     $user = $usersService->getUserByToken($authToken);
     $roleUser = $usersService->getUserRole($user['user_id']);

@@ -4918,8 +4918,6 @@ ALTER TABLE `audit_form_vl` CHANGE `unique_id` `unique_id` VARCHAR(256) CHARACTE
 UPDATE `system_config` SET `value` = '5.2.1' WHERE `system_config`.`name` = 'sc_version';
 
 -- Jeyabanu 10-08-2023
-ALTER TABLE `user_details` ADD `user_country` VARCHAR(256) NULL DEFAULT NULL AFTER `role_id`;
-ALTER TABLE `user_details` ADD `user_default_time_zone` VARCHAR(256) NULL DEFAULT NULL AFTER `user_country`;
 
 INSERT INTO `s_app_menu` (`id`, `module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'admin', 'no', 'Recommended Corrective Actions', '/common/reference/recommended-corrective-actions.php?testType=eid', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-recommended-corrective-actions\r\n', '11', '40', 'active', CURRENT_TIMESTAMP), (NULL, 'admin', 'no', 'Recommended Corrective Actions', '/common/reference/recommended-corrective-actions.php?testType=eid', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-recommended-corrective-actions\r\n', '12', '41', 'active', CURRENT_TIMESTAMP);
 
@@ -4966,3 +4964,11 @@ ALTER TABLE `audit_form_tb` ADD `external_sample_code` VARCHAR(256) NULL DEFAULT
 ALTER TABLE `form_tb` CHANGE `sample_received_at_lab_datetime` `sample_received_at_vl_lab_datetime` DATETIME NULL DEFAULT NULL;
 ALTER TABLE `audit_form_tb` CHANGE `sample_received_at_lab_datetime` `sample_received_at_vl_lab_datetime` DATETIME NULL DEFAULT NULL;
 
+-- Amit 24-Aug-2023
+UPDATE `privileges` SET `privilege_name` = '/batch/edit-batch.php?type=hepatitis' WHERE `privileges_name` like '%/batch/edit-batch.php?type=hepatitis';
+
+
+-- Amit 25-Aug-2023
+UPDATE `r_sample_status` SET `status_name` = 'Expired' WHERE `r_sample_status`.`status_id` = 10;
+
+INSERT INTO `r_sample_status` (`status_id`, `status_name`, `status`) VALUES ('12', 'Cancelled', 'active');

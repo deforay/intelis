@@ -12,4 +12,5 @@ namespace SAMPLE_STATUS {
     const RECEIVED_AT_CLINIC = 9; // Sample has been received at the clinic
     const EXPIRED = 10; // Sample has expired
     const NO_RESULT = 11; // Sample has no result
+    const CANCELLED = 12; // Sample Cancelled - No Testing required
 }
