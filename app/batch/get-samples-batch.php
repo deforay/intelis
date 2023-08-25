@@ -72,9 +72,9 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 
 if (isset($_POST['sampleReceivedAtLab']) && trim($_POST['sampleReceivedAtLab']) != '') {
     if (trim($sampleReceivedStartDate) == trim($sampleReceivedEndDate)) {
-        $swhere[] = $where[] = ' DATE(sample_received_at_vl_lab_datetime) = "' . $sampleReceivedStartDate . '"';
+        $swhere[] = $where[] = ' DATE(sample_received_at_lab_datetime) = "' . $sampleReceivedStartDate . '"';
     } else {
-        $swhere[] = $where[] = ' DATE(sample_received_at_vl_lab_datetime) >= "' . $sampleReceivedStartDate . '" AND DATE(sample_received_at_vl_lab_datetime) <= "' . $sampleReceivedEndDate . '"';
+        $swhere[] = $where[] = ' DATE(sample_received_at_lab_datetime) >= "' . $sampleReceivedStartDate . '" AND DATE(sample_received_at_lab_datetime) <= "' . $sampleReceivedEndDate . '"';
     }
 }
 if (!empty($where)) {

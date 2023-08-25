@@ -97,7 +97,7 @@ try {
                     'sample_collection_date'                => $sampleCollectionDate,
                     'specimen_type'                         => $sampleType['sample_id'] ?? null,
                     'test_number'                           => $rowData['U'],
-                    'sample_received_at_vl_lab_datetime'    => $sampleReceivedDate,
+                    'sample_received_at_lab_datetime'    => $sampleReceivedDate,
                     'lab_id'                                => $labName['facility_id'] ?? null,
                     'is_sample_rejected'                    => strtolower($rowData['X']),
                     'reason_for_sample_rejection'           => (isset($rejectionReason['rejection_reason_id']) && $rejectionReason['rejection_reason_id'] != "") ? $rejectionReason['rejection_reason_id'] : 9999,

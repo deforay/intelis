@@ -138,7 +138,7 @@ $sQuery = "SELECT
                vl.request_clinician_name,
                vl.lab_tech_comments,
                vl.sample_received_at_hub_datetime,
-               vl.sample_received_at_vl_lab_datetime,
+               vl.sample_received_at_lab_datetime,
                vl.result_dispatched_datetime,
                vl.request_created_datetime,
                vl.result_printed_datetime,
@@ -194,9 +194,9 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
      if (trim($labStartDate) == trim($labEndDate)) {
-          $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) like "' . $labStartDate . '"';
+          $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) like "' . $labStartDate . '"';
      } else {
-          $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $labEnddate . '"';
+          $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $labEnddate . '"';
      }
 }
 if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
@@ -284,7 +284,7 @@ if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 4) {
      $sWhere[] = ' vl.is_sample_rejected is not null AND vl.is_sample_rejected like "yes"';
 }
 if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 6) {
-     $sWhere[] = ' vl.sample_received_at_vl_lab_datetime is not null AND vl.sample_received_at_vl_lab_datetime not like ""';
+     $sWhere[] = ' vl.sample_received_at_lab_datetime is not null AND vl.sample_received_at_lab_datetime not like ""';
 }
 if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 7) {
      $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . SAMPLE_STATUS\ACCEPTED;

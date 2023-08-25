@@ -57,7 +57,7 @@ try {
 	}
 
 	$hepatitisData = array(
-		'sample_received_at_vl_lab_datetime'  => $_POST['sampleReceivedDate'],
+		'sample_received_at_lab_datetime'  => $_POST['sampleReceivedDate'],
 		'lab_id'                              => $_POST['labId'] ?? null,
 		'sample_condition'  				  => $_POST['sampleCondition'] ?? ($_POST['specimenQuality'] ?? null),
 		'sample_tested_datetime'  			  => $_POST['sampleTestedDateTime'] ?? null,

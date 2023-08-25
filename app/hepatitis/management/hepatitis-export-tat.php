@@ -17,7 +17,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $sQuery = "SELECT vl.sample_collection_date,
 				vl.sample_tested_datetime,
-				vl.sample_received_at_vl_lab_datetime,
+				vl.sample_received_at_lab_datetime,
 				vl.result_printed_datetime,
 				vl.result_mail_datetime,
 				vl.request_created_by,
@@ -86,7 +86,7 @@ foreach ($rResult as $aRow) {
 	$row = [];
 	//sample collecion date
 	$sampleCollectionDate =  DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-	$sampleRecievedDate = DateUtility::humanReadableDateFormat($aRow['sample_received_at_vl_lab_datetime'] ?? '');
+	$sampleRecievedDate = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
 	$testDate = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 	$printDate = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 	$mailDate = DateUtility::humanReadableDateFormat($aRow['result_mail_datetime'] ?? '');

@@ -372,7 +372,7 @@ try {
             'has_recent_travel_history' => !empty($data['hasRecentTravelHistory']) ? $data['hasRecentTravelHistory'] : null,
             'travel_country_names' => !empty($data['countryName']) ? $data['countryName'] : null,
             'travel_return_date' => !empty($data['returnDate']) ? DateUtility::isoDateFormat($data['returnDate']) : null,
-            'sample_received_at_vl_lab_datetime' => !empty($data['sampleReceivedDate']) ? $data['sampleReceivedDate'] : null,
+            'sample_received_at_lab_datetime' => !empty($data['sampleReceivedDate']) ? $data['sampleReceivedDate'] : null,
             'sample_condition' => !empty($data['sampleCondition']) ? $data['sampleCondition'] : ($data['specimenQuality'] ?? null),
             'asymptomatic' => !empty($data['asymptomatic']) ? $data['asymptomatic'] : null,
             'lab_technician' => (!empty($data['labTechnician']) && $data['labTechnician'] != '') ? $data['labTechnician'] : $user['user_id'],

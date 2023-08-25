@@ -158,7 +158,7 @@ ts.status_name,
 vl.result_approved_datetime,
 vl.result_reviewed_datetime,
 vl.sample_received_at_hub_datetime,
-vl.sample_received_at_vl_lab_datetime,
+vl.sample_received_at_lab_datetime,
 vl.result_dispatched_datetime,
 vl.result_printed_datetime,
 vl.result_approved_by

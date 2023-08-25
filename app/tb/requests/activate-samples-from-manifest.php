@@ -64,7 +64,7 @@ foreach ($sampleResult as $sampleRow) {
         $tbData['sample_code_key'] = $sampleData['sampleCodeKey'];
         if (!empty($_POST['testDate'])) {
             $tbData['sample_tested_datetime'] = null;
-            $tbData['sample_received_at_vl_lab_datetime'] = $_POST['testDate'];
+            $tbData['sample_received_at_lab_datetime'] = $_POST['testDate'];
         }
         $tbData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
         $tbData['data_sync'] = 0;

@@ -567,7 +567,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim($vlQueryInfo['clinic_date']) != '
 										<td class="sampleReceivedDate labels"><label for="sampleReceivedDate">Date
 												Received</label></td>
 										<td>
-											<input type="text" class="form-control" name="sampleReceivedDate" id="sampleReceivedDate" placeholder="Received Date" title="Enter Received Date" style="width:100%;" value="<?php echo $vlQueryInfo['sample_received_at_vl_lab_datetime']; ?>">
+											<input type="text" class="form-control" name="sampleReceivedDate" id="sampleReceivedDate" placeholder="Received Date" title="Enter Received Date" style="width:100%;" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>">
 										</td>
 									</tr>
 									<tr>

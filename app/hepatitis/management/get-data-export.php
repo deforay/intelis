@@ -182,9 +182,9 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 }
 if (isset($_POST['sampleRecievedDate']) && trim($_POST['sampleRecievedDate']) != '') {
      if (trim($rstart_date) == trim($rend_date)) {
-          $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) = "' . $rstart_date . '"';
+          $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $rstart_date . '"';
      } else {
-          $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $rstart_date . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $rend_date . '"';
+          $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $rstart_date . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $rend_date . '"';
      }
 }
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {

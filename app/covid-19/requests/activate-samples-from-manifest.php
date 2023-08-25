@@ -63,7 +63,7 @@ foreach ($sampleResult as $sampleRow) {
         $covid19Data['data_sync'] = 0;
         if (!empty($_POST['testDate'])) {
             $covid19Data['sample_tested_datetime'] = null;
-            $covid19Data['sample_received_at_vl_lab_datetime'] = $_POST['testDate'];
+            $covid19Data['sample_received_at_lab_datetime'] = $_POST['testDate'];
         }
         $covid19Data['last_modified_by'] = $_SESSION['userId'];
         $covid19Data['last_modified_datetime'] = DateUtility::getCurrentDateTime();

@@ -20,7 +20,7 @@ $testTableName = 'covid19_tests';
 
 try {
 	$covid19Data = array(
-		'sample_received_at_vl_lab_datetime' => DateUtility::isoDateFormat($_POST['sampleReceivedDate'] ?? '', true),
+		'sample_received_at_lab_datetime' => DateUtility::isoDateFormat($_POST['sampleReceivedDate'] ?? '', true),
 		'lab_id' => $_POST['labId'] ?? null,
 		'is_sample_rejected' => $_POST['isSampleRejected'] ?? null,
 		'result' => $_POST['result'] ?? null,

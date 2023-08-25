@@ -334,7 +334,7 @@ try {
 		'rapid_test_performed' => $_POST['rapidTestPerformed'] ?? null,
 		'rapid_test_date' => $_POST['rapidtestDate'] ?? null,
 		'rapid_test_result' => $_POST['rapidTestResult'] ?? null,
-		'sample_received_at_vl_lab_datetime' => $_POST['sampleReceivedDate'] ?? null,
+		'sample_received_at_lab_datetime' => $_POST['sampleReceivedDate'] ?? null,
 		'eid_test_platform' => $_POST['eidPlatform'] ?? null,
 		'import_machine_name' => $_POST['machineName'] ?? null,
 		'lab_reception_person' => $_POST['labReceptionPerson'] ?? null,

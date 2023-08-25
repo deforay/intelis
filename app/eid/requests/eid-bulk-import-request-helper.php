@@ -143,7 +143,7 @@ try {
                     'sample_collection_date' => $sampleCollectionDate,
                     'sample_requestor_name' => $rowData['X'] ?? null,
                     'sample_requestor_phone' => $rowData['Y'] ?? null,
-                    'sample_received_at_vl_lab_datetime' => $sampleReceivedDate,
+                    'sample_received_at_lab_datetime' => $sampleReceivedDate,
                     'lab_id' => $labName['facility_id'] ?? null,
                     'sample_tested_datetime' => $sampleTestDate,
                     'is_sample_rejected' => isset($rowData['AB']) ? strtolower($rowData['AB']) : null,

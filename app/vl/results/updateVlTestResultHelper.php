@@ -114,7 +114,7 @@ try {
         'lab_id' => $_POST['labId'] ?? null,
         'vl_test_platform' => $testingPlatform ?? null,
         'sample_received_at_hub_datetime' => $_POST['sampleReceivedAtHubOn'],
-        'sample_received_at_vl_lab_datetime' => $_POST['sampleReceivedOn'],
+        'sample_received_at_lab_datetime' => $_POST['sampleReceivedOn'],
         'sample_tested_datetime' => $_POST['sampleTestingDateAtLab'],
         'result_dispatched_datetime' => $_POST['resultDispatchedOn'] ?? null,
         'is_sample_rejected' => $isRejected,

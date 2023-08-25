@@ -101,7 +101,7 @@ ALTER TABLE `vl_request_form` ADD INDEX(`result_status`);
 -- Version 3.10.6 ---------- Amit 04-Mar-2019
 ALTER TABLE `vl_request_form` ADD `sample_registered_at_lab` DATETIME NULL AFTER `lab_phone_number`;
 UPDATE `vl_request_form` set sample_registered_at_lab = request_created_datetime where sample_registered_at_lab is NULL;
-UPDATE `vl_request_form` set sample_received_at_vl_lab_datetime = request_created_datetime where sample_received_at_vl_lab_datetime is NULL;
+UPDATE `vl_request_form` set sample_received_at_lab_datetime = request_created_datetime where sample_received_at_lab_datetime is NULL;
 
 
 CREATE TABLE `move_samples` (
@@ -177,7 +177,7 @@ CREATE TABLE `eid_form` (
   `remote_sample_code` VARCHAR(255) NULL DEFAULT NULL,
   `sample_collection_date` DATETIME NOT NULL,
   `sample_received_at_hub_datetime` DATETIME NOT NULL,
-  `sample_received_at_vl_lab_datetime` DATETIME NOT NULL,
+  `sample_received_at_lab_datetime` DATETIME NOT NULL,
   `sample_tested_datetime` DATETIME NULL DEFAULT NULL,
   `funding_source` INTEGER NULL DEFAULT NULL,
   `implementation_partner` INTEGER NULL DEFAULT NULL,
@@ -258,7 +258,7 @@ ALTER TABLE `eid_form` CHANGE `created_by` `request_created_by` VARCHAR(255) CHA
 
 
 ALTER TABLE `eid_form` CHANGE `sample_received_at_hub_datetime` `sample_received_at_hub_datetime` DATETIME NULL DEFAULT NULL;
-ALTER TABLE `eid_form` CHANGE `sample_received_at_vl_lab_datetime` `sample_received_at_vl_lab_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `eid_form` CHANGE `sample_received_at_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
 ALTER TABLE `eid_form` CHANGE `sample_rejection_reason` `sample_rejection_reason` INT(11) NULL DEFAULT NULL;
 ALTER TABLE `eid_form` CHANGE `facility_id` `facility_id` INT(11) NULL DEFAULT NULL;
 ALTER TABLE `eid_form` CHANGE `result` `result` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `request_created_by` `request_created_by` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `last_modified_datetime` `last_modified_datetime` DATETIME NULL DEFAULT NULL, CHANGE `last_modified_by` `last_modified_by` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
@@ -653,7 +653,7 @@ CREATE TABLE `form_covid19` (
   `remote_sample_code` varchar(255) DEFAULT NULL,
   `sample_collection_date` datetime NOT NULL,
   `sample_received_at_hub_datetime` datetime DEFAULT NULL,
-  `sample_received_at_vl_lab_datetime` datetime DEFAULT NULL,
+  `sample_received_at_lab_datetime` datetime DEFAULT NULL,
   `sample_tested_datetime` datetime DEFAULT NULL,
   `funding_source` int(11) DEFAULT NULL,
   `implementing_partner` int(11) DEFAULT NULL,
@@ -957,7 +957,7 @@ ALTER TABLE `s_vlsm_instance` ADD `vl_last_dash_sync` DATETIME NULL DEFAULT NULL
 ALTER TABLE `r_covid19_symptoms` ADD `parent_symptom` INT NULL DEFAULT NULL AFTER `symptom_name`;
 
 
-ALTER TABLE `form_covid19` ADD `is_patient_pregnant` VARCHAR(255) NULL DEFAULT NULL AFTER `patient_gender`, ADD `temperature_measurement_method` VARCHAR(255) NULL DEFAULT NULL AFTER `fever_temp`, ADD `respiratory_rate` INT NULL DEFAULT NULL AFTER `temperature_measurement_method`, ADD `oxygen_saturation` DOUBLE NULL DEFAULT NULL AFTER `respiratory_rate`, ADD `number_of_days_sick` INT NULL DEFAULT NULL AFTER `priority_status`, ADD `medical_history` VARCHAR(255) NULL DEFAULT NULL AFTER `date_of_initial_consultation`, ADD `recent_hospitalization` VARCHAR(255) NULL DEFAULT NULL AFTER `medical_history`, ADD `patient_lives_with_children` VARCHAR(255) NULL DEFAULT NULL AFTER `recent_hospitalization`, ADD `patient_cares_for_children` VARCHAR(255) NULL DEFAULT NULL AFTER `patient_lives_with_children`, ADD `sample_condition` VARCHAR(255) NULL DEFAULT NULL AFTER `sample_received_at_vl_lab_datetime`;
+ALTER TABLE `form_covid19` ADD `is_patient_pregnant` VARCHAR(255) NULL DEFAULT NULL AFTER `patient_gender`, ADD `temperature_measurement_method` VARCHAR(255) NULL DEFAULT NULL AFTER `fever_temp`, ADD `respiratory_rate` INT NULL DEFAULT NULL AFTER `temperature_measurement_method`, ADD `oxygen_saturation` DOUBLE NULL DEFAULT NULL AFTER `respiratory_rate`, ADD `number_of_days_sick` INT NULL DEFAULT NULL AFTER `priority_status`, ADD `medical_history` VARCHAR(255) NULL DEFAULT NULL AFTER `date_of_initial_consultation`, ADD `recent_hospitalization` VARCHAR(255) NULL DEFAULT NULL AFTER `medical_history`, ADD `patient_lives_with_children` VARCHAR(255) NULL DEFAULT NULL AFTER `recent_hospitalization`, ADD `patient_cares_for_children` VARCHAR(255) NULL DEFAULT NULL AFTER `patient_lives_with_children`, ADD `sample_condition` VARCHAR(255) NULL DEFAULT NULL AFTER `sample_received_at_lab_datetime`;
 -- Thana 27-Jul-2020
 ALTER TABLE `r_covid19_test_reasons` ADD `parent_reason` INT(11) NULL DEFAULT NULL AFTER `test_reason_name`;
 
@@ -1687,7 +1687,7 @@ CREATE TABLE `form_hepatitis` (
   `remote_sample_code` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `sample_collection_date` datetime NOT NULL,
   `sample_received_at_hub_datetime` datetime DEFAULT NULL,
-  `sample_received_at_vl_lab_datetime` datetime DEFAULT NULL,
+  `sample_received_at_lab_datetime` datetime DEFAULT NULL,
   `sample_tested_datetime` datetime DEFAULT NULL,
   `funding_source` int(11) DEFAULT NULL,
   `implementing_partner` int(11) DEFAULT NULL,
@@ -1811,7 +1811,7 @@ CREATE TABLE `form_hepatitis` (
  `remote_sample_code` varchar(255) DEFAULT NULL,
  `sample_collection_date` datetime NOT NULL,
  `sample_received_at_hub_datetime` datetime DEFAULT NULL,
- `sample_received_at_vl_lab_datetime` datetime DEFAULT NULL,
+ `sample_received_at_lab_datetime` datetime DEFAULT NULL,
  `sample_condition` varchar(255) DEFAULT NULL,
  `sample_tested_datetime` datetime DEFAULT NULL,
  `funding_source` int(11) DEFAULT NULL,
@@ -4963,6 +4963,14 @@ ALTER TABLE `audit_form_tb` ADD `result_sent_to_source_datetime` DATETIME NULL D
 ALTER TABLE `form_tb` ADD `external_sample_code` VARCHAR(256) NULL DEFAULT NULL AFTER `sample_code`;
 ALTER TABLE `audit_form_tb` ADD `external_sample_code` VARCHAR(256) NULL DEFAULT NULL AFTER `sample_code`;
 
-ALTER TABLE `form_tb` CHANGE `sample_received_at_lab_datetime` `sample_received_at_vl_lab_datetime` DATETIME NULL DEFAULT NULL;
-ALTER TABLE `audit_form_tb` CHANGE `sample_received_at_lab_datetime` `sample_received_at_vl_lab_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `form_vl` CHANGE `sample_received_at_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `audit_form_vl` CHANGE `sample_received_at_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
 
+ALTER TABLE `form_covid19` CHANGE `sample_received_at_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `audit_form_covid19` CHANGE `sample_received_at_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
+
+ALTER TABLE `form_eid` CHANGE `sample_received_at_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `audit_form_eid` CHANGE `sample_received_at_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
+
+ALTER TABLE `form_hepatitis` CHANGE `sample_received_at_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `audit_form_hepatitis` CHANGE `sample_received_at_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;

@@ -124,7 +124,7 @@ try {
 		'reason_for_vl_test' => $_POST['reasonVlTest'] ?? null,
 		'specimen_type' => $_POST['specimenType'] ?? null,
 		'sample_collection_date' => $_POST['sampleCollectionDate'] ?? null,
-		'sample_received_at_vl_lab_datetime' => $_POST['sampleReceivedDate'] ?? null,
+		'sample_received_at_lab_datetime' => $_POST['sampleReceivedDate'] ?? null,
 		'sample_tested_datetime' => $_POST['sampleTestedDateTime'] ?? null,
 		'vl_testing_site' => $_POST['vlTestingSite'] ?? null,
 		'sample_condition' => $_POST['sampleCondition'] ?? ($_POST['specimenQuality'] ?? null),

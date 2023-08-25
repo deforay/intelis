@@ -269,7 +269,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                                     <tr>
                                         <th scope="row"><label for="">Sample Received Date <span class="mandatory">*</span></label></th>
                                         <td>
-                                            <input value="<?php echo DateUtility::humanReadableDateFormat($hepatitisInfo['sample_received_at_vl_lab_datetime']) ?>" type="text" class="form-control isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
+                                            <input value="<?php echo DateUtility::humanReadableDateFormat($hepatitisInfo['sample_received_at_lab_datetime']) ?>" type="text" class="form-control isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
                                         </td>
                                         <td><label for="labId">Lab Name <span class="mandatory">*</span></label> </td>
                                         <td>

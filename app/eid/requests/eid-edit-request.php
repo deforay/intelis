@@ -132,13 +132,13 @@ if (isset($eidInfo['sample_collection_date']) && trim($eidInfo['sample_collectio
     $sampleCollectionDate = '';
     $eidInfo['sample_collection_date'] = '';
 }
-if (isset($eidInfo['sample_received_at_vl_lab_datetime']) && trim($eidInfo['sample_received_at_vl_lab_datetime']) != '' && $eidInfo['sample_received_at_vl_lab_datetime'] != '0000-00-00 00:00:00') {
-    $sampleCollectionDate = $eidInfo['sample_received_at_vl_lab_datetime'];
-    $expStr = explode(" ", $eidInfo['sample_received_at_vl_lab_datetime']);
-    $eidInfo['sample_received_at_vl_lab_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+if (isset($eidInfo['sample_received_at_lab_datetime']) && trim($eidInfo['sample_received_at_lab_datetime']) != '' && $eidInfo['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
+    $sampleCollectionDate = $eidInfo['sample_received_at_lab_datetime'];
+    $expStr = explode(" ", $eidInfo['sample_received_at_lab_datetime']);
+    $eidInfo['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $sampleCollectionDate = '';
-    $eidInfo['sample_received_at_vl_lab_datetime'] = '';
+    $eidInfo['sample_received_at_lab_datetime'] = '';
 }
 if (isset($eidInfo['sample_tested_datetime']) && trim($eidInfo['sample_tested_datetime']) != '' && $eidInfo['sample_tested_datetime'] != '0000-00-00 00:00:00') {
     $sampleCollectionDate = $eidInfo['sample_tested_datetime'];

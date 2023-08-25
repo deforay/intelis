@@ -210,9 +210,9 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 }
 if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
      if (trim($sReceivedDate) == trim($eReceivedDate)) {
-          $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) like "' . $sReceivedDate . '"';
+          $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) like "' . $sReceivedDate . '"';
      } else {
-          $sWhere[] = ' DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $sReceivedDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $eReceivedDate . '"';
+          $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $sReceivedDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $eReceivedDate . '"';
      }
 }
 if (isset($_POST['resultDispatchedOn']) && trim($_POST['resultDispatchedOn']) != '') {

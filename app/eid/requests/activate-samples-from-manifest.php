@@ -57,7 +57,7 @@ foreach ($sampleResult as $sampleRow) {
         $eidData['data_sync'] = 0;
         if (!empty($_POST['testDate'])) {
             $eidData['sample_tested_datetime'] = null;
-            $eidData['sample_received_at_vl_lab_datetime'] = DateUtility::isoDateFormat($_POST['testDate'], true);
+            $eidData['sample_received_at_lab_datetime'] = DateUtility::isoDateFormat($_POST['testDate'], true);
         }
         $eidData['last_modified_by'] = $_SESSION['userId'];
         $eidData['last_modified_datetime'] = DateUtility::getCurrentDateTime();

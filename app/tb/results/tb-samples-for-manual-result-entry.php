@@ -201,7 +201,7 @@ if (!empty($sWhere)) {
 }
 $sQuery = $sQuery . $sWhere;
 
-//echo $sQuery;
+
 $_SESSION['tbResultQuery'] = $sQuery;
 
 if (!empty($sOrder)) {

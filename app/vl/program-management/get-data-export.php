@@ -128,7 +128,7 @@ $sQuery = "SELECT vl.vl_sample_id,
                vl.request_clinician_name,
                vl.lab_tech_comments,
                vl.sample_received_at_hub_datetime,
-               vl.sample_received_at_vl_lab_datetime,
+               vl.sample_received_at_lab_datetime,
                vl.result_dispatched_datetime,
                vl.request_created_datetime,
                vl.result_printed_datetime,
@@ -290,9 +290,9 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
 }
 if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
      if (trim($sSampleReceivedDate) == trim($eSampleReceivedDate)) {
-          $sWhere[] =  '  DATE(vl.sample_received_at_vl_lab_datetime) like "' . $sSampleReceivedDate . '"';
+          $sWhere[] =  '  DATE(vl.sample_received_at_lab_datetime) like "' . $sSampleReceivedDate . '"';
      } else {
-          $sWhere[] =  '  DATE(vl.sample_received_at_vl_lab_datetime) >= "' . $sSampleReceivedDate . '" AND DATE(vl.sample_received_at_vl_lab_datetime) <= "' . $eSampleReceivedDate . '"';
+          $sWhere[] =  '  DATE(vl.sample_received_at_lab_datetime) >= "' . $sSampleReceivedDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $eSampleReceivedDate . '"';
      }
 }
 if (isset($_POST['requestCreatedDatetime']) && trim($_POST['requestCreatedDatetime']) != '') {

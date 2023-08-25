@@ -68,7 +68,7 @@ foreach ($sampleResult as $sampleRow) {
 
         if (!empty($_POST['testDate'])) {
             $vldata['sample_tested_datetime'] = null;
-            $vldata['sample_received_at_vl_lab_datetime'] = $_POST['testDate'];
+            $vldata['sample_received_at_lab_datetime'] = $_POST['testDate'];
         }
         $db = $db->where('vl_sample_id', $sampleRow['vl_sample_id']);
         $id = $db->update('form_vl', $vldata);

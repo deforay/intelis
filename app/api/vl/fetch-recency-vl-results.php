@@ -46,7 +46,7 @@ try {
                     vl.remote_sample_code,
                     vl.external_sample_code as `recency_id`,
                     vl.sample_collection_date,
-                    vl.sample_received_at_vl_lab_datetime,
+                    vl.sample_received_at_lab_datetime,
                     vl.sample_registered_at_lab,
                     vl.sample_tested_datetime,
                     vl.is_sample_rejected,
