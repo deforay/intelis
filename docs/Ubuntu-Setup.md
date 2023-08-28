@@ -6,12 +6,14 @@
 2. **Update Software**: Open Terminal (`ctrl + alt + t`) and run:
 
     ```bash
-    sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y
+    sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y;
+
     ```
 3. **Install Basic Packages**:
 
     ```bash
-    sudo apt install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools
+    sudo apt install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk;
+
     ```
 4. **Locale Settings**:
 
@@ -20,11 +22,13 @@
     export LANG=en_US.UTF-8;
     export LC_ALL=en_US.UTF-8;
     sudo update-locale;
+
     ```
 5. **Optional: Install VS Code**:
 
     ```bash
-    sudo snap install --classic code
+    sudo snap install --classic code;
+
     ```
 
 ## Apache Setup
@@ -36,6 +40,7 @@
     sudo a2enmod rewrite headers deflate env;
     sudo service apache2 restart;
     sudo setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www;
+
     ```
 
 ## MySQL Setup
@@ -43,25 +48,28 @@
 1. **Install MySQL**:
 
     ```bash
-    sudo apt install -y mysql-server
+    sudo apt install -y mysql-server;
+
     ```
 2. **Set Root Password**:
 
     Make sure you replace `<PASSWORD>` below with the actual password you want to set.
 
     ```bash
-    sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '<PASSWORD>'; FLUSH PRIVILEGES;"
+    sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '<PASSWORD>'; FLUSH PRIVILEGES;";
+
     ```
 3. **MySQL Configuration**:
 
     ```bash
-    sudo sed -i '/skip-external-locking/a sql_mode =\ninnodb_strict_mode = 0' /etc/mysql/mysql.conf.d/mysqld.cnf
+    sudo awk 'BEGIN {added=0} /skip-external-locking|mysqlx-bind-address/ { if (added == 0) { print; print "sql_mode ="; print "innodb_strict_mode = 0"; added=1; next; } } { print }' /etc/mysql/mysql.conf.d/mysqld.cnf > tmpfile && sudo mv tmpfile /etc/mysql/mysql.conf.d/mysqld.cnf;
 
     ```
 4. **Restart MySQL**
 
     ```bash
-    sudo service mysql restart
+    sudo service mysql restart;
+
     ```
 
 ## PHP Setup
@@ -76,6 +84,7 @@
     php7.4-mbstring php7.4-curl php7.4-xml php7.4-xmlrpc php7.4-bcmath \
     php7.4-gmp php7.4-zip php7.4-intl php7.4-imagick php-mime-type php7.4-apcu;
     sudo service apache2 restart;
+
     ```
 2. **Configure PHP 7.4**:
 
@@ -92,6 +101,25 @@
 
     ```
 
+## phpMyAdmin Setup
+
+* **Download Latest phpMyAdmin and place it in www folder**:
+
+	```bash
+	wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
+	tar xzf phpMyAdmin-latest-all-languages.tar.gz;
+	sudo mv phpMyAdmin-*-all-languages /var/www/phpmyadmin;
+	rm phpMyAdmin-latest-all-languages.tar.gz;
+
+	```
+* **Configuring Apache for phpMyAdmin**:
+
+	```bash
+	sudo awk 'BEGIN {added=0} /ServerAdmin|DocumentRoot/ { if (added == 0) { print; print "Alias /phpmyadmin /var/www/phpmyadmin"; added=1; next; } } { print }' /etc/apache2/sites-available/000-default.conf > tmpfile && sudo mv tmpfile /etc/apache2/sites-available/000-default.conf;
+	sudo service apache2 restart;
+
+	```
+
 ## Composer Setup
 
 * **Install Composer**:
@@ -100,7 +128,8 @@
     php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
     php composer-setup.php
     php -r "unlink('composer-setup.php');"
-    sudo mv composer.phar /usr/local/bin/composer
+    sudo mv composer.phar /usr/local/bin/composer;
+
     ```
 
 Proceed to [VLSM setup](../README.md).

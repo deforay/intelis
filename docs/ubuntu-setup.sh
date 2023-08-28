@@ -17,7 +17,7 @@ echo "Updating software packages..."
 sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y
 
 echo "Installing basic packages..."
-sudo apt install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools
+sudo apt install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk
 
 echo "Setting up locale..."
 sudo locale-gen en_US en_US.UTF-8
@@ -66,7 +66,7 @@ sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_passwo
 
 
 echo "Configuring MySQL..."
-sudo sed -i '/skip-external-locking/a sql_mode =\ninnodb_strict_mode = 0' /etc/mysql/mysql.conf.d/mysqld.cnf
+sudo awk 'BEGIN {added=0} /skip-external-locking|mysqlx-bind-address/ { if (added == 0) { print; print "sql_mode ="; print "innodb_strict_mode = 0"; added=1; next; } } { print }' /etc/mysql/mysql.conf.d/mysqld.cnf > tmpfile && sudo mv tmpfile /etc/mysql/mysql.conf.d/mysqld.cnf
 sudo service mysql restart
 
 
@@ -92,7 +92,7 @@ sudo mv phpMyAdmin-*-all-languages /var/www/phpmyadmin
 rm phpMyAdmin-latest-all-languages.tar.gz
 
 echo "Configuring Apache for phpMyAdmin..."
-sudo sed -i '/<\/VirtualHost>/i \    Alias \/phpmyadmin \/var\/www\/phpmyadmin' /etc/apache2/sites-available/000-default.conf
+sudo awk 'BEGIN {added=0} /ServerAdmin|DocumentRoot/ { if (added == 0) { print; print "Alias /phpmyadmin /var/www/phpmyadmin"; added=1; next; } } { print }' /etc/apache2/sites-available/000-default.conf > tmpfile && sudo mv tmpfile /etc/apache2/sites-available/000-default.conf
 sudo service apache2 restart
 
 # Composer Setup
