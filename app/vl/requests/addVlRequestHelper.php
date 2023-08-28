@@ -175,8 +175,6 @@ try {
         $_POST['treatmentIndication'] = $_POST['newTreatmentIndication'] . '_Other';
     }
 
-
-
     $vlData = array(
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => $formId,
@@ -198,6 +196,7 @@ try {
         'patient_has_active_tb' => $_POST['activeTB'] ?? null,
         'patient_active_tb_phase' => $_POST['tbPhase'] ?? null,
         'patient_art_no' => $_POST['artNo'] ?? null,
+        'sync_patient_identifiers' => $_POST['syncPatientIdentifiers'] ?? null,
         'is_patient_new' => $_POST['isPatientNew'] ?? null,
         'treatment_duration' => $_POST['treatmentDuration'] ?? null,
         'treatment_indication' => $_POST['treatmentIndication'] ?? null,
@@ -279,12 +278,9 @@ try {
     $vlData['request_created_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;
     $vlData['last_modified_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;
 
-    $vlData['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vlData['patient_art_no']);
-
 
 
     $vlData['vl_result_category'] = $vlService->getVLResultCategory($vlData['result_status'], $vlData['result']);
-
 
 
 
@@ -328,6 +324,25 @@ try {
     $vlData = array_merge($vlData, $pngSpecificFields);
 
     $vlData['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vlData['patient_art_no']);
+    $vlData['patient_middle_name'] = $general->crypto('doNothing', $_POST['patientMiddleName'], $vlData['patient_art_no']);
+    $vlData['patient_last_name'] = $general->crypto('doNothing', $_POST['patientLastName'], $vlData['patient_art_no']);
+
+
+    if($_POST['syncPatientIdentifiers'] === 'no'){
+        $key = base64_decode('zACCxM1c1AfRevJ/Zpk+PKXpO+ebWjNSgCRa5/Uheh4=');
+        $encryptedPatientId = $general->crypto('encrypt' , $vlData['patient_art_no'], $key);
+        $encryptedPatientFirstName = $general->crypto('encrypt' , $vlData['patient_first_name'], $key);
+        $encryptedPatientMiddleName = $general->crypto('encrypt' , $vlData['patient_middle_name'], $key);
+        $encryptedPatientLastName = $general->crypto('encrypt' , $vlData['patient_last_name'], $key);
+
+        $vlData['patient_art_no'] = $encryptedPatientId;
+        $vlData['patient_first_name'] = $encryptedPatientFirstName;
+        $vlData['patient_middle_name'] = $encryptedPatientMiddleName;
+        $vlData['patient_last_name'] = $encryptedPatientLastName;
+        $vlData['is_encrypted'] = 'yes';
+   }
+
+
     $id = 0;
 
     $db = $db->where('vl_sample_id', $_POST['vlSampleId']);

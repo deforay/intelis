@@ -1,13 +1,11 @@
 <?php
 
 
-
 use App\Utilities\DateUtility;
 use App\Registries\ContainerRegistry;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
-
 
 
 
@@ -92,7 +90,24 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
      $rch .= '</tbody>';
      $rch .= '</table>';
 }
-?>
+
+if (!empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes'){
+     $key = base64_decode('zACCxM1c1AfRevJ/Zpk+PKXpO+ebWjNSgCRa5/Uheh4=');
+     $vlQueryInfo['patient_art_no'] = $general->crypto('decrypt' ,$vlQueryInfo['patient_art_no'], $key);
+     if($vlQueryInfo['patient_first_name']!=''){
+          $vlQueryInfo['patient_first_name'] = $general->crypto('decrypt' ,$vlQueryInfo['patient_first_name'], $key);
+     }
+
+     if($vlQueryInfo['patient_middle_name']!=''){
+          $vlQueryInfo['patient_middle_name'] = $general->crypto('decrypt' ,$vlQueryInfo['patient_middle_name'], $key);
+     }
+   
+     if($vlQueryInfo['patient_last_name']!=''){
+          $vlQueryInfo['patient_last_name'] = $general->crypto('decrypt' ,$vlQueryInfo['patient_last_name'], $key);
+     }
+  }
+
+?> 
 <style>
      .table>tbody>tr>td {
           border-top: none;
@@ -211,7 +226,20 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                         <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="<?= _('Enter Unique ART Number or Patient Name'); ?>" title="<?= _('Enter art number or patient name'); ?>" />&nbsp;&nbsp;
                                         <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
                                    </div>
+
                                    <div class="box-body">
+                                   <div class="row">
+                                        <div class="col-md-12">
+                                                  <label class="col-lg-5 control-label" for="syncPatientIdentifiers"><?= _('Patient is from Defence Forces (Patient Name and Patient ID will not be synced between LIS and STS)'); ?> <span class="mandatory">*</span></label>
+                                                  <div class="col-lg-5">
+                                                       <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control isRequired" title="<?= _('Select Patient is from Defence Forces'); ?>">
+                                                            <option value=""><?= _('--Select--'); ?></option>     
+                                                            <option value="no" selected='selected'><?= _('No'); ?></option>
+                                                            <option value="yes"><?= _('Yes'); ?></option>
+                                                       </select>
+                                                  </div>
+                                        </div>
+                                   </div>
                                         <div class="row">
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
