@@ -47,6 +47,8 @@
     ```
 2. **Set Root Password**:
 
+    Make sure you replace <PASSWORD> below with the actual password you want to set.
+
     ```bash
     sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '<PASSWORD>'; FLUSH PRIVILEGES;"
     ```
@@ -54,6 +56,7 @@
 
     ```bash
     sudo sed -i '/skip-external-locking\|127.0.0.1/a sql_mode =' /etc/mysql/mysql.conf.d/mysqld.cnf
+
     ```
 4. **Restart MySQL**
 
