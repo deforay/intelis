@@ -4,7 +4,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UsersService;
 use App\Services\SystemService;
-
+use GuzzleHttp\Client;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -12,7 +12,6 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 $tableName = "user_details";
-$configTableName = "global_config";
 $userName = ($_POST['userName']);
 $emailId = ($_POST['email']);
 $loginId = ($_POST['loginId']);
@@ -61,55 +60,55 @@ try {
         );
         $db->insert($tableName, $insertData);
 
-        if (isset($_POST['vl_form']) && trim($_POST['vl_form']) != "") {
-            $data = array('value' => trim($_POST['vl_form']));
-            $db = $db->where('name', 'vl_form');
-            $id = $db->update($configTableName, $data);
-        }
+        $configFields = [
+            'vl_form',
+            'default_time_zone',
+            'app_locale'
+        ];
 
-        if (isset($_POST['default_time_zone']) && trim($_POST['default_time_zone']) != "") {
-            $data = array('value' => trim($_POST['default_time_zone']));
-            $db = $db->where('name', 'default_time_zone');
-            $id = $db->update($configTableName, $data);
-        }
-
-        if (isset($_POST['app_locale']) && trim($_POST['app_locale']) != "") {
-            $data = array('value' => trim($_POST['app_locale']));
-            $db = $db->where('name', 'app_locale');
-            $id = $db->update($configTableName, $data);
+        foreach ($configFields as $field) {
+            if (isset($_POST[$field]) && !empty(trim($_POST[$field]))) {
+                $data = array('value' => trim($_POST[$field]));
+                $db = $db->where('name', $field);
+                $id = $db->update('global_config', $data);
+            }
         }
 
         $modules = array_map("changeModuleWithQuotes", $activeModulesArr);
 
         $activeModules = implode(",", $modules);
 
-        $privilegesSql = "SELECT p.privilege_id FROM privileges as p inner join resources as r on r.resource_id=p.resource_id WHERE r.module IN ($activeModules)";
+        $privilegesSql = "SELECT p.privilege_id
+                            FROM privileges AS p
+                            INNER JOIN resources AS r ON r.resource_id=p.resource_id
+                            WHERE r.module IN ($activeModules)";
         $privileges = $db->query($privilegesSql);
         foreach ($privileges as $privilege) {
             $privilegeId = $privilege['privilege_id'];
-            $db->query("insert into roles_privileges_map(role_id,privilege_id) values (1,$privilegeId)");
+            $db->query("INSERT IGNORE INTO roles_privileges_map(role_id,privilege_id) VALUES (1,$privilegeId)");
         }
 
         if (!empty(SYSTEM_CONFIG['remoteURL']) && $userType == 'vluser') {
             $insertData['userId'] = $userId;
             $insertData['loginId'] = null; // We don't want to unintentionally end up creating admin users on STS
-            $insertData['password'] = $usersService->passwordHash($general->generateRandomString()); // We don't want to unintentionally end up creating admin users on STS
+            $insertData['password'] = null; // We don't want to unintentionally end up creating admin users on STS
             $insertData['hashAlgorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on STS
             $insertData['role'] = 0; // We don't want to unintentionally end up creating admin users on STS
-            $insertData['status'] = 'inactive'; // so that we can retain whatever status is on server
+            $insertData['status'] = 'inactive';
+
+
             $apiUrl = SYSTEM_CONFIG['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
             $post = array(
                 'post' => json_encode($insertData),
                 'x-api-key' => $general->generateRandomString(18)
             );
 
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $apiUrl);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, ($post));
-            $result = curl_exec($ch);
-            curl_close($ch);
-            $deResult = json_decode($result, true);
+            $client = new Client();
+            $response = $client->post($apiUrl, [
+                'form_params' => $post
+            ]);
+
+            $result = $response->getBody()->getContents();
         }
 
         $_SESSION['alertMsg'] = "New admin user added successfully";

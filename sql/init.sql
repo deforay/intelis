@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Aug 26, 2023 at 01:12 AM
+-- Generation Time: Aug 28, 2023 at 06:53 PM
 -- Server version: 5.7.39
 -- PHP Version: 7.4.33
 
@@ -45,7 +45,7 @@ CREATE TABLE `activity_log` (
 
 CREATE TABLE `audit_form_covid19` (
   `action` varchar(8) DEFAULT 'insert',
-  `revision` int(11) NOT NULL,
+  `revision` int(6) NOT NULL,
   `dt_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `covid19_id` int(11) NOT NULL,
   `unique_id` varchar(500) DEFAULT NULL,
@@ -175,7 +175,7 @@ CREATE TABLE `audit_form_covid19` (
   `request_created_by` text,
   `sample_registered_at_lab` datetime DEFAULT NULL,
   `sample_batch_id` int(11) DEFAULT NULL,
-  `sample_package_id` varchar(256) DEFAULT NULL,
+  `sample_package_id` int(11) DEFAULT NULL,
   `sample_package_code` mediumtext,
   `positive_test_manifest_id` int(11) DEFAULT NULL,
   `positive_test_manifest_code` varchar(255) DEFAULT NULL,
@@ -201,21 +201,21 @@ CREATE TABLE `audit_form_covid19` (
 
 CREATE TABLE `audit_form_eid` (
   `action` varchar(8) DEFAULT 'insert',
-  `revision` int(11) NOT NULL,
+  `revision` int(6) NOT NULL,
   `dt_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `eid_id` int(11) NOT NULL,
-  `unique_id` varchar(500) DEFAULT NULL,
-  `vlsm_instance_id` varchar(255) DEFAULT NULL,
+  `unique_id` varchar(256) DEFAULT NULL,
+  `vlsm_instance_id` varchar(100) NOT NULL,
   `vlsm_country_id` int(11) DEFAULT NULL,
   `sample_code_key` int(11) DEFAULT NULL,
-  `sample_code_format` varchar(255) DEFAULT NULL,
-  `sample_code` varchar(500) DEFAULT NULL,
+  `sample_code_format` varchar(100) DEFAULT NULL,
+  `sample_code` varchar(100) DEFAULT NULL,
   `sample_reordered` varchar(256) NOT NULL DEFAULT 'no',
   `remote_sample` varchar(255) NOT NULL DEFAULT 'no',
   `remote_sample_code_key` int(11) DEFAULT NULL,
-  `remote_sample_code_format` varchar(255) DEFAULT NULL,
-  `remote_sample_code` varchar(500) DEFAULT NULL,
-  `external_sample_code` varchar(100) DEFAULT NULL,
+  `remote_sample_code_format` varchar(100) DEFAULT NULL,
+  `remote_sample_code` varchar(100) DEFAULT NULL,
+  `external_sample_code` varchar(256) DEFAULT NULL,
   `sample_collection_date` datetime NOT NULL,
   `sample_dispatched_datetime` datetime DEFAULT NULL,
   `sample_received_at_hub_datetime` datetime DEFAULT NULL,
@@ -223,7 +223,7 @@ CREATE TABLE `audit_form_eid` (
   `sample_tested_datetime` datetime DEFAULT NULL,
   `funding_source` int(11) DEFAULT NULL,
   `implementing_partner` int(11) DEFAULT NULL,
-  `is_sample_rejected` varchar(255) DEFAULT NULL,
+  `is_sample_rejected` varchar(10) DEFAULT NULL,
   `test_1_date` date DEFAULT NULL,
   `test_1_batch` int(11) DEFAULT NULL,
   `test_1_assay` text,
@@ -246,33 +246,33 @@ CREATE TABLE `audit_form_eid` (
   `caretaker_contact_consent` text,
   `caretaker_phone_number` text,
   `caretaker_address` text,
-  `previous_sample_code` varchar(256) DEFAULT NULL,
+  `previous_sample_code` varchar(32) DEFAULT NULL,
   `clinical_assessment` varchar(256) DEFAULT NULL,
-  `clinician_name` varchar(256) DEFAULT NULL,
+  `clinician_name` varchar(64) DEFAULT NULL,
   `mother_dob` date DEFAULT NULL,
-  `mother_age_in_years` varchar(255) DEFAULT NULL,
-  `mother_marital_status` varchar(255) DEFAULT NULL,
-  `child_id` text,
-  `child_name` text,
-  `child_surname` text,
+  `mother_age_in_years` varchar(3) DEFAULT NULL,
+  `mother_marital_status` varchar(10) DEFAULT NULL,
+  `child_id` varchar(100) DEFAULT NULL,
+  `child_name` varchar(100) DEFAULT NULL,
+  `child_surname` varchar(100) DEFAULT NULL,
   `child_dob` date DEFAULT NULL,
-  `child_age` varchar(255) DEFAULT NULL,
-  `child_gender` varchar(255) DEFAULT NULL,
+  `child_age` int(11) DEFAULT NULL,
+  `child_gender` varchar(10) DEFAULT NULL,
   `child_weight` int(11) DEFAULT NULL,
   `child_prophylactic_arv` text,
   `child_prophylactic_arv_other` text,
-  `mother_hiv_status` varchar(255) DEFAULT NULL,
+  `mother_hiv_status` varchar(16) DEFAULT NULL,
   `next_appointment_date` date DEFAULT NULL,
   `no_of_exposed_children` int(11) DEFAULT NULL,
   `no_of_infected_children` int(11) DEFAULT NULL,
   `mother_arv_protocol` int(11) DEFAULT NULL,
   `mode_of_delivery` varchar(255) DEFAULT NULL,
-  `mode_of_delivery_other` varchar(256) DEFAULT NULL,
-  `mother_art_status` varchar(256) DEFAULT NULL,
+  `mode_of_delivery_other` varchar(32) DEFAULT NULL,
+  `mother_art_status` varchar(32) DEFAULT NULL,
   `mother_treatment` varchar(255) DEFAULT NULL,
   `mother_regimen` text,
   `started_art_date` date DEFAULT NULL,
-  `mother_mtct_risk` varchar(32) DEFAULT NULL,
+  `mother_mtct_risk` varchar(256) DEFAULT NULL,
   `mother_treatment_other` varchar(1000) DEFAULT NULL,
   `mother_treatment_initiation_date` date DEFAULT NULL,
   `mother_cd4` varchar(255) DEFAULT NULL,
@@ -290,28 +290,28 @@ CREATE TABLE `audit_form_eid` (
   `infant_on_pmtct_prophylaxis` text,
   `infant_on_ctx_prophylaxis` text,
   `age_breastfeeding_stopped_in_months` varchar(255) DEFAULT NULL,
-  `infant_art_status` varchar(256) DEFAULT NULL,
-  `infant_art_status_other` varchar(256) DEFAULT NULL,
+  `infant_art_status` varchar(32) DEFAULT NULL,
+  `infant_art_status_other` varchar(32) DEFAULT NULL,
   `child_started_art_date` text,
   `choice_of_feeding` varchar(255) DEFAULT NULL,
   `is_child_on_cotrim` text,
   `child_started_cotrim_date` text,
   `is_cotrimoxazole_being_administered_to_the_infant` varchar(255) DEFAULT NULL,
   `sample_requestor_name` text,
-  `sample_requestor_phone` varchar(255) DEFAULT NULL,
+  `sample_requestor_phone` varchar(16) DEFAULT NULL,
   `specimen_quality` varchar(255) DEFAULT NULL,
   `specimen_type` varchar(255) DEFAULT NULL,
   `reason_for_eid_test` int(11) DEFAULT NULL,
-  `pcr_test_performed_before` varchar(255) DEFAULT NULL,
+  `pcr_test_performed_before` varchar(10) DEFAULT NULL,
   `pcr_test_number` int(11) DEFAULT NULL,
-  `last_pcr_id` varchar(255) DEFAULT NULL,
-  `previous_pcr_result` varchar(255) DEFAULT NULL,
+  `last_pcr_id` varchar(32) DEFAULT NULL,
+  `previous_pcr_result` varchar(16) DEFAULT NULL,
   `last_pcr_date` date DEFAULT NULL,
   `reason_for_pcr` varchar(500) DEFAULT NULL,
   `reason_for_repeat_pcr_other` text,
   `rapid_test_performed` varchar(255) DEFAULT NULL,
   `rapid_test_date` date DEFAULT NULL,
-  `rapid_test_result` varchar(255) DEFAULT NULL,
+  `rapid_test_result` varchar(32) DEFAULT NULL,
   `sample_collection_reason` text,
   `lab_id` int(11) DEFAULT NULL,
   `lab_testing_point` text,
@@ -320,9 +320,9 @@ CREATE TABLE `audit_form_eid` (
   `referring_lab_id` int(11) DEFAULT NULL,
   `lab_technician` text,
   `lab_reception_person` text,
-  `eid_test_platform` varchar(255) DEFAULT NULL,
+  `eid_test_platform` varchar(64) DEFAULT NULL,
   `result_status` int(11) DEFAULT NULL,
-  `locked` varchar(256) DEFAULT 'no',
+  `locked` varchar(10) DEFAULT 'no',
   `result` varchar(255) DEFAULT NULL,
   `reason_for_changing` varchar(256) DEFAULT NULL,
   `tested_by` text,
@@ -334,12 +334,11 @@ CREATE TABLE `audit_form_eid` (
   `revised_on` datetime DEFAULT NULL,
   `result_approved_by` text,
   `second_dbs_requested` varchar(256) DEFAULT NULL,
-  `second_DBS_requested_reason` varchar(256) DEFAULT NULL,
   `approver_comments` text,
   `result_dispatched_datetime` datetime DEFAULT NULL,
   `result_mail_datetime` datetime DEFAULT NULL,
-  `app_sample_code` varchar(256) DEFAULT NULL,
-  `manual_result_entry` varchar(255) DEFAULT 'no',
+  `app_sample_code` varchar(100) DEFAULT NULL,
+  `manual_result_entry` varchar(10) DEFAULT NULL,
   `import_machine_name` text,
   `import_machine_file_name` text,
   `result_printed_datetime` datetime DEFAULT NULL,
@@ -350,12 +349,12 @@ CREATE TABLE `audit_form_eid` (
   `last_modified_datetime` datetime DEFAULT NULL,
   `last_modified_by` text,
   `sample_batch_id` int(11) DEFAULT NULL,
-  `sample_package_id` varchar(255) DEFAULT NULL,
+  `sample_package_id` int(11) DEFAULT NULL,
   `sample_package_code` text,
   `lot_number` text,
   `source_of_request` text,
   `source_data_dump` mediumtext,
-  `result_sent_to_source` mediumtext,
+  `result_sent_to_source` varchar(10) DEFAULT 'pending',
   `form_attributes` json DEFAULT NULL,
   `lot_expiration_date` date DEFAULT NULL,
   `data_sync` int(11) NOT NULL DEFAULT '0'
@@ -369,7 +368,7 @@ CREATE TABLE `audit_form_eid` (
 
 CREATE TABLE `audit_form_generic` (
   `action` varchar(8) DEFAULT 'insert',
-  `revision` int(11) NOT NULL,
+  `revision` int(6) NOT NULL,
   `dt_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `sample_id` int(11) NOT NULL,
   `unique_id` varchar(500) DEFAULT NULL,
@@ -390,7 +389,7 @@ CREATE TABLE `audit_form_generic` (
   `province_id` varchar(255) DEFAULT NULL,
   `facility_sample_id` varchar(255) DEFAULT NULL,
   `sample_batch_id` varchar(11) DEFAULT NULL,
-  `sample_package_id` varchar(11) DEFAULT NULL,
+  `sample_package_id` int(11) DEFAULT NULL,
   `sample_package_code` text,
   `sample_reordered` varchar(45) NOT NULL DEFAULT 'no',
   `test_urgency` varchar(255) DEFAULT NULL,
@@ -452,6 +451,7 @@ CREATE TABLE `audit_form_generic` (
   `sample_registered_at_lab` datetime DEFAULT NULL,
   `sample_tested_datetime` datetime DEFAULT NULL,
   `result` text,
+  `result_unit` int(11) DEFAULT NULL,
   `final_result_interpretation` text,
   `approver_comments` mediumtext,
   `reason_for_test_result_changes` mediumtext,
@@ -526,7 +526,7 @@ CREATE TABLE `audit_form_generic` (
 
 CREATE TABLE `audit_form_hepatitis` (
   `action` varchar(8) DEFAULT 'insert',
-  `revision` int(11) NOT NULL,
+  `revision` int(6) NOT NULL,
   `dt_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `hepatitis_id` int(11) NOT NULL,
   `unique_id` varchar(500) DEFAULT NULL,
@@ -622,7 +622,7 @@ CREATE TABLE `audit_form_hepatitis` (
   `request_created_by` text,
   `sample_registered_at_lab` datetime DEFAULT NULL,
   `sample_batch_id` int(11) DEFAULT NULL,
-  `sample_package_id` varchar(255) DEFAULT NULL,
+  `sample_package_id` int(11) DEFAULT NULL,
   `sample_package_code` text,
   `positive_test_manifest_id` int(11) DEFAULT NULL,
   `positive_test_manifest_code` varchar(255) DEFAULT NULL,
@@ -647,7 +647,7 @@ CREATE TABLE `audit_form_hepatitis` (
 
 CREATE TABLE `audit_form_tb` (
   `action` varchar(8) DEFAULT 'insert',
-  `revision` int(11) NOT NULL,
+  `revision` int(6) NOT NULL,
   `dt_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `tb_id` int(11) NOT NULL,
   `unique_id` varchar(500) DEFAULT NULL,
@@ -749,7 +749,7 @@ CREATE TABLE `audit_form_tb` (
 
 CREATE TABLE `audit_form_vl` (
   `action` varchar(8) DEFAULT 'insert',
-  `revision` int(11) NOT NULL,
+  `revision` int(6) NOT NULL,
   `dt_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `vl_sample_id` int(11) NOT NULL,
   `unique_id` varchar(256) DEFAULT NULL,
@@ -761,7 +761,7 @@ CREATE TABLE `audit_form_vl` (
   `province_id` int(11) DEFAULT NULL,
   `facility_sample_id` varchar(100) DEFAULT NULL,
   `sample_batch_id` varchar(11) DEFAULT NULL,
-  `sample_package_id` varchar(11) DEFAULT NULL,
+  `sample_package_id` int(11) DEFAULT NULL,
   `sample_package_code` text,
   `sample_reordered` varchar(45) NOT NULL DEFAULT 'no',
   `remote_sample_code_key` int(11) DEFAULT NULL,
@@ -843,6 +843,7 @@ CREATE TABLE `audit_form_vl` (
   `is_sample_rejected` varchar(10) DEFAULT NULL,
   `sample_rejection_facility` int(11) DEFAULT NULL,
   `reason_for_sample_rejection` int(11) DEFAULT NULL,
+  `recommended_corrective_action` int(11) DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
   `request_created_by` varchar(500) NOT NULL,
   `request_created_datetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -4753,7 +4754,7 @@ CREATE TABLE `system_config` (
 INSERT INTO `system_config` (`display_name`, `name`, `value`) VALUES
 ('Testing Lab ID', 'sc_testing_lab_id', ''),
 ('User Type', 'sc_user_type', 'vluser'),
-('Version', 'sc_version', '5.2.1'),
+('Version', 'sc_version', '5.2.2'),
 ('Email Id', 'sup_email', NULL),
 ('Password', 'sup_password', NULL);
 
@@ -6072,37 +6073,37 @@ ALTER TABLE `activity_log`
 -- AUTO_INCREMENT for table `audit_form_covid19`
 --
 ALTER TABLE `audit_form_covid19`
-  MODIFY `revision` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `revision` int(6) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `audit_form_eid`
 --
 ALTER TABLE `audit_form_eid`
-  MODIFY `revision` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `revision` int(6) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `audit_form_generic`
 --
 ALTER TABLE `audit_form_generic`
-  MODIFY `revision` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `revision` int(6) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `audit_form_hepatitis`
 --
 ALTER TABLE `audit_form_hepatitis`
-  MODIFY `revision` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `revision` int(6) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `audit_form_tb`
 --
 ALTER TABLE `audit_form_tb`
-  MODIFY `revision` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `revision` int(6) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `audit_form_vl`
 --
 ALTER TABLE `audit_form_vl`
-  MODIFY `revision` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `revision` int(6) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `batch_details`
@@ -6588,7 +6589,7 @@ ALTER TABLE `system_admin`
 -- AUTO_INCREMENT for table `s_app_menu`
 --
 ALTER TABLE `s_app_menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=180;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=182;
 
 --
 -- AUTO_INCREMENT for table `s_available_country_forms`
