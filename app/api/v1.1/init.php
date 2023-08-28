@@ -1,6 +1,7 @@
 <?php
 // Allow from any origin
 use App\Services\TbService;
+use App\Services\GenericTestsService;
 use App\Services\VlService;
 use App\Services\ApiService;
 use App\Services\EidService;
@@ -388,6 +389,30 @@ if (isset($applicationConfig['modules']['tb']) && $applicationConfig['modules'][
     $data['tb']['resultsList'] = $app->generateSelectOptions($tbService->getTbResults(null, $updatedDateTime));
 
     $data['tb']['statusFilterList'] = [
+        ['value' => '7', 'show' => 'Approved'],
+        ['value' => '1', 'show' => 'Pending'],
+        ['value' => '4', 'show' => 'Rejected']
+    ];
+    $status = true;
+}
+
+// Check if lab tests module active/inactive
+if (isset($applicationConfig['modules']['generic-tests']) && $applicationConfig['modules']['generic-tests'] === true) {
+
+    /** @var GenericTestsService $tbService */
+    $genericService = ContainerRegistry::get(GenericTestsService::class);
+    $data['genericTests']['specimenTypeList'] = $app->generateSelectOptions($genericService->getGenericSampleTypes($updatedDateTime));
+    $data['genericTests']['resultsList'] = $app->generateSelectOptions($genericService->getGenericResults(null, $updatedDateTime));
+    /* Rejected Reason*/
+    $data['genericTests']['rejectedReasonList'] = $rejectionReason['generic-tests'];
+    /* Testing Platform Details */
+    $testPlatformList = [];
+    $testPlatformResult = $general->getTestingPlatforms('generic-tests');
+    foreach ($testPlatformResult as $row) {
+        $testPlatformList[$row['machine_name']] = $row['machine_name'];
+    }
+    $data['genericTests']['testPlatformList'] = $app->generateSelectOptions($testPlatformList);
+    $data['genericTests']['statusFilterList'] = [
         ['value' => '7', 'show' => 'Approved'],
         ['value' => '1', 'show' => 'Pending'],
         ['value' => '4', 'show' => 'Rejected']
