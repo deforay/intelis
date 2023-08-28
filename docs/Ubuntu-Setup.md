@@ -55,7 +55,7 @@
 3. **MySQL Configuration**:
 
     ```bash
-    sudo sed -i '/skip-external-locking\|127.0.0.1/a sql_mode =' /etc/mysql/mysql.conf.d/mysqld.cnf
+    sudo sed -i '/skip-external-locking/a sql_mode =\ninnodb_strict_mode = 0' /etc/mysql/mysql.conf.d/mysqld.cnf
 
     ```
 4. **Restart MySQL**

@@ -60,12 +60,13 @@ done
 
 # Set MySQL root password and create databases
 echo "Setting MySQL root password and creating databases..."
-sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$mysql_root_password'; FLUSH PRIVILEGES;"
 sudo mysql -e "CREATE DATABASE vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
 sudo mysql -e "CREATE DATABASE interfacing CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$mysql_root_password'; FLUSH PRIVILEGES;"
+
 
 echo "Configuring MySQL..."
-sudo sed -i '/skip-external-locking\|127.0.0.1/a sql_mode =' /etc/mysql/mysql.conf.d/mysqld.cnf
+sudo sed -i '/skip-external-locking/a sql_mode =\ninnodb_strict_mode = 0' /etc/mysql/mysql.conf.d/mysqld.cnf
 sudo service mysql restart
 
 
