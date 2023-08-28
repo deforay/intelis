@@ -171,6 +171,21 @@ $sFormat = '';
                                         <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="<?= _('Enter Unique ART Number or Patient Name'); ?>" title="<?= _('Enter art number or patient name'); ?>" />&nbsp;&nbsp;
                                         <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
                                    </div>
+
+                                   <div class="row">
+
+                                   <div class="col-md-12">
+                                             <label class="col-lg-5 control-label" for="syncPatientIdentifiers"><?= _('Patient is from Defence Forces (Patient Name and Patient ID will not be synced between LIS and STS)'); ?> <span class="mandatory">*</span></label>
+                                             <div class="col-lg-5">
+                                                  <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control isRequired" title="<?= _('Select Patient is from Defence Forces'); ?>">
+                                                       <option value=""><?= _('--Select--'); ?></option>     
+                                                       <option value="no" selected='selected'><?= _('No'); ?></option>
+                                                       <option value="yes"><?= _('Yes'); ?></option>
+                                                  </select>
+                                             </div>
+                                   </div>
+                                   </div>
+
                                    <div class="box-body">
                                         <div class="row">
                                              <div class="col-xs-3 col-md-3">
@@ -670,9 +685,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
                let artNo = $.trim($(this).val());
 
-               if (artNo.length < 10) {
-                    $("#artNoGroup").html('<small style="color:red;font-weight:bold;">Patient ART No. should be at least 10 characters long</small><br>');
-               }
+              
                if (artNo.length > 3) {
 
                     $.post("/common/patient-last-request-details.php", {
@@ -695,11 +708,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                                         $("#artNoGroup").append("<br><small style='color:red'><?= _("Total No. of times Patient tested for HIV VL"); ?> : " + obj.no_of_tested_time + "</small >");
                                    }
                               } else {
-                                   if (artNo.length < 10) {
-                                        $("#artNoGroup").html('<small style="color:red;font-weight:bold;">Patient ART No. should be at least 10 characters long</small><br>');
-                                   } else {
+                                   
                                         $("#artNoGroup").html('');
-                                   }
                               }
                          });
                }
@@ -1059,10 +1069,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                alert("Sample id length must be a minimum length of " + minLength + " characters");
                return false;
           }
-          if (ARTlength.length < 10) {
-               alert("<?= _("Patient ART No. should be at least 10 characters long"); ?>");
-               //return false;
-          }
+        
           flag = deforayValidator.init({
                formId: 'vlRequestFormCameroon'
           });
@@ -1098,10 +1105,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                alert("Sample id length must be a minimum length of " + minLength + " characters");
                return false;
           }
-          if (ARTlength.length < 10) {
-               alert("<?= _("Patient ART No. should be at least 10 characters long"); ?>");
-               //return false;
-          }
+         
           flag = deforayValidator.init({
                formId: 'vlRequestFormCameroon'
           });
@@ -1175,6 +1179,16 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     $("#receivesmsNo").prop('checked', true);
                }
           }
+
+          if ($.trim(patientArray['sync_patient_identifiers']) != '') {
+               if (patientArray['sync_patient_identifiers'] == 'yes') {
+                    $("#syncPatientIdentifiers").val('yes');
+               }
+               else{
+                    $("#syncPatientIdentifiers").val('no');
+               }
+          }
+
           if ($.trim(patientArray['patient_art_no']) != '') {
                $("#artNo").val($.trim(patientArray['patient_art_no']));
           }

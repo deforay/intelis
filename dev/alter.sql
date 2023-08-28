@@ -5005,3 +5005,10 @@ CHANGE `result_sent_to_source` `result_sent_to_source` VARCHAR(10) CHARACTER SET
 
 -- Amit 26-Aug-2023 version 5.2.2
 UPDATE `system_config` SET `value` = '5.2.2' WHERE `system_config`.`name` = 'sc_version';
+
+-- Jeyabanu 25-08-2023
+ALTER TABLE `form_vl` ADD `is_encrypted` VARCHAR(10) NULL DEFAULT 'no' AFTER `patient_art_no`;
+ALTER TABLE `audit_form_vl` ADD `is_encrypted` VARCHAR(10) NULL DEFAULT 'no' AFTER `patient_art_no`;
+
+ALTER TABLE `form_vl` ADD `sync_patient_identifiers` VARCHAR(10) NULL DEFAULT 'yes' AFTER `is_encrypted`;
+ALTER TABLE `audit_form_vl` ADD `sync_patient_identifiers` VARCHAR(10) NULL DEFAULT 'yes' AFTER `is_encrypted`;
