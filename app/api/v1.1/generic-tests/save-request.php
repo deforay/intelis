@@ -360,7 +360,7 @@ try {
             'lab_tech_comments' => !empty($data['approverComments']) ? $data['approverComments'] : null,
             'revised_by' => (isset($data['revisedBy']) && $data['revisedBy'] != "") ? $data['revisedBy'] : "",
             'revised_on' => (isset($data['revisedOn']) && $data['revisedOn'] != "") ? $data['revisedOn'] : null,
-            'reason_for_test_result_changes' => (!empty($data['reasonFortbResultChanges'])) ? $data['reasonFortbResultChanges'] : null,
+            'reason_for_test_result_changes' => (!empty($data['reasonForResultChanges'])) ? $data['reasonForResultChanges'] : null,
             'rejection_on' => (!empty($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($data['rejectionDate']) : null,
             'result_status' => $status,
             'data_sync' => 0,
@@ -441,5 +441,5 @@ try {
     error_log($exc->getTraceAsString());
 }
 $payload = json_encode($payload);
-$general->addApiTracking($transactionId, $user['user_id'], iterator_count($input), 'save-request', 'tb', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], iterator_count($input), 'save-request', 'generic-tests', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 echo $payload;

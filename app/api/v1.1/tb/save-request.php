@@ -394,11 +394,11 @@ try {
         $tbData['last_modified_by'] = $user['user_id'];
 
         if (isset($data['tbSampleId']) && $data['tbSampleId'] != '' && ($data['isSampleRejected'] == 'no' || $data['isSampleRejected'] == '')) {
-            if (!empty($data['testResult'])) {
+            if (!empty($data['testResults'])) {
                 $db = $db->where('tb_id', $data['tbSampleId']);
                 $db->delete($testTableName);
 
-                foreach ($data['testResult'] as $testKey => $testResult) {
+                foreach ($data['testResults'] as $testKey => $testResult) {
                     if (!empty($testResult) && trim($testResult) != "") {
                         $db->insert($testTableName, [
                             'tb_id' => $data['tbSampleId'],
