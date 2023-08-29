@@ -127,6 +127,10 @@ $sFormat = '';
 
 $testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
+$mandatoryClass = "";
+if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') {
+     $mandatoryClass = "isRequired";
+}
 ?>
 <style>
      .table>tbody>tr>td {
@@ -341,45 +345,53 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                               <div class="box box-primary requestForm" style="display:none;">
                                    <div class="box-header with-border">
                                         <h3 class="box-title">Patient Information</h3>&nbsp;&nbsp;&nbsp;
-                                        <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Enter Patient ID" title="Please enter the Enter patient id" />&nbsp;&nbsp;
+                                        <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Enter EPID Number" title="Please enter the Enter EPID Number" />&nbsp;&nbsp;
                                         <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
                                    </div>
                                    <div class="box-body">
                                         <div class="row">
                                              <div class="col-md-6">
-                                                  <label class="col-lg-5" for="artNo">Patient ID <span class="mandatory">*</span></label>
+                                                  <label class="col-lg-5" for="artNo">EPID Number <?php if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?><span class="mandatory">*</span><?php } ?></label>
                                                   <div class="col-lg-7">
-                                                       <input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter patient ID" title="Enter patient ID" onchange="checkPatientDetails('form_generic','patient_id',this,null)" />
+                                                       <input type="text" name="artNo" id="artNo" class="form-control <?= $mandatoryClass; ?>" placeholder="Enter EPID Number" title="Enter EPID Number" onchange="checkPatientDetails('form_generic','patient_id',this,null)" />
                                                   </div>
                                              </div>
                                              <div class="col-md-6">
+                                                  <label class="col-lg-5" for="artNo">Laboratory Number <?php if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?><span class="mandatory">*</span><?php } ?></label>
+                                                  <div class="col-lg-7">
+                                                       <input type="text" name="laboratoryNumber" id="laboratoryNumber" class="form-control <?= $mandatoryClass; ?>" placeholder="Enter Laboratory Number" title="Enter Laboratory Number" />
+                                                  </div>
+                                             </div>
+                                        </div>
+                                        <div class="row">
+                                        <div class="col-md-6">
                                                   <label class="col-lg-5" for="dob">Date of Birth </label>
                                                   <div class="col-lg-7">
                                                        <input type="text" name="dob" id="dob" class="form-control date" placeholder="Enter DOB" title="Enter dob" onchange="getAge();" />
                                                   </div>
                                              </div>
-                                        </div>
-                                        <div class="row">
                                              <div class="col-md-6">
                                                   <label class="col-lg-5" for="ageInYears">If DOB unknown, Age in Years </label>
                                                   <div class="col-lg-7">
                                                        <input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="3" placeholder="Age in Years" title="Enter age in years" />
                                                   </div>
                                              </div>
+                                        </div>
+                                        <div class="row">
                                              <div class="col-md-6">
                                                   <label class="col-lg-5" for="ageInMonths">If Age < 1, Age in Months </label>
                                                             <div class="col-lg-7">
                                                                  <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" />
                                                             </div>
                                              </div>
-                                        </div>
-                                        <div class="row">
                                              <div class="col-md-6">
                                                   <label class="col-lg-5" for="patientFirstName">Patient Name (First Name, Last Name) <span class="mandatory">*</span></label>
                                                   <div class="col-lg-7">
                                                        <input type="text" name="patientFirstName" id="patientFirstName" class="form-control isRequired" placeholder="Enter Patient Name" title="Enter patient name" />
                                                   </div>
                                              </div>
+                                        </div>
+                                        <div class="row ">
                                              <div class="col-md-6">
                                                   <label class="col-lg-5" for="gender">Gender</label>
                                                   <div class="col-lg-5">
@@ -394,8 +406,6 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                        </label>
                                                   </div>
                                              </div>
-                                        </div>
-                                        <div class="row ">
                                              <div class="col-md-6">
                                                   <label class="col-lg-5" for="gender">Patient consent to receive SMS?</label>
                                                   <div class="col-lg-7">
@@ -407,14 +417,14 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                        </label>
                                                   </div>
                                              </div>
+                                        </div>
+                                        <div class="row">
                                              <div class="col-md-6">
                                                   <label class="col-lg-5" for="patientPhoneNumber">Phone Number</label>
                                                   <div class="col-lg-7">
                                                        <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control forceNumeric" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" />
                                                   </div>
                                              </div>
-                                        </div>
-                                        <div class="row">
                                              <div class="col-md-6 femaleSection">
                                                   <label class="col-lg-5" for="patientPregnant">Is Patient Pregnant? </label>
                                                   <div class="col-lg-7">
@@ -426,6 +436,8 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                        </label>
                                                   </div>
                                              </div>
+                                        </div>
+                                        <div class="row ">
                                              <div class="col-md-6 femaleSection">
                                                   <label class="col-lg-5" for="breastfeeding">Is Patient Breastfeeding? </label>
                                                   <div class="col-lg-7">
@@ -437,8 +449,6 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                                        </label>
                                                   </div>
                                              </div>
-                                        </div>
-                                        <div class="row ">
                                              <div class="col-md-6" style="display:none;" id="patientSection">
                                                   <label class="col-lg-5" for="treatPeriod">How long has this patient been on treatment ? </label>
                                                   <div class="col-lg-7">
@@ -825,6 +835,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                }
           }).click(function() {
                $('.ui-datepicker-calendar').show();
+          });
+          
+          $("#specimenType").select2({
+               width: '100%',
+               placeholder: "<?php echo _("Select Specimen Type"); ?>"
           });
           $("#testType").select2({
                width: '100%',

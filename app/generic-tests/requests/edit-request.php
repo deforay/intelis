@@ -302,7 +302,10 @@ $testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
 
 $reasonForChangeArr = explode('##', $genericResultInfo['reason_for_test_result_changes']);
 $reasonForChange = $reasonForChangeArr[1];
-
+$mandatoryClass = "";
+if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') {
+     $mandatoryClass = "isRequired";
+}
 ?><!-- Content Wrapper. Contains page content -->
 <style>
 	.ui_tpicker_second_label {
@@ -531,41 +534,52 @@ $reasonForChange = $reasonForChangeArr[1];
 							<div class="box-body">
 								<div class="row">
 									<div class="col-md-6">
-										<label class="col-lg-5" for="artNo">Patient ID <span class="mandatory">*</span></label>
-										<div class="col-lg-7">
-											<input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter Patient ID" title="Enter patient id" value="<?= htmlspecialchars($genericResultInfo['patient_id']); ?>" />
-										</div>
+									<label class="col-lg-5" for="artNo">EPID Number <?php if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?><span class="mandatory">*</span><?php } ?></label>
+                                                  <div class="col-lg-7">
+                                                       <input type="text" name="artNo" id="artNo" class="form-control <?= $mandatoryClass; ?>" placeholder="Enter EPID Number" title="Enter EPID Number" value="<?= htmlspecialchars($genericResultInfo['patient_id']); ?>" />
+                                                  </div>
+										
 									</div>
 									<div class="col-md-6">
+                                            <label class="col-lg-5" for="artNo">Laboratory Number <?php if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?><span class="mandatory">*</span><?php } ?></label>
+                                            <div class="col-lg-7">
+                                                <input type="text" name="laboratoryNumber" id="laboratoryNumber" class="form-control <?= $mandatoryClass; ?>" placeholder="Enter Laboratory Number" title="Enter Laboratory Number" value="<?= $genericResultInfo['laboratory_number']; ?>" />
+                                            </div>
+                                    </div>
+								</div>
+								<div class="row">
+								<div class="col-md-6">
 										<label class="col-lg-5" for="dob">Date of Birth </label>
 										<div class="col-lg-7">
 											<input type="text" name="dob" id="dob" class="form-control date" placeholder="Enter DOB" title="Enter dob" value="<?= htmlspecialchars($genericResultInfo['patient_dob']); ?>" onchange="getAge();" />
 										</div>
 									</div>
-								</div>
-								<div class="row">
 									<div class="col-md-6">
 										<label class="col-lg-5" for="ageInYears">If DOB unknown, Age in Years </label>
 										<div class="col-lg-7">
 											<input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="3" placeholder="Age in Years" title="Enter age in years" value="<?= htmlspecialchars($genericResultInfo['patient_age_in_years']); ?>" />
 										</div>
 									</div>
-									<div class="col-md-6">
+									
+								</div>
+								<div class="row">
+								<div class="col-md-6">
 										<label class="col-lg-5" for="ageInMonths">If Age
 											< 1, Age in Months </label>
 												<div class="col-lg-7">
 													<input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" value="<?= htmlspecialchars($genericResultInfo['patient_age_in_months']); ?>" />
 												</div>
 									</div>
-								</div>
-								<div class="row">
 									<div class="col-md-6">
 										<label class="col-lg-5" for="patientFirstName">Patient Name (First Name, Last Name) <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
 											<input type="text" name="patientFirstName" id="patientFirstName" class="form-control isRequired" placeholder="Enter Patient Name" title="Enter patient name" value="<?php echo $patientFullName; ?>" />
 										</div>
 									</div>
-									<div class="col-md-6">
+									
+								</div>
+								<div class="row">
+								<div class="col-md-6">
 										<label class="col-lg-5" for="gender">Gender</label>
 										<div class="col-lg-7">
 											<label class="radio-inline" style="margin-left:0px;">
@@ -582,8 +596,6 @@ $reasonForChange = $reasonForChangeArr[1];
 											</label>
 										</div>
 									</div>
-								</div>
-								<div class="row">
 									<div class="col-md-6">
 										<label class="col-lg-5" for="gender">Patient consent to receive SMS?</label>
 										<div class="col-lg-7">
@@ -597,14 +609,15 @@ $reasonForChange = $reasonForChangeArr[1];
 											</label>
 										</div>
 									</div>
-									<div class="col-md-6">
+									
+								</div>
+								<div class="row ">
+								<div class="col-md-6">
 										<label class="col-lg-5" for="patientPhoneNumber">Phone Number</label>
 										<div class="col-lg-7">
 											<input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control forceNumeric" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" value="<?= htmlspecialchars($genericResultInfo['patient_mobile_number']); ?>" />
 										</div>
 									</div>
-								</div>
-								<div class="row ">
 									<div class="col-md-6 femaleSection" style="display:<?php echo ($genericResultInfo['patient_gender'] == 'female' || $genericResultInfo['patient_gender'] == '' || $genericResultInfo['patient_gender'] == null) ? "" : "none" ?>" ;>
 										<label class="col-lg-5" for="patientPregnant">Is Patient Pregnant? </label>
 										<div class="col-lg-7">
@@ -618,6 +631,9 @@ $reasonForChange = $reasonForChangeArr[1];
 											</label>
 										</div>
 									</div>
+									
+								</div>
+								<div class="row">
 									<div class="col-md-6 femaleSection" style="display:<?php echo ($genericResultInfo['patient_gender'] == 'female' || $genericResultInfo['patient_gender'] == '' || $genericResultInfo['patient_gender'] == null) ? "" : "none" ?>" ;>
 										<label class="col-lg-5" for="breastfeeding">Is Patient Breastfeeding? </label>
 										<div class="col-lg-7">
@@ -631,8 +647,6 @@ $reasonForChange = $reasonForChangeArr[1];
 											</label>
 										</div>
 									</div>
-								</div>
-								<div class="row">
 									<div class="col-md-6" style="display:none;" id="patientSection">
 										<label class="col-lg-5" for="">How long has this patient been on treatment ? </label>
 										<div class="col-lg-7">
@@ -1169,6 +1183,10 @@ $reasonForChange = $reasonForChangeArr[1];
 
 
 		autoFillFocalDetails();
+		$("#specimenType").select2({
+               width: '100%',
+               placeholder: "<?php echo _("Select Specimen Type"); ?>"
+          });
 		$('#fName').select2({
 			width: '100%',
 			placeholder: "Select Clinic/Health Center"

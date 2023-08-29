@@ -219,6 +219,7 @@ try {
           'is_patient_breastfeeding' => (isset($_POST['breastfeeding']) && $_POST['breastfeeding'] != '') ? $_POST['breastfeeding'] : null,
           'pregnancy_trimester' => (isset($_POST['trimester']) && $_POST['trimester'] != '') ? $_POST['trimester'] : null,
           'patient_id' => (isset($_POST['artNo']) && $_POST['artNo'] != '') ? $_POST['artNo'] : null,
+          'laboratory_number' => (isset($_POST['laboratoryNumber']) && $_POST['laboratoryNumber'] != '') ? $_POST['laboratoryNumber'] : null,
           'treatment_indication' => (isset($_POST['treatmentIndication']) && $_POST['treatmentIndication'] != '') ? $_POST['treatmentIndication'] : null,
           //'treatment_initiated_date'              => $_POST['dateOfArtInitiation'],
           'patient_mobile_number' => (isset($_POST['patientPhoneNumber']) && $_POST['patientPhoneNumber'] != '') ? $_POST['patientPhoneNumber'] : null,

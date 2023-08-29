@@ -5012,3 +5012,7 @@ ALTER TABLE `audit_form_vl` ADD `is_encrypted` VARCHAR(10) NULL DEFAULT 'no' AFT
 
 ALTER TABLE `form_vl` ADD `sync_patient_identifiers` VARCHAR(10) NULL DEFAULT 'yes' AFTER `is_encrypted`;
 ALTER TABLE `audit_form_vl` ADD `sync_patient_identifiers` VARCHAR(10) NULL DEFAULT 'yes' AFTER `is_encrypted`;
+
+
+-- Jeyabanu 29-08-2023
+ALTER TABLE `form_generic` ADD `laboratory_number` VARCHAR(100) NULL DEFAULT NULL AFTER `patient_id`;
