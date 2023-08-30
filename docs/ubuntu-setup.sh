@@ -16,7 +16,7 @@ fi
 trap 'echo "An error occurred. Exiting..."; exit 1' ERR
 
 # Check for dependencies
-for cmd in "apt" "mysql" "awk" "git" "wget"; do
+for cmd in "apt"; do
     if ! command -v $cmd &> /dev/null; then
         echo "$cmd is not installed. Exiting..."
         exit 1
