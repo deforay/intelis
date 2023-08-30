@@ -583,6 +583,7 @@ if (!empty($requestResult)) {
           $html .= '</td>';
           $html .= '</tr>';
           $html .= '</table>';
+          
           if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {
                $pdf->writeHTML($html);
                $pdf->lastPage();

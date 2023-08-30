@@ -563,17 +563,5 @@ if (!empty($requestResult)) {
             }
         }
     }
-
-    if (!empty($pages)) {
-        $resultPdf = new PdfConcatenateHelper();
-        $resultPdf->setFiles($pages);
-        $resultPdf->setPrintHeader(false);
-        $resultPdf->setPrintFooter(false);
-        $resultPdf->concat();
-        $resultFilename = 'VLSM-TB-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
-        $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
-        MiscUtility::removeDirectory($pathFront);
-        unset($_SESSION['rVal']);
-    }
+   
 }
-echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename);

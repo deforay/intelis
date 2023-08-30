@@ -133,7 +133,9 @@ class GeoLocationsService
     {
 
         $response = [];
-        $provinceId = implode(',',$provinceId);
+        if(is_array($provinceId)){
+            $provinceId = implode(',',$provinceId);
+        }
         if ($districts === true) {
             $districtSql = "SELECT geo_id, geo_name from geographical_divisions WHERE geo_parent IN ($provinceId) AND geo_status='active'";
             $response['districts'] = $this->db->rawQuery($districtSql);

@@ -232,92 +232,77 @@ class MYPDF extends TCPDF
         // Set font
         $this->SetFont('helvetica', '', 8);
         // Page number
-        $this->Cell(0, 10, 'Page' . $_SESSION['aliasPage'] . '/' . $_SESSION['nbPages'], 0, false, 'C', 0);
+		$this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . ' of ' . $this->getAliasNbPages(), 0, false, 'C', 0);
     }
 }
 
 
+$fileArray = array(
+	1 => 'pdf/result-pdf-ssudan.php',
+	2 => 'pdf/result-pdf-sierraleone.php',
+	3 => 'pdf/result-pdf-drc.php',
+	4 => 'pdf/result-pdf-cameroon.php',
+	5 => 'pdf/result-pdf-png.php',
+	6 => 'pdf/result-pdf-who.php',
+	7 => 'pdf/result-pdf-rwanda.php',
+);
+
 
 $resultFilename = '';
 if (!empty($requestResult)) {
-    $_SESSION['rVal'] = $general->generateRandomString(6);
-    $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
-    MiscUtility::makeDirectory($pathFront);
-    $pages = [];
-    $page = 1;
-
-    foreach ($requestResult as $result) {
-
-        $countryFormId = $general->getGlobalConfig('vl_form');
+	$_SESSION['rVal'] = $general->generateRandomString(6);
+	$pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
+	MiscUtility::makeDirectory($pathFront);
+	$pages = [];
+	$page = 1;
+	foreach ($requestResult as $result) {
+		//set print time
+		if (isset($result['result_printed_datetime']) && $result['result_printed_datetime'] != "") {
+			$printedTime = date('Y-m-d H:i:s', strtotime($result['result_printed_datetime']));
+		} else {
+			$printedTime = DateUtility::getCurrentDateTime();
+		}
+		$expStr = explode(" ", $printedTime);
+		$printDate = DateUtility::humanReadableDateFormat($expStr[0]);
+		$printDateTime = $expStr[1];
 
         $tbTestQuery = "SELECT * from tb_tests where tb_id= " . $result['tb_id'] . " ORDER BY tb_test_id ASC";
         $tbTestInfo = $db->rawQuery($tbTestQuery);
-
+		// Lab Details
         $facilityQuery = "SELECT * from form_tb as c19 INNER JOIN facility_details as fd ON c19.facility_id=fd.facility_id where tb_id= " . $result['tb_id'] . " GROUP BY fd.facility_id LIMIT 1";
         $facilityInfo = $db->rawQueryOne($facilityQuery);
-        // echo "<pre>";print_r($tbTestInfo);die;
 
-        $patientFname = ($general->crypto('doNothing', $result['patient_name'], $result['patient_id']));
-        $patientLname = ($general->crypto('doNothing', $result['patient_surname'], $result['patient_id']));
+		$patientFname = ($general->crypto('doNothing', $result['patient_name'], $result['patient_id']));
+		$patientLname = ($general->crypto('doNothing', $result['patient_surname'], $result['patient_id']));
 
-        $signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%tb%' AND signatory_status like 'active' ORDER BY display_order ASC";
+		$signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%tb%' AND signatory_status like 'active' ORDER BY display_order ASC";
         $signResults = $db->rawQuery($signQuery, array($result['lab_id']));
-        $currentTime = DateUtility::getCurrentDateTime();
-        $_SESSION['aliasPage'] = $page;
-        if (!isset($result['labName'])) {
-            $result['labName'] = '';
-        }
-        $draftTextShow = false;
-        //Set watermark text
-        for ($m = 0; $m < count($mFieldArray); $m++) {
-            if (!isset($result[$mFieldArray[$m]]) || trim($result[$mFieldArray[$m]]) == '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
-                $draftTextShow = true;
-                break;
-            }
-        }
+		$currentDateTime = DateUtility::getCurrentDateTime();
+		$_SESSION['aliasPage'] = $page;
+       
+		if (!isset($result['labName'])) {
+			$result['labName'] = '';
+		}
+		$draftTextShow = false;
+		//Set watermark text
+		for ($m = 0; $m < count($mFieldArray); $m++) {
+			if (!isset($result[$mFieldArray[$m]]) || trim($result[$mFieldArray[$m]]) == '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
+				$draftTextShow = true;
+				break;
+			}
+		}
 
-        if (isset($result['report_format']) && $result['report_format'] != "") {
-            $formats = json_decode($result['report_format'], true);
-            if (file_exists($formats['tb'])) {
-                /* New format selection */
-                include($formats['tb']);
-            } else {
-                if ($arr['vl_form'] == 1) {
-                    include('pdf/result-pdf-ssudan.php');
-                } else if ($arr['vl_form'] == 2) {
-                    include('pdf/result-pdf-sierraleone.php');
-                } else if ($arr['vl_form'] == 3) {
-                    include('pdf/result-pdf-drc.php');
-                } else if ($arr['vl_form'] == 4) {
-                    include('pdf/result-pdf-cameroon.php');
-                } else if ($arr['vl_form'] == 5) {
-                    // include('pdf/result-pdf-png.php');
-                } else if ($arr['vl_form'] == 6) {
-                    // include('pdf/result-pdf-who.php');
-                } else if ($arr['vl_form'] == 7) {
-                    include('pdf/result-pdf-rwanda.php');
-                }
-                exit(0);
-            }
-        } else {
-            if ($arr['vl_form'] == 1) {
-                include('pdf/result-pdf-ssudan.php');
-            } elseif ($arr['vl_form'] == 2) {
-                include('pdf/result-pdf-sierraleone.php');
-            } elseif ($arr['vl_form'] == 3) {
-                include('pdf/result-pdf-drc.php');
-            } elseif ($arr['vl_form'] == 4) {
-                include('pdf/result-pdf-cameroon.php');
-            } elseif ($arr['vl_form'] == 5) {
-                // include('pdf/result-pdf-png.php');
-            } elseif ($arr['vl_form'] == 6) {
-                // include('pdf/result-pdf-who.php');
-            } elseif ($arr['vl_form'] == 7) {
-                include('pdf/result-pdf-rwanda.php');
-            }
-            exit(0);
-        }
-    }
+		$selectedReportFormats = [];
+		if (isset($result['reportFormat']) && $result['reportFormat'] != "") {
+			$selectedReportFormats = json_decode($result['reportFormat'], true);
+		}
+        
+		if (!empty($selectedReportFormats) && !empty($selectedReportFormats['tb'])) {
+			require($selectedReportFormats['tb']);
+		} else {
+			require($fileArray[$arr['vl_form']]);
+		}
+	}
     if (!empty($pages)) {
         $resultPdf = new PdfConcatenateHelper();
         $resultPdf->setFiles($pages);

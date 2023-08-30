@@ -46,7 +46,7 @@ if ((isset($_POST['id']) && !empty(trim($_POST['id']))) || (isset($_POST['sample
                   LEFT JOIN facility_details as l ON l.facility_id = vl.lab_id
                   LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id = vl.implementing_partner
                   LEFT JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id = vl.reason_for_sample_rejection
-                                 LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action";
+                  LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action";
 
   $searchQueryWhere = [];
   if (!empty(trim($_POST['id']))) {
@@ -175,8 +175,8 @@ class MYPDF extends TCPDF
     // Set font
     $this->SetFont('helvetica', '', 8);
     // Page number
-    //$this->Cell(0, 10, 'Page' . $_SESSION['aliasPage'] . '/' . $_SESSION['nbPages'], 0, false, 'C', 0, '', 0, false, 'T', 'M');
-    $this->Cell(0, 10, 'Page 1 of 1', 0, false, 'C', 0);
+    $this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . ' of ' . $this->getAliasNbPages(), 0, false, 'C', 0);
+    //$this->Cell(0, 10, 'Page 1 of 1', 0, false, 'C', 0);
   }
 }
 

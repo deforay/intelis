@@ -234,7 +234,7 @@ class MYPDF extends TCPDF
 			$generatedAtTestingLab = "";
 		}
 		// Page number
-		$this->Cell(0, 10, 'Page' . $_SESSION['aliasPage'] . '/' . $_SESSION['nbPages'] . $generatedAtTestingLab, 0, false, 'C', 0);
+		$this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . ' of ' . $this->getAliasNbPages(), 0, false, 'C', 0);
 	}
 }
 
