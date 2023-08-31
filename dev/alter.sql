@@ -4983,7 +4983,7 @@ WHERE `privilege_name` like '%/batch/edit-batch.php?type=hepatitis';
 -- Amit 25-Aug-2023
 UPDATE `r_sample_status` SET `status_name` = 'Expired' WHERE `r_sample_status`.`status_id` = 10;
 
-INSERT INTO `r_sample_status` (`status_id`, `status_name`, `status`) VALUES ('12', 'Cancelled', 'active');
+INSERT IGNORE INTO `r_sample_status` (`status_id`, `status_name`, `status`) VALUES ('12', 'Cancelled', 'active');
 ALTER TABLE `form_eid`
 CHANGE `unique_id` `unique_id` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `vlsm_instance_id` `vlsm_instance_id` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
 CHANGE `remote_sample_code` `remote_sample_code` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
