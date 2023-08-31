@@ -147,6 +147,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <!-- </tr> -->
                                         <?php } ?>
                                     </tr>
+                                    <tr>
+                                    <th scope="row"><?= _('Requesting Clinician Name'); ?></th>
+                                        <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Request Clinician Name" title="Please enter request clinician" value="<?php echo $eidInfo['clinician_name']; ?>"/></td>
+                                    </tr>
                                 </table>
                                 <br>
                                 <hr style="border: 1px solid #ccc;">
@@ -342,17 +346,23 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </div>
                                     <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
+                                            <td><label for="" class="labels">Testing Platform </label></td>
+                                            <td><select class="form-control result-optional" name="eidPlatform" id="eidPlatform" title="Please select the testing platform">
+                                                    <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'], '-- Select --'); ?>
+                                                </select>
+                                            </td>
                                             <th scope="row"><label for="">Sample Received Date </label></th>
                                             <td>
                                                 <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
                                             </td>
+                                           
+                                        <tr>
                                             <td><label for="labId">Lab Name </label> </td>
                                             <td>
                                                 <select name="labId" id="labId" class="form-control" title="Please select Testing Lab name" style="width:100%;">
                                                     <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                        <tr>
                                             <th scope="row">Is Sample Rejected?</th>
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">
@@ -362,20 +372,21 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 </select>
                                             </td>
 
-                                            <th scope="row" class="rejected" style="display: none;">Reason for Rejection</th>
+                                        </tr>
+                                        <tr class="show-rejection rejected" style="display:none;">
+
+                                        <th scope="row" class="rejected" style="display: none;">Reason for Rejection</th>
                                             <td class="rejected" style="display: none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please choose reason for rejection">
                                                     <option value=''> -- Select -- </option>
                                                     <?php echo $rejectionReason; ?>
                                                 </select>
                                             </td>
-                                        </tr>
-                                        <tr class="show-rejection rejected" style="display:none;">
                                             <td><label for="rejectionDate">Rejection Date</label><span class="mandatory">*</span></td>
                                             <td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
                                             <td></td>
-                                            <td></td>
                                         </tr>
+                                       
                                         <tr>
                                             <td style="width:25%;"><label for="">Sample Test Date </label></td>
                                             <td style="width:25%;">

@@ -86,6 +86,10 @@ $implementingPartnerList = $general->getImplementationPartners();
 
 $disable = "disabled = 'disabled'";
 
+$testPlatformResult = $general->getTestingPlatforms('eid');
+foreach ($testPlatformResult as $row) {
+    $testPlatformList[$row['machine_name']] = $row['machine_name'];
+}
 
 $iResultQuery = "SELECT * FROM instrument_machines";
 $iResult = $db->rawQuery($iResultQuery);

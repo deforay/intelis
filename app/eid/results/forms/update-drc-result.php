@@ -150,6 +150,12 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
 										<!-- </tr> -->
 									<?php } ?>
 								</tr>
+								<tr>
+								<td><label for="clinicianName">Demandeur </label></td>
+											<td>
+												<input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Demandeur" title="<?= _("Please enter requesting clinician name"); ?>" style="width:100%;" value="<?= $eidInfo['clinician_name']; ?>" />
+											</td>
+								</tr>
 							</table>
 							<br><br>
 							<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
@@ -440,7 +446,6 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
 					</div>
 
 					<form class="form-horizontal" method="post" name="editEIDRequestForm" id="editEIDRequestForm" autocomplete="off" action="eid-update-result-helper.php">
-						<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
 
 							<div class="box box-primary">
 								<div class="box-body">
@@ -449,17 +454,25 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
 									</div>
 									<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 										<tr>
+											<td style="width: 25%;"><label for="testingPlatform">Technique utilisée </label>
+											</td>
+											<td style="width: 25%;">
+												<select name="eidPlatform" id="eidPlatform" class="form-control" title="Please choose EID Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
+													<?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'], '-- Select --'); ?>
+												</select>
+											</td>
 											<th scope="row"><label for="">Date de réception de l'échantillon <span class="mandatory">*</span></label></th>
 											<td>
 												<input type="text" readonly class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Date de réception de l'échantillon" <?php echo $labFieldDisabled; ?> value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_received_at_lab_datetime']) ?>" onchange="" style="width:100%;" />
 											</td>
+											
+										<tr>
 											<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
 											<td>
 												<select name="labId" id="labId" class="form-control isRequired" title="Nom du Laboratoire" style="width:100%;">
 													<?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Sélectionner --'); ?>
 												</select>
 											</td>
-										<tr>
 											<th scope="row">L'échantillon est-il rejeté? <span class="mandatory">*</span></th>
 											<td>
 												<select class="form-control isRequired" name="isSampleRejected" title="Veuillez sélectionner si l'échantillon est rejeté ou non?" id="isSampleRejected" onchange="sampleRejection();">
@@ -469,8 +482,11 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
 												</select>
 											</td>
 
-											<th scope="row" class="rejected" style="display: none;">Raison du rejet</th>
-											<td class="rejected" style="display: none;">
+											
+										</tr>
+										<tr class="rejected" style="display:none;">
+											<th scope="row">Raison du rejet</th>
+											<td>
 												<select name="sampleRejectionReason" id="sampleRejectionReason" class="form-control labSection" title="Veuillez choisir la raison du rejet" <?php echo $labFieldDisabled; ?> <option value="">-- Sélectionner --</option>
 													<option value="">-- Sélectionner --</option>
 													<?php foreach ($rejectionTypeResult as $type) { ?>
@@ -485,12 +501,9 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
 													<?php }  ?>
 												</select>
 											</td>
-										</tr>
-										<tr class="rejected" style="display:none;">
 											<th scope="row">Date de rejet<span class="mandatory">*</span></th>
 											<td><input value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date de rejet" title="Veuillez choisir la date rejetée" /></td>
-											<td></td>
-											<td></td>
+											
 										</tr>
 										<tr>
 											<td style="width:25%;"><label for="">Test effectué le </label></td>
@@ -540,7 +553,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
 									</table>
 								</div>
 							</div>
-						<?php } ?>
+						
 
 				</div>
 				<!-- /.box-body -->
@@ -590,7 +603,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
 							details = data.split("###");
 							$("#facilityId").html(details[0]);
 							$("#district").html(details[1]);
-							$("#clinicianName").val(details[2]);
+							//$("#clinicianName").val(details[2]);
 						}
 					});
 			}
@@ -645,7 +658,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
 						details = data.split("###");
 						$("#province").html(details[0]);
 						$("#district").html(details[1]);
-						$("#clinicianName").val(details[2]);
+						//$("#clinicianName").val(details[2]);
 					}
 				});
 		} else if (pName == '' && cName == '') {

@@ -141,6 +141,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _("-- Selec
 												<?php } ?>
 											</select>
 										</td>
+										<td><label for="clinicianName">Demandeur </label></td>
+											<td>
+												<input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Demandeur" title="<?= _("Please enter requesting clinician name"); ?>" style="width:100%;" />
+											</td>
 										<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
 											<!-- <tr> -->
 											<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
@@ -150,6 +154,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _("-- Selec
 												</select>
 											</td>
 											<!-- </tr> -->
+										
 										<?php } ?>
 									</tr>
 								</table>
@@ -469,17 +474,25 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _("-- Selec
 									</div>
 									<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 										<tr>
+											<td style="width: 25%;"><label for="testingPlatform">Technique utilisée </label>
+											</td>
+											<td style="width: 25%;">
+												<select name="eidPlatform" id="eidPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
+													<?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
+												</select>
+											</td>
 											<th scope="row" style="width:15%;"><label for="">Date de réception de l'échantillon </label></th>
 											<td style="width:35%;">
 												<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
 											</td>
+											
+										<tr>
 											<th scope="row" style="width:15%;"><label for="labId">Nom du Laboratoire</label> </th>
 											<td style="width:35%;">
 												<select name="labId" id="labId" class="form-control" title="Nom du Laboratoire" style="width:100%;">
 													<?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
 												</select>
 											</td>
-										<tr>
 											<th scope="row">Is Sample Rejected?</th>
 											<td>
 												<select class="form-control" name="isSampleRejected" id="isSampleRejected">
@@ -487,9 +500,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _("-- Selec
 													<option value="yes"> Oui </option>
 													<option value="no"> Non </option>
 												</select>
-											</td>
-
-											<th scope="row" class="rejected" style="display: none;">Raison du rejet</th>
+											</td>											
+										</tr>
+										<tr>
+										<th scope="row" class="rejected" style="display: none;">Raison du rejet</th>
 											<td class="rejected" style="display: none;">
 
 												<select name="sampleRejectionReason" id="sampleRejectionReason" class="form-control labSection" title="Please choose a Rejection Reason" <?php echo $labFieldDisabled; ?>>
@@ -510,7 +524,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _("-- Selec
 										<tr class="rejected" style="display:none;">
 											<th scope="row">Date de rejet<span class="mandatory">*</span></th>
 											<td><input value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date de rejet" title="Veuillez choisir la date rejetée" /></td>
-											<<th scope="row">
+											<th scope="row">
 												</th>
 												<td></td>
 										</tr>
@@ -609,7 +623,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _("-- Selec
 							details = data.split("###");
 							$("#facilityId").html(details[0]);
 							$("#district").html(details[1]);
-							$("#clinicianName").val(details[2]);
+							//$("#clinicianName").val(details[2]);
 						}
 					});
 			}
@@ -699,7 +713,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _("-- Selec
 						details = data.split("###");
 						$("#province").html(details[0]);
 						$("#district").html(details[1]);
-
 						//$("#clinicianName").val(details[2]);
 					}
 				});

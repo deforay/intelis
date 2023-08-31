@@ -180,6 +180,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 												<?php } ?>
 											</select>
 										</td>
+										
 										<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
 											<!-- <tr> -->
 											<td><label for="labId">Nom du Laboratoire <span
@@ -192,6 +193,12 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 											</td>
 											<!-- </tr> -->
 										<?php } ?>
+									</tr>
+									<tr>
+									<td><label for="clinicianName">Demandeur </label></td>
+											<td>
+												<input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Demandeur" title="<?= _("Please enter requesting clinician name"); ?>" style="width:100%;" value="<?= $eidInfo['clinician_name']; ?>" />
+											</td>
 									</tr>
 								</table>
 								<br><br>
@@ -383,11 +390,6 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 
 								</table>
 
-
-
-
-
-
 								<br><br>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
@@ -563,6 +565,13 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 									</div>
 									<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 										<tr>
+											<td style="width: 25%;"><label for="testingPlatform">Technique utilisée </label>
+											</td>
+											<td style="width: 25%;">
+												<select name="eidPlatform" id="eidPlatform" class="form-control" title="Please choose EID Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
+													<?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'], '-- Select --'); ?>
+												</select>
+											</td>
 											<th scope="row" style="width:15%;"><label for="">Date de réception de l'échantillon </label></th>
 											<td style="width:35%;">
 												<input type="text" class="form-control dateTime" id="sampleReceivedDate"
@@ -571,6 +580,8 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 													value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_received_at_lab_datetime']) ?>"
 													style="width:100%;" />
 											</td>
+											
+										<tr>
 											<th scope="row" style="width:15%;"><label for="labId">Nom du Laboratoire </label> </th>
 											<td style="width:35%;">
 												<select name="labId" id="labId" class="form-control"
@@ -578,7 +589,6 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 													<?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Sélectionner --'); ?>
 												</select>
 											</td>
-										<tr>
 											<th scope="row">Is Sample Rejected?</th>
 											<td>
 												<select class="form-control" name="isSampleRejected" id="isSampleRejected">
@@ -588,7 +598,10 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 												</select>
 											</td>
 
-											<th scope="row" class="rejected" style="display: none;">Raison du rejet</th>
+											
+										</tr>
+										<tr>
+										<th scope="row" class="rejected" style="display: none;">Raison du rejet</th>
 											<td class="rejected" style="display: none;">
 
 												<select name="sampleRejectionReason" id="sampleRejectionReason"

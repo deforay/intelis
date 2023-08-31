@@ -158,6 +158,10 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             </td>
                                         <?php } ?>
                                     </tr>
+                                    <tr>
+                                    <th scope="row"><?= _('Requesting Clinician Name'); ?></th>
+                                        <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Request Clinician Name" title="Please enter request clinician" value="<?php echo $eidInfo['clinician_name']; ?>"/></td>
+                                    </tr>
                                 </table>
                                 <br>
                                 <hr style="border: 1px solid #ccc;">
@@ -577,7 +581,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                         details = data.split("###");
                         $("#facilityId").html(details[0]);
                         $("#district").html(details[1]);
-                        $("#clinicianName").val(details[2]);
+                        //$("#clinicianName").val(details[2]);
                     }
                 });
             //}
@@ -647,7 +651,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                         details = data.split("###");
                         $("#province").html(details[0]);
                         $("#district").html(details[1]);
-                        $("#clinicianName").val(details[2]);
+                        //$("#clinicianName").val(details[2]);
                     }
                 });
         } else if (pName == '' && cName == '') {

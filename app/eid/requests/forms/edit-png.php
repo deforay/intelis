@@ -178,6 +178,8 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         <?php } ?>
                                     </tr>
                                     <tr>
+                                        <th scope="row"><?= _('Requesting Clinician Name'); ?></th>
+                                        <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Request Clinician Name" title="Please enter request clinician" value="<?php echo $eidInfo['clinician_name']; ?>"/></td>
                                         <th scope="row">Requesting Officer</th>
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" value="<?php echo $eidInfo['sample_requestor_name'] ?>" placeholder="Requesting Officer" />
@@ -496,17 +498,24 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     </div>
                                     <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
+                                            <td><label for="" class="labels">Testing Platform </label></td>
+                                            <td><select class="form-control result-optional" name="eidPlatform" id="eidPlatform" title="Please select the testing platform">
+                                                    <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'], '-- Select --'); ?>
+                                                </select>
+                                            </td>
+
                                             <th scope="row"><label for="">Sample Received Date </label></th>
                                             <td>
                                                 <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" value="<?php echo $eidInfo['sample_received_at_lab_datetime'] ?>" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
                                             </td>
+                                           
+                                        <tr>
                                             <td><label for="labId">Lab Name </label> </td>
                                             <td>
                                                 <select name="labId" id="labId" class="form-control" title="Please select Testing Lab name" style="width:100%;">
                                                     <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                        <tr>
                                             <th scope="row">Is Sample Rejected?</th>
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">
@@ -515,25 +524,25 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                                     <option value="no" <?php echo ($eidInfo['is_sample_rejected'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
                                                 </select>
                                             </td>
-
-                                            <th scope="row" class="rejected" style="display: none;">Reason for Rejection</th>
-                                            <td class="rejected" style="display: none;">
-                                                <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
-                                                    <option value=''> -- Select -- </option>
-                                                    <?php foreach ($rejectionTypeResult as $type) { ?>
-                                                        <optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
-                                                            <?php
-                                                            foreach ($rejectionResult as $reject) {
-                                                                if ($type['rejection_type'] == $reject['rejection_type']) { ?>
-                                                                    <option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($eidInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?= $reject['rejection_reason_name']; ?></option>
-                                                            <?php }
-                                                            } ?>
-                                                        </optgroup>
-                                                    <?php } ?>
-                                                </select>
-                                            </td>
                                         </tr>
-
+                                        <tr>
+                                            <th scope="row" class="rejected" style="display: none;">Reason for Rejection</th>
+                                                <td class="rejected" style="display: none;">
+                                                    <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
+                                                        <option value=''> -- Select -- </option>
+                                                        <?php foreach ($rejectionTypeResult as $type) { ?>
+                                                            <optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
+                                                                <?php
+                                                                foreach ($rejectionResult as $reject) {
+                                                                    if ($type['rejection_type'] == $reject['rejection_type']) { ?>
+                                                                        <option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($eidInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?= $reject['rejection_reason_name']; ?></option>
+                                                                <?php }
+                                                                } ?>
+                                                            </optgroup>
+                                                        <?php } ?>
+                                                    </select>
+                                                </td>
+                                        </tr>
                                         <tr class="show-rejection rejected" style="display:none;">
                                             <th>Rejection Date<span class="mandatory">*</span></th>
                                             <td><input value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>

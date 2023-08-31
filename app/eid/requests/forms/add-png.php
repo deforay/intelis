@@ -147,6 +147,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <?php } ?>
                                     </tr>
                                     <tr>
+                                        <th scope="row"><?= _('Requesting Clinician Name'); ?></th>
+                                        <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Request Clinician Name" title="Please enter request clinician" value="<?php echo $eidInfo['clinician_name']; ?>"/></td>
                                         <th scope="row">Requesting Officer</th>
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Requesting Officer" />
@@ -468,17 +470,23 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </div>
                                     <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
+                                            <td><label for="" class="labels">Testing Platform </label></td>
+                                            <td><select class="form-control result-optional" name="eidPlatform" id="eidPlatform" title="Please select the testing platform">
+                                                    <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
+                                                </select>
+                                            </td>
                                             <th scope="row"><label for="">Sample Received Date </label></th>
                                             <td>
                                                 <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
                                             </td>
+                                           
+                                        <tr>
                                             <td><label for="labId">Lab Name </label> </td>
                                             <td>
                                                 <select name="labId" id="labId" class="form-control" title="Please select Testing Lab name" style="width:100%;">
                                                     <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                        <tr>
                                             <th scope="row">Is Sample Rejected?</th>
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">
@@ -487,8 +495,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <option value="no"> No </option>
                                                 </select>
                                             </td>
-
-                                            <th scope="row" class="rejected" style="display: none;">Reason for Rejection</th>
+                                        </tr>
+                                        <tr>
+                                        <th scope="row" class="rejected" style="display: none;">Reason for Rejection</th>
                                             <td class="rejected" style="display: none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
                                                     <option value=''> -- Select -- </option>
@@ -833,7 +842,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                         details = data.split("###");
                         $("#province").html(details[0]);
                         $("#district").html(details[1]);
-                        $("#clinicianName").val(details[2]);
+                        //$("#clinicianName").val(details[2]);
                     }
                 });
         } else if (pName == '' && cName == '') {

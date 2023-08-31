@@ -428,6 +428,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <input type="text" name="labTestingPointOther" id="labTestingPointOther" class="form-control" title="<?= _('Please specify other point of entry') ?>" placeholder="<?= _('Please specify other point of entry') ?>" style="display:none;" />
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <th scope="row"><?= _('Requesting Clinician Name'); ?></th>
+                                        <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Request Clinician Name" title="Please enter request clinician" /></td>
+                                    </tr>   
                                 </table>
 
                                 <br><br>
@@ -467,17 +471,24 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </div>
                                     <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
+                                            <th><?= _('Testing Platform'); ?> </th>
+                                            <td>
+                                                <select name="eidPlatform" id="eidPlatform" class="form-control" title="<?= _('Please choose VL Testing Platform'); ?>" <?php echo $labFieldDisabled; ?> onchange="hivDetectionChange();">
+                                                    <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
+                                                </select>
+                                            </td>
                                             <th scope="row"><label for=""><?= _('Sample Received Date'); ?> </label></th>
                                             <td>
                                                 <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
                                             </td>
+                                           
+                                        <tr>
                                             <td><label for="labId"><?= _('Lab Name'); ?> </label> </td>
                                             <td>
                                                 <select name="labId" id="labId" class="form-control" title="Please select Testing Lab name" style="width:100%;">
                                                     <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                        <tr>
                                             <th scope="row"><?= _('Is Sample Rejected?'); ?></th>
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">
@@ -487,6 +498,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 </select>
                                             </td>
 
+                                            
+                                        </tr>
+                                        <tr class="show-rejection rejected" style="display:none;">
                                             <th scope="row" class="rejected" style="display: none;"><?= _('Reason for Rejection'); ?></th>
                                             <td class="rejected" style="display: none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="<?= _('Please choose reason for rejection'); ?>">
@@ -494,12 +508,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <?php echo $rejectionReason; ?>
                                                 </select>
                                             </td>
-                                        </tr>
-                                        <tr class="show-rejection rejected" style="display:none;">
                                             <td><label for="rejectionDate"><?= _('Rejection Date'); ?></label><span class="mandatory">*</span></td>
                                             <td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="<?= _('Select Rejection Date'); ?>" /></td>
-                                            <td></td>
-                                            <td></td>
                                         </tr>
                                         <tr>
                                             <td style="width:25%;"><label for=""><?= _('Sample Test Date'); ?> </label></td>
@@ -788,7 +798,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     }
 
     $(document).ready(function() {
-        autoSelectSingleOption('facilityId');
+        Utilities.autoSelectSingleOption('facilityId');
         $("#childId").on('input', function() {
             $.post("/common/patient-last-request-details.php", {
                     patientId: $.trim($(this).val()),

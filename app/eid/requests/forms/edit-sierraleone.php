@@ -155,6 +155,10 @@ $aResult = $db->query($aQuery);
                                             </select>
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <th scope="row"><?= _('Requesting Clinician Name'); ?></th>
+                                        <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Request Clinician Name" title="Please enter request clinician" value="<?php echo $eidInfo['clinician_name']; ?>"/></td>
+                                    </tr>  
                                     <tr class="testingPoint" style="display:none;">
                                         <td class="labels"><label for="labTestingPoint">Lab Testing Points</label> </td>
                                         <td>
@@ -643,7 +647,7 @@ $aResult = $db->query($aQuery);
                         details = data.split("###");
                         $("#facilityId").html(details[0]);
                         $("#district").html(details[1]);
-                        $("#clinicianName").val(details[2]);
+                       // $("#clinicianName").val(details[2]);
                     }
                 });
             //}
@@ -713,7 +717,7 @@ $aResult = $db->query($aQuery);
                         details = data.split("###");
                         $("#province").html(details[0]);
                         $("#district").html(details[1]);
-                        $("#clinicianName").val(details[2]);
+                        //$("#clinicianName").val(details[2]);
                     }
                 });
         } else if (pName == '' && cName == '') {

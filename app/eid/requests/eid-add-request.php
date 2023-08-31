@@ -80,6 +80,7 @@ foreach ($iResult as $val) {
 }
 
 
+
 $testPlatformResult = $general->getTestingPlatforms('eid');
 foreach ($testPlatformResult as $row) {
     $testPlatformList[$row['machine_name']] = $row['machine_name'];

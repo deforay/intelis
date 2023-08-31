@@ -152,6 +152,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
 
                                     </tr>
+                                    <tr>
+                                    <th scope="row"><?= _('Requesting Clinician Name'); ?></th>
+                                        <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Request Clinician Name" title="Please enter request clinician" /></td>
+                                    </tr>
                                 </table>
                                 <br>
                                 <hr style="border: 1px solid #ccc;">
@@ -643,7 +647,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                         details = data.split("###");
                         $("#province").html(details[0]);
                         $("#district").html(details[1]);
-                        $("#clinicianName").val(details[2]);
+                        //$("#clinicianName").val(details[2]);
                     }
                 });
         } else if (pName == '' && cName == '') {
