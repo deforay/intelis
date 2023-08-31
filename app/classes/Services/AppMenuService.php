@@ -36,13 +36,12 @@ class AppMenuService
     public function getMenu($parentId = 0, $menuId = 0)
     {
         $activeModules = SystemService::getActiveModules();
-
-        $this->db->where('module', $activeModules, 'IN');
+        $activeModulesInfo = implode("','",$activeModules);
+        $this->db->where("module IN ('$activeModulesInfo') AND (sub_module IN ('$activeModulesInfo') OR sub_module IS NULL)");
         $this->db->where('status', 'active');
         if (!empty($menuId) && $menuId > 0) {
             $this->db->where('id', $menuId);
         }
-
 
         switch ($_SESSION['instanceType']) {
             case 'remoteuser':
