@@ -67,30 +67,30 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
     [$sTestDate, $sTestDate] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
 
-    $sWhere = '';
+    $sWhere = [];
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
         if (trim($start_date) == trim($end_date)) {
-            $sWhere = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
+            $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
         } else {
-            $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+            $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
         }
     }
     if (isset($_POST['district']) && trim($_POST['district']) != '') {
-        $sWhere = $sWhere . " AND f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+        $sWhere[] = " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
     }
     if (isset($_POST['state']) && trim($_POST['state']) != '') {
-        $sWhere = $sWhere . " AND f.facility_state LIKE '%" . $_POST['state'] . "%' ";
+        $sWhere[] = $sWhere . " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
     }
     if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-        $sWhere = $sWhere . ' AND f.facility_id = "' . $_POST['facilityName'] . '"';
+        $sWhere[] =  ' f.facility_id = "' . $_POST['facilityName'] . '"';
     }
-    $sQuery = $sQuery . ' ' . $sWhere . ' AND vl.result!=""';
+    $sQuery = $sQuery . ' ' . implode(" AND ",$sWhere) . ' AND vl.result!=""';
 
     $sResult = $db->rawQuery($sQuery);
 
     //question two query
     //first check empty results
-    $sWhere = 'where ';
+    $sWhere = [];
     $checkEmptyResultQuery = "SELECT vl.sample_collection_date,
                                 vl.sample_tested_datetime,
                                 f.facility_name,
@@ -101,28 +101,28 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
                                 JOIN facility_details as f ON vl.facility_id=f.facility_id";
     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
         if (trim($start_date) == trim($end_date)) {
-            $sWhere = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
+            $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
         } else {
-            $sWhere = $sWhere . ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+            $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
         }
     }
     if (isset($_POST['district']) && trim($_POST['district']) != '') {
-        $sWhere = $sWhere . " AND f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+        $sWhere[] = " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
     }
     if (isset($_POST['state']) && trim($_POST['state']) != '') {
-        $sWhere = $sWhere . " AND f.facility_state LIKE '%" . $_POST['state'] . "%' ";
+        $sWhere[] =  " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
     }
     if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-        $sWhere = $sWhere . ' AND f.facility_id = "' . $_POST['facilityName'] . '"';
+        $sWhere[] = ' f.facility_id = "' . $_POST['facilityName'] . '"';
     }
 
-    $checkEmptyResultQuery = $checkEmptyResultQuery . ' ' . $sWhere . ' AND vl.sample_tested_datetime IS NULL AND vl.sample_type!="" AND vl.sample_collection_date < "' . DateUtility::getCurrentDateTime() . '" - INTERVAL 1 MONTH AND IFNULL(reason_for_vl_testing, 0)  != 9999';
+    $checkEmptyResultQuery = $checkEmptyResultQuery . ' ' . implode(" AND ",$sWhere) . ' AND vl.sample_tested_datetime IS NULL AND vl.sample_type!="" AND vl.sample_collection_date < "' . DateUtility::getCurrentDateTime() . '" - INTERVAL 1 MONTH AND IFNULL(reason_for_vl_testing, 0)  != 9999';
     $checkEmptyResult = $db->rawQuery($checkEmptyResultQuery);
     //get all sample type
     $sampleType = "Select * from r_vl_sample_type where status='active'";
     $sampleTypeResult = $db->rawQuery($sampleType);
     if (count($checkEmptyResult) > 0) {
-        $sWhere = '';
+        $sWhere = [];
         foreach ($sampleTypeResult as $sample) {
             $checkEmptyResultSampleQuery = 'SELECT vl.sample_collection_date,
                                                 vl.sample_tested_datetime,
@@ -140,22 +140,22 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
 
             if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
                 if (trim($start_date) == trim($end_date)) {
-                    $sWhere = ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
+                    $sWhere[] = '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
                 } else {
-                    $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+                    $sWhere[] =  '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
                 }
             }
 
             if (isset($_POST['district']) && trim($_POST['district']) != '') {
-                $sWhere = $sWhere . " AND f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+                $sWhere[] =  "  f.facility_district LIKE '%" . $_POST['district'] . "%' ";
             }
             if (isset($_POST['state']) && trim($_POST['state']) != '') {
-                $sWhere = $sWhere . " AND f.facility_state LIKE '%" . $_POST['state'] . "%' ";
+                $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
             }
             if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-                $sWhere = $sWhere . ' AND f.facility_id = "' . $_POST['facilityName'] . '"';
+                $sWhere[] = ' f.facility_id = "' . $_POST['facilityName'] . '"';
             }
-            $checkEmptyResultSampleQuery = $checkEmptyResultSampleQuery . $sWhere;
+            $checkEmptyResultSampleQuery = $checkEmptyResultSampleQuery . implode(" AND ",$sWhere);
             $checkEmptySampleResult[$sample['sample_name']] = $db->rawQuery($checkEmptyResultSampleQuery);
         }
     }
@@ -173,7 +173,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
     $j = 0;
     $avgResult = [];
     while ($month <= $end) {
-        $sWhere = '';
+        $sWhere = [];
         $mnth = date('m', $month);
         $year = date('Y', $month);
         $dFormat = date("M-Y", $month);
@@ -191,29 +191,29 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
                                 AND YEAR(sample_collection_date)='$year'";
         if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
             if (trim($start_date) == trim($end_date)) {
-                $sWhere = ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
+                $sWhere[] = '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
             } else {
-                $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+                $sWhere[] =  '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
             }
         }
         if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
             if (trim($sTestDate) == trim($eTestDate)) {
-                $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
+                $sWhere[] =  '  DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
             } else {
-                $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
+                $sWhere[] =  '  DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
             }
         }
         if (isset($_POST['district']) && trim($_POST['district']) != '') {
-            $sWhere = $sWhere . " AND f.facility_district LIKE '%" . $_POST['district'] . "%' ";
+            $sWhere[] = "  f.facility_district LIKE '%" . $_POST['district'] . "%' ";
         }
         if (isset($_POST['state']) && trim($_POST['state']) != '') {
-            $sWhere = $sWhere . " AND f.facility_state LIKE '%" . $_POST['state'] . "%' ";
+            $sWhere[] =  "  f.facility_state LIKE '%" . $_POST['state'] . "%' ";
         }
 
         if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-            $sWhere = $sWhere . ' AND f.facility_id = "' . $_POST['facilityName'] . '"';
+            $sWhere[] =  '  f.facility_id = "' . $_POST['facilityName'] . '"';
         }
-        $checkResultAvgQuery = $checkResultAvgQuery . ' ' . $sWhere . ' AND vl.result=""';
+        $checkResultAvgQuery = $checkResultAvgQuery . ' ' . implode(" AND ",$sWhere) . ' AND vl.result=""';
         $checkResultAvgResult = $db->rawQuery($checkResultAvgQuery);
         if (count($checkResultAvgResult) > 0) {
             $total = 0;
