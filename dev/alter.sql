@@ -5026,3 +5026,8 @@ UPDATE `s_app_menu` SET `sub_module` = 'eid' WHERE `s_app_menu`.`display_text` =
 UPDATE `s_app_menu` SET `sub_module` = 'covid19' WHERE `s_app_menu`.`display_text` = 'Covid-19 Config';
 UPDATE `s_app_menu` SET `sub_module` = 'hepatitis' WHERE `s_app_menu`.`display_text` = 'Hepatitis Config';
 UPDATE `s_app_menu` SET `sub_module` = 'tb' WHERE `s_app_menu`.`display_text` = 'TB Config';
+
+
+
+-- Amit 4-Sep-2023 version 5.2.3
+UPDATE `system_config` SET `value` = '5.2.3' WHERE `system_config`.`name` = 'sc_version';
