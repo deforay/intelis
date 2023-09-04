@@ -201,6 +201,13 @@ foreach ($rResult as $aRow) {
      if ($systemType != 'standalone') {
           $row[] = $aRow['remote_sample_code'];
      }
+     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes'){
+          $key = base64_decode('zACCxM1c1AfRevJ/Zpk+PKXpO+ebWjNSgCRa5/Uheh4=');
+          $aRow['patient_art_no'] = $general->crypto('decrypt' ,$aRow['patient_art_no'], $key);
+          $patientFname = $general->crypto('decrypt' ,$patientFname, $key);
+          $patientMname = $general->crypto('decrypt' ,$patientMname, $key);
+          $patientLname = $general->crypto('decrypt' ,$patientLname, $key);
+       }
      $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
      $row[] = $aRow['batch_code'];
      $row[] = $aRow['patient_art_no'];

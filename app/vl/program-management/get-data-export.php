@@ -134,6 +134,7 @@ $sQuery = "SELECT vl.vl_sample_id,
                vl.result_printed_datetime,
                vl.last_modified_datetime,
                vl.result_status,
+               vl.is_encrypted,
                s.sample_name as sample_name,
                b.batch_code,
                ts.status_name,
@@ -353,6 +354,13 @@ foreach ($rResult as $aRow) {
      if ($_SESSION['instanceType'] != 'standalone') {
           $row[] = $aRow['remote_sample_code'];
      }
+     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes'){
+          $key = base64_decode('zACCxM1c1AfRevJ/Zpk+PKXpO+ebWjNSgCRa5/Uheh4=');
+          $aRow['patient_art_no'] = $general->crypto('decrypt' ,$aRow['patient_art_no'], $key);
+          $patientFname = $general->crypto('decrypt' ,$patientFname, $key);
+          $patientMname = $general->crypto('decrypt' ,$patientMname, $key);
+          $patientLname = $general->crypto('decrypt' ,$patientLname, $key);
+       }
      $row[] = $aRow['batch_code'];
      $row[] = $aRow['patient_art_no'];
      $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
