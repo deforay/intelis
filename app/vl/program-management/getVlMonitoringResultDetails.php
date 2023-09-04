@@ -121,6 +121,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                     vl.patient_art_no,
                     vl.sample_collection_date,
                     vl.sample_tested_datetime,
+                    vl.is_encrypted,
                     s.sample_name,
                     b.batch_code,
                     ts.status_name,
@@ -212,6 +213,13 @@ foreach ($rResult as $aRow) {
      $row = [];
      $row[] = $aRow['sample_code'];
      $row[] = $aRow['batch_code'];
+     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes'){
+          $key = base64_decode('zACCxM1c1AfRevJ/Zpk+PKXpO+ebWjNSgCRa5/Uheh4=');
+          $aRow['patient_art_no'] = $general->crypto('decrypt' ,$aRow['patient_art_no'], $key);
+          $patientFname = $general->crypto('decrypt' ,$patientFname, $key);
+          $patientMname = $general->crypto('decrypt' ,$patientMname, $key);
+          $patientLname = $general->crypto('decrypt' ,$patientLname, $key);
+       }
      $row[] = $aRow['patient_art_no'];
      $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
      $row[] = ($aRow['facility_name']);

@@ -51,6 +51,7 @@ $sQuery = "SELECT
                vl.patient_gender,
                vl.is_patient_pregnant,
                vl.is_patient_breastfeeding,
+               vl.is_encrypted,
                DATE_FORMAT(vl.treatment_initiated_date,'%d-%b-%Y') as artStartDate,
                vl.current_regimen,
                DATE_FORMAT(vl.date_of_initiation_of_current_regimen,'%d-%b-%Y') as regStartDate,
