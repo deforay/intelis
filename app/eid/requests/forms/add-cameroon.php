@@ -148,6 +148,31 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <!-- </tr> -->
                                         <?php } ?>
                                     </tr>
+                                    <tr>
+                                        <td>
+                                        <label for="fundingSource"><?= _('Project Name'); ?> </label><br>
+                                            <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
+                                                <option value=""> -- Select -- </option>
+                                                 <?php
+                                                foreach ($fundingSourceList as $fundingSource) {
+                                                ?>
+                                                <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </td>
+                                        <td>
+                                        <label for="implementingPartner"><?= _('Implementing Partner'); ?> </label><br>
+
+                                            <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
+                                                <option value=""> -- Select -- </option>
+                                                <?php
+                                                foreach ($implementingPartnerList as $implementingPartner) {
+                                                ?>
+                                                <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" ><?= $implementingPartner['i_partner_name']; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </td>     
+                                    </tr>
                                 </table>
                                 <br>
                                 <hr style="border: 1px solid #ccc;">

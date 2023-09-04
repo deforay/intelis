@@ -861,7 +861,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 														<?php
 														if (!empty($genericTestInfo)) {
 															$kitShow = false;
-															//echo '<pre>'; print_r($genericTestInfo); die;
+															
 															foreach ($genericTestInfo as $indexKey => $rows) { ?>
 																<tr>
 																	<td class="text-center">

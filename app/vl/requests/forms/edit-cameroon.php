@@ -91,21 +91,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
      $rch .= '</table>';
 }
 
-if (!empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes'){
-     $key = base64_decode('zACCxM1c1AfRevJ/Zpk+PKXpO+ebWjNSgCRa5/Uheh4=');
-     $vlQueryInfo['patient_art_no'] = $general->crypto('decrypt' ,$vlQueryInfo['patient_art_no'], $key);
-     if($vlQueryInfo['patient_first_name']!=''){
-          $vlQueryInfo['patient_first_name'] = $general->crypto('decrypt' ,$vlQueryInfo['patient_first_name'], $key);
-     }
 
-     if($vlQueryInfo['patient_middle_name']!=''){
-          $vlQueryInfo['patient_middle_name'] = $general->crypto('decrypt' ,$vlQueryInfo['patient_middle_name'], $key);
-     }
-   
-     if($vlQueryInfo['patient_last_name']!=''){
-          $vlQueryInfo['patient_last_name'] = $general->crypto('decrypt' ,$vlQueryInfo['patient_last_name'], $key);
-     }
-  }
 
 ?> 
 <style>
@@ -217,6 +203,35 @@ if (!empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes
                                              <div class="col-xs-2 col-md-2 fContactPerson" style="display:none;"><strong>Clinic Contact Person -</strong></div>
                                              <div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:none;"></div>
                                         </div>
+                                        <div class="row">
+                                             <div class="col-xs-3 col-md-3">
+                                                  <div class="form-group">
+                                                       <label for="fundingSource">Project Name</label>
+                                                       <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
+                                                            <option value=""> -- Select -- </option>
+                                                            <?php
+                                                            foreach ($fundingSourceList as $fundingSource) {
+                                                            ?>
+                                                                 <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
+                                                            <?php } ?>
+                                                       </select>
+                                                  </div>
+                                             </div>
+                                             <div class="col-xs-3 col-md-3">
+                                                  <div class="form-group">
+                                                       <label for="implementingPartner">Implementing Partner</label>
+                                                       <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
+                                                            <option value=""> -- Select -- </option>
+                                                            <?php
+                                                            foreach ($implementingPartnerList as $implementingPartner) {
+                                                            ?>
+                                                                 <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
+                                                            <?php } ?>
+                                                       </select>
+                                                  </div>
+                                             </div>
+                                             
+                                        </div>
 
                                    </div>
                               </div>
@@ -234,8 +249,8 @@ if (!empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes
                                                   <div class="col-lg-5">
                                                        <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control isRequired" title="<?= _('Select Patient is from Defence Forces'); ?>">
                                                             <option value=""><?= _('--Select--'); ?></option>     
-                                                            <option value="no" selected='selected'><?= _('No'); ?></option>
-                                                            <option value="yes"><?= _('Yes'); ?></option>
+                                                            <option value="no" <?php echo ($vlQueryInfo['sync_patient_identifiers']=="no") ? "selected='selected'" : ""; ?>><?= _('No'); ?></option>
+                                                            <option value="yes" <?php echo ($vlQueryInfo['sync_patient_identifiers']=="yes") ? "selected='selected'" : ""; ?>><?= _('Yes'); ?></option>
                                                        </select>
                                                   </div>
                                         </div>

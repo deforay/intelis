@@ -24,7 +24,7 @@ if (!empty($requestResult)) {
      foreach ($requestResult as $result) {
           $currentTime = DateUtility::getCurrentDateTime();
 
-          $genericTestQuery = "SELECT * from generic_test_results where generic_id=? ORDER BY test_id ASC";
+          $genericTestQuery = "SELECT res.*, m.test_method_name from generic_test_results as res INNER JOIN r_generic_test_methods AS m ON m.test_method_id=res.test_name where res.generic_id=? ORDER BY res.test_id ASC";
           $genericTestInfo = $db->rawQuery($genericTestQuery, array($result['sample_id']));
 
           $testedBy = '';
@@ -305,7 +305,7 @@ if (!empty($requestResult)) {
           $html .= '<table style="padding:4px 2px 2px 2px;">';
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">PATIENT NAME</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">PATIENT ID</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">EPID NUMBER</td>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REASON FOR VL TESTING</td>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
           $html .= '</tr>';
@@ -333,7 +333,7 @@ if (!empty($requestResult)) {
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">BREAST FEEDING</td>';
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">PREGNANCY STATUS</td>';
           } else {
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">LOINC CODE</td>';
+               //$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">LOINC CODE</td>';
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
           }
           $html .= '</tr>';
@@ -344,7 +344,7 @@ if (!empty($requestResult)) {
                $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (str_replace("_", " ", $result['is_patient_breastfeeding'])) . '</td>';
                $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (str_replace("_", " ", $result['is_patient_pregnant'])) . '</td>';
           } else {
-               $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['test_loinc_code'] . '</td>';
+              // $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['test_loinc_code'] . '</td>';
                $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
           }
           $html .= '</tr>';
@@ -370,30 +370,32 @@ if (!empty($requestResult)) {
           $html .= '</tr>';
           $html .= '<tr>';
           $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE ID</td>';
+          $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">LABORATORY NUMBER</td>';
           $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE COLLECTION DATE</td>';
-          $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE RECEIPT DATE</td>';
           $html .= '</tr>';
           $html .= '<tr>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_code'] . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['laboratory_number'] . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $sampleReceivedDate . " " . $sampleReceivedTime . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
+          $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE RECEIPT DATE</td>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE REJECTION STATUS</td>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE TEST DATE</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">RESULT RELEASE DATE</td>';
           $html .= '</tr>';
           $rejectedStatus = (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') ? 'Rejected' : 'Not Rejected';
           $html .= '<tr>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $sampleReceivedDate . " " . $sampleReceivedTime . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $rejectedStatus . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $sampleDispatchDate . " " . $sampleDispatchTime . '</td>';
           $html .= '</tr>';
 
           $html .= '<tr>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">RESULT RELEASE DATE</td>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE TYPE</td>';
           $html .= '</tr>';
           $html .= '<tr>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $sampleDispatchDate . " " . $sampleDispatchTime . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['sample_type_name']) . '</td>';
           $html .= '</tr>';
           // $html .= '<tr>';
@@ -416,7 +418,7 @@ if (!empty($requestResult)) {
                foreach ($genericTestInfo as $indexKey => $rows) {
                     $html .= '<tr>
                                         <td align="center" style="line-height:20px;font-size:11px;">' . ($indexKey + 1) . '</td>
-                                        <td align="center" style="line-height:20px;font-size:11px;">' . $rows['test_name'] . '</td>
+                                        <td align="center" style="line-height:20px;font-size:11px;">' . $rows['test_method_name'] . '</td>
                                         <td align="center" style="line-height:20px;font-size:11px;">' . date("d-M-Y H:i:s", strtotime($rows['sample_tested_datetime'])) . '</td>
                                         <td align="center" style="line-height:20px;font-size:11px;">' . $rows['testing_platform'] . '</td>
                                         <td align="center" style="line-height:20px;font-size:11px;">' . ($rows['result']) . '</td>

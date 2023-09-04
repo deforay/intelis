@@ -327,6 +327,9 @@ try {
           $vlData['patient_last_name'] = $encryptedPatientLastName;
           $vlData['is_encrypted'] = 'yes';
      }
+     else{
+          $vlData['is_encrypted'] = NULL;
+     }
 
      $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $vlData);

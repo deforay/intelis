@@ -153,7 +153,8 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.vl_sample_id,
                vl.sample_received_at_lab_datetime,
                vl.result_dispatched_datetime,
                vl.result_printed_datetime,
-               vl.result_approved_by
+               vl.result_approved_by,
+               vl.is_encrypted
                FROM form_vl as vl
                LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
                LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
@@ -301,6 +302,13 @@ foreach ($rResult as $aRow) {
      $patientFname = $general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_art_no']);
      $patientMname = $general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_art_no']);
      $patientLname = $general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_art_no']);
+     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes'){
+          $key = base64_decode('zACCxM1c1AfRevJ/Zpk+PKXpO+ebWjNSgCRa5/Uheh4=');
+          $aRow['patient_art_no'] = $general->crypto('decrypt' ,$aRow['patient_art_no'], $key);
+          $patientFname = $general->crypto('decrypt' ,$patientFname, $key);
+          $patientMname = $general->crypto('decrypt' ,$patientMname, $key);
+          $patientLname = $general->crypto('decrypt' ,$patientLname, $key);
+       }
 
      $row[] = $aRow['sample_code'];
      if ($_SESSION['instanceType'] != 'standalone') {

@@ -130,7 +130,31 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                             <input type="text" class="form-control" style="width:100%;" name="fCode" id="fCode" placeholder="<?= _('Clinic/Health Center Code'); ?>" title="<?= _('Please enter clinic/health center code'); ?>" value="<?php echo $facilityResult[0]['facility_code']; ?>">
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td>
+                                        <label for="fundingSource"><?= _('Project Name'); ?> </label><br>
+                                            <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
+                                                <option value=""> -- Select -- </option>
+                                                 <?php
+                                                foreach ($fundingSourceList as $fundingSource) {
+                                                ?>
+                                                <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $eidInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </td>
+                                        <td>
+                                        <label for="implementingPartner"><?= _('Implementing Partner'); ?> </label><br>
 
+                                            <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
+                                                <option value=""> -- Select -- </option>
+                                                <?php
+                                                foreach ($implementingPartnerList as $implementingPartner) {
+                                                ?>
+                                                <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $eidInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </td>     
+                                    </tr>
                                 </table>
                                 <br>
                                 <hr style="border: 1px solid #ccc;">

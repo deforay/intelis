@@ -174,10 +174,10 @@ try {
 		'province_id' => !empty($_POST['provinceId']) ? $_POST['provinceId'] : null,
 		'lab_id' => !empty($_POST['labId']) ? $_POST['labId'] : null,
 		'testing_point' => !empty($_POST['testingPoint']) ? $_POST['testingPoint'] : null,
-		'implementing_partner' => !empty($_POST['implementingPartner']) ? $_POST['implementingPartner'] : null,
+		'funding_source' => (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') ? base64_decode($_POST['fundingSource']) : null,
+        'implementing_partner' => (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') ? base64_decode($_POST['implementingPartner']) : null,
 		'source_of_alert' => !empty($_POST['sourceOfAlertPOE']) ? $_POST['sourceOfAlertPOE'] : null,
 		'source_of_alert_other' => (!empty($_POST['sourceOfAlertPOE']) && $_POST['sourceOfAlertPOE'] == 'others') ? $_POST['alertPoeOthers'] : null,
-		'funding_source' => !empty($_POST['fundingSource']) ? $_POST['fundingSource'] : null,
 		'patient_id' => !empty($_POST['patientId']) ? $_POST['patientId'] : null,
 		'patient_name' => !empty($_POST['firstName']) ? $_POST['firstName'] : null,
 		'patient_surname' => !empty($_POST['lastName']) ? $_POST['lastName'] : null,
@@ -366,7 +366,7 @@ try {
 		$db->delete($testTableName);
 		$covid19Data['sample_tested_datetime'] = null;
 	}
-	// echo "<pre>";print_r($covid19Data);die;
+	 //echo "<pre>";print_r($covid19Data);die;
 	$id = 0;
 	if (isset($_POST['covid19SampleId']) && $_POST['covid19SampleId'] != '') {
 		$db = $db->where('covid19_id', $_POST['covid19SampleId']);

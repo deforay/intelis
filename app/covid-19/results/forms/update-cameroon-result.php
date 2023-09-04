@@ -169,6 +169,28 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                             </select>
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <th>Project Name</th>
+                                        <td><select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
+                                                <option value=""> -- Select -- </option>
+                                                 <?php
+                                                foreach ($fundingSourceList as $fundingSource) {
+                                                ?>
+                                                <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $covid19Info['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </td>
+                                        <th>Implementing Partner</th>
+                                        <td><select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
+                                                <option value=""> -- Select -- </option>
+                                                <?php
+                                                foreach ($implementingPartnerList as $implementingPartner) {
+                                                ?>
+                                                <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $covid19Info['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </td>     
+                                    </tr>
                                 </table>
 
                                 <div class="box-header with-border sectionHeader">

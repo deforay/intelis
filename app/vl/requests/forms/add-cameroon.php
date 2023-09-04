@@ -162,7 +162,35 @@ $sFormat = '';
                                              <div class="col-xs-2 col-md-2 fContactPerson" style="display:none;"><strong>Clinic Contact Person -</strong></div>
                                              <div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:none;"></div>
                                         </div>
-
+                                        <div class="row">
+                                             <div class="col-xs-3 col-md-3">
+                                                  <div class="form-group">
+                                                       <label for="fundingSource">Project Name</label>
+                                                       <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
+                                                            <option value=""> -- Select -- </option>
+                                                            <?php
+                                                            foreach ($fundingSourceList as $fundingSource) {
+                                                            ?>
+                                                                 <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
+                                                            <?php } ?>
+                                                       </select>
+                                                  </div>
+                                             </div>
+                                             <div class="col-xs-3 col-md-3">
+                                                  <div class="form-group">
+                                                       <label for="implementingPartner">Implementing Partner</label>
+                                                       <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
+                                                            <option value=""> -- Select -- </option>
+                                                            <?php
+                                                            foreach ($implementingPartnerList as $implementingPartner) {
+                                                            ?>
+                                                                 <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
+                                                            <?php } ?>
+                                                       </select>
+                                                  </div>
+                                             </div>
+                                             
+                                        </div>
                                    </div>
                               </div>
                               <div class="box box-primary">

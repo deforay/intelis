@@ -144,6 +144,28 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
+                                        <th>Project Name</th>
+                                        <td><select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
+                                                <option value=""> -- Select -- </option>
+                                                 <?php
+                                                foreach ($fundingSourceList as $fundingSource) {
+                                                ?>
+                                                <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </td>
+                                        <th>Implementing Partner</th>
+                                        <td><select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
+                                                <option value=""> -- Select -- </option>
+                                                <?php
+                                                foreach ($implementingPartnerList as $implementingPartner) {
+                                                ?>
+                                                <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </td>     
+                                    </tr>
+                                    <tr>
                                         <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
                                             <!-- <tr> -->
                                             <td><label for="labId"><?= _("Testing Laboratory"); ?> <span class="mandatory">*</span></label> </td>

@@ -222,6 +222,22 @@ if ($vlQueryInfo['patient_last_name'] != '') {
 	$patientLastName = '';
 }
 
+if (!empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes'){
+	$key = base64_decode('zACCxM1c1AfRevJ/Zpk+PKXpO+ebWjNSgCRa5/Uheh4=');
+	$vlQueryInfo['patient_art_no'] = $general->crypto('decrypt' ,$vlQueryInfo['patient_art_no'], $key);
+	if($patientFirstName!=''){
+		 $patientFirstName = $general->crypto('decrypt' ,$patientFirstName, $key);
+	}
+
+	if($patientMiddleName!=''){
+		 $patientMiddleName = $general->crypto('decrypt' ,$patientMiddleName, $key);
+	}
+  
+	if($patientLastName!=''){
+		 $patientLastName = $general->crypto('decrypt' ,$patientLastName, $key);
+	}
+ }
+
 $patientFullName = trim(implode(" ", array($patientFirstName, $patientMiddleName, $patientLastName)));
 
 
