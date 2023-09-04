@@ -1,21 +1,15 @@
 <?php
 
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Services\UsersService;
 use App\Services\FacilitiesService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
-
-
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-
-$arr = [];
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
@@ -25,23 +19,38 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilityService */
 $facilityService = ContainerRegistry::get(FacilitiesService::class);
 
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+
 try {
-    $fileName = $_FILES['facilitiesInfo']['name'];
-    $ranNumber = $general->generateRandomString(12);
+
+    $uploadedFiles = $request->getUploadedFiles();
+    $uploadedFile = $uploadedFiles['facilitiesInfo'];
+    $fileName = $uploadedFile->getClientFilename();
+
+
+
+    $ranNumber = "BULK-FACILITIES-" . strtoupper($general->generateRandomString(16));
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName = $ranNumber . "." . $extension;
 
+
     $excel = new Spreadsheet();
-     $output = [];
-     $sheet = $excel->getActiveSheet();
+    $output = [];
+    $sheet = $excel->getActiveSheet();
 
-    if (!file_exists(TEMP_PATH . DIRECTORY_SEPARATOR ) && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR )) {
-        mkdir(TEMP_PATH . DIRECTORY_SEPARATOR , 0777, true);
-    }
+    MiscUtility::makeDirectory(TEMP_PATH);
 
-    if (move_uploaded_file($_FILES['facilitiesInfo']['tmp_name'], TEMP_PATH . DIRECTORY_SEPARATOR  . $fileName)) {
+    // Define the target path
+    $targetPath = TEMP_PATH . DIRECTORY_SEPARATOR . $fileName;
 
-        $spreadsheet = IOFactory::load(TEMP_PATH . DIRECTORY_SEPARATOR . $fileName);
+    // Move the file
+    $uploadedFile->moveTo($targetPath);
+
+    if (0 == $uploadedFile->getError()) {
+
+        $spreadsheet = IOFactory::load($targetPath);
         $sheetData   = $spreadsheet->getActiveSheet();
         $sheetData   = $sheetData->toArray(null, true, true, true);
         $returnArray = [];
@@ -49,17 +58,15 @@ try {
         $total = count($resultArray);
         $facilityNotAdded = [];
 
-       
-
         foreach ($resultArray as $rowIndex => $rowData) {
-             
-            if (empty($rowData['A']) || empty($rowData['B']) || empty($rowData['D']) || empty($rowData['E']) || empty($rowData['F'])) {
-                $_SESSION['alertMsg'] = _("Please enter all the mandatory fields in excel sheet");
+
+            if (empty($rowData['A']) || empty($rowData['D']) || empty($rowData['E']) || empty($rowData['F'])) {
+                $_SESSION['alertMsg'] = _("Please enter all the mandatory fields in the excel sheet");
                 header("Location:/facilities/upload-facilities.php");
                 die;
             }
             if (!in_array($rowData['F'], ['1', '2', '3'], true)) {
-                $rowData['F'] = '1';
+                $rowData['F'] = 1;
             }
 
             $instanceId = '';
@@ -75,7 +82,7 @@ try {
 
             $data = array(
                 'facility_name' => $rowData['A'],
-                'facility_code' => !empty($rowData['B']) ? $rowData['B'] : null,
+                'facility_code' => $rowData['B'] ?? null,
                 'vlsm_instance_id' => $instanceId,
                 'facility_mobile_numbers' => $rowData['I'],
                 'address' => $rowData['G'],
@@ -87,7 +94,6 @@ try {
                 'longitude' => $rowData['K'],
                 'facility_emails' => $rowData['H'],
                 'facility_type' => $rowData['F'],
-                //'report_format' => (isset($rowData['F']) && $rowData['F'] == 2) ? json_encode($_POST['reportFormat']) : null,
                 'updated_datetime' => DateUtility::getCurrentDateTime(),
                 'status' => 'active'
             );
@@ -95,49 +101,48 @@ try {
             if ((isset($facilityCheck['facility_id']) && $facilityCheck['facility_id'] != "") || (isset($facilityCodeCheck['facility_id']) && $facilityCodeCheck['facility_id'] != "")) {
                 array_push($facilityNotAdded, $rowData);
             } else {
-                 $db->insert('facility_details', $data);
+                $db->insert('facility_details', $data);
                 error_log($db->getLastError());
             }
         }
-        
+
         $notAdded = count($facilityNotAdded);
-        if($notAdded>0)
-        {
+        if ($notAdded > 0) {
             $column_header = ["Facility Name*", "Facility Code*", "External Facility Code", "Province/State*", "District/County*", "Facility Type* (1-Health Facility,2-Testing Lab,3-Collection Site)", "Address", "Email", "Phone Number", "Latitude", "Longitude"];
             $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-            ->setValueExplicit(html_entity_decode($nameValue));
-            $colNo=1;
+                ->setValueExplicit(html_entity_decode($nameValue));
+            $colNo = 1;
             foreach ($column_header as $value) {
-                    $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-                        ->setValueExplicit(html_entity_decode($value));
-                    $colNo++;
+                $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
+                    ->setValueExplicit(html_entity_decode($value));
+                $colNo++;
             }
-           
+
             foreach ($facilityNotAdded as $rowNo => $dataValue) {
                 $colNo = 1;
-                $rRowCount = $rowNo+2;
+                $rRowCount = $rowNo + 2;
                 foreach ($dataValue as $field => $value) {
-                     $sheet->setCellValue(
-                          Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-                          html_entity_decode($value)
-                     );
-                     $colNo++;
+                    $sheet->setCellValue(
+                        Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
+                        html_entity_decode($value)
+                    );
+                    $colNo++;
                 }
-           }
+            }
 
             $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
             $filename = 'INCORRECT-FACILITY-ROWS.xlsx';
-            $path = TEMP_PATH . DIRECTORY_SEPARATOR . $filename;
-            $writer->save($path);
-	    }
+            $writer->save($targetPath);
+        }
+
+
+        $_SESSION['alertMsg'] = _("Facilities added successfully");
+    } else {
+        throw new SystemException(_("Bulk Facility Import File not uploaded") . " - " . $uploadedFile->getError());
     }
-    else
-    {
-    	echo "File not uploaded".$_FILES['facilitiesInfo']['error']; die;
-    }
-    $_SESSION['alertMsg'] = _("Bulk Facilities file uploaded successfully.");
     header("Location:/facilities/upload-facilities.php?total=$total&notAdded=$notAdded&link=$filename");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
+    throw new SystemException(($exc->getMessage()));
 }
