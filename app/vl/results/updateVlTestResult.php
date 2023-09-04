@@ -241,8 +241,6 @@ if (!empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes
 $patientFullName = trim(implode(" ", array($patientFirstName, $patientMiddleName, $patientLastName)));
 
 
-
-
 ?>
 <style>
 	:disabled {

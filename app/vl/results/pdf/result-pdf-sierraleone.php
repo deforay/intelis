@@ -400,7 +400,7 @@ if (!empty($requestResult)) {
           $html .= '</tr>';
           if (trim($showMessage) != '') {
                $html .= '<tr>';
-               $html .= '<td colspan="3" style="line-height:13px;font-size:' . $messageTextSize . ';text-align:left;">' . $showMessage . '</td>';
+               //$html .= '<td colspan="3" style="line-height:13px;font-size:' . $messageTextSize . ';text-align:left;">' . $showMessage . '</td>';
                $html .= '</tr>';
                $html .= '<tr>';
                $html .= '<td colspan="3" style="line-height:16px;"></td>';
@@ -408,7 +408,7 @@ if (!empty($requestResult)) {
           }
           if (trim($tndMessage) != '') {
                $html .= '<tr>';
-               $html .= '<td colspan="3" style="line-height:13px;font-size:18px;text-align:left;">' . $tndMessage . '</td>';
+             //  $html .= '<td colspan="3" style="line-height:13px;font-size:18px;text-align:left;">' . $tndMessage . '</td>';
                $html .= '</tr>';
                $html .= '<tr>';
                $html .= '<td colspan="3" style="line-height:16px;"></td>';

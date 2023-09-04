@@ -77,7 +77,7 @@ $provinceInfo = [];
 foreach ($pdResult as $state) {
     $provinceInfo[$state['geo_name']] = ($state['geo_name']);
 }
-$province = "<option value=''> <?= _("-- Select --"); ?> </option>";
+$province = "<option value=''> <?= _('-- Select --'); ?> </option>";
 foreach ($pdResult as $provinceName) {
     $selected = "";
     if ($covid19Info['geo_id'] == $provinceName['geo_id']) {
