@@ -77,7 +77,7 @@ foreach ($pdResult as $state) {
     $provinceInfo[$state['geo_name']] = ($state['geo_name']);
 }
 
-$province = "<option value=''> -- Select -- </option>";
+$province = "<option value=''> <?= _("-- Select --"); ?> </option>";
 foreach ($pdResult as $provinceName) {
     $province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
 }
@@ -170,26 +170,26 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Project Name</th>
+                                        <th><?= _("Project Name"); ?></th>
                                         <td><select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
-                                                <option value=""> -- Select -- </option>
-                                                 <?php
+                                                <option value=""> <?= _("-- Select --"); ?> </option>
+                                                <?php
                                                 foreach ($fundingSourceList as $fundingSource) {
                                                 ?>
-                                                <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $covid19Info['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
+                                                    <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $covid19Info['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
-                                        <th>Implementing Partner</th>
+                                        <th><?= _("Implementing Partner"); ?></th>
                                         <td><select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
-                                                <option value=""> -- Select -- </option>
+                                                <option value=""> <?= _("-- Select --"); ?> </option>
                                                 <?php
                                                 foreach ($implementingPartnerList as $implementingPartner) {
                                                 ?>
-                                                <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $covid19Info['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
+                                                    <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $covid19Info['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
                                                 <?php } ?>
                                             </select>
-                                        </td>     
+                                        </td>
                                     </tr>
                                 </table>
 
@@ -281,7 +281,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </td>
                                     </tr>
                                     <tr>
-                                    <th scope="row"><?= _("Type of Test Request"); ?></th>
+                                        <th scope="row"><?= _("Type of Test Request"); ?></th>
                                         <td>
                                             <select name="testTypeRequested" id="testTypeRequested" class="form-control" title="Please choose type of test request" style="width:100%">
                                                 <option value=""><?= _("-- Select --"); ?></option>
@@ -300,7 +300,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </td>
                                     </tr>
                                     <tr>
-                                    <th scope="row" style="width:15% !important"><?= _("Sample Collection Date"); ?> <span class="mandatory">*</span> </th>
+                                        <th scope="row" style="width:15% !important"><?= _("Sample Collection Date"); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
                                             <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _("Sample Collection Date"); ?>" value="<?php echo ($covid19Info['sample_collection_date']); ?>" />
                                         </td>
@@ -310,7 +310,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </td>
                                     </tr>
                                     <tr>
-                                    <th scope="row"><?= _("Specimen Type"); ?> <span class="mandatory">*</span></th>
+                                        <th scope="row"><?= _("Specimen Type"); ?> <span class="mandatory">*</span></th>
                                         <td>
                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="<?= _("Please choose specimen type"); ?>" style="width:100%">
                                                 <option value=""><?= _("-- Select --"); ?></option>
@@ -448,7 +448,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                             <option value="RDT-Antibody" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'RDT-Antibody') ? "selected='selected'" : ""; ?>><?= _("RDT-Antibody"); ?></option>
                                                                             <option value="RDT-Antigen" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'RDT-Antigen') ? "selected='selected'" : ""; ?>><?= _("RDT-Antigen"); ?></option>
                                                                             <option value="ELISA" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'ELISA') ? "selected='selected'" : ""; ?>><?= _("ELISA"); ?></option>
-                                                                            <option value="other" <?php echo (isset($show) && $show == 'block') ? "selected='selected'" : ""; ?>><?= _("Others"); ?></option>                                                               
+                                                                            <option value="other" <?php echo (isset($show) && $show == 'block') ? "selected='selected'" : ""; ?>><?= _("Others"); ?></option>
                                                                         </select>
                                                                         <input <?php echo $value; ?> type="text" name="testNameOther[]" id="testNameOther<?= ($indexKey + 1); ?>" class="form-control testNameOther<?= ($indexKey + 1); ?>" title="<?= _("Please enter the name of the Testkit (or) Test Method used"); ?>" placeholder="<?= _("Enter the name of the Testkit <?= ($indexKey + 1); ?>"); ?>" style="display: <?php echo $show; ?>;margin-top: 10px;" />
                                                                     </td>
@@ -499,7 +499,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                             <th scope="row" colspan="<?php echo $span; ?>" class="text-right final-result-row">Final Result</th>
                                                             <td>
                                                                 <select class="form-control result-focus isRequired" name="result" id="result">
-                                                                    <option value=''> -- Select -- </option>
+                                                                    <option value=''> <?= _("-- Select --"); ?> </option>
                                                                     <?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?>
                                                                         <option value="<?php echo $c19ResultKey; ?>" <?php echo ($covid19Info['result'] == $c19ResultKey) ? "selected='selected'" : ""; ?>> <?php echo $c19ResultValue; ?> </option>
                                                                     <?php } ?>
@@ -679,7 +679,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                 });
         } else if (pName == '') {
             $("#patientDistrict").html("<?php echo $province; ?>");
-            $("#patientDistrict").html("<option value=''> -- Select -- </option>");
+            $("#patientDistrict").html("<option value=''> <?= _("-- Select --"); ?> </option>");
         }
         $.unblockUI();
     }

@@ -77,7 +77,7 @@ $provinceInfo = [];
 foreach ($pdResult as $state) {
     $provinceInfo[$state['geo_name']] = ($state['geo_name']);
 }
-$province = "<option value=''> -- Select -- </option>";
+$province = "<option value=''> <?= _("-- Select --"); ?> </option>";
 foreach ($pdResult as $provinceName) {
     $selected = "";
     if ($covid19Info['geo_id'] == $provinceName['geo_id']) {
@@ -192,26 +192,26 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         <td></td>
                                     </tr>
                                     <tr>
-                                        <th>Project Name</th>
+                                        <th><?= _("Project Name"); ?></th>
                                         <td><select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
-                                                <option value=""> -- Select -- </option>
-                                                 <?php
+                                                <option value=""> <?= _("-- Select --"); ?> </option>
+                                                <?php
                                                 foreach ($fundingSourceList as $fundingSource) {
                                                 ?>
-                                                <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $covid19Info['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
+                                                    <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $covid19Info['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
-                                        <th>Implementing Partner</th>
+                                        <th><?= _("Implementing Partner"); ?></th>
                                         <td><select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
-                                                <option value=""> -- Select -- </option>
+                                                <option value=""> <?= _("-- Select --"); ?> </option>
                                                 <?php
                                                 foreach ($implementingPartnerList as $implementingPartner) {
                                                 ?>
-                                                <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $covid19Info['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
+                                                    <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $covid19Info['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
                                                 <?php } ?>
                                             </select>
-                                        </td>     
+                                        </td>
                                     </tr>
                                 </table>
 
@@ -254,7 +254,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         <th scope="row"><label for="patientGender"><?= _("Gender"); ?> <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <select class="form-control isRequired" name="patientGender" id="patientGender">
-                                                <option value=''> -- Select -- </option>
+                                                <option value=''> <?= _("-- Select --"); ?> </option>
                                                 <option value='male' <?php echo ($covid19Info['patient_gender'] == 'male') ? "selected='selected'" : ""; ?>> <?= _("Male"); ?> </option>
                                                 <option value='female' <?php echo ($covid19Info['patient_gender'] == 'female') ? "selected='selected'" : ""; ?>> <?= _("Female"); ?> </option>
                                                 <option value='other' <?php echo ($covid19Info['patient_gender'] == 'other') ? "selected='selected'" : ""; ?>> <?= _("Other"); ?> </option>
@@ -661,7 +661,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
             $("#province").html("<?php echo $province; ?>");
             $("#facilityId").html("<?php echo $facility; ?>");
             $("#facilityId").select2("val", "");
-            $("#district").html("<option value=''> -- Select -- </option>");
+            $("#district").html("<option value=''> <?= _("-- Select --"); ?> </option>");
         }
         $.unblockUI();
     }
@@ -709,7 +709,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                 });
         } else if (pName == '') {
             $("#province").html("<?php echo $province; ?>");
-            $("#patientDistrict").html("<option value=''> -- Select -- </option>");
+            $("#patientDistrict").html("<option value=''> <?= _("-- Select --"); ?> </option>");
         }
         $.unblockUI();
     }
@@ -749,7 +749,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                     }
                 });
         } else {
-            $("#facilityId").html("<option value=''> -- Select -- </option>");
+            $("#facilityId").html("<option value=''> <?= _("-- Select --"); ?> </option>");
         }
         $.unblockUI();
     }

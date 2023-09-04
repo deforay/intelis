@@ -144,26 +144,26 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Project Name</th>
+                                        <th><?= _("Project Name"); ?></th>
                                         <td><select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
-                                                <option value=""> -- Select -- </option>
-                                                 <?php
+                                                <option value=""> <?= _("-- Select --"); ?> </option>
+                                                <?php
                                                 foreach ($fundingSourceList as $fundingSource) {
                                                 ?>
-                                                <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
+                                                    <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
-                                        <th>Implementing Partner</th>
+                                        <th><?= _("Implementing Partner"); ?></th>
                                         <td><select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
-                                                <option value=""> -- Select -- </option>
+                                                <option value=""> <?= _("-- Select --"); ?> </option>
                                                 <?php
                                                 foreach ($implementingPartnerList as $implementingPartner) {
                                                 ?>
-                                                <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
+                                                    <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
                                                 <?php } ?>
                                             </select>
-                                        </td>     
+                                        </td>
                                     </tr>
                                     <tr>
                                         <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
@@ -465,7 +465,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                             <th scope="row" colspan="4" class="text-right final-result-row">Final Result</th>
                                                             <td>
                                                                 <select class="form-control" name="result" id="result">
-                                                                    <option value=''> -- Select -- </option>
+                                                                    <option value=''> <?= _("-- Select --"); ?> </option>
                                                                     <?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?>
                                                                         <option value="<?php echo $c19ResultKey; ?>"> <?php echo $c19ResultValue; ?> </option>
                                                                     <?php } ?>
@@ -628,7 +628,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <label for="state" class="col-lg-4 control-label">Province/State <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
                                         <select name="state" id="state" class="form-control isRequired" title="Please choose province/state">
-                                            <option value=""> -- Select -- </option>
+                                            <option value=""> <?= _("-- Select --"); ?> </option>
                                             <?php
                                             foreach ($pResult as $province) {
                                             ?>
@@ -835,7 +835,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             $("#province").html("<?php echo $province; ?>");
             $("#facilityId").html("<?php echo addslashes($facility); ?>");
             $("#facilityId").select2("val", "");
-            $("#district").html("<option value=''> -- Select -- </option>");
+            $("#district").html("<option value=''> <?= _("-- Select --"); ?> </option>");
         }
         $.unblockUI();
     }
@@ -857,7 +857,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                 });
         } else if (pName == '') {
             $(obj).html("<?php echo $province; ?>");
-            $("#patientDistrict").html("<option value=''> -- Select -- </option>");
+            $("#patientDistrict").html("<option value=''> <?= _("-- Select --"); ?> </option>");
         }
         $.unblockUI();
     }
@@ -921,7 +921,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                     }
                 });
         } else {
-            $("#facilityId").html("<option value=''> -- Select -- </option>");
+            $("#facilityId").html("<option value=''> <?= _("-- Select --"); ?> </option>");
         }
         $.unblockUI();
     }
