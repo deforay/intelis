@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-09-04 13:07+0530\n"
-"PO-Revision-Date: 2023-09-04 13:07+0530\n"
+"POT-Creation-Date: 2023-09-05 04:06+0530\n"
+"PO-Revision-Date: 2023-09-05 04:08+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -880,7 +880,7 @@ msgstr ""
 #: tb/results/tb-result-status.php:96 tb/results/tb-result-status.php:112
 #: users/addUser.php:223 users/addUser.php:233 users/editUser.php:266
 #: users/editUser.php:297 users/editUser.php:307
-#: vl/program-management/getHighVlResultDetails.php:254
+#: vl/program-management/getHighVlResultDetails.php:261
 #: vl/program-management/highViralLoad.php:103
 #: vl/program-management/highViralLoad.php:120
 #: vl/program-management/highViralLoad.php:138
@@ -955,7 +955,7 @@ msgstr ""
 #: vl/results/forms/update-cameroon-result.php:639
 #: vl/results/forms/update-cameroon-result.php:672
 #: vl/results/forms/update-cameroon-result.php:683
-#: vl/results/forms/update-cameroon-result.php:758
+#: vl/results/forms/update-cameroon-result.php:750
 #: vl/results/forms/update-drc-result.php:17
 #: vl/results/getVlResultsForApproval.php:192
 #: vl/results/vl-failed-results.php:67 vl/results/vl-failed-results.php:93
@@ -3678,7 +3678,7 @@ msgstr ""
 #: tb/requests/tb-requests.php:153 vl/program-management/vl-export-data.php:316
 #: vl/requests/vl-requests.php:295
 msgid "Funding Sources"
-msgstr ""
+msgstr "Project Names"
 
 #: common/reference/funding-sources.php:25
 msgid "Add Funding Sources"
@@ -4541,7 +4541,7 @@ msgstr ""
 #: vl/program-management/vlMonitoringReport.php:292
 #: vl/requests/addSamplesFromManifest.php:109 vl/requests/vl-requests.php:595
 #: vl/requests/vl-requests.php:648 vl/results/get-manual-results.php:294
-#: vl/results/getVlTestResultDetails.php:306
+#: vl/results/getVlTestResultDetails.php:307
 #: vl/results/vl-failed-results.php:179 vl/results/vl-failed-results.php:209
 #: vl/results/vlPrintResult.php:337 vl/results/vlPrintResult.php:395
 #: vl/results/vlPrintResult.php:687 vl/results/vlPrintResult.php:747
@@ -5103,7 +5103,7 @@ msgstr ""
 #: tb/management/tb-export-data.php:194 tb/requests/tb-requests.php:214
 #: tb/requests/tb-requests.php:251 tb/requests/tb-requests.php:269
 #: users/addUser.php:139 users/editUser.php:187
-#: vl/program-management/getHighVlResultDetails.php:255
+#: vl/program-management/getHighVlResultDetails.php:262
 #: vl/program-management/highViralLoad.php:212
 #: vl/program-management/highViralLoad.php:231
 #: vl/program-management/highViralLoad.php:244
@@ -5208,7 +5208,7 @@ msgstr ""
 #: tb/management/tb-export-data.php:195 tb/requests/tb-requests.php:215
 #: tb/requests/tb-requests.php:252 tb/requests/tb-requests.php:270
 #: users/addUser.php:140 users/editUser.php:188
-#: vl/program-management/getHighVlResultDetails.php:256
+#: vl/program-management/getHighVlResultDetails.php:263
 #: vl/program-management/highViralLoad.php:215
 #: vl/program-management/highViralLoad.php:234
 #: vl/program-management/highViralLoad.php:247
@@ -5382,6 +5382,9 @@ msgstr ""
 #: tb/management/tb-export-data.php:262 tb/management/tb-export-data.php:285
 #: vl/program-management/vl-export-data.php:542
 #: vl/program-management/vl-export-data.php:608
+#: vl/requests/forms/add-cameroon.php:181
+#: vl/requests/forms/edit-cameroon.php:222
+#: vl/results/forms/update-cameroon-result.php:284
 msgid "Implementing Partner"
 msgstr ""
 
@@ -7375,6 +7378,9 @@ msgstr ""
 #: eid/requests/forms/add-cameroon.php:153
 #: eid/requests/forms/edit-cameroon.php:135
 #: eid/results/forms/update-cameroon-result.php:146
+#: vl/requests/forms/add-cameroon.php:168
+#: vl/requests/forms/edit-cameroon.php:209
+#: vl/results/forms/update-cameroon-result.php:271
 msgid "Project Name"
 msgstr ""
 
@@ -7920,7 +7926,7 @@ msgstr ""
 #: eid/requests/forms/add-cameroon.php:536
 #: vl/requests/forms/add-cameroon.php:588 vl/requests/forms/add-drc.php:462
 #: vl/requests/forms/edit-cameroon.php:683 vl/requests/forms/edit-drc.php:497
-#: vl/results/forms/update-cameroon-result.php:718
+#: vl/results/forms/update-cameroon-result.php:710
 #: vl/results/forms/update-drc-result.php:470
 msgid "Rejection Date"
 msgstr ""
@@ -7931,7 +7937,7 @@ msgstr ""
 #: eid/requests/forms/add-cameroon.php:537
 #: vl/requests/forms/add-cameroon.php:590
 #: vl/requests/forms/edit-cameroon.php:685
-#: vl/results/forms/update-cameroon-result.php:720
+#: vl/results/forms/update-cameroon-result.php:712
 msgid "Select Rejection Date"
 msgstr ""
 
@@ -8156,7 +8162,7 @@ msgstr ""
 #: vl/requests/forms/add-cameroon.php:608
 #: vl/requests/forms/edit-cameroon.php:703
 #: vl/result-mail/editTestResultEmailConfig.php:114
-#: vl/results/forms/update-cameroon-result.php:738
+#: vl/results/forms/update-cameroon-result.php:730
 msgid "Reviewed By"
 msgstr ""
 
@@ -8164,7 +8170,7 @@ msgstr ""
 #: covid-19/results/forms/update-cameroon-result.php:516
 #: vl/requests/forms/add-cameroon.php:610
 #: vl/requests/forms/edit-cameroon.php:705
-#: vl/results/forms/update-cameroon-result.php:740
+#: vl/results/forms/update-cameroon-result.php:732
 msgid "Please choose reviewed by"
 msgstr ""
 
@@ -8173,14 +8179,14 @@ msgstr ""
 #: eid/requests/forms/add-cameroon.php:557
 #: vl/requests/forms/add-cameroon.php:600
 #: vl/requests/forms/edit-cameroon.php:695
-#: vl/results/forms/update-cameroon-result.php:730
+#: vl/results/forms/update-cameroon-result.php:722
 msgid "Reviewed On"
 msgstr ""
 
 #: covid-19/requests/forms/edit-cameroon.php:556
 #: covid-19/results/forms/update-cameroon-result.php:521
 #: vl/requests/forms/edit-cameroon.php:697
-#: vl/results/forms/update-cameroon-result.php:732
+#: vl/results/forms/update-cameroon-result.php:724
 msgid "Reviewed on"
 msgstr ""
 
@@ -8188,7 +8194,7 @@ msgstr ""
 #: covid-19/results/forms/update-cameroon-result.php:521
 #: eid/requests/forms/add-cameroon.php:558
 #: vl/requests/forms/edit-cameroon.php:697
-#: vl/results/forms/update-cameroon-result.php:732
+#: vl/results/forms/update-cameroon-result.php:724
 msgid "Please enter the Reviewed on"
 msgstr ""
 
@@ -8263,7 +8269,7 @@ msgstr ""
 #: tb/requests/get-request-list.php:300
 #: tb/results/tb-samples-for-manual-result-entry.php:231
 #: vl/requests/get-request-list.php:417 vl/results/get-manual-results.php:297
-#: vl/results/getVlTestResultDetails.php:309
+#: vl/results/getVlTestResultDetails.php:310
 msgid "Locked"
 msgstr ""
 
@@ -8792,7 +8798,7 @@ msgstr ""
 #: hepatitis/results/hepatitis-samples-for-manual-result-entry.php:235
 #: tb/results/tb-samples-for-manual-result-entry.php:228
 #: vl/results/get-manual-results.php:294
-#: vl/results/getVlTestResultDetails.php:306
+#: vl/results/getVlTestResultDetails.php:307
 msgid "Enter Result"
 msgstr ""
 
@@ -8861,7 +8867,7 @@ msgstr ""
 #: hepatitis/results/get-results-for-print.php:287
 #: tb/results/get-results-for-print.php:280
 #: vl/results/get-manual-results.php:292
-#: vl/results/getVlTestResultDetails.php:304
+#: vl/results/getVlTestResultDetails.php:305
 msgid "Print"
 msgstr ""
 
@@ -9845,7 +9851,7 @@ msgstr ""
 #: eid/requests/forms/add-cameroon.php:567
 #: vl/requests/forms/add-cameroon.php:617
 #: vl/requests/forms/edit-cameroon.php:712
-#: vl/results/forms/update-cameroon-result.php:747
+#: vl/results/forms/update-cameroon-result.php:739
 msgid "Approved On"
 msgstr ""
 
@@ -9863,7 +9869,7 @@ msgstr ""
 #: vl/requests/forms/add-cameroon.php:625
 #: vl/requests/forms/edit-cameroon.php:720
 #: vl/result-mail/editTestResultEmailConfig.php:115
-#: vl/results/forms/update-cameroon-result.php:755
+#: vl/results/forms/update-cameroon-result.php:747
 msgid "Approved By"
 msgstr ""
 
@@ -10465,12 +10471,16 @@ msgstr ""
 msgid "No Facility Mapped to Selected Test Type"
 msgstr ""
 
-#: facilities/upload-facilities-helper.php:57
-msgid "Please enter all the mandatory fields in excel sheet"
+#: facilities/upload-facilities-helper.php:64
+msgid "Please enter all the mandatory fields in the excel sheet"
 msgstr ""
 
-#: facilities/upload-facilities-helper.php:138
-msgid "Bulk Facilities file uploaded successfully."
+#: facilities/upload-facilities-helper.php:139
+msgid "Facilities added successfully"
+msgstr ""
+
+#: facilities/upload-facilities-helper.php:141
+msgid "Bulk Facility Import File not uploaded"
 msgstr ""
 
 #: facilities/upload-facilities.php:74
@@ -15976,6 +15986,11 @@ msgstr ""
 msgid "Please indicate if this is a reordered sample"
 msgstr ""
 
+#: vl/requests/forms/add-cameroon.php:118
+#: vl/requests/forms/edit-cameroon.php:159
+msgid "Print Barcode Label"
+msgstr ""
+
 #: vl/requests/forms/add-cameroon.php:129
 #: vl/requests/forms/edit-cameroon.php:170
 msgid "Please choose a province"
@@ -16476,27 +16491,27 @@ msgstr ""
 
 #: vl/requests/forms/add-cameroon.php:594
 #: vl/requests/forms/edit-cameroon.php:689
-#: vl/results/forms/update-cameroon-result.php:724
+#: vl/results/forms/update-cameroon-result.php:716
 msgid "Viral Load (Log)"
 msgstr ""
 
 #: vl/requests/forms/add-cameroon.php:596
 #: vl/requests/forms/edit-cameroon.php:691
 #: vl/result-mail/editTestResultEmailConfig.php:103
-#: vl/results/forms/update-cameroon-result.php:726
+#: vl/results/forms/update-cameroon-result.php:718
 msgid "Viral Load Log"
 msgstr ""
 
 #: vl/requests/forms/add-cameroon.php:596
 #: vl/requests/forms/edit-cameroon.php:691
-#: vl/results/forms/update-cameroon-result.php:726
+#: vl/results/forms/update-cameroon-result.php:718
 msgid "Please enter viral load log"
 msgstr ""
 
 #: vl/requests/forms/add-cameroon.php:636
 #: vl/requests/forms/edit-cameroon.php:731
 #: vl/result-mail/editTestResultEmailConfig.php:116
-#: vl/results/forms/update-cameroon-result.php:766
+#: vl/results/forms/update-cameroon-result.php:758
 msgid "Lab Tech. Comments"
 msgstr ""
 
@@ -16569,10 +16584,6 @@ msgstr ""
 msgid "Edit VL Request"
 msgstr ""
 
-#: vl/requests/forms/edit-cameroon.php:159
-msgid "Print Barcode Label"
-msgstr ""
-
 #: vl/requests/forms/edit-cameroon.php:261
 msgid "Unique ART (TRACNET) No."
 msgstr ""
@@ -16582,12 +16593,12 @@ msgid "Enter new reason of testing"
 msgstr ""
 
 #: vl/requests/forms/edit-cameroon.php:685
-#: vl/results/forms/update-cameroon-result.php:720
+#: vl/results/forms/update-cameroon-result.php:712
 msgid "Please select rejection date"
 msgstr ""
 
 #: vl/requests/forms/edit-cameroon.php:733
-#: vl/results/forms/update-cameroon-result.php:768
+#: vl/results/forms/update-cameroon-result.php:760
 msgid "Lab comments"
 msgstr ""
 

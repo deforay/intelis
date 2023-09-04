@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2023-09-04 13:06+0530\n"
-"PO-Revision-Date: 2023-09-04 13:06+0530\n"
+"PO-Revision-Date: 2023-09-05 04:10+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -3700,7 +3700,7 @@ msgstr "Modifier Action corrective recommandée"
 #: tb/requests/tb-requests.php:153 vl/program-management/vl-export-data.php:316
 #: vl/requests/vl-requests.php:295
 msgid "Funding Sources"
-msgstr "Sources de financement"
+msgstr "Nom du projet"
 
 #: common/reference/funding-sources.php:25
 msgid "Add Funding Sources"

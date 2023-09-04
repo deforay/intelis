@@ -266,34 +266,34 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 									<?php echo ($facilityResult[0]['contact_person']); ?></div>
 							</div>
 							<div class="row">
-                                             <div class="col-xs-3 col-md-3">
-                                                  <div class="form-group">
-                                                       <label for="fundingSource">Project Name</label>
-                                                       <select <?php echo $disable; ?> class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
-                                                            <option value=""> -- Select -- </option>
-                                                            <?php
-                                                            foreach ($fundingSourceList as $fundingSource) {
-                                                            ?>
-                                                                 <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
-                                                            <?php } ?>
-                                                       </select>
-                                                  </div>
-                                             </div>
-                                             <div class="col-xs-3 col-md-3">
-                                                  <div class="form-group">
-                                                       <label for="implementingPartner">Implementing Partner</label>
-                                                       <select <?php echo $disable; ?> class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
-                                                            <option value=""> -- Select -- </option>
-                                                            <?php
-                                                            foreach ($implementingPartnerList as $implementingPartner) {
-                                                            ?>
-                                                                 <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
-                                                            <?php } ?>
-                                                       </select>
-                                                  </div>
-                                             </div>
-                                             
-                                        </div>
+								<div class="col-xs-3 col-md-3">
+									<div class="form-group">
+										<label for="fundingSource"><?= _("Project Name"); ?></label>
+										<select <?php echo $disable; ?> class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
+											<option value=""> -- Select -- </option>
+											<?php
+											foreach ($fundingSourceList as $fundingSource) {
+											?>
+												<option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
+											<?php } ?>
+										</select>
+									</div>
+								</div>
+								<div class="col-xs-3 col-md-3">
+									<div class="form-group">
+										<label for="implementingPartner"><?= _("Implementing Partner"); ?></label>
+										<select <?php echo $disable; ?> class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
+											<option value=""> -- Select -- </option>
+											<?php
+											foreach ($implementingPartnerList as $implementingPartner) {
+											?>
+												<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
+											<?php } ?>
+										</select>
+									</div>
+								</div>
+
+							</div>
 						</div>
 
 					</div>
@@ -702,14 +702,6 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														<datalist id="possibleVlResults">
 
 														</datalist>
-														<!--   <input type="checkbox" class="labSection specialResults" name="lt20" value="yes" title="Please check <20">
-                                                                           &lt; 20<br>
-                                                                           <input type="checkbox" class="labSection specialResults" name="lt40" value="yes" title="Please check <40">
-                                                                           &lt; 40<br>
-                                                                           <input type="checkbox" class="specialResults" name="tnd" value="yes" title="Please check tnd" <?php echo $labFieldDisabled; ?>> Target Not Detected<br>
-                                                                           <input type="checkbox" class="specialResults" name="bdl" value="yes" title="Please check bdl" <?php echo $labFieldDisabled; ?>> Below Detection Level<br>
-                                                                           <input type="checkbox" class="specialResults" name="failed" value="yes" title="Please check failed" <?php echo $labFieldDisabled; ?>> Failed<br>
-                                                                           <input type="checkbox" class="specialResults" name="invalid" value="yes" title="Please check invalid" <?php echo $labFieldDisabled; ?>> Invalid-->
 													</div>
 												</div>
 											</div>

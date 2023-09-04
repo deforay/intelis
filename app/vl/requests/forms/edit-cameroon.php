@@ -93,7 +93,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 
 
 
-?> 
+?>
 <style>
      .table>tbody>tr>td {
           border-top: none;
@@ -206,7 +206,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                         <div class="row">
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="fundingSource">Project Name</label>
+                                                       <label for="fundingSource"><?= _("Project Name"); ?></label>
                                                        <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
                                                             <option value=""> -- Select -- </option>
                                                             <?php
@@ -219,7 +219,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="implementingPartner">Implementing Partner</label>
+                                                       <label for="implementingPartner"><?= _("Implementing Partner"); ?></label>
                                                        <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
                                                             <option value=""> -- Select -- </option>
                                                             <?php
@@ -230,7 +230,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                        </select>
                                                   </div>
                                              </div>
-                                             
+
                                         </div>
 
                                    </div>
@@ -243,18 +243,18 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                    </div>
 
                                    <div class="box-body">
-                                   <div class="row">
-                                        <div class="col-md-12">
+                                        <div class="row">
+                                             <div class="col-md-12">
                                                   <label class="col-lg-5 control-label" for="syncPatientIdentifiers"><?= _('Patient is from Defence Forces (Patient Name and Patient ID will not be synced between LIS and STS)'); ?> <span class="mandatory">*</span></label>
                                                   <div class="col-lg-5">
                                                        <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control isRequired" title="<?= _('Select Patient is from Defence Forces'); ?>">
-                                                            <option value=""><?= _('--Select--'); ?></option>     
-                                                            <option value="no" <?php echo ($vlQueryInfo['sync_patient_identifiers']=="no") ? "selected='selected'" : ""; ?>><?= _('No'); ?></option>
-                                                            <option value="yes" <?php echo ($vlQueryInfo['sync_patient_identifiers']=="yes") ? "selected='selected'" : ""; ?>><?= _('Yes'); ?></option>
+                                                            <option value=""><?= _('--Select--'); ?></option>
+                                                            <option value="no" <?php echo ($vlQueryInfo['sync_patient_identifiers'] == "no") ? "selected='selected'" : ""; ?>><?= _('No'); ?></option>
+                                                            <option value="yes" <?php echo ($vlQueryInfo['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>><?= _('Yes'); ?></option>
                                                        </select>
                                                   </div>
+                                             </div>
                                         </div>
-                                   </div>
                                         <div class="row">
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">

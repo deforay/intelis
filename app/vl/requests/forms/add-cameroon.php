@@ -115,7 +115,7 @@ $sFormat = '';
                                              <?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") { ?>
                                                   <div class="col-xs-3 col-md-3 pull-right">
                                                        <div class="">
-                                                            <label for="printBarCode">Print Barcode Label <span class="mandatory">*</span> </label>
+                                                            <label for="printBarCode"><?= _('Print Barcode Label'); ?> <span class="mandatory">*</span> </label>
                                                             <input type="checkbox" class="" id="printBarCode" name="printBarCode" checked />
                                                        </div>
                                                   </div>
@@ -165,7 +165,7 @@ $sFormat = '';
                                         <div class="row">
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="fundingSource">Project Name</label>
+                                                       <label for="fundingSource"><?= _("Project Name"); ?></label>
                                                        <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
                                                             <option value=""> -- Select -- </option>
                                                             <?php
@@ -178,7 +178,7 @@ $sFormat = '';
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="implementingPartner">Implementing Partner</label>
+                                                       <label for="implementingPartner"><?= _("Implementing Partner"); ?></label>
                                                        <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
                                                             <option value=""> -- Select -- </option>
                                                             <?php
@@ -189,7 +189,7 @@ $sFormat = '';
                                                        </select>
                                                   </div>
                                              </div>
-                                             
+
                                         </div>
                                    </div>
                               </div>
@@ -202,16 +202,16 @@ $sFormat = '';
 
                                    <div class="row">
 
-                                   <div class="col-md-12">
+                                        <div class="col-md-12">
                                              <label class="col-lg-5 control-label" for="syncPatientIdentifiers"><?= _('Patient is from Defence Forces (Patient Name and Patient ID will not be synced between LIS and STS)'); ?> <span class="mandatory">*</span></label>
                                              <div class="col-lg-5">
                                                   <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control isRequired" title="<?= _('Select Patient is from Defence Forces'); ?>">
-                                                       <option value=""><?= _('--Select--'); ?></option>     
+                                                       <option value=""><?= _('--Select--'); ?></option>
                                                        <option value="no" selected='selected'><?= _('No'); ?></option>
                                                        <option value="yes"><?= _('Yes'); ?></option>
                                                   </select>
                                              </div>
-                                   </div>
+                                        </div>
                                    </div>
 
                                    <div class="box-body">
@@ -713,7 +713,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
                let artNo = $.trim($(this).val());
 
-              
+
                if (artNo.length > 3) {
 
                     $.post("/common/patient-last-request-details.php", {
@@ -736,8 +736,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                                         $("#artNoGroup").append("<br><small style='color:red'><?= _("Total No. of times Patient tested for HIV VL"); ?> : " + obj.no_of_tested_time + "</small >");
                                    }
                               } else {
-                                   
-                                        $("#artNoGroup").html('');
+
+                                   $("#artNoGroup").html('');
                               }
                          });
                }
@@ -1097,7 +1097,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                alert("Sample id length must be a minimum length of " + minLength + " characters");
                return false;
           }
-        
+
           flag = deforayValidator.init({
                formId: 'vlRequestFormCameroon'
           });
@@ -1133,7 +1133,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                alert("Sample id length must be a minimum length of " + minLength + " characters");
                return false;
           }
-         
+
           flag = deforayValidator.init({
                formId: 'vlRequestFormCameroon'
           });
@@ -1211,8 +1211,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           if ($.trim(patientArray['sync_patient_identifiers']) != '') {
                if (patientArray['sync_patient_identifiers'] == 'yes') {
                     $("#syncPatientIdentifiers").val('yes');
-               }
-               else{
+               } else {
                     $("#syncPatientIdentifiers").val('no');
                }
           }
