@@ -196,19 +196,19 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                              </div>
                                         </div>
                                         <div class="row facilityDetails" style="display:none;">
-                                             <div class="col-xs-2 col-md-2 femails" style="display:none;"><strong>Clinic Email(s) -</strong></div>
+                                             <div class="col-xs-2 col-md-2 femails" style="display:none;"><strong><?= _translate('Clinic Email(s) -'); ?></strong></div>
                                              <div class="col-xs-2 col-md-2 femails facilityEmails" style="display:none;"></div>
-                                             <div class="col-xs-2 col-md-2 fmobileNumbers" style="display:none;"><strong>Clinic Mobile No.(s) -</strong></div>
+                                             <div class="col-xs-2 col-md-2 fmobileNumbers" style="display:none;"><strong><?= _translate('Clinic Mobile No.(s) -'); ?></strong></div>
                                              <div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:none;"></div>
-                                             <div class="col-xs-2 col-md-2 fContactPerson" style="display:none;"><strong>Clinic Contact Person -</strong></div>
+                                             <div class="col-xs-2 col-md-2 fContactPerson" style="display:none;"><strong><?= _translate('Clinic Contact Person -'); ?></strong></div>
                                              <div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:none;"></div>
                                         </div>
                                         <div class="row">
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="fundingSource"><?= _translate("Project Name"); ?></label>
-                                                       <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
-                                                            <option value=""> -- Select -- </option>
+                                                       <select class="form-control" name="fundingSource" id="fundingSource" title="<?= _translate('Please choose implementing partner'); ?>" style="width:100%;">
+                                                            <option value=""> <?= _translate('-- Select --'); ?> </option>
                                                             <?php
                                                             foreach ($fundingSourceList as $fundingSource) {
                                                             ?>
@@ -221,7 +221,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                   <div class="form-group">
                                                        <label for="implementingPartner"><?= _translate("Implementing Partner"); ?></label>
                                                        <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
-                                                            <option value=""> -- Select -- </option>
+                                                            <option value=""> <?= _translate('-- Select --'); ?> </option>
                                                             <?php
                                                             foreach ($implementingPartnerList as $implementingPartner) {
                                                             ?>
@@ -292,7 +292,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="patientLastName"><?= _translate('Patient Last Name'); ?> </label>
-                                                       <input type="text" name="patientLastName" id="patientLastName" value="<?= $vlQueryInfo['patient_last_name'] ?>" class="form-control" placeholder="<?= _translate('Enter Patient Last Name'); ?>" title="<?= ('Enter patient last name'); ?>" />
+                                                       <input type="text" name="patientLastName" id="patientLastName" value="<?= $vlQueryInfo['patient_last_name'] ?>" class="form-control" placeholder="<?= _translate('Enter Patient Last Name'); ?>" title="<?= _translate('Enter patient last name'); ?>" />
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -417,7 +417,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                             <div class="form-group">
                                                                  <label for="lineOfTreatment" class="labels"><?= _translate('Line of Treatment'); ?> </label>
                                                                  <select class="form-control" name="lineOfTreatment" id="lineOfTreatment" title="<?= _translate('Line Of Treatment'); ?>">
-                                                                      <option value="">--Select--</option>
+                                                                      <option value=""><?= _translate('--Select--'); ?></option>
                                                                       <option value="1" <?php echo ($vlQueryInfo['line_of_treatment'] == '1') ? "selected='selected' " : "" ?>><?= _translate('1st Line'); ?></option>
                                                                       <option value="2" <?php echo ($vlQueryInfo['line_of_treatment'] == '2') ? "selected='selected' " : "" ?>><?= _translate('2nd Line'); ?></option>
                                                                       <option value="3" <?php echo ($vlQueryInfo['line_of_treatment'] == '3') ? "selected='selected' " : "" ?>><?= _translate('3rd Line'); ?></option>
@@ -748,12 +748,12 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                        </div>
                                                   </div> <!-- /printer_data_loading -->
                                                   <div id="printer_details" style="display:none">
-                                                       <span id="selected_printer">No printer selected!</span>
+                                                       <span id="selected_printer"><?= _translate('No printer selected!'); ?></span>
                                                        <button type="button" class="btn btn-success" onclick="changePrinter()">Change/Retry</button>
                                                   </div><br /> <!-- /printer_details -->
                                                   <div id="printer_select" style="display:none">
-                                                       Zebra Printer Options<br />
-                                                       Printer: <select id="printers"></select>
+                                                  <?= _translate('Zebra Printer Options'); ?><br />
+                                                  <?= _translate('Printer:'); ?> <select id="printers"></select>
                                                   </div> <!-- /printer_select -->
                                              <?php } ?>
                                              <!-- BARCODESTUFF END -->

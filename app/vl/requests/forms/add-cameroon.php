@@ -180,7 +180,7 @@ $sFormat = '';
                                                   <div class="form-group">
                                                        <label for="implementingPartner"><?= _translate("Implementing Partner"); ?></label>
                                                        <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
-                                                            <option value=""> -- Select -- </option>
+                                                            <option value=""> <?= _translate('-- Select --'); ?> </option>
                                                             <?php
                                                             foreach ($implementingPartnerList as $implementingPartner) {
                                                             ?>
@@ -647,19 +647,19 @@ $sFormat = '';
                                         <div class="box-footer">
                                              <!-- BARCODESTUFF START -->
                                              <?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') { ?>
-                                                  <div id="printer_data_loading" style="display:none"><span id="loading_message">Loading Printer Details...</span><br />
+                                                  <div id="printer_data_loading" style="display:none"><span id="loading_message"><?= _translate('Loading Printer Details...'); ?></span><br />
                                                        <div class="progress" style="width:100%">
                                                             <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
                                                             </div>
                                                        </div>
                                                   </div> <!-- /printer_data_loading -->
                                                   <div id="printer_details" style="display:none">
-                                                       <span id="selected_printer">No printer selected!</span>
-                                                       <button type="button" class="btn btn-success" onclick="changePrinter()">Change/Retry</button>
+                                                       <span id="selected_printer"><?= _translate('No printer selected!'); ?></span>
+                                                       <button type="button" class="btn btn-success" onclick="changePrinter()"><?= _translate('Change/Retry'); ?></button>
                                                   </div><br /> <!-- /printer_details -->
                                                   <div id="printer_select" style="display:none">
-                                                       Zebra Printer Options<br />
-                                                       Printer: <select id="printers"></select>
+                                                  <?= _translate('Zebra Printer Options'); ?><br />
+                                                       <?= _translate('Printer:'); ?> <select id="printers"></select>
                                                   </div> <!-- /printer_select -->
                                              <?php } ?>
                                              <!-- BARCODESTUFF END -->
@@ -754,16 +754,16 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           });
 
           $('#fName').select2({
-               placeholder: "Select Clinic/Health Center"
+               placeholder: "<?= _translate('Select Clinic/Health Center'); ?>"
           });
           $('#labId').select2({
-               placeholder: "Select Lab Name"
+               placeholder: "<?= _translate('Select Lab Name'); ?>"
           });
           $('#reviewedBy').select2({
-               placeholder: "Select Reviewed By"
+               placeholder: "<?= _translate('Select Reviewed By'); ?>"
           });
           $('#approvedBy').select2({
-               placeholder: "Select Approved By"
+               placeholder: "<?= _translate('Select Approved By'); ?>"
           });
           // BARCODESTUFF START
           <?php

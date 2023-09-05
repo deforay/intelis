@@ -566,57 +566,57 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="facilityName" class="col-lg-4 control-label">Facility Name <span class="mandatory">*</span></label>
+                                    <label for="facilityName" class="col-lg-4 control-label"><?= _translate('Facility Name'); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="facilityName" name="facilityName" placeholder="Facility Name" title="Please enter facility name" onblur="checkNameValidation('facility_details','facility_name',this,null,'The facility name that you entered already exists.Enter another name',null)" />
+                                        <input type="text" class="form-control isRequired" id="facilityName" name="facilityName" placeholder="<?= _translate('Facility Name'); ?>" title="<?= _translate('Please enter facility name'); ?>" onblur="checkNameValidation('facility_details','facility_name',this,null,'The facility name that you entered already exists.Enter another name',null)" />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="facilityCode" class="col-lg-4 control-label">Facility Code</label>
+                                    <label for="facilityCode" class="col-lg-4 control-label"><?= _translate('Facility Code'); ?></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control" id="facilityCode" name="facilityCode" placeholder="Facility Code" title="Please enter facility code" onblur="checkNameValidation('facility_details','facility_code',this,null,'The code that you entered already exists.Try another code',null)" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="otherId" class="col-lg-4 control-label">Other Id </label>
-                                    <div class="col-lg-7">
-                                        <input type="text" class="form-control" id="otherId" name="otherId" placeholder="Other Id" />
-                                        <input type="hidden" class="form-control isRequired" id="facilityType" name="facilityType" value="1" title="Please select facility type" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="email" class="col-lg-4 control-label">Email(s) </label>
-                                    <div class="col-lg-7">
-                                        <input type="text" class="form-control" id="email" name="email" placeholder="eg-email1@gmail.com,email2@gmail.com" />
+                                        <input type="text" class="form-control" id="facilityCode" name="facilityCode" placeholder="<?= _translate('Facility Code'); ?>" title="<?= _translate('Please enter facility code'); ?>" onblur="checkNameValidation('facility_details','facility_code',this,null,'The code that you entered already exists.Try another code',null)" />
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="row">
-
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="testingPoints" class="col-lg-4 control-label">Testing Point(s)<br> <small>(comma separated)</small> </label>
+                                    <label for="otherId" class="col-lg-4 control-label"><?= _translate('Other Id'); ?> </label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control" id="testingPoints" name="testingPoints" placeholder="eg. VCT, PMTCT" />
+                                        <input type="text" class="form-control" id="otherId" name="otherId" placeholder="<?= _translate('Other Id'); ?>" />
+                                        <input type="hidden" class="form-control isRequired" id="facilityType" name="facilityType" value="1" title="<?= _translate('Please select facility type'); ?>" />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="contactPerson" class="col-lg-4 control-label">Contact Person</label>
+                                    <label for="email" class="col-lg-4 control-label"><?= _translate('Email(s)'); ?> </label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control" id="contactPerson" name="contactPerson" placeholder="Contact Person" />
+                                        <input type="text" class="form-control" id="email" name="email" placeholder="<?= _translate('eg-email1@gmail.com,email2@gmail.com'); ?>" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="testingPoints" class="col-lg-4 control-label"><?= _translate('Testing Point(s)'); ?><br> <small><?= _translate('(comma separated)'); ?></small> </label>
+                                    <div class="col-lg-7">
+                                        <input type="text" class="form-control" id="testingPoints" name="testingPoints" placeholder="<?= _translate('eg. VCT, PMTCT'); ?>" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="contactPerson" class="col-lg-4 control-label"><?= _translate('Contact Person'); ?></label>
+                                    <div class="col-lg-7">
+                                        <input type="text" class="form-control" id="contactPerson" name="contactPerson" placeholder="<?= _translate('Contact Person'); ?>" />
                                     </div>
                                 </div>
                             </div>
@@ -625,9 +625,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="state" class="col-lg-4 control-label">Province/State <span class="mandatory">*</span></label>
+                                    <label for="state" class="col-lg-4 control-label"><?= _translate('Province/State'); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <select name="state" id="state" class="form-control isRequired" title="Please choose province/state">
+                                        <select name="state" id="state" class="form-control isRequired" title="<?= _translate('Please choose province/state'); ?>">
                                             <option value=""> <?= _translate("-- Select --"); ?> </option>
                                             <?php
                                             foreach ($pResult as $province) {
@@ -636,17 +636,17 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <?php
                                             }
                                             ?>
-                                            <option value="other">Other</option>
+                                            <option value="other"><?= _translate('Other'); ?></option>
                                         </select>
-                                        <input type="text" class="form-control" name="provinceNew" id="provinceNew" placeholder="Enter Province/State" title="Please enter province/state" style="margin-top:4px;display:none;" />
+                                        <input type="text" class="form-control" name="provinceNew" id="provinceNew" placeholder="<?= _translate('Enter Province/State'); ?>" title="<?= _translate('Please enter province/state'); ?>" style="margin-top:4px;display:none;" />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="phoneNo" class="col-lg-4 control-label">Phone Number</label>
+                                    <label for="phoneNo" class="col-lg-4 control-label"><?= _translate('Phone Number'); ?></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control forceNumeric" id="phoneNo" name="phoneNo" placeholder="Phone Number" onblur="checkNameValidation('facility_details','facility_mobile_numbers',this,null,'The mobile no that you entered already exists.Enter another mobile no.',null)" />
+                                        <input type="text" class="form-control forceNumeric" id="phoneNo" name="phoneNo" placeholder="<?= _translate('Phone Number'); ?>" onblur="checkNameValidation('facility_details','facility_mobile_numbers',this,null,'The mobile no that you entered already exists.Enter another mobile no.',null)" />
                                     </div>
                                 </div>
                             </div>
@@ -654,17 +654,17 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="hubName" class="col-lg-4 control-label">Linked Hub Name (If Applicable)</label>
+                                    <label for="hubName" class="col-lg-4 control-label"><?= _translate('Linked Hub Name (If Applicable)'); ?></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control" id="hubName" name="hubName" placeholder="Hub Name" title="Please enter hub name" />
+                                        <input type="text" class="form-control" id="hubName" name="hubName" placeholder="<?= _translate('Hub Name'); ?>" title="<?= _translate('Please enter hub name'); ?>" />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="district" class="col-lg-4 control-label">District/County <span class="mandatory">*</span></label>
+                                    <label for="district" class="col-lg-4 control-label"><?= _translate('District/County'); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="district" name="district" placeholder="District/County" title="Please enter district/county" />
+                                        <input type="text" class="form-control isRequired" id="district" name="district" placeholder="<?= _translate('District/County'); ?>" title="<?= _translate('Please enter district/county'); ?>" />
                                     </div>
                                 </div>
                             </div>
@@ -673,7 +673,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="country" class="col-lg-4 control-label">Country</label>
+                                    <label for="country" class="col-lg-4 control-label"><?= _translate('Country'); ?></label>
                                     <div class="col-lg-7">
                                         <input type="text" class="form-control" id="country" name="country" placeholder="Country" />
                                     </div>
@@ -681,7 +681,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="address" class="col-lg-4 control-label">Address</label>
+                                    <label for="address" class="col-lg-4 control-label"><?= _translate('Address'); ?></label>
                                     <div class="col-lg-7">
                                         <textarea class="form-control" name="address" id="address" placeholder="Address"></textarea>
                                     </div>
@@ -692,17 +692,17 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="latitude" class="col-lg-4 control-label">Latitude</label>
+                                    <label for="latitude" class="col-lg-4 control-label"><?= _translate('Latitude'); ?></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control forceNumeric" id="latitude" name="latitude" placeholder="Latitude" title="Please enter latitude" />
+                                        <input type="text" class="form-control forceNumeric" id="latitude" name="latitude" placeholder="<?= _translate('Latitude'); ?>" title="<?= _translate('Please enter latitude'); ?>" />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="longitude" class="col-lg-4 control-label">Longitude</label>
+                                    <label for="longitude" class="col-lg-4 control-label"><?= _translate('Longitude'); ?></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control forceNumeric" id="longitude" name="longitude" placeholder="Longitude" title="Please enter longitude" />
+                                        <input type="text" class="form-control forceNumeric" id="longitude" name="longitude" placeholder="<?= _translate('Longitude'); ?>" title="<?= _translate('Please enter longitude'); ?>" />
                                         <input type="hidden" name="reqForm" id="reqForm" value="1" />
                                         <input type="hidden" name="headerText" id="headerText" />
                                         <input type="hidden" name="testType[]" id="testType" value="covid19" />
@@ -723,8 +723,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
             <!-- Modal footer -->
             <div class="modal-footer">
-                <a class="btn btn-primary" href="javascript:void(0);" onclick="addFacility();">Submit</a>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <a class="btn btn-primary" href="javascript:void(0);" onclick="addFacility();"><?= _translate('Submit'); ?></a>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><?= _translate('Close'); ?></button>
             </div>
 
         </div>
@@ -1032,29 +1032,29 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         });
         $('#labId').select2({
             width: '100%',
-            placeholder: "Select Testing Lab"
+            placeholder: "<?= _translate('Select Testing Lab'); ?>"
         });
         $('#reviewedBy').select2({
             width: '100%',
-            placeholder: "Select Reviewed By"
+            placeholder: "<?= _translate('Select Reviewed By'); ?>"
         });
         $('#facilityId').select2({
-            placeholder: "Select Clinic/Health Center"
+            placeholder: "<?= _translate('Select Clinic/Health Center'); ?>"
         });
         $('#labTechnician').select2({
-            placeholder: "Select Lab Technician"
+            placeholder: "<?= _translate('Select Lab Technician'); ?>"
         });
 
         $('#patientNationality').select2({
-            placeholder: "Select Nationality"
+            placeholder: "<?= _translate('Select Nationality'); ?>"
         });
 
         $('#patientProvince').select2({
-            placeholder: "Select Case State"
+            placeholder: "<?= _translate('Select Case State'); ?>"
         });
         $('#authorizedBy').select2({
             width: '100%',
-            placeholder: "Select Authorized By"
+            placeholder: "<?= _translate('Select Authorized By'); ?>"
         });
 
         $('#isResultAuthorized').change(function(e) {
