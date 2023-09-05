@@ -1,20 +1,19 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\UsersService;
 use GuzzleHttp\Client;
-
-
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+use App\Services\UsersService;
+use App\Services\CommonService;
+use App\Services\SystemService;
+use App\Registries\ContainerRegistry;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
 /** @var UsersService $userModel */
 $userModel = ContainerRegistry::get(UsersService::class);
+
+/** @var SystemService $systemService */
+$systemService = ContainerRegistry::get(SystemService::class);
 
 
 // Sanitized values from $request object
@@ -52,15 +51,16 @@ try {
             $db->where('user_name', $data['user_name']);
         } else {
             $_SESSION['userLocale'] = $_POST['userLocale'] ?? 'en_US';
-            $data = array(
+            $systemService->setLocale($_SESSION['userLocale']);
+            $data = [
                 'user_name' => $_POST['userName'],
                 'email' => $_POST['email'],
                 'user_locale' => $_SESSION['userLocale'],
                 'phone_number' => $_POST['phoneNo'],
-            );
+            ];
 
             if (isset($_POST['password']) && trim($_POST['password']) != "") {
-                $userRow = $db->rawQueryOne("SELECT `password` FROM user_details as ud WHERE ud.user_id = ?", array($userId));
+                $userRow = $db->rawQueryOne("SELECT `password` FROM user_details as ud WHERE ud.user_id = ?", [$userId]);
                 if (password_verify($_POST['password'], $userRow['password'])) {
                     $_SESSION['alertMsg'] = _translate("Your new password cannot be same as the current password. Please try another password.");
                     header("Location:editProfile.php");
@@ -102,8 +102,6 @@ try {
                 $response['status'] = "fail";
                 $response['message'] = "Profile not updated!";
             }
-
-            print_r(json_encode($response));
         } else {
             $_SESSION['alertMsg'] = _translate("Your profile changes have been saved. You can continue using the application.");
             header("Location:editProfile.php");

@@ -13,29 +13,28 @@ class SystemService
 {
     protected ?CommonService $commonService;
 
-    public function __construct(
-        CommonService $commonService
-    ) {
+    public function __construct(CommonService $commonService)
+    {
         $this->commonService = $commonService;
     }
 
     // Application Bootstrap
     public function bootstrap(): SystemService
     {
-        $this->setupTranslation();
-        $this->setupDateTimeZone();
+        $this->setLocale();
+        $this->setDateTimeZone();
 
         return $this;
     }
 
     // Setup Translation
-    public function setupTranslation($domain = "messages"): void
+    public function setLocale($locale = null, $domain = "messages"): void
     {
         // Set the default locale
         $defaultLocale = 'en_US';
 
         // Determine the locale to use
-        $_SESSION['APP_LOCALE'] = $_SESSION['userLocale'] ?? $_SESSION['APP_LOCALE'] ?? $this->commonService->getGlobalConfig('app_locale') ?? $defaultLocale;
+        $_SESSION['APP_LOCALE'] = $locale ?? $_SESSION['userLocale'] ?? $_SESSION['APP_LOCALE'] ?? $this->commonService->getGlobalConfig('app_locale') ?? $defaultLocale;
 
 
         // Construct the path to the .mo file
@@ -75,7 +74,7 @@ class SystemService
 
 
     // Setup Timezone
-    public function setupDateTimeZone(): void
+    public function setDateTimeZone(): void
     {
         $_SESSION['APP_TIMEZONE'] = $_SESSION['APP_TIMEZONE'] ??
             $this->commonService->getGlobalConfig('default_time_zone') ?? 'UTC';
