@@ -5,12 +5,11 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 $_SESSION['captchaStatus'] = 'fail';
 
-$_POST['challenge_field'] = filter_var($_POST['challenge_field'], FILTER_SANITIZE_STRING);
-
+$_POST['challenge_field'] = htmlspecialchars($_POST['challenge_field'], ENT_QUOTES);
 if (!empty($_POST['challenge_field']) && $_SESSION['captchaCode'] == $_POST['challenge_field']) {
     $_SESSION['captchaStatus'] = 'success';
-    echo "success";
 } else {
     $_SESSION['captchaStatus'] = 'fail';
-    echo "fail";
 }
+
+echo $_SESSION['captchaStatus'];
