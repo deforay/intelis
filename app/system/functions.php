@@ -5,5 +5,5 @@ use App\Services\SystemService;
 
 function _translate($text)
 {
-    SystemService::translate($text);
+    return SystemService::translate($text);
 }
