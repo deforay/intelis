@@ -148,8 +148,8 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
               <span class="input-group-addon"><em class="fa-solid fa-language"></em></span>
               <select class="form-control isRequired readPage" name="app_locale" id="app_locale" title="<?php echo _translate('Please select the VLSM Locale'); ?>">
                 <option value=""><?= _translate("-- Choose User Locale --"); ?></option>
-                <?php foreach ($localeLists as $locale) { ?>
-                  <option value="<?php echo $locale; ?>" <?php echo (isset($arr['app_locale']) && $arr['app_locale'] == $locale) ? 'selected="selected"' : ''; ?>><?php echo $locale; ?></option>
+                <?php foreach ($localeLists as $locale => $localeName) { ?>
+                  <option value="<?php echo $locale; ?>" <?php echo (isset($arr['app_locale']) && $arr['app_locale'] == $locale) ? 'selected="selected"' : ''; ?>><?= $localeName; ?></option>
                 <?php } ?>
               </select>
             </div>
