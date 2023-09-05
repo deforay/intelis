@@ -196,11 +196,11 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								<div class="row">
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="app_locale" class="col-lg-4 control-label"><?php echo _translate("VLSM Locale"); ?> <span class="mandatory">*</span> </label>
+											<label for="app_locale" class="col-lg-4 control-label"><?php echo _translate("System Locale"); ?> <span class="mandatory">*</span> </label>
 											<div class="col-lg-8">
-												<select class="form-control isRequired readPage" name="app_locale" id="app_locale" title="<?php echo _translate('Please select the VLSM Locale'); ?>">
-													<?php foreach ($localeLists as $locale) { ?>
-														<option value="<?php echo $locale; ?>" <?php echo (isset($arr['app_locale']) && $arr['app_locale'] == $locale) ? 'selected="selected"' : ''; ?>><?php echo $locale; ?></option>
+												<select class="form-control isRequired readPage" name="app_locale" id="app_locale" title="<?php echo _translate('Please select the System Locale'); ?>">
+													<?php foreach ($localeLists as $locale => $localeName) { ?>
+														<option value="<?php echo $locale; ?>" <?php echo (isset($arr['app_locale']) && $arr['app_locale'] == $locale) ? 'selected="selected"' : ''; ?>><?= $localeName; ?></option>
 													<?php } ?>
 												</select>
 											</div>
@@ -325,13 +325,13 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								<div class="row" style="margin-top:10px;">
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="import_non_matching_sample" class="col-lg-4 control-label"><?php echo _translate("Allow Samples not matching the VLSM Sample IDs while importing results manually"); ?></label>
+											<label for="import_non_matching_sample" class="col-lg-4 control-label"><?php echo _translate("Allow Samples not matching the System Sample IDs while importing results manually"); ?></label>
 											<div class="col-lg-8">
 												<br>
 												<br>
 												<input class="readPage" type="radio" id="import_non_matching_sample_yes" name="import_non_matching_sample" value="yes" <?php echo ($arr['import_non_matching_sample'] == 'yes') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _translate("Yes"); ?>&nbsp;&nbsp;
 												<input class="readPage" type="radio" id="import_non_matching_sample_no" name="import_non_matching_sample" value="no" <?php echo ($arr['import_non_matching_sample'] == 'no') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _translate("No"); ?>
-												<br><br> <code><?php echo _translate("While importing results from CSV/Excel file, should we import results of Sample IDs that do not match the Sample IDs present in VLSM database"); ?></code>
+												<br><br> <code><?php echo _translate("While importing results from CSV/Excel file, should we import results of Sample IDs that do not match the Sample IDs present in System database"); ?></code>
 											</div>
 										</div>
 									</div>

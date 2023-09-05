@@ -1,14 +1,14 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\FacilitiesService;
-use App\Services\UsersService;
 use App\Services\VlService;
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 
 
-$title = "Enter VL Result";
+$title = _translate("Enter VL Result");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -222,21 +222,21 @@ if ($vlQueryInfo['patient_last_name'] != '') {
 	$patientLastName = '';
 }
 
-if (!empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes'){
+if (!empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes') {
 	$key = base64_decode('zACCxM1c1AfRevJ/Zpk+PKXpO+ebWjNSgCRa5/Uheh4=');
-	$vlQueryInfo['patient_art_no'] = $general->crypto('decrypt' ,$vlQueryInfo['patient_art_no'], $key);
-	if($patientFirstName!=''){
-		 $patientFirstName = $general->crypto('decrypt' ,$patientFirstName, $key);
+	$vlQueryInfo['patient_art_no'] = $general->crypto('decrypt', $vlQueryInfo['patient_art_no'], $key);
+	if ($patientFirstName != '') {
+		$patientFirstName = $general->crypto('decrypt', $patientFirstName, $key);
 	}
 
-	if($patientMiddleName!=''){
-		 $patientMiddleName = $general->crypto('decrypt' ,$patientMiddleName, $key);
+	if ($patientMiddleName != '') {
+		$patientMiddleName = $general->crypto('decrypt', $patientMiddleName, $key);
 	}
-  
-	if($patientLastName!=''){
-		 $patientLastName = $general->crypto('decrypt' ,$patientLastName, $key);
+
+	if ($patientLastName != '') {
+		$patientLastName = $general->crypto('decrypt', $patientLastName, $key);
 	}
- }
+}
 
 $patientFullName = trim(implode(" ", array($patientFirstName, $patientMiddleName, $patientLastName)));
 

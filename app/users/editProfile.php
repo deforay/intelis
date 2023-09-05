@@ -1,8 +1,8 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 
 require_once APPLICATION_PATH . '/header.php';
@@ -74,8 +74,10 @@ $data = $db->get("user_login_history", 25);
                   <div class="col-lg-8">
                     <select class="form-control isRequired" name="userLocale" id="userLocale" title="<?php echo _translate('Please select your Locale'); ?>">
                       <option value=""><?= _translate("--Select--"); ?></option>
-                      <?php foreach ($localeLists as $locale) { ?>
-                        <option value="<?php echo $locale; ?>" <?php echo ($userInfo['user_locale'] == $locale) ? 'selected="selected"' : ''; ?>><?php echo $locale; ?></option>
+                      <?php
+                      $selectedLocale = $userInfo['user_locale'] ?? $general->getGlobalConfig('app_locale') ?? 'en_US';
+                      foreach ($localeLists as $locale => $localeName) { ?>
+                        <option value="<?php echo $locale; ?>" <?php echo ($selectedLocale == $locale) ? 'selected="selected"' : ''; ?>><?= $localeName; ?></option>
                       <?php } ?>
                     </select>
                   </div>

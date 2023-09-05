@@ -11894,11 +11894,11 @@ msgid "Please choose Timezone"
 msgstr ""
 
 #: global-config/editGlobalConfig.php:199
-msgid "VLSM Locale"
+msgid "System Locale"
 msgstr ""
 
 #: global-config/editGlobalConfig.php:201 setup/index.php:149
-msgid "Please select the VLSM Locale"
+msgid "Please select the System Locale"
 msgstr ""
 
 #: global-config/editGlobalConfig.php:213
@@ -11979,14 +11979,14 @@ msgstr ""
 
 #: global-config/editGlobalConfig.php:328
 msgid ""
-"Allow Samples not matching the VLSM Sample IDs while importing results "
+"Allow Samples not matching the System Sample IDs while importing results "
 "manually"
 msgstr ""
 
 #: global-config/editGlobalConfig.php:334
 msgid ""
 "While importing results from CSV/Excel file, should we import results of "
-"Sample IDs that do not match the Sample IDs present in VLSM database"
+"Sample IDs that do not match the Sample IDs present in System database"
 msgstr ""
 
 #: global-config/editGlobalConfig.php:342
@@ -13026,7 +13026,7 @@ msgid "To ensure proper result import :"
 msgstr ""
 
 #: import-result/import-file.php:79
-msgid "Record the Samples in VLSM before sending them to Viral Load machine."
+msgid "Record the Samples in System before sending them to Viral Load machine."
 msgstr ""
 
 #: import-result/import-file.php:80
@@ -14215,7 +14215,7 @@ msgid "Some problem occurred, please try again."
 msgstr ""
 
 #: system-admin/instance-overview/instanceIndex.php:2
-msgid "VLSM Instance Overview"
+msgid "System Instance Overview"
 msgstr ""
 
 #: system-admin/instance-overview/instanceIndex.php:56

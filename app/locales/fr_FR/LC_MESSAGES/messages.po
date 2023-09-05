@@ -11949,12 +11949,12 @@ msgid "Please choose Timezone"
 msgstr "Veuillez choisir un fuseau horaire"
 
 #: global-config/editGlobalConfig.php:199
-msgid "VLSM Locale"
-msgstr "Locale VLSM"
+msgid "System Locale"
+msgstr "Locale System"
 
 #: global-config/editGlobalConfig.php:201 setup/index.php:149
-msgid "Please select the VLSM Locale"
-msgstr "Veuillez sélectionner le lieu du VLSM"
+msgid "Please select the System Locale"
+msgstr "Veuillez sélectionner le lieu du System"
 
 #: global-config/editGlobalConfig.php:213
 #: global-config/editGlobalConfig.php:215
@@ -12035,16 +12035,16 @@ msgstr "Dymo LabelWriter 450"
 
 #: global-config/editGlobalConfig.php:328
 msgid ""
-"Allow Samples not matching the VLSM Sample IDs while importing results "
+"Allow Samples not matching the System Sample IDs while importing results "
 "manually"
 msgstr ""
-"Autoriser les échantillons ne correspondant pas aux ID d'échantillons VLSM "
+"Autoriser les échantillons ne correspondant pas aux ID d'échantillons System "
 "lors de l'importation manuelle des résultats"
 
 #: global-config/editGlobalConfig.php:334
 msgid ""
 "While importing results from CSV/Excel file, should we import results of "
-"Sample IDs that do not match the Sample IDs present in VLSM database"
+"Sample IDs that do not match the Sample IDs present in System database"
 msgstr ""
 "Lors de l'importation de résultats à partir d'un fichier CSV/Excel, devons-"
 "nous importer les résultats des ID d'échantillons qui ne correspondent pas "
@@ -13126,9 +13126,9 @@ msgid "To ensure proper result import :"
 msgstr "Pour garantir une importation correcte des résultats :"
 
 #: import-result/import-file.php:79
-msgid "Record the Samples in VLSM before sending them to Viral Load machine."
+msgid "Record the Samples in System before sending them to Viral Load machine."
 msgstr ""
-"Enregistrer les échantillons dans le VLSM avant de les envoyer à la machine "
+"Enregistrer les échantillons dans le System avant de les envoyer à la machine "
 "de charge virale."
 
 #: import-result/import-file.php:80
@@ -14379,8 +14379,8 @@ msgid "Some problem occurred, please try again."
 msgstr "Un problème s'est produit, veuillez réessayer."
 
 #: system-admin/instance-overview/instanceIndex.php:2
-msgid "VLSM Instance Overview"
-msgstr "Aperçu de l'instance VLSM"
+msgid "System Instance Overview"
+msgstr "Aperçu de l'instance System"
 
 #: system-admin/instance-overview/instanceIndex.php:56
 msgid "Instance Id"

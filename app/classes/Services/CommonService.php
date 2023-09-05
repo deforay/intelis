@@ -459,15 +459,27 @@ class CommonService
 
     public function getLocaleList()
     {
+        $localeMap = [
+            'en_US' => 'English_United States',
+            'en_CM' => 'English_Cameroon',
+            'fr_CM' => 'French_Cameroon',
+            'fr_FR' => 'French',
+            'lo_LA' => 'Lao'
+        ];
+
         $path = APPLICATION_PATH . DIRECTORY_SEPARATOR . 'locales';
-        $localeLists = scandir($path);
-        foreach (array(".", "..", ".DS_Store") as $delVal) {
-            if (($key = array_search($delVal, $localeLists)) !== false) {
-                unset($localeLists[$key]);
-            }
+
+        // Filter out unwanted entries directly
+        $localeList = array_diff(scandir($path), ['.', '..', '.DS_Store']);
+
+        $locales = [];
+        foreach ($localeList as $locale) {
+            $locales[$locale] = $localeMap[$locale] ?? $locale;
         }
-        return $localeLists;
+
+        return $locales;
     }
+
 
     public function activeReportFormats($module): array
     {

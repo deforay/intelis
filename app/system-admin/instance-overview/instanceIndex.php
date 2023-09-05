@@ -1,5 +1,5 @@
 <?php
-$title = _translate("VLSM Instance Overview") . " - " . _translate("System Admin");
+$title = _translate("System Instance Overview") . " - " . _translate("System Admin");
 require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
 $instanceValues = "SELECT * FROM s_vlsm_instance";
 $data = $db->rawQuery($instanceValues);
