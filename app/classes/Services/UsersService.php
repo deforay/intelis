@@ -104,7 +104,6 @@ class UsersService
                 $sharedPrivileges[$privilege] = $row['privilege_name'];
             }
         }
-       // echo '<pre>'; print_r($sharedPrivileges); die;
         // Return the array of shared privileges
         return $sharedPrivileges;
     }

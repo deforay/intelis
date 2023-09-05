@@ -580,14 +580,6 @@ $sFormat = '';
                                                                            <datalist id="possibleVlResults">
 
                                                                            </datalist>
-                                                                           <!--   <input type="checkbox" class="labSection specialResults" name="lt20" value="yes" title="Please check <20">
-                                                                           &lt; 20<br>
-                                                                           <input type="checkbox" class="labSection specialResults" name="lt40" value="yes" title="Please check <40">
-                                                                           &lt; 40<br>
-                                                                           <input type="checkbox" class="specialResults" name="tnd" value="yes" title="Please check tnd" <?php echo $labFieldDisabled; ?>> Target Not Detected<br>
-                                                                           <input type="checkbox" class="specialResults" name="bdl" value="yes" title="Please check bdl" <?php echo $labFieldDisabled; ?>> Below Detection Level<br>
-                                                                           <input type="checkbox" class="specialResults" name="failed" value="yes" title="Please check failed" <?php echo $labFieldDisabled; ?>> Failed<br>
-                                                                           <input type="checkbox" class="specialResults" name="invalid" value="yes" title="Please check invalid" <?php echo $labFieldDisabled; ?>> Invalid-->
                                                                       </div>
                                                                  </div>
                                                             </div>

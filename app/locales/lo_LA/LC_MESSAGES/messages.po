@@ -4947,13 +4947,13 @@ msgid "Dymo LabelWriter 450"
 msgstr "Dymo LabelWriter 450"
 
 #: global-config/editGlobalConfig.php:296
-msgid "Allow Samples not matching the VLSM Sample IDs while importing results manually"
-msgstr "ອະ ນຸ ຍາດ ໃຫ້ ຕົວ ຢ່າງ ບໍ່ ສອດ ຄ່ອງ ກັບ ຕົວ ອັກ ສອນ VLSM ຕົວ ຢ່າງ ໃນ ຂະ ນະ ທີ່ ນໍາ ເຂົ້າ ຜົນ ໄດ້ ຮັບ ດ້ວຍ ຕົວ ເອງ"
+msgid "Allow Samples not matching the System Sample IDs while importing results manually"
+msgstr "ອະ ນຸ ຍາດ ໃຫ້ ຕົວ ຢ່າງ ບໍ່ ສອດ ຄ່ອງ ກັບ ຕົວ ອັກ ສອນ System ຕົວ ຢ່າງ ໃນ ຂະ ນະ ທີ່ ນໍາ ເຂົ້າ ຜົນ ໄດ້ ຮັບ ດ້ວຍ ຕົວ ເອງ"
 
 #: global-config/editGlobalConfig.php:302
 msgid ""
 "While importing results from CSV/Excel file, should we import results of Sample IDs that do not match "
-"the Sample IDs present in VLSM database"
+"the Sample IDs present in System database"
 msgstr ""
 "ໃນຂະນະທີ່ການນໍາເຂົ້າຜົນໄດ້ຮັບຈາກໄຟລ໌ CSV/Excel, ພວກເຮົາຄວນນໍາເຂົ້າຜົນໄດ້ຮັບຂອງຕົວແບບທີ່ບໍ່ສອດຄ່ອງກັບຕົວແບບທີ່ມີຢູ່ໃນຖານຂໍ້ມູນ VLSM"
 
@@ -6226,8 +6226,8 @@ msgid "To ensure proper result import :"
 msgstr "ເພື່ອຮັບປະກັນການນໍາເຂົ້າຜົນໄດ້ຮັບທີ່ເຫມາະສົມ :"
 
 #: import-result/import-file.php:60
-msgid "Record the Samples in VLSM before sending them to Viral Load machine."
-msgstr "ບັນທຶກຕົວຢ່າງໃນ VLSM ກ່ອນທີ່ຈະສົ່ງໃຫ້ເຂົາເຈົ້າໄປທີ່ເຄື່ອງ Viral Load."
+msgid "Record the Samples in System before sending them to Viral Load machine."
+msgstr "ບັນທຶກຕົວຢ່າງໃນ System ກ່ອນທີ່ຈະສົ່ງໃຫ້ເຂົາເຈົ້າໄປທີ່ເຄື່ອງ Viral Load."
 
 #: import-result/import-file.php:61
 msgid "Create a Batch with the samples recorded in the previous step."
