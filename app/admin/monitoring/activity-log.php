@@ -4,7 +4,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UsersService;
 
-$title = _("User Activity Log");
+$title = _translate("User Activity Log");
 require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
@@ -39,14 +39,14 @@ foreach ($actions as $list) {
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1><span class="fa-solid fa-file-lines"></span>
-			<?php echo _("User Activity Log"); ?>
+			<?php echo _translate("User Activity Log"); ?>
 		</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><span class="fa-solid fa-chart-pie"></span>
-					<?php echo _("Home"); ?>
+					<?php echo _translate("Home"); ?>
 				</a></li>
 			<li class="active">
-				<?php echo _("Audit Trail"); ?>
+				<?php echo _translate("Audit Trail"); ?>
 			</li>
 		</ol>
 	</section>
@@ -56,72 +56,65 @@ foreach ($actions as $list) {
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table aria-describedby="table" class="table" aria-hidden="true"
-						style="margin-left:1%;margin-top:20px;width:98%;">
+					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<th scope="row">
-								<?= _('Date Range'); ?>&nbsp;:
+								<?= _translate('Date Range'); ?>&nbsp;:
 							</th>
 							<td>
-								<input type="text" id="dateRange" name="dateRange" class="form-control daterangefield"
-									placeholder="<?php echo _('Enter date range'); ?>"
-									style="width:220px;background:#fff;" />
+								<input type="text" id="dateRange" name="dateRange" class="form-control daterangefield" placeholder="<?php echo _translate('Enter date range'); ?>" style="width:220px;background:#fff;" />
 							</td>
 							<th scope="row">
-								<?php echo _("Users"); ?>&nbsp;:
+								<?php echo _translate("Users"); ?>&nbsp;:
 							</th>
 							<td>
-								<select style="width:220px;" class="form-control select2" id="userName" name="userName"
-									title="<?php echo _('Please select the user name'); ?>">
+								<select style="width:220px;" class="form-control select2" id="userName" name="userName" title="<?php echo _translate('Please select the user name'); ?>">
 									<?php echo $general->generateSelectOptions($userNameList, null, '--Select--'); ?>
 								</select>
 							</td>
 						</tr>
 						<tr>
 							<th scope="row">
-								<?php echo _("Type of Action"); ?>&nbsp;:
+								<?php echo _translate("Type of Action"); ?>&nbsp;:
 							</th>
 							<td>
-								<select style="width:220px;" class="form-control" id="typeOfAction" name="typeOfAction"
-									title="<?php echo _('Type of Action'); ?>">
+								<select style="width:220px;" class="form-control" id="typeOfAction" name="typeOfAction" title="<?php echo _translate('Type of Action'); ?>">
 									<?php echo $general->generateSelectOptions($actionList, null, '--All--'); ?>
 								</select>
 							</td>
 							<td style=" display: contents; ">
 								<button onclick="oTable.fnDraw();" value="Search" class="btn btn-primary btn-sm"><span>
-										<?php echo _("Search"); ?>
+										<?php echo _translate("Search"); ?>
 									</span></button>
-								<a href="/admin/monitoring/activity-log.php" class="btn btn-danger btn-sm"
-									style=" margin-left: 15px; "><span>
-										<?php echo _("Clear"); ?>
+								<a href="/admin/monitoring/activity-log.php" class="btn btn-danger btn-sm" style=" margin-left: 15px; "><span>
+										<?php echo _translate("Clear"); ?>
 									</span></a>
 							</td>
 						</tr>
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="auditTrailDataTable"
-							class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="auditTrailDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th>
-										<?php echo _("Audit Log"); ?>
+										<?php echo _translate("Audit Log"); ?>
 									</th>
 									<th>
-										<?php echo _("Type of Action"); ?>
+										<?php echo _translate("Type of Action"); ?>
 									</th>
 									<th>
-										<?php echo _("IP Address"); ?>
+										<?php echo _translate("IP Address"); ?>
 									</th>
 									<th>
-										<?php echo _("Recorded On"); ?>
+										<?php echo _translate("Recorded On"); ?>
 									</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
 									<td colspan="15" class="dataTables_empty">
-										<?php echo _("Loading data from server"); ?>
+										<?php echo _translate("Loading data from server"); ?>
 									</td>
 								</tr>
 							</tbody>
@@ -140,7 +133,7 @@ foreach ($actions as $list) {
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
 	var oTable = null;
-	$(document).ready(function () {
+	$(document).ready(function() {
 		$('#userName').select2({
 			placeholder: "Select user to filter"
 		});
@@ -151,30 +144,30 @@ foreach ($actions as $list) {
 
 		loadVlRequestData();
 		$('#dateRange').daterangepicker({
-			locale: {
-				cancelLabel: "<?= _("Clear"); ?>",
-				format: 'DD-MMM-YYYY',
-				separator: ' to ',
+				locale: {
+					cancelLabel: "<?= _translate("Clear"); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
+				},
+				showDropdowns: true,
+				alwaysShowCalendars: false,
+				startDate: moment().subtract(28, 'days'),
+				endDate: moment(),
+				maxDate: moment(),
+				ranges: {
+					'Today': [moment(), moment()],
+					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
+				}
 			},
-			showDropdowns: true,
-			alwaysShowCalendars: false,
-			startDate: moment().subtract(28, 'days'),
-			endDate: moment(),
-			maxDate: moment(),
-			ranges: {
-				'Today': [moment(), moment()],
-				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-				'This Month': [moment().startOf('month'), moment().endOf('month')],
-				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-				'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-				'Last 120 Days': [moment().subtract(119, 'days'), moment()],
-				'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-				'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
-			}
-		},
-			function (start, end) {
+			function(start, end) {
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
@@ -206,7 +199,7 @@ foreach ($actions as $list) {
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "/admin/monitoring/get-audit-trail-list.php",
-			"fnServerData": function (sSource, aoData, fnCallback) {
+			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "dateRange",
 					"value": $("#dateRange").val()

@@ -41,7 +41,7 @@ try {
         $db->update('global_config', $data);
     }
 
-    $_SESSION['alertMsg'] = _("System Configuration updated successfully.");
+    $_SESSION['alertMsg'] = _translate("System Configuration updated successfully.");
     header("Location:index.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());

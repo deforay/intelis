@@ -37,7 +37,7 @@ try {
 			$lastId = $db->getInsertId();
 		}
 		if ($lastId > 0) {
-			$_SESSION['alertMsg'] = _("Funding Source saved successfully");
+			$_SESSION['alertMsg'] = _translate("Funding Source saved successfully");
 			$general->activityLog('Funding Source', $_SESSION['userName'] . ' added new Funding Source for ' . $_POST['fundingSrcName'], 'common-reference');
 		}
 	}

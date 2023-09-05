@@ -696,7 +696,7 @@ $sFormat = '';
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label labels" for="approvedOn">Approved On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" value="" class="form-control dateTime" id="approvedOnDateTime" title="Please choose Approved On" name="approvedOnDateTime" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
+                                                                           <input type="text" value="" class="form-control dateTime" id="approvedOnDateTime" title="Please choose Approved On" name="approvedOnDateTime" placeholder="<?= _translate("Please enter date"); ?>" style="width:100%;" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-6">
@@ -794,16 +794,16 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               if (data != "0") {
                                    obj = $.parseJSON(data);
                                    if (obj.no_of_req_time != null && obj.no_of_req_time > 0) {
-                                        $("#artNoGroup").html("<small style='color: red'><?= _("No. of times Test Requested for this Patient"); ?> : " + obj.no_of_req_time + "</small>");
+                                        $("#artNoGroup").html("<small style='color: red'><?= _translate("No. of times Test Requested for this Patient"); ?> : " + obj.no_of_req_time + "</small>");
                                    }
                                    if (obj.request_created_datetime != null) {
-                                        $("#artNoGroup").append("<br><small style='color:red'><?= _("Last Test Request Added On LIS/STS"); ?> : " + obj.request_created_datetime + "</small>");
+                                        $("#artNoGroup").append("<br><small style='color:red'><?= _translate("Last Test Request Added On LIS/STS"); ?> : " + obj.request_created_datetime + "</small>");
                                    }
                                    if (obj.sample_collection_date != null) {
-                                        $("#artNoGroup").append("<br><small style='color:red'><?= _("Sample Collection Date for Last Request"); ?> : " + obj.sample_collection_date + "</small>");
+                                        $("#artNoGroup").append("<br><small style='color:red'><?= _translate("Sample Collection Date for Last Request"); ?> : " + obj.sample_collection_date + "</small>");
                                    }
                                    if (obj.no_of_tested_time != null && obj.no_of_tested_time > 0) {
-                                        $("#artNoGroup").append("<br><small style='color:red'><?= _("Total No. of times Patient tested for HIV VL"); ?> : " + obj.no_of_tested_time + "</small >");
+                                        $("#artNoGroup").append("<br><small style='color:red'><?= _translate("Total No. of times Patient tested for HIV VL"); ?> : " + obj.no_of_tested_time + "</small >");
                                    }
                               } else {
 

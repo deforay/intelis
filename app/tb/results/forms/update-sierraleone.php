@@ -95,10 +95,10 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("TB LABORATORY TEST REQUEST FORM"); ?></h1>
+		<h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _translate("TB LABORATORY TEST REQUEST FORM"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Edit New Request"); ?></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+			<li class="active"><?php echo _translate("Edit New Request"); ?></li>
 		</ol>
 	</section>
 	<!-- Main content -->
@@ -167,7 +167,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 									<tr>
 										<th scope="row"><label for="requestedDate">Date of request </label></th>
 										<td>
-											<input type="text" value="<?php echo $tbInfo['request_created_datetime']; ?>" class="date-time form-control" id="requestedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date of request date" style="width:100%;" />
+											<input type="text" value="<?php echo $tbInfo['request_created_datetime']; ?>" class="date-time form-control" id="requestedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date of request date" style="width:100%;" />
 										</td>
 										<td><label class="label-control" for="referringUnit">Referring Unit </label></td>
 										<td>
@@ -313,7 +313,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										</td>
 										<th scope="row"><label class="label-control" for="sampleReceivedDate">Date of Specimen Reception </label></th>
 										<td>
-											<input type="text" class="date-time form-control" value="<?php echo $tbInfo['sample_received_at_lab_datetime']; ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
+											<input type="text" class="date-time form-control" value="<?php echo $tbInfo['sample_received_at_lab_datetime']; ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
 										</td>
 									</tr>
 									<tr>
@@ -377,14 +377,14 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 											</td>
 											<th scope="row"><label class="label-control" for="sampleReceivedDate">Date of Reception </label></th>
 											<td>
-												<input type="text" class="date-time form-control" value="<?php echo $tbInfo['sample_received_at_lab_datetime']; ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
+												<input type="text" class="date-time form-control" value="<?php echo $tbInfo['sample_received_at_lab_datetime']; ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
 											</td>
 
 										</tr>
 										<tr>
 											<th scope="row"><label class="label-control" for="sampleTestedDateTime">Date of Sample Tested <span class="mandatory">*</span></label></th>
 											<td>
-												<input type="text" value="<?php echo $tbInfo['sample_tested_datetime']; ?>" class="date-time form-control isRequired" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample tested" style="width:100%;" />
+												<input type="text" value="<?php echo $tbInfo['sample_tested_datetime']; ?>" class="date-time form-control isRequired" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample tested" style="width:100%;" />
 											</td>
 											<th scope="row"><label class="label-control" for="testedBy">Tested By</label></th>
 											<td>
@@ -397,12 +397,12 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										<tr>
 											<th scope="row"><label class="label-control" for="testedBy">Date Of Result</label></th>
 											<td>
-												<input type="text" value="<?php echo $tbInfo['result_date']; ?>" class="date-time form-control" value="<?php echo $tbInfo['result_date']; ?>" id="resultDate" name="resultDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter result date" style="width:100%;" />
+												<input type="text" value="<?php echo $tbInfo['result_date']; ?>" class="date-time form-control" value="<?php echo $tbInfo['result_date']; ?>" id="resultDate" name="resultDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter result date" style="width:100%;" />
 											</td>
 
 											<th scope="row"><label class="label-control" for="sampleDispatchedDate">Sample Dispatched On</label></th>
 											<td>
-												<input type="text" value="<?php echo $tbInfo['sample_dispatched_datetime']; ?>" class="date-time form-control" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _("Please enter date"); ?>" title="Please choose sample dispatched date" style="width:100%;" />
+												<input type="text" value="<?php echo $tbInfo['sample_dispatched_datetime']; ?>" class="date-time form-control" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please choose sample dispatched date" style="width:100%;" />
 											</td>
 
 
@@ -433,7 +433,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													if ($covid19Info['reason_for_sample_rejection'] == 9999) {
 														echo '<option value="9999" selected="selected">Unspecified</option>';
 													} ?>
-									             <option value="other">Other (Please Specify) </option>
+													<option value="other">Other (Please Specify) </option>
 
 												</select>
 												<input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
@@ -441,15 +441,15 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 											</td>
 										</tr>
 										<tr class="show-rejection" style="display:none;">
-								
+
 											<th class="labels">Recommended Corrective Action</th>
-                                            <td><select name="correctiveAction" id="correctiveAction" class="form-control" title="Please choose Recommended corrective action">
-                                                    <option value="">-- Select --</option>
-                                                    <?php foreach ($correctiveActions as $action) { ?>
-                                                    <option value="<?php echo $action['recommended_corrective_action_id']; ?>" <?php echo ($tbInfo['recommended_corrective_action'] == $action['recommended_corrective_action_id']) ? 'selected="selected"' : ''; ?>><?= $action['recommended_corrective_action_name']; ?></option>
-                                                    <?php } ?>
-                                                </select>
-                                            </td>
+											<td><select name="correctiveAction" id="correctiveAction" class="form-control" title="Please choose Recommended corrective action">
+													<option value="">-- Select --</option>
+													<?php foreach ($correctiveActions as $action) { ?>
+														<option value="<?php echo $action['recommended_corrective_action_id']; ?>" <?php echo ($tbInfo['recommended_corrective_action'] == $action['recommended_corrective_action_id']) ? 'selected="selected"' : ''; ?>><?= $action['recommended_corrective_action_name']; ?></option>
+													<?php } ?>
+												</select>
+											</td>
 											<th scope="row"><label class="label-control" for="rejectionDate">Rejection Date<span class="mandatory">*</span></label></th>
 											<td><input value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select rejection date" title="Please select the rejection date" /></td>
 										</tr>
@@ -905,14 +905,14 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 	}
 
 	function checkRejectionReason() {
-          var rejectionReason = $("#sampleRejectionReason").val();
-          if (rejectionReason == "other") {
-               $("#newRejectionReason").show();
-               $("#newRejectionReason").addClass("isRequired");
-          } else {
-               $("#newRejectionReason").hide();
-               $("#newRejectionReason").removeClass("isRequired");
-               $('#newRejectionReason').val("");
-          }
-     }
+		var rejectionReason = $("#sampleRejectionReason").val();
+		if (rejectionReason == "other") {
+			$("#newRejectionReason").show();
+			$("#newRejectionReason").addClass("isRequired");
+		} else {
+			$("#newRejectionReason").hide();
+			$("#newRejectionReason").removeClass("isRequired");
+			$('#newRejectionReason').val("");
+		}
+	}
 </script>

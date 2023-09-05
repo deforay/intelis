@@ -33,7 +33,7 @@ try {
         }
 
         if ($lastId > 0) {
-            $_SESSION['alertMsg'] = _("Covid-19 QC test kit saved successfully");
+            $_SESSION['alertMsg'] = _translate("Covid-19 QC test kit saved successfully");
             $general->activityLog('Covid-19 qc test kit', $_SESSION['userName'] . ' added new qc test kit for ' . $_POST['testKitName'], 'covid19-reference');
         }
     }

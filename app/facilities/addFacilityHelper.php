@@ -301,7 +301,7 @@ try {
 		$db->insert("health_facilities", $data);
 		return 1;
 	} else {
-		$_SESSION['alertMsg'] = _("Facility details added successfully");
+		$_SESSION['alertMsg'] = _translate("Facility details added successfully");
 		header("Location:/facilities/facilities.php");
 	}
 } catch (Exception $exc) {

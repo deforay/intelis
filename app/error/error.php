@@ -57,23 +57,23 @@
             <br>
             <h2 style="color:red;text-align: center;font-size:6em;font-weight:500;">
               <span class="fa-solid fa-triangle-exclamation"></span>
-              <?= _("An error occurred"); ?>
+              <?= _translate("An error occurred"); ?>
 
             </h2>
             <h3 style="color:#555;font-weight:bold;font-size:1.4em;">
               <?= htmlspecialchars($errorMessage, ENT_QUOTES, 'UTF-8'); ?>
             </h3>
             <h3 style="color:#555;font-weight:bold;font-size:1.4em;">
-              <?= _("Error Code") . " : " . $httpCode; ?>
+              <?= _translate("Error Code") . " : " . $httpCode; ?>
             </h3>
             <small>
-              <?= _("Please contact the System Admin for further support."); ?>
+              <?= _translate("Please contact the System Admin for further support."); ?>
             </small>
             <br>
             <br>
             <small>
               <a href="/">
-                <?= _("Go to Dashboard"); ?>
+                <?= _translate("Go to Dashboard"); ?>
               </a>
             </small>
 
@@ -85,7 +85,7 @@
 
   <footer class="main-footer" style="margin:0;min-height:100px !important;text-align:center;">
     <small>
-      <?= _("This project is supported by the U.S. President's Emergency Plan for AIDS Relief (PEPFAR) through the U.S.
+      <?= _translate("This project is supported by the U.S. President's Emergency Plan for AIDS Relief (PEPFAR) through the U.S.
 		Centers for Disease Control and Prevention (CDC)."); ?>
     </small>
   </footer>

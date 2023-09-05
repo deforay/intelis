@@ -76,10 +76,10 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM"); ?></h1>
+        <h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _translate("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-            <li class="active"><?php echo _("Edit EID Request"); ?></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+            <li class="active"><?php echo _translate("Edit EID Request"); ?></li>
         </ol>
     </section>
     <!-- Main content -->
@@ -178,8 +178,8 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         <?php } ?>
                                     </tr>
                                     <tr>
-                                        <th scope="row"><?= _('Requesting Clinician Name'); ?></th>
-                                        <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Request Clinician Name" title="Please enter request clinician" value="<?php echo $eidInfo['clinician_name']; ?>"/></td>
+                                        <th scope="row"><?= _translate('Requesting Clinician Name'); ?></th>
+                                        <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Request Clinician Name" title="Please enter request clinician" value="<?php echo $eidInfo['clinician_name']; ?>" /></td>
                                         <th scope="row">Requesting Officer</th>
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" value="<?php echo $eidInfo['sample_requestor_name'] ?>" placeholder="Requesting Officer" />
@@ -506,9 +506,9 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 
                                             <th scope="row"><label for="">Sample Received Date </label></th>
                                             <td>
-                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" value="<?php echo $eidInfo['sample_received_at_lab_datetime'] ?>" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" value="<?php echo $eidInfo['sample_received_at_lab_datetime'] ?>" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
                                             </td>
-                                           
+
                                         <tr>
                                             <td><label for="labId">Lab Name </label> </td>
                                             <td>
@@ -527,21 +527,21 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         </tr>
                                         <tr>
                                             <th scope="row" class="rejected" style="display: none;">Reason for Rejection</th>
-                                                <td class="rejected" style="display: none;">
-                                                    <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
-                                                        <option value=''> -- Select -- </option>
-                                                        <?php foreach ($rejectionTypeResult as $type) { ?>
-                                                            <optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
-                                                                <?php
-                                                                foreach ($rejectionResult as $reject) {
-                                                                    if ($type['rejection_type'] == $reject['rejection_type']) { ?>
-                                                                        <option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($eidInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?= $reject['rejection_reason_name']; ?></option>
-                                                                <?php }
-                                                                } ?>
-                                                            </optgroup>
-                                                        <?php } ?>
-                                                    </select>
-                                                </td>
+                                            <td class="rejected" style="display: none;">
+                                                <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
+                                                    <option value=''> -- Select -- </option>
+                                                    <?php foreach ($rejectionTypeResult as $type) { ?>
+                                                        <optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
+                                                            <?php
+                                                            foreach ($rejectionResult as $reject) {
+                                                                if ($type['rejection_type'] == $reject['rejection_type']) { ?>
+                                                                    <option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($eidInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?= $reject['rejection_reason_name']; ?></option>
+                                                            <?php }
+                                                            } ?>
+                                                        </optgroup>
+                                                    <?php } ?>
+                                                </select>
+                                            </td>
                                         </tr>
                                         <tr class="show-rejection rejected" style="display:none;">
                                             <th>Rejection Date<span class="mandatory">*</span></th>
@@ -552,7 +552,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         <tr>
                                             <td style="width:25%;"><label for="">Sample Test Date </label></td>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" value="<?php echo $eidInfo['sample_tested_datetime'] ?>" placeholder="<?= _("Please enter date"); ?>" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" value="<?php echo $eidInfo['sample_tested_datetime'] ?>" placeholder="<?= _translate("Please enter date"); ?>" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
                                             </td>
 
 
@@ -579,25 +579,25 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         <tr>
                                             <th scope="row" style="width:25%;"><label for=""> Test Date </label></th>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['test_1_date']); ?>" id="test1Date" name="test1Date" placeholder="<?= _("Please enter test date"); ?>" title="Test Date" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['test_1_date']); ?>" id="test1Date" name="test1Date" placeholder="<?= _translate("Please enter test date"); ?>" title="Test Date" onchange="" style="width:100%;" />
                                             </td>
 
 
                                             <th scope="row">Batch</th>
                                             <td>
-                                                <input type="text" class="form-control" id="test1Batch" name="test1Batch" value="<?php echo ($eidInfo['test_1_batch']); ?>" placeholder="<?= _("Please enter Batch"); ?>" title="Batch" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="test1Batch" name="test1Batch" value="<?php echo ($eidInfo['test_1_batch']); ?>" placeholder="<?= _translate("Please enter Batch"); ?>" title="Batch" onchange="" style="width:100%;" />
                                             </td>
                                         </tr>
                                         <tr>
                                             <th scope="row" style="width:25%;"><label for=""> Assay </label></th>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control" id="test1Assay" name="test1Assay" value="<?php echo ($eidInfo['test_1_assay']); ?>" placeholder="<?= _("Please enter Assay"); ?>" title="Assay" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="test1Assay" name="test1Assay" value="<?php echo ($eidInfo['test_1_assay']); ?>" placeholder="<?= _translate("Please enter Assay"); ?>" title="Assay" onchange="" style="width:100%;" />
                                             </td>
 
 
                                             <th scope="row">CT/QS value</th>
                                             <td>
-                                                <input type="text" class="form-control" id="test1CtQs" name="test1CtQs" value="<?php echo ($eidInfo['test_1_ct_qs']); ?>" placeholder="<?= _("Please enter CT/QS value"); ?>" title="CT/QS value" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="test1CtQs" name="test1CtQs" value="<?php echo ($eidInfo['test_1_ct_qs']); ?>" placeholder="<?= _translate("Please enter CT/QS value"); ?>" title="CT/QS value" onchange="" style="width:100%;" />
                                             </td>
                                         </tr>
 
@@ -620,7 +620,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                                     <option value="no" <?php echo ($eidInfo['test_1_repeated'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
                                                 </select>
                                                 <span class="test1RepeatReason" style="display:none;">
-                                                    Why? <input type="text" value="<?php echo ($eidInfo['test_1_repeat_reason']); ?>" class="form-control" id="test1RepeatReason" name="test1RepeatReason" placeholder="<?= _("Reason for Repeating Test"); ?>" title="Reason for Repeating Test" onchange="" style="width:100%;" /></span>
+                                                    Why? <input type="text" value="<?php echo ($eidInfo['test_1_repeat_reason']); ?>" class="form-control" id="test1RepeatReason" name="test1RepeatReason" placeholder="<?= _translate("Reason for Repeating Test"); ?>" title="Reason for Repeating Test" onchange="" style="width:100%;" /></span>
                                             </td>
                                         </tr>
 
@@ -633,25 +633,25 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         <tr>
                                             <th scope="row" style="width:25%;"><label for=""> Test Date </label></th>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['test_2_date']); ?>" id="test2Date" name="test2Date" placeholder="<?= _("Please enter test date"); ?>" title="Test Date" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['test_2_date']); ?>" id="test2Date" name="test2Date" placeholder="<?= _translate("Please enter test date"); ?>" title="Test Date" onchange="" style="width:100%;" />
                                             </td>
 
 
                                             <th scope="row">Batch</th>
                                             <td>
-                                                <input type="text" class="form-control" id="test2Batch" name="test2Batch" value="<?php echo ($eidInfo['test_2_batch']); ?>" placeholder="<?= _("Please enter Batch"); ?>" title="Batch" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="test2Batch" name="test2Batch" value="<?php echo ($eidInfo['test_2_batch']); ?>" placeholder="<?= _translate("Please enter Batch"); ?>" title="Batch" onchange="" style="width:100%;" />
                                             </td>
                                         </tr>
                                         <tr>
                                             <th scope="row" style="width:25%;"><label for=""> Assay </label></th>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control" id="test2Assay" name="test2Assay" value="<?php echo ($eidInfo['test_2_assay']); ?>" placeholder="<?= _("Please enter assay"); ?>" title="Assay" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="test2Assay" name="test2Assay" value="<?php echo ($eidInfo['test_2_assay']); ?>" placeholder="<?= _translate("Please enter assay"); ?>" title="Assay" onchange="" style="width:100%;" />
                                             </td>
 
 
                                             <th scope="row">CT/QS value</th>
                                             <td>
-                                                <input type="text" class="form-control" id="test2CtQs" name="test2CtQs" value="<?php echo ($eidInfo['test_2_ct_qs']); ?>" placeholder="<?= _("Please enter CT/QS value"); ?>" title="CT/QS value" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="test2CtQs" name="test2CtQs" value="<?php echo ($eidInfo['test_2_ct_qs']); ?>" placeholder="<?= _translate("Please enter CT/QS value"); ?>" title="CT/QS value" onchange="" style="width:100%;" />
                                             </td>
                                         </tr>
 

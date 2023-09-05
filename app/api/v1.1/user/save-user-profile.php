@@ -65,7 +65,7 @@ try {
 
     if (!isset($user)) {
         if (!$apiKey) {
-            throw new SystemException(_("Please check your request parameters."));
+            throw new SystemException(_translate("Please check your request parameters."));
         }
         $userId = !empty($post['userId']) ? base64_decode($db->escape($post['userId'])) : null;
     } else {
@@ -158,7 +158,7 @@ try {
     } else {
         $payload = [
             'status' => 'failed',
-            'message' => _("Something went wrong. Please try again later."),
+            'message' => _translate("Something went wrong. Please try again later."),
             'timestamp' => time(),
         ];
     }

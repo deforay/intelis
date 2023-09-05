@@ -277,7 +277,7 @@ $batchResult = $db->rawQuery($batchQuery);
     });
     $('#sampleCollectionDate').daterangepicker({
         locale: {
-          cancelLabel: "<?= _("Clear"); ?>",
+          cancelLabel: "<?= _translate("Clear"); ?>",
           format: 'DD-MMM-YYYY',
           separator: ' to ',
         },

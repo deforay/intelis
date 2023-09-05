@@ -46,10 +46,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM"); ?></h1>
+        <h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _translate("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-            <li class="active"><?php echo _("Add EID Request"); ?></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+            <li class="active"><?php echo _translate("Add EID Request"); ?></li>
         </ol>
     </section>
     <!-- Main content -->
@@ -147,8 +147,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <?php } ?>
                                     </tr>
                                     <tr>
-                                        <th scope="row"><?= _('Requesting Clinician Name'); ?></th>
-                                        <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Request Clinician Name" title="Please enter request clinician" value="<?php echo $eidInfo['clinician_name']; ?>"/></td>
+                                        <th scope="row"><?= _translate('Requesting Clinician Name'); ?></th>
+                                        <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Request Clinician Name" title="Please enter request clinician" value="<?php echo $eidInfo['clinician_name']; ?>" /></td>
                                         <th scope="row">Requesting Officer</th>
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Requesting Officer" />
@@ -477,9 +477,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                             <th scope="row"><label for="">Sample Received Date </label></th>
                                             <td>
-                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
                                             </td>
-                                           
+
                                         <tr>
                                             <td><label for="labId">Lab Name </label> </td>
                                             <td>
@@ -497,7 +497,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         </tr>
                                         <tr>
-                                        <th scope="row" class="rejected" style="display: none;">Reason for Rejection</th>
+                                            <th scope="row" class="rejected" style="display: none;">Reason for Rejection</th>
                                             <td class="rejected" style="display: none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
                                                     <option value=''> -- Select -- </option>
@@ -514,7 +514,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <tr>
                                             <td style="width:25%;"><label for="">Sample Test Date </label></td>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
                                             </td>
 
 
@@ -540,25 +540,25 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <tr>
                                             <th scope="row" style="width:25%;"><label for=""> Test Date </label></th>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control date" id="test1Date" name="test1Date" placeholder="<?= _("Please enter test date"); ?>" title="Test Date" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control date" id="test1Date" name="test1Date" placeholder="<?= _translate("Please enter test date"); ?>" title="Test Date" onchange="" style="width:100%;" />
                                             </td>
 
 
                                             <th scope="row">Batch</th>
                                             <td>
-                                                <input type="text" class="form-control" id="test1Batch" name="test1Batch" placeholder="<?= _("Please enter Batch"); ?>" title="Batch" style="width:100%;" />
+                                                <input type="text" class="form-control" id="test1Batch" name="test1Batch" placeholder="<?= _translate("Please enter Batch"); ?>" title="Batch" style="width:100%;" />
                                             </td>
                                         </tr>
                                         <tr>
                                             <th scope="row" style="width:25%;"><label for=""> Assay </label></th>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control" id="test1Assay" name="test1Assay" placeholder="<?= _("Please enter assay"); ?>" title="Assay" style="width:100%;" />
+                                                <input type="text" class="form-control" id="test1Assay" name="test1Assay" placeholder="<?= _translate("Please enter assay"); ?>" title="Assay" style="width:100%;" />
                                             </td>
 
 
                                             <th scope="row">CT/QS value</th>
                                             <td>
-                                                <input type="text" class="form-control" id="test1CtQs" name="test1CtQs" placeholder="<?= _("Please enter CT/QS value"); ?>" title="CT/QS Value" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="test1CtQs" name="test1CtQs" placeholder="<?= _translate("Please enter CT/QS value"); ?>" title="CT/QS Value" onchange="" style="width:100%;" />
                                             </td>
                                         </tr>
 
@@ -581,7 +581,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <option value="no"> No </option>
                                                 </select>
                                                 <span class="test1RepeatReason" style="display:none;">
-                                                    Why? <input type="text" class="form-control" id="test1RepeatReason" name="test1RepeatReason" placeholder="<?= _("Reason for Repeating Test"); ?>" title="Reason for Repeating Test" onchange="" style="width:100%;" /></span>
+                                                    Why? <input type="text" class="form-control" id="test1RepeatReason" name="test1RepeatReason" placeholder="<?= _translate("Reason for Repeating Test"); ?>" title="Reason for Repeating Test" onchange="" style="width:100%;" /></span>
                                             </td>
                                         </tr>
 
@@ -594,25 +594,25 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <tr>
                                             <th scope="row" style="width:25%;"><label for=""> Test Date </label></th>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control date" id="test2Date" name="test2Date" placeholder="<?= _("Please enter test date"); ?>" title="Test Date" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control date" id="test2Date" name="test2Date" placeholder="<?= _translate("Please enter test date"); ?>" title="Test Date" onchange="" style="width:100%;" />
                                             </td>
 
 
                                             <th scope="row">Batch</th>
                                             <td>
-                                                <input type="text" class="form-control" id="test2Batch" name="test2Batch" placeholder="<?= _("Please enter Batch"); ?>" title="Batch" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="test2Batch" name="test2Batch" placeholder="<?= _translate("Please enter Batch"); ?>" title="Batch" onchange="" style="width:100%;" />
                                             </td>
                                         </tr>
                                         <tr>
                                             <th scope="row" style="width:25%;"><label for=""> Assay </label></th>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control" id="test2Assay" name="test2Assay" placeholder="<?= _("Please enter assay"); ?>" title="Assay" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="test2Assay" name="test2Assay" placeholder="<?= _translate("Please enter assay"); ?>" title="Assay" onchange="" style="width:100%;" />
                                             </td>
 
 
                                             <th scope="row">CT/QS value</th>
                                             <td>
-                                                <input type="text" class="form-control" id="test2CtQs" name="test2CtQs" placeholder="<?= _("Please enter CT/QS value"); ?>" title="CT/QS value" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="test2CtQs" name="test2CtQs" placeholder="<?= _translate("Please enter CT/QS value"); ?>" title="CT/QS value" onchange="" style="width:100%;" />
                                             </td>
                                         </tr>
 

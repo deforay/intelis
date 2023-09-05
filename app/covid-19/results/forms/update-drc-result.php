@@ -514,15 +514,15 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                                     <th scope="row" colspan="4" style="width:15% !important">Symptômes <span class="mandatory">*</span> </th>
                                 </tr>
                                 <tr>
-                                <th scope="row" style="width:15% !important"><label for="asymptomatic">Asymptomatic <span class="mandatory">*</span></label></th>
-                                        <td style="width:35% !important;">
-                                            <select name="asymptomatic" id="asymptomatic" class="form-control isRequired" title="Asymptomatic" onchange="asymptomaticFn(this.value);">
-                                                <option value="">--Select--</option>
-                                                <option value="yes" <?php echo ($covid19Info['asymptomatic'] == 'yes') ? "selected='selected'" : ""; ?>>Oui</option>
-                                                <option value="no" <?php echo ($covid19Info['asymptomatic'] == 'no') ? "selected='selected'" : ""; ?>>Non</option>
-                                                <option value="unknown" <?php echo ($covid19Info['asymptomatic'] == 'unknown') ? "selected='selected'" : ""; ?>>Inconnu</option>
-                                            </select>
-                                        </td>
+                                    <th scope="row" style="width:15% !important"><label for="asymptomatic">Asymptomatic <span class="mandatory">*</span></label></th>
+                                    <td style="width:35% !important;">
+                                        <select name="asymptomatic" id="asymptomatic" class="form-control isRequired" title="Asymptomatic" onchange="asymptomaticFn(this.value);">
+                                            <option value="">--Select--</option>
+                                            <option value="yes" <?php echo ($covid19Info['asymptomatic'] == 'yes') ? "selected='selected'" : ""; ?>>Oui</option>
+                                            <option value="no" <?php echo ($covid19Info['asymptomatic'] == 'no') ? "selected='selected'" : ""; ?>>Non</option>
+                                            <option value="unknown" <?php echo ($covid19Info['asymptomatic'] == 'unknown') ? "selected='selected'" : ""; ?>>Inconnu</option>
+                                        </select>
+                                    </td>
                                 </tr>
                                 <tr class="symptoms" style="display: <?php echo ($covid19Info['asymptomatic'] == 'yes') ? "none" : "contents"; ?>;">
                                     <td colspan="4">
@@ -682,7 +682,7 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                                 <tr>
                                     <th scope="row" style="width: 15% !important;"><label for="returnDate">Date de retour</label></th>
                                     <td style="width:35% !important;">
-                                        <input type="text" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['travel_return_date']); ?>" class="form-control date" id="returnDate" name="returnDate" placeholder="<?= _("Please enter date"); ?>" title="Date de retour" />
+                                        <input type="text" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['travel_return_date']); ?>" class="form-control date" id="returnDate" name="returnDate" placeholder="<?= _translate("Please enter date"); ?>" title="Date de retour" />
                                     </td>
 
                                     <th scope="row">Compagnie aérienne</th>
@@ -738,7 +738,7 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                                     <tr>
                                         <th scope="row"><label for="">Date de réception de l'échantillon <span class="mandatory">*</span></label></th>
                                         <td>
-                                            <input type="text" class="form-control isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Date de réception de l'échantillon" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['sample_received_at_lab_datetime']) ?>" onchange="" style="width:100%;" />
+                                            <input type="text" class="form-control isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Date de réception de l'échantillon" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['sample_received_at_lab_datetime']) ?>" onchange="" style="width:100%;" />
                                         </td>
                                         <th scope="row"><label for="sampleCondition">Condition de l'échantillon</label></th>
                                         <td>

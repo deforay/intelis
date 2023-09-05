@@ -51,23 +51,16 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $sele
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='editresult' id='editresult' autocomplete="off"
-					enctype="multipart/form-data" action="save-vl-results-helper.php">
+				<form class="form-horizontal" method='post' name='editresult' id='editresult' autocomplete="off" enctype="multipart/form-data" action="save-vl-results-helper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="viralLoadResult" class="col-lg-4 control-label">Viral Load Result<span
-											class="mandatory">*</span></label>
+									<label for="viralLoadResult" class="col-lg-4 control-label">Viral Load Result<span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="resultName"
-											name="resultName" value="<?php echo $resultInfo[0]['result']; ?>"
-											placeholder="Viral Load Result" title="Please enter Result name" readonly
-											onblur="checkNameValidation('r_vl_results','result',this,'<?php echo "result_id##" . htmlspecialchars($id); ?>','The Result name that you entered already exists.Enter another name',null)" />
-										<input type="hidden" class="form-control" id="resultId" name="resultId"
-											value="<?php echo base64_encode($id); ?>" />
-										<input type="hidden" class="form-control" id="oldResultName"
-											name="oldResultName" value="<?php echo $resultInfo[0]['result']; ?>" />
+										<input type="text" class="form-control isRequired" id="resultName" name="resultName" value="<?php echo $resultInfo[0]['result']; ?>" placeholder="Viral Load Result" title="Please enter Result name" readonly onblur="checkNameValidation('r_vl_results','result',this,'<?php echo "result_id##" . htmlspecialchars($id); ?>','The Result name that you entered already exists.Enter another name',null)" />
+										<input type="hidden" class="form-control" id="resultId" name="resultId" value="<?php echo base64_encode($id); ?>" />
+										<input type="hidden" class="form-control" id="oldResultName" name="oldResultName" value="<?php echo $resultInfo[0]['result']; ?>" />
 									</div>
 								</div>
 							</div>
@@ -75,8 +68,7 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $sele
 								<div class="form-group">
 									<label for="resultStatus" class="col-lg-4 control-label">Result Status</label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" id="resultStatus" name="resultStatus"
-											placeholder="Result Status" title="Please select Result Status">
+										<select class="form-control isRequired" id="resultStatus" name="resultStatus" placeholder="Result Status" title="Please select Result Status">
 											<option value="active" <?php echo ($resultInfo[0]['status'] == "active" ? 'selected' : ''); ?>>Active</option>
 											<option value="inactive" <?php echo ($resultInfo[0]['status'] == "inactive" ? 'selected' : ''); ?>>Inactive</option>
 										</select>
@@ -88,22 +80,21 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $sele
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="resultName" class="col-lg-4 control-label">
-										<?php echo _("Interpretation"); ?><span class="mandatory">*</span>
+										<?php echo _translate("Interpretation"); ?><span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name="interpretation"
-											id="interpretation">
+										<select class="form-control isRequired" name="interpretation" id="interpretation">
 											<option value="">--Select--</option>
 											<option value="suppressed" <?php if ($resultInfo[0]['interpretation'] == "suppressed")
-												echo "selected='selected'"; ?>>Suppressed</option>
+																			echo "selected='selected'"; ?>>Suppressed</option>
 											<option value="not suppressed" <?php if ($resultInfo[0]['interpretation'] == "not suppressed")
-												echo "selected='selected'"; ?>>Not Suppressed</option>
+																				echo "selected='selected'"; ?>>Not Suppressed</option>
 											<option value="error" <?php if ($resultInfo[0]['interpretation'] == "error")
-												echo "selected='selected'"; ?>>Error</option>
+																		echo "selected='selected'"; ?>>Error</option>
 											<option value="failed" <?php if ($resultInfo[0]['interpretation'] == "failed")
-												echo "selected='selected'"; ?>>Failed</option>
+																		echo "selected='selected'"; ?>>Failed</option>
 											<option value="no result" <?php if ($resultInfo[0]['interpretation'] == "no result")
-												echo "selected='selected'"; ?>>No Result</option>
+																			echo "selected='selected'"; ?>>No Result</option>
 										</select>
 									</div>
 								</div>
@@ -111,12 +102,10 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $sele
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="resultStatus" class="col-lg-4 control-label">
-										<?php echo _("Available For Instrument"); ?>
+										<?php echo _translate("Available For Instrument"); ?>
 									</label>
 									<div class="col-lg-7">
-										<select style="width: 275px;" class="form-control" id="instruments"
-											name="instruments[]" title="<?php echo _('Please select instruments'); ?>"
-											multiple="multiple">
+										<select style="width: 275px;" class="form-control" id="instruments" name="instruments[]" title="<?php echo _translate('Please select instruments'); ?>" multiple="multiple">
 											<?= $instrumentsDropdown; ?>
 										</select>
 									</div>
@@ -127,8 +116,7 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $sele
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">
-						<a class="btn btn-primary" href="javascript:void(0);"
-							onclick="validateNow();return false;">Submit</a>
+						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
 						<a href="vl-results.php" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->
@@ -143,9 +131,9 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $sele
 </div>
 
 <script type="text/javascript">
-	$(document).ready(function () {
+	$(document).ready(function() {
 		$("#instruments").select2({
-			placeholder: "<?php echo _("Select Instruments"); ?>"
+			placeholder: "<?php echo _translate("Select Instruments"); ?>"
 		});
 
 	});
@@ -169,13 +157,13 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $sele
 		removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
 		$.post("/includes/checkDuplicate.php", {
-			tableName: tableName,
-			fieldName: fieldName,
-			value: removeDots.trim(),
-			fnct: fnct,
-			format: "html"
-		},
-			function (data) {
+				tableName: tableName,
+				fieldName: fieldName,
+				value: removeDots.trim(),
+				fnct: fnct,
+				format: "html"
+			},
+			function(data) {
 				if (data === '1') {
 					alert(alrt);
 					document.getElementById(obj.id).value = "";

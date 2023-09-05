@@ -297,7 +297,7 @@ foreach ($rResult as $aRow) {
      $row[] = ($aRow['status_name']);
      $row[] = $aRow['funding_source_name'] ?? null;
      $row[] = $aRow['i_partner_name'] ?? null;
-     $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("View") . '" onclick="convertSearchResultToPdf(' . $aRow['eid_id'] . ')"><em class="fa-solid fa-file-lines"></em> ' . _("Result PDF") . '</a>';
+     $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("View") . '" onclick="convertSearchResultToPdf(' . $aRow['eid_id'] . ')"><em class="fa-solid fa-file-lines"></em> ' . _translate("Result PDF") . '</a>';
 
      $output['aaData'][] = $row;
 }

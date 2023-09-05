@@ -146,9 +146,9 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
-    $status = '<select class="form-control" name="status[]" id="' . $aRow['rejection_reason_id'] . '" title="' . _("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['rejection_reason_status'] . '\')">
-               <option value="active" ' . ($aRow['rejection_reason_status'] == "active" ? "selected=selected" : "") . '>' . _("Active") . '</option>
-               <option value="inactive" ' . ($aRow['rejection_reason_status'] == "inactive" ? "selected=selected" : "") . '>' . _("Inactive") . '</option>
+    $status = '<select class="form-control" name="status[]" id="' . $aRow['rejection_reason_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['rejection_reason_status'] . '\')">
+               <option value="active" ' . ($aRow['rejection_reason_status'] == "active" ? "selected=selected" : "") . '>' . _translate("Active") . '</option>
+               <option value="inactive" ' . ($aRow['rejection_reason_status'] == "inactive" ? "selected=selected" : "") . '>' . _translate("Inactive") . '</option>
                </select><br><br>';
     $row = [];
     $row[] = ($aRow['rejection_reason_name']);
@@ -156,7 +156,7 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['rejection_reason_code']);
     if ($usersService->isAllowed("/generic-tests/configuration/sample-rejection-reasons/generic-edit-sample-rejection-reasons.php") && $sarr['sc_user_type'] != 'vluser') {
         $row[] = $status;
-        // $row[] = '<a href="generic-edit-rejection-reasons.php?id=' . base64_encode($aRow['rejection_reason_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
+        // $row[] = '<a href="generic-edit-rejection-reasons.php?id=' . base64_encode($aRow['rejection_reason_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
     } else {
         $row[] = ucwords($aRow['rejection_reason_status']);
     }

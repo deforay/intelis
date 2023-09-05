@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Whoops\Run;
 use Whoops\Util\Misc;
+use Gettext\Loader\MoLoader;
 use App\Services\CommonService;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Handler\JsonResponseHandler;
@@ -30,22 +31,48 @@ class SystemService
     // Setup Translation
     public function setupTranslation($domain = "messages"): void
     {
-        // Default to 'en_US' if nothing is set
-        $defaultLocale = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? 'english' : 'en_US.utf8';
+        // Set the default locale
+        $defaultLocale = 'en_US';
 
+        // Determine the locale to use
         $_SESSION['APP_LOCALE'] = $_SESSION['userLocale'] ?? $_SESSION['APP_LOCALE'] ?? $this->commonService->getGlobalConfig('app_locale') ?? $defaultLocale;
 
-        if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
-            if (strpos($_SESSION['APP_LOCALE'], '.utf8') === false) {
-                $_SESSION['APP_LOCALE'] .= '.utf8';
-            }
-        }
 
-        setlocale(LC_ALL, $_SESSION['APP_LOCALE']);
-        bindtextdomain($domain, APPLICATION_PATH . DIRECTORY_SEPARATOR . 'locales');
-        bind_textdomain_codeset($domain, 'UTF-8');
-        textdomain($domain);
+        // Construct the path to the .mo file
+        $moFilePath = sprintf(
+            '%s%slocales%s%s%sLC_MESSAGES%s%s.mo',
+            APPLICATION_PATH,
+            DIRECTORY_SEPARATOR,
+            DIRECTORY_SEPARATOR,
+            $_SESSION['APP_LOCALE'],
+            DIRECTORY_SEPARATOR,
+            DIRECTORY_SEPARATOR,
+            $domain
+        );
+
+        // Initialize translations to null
+        $_SESSION['translations'] = null;
+
+        // Load translations if the locale is not the default and the .mo file exists
+        if ($_SESSION['APP_LOCALE'] !== $defaultLocale && file_exists($moFilePath)) {
+            $loader = new MoLoader();
+            $translations = $loader->loadFile($moFilePath);
+
+            // Store translations in the session
+            $_SESSION['translations'] = $translations;
+        }
     }
+
+    public static function translate($text)
+    {
+        if (empty($_SESSION['translations']) || empty($_SESSION['translations']->find(null, $text))) {
+            return $text;
+        } else {
+            return $_SESSION['translations']->find(null, $text)->getTranslation();
+        }
+    }
+
+
 
     // Setup Timezone
     public function setupDateTimeZone(): void

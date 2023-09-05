@@ -37,7 +37,7 @@ require_once APPLICATION_PATH . '/header.php';
 	<section class="content-header">
 		<h1><em class="fa-solid fa-hospital"></em> <?php echo $title; ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
 			<li class="active"> <?php echo $title; ?></li>
 		</ol>
 	</section>
@@ -59,27 +59,27 @@ require_once APPLICATION_PATH . '/header.php';
 								<div class="row">
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="testType" class="col-lg-4 control-label"><?php echo _("Test Type"); ?></label>
+											<label for="testType" class="col-lg-4 control-label"><?php echo _translate("Test Type"); ?></label>
 											<div class="col-lg-8">
-												<select class="form-control" id="testType" name="testType" title="<?php echo _('Choose one test type'); ?>" onchange="selectedTestType();">
-													<option value=""><?php echo _("--Select--"); ?></option>
+												<select class="form-control" id="testType" name="testType" title="<?php echo _translate('Choose one test type'); ?>" onchange="selectedTestType();">
+													<option value=""><?php echo _translate("--Select--"); ?></option>
 													<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
-														<option value="vl"><?php echo _("Viral Load"); ?></option>
+														<option value="vl"><?php echo _translate("Viral Load"); ?></option>
 													<?php }
 													if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) { ?>
-														<option value="eid"><?php echo _("Early Infant Diagnosis"); ?></option>
+														<option value="eid"><?php echo _translate("Early Infant Diagnosis"); ?></option>
 													<?php }
 													if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) { ?>
-														<option value="covid19"><?php echo _("Covid-19"); ?></option>
+														<option value="covid19"><?php echo _translate("Covid-19"); ?></option>
 													<?php }
 													if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) { ?>
-														<option value='hepatitis'><?php echo _("Hepatitis"); ?></option>
+														<option value='hepatitis'><?php echo _translate("Hepatitis"); ?></option>
 													<?php }
 													if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
-														<option value='tb'><?php echo _("TB"); ?></option>
+														<option value='tb'><?php echo _translate("TB"); ?></option>
 													<?php }
 													if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) { ?>
-														<option value='generic-tests'><?php echo _("Other Lab Tests"); ?></option>
+														<option value='generic-tests'><?php echo _translate("Other Lab Tests"); ?></option>
 													<?php } ?>
 												</select>
 											</div>
@@ -90,7 +90,7 @@ require_once APPLICATION_PATH . '/header.php';
 								<div class="row">
 									<div class="col-md-12">
 										<div class="form-group">
-											<label for="facilities" style="margin-left: 30px;" class="control-label"><?php echo _("Select the"); ?> <?php echo str_replace("Manage", "", $title); ?> <?php echo _("for test type"); ?> </label>
+											<label for="facilities" style="margin-left: 30px;" class="control-label"><?php echo _translate("Select the"); ?> <?php echo str_replace("Manage", "", $title); ?> <?php echo _translate("for test type"); ?> </label>
 											<div class="col-lg-12">
 												<div class="col-md-5">
 													<select name="facilities[]" id="search" class="form-control" size="8" multiple="multiple">
@@ -119,8 +119,8 @@ require_once APPLICATION_PATH . '/header.php';
 						<div class="box-footer">
 							<input type="hidden" name="mappingType" class="form-control" id="mappingType" value="<?= $mappingType; ?>" />
 							<input type="hidden" name="selectedFacilities" id="selectedFacilities" />
-							<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
-							<a href="facilities.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
+							<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
+							<a href="facilities.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
 						</div>
 						<!-- /.box-footer -->
 					</div>
@@ -145,8 +145,8 @@ require_once APPLICATION_PATH . '/header.php';
 		}
 		$('#search').multiselect({
 			search: {
-				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
+				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
 			},
 			fireSearch: function(value) {
 				return value.length > 2;
@@ -178,7 +178,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 	function selectedTestType() {
 		$.blockUI({
-			message: '<h3><?php echo _("Trying to get mapped facilities"); ?> <br><?php echo _("Please wait"); ?>...</h3>'
+			message: '<h3><?php echo _translate("Trying to get mapped facilities"); ?> <br><?php echo _translate("Please wait"); ?>...</h3>'
 		});
 		$.post("getTestTypeFacilitiesHelper.php", {
 				mappingType: "<?= $mappingType; ?>",

@@ -49,9 +49,9 @@ try {
         $db->update($tableName, $data);
 
 
-        $_SESSION['alertMsg'] = _("Facility Mapped to Selected Test Type successfully");
+        $_SESSION['alertMsg'] = _translate("Facility Mapped to Selected Test Type successfully");
     } else {
-        $_SESSION['alertMsg'] = _("No Facility Mapped to Selected Test Type");
+        $_SESSION['alertMsg'] = _translate("No Facility Mapped to Selected Test Type");
     }
     header("Location:/facilities/mapTestType.php?type=$mappingType&test=$testType");
 } catch (Exception $exc) {

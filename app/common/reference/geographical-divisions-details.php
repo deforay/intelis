@@ -1,5 +1,5 @@
 <?php
-$title = _("Geographical Divisions");
+$title = _translate("Geographical Divisions");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -8,10 +8,10 @@ require_once APPLICATION_PATH . '/header.php';
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-gears"></em> <?php echo _("Geographical Divisions"); ?></h1>
+		<h1><em class="fa-solid fa-gears"></em> <?php echo _translate("Geographical Divisions"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Geographical Divisions"); ?></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+			<li class="active"><?php echo _translate("Geographical Divisions"); ?></li>
 		</ol>
 	</section>
 
@@ -22,7 +22,7 @@ require_once APPLICATION_PATH . '/header.php';
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if (isset($_SESSION['privileges']) && in_array("add-geographical-divisions.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-							<a href="add-geographical-divisions.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add New Geographical Divisions"); ?></a>
+							<a href="add-geographical-divisions.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add New Geographical Divisions"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -30,17 +30,17 @@ require_once APPLICATION_PATH . '/header.php';
 						<table aria-describedby="table" id="samTypDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th scope="row"><?php echo _("Name"); ?></th>
-									<th scope="row"><?php echo _("Code"); ?></th>
-									<th scope="row"><?php echo _("Status"); ?></th>
+									<th scope="row"><?php echo _translate("Name"); ?></th>
+									<th scope="row"><?php echo _translate("Code"); ?></th>
+									<th scope="row"><?php echo _translate("Status"); ?></th>
 									<?php if (isset($_SESSION['privileges']) && in_array("geographical-divisions-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-										<th scope="row"><?php echo _("Action"); ?></th>
+										<th scope="row"><?php echo _translate("Action"); ?></th>
 									<?php } ?>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="3" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+									<td colspan="3" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 

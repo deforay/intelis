@@ -40,7 +40,7 @@ try {
 			$lastId = $db->getInsertId();
 		}
 		if ($lastId > 0) {
-			$_SESSION['alertMsg'] = _("Art Code details saved successfully");
+			$_SESSION['alertMsg'] = _translate("Art Code details saved successfully");
 			$general->activityLog('Add art code details', $_SESSION['userName'] . ' added new art code for ' . $_POST['artCode'], 'vl-reference');
 		}
 	}

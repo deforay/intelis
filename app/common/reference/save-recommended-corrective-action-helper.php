@@ -13,7 +13,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
- 
+
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
@@ -40,11 +40,11 @@ try {
 			$lastId = $db->getInsertId();
 		}
 		if ($lastId > 0) {
-			$_SESSION['alertMsg'] = _("Recommended Corrective Action saved successfully");
+			$_SESSION['alertMsg'] = _translate("Recommended Corrective Action saved successfully");
 			$general->activityLog('Recommended Corrective Action', $_SESSION['userName'] . ' added new Recommended Corrective Action for ' . $_POST['correctiveAction'], 'common-reference');
 		}
 	}
-	header("Location:recommended-corrective-actions.php?testType=".$_POST['testType']);
+	header("Location:recommended-corrective-actions.php?testType=" . $_POST['testType']);
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
 	error_log($exc->getTraceAsString());

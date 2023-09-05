@@ -321,7 +321,7 @@ class CommonService
                 return "<option data-code='{$row['geo_code']}' data-province-id='{$row['geo_id']}' data-name='{$row['geo_name']}' value='{$row['geo_name']}##{$row['geo_code']}'> {$row['geo_name']} </option>";
             }, $result);
 
-            array_unshift($options, "<option value=''>" . _("-- Select --") . " </option>");
+            array_unshift($options, "<option value=''>" . _translate("-- Select --") . " </option>");
 
             return implode('', $options);
         });
@@ -813,5 +813,4 @@ class CommonService
         $srcResults = $this->db->rawQuery($srcQuery);
         return $srcResults;
     }
-
 }

@@ -58,8 +58,8 @@ if (!empty($sampleType)) { ?>
     <table aria-describedby="table" class="col-lg-12 table table-bordered" style=" width: 80%;">
         <thead>
             <tr>
-                <th style="text-align:center;"><?php echo _("Test Category"); ?></th>
-                <th style="text-align:center;"><?php echo _("Sample Type"); ?></th>
+                <th style="text-align:center;"><?php echo _translate("Test Category"); ?></th>
+                <th style="text-align:center;"><?php echo _translate("Sample Type"); ?></th>
             </tr>
         </thead>
         <tbody id="sampleTypeTable">

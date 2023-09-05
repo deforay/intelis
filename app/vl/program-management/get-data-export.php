@@ -354,13 +354,13 @@ foreach ($rResult as $aRow) {
      if ($_SESSION['instanceType'] != 'standalone') {
           $row[] = $aRow['remote_sample_code'];
      }
-     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes'){
+     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
           $key = base64_decode('zACCxM1c1AfRevJ/Zpk+PKXpO+ebWjNSgCRa5/Uheh4=');
-          $aRow['patient_art_no'] = $general->crypto('decrypt' ,$aRow['patient_art_no'], $key);
-          $patientFname = $general->crypto('decrypt' ,$patientFname, $key);
-          $patientMname = $general->crypto('decrypt' ,$patientMname, $key);
-          $patientLname = $general->crypto('decrypt' ,$patientLname, $key);
-       }
+          $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
+          $patientFname = $general->crypto('decrypt', $patientFname, $key);
+          $patientMname = $general->crypto('decrypt', $patientMname, $key);
+          $patientLname = $general->crypto('decrypt', $patientLname, $key);
+     }
      $row[] = $aRow['batch_code'];
      $row[] = $aRow['patient_art_no'];
      $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
@@ -375,7 +375,7 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['i_partner_name'] ?? null;
      $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
      $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
-     //$row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("View") . '" onclick="convertSearchResultToPdf(' . $aRow['vl_sample_id'] . ');"><em class="fa-solid fa-file-lines"></em> ' . _("Result PDF") . '</a>';
+     //$row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("View") . '" onclick="convertSearchResultToPdf(' . $aRow['vl_sample_id'] . ');"><em class="fa-solid fa-file-lines"></em> ' . _translate("Result PDF") . '</a>';
 
      $output['aaData'][] = $row;
 }

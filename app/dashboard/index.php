@@ -1,5 +1,8 @@
 <?php
-$title = _("Dashboard");
+
+
+
+$title = _translate("Dashboard");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -71,22 +74,22 @@ require_once APPLICATION_PATH . '/header.php';
 			<ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
 				<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true && array_intersect($_SESSION['modules'], array('vl'))) { ?>
 					<li class="active"><a href="#vlDashboard" data-name="vl" data-toggle="tab" onclick="generateDashboard('vl');">
-							<?= _("HIV Viral Load Tests"); ?>
+							<?= _translate("HIV Viral Load Tests"); ?>
 						</a></li>
 				<?php }
 				if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true && array_intersect($_SESSION['modules'], array('eid'))) { ?>
 					<li><a href="#eidDashboard" data-name="eid" data-toggle="tab" onclick="generateDashboard('eid');">
-							<?= _("EID Tests"); ?>
+							<?= _translate("EID Tests"); ?>
 						</a></li>
 				<?php }
 				if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true && array_intersect($_SESSION['modules'], array('covid19'))) { ?>
 					<li><a href="#covid19Dashboard" data-name="covid19" data-toggle="tab" onclick="generateDashboard('covid19');">
-							<?= _("Covid-19 Tests"); ?>
+							<?= _translate("Covid-19 Tests"); ?>
 						</a></li>
 				<?php }
 				if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true && array_intersect($_SESSION['modules'], array('hepatitis'))) { ?>
 					<li><a href="#hepatitisDashboard" data-toggle="tab" onclick="generateDashboard('hepatitis');">
-							<?= _("Hepatitis Tests"); ?>
+							<?= _translate("Hepatitis Tests"); ?>
 						</a></li>
 				<?php }
 				if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true && array_intersect($_SESSION['modules'], array('tb'))) { ?>
@@ -97,7 +100,7 @@ require_once APPLICATION_PATH . '/header.php';
 				<?php }
 				if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] === true) { ?>
 					<li><a href="#recencyDashboard" data-name="recency" data-toggle="tab" onclick="generateDashboard('recency')">
-							<?= _("Confirmation Tests for Recency"); ?>
+							<?= _translate("Confirmation Tests for Recency"); ?>
 						</a></li>
 				<?php } ?>
 			</ul>
@@ -119,14 +122,14 @@ require_once APPLICATION_PATH . '/header.php';
 										<table aria-describedby="table" class="table searchTable" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
 												<th scope="row" style="vertical-align:middle;"><strong>
-														<?= _("Date Range"); ?>&nbsp;:
+														<?= _translate("Date Range"); ?>&nbsp;:
 													</strong></th>
 												<td>
-													<input type="text" id="vlSampleCollectionDate" name="vlSampleCollectionDate" class="form-control" placeholder="<?= _('Select Sample Collection daterange'); ?>" style="width:220px;background:#fff;" />
+													<input type="text" id="vlSampleCollectionDate" name="vlSampleCollectionDate" class="form-control" placeholder="<?= _translate('Select Sample Collection daterange'); ?>" style="width:220px;background:#fff;" />
 												</td>
-												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('vl');" value="<?= _('Search'); ?>" class="searchBtn btn btn-success btn-sm">
+												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('vl');" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
 													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('vl');"><span>
-															<?= _("Reset"); ?>
+															<?= _translate("Reset"); ?>
 														</span></button>
 												</td>
 											</tr>
@@ -163,14 +166,14 @@ require_once APPLICATION_PATH . '/header.php';
 										<table aria-describedby="table" class="table searchTable" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
 												<th scope="row" style="vertical-align:middle;"><strong>
-														<?= _('Date Range'); ?>&nbsp;:
+														<?= _translate('Date Range'); ?>&nbsp;:
 													</strong></th>
 												<td>
-													<input type="text" id="recencySampleCollectionDate" name="recencySampleCollectionDate" class="form-control" placeholder="<?= _('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
+													<input type="text" id="recencySampleCollectionDate" name="recencySampleCollectionDate" class="form-control" placeholder="<?= _translate('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
 												</td>
-												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('recency')" value="<?= _('Search'); ?>" class="searchBtn btn btn-success btn-sm">
+												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('recency')" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
 													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('recency');"><span>
-															<?= _('Reset'); ?>
+															<?= _translate('Reset'); ?>
 														</span></button>
 												</td>
 											</tr>
@@ -209,14 +212,14 @@ require_once APPLICATION_PATH . '/header.php';
 										<table aria-describedby="table" class="table searchTable" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
 												<th scope="row" style="vertical-align:middle;"><strong>
-														<?= _('Date Range'); ?>&nbsp;:
+														<?= _translate('Date Range'); ?>&nbsp;:
 													</strong></th>
 												<td>
-													<input type="text" id="eidSampleCollectionDate" name="eidSampleCollectionDate" class="form-control" placeholder="<?= _('Select Sample Collection daterange'); ?>" style="width:220px;background:#fff;" />
+													<input type="text" id="eidSampleCollectionDate" name="eidSampleCollectionDate" class="form-control" placeholder="<?= _translate('Select Sample Collection daterange'); ?>" style="width:220px;background:#fff;" />
 												</td>
-												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('eid')" value="<?= _('Search'); ?>" class="searchBtn btn btn-success btn-sm">
+												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('eid')" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
 													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('eid');"><span>
-															<?= _('Reset'); ?>
+															<?= _translate('Reset'); ?>
 														</span></button>
 												</td>
 											</tr>
@@ -256,14 +259,14 @@ require_once APPLICATION_PATH . '/header.php';
 										<table aria-describedby="table" class="table searchTable" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
 												<th scope="row" style="vertical-align:middle;"><strong>
-														<?= _('Date Range'); ?>&nbsp;:
+														<?= _translate('Date Range'); ?>&nbsp;:
 													</strong></th>
 												<td>
-													<input type="text" id="covid19SampleCollectionDate" name="covid19SampleCollectionDate" class="form-control" placeholder="<?= _('Select Sample Collection daterange'); ?>" style="width:220px;background:#fff;" />
+													<input type="text" id="covid19SampleCollectionDate" name="covid19SampleCollectionDate" class="form-control" placeholder="<?= _translate('Select Sample Collection daterange'); ?>" style="width:220px;background:#fff;" />
 												</td>
-												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('covid19')" value="<?= _('Search'); ?>" class="searchBtn btn btn-success btn-sm">
+												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('covid19')" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
 													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('covid19');"><span>
-															<?= _('Reset'); ?>
+															<?= _translate('Reset'); ?>
 														</span></button>
 												</td>
 											</tr>
@@ -304,14 +307,14 @@ require_once APPLICATION_PATH . '/header.php';
 										<table aria-describedby="table" class="table searchTable" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
 												<th scope="row" style="vertical-align:middle;"><strong>
-														<?= _('Date Range'); ?>&nbsp;:
+														<?= _translate('Date Range'); ?>&nbsp;:
 													</strong></th>
 												<td>
-													<input type="text" id="hepatitisSampleCollectionDate" name="hepatitisSampleCollectionDate" class="form-control" placeholder="<?= _('Select Sample Collection daterange'); ?>" style="width:220px;background:#fff;" />
+													<input type="text" id="hepatitisSampleCollectionDate" name="hepatitisSampleCollectionDate" class="form-control" placeholder="<?= _translate('Select Sample Collection daterange'); ?>" style="width:220px;background:#fff;" />
 												</td>
-												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('hepatitis')" value="<?= _('Search'); ?>" class="searchBtn btn btn-success btn-sm">
+												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('hepatitis')" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
 													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('hepatitis');"><span>
-															<?= _('Reset'); ?>
+															<?= _translate('Reset'); ?>
 														</span></button>
 												</td>
 											</tr>
@@ -352,14 +355,14 @@ require_once APPLICATION_PATH . '/header.php';
 										<table aria-describedby="table" class="table searchTable" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
 												<th scope="row" style="vertical-align:middle;"><strong>
-														<?= _('Date Range'); ?>&nbsp;:
+														<?= _translate('Date Range'); ?>&nbsp;:
 													</strong></th>
 												<td>
-													<input type="text" id="tbSampleCollectionDate" name="tbSampleCollectionDate" class="form-control" placeholder="<?= _('Select Sample Collection daterange'); ?>" style="width:220px;background:#fff;" />
+													<input type="text" id="tbSampleCollectionDate" name="tbSampleCollectionDate" class="form-control" placeholder="<?= _translate('Select Sample Collection daterange'); ?>" style="width:220px;background:#fff;" />
 												</td>
-												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('tb')" value="<?= _('Search'); ?>" class="searchBtn btn btn-success btn-sm">
+												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('tb')" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
 													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('tb');"><span>
-															<?= _('Reset'); ?>
+															<?= _translate('Reset'); ?>
 														</span></button>
 												</td>
 											</tr>
@@ -400,14 +403,14 @@ require_once APPLICATION_PATH . '/header.php';
 										<table aria-describedby="table" class="table searchTable" style="margin-left:1%;margin-top:0px;width: 98%;margin-bottom: 0px;">
 											<tr>
 												<th scope="row" style="vertical-align:middle;"><strong>
-														<?= _('Date Range'); ?>&nbsp;:
+														<?= _translate('Date Range'); ?>&nbsp;:
 													</strong></th>
 												<td>
-													<input type="text" id="genericTestsSampleCollectionDate" name="genericTestsSampleCollectionDate" id="genericTestsSampleCollectionDate" class="form-control" placeholder="<?= _('Select Sample Collection daterange'); ?>" style="width:220px;background:#fff;" />
+													<input type="text" id="genericTestsSampleCollectionDate" name="genericTestsSampleCollectionDate" id="genericTestsSampleCollectionDate" class="form-control" placeholder="<?= _translate('Select Sample Collection daterange'); ?>" style="width:220px;background:#fff;" />
 												</td>
-												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('generic-tests')" value="<?= _('Search'); ?>" class="searchBtn btn btn-success btn-sm">
+												<td colspan="3">&nbsp;<input type="button" onclick="generateDashboard('generic-tests')" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
 													&nbsp;<button class="btn btn-danger btn-sm" onclick="resetSearchVlRequestData('generic-tests');"><span>
-															<?= _('Reset'); ?>
+															<?= _translate('Reset'); ?>
 														</span></button>
 												</td>
 											</tr>
@@ -469,7 +472,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate,#tbSampleCollectionDate,#genericTestsSampleCollectionDate').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _("Clear"); ?>",
+					cancelLabel: "<?= _translate("Clear"); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},
@@ -777,7 +780,7 @@ require_once APPLICATION_PATH . '/header.php';
 	function resetSearchVlRequestData(requestType) {
 		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#recencySampleCollectionDate,#tbSampleCollectionDate,#genericTestsSampleCollectionDate').daterangepicker({
 			locale: {
-				cancelLabel: "<?= _("Clear"); ?>",
+				cancelLabel: "<?= _translate("Clear"); ?>",
 				format: 'DD-MMM-YYYY',
 				separator: ' to ',
 			},
@@ -819,7 +822,7 @@ require_once APPLICATION_PATH . '/header.php';
 				if (data['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span>' + data['aaData'].length + ' <?= addslashes(_("EID testing lab(s) did not meet the monthly test target")); ?>. </span><a href="/eid/management/eidTestingTargetReport.php" target="_blank"> <?= _("more"); ?> </a>\
+							<span>' + data['aaData'].length + ' <?= addslashes(_translate("EID testing lab(s) did not meet the monthly test target")); ?>. </span><a href="/eid/management/eidTestingTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
 							</div>';
 					$("#contEid").html(div);
 				}
@@ -843,7 +846,7 @@ require_once APPLICATION_PATH . '/header.php';
 				if (data['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span>' + data['aaData'].length + ' <?= addslashes(_("VL testing lab(s) did not meet the monthly test target")); ?>. </span><a href="/vl/program-management/vlTestingTargetReport.php" target="_blank"> <?= _("more"); ?> </a>\
+							<span>' + data['aaData'].length + ' <?= addslashes(_translate("VL testing lab(s) did not meet the monthly test target")); ?>. </span><a href="/vl/program-management/vlTestingTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
 							</div>';
 					$("#cont").html(div);
 				}
@@ -866,7 +869,7 @@ require_once APPLICATION_PATH . '/header.php';
 				if (data == 1) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span> <?= addslashes(_("VL testing lab(s) did not meet suppression targets")); ?> </span><a href="/vl/program-management/vlSuppressedTargetReport.php" target="_blank"> <?= _("more"); ?> </a>\
+							<span> <?= addslashes(_translate("VL testing lab(s) did not meet suppression targets")); ?> </span><a href="/vl/program-management/vlSuppressedTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
 							</div>';
 					$("#contVl").html(div);
 				}
@@ -890,7 +893,7 @@ require_once APPLICATION_PATH . '/header.php';
 				if (data['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span >' + data['aaData'].length + ' <?= addslashes(_("Covid-19 testing lab(s) did not meet the monthly test target")); ?>.  </span><a href="/covid-19/management/covid19TestingTargetReport.php" target="_blank"> <?= _("more"); ?> </a>\
+							<span >' + data['aaData'].length + ' <?= addslashes(_translate("Covid-19 testing lab(s) did not meet the monthly test target")); ?>.  </span><a href="/covid-19/management/covid19TestingTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
 							</div>';
 					$("#contCovid").html(div);
 				}
@@ -914,7 +917,7 @@ require_once APPLICATION_PATH . '/header.php';
 				if (data['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-				<span >' + data['aaData'].length + ' <?= addslashes(_("Hepatitis testing lab(s) did not meet the monthly test target")); ?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?= _("more"); ?> </a>\
+				<span >' + data['aaData'].length + ' <?= addslashes(_translate("Hepatitis testing lab(s) did not meet the monthly test target")); ?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
 				</div>';
 					$("#contCovid").html(div);
 				}
@@ -935,7 +938,7 @@ require_once APPLICATION_PATH . '/header.php';
 				if (data['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-				<span >' + data['aaData'].length + ' <?= addslashes(_("TB testing lab(s) did not meet the monthly test target")); ?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?= _("more"); ?> </a>\
+				<span >' + data['aaData'].length + ' <?= addslashes(_translate("TB testing lab(s) did not meet the monthly test target")); ?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
 				</div>';
 					$("#contCovid").html(div);
 				}

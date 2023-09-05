@@ -233,7 +233,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['last_modified_datetime'];
     $row[] = ($aRow['status_name']);
     if ($editRequest) {
-        $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Failed result retest") . '" onclick="retestSample(\'' . trim(base64_encode($aRow['sample_id'])) . '\')"><em class="fa-solid fa-arrows-rotate"></em>' . _("Retest") . '</a>';
+        $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Failed result retest") . '" onclick="retestSample(\'' . trim(base64_encode($aRow['sample_id'])) . '\')"><em class="fa-solid fa-arrows-rotate"></em>' . _translate("Retest") . '</a>';
     }
 
     $output['aaData'][] = $row;

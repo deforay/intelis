@@ -40,7 +40,7 @@ try {
 		}
 
 		if ($lastId > 0) {
-			$_SESSION['alertMsg'] = _("VL Results details saved successfully");
+			$_SESSION['alertMsg'] = _translate("VL Results details saved successfully");
 			$general->activityLog('VL Results details', $_SESSION['userName'] . ' added new results for ' . $_POST['resultName'], 'vl-reference');
 		}
 	}

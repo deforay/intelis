@@ -37,15 +37,15 @@ $skin = "skin-blue";
 
 $logoName = "<img src='/assets/img/flask.png' style='margin-top:-5px;max-width:22px;'> <span style=''>LIS</span>";
 $smallLogoName = "<img src='/assets/img/flask.png'>";
-$systemType = _("Lab Sample Management Module");
-$shortName = _("Sample Management");
+$systemType = _translate("Lab Sample Management Module");
+$shortName = _translate("Sample Management");
 $shortCode = 'LIS';
 if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser') {
 	$skin = "skin-red";
-	$systemType = _("Remote Sample Tracking Module");
+	$systemType = _translate("Remote Sample Tracking Module");
 	$logoName = "<span class='fa fa-medkit'></span> STS";
 	$smallLogoName = "<span class='fa fa-medkit'></span>";
-	$shortName = _("Sample Tracking");
+	$shortName = _translate("Sample Tracking");
 	$shortCode = 'STS';
 }
 
@@ -58,7 +58,7 @@ $request = $GLOBALS['request'];
 
 if (!$usersService->isAllowed($request)) {
 	http_response_code(401);
-	throw new SystemException(_('Unauthorized access. You do not have permission to access this page.'), 401);
+	throw new SystemException(_translate('Unauthorized access. You do not have permission to access this page.'), 401);
 }
 
 $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
@@ -161,13 +161,13 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 								?>
 									<li class="user-footer">
 										<a href="/users/editProfile.php" class="">
-											<?= _("Edit Profile"); ?>
+											<?= _translate("Edit Profile"); ?>
 										</a>
 									</li>
 								<?php } ?>
 								<li class="user-footer">
 									<a href="/login/logout.php">
-										<?= _("Sign out"); ?>
+										<?= _translate("Sign out"); ?>
 									</a>
 								</li>
 							</ul>
@@ -204,7 +204,7 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 							<li class="<?= $classNames; ?>">
 								<a href="<?= $menu['link'] ?>">
 									<span class="<?= $menu['icon'] ?>"></span> <span>
-										<?= _($menu['display_text']); ?>
+										<?= _translate($menu['display_text']); ?>
 									</span>
 
 									<?php if ($menu['has_children'] == 'yes') { ?>
@@ -231,7 +231,7 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 											<a href="<?= $subMenu['link']; ?>">
 												<span class="<?= $subMenu['icon'] ?>"></span>
 												<span>
-													<?= _($subMenu['display_text']); ?>
+													<?= _translate($subMenu['display_text']); ?>
 												</span>
 												<?php if ($subMenuHasChildren) { ?>
 													<span class="pull-right-container">
@@ -254,7 +254,7 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 															<a class="menu-item" href="<?= $childMenu['link'] ?>" <?= $innerPages; ?>>
 																<span class="<?= $childMenu['icon'] ?>"></span>
 																<span class="inner-menu-item-text">
-																	<?= _($childMenu['display_text']); ?>
+																	<?= _translate($childMenu['display_text']); ?>
 																</span>
 															</a>
 														</li>
@@ -288,6 +288,6 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 				<span onclick="closeModal();" style="float:right;clear:both;" class="closeModal"></span>
 			</div>
 			<iframe id="dFrame" src="" title="LIS Content" style="border:none;" scrolling="yes" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0">
-				<?= _("Unable to load this page or resource"); ?>
+				<?= _translate("Unable to load this page or resource"); ?>
 			</iframe>
 		</div>

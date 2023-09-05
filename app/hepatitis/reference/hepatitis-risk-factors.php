@@ -1,16 +1,16 @@
 <?php
-$title = _("Hepatitis Risk Factors");
- 
+$title = _translate("Hepatitis Risk Factors");
+
 require_once APPLICATION_PATH . '/header.php';
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-square-h"></em> <?php echo _("Hepatitis Risk Factors"); ?></h1>
+		<h1><em class="fa-solid fa-square-h"></em> <?php echo _translate("Hepatitis Risk Factors"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Hepatitis Risk Factors"); ?></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+			<li class="active"><?php echo _translate("Hepatitis Risk Factors"); ?></li>
 		</ol>
 	</section>
 
@@ -21,16 +21,16 @@ require_once APPLICATION_PATH . '/header.php';
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if (isset($_SESSION['privileges']) && in_array("hepatitis-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-							<a href="add-hepatitis-risk-factors.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Hepatitis Risk Factors"); ?></a>
+							<a href="add-hepatitis-risk-factors.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Hepatitis Risk Factors"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="sampTypDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+						<table aria-describedby="table" id="sampTypDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th scope="row"><?php echo _("Risk Factor Name"); ?></th>
-									<th scope="row"><?php echo _("Status"); ?></th>
+									<th scope="row"><?php echo _translate("Risk Factor Name"); ?></th>
+									<th scope="row"><?php echo _translate("Status"); ?></th>
 									<?php if (isset($_SESSION['privileges']) && in_array("hepatitis-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
 										<!-- <th scope="row">Action</th> -->
 									<?php } ?>
@@ -38,7 +38,7 @@ require_once APPLICATION_PATH . '/header.php';
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="3" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+									<td colspan="3" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 
@@ -74,7 +74,7 @@ require_once APPLICATION_PATH . '/header.php';
 				},
 				{
 					"sClass": "center",
-					"bSortable" : false
+					"bSortable": false
 				}
 			],
 			"aaSorting": [
@@ -98,7 +98,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 	function updateStatus(obj, optVal) {
 		if (obj.value != '') {
-			conf = confirm("<?php echo _("Are you sure you want to change the status?"); ?>");
+			conf = confirm("<?php echo _translate("Are you sure you want to change the status?"); ?>");
 			if (conf) {
 				$.post("update-hepatitis-risk-factors-status.php", {
 						status: obj.value,
@@ -107,7 +107,7 @@ require_once APPLICATION_PATH . '/header.php';
 					function(data) {
 						if (data != "") {
 							oTable.fnDraw();
-							alert("<?php echo _("Updated successfully."); ?>");
+							alert("<?php echo _translate("Updated successfully."); ?>");
 						}
 					});
 			} else {

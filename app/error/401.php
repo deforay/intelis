@@ -19,7 +19,7 @@ require_once APPLICATION_PATH . '/header.php';
         <h2 style="color:red;text-align: center;">
           Sorry! You are not allowed to access this page.<br />
           <small>
-            <?= _("Please contact the System Admin for further support."); ?>
+            <?= _translate("Please contact the System Admin for further support."); ?>
           </small>
         </h2>
       </div>

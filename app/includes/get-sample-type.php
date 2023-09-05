@@ -29,7 +29,7 @@ $sampleTypes = $db->get($table);
 ?>
 <?php if (!empty($sampleTypes)) { ?>
     <option value="">
-        <?php echo _("-- Select --"); ?>
+        <?php echo _translate("-- Select --"); ?>
     </option>
     <?php foreach ($sampleTypes as $sample) { ?>
         <option value="<?php echo $sample['sample_id']; ?>" <?php echo (!empty($_POST['sampleId']) && $_POST['sampleId'] == $sample['sample_id']) ? "selected='selected'" : ""; ?>><?php echo $sample['sample_name']; ?>
@@ -37,9 +37,8 @@ $sampleTypes = $db->get($table);
     <?php } ?>
 <?php } else { ?>
     <option value="">
-        <?php echo _("-- Select --"); ?>
+        <?php echo _translate("-- Select --"); ?>
     </option>
-    <?php
+<?php
 }
 ?>
-

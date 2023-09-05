@@ -170,7 +170,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="operator" class="col-lg-4 control-label"><?php echo _("Operator/Technician"); ?> </label>
+									<label for="operator" class="col-lg-4 control-label"><?php echo _translate("Operator/Technician"); ?> </label>
 									<div class="col-lg-7" style="margin-left:3%;">
 										<select class="form-control select2" id="operator" name="operator" title="Choose one Operator/Technician">
 											<?= $general->generateSelectOptions($usersList, null, '-- Select --'); ?>
@@ -181,7 +181,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="facility" class="col-lg-4 control-label"><?php echo _("Sample Collection Point"); ?></label>
+									<label for="facility" class="col-lg-4 control-label"><?php echo _translate("Sample Collection Point"); ?></label>
 									<div class="col-lg-7" style="margin-left:3%;">
 										<select class="form-control select2" id="facility" name="facility" title="Choose one sample collection point">
 											<?= $general->generateSelectOptions($facilities, null, '-- Select --'); ?>
@@ -193,7 +193,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="sampleType" class="col-lg-4 control-label"><?php echo _("Sample Type"); ?></label>
+									<label for="sampleType" class="col-lg-4 control-label"><?php echo _translate("Sample Type"); ?></label>
 									<div class="col-lg-7" style="margin-left:3%;">
 										<select class="form-control select2" id="sampleType" name="sampleType" title="Choose Sample Type">
 											<?= $general->generateSelectOptions($sampleTypes, null, '-- Select --'); ?>
@@ -204,9 +204,9 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="daterange" class="col-lg-4 control-label"><?php echo _("Sample Collection Date Range"); ?></label>
+									<label for="daterange" class="col-lg-4 control-label"><?php echo _translate("Sample Collection Date Range"); ?></label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<input type="text" class="form-control" id="daterange" name="daterange" placeholder="<?php echo _('Sample Collection Date Range'); ?>" title="Choose one sample collection date range">
+										<input type="text" class="form-control" id="daterange" name="daterange" placeholder="<?php echo _translate('Sample Collection Date Range'); ?>" title="Choose one sample collection date range">
 									</div>
 								</div>
 							</div>
@@ -273,11 +273,11 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 	$(document).ready(function() {
 		$("#testType").select2({
 			width: '100%',
-			placeholder: "<?php echo _("Select Test Type"); ?>"
+			placeholder: "<?php echo _translate("Select Test Type"); ?>"
 		});
 		$('#daterange').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _("Clear"); ?>",
+					cancelLabel: "<?= _translate("Clear"); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},

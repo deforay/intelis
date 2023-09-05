@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-  
+
 
 $tableName = "other_config";
 try {
@@ -21,7 +21,7 @@ try {
             $db->update($tableName, $data);
         }
     }
-    $_SESSION['alertMsg'] = _("Test Result Email Config values updated successfully.");
+    $_SESSION['alertMsg'] = _translate("Test Result Email Config values updated successfully.");
     header("Location:testResultEmailConfig.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());

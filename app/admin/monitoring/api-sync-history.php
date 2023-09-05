@@ -3,7 +3,7 @@
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
-$title = _("Audit Trail");
+$title = _translate("Audit Trail");
 require_once APPLICATION_PATH . '/header.php';
 
 
@@ -31,14 +31,14 @@ foreach ($syncedTypeResults as $synced) {
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1><em class="fa-solid  fa-circle-nodes"></em>
-			<?php echo _("API History"); ?>
+			<?php echo _translate("API History"); ?>
 		</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em>
-					<?php echo _("Home"); ?>
+					<?php echo _translate("Home"); ?>
 				</a></li>
 			<li class="active">
-				<?php echo _("API History"); ?>
+				<?php echo _translate("API History"); ?>
 			</li>
 		</ol>
 	</section>
@@ -51,58 +51,58 @@ foreach ($syncedTypeResults as $synced) {
 					<table aria-describedby="table" class="table" aria-hidden="true" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<td><strong>
-									<?= _('Date Range'); ?>&nbsp;:
+									<?= _translate('Date Range'); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<input type="text" id="dateRange" name="dateRange" class="form-control daterangefield" placeholder="<?php echo _('Enter date range'); ?>" style="width:220px;background:#fff;" />
+								<input type="text" id="dateRange" name="dateRange" class="form-control daterangefield" placeholder="<?php echo _translate('Enter date range'); ?>" style="width:220px;background:#fff;" />
 							</td>
 							<td><strong>
-									<?php echo _("Test Type"); ?>&nbsp;:
+									<?php echo _translate("Test Type"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
+								<select id="testType" name="testType" class="form-control" placeholder="<?php echo _translate('Please select the Test types'); ?>">
 									<option value="">
-										<?php echo _("-- Select --"); ?>
+										<?php echo _translate("-- Select --"); ?>
 									</option>
 									<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
 										<option value="vl">
-											<?php echo _("Viral Load"); ?>
+											<?php echo _translate("Viral Load"); ?>
 										</option>
 									<?php }
 									if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) { ?>
 										<option value="eid">
-											<?php echo _("Early Infant Diagnosis"); ?>
+											<?php echo _translate("Early Infant Diagnosis"); ?>
 										</option>
 									<?php }
 									if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) { ?>
 										<option value="covid19">
-											<?php echo _("Covid-19"); ?>
+											<?php echo _translate("Covid-19"); ?>
 										</option>
 									<?php }
 									if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) { ?>
 										<option value='hepatitis'>
-											<?php echo _("Hepatitis"); ?>
+											<?php echo _translate("Hepatitis"); ?>
 										</option>
 									<?php }
 									if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
 										<option value='tb'>
-											<?php echo _("TB"); ?>
+											<?php echo _translate("TB"); ?>
 										</option>
 									<?php } ?>
 								</select>
 							</td>
 							<td><strong>
-									<?php echo _("API Type"); ?>&nbsp;:
+									<?php echo _translate("API Type"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select style="width:220px;" class="form-control select2" id="syncedType" name="syncedType" title="<?php echo _('Please select the API type'); ?>">
+								<select style="width:220px;" class="form-control select2" id="syncedType" name="syncedType" title="<?php echo _translate('Please select the API type'); ?>">
 									<?php echo $general->generateSelectOptions($syncedType, null, '--Select--'); ?>
 								</select>
 							</td>
 						</tr>
 						<tr>
 							<td><button onclick="oTable.fnDraw();" value="Search" class="btn btn-primary btn-sm"><span>
-										<?php echo _("Search"); ?>
+										<?php echo _translate("Search"); ?>
 									</span></button></td>
 						</tr>
 					</table>
@@ -112,32 +112,32 @@ foreach ($syncedTypeResults as $synced) {
 							<thead>
 								<tr>
 									<th>
-										<?php echo _("Transaction ID"); ?>
+										<?php echo _translate("Transaction ID"); ?>
 									</th>
 									<th>
-										<?php echo _("Number of Records Synced"); ?>
+										<?php echo _translate("Number of Records Synced"); ?>
 									</th>
 									<th>
-										<?php echo _("Sync Type"); ?>
+										<?php echo _translate("Sync Type"); ?>
 									</th>
 									<th>
-										<?php echo _("Test Type"); ?>
+										<?php echo _translate("Test Type"); ?>
 									</th>
 									<th style="width:200px;">
-										<?php echo _("URL"); ?>
+										<?php echo _translate("URL"); ?>
 									</th>
 									<th>
-										<?php echo _("Synced On"); ?>
+										<?php echo _translate("Synced On"); ?>
 									</th>
 									<th>
-										<?php echo _("Action"); ?>
+										<?php echo _translate("Action"); ?>
 									</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
 									<td colspan="7" class="dataTables_empty">
-										<?php echo _("Loading data from server"); ?>
+										<?php echo _translate("Loading data from server"); ?>
 									</td>
 								</tr>
 							</tbody>
@@ -160,7 +160,7 @@ foreach ($syncedTypeResults as $synced) {
 		loadVlRequestData();
 		$('#dateRange').daterangepicker({
 			locale: {
-				cancelLabel: "<?= _("Clear"); ?>",
+				cancelLabel: "<?= _translate("Clear"); ?>",
 				format: 'DD-MMM-YYYY',
 				separator: ' to ',
 			},

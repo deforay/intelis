@@ -188,11 +188,11 @@ foreach ($rResult as $aRow) {
      $patientLname = ($general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_art_no']));
 
 
-     $status = '<select class="form-control"  name="status[]" id="' . $aRow['vl_sample_id'] . '" title="' . _("Please select status") . '" onchange="updateStatus(this,' . $aRow['status_id'] . ')">
-               <option value="">' . _("-- Select --") . '</option>
-               <option value="7" ' . ($aRow['status_id'] == "7" ? "selected=selected" : "") . '>' . _("Accepted") . '</option>
-               <option value="4" ' . ($aRow['status_id'] == "4"  ? "selected=selected" : "") . '>' . _("Rejected") . '</option>
-               <option value="2" ' . ($aRow['status_id'] == "2"  ? "selected=selected" : "") . '>' . _("Lost") . '</option>
+     $status = '<select class="form-control"  name="status[]" id="' . $aRow['vl_sample_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,' . $aRow['status_id'] . ')">
+               <option value="">' . _translate("-- Select --") . '</option>
+               <option value="7" ' . ($aRow['status_id'] == "7" ? "selected=selected" : "") . '>' . _translate("Accepted") . '</option>
+               <option value="4" ' . ($aRow['status_id'] == "4"  ? "selected=selected" : "") . '>' . _translate("Rejected") . '</option>
+               <option value="2" ' . ($aRow['status_id'] == "2"  ? "selected=selected" : "") . '>' . _translate("Lost") . '</option>
                </select><br><br>';
 
      $row = [];
@@ -201,13 +201,13 @@ foreach ($rResult as $aRow) {
      if ($systemType != 'standalone') {
           $row[] = $aRow['remote_sample_code'];
      }
-     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes'){
+     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
           $key = base64_decode('zACCxM1c1AfRevJ/Zpk+PKXpO+ebWjNSgCRa5/Uheh4=');
-          $aRow['patient_art_no'] = $general->crypto('decrypt' ,$aRow['patient_art_no'], $key);
-          $patientFname = $general->crypto('decrypt' ,$patientFname, $key);
-          $patientMname = $general->crypto('decrypt' ,$patientMname, $key);
-          $patientLname = $general->crypto('decrypt' ,$patientLname, $key);
-       }
+          $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
+          $patientFname = $general->crypto('decrypt', $patientFname, $key);
+          $patientMname = $general->crypto('decrypt', $patientMname, $key);
+          $patientLname = $general->crypto('decrypt', $patientLname, $key);
+     }
      $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
      $row[] = $aRow['batch_code'];
      $row[] = $aRow['patient_art_no'];

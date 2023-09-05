@@ -68,25 +68,25 @@ $pResult = $db->rawQuery($pQuery);
 							<thead>
 								<tr>
 									<th style="width:10%;">
-										<?= _("Select"); ?>
+										<?= _translate("Select"); ?>
 									</th>
 									<th style="width:10%;">
-										<?= _("Patient ID"); ?>
+										<?= _translate("Patient ID"); ?>
 									</th>
 									<th style="width:10%;">
-										<?= _("Patient Name"); ?>
+										<?= _translate("Patient Name"); ?>
 									</th>
 									<th style="width:10%;">
-										<?= _("Age"); ?>
+										<?= _translate("Age"); ?>
 									</th>
 									<th style="width:10%;">
-										<?= _("Gender"); ?>
+										<?= _translate("Gender"); ?>
 									</th>
 									<th style="width:10%;">
-										<?= _("Facility Name"); ?>
+										<?= _translate("Facility Name"); ?>
 									</th>
 									<th style="width:10%;">
-										<?= _("Date and Time"); ?>
+										<?= _translate("Date and Time"); ?>
 									</th>
 								</tr>
 							</thead>

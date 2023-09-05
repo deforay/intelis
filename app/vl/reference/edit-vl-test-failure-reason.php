@@ -15,10 +15,10 @@ $failureReasonInfo = $db->getOne('r_vl_test_failure_reasons');
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><em class="fa-solid fa-flask-vial"></em> <?php echo _("Edit VL Test Failure Reasons"); ?></h1>
+        <h1><em class="fa-solid fa-flask-vial"></em> <?php echo _translate("Edit VL Test Failure Reasons"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-            <li class="active"><?php echo _("VL Test Failure Reasons"); ?></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+            <li class="active"><?php echo _translate("VL Test Failure Reasons"); ?></li>
         </ol>
     </section>
 
@@ -28,7 +28,7 @@ $failureReasonInfo = $db->getOne('r_vl_test_failure_reasons');
         <div class="box box-default">
             <!-- /.box-header -->
             <div class="box-header with-border">
-                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
+                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _translate("indicates required field"); ?> &nbsp;</div>
             </div>
             <!-- form start -->
             <form class="form-horizontal" method='post' name='referenceForm' id='referenceForm' autocomplete="off" enctype="multipart/form-data" action="save-vl-test-failure-reason-helper.php">
@@ -37,20 +37,20 @@ $failureReasonInfo = $db->getOne('r_vl_test_failure_reasons');
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="failureReason" class="col-lg-4 control-label"><?php echo _("Test Failure Reason"); ?> <span class="mandatory">*</span></label>
+                                    <label for="failureReason" class="col-lg-4 control-label"><?php echo _translate("Test Failure Reason"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" value="<?php echo $failureReasonInfo['failure_reason']; ?>" class="form-control isRequired" id="failureReason" name="failureReason" placeholder="<?php echo _('Enter Test Failure Reason'); ?>" title="<?php echo _('Please enter Test Failure Reason'); ?>" onblur='checkNameValidation("r_vl_test_failure_reasons","failure_reason",this,' <?php echo "failure_id##" . $id; ?>',"<?php echo _("This failure reason that you entered already exists.Try another failure reason"); ?>",null)' />
+                                        <input type="text" value="<?php echo $failureReasonInfo['failure_reason']; ?>" class="form-control isRequired" id="failureReason" name="failureReason" placeholder="<?php echo _translate('Enter Test Failure Reason'); ?>" title="<?php echo _translate('Please enter Test Failure Reason'); ?>" onblur='checkNameValidation("r_vl_test_failure_reasons","failure_reason",this,' <?php echo "failure_id##" . $id; ?>',"<?php echo _translate("This failure reason that you entered already exists.Try another failure reason"); ?>",null)' />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="status" class="col-lg-4 control-label"><?php echo _("Status"); ?></label>
+                                    <label for="status" class="col-lg-4 control-label"><?php echo _translate("Status"); ?></label>
                                     <div class="col-lg-7">
-                                        <select class="form-control isRequired" id="status" name="status" placeholder="<?php echo _('Select status'); ?>" title="<?php echo _('Please select art status'); ?>">
-                                            <option value=""><?php echo _("--Select--"); ?></option>
-                                            <option value="active" <?php echo (isset($failureReasonInfo['status']) && $failureReasonInfo['status'] == 'active') ? "selected='selected'" : ""; ?>><?php echo _("Active"); ?></option>
-                                            <option value="inactive" <?php echo (isset($failureReasonInfo['status']) && $failureReasonInfo['status'] == 'inactive') ? "selected='selected'" : ""; ?>><?php echo _("Inactive"); ?></option>
+                                        <select class="form-control isRequired" id="status" name="status" placeholder="<?php echo _translate('Select status'); ?>" title="<?php echo _translate('Please select art status'); ?>">
+                                            <option value=""><?php echo _translate("--Select--"); ?></option>
+                                            <option value="active" <?php echo (isset($failureReasonInfo['status']) && $failureReasonInfo['status'] == 'active') ? "selected='selected'" : ""; ?>><?php echo _translate("Active"); ?></option>
+                                            <option value="inactive" <?php echo (isset($failureReasonInfo['status']) && $failureReasonInfo['status'] == 'inactive') ? "selected='selected'" : ""; ?>><?php echo _translate("Inactive"); ?></option>
                                         </select>
                                     </div>
                                 </div>
@@ -62,8 +62,8 @@ $failureReasonInfo = $db->getOne('r_vl_test_failure_reasons');
                 <!-- /.box-body -->
                 <div class="box-footer">
                     <input type="hidden" name="failureId" value="<?php echo htmlspecialchars($_GET['id']); ?>" />
-                    <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
-                    <a href="vl-art-code-details.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
+                    <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
+                    <a href="vl-art-code-details.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
                 </div>
                 <!-- /.box-footer -->
             </form>

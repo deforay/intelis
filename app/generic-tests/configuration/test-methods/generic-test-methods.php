@@ -1,5 +1,5 @@
 <?php
-$title = _("Test Methods");
+$title = _translate("Test Methods");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -14,10 +14,10 @@ $usersService = ContainerRegistry::get(UsersService::class);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-gears"></em> <?php echo _("Other Lab Test Methods"); ?></h1>
+		<h1><em class="fa-solid fa-gears"></em> <?php echo _translate("Other Lab Test Methods"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Test Methods"); ?></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+			<li class="active"><?php echo _translate("Test Methods"); ?></li>
 		</ol>
 	</section>
 
@@ -28,7 +28,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if ($usersService->isAllowed("/generic-tests/configuration/test-methods/generic-add-test-methods.php")) { ?>
-							<a href="/generic-tests/configuration/test-methods/generic-add-test-methods.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Test Methods"); ?></a>
+							<a href="/generic-tests/configuration/test-methods/generic-add-test-methods.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Test Methods"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -36,9 +36,9 @@ $usersService = ContainerRegistry::get(UsersService::class);
 						<table aria-describedby="table" id="partnerTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th scope="row"><?php echo _("Test Method"); ?></th>
-									<th scope="row"><?php echo _("Status"); ?></th>
-									<th scope="row"><?php echo _("Updated On"); ?></th>
+									<th scope="row"><?php echo _translate("Test Method"); ?></th>
+									<th scope="row"><?php echo _translate("Status"); ?></th>
+									<th scope="row"><?php echo _translate("Updated On"); ?></th>
 									<?php if ($usersService->isAllowed("/generic-tests/configuration/test-methods/generic-edit-test-methods.php")) { ?>
 										<th scope="row">Action</th>
 									<?php } ?>
@@ -46,7 +46,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="5" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+									<td colspan="5" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 
@@ -114,7 +114,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 
 	function updateStatus(obj, optVal) {
 		if (obj.value != '') {
-			conf = confirm('<?php echo _("Are you sure you want to change the status"); ?>?');
+			conf = confirm('<?php echo _translate("Are you sure you want to change the status"); ?>?');
 			if (conf) {
 				$.post("update-implementation-status.php", {
 						status: obj.value,
@@ -123,7 +123,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 					function(data) {
 						if (data != "") {
 							oTable.fnDraw();
-							alert('<?php echo _("Updated successfully"); ?>.');
+							alert('<?php echo _translate("Updated successfully"); ?>.');
 						}
 					});
 			} else {

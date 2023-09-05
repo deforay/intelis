@@ -30,14 +30,14 @@ try {
             $db = $db->where('test_category_id', $testCategoryId);
             $lastId = $db->update($tableName, $data);
             if ($lastId > 0) {
-                $_SESSION['alertMsg'] = _("Test Category updated successfully");
+                $_SESSION['alertMsg'] = _translate("Test Category updated successfully");
                 $general->activityLog('Test category', $_SESSION['userName'] . ' updated new Test category for ' . $_POST['testCategory'], 'generic-test-categories');
             }
         } else {
             $id = $db->insert($tableName, $data);
             $lastId = $db->getInsertId();
             if ($lastId > 0) {
-                $_SESSION['alertMsg'] = _("Test Category added successfully");
+                $_SESSION['alertMsg'] = _translate("Test Category added successfully");
                 $general->activityLog('Test Category', $_SESSION['userName'] . ' added new Test category for ' . $_POST['testCategory'], 'generic-test-categories');
             }
         }

@@ -19,7 +19,7 @@ try {
         $data['system_admin_password'] = $usersService->passwordHash($_POST['password']);
         $db = $db->where('system_admin_id', $userId);
         $db->update($tableName, $data);
-        $_SESSION['alertMsg'] = _("Password updated successfully");
+        $_SESSION['alertMsg'] = _translate("Password updated successfully");
     }
     header("Location:/system-admin/edit-config/index.php");
 } catch (Exception $exc) {

@@ -38,7 +38,7 @@ try {
 			$lastId = $db->getInsertId();
 		}
 		if ($lastId > 0) {
-			$_SESSION['alertMsg'] = _("Lab Tests Sample Rejection Reasons details added successfully");
+			$_SESSION['alertMsg'] = _translate("Lab Tests Sample Rejection Reasons details added successfully");
 			$general->activityLog('VL Sample Rejection Reasons For VL', $_SESSION['userName'] . ' added new reference Sample Rejection Reasons for VL  ' . $_POST['rejectionReasonName'], 'vl-reference');
 		}
 	}

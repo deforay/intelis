@@ -263,7 +263,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
     });
     $('#sampleTestDate').daterangepicker({
         locale: {
-          cancelLabel: "<?= _("Clear"); ?>",
+          cancelLabel: "<?= _translate("Clear"); ?>",
           format: 'DD-MMM-YYYY',
           separator: ' to ',
         },

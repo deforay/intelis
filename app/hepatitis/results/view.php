@@ -13,7 +13,7 @@ $keyFromGlobalConfig = $general->getGlobalConfig('key');
 $decryptedString = CommonService::decrypt($_GET['q'], base64_decode($keyFromGlobalConfig));
 //$data = explode('&&&', urldecode($decryption));
 
-$invalidRequest = _("INVALID REQUEST");
+$invalidRequest = _translate("INVALID REQUEST");
 
 if (empty($decryptedString)) {
     die("<br><br><br><br><br><br><h1 style='text-align:center;font-family:arial;font-size:1.3em;'>$invalidRequest</h1>");

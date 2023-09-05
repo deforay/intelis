@@ -72,10 +72,10 @@ $sd = (!empty($array)) ?  (sqrt(array_sum(array_map("sd_square", $array, array_f
     $(function() {
         Highcharts.chart('container', {
             title: {
-                text: "<?php echo _("Control Result"); ?>"
+                text: "<?php echo _translate("Control Result"); ?>"
             },
             subtitle: {
-                text: "<?php echo _("Mean"); ?>:<?php echo round($mean, 2); ?>   <?php echo _("SD"); ?>:<?php echo round($sd, 2); ?>"
+                text: "<?php echo _translate("Mean"); ?>:<?php echo round($mean, 2); ?>   <?php echo _translate("SD"); ?>:<?php echo round($sd, 2); ?>"
             },
             xAxis: {
                 categories: [<?php
@@ -89,7 +89,7 @@ $sd = (!empty($array)) ?  (sqrt(array_sum(array_map("sd_square", $array, array_f
                 min: <?php echo round($mean - ($sd * 3), 2); ?>,
                 max: <?php echo round($mean + ($sd * 3), 2); ?>,
                 title: {
-                    text: "<?php echo _("Control Result"); ?>"
+                    text: "<?php echo _translate("Control Result"); ?>"
                 },
 
                 plotLines: [{

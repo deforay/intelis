@@ -33,7 +33,7 @@ try {
 		}
 
 		if ($lastId > 0) {
-			$_SESSION['alertMsg'] = _("Hepatitis Results details saved successfully");
+			$_SESSION['alertMsg'] = _translate("Hepatitis Results details saved successfully");
 			$general->activityLog('Hepatitis Results details', $_SESSION['userName'] . ' added new results for ' . $_POST['resultName'], 'hepatitis-reference');
 		}
 	}

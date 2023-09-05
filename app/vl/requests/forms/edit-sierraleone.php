@@ -663,7 +663,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 													</div>
 												</div>
 											</div>
-											<div class="row"> 
+											<div class="row">
 												<div class="col-md-6">
 													<div class="form-group">
 														<div class="col-lg-12">
@@ -957,7 +957,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 											<div class="col-md-4">
 												<label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On <span class="review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
 												<div class="col-lg-7">
-													<input type="text" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
+													<input type="text" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="<?= _translate("Please enter date"); ?>" style="width:100%;" />
 												</div>
 											</div>
 										</div>

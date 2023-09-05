@@ -733,16 +733,16 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               if (data != "0") {
                                    obj = $.parseJSON(data);
                                    if (obj.no_of_req_time != null && obj.no_of_req_time > 0) {
-                                        $("#artNoGroup").html("<small style='color: red'><?= _("No. of times Test Requested for this Patient"); ?> : " + obj.no_of_req_time + "</small>");
+                                        $("#artNoGroup").html("<small style='color: red'><?= _translate("No. of times Test Requested for this Patient"); ?> : " + obj.no_of_req_time + "</small>");
                                    }
                                    if (obj.request_created_datetime != null) {
-                                        $("#artNoGroup").append("<br><small style='color:red'><?= _("Last Test Request Added On LIS/STS"); ?> : " + obj.request_created_datetime + "</small>");
+                                        $("#artNoGroup").append("<br><small style='color:red'><?= _translate("Last Test Request Added On LIS/STS"); ?> : " + obj.request_created_datetime + "</small>");
                                    }
                                    if (obj.sample_collection_date != null) {
-                                        $("#artNoGroup").append("<br><small style='color:red'><?= _("Sample Collection Date for Last Request"); ?> : " + obj.sample_collection_date + "</small>");
+                                        $("#artNoGroup").append("<br><small style='color:red'><?= _translate("Sample Collection Date for Last Request"); ?> : " + obj.sample_collection_date + "</small>");
                                    }
                                    if (obj.no_of_tested_time != null && obj.no_of_tested_time > 0) {
-                                        $("#artNoGroup").append("<br><small style='color:red'><?= _("Total No. of times Patient tested for HIV VL"); ?> : " + obj.no_of_tested_time + "</small >");
+                                        $("#artNoGroup").append("<br><small style='color:red'><?= _translate("Total No. of times Patient tested for HIV VL"); ?> : " + obj.no_of_tested_time + "</small >");
                                    }
                               } else {
                                    if (artNo.length < 10) {
@@ -1122,7 +1122,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                return false;
           }
           if (ARTlength.length < 10) {
-               alert("<?= _("Patient ART No. should be at least 10 characters long"); ?>");
+               alert("<?= _translate("Patient ART No. should be at least 10 characters long"); ?>");
                //return false;
           }
           flag = deforayValidator.init({
@@ -1161,7 +1161,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                return false;
           }
           if (ARTlength.length < 10) {
-               alert("<?= _("Patient ART No. should be at least 10 characters long"); ?>");
+               alert("<?= _translate("Patient ART No. should be at least 10 characters long"); ?>");
                //return false;
           }
           flag = deforayValidator.init({

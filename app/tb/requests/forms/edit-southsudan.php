@@ -7,6 +7,7 @@ use App\Utilities\DateUtility;
 
 
 /* To get testing platform names */
+
 $testPlatformResult = $general->getTestingPlatforms('tb');
 // Nationality
 $nationalityQry = "SELECT * FROM `r_countries` ORDER BY `iso_name` ASC";
@@ -160,7 +161,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 									<tr>
 										<th scope="row"><label for="requestedDate">Date of request <span class="mandatory">*</span></label></th>
 										<td>
-											<input type="text" value="<?php echo $tbInfo['request_created_datetime']; ?>" class="date-time form-control" id="requestedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date of request date" style="width:100%;" />
+											<input type="text" value="<?php echo $tbInfo['request_created_datetime']; ?>" class="date-time form-control" id="requestedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date of request date" style="width:100%;" />
 										</td>
 										<td><label class="label-control" for="referringUnit">Referring Unit </label></td>
 										<td>
@@ -367,17 +368,17 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 											</td>
 											<th scope="row"><label class="label-control" for="sampleReceivedDate">Date of Reception </label></th>
 											<td>
-												<input type="text" class="date-time form-control" value="<?php echo $tbInfo['sample_received_at_lab_datetime']; ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
+												<input type="text" class="date-time form-control" value="<?php echo $tbInfo['sample_received_at_lab_datetime']; ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
 											</td>
 										</tr>
 										<tr>
 											<th scope="row"><label class="label-control" for="sampleTestedDateTime">Date of Sample Tested</label></th>
 											<td>
-												<input type="text" value="<?php echo $tbInfo['sample_tested_datetime']; ?>" class="date-time form-control" value="<?php echo $tbInfo['sample_collection_date']; ?>" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample tested" style="width:100%;" />
+												<input type="text" value="<?php echo $tbInfo['sample_tested_datetime']; ?>" class="date-time form-control" value="<?php echo $tbInfo['sample_collection_date']; ?>" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample tested" style="width:100%;" />
 											</td>
 											<th scope="row"><label class="label-control" for="sampleDispatchedDate">Sample Dispatched On</label></th>
 											<td>
-												<input type="text" value="<?php echo $tbInfo['sample_dispatched_datetime']; ?>" class="date-time form-control" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _("Please enter date"); ?>" title="Please choose sample dispatched date" style="width:100%;" />
+												<input type="text" value="<?php echo $tbInfo['sample_dispatched_datetime']; ?>" class="date-time form-control" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please choose sample dispatched date" style="width:100%;" />
 											</td>
 										</tr>
 										<tr>

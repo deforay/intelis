@@ -128,7 +128,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 									<tr>
 										<th scope="row"><label for="requestedDate">Date of request <span class="mandatory">*</span></label></th>
 										<td>
-											<input type="text" class="date-time form-control" id="requestedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date of request date" style="width:100%;" />
+											<input type="text" class="date-time form-control" id="requestedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date of request date" style="width:100%;" />
 										</td>
 										<td><label class="label-control" for="referringUnit">Referring Unit </label></td>
 										<td>
@@ -340,18 +340,18 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 											</td>
 											<th scope="row"><label class="label-control" for="sampleReceivedDate">Date of Reception </label></th>
 											<td>
-												<input type="text" class="date-time form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
+												<input type="text" class="date-time form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
 											</td>
 										</tr>
 										<tr>
 											<th scope="row"><label class="label-control" for="sampleTestedDateTime">Date of Sample Tested</label></th>
 											<td>
-												<input type="text" class="date-time form-control" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample tested" style="width:100%;" />
+												<input type="text" class="date-time form-control" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample tested" style="width:100%;" />
 											</td>
 
 											<th scope="row"><label class="label-control" for="sampleDispatchedDate">Sample Dispatched On</label></th>
 											<td>
-												<input type="text" class="date-time form-control" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _("Please enter date"); ?>" title="Please choose sample dispatched date" style="width:100%;" />
+												<input type="text" class="date-time form-control" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please choose sample dispatched date" style="width:100%;" />
 											</td>
 										</tr>
 										<tr>

@@ -1,6 +1,6 @@
 <?php
-$title = _("TB Test Reasons");
- 
+$title = _translate("TB Test Reasons");
+
 require_once APPLICATION_PATH . '/header.php';
 
 // if($sarr['sc_user_type']=='vluser'){
@@ -11,10 +11,10 @@ require_once APPLICATION_PATH . '/header.php';
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><em class="fa-solid fa-heart-pulse"></em> <?php echo _("TB Test Reasons");?></h1>
+    <h1><em class="fa-solid fa-heart-pulse"></em> <?php echo _translate("TB Test Reasons"); ?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
-      <li class="active"><?php echo _("TB Test Reasons");?></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+      <li class="active"><?php echo _translate("TB Test Reasons"); ?></li>
     </ol>
   </section>
 
@@ -25,17 +25,17 @@ require_once APPLICATION_PATH . '/header.php';
         <div class="box">
           <div class="box-header with-border">
             <?php if (isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-              <a href="add-tb-test-reasons.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add TB Test Reasons");?></a>
+              <a href="add-tb-test-reasons.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add TB Test Reasons"); ?></a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
           </div>
           <!-- /.box-header -->
           <div class="box-body">
-            <table aria-describedby="table" id="testReasonDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+            <table aria-describedby="table" id="testReasonDataTable" class="table table-bordered table-striped" aria-hidden="true">
               <thead>
                 <tr>
-                  <th scope="row"><?php echo _("Test Reason");?></th>
-                  <th scope="row"><?php echo _("Test Reason Status");?></th>
+                  <th scope="row"><?php echo _translate("Test Reason"); ?></th>
+                  <th scope="row"><?php echo _translate("Test Reason Status"); ?></th>
                   <?php if (isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
                     <!-- <th scope="row">Action</th> -->
                   <?php } ?>
@@ -43,7 +43,7 @@ require_once APPLICATION_PATH . '/header.php';
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="3" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
+                  <td colspan="3" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
                 </tr>
               </tbody>
 
@@ -99,9 +99,10 @@ require_once APPLICATION_PATH . '/header.php';
     });
     $.unblockUI();
   });
+
   function updateStatus(obj, optVal) {
     if (obj.value != '') {
-      conf = confirm("<?php echo _("Are you sure you want to change the status?");?>");
+      conf = confirm("<?php echo _translate("Are you sure you want to change the status?"); ?>");
       if (conf) {
         $.post("update-tb-test-reason-status.php", {
             status: obj.value,
@@ -110,13 +111,12 @@ require_once APPLICATION_PATH . '/header.php';
           function(data) {
             if (data != "") {
               oTable.fnDraw();
-              alert("<?php echo _("Updated successfully");?>.");
+              alert("<?php echo _translate("Updated successfully"); ?>.");
             }
           });
+      } else {
+        window.top.location.href = window.top.location;
       }
-	  else {
-		window.top.location.href = window.top.location;
-	  }
     }
   }
 </script>

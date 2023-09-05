@@ -3,7 +3,7 @@
 if (session_status() == PHP_SESSION_NONE) {
         session_start();
 }
-  
+
 
 
 $tableName1 = "roles";
@@ -28,7 +28,7 @@ try {
                                         }
                                 }
                         }
-                        $_SESSION['alertMsg'] = _("Roles Added successfully");
+                        $_SESSION['alertMsg'] = _translate("Roles Added successfully");
                 }
         }
         header("Location:roles.php");

@@ -364,7 +364,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
                                              </div>
                                         </div>
                                         <div class="row">
-                                        <div class="col-md-6">
+                                             <div class="col-md-6">
                                                   <label class="col-lg-5" for="dob">Date of Birth </label>
                                                   <div class="col-lg-7">
                                                        <input type="text" name="dob" id="dob" class="form-control date" placeholder="Enter DOB" title="Enter dob" onchange="getAge();" />
@@ -658,7 +658,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
                                                                                           </select> -->
                                                                            </td>
                                                                            <td class="testResultUnit">
-                                                                                <select class="form-control" id="testResultUnit1" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+                                                                                <select class="form-control" id="testResultUnit1" name="testResultUnit[]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>'>
                                                                                      <option value="">--Select--</option>
                                                                                      <?php foreach ($testResultUnits as $key => $unit) { ?>
                                                                                           <option value="<?php echo $key; ?>"><?php echo $unit; ?></option>
@@ -720,7 +720,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
                                                        <div class="col-md-6">
                                                             <label class="col-lg-5 control-label labels" for="approvedOn">Approved On <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                             <div class="col-lg-7">
-                                                                 <input type="text" value="" class="form-control dateTime" id="approvedOn" title="Please choose Approved On" name="approvedOn" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
+                                                                 <input type="text" value="" class="form-control dateTime" id="approvedOn" title="Please choose Approved On" name="approvedOn" placeholder="<?= _translate("Please enter date"); ?>" style="width:100%;" />
                                                             </div>
                                                        </div>
                                                        <div class="col-md-6">
@@ -836,14 +836,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }).click(function() {
                $('.ui-datepicker-calendar').show();
           });
-          
+
           $("#specimenType").select2({
                width: '100%',
-               placeholder: "<?php echo _("Select Specimen Type"); ?>"
+               placeholder: "<?php echo _translate("Select Specimen Type"); ?>"
           });
           $("#testType").select2({
                width: '100%',
-               placeholder: "<?php echo _("Select Test Type"); ?>"
+               placeholder: "<?php echo _translate("Select Test Type"); ?>"
           });
           $('#labId').select2({
                width: '100%',
@@ -1417,7 +1417,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                date2 = new Date(sampleReceivedDate);
 
                if (date2.getTime() < date1.getTime()) {
-                    alert("<?= _("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date"); ?>");
+                    alert("<?= _translate("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date"); ?>");
                     $("#sampleReceivedDate").val("");
                }
           }
@@ -1432,7 +1432,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                date2 = new Date(sampleReceivedAtHubOn);
 
                if (date2.getTime() < date1.getTime()) {
-                    alert("<?= _("Sample Received at Hub Date cannot be earlier than Sample Collection Date"); ?>");
+                    alert("<?= _translate("Sample Received at Hub Date cannot be earlier than Sample Collection Date"); ?>");
                     $("#sampleReceivedAtHubOn").val("");
                }
           }
@@ -1447,7 +1447,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                date2 = new Date(sampleTestingDate);
 
                if (date2.getTime() < date1.getTime()) {
-                    alert("<?= _("Sample Testing Date cannot be earlier than Sample Collection Date"); ?>");
+                    alert("<?= _translate("Sample Testing Date cannot be earlier than Sample Collection Date"); ?>");
                     $("#sampleTestingDateAtLab").val("");
                }
           }
@@ -1529,7 +1529,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          $.unblockUI();
                          $("#sampleCollectionDate").val('');
                          generateSampleCode();
-                         alert("<?= _("Could not save this form. Please try again."); ?>");
+                         alert("<?= _translate("Could not save this form. Please try again."); ?>");
                     }
                });
      }
@@ -1632,11 +1632,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          });
                          $(".dynamicFacilitySelect2").select2({
                               width: '100%',
-                              placeholder: "<?php echo _("Select any one of the option"); ?>"
+                              placeholder: "<?php echo _translate("Select any one of the option"); ?>"
                          });
                          $(".dynamicSelect2").select2({
                               width: '100%',
-                              placeholder: "<?php echo _("Select any one of the option"); ?>"
+                              placeholder: "<?php echo _translate("Select any one of the option"); ?>"
                          });
 
                          if ($('#resultType').val() == 'qualitative') {
@@ -1696,7 +1696,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          <input type="text" id="testResult${testCounter}" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
                     </td>
                     <td class="testResultUnit">
-                    <select class="form-control resultUnit" id="testResultUnit${testCounter}" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+                    <select class="form-control resultUnit" id="testResultUnit${testCounter}" name="testResultUnit[]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>'>
                <option value="">--Select--</option>
                <?php foreach ($testResultUnits as $key => $unit) { ?>
                     <option value="<?php echo $key; ?>"><?php echo $unit; ?></option>

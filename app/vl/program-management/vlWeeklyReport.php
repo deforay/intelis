@@ -30,7 +30,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
   <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1><em class="fa-solid fa-calendar-check"></em>
-      <?php echo _("VL Lab Weekly Report"); ?>
+      <?php echo _translate("VL Lab Weekly Report"); ?>
       <!--<ol class="breadcrumb">-->
       <!--  <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>-->
       <!--  <li class="active">Export Result</li>-->
@@ -49,39 +49,35 @@ $facilityResult = $db->rawQuery($facilityQuery);
                 <div class="bs-example bs-example-tabs">
                   <ul id="myTab" class="nav nav-tabs">
                     <li class="active"><a href="#labReport" data-toggle="tab">
-                        <?php echo _("VL Lab Weekly Report"); ?>
+                        <?php echo _translate("VL Lab Weekly Report"); ?>
                       </a></li>
                     <li><a href="#femaleReport" data-toggle="tab">
-                        <?php echo _("VL Lab Weekly Report - Female"); ?>
+                        <?php echo _translate("VL Lab Weekly Report - Female"); ?>
                       </a></li>
                   </ul>
                   <div id="myTabContent" class="tab-content">
                     <div class="tab-pane fade in active" id="labReport">
-                      <table aria-describedby="table" class="table valign-mid" cellpadding="1" cellspacing="3"
-                        style="margin-left:1%;margin-top:20px;width:90%;">
+                      <table aria-describedby="table" class="table valign-mid" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:90%;">
                         <tr>
                           <th scope="row" style="width:15%"><strong>
-                              <?php echo _("Sample Test Date Range"); ?>&nbsp;:
+                              <?php echo _translate("Sample Test Date Range"); ?>&nbsp;:
                             </strong></th>
                           <td style="width:20% !important;">
-                            <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control"
-                              placeholder="<?php echo _('Sample Test Date Range'); ?>" readonly
-                              style="background:#eee;font-size:0.9em" />
+                            <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Sample Test Date Range'); ?>" readonly style="background:#eee;font-size:0.9em" />
                           </td>
                           <th scope="row" style="width:8%"><strong>
-                              <?php echo _("VL Lab(s)"); ?>&nbsp;:
+                              <?php echo _translate("VL Lab(s)"); ?>&nbsp;:
                             </strong></th>
                           <td style="width:28%;">
-                            <select id="lab" name="lab" class="form-control"
-                              title="<?php echo _('Please select lab'); ?>" multiple>
+                            <select id="lab" name="lab" class="form-control" title="<?php echo _translate('Please select lab'); ?>" multiple>
                               <option value="">
-                                <?php echo _("-- Select --"); ?>
+                                <?php echo _translate("-- Select --"); ?>
                               </option>
                               <?php
                               foreach ($facilityResult as $lab) {
-                                ?>
+                              ?>
                                 <option value="<?php echo $lab['facility_id']; ?>"><?php echo ($lab['facility_name'] . "-" . $lab['facility_code']); ?></option>
-                                <?php
+                              <?php
                               }
                               ?>
                             </select>
@@ -89,134 +85,127 @@ $facilityResult = $db->rawQuery($facilityQuery);
                         </tr>
                         <tr>
                           <td colspan="6">
-                            &nbsp;<input type="button" onclick="searchWeeklyData();" value="<?= _('Search'); ?>"
-                              class="btn btn-success btn-sm">
-                            &nbsp;<button class="btn btn-danger btn-sm"
-                              onclick="document.location.href = document.location"><span>
-                                <?= _('Reset'); ?>
+                            &nbsp;<input type="button" onclick="searchWeeklyData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
+                            &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
+                                <?= _translate('Reset'); ?>
                               </span></button>
                             &nbsp;<button class="btn btn-info btn-sm" type="button" onclick="exportVLWeeklyReport()">
-                              <?php echo _("Excel Export"); ?>
+                              <?php echo _translate("Excel Export"); ?>
                             </button>
                           </td>
                         </tr>
                       </table>
-                      <table aria-describedby="table" id="vlWeeklyReportDataTable"
-                        class="table table-bordered table-striped" aria-hidden="true">
+                      <table aria-describedby="table" id="vlWeeklyReportDataTable" class="table table-bordered table-striped" aria-hidden="true">
                         <thead>
                           <tr>
                             <th scope="col" rowspan="2">
-                              <?php echo _("Province/State"); ?>
+                              <?php echo _translate("Province/State"); ?>
                             </th>
                             <th scope="col" rowspan="2">
-                              <?php echo _("District/County"); ?>
+                              <?php echo _translate("District/County"); ?>
                             </th>
                             <th scope="col" rowspan="2">
-                              <?php echo _("Site Name"); ?>
+                              <?php echo _translate("Site Name"); ?>
                             </th>
                             <!-- <th scope="row" rowspan="2">IPSL</th> -->
                             <th scope="col" rowspan="2">
-                              <?php echo _("No. of Rejections"); ?>
+                              <?php echo _translate("No. of Rejections"); ?>
                             </th>
                             <th scope="col" colspan="2" style="text-align:center;">
-                              <?php echo _("Viral Load Results - Peds"); ?>
+                              <?php echo _translate("Viral Load Results - Peds"); ?>
                             </th>
                             <th scope="col" colspan="4" style="text-align:center;">
-                              <?php echo _("Viral Load Results - Adults"); ?>
+                              <?php echo _translate("Viral Load Results - Adults"); ?>
                             </th>
                             <th scope="col" colspan="2" style="text-align:center;">
-                              <?php echo _("Viral Load Results - Pregnant/Breastfeeding Female"); ?>
+                              <?php echo _translate("Viral Load Results - Pregnant/Breastfeeding Female"); ?>
                             </th>
                             <th scope="col" colspan="2" style="text-align:center;">
-                              <?php echo _("Age/Sex Unknown"); ?>
+                              <?php echo _translate("Age/Sex Unknown"); ?>
                             </th>
                             <th scope="col" colspan="2" style="text-align:center;">
-                              <?php echo _("Totals"); ?>
+                              <?php echo _translate("Totals"); ?>
                             </th>
                             <th scope="col" rowspan="2">
-                              <?php echo _("Total Test per Clinic"); ?>
+                              <?php echo _translate("Total Test per Clinic"); ?>
                             </th>
                           </tr>
                           <tr>
                             <th scope="row">
-                              <?php echo _("<= 15 y"); ?> &amp;
-                              <?php echo _("<=1000 cp/ml"); ?>
+                              <?php echo _translate("<= 15 y"); ?> &amp;
+                              <?php echo _translate("<=1000 cp/ml"); ?>
                             </th>
                             <th scope="row">
-                              <?php echo _("<= 15 y"); ?> &amp;
-                              <?php echo _(">1000 cp/ml"); ?>
+                              <?php echo _translate("<= 15 y"); ?> &amp;
+                              <?php echo _translate(">1000 cp/ml"); ?>
                             </th>
                             <th scope="row">
-                              <?php echo _("> 15 y"); ?> &amp;
-                              <?php echo _("Male <=1000 cp/ml"); ?>
+                              <?php echo _translate("> 15 y"); ?> &amp;
+                              <?php echo _translate("Male <=1000 cp/ml"); ?>
                             </th>
                             <th scope="row">
-                              <?php echo _("> 15 y"); ?> &amp;
-                              <?php echo _("Male >1000 cp/ml"); ?>
+                              <?php echo _translate("> 15 y"); ?> &amp;
+                              <?php echo _translate("Male >1000 cp/ml"); ?>
                             </th>
                             <th scope="row">
-                              <?php echo _("> 15 y"); ?> &amp;
-                              <?php echo _("Female <=1000 cp/ml"); ?>
+                              <?php echo _translate("> 15 y"); ?> &amp;
+                              <?php echo _translate("Female <=1000 cp/ml"); ?>
                             </th>
                             <th scope="row">
-                              <?php echo _("> 15 y"); ?> &amp;
-                              <?php echo _("Female >1000 cp/ml"); ?>
+                              <?php echo _translate("> 15 y"); ?> &amp;
+                              <?php echo _translate("Female >1000 cp/ml"); ?>
                             </th>
                             <th scope="row">
-                              <?php echo _("<=1000 cp/ml"); ?>
+                              <?php echo _translate("<=1000 cp/ml"); ?>
                             </th>
                             <th scope="row">
-                              <?php echo _(">1000 cp/ml"); ?>
+                              <?php echo _translate(">1000 cp/ml"); ?>
                             </th>
                             <th scope="row">
-                              <?php echo _("Unknown Age/Sex <=1000 cp/ml"); ?>
+                              <?php echo _translate("Unknown Age/Sex <=1000 cp/ml"); ?>
                             </th>
                             <th scope="row">
-                              <?php echo _("Unknown Age/Sex >1000 cp/ml"); ?>
+                              <?php echo _translate("Unknown Age/Sex >1000 cp/ml"); ?>
                             </th>
                             <th scope="row">
-                              <?php echo _("<=1000 cp/ml"); ?>
+                              <?php echo _translate("<=1000 cp/ml"); ?>
                             </th>
                             <th scope="row">
-                              <?php echo _(">1000 cp/ml"); ?>
+                              <?php echo _translate(">1000 cp/ml"); ?>
                             </th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr>
                             <td colspan="19" class="dataTables_empty">
-                              <?php echo _("Loading data from server"); ?>
+                              <?php echo _translate("Loading data from server"); ?>
                             </td>
                           </tr>
                         </tbody>
                       </table>
                     </div>
                     <div class="tab-pane fade" id="femaleReport">
-                      <table aria-describedby="table" class="table valign-mid" cellpadding="1" cellspacing="3"
-                        style="margin-left:1%;margin-top:20px;width:98%;">
+                      <table aria-describedby="table" class="table valign-mid" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
                         <tr>
                           <th scope="row" style="width:13%"><strong>
-                              <?php echo _("Sample Test Date Range"); ?>&nbsp;:
+                              <?php echo _translate("Sample Test Date Range"); ?>&nbsp;:
                             </strong></th>
                           <td style="width:20% !important;">
-                            <input type="text" id="femaleSampleTestDate" name="femaleSampleTestDate"
-                              class="form-control daterange" placeholder="<?php echo _('Sample Test Date Range'); ?>"
-                              readonly style="background:#eee;font-size:0.9em" />
+                            <input type="text" id="femaleSampleTestDate" name="femaleSampleTestDate" class="form-control daterange" placeholder="<?php echo _translate('Sample Test Date Range'); ?>" readonly style="background:#eee;font-size:0.9em" />
                           </td>
                           <th scope="row" style="width:8%"><strong>
-                              <?php echo _("VL Lab(s)"); ?>&nbsp;:
+                              <?php echo _translate("VL Lab(s)"); ?>&nbsp;:
                             </strong></th>
                           <td style="width:28%;">
-                            <select id="femaleLab" name="femaleLab" class="form-control"
-                              title="<?php echo _('Please select lab'); ?>" multiple>
+                            <select id="femaleLab" name="femaleLab" class="form-control" title="<?php echo _translate('Please select lab'); ?>" multiple>
                               <option value="">
-                                <?php echo _("-- Select --"); ?>
+                                <?php echo _translate("-- Select --"); ?>
                               </option>
                               <?php
                               foreach ($facilityResult as $lab) {
-                                ?>
+                              ?>
                                 <option value="<?php echo $lab['facility_id']; ?>"><?php echo ($lab['facility_name'] . "-" . $lab['facility_code']); ?></option>
-                                <?php
+                              <?php
                               }
                               ?>
                             </select>
@@ -224,71 +213,67 @@ $facilityResult = $db->rawQuery($facilityQuery);
                         </tr>
                         <tr>
                           <td colspan="6">
-                            &nbsp;<input type="button" onclick="searchFemaleData();" value="<?= _('Search'); ?>"
-                              class="btn btn-success btn-sm">
-                            &nbsp;<button class="btn btn-danger btn-sm"
-                              onclick="document.location.href = document.location"><span>
-                                <?= _('Reset'); ?>
+                            &nbsp;<input type="button" onclick="searchFemaleData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
+                            &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
+                                <?= _translate('Reset'); ?>
                               </span></button>
-                            &nbsp;<button class="btn btn-info btn-sm" type="button"
-                              onclick="exportFemaleVLWeeklyReport()">
-                              <?php echo _("Excel Export"); ?>
+                            &nbsp;<button class="btn btn-info btn-sm" type="button" onclick="exportFemaleVLWeeklyReport()">
+                              <?php echo _translate("Excel Export"); ?>
                             </button>
                           </td>
                         </tr>
                       </table>
-                      <table aria-describedby="table" id="vlWeeklyFemaleReportDataTable"
-                        class="table table-bordered table-striped" aria-hidden="true">
+                      <table aria-describedby="table" id="vlWeeklyFemaleReportDataTable" class="table table-bordered table-striped" aria-hidden="true">
                         <thead>
                           <tr>
                             <th scope="col">
-                              <?php echo _("Province/State"); ?>
+                              <?php echo _translate("Province/State"); ?>
                             </th>
                             <th scope="col">
-                              <?php echo _("District/County"); ?>
+                              <?php echo _translate("District/County"); ?>
                             </th>
                             <th scope="col">
-                              <?php echo _("Site Name"); ?>
+                              <?php echo _translate("Site Name"); ?>
                             </th>
                             <th scope="col">
-                              <?php echo _("Total Female"); ?>
+                              <?php echo _translate("Total Female"); ?>
                             </th>
                             <th scope="col">
-                              <?php echo _("Pregnant <=1000 cp/ml"); ?>
+                              <?php echo _translate("Pregnant <=1000 cp/ml"); ?>
                             </th>
                             <th scope="col">
-                              <?php echo _("Pregnant >1000 cp/ml"); ?>
+                              <?php echo _translate("Pregnant >1000 cp/ml"); ?>
                             </th>
                             <th scope="col">
-                              <?php echo _("Breastfeeding <=1000 cp/ml"); ?>
+                              <?php echo _translate("Breastfeeding <=1000 cp/ml"); ?>
                             </th>
                             <th scope="col">
-                              <?php echo _("Breastfeeding >1000 cp/ml"); ?>
+                              <?php echo _translate("Breastfeeding >1000 cp/ml"); ?>
                             </th>
                             <th scope="col">
-                              <?php echo _("Age > 15 <=1000 cp/ml"); ?>
+                              <?php echo _translate("Age > 15 <=1000 cp/ml"); ?>
                             </th>
                             <th scope="col">
-                              <?php echo _("Age > 15 >1000 cp/ml"); ?>
+                              <?php echo _translate("Age > 15 >1000 cp/ml"); ?>
                             </th>
                             <th scope="col">
-                              <?php echo _("Age Unknown <=1000 cp/ml"); ?>
+                              <?php echo _translate("Age Unknown <=1000 cp/ml"); ?>
                             </th>
                             <th scope="col">
-                              <?php echo _("Age Unknown >1000 cp/ml"); ?>
+                              <?php echo _translate("Age Unknown >1000 cp/ml"); ?>
                             </th>
                             <th scope="col">
-                              <?php echo _("Age <=15 <=1000 cp/ml"); ?>
+                              <?php echo _translate("Age <=15 <=1000 cp/ml"); ?>
                             </th>
                             <th scope="col">
-                              <?php echo _("Age <=15>1000 cp/ml"); ?>
+                              <?php echo _translate("Age <=15>1000 cp/ml"); ?>
                             </th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr>
                             <td colspan="13" class="dataTables_empty">
-                              <?php echo _("Loading data from server"); ?>
+                              <?php echo _translate("Loading data from server"); ?>
                             </td>
                           </tr>
                         </tbody>
@@ -317,36 +302,36 @@ $facilityResult = $db->rawQuery($facilityQuery);
   var endDate = "";
   var oTable = null;
   var oTableFemale = null;
-  $(document).ready(function () {
+  $(document).ready(function() {
     $('#lab').select2({
-      placeholder: "<?php echo _("All Labs"); ?>"
+      placeholder: "<?php echo _translate("All Labs"); ?>"
     });
     $('#femaleLab').select2({
       width: '250px',
-      placeholder: "<?php echo _("All Labs"); ?>"
+      placeholder: "<?php echo _translate("All Labs"); ?>"
     });
     $('#sampleTestDate,#sampleCollectionDate,#femaleSampleTestDate,#femaleSampleCollectionDate').daterangepicker({
-      locale: {
-        cancelLabel: "<?= _("Clear"); ?>",
-        format: 'DD-MMM-YYYY',
-        separator: ' to ',
+        locale: {
+          cancelLabel: "<?= _translate("Clear"); ?>",
+          format: 'DD-MMM-YYYY',
+          separator: ' to ',
+        },
+        startDate: moment().subtract(6, 'days'),
+        endDate: moment(),
+        maxDate: moment(),
+        ranges: {
+          'Today': [moment(), moment()],
+          'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+          'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+          'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+          'This Month': [moment().startOf('month'), moment().endOf('month')],
+          'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+          'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+          'Last 18 Months': [moment().subtract('month', 18).startOf('month'), moment().endOf('month')],
+          'Last 24 Months': [moment().subtract('month', 24).startOf('month'), moment().endOf('month')]
+        }
       },
-      startDate: moment().subtract(6, 'days'),
-      endDate: moment(),
-      maxDate: moment(),
-      ranges: {
-        'Today': [moment(), moment()],
-        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-        'This Month': [moment().startOf('month'), moment().endOf('month')],
-        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-        'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
-        'Last 18 Months': [moment().subtract('month', 18).startOf('month'), moment().endOf('month')],
-        'Last 24 Months': [moment().subtract('month', 24).startOf('month'), moment().endOf('month')]
-      }
-    },
-      function (start, end) {
+      function(start, end) {
         startDate = start.format('YYYY-MM-DD');
         endDate = end.format('YYYY-MM-DD');
       });
@@ -367,72 +352,72 @@ $facilityResult = $db->rawQuery($facilityQuery);
       "iDisplayLength": 10,
       "bRetrieve": true,
       "aoColumns": [{
-        "sClass": "center"
-      },
-      {
-        "sClass": "center"
-      },
-      // {"sClass":"center"},
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      }
+          "sClass": "center"
+        },
+        {
+          "sClass": "center"
+        },
+        // {"sClass":"center"},
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        }
       ],
       "aaSorting": [
         [2, "asc"]
@@ -440,7 +425,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
       "bProcessing": true,
       "bServerSide": true,
       "sAjaxSource": "getVlWeeklyReport.php",
-      "fnServerData": function (sSource, aoData, fnCallback) {
+      "fnServerData": function(sSource, aoData, fnCallback) {
         aoData.push({
           "name": "sampleTestDate",
           "value": $("#sampleTestDate").val()
@@ -477,64 +462,64 @@ $facilityResult = $db->rawQuery($facilityQuery);
       "iDisplayLength": 10,
       "bRetrieve": true,
       "aoColumns": [{
-        "sClass": "center"
-      },
-      {
-        "sClass": "center"
-      },
-      {
-        "sClass": "center"
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      },
+          "sClass": "center"
+        },
+        {
+          "sClass": "center"
+        },
+        {
+          "sClass": "center"
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        },
       ],
       //"aaSorting": [[ 0, "asc" ]],
       "bProcessing": true,
       "bServerSide": true,
       "sAjaxSource": "getVlWeeklyFemaleReport.php",
-      "fnServerData": function (sSource, aoData, fnCallback) {
+      "fnServerData": function(sSource, aoData, fnCallback) {
         aoData.push({
           "name": "sampleTestDate",
           "value": $("#femaleSampleTestDate").val()
@@ -553,7 +538,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
           "url": sSource,
           "data": aoData,
           "success": fnCallback
-        }).done(function () {
+        }).done(function() {
 
         });
       }
@@ -576,14 +561,14 @@ $facilityResult = $db->rawQuery($facilityQuery);
     searchWeeklyData();
     $.blockUI();
     $.post("/vl/program-management/generateVlWeeklyReportExcel.php", {
-      reportedDate: $("#sampleTestDate").val(),
-      lab: ($("#lab").val() == null) ? '' : $("#lab").val().join(','),
-      searchData: $('.dataTables_filter input').val()
-    },
-      function (data) {
+        reportedDate: $("#sampleTestDate").val(),
+        lab: ($("#lab").val() == null) ? '' : $("#lab").val().join(','),
+        searchData: $('.dataTables_filter input').val()
+      },
+      function(data) {
         $.unblockUI();
         if (data == "" || data == null || data == undefined) {
-          alert("<?php echo _("Unable to generate the excel file"); ?>");
+          alert("<?php echo _translate("Unable to generate the excel file"); ?>");
         } else {
           $.unblockUI();
           location.href = '/temporary/' + data;
@@ -600,14 +585,14 @@ $facilityResult = $db->rawQuery($facilityQuery);
     searchFemaleData();
     $.blockUI();
     $.post("/vl/program-management/generateVlWeeklyFemaleReportExcel.php", {
-      sample_test_date: $("#femaleSampleTestDate").val(),
-      lab: (labTexts.length > 0) ? labTexts.join(',') : '',
-      searchData: $('.dataTables_filter input').val()
-    },
-      function (data) {
+        sample_test_date: $("#femaleSampleTestDate").val(),
+        lab: (labTexts.length > 0) ? labTexts.join(',') : '',
+        searchData: $('.dataTables_filter input').val()
+      },
+      function(data) {
         $.unblockUI();
         if (data == "" || data == null || data == undefined) {
-          alert("<?php echo _("Unable to generate the excel file"); ?>");
+          alert("<?php echo _translate("Unable to generate the excel file"); ?>");
         } else {
           $.unblockUI();
           location.href = '/temporary/' + data;

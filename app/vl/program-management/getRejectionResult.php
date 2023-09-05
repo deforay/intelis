@@ -76,15 +76,14 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 }
 
 if (!empty($tResult)) {
-    ?>
+?>
     <div id="container" style="width: 100%; height: 500px; margin: 20px auto;"></div>
     <!-- <div id="rejectedType" style="width: 100%; height: 400px; margin: 20px auto;margin-top:50px;"></div> -->
 <?php }
 if (!empty($tableResult)) { ?>
     <div class="pull-right">
-        <button class="btn btn-success" type="button" onclick="exportInexcel()"><em
-                class="fa-solid fa-cloud-arrow-down"></em>
-            <?php echo _("Export Excel"); ?>
+        <button class="btn btn-success" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
+            <?php echo _translate("Export Excel"); ?>
         </button>
     </div>
 <?php } ?>
@@ -92,22 +91,22 @@ if (!empty($tableResult)) { ?>
     <thead>
         <tr>
             <th>
-                <?php echo _("Lab Name"); ?>
+                <?php echo _translate("Lab Name"); ?>
             </th>
             <th>
-                <?php echo _("Facility Name"); ?>
+                <?php echo _translate("Facility Name"); ?>
             </th>
             <th>
-                <?php echo _("Rejection Reason"); ?>
+                <?php echo _translate("Rejection Reason"); ?>
             </th>
             <th>
-                <?php echo _("Reason Category"); ?>
+                <?php echo _translate("Reason Category"); ?>
             </th>
             <th>
-                <?php echo _("Recommended Corrective Action"); ?>
+                <?php echo _translate("Recommended Corrective Action"); ?>
             </th>
             <th>
-                <?php echo _("No. of Samples"); ?>
+                <?php echo _translate("No. of Samples"); ?>
             </th>
         </tr>
     </thead>
@@ -115,10 +114,8 @@ if (!empty($tableResult)) { ?>
         <?php
         if (!empty($tableResult)) {
             foreach ($tableResult as $tableRow) {
-                ?>
-                <tr data-lab="<?php echo base64_encode($_POST['labName']); ?>"
-                    data-facility="<?php echo base64_encode(implode(',', $_POST['clinicName'])); ?>"
-                    data-daterange="<?= htmlspecialchars($_POST['sampleCollectionDate']); ?>" data-type="rejection">
+        ?>
+                <tr data-lab="<?php echo base64_encode($_POST['labName']); ?>" data-facility="<?php echo base64_encode(implode(',', $_POST['clinicName'])); ?>" data-daterange="<?= htmlspecialchars($_POST['sampleCollectionDate']); ?>" data-type="rejection">
                     <td>
                         <?php echo ($tableRow['labname']); ?>
                     </td>
@@ -138,18 +135,18 @@ if (!empty($tableResult)) { ?>
                         <?php echo $tableRow['total']; ?>
                     </td>
                 </tr>
-                <?php
+        <?php
             }
         }
         ?>
     </tbody>
 </table>
 <script>
-    $(function () {
+    $(function() {
         $("#vlRequestDataTable").DataTable();
     });
-    $(document).ready(function () {
-        $('#vlRequestDataTable tbody').on('click', 'tr', function () {
+    $(document).ready(function() {
+        $('#vlRequestDataTable tbody').on('click', 'tr', function() {
             let facilityId = $(this).attr('data-facility');
             let lab = $(this).attr('data-lab');
             let daterange = $(this).attr('data-daterange');
@@ -169,7 +166,7 @@ if (!empty($tableResult)) { ?>
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _("Sample Rejection Reasons"); ?>"
+                text: "<?php echo _translate("Sample Rejection Reasons"); ?>"
             },
             credits: {
                 enabled: false
@@ -194,25 +191,25 @@ if (!empty($tableResult)) { ?>
                 colorByPoint: true,
                 point: {
                     events: {
-                        click: function (e) {
+                        click: function(e) {
                             e.preventDefault();
                         }
                     }
                 },
                 data: [
-                        <?php
-                        foreach ($tResult as $reasonName => $values) {
-                            ?> {
+                    <?php
+                    foreach ($tResult as $reasonName => $values) {
+                    ?> {
                             name: '<?php echo $reasonName; ?>',
                             y: <?php echo ($values['total']); ?>,
-                                number: '<?php echo ($values['category']); ?>'
-                                },
-                            <?php
-                        }
-                        ?>
-                    ]
-                }]
-            });
+                            number: '<?php echo ($values['category']); ?>'
+                        },
+                    <?php
+                    }
+                    ?>
+                ]
+            }]
+        });
     <?php }
 
     if (!empty($rjResult)) { ?>
@@ -224,7 +221,7 @@ if (!empty($tableResult)) { ?>
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _("Sample Rejection by Categories"); ?>"
+                text: "<?php echo _translate("Sample Rejection by Categories"); ?>"
             },
             credits: {
                 enabled: false
@@ -249,7 +246,7 @@ if (!empty($tableResult)) { ?>
                 colorByPoint: true,
                 point: {
                     events: {
-                        click: function (e) {
+                        click: function(e) {
                             e.preventDefault();
                         }
                     }
@@ -257,9 +254,9 @@ if (!empty($tableResult)) { ?>
                 data: [
                     <?php
                     foreach ($rjResult as $key => $total) {
-                        ?> {
-                        name: '<?php echo ($key); ?>',
-                        y: <?php echo ($total); ?>
+                    ?> {
+                            name: '<?php echo ($key); ?>',
+                            y: <?php echo ($total); ?>
                         },
                     <?php
                     }

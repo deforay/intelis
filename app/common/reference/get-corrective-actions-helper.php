@@ -75,7 +75,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
         if ($sWhereSub == "") {
             $sWhereSub .= "(";
         } else {
-            $sWhereSub .= " AND ("; 
+            $sWhereSub .= " AND (";
         }
         $colSize = count($aColumns);
 
@@ -108,8 +108,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
  */
 
 $sQuery = "SELECT * FROM $tableName";
-if(isset($testType) && $testType!="")
-{
+if (isset($testType) && $testType != "") {
     $sWhere = "test_type = '$testType'";
 }
 if (!empty($sWhere)) {
@@ -151,24 +150,24 @@ $output = array(
 );
 $editRequest = false;
 if ($usersService->isAllowed("/common/reference/edit-recommended-corrective-action.php?testType=vl")) {
-     $editRequest = true;
+    $editRequest = true;
 }
 //echo $editRequest; die;
 foreach ($rResult as $aRow) {
-   
+
     $row = [];
     $row[] = ($aRow['recommended_corrective_action_name']);
     $row[] = ($aRow['status']);
-    
-    if ($editRequest) {
-        $edit = '<a href="/common/reference/edit-recommended-corrective-action.php?testType=vl&id=' . base64_encode($aRow[$primaryKey]) .  '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
-   }
 
-   $actions = "";
-   if ($editRequest) {
+    if ($editRequest) {
+        $edit = '<a href="/common/reference/edit-recommended-corrective-action.php?testType=vl&id=' . base64_encode($aRow[$primaryKey]) .  '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
+    }
+
+    $actions = "";
+    if ($editRequest) {
         $actions .= $edit;
-   }
-   $row[] = $actions;
+    }
+    $row[] = $actions;
     $output['aaData'][] = $row;
 }
 

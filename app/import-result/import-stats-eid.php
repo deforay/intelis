@@ -145,7 +145,7 @@ unset($_SESSION['controllertrack']);
             function(data) {
                 if (data == "" || data == null || data == undefined) {
                     $.unblockUI();
-                    alert("<?= _("Unable to generate download"); ?>");
+                    alert("<?= _translate("Unable to generate download"); ?>");
                 } else {
                     $.unblockUI();
                     window.open('/download.php?f=' + data, '_blank');

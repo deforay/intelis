@@ -153,7 +153,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                                     </tr>
                                     <tr>
-                                    <th scope="row"><?= _('Requesting Clinician Name'); ?></th>
+                                        <th scope="row"><?= _translate('Requesting Clinician Name'); ?></th>
                                         <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Request Clinician Name" title="Please enter request clinician" /></td>
                                     </tr>
                                 </table>
@@ -377,7 +377,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <?php if ($usersService->isAllowed('/eid/results/eid-manual-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                             <th scope="row" class="labels">Sample Received Date (at Testing Lab) <span class="mandatory">*</span></th>
                                             <td>
-                                                <input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample received date" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample received date" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
                                             </td>
                                         <?php } ?>
                                     </tr>
@@ -431,7 +431,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <tr>
                                             <th scope="row" style="width:25%;" class="labels">Sample Test Date </th>
                                             <td style="width:25%;">
-                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Please enter the sample tested date and time" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter the sample tested date and time" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
                                             </td>
                                             <th scope="row" class="labels">Result</th>
                                             <td>
@@ -474,7 +474,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                             <th scope="row" class="labels">Approved On </th>
                                             <td style="width:25%;">
-                                                <input type="text" value="<?php DateUtility::humanReadableDateFormat(DateUtility::getCurrentDateTime()); ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="<?= _("Please enter date"); ?>" <?php echo $labFieldDisabled; ?>style="width:100%;" title="Please select approved on" />
+                                                <input type="text" value="<?php DateUtility::humanReadableDateFormat(DateUtility::getCurrentDateTime()); ?>" class="form-control dateTime" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="<?= _translate("Please enter date"); ?>" <?php echo $labFieldDisabled; ?>style="width:100%;" title="Please select approved on" />
                                             </td>
                                         </tr>
                                         <tr>

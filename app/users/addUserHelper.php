@@ -103,7 +103,7 @@ try {
             }
         }
 
-        $_SESSION['alertMsg'] = _("User saved successfully!");
+        $_SESSION['alertMsg'] = _translate("User saved successfully!");
     }
     $systemType = $general->getSystemConfig('sc_user_type');
     if (isset(SYSTEM_CONFIG['remoteURL']) && SYSTEM_CONFIG['remoteURL'] != "" && $systemType == 'vluser') {

@@ -66,7 +66,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
 } else {
 	throw new SystemException('Invalid test type - ' . $_GET['type'], 500);
 }
-$title = _($_title . " | Batches");
+$title = _translate($_title . " | Batches");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -84,10 +84,10 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("Manage " . $_title . " Batches"); ?></h1>
+		<h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _translate("Manage " . $_title . " Batches"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Manage Batches"); ?></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+			<li class="active"><?php echo _translate("Manage Batches"); ?></li>
 		</ol>
 	</section>
 	<!-- Main content -->
@@ -113,7 +113,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 								<div class="col-xs-6 col-md-6">
 									<div class="box-header with-border">
 										<?php if ($usersService->isAllowed("/batch/add-batch.php?type=" . $_GET['type'])) { ?>
-											<a href="add-batch.php?type=<?php echo $_GET['type']; ?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Create New Batch"); ?></a>
+											<a href="add-batch.php?type=<?php echo $_GET['type']; ?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Create New Batch"); ?></a>
 										<?php } ?>
 									</div>
 								</div>
@@ -122,7 +122,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 					<?php } else { ?>
 						<div class="box-header with-border">
 							<?php if ($usersService->isAllowed("/batch/add-batch.php?type=" . $_GET['type'])) { ?>
-								<a href="add-batch.php?type=<?php echo $_GET['type']; ?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Create New Batch"); ?></a>
+								<a href="add-batch.php?type=<?php echo $_GET['type']; ?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Create New Batch"); ?></a>
 							<?php } ?>
 						</div>
 					<?php } ?>
@@ -131,22 +131,22 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 						<table aria-describedby="table" id="batchCodeDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th scope="col"><?php echo _("Batch Code"); ?></th>
+									<th scope="col"><?php echo _translate("Batch Code"); ?></th>
 									<?php if (!empty($_GET['type']) && $_GET['type'] == 'generic-tests') { ?>
-										<th scope="col"><?php echo _("Test Type"); ?></th>
+										<th scope="col"><?php echo _translate("Test Type"); ?></th>
 									<?php } ?>
-									<th scope="col"><?php echo _("No. of Samples"); ?></th>
-									<th scope="col"><?php echo _("No. of Samples Tested"); ?></th>
-									<th scope="col"><?php echo _("Tested Date"); ?></th>
-									<th scope="col"><?php echo _("Last Modified On"); ?></th>
+									<th scope="col"><?php echo _translate("No. of Samples"); ?></th>
+									<th scope="col"><?php echo _translate("No. of Samples Tested"); ?></th>
+									<th scope="col"><?php echo _translate("Tested Date"); ?></th>
+									<th scope="col"><?php echo _translate("Last Modified On"); ?></th>
 									<?php if ($usersService->isAllowed("/batch/edit-batch.php?type=" . $_GET['type'])) { ?>
-										<th scope="col"><?php echo _("Action"); ?></th>
+										<th scope="col"><?php echo _translate("Action"); ?></th>
 									<?php } ?>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="5" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+									<td colspan="5" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 						</table>
@@ -166,7 +166,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 	$(document).ready(function() {
 		$("#testType").select2({
 			width: '100%',
-			placeholder: "<?php echo _("Select Test Type"); ?>"
+			placeholder: "<?php echo _translate("Select Test Type"); ?>"
 		});
 		$.blockUI();
 		oTable = $('#batchCodeDataTable').dataTable({
@@ -237,7 +237,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 
 
 	function deleteBatchCode(bId, batchCode) {
-		var conf = confirm("<?php echo _("Are you sure you want to delete Batch"); ?> : " + batchCode + "?\n<?php echo _("This action cannot be undone."); ?>");
+		var conf = confirm("<?php echo _translate("Are you sure you want to delete Batch"); ?> : " + batchCode + "?\n<?php echo _translate("This action cannot be undone."); ?>");
 		if (conf) {
 			$.post("delete-batch.php", {
 					id: bId,
@@ -245,9 +245,9 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 				},
 				function(data) {
 					if (data == 1) {
-						alert("<?php echo _("Batch deleted"); ?>");
+						alert("<?php echo _translate("Batch deleted"); ?>");
 					} else {
-						alert("<?php echo _("Something went wrong. Please try again!"); ?>");
+						alert("<?php echo _translate("Something went wrong. Please try again!"); ?>");
 					}
 					oTable.fnDraw();
 				});

@@ -35,7 +35,7 @@ try {
 		$db->insert($tableName, $data);
 		$lastId = $db->getInsertId();
 
-		$_SESSION['alertMsg'] = _("Sample Type details added successfully");
+		$_SESSION['alertMsg'] = _translate("Sample Type details added successfully");
 		$general->activityLog('add-sample-type', $_SESSION['userName'] . ' added new reference sample type' . $_POST['sampleName'], 'reference-covid19-sample-type');
 	}
 	header("Location:covid19-sample-type.php");

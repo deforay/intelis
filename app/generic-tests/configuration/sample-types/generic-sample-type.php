@@ -1,5 +1,5 @@
 <?php
-$title = _("Other Lab Tests Sample Types");
+$title = _translate("Other Lab Tests Sample Types");
 require_once APPLICATION_PATH . '/header.php';
 
 use App\Services\UsersService;
@@ -13,10 +13,10 @@ $usersService = ContainerRegistry::get(UsersService::class);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-gears"></em> <?php echo _("Other Lab Tests Sample Types"); ?></h1>
+		<h1><em class="fa-solid fa-gears"></em> <?php echo _translate("Other Lab Tests Sample Types"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Sample Types"); ?></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+			<li class="active"><?php echo _translate("Sample Types"); ?></li>
 		</ol>
 	</section>
 
@@ -27,7 +27,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if ($usersService->isAllowed("/generic-tests/configuration/sample-types/generic-add-sample-type.php")) { ?>
-							<a href="/generic-tests/configuration/sample-types/generic-add-sample-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Sample Type"); ?></a>
+							<a href="/generic-tests/configuration/sample-types/generic-add-sample-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Sample Type"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -35,10 +35,10 @@ $usersService = ContainerRegistry::get(UsersService::class);
 						<table aria-describedby="table" id="partnerTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th scope="row"><?php echo _("Sample Type Name"); ?></th>
-									<th scope="row"><?php echo _("Sample Type Code"); ?></th>
-									<th scope="row"><?php echo _("Status"); ?></th>
-									<th scope="row"><?php echo _("Updated On"); ?></th>
+									<th scope="row"><?php echo _translate("Sample Type Name"); ?></th>
+									<th scope="row"><?php echo _translate("Sample Type Code"); ?></th>
+									<th scope="row"><?php echo _translate("Status"); ?></th>
+									<th scope="row"><?php echo _translate("Updated On"); ?></th>
 									<?php if ($usersService->isAllowed("/generic-tests/configuration/sample-types/generic-edit-sample-type.php")) { ?>
 										<th scope="row">Action</th>
 									<?php } ?>
@@ -46,7 +46,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="5" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+									<td colspan="5" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 
@@ -116,7 +116,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 
 	function updateStatus(obj, optVal) {
 		if (obj.value != '') {
-			conf = confirm('<?php echo _("Are you sure you want to change the status"); ?>?');
+			conf = confirm('<?php echo _translate("Are you sure you want to change the status"); ?>?');
 			if (conf) {
 				$.post("update-implementation-status.php", {
 						status: obj.value,
@@ -125,7 +125,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 					function(data) {
 						if (data != "") {
 							oTable.fnDraw();
-							alert('<?php echo _("Updated successfully"); ?>.');
+							alert('<?php echo _translate("Updated successfully"); ?>.');
 						}
 					});
 			} else {

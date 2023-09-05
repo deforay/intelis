@@ -49,7 +49,7 @@ try {
 			}
 			$db->update("facility_details", $facilityData);
 
-			$_SESSION['alertMsg'] = _("Geographical Divisions details saved successfully");
+			$_SESSION['alertMsg'] = _translate("Geographical Divisions details saved successfully");
 			$general->activityLog('Geographical Divisions details', $_SESSION['userName'] . ' saved geographical division - ' . $_POST['geoName'], 'common-reference');
 		}
 	}

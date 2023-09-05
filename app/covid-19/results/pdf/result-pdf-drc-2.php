@@ -81,7 +81,7 @@ class DRC_PDF extends MYPDF
         // Set font
         $this->SetFont('helvetica', 'I', 8);
         if ($this->systemConfig['sc_user_type'] == 'vluser' && $this->dataSync == 0) {
-            $generatedAtTestingLab = " | " . _("Report generated at Testing Lab");
+            $generatedAtTestingLab = " | " . _translate("Report generated at Testing Lab");
         } else {
             $generatedAtTestingLab = "";
         }

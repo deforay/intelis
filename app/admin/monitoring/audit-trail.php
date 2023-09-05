@@ -4,7 +4,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\SystemService;
 
-$title = _("Audit Trail");
+$title = _translate("Audit Trail");
 require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
@@ -75,10 +75,10 @@ $resultColumn = getColumns($db, $tableName);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-clock-rotate-left"></em> <?php echo _("Audit Trail"); ?></h1>
+		<h1><em class="fa-solid fa-clock-rotate-left"></em> <?php echo _translate("Audit Trail"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Audit Trail"); ?></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+			<li class="active"><?php echo _translate("Audit Trail"); ?></li>
 		</ol>
 	</section>
 	<!-- Main content -->
@@ -92,34 +92,34 @@ $resultColumn = getColumns($db, $tableName);
 
 						<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 							<tr>
-								<td><strong><?php echo _("Test Type"); ?>&nbsp;:</strong></td>
+								<td><strong><?php echo _translate("Test Type"); ?>&nbsp;:</strong></td>
 								<td>
-									<select id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
+									<select id="testType" name="testType" class="form-control" placeholder="<?php echo _translate('Please select the Test types'); ?>">
 										<option value="">-- Choose Test Type--</option>
 										<?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
-											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'audit_form_vl') ? "selected='selected'" : ""; ?> value="audit_form_vl"><?php echo _("Viral Load"); ?></option>
+											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'audit_form_vl') ? "selected='selected'" : ""; ?> value="audit_form_vl"><?php echo _translate("Viral Load"); ?></option>
 										<?php }
 										if (!empty($activeModules) && in_array('eid', $activeModules)) { ?>
-											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'audit_form_eid') ? "selected='selected'" : ""; ?> value="audit_form_eid"><?php echo _("Early Infant Diagnosis"); ?></option>
+											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'audit_form_eid') ? "selected='selected'" : ""; ?> value="audit_form_eid"><?php echo _translate("Early Infant Diagnosis"); ?></option>
 										<?php }
 										if (!empty($activeModules) && in_array('covid19', $activeModules)) { ?>
-											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'audit_form_covid19') ? "selected='selected'" : ""; ?> value="audit_form_covid19"><?php echo _("Covid-19"); ?></option>
+											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'audit_form_covid19') ? "selected='selected'" : ""; ?> value="audit_form_covid19"><?php echo _translate("Covid-19"); ?></option>
 										<?php }
 										if (!empty($activeModules) && in_array('hepatitis', $activeModules)) { ?>
-											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'audit_form_hepatitis') ? "selected='selected'" : ""; ?> value='audit_form_hepatitis'><?php echo _("Hepatitis"); ?></option>
+											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'audit_form_hepatitis') ? "selected='selected'" : ""; ?> value='audit_form_hepatitis'><?php echo _translate("Hepatitis"); ?></option>
 										<?php }
 										if (!empty($activeModules) && in_array('tb', $activeModules)) { ?>
-											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'audit_form_tb') ? "selected='selected'" : ""; ?> value='audit_form_tb'><?php echo _("TB"); ?></option>
+											<option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'audit_form_tb') ? "selected='selected'" : ""; ?> value='audit_form_tb'><?php echo _translate("TB"); ?></option>
 										<?php } ?>
 									</select>
 								</td>
-								<td>&nbsp;<strong><?php echo _("Sample Code"); ?>&nbsp;:</strong></td>
+								<td>&nbsp;<strong><?php echo _translate("Sample Code"); ?>&nbsp;:</strong></td>
 								<td>
 									<input type="text" value="<?= htmlspecialchars($_POST['sampleCode']); ?>" name="sampleCode" id="sampleCode" class="form-control" />
 								</td>
 							<tr>
-								<td colspan="4">&nbsp;<input type="submit" value="<?php echo _("Submit"); ?>" class="btn btn-success btn-sm">
-									&nbsp;<button type="reset" class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _('Reset'); ?></span></button>
+								<td colspan="4">&nbsp;<input type="submit" value="<?php echo _translate("Submit"); ?>" class="btn btn-success btn-sm">
+									&nbsp;<button type="reset" class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
 								</td>
 							</tr>
 						</table>
@@ -131,7 +131,7 @@ $resultColumn = getColumns($db, $tableName);
 			if (!empty($sampleCode)) {
 				$posts = getColumnValues($db, $tableName, $sampleCode);
 
-				?>
+			?>
 				<div class="col-xs-12">
 					<div class="box">
 						<!-- /.box-header -->
@@ -143,10 +143,10 @@ $resultColumn = getColumns($db, $tableName);
 									//echo '<pre>'; print_r($resultColumn); die;
 									$i = 0;
 									foreach ($resultColumn as $col) {
-										?>
+									?>
 										<option value="<?php echo $i; ?>"><?php echo $col['COLUMN_NAME']; ?></option>
 									<?php
-									$i++;
+										$i++;
 									}
 									?>
 								</select>
@@ -159,7 +159,7 @@ $resultColumn = getColumns($db, $tableName);
 											$colArr = [];
 											foreach ($resultColumn as $col) {
 												$colArr[] = $col['COLUMN_NAME'];
-												?>
+											?>
 												<th>
 													<?php
 													echo $col['COLUMN_NAME'];
@@ -172,7 +172,7 @@ $resultColumn = getColumns($db, $tableName);
 										<?php
 
 										for ($i = 0; $i < count($posts); $i++) {
-											?>
+										?>
 											<tr>
 												<?php
 												for ($j = 0; $j < count($colArr); $j++) {
@@ -182,7 +182,7 @@ $resultColumn = getColumns($db, $tableName);
 													} else {
 														echo '<td>' . $posts[$i][$colArr[$j]] . '</td>';
 													}
-													?>
+												?>
 												<?php }
 												?>
 											</tr>
@@ -202,7 +202,7 @@ $resultColumn = getColumns($db, $tableName);
 											$resultColumn = getColumns($db, $tableName2);
 											$posts = getColumnValues($db, $tableName2, $sampleCode);
 											foreach ($resultColumn as $col) {
-												?>
+											?>
 												<th>
 													<?php
 													echo $col['COLUMN_NAME'];
@@ -214,11 +214,11 @@ $resultColumn = getColumns($db, $tableName);
 									<tbody>
 										<?php
 										for ($i = 0; $i < count($posts); $i++) {
-											?>
+										?>
 											<tr>
 												<?php
 												for ($j = 3; $j < count($colArr); $j++) {
-													?>
+												?>
 													<td>
 														<?php
 														echo $posts[$i][$colArr[$j]];
@@ -285,7 +285,7 @@ $resultColumn = getColumns($db, $tableName);
 	$(document).ready(function() {
 
 		$("#auditColumn").select2({
-			placeholder: "<?php echo _("Select Columns"); ?>"
+			placeholder: "<?php echo _translate("Select Columns"); ?>"
 		});
 		table = $("#auditTable").DataTable({
 			dom: 'Bfrtip',

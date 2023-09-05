@@ -63,10 +63,10 @@ foreach ($pdResult as $provinceName) {
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><em class="fa-solid fa-virus-covid"></em> <?php echo _("Edit Covid-19 QC Test Kit"); ?></h1>
+        <h1><em class="fa-solid fa-virus-covid"></em> <?php echo _translate("Edit Covid-19 QC Test Kit"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-            <li class="active"><?php echo _("Covid-19 QC Test Kit"); ?></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+            <li class="active"><?php echo _translate("Covid-19 QC Test Kit"); ?></li>
         </ol>
     </section>
 
@@ -74,7 +74,7 @@ foreach ($pdResult as $provinceName) {
     <section class="content">
         <div class="box box-default">
             <div class="box-header with-border">
-                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
+                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _translate("indicates required field"); ?> &nbsp;</div>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -84,17 +84,17 @@ foreach ($pdResult as $provinceName) {
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="qcCode" class="col-lg-4 control-label"><?php echo _("QC Code"); ?><span class="mandatory">*</span></label>
+                                    <label for="qcCode" class="col-lg-4 control-label"><?php echo _translate("QC Code"); ?><span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" value="<?php echo $qcDataInfo['qc_code']; ?>" class="form-control isRequired" id="qcCode" name="qcCode" placeholder="<?php echo _('QC Code'); ?>" title="<?php echo _('Please enter QC Code'); ?>" readonly />
+                                        <input type="text" value="<?php echo $qcDataInfo['qc_code']; ?>" class="form-control isRequired" id="qcCode" name="qcCode" placeholder="<?php echo _translate('QC Code'); ?>" title="<?php echo _translate('Please enter QC Code'); ?>" readonly />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="testKit" class="col-lg-4 control-label"><?php echo _("Test Kit"); ?> <span class="mandatory">*</span></label>
+                                    <label for="testKit" class="col-lg-4 control-label"><?php echo _translate("Test Kit"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <select class="form-control select2 isRequired" id="testKit" name="testKit" title="<?php echo _('Please select test kit'); ?>" onchange="getKitLabels(this.value);">
+                                        <select class="form-control select2 isRequired" id="testKit" name="testKit" title="<?php echo _translate('Please select test kit'); ?>" onchange="getKitLabels(this.value);">
                                             <?= $general->generateSelectOptions($testKitsList, base64_encode($qcDataInfo['testkit']), "--Select--"); ?>
                                         </select>
                                     </div>
@@ -104,17 +104,17 @@ foreach ($pdResult as $provinceName) {
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="lotNo" class="col-lg-4 control-label"><?php echo _("Lot number"); ?> <span class="mandatory">*</span></label>
+                                    <label for="lotNo" class="col-lg-4 control-label"><?php echo _translate("Lot number"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" value="<?php echo $qcDataInfo['lot_no']; ?>" class="form-control isRequired" id="lotNo" name="lotNo" placeholder="<?php echo _('Lot number'); ?>" title="<?php echo _('Please enter lot no'); ?>" />
+                                        <input type="text" value="<?php echo $qcDataInfo['lot_no']; ?>" class="form-control isRequired" id="lotNo" name="lotNo" placeholder="<?php echo _translate('Lot number'); ?>" title="<?php echo _translate('Please enter lot no'); ?>" />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="expiryDate" class="col-lg-4 control-label"><?php echo _("Expiry Date"); ?> <span class="mandatory">*</span></label>
+                                    <label for="expiryDate" class="col-lg-4 control-label"><?php echo _translate("Expiry Date"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" value="<?php echo date("d-M-Y", strtotime($qcDataInfo['expiry_date'])); ?>" class="form-control date isRequired" id="expiryDate" name="expiryDate" placeholder="<?php echo _('Expiry date'); ?>" title="<?php echo _('Please enter expiry date'); ?>" />
+                                        <input type="text" value="<?php echo date("d-M-Y", strtotime($qcDataInfo['expiry_date'])); ?>" class="form-control date isRequired" id="expiryDate" name="expiryDate" placeholder="<?php echo _translate('Expiry date'); ?>" title="<?php echo _translate('Please enter expiry date'); ?>" />
                                     </div>
                                 </div>
                             </div>
@@ -122,7 +122,7 @@ foreach ($pdResult as $provinceName) {
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="province" class="col-lg-4 control-label"><?php echo _("State / Province"); ?></label>
+                                    <label for="province" class="col-lg-4 control-label"><?php echo _translate("State / Province"); ?></label>
                                     <div class="col-lg-7">
                                         <select class="form-control select2" name="province" id="province" title="Please choose State / province" onchange="getDistrictDetails(this);" style="width:100%;">
                                             <?php echo $province; ?>
@@ -133,7 +133,7 @@ foreach ($pdResult as $provinceName) {
 
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="district" class="col-lg-4 control-label"><?php echo _("District / County"); ?></label>
+                                    <label for="district" class="col-lg-4 control-label"><?php echo _translate("District / County"); ?></label>
                                     <div class="col-lg-7">
                                         <select class="form-control select2" name="district" id="district" title="Please choose district / county" style="width:100%;" onchange="getLabsDistrictWise(this);">
                                             <option value=""> -- Select -- </option>
@@ -145,9 +145,9 @@ foreach ($pdResult as $provinceName) {
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="labName" class="col-lg-4 control-label"><?php echo _("Testing Lab"); ?> <span class="mandatory">*</span></label>
+                                    <label for="labName" class="col-lg-4 control-label"><?php echo _translate("Testing Lab"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <select class="form-control select2 isRequired" id="labName" name="labName" title="<?php echo _('Please select lab name'); ?>" onchange="getTestingPoints();">
+                                        <select class="form-control select2 isRequired" id="labName" name="labName" title="<?php echo _translate('Please select lab name'); ?>" onchange="getTestingPoints();">
                                             <?= $general->generateSelectOptions($testingLabs, $qcDataInfo['lab_id'], "--Select--"); ?>
                                         </select>
                                     </div>
@@ -155,18 +155,18 @@ foreach ($pdResult as $provinceName) {
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="testingPoint" class="col-lg-4 control-label"><?php echo _("Testing Point"); ?></label>
+                                    <label for="testingPoint" class="col-lg-4 control-label"><?php echo _translate("Testing Point"); ?></label>
                                     <div class="col-lg-7">
-                                        <select class="form-control select2" id="testingPoint" name="testingPoint" title="<?php echo _('Please select testing point'); ?>">
+                                        <select class="form-control select2" id="testingPoint" name="testingPoint" title="<?php echo _translate('Please select testing point'); ?>">
                                         </select>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="testerName" class="col-lg-4 control-label"><?php echo _("Tester Name"); ?> <span class="mandatory">*</span></label>
+                                    <label for="testerName" class="col-lg-4 control-label"><?php echo _translate("Tester Name"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <select class="form-control select2 isRequired" id="testerName" name="testerName" title="<?php echo _('Please select tester name'); ?>">
+                                        <select class="form-control select2 isRequired" id="testerName" name="testerName" title="<?php echo _translate('Please select tester name'); ?>">
                                             <?= $general->generateSelectOptions($users, $qcDataInfo['tested_by'], "--Select--"); ?>
                                         </select>
                                     </div>
@@ -174,17 +174,17 @@ foreach ($pdResult as $provinceName) {
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="receivedOn" class="col-lg-4 control-label"><?php echo _("Received On"); ?> <span class="mandatory">*</span></label>
+                                    <label for="receivedOn" class="col-lg-4 control-label"><?php echo _translate("Received On"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" value="<?php echo date("d-M-Y H:s:i", strtotime($qcDataInfo['qc_received_datetime'])); ?>" class="form-control date-time isRequired" id="receivedOn" name="receivedOn" placeholder="<?php echo _('Received on'); ?>" title="<?php echo _('Please enter received on'); ?>" />
+                                        <input type="text" value="<?php echo date("d-M-Y H:s:i", strtotime($qcDataInfo['qc_received_datetime'])); ?>" class="form-control date-time isRequired" id="receivedOn" name="receivedOn" placeholder="<?php echo _translate('Received on'); ?>" title="<?php echo _translate('Please enter received on'); ?>" />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="testedOn" class="col-lg-4 control-label"><?php echo _("Tested On"); ?> <span class="mandatory">*</span></label>
+                                    <label for="testedOn" class="col-lg-4 control-label"><?php echo _translate("Tested On"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" value="<?php echo date("d-M-Y H:s:i", strtotime($qcDataInfo['qc_tested_datetime'])); ?>" class="form-control date-time isRequired" id="testedOn" name="testedOn" placeholder="<?php echo _('Tested on'); ?>" title="<?php echo _('Please enter tested on'); ?>" />
+                                        <input type="text" value="<?php echo date("d-M-Y H:s:i", strtotime($qcDataInfo['qc_tested_datetime'])); ?>" class="form-control date-time isRequired" id="testedOn" name="testedOn" placeholder="<?php echo _translate('Tested on'); ?>" title="<?php echo _translate('Please enter tested on'); ?>" />
                                     </div>
                                 </div>
                             </div>
@@ -194,8 +194,8 @@ foreach ($pdResult as $provinceName) {
                     <table aria-describedby="table" id="qcTestTableRoot" border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;<?php echo $display; ?>">
                         <thead>
                             <tr>
-                                <th style="text-align:center;"><?php echo _("QC Test Label"); ?></th>
-                                <th style="text-align:center;"><?php echo _("Test Result"); ?></th>
+                                <th style="text-align:center;"><?php echo _translate("QC Test Label"); ?></th>
+                                <th style="text-align:center;"><?php echo _translate("Test Result"); ?></th>
                             </tr>
                         </thead>
                         <tbody id="qcTestTable">
@@ -217,8 +217,8 @@ foreach ($pdResult as $provinceName) {
                     <!-- /.box-body -->
                     <div class="box-footer">
                         <input type="hidden" name="qcDataId" id="qcDataId" value="<?php echo base64_encode($qcDataInfo['qc_id']); ?>" />
-                        <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
-                        <a href="covid-19-qc-data.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
+                        <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
+                        <a href="covid-19-qc-data.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
                     </div>
                     <!-- /.box-footer -->
                 </form>

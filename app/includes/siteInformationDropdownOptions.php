@@ -24,7 +24,7 @@ $sarr = $general->getSystemConfig();
 if ($arr['vl_form'] == '3') {
 	$GLOBALS['option'] = '<option value=""> -- Sélectionner -- </option>';
 } else {
-	$GLOBALS['option'] = '<option value=""> ' . _("-- Select --") . ' </option>';
+	$GLOBALS['option'] = '<option value=""> ' . _translate("-- Select --") . ' </option>';
 }
 
 if (!empty($_POST['testType'])) {

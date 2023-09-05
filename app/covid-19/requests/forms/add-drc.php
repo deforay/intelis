@@ -46,7 +46,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 
-$facility = $general->generateSelectOptions($healthFacilities, null, _("-- Select --"));
+$facility = $general->generateSelectOptions($healthFacilities, null, _translate("-- Select --"));
 
 $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 // Province
@@ -181,7 +181,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
 
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title">INFORMATION PATIENT</h3>&nbsp;&nbsp;&nbsp;
-                                    <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Code du patient" title="<?= _("Please enter the Patient ID"); ?>" />&nbsp;&nbsp;
+                                    <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="Code du patient" title="<?= _translate("Please enter the Patient ID"); ?>" />&nbsp;&nbsp;
                                     <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
@@ -678,7 +678,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                     <tr>
                                         <th scope="row" style="width: 15% !important;"><label for="returnDate">Date de retour</label></th>
                                         <td style="width:35% !important;">
-                                            <input type="text" class="form-control date" id="returnDate" name="returnDate" placeholder="<?= _("Please enter date"); ?>" title="Date de retour" />
+                                            <input type="text" class="form-control date" id="returnDate" name="returnDate" placeholder="<?= _translate("Please enter date"); ?>" title="Date de retour" />
                                         </td>
 
                                         <th scope="row">Compagnie aérienne</th>
@@ -742,7 +742,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <tr>
                                             <th scope="row"><label for="">Date de réception de l'échantillon </label></th>
                                             <td>
-                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Veuillez saisir la date de réception de l'échantillon" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Veuillez saisir la date de réception de l'échantillon" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> onchange="" style="width:100%;" />
                                             </td>
                                             <th scope="row"><label for="sampleCondition">Condition de l'échantillon</label></th>
                                             <td>
@@ -1257,7 +1257,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
     function validateNow() {
 
         if ($("#patientDob").val() == "" && $("#patientAge").val() == "") {
-            alert("<?= _("Please enter Patient Age or Date of Birth"); ?>");
+            alert("<?= _translate("Please enter Patient Age or Date of Birth"); ?>");
             return false;
         }
         if ($('#isResultAuthorized').val() != "yes") {

@@ -149,12 +149,12 @@ if (isset($_POST['targetType']) && $_POST['targetType'] != '') {
             type: 'column'
         },
         title: {
-            text: "<?php echo _("VL Suppressed Testing Target"); ?>"
+            text: "<?php echo _translate("VL Suppressed Testing Target"); ?>"
         },
         exporting: {
             chartOptions: {
                 subtitle: {
-                    text: "<?php echo _("VL Suppressed Testing Target"); ?>",
+                    text: "<?php echo _translate("VL Suppressed Testing Target"); ?>",
                 }
             }
         },
@@ -164,15 +164,15 @@ if (isset($_POST['targetType']) && $_POST['targetType'] != '') {
         xAxis: {
             //  categories: ["21 Mar", "22 Mar", "23 Mar", "24 Mar", "25 Mar", "26 Mar", "27 Mar"]
             categories: [<?php
-            echo "'" . htmlspecialchars($monthYear) . "',";
-            ?>]
+                            echo "'" . htmlspecialchars($monthYear) . "',";
+                            ?>]
         },
         yAxis: {
             title: {
-                text: "<?php echo _("No of target in month %"); ?>"
+                text: "<?php echo _translate("No of target in month %"); ?>"
             },
             labels: {
-                formatter: function () {
+                formatter: function() {
                     return this.value;
                 }
             },
@@ -196,14 +196,14 @@ if (isset($_POST['targetType']) && $_POST['targetType'] != '') {
         series: [
             <?php foreach ($resArray as $tRow) {
                 $color = sprintf("#%06x", random_int(0, 16777215)); ?> {
-                name: '<?php echo $tRow['facility_name']; ?>',
-                // data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
-                data: [
+                    name: '<?php echo $tRow['facility_name']; ?>',
+                    // data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
+                    data: [
                         <?php
                         echo $tRow['supp_percent'];
                         ?>
                     ]
-    },
+                },
 
             <?php } ?>
         ]

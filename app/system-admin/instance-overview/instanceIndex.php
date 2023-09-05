@@ -1,5 +1,5 @@
 <?php
-$title = _("VLSM Instance Overview") . " - " . _("System Admin");
+$title = _translate("VLSM Instance Overview") . " - " . _translate("System Admin");
 require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
 $instanceValues = "SELECT * FROM s_vlsm_instance";
 $data = $db->rawQuery($instanceValues);
@@ -32,10 +32,10 @@ $data = $db->rawQuery($instanceValues);
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1> <em class="fa-solid fa-gears"></em> <?php echo _("Instance Overview"); ?></h1>
+        <h1> <em class="fa-solid fa-gears"></em> <?php echo _translate("Instance Overview"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/system-admin/edit-config/index.php"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-            <li class="active"><?php echo _("Instance Overview"); ?></li>
+            <li><a href="/system-admin/edit-config/index.php"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+            <li class="active"><?php echo _translate("Instance Overview"); ?></li>
         </ol>
     </section>
 
@@ -53,77 +53,77 @@ $data = $db->rawQuery($instanceValues);
                     ?>
                             <thead id="<?php echo $project['vlsm_instance_id']; ?>">
                                 <tr>
-                                    <th><?php echo _("Instance Id"); ?></th>
+                                    <th><?php echo _translate("Instance Id"); ?></th>
                                     <td><?php echo $project['vlsm_instance_id']; ?></td>
                                 </tr>
                                 <tr>
-                                    <th><?php echo _("Instance Facility Name"); ?></th>
+                                    <th><?php echo _translate("Instance Facility Name"); ?></th>
                                     <td><span class="editSpan instanceName"><?php echo $project['instance_facility_name']; ?></span>
                                         <input class="editInput instanceName form-control input-sm" type="text" name="instance_facility_name" value="<?php echo $project['instance_facility_name']; ?>" style="display: none;">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><?php echo _("Instance Facility Code"); ?></th>
+                                    <th><?php echo _translate("Instance Facility Code"); ?></th>
                                     <td><span class="editSpan instanceCode"><?php echo $project['instance_facility_code']; ?></span>
                                         <input class="editInput instanceCode form-control input-sm" type="text" name="instance_facility_code" value="<?php echo $project['instance_facility_code']; ?>" style="display: none;">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><?php echo _("Instance Facility Type"); ?></th>
+                                    <th><?php echo _translate("Instance Facility Type"); ?></th>
                                     <td><?php echo $project['instance_facility_type']; ?></td>
                                 </tr>
                                 <tr>
-                                    <th><?php echo _("Added On"); ?></th>
+                                    <th><?php echo _translate("Added On"); ?></th>
                                     <td><?php echo date('d-M-Y H:i:s', strtotime($project['instance_added_on'])); ?></td>
                                 </tr>
                                 <tr>
-                                <th><?php echo _("Updated On"); ?></th>
-                                <td><?php echo date('d-M-Y H:i:s', strtotime($project['instance_update_on'])); ?></td>
+                                    <th><?php echo _translate("Updated On"); ?></th>
+                                    <td><?php echo date('d-M-Y H:i:s', strtotime($project['instance_update_on'])); ?></td>
                                 </tr>
                                 <tr>
-                                    <th><?php echo _("Vl Last Sync"); ?></th>
+                                    <th><?php echo _translate("Vl Last Sync"); ?></th>
                                     <td><span class="editSpan vlLastSync"><?php echo date('d-M-Y H:i:s', strtotime($project['vl_last_dash_sync'])); ?></span>
                                         <input class="editInput vlLastSync form-control input-sm date-time" type="text" name="vl_last_dash_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['vl_last_dash_sync'])); ?>" readonly style="display: none;background:#fff;">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><?php echo _("EID Last Sync"); ?></th>
+                                    <th><?php echo _translate("EID Last Sync"); ?></th>
                                     <td><span class="editSpan eidLastSync"><?php echo date('d-M-Y H:i:s', strtotime($project['eid_last_dash_sync'])); ?></span>
                                         <input class="editInput eidLastSync form-control input-sm date-time" type="text" name="eid_last_dash_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['eid_last_dash_sync'])); ?>" readonly style="display: none;background:#fff;">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><?php echo _("Covid-19 Last Sync"); ?></th>
+                                    <th><?php echo _translate("Covid-19 Last Sync"); ?></th>
                                     <td><span class="editSpan covid19LastSync"><?php echo date('d-M-Y H:i:s', strtotime($project['covid19_last_dash_sync'])); ?></span>
                                         <input class="editInput covid19LastSync form-control input-sm date-time" type="text" name="covid19_last_dash_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['covid19_last_dash_sync'])); ?>" readonly style="display: none;background:#fff;">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><?php echo _("Remote Request Last Sync"); ?></th>
+                                    <th><?php echo _translate("Remote Request Last Sync"); ?></th>
                                     <td><span class="editSpan remoteRequestLastSync"><?php echo date('d-M-Y H:i:s', strtotime($project['last_remote_requests_sync'])); ?></span>
                                         <input class="editInput remoteRequestLastSync form-control input-sm date-time" type="text" name="last_remote_requests_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['last_remote_requests_sync'])); ?>" readonly style="display: none;background:#fff;">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><?php echo _("Remote Results Last Sync"); ?></th>
+                                    <th><?php echo _translate("Remote Results Last Sync"); ?></th>
                                     <td><span class="editSpan remoteResultsLastSync"><?php echo date('d-M-Y H:i:s', strtotime($project['last_remote_results_sync'])); ?></span>
                                         <input class="editInput remoteResultsLastSync form-control input-sm date-time" type="text" name="last_remote_results_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['last_remote_results_sync'])); ?>" readonly style="display: none;background:#fff;">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><?php echo _("Remote Reference Last Sync"); ?></th>
+                                    <th><?php echo _translate("Remote Reference Last Sync"); ?></th>
                                     <td><span class="editSpan remoteReferenceLastSync"><?php echo date('d-M-Y H:i:s', strtotime($project['last_remote_reference_data_sync'])); ?></span>
                                         <input class="editInput remoteReferenceLastSync form-control input-sm date-time" type="text" name="last_remote_reference_data_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['last_remote_reference_data_sync'])); ?>" readonly style="display: none;background:#fff;">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><?php echo _("Action"); ?></th>
+                                    <th><?php echo _translate("Action"); ?></th>
                                     <td>
                                         <div class="btn-group btn-group-sm">
                                             <button type="button" class="btn btn-sm btn-default editBtn" style="float: none;"><span class="glyphicon glyphicon-pencil"></span></button>
                                         </div>
-                                        <button type="button" class="btn btn-sm btn-success saveBtn" style="float: none; display: none;"><?php echo _("Save"); ?></button>
-                                        <button type="button" class="btn btn-sm-default cancelBtn" style="float: none; display: none;"><?php echo _("Cancel"); ?></button>
+                                        <button type="button" class="btn btn-sm btn-success saveBtn" style="float: none; display: none;"><?php echo _translate("Save"); ?></button>
+                                        <button type="button" class="btn btn-sm-default cancelBtn" style="float: none; display: none;"><?php echo _translate("Cancel"); ?></button>
                                     </td>
                                 </tr>
                             </thead>
@@ -132,7 +132,7 @@ $data = $db->rawQuery($instanceValues);
                         ?>
                 </tbody>
             <?php } else {
-                        echo _("No record found");
+                        echo _translate("No record found");
                     } ?>
 
             </table>

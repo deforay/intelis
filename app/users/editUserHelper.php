@@ -130,7 +130,7 @@ try {
                 }
             }
         }
-        $_SESSION['alertMsg'] = _("User updated successfully");
+        $_SESSION['alertMsg'] = _translate("User updated successfully");
 
         $systemType = $general->getSystemConfig('sc_user_type');
         if (!empty(SYSTEM_CONFIG['remoteURL']) && $systemType == 'vluser') {

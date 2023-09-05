@@ -87,13 +87,13 @@ if (($_POST['action'] == 'edit') && !empty($_POST['id'])) {
     if ($update) {
         $returnData = array(
             'status' => 'ok',
-            'msg' => _("Instance data has been updated successfully."),
+            'msg' => _translate("Instance data has been updated successfully."),
             'data' => $userData
         );
     } else {
         $returnData = array(
             'status' => 'error',
-            'msg' => _("Some problem occurred, please try again."),
+            'msg' => _translate("Some problem occurred, please try again."),
             'data' => ''
         );
     }

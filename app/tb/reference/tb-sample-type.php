@@ -1,6 +1,6 @@
 <?php
-$title = _("TB Sample Type");
- 
+$title = _translate("TB Sample Type");
+
 require_once APPLICATION_PATH . '/header.php';
 
 // if($sarr['sc_user_type']=='vluser'){
@@ -11,10 +11,10 @@ require_once APPLICATION_PATH . '/header.php';
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><em class="fa-solid fa-heart-pulse"></em> <?php echo _("TB Sample Type");?></h1>
+    <h1><em class="fa-solid fa-heart-pulse"></em> <?php echo _translate("TB Sample Type"); ?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home");?></a></li>
-      <li class="active"><?php echo _("TB Sample Type");?></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+      <li class="active"><?php echo _translate("TB Sample Type"); ?></li>
     </ol>
   </section>
 
@@ -27,33 +27,33 @@ require_once APPLICATION_PATH . '/header.php';
             <div class="row" style="background:#e0e0e0;padding: 15px;">
               <div class="col-md-12">
                 <div class="col-md-4">
-                  <input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0" data-showhide="facility_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _("Facility Code");?></label>
+                  <input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0" data-showhide="facility_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _translate("Facility Code"); ?></label>
                 </div>
                 <div class="col-md-4">
-                  <input type="checkbox" onclick="fnShowHide(this.value);" value="1" id="iCol1" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol1"><?php echo _("Facility Name");?></label>
+                  <input type="checkbox" onclick="fnShowHide(this.value);" value="1" id="iCol1" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol1"><?php echo _translate("Facility Name"); ?></label>
                 </div>
                 <div class="col-md-4">
-                  <input type="checkbox" onclick="fnShowHide(this.value);" value="2" id="iCol2" data-showhide="facility_type" class="showhideCheckBox" /> <label for="iCol2"><?php echo _("Facility Type");?></label>
+                  <input type="checkbox" onclick="fnShowHide(this.value);" value="2" id="iCol2" data-showhide="facility_type" class="showhideCheckBox" /> <label for="iCol2"><?php echo _translate("Facility Type"); ?></label>
                 </div>
                 <div class="col-md-4">
-                  <input type="checkbox" onclick="fnShowHide(this.value);" value="3" id="iCol3" data-showhide="status" class="showhideCheckBox" /> <label for="iCol3"><?php echo _("Status");?></label> <br>
+                  <input type="checkbox" onclick="fnShowHide(this.value);" value="3" id="iCol3" data-showhide="status" class="showhideCheckBox" /> <label for="iCol3"><?php echo _translate("Status"); ?></label> <br>
                 </div>
               </div>
             </div>
           </span>
           <div class="box-header with-border">
             <?php if (isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-              <a href="add-tb-sample-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add TB Sample Type");?></a>
+              <a href="add-tb-sample-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add TB Sample Type"); ?></a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
           </div>
           <!-- /.box-header -->
           <div class="box-body">
-            <table aria-describedby="table" id="samTypDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+            <table aria-describedby="table" id="samTypDataTable" class="table table-bordered table-striped" aria-hidden="true">
               <thead>
                 <tr>
-                  <th scope="row"><?php echo _("Sample Name");?></th>
-                  <th scope="row"><?php echo _("Sample Status");?></th>
+                  <th scope="row"><?php echo _translate("Sample Name"); ?></th>
+                  <th scope="row"><?php echo _translate("Sample Status"); ?></th>
                   <?php if (isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
                     <!-- <th scope="row">Action</th> -->
                   <?php } ?>
@@ -61,7 +61,7 @@ require_once APPLICATION_PATH . '/header.php';
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="3" class="dataTables_empty"><?php echo _("Loading data from server");?></td>
+                  <td colspan="3" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
                 </tr>
               </tbody>
 
@@ -117,9 +117,10 @@ require_once APPLICATION_PATH . '/header.php';
     });
     $.unblockUI();
   });
+
   function updateStatus(obj, optVal) {
     if (obj.value != '') {
-      conf = confirm("<?php echo _("Are you sure you want to change the status?");?>");
+      conf = confirm("<?php echo _translate("Are you sure you want to change the status?"); ?>");
       if (conf) {
         $.post("update-tb-sample-type-status.php", {
             status: obj.value,
@@ -128,13 +129,12 @@ require_once APPLICATION_PATH . '/header.php';
           function(data) {
             if (data != "") {
               oTable.fnDraw();
-              alert("<?php echo _("Updated successfully");?>.");
+              alert("<?php echo _translate("Updated successfully"); ?>.");
             }
           });
+      } else {
+        window.top.location.href = window.top.location;
       }
-	  else {
-		window.top.location.href = window.top.location;
-	  }
     }
   }
 </script>

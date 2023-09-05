@@ -22,7 +22,7 @@ $uQuery = "SELECT * FROM user_details WHERE `status` like 'active' ORDER by user
 $uResult = $db->rawQuery($uQuery);
 ?>
 <div class="col-md-12 col-lg-12">
-    <h4 style="margin-left:20px; font-weight:bold;"><?php echo _("User-Facility Map"); ?></h4>
+    <h4 style="margin-left:20px; font-weight:bold;"><?php echo _translate("User-Facility Map"); ?></h4>
     <div class="col-xs-5">
         <select name="from[]" id="search" class="form-control" size="8" multiple="multiple">
             <?php

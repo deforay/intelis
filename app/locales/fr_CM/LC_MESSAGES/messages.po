@@ -17074,7 +17074,7 @@ msgstr ""
 
 #, fuzzy
 #~| msgid "-- Select --"
-#~ msgid "<?= _('-- Select --'); ?>"
+#~ msgid "<?= _translate('-- Select --'); ?>"
 #~ msgstr "-- Sélectionner --"
 
 #, fuzzy

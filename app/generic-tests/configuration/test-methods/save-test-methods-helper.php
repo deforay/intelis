@@ -30,14 +30,14 @@ try {
             $db = $db->where('test_method_id', $testMethodId);
             $lastId = $db->update($tableName, $data);
             if ($lastId > 0) {
-                $_SESSION['alertMsg'] = _("Test Method updated successfully");
+                $_SESSION['alertMsg'] = _translate("Test Method updated successfully");
                 $general->activityLog('Test Method', $_SESSION['userName'] . ' updated new Test Method for ' . $_POST['testMethod'], 'generic-test-methods');
             }
         } else {
             $id = $db->insert($tableName, $data);
             $lastId = $db->getInsertId();
             if ($lastId > 0) {
-                $_SESSION['alertMsg'] = _("Test Method added successfully");
+                $_SESSION['alertMsg'] = _translate("Test Method added successfully");
                 $general->activityLog('Test Method', $_SESSION['userName'] . ' added new Test Method for ' . $_POST['testMethod'], 'generic-test-methods');
             }
         }

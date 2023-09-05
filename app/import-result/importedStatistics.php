@@ -37,7 +37,7 @@ $importMap = [
 if (isset($importMap[$module])) {
   require_once(APPLICATION_PATH . '/import-result/' . $importMap[$module]);
 } else {
-  throw new SystemException(_('Invalid Test Type'));
+  throw new SystemException(_translate('Invalid Test Type'));
 }
 
 require_once(APPLICATION_PATH . '/footer.php');

@@ -4,7 +4,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
-$title = _("Covid-19 Quarterly Monitoring Report");
+$title = _translate("Covid-19 Quarterly Monitoring Report");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -174,7 +174,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><em class="fa-solid fa-book"></em> <?php echo _("COVID-19 Testing Target Report"); ?>
+    <h1><em class="fa-solid fa-book"></em> <?php echo _translate("COVID-19 Testing Target Report"); ?>
       <!--<ol class="breadcrumb">-->
       <!--  <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>-->
       <!--  <li class="active">Export Result</li>-->
@@ -189,32 +189,32 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
         <div class="box" id="filterDiv">
           <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
             <tr>
-              <td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
+              <td><strong><?php echo _translate("Sample Test Date"); ?>&nbsp;:</strong></td>
               <td>
-                <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="background:#fff;" />
+                <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="background:#fff;" />
               </td>
-              <td><strong><?php echo _("Lab Name"); ?> :</strong></td>
+              <td><strong><?php echo _translate("Lab Name"); ?> :</strong></td>
               <td style="width: 30%;">
-                <select id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple>
+                <select id="facilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple>
                   <?= $testingLabsDropdown; ?>
                 </select>
               </td>
             </tr>
             <tr>
-              <td><strong><?php echo _("Target Type"); ?>&nbsp;:</strong></td>
+              <td><strong><?php echo _translate("Target Type"); ?>&nbsp;:</strong></td>
               <td>
-                <select class="form-control" id="targetType" name="targetType" title="<?php echo _('Please select Target Type'); ?>">
-                  <option value="1"><?php echo _("Monthly Targets not met"); ?></option>
-                  <option value="2"><?php echo _("Monthly Targets met"); ?></option>
-                  <option value="3"><?php echo _("Show all"); ?></option>
+                <select class="form-control" id="targetType" name="targetType" title="<?php echo _translate('Please select Target Type'); ?>">
+                  <option value="1"><?php echo _translate("Monthly Targets not met"); ?></option>
+                  <option value="2"><?php echo _translate("Monthly Targets met"); ?></option>
+                  <option value="3"><?php echo _translate("Show all"); ?></option>
                 </select>
               </td>
             </tr>
             <tr>
-              <td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
-                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _('Reset'); ?></span></button>
+              <td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
 
-                &nbsp;<button class="btn btn-info" type="button" onclick="exportInexcel()"><?php echo _("Export to excel"); ?></button>
+                &nbsp;<button class="btn btn-info" type="button" onclick="exportInexcel()"><?php echo _translate("Export to excel"); ?></button>
               </td>
             </tr>
           </table>
@@ -223,18 +223,18 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
             <table aria-describedby="table" id="vlMonitoringTable" class="table table-bordered table-striped" aria-hidden="true">
               <thead>
                 <tr>
-                  <th scope="row"><?php echo _("Facility Name"); ?></th>
-                  <th><?php echo _("Month"); ?> </th>
-                  <th> <?php echo _("Number of Samples Received"); ?> </th>
-                  <th> <?php echo _("Number of Samples Rejected"); ?> </th>
-                  <th><?php echo _("Number of Samples Tested"); ?></th>
-                  <th><?php echo _("Monthly Test Target"); ?></th>
+                  <th scope="row"><?php echo _translate("Facility Name"); ?></th>
+                  <th><?php echo _translate("Month"); ?> </th>
+                  <th> <?php echo _translate("Number of Samples Received"); ?> </th>
+                  <th> <?php echo _translate("Number of Samples Rejected"); ?> </th>
+                  <th><?php echo _translate("Number of Samples Tested"); ?></th>
+                  <th><?php echo _translate("Monthly Test Target"); ?></th>
 
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="10" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+                  <td colspan="10" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
                 </tr>
               </tbody>
             </table>
@@ -259,12 +259,12 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
   var oTable = null;
   $(document).ready(function() {
     $("#facilityName").multipleSelect({
-      placeholder: "<?php echo _("Select facility name"); ?>",
+      placeholder: "<?php echo _translate("Select facility name"); ?>",
       width: '100%'
     });
     $('#sampleTestDate').daterangepicker({
         locale: {
-          cancelLabel: "<?= _("Clear"); ?>",
+          cancelLabel: "<?= _translate("Clear"); ?>",
           format: 'DD-MMM-YYYY',
           separator: ' to ',
         },
@@ -379,7 +379,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
       },
       function(data) {
         if (data == "" || data == null || data == undefined) {
-          alert("<?php echo _("Unable to generate excel file"); ?>");
+          alert("<?php echo _translate("Unable to generate excel file"); ?>");
         } else {
           window.open('/download.php?f=' + data, '_blank');
         }
@@ -423,7 +423,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
       content += '</div></div></div></div>';
     }
     content += '<div class="col-xs-1">';
-    content += '<button class="btn btn-info mpr-close"><?php echo _("Apply"); ?></button>';
+    content += '<button class="btn btn-info mpr-close"><?php echo _translate("Apply"); ?></button>';
     content += '</div>';
     content += '</div>';
 

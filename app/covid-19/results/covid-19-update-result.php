@@ -7,7 +7,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 
-$title = _("Enter Covid-19 Result");
+$title = _translate("Enter Covid-19 Result");
 
 require_once APPLICATION_PATH . '/header.php';
 

@@ -5,7 +5,7 @@ use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 use App\Services\SystemService;
 
-$title = _("Facilities");
+$title = _translate("Facilities");
 
 require_once APPLICATION_PATH . '/header.php';
 $fQuery = "SELECT * FROM facility_type";
@@ -38,10 +38,10 @@ $state = $geolocationService->getProvinces("yes");
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><em class="fa-solid fa-hospital"></em> <?php echo _("Facilities"); ?></h1>
+    <h1><em class="fa-solid fa-hospital"></em> <?php echo _translate("Facilities"); ?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-      <li class="active"><?php echo _("Facilities"); ?></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+      <li class="active"><?php echo _translate("Facilities"); ?></li>
     </ol>
   </section>
 
@@ -53,15 +53,15 @@ $state = $geolocationService->getProvinces("yes");
           <table aria-describedby="table" class="table" id="advanceFilter" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%; display:none;">
             <tbody>
               <tr>
-                <td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+                <td><strong><?php echo _translate("Province/State"); ?>&nbsp;:</strong></td>
                 <td>
-                  <select class="form-control select2-element" id="state" onchange="getDistrictByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
-                    <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+                  <select class="form-control select2-element" id="state" onchange="getDistrictByProvince(this.value)" name="state" title="<?php echo _translate('Please select Province/State'); ?>">
+                    <?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
                   </select>
                 </td>
-                <td><strong><?php echo _("District/County"); ?> :</strong></td>
+                <td><strong><?php echo _translate("District/County"); ?> :</strong></td>
                 <td>
-                  <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>">
+                  <select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select Province/State'); ?>">
                   </select>
                 </td>
 
@@ -69,8 +69,8 @@ $state = $geolocationService->getProvinces("yes");
               <tr>
                 <td>&nbsp;<strong>Facility Type &nbsp;:</strong></td>
                 <td>
-                  <select class="form-control isRequired select2-element" id="facilityType" name="facilityType" title="<?php echo _('Please select facility type'); ?>" onchange="<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? 'getFacilityUser();' : ''; ?> getTestType(); showSignature(this.value);">
-                    <option value=""> <?php echo _("-- Select --"); ?> </option>
+                  <select class="form-control isRequired select2-element" id="facilityType" name="facilityType" title="<?php echo _translate('Please select facility type'); ?>" onchange="<?php echo ($_SESSION['instanceType'] == 'remoteuser') ? 'getFacilityUser();' : ''; ?> getTestType(); showSignature(this.value);">
+                    <option value=""> <?php echo _translate("-- Select --"); ?> </option>
                     <?php
                     foreach ($fResult as $type) {
                     ?>
@@ -82,22 +82,22 @@ $state = $geolocationService->getProvinces("yes");
                 </td>
                 <td>&nbsp;<strong>Test Type &nbsp;:</strong></td>
                 <td>
-                  <select id="testType" name="testType" onchange="return checkFacilityType();" class="form-control select2-element" placeholder="<?php echo _('Please select the Test types'); ?>">
+                  <select id="testType" name="testType" onchange="return checkFacilityType();" class="form-control select2-element" placeholder="<?php echo _translate('Please select the Test types'); ?>">
                     <option value="">-- Choose Test Type--</option>
                     <?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
-                      <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'vl') ? "selected='selected'" : ""; ?> value="vl"><?php echo _("Viral Load"); ?></option>
+                      <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'vl') ? "selected='selected'" : ""; ?> value="vl"><?php echo _translate("Viral Load"); ?></option>
                     <?php }
                     if (!empty($activeModules) && in_array('eid', $activeModules)) { ?>
-                      <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'eid') ? "selected='selected'" : ""; ?> value="eid"><?php echo _("Early Infant Diagnosis"); ?></option>
+                      <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'eid') ? "selected='selected'" : ""; ?> value="eid"><?php echo _translate("Early Infant Diagnosis"); ?></option>
                     <?php }
                     if (!empty($activeModules) && in_array('covid19', $activeModules)) { ?>
-                      <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'covid19') ? "selected='selected'" : ""; ?> value="covid19"><?php echo _("Covid-19"); ?></option>
+                      <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'covid19') ? "selected='selected'" : ""; ?> value="covid19"><?php echo _translate("Covid-19"); ?></option>
                     <?php }
                     if (!empty($activeModules) && in_array('hepatitis', $activeModules)) { ?>
-                      <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'hepatitis') ? "selected='selected'" : ""; ?> value='hepatitis'><?php echo _("Hepatitis"); ?></option>
+                      <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'hepatitis') ? "selected='selected'" : ""; ?> value='hepatitis'><?php echo _translate("Hepatitis"); ?></option>
                     <?php }
                     if (!empty($activeModules) && in_array('tb', $activeModules)) { ?>
-                      <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'tb') ? "selected='selected'" : ""; ?> value='tb'><?php echo _("TB"); ?></option>
+                      <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'tb') ? "selected='selected'" : ""; ?> value='tb'><?php echo _translate("TB"); ?></option>
                     <?php } ?>
                   </select>
                 </td>
@@ -124,28 +124,28 @@ $state = $geolocationService->getProvinces("yes");
             <div class="row" style="background:#e0e0e0;padding: 15px;">
               <div class="col-md-12">
                 <div class="col-md-4">
-                  <input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0" data-showhide="facility_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _("Facility Code"); ?></label>
+                  <input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0" data-showhide="facility_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _translate("Facility Code"); ?></label>
                 </div>
                 <div class="col-md-4">
-                  <input type="checkbox" onclick="fnShowHide(this.value);" value="1" id="iCol1" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol1"><?php echo _("Facility Name"); ?></label>
+                  <input type="checkbox" onclick="fnShowHide(this.value);" value="1" id="iCol1" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol1"><?php echo _translate("Facility Name"); ?></label>
                 </div>
                 <div class="col-md-4">
-                  <input type="checkbox" onclick="fnShowHide(this.value);" value="2" id="iCol2" data-showhide="facility_type" class="showhideCheckBox" /> <label for="iCol2"><?php echo _("Facility Type"); ?></label>
+                  <input type="checkbox" onclick="fnShowHide(this.value);" value="2" id="iCol2" data-showhide="facility_type" class="showhideCheckBox" /> <label for="iCol2"><?php echo _translate("Facility Type"); ?></label>
                 </div>
                 <div class="col-md-4">
-                  <input type="checkbox" onclick="fnShowHide(this.value);" value="3" id="iCol3" data-showhide="status" class="showhideCheckBox" /> <label for="iCol3"><?php echo _("Status"); ?></label> <br>
+                  <input type="checkbox" onclick="fnShowHide(this.value);" value="3" id="iCol3" data-showhide="status" class="showhideCheckBox" /> <label for="iCol3"><?php echo _translate("Status"); ?></label> <br>
                 </div>
               </div>
             </div>
           </span>
           <div class="box-header with-border">
             <?php if (isset($_SESSION['privileges']) && in_array("addFacility.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?>
-              <a href="upload-facilities.php" class="btn btn-primary pull-right" > <em class="fa-solid fa-plus"></em> <?php echo _("Bulk Upload"); ?></a>
-              <a href="addFacility.php" class="btn btn-primary pull-right" style="margin-right: 10px;"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Facility"); ?></a>
-              <a href="mapTestType.php?type=testing-labs" class="btn btn-primary pull-right" style="margin-right: 10px;"> <em class="fa-solid fa-plus"></em> <?php echo _("Manage Testing Lab"); ?></a>
-              <a href="mapTestType.php?type=health-facilities" class="btn btn-primary pull-right" style="margin-right: 10px;"> <em class="fa-solid fa-plus"></em> <?php echo _("Manage Health Facilities"); ?></a>
+              <a href="upload-facilities.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Bulk Upload"); ?></a>
+              <a href="addFacility.php" class="btn btn-primary pull-right" style="margin-right: 10px;"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Facility"); ?></a>
+              <a href="mapTestType.php?type=testing-labs" class="btn btn-primary pull-right" style="margin-right: 10px;"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Manage Testing Lab"); ?></a>
+              <a href="mapTestType.php?type=health-facilities" class="btn btn-primary pull-right" style="margin-right: 10px;"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Manage Health Facilities"); ?></a>
             <?php } ?>
-            &nbsp;<button id="filter" class="btn btn-primary btn-sm pull-right" style="margin-right:5px;line-height: 2;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?php echo _("Show Advanced Search Options"); ?></span></button>
+            &nbsp;<button id="filter" class="btn btn-primary btn-sm pull-right" style="margin-right:5px;line-height: 2;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?php echo _translate("Show Advanced Search Options"); ?></span></button>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
           </div>
           <!-- /.box-header -->
@@ -154,20 +154,20 @@ $state = $geolocationService->getProvinces("yes");
             <table aria-describedby="table" id="facilityDataTable" class="table table-bordered table-striped" aria-hidden="true">
               <thead>
                 <tr>
-                  <th><?php echo _("Facility Code"); ?></th>
-                  <th scope="row"><?php echo _("Facility Name"); ?></th>
-                  <th><?php echo _("Facility Type"); ?></th>
-                  <th scope="row"><?php echo _("Status"); ?></th>
-                  <th><?php echo _("Province"); ?></th>
-                  <th><?php echo _("District"); ?></th>
+                  <th><?php echo _translate("Facility Code"); ?></th>
+                  <th scope="row"><?php echo _translate("Facility Name"); ?></th>
+                  <th><?php echo _translate("Facility Type"); ?></th>
+                  <th scope="row"><?php echo _translate("Status"); ?></th>
+                  <th><?php echo _translate("Province"); ?></th>
+                  <th><?php echo _translate("District"); ?></th>
                   <?php if (isset($_SESSION['privileges']) && in_array("editFacility.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?>
-                    <th><?php echo _("Action"); ?></th>
+                    <th><?php echo _translate("Action"); ?></th>
                   <?php } ?>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+                  <td colspan="6" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
                 </tr>
               </tbody>
 
@@ -191,10 +191,10 @@ $state = $geolocationService->getProvinces("yes");
     $.blockUI();
 
     $("#state").select2({
-      placeholder: "<?php echo _("Select Province"); ?>"
+      placeholder: "<?php echo _translate("Select Province"); ?>"
     });
     $("#district").select2({
-      placeholder: "<?php echo _("Select District"); ?>"
+      placeholder: "<?php echo _translate("Select District"); ?>"
     });
     oTable = $('#facilityDataTable').dataTable({
       "oLanguage": {
@@ -296,7 +296,7 @@ $state = $geolocationService->getProvinces("yes");
       function(data) {
         if (data == "" || data == null || data == undefined) {
           $.unblockUI();
-          alert("<?php echo _("Unable to generate excel"); ?>");
+          alert("<?php echo _translate("Unable to generate excel"); ?>");
         } else {
           $.unblockUI();
           window.open('/download.php?f=' + data, '_blank');

@@ -15,10 +15,10 @@ $usersService = ContainerRegistry::get(UsersService::class);
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><em class="fa-solid fa-gears"></em> <?php echo _("Test Type Configuration"); ?></h1>
+    <h1><em class="fa-solid fa-gears"></em> <?php echo _translate("Test Type Configuration"); ?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-      <li class="active"><?php echo _("Test Type Configuration"); ?></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+      <li class="active"><?php echo _translate("Test Type Configuration"); ?></li>
     </ol>
   </section>
 
@@ -29,7 +29,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
         <div class="box">
           <div class="box-header with-border">
             <?php if ($usersService->isAllowed("/generic-tests/configuration/add-test-type.php")) { ?>
-              <a href="add-test-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Test Type"); ?></a>
+              <a href="add-test-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Test Type"); ?></a>
             <?php } ?>
           </div>
           <!-- /.box-header -->
@@ -37,19 +37,19 @@ $usersService = ContainerRegistry::get(UsersService::class);
             <table aria-describedby="table" id="testTypeDataTable" class="table table-bordered table-striped" aria-hidden="true">
               <thead>
                 <tr>
-                  <th><?php echo _("Standard Name"); ?></th>
-                  <th><?php echo _("Generic Name"); ?></th>
-                  <th><?php echo _("Short Code"); ?></th>
-                  <th><?php echo _("LOINC Code"); ?></th>
-                  <th><?php echo _("Status"); ?></th>
+                  <th><?php echo _translate("Standard Name"); ?></th>
+                  <th><?php echo _translate("Generic Name"); ?></th>
+                  <th><?php echo _translate("Short Code"); ?></th>
+                  <th><?php echo _translate("LOINC Code"); ?></th>
+                  <th><?php echo _translate("Status"); ?></th>
                   <?php if ($usersService->isAllowed("/generic-tests/configuration/edit-test-type.php")) { ?>
-                    <th><?php echo _("Action"); ?></th>
+                    <th><?php echo _translate("Action"); ?></th>
                   <?php } ?>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+                  <td colspan="6" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
                 </tr>
               </tbody>
             </table>

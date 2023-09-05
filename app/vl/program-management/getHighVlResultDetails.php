@@ -242,13 +242,13 @@ foreach ($rResult as $aRow) {
     if ($_SESSION['instanceType'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];
     }
-    if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes'){
+    if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
         $key = base64_decode('zACCxM1c1AfRevJ/Zpk+PKXpO+ebWjNSgCRa5/Uheh4=');
-        $aRow['patient_art_no'] = $general->crypto('decrypt' ,$aRow['patient_art_no'], $key);
-        $patientFname = $general->crypto('decrypt' ,$patientFname, $key);
-        $patientMname = $general->crypto('decrypt' ,$patientMname, $key);
-        $patientLname = $general->crypto('decrypt' ,$patientLname, $key);
-     }
+        $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
+        $patientFname = $general->crypto('decrypt', $patientFname, $key);
+        $patientMname = $general->crypto('decrypt', $patientMname, $key);
+        $patientLname = $general->crypto('decrypt', $patientLname, $key);
+    }
     $row[] = ($aRow['facility_name']);
     $row[] = $aRow['patient_art_no'];
     $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
@@ -258,9 +258,9 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['labName'];
     $row[] = $aRow['result'];
     $row[] = '<select class="form-control" name="status" id=' . $aRow['vl_sample_id'] . ' title="Please select status" onchange="updateStatus(this.id,this.value)">
-                            <option value=""> ' . _("-- Select --") . ' </option>
-                            <option value="yes" ' . ($aRow['contact_complete_status'] == "yes" ? "selected=selected" : "") . '>' . _("Yes") . '</option>
-                            <option value="no" ' . ($aRow['contact_complete_status'] == "no" ? "selected=selected" : "") . '>' . _("No") . '</option>
+                            <option value=""> ' . _translate("-- Select --") . ' </option>
+                            <option value="yes" ' . ($aRow['contact_complete_status'] == "yes" ? "selected=selected" : "") . '>' . _translate("Yes") . '</option>
+                            <option value="no" ' . ($aRow['contact_complete_status'] == "no" ? "selected=selected" : "") . '>' . _translate("No") . '</option>
                         </select>';
     $output['aaData'][] = $row;
 }

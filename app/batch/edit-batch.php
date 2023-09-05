@@ -4,7 +4,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
-$title = _($title . " | Edit Batch");
+$title = _translate($title . " | Edit Batch");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -81,11 +81,11 @@ $bQuery = "(SELECT vl.sample_code,vl.sample_batch_id,
                     AND vl.sample_code NOT LIKE ''
                     AND vl.sample_batch_id = ?";
 
-					if (isset($_GET['type']) && $_GET['type'] == 'generic-tests'){
-						$bQuery .= " AND vl.test_type = ?";
-					}
+if (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
+	$bQuery .= " AND vl.test_type = ?";
+}
 
-                    $bQuery .= ") UNION
+$bQuery .= ") UNION
 
                     (SELECT vl.sample_code,vl.sample_batch_id,
                         vl.$refPrimaryColumn,vl.facility_id,
@@ -142,9 +142,9 @@ $testPlatformResult = $general->getTestingPlatforms($_GET['type']);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><?php echo _("Edit Batch"); ?></h1>
+		<h1><?php echo _translate("Edit Batch"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
 			<li class="active">Batch</li>
 		</ol>
 	</section>
@@ -153,37 +153,37 @@ $testPlatformResult = $general->getTestingPlatforms($_GET['type']);
 	<section class="content">
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _translate("indicates required field"); ?> &nbsp;</div>
 			</div>
 			<table aria-describedby="table" class="table" aria-hidden="true" style="margin-top:20px;width: 100%;">
 				<tr>
-					<th style="width: 20%;" scope="col"><?php echo _("Facility"); ?></th>
+					<th style="width: 20%;" scope="col"><?php echo _translate("Facility"); ?></th>
 					<td style="width: 30%;">
-						<select style="width: 100%;" class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple">
+						<select style="width: 100%;" class="form-control" id="facilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
 							<?= $facilitiesDropdown; ?>
 						</select>
 					</td>
-					<th style="width: 20%;" scope="col"><?php echo _("Sample Collection Date"); ?></th>
+					<th style="width: 20%;" scope="col"><?php echo _translate("Sample Collection Date"); ?></th>
 					<td style="width: 30%;">
-						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:100%;background:#fff;" />
+						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:100%;background:#fff;" />
 					</td>
 				</tr>
 				<tr>
 					<th style="width: 20%;" scope="col">Date Sample Receieved at Lab</th>
 					<td style="width: 30%;">
-						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="<?php echo _('Select Received at Lab Date'); ?>" readonly style="width:100%;background:#fff;" />
+						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="<?php echo _translate('Select Received at Lab Date'); ?>" readonly style="width:100%;background:#fff;" />
 					</td>
-					<th style="width: 20%;" scope="col"><?php echo _("Positions"); ?></th>
+					<th style="width: 20%;" scope="col"><?php echo _translate("Positions"); ?></th>
 					<td style="width: 30%;">
-						<select id="positions-type" class="form-control" title="<?php echo _('Please select the postion'); ?>">
-							<option value="numeric" <?php echo ($batchInfo[0]['position_type'] == "numeric") ? 'selected="selected"' : ''; ?>><?php echo _("Numeric"); ?></option>
-							<option value="alpha-numeric" <?php echo ($batchInfo[0]['position_type'] == "alpha-numeric") ? 'selected="selected"' : ''; ?>><?php echo _("Alpha Numeric"); ?></option>
+						<select id="positions-type" class="form-control" title="<?php echo _translate('Please select the postion'); ?>">
+							<option value="numeric" <?php echo ($batchInfo[0]['position_type'] == "numeric") ? 'selected="selected"' : ''; ?>><?php echo _translate("Numeric"); ?></option>
+							<option value="alpha-numeric" <?php echo ($batchInfo[0]['position_type'] == "alpha-numeric") ? 'selected="selected"' : ''; ?>><?php echo _translate("Alpha Numeric"); ?></option>
 						</select>
 					</td>
 				</tr>
 				<tr>
-					<td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _('Filter Samples'); ?>" class="btn btn-success btn-sm">
-						&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Reset Filters"); ?></span></button>
+					<td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _translate('Filter Samples'); ?>" class="btn btn-success btn-sm">
+						&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _translate("Reset Filters"); ?></span></button>
 					</td>
 				</tr>
 			</table>
@@ -195,9 +195,9 @@ $testPlatformResult = $general->getTestingPlatforms($_GET['type']);
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="batchCode" class="col-lg-4 control-label"><?php echo _("Batch Code"); ?> <span class="mandatory">*</span></label>
+									<label for="batchCode" class="col-lg-4 control-label"><?php echo _translate("Batch Code"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<input type="text" class="form-control isRequired" id="batchCode" name="batchCode" placeholder="<?php echo _('Batch Code'); ?>" title="<?php echo _('Please enter batch code'); ?>" value="<?php echo $batchInfo[0]['batch_code']; ?>" onblur="checkNameValidation('batch_details','batch_code',this,'<?php echo "batch_id##" . $id; ?>','<?php echo _("This batch code already exists.Try another code"); ?>',null)" />
+										<input type="text" class="form-control isRequired" id="batchCode" name="batchCode" placeholder="<?php echo _translate('Batch Code'); ?>" title="<?php echo _translate('Please enter batch code'); ?>" value="<?php echo $batchInfo[0]['batch_code']; ?>" onblur="checkNameValidation('batch_details','batch_code',this,'<?php echo "batch_id##" . $id; ?>','<?php echo _translate("This batch code already exists.Try another code"); ?>',null)" />
 									</div>
 								</div>
 							</div>
@@ -205,10 +205,10 @@ $testPlatformResult = $general->getTestingPlatforms($_GET['type']);
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="machine" class="col-lg-4 control-label"><?php echo _("Testing Platform"); ?> <span class="mandatory">*</span></label>
+									<label for="machine" class="col-lg-4 control-label"><?php echo _translate("Testing Platform"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<select name="machine" id="machine" class="form-control isRequired" title="<?php echo _('Please choose machine'); ?>">
-											<option value=""> <?php echo _("-- Select --"); ?> </option>
+										<select name="machine" id="machine" class="form-control isRequired" title="<?php echo _translate('Please choose machine'); ?>">
+											<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 											<?php foreach ($testPlatformResult as $machine) { ?>
 												<option value="<?= $machine['config_id'] ?>" <?= ($batchInfo[0]['machine'] == $machine['config_id']) ? 'selected' : '' ?> data-no-of-samples="<?= $machine['max_no_of_samples_in_a_batch'] ?>"><?= $machine['machine_name'] ?></option>
 											<?php } ?>
@@ -250,8 +250,8 @@ $testPlatformResult = $general->getTestingPlatforms($_GET['type']);
 						<input type="hidden" name="batchId" id="batchId" value="<?php echo $batchInfo[0]['batch_id']; ?>" />
 						<input type="hidden" name="selectedSample" id="selectedSample" />
 						<input type="hidden" name="positions" id="positions" value="<?php echo $batchInfo[0]['position_type']; ?>" />
-						<a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
-						<a href="batches.php?type=<?php echo $_GET['type']; ?>" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
+						<a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
+						<a href="batches.php?type=<?php echo $_GET['type']; ?>" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
 					</div>
 					<!-- /.box-footer -->
 				</form>
@@ -282,12 +282,12 @@ $testPlatformResult = $general->getTestingPlatforms($_GET['type']);
 		var selected = $("#machine").find('option:selected');
 		noOfSamples = selected.data('no-of-samples');
 		if (noOfSamples < selVal.length) {
-			alert("<?= _("You have selected more than allowed number of samples"); ?>");
+			alert("<?= _translate("You have selected more than allowed number of samples"); ?>");
 			return false;
 		}
 
 		if (selVal == "") {
-			alert("<?= _("Please select one or more samples"); ?>");
+			alert("<?= _translate("Please select one or more samples"); ?>");
 			return false;
 		}
 
@@ -304,8 +304,8 @@ $testPlatformResult = $general->getTestingPlatforms($_GET['type']);
 	$(document).ready(function() {
 		$('#search').multiselect({
 			search: {
-				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
+				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
 			},
 			fireSearch: function(value) {
 				return value.length > 2;
@@ -313,29 +313,29 @@ $testPlatformResult = $general->getTestingPlatforms($_GET['type']);
 			afterMoveToRight: function($left, $right, $options) {
 				const count = $right.find('option').length;
 				if (count > 0) {
-					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+					$('#alertText').html('<?php echo _translate("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _translate("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _translate("samples per batch"); ?>');
 				} else {
-					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+					$('#alertText').html('<?php echo _translate("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _translate("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _translate("samples per batch"); ?>');
 				}
 			},
 			afterMoveToLeft: function($left, $right, $options) {
 				const count = $right.find('option').length;
 				if (count > 0) {
-					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+					$('#alertText').html('<?php echo _translate("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _translate("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _translate("samples per batch"); ?>');
 				} else {
-					$('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+					$('#alertText').html('<?php echo _translate("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _translate("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _translate("samples per batch"); ?>');
 				}
 			}
 		});
 		$("#facilityName").select2({
-			placeholder: "<?php echo _('Select Facilities'); ?>"
+			placeholder: "<?php echo _translate('Select Facilities'); ?>"
 		});
 		setTimeout(function() {
 			$("#search_rightSelected").trigger('click');
 		}, 10);
 		$('#sampleCollectionDate').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _("Clear"); ?>",
+					cancelLabel: "<?= _translate("Clear"); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},

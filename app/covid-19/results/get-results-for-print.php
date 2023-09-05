@@ -272,7 +272,7 @@ foreach ($rResult as $aRow) {
     } else {
         $row[] = '<input type="checkbox" name="chkPrinted[]" class="checkPrintedRows" id="chkPrinted' . $aRow['covid19_id'] . '"  value="' . $aRow['covid19_id'] . '" onclick="checkedPrintedRow(this);"  />';
     }
-    $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Print") . '" onclick="resultPDF(' . $aRow['covid19_id'] . ')"><em class="fa-solid fa-print"></em> ' . _("Print") . '</a>';
+    $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Print") . '" onclick="resultPDF(' . $aRow['covid19_id'] . ')"><em class="fa-solid fa-print"></em> ' . _translate("Print") . '</a>';
 
     $patientFname = $general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']);
     $patientLname = $general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']);

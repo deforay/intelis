@@ -1,6 +1,6 @@
 <?php
 
-$title = _("Enter Covid-19 Result");
+$title = _translate("Enter Covid-19 Result");
 
 require_once APPLICATION_PATH . '/header.php';
 ?>
@@ -56,10 +56,10 @@ require_once APPLICATION_PATH . '/header.php';
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><em class="fa-solid fa-virus-covid"></em> <?php echo _("Covid-19 QC Data"); ?></h1>
+        <h1><em class="fa-solid fa-virus-covid"></em> <?php echo _translate("Covid-19 QC Data"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-            <li class="active"><?php echo _("Covid-19 QC Data"); ?></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+            <li class="active"><?php echo _translate("Covid-19 QC Data"); ?></li>
         </ol>
     </section>
 
@@ -70,7 +70,7 @@ require_once APPLICATION_PATH . '/header.php';
                 <div class="box">
                     <div class="box-header with-border">
                         <?php if (isset($_SESSION['privileges']) && in_array("add-covid-19-qc-data.php", $_SESSION['privileges'])) { ?>
-                            <a href="add-covid-19-qc-data.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add New Covid-19 QC Data"); ?></a>
+                            <a href="add-covid-19-qc-data.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add New Covid-19 QC Data"); ?></a>
                         <?php } ?>
                     </div>
                     <!-- /.box-header -->
@@ -78,22 +78,22 @@ require_once APPLICATION_PATH . '/header.php';
                         <table aria-describedby="table" id="qcTestKitsDataTable" class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
                                 <tr>
-                                    <th><?php echo _("QC Code"); ?></th>
-                                    <th><?php echo _("Test Kit"); ?></th>
-                                    <th><?php echo _("Lot Number"); ?></th>
-                                    <th><?php echo _("Expiry Date"); ?></th>
-                                    <th scope="row"><?php echo _("Testing Lab"); ?></th>
-                                    <th><?php echo _("Tester Name"); ?></th>
-                                    <th><?php echo _("Tested On"); ?></th>
-                                    <th><?php echo _("Last Modified On"); ?></th>
+                                    <th><?php echo _translate("QC Code"); ?></th>
+                                    <th><?php echo _translate("Test Kit"); ?></th>
+                                    <th><?php echo _translate("Lot Number"); ?></th>
+                                    <th><?php echo _translate("Expiry Date"); ?></th>
+                                    <th scope="row"><?php echo _translate("Testing Lab"); ?></th>
+                                    <th><?php echo _translate("Tester Name"); ?></th>
+                                    <th><?php echo _translate("Tested On"); ?></th>
+                                    <th><?php echo _translate("Last Modified On"); ?></th>
                                     <?php if (isset($_SESSION['privileges']) && in_array("edit-covid-19-qc-data.php", $_SESSION['privileges'])) { ?>
-                                        <th><?php echo _("Action"); ?></th>
+                                        <th><?php echo _translate("Action"); ?></th>
                                     <?php } ?>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="9" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+                                    <td colspan="9" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
                                 </tr>
                             </tbody>
 

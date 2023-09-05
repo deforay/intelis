@@ -32,12 +32,12 @@ if (!empty($keyFromGlobalConfig)) {
     );
     $data = explode('&&&', urldecode($decryption));
 
-    $invalidRequest = _("INVALID REQUEST");
+    $invalidRequest = _translate("INVALID REQUEST");
 
     $uniqueId = $data[0] ?? null;
 }
 
-$invalidRequest = _("INVALID REQUEST");
+$invalidRequest = _translate("INVALID REQUEST");
 if (empty($uniqueId)) {
     die("<br><br><br><br><br><br><h1 style='text-align:center;font-family:arial;font-size:1.3em;'>$invalidRequest</h1>");
 }

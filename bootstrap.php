@@ -16,6 +16,9 @@ use App\Registries\ContainerRegistry;
 // Dependency Injection
 require_once(APPLICATION_PATH . '/system/di.php');
 
+// Global functions
+require_once(__DIR__ . '/app/system/functions.php');
+
 // Just putting $db and SYSTEM_CONFIG here in case there are
 // some old scripts that are still depending on these.
 $db = ContainerRegistry::get('db');

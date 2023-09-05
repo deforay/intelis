@@ -4,7 +4,7 @@ use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
-$title = _("Edit Configuration");
+$title = _translate("Edit Configuration");
 
 require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
 
@@ -23,10 +23,10 @@ $fResult = $facilitiesService->getAllFacilities(2);
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><em class="fa-sharp fa-solid fa-gears"></em> <?php echo _("Edit System Configuration"); ?></h1>
+    <h1><em class="fa-sharp fa-solid fa-gears"></em> <?php echo _translate("Edit System Configuration"); ?></h1>
     <ol class="breadcrumb">
-      <li><a href="index.php"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-      <li class="active"><?php echo _("Manage System Config"); ?></li>
+      <li><a href="index.php"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+      <li class="active"><?php echo _translate("Manage System Config"); ?></li>
     </ol>
   </section>
 
@@ -44,16 +44,16 @@ $fResult = $facilitiesService->getAllFacilities(2);
           <div class="box-body">
             <div class="panel panel-default">
               <div class="panel-heading">
-                <h3 class="panel-title"><?php echo _("Instance Settings"); ?></h3>
+                <h3 class="panel-title"><?php echo _translate("Instance Settings"); ?></h3>
               </div>
               <div class="panel-body">
                 <div class="row">
                   <div class="col-md-7">
                     <div class="form-group">
-                      <label for="timezone" class="col-lg-4 control-label"><?php echo _("Timezone"); ?> <span class="mandatory">*</span></label>
+                      <label for="timezone" class="col-lg-4 control-label"><?php echo _translate("Timezone"); ?> <span class="mandatory">*</span></label>
                       <div class="col-lg-8">
-                        <select class="form-control select2 isRequired" id="default_time_zone" name="default_time_zone" placeholder="<?php echo _('Timezone'); ?>" title="<?php echo _('Please choose Timezone'); ?>">
-                          <option value=""><?= _("-- Select --"); ?></option>
+                        <select class="form-control select2 isRequired" id="default_time_zone" name="default_time_zone" placeholder="<?php echo _translate('Timezone'); ?>" title="<?php echo _translate('Please choose Timezone'); ?>">
+                          <option value=""><?= _translate("-- Select --"); ?></option>
                           <?php
                           $timezone_identifiers = DateTimeZone::listIdentifiers();
 
@@ -70,23 +70,23 @@ $fResult = $facilitiesService->getAllFacilities(2);
                   </div>
                   <div class="col-md-7">
                     <div class="form-group">
-                      <label for="sc_user_type" class="col-lg-4 control-label"><?php echo _("Instance Type"); ?> <span class="mandatory">*</span></label>
+                      <label for="sc_user_type" class="col-lg-4 control-label"><?php echo _translate("Instance Type"); ?> <span class="mandatory">*</span></label>
                       <div class="col-lg-8">
-                        <select class="form-control select2" id="sc_user_type" name="sc_user_type" placeholder="<?php echo _('Instance Type'); ?>" title="<?php echo _('Please choose instance type'); ?>" onchange="enableLab();">
-                          <option value=""><?php echo _("-- Select --"); ?></option>
-                          <option value="standalone" <?php echo ('standalone' == $sarr['sc_user_type']) ? "selected='selected'" : "" ?>><?php echo _("Standalone"); ?></option>
-                          <option value="vluser" <?php echo ('vluser' == $sarr['sc_user_type']) ? "selected='selected'" : "" ?>><?php echo _("Lab Instance"); ?></option>
-                          <option value="remoteuser" <?php echo ('remoteuser' == $sarr['sc_user_type']) ? "selected='selected'" : "" ?>><?php echo _("Remote Instance"); ?></option>
+                        <select class="form-control select2" id="sc_user_type" name="sc_user_type" placeholder="<?php echo _translate('Instance Type'); ?>" title="<?php echo _translate('Please choose instance type'); ?>" onchange="enableLab();">
+                          <option value=""><?php echo _translate("-- Select --"); ?></option>
+                          <option value="standalone" <?php echo ('standalone' == $sarr['sc_user_type']) ? "selected='selected'" : "" ?>><?php echo _translate("Standalone"); ?></option>
+                          <option value="vluser" <?php echo ('vluser' == $sarr['sc_user_type']) ? "selected='selected'" : "" ?>><?php echo _translate("Lab Instance"); ?></option>
+                          <option value="remoteuser" <?php echo ('remoteuser' == $sarr['sc_user_type']) ? "selected='selected'" : "" ?>><?php echo _translate("Remote Instance"); ?></option>
                         </select>
                       </div>
                     </div>
                   </div>
                   <div class="col-md-7 labName" style="<?php echo ($sarr['sc_user_type'] == 'vluser') ? 'display:show' : 'display:none'; ?>">
                     <div class="form-group">
-                      <label for="sc_testing_lab_id" class="col-lg-4 control-label"><?php echo _("Lab Name"); ?></label>
+                      <label for="sc_testing_lab_id" class="col-lg-4 control-label"><?php echo _translate("Lab Name"); ?></label>
                       <div class="col-lg-8">
-                        <select class="form-control select2" name="sc_testing_lab_id" id="sc_testing_lab_id" style="width:100%;" title="<?php echo _('Please select the lab name'); ?>">
-                          <option value=""><?php echo _("-- Select --"); ?></option>
+                        <select class="form-control select2" name="sc_testing_lab_id" id="sc_testing_lab_id" style="width:100%;" title="<?php echo _translate('Please select the lab name'); ?>">
+                          <option value=""><?php echo _translate("-- Select --"); ?></option>
                           <?php foreach ($fResult as $labName) { ?>
                             <option value="<?php echo $labName['facility_id']; ?>" <?php echo ($labName['facility_id'] == $sarr['sc_testing_lab_id']) ? "selected='selected'" : "" ?>><?php echo $labName['facility_name']; ?></option>
                           <?php } ?>
@@ -100,7 +100,7 @@ $fResult = $facilitiesService->getAllFacilities(2);
 
             <div class="panel panel-default">
               <div class="panel-heading">
-                <h3 class="panel-title"><?php echo _("SMTP Settings"); ?></h3>
+                <h3 class="panel-title"><?php echo _translate("SMTP Settings"); ?></h3>
               </div>
               <div class="panel-body">
                 <div class="row">
@@ -128,8 +128,8 @@ $fResult = $facilitiesService->getAllFacilities(2);
 
           </div>
           <div class="box-footer">
-            <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
-            <a href="index.php" class="btn btn-default"> <?php echo _("Reload"); ?></a>
+            <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
+            <a href="index.php" class="btn btn-default"> <?php echo _translate("Reload"); ?></a>
           </div>
         </form>
       </div>

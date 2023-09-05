@@ -19,14 +19,14 @@ if (isset($_POST['testTypeId'])) {
     $testMethodList = $general->getTestMethod($testTypeId);
     if (!empty($testMethodList)) { ?>
         <option value="">
-            <?php echo _("-- Select --"); ?>
+            <?php echo _translate("-- Select --"); ?>
         </option>
         <?php foreach ($testMethodList as $method) { ?>
             <option value="<?php echo $method['test_method_id']; ?>" <?php echo (!empty($_POST['testMethodId']) && $_POST['testMethodId'] == $method['test_method_id']) ? "selected='selected'" : ""; ?>><?php echo $method['test_method_name']; ?></option>
         <?php }
     } else { ?>
         <option value="">
-            <?php echo _("-- Select --"); ?>
+            <?php echo _translate("-- Select --"); ?>
         </option>
-    <?php }
+<?php }
 }

@@ -304,7 +304,7 @@ $reasonForChangeArr = explode('##', $genericResultInfo['reason_for_test_result_c
 $reasonForChange = $reasonForChangeArr[1];
 $mandatoryClass = "";
 if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') {
-     $mandatoryClass = "isRequired";
+	$mandatoryClass = "isRequired";
 }
 ?><!-- Content Wrapper. Contains page content -->
 <style>
@@ -534,21 +534,21 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 							<div class="box-body">
 								<div class="row">
 									<div class="col-md-6">
-									<label class="col-lg-5" for="artNo">EPID Number <?php if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?><span class="mandatory">*</span><?php } ?></label>
-                                                  <div class="col-lg-7">
-                                                       <input type="text" name="artNo" id="artNo" class="form-control <?= $mandatoryClass; ?>" placeholder="Enter EPID Number" title="Enter EPID Number" value="<?= htmlspecialchars($genericResultInfo['patient_id']); ?>" />
-                                                  </div>
-										
+										<label class="col-lg-5" for="artNo">EPID Number <?php if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?><span class="mandatory">*</span><?php } ?></label>
+										<div class="col-lg-7">
+											<input type="text" name="artNo" id="artNo" class="form-control <?= $mandatoryClass; ?>" placeholder="Enter EPID Number" title="Enter EPID Number" value="<?= htmlspecialchars($genericResultInfo['patient_id']); ?>" />
+										</div>
+
 									</div>
 									<div class="col-md-6">
-                                            <label class="col-lg-5" for="artNo">Laboratory Number <?php if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?><span class="mandatory">*</span><?php } ?></label>
-                                            <div class="col-lg-7">
-                                                <input type="text" name="laboratoryNumber" id="laboratoryNumber" class="form-control <?= $mandatoryClass; ?>" placeholder="Enter Laboratory Number" title="Enter Laboratory Number" value="<?= $genericResultInfo['laboratory_number']; ?>" />
-                                            </div>
-                                    </div>
+										<label class="col-lg-5" for="artNo">Laboratory Number <?php if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?><span class="mandatory">*</span><?php } ?></label>
+										<div class="col-lg-7">
+											<input type="text" name="laboratoryNumber" id="laboratoryNumber" class="form-control <?= $mandatoryClass; ?>" placeholder="Enter Laboratory Number" title="Enter Laboratory Number" value="<?= $genericResultInfo['laboratory_number']; ?>" />
+										</div>
+									</div>
 								</div>
 								<div class="row">
-								<div class="col-md-6">
+									<div class="col-md-6">
 										<label class="col-lg-5" for="dob">Date of Birth </label>
 										<div class="col-lg-7">
 											<input type="text" name="dob" id="dob" class="form-control date" placeholder="Enter DOB" title="Enter dob" value="<?= htmlspecialchars($genericResultInfo['patient_dob']); ?>" onchange="getAge();" />
@@ -560,10 +560,10 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 											<input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="3" placeholder="Age in Years" title="Enter age in years" value="<?= htmlspecialchars($genericResultInfo['patient_age_in_years']); ?>" />
 										</div>
 									</div>
-									
+
 								</div>
 								<div class="row">
-								<div class="col-md-6">
+									<div class="col-md-6">
 										<label class="col-lg-5" for="ageInMonths">If Age
 											< 1, Age in Months </label>
 												<div class="col-lg-7">
@@ -576,10 +576,10 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 											<input type="text" name="patientFirstName" id="patientFirstName" class="form-control isRequired" placeholder="Enter Patient Name" title="Enter patient name" value="<?php echo $patientFullName; ?>" />
 										</div>
 									</div>
-									
+
 								</div>
 								<div class="row">
-								<div class="col-md-6">
+									<div class="col-md-6">
 										<label class="col-lg-5" for="gender">Gender</label>
 										<div class="col-lg-7">
 											<label class="radio-inline" style="margin-left:0px;">
@@ -609,10 +609,10 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 											</label>
 										</div>
 									</div>
-									
+
 								</div>
 								<div class="row ">
-								<div class="col-md-6">
+									<div class="col-md-6">
 										<label class="col-lg-5" for="patientPhoneNumber">Phone Number</label>
 										<div class="col-lg-7">
 											<input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control forceNumeric" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" value="<?= htmlspecialchars($genericResultInfo['patient_mobile_number']); ?>" />
@@ -631,7 +631,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 											</label>
 										</div>
 									</div>
-									
+
 								</div>
 								<div class="row">
 									<div class="col-md-6 femaleSection" style="display:<?php echo ($genericResultInfo['patient_gender'] == 'female' || $genericResultInfo['patient_gender'] == '' || $genericResultInfo['patient_gender'] == null) ? "" : "none" ?>" ;>
@@ -861,7 +861,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 														<?php
 														if (!empty($genericTestInfo)) {
 															$kitShow = false;
-															
+
 															foreach ($genericTestInfo as $indexKey => $rows) { ?>
 																<tr>
 																	<td class="text-center">
@@ -900,7 +900,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 																		<input type="text" id="testResult<?= ($indexKey + 1); ?>" value="<?php echo $rows['result']; ?>" name="testResult[]" class="form-control result-focus" value="<?php echo $genericResultInfo['result']; ?>" placeholder="Enter result" title="Please enter final results">
 																	</td>
 																	<td class="testResultUnit">
-																		<select class="form-control resultUnit" id="testResultUnit<?= ($indexKey + 1); ?>" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+																		<select class="form-control resultUnit" id="testResultUnit<?= ($indexKey + 1); ?>" name="testResultUnit[]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>'>
 																			<option value="">--Select--</option>
 																			<?php
 																			foreach ($testResultUnits as $unit) {
@@ -945,7 +945,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 																	<input type="text" id="testResult<?= ($indexKey + 1); ?>" name="testResult[]" class="form-control result-focus" placeholder="Enter result" title="Please enter final results">
 																</td>
 																<td class="testResultUnit">
-																	<select class="form-control" id="testResultUnit<?= ($indexKey + 1); ?>" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+																	<select class="form-control" id="testResultUnit<?= ($indexKey + 1); ?>" name="testResultUnit[]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>'>
 																		<option value="">--Select--</option>
 																		<?php
 																		foreach ($testResultUnits as $unit) {
@@ -1023,7 +1023,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 												<label class="col-lg-5 control-label" for="approvedOn">Approved On
 													<span class="mandatory review-approve-span" style="display: <?php echo ($genericResultInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
 												<div class="col-lg-7">
-													<input type="text" value="<?php echo $genericResultInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOn" name="approvedOn" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
+													<input type="text" value="<?php echo $genericResultInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOn" name="approvedOn" placeholder="<?= _translate("Please enter date"); ?>" style="width:100%;" />
 												</div>
 											</div>
 											<div class="col-md-6">
@@ -1184,16 +1184,16 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 
 		autoFillFocalDetails();
 		$("#specimenType").select2({
-               width: '100%',
-               placeholder: "<?php echo _("Select Specimen Type"); ?>"
-          });
+			width: '100%',
+			placeholder: "<?php echo _translate("Select Specimen Type"); ?>"
+		});
 		$('#fName').select2({
 			width: '100%',
 			placeholder: "Select Clinic/Health Center"
 		});
 		$("#testType").select2({
 			width: '100%',
-			placeholder: "<?php echo _("Select Test Type"); ?>"
+			placeholder: "<?php echo _translate("Select Test Type"); ?>"
 		});
 		$('#labId').select2({
 			width: '100%',
@@ -1400,7 +1400,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 			date2 = new Date(sampleReceivedAtHubOn);
 
 			if (date2.getTime() < date1.getTime()) {
-				alert("<?= _("Sample Received at Hub Date cannot be earlier than Sample Collection Date"); ?>");
+				alert("<?= _translate("Sample Received at Hub Date cannot be earlier than Sample Collection Date"); ?>");
 				$("#sampleReceivedAtHubOn").val("");
 			}
 		}
@@ -1415,7 +1415,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 			date2 = new Date(sampleReceivedDate);
 
 			if (date2.getTime() < date1.getTime()) {
-				alert("<?= _("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date"); ?>");
+				alert("<?= _translate("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date"); ?>");
 				$("#sampleReceivedDate").val("");
 			}
 		}
@@ -1430,7 +1430,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 			date2 = new Date(sampleTestingDate);
 
 			if (date2.getTime() < date1.getTime()) {
-				alert("<?= _("Sample Testing Date cannot be earlier than Sample Collection Date"); ?>");
+				alert("<?= _translate("Sample Testing Date cannot be earlier than Sample Collection Date"); ?>");
 				$("#sampleTestingDateAtLab").val("");
 			}
 		}
@@ -1817,11 +1817,11 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 					});
 					$(".dynamicFacilitySelect2").select2({
 						width: '100%',
-						placeholder: "<?php echo _("Select any one of the option"); ?>"
+						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
 					});
 					$(".dynamicSelect2").select2({
 						width: '100%',
-						placeholder: "<?php echo _("Select any one of the option"); ?>"
+						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
 					});
 					if ($('#resultType').val() == 'qualitative') {
 						$('.final-result-row').attr('colspan', 4)
@@ -1890,7 +1890,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 			   <input type="text" id="testResult${testCounter}" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
 			</td>
 			<td class="testResultUnit">
-			<select class="form-control" id="testResultUnit${testCounter}" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+			<select class="form-control" id="testResultUnit${testCounter}" name="testResultUnit[]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>'>
 					<option value="">--Select--</option>
 					<?php
 					foreach ($testResultUnits as $unit) {

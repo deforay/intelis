@@ -60,10 +60,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><em class="fa-solid fa-pen-to-square"></em> <?= _("COVID-19 VIRUS LABORATORY TEST REQUEST FORM"); ?></h1>
+        <h1><em class="fa-solid fa-pen-to-square"></em> <?= _translate("COVID-19 VIRUS LABORATORY TEST REQUEST FORM"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?= _("Home"); ?></a></li>
-            <li class="active"><?= _("Add New Request"); ?></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?= _translate("Home"); ?></a></li>
+            <li class="active"><?= _translate("Add New Request"); ?></li>
         </ol>
     </section>
     <!-- Main content -->
@@ -72,7 +72,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         <div class="box box-default">
             <div class="box-header with-border">
 
-                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span><?= _("indicates required field"); ?> &nbsp;</div>
+                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span><?= _translate("indicates required field"); ?> &nbsp;</div>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -82,58 +82,58 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                         <div class="box box-default">
                             <div class="box-body">
                                 <div class="box-header with-border sectionHeader">
-                                    <h3 class="box-title"><?= _("SITE INFORMATION"); ?></h3>
+                                    <h3 class="box-title"><?= _translate("SITE INFORMATION"); ?></h3>
                                 </div>
                                 <div class="box-header with-border">
-                                    <h3 class="box-title" style="font-size:1em;"><?= _("To be filled by requesting Clinician/Nurse"); ?></h3>
+                                    <h3 class="box-title" style="font-size:1em;"><?= _translate("To be filled by requesting Clinician/Nurse"); ?></h3>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
                                         <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
-                                            <td><label for="sampleCode"><?= _("Sample ID"); ?> </label></td>
+                                            <td><label for="sampleCode"><?= _translate("Sample ID"); ?> </label></td>
                                             <td>
                                                 <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"></span>
                                                 <input type="hidden" id="sampleCode" name="sampleCode" />
                                             </td>
                                         <?php } else { ?>
-                                            <td><label for="sampleCode"><?= _("Sample ID"); ?> </label><span class="mandatory">*</span></td>
+                                            <td><label for="sampleCode"><?= _translate("Sample ID"); ?> </label><span class="mandatory">*</span></td>
                                             <td>
                                                 <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly="readonly" placeholder="Sample ID" title="Please enter sample code" style="width:100%;" onchange="checkSampleNameValidation('form_covid19','<?php echo $sampleCode; ?>',this.id,null,'The sample id that you entered already exists. Please try another sample id',null)" />
                                             </td>
                                         <?php } ?>
-                                        <td><label for="sourceOfAlertPOE"><?= _("Source of Alert / POE"); ?></label></td>
+                                        <td><label for="sourceOfAlertPOE"><?= _translate("Source of Alert / POE"); ?></label></td>
                                         <td>
                                             <select class="form-control select2" name="sourceOfAlertPOE" id="sourceOfAlertPOE" title="Please choose source of Alert / POE" style="width:100%;">
-                                                <option value=""> <?= _("-- Select --"); ?> </option>
-                                                <option value="hotline"><?= _("Hotline"); ?></option>
-                                                <option value="community-surveillance"><?= _("Community Surveillance"); ?></option>
-                                                <option value="poe"><?= _("POE"); ?></option>
-                                                <option value="contact-tracing"><?= _("Contact Tracing"); ?></option>
-                                                <option value="clinic"><?= _("Clinic"); ?></option>
-                                                <option value="sentinel-site"><?= _("Sentinel Site"); ?></option>
-                                                <option value="screening"><?= _("Screening"); ?></option>
-                                                <option value="others"><?= _("Others"); ?></option>
+                                                <option value=""> <?= _translate("-- Select --"); ?> </option>
+                                                <option value="hotline"><?= _translate("Hotline"); ?></option>
+                                                <option value="community-surveillance"><?= _translate("Community Surveillance"); ?></option>
+                                                <option value="poe"><?= _translate("POE"); ?></option>
+                                                <option value="contact-tracing"><?= _translate("Contact Tracing"); ?></option>
+                                                <option value="clinic"><?= _translate("Clinic"); ?></option>
+                                                <option value="sentinel-site"><?= _translate("Sentinel Site"); ?></option>
+                                                <option value="screening"><?= _translate("Screening"); ?></option>
+                                                <option value="others"><?= _translate("Others"); ?></option>
                                             </select>
                                         </td>
-                                        <td class="show-alert-poe" style="display: none;"><label for="sourceOfAlertPOE"><?= _("Source of Alert / POE Others"); ?><span class="mandatory">*</span></label></td>
+                                        <td class="show-alert-poe" style="display: none;"><label for="sourceOfAlertPOE"><?= _translate("Source of Alert / POE Others"); ?><span class="mandatory">*</span></label></td>
                                         <td class="show-alert-poe" style="display: none;">
-                                            <input type="text" class="form-control" name="alertPoeOthers" id="alertPoeOthers" placeholder="<?= _('Source of Alert / POE Others'); ?>" title="<?= _('Please choose source of Alert / POE'); ?>" style="width:100%;">
+                                            <input type="text" class="form-control" name="alertPoeOthers" id="alertPoeOthers" placeholder="<?= _translate('Source of Alert / POE Others'); ?>" title="<?= _translate('Please choose source of Alert / POE'); ?>" style="width:100%;">
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><label for="province"><?= _("Health Facility/POE State"); ?> </label><span class="mandatory">*</span></td>
+                                        <td><label for="province"><?= _translate("Health Facility/POE State"); ?> </label><span class="mandatory">*</span></td>
                                         <td>
-                                            <select class="form-control select2" name="province" id="province" title="<?= _('Please choose State'); ?>" onchange="getfacilityDetails(this);" style="width:100%;">
+                                            <select class="form-control select2" name="province" id="province" title="<?= _translate('Please choose State'); ?>" onchange="getfacilityDetails(this);" style="width:100%;">
                                                 <?php echo $province; ?>
                                             </select>
                                         </td>
-                                        <td><label for="district"><?= _("Health Facility/POE County"); ?> </label><span class="mandatory">*</span></td>
+                                        <td><label for="district"><?= _translate("Health Facility/POE County"); ?> </label><span class="mandatory">*</span></td>
                                         <td>
                                             <select class="form-control select2 " name="district" id="district" title="Please choose County" style="width:100%;" onchange="getfacilityDistrictwise(this);">
-                                                <option value=""> <?= _("-- Select --"); ?> </option>
+                                                <option value=""> <?= _translate("-- Select --"); ?> </option>
                                             </select>
                                         </td>
-                                        <td><label for="facilityId"><?= _("Health Facility/POE"); ?> </label><span class="mandatory">*</span></td>
+                                        <td><label for="facilityId"><?= _translate("Health Facility/POE"); ?> </label><span class="mandatory">*</span></td>
                                         <td>
                                             <select class="form-control  " name="facilityId" id="facilityId" title="Please choose service provider" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
                                                 <?php echo $facility; ?>
@@ -144,9 +144,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><?= _("Project Name"); ?></th>
+                                        <th><?= _translate("Project Name"); ?></th>
                                         <td><select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
-                                                <option value=""> <?= _("-- Select --"); ?> </option>
+                                                <option value=""> <?= _translate("-- Select --"); ?> </option>
                                                 <?php
                                                 foreach ($fundingSourceList as $fundingSource) {
                                                 ?>
@@ -154,9 +154,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <?php } ?>
                                             </select>
                                         </td>
-                                        <th><?= _("Implementing Partner"); ?></th>
+                                        <th><?= _translate("Implementing Partner"); ?></th>
                                         <td><select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
-                                                <option value=""> <?= _("-- Select --"); ?> </option>
+                                                <option value=""> <?= _translate("-- Select --"); ?> </option>
                                                 <?php
                                                 foreach ($implementingPartnerList as $implementingPartner) {
                                                 ?>
@@ -168,7 +168,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr>
                                         <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
                                             <!-- <tr> -->
-                                            <td><label for="labId"><?= _("Testing Laboratory"); ?> <span class="mandatory">*</span></label> </td>
+                                            <td><label for="labId"><?= _translate("Testing Laboratory"); ?> <span class="mandatory">*</span></label> </td>
                                             <td>
                                                 <select name="labId" id="labId" class="form-control select2 isRequired" title="Please select Testing Testing Laboratory" style="width:100%;">
                                                     <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
@@ -189,150 +189,150 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 
                                 <div class="box-header with-border sectionHeader">
-                                    <h3 class="box-title"><?= _("CASE DETAILS/DEMOGRAPHICS"); ?></h3>
+                                    <h3 class="box-title"><?= _translate("CASE DETAILS/DEMOGRAPHICS"); ?></h3>
                                 </div>
                                 <div class="box-header with-border">
-                                    <h3 class="box-title"><?= _("Patient Information"); ?></h3>&nbsp;&nbsp;&nbsp;
-                                    <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="<?= _('Enter Case ID or Patient Name'); ?>" title="<?= _('Enter art number or patient name'); ?>" />&nbsp;&nbsp;
-                                    <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em><?= _("Search"); ?></a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;<?= _("No Patient Found"); ?></strong></span>
+                                    <h3 class="box-title"><?= _translate("Patient Information"); ?></h3>&nbsp;&nbsp;&nbsp;
+                                    <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="" placeholder="<?= _translate('Enter Case ID or Patient Name'); ?>" title="<?= _translate('Enter art number or patient name'); ?>" />&nbsp;&nbsp;
+                                    <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em><?= _translate("Search"); ?></a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;<?= _translate("No Patient Found"); ?></strong></span>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
-                                        <th scope="row" style="width:15% !important"><label for="patientId"><?= _("Case ID"); ?> <span class="mandatory">*</span> </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="patientId"><?= _translate("Case ID"); ?> <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="<?= _('Case Identification'); ?>" title="<?= _('Please enter Case ID'); ?>" style="width:100%;" onchange="" />
+                                            <input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="<?= _translate('Case Identification'); ?>" title="<?= _translate('Please enter Case ID'); ?>" style="width:100%;" onchange="" />
                                         </td>
-                                        <th scope="row" style="width:15% !important"><label for="externalSampleCode"><?= _("DHIS2 Case ID"); ?> </label></th>
-                                        <td style="width:35% !important"><input type="text" class="form-control" id="externalSampleCode" name="externalSampleCode" placeholder="<?= _('DHIS2 Case ID'); ?>" title="<?= _('Please enter DHIS2 Case ID'); ?>" style="width:100%;" /></td>
+                                        <th scope="row" style="width:15% !important"><label for="externalSampleCode"><?= _translate("DHIS2 Case ID"); ?> </label></th>
+                                        <td style="width:35% !important"><input type="text" class="form-control" id="externalSampleCode" name="externalSampleCode" placeholder="<?= _translate('DHIS2 Case ID'); ?>" title="<?= _translate('Please enter DHIS2 Case ID'); ?>" style="width:100%;" /></td>
                                     </tr>
                                     <tr>
-                                        <th scope="row" style="width:15% !important"><label for="firstName"><?= _("First Name"); ?> <span class="mandatory">*</span> </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="firstName"><?= _translate("First Name"); ?> <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control isRequired" id="firstName" name="firstName" placeholder="First Name" title="Please enter First name" style="width:100%;" onchange="" />
                                         </td>
-                                        <th scope="row" style="width:15% !important"><label for="lastName"><?= _("Last name"); ?> </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="lastName"><?= _translate("Last name"); ?> </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control " id="lastName" name="lastName" placeholder="Last name" title="Please enter Last name" style="width:100%;" onchange="" />
                                         </td>
                                     </tr>
                                     <tr>
 
-                                        <th scope="row"><label for="patientDob"><?= _('Date of Birth'); ?> </label></th>
+                                        <th scope="row"><label for="patientDob"><?= _translate('Date of Birth'); ?> </label></th>
                                         <td>
-                                            <input type="text" class="form-control" id="patientDob" name="patientDob" placeholder="<?= _('Date of Birth'); ?>" title="<?= _('Please enter Date of birth'); ?>" style="width:100%;" onchange="calculateAgeInYears();" />
+                                            <input type="text" class="form-control" id="patientDob" name="patientDob" placeholder="<?= _translate('Date of Birth'); ?>" title="<?= _translate('Please enter Date of birth'); ?>" style="width:100%;" onchange="calculateAgeInYears();" />
                                         </td>
-                                        <th scope="row"><?= _("Age (years)"); ?></th>
-                                        <td><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="patientAge" name="patientAge" placeholder="<?= _('Case Age (in years)'); ?>" title="<?= _('Case Age'); ?>" style="width:100%;" onchange="" /></td>
+                                        <th scope="row"><?= _translate("Age (years)"); ?></th>
+                                        <td><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="patientAge" name="patientAge" placeholder="<?= _translate('Case Age (in years)'); ?>" title="<?= _translate('Case Age'); ?>" style="width:100%;" onchange="" /></td>
                                     </tr>
                                     <tr>
-                                        <th scope="row"><label for="patientGender"><?= _("Gender"); ?> <span class="mandatory">*</span> </label></th>
+                                        <th scope="row"><label for="patientGender"><?= _translate("Gender"); ?> <span class="mandatory">*</span> </label></th>
                                         <td>
-                                            <select class="form-control isRequired" name="patientGender" id="patientGender" title="<?= _('Please select the gender'); ?>">
-                                                <option value=''> <?= _("-- Select --"); ?> </option>
-                                                <option value='male'> <?= _("Male"); ?> </option>
-                                                <option value='female'> <?= _("Female"); ?> </option>
-                                                <option value='other'> <?= _("Other"); ?> </option>
+                                            <select class="form-control isRequired" name="patientGender" id="patientGender" title="<?= _translate('Please select the gender'); ?>">
+                                                <option value=''> <?= _translate("-- Select --"); ?> </option>
+                                                <option value='male'> <?= _translate("Male"); ?> </option>
+                                                <option value='female'> <?= _translate("Female"); ?> </option>
+                                                <option value='other'> <?= _translate("Other"); ?> </option>
 
                                             </select>
                                         </td>
-                                        <th scope="row"><?= _("Phone number"); ?></th>
-                                        <td><input type="text" class="form-control " id="patientPhoneNumber" name="patientPhoneNumber" placeholder="<?= _('Phone Number'); ?>" title="<?= _('Case Phone Number'); ?>" style="width:100%;" onchange="" /></td>
+                                        <th scope="row"><?= _translate("Phone number"); ?></th>
+                                        <td><input type="text" class="form-control " id="patientPhoneNumber" name="patientPhoneNumber" placeholder="<?= _translate('Phone Number'); ?>" title="<?= _translate('Case Phone Number'); ?>" style="width:100%;" onchange="" /></td>
                                     </tr>
                                     <tr>
-                                        <th scope="row"><?= _("Address"); ?></th>
-                                        <td><textarea class="form-control " id="patientAddress" name="patientAddress" placeholder="<?= _('Address'); ?>" title="<?= _('Case Address'); ?>" style="width:100%;" onchange=""></textarea></td>
+                                        <th scope="row"><?= _translate("Address"); ?></th>
+                                        <td><textarea class="form-control " id="patientAddress" name="patientAddress" placeholder="<?= _translate('Address'); ?>" title="<?= _translate('Case Address'); ?>" style="width:100%;" onchange=""></textarea></td>
 
-                                        <th scope="row"><?= _("State"); ?></th>
+                                        <th scope="row"><?= _translate("State"); ?></th>
                                         <td>
-                                            <select class="form-control " name="patientProvince" id="patientProvince" title="<?= _('Please Case State'); ?>" onchange="getPatientDistrictDetails(this);" style="width:100%;">
+                                            <select class="form-control " name="patientProvince" id="patientProvince" title="<?= _translate('Please Case State'); ?>" onchange="getPatientDistrictDetails(this);" style="width:100%;">
                                                 <?php echo $province; ?>
                                             </select>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row"><?= _("County"); ?></th>
+                                        <th scope="row"><?= _translate("County"); ?></th>
                                         <td>
                                             <select class="form-control select2" name="patientDistrict" id="patientDistrict" title="Please Case County" style="width:100%;">
-                                                <option value=""> <?= _("-- Select --"); ?> </option>
+                                                <option value=""> <?= _translate("-- Select --"); ?> </option>
                                             </select>
                                         </td>
-                                        <th scope="row"><?= _("Payam"); ?></th>
-                                        <td><input class="form-control" id="patientZone" name="patientZone" placeholder="<?= _('Case Payam'); ?>" title="<?= _('Please enter the Case Payam'); ?>" style="width:100%;"></td>
+                                        <th scope="row"><?= _translate("Payam"); ?></th>
+                                        <td><input class="form-control" id="patientZone" name="patientZone" placeholder="<?= _translate('Case Payam'); ?>" title="<?= _translate('Please enter the Case Payam'); ?>" style="width:100%;"></td>
 
                                     </tr>
                                     <tr>
-                                        <th scope="row"><?= _("Boma/Village"); ?></th>
-                                        <td><input class="form-control" id="patientCity" name="patientCity" placeholder="<?= _('Case Boma/Village'); ?>" title="<?= _('Please enter the Case Boma/Village'); ?>" style="width:100%;"></td>
-                                        <th scope="row"><?= _("Nationality"); ?></th>
+                                        <th scope="row"><?= _translate("Boma/Village"); ?></th>
+                                        <td><input class="form-control" id="patientCity" name="patientCity" placeholder="<?= _translate('Case Boma/Village'); ?>" title="<?= _translate('Please enter the Case Boma/Village'); ?>" style="width:100%;"></td>
+                                        <th scope="row"><?= _translate("Nationality"); ?></th>
                                         <td>
-                                            <select name="patientNationality" id="patientNationality" class="form-control" title="<?= _('Please choose nationality'); ?>" style="width:100%">
+                                            <select name="patientNationality" id="patientNationality" class="form-control" title="<?= _translate('Please choose nationality'); ?>" style="width:100%">
                                                 <?= $general->generateSelectOptions($nationalityList, null, '-- Select --'); ?>
                                             </select>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row"><?= _("Passport Number"); ?></th>
-                                        <td><input class="form-control" id="patientPassportNumber" name="patientPassportNumber" placeholder="<?= _('Passport Number'); ?>" title="<?= _('Please enter Passport Number'); ?>" style="width:100%;"></td>
+                                        <th scope="row"><?= _translate("Passport Number"); ?></th>
+                                        <td><input class="form-control" id="patientPassportNumber" name="patientPassportNumber" placeholder="<?= _translate('Passport Number'); ?>" title="<?= _translate('Please enter Passport Number'); ?>" style="width:100%;"></td>
 
                                     </tr>
 
                                 </table>
 
                                 <div class="box-header with-border sectionHeader">
-                                    <h3 class="box-title"><?= _("SPECIMEN INFORMATION"); ?></h3>
+                                    <h3 class="box-title"><?= _translate("SPECIMEN INFORMATION"); ?></h3>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true">
                                     <tr>
                                         <td colspan=4>
                                             <ul>
-                                                <li><?= _("All specimens collected should be regarded as potentially infectious and you <u>MUST CONTACT</u> the reference laboratory before sending samples."); ?></li>
-                                                <li><?= _("All samples must be sent in accordance with Category B transport requirements."); ?></li>
+                                                <li><?= _translate("All specimens collected should be regarded as potentially infectious and you <u>MUST CONTACT</u> the reference laboratory before sending samples."); ?></li>
+                                                <li><?= _translate("All samples must be sent in accordance with Category B transport requirements."); ?></li>
                                             </ul>
 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row"><?= _("Type of Test Request"); ?></th>
+                                        <th scope="row"><?= _translate("Type of Test Request"); ?></th>
                                         <td>
-                                            <select name="testTypeRequested" id="testTypeRequested" class="form-control" title="<?= _('Please choose type of test request'); ?>" style="width:100%">
-                                                <option value=""><?= _("-- Select --"); ?></option>
-                                                <option value="Real Time RT-PCR"><?= _("Real Time RT-PCR"); ?></option>
-                                                <option value="RDT-Antibody"><?= _("RDT-Antibody"); ?></option>
-                                                <option value="RDT-Antigen"><?= _("RDT-Antigen"); ?></option>
-                                                <option value="GeneXpert"><?= _("GeneXpert"); ?></option>
-                                                <option value="ELISA"><?= _("ELISA"); ?></option>
+                                            <select name="testTypeRequested" id="testTypeRequested" class="form-control" title="<?= _translate('Please choose type of test request'); ?>" style="width:100%">
+                                                <option value=""><?= _translate("-- Select --"); ?></option>
+                                                <option value="Real Time RT-PCR"><?= _translate("Real Time RT-PCR"); ?></option>
+                                                <option value="RDT-Antibody"><?= _translate("RDT-Antibody"); ?></option>
+                                                <option value="RDT-Antigen"><?= _translate("RDT-Antigen"); ?></option>
+                                                <option value="GeneXpert"><?= _translate("GeneXpert"); ?></option>
+                                                <option value="ELISA"><?= _translate("ELISA"); ?></option>
                                             </select>
                                         </td>
-                                        <th scope="row"><?= _("Reason for Test Request"); ?> <span class="mandatory">*</span></th>
+                                        <th scope="row"><?= _translate("Reason for Test Request"); ?> <span class="mandatory">*</span></th>
                                         <td>
-                                            <select name="reasonForCovid19Test" id="reasonForCovid19Test" class="form-control isRequired" title="<?= _('Please choose reason for testing'); ?>" style="width:100%">
+                                            <select name="reasonForCovid19Test" id="reasonForCovid19Test" class="form-control isRequired" title="<?= _translate('Please choose reason for testing'); ?>" style="width:100%">
                                                 <?= $general->generateSelectOptions($covid19ReasonsForTesting, null, '-- Select --'); ?>
                                             </select>
                                         </td>
                                     </tr>
 
                                     <tr>
-                                        <th scope="row" style="width:15% !important"><?= _("Sample Collection Date"); ?> <span class="mandatory">*</span> </th>
+                                        <th scope="row" style="width:15% !important"><?= _translate("Sample Collection Date"); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _('Sample Collection Date'); ?>" onchange="generateSampleCode();" />
+                                            <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" onchange="generateSampleCode();" />
                                         </td>
-                                        <th scope="row" style="width:15% !important"><?= _("Sample Dispatched On"); ?> <span class="mandatory">*</span> </th>
+                                        <th scope="row" style="width:15% !important"><?= _translate("Sample Dispatched On"); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control dateTime isRequired" type="text" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="<?= _('Sample Dispatched On'); ?>" />
+                                            <input class="form-control dateTime isRequired" type="text" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="<?= _translate('Sample Dispatched On'); ?>" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row"><?= _("Specimen Type"); ?> <span class="mandatory">*</span></th>
+                                        <th scope="row"><?= _translate("Specimen Type"); ?> <span class="mandatory">*</span></th>
                                         <td>
-                                            <select name="specimenType" id="specimenType" class="form-control isRequired" title="<?= _('Please choose specimen type'); ?>" style="width:100%">
+                                            <select name="specimenType" id="specimenType" class="form-control isRequired" title="<?= _translate('Please choose specimen type'); ?>" style="width:100%">
                                                 <?php echo $general->generateSelectOptions($specimenTypeResult, null, '-- Select --'); ?>
                                             </select>
                                         </td>
-                                        <th scope="row"><label for="testNumber"><?= _("Test Number"); ?></label></th>
+                                        <th scope="row"><label for="testNumber"><?= _translate("Test Number"); ?></label></th>
                                         <td>
-                                            <select class="form-control" name="testNumber" id="testNumber" title="<?= _('Test Number'); ?>" style="width:100%;">
-                                                <option value=""><?= _("--Select--"); ?></option>
+                                            <select class="form-control" name="testNumber" id="testNumber" title="<?= _translate('Test Number'); ?>" style="width:100%;">
+                                                <option value=""><?= _translate("--Select--"); ?></option>
                                                 <?php foreach (range(1, 5) as $element) {
                                                     echo '<option value="' . $element . '">' . $element . '</option>';
                                                 } ?>
@@ -349,66 +349,66 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
-                                        <h3 class="box-title"><?= _("Reserved for Laboratory Use"); ?> </h3>
+                                        <h3 class="box-title"><?= _translate("Reserved for Laboratory Use"); ?> </h3>
                                     </div>
                                     <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
-                                            <th scope="row"><label for=""><?= _("Sample Received Date"); ?> </label></th>
+                                            <th scope="row"><label for=""><?= _translate("Sample Received Date"); ?> </label></th>
                                             <td>
-                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="<?= _('Please enter sample receipt date'); ?>" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="<?= _translate('Please enter sample receipt date'); ?>" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> onchange="" style="width:100%;" />
                                             </td>
-                                            <td class="lab-show"><label for="labId"><?= _("Testing Laboratory"); ?> </label> </td>
+                                            <td class="lab-show"><label for="labId"><?= _translate("Testing Laboratory"); ?> </label> </td>
                                             <td class="lab-show">
-                                                <select name="labId" id="labId" class="select2 form-control" title="<?= _('Please select Testing Testing Laboratory'); ?>" style="width:100%;" onchange="getTestingPoints();">
+                                                <select name="labId" id="labId" class="select2 form-control" title="<?= _translate('Please select Testing Testing Laboratory'); ?>" style="width:100%;" onchange="getTestingPoints();">
                                                     <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td><label for="specimenQuality"><?= _("Specimen Quality"); ?></label></td>
+                                            <td><label for="specimenQuality"><?= _translate("Specimen Quality"); ?></label></td>
                                             <td>
                                                 <select class="form-control" id="specimenQuality" name="specimenQuality" title="Please enter the specimen quality">
-                                                    <option value=""><?= _("--Select--"); ?></option>
-                                                    <option value="good"><?= _("Good"); ?></option>
-                                                    <option value="poor"><?= _("Poor"); ?></option>
+                                                    <option value=""><?= _translate("--Select--"); ?></option>
+                                                    <option value="good"><?= _translate("Good"); ?></option>
+                                                    <option value="poor"><?= _translate("Poor"); ?></option>
                                                 </select>
                                             </td>
-                                            <th scope="row"><label for="labTechnician"><?= _("Lab Technician"); ?> </label></th>
+                                            <th scope="row"><label for="labTechnician"><?= _translate("Lab Technician"); ?> </label></th>
                                             <td>
                                                 <select name="labTechnician" id="labTechnician" class="form-control" title="Please select a Lab Technician" style="width:100%;">
-                                                    <option value=""><?= _("--Select--"); ?></option>
+                                                    <option value=""><?= _translate("--Select--"); ?></option>
                                                     <?= $general->generateSelectOptions($labTechniciansResults, $_SESSION['userId'], '-- Select --'); ?>
                                                 </select>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th scope="row" class="testingPointField" style="display:none;"><label for=""><?= _("Testing Point"); ?> </label></th>
+                                            <th scope="row" class="testingPointField" style="display:none;"><label for=""><?= _translate("Testing Point"); ?> </label></th>
                                             <td class="testingPointField" style="display:none;">
-                                                <select name="testingPoint" id="testingPoint" class="form-control" title="<?= _('Please select a Testing Point'); ?>" style="width:100%;">
+                                                <select name="testingPoint" id="testingPoint" class="form-control" title="<?= _translate('Please select a Testing Point'); ?>" style="width:100%;">
                                                 </select>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th scope="row"><?= _("Is Sample Rejected?"); ?></th>
+                                            <th scope="row"><?= _translate("Is Sample Rejected?"); ?></th>
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">
-                                                    <option value=''> <?= _("-- Select --"); ?> </option>
-                                                    <option value="yes"> <?= _("Yes"); ?> </option>
-                                                    <option value="no"> <?= _("No"); ?> </option>
+                                                    <option value=''> <?= _translate("-- Select --"); ?> </option>
+                                                    <option value="yes"> <?= _translate("Yes"); ?> </option>
+                                                    <option value="no"> <?= _translate("No"); ?> </option>
                                                 </select>
                                             </td>
 
-                                            <th scope="row" class="show-rejection" style="display:none;"><?= _("Reason for Rejection"); ?></th>
+                                            <th scope="row" class="show-rejection" style="display:none;"><?= _translate("Reason for Rejection"); ?></th>
                                             <td class="show-rejection" style="display:none;">
-                                                <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="<?= _('Please select the Reason for Rejection'); ?>">
-                                                    <option value=''> <?= _("-- Select --"); ?> </option>
+                                                <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="<?= _translate('Please select the Reason for Rejection'); ?>">
+                                                    <option value=''> <?= _translate("-- Select --"); ?> </option>
                                                     <?php echo $rejectionReason; ?>
                                                 </select>
                                             </td>
                                         </tr>
                                         <tr class="show-rejection" style="display:none;">
-                                            <th scope="row"><?= _("Rejection Date"); ?><span class="mandatory">*</span></th>
-                                            <td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="<?= _('Select Rejection Date'); ?>" title="<?= _('Please select the Rejection Date'); ?>" /></td>
+                                            <th scope="row"><?= _translate("Rejection Date"); ?><span class="mandatory">*</span></th>
+                                            <td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="<?= _translate('Select Rejection Date'); ?>" title="<?= _translate('Please select the Rejection Date'); ?>" /></td>
                                             <td></td>
                                             <td></td>
                                         </tr>
@@ -417,29 +417,29 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
                                                     <thead>
                                                         <tr>
-                                                            <th scope="row" class="text-center"><?= _("Test No"); ?></th>
-                                                            <th scope="row" class="text-center"><?= _("Test Method"); ?></th>
-                                                            <th scope="row" class="text-center"><?= _("Date of Testing"); ?></th>
-                                                            <th scope="row" class="text-center"><?= _("Test Platform/Test Kit"); ?></th>
-                                                            <th scope="row" class="text-center kitlabels" style="display: none;"><?= _("Kit Lot No"); ?></th>
-                                                            <th scope="row" class="text-center kitlabels" style="display: none;"><?= _("Expiry Date"); ?></th>
-                                                            <th scope="row" class="text-center"><?= _("Test Result"); ?></th>
+                                                            <th scope="row" class="text-center"><?= _translate("Test No"); ?></th>
+                                                            <th scope="row" class="text-center"><?= _translate("Test Method"); ?></th>
+                                                            <th scope="row" class="text-center"><?= _translate("Date of Testing"); ?></th>
+                                                            <th scope="row" class="text-center"><?= _translate("Test Platform/Test Kit"); ?></th>
+                                                            <th scope="row" class="text-center kitlabels" style="display: none;"><?= _translate("Kit Lot No"); ?></th>
+                                                            <th scope="row" class="text-center kitlabels" style="display: none;"><?= _translate("Expiry Date"); ?></th>
+                                                            <th scope="row" class="text-center"><?= _translate("Test Result"); ?></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody id="testKitNameTable">
                                                         <tr>
                                                             <td class="text-center">1</td>
                                                             <td>
-                                                                <select onchange="testMethodChanged(this.value,1)" class="form-control test-name-table-input" id="testName1" name="testName[]" title="<?= _('Please enter the name of the Testkit (or) Test Method used'); ?>">
-                                                                    <option value=""><?= _("-- Select --"); ?></option>
-                                                                    <option value="Real Time RT-PCR"><?= _("Real Time RT-PCR"); ?></option>
-                                                                    <option value="RDT-Antibody"><?= _("RDT-Antibody"); ?></option>
-                                                                    <option value="RDT-Antigen"><?= _("RDT-Antigen"); ?></option>
-                                                                    <option value="GeneXpert"><?= _("GeneXpert"); ?></option>
-                                                                    <option value="ELISA"><?= _("ELISA"); ?></option>
-                                                                    <option value="other"><?= _("Others"); ?></option>
+                                                                <select onchange="testMethodChanged(this.value,1)" class="form-control test-name-table-input" id="testName1" name="testName[]" title="<?= _translate('Please enter the name of the Testkit (or) Test Method used'); ?>">
+                                                                    <option value=""><?= _translate("-- Select --"); ?></option>
+                                                                    <option value="Real Time RT-PCR"><?= _translate("Real Time RT-PCR"); ?></option>
+                                                                    <option value="RDT-Antibody"><?= _translate("RDT-Antibody"); ?></option>
+                                                                    <option value="RDT-Antigen"><?= _translate("RDT-Antigen"); ?></option>
+                                                                    <option value="GeneXpert"><?= _translate("GeneXpert"); ?></option>
+                                                                    <option value="ELISA"><?= _translate("ELISA"); ?></option>
+                                                                    <option value="other"><?= _translate("Others"); ?></option>
                                                                 </select>
-                                                                <input type="text" name="testNameOther[]" id="testNameOther1" class="form-control testNameOther1" title="<?= _('Please enter the name of the Testkit (or) Test Method used'); ?>" placeholder="<?= _('Please enter the name of the Testkit (or) Test Method used'); ?>" style="display: none;margin-top: 10px;" />
+                                                                <input type="text" name="testNameOther[]" id="testNameOther1" class="form-control testNameOther1" title="<?= _translate('Please enter the name of the Testkit (or) Test Method used'); ?>" placeholder="<?= _translate('Please enter the name of the Testkit (or) Test Method used'); ?>" style="display: none;margin-top: 10px;" />
                                                             </td>
                                                             <td><input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row 1" /></td>
                                                             <td>
@@ -465,7 +465,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                             <th scope="row" colspan="4" class="text-right final-result-row">Final Result</th>
                                                             <td>
                                                                 <select class="form-control" name="result" id="result">
-                                                                    <option value=''> <?= _("-- Select --"); ?> </option>
+                                                                    <option value=''> <?= _translate("-- Select --"); ?> </option>
                                                                     <?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?>
                                                                         <option value="<?php echo $c19ResultKey; ?>"> <?php echo $c19ResultValue; ?> </option>
                                                                     <?php } ?>
@@ -628,7 +628,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <label for="state" class="col-lg-4 control-label">Province/State <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
                                         <select name="state" id="state" class="form-control isRequired" title="Please choose province/state">
-                                            <option value=""> <?= _("-- Select --"); ?> </option>
+                                            <option value=""> <?= _translate("-- Select --"); ?> </option>
                                             <?php
                                             foreach ($pResult as $province) {
                                             ?>
@@ -835,7 +835,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             $("#province").html("<?php echo $province; ?>");
             $("#facilityId").html("<?php echo addslashes($facility); ?>");
             $("#facilityId").select2("val", "");
-            $("#district").html("<option value=''> <?= _("-- Select --"); ?> </option>");
+            $("#district").html("<option value=''> <?= _translate("-- Select --"); ?> </option>");
         }
         $.unblockUI();
     }
@@ -857,7 +857,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                 });
         } else if (pName == '') {
             $(obj).html("<?php echo $province; ?>");
-            $("#patientDistrict").html("<option value=''> <?= _("-- Select --"); ?> </option>");
+            $("#patientDistrict").html("<option value=''> <?= _translate("-- Select --"); ?> </option>");
         }
         $.unblockUI();
     }
@@ -921,7 +921,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                     }
                 });
         } else {
-            $("#facilityId").html("<option value=''> <?= _("-- Select --"); ?> </option>");
+            $("#facilityId").html("<option value=''> <?= _translate("-- Select --"); ?> </option>");
         }
         $.unblockUI();
     }

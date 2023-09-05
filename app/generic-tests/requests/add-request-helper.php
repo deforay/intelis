@@ -37,7 +37,7 @@ try {
     $validateField = array($_POST['sampleCode'], $_POST['sampleCollectionDate']);
     $chkValidation = $general->checkMandatoryFields($validateField);
     if ($chkValidation) {
-        $_SESSION['alertMsg'] = _("Please enter all mandatory fields to save the test request");
+        $_SESSION['alertMsg'] = _translate("Please enter all mandatory fields to save the test request");
         header("Location:addVlRequest.php");
         die;
     }
@@ -346,7 +346,7 @@ try {
                 $_POST['sampleCode'] = $_POST['sampleCodeFormat'] . $maxId;
                 $_POST['sampleCodeKey'] = $maxId;
             } else {
-                $_SESSION['alertMsg'] = _("Please check your sample ID");
+                $_SESSION['alertMsg'] = _translate("Please check your sample ID");
                 header("Location:add-request.php");
             }
         }
@@ -364,7 +364,7 @@ try {
     }
 
     if ($id === true) {
-        $_SESSION['alertMsg'] = _("Lab test request added successfully");
+        $_SESSION['alertMsg'] = _translate("Lab test request added successfully");
         //Add event log
 
         $eventType = 'add-test-request';
@@ -388,7 +388,7 @@ try {
             header("Location:view-requests.php");
         }
     } else {
-        $_SESSION['alertMsg'] = _("Please try again later");
+        $_SESSION['alertMsg'] = _translate("Please try again later");
         header("Location:view-requests.php");
     }
 } catch (Exception $exc) {

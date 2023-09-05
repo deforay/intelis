@@ -85,25 +85,25 @@ $pResult = $db->get("form_eid vl", 25, "fd.facility_id,
 							<thead>
 								<tr>
 									<th style="width:10%;">
-										<?= _("Select"); ?>
+										<?= _translate("Select"); ?>
 									</th>
 									<th>
-										<?= _("Infant Code/ID"); ?>
+										<?= _translate("Infant Code/ID"); ?>
 									</th>
 									<th>
-										<?= _("Infant Name"); ?>
+										<?= _translate("Infant Name"); ?>
 									</th>
 									<th style="width:10%;">
-										<?= _("Age"); ?>
+										<?= _translate("Age"); ?>
 									</th>
 									<th style="width:10%;">
-										<?= _("Gender"); ?>
+										<?= _translate("Gender"); ?>
 									</th>
 									<th style="width:10%;">
-										<?= _("Facility Name"); ?>
+										<?= _translate("Facility Name"); ?>
 									</th>
 									<th style="width:10%;">
-										<?= _("Date and Time"); ?>
+										<?= _translate("Date and Time"); ?>
 									</th>
 								</tr>
 							</thead>

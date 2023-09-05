@@ -3,7 +3,7 @@
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
-$title = _("VL | Clinics Report");
+$title = _translate("VL | Clinics Report");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -46,14 +46,14 @@ $state = $geolocationService->getProvinces("yes");
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1> <em class="fa-solid fa-book"></em>
-			<?php echo _("Clinic Reports"); ?>
+			<?php echo _translate("Clinic Reports"); ?>
 		</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em>
-					<?php echo _("Home"); ?>
+					<?php echo _translate("Home"); ?>
 				</a></li>
 			<li class="active">
-				<?php echo _("Clinic Reports"); ?>
+				<?php echo _translate("Clinic Reports"); ?>
 			</li>
 		</ol>
 	</section>
@@ -69,19 +69,19 @@ $state = $geolocationService->getProvinces("yes");
 								<div class="bs-example bs-example-tabs">
 									<ul id="myTab" class="nav nav-tabs">
 										<li class="active"><a href="#highViralLoadReport" data-toggle="tab">
-												<?php echo _("High Viral Load Report"); ?>
+												<?php echo _translate("High Viral Load Report"); ?>
 											</a></li>
 										<li><a href="#highVlVirologicFailureReport" data-toggle="tab">
-												<?php echo _("High VL and Virologic Failure Report"); ?>
+												<?php echo _translate("High VL and Virologic Failure Report"); ?>
 											</a></li>
 										<li><a href="#sampleRjtReport" data-toggle="tab">
-												<?php echo _("Sample Rejection Report"); ?>
+												<?php echo _translate("Sample Rejection Report"); ?>
 											</a></li>
 										<li><a href="#notAvailReport" data-toggle="tab">
-												<?php echo _("Results Not Available Report"); ?>
+												<?php echo _translate("Results Not Available Report"); ?>
 											</a></li>
 										<li><a href="#incompleteFormReport" data-toggle="tab">
-												<?php echo _("Data Quality Check"); ?>
+												<?php echo _translate("Data Quality Check"); ?>
 											</a></li>
 									</ul>
 									<div id="myTabContent" class="tab-content">
@@ -89,18 +89,18 @@ $state = $geolocationService->getProvinces("yes");
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><strong>
-															<?php echo _("Sample Test Date"); ?>&nbsp;:
+															<?php echo _translate("Sample Test Date"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<input type="text" id="hvlSampleTestDate" name="hvlSampleTestDate" class="form-control highViralLoadReportFilter stDate" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:170px;background:#fff;" onchange="setSampleTestDate(this)" />
+														<input type="text" id="hvlSampleTestDate" name="hvlSampleTestDate" class="form-control highViralLoadReportFilter stDate" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:170px;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
 													<td>&nbsp;<strong>
-															<?php echo _("Batch Code"); ?>&nbsp;:
+															<?php echo _translate("Batch Code"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control highViralLoadReportFilter" id="hvlBatchCode" name="hvlBatchCode" title="<?php echo _('Please select batch code'); ?>" style="width:170px;">
+														<select class="form-control highViralLoadReportFilter" id="hvlBatchCode" name="hvlBatchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:170px;">
 															<option value="">
-																<?php echo _("-- Select --"); ?>
+																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php
 															foreach ($batResult as $code) {
@@ -112,12 +112,12 @@ $state = $geolocationService->getProvinces("yes");
 														</select>
 													</td>
 													<td>&nbsp;<strong>
-															<?php echo _("Sample Type"); ?>&nbsp;:
+															<?php echo _translate("Sample Type"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select style="width:170px;" class="form-control highViralLoadReportFilter" id="hvlSampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
+														<select style="width:170px;" class="form-control highViralLoadReportFilter" id="hvlSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
 															<option value="">
-																<?php echo _("-- Select --"); ?>
+																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php
 															foreach ($sResult as $type) {
@@ -131,28 +131,28 @@ $state = $geolocationService->getProvinces("yes");
 												</tr>
 												<tr>
 													<td><strong>
-															<?php echo _("Province/State"); ?>&nbsp;:
+															<?php echo _translate("Province/State"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control highViralLoadReportFilter select2-element" id="state" onchange="getByProvince('district','hvlFacilityName',this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
-															<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+														<select class="form-control highViralLoadReportFilter select2-element" id="state" onchange="getByProvince('district','hvlFacilityName',this.value)" name="state" title="<?php echo _translate('Please select Province/State'); ?>">
+															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 														</select>
 													</td>
 
 													<td><strong>
-															<?php echo _("District/County"); ?> :
+															<?php echo _translate("District/County"); ?> :
 														</strong></td>
 													<td>
-														<select class="form-control highViralLoadReportFilter select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict('hvlFacilityName',this.value)">
+														<select class="form-control highViralLoadReportFilter select2-element" id="district" name="district" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('hvlFacilityName',this.value)">
 														</select>
 													</td>
 													<td>&nbsp;<strong>
-															<?php echo _("Facility Name & Code"); ?>&nbsp;:
+															<?php echo _translate("Facility Name & Code"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control highViralLoadReportFilter" id="hvlFacilityName" name="hvlFacilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:170px;">
+														<select class="form-control highViralLoadReportFilter" id="hvlFacilityName" name="hvlFacilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:170px;">
 															<option value="">
-																<?php echo _("-- Select --"); ?>
+																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php foreach ($fResult as $name) { ?>
 																<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
@@ -163,56 +163,56 @@ $state = $geolocationService->getProvinces("yes");
 												</tr>
 												<tr>
 													<td>&nbsp;<strong>
-															<?php echo _("Contact Status"); ?>&nbsp;:
+															<?php echo _translate("Contact Status"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control highViralLoadReportFilter" id="hvlContactStatus" name="hvlContactStatus" title="<?php echo _('Please select contact status'); ?>" style="width:170px;">
+														<select class="form-control highViralLoadReportFilter" id="hvlContactStatus" name="hvlContactStatus" title="<?php echo _translate('Please select contact status'); ?>" style="width:170px;">
 															<option value="">
-																<?php echo _("-- Select --"); ?>
+																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="yes">
-																<?php echo _("Completed"); ?>
+																<?php echo _translate("Completed"); ?>
 															</option>
 															<option value="no">
-																<?php echo _("Not Completed"); ?>
+																<?php echo _translate("Not Completed"); ?>
 															</option>
 															<option value="all" selected="selected">
-																<?php echo _("All"); ?>
+																<?php echo _translate("All"); ?>
 															</option>
 														</select>
 													</td>
 													<td><strong>
-															<?php echo _("Gender"); ?>&nbsp;:
+															<?php echo _translate("Gender"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select name="hvlGender" id="hvlGender" class="form-control highViralLoadReportFilter" title="<?php echo _('Please choose gender'); ?>" style="width:170px;" onchange="hideFemaleDetails(this.value,'hvlPatientPregnant','hvlPatientBreastfeeding');">
+														<select name="hvlGender" id="hvlGender" class="form-control highViralLoadReportFilter" title="<?php echo _translate('Please choose gender'); ?>" style="width:170px;" onchange="hideFemaleDetails(this.value,'hvlPatientPregnant','hvlPatientBreastfeeding');">
 															<option value="">
-																<?php echo _("-- Select --"); ?>
+																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="male">
-																<?php echo _("Male"); ?>
+																<?php echo _translate("Male"); ?>
 															</option>
 															<option value="female">
-																<?php echo _("Female"); ?>
+																<?php echo _translate("Female"); ?>
 															</option>
 															<option value="not_recorded">
-																<?php echo _("Not Recorded"); ?>
+																<?php echo _translate("Not Recorded"); ?>
 															</option>
 														</select>
 													</td>
 													<td><strong>
-															<?php echo _("Pregnant"); ?>&nbsp;:
+															<?php echo _translate("Pregnant"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select name="hvlPatientPregnant" id="hvlPatientPregnant" class="form-control highViralLoadReportFilter" title="<?php echo _('Please choose pregnant option'); ?>">
+														<select name="hvlPatientPregnant" id="hvlPatientPregnant" class="form-control highViralLoadReportFilter" title="<?php echo _translate('Please choose pregnant option'); ?>">
 															<option value="">
-																<?php echo _("-- Select --"); ?>
+																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="yes">
-																<?php echo _("Yes"); ?>
+																<?php echo _translate("Yes"); ?>
 															</option>
 															<option value="no">
-																<?php echo _("No"); ?>
+																<?php echo _translate("No"); ?>
 															</option>
 														</select>
 													</td>
@@ -220,42 +220,42 @@ $state = $geolocationService->getProvinces("yes");
 												</tr>
 												<tr>
 													<td><strong>
-															<?php echo _("Breastfeeding"); ?>&nbsp;:
+															<?php echo _translate("Breastfeeding"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select name="hvlPatientBreastfeeding" id="hvlPatientBreastfeeding" class="form-control highViralLoadReportFilter" title="<?php echo _('Please choose option'); ?>">
+														<select name="hvlPatientBreastfeeding" id="hvlPatientBreastfeeding" class="form-control highViralLoadReportFilter" title="<?php echo _translate('Please choose option'); ?>">
 															<option value="">
-																<?php echo _("-- Select --"); ?>
+																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="yes">
-																<?php echo _("Yes"); ?>
+																<?php echo _translate("Yes"); ?>
 															</option>
 															<option value="no">
-																<?php echo _("No"); ?>
+																<?php echo _translate("No"); ?>
 															</option>
 														</select>
 													</td>
 													<td><strong>
-															<?php echo _("Export with Patient Name"); ?>&nbsp;:
+															<?php echo _translate("Export with Patient Name"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select name="patientInfo" id="patientInfo" class="form-control highViralLoadReportFilter" title="<?php echo _('Please choose community sample'); ?>" style="width:170px;">
+														<select name="patientInfo" id="patientInfo" class="form-control highViralLoadReportFilter" title="<?php echo _translate('Please choose community sample'); ?>" style="width:170px;">
 															<option value="yes">
-																<?php echo _("Yes"); ?>
+																<?php echo _translate("Yes"); ?>
 															</option>
 															<option value="no">
-																<?php echo _("No"); ?>
+																<?php echo _translate("No"); ?>
 															</option>
 														</select>
 													</td>
 												</tr>
 												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?= _('Search'); ?>" class="btn btn-success btn-sm">
+													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="resetFilters('highViralLoadReportFilter');"><span>
-																<?= _('Reset'); ?>
+																<?= _translate('Reset'); ?>
 															</span></button>
 														<button class="btn btn-success btn-sm" type="button" onclick="exportHighViralLoadInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
-															<?php echo _("Export to excel"); ?>
+															<?php echo _translate("Export to excel"); ?>
 														</button>
 													</td>
 												</tr>
@@ -265,46 +265,46 @@ $state = $geolocationService->getProvinces("yes");
 												<thead>
 													<tr>
 														<th>
-															<?php echo _("Sample Code"); ?>
+															<?php echo _translate("Sample Code"); ?>
 														</th>
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 															<th>
-																<?php echo _("Remote Sample Code"); ?>
+																<?php echo _translate("Remote Sample Code"); ?>
 															</th>
 														<?php } ?>
 														<th scope="row">
-															<?php echo _("Facility Name"); ?>
+															<?php echo _translate("Facility Name"); ?>
 														</th>
 														<th>
-															<?php echo _("Patient ART no"); ?>.
+															<?php echo _translate("Patient ART no"); ?>.
 														</th>
 														<th>
-															<?php echo _("Patient's Name"); ?>
+															<?php echo _translate("Patient's Name"); ?>
 														</th>
 														<th>
-															<?php echo _("Patient Phone no"); ?>.
+															<?php echo _translate("Patient Phone no"); ?>.
 														</th>
 														<th scope="row">
-															<?php echo _("Sample Collection Date"); ?>
+															<?php echo _translate("Sample Collection Date"); ?>
 														</th>
 														<th>
-															<?php echo _("Sample Tested Date"); ?>
+															<?php echo _translate("Sample Tested Date"); ?>
 														</th>
 														<th>
-															<?php echo _("Viral Load Lab"); ?>
+															<?php echo _translate("Viral Load Lab"); ?>
 														</th>
 														<th>
-															<?php echo _("Viral Load (cp/ml)"); ?>
+															<?php echo _translate("Viral Load (cp/ml)"); ?>
 														</th>
 														<th scope="row">
-															<?php echo _("Status"); ?>
+															<?php echo _translate("Status"); ?>
 														</th>
 													</tr>
 												</thead>
 												<tbody>
 													<tr>
 														<td colspan="7" class="dataTables_empty">
-															<?php echo _("Loading data from server"); ?>
+															<?php echo _translate("Loading data from server"); ?>
 														</td>
 													</tr>
 												</tbody>
@@ -314,25 +314,25 @@ $state = $geolocationService->getProvinces("yes");
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 												<tr>
 													<td><strong>
-															<?php echo _("Province/State"); ?>&nbsp;:
+															<?php echo _translate("Province/State"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control vfvlnsfilters select2-element" id="vfVlnsState" onchange="getByProvince('vfVlnsDistrict','vfVlnsfacilityName',this.value)" name="vfVlnsState" title="<?php echo _('Please select Province/State'); ?>">
-															<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+														<select class="form-control vfvlnsfilters select2-element" id="vfVlnsState" onchange="getByProvince('vfVlnsDistrict','vfVlnsfacilityName',this.value)" name="vfVlnsState" title="<?php echo _translate('Please select Province/State'); ?>">
+															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 														</select>
 													</td>
 
 													<td><strong>
-															<?php echo _("District/County"); ?> :
+															<?php echo _translate("District/County"); ?> :
 														</strong></td>
 													<td>
-														<select class="form-control vfvlnsfilters select2-element" id="vfVlnsDistrict" name="vfVlnsDistrict" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict('vfVlnsfacilityName',this.value)">
+														<select class="form-control vfvlnsfilters select2-element" id="vfVlnsDistrict" name="vfVlnsDistrict" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('vfVlnsfacilityName',this.value)">
 														</select>
 													</td>
-													<td><strong><?php echo _("Facility Name"); ?> :</strong></td>
+													<td><strong><?php echo _translate("Facility Name"); ?> :</strong></td>
 													<td>
-														<select class="form-control vfvlnsfilters" id="vfVlnsfacilityName" name="vfVlnsfacilityName" title="<?php echo _('Please select facility name'); ?>" style="width:220px;">
-															<option value=""><?php echo _('-- Select --'); ?></option>
+														<select class="form-control vfvlnsfilters" id="vfVlnsfacilityName" name="vfVlnsfacilityName" title="<?php echo _translate('Please select facility name'); ?>" style="width:220px;">
+															<option value=""><?php echo _translate('-- Select --'); ?></option>
 															<?php foreach ($fResult as $name) { ?>
 																<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
 															<?php } ?>
@@ -340,19 +340,19 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 												</tr>
 												<tr>
-													<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
+													<td><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
 													<td>
-														<input type="text" id="vfVlnsSampleCollectionDate" name="vfVlnsSampleCollectionDate" class="form-control vfvlnsfilters daterangefield" placeholder="<?php echo _('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
+														<input type="text" id="vfVlnsSampleCollectionDate" name="vfVlnsSampleCollectionDate" class="form-control vfvlnsfilters daterangefield" placeholder="<?php echo _translate('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
 													</td>
-													<td><strong><?php echo _("Sample Tested Date"); ?>&nbsp;:</strong></td>
+													<td><strong><?php echo _translate("Sample Tested Date"); ?>&nbsp;:</strong></td>
 													<td>
-														<input type="text" id="vfVlnsSampleTestDate" name="vfVlnsSampleTestDate" class="form-control vfvlnsfilters daterangefield" placeholder="<?php echo _('Select Tested Date'); ?>" style="width:220px;background:#fff;" />
+														<input type="text" id="vfVlnsSampleTestDate" name="vfVlnsSampleTestDate" class="form-control vfvlnsfilters daterangefield" placeholder="<?php echo _translate('Select Tested Date'); ?>" style="width:220px;background:#fff;" />
 													</td>
 												</tr>
 												<tr>
 													<td colspan="6">
-														&nbsp;<button onclick="vfVlnsExportInexcel();" value="Search" class="btn btn-success btn-sm"><em class="fa-solid fa-cloud-arrow-down"></em><span><?php echo _(" Generate report"); ?></span></button>
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="resetFilters('vfvlnsfilters');"><span><?php echo _("Reset"); ?></span></button>
+														&nbsp;<button onclick="vfVlnsExportInexcel();" value="Search" class="btn btn-success btn-sm"><em class="fa-solid fa-cloud-arrow-down"></em><span><?php echo _translate(" Generate report"); ?></span></button>
+														&nbsp;<button class="btn btn-danger btn-sm" onclick="resetFilters('vfvlnsfilters');"><span><?php echo _translate("Reset"); ?></span></button>
 													</td>
 												</tr>
 											</table>
@@ -361,18 +361,18 @@ $state = $geolocationService->getProvinces("yes");
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><strong>
-															<?php echo _("Sample Test Date"); ?>&nbsp;:
+															<?php echo _translate("Sample Test Date"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<input type="text" id="rjtSampleTestDate" name="rjtSampleTestDate" class="form-control sampleRjtReportFilter stDate daterange" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:170px;background:#fff;" onchange="setSampleTestDate(this)" />
+														<input type="text" id="rjtSampleTestDate" name="rjtSampleTestDate" class="form-control sampleRjtReportFilter stDate daterange" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:170px;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
 													<td>&nbsp;<strong>
-															<?php echo _("Batch Code"); ?>&nbsp;:
+															<?php echo _translate("Batch Code"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control sampleRjtReportFilter" id="rjtBatchCode" name="rjtBatchCode" title="<?php echo _('Please select batch code'); ?>" style="width:170px;">
+														<select class="form-control sampleRjtReportFilter" id="rjtBatchCode" name="rjtBatchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:170px;">
 															<option value="">
-																<?php echo _("-- Select --"); ?>
+																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php
 															foreach ($batResult as $code) {
@@ -384,12 +384,12 @@ $state = $geolocationService->getProvinces("yes");
 														</select>
 													</td>
 													<td>&nbsp;<strong>
-															<?php echo _("Sample Type"); ?>&nbsp;:
+															<?php echo _translate("Sample Type"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select style="width:170px;" class="form-control sampleRjtReportFilter" id="rjtSampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
+														<select style="width:170px;" class="form-control sampleRjtReportFilter" id="rjtSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
 															<option value="">
-																<?php echo _("-- Select --"); ?>
+																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php
 															foreach ($sResult as $type) {
@@ -403,28 +403,28 @@ $state = $geolocationService->getProvinces("yes");
 												</tr>
 												<tr>
 													<td><strong>
-															<?php echo _("Province/State"); ?>&nbsp;:
+															<?php echo _translate("Province/State"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control sampleRjtReportFilter select2-element" id="rjtState" onchange="getByProvince('rjtDistrict','rjtFacilityName',this.value)" name="rjtState" title="<?php echo _('Please select Province/State'); ?>">
-															<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+														<select class="form-control sampleRjtReportFilter select2-element" id="rjtState" onchange="getByProvince('rjtDistrict','rjtFacilityName',this.value)" name="rjtState" title="<?php echo _translate('Please select Province/State'); ?>">
+															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 														</select>
 													</td>
 
 													<td><strong>
-															<?php echo _("District/County"); ?> :
+															<?php echo _translate("District/County"); ?> :
 														</strong></td>
 													<td>
-														<select class="form-control sampleRjtReportFilter select2-element" id="rjtDistrict" name="rjtDistrict" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict('rjtFacilityName',this.value)">
+														<select class="form-control sampleRjtReportFilter select2-element" id="rjtDistrict" name="rjtDistrict" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('rjtFacilityName',this.value)">
 														</select>
 													</td>
 													<td>&nbsp;<strong>
-															<?php echo _("Facility Name & Code"); ?>&nbsp;:
+															<?php echo _translate("Facility Name & Code"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control sampleRjtReportFilter" id="rjtFacilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:170px;">
+														<select class="form-control sampleRjtReportFilter" id="rjtFacilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:170px;">
 															<option value="">
-																<?php echo _("-- Select --"); ?>
+																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php
 															foreach ($fResult as $name) {
@@ -439,53 +439,53 @@ $state = $geolocationService->getProvinces("yes");
 												</tr>
 												<tr>
 													<td><strong>
-															<?php echo _("Gender"); ?>&nbsp;:
+															<?php echo _translate("Gender"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select name="rjtGender" id="rjtGender" class="form-control sampleRjtReportFilter" title="<?php echo _('Please choose gender'); ?>" style="width:170px;" onchange="hideFemaleDetails(this.value,'rjtPatientPregnant','rjtPatientBreastfeeding');">
+														<select name="rjtGender" id="rjtGender" class="form-control sampleRjtReportFilter" title="<?php echo _translate('Please choose gender'); ?>" style="width:170px;" onchange="hideFemaleDetails(this.value,'rjtPatientPregnant','rjtPatientBreastfeeding');">
 															<option value="">
-																<?php echo _("-- Select --"); ?>
+																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="male">
-																<?php echo _("Male"); ?>
+																<?php echo _translate("Male"); ?>
 															</option>
 															<option value="female">
-																<?php echo _("Female"); ?>
+																<?php echo _translate("Female"); ?>
 															</option>
 															<option value="not_recorded">
-																<?php echo _("Not Recorded"); ?>
+																<?php echo _translate("Not Recorded"); ?>
 															</option>
 														</select>
 													</td>
 													<td><strong>
-															<?php echo _("Pregnant"); ?>&nbsp;:
+															<?php echo _translate("Pregnant"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select name="rjtPatientPregnant" id="rjtPatientPregnant" class="form-control sampleRjtReportFilter" title="<?php echo _('Please choose pregnant option'); ?>">
+														<select name="rjtPatientPregnant" id="rjtPatientPregnant" class="form-control sampleRjtReportFilter" title="<?php echo _translate('Please choose pregnant option'); ?>">
 															<option value="">
-																<?php echo _("-- Select --"); ?>
+																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="yes">
-																<?php echo _("Yes"); ?>
+																<?php echo _translate("Yes"); ?>
 															</option>
 															<option value="no">
-																<?php echo _("No"); ?>
+																<?php echo _translate("No"); ?>
 															</option>
 														</select>
 													</td>
 													<td><strong>
-															<?php echo _("Breastfeeding"); ?>&nbsp;:
+															<?php echo _translate("Breastfeeding"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select name="rjtPatientBreastfeeding" id="rjtPatientBreastfeeding" class="form-control sampleRjtReportFilter" title="<?php echo _('Please choose option'); ?>">
+														<select name="rjtPatientBreastfeeding" id="rjtPatientBreastfeeding" class="form-control sampleRjtReportFilter" title="<?php echo _translate('Please choose option'); ?>">
 															<option value="">
-																<?php echo _("-- Select --"); ?>
+																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="yes">
-																<?php echo _("Yes"); ?>
+																<?php echo _translate("Yes"); ?>
 															</option>
 															<option value="no">
-																<?php echo _("No"); ?>
+																<?php echo _translate("No"); ?>
 															</option>
 														</select>
 													</td>
@@ -493,7 +493,7 @@ $state = $geolocationService->getProvinces("yes");
 												</tr>
 												<tr>
 													<td><strong>
-															<?php echo _("Rejection Reason"); ?>&nbsp;:
+															<?php echo _translate("Rejection Reason"); ?>&nbsp;:
 														</strong></td>
 													<td colspan="3">
 														<select name="rejectionReason" id="rejectionReason" class="form-control sampleRjtReportFilter" title="Please choose reason" onchange="checkRejectionReason();">
@@ -515,26 +515,26 @@ $state = $geolocationService->getProvinces("yes");
 														</select>
 													</td>
 													<td><strong>
-															<?php echo _("Export with Patient Name"); ?>&nbsp;:
+															<?php echo _translate("Export with Patient Name"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select name="patientRejectedInfo" id="patientRejectedInfo" class="form-control sampleRjtReportFilter" title="<?php echo _('Please choose community sample'); ?>" style="width:170px;">
+														<select name="patientRejectedInfo" id="patientRejectedInfo" class="form-control sampleRjtReportFilter" title="<?php echo _translate('Please choose community sample'); ?>" style="width:170px;">
 															<option value="yes">
-																<?php echo _("Yes"); ?>
+																<?php echo _translate("Yes"); ?>
 															</option>
 															<option value="no">
-																<?php echo _("No"); ?>
+																<?php echo _translate("No"); ?>
 															</option>
 														</select>
 													</td>
 												</tr>
 												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?= _('Search'); ?>" class="btn btn-success btn-sm">
+													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="resetFilters('sampleRjtReportFilter');"><span>
-																<?= _('Reset'); ?>
+																<?= _translate('Reset'); ?>
 															</span></button>
 														<button class="btn btn-success btn-sm" type="button" onclick="exportRejectedResultInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
-															<?php echo _("Export to excel"); ?>
+															<?php echo _translate("Export to excel"); ?>
 														</button>
 													</td>
 												</tr>
@@ -543,40 +543,40 @@ $state = $geolocationService->getProvinces("yes");
 												<thead>
 													<tr>
 														<th>
-															<?php echo _("Sample Code"); ?>
+															<?php echo _translate("Sample Code"); ?>
 														</th>
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 															<th>
-																<?php echo _("Remote Sample Code"); ?>
+																<?php echo _translate("Remote Sample Code"); ?>
 															</th>
 														<?php } ?>
 														<th scope="row">
-															<?php echo _("Facility Name"); ?>
+															<?php echo _translate("Facility Name"); ?>
 														</th>
 														<th>
-															<?php echo _("Patient ART no"); ?>.
+															<?php echo _translate("Patient ART no"); ?>.
 														</th>
 														<th>
-															<?php echo _("Patient Name"); ?>
+															<?php echo _translate("Patient Name"); ?>
 														</th>
 														<th scope="row">
-															<?php echo _("Sample Collection Date"); ?>
+															<?php echo _translate("Sample Collection Date"); ?>
 														</th>
 														<th>
-															<?php echo _("VL Lab Name"); ?>
+															<?php echo _translate("VL Lab Name"); ?>
 														</th>
 														<th>
-															<?php echo _("Rejection Reason"); ?>
+															<?php echo _translate("Rejection Reason"); ?>
 														</th>
 														<th>
-															<?php echo _("Recommended Corrective Action"); ?>
+															<?php echo _translate("Recommended Corrective Action"); ?>
 														</th>
 													</tr>
 												</thead>
 												<tbody>
 													<tr>
 														<td colspan="6" class="dataTables_empty">
-															<?php echo _("Loading data from server"); ?>
+															<?php echo _translate("Loading data from server"); ?>
 														</td>
 													</tr>
 												</tbody>
@@ -586,18 +586,18 @@ $state = $geolocationService->getProvinces("yes");
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><strong>
-															<?php echo _("Sample Collection Date"); ?>&nbsp;:
+															<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<input type="text" id="noResultSampleTestDate" name="noResultSampleTestDate" class="form-control notAvailReportFilter stDate daterange" placeholder="<?php echo _('Select Sample Collection Date'); ?>" readonly style="width:170px;background:#fff;" onchange="setSampleTestDate(this)" />
+														<input type="text" id="noResultSampleTestDate" name="noResultSampleTestDate" class="form-control notAvailReportFilter stDate daterange" placeholder="<?php echo _translate('Select Sample Collection Date'); ?>" readonly style="width:170px;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
 													<td>&nbsp;<strong>
-															<?php echo _("Batch Code"); ?>&nbsp;:
+															<?php echo _translate("Batch Code"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control notAvailReportFilter" id="noResultBatchCode" name="noResultBatchCode" title="<?php echo _('Please select batch code'); ?>" style="width:170px;">
+														<select class="form-control notAvailReportFilter" id="noResultBatchCode" name="noResultBatchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:170px;">
 															<option value="">
-																<?php echo _("-- Select --"); ?>
+																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php
 															foreach ($batResult as $code) {
@@ -609,12 +609,12 @@ $state = $geolocationService->getProvinces("yes");
 														</select>
 													</td>
 													<td>&nbsp;<strong>
-															<?php echo _("Sample Type"); ?>&nbsp;:
+															<?php echo _translate("Sample Type"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select style="width:170px;" class="form-control notAvailReportFilter" id="noResultSampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
+														<select style="width:170px;" class="form-control notAvailReportFilter" id="noResultSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
 															<option value="">
-																<?php echo _("-- Select --"); ?>
+																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php
 															foreach ($sResult as $type) {
@@ -628,28 +628,28 @@ $state = $geolocationService->getProvinces("yes");
 												</tr>
 												<tr>
 													<td><strong>
-															<?php echo _("Province/State"); ?>&nbsp;:
+															<?php echo _translate("Province/State"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control notAvailReportFilter select2-element" id="noResultState" onchange="getByProvince('noResultDistrict','noResultFacilityName',this.value)" name="rjtState" title="<?php echo _('Please select Province/State'); ?>">
-															<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+														<select class="form-control notAvailReportFilter select2-element" id="noResultState" onchange="getByProvince('noResultDistrict','noResultFacilityName',this.value)" name="rjtState" title="<?php echo _translate('Please select Province/State'); ?>">
+															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 														</select>
 													</td>
 
 													<td><strong>
-															<?php echo _("District/County"); ?> :
+															<?php echo _translate("District/County"); ?> :
 														</strong></td>
 													<td>
-														<select class="form-control notAvailReportFilter select2-element" id="noResultDistrict" name="noResultDistrict" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict('noResultFacilityName',this.value)">
+														<select class="form-control notAvailReportFilter select2-element" id="noResultDistrict" name="noResultDistrict" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('noResultFacilityName',this.value)">
 														</select>
 													</td>
 													<td>&nbsp;<strong>
-															<?php echo _("Facility Name & Code"); ?>&nbsp;:
+															<?php echo _translate("Facility Name & Code"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control notAvailReportFilter" id="noResultFacilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:170px;">
+														<select class="form-control notAvailReportFilter" id="noResultFacilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:170px;">
 															<option value="">
-																<?php echo _("-- Select --"); ?>
+																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php
 															foreach ($fResult as $name) {
@@ -664,79 +664,79 @@ $state = $geolocationService->getProvinces("yes");
 												</tr>
 												<tr>
 													<td><strong>
-															<?php echo _("Gender"); ?>&nbsp;:
+															<?php echo _translate("Gender"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select name="noResultGender" id="noResultGender" class="form-control notAvailReportFilter" title="<?php echo _('Please choose gender'); ?>" style="width:170px;" onchange="hideFemaleDetails(this.value,'noResultPatientPregnant','noResultPatientBreastfeeding');">
+														<select name="noResultGender" id="noResultGender" class="form-control notAvailReportFilter" title="<?php echo _translate('Please choose gender'); ?>" style="width:170px;" onchange="hideFemaleDetails(this.value,'noResultPatientPregnant','noResultPatientBreastfeeding');">
 															<option value="">
-																<?php echo _("-- Select --"); ?>
+																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="male">
-																<?php echo _("Male"); ?>
+																<?php echo _translate("Male"); ?>
 															</option>
 															<option value="female">
-																<?php echo _("Female"); ?>
+																<?php echo _translate("Female"); ?>
 															</option>
 															<option value="not_recorded">
-																<?php echo _("Not Recorded"); ?>
+																<?php echo _translate("Not Recorded"); ?>
 															</option>
 														</select>
 													</td>
 													<td><strong>
-															<?php echo _("Pregnant"); ?>&nbsp;:
+															<?php echo _translate("Pregnant"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select name="noResultPatientPregnant" id="noResultPatientPregnant" class="form-control notAvailReportFilter" title="<?php echo _('Please choose pregnant option'); ?>">
+														<select name="noResultPatientPregnant" id="noResultPatientPregnant" class="form-control notAvailReportFilter" title="<?php echo _translate('Please choose pregnant option'); ?>">
 															<option value="">
-																<?php echo _("-- Select --"); ?>
+																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="yes">
-																<?php echo _("Yes"); ?>
+																<?php echo _translate("Yes"); ?>
 															</option>
 															<option value="no">
-																<?php echo _("No"); ?>
+																<?php echo _translate("No"); ?>
 															</option>
 														</select>
 													</td>
 													<td><strong>
-															<?php echo _("Breastfeeding"); ?>&nbsp;:
+															<?php echo _translate("Breastfeeding"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select name="noResultPatientBreastfeeding" id="noResultPatientBreastfeeding" class="form-control notAvailReportFilter" title="<?php echo _('Please choose option'); ?>">
+														<select name="noResultPatientBreastfeeding" id="noResultPatientBreastfeeding" class="form-control notAvailReportFilter" title="<?php echo _translate('Please choose option'); ?>">
 															<option value="">
-																<?php echo _("-- Select --"); ?>
+																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="yes">
-																<?php echo _("Yes"); ?>
+																<?php echo _translate("Yes"); ?>
 															</option>
 															<option value="no">
-																<?php echo _("No"); ?>
+																<?php echo _translate("No"); ?>
 															</option>
 														</select>
 													</td>
 												</tr>
 												<tr>
 													<td><strong>
-															<?php echo _("Export with Patient Name"); ?>&nbsp;:
+															<?php echo _translate("Export with Patient Name"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select name="patientNtAvailInfo" id="patientNtAvailInfo" class="form-control notAvailReportFilter" title="<?php echo _('Please choose community sample'); ?>" style="width:170px;">
+														<select name="patientNtAvailInfo" id="patientNtAvailInfo" class="form-control notAvailReportFilter" title="<?php echo _translate('Please choose community sample'); ?>" style="width:170px;">
 															<option value="yes">
-																<?php echo _("Yes"); ?>
+																<?php echo _translate("Yes"); ?>
 															</option>
 															<option value="no">
-																<?php echo _("No"); ?>
+																<?php echo _translate("No"); ?>
 															</option>
 														</select>
 													</td>
 												</tr>
 												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?= _('Search'); ?>" class="btn btn-success btn-sm">
+													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="resetFilters('notAvailReportFilter');"><span>
-																<?= _('Reset'); ?>
+																<?= _translate('Reset'); ?>
 															</span></button>
 														<button class="btn btn-success btn-sm" type="button" onclick="exportNotAvailableResultInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
-															<?php echo _("Export to excel"); ?>
+															<?php echo _translate("Export to excel"); ?>
 														</button>
 													</td>
 												</tr>
@@ -745,37 +745,37 @@ $state = $geolocationService->getProvinces("yes");
 												<thead>
 													<tr>
 														<th>
-															<?php echo _("Sample Code"); ?>
+															<?php echo _translate("Sample Code"); ?>
 														</th>
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 															<th>
-																<?php echo _("Remote Sample Code"); ?>
+																<?php echo _translate("Remote Sample Code"); ?>
 															</th>
 														<?php } ?>
 														<th scope="row">
-															<?php echo _("Facility Name"); ?>
+															<?php echo _translate("Facility Name"); ?>
 														</th>
 														<th>
-															<?php echo _("Patient ART no"); ?>.
+															<?php echo _translate("Patient ART no"); ?>.
 														</th>
 														<th>
-															<?php echo _("Patient Name"); ?>
+															<?php echo _translate("Patient Name"); ?>
 														</th>
 														<th scope="row">
-															<?php echo _("Sample Collection Date"); ?>
+															<?php echo _translate("Sample Collection Date"); ?>
 														</th>
 														<th>
-															<?php echo _("VL Lab Name"); ?>
+															<?php echo _translate("VL Lab Name"); ?>
 														</th>
 														<th>
-															<?php echo _("Sample Status"); ?>
+															<?php echo _translate("Sample Status"); ?>
 														</th>
 													</tr>
 												</thead>
 												<tbody>
 													<tr>
 														<td colspan="4" class="dataTables_empty">
-															<?php echo _("Loading data from server"); ?>
+															<?php echo _translate("Loading data from server"); ?>
 														</td>
 													</tr>
 												</tbody>
@@ -785,76 +785,76 @@ $state = $geolocationService->getProvinces("yes");
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><strong>
-															<?php echo _("Sample Collection Date"); ?>&nbsp;:
+															<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control incompleteFormReportFilter" placeholder="<?php echo _('Select Sample Collection Date'); ?>" readonly style="width:170px;background:#fff;" />
+														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control incompleteFormReportFilter" placeholder="<?php echo _translate('Select Sample Collection Date'); ?>" readonly style="width:170px;background:#fff;" />
 													</td>
 													<td>&nbsp;<strong>
-															<?php echo _("Fields"); ?>&nbsp;:
+															<?php echo _translate("Fields"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control incompleteFormReportFilter" id="formField" name="formField" multiple="multiple" title="<?php echo _('Please fields'); ?>" style="width:170px;">
+														<select class="form-control incompleteFormReportFilter" id="formField" name="formField" multiple="multiple" title="<?php echo _translate('Please fields'); ?>" style="width:170px;">
 															<option value="">
-																<?php echo _("-- Select --"); ?>
+																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="sample_code">
-																<?php echo _("Sample Code"); ?>
+																<?php echo _translate("Sample Code"); ?>
 															</option>
 															<option value="sample_collection_date">
-																<?php echo _("Sample Collection Date"); ?>
+																<?php echo _translate("Sample Collection Date"); ?>
 															</option>
 															<option value="sample_batch_id">
-																<?php echo _("Batch Code"); ?>
+																<?php echo _translate("Batch Code"); ?>
 															</option>
 															<option value="patient_art_no">
-																<?php echo _("Unique ART No"); ?>.
+																<?php echo _translate("Unique ART No"); ?>.
 															</option>
 															<option value="patient_first_name">
-																<?php echo _("Patient Name"); ?>
+																<?php echo _translate("Patient Name"); ?>
 															</option>
 															<option value="facility_id">
-																<?php echo _("Facility Name"); ?>
+																<?php echo _translate("Facility Name"); ?>
 															</option>
 															<option value="facility_state">
-																<?php echo _("Province"); ?>
+																<?php echo _translate("Province"); ?>
 															</option>
 															<option value="facility_district">
-																<?php echo _("County"); ?>
+																<?php echo _translate("County"); ?>
 															</option>
 															<option value="sample_type">
-																<?php echo _("Sample Type"); ?>
+																<?php echo _translate("Sample Type"); ?>
 															</option>
 															<option value="result">
-																<?php echo _("Result"); ?>
+																<?php echo _translate("Result"); ?>
 															</option>
 															<option value="result_status">
-																<?php echo _("Status"); ?>
+																<?php echo _translate("Status"); ?>
 															</option>
 														</select>
 													</td>
 													<td><strong>
-															<?php echo _("Export with Patient Name"); ?>&nbsp;:
+															<?php echo _translate("Export with Patient Name"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select name="patientVlQualityInfo" id="patientVlQualityInfo" class="form-control incompleteFormReportFilter" title="<?php echo _('Please choose community sample'); ?>" style="width:170px;">
+														<select name="patientVlQualityInfo" id="patientVlQualityInfo" class="form-control incompleteFormReportFilter" title="<?php echo _translate('Please choose community sample'); ?>" style="width:170px;">
 															<option value="yes">
-																<?php echo _("Yes"); ?>
+																<?php echo _translate("Yes"); ?>
 															</option>
 															<option value="no">
-																<?php echo _("No"); ?>
+																<?php echo _translate("No"); ?>
 															</option>
 														</select>
 													</td>
 												</tr>
 
 												<tr>
-													<td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?= _('Search'); ?>" class="btn btn-success btn-sm">
+													<td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="resetFilters('incompleteFormReportFilter');"><span>
-																<?= _('Reset'); ?>
+																<?= _translate('Reset'); ?>
 															</span></button>
 														<button class="btn btn-success btn-sm" type="button" onclick="exportDataQualityInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
-															<?php echo _("Export to excel"); ?>
+															<?php echo _translate("Export to excel"); ?>
 														</button>
 													</td>
 												</tr>
@@ -863,49 +863,49 @@ $state = $geolocationService->getProvinces("yes");
 												<thead>
 													<tr>
 														<th>
-															<?php echo _("Sample Code"); ?>
+															<?php echo _translate("Sample Code"); ?>
 														</th>
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 															<th>
-																<?php echo _("Remote Sample Code"); ?>
+																<?php echo _translate("Remote Sample Code"); ?>
 															</th>
 														<?php } ?>
 														<th scope="row">
-															<?php echo _("Sample Collection Date"); ?>
+															<?php echo _translate("Sample Collection Date"); ?>
 														</th>
 														<th>
-															<?php echo _("Batch Code"); ?>
+															<?php echo _translate("Batch Code"); ?>
 														</th>
 														<th>
-															<?php echo _("Unique ART No"); ?>
+															<?php echo _translate("Unique ART No"); ?>
 														</th>
 														<th>
-															<?php echo _("Patient's Name"); ?>
+															<?php echo _translate("Patient's Name"); ?>
 														</th>
 														<th scope="row">
-															<?php echo _("Facility Name"); ?>
+															<?php echo _translate("Facility Name"); ?>
 														</th>
 														<th>
-															<?php echo _("Province/State"); ?>
+															<?php echo _translate("Province/State"); ?>
 														</th>
 														<th>
-															<?php echo _("District/County"); ?>
+															<?php echo _translate("District/County"); ?>
 														</th>
 														<th>
-															<?php echo _("Sample Type"); ?>
+															<?php echo _translate("Sample Type"); ?>
 														</th>
 														<th>
-															<?php echo _("Result"); ?>
+															<?php echo _translate("Result"); ?>
 														</th>
 														<th scope="row">
-															<?php echo _("Status"); ?>
+															<?php echo _translate("Status"); ?>
 														</th>
 													</tr>
 												</thead>
 												<tbody>
 													<tr>
 														<td colspan="13" class="dataTables_empty">
-															<?php echo _("Loading data from server"); ?>
+															<?php echo _translate("Loading data from server"); ?>
 														</td>
 													</tr>
 												</tbody>
@@ -934,26 +934,26 @@ $state = $geolocationService->getProvinces("yes");
 	$(document).ready(function() {
 		$("#state,#rjtState,#noResultState").select2({
 			width: '170px',
-			placeholder: "<?php echo _("Select Province"); ?>"
+			placeholder: "<?php echo _translate("Select Province"); ?>"
 		});
 		$("#district,#rjtDistrict,#noResultDistrict").select2({
 			width: '170px',
-			placeholder: "<?php echo _("Select District"); ?>"
+			placeholder: "<?php echo _translate("Select District"); ?>"
 		});
 		$("#hvlFacilityName,#rjtFacilityName,#noResultFacilityName").select2({
 			width: '170px',
-			placeholder: "<?php echo _("Select Facilities"); ?>"
+			placeholder: "<?php echo _translate("Select Facilities"); ?>"
 		});
 		$("#formField").select2({
 			width: '170px',
-			placeholder: "<?php echo _("Select Fields"); ?>"
+			placeholder: "<?php echo _translate("Select Fields"); ?>"
 		});
 		$("#vfVlnsfacilityName").select2({
-			placeholder: "<?php echo _("Select Facilities"); ?>"
+			placeholder: "<?php echo _translate("Select Facilities"); ?>"
 		});
 		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate,#vfVlnsSampleCollectionDate,#vfVlnsSampleTestDate').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _("Clear"); ?>",
+					cancelLabel: "<?= _translate("Clear"); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},
@@ -981,7 +981,7 @@ $state = $geolocationService->getProvinces("yes");
 			});
 		$('#vfVlnsSampleCollectionDate').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _("Clear"); ?>",
+					cancelLabel: "<?= _translate("Clear"); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},
@@ -1035,7 +1035,7 @@ $state = $geolocationService->getProvinces("yes");
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _("No data found matching the selected parameters"); ?>");
+					alert("<?php echo _translate("No data found matching the selected parameters"); ?>");
 				} else {
 					$.unblockUI();
 					window.open('/download.php?f=' + data, '_blank');
@@ -1428,14 +1428,14 @@ $state = $geolocationService->getProvinces("yes");
 	}
 
 	function updateStatus(id, value) {
-		conf = confirm("<?php echo _("Do you wisht to change the contact completed status?"); ?>");
+		conf = confirm("<?php echo _translate("Do you wisht to change the contact completed status?"); ?>");
 		if (conf) {
 			$.post("/vl/program-management/updateContactCompletedStatus.php", {
 					id: id,
 					value: value
 				},
 				function(data) {
-					alert("<?php echo _("Status updated successfully"); ?>");
+					alert("<?php echo _translate("Status updated successfully"); ?>");
 					oTableViralLoad.fnDraw();
 				});
 		} else {
@@ -1448,7 +1448,7 @@ $state = $geolocationService->getProvinces("yes");
 			searchVlRequestData();
 		}
 		var markAsComplete = false;
-		confm = confirm("<?php echo _("Do you want to mark these as complete ?"); ?>");
+		confm = confirm("<?php echo _translate("Do you want to mark these as complete ?"); ?>");
 		if (confm) {
 			var markAsComplete = true;
 		}
@@ -1467,7 +1467,7 @@ $state = $geolocationService->getProvinces("yes");
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _("Unable to generate the excel file"); ?>");
+					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
 					//location.href = '/temporary/' + data;
@@ -1496,7 +1496,7 @@ $state = $geolocationService->getProvinces("yes");
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _("Unable to generate the excel file"); ?>");
+					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
 					window.open('/download.php?f=' + data, '_blank');
@@ -1522,7 +1522,7 @@ $state = $geolocationService->getProvinces("yes");
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _("Unable to generate the excel file"); ?>");
+					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
 					window.open('/download.php?f=' + data, '_blank');
@@ -1544,7 +1544,7 @@ $state = $geolocationService->getProvinces("yes");
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _("Unable to generate the excel file"); ?>");
+					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
 					window.open('/download.php?f=' + data, '_blank');

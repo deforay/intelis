@@ -48,7 +48,7 @@ class LegacyRequestHandler implements RequestHandlerInterface
                         $fileToInclude = (APPLICATION_PATH . DIRECTORY_SEPARATOR . $uri);
                     } else {
                         http_response_code(404);
-                        throw new SystemException(_('Sorry! We could not find this page or resource' . '-' . $uri), 404);
+                        throw new SystemException(_translate('Sorry! We could not find this page or resource' . '-' . $uri), 404);
                         //$fileToInclude = APPLICATION_PATH . '/error/error.php';
                     }
                     break;

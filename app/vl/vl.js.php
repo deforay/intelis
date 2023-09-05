@@ -84,7 +84,7 @@
             date2 = new Date(sampleReceivedDate);
 
             if (date2.getTime() < date1.getTime()) {
-                alert("<?= _("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date"); ?>");
+                alert("<?= _translate("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date"); ?>");
                 $("#sampleReceivedDate").val("");
             }
         }
@@ -99,7 +99,7 @@
             date2 = new Date(sampleReceivedAtHubOn);
 
             if (date2.getTime() < date1.getTime()) {
-                alert("<?= _("Sample Received at Hub Date cannot be earlier than Sample Collection Date"); ?>");
+                alert("<?= _translate("Sample Received at Hub Date cannot be earlier than Sample Collection Date"); ?>");
                 $("#sampleReceivedAtHubOn").val("");
             }
         }
@@ -114,7 +114,7 @@
             date2 = new Date(sampleTestingDate);
 
             if (date2.getTime() < date1.getTime()) {
-                alert("<?= _("Sample Testing Date cannot be earlier than Sample Collection Date"); ?>");
+                alert("<?= _translate("Sample Testing Date cannot be earlier than Sample Collection Date"); ?>");
                 $("#sampleTestingDateAtLab").val("");
             }
         }
@@ -129,7 +129,7 @@
             date2 = new Date(artInitiationDate);
 
             if (date2.getTime() < date1.getTime()) {
-                alert("<?= _("ART Initiation Date cannot be earlier than Patient Date of Birth"); ?>");
+                alert("<?= _translate("ART Initiation Date cannot be earlier than Patient Date of Birth"); ?>");
                 $("#dateOfArtInitiation").val("");
             }
         }

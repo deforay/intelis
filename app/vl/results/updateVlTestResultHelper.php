@@ -174,7 +174,7 @@ try {
     $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vlData);
     if ($id === true) {
-        $_SESSION['alertMsg'] = _("VL request updated successfully");
+        $_SESSION['alertMsg'] = _translate("VL request updated successfully");
         //Log result updates
         $data = array(
             'user_id' => $_SESSION['userId'],
@@ -184,7 +184,7 @@ try {
         );
         $db->insert($tableName2, $data);
     } else {
-        $_SESSION['alertMsg'] = _("Please try again later");
+        $_SESSION['alertMsg'] = _translate("Please try again later");
     }
 
     header("Location:vlTestResult.php");

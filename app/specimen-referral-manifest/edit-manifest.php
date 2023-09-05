@@ -239,7 +239,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="operator" class="col-lg-4 control-label">
-										<?php echo _("Operator/Technician"); ?>
+										<?php echo _translate("Operator/Technician"); ?>
 									</label>
 									<div class="col-lg-7" style="margin-left:3%;">
 										<select class="form-control select2" id="operator" name="operator" title="Choose one Operator/Technician">
@@ -253,7 +253,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="facility" class="col-lg-4 control-label">
-										<?php echo _("Sample Collection Point"); ?>
+										<?php echo _translate("Sample Collection Point"); ?>
 									</label>
 									<div class="col-lg-7" style="margin-left:3%;">
 										<select class="form-control select2" id="facility" name="facility" title="Choose one sample collection point">
@@ -265,7 +265,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="sampleType" class="col-lg-4 control-label">
-										<?php echo _("Sample Type"); ?>
+										<?php echo _translate("Sample Type"); ?>
 									</label>
 									<div class="col-lg-7" style="margin-left:3%;">
 										<select class="form-control select2" id="sampleType" name="sampleType" title="Choose Sample Type">
@@ -279,10 +279,10 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="daterange" class="col-lg-4 control-label">
-										<?php echo _("Sample Collection Date Range"); ?>
+										<?php echo _translate("Sample Collection Date Range"); ?>
 									</label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<input type="text" class="form-control" id="daterange" name="daterange" placeholder="<?php echo _('Sample Collection Date Range'); ?>" title="Choose one sample collection date range">
+										<input type="text" class="form-control" id="daterange" name="daterange" placeholder="<?php echo _translate('Sample Collection Date Range'); ?>" title="Choose one sample collection date range">
 									</div>
 								</div>
 							</div>
@@ -370,7 +370,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 		//getSampleCodeDetails();
 		$('#daterange').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _("Clear"); ?>",
+					cancelLabel: "<?= _translate("Clear"); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},

@@ -5,7 +5,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 
-$title = _("View All Requests");
+$title = _translate("View All Requests");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -43,10 +43,10 @@ $state = $geolocationService->getProvinces("yes");
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><em class="fa-solid fa-list-check"></em> <?php echo _("Failed/Hold Samples"); ?></h1>
+        <h1><em class="fa-solid fa-list-check"></em> <?php echo _translate("Failed/Hold Samples"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-            <li class="active"><?php echo _("Test Request"); ?></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+            <li class="active"><?php echo _translate("Test Request"); ?></li>
         </ol>
     </section>
 
@@ -57,40 +57,40 @@ $state = $geolocationService->getProvinces("yes");
                 <div class="box">
                     <table aria-describedby="table" id="advanceFilter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
                         <tr>
-                            <td><strong><?php echo _("Sample Collection Date"); ?> :</strong></td>
+                            <td><strong><?php echo _translate("Sample Collection Date"); ?> :</strong></td>
                             <td>
-                                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="background:#fff;" />
+                                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="background:#fff;" />
                             </td>
-                            <td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+                            <td><strong><?php echo _translate("Province/State"); ?>&nbsp;:</strong></td>
                             <td>
-                                <select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
-                                    <?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+                                <select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _translate('Please select Province/State'); ?>">
+                                    <?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
                                 </select>
                             </td>
-                            <td><strong><?php echo _("District/County"); ?> :</strong></td>
+                            <td><strong><?php echo _translate("District/County"); ?> :</strong></td>
                             <td>
-                                <select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict(this.value		)">
+                                <select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict(this.value		)">
                                 </select>
                             </td>
 
                         </tr>
                         <tr>
-                            <td><strong><?php echo _("Facility Name"); ?> :</strong></td>
+                            <td><strong><?php echo _translate("Facility Name"); ?> :</strong></td>
                             <td>
-                                <select class="form-control" id="facilityName" name="facilityName" multiple="multiple" title="<?php echo _('Please select facility name'); ?>" style="width:100%;">
+                                <select class="form-control" id="facilityName" name="facilityName" multiple="multiple" title="<?php echo _translate('Please select facility name'); ?>" style="width:100%;">
                                     <?= $facilitiesDropdown; ?>
                                 </select>
                             </td>
-                            <td><strong><?php echo _("Testing Lab"); ?> :</strong></td>
+                            <td><strong><?php echo _translate("Testing Lab"); ?> :</strong></td>
                             <td>
-                                <select class="form-control" id="vlLab" name="vlLab" title="<?php echo _('Please select vl lab'); ?>" style="width:220px;">
+                                <select class="form-control" id="vlLab" name="vlLab" title="<?php echo _translate('Please select vl lab'); ?>" style="width:220px;">
                                     <?= $testingLabsDropdown; ?>
                                 </select>
                             </td>
-                            <td><strong><?php echo _("Sample Type"); ?> :</strong></td>
+                            <td><strong><?php echo _translate("Sample Type"); ?> :</strong></td>
                             <td>
-                                <select class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
-                                    <option value=""> <?php echo _("-- Select --"); ?> </option>
+                                <select class="form-control" id="sampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+                                    <option value=""> <?php echo _translate("-- Select --"); ?> </option>
                                     <?php
                                     foreach ($sResult as $type) {
                                     ?>
@@ -102,39 +102,39 @@ $state = $geolocationService->getProvinces("yes");
                             </td>
                         </tr>
                         <tr>
-                            <td><strong><?php echo _("Result Status"); ?>&nbsp;:</strong></td>
+                            <td><strong><?php echo _translate("Result Status"); ?>&nbsp;:</strong></td>
                             <td>
-                                <select name="status" id="status" class="form-control" title="<?php echo _('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
-                                    <option value="1"><?php echo _("Hold"); ?></option>
-                                    <option value="2"><?php echo _("Lost"); ?></option>
-                                    <option value="5"><?php echo _("Failed"); ?></option>
-                                    <option value="10"><?php echo _("Expired"); ?></option>
+                                <select name="status" id="status" class="form-control" title="<?php echo _translate('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
+                                    <option value="1"><?php echo _translate("Hold"); ?></option>
+                                    <option value="2"><?php echo _translate("Lost"); ?></option>
+                                    <option value="5"><?php echo _translate("Failed"); ?></option>
+                                    <option value="10"><?php echo _translate("Expired"); ?></option>
                                 </select>
                             </td>
-                            <td><strong><?php echo _("Patient ID"); ?>&nbsp;:</strong></td>
+                            <td><strong><?php echo _translate("Patient ID"); ?>&nbsp;:</strong></td>
                             <td>
-                                <input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _('Enter Patient ID'); ?>" style="background:#fff;" />
+                                <input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _translate('Enter Patient ID'); ?>" style="background:#fff;" />
                             </td>
 
-                            <td><strong><?php echo _("Patient Name"); ?>&nbsp;:</strong></td>
+                            <td><strong><?php echo _translate("Patient Name"); ?>&nbsp;:</strong></td>
                             <td>
-                                <input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _('Enter Patient Name'); ?>" style="background:#fff;" />
+                                <input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
                             </td>
                         </tr>
 
                         <tr>
-                            <td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?= _('Search'); ?>" class="btn btn-default btn-sm">
-                                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _('Reset'); ?></span></button>
+                            <td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-default btn-sm">
+                                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
                             </td>
                             <td colspan="4">
-                                &nbsp;<button class="btn btn-success btn-sm pull-right retest-btn" style="margin-right:5px;display:none;" onclick="retestSample('',true);"><span><?php echo _("Retest the selected samples"); ?></span></button>
+                                &nbsp;<button class="btn btn-success btn-sm pull-right retest-btn" style="margin-right:5px;display:none;" onclick="retestSample('',true);"><span><?php echo _translate("Retest the selected samples"); ?></span></button>
                             </td>
                         </tr>
                     </table>
                     <table aria-describedby="table" id="filter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
                         <tr id="">
                             <td>
-                                &nbsp;<button class="btn btn-success btn-sm pull-right retest-btn" style="margin-right:5px;display:none;" onclick="retestSample('',true);"><span><?php echo _("Retest the selected samples"); ?></span></button>
+                                &nbsp;<button class="btn btn-success btn-sm pull-right retest-btn" style="margin-right:5px;display:none;" onclick="retestSample('',true);"><span><?php echo _translate("Retest the selected samples"); ?></span></button>
                             </td>
                         </tr>
                     </table>
@@ -142,47 +142,47 @@ $state = $geolocationService->getProvinces("yes");
                         <div class="row" style="background:#e0e0e0;float: right !important;padding: 15px;">
                             <div class="col-md-12">
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _("Sample Code"); ?></label>
+                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _translate("Sample Code"); ?></label>
                                 </div>
                                 <?php $i = 0;
                                 if ($_SESSION['instanceType'] != 'standalone') {
                                     $i = 1; ?>
                                     <div class="col-md-3">
-                                        <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Remote Sample Code"); ?></label>
+                                        <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Remote Sample Code"); ?></label>
                                     </div>
                                 <?php } ?>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_collection_date" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Sample Collection Date"); ?></label> <br>
+                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_collection_date" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Sample Collection Date"); ?></label> <br>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Batch Code"); ?></label>
+                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Batch Code"); ?></label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_art_no" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Art No"); ?></label> <br>
+                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_art_no" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Art No"); ?></label> <br>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_first_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Patient's Name"); ?></label>
+                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_first_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Patient's Name"); ?></label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Facility Name"); ?></label>
+                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Facility Name"); ?></label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="state" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Province/State"); ?></label>
+                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="state" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Province/State"); ?></label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="district" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("District/County"); ?></label>
+                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="district" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("District/County"); ?></label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Sample Type"); ?></label>
+                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Sample Type"); ?></label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Result"); ?></label>
+                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Result"); ?></label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="last_modified_datetime" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Last Modified Date"); ?></label>
+                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="last_modified_datetime" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Last Modified Date"); ?></label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="status_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _("Status"); ?></label>
+                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="status_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Status"); ?></label>
                                 </div>
                             </div>
                         </div>
@@ -194,29 +194,29 @@ $state = $geolocationService->getProvinces("yes");
                             <thead>
                                 <tr>
                                     <th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()" /></th>
-                                    <th><?php echo _("Sample Code"); ?></th>
+                                    <th><?php echo _translate("Sample Code"); ?></th>
                                     <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-                                        <th><?php echo _("Remote Sample Code"); ?></th>
+                                        <th><?php echo _translate("Remote Sample Code"); ?></th>
                                     <?php } ?>
-                                    <th><?php echo _("Sample Collection Date"); ?></th>
-                                    <th><?php echo _("Batch Code"); ?></th>
-                                    <th><?php echo _("Unique ART No"); ?></th>
-                                    <th><?php echo _("Patient's Name"); ?></th>
-                                    <th scope="row"><?php echo _("Facility Name"); ?></th>
-                                    <th><?php echo _("Province/State"); ?></th>
-                                    <th><?php echo _("District/County"); ?></th>
-                                    <th><?php echo _("Sample Type"); ?></th>
-                                    <th><?php echo _("Result"); ?></th>
-                                    <th><?php echo _("Last Modified Date"); ?></th>
-                                    <th scope="row"><?php echo _("Status"); ?></th>
+                                    <th><?php echo _translate("Sample Collection Date"); ?></th>
+                                    <th><?php echo _translate("Batch Code"); ?></th>
+                                    <th><?php echo _translate("Unique ART No"); ?></th>
+                                    <th><?php echo _translate("Patient's Name"); ?></th>
+                                    <th scope="row"><?php echo _translate("Facility Name"); ?></th>
+                                    <th><?php echo _translate("Province/State"); ?></th>
+                                    <th><?php echo _translate("District/County"); ?></th>
+                                    <th><?php echo _translate("Sample Type"); ?></th>
+                                    <th><?php echo _translate("Result"); ?></th>
+                                    <th><?php echo _translate("Last Modified Date"); ?></th>
+                                    <th scope="row"><?php echo _translate("Status"); ?></th>
                                     <?php if (isset($_SESSION['privileges']) && (in_array("/vl/requests/editVlRequest.php", $_SESSION['privileges']))) { ?>
-                                        <th><?php echo _("Action"); ?></th>
+                                        <th><?php echo _translate("Action"); ?></th>
                                     <?php } ?>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="16" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+                                    <td colspan="16" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -224,19 +224,19 @@ $state = $geolocationService->getProvinces("yes");
                         if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') {
                         ?>
 
-                            <div id="printer_data_loading" style="display:none"><span id="loading_message"><?php echo _("Loading Printer Details"); ?>...</span><br />
+                            <div id="printer_data_loading" style="display:none"><span id="loading_message"><?php echo _translate("Loading Printer Details"); ?>...</span><br />
                                 <div class="progress" style="width:100%">
                                     <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
                                     </div>
                                 </div>
                             </div> <!-- /printer_data_loading -->
                             <div id="printer_details" style="display:none">
-                                <span id="selected_printer"><?php echo _("No printer selected"); ?>!</span>
-                                <button type="button" class="btn btn-success" onclick="changePrinter()"><?php echo _("Change/Retry"); ?></button>
+                                <span id="selected_printer"><?php echo _translate("No printer selected"); ?>!</span>
+                                <button type="button" class="btn btn-success" onclick="changePrinter()"><?php echo _translate("Change/Retry"); ?></button>
                             </div><br /> <!-- /printer_details -->
                             <div id="printer_select" style="display:none">
-                                <?php echo _("Zebra Printer Options"); ?><br />
-                                <?php echo _("Printer"); ?>: <select id="printers"></select>
+                                <?php echo _translate("Zebra Printer Options"); ?><br />
+                                <?php echo _translate("Printer"); ?>: <select id="printers"></select>
                             </div> <!-- /printer_select -->
 
                         <?php
@@ -286,16 +286,16 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
     var oTable = null;
     $(document).ready(function() {
         $("#state").select2({
-            placeholder: "<?php echo _("Select Province"); ?>"
+            placeholder: "<?php echo _translate("Select Province"); ?>"
         });
         $("#district").select2({
-            placeholder: "<?php echo _("Select District"); ?>"
+            placeholder: "<?php echo _translate("Select District"); ?>"
         });
         $("#vlLab").select2({
-            placeholder: "<?php echo _("Select Labs"); ?>"
+            placeholder: "<?php echo _translate("Select Labs"); ?>"
         });
         $("#facilityName").select2({
-            placeholder: "<?php echo _("Select Facilities"); ?>"
+            placeholder: "<?php echo _translate("Select Facilities"); ?>"
         });
         <?php
         if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
@@ -306,7 +306,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
         loadVlRequestData();
         $('#sampleCollectionDate').daterangepicker({
                 locale: {
-                    cancelLabel: "<?= _("Clear"); ?>",
+                    cancelLabel: "<?= _translate("Clear"); ?>",
                     format: 'DD-MMM-YYYY',
                     separator: ' to ',
                 },
@@ -567,7 +567,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
             function(data) {
                 $.unblockUI();
                 if (data === "" || data === null || data === undefined) {
-                    alert("<?php echo _("Unable to generate the excel file"); ?>");
+                    alert("<?php echo _translate("Unable to generate the excel file"); ?>");
                 } else {
                     location.href = '/temporary/' + data;
                 }
@@ -592,10 +592,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 function(data) {
                     $.unblockUI();
                     if (data > 0) {
-                        alert("<?php echo _("Retest has been submitted"); ?>.");
+                        alert("<?php echo _translate("Retest has been submitted"); ?>.");
                         oTable.fnDraw();
                     } else {
-                        alert("<?php echo _("Something went wrong. Please try again later"); ?>");
+                        alert("<?php echo _translate("Something went wrong. Please try again later"); ?>");
                     }
                 });
         }

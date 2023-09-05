@@ -229,7 +229,7 @@ class MYPDF extends TCPDF
 		// Set font
 		$this->SetFont('helvetica', '', 8);
 		if ($this->systemConfig['sc_user_type'] == 'vluser' && $this->dataSync == 0 && ($this->formId == 1 || $this->formId == 3)) {
-			$generatedAtTestingLab = " | " . _("Report generated at Testing Lab");
+			$generatedAtTestingLab = " | " . _translate("Report generated at Testing Lab");
 		} else {
 			$generatedAtTestingLab = "";
 		}

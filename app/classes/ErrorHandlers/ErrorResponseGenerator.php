@@ -40,7 +40,7 @@ class ErrorResponseGenerator
             $httpCode = (http_response_code() == 200) ? 500 : http_response_code();
 
             $errorMessage = $exception->getMessage() ??
-                _('Sorry, something went wrong. Please try again later.');
+                _translate('Sorry, something went wrong. Please try again later.');
 
             // Log the error with Monolog, including the stack trace
             $logger->error('Error: ' . $exception->getMessage(), [
@@ -50,7 +50,7 @@ class ErrorResponseGenerator
 
             if (APPLICATION_ENV == 'production') {
                 $errorMessage =
-                    _('Sorry, something went wrong. Please try again later.');
+                    _translate('Sorry, something went wrong. Please try again later.');
             }
 
             if (strpos($request->getUri()->getPath(), '/api/') === 0) {

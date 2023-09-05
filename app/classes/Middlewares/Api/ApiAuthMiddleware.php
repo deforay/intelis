@@ -35,7 +35,7 @@ class ApiAuthMiddleware implements MiddlewareInterface
         if (false === $tokenValidation) {
             $response = new Response();
             $response->getBody()->write(json_encode([
-                'error' => _('Unauthorized Access. Please contact your system administrator.'),
+                'error' => _translate('Unauthorized Access. Please contact your system administrator.'),
                 'timestamp' => time()
             ]));
             return $response->withStatus(401);

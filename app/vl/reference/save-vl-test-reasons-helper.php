@@ -34,7 +34,7 @@ try {
 		}
 
 		if ($lastId > 0) {
-			$_SESSION['alertMsg'] = _("VL Test Reason details saved successfully");
+			$_SESSION['alertMsg'] = _translate("VL Test Reason details saved successfully");
 			$general->activityLog('VL Test Reason details', $_SESSION['userName'] . ' added new Test Reason for ' . $_POST['testReasonName'], 'vl-reference');
 		}
 	}

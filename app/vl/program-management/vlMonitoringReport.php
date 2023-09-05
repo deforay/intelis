@@ -5,7 +5,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 
-$title = _("VL Quarterly Monitoring Report");
+$title = _translate("VL Quarterly Monitoring Report");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -173,7 +173,7 @@ $state = $geolocationService->getProvinces("yes");
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1><em class="fa-solid fa-book"></em>
-			<?php echo _("VL Quarterly Monitoring Tool"); ?>
+			<?php echo _translate("VL Quarterly Monitoring Tool"); ?>
 			<!--<ol class="breadcrumb">-->
 			<!--  <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>-->
 			<!--  <li class="active">Export Result</li>-->
@@ -185,16 +185,13 @@ $state = $geolocationService->getProvinces("yes");
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box" id="filterDiv">
-					<table aria-describedby="table" class="table" aria-hidden="true"
-						style="margin-left:1%;margin-top:20px;width:98%;">
+					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<td><strong>
-									<?php echo _("Sample Collection Date"); ?>&nbsp;:
+									<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate"
-									class="form-control" placeholder="Select Collection Date" readonly
-									style="width:220px;background:#fff;" />
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" />
 								<!--<div id="sla-data-range" class="mrp-container form-control">
 									<span class="mrp-icon"><em class="fa-solid fa-calendar-days"></em> &nbsp;</span>
 									<div class="mrp-monthdisplay ">
@@ -206,13 +203,11 @@ $state = $geolocationService->getProvinces("yes");
 								</div>-->
 							</td>
 							<td><strong>
-									<?php echo _("Region/Province/State"); ?>&nbsp;:
+									<?php echo _translate("Region/Province/State"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select name="state" id="state" class="form-control"
-									title="<?php echo _('Please choose Province/State/Region'); ?>"
-									onchange="getByProvince(this.value)" onkeyup="searchVlRequestData()">
-									<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+								<select name="state" id="state" class="form-control" title="<?php echo _translate('Please choose Province/State/Region'); ?>" onchange="getByProvince(this.value)" onkeyup="searchVlRequestData()">
+									<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 								</select>
 							</td>
 
@@ -220,20 +215,17 @@ $state = $geolocationService->getProvinces("yes");
 						<tr>
 
 							<td><strong>
-									<?php echo _("District/County"); ?> :
+									<?php echo _translate("District/County"); ?> :
 								</strong></td>
 							<td>
-								<select name="district" id="district" class="form-control"
-									title="<?php echo _('Please choose District/County'); ?>"
-									onchange="getByDistrict(this.value)" onkeyup="searchVlRequestData()">
+								<select name="district" id="district" class="form-control" title="<?php echo _translate('Please choose District/County'); ?>" onchange="getByDistrict(this.value)" onkeyup="searchVlRequestData()">
 								</select>
 							</td>
 							<td><strong>
-									<?php echo _("Lab Name"); ?> :
+									<?php echo _translate("Lab Name"); ?> :
 								</strong></td>
 							<td>
-								<select class="form-control" id="facilityName" name="facilityName"
-									title="<?php echo _('Please select facility name'); ?>">
+								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
@@ -245,61 +237,58 @@ $state = $geolocationService->getProvinces("yes");
 			  </td> -->
 						</tr>
 						<tr>
-							<td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();"
-									value="<?= _('Search'); ?>" class="btn btn-success btn-sm">
-								&nbsp;<button class="btn btn-danger btn-sm"
-									onclick="document.location.href = document.location"><span>
-										<?= _('Reset'); ?>
+							<td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
+								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
+										<?= _translate('Reset'); ?>
 									</span></button>
 
 								&nbsp;<button class="btn btn-info" type="button" onclick="exportInexcel()">
-									<?php echo _("Export to excel"); ?>
+									<?php echo _translate("Export to excel"); ?>
 								</button>
 							</td>
 						</tr>
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="vlMonitoringTable"
-							class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="vlMonitoringTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th>
-										<?php echo _("Sample Code"); ?>
+										<?php echo _translate("Sample Code"); ?>
 									</th>
 									<th>
-										<?php echo _("Batch Code"); ?>
+										<?php echo _translate("Batch Code"); ?>
 									</th>
 									<th>
-										<?php echo _("Unique ART No"); ?>
+										<?php echo _translate("Unique ART No"); ?>
 									</th>
 									<th>
-										<?php echo _("Patient's Name"); ?>
+										<?php echo _translate("Patient's Name"); ?>
 									</th>
 									<th scope="row">
-										<?php echo _("Facility Name"); ?>
+										<?php echo _translate("Facility Name"); ?>
 									</th>
 									<th>
-										<?php echo _("Province/State/Region"); ?>
+										<?php echo _translate("Province/State/Region"); ?>
 									</th>
 									<th>
-										<?php echo _("District/County"); ?>
+										<?php echo _translate("District/County"); ?>
 									</th>
 									<th>
-										<?php echo _("Sample Type"); ?>
+										<?php echo _translate("Sample Type"); ?>
 									</th>
 									<th>
-										<?php echo _("Result"); ?>
+										<?php echo _translate("Result"); ?>
 									</th>
 									<th scope="row">
-										<?php echo _("Status"); ?>
+										<?php echo _translate("Status"); ?>
 									</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
 									<td colspan="10" class="dataTables_empty">
-										<?php echo _("Loading data from server"); ?>
+										<?php echo _translate("Loading data from server"); ?>
 									</td>
 								</tr>
 							</tbody>
@@ -322,50 +311,50 @@ $state = $geolocationService->getProvinces("yes");
 	var startDate = "";
 	var endDate = "";
 	var oTable = null;
-	$(document).ready(function () {
+	$(document).ready(function() {
 		$("#state").select2({
-			placeholder: "<?php echo _("Select Province"); ?>"
+			placeholder: "<?php echo _translate("Select Province"); ?>"
 		});
 		$("#district").select2({
-			placeholder: "<?php echo _("Select District"); ?>"
+			placeholder: "<?php echo _translate("Select District"); ?>"
 		});
 		$("#facilityName").select2({
-			placeholder: "<?php echo _("Select Facility"); ?>"
+			placeholder: "<?php echo _translate("Select Facility"); ?>"
 		});
 		$('#sampleCollectionDate').daterangepicker({
-			locale: {
-				cancelLabel: "<?= _("Clear"); ?>",
-				format: 'DD-MMM-YYYY',
-				separator: ' to ',
+				locale: {
+					cancelLabel: "<?= _translate("Clear"); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
+				},
+				startDate: moment().subtract(6, 'days'),
+				endDate: moment(),
+				maxDate: moment(),
+				ranges: {
+					'Today': [moment(), moment()],
+					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+					'Last 18 Months': [moment().subtract('month', 18).startOf('month'), moment().endOf('month')],
+					'Last 24 Months': [moment().subtract('month', 24).startOf('month'), moment().endOf('month')]
+				}
 			},
-			startDate: moment().subtract(6, 'days'),
-			endDate: moment(),
-			maxDate: moment(),
-			ranges: {
-				'Today': [moment(), moment()],
-				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-				'This Month': [moment().startOf('month'), moment().endOf('month')],
-				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-				'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
-				'Last 18 Months': [moment().subtract('month', 18).startOf('month'), moment().endOf('month')],
-				'Last 24 Months': [moment().subtract('month', 24).startOf('month'), moment().endOf('month')]
-			}
-		},
-			function (start, end) {
+			function(start, end) {
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
-		$("#state").change(function () {
+		$("#state").change(function() {
 			provinceId = $(this).val();
 			$.blockUI();
 			$("#district").html('');
 			$.post("/common/get-by-province-id.php", {
-				provinceId: provinceId,
-				districts: true,
-			},
-				function (data) {
+					provinceId: provinceId,
+					districts: true,
+				},
+				function(data) {
 					Obj.parseJSON(data);
 					$("#district").html(Obj['districts']);
 				});
@@ -374,7 +363,7 @@ $state = $geolocationService->getProvinces("yes");
 		loadVlRequestData();
 		$('#sampleTestDate').val("");
 		$('#sampleCollectionDate').val("");
-		$("#filterDiv input, #filterDiv select").on("change", function () {
+		$("#filterDiv input, #filterDiv select").on("change", function() {
 			searchExecuted = false;
 		});
 
@@ -394,35 +383,35 @@ $state = $geolocationService->getProvinces("yes");
 			"iDisplayLength": 25,
 			"bRetrieve": true,
 			"aoColumns": [{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
 			],
 			"aaSorting": [
 				[0, "asc"]
@@ -430,7 +419,7 @@ $state = $geolocationService->getProvinces("yes");
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "getVlMonitoringResultDetails.php",
-			"fnServerData": function (sSource, aoData, fnCallback) {
+			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "facilityName",
 					"value": $("#facilityName").val()
@@ -481,17 +470,17 @@ $state = $geolocationService->getProvinces("yes");
 		$.blockUI();
 		oTable.fnDraw();
 		$.post("/vl/program-management/vlMonitoringExportInExcel.php", {
-			//sampleCollectionDate: $("#mrp-lowerDate").val() + ' to ' + $("#mrp-upperDate").val(),
-			sampleCollectionDate: $("#sampleCollectionDate").val(),
-			fyName: $("#facilityName  option:selected").text(),
-			facilityName: $("#facilityName").val(),
-			state: $("#state").val(),
-			district: $("#district").val(),
-			sampleTestDate: $("#sampleTestDate").val()
-		},
-			function (data) {
+				//sampleCollectionDate: $("#mrp-lowerDate").val() + ' to ' + $("#mrp-upperDate").val(),
+				sampleCollectionDate: $("#sampleCollectionDate").val(),
+				fyName: $("#facilityName  option:selected").text(),
+				facilityName: $("#facilityName").val(),
+				state: $("#state").val(),
+				district: $("#district").val(),
+				sampleTestDate: $("#sampleTestDate").val()
+			},
+			function(data) {
 				if (data == "" || data == null || data == undefined) {
-					alert("<?php echo _("Unable to generate excel file"); ?>");
+					alert("<?php echo _translate("Unable to generate excel file"); ?>");
 				} else {
 					location.href = '/temporary/' + data;
 				}
@@ -501,7 +490,7 @@ $state = $geolocationService->getProvinces("yes");
 
 	var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-	$(function () {
+	$(function() {
 		startMonth = <?php echo $startMonth; ?>;
 		startYear = <?php echo $startYear; ?>;
 		endMonth = <?php echo $endMonth ?>;
@@ -535,11 +524,11 @@ $state = $geolocationService->getProvinces("yes");
 			content += '</div></div></div></div>';
 		}
 		content += '<div class="col-xs-1">';
-		content += '<button class="btn btn-info mpr-close"><?php echo _("Apply"); ?></button>';
+		content += '<button class="btn btn-info mpr-close"><?php echo _translate("Apply"); ?></button>';
 		content += '</div>';
 		content += '</div>';
 
-		$(document).on('click', '.mpr-month', function (e) {
+		$(document).on('click', '.mpr-month', function(e) {
 			e.stopPropagation();
 			$month = $(this);
 			var monthnum = $month.data('month');
@@ -567,32 +556,32 @@ $state = $geolocationService->getProvinces("yes");
 		});
 
 
-		$(document).on('click', '.mpr-yearup', function (e) {
+		$(document).on('click', '.mpr-yearup', function(e) {
 			$('.mpr-month').css("color", "black");
 			e.stopPropagation();
 			var year = parseInt($(this).prev().html());
 			year++;
 			$(this).prev().html("" + year);
-			$(this).parents('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175, function () {
+			$(this).parents('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175, function() {
 				paintMonths();
 				$(this).parents('.mpr-calendar').find('.mpr-MonthsWrapper').fadeIn(175);
 			});
 		});
 
-		$(document).on('click', '.mpr-yeardown', function (e) {
+		$(document).on('click', '.mpr-yeardown', function(e) {
 			$('.mpr-month').css("color", "black");
 			e.stopPropagation();
 			var year = parseInt($(this).next().html());
 			year--;
 			$(this).next().html("" + year);
 			//paintMonths();
-			$(this).parents('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175, function () {
+			$(this).parents('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175, function() {
 				paintMonths();
 				$(this).parents('.mpr-calendar').find('.mpr-MonthsWrapper').fadeIn(175);
 			});
 		});
 
-		$(document).on('click', '.mpr-ytd', function (e) {
+		$(document).on('click', '.mpr-ytd', function(e) {
 			e.stopPropagation();
 			var d = new Date();
 			startDate = parseInt(d.getFullYear() + "01");
@@ -600,33 +589,33 @@ $state = $geolocationService->getProvinces("yes");
 			if (month < 9)
 				month = "0" + month;
 			endDate = parseInt("" + d.getFullYear() + month);
-			$('.mpr-calendar').each(function () {
+			$('.mpr-calendar').each(function() {
 				var $cal = $(this);
 				var year = $('h5 span', $cal).html(d.getFullYear());
 			});
-			$('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175, function () {
+			$('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175, function() {
 				paintMonths();
 				$('.mpr-calendar').find('.mpr-MonthsWrapper').fadeIn(175);
 			});
 		});
 
-		$(document).on('click', '.mpr-prev-year', function (e) {
+		$(document).on('click', '.mpr-prev-year', function(e) {
 			e.stopPropagation();
 			var d = new Date();
 			var year = d.getFullYear() - 1;
 			startDate = parseInt(year + "01");
 			endDate = parseInt(year + "12");
-			$('.mpr-calendar').each(function () {
+			$('.mpr-calendar').each(function() {
 				var $cal = $(this);
 				$('h5 span', $cal).html(year);
 			});
-			$('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175, function () {
+			$('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175, function() {
 				paintMonths();
 				$('.mpr-calendar').find('.mpr-MonthsWrapper').fadeIn(175);
 			});
 		});
 
-		$(document).on('click', '.mpr-fiscal-ytd', function (e) {
+		$(document).on('click', '.mpr-fiscal-ytd', function(e) {
 			e.stopPropagation();
 			var d = new Date();
 			var year;
@@ -644,20 +633,20 @@ $state = $geolocationService->getProvinces("yes");
 				cm = (d.getMonth() + 1);
 			startDate = parseInt("" + year + fm);
 			endDate = parseInt("" + d.getFullYear() + cm);
-			$('.mpr-calendar').each(function (i) {
+			$('.mpr-calendar').each(function(i) {
 				var $cal = $(this);
 				if (i == 0)
 					$('h5 span', $cal).html(year);
 				else
 					$('h5 span', $cal).html(d.getFullYear());
 			});
-			$('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175, function () {
+			$('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175, function() {
 				paintMonths();
 				$('.mpr-calendar').find('.mpr-MonthsWrapper').fadeIn(175);
 			});
 		});
 
-		$(document).on('click', '.mpr-prev-fiscal', function () {
+		$(document).on('click', '.mpr-prev-fiscal', function() {
 			var d = new Date();
 			var year;
 			if ((d.getMonth() + 1) < fiscalMonth)
@@ -674,14 +663,14 @@ $state = $geolocationService->getProvinces("yes");
 				efm = (fiscalMonth - 1);
 			startDate = parseInt("" + year + fm);
 			endDate = parseInt("" + (d.getFullYear() - 1) + efm);
-			$('.mpr-calendar').each(function (i) {
+			$('.mpr-calendar').each(function(i) {
 				var $cal = $(this);
 				if (i == 0)
 					$('h5 span', $cal).html(year);
 				else
 					$('h5 span', $cal).html(d.getFullYear() - 1);
 			});
-			$('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175, function () {
+			$('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175, function() {
 				paintMonths();
 				$('.mpr-calendar').find('.mpr-MonthsWrapper').fadeIn(175);
 			});
@@ -693,26 +682,26 @@ $state = $geolocationService->getProvinces("yes");
 			placement: "bottom",
 			html: true,
 			content: content
-		}).on('show.bs.popover', function () {
+		}).on('show.bs.popover', function() {
 			$('.popover').remove();
-			var waiter = setInterval(function () {
+			var waiter = setInterval(function() {
 				if ($('.popover').size() > 0) {
 					clearInterval(waiter);
 					setViewToCurrentYears();
 					paintMonths();
 				}
 			}, 50);
-		}).on('shown.bs.popover', function () {
+		}).on('shown.bs.popover', function() {
 			mprVisible = true;
-		}).on('hidden.bs.popover', function () {
+		}).on('hidden.bs.popover', function() {
 			mprVisible = false;
 		});
 
-		$(document).on('click', '.mpr-calendarholder', function (e) {
+		$(document).on('click', '.mpr-calendarholder', function(e) {
 			e.preventDefault();
 			e.stopPropagation();
 		});
-		$(document).on("click", ".mrp-container", function (e) {
+		$(document).on("click", ".mrp-container", function(e) {
 			if (mprVisible) {
 				e.preventDefault();
 				e.stopPropagation();
@@ -720,10 +709,10 @@ $state = $geolocationService->getProvinces("yes");
 			}
 		});
 
-		$(document).on("click", function (e) {
+		$(document).on("click", function(e) {
 
 			if (mprVisible) {
-				$('.mpr-calendarholder').parents('.popover').fadeOut(200, function () {
+				$('.mpr-calendarholder').parents('.popover').fadeOut(200, function() {
 					$('.mpr-calendarholder').parents('.popover').remove();
 					$('.mrp-container').trigger('click');
 				});
@@ -731,10 +720,10 @@ $state = $geolocationService->getProvinces("yes");
 			}
 		});
 
-		$(document).on('click', '.mpr-close', function (e) {
+		$(document).on('click', '.mpr-close', function(e) {
 			//console.log(e);
 			if (mprVisible) {
-				$('.mpr-calendarholder').parents('.popover').fadeOut(200, function () {
+				$('.mpr-calendarholder').parents('.popover').fadeOut(200, function() {
 					$('.mpr-calendarholder').parents('.popover').remove();
 					$('.mrp-container').trigger('click');
 				});
@@ -752,10 +741,10 @@ $state = $geolocationService->getProvinces("yes");
 	}
 
 	function paintMonths() {
-		$('.mpr-calendar').each(function () {
+		$('.mpr-calendar').each(function() {
 			var $cal = $(this);
 			var year = $('h5 span', $cal).html();
-			$('.mpr-month', $cal).each(function (i) {
+			$('.mpr-month', $cal).each(function(i) {
 				if ((i + 1) > 9)
 					cDate = parseInt("" + year + (i + 1));
 				else
@@ -816,11 +805,11 @@ $state = $geolocationService->getProvinces("yes");
 		$("#district").html('');
 		$("#facilityName").html('');
 		$.post("/common/get-by-province-id.php", {
-			provinceId: provinceId,
-			districts: true,
-			labs: true
-		},
-			function (data) {
+				provinceId: provinceId,
+				districts: true,
+				labs: true
+			},
+			function(data) {
 				Obj = $.parseJSON(data);
 				$("#district").html(Obj['districts']);
 				$("#facilityName").html(Obj['labs']);
@@ -830,10 +819,10 @@ $state = $geolocationService->getProvinces("yes");
 	function getByDistrict(districtId) {
 		$("#facilityName").html('');
 		$.post("/common/get-by-district-id.php", {
-			districtId: districtId,
-			labs: true
-		},
-			function (data) {
+				districtId: districtId,
+				labs: true
+			},
+			function(data) {
 				Obj = $.parseJSON(data);
 				$("#facilityName").html(Obj['labs']);
 			});

@@ -137,7 +137,7 @@ foreach ($rejectionTypeResult as $type) {
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1>
-			<?= _("Imported Results"); ?>
+			<?= _translate("Imported Results"); ?>
 		</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
@@ -150,7 +150,7 @@ foreach ($rejectionTypeResult as $type) {
 		<div class="arrow-right"></div>
 		<input type="hidden" name="statusDropDownId" id="statusDropDownId" />
 		<h3 style="color:red;">
-			<?= _("Choose Rejection Reason"); ?>
+			<?= _translate("Choose Rejection Reason"); ?>
 		</h3>
 		<select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" onchange="updateRejectionReasonStatus(this);">
 			<?php echo $rejectionReason; ?>
@@ -169,16 +169,16 @@ foreach ($rejectionTypeResult as $type) {
 							<div class="box-header with-border">
 								<ul style="list-style: none;float: right;">
 									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation" style="color:#e8000b;"></em>
-										<?= _("Sample Code/ID not from VLSM"); ?>
+										<?= _translate("Sample Code/ID not from VLSM"); ?>
 									</li>
 									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation" style="color:#86c0c8;"></em>
-										<?= _("Result already exists for this sample"); ?>
+										<?= _translate("Result already exists for this sample"); ?>
 									</li>
 									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation" style="color:#337ab7;"></em>
-										<?= _("Result for sample from VLSM"); ?>
+										<?= _translate("Result for sample from VLSM"); ?>
 									</li>
 									<li style="float:left;margin-right:20px;"><em class="fa-solid fa-exclamation" style="color:#7d8388;"></em>
-										<?= _("Control"); ?>
+										<?= _translate("Control"); ?>
 									</li>
 								</ul>
 							</div>
@@ -186,46 +186,46 @@ foreach ($rejectionTypeResult as $type) {
 						<!-- /.box-header -->
 						<div class="box-body">
 							<div class="col-md-6 col-sm-6">
-								<input type="button" onclick="acceptAllSamples();" value="<?= _("Accept All Samples"); ?>" class="btn btn-success btn-sm">
+								<input type="button" onclick="acceptAllSamples();" value="<?= _translate("Accept All Samples"); ?>" class="btn btn-success btn-sm">
 								<br><strong class="text-danger">
-									<?= _("Only accepts samples that do not have status field already selected"); ?>
+									<?= _translate("Only accepts samples that do not have status field already selected"); ?>
 								</strong>
 							</div>
 							<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 								<thead>
 									<tr>
 										<th style="width: 23%;">
-											<?= _("Sample Code/ID"); ?>
+											<?= _translate("Sample Code/ID"); ?>
 										</th>
 										<th style="width: 11%;">
-											<?= _("Sample Collection Date"); ?>
+											<?= _translate("Sample Collection Date"); ?>
 										</th>
 										<th style="width: 10%;">
-											<?= _("Sample Test Date"); ?>
+											<?= _translate("Sample Test Date"); ?>
 										</th>
 										<th style="width: 10%;">
-											<?= _("Clinic/Site Name"); ?>
+											<?= _translate("Clinic/Site Name"); ?>
 										</th>
 										<th style="width: 10%;">
-											<?= _("Batch Code"); ?>
+											<?= _translate("Batch Code"); ?>
 										</th>
 										<th style="width: 10%;">
-											<?= _("Lot Number"); ?>
+											<?= _translate("Lot Number"); ?>
 										</th>
 										<th style="width: 10%;">
-											<?= _("Lot Expiry Date"); ?>
+											<?= _translate("Lot Expiry Date"); ?>
 										</th>
 										<th style="width: 10%;">
-											<?= _("Rejection Reason"); ?>
+											<?= _translate("Rejection Reason"); ?>
 										</th>
 										<th style="max-width: 9%;">
-											<?= _("Sample Type"); ?>
+											<?= _translate("Sample Type"); ?>
 										</th>
 										<th style="width: 9%;">
-											<?= _("Result"); ?>
+											<?= _translate("Result"); ?>
 										</th>
 										<th style="width: 9%;">
-											<?= _("Status"); ?>
+											<?= _translate("Status"); ?>
 										</th>
 									</tr>
 								</thead>
@@ -242,13 +242,13 @@ foreach ($rejectionTypeResult as $type) {
 								<input type="hidden" name="checkedTestsIdValue" id="checkedTestsIdValue" />
 								<td style=" width: 30%; ">
 									<strong>
-										<?= _("Comments") ?>&nbsp;
+										<?= _translate("Comments") ?>&nbsp;
 									</strong>
 									<textarea style="height: 34px;width: 100%;" class="form-control" id="comments" name="comments" placeholder="Comments"></textarea>
 								</td>
 								<td style=" width: 20%; ">
 									<strong>
-										<?= _("Tested By"); ?><span class="mandatory">*</span>&nbsp;
+										<?= _translate("Tested By"); ?><span class="mandatory">*</span>&nbsp;
 									</strong>
 									<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose tested by" style="width: 100%;">
 										<option value="">-- Select --</option>
@@ -263,7 +263,7 @@ foreach ($rejectionTypeResult as $type) {
 								</td>
 								<td style=" width: 20%; ">
 									<strong>
-										<?= _("Reviewed By"); ?><span class="mandatory">*</span>&nbsp;
+										<?= _translate("Reviewed By"); ?><span class="mandatory">*</span>&nbsp;
 									</strong>
 									<!--<input type="text" name="reviewedBy" id="reviewedBy" class="form-control" title="Please enter Reviewed By" placeholder ="Reviewed By"/>-->
 									<select name="reviewedBy" id="reviewedBy" class="form-control" title="Please choose reviewed by" style="width: 100%;">
@@ -279,7 +279,7 @@ foreach ($rejectionTypeResult as $type) {
 								</td>
 								<td style=" width: 20%; ">
 									<strong>
-										<?= _("Approved By"); ?><span class="mandatory">*</span>&nbsp;
+										<?= _translate("Approved By"); ?><span class="mandatory">*</span>&nbsp;
 									</strong>
 									<!--<input type="text" name="approvedBy" id="approvedBy" class="form-control" title="Please enter Approved By" placeholder ="Approved By"/>-->
 									<select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" style="width: 100%;">
@@ -297,7 +297,7 @@ foreach ($rejectionTypeResult as $type) {
 									<br>
 									<input type="hidden" name="print" id="print" />
 									<input type="hidden" name="module" id="module" value="<?= ($module); ?>" />
-									<input type="button" onclick="submitTestStatus();" value="<?= _("Save"); ?>" class="btn btn-success btn-sm">
+									<input type="button" onclick="submitTestStatus();" value="<?= _translate("Save"); ?>" class="btn btn-success btn-sm">
 								</td>
 							</tr>
 
@@ -310,12 +310,12 @@ foreach ($rejectionTypeResult as $type) {
 							<div class="col-md-12 col-sm-12">
 								<br>
 								<h3>
-									<?= _("Either there were no records imported or you seem to have reached this page by mistake."); ?>
+									<?= _translate("Either there were no records imported or you seem to have reached this page by mistake."); ?>
 									<br><br>
-									<?= _("Please contact technical support if you need assistance."); ?>
+									<?= _translate("Please contact technical support if you need assistance."); ?>
 								</h3>
 								<br>
-								<input type="button" onclick="history.go(-1);" value="<?= _("Back"); ?>" class="btn btn-danger btn-sm">
+								<input type="button" onclick="history.go(-1);" value="<?= _translate("Back"); ?>" class="btn btn-danger btn-sm">
 							</div>
 						</div>
 
@@ -445,7 +445,7 @@ foreach ($rejectionTypeResult as $type) {
 			return false;
 		}
 		if (obj.value == '4') {
-			var confrm = confirm("<?= _("Do you wish to overwrite this result?"); ?>");
+			var confrm = confirm("<?= _translate("Do you wish to overwrite this result?"); ?>");
 			if (confrm) {
 				var pos = $("#" + obj.id).offset();
 				$("#rejectReasonDiv").show();
@@ -527,25 +527,25 @@ foreach ($rejectionTypeResult as $type) {
 				return false;
 			}
 		} else if (appBy == reviewedBy && (reviewedBy != '' && appBy != '') && globalValue == 'no') {
-			alert("<?= _("Same person is reviewing and approving result!"); ?>");
+			alert("<?= _translate("Same person is reviewing and approving result!"); ?>");
 			return false;
 		}
 
 		if (appBy == reviewedBy && (reviewedBy != '' && appBy != '') && globalValue == 'yes') {
-			conf = confirm("<?= _("Same person is reviewing and approving result!"); ?>");
+			conf = confirm("<?= _translate("Same person is reviewing and approving result!"); ?>");
 			if (conf) {} else {
 				return false;
 			}
 		}
 
 		if (somethingmissing == true) {
-			alert("<?= _("Please ensure that you have updated the status of all the Controls and Samples"); ?> ");
+			alert("<?= _translate("Please ensure that you have updated the status of all the Controls and Samples"); ?> ");
 			$.unblockUI();
 			return false;
 		}
 
 		if (appBy != '' && somethingmissing == false && testBy != "" && reviewedBy != "") {
-			conf = confirm("<?= _("Are you sure you want to continue ?"); ?>");
+			conf = confirm("<?= _translate("Are you sure you want to continue ?"); ?>");
 			if (conf) {
 				$.blockUI();
 				$.post("/import-result/processImportedResults.php", {
@@ -578,7 +578,7 @@ foreach ($rejectionTypeResult as $type) {
 				oTable.fnDraw();
 			}
 		} else {
-			alert("<?= _("Please ensure you have updated the status and the approved by and reviewed by and tested by field"); ?>");
+			alert("<?= _translate("Please ensure you have updated the status and the approved by and reviewed by and tested by field"); ?>");
 			return false;
 		}
 	}
@@ -590,7 +590,7 @@ foreach ($rejectionTypeResult as $type) {
 
 	function updateStatus(value, status) {
 		if (status != '') {
-			conf = confirm("<?= _("Do you wish to change the status ?"); ?>");
+			conf = confirm("<?= _translate("Do you wish to change the status ?"); ?>");
 			if (conf) {
 				$.blockUI();
 				$.post("/import-result/processImportedResults.php", {
@@ -611,14 +611,14 @@ foreach ($rejectionTypeResult as $type) {
 				oTable.fnDraw();
 			}
 		} else {
-			alert("<?= _("Please select result status"); ?>");
+			alert("<?= _translate("Please select result status"); ?>");
 		}
 	}
 
 	function updateSampleCode(obj, oldSampleCode, tempsampleId) {
 		$(obj).fastConfirm({
 			position: "right",
-			questionText: "<?= _("Are you sure you want to rename this Sample?"); ?>",
+			questionText: "<?= _translate("Are you sure you want to rename this Sample?"); ?>",
 			onProceed: function(trigger) {
 				var pos = oTable.fnGetPosition(obj);
 				$.blockUI();
@@ -628,7 +628,7 @@ foreach ($rejectionTypeResult as $type) {
 					},
 					function(data) {
 						if (data == 0) {
-							alert("<?= _("Something went wrong! Please try again"); ?>");
+							alert("<?= _translate("Something went wrong! Please try again"); ?>");
 							oTable.fnDraw();
 						}
 					});
@@ -653,7 +653,7 @@ foreach ($rejectionTypeResult as $type) {
 					},
 					function(data) {
 						if (data == 0) {
-							alert("<?= _("Something went wrong! Please try again"); ?>");
+							alert("<?= _translate("Something went wrong! Please try again"); ?>");
 							oTable.fnDraw();
 						}
 					});
@@ -668,7 +668,7 @@ foreach ($rejectionTypeResult as $type) {
 	function sampleToControl(obj, oldValue, tempsampleId) {
 		$(obj).fastConfirm({
 			position: "left",
-			questionText: "<?= _("Are you sure you want to change this sample?"); ?>",
+			questionText: "<?= _translate("Are you sure you want to change this sample?"); ?>",
 			onProceed: function(trigger) {
 				var pos = oTable.fnGetPosition(obj);
 				$.blockUI();
@@ -678,7 +678,7 @@ foreach ($rejectionTypeResult as $type) {
 					},
 					function(data) {
 						if (data == 0) {
-							alert("<?= _("Something went wrong! Please try again"); ?>");
+							alert("<?= _translate("Something went wrong! Please try again"); ?>");
 							oTable.fnDraw();
 						}
 					});
@@ -691,7 +691,7 @@ foreach ($rejectionTypeResult as $type) {
 	}
 
 	function sampleToControlAlert(number) {
-		alert("<?= _("Maximum number of controls allowed as per the instrument configuration is"); ?> " + number);
+		alert("<?= _translate("Maximum number of controls allowed as per the instrument configuration is"); ?> " + number);
 		oTable.fnDraw();
 	}
 
@@ -704,7 +704,7 @@ foreach ($rejectionTypeResult as $type) {
 	}
 
 	function acceptAllSamples() {
-		conf = confirm("<?= _("Are you sure you want to mark all samples as 'Accepted'?"); ?>");
+		conf = confirm("<?= _translate("Are you sure you want to mark all samples as 'Accepted'?"); ?>");
 		if (conf) {
 			$.blockUI();
 			$.post("/import-result/updateAllSampleStatus.php", {},

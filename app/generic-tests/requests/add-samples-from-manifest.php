@@ -1,5 +1,5 @@
 <?php
-$title = _("Add Samples from Manifest");
+$title = _translate("Add Samples from Manifest");
 require_once APPLICATION_PATH . '/header.php';
 ?>
 <style>
@@ -12,14 +12,14 @@ require_once APPLICATION_PATH . '/header.php';
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1><em class="fa-solid fa-plus"></em>
-			<?php echo _("Add Samples from Manifest"); ?>
+			<?php echo _translate("Add Samples from Manifest"); ?>
 		</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em>
-					<?php echo _("Home"); ?>
+					<?php echo _translate("Home"); ?>
 				</a></li>
 			<li class="active">
-				<?php echo _("Test Request"); ?>
+				<?php echo _translate("Test Request"); ?>
 			</li>
 		</ol>
 	</section>
@@ -32,21 +32,21 @@ require_once APPLICATION_PATH . '/header.php';
 					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: block;">
 						<tr>
 							<td style="width:20%;vertical-align:middle;"><strong>
-									<?php echo _("Enter Sample Manifest Code"); ?> :
+									<?php echo _translate("Enter Sample Manifest Code"); ?> :
 								</strong></td>
 							<td style="width:70%;vertical-align:middle;">
-								<input type="text" id="samplePackageCode" name="samplePackageCode" class="form-control" placeholder="<?php echo _('Sample Manifest Code'); ?>" title="<?php echo _('Please enter the sample manifest code'); ?>" style="background:#fff;" />
+								<input type="text" id="samplePackageCode" name="samplePackageCode" class="form-control" placeholder="<?php echo _translate('Sample Manifest Code'); ?>" title="<?php echo _translate('Please enter the sample manifest code'); ?>" style="background:#fff;" />
 								<input type="hidden" id="sampleId" name="sampleId" />
 							</td>
 							<td style="width:10%;">
 								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="getSampleCode();return false;"><span>
-										<?php echo _("Submit"); ?>
+										<?php echo _translate("Submit"); ?>
 									</span></button>
 							</td>
 						</tr>
 						<tr class="activateSample" style="display:none;">
 							<th scope="row" style="width:20%;vertical-align:middle;">
-								<?php echo _("Sample Received at Testing Lab"); ?> :
+								<?php echo _translate("Sample Received at Testing Lab"); ?> :
 							</th>
 							<td style="width:70%;vertical-align:middle;"><input type="text" name="testDate" id="testDate" class="form-control dateTime" placeholder="Sample Received at Testing Lab" title="Please select when the samples were received at the Testing Lab" readonly />
 							</td>
@@ -62,49 +62,49 @@ require_once APPLICATION_PATH . '/header.php';
 							<thead>
 								<tr>
 									<th>
-										<?php echo _("Sample Code"); ?>
+										<?php echo _translate("Sample Code"); ?>
 									</th>
 									<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 										<th>
-											<?php echo _("Remote Sample Code"); ?>
+											<?php echo _translate("Remote Sample Code"); ?>
 										</th>
 									<?php } ?>
 									<th>
-										<?php echo _("Sample Collection Date"); ?>
+										<?php echo _translate("Sample Collection Date"); ?>
 									</th>
 									<th>
-										<?php echo _("Batch Code"); ?>
+										<?php echo _translate("Batch Code"); ?>
 									</th>
 									<th>
-										<?php echo _("Patient ID"); ?>
+										<?php echo _translate("Patient ID"); ?>
 									</th>
 									<th>
-										<?php echo _("Patient's Name"); ?>
+										<?php echo _translate("Patient's Name"); ?>
 									</th>
 									<th scope="row">
-										<?php echo _("Facility Name"); ?>
+										<?php echo _translate("Facility Name"); ?>
 									</th>
 									<th>
-										<?php echo _("Province/State"); ?>
+										<?php echo _translate("Province/State"); ?>
 									</th>
 									<th>
-										<?php echo _("District/County"); ?>
+										<?php echo _translate("District/County"); ?>
 									</th>
 									<th>
-										<?php echo _("Sample Type"); ?>
+										<?php echo _translate("Sample Type"); ?>
 									</th>
 									<th>
-										<?php echo _("Result"); ?>
+										<?php echo _translate("Result"); ?>
 									</th>
 									<th>
-										<?php echo _("Last Modified Date"); ?>
+										<?php echo _translate("Last Modified Date"); ?>
 									</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
 									<td colspan="12" class="dataTables_empty" style="text-align:center;">
-										<?php echo _("Please enter the manifest code then submit!"); ?>
+										<?php echo _translate("Please enter the manifest code then submit!"); ?>
 									</td>
 								</tr>
 							</tbody>
@@ -242,7 +242,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					}
 				});
 		} else {
-			alert('<?php echo _("Please enter the Sample Manifest Code then hit submit"); ?>');
+			alert('<?php echo _translate("Please enter the Sample Manifest Code then hit submit"); ?>');
 		}
 	}
 
@@ -252,7 +252,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 		function forceSyncRequestsByManifestCode(manifestCode, forceSyncModule) {
 			$.blockUI({
-				message: '<h3><?php echo _("Trying to sync Relevant Manifest Code Test Requests"); ?><br><?php echo _("Please wait"); ?>...</h3>'
+				message: '<h3><?php echo _translate("Trying to sync Relevant Manifest Code Test Requests"); ?><br><?php echo _translate("Please wait"); ?>...</h3>'
 			});
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {
@@ -287,7 +287,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 	function activateSamplesFromManifest() {
 		if ($("#testDate").val() == "") {
-			alert("<?= _("Please select when the samples were received at the Testing Lab"); ?>");
+			alert("<?= _translate("Please select when the samples were received at the Testing Lab"); ?>");
 			return false;
 		}
 		$.blockUI();
@@ -297,7 +297,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			},
 			function(data) {
 				if (data > 0) {
-					alert('<?php echo _("Samples from this Manifest have been activated"); ?>');
+					alert('<?php echo _translate("Samples from this Manifest have been activated"); ?>');
 					$('.activateSample').hide();
 				}
 				oTable.fnDraw();

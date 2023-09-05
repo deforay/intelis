@@ -113,7 +113,7 @@ try {
                 'transactionId' => $transactionId,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
                 'status' => 'failed',
-                'message' => _("Missing required fields")
+                'message' => _translate("Missing required fields")
             ];
             continue;
         } elseif (DateUtility::hasFutureDates(array_intersect_key($data, array_flip($cantBeFutureDates)))) {
@@ -121,7 +121,7 @@ try {
                 'transactionId' => $transactionId,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
                 'status' => 'failed',
-                'message' => _("Invalid Dates. Cannot be in the future")
+                'message' => _translate("Invalid Dates. Cannot be in the future")
             ];
             continue;
         }
@@ -172,7 +172,7 @@ try {
                         'transactionId' => $transactionId,
                         'appSampleCode' => $data['appSampleCode'] ?? null,
                         'status' => 'failed',
-                        'error' => _("Sample Locked or Finalized")
+                        'error' => _translate("Sample Locked or Finalized")
 
                     ];
                     continue;
@@ -212,7 +212,7 @@ try {
                     'transactionId' => $transactionId,
                     'appSampleCode' => $data['appSampleCode'] ?? null,
                     'status' => 'failed',
-                    'error' => _("Failed to insert sample")
+                    'error' => _translate("Failed to insert sample")
                 ];
                 continue;
             }

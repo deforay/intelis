@@ -32,7 +32,7 @@ try {
 		}
 
 		if ($lastId > 0) {
-			$_SESSION['alertMsg'] = _("Covid-19 Results details saved successfully");
+			$_SESSION['alertMsg'] = _translate("Covid-19 Results details saved successfully");
 			$general->activityLog('Covid-19 Results details', $_SESSION['userName'] . ' added new results for ' . $_POST['resultName'], 'covid19-reference');
 		}
 	}

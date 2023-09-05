@@ -404,7 +404,7 @@ $patientProvince = $patientProvinceInfo[0];
                                         <tr>
                                             <th scope="row"><label for="">Sample Received Date </label></th>
                                             <td>
-                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['sample_received_at_lab_datetime']) ?>" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['sample_received_at_lab_datetime']) ?>" onchange="" style="width:100%;" />
                                             </td>
                                             <td class="lab-show"><label for="labId">Testing Laboratory </label> </td>
                                             <td class="lab-show">
@@ -471,17 +471,17 @@ $patientProvince = $patientProvinceInfo[0];
                                             </td>
                                         </tr>
                                         <tr class="show-rejection" style="display:none;">
-                                        <th class="labels">Recommended Corrective Action</th>
+                                            <th class="labels">Recommended Corrective Action</th>
                                             <td><select name="correctiveAction" id="correctiveAction" class="form-control" title="Please choose Recommended corrective action">
                                                     <option value="">-- Select --</option>
                                                     <?php foreach ($correctiveActions as $action) { ?>
-                                                    <option value="<?php echo $action['recommended_corrective_action_id']; ?>" <?php echo ($covid19Info['recommended_corrective_action'] == $action['recommended_corrective_action_id']) ? 'selected="selected"' : ''; ?>><?= $action['recommended_corrective_action_name']; ?></option>
+                                                        <option value="<?php echo $action['recommended_corrective_action_id']; ?>" <?php echo ($covid19Info['recommended_corrective_action'] == $action['recommended_corrective_action_id']) ? 'selected="selected"' : ''; ?>><?= $action['recommended_corrective_action_name']; ?></option>
                                                     <?php } ?>
                                                 </select>
                                             </td>
                                             <th scope="row">Rejection Date<span class="mandatory">*</span></th>
                                             <td><input value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select the Rejection Date" /></td>
-                                            
+
                                         </tr>
                                         <tr>
                                             <td colspan="4">
@@ -1207,14 +1207,14 @@ $patientProvince = $patientProvinceInfo[0];
     }
 
     function checkRejectionReason() {
-          var rejectionReason = $("#sampleRejectionReason").val();
-          if (rejectionReason == "other") {
-               $("#newRejectionReason").show();
-               $("#newRejectionReason").addClass("isRequired");
-          } else {
-               $("#newRejectionReason").hide();
-               $("#newRejectionReason").removeClass("isRequired");
-               $('#newRejectionReason').val("");
-          }
-     }
+        var rejectionReason = $("#sampleRejectionReason").val();
+        if (rejectionReason == "other") {
+            $("#newRejectionReason").show();
+            $("#newRejectionReason").addClass("isRequired");
+        } else {
+            $("#newRejectionReason").hide();
+            $("#newRejectionReason").removeClass("isRequired");
+            $('#newRejectionReason').val("");
+        }
+    }
 </script>

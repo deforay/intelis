@@ -33,7 +33,7 @@ try {
 		}
 
 		if ($lastId > 0) {
-			$_SESSION['alertMsg'] = _("EID Sample details saved successfully");
+			$_SESSION['alertMsg'] = _translate("EID Sample details saved successfully");
 			$general->activityLog('EID Sample Type details', $_SESSION['userName'] . ' added new sample type for ' . $_POST['sampleName'], 'eid-reference');
 		}
 	}

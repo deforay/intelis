@@ -423,7 +423,7 @@ $html .= '<tr>';
 $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"></td>';
 $html .= '</tr>';
 if ($_SESSION['instanceType'] == 'vluser' && $result['dataSync'] == 0) {
-    $generatedAtTestingLab = " | " . _("Report generated at Testing Lab");
+    $generatedAtTestingLab = " | " . _translate("Report generated at Testing Lab");
 } else {
     $generatedAtTestingLab = "";
 }

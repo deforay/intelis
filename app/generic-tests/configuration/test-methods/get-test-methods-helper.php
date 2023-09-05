@@ -147,7 +147,7 @@ foreach ($rResult as $aRow) {
     $row[] = ucwords($aRow['test_method_status']);
     $row[] = $aRow['updated_datetime'] = DateUtility::humanReadableDateFormat($aRow['updated_datetime'], true);
     if ($usersService->isAllowed("/generic-tests/configuration/test-methods/generic-edit-test-methods.php")) {
-        $row[] = '<a href="generic-edit-test-methods.php?id=' . base64_encode($aRow['test_method_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
+        $row[] = '<a href="generic-edit-test-methods.php?id=' . base64_encode($aRow['test_method_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
     }
     $output['aaData'][] = $row;
 }

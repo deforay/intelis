@@ -33,7 +33,7 @@ try {
 		}
 
 		if ($lastId > 0) {
-			$_SESSION['alertMsg'] = _("TB Results details saved successfully");
+			$_SESSION['alertMsg'] = _translate("TB Results details saved successfully");
 			$general->activityLog('TB Results details', $_SESSION['userName'] . ' added new results for ' . $_POST['resultName'], 'tb-reference');
 		}
 	}

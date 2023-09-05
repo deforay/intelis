@@ -156,23 +156,23 @@ try {
     }
 
     if (!empty($_POST['newRejectionReason'])) {
-		$rejectionReasonQuery = "SELECT rejection_reason_id
+        $rejectionReasonQuery = "SELECT rejection_reason_id
 					FROM r_tb_sample_rejection_reasons
 					WHERE rejection_reason_name like ?";
-		$rejectionResult = $db->rawQueryOne($rejectionReasonQuery, [$_POST['newRejectionReason']]);
-		if (empty($rejectionResult)) {
-			$data = array(
-				'rejection_reason_name' => $_POST['newRejectionReason'],
-				'rejection_type' => 'general',
-				'rejection_reason_status' => 'active',
-				'updated_datetime' => DateUtility::getCurrentDateTime()
-			);
-			$id = $db->insert('r_tb_sample_rejection_reasons', $data);
-			$_POST['sampleRejectionReason'] = $id;
-		} else {
-			$_POST['sampleRejectionReason'] = $rejectionResult['rejection_reason_id'];
-		}
-	}
+        $rejectionResult = $db->rawQueryOne($rejectionReasonQuery, [$_POST['newRejectionReason']]);
+        if (empty($rejectionResult)) {
+            $data = array(
+                'rejection_reason_name' => $_POST['newRejectionReason'],
+                'rejection_type' => 'general',
+                'rejection_reason_status' => 'active',
+                'updated_datetime' => DateUtility::getCurrentDateTime()
+            );
+            $id = $db->insert('r_tb_sample_rejection_reasons', $data);
+            $_POST['sampleRejectionReason'] = $id;
+        } else {
+            $_POST['sampleRejectionReason'] = $rejectionResult['rejection_reason_id'];
+        }
+    }
     $reason = $_POST['reasonForTbTest'];
     $reason['reason'] = array($reason['reason'] => 'yes');
 
@@ -195,7 +195,7 @@ try {
         'patient_gender' => !empty($_POST['patientGender']) ? $_POST['patientGender'] : null,
         'patient_age' => !empty($_POST['patientAge']) ? $_POST['patientAge'] : null,
         'patient_phone' => !empty($_POST['patientPhoneNumber']) ? $_POST['patientPhoneNumber'] : null,
-		'patient_address' => !empty($_POST['patientAddress']) ? $_POST['patientAddress'] : null,
+        'patient_address' => !empty($_POST['patientAddress']) ? $_POST['patientAddress'] : null,
         'reason_for_tb_test' => !empty($reason) ? json_encode($reason) : null,
         'hiv_status' => !empty($_POST['hivStatus']) ? $_POST['hivStatus'] : null,
         'previously_treated_for_tb' => !empty($_POST['previouslyTreatedForTB']) ? $_POST['previouslyTreatedForTB'] : null,
@@ -268,7 +268,7 @@ try {
         error_log($db->getLastError());
     }
     if ($id === true) {
-        $_SESSION['alertMsg'] = _("TB test request added successfully");
+        $_SESSION['alertMsg'] = _translate("TB test request added successfully");
         //Add event log
         $eventType = 'tb-add-request';
         $action = $_SESSION['userName'] . ' added a new TB request with the Sample ID/Code  ' . $_POST['tbSampleId'];
@@ -276,7 +276,7 @@ try {
 
         $general->activityLog($eventType, $action, $resource);
     } else {
-        $_SESSION['alertMsg'] = _("Unable to add this TB sample. Please try again later");
+        $_SESSION['alertMsg'] = _translate("Unable to add this TB sample. Please try again later");
     }
 
     if (!empty($_POST['saveNext']) && $_POST['saveNext'] == 'next') {

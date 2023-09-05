@@ -41,7 +41,7 @@ try {
      $validateField = array($_POST['vlSampleId'], $_POST['sampleCode'], $_POST['sampleCollectionDate']);
      $chkValidation = $general->checkMandatoryFields($validateField);
      if ($chkValidation) {
-          $_SESSION['alertMsg'] = _("Please enter all mandatory fields to save the test request");
+          $_SESSION['alertMsg'] = _translate("Please enter all mandatory fields to save the test request");
           header("Location:editVlRequest.php?id=" . base64_encode($_POST['vlSampleId']));
           die;
      }
@@ -313,21 +313,20 @@ try {
           $pngSpecificFields['report_date'] = DateUtility::isoDateFormat($_POST['reportDate'] ?? '');
      }
      $vlData = array_merge($vlData, $pngSpecificFields);
-     
-     if($_POST['syncPatientIdentifiers'] === 'no'){
+
+     if ($_POST['syncPatientIdentifiers'] === 'no') {
           $key = base64_decode('zACCxM1c1AfRevJ/Zpk+PKXpO+ebWjNSgCRa5/Uheh4=');
-          $encryptedPatientId = $general->crypto('encrypt' , $vlData['patient_art_no'], $key);
-          $encryptedPatientFirstName = $general->crypto('encrypt' , $vlData['patient_first_name'], $key);
-          $encryptedPatientMiddleName = $general->crypto('encrypt' , $vlData['patient_middle_name'], $key);
-          $encryptedPatientLastName = $general->crypto('encrypt' , $vlData['patient_last_name'], $key);
+          $encryptedPatientId = $general->crypto('encrypt', $vlData['patient_art_no'], $key);
+          $encryptedPatientFirstName = $general->crypto('encrypt', $vlData['patient_first_name'], $key);
+          $encryptedPatientMiddleName = $general->crypto('encrypt', $vlData['patient_middle_name'], $key);
+          $encryptedPatientLastName = $general->crypto('encrypt', $vlData['patient_last_name'], $key);
 
           $vlData['patient_art_no'] = $encryptedPatientId;
           $vlData['patient_first_name'] = $encryptedPatientFirstName;
           $vlData['patient_middle_name'] = $encryptedPatientMiddleName;
           $vlData['patient_last_name'] = $encryptedPatientLastName;
           $vlData['is_encrypted'] = 'yes';
-     }
-     else{
+     } else {
           $vlData['is_encrypted'] = NULL;
      }
 
@@ -336,7 +335,7 @@ try {
      error_log($db->getLastError());
      //die;
      if ($id === true) {
-          $_SESSION['alertMsg'] = _("VL request updated successfully");
+          $_SESSION['alertMsg'] = _translate("VL request updated successfully");
 
           $eventType = 'update-vl-request-sudan';
           $action = $_SESSION['userName'] . ' updated request with the sample code ' . $_POST['sampleCode'];
@@ -344,7 +343,7 @@ try {
 
           $general->activityLog($eventType, $action, $resource);
      } else {
-          $_SESSION['alertMsg'] = _("Please try again later");
+          $_SESSION['alertMsg'] = _translate("Please try again later");
      }
      header("Location:/vl/requests/vl-requests.php");
 } catch (Exception $exc) {

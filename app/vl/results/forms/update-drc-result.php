@@ -14,7 +14,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 
-$facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], _("-- Select --"));
+$facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], _translate("-- Select --"));
 //Get selected state
 $stateQuery = "SELECT * FROM facility_details WHERE facility_id= ?";
 $stateResult = $db->rawQuery($stateQuery, [$vlQueryInfo['facility_id']]);
@@ -143,11 +143,11 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 									<tr>
 										<td><label for="clinicianName">Demandeur </label></td>
 										<td>
-											<input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Demandeur" title="<?= _("Please enter requesting clinician name"); ?>" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['request_clinician_name']; ?>" style="width:100%;" />
+											<input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Demandeur" title="<?= _translate("Please enter requesting clinician name"); ?>" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['request_clinician_name']; ?>" style="width:100%;" />
 										</td>
 										<td><label for="clinicanTelephone">Téléphone </label></td>
 										<td>
-											<input type="text" class="form-control forceNumeric" id="clinicanTelephone" name="clinicanTelephone" placeholder="Téléphone" title="<?= _("Please enter phone number"); ?>" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" style="width:100%;" />
+											<input type="text" class="form-control forceNumeric" id="clinicanTelephone" name="clinicanTelephone" placeholder="Téléphone" title="<?= _translate("Please enter phone number"); ?>" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" style="width:100%;" />
 										</td>
 										<td><label for="supportPartner">Partnaire d'appui </label></td>
 										<td>
@@ -165,7 +165,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 									<tr>
 										<td><label for="">Date de la demande </label></td>
 										<td>
-											<input type="text" class="form-control date" id="dateOfDemand" name="dateOfDemand" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de la demande" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['date_test_ordered_by_physician']; ?>" style="width:100%;" />
+											<input type="text" class="form-control date" id="dateOfDemand" name="dateOfDemand" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de la demande" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['date_test_ordered_by_physician']; ?>" style="width:100%;" />
 										</td>
 										<td><label for="fundingSource">Source de financement </label></td>
 										<td>
@@ -187,11 +187,11 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 									<tr>
 										<td style="width: 15% !important;"><label for="patientArtNo">Code du patient </label></td>
 										<td style="width: 35% !important;">
-											<input type="text" class="form-control" id="patientArtNo" name="patientArtNo" placeholder="Code du patient" title="<?= _("Please enter the Patient ID"); ?>" <?php echo $disable; ?> value="<?= htmlspecialchars($vlQueryInfo['patient_art_no']); ?>" style="width:100%;" />
+											<input type="text" class="form-control" id="patientArtNo" name="patientArtNo" placeholder="Code du patient" title="<?= _translate("Please enter the Patient ID"); ?>" <?php echo $disable; ?> value="<?= htmlspecialchars($vlQueryInfo['patient_art_no']); ?>" style="width:100%;" />
 										</td>
 										<td style="width:15%;"><label for="">Date de naissance </label></td>
 										<td style="width:35%;">
-											<input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _("Please enter date"); ?>" title="Please select date de naissance" <?php echo $disable; ?> value="<?= htmlspecialchars($vlQueryInfo['patient_dob']); ?>" style="width:100%;" />
+											<input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _translate("Please enter date"); ?>" title="Please select date de naissance" <?php echo $disable; ?> value="<?= htmlspecialchars($vlQueryInfo['patient_dob']); ?>" style="width:100%;" />
 										</td>
 									</tr>
 									<tr>
@@ -209,11 +209,11 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 										<td style="width:35%;">
 											<label class="radio-inline" style="padding-left:12px !important;margin-left:0;">&nbsp;M</label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="genderMale" name="gender" <?php echo $disable; ?> value="male" title="<?= _("Please select a gender"); ?>" <?php echo (trim($vlQueryInfo['patient_gender']) == "male") ? 'checked="checked"' : ''; ?>>
+												<input type="radio" class="" id="genderMale" name="gender" <?php echo $disable; ?> value="male" title="<?= _translate("Please select a gender"); ?>" <?php echo (trim($vlQueryInfo['patient_gender']) == "male") ? 'checked="checked"' : ''; ?>>
 											</label>
 											<label class="radio-inline" style="padding-left:12px !important;margin-left:0;">F</label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="genderFemale" name="gender" <?php echo $disable; ?> value="female" title="<?= _("Please select a gender"); ?>" <?php echo (trim($vlQueryInfo['patient_gender']) == "female") ? 'checked="checked"' : ''; ?>>
+												<input type="radio" class="" id="genderFemale" name="gender" <?php echo $disable; ?> value="female" title="<?= _translate("Please select a gender"); ?>" <?php echo (trim($vlQueryInfo['patient_gender']) == "female") ? 'checked="checked"' : ''; ?>>
 											</label>
 										</td>
 										<td style="width:15%;"><label>Régime ARV en cours </label></td>
@@ -249,7 +249,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 										</td>
 										<td style="width: 15% !important;" class="du"><label for="">Date du début des ARV </label></td>
 										<td tyle="width: 35% !important;" class="du">
-											<input type="text" class="form-control date" id="dateOfArtInitiation" name="dateOfArtInitiation" placeholder="<?= _("Please enter date"); ?>" title="Please enter date du début des ARV" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['treatment_initiated_date']; ?>" style="width:100%;" /> &nbsp;(Jour/Mois/Année) </span>
+											<input type="text" class="form-control date" id="dateOfArtInitiation" name="dateOfArtInitiation" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date du début des ARV" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['treatment_initiated_date']; ?>" style="width:100%;" /> &nbsp;(Jour/Mois/Année) </span>
 										</td>
 									</tr>
 									<tr>
@@ -276,7 +276,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 										</td>
 										<td style="width: 15% !important;"><label for="">Date du changement de régime ARV </label></td>
 										<td style="width: 35% !important;">
-											<input type="text" class="form-control date" id="dateOfArvRegimenChange" name="dateOfArvRegimenChange" placeholder="<?= _("Please enter date"); ?>" title="Please enter date du changement de régime ARV" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['regimen_change_date']; ?>" style="width:100%;" /> (Jour/Mois/Année)
+											<input type="text" class="form-control date" id="dateOfArvRegimenChange" name="dateOfArvRegimenChange" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date du changement de régime ARV" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['regimen_change_date']; ?>" style="width:100%;" /> (Jour/Mois/Année)
 										</td>
 									</tr>
 									<tr>
@@ -306,7 +306,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 										</td>
 										<td style="width: 15% !important;"><label for="">Date dernière charge virale (demande) </label></td>
 										<td style="width: 35% !important;">
-											<input type="text" class="form-control date" id="lastViralLoadTestDate" name="lastViralLoadTestDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date dernière charge virale" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['last_viral_load_date']; ?>" style="width:100%;" />
+											<input type="text" class="form-control date" id="lastViralLoadTestDate" name="lastViralLoadTestDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date dernière charge virale" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['last_viral_load_date']; ?>" style="width:100%;" />
 										</td>
 									</tr>
 									<tr id="femaleElements">
@@ -356,7 +356,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 									<tr>
 										<td><label for="">Date du prélèvement </label></td>
 										<td>
-											<input type="text" class="form-control dateTime" id="sampleCollectionDate" name="sampleCollectionDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date du prélèvement" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['sample_collection_date']; ?>" style="width:100%;" />
+											<input type="text" class="form-control dateTime" id="sampleCollectionDate" name="sampleCollectionDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date du prélèvement" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['sample_collection_date']; ?>" style="width:100%;" />
 										</td>
 										<td></td>
 										<td></td>
@@ -398,7 +398,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 									<tr>
 										<td><label for="">Date de départ au Labo biomol </label></td>
 										<td>
-											<input type="text" class="form-control dateTime" id="dateDispatchedFromClinicToLab" name="dateDispatchedFromClinicToLab" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de départ au Labo biomol" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['sample_dispatched_datetime']; ?>" style="width:100%;" />
+											<input type="text" class="form-control dateTime" id="dateDispatchedFromClinicToLab" name="dateDispatchedFromClinicToLab" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de départ au Labo biomol" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['sample_dispatched_datetime']; ?>" style="width:100%;" />
 										</td>
 										<td></td>
 										<td></td>
@@ -419,7 +419,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 									<tr style="<?php echo ($sCode != '') ? 'display:none' : ''; ?>">
 										<td><label for="">Date de réception de l'échantillon <span class="mandatory">*</span> </label></td>
 										<td>
-											<input type="text" class="form-control dateTime isRequired" id="sampleReceivedOn<?php echo ($sCode != '') ? 'Lab' : ''; ?>" name="sampleReceivedOn<?php echo ($sCode != '') ? 'Lab' : ''; ?>" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" style="width:100%;" />
+											<input type="text" class="form-control dateTime isRequired" id="sampleReceivedOn<?php echo ($sCode != '') ? 'Lab' : ''; ?>" name="sampleReceivedOn<?php echo ($sCode != '') ? 'Lab' : ''; ?>" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" style="width:100%;" />
 										</td>
 										<td><label for="labId">Nom du laboratoire <span class="mandatory">*</span></label> </td>
 										<td>
@@ -431,7 +431,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 									<tr>
 										<td><label for="">Date de réalisation de la charge virale <span class="mandatory">*</span></label></td>
 										<td>
-											<input type="text" class="form-control dateTime isRequired" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" style="width:100%;" />
+											<input type="text" class="form-control dateTime isRequired" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" style="width:100%;" />
 										</td>
 										<td><label for="testingPlatform">Technique utilisée <span class="mandatory">*</span></label></td>
 										<td>
@@ -447,7 +447,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 									<tr>
 										<td><label for="">Décision prise <span class="mandatory">*</span></label></td>
 										<td>
-											<select class="form-control result-focus isRequired" id="isSampleRejected" name="isSampleRejected" title="<?= _('Please select if sample is rejected'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
+											<select class="form-control result-focus isRequired" id="isSampleRejected" name="isSampleRejected" title="<?= _translate('Please select if sample is rejected'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
 												<option value=""> -- Sélectionner -- </option>
 												<option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>Echantillon accepté</option>
 												<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Echantillon rejeté</option>
@@ -457,7 +457,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 									<tr class="rejectionReason" style="display:<?php echo ($vlQueryInfo['result_status'] == 4) ? '' : 'none'; ?>;">
 										<td><label for="rejectionReason">Motifs de rejet <span class="mandatory">*</span></label></td>
 										<td>
-											<select class="form-control" id="rejectionReason" name="rejectionReason" title="<?= _('Please select reason for rejection'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();" style="width:100%;">
+											<select class="form-control" id="rejectionReason" name="rejectionReason" title="<?= _translate('Please select reason for rejection'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();" style="width:100%;">
 												<option value=""> -- Sélectionner -- </option>
 												<?php foreach ($rejectionResult as $rjctReason) { ?>
 													<option value="<?php echo $rjctReason['rejection_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_sample_rejection'] == $rjctReason['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ($rjctReason['rejection_reason_name']); ?></option>
@@ -467,7 +467,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 											<input type="text" class="form-control newRejectionReason" id="newRejectionReason" name="newRejectionReason" placeholder="Motifs de rejet" title="Please enter motifs de rejet" <?php echo $labFieldDisabled; ?> style="width:100%;display:none;" />
 										</td>
 										<th scope="row" class="rejectionReason" style="display:none;">
-											<?php echo _("Rejection Date"); ?>
+											<?php echo _translate("Rejection Date"); ?>
 										</th>
 										<td class="rejectionReason" style="display:none;"><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
 									</tr>
@@ -488,7 +488,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 									<?php if (count($reasonForFailure) > 0) { ?>
 										<tr class="reasonForFailure vlResult" style="<?php echo (!isset($vlQueryInfo['result']) || $vlQueryInfo['result'] != 'Failed') ? 'display: none;' : ''; ?>">
 											<th scope="row" class="reasonForFailure">
-												<?php echo _("Reason for Failure"); ?>
+												<?php echo _translate("Reason for Failure"); ?>
 											</th>
 											<td class="reasonForFailure">
 												<select name="reasonForFailure" id="reasonForFailure" class="form-control vlResult" title="Please choose reason for failure" style="width: 100%;">
@@ -527,15 +527,15 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 																							else
 																								echo "none;"; ?>">
 											<label for="reasonForResultChanges">
-												<?= _("Enter reason for changing the result"); ?> <span class="mandatory">*</span>
+												<?= _translate("Enter reason for changing the result"); ?> <span class="mandatory">*</span>
 											</label>
 										</td>
 										<td class="reasonForResultChanges" style="display:<?php if ($reasonChange != "")
 																								echo "block";
 																							else
 																								echo "none;"; ?>none;">
-											<textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="<?= _("Enter reason for changing the result"); ?>" title="<?= _("Enter reason for changing the result"); ?>" style="width:100%;"><?php if ($reasonChange != "")
-																																																																						echo $reasonChange; ?></textarea>
+											<textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="<?= _translate("Enter reason for changing the result"); ?>" title="<?= _translate("Enter reason for changing the result"); ?>" style="width:100%;"><?php if ($reasonChange != "")
+																																																																											echo $reasonChange; ?></textarea>
 										</td>
 									</tr>
 								</table>

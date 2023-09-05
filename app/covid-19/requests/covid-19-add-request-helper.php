@@ -12,7 +12,7 @@ use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
-} 
+}
 
 
 /** @var MysqliDb $db */
@@ -354,7 +354,7 @@ try {
 	}
 
 	if ($id === true) {
-		$_SESSION['alertMsg'] = _("Covid-19 test request added successfully");
+		$_SESSION['alertMsg'] = _translate("Covid-19 test request added successfully");
 		//Add event log
 		$eventType = 'covid-19-add-request';
 		$action = $_SESSION['userName'] . ' added a new Covid-19 request with the Sample Code/ID ' . $_POST['sampleCode'] . ' (' . $_POST['covid19SampleId'] . ')';
@@ -362,7 +362,7 @@ try {
 
 		$general->activityLog($eventType, $action, $resource);
 	} else {
-		$_SESSION['alertMsg'] = _("Unable to add this Covid-19 sample. Please try again later");
+		$_SESSION['alertMsg'] = _translate("Unable to add this Covid-19 sample. Please try again later");
 	}
 	if (!empty($_POST['saveNext']) && $_POST['saveNext'] == 'next' && (!empty($_POST['quickForm']) && $_POST['quickForm'] == "quick")) {
 		header("Location:/covid-19/requests/covid-19-quick-add.php");

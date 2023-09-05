@@ -36,7 +36,7 @@ try {
 		$db->insert($tableName, $data);
 		$lastId = $db->getInsertId();
 
-		$_SESSION['alertMsg'] = _("Test reasons details added successfully");
+		$_SESSION['alertMsg'] = _translate("Test reasons details added successfully");
 		$general->activityLog('add-test-reasons', $_SESSION['userName'] . ' added new reference test reasons' . $_POST['testReasonName'], 'reference-tb-test-reasons');
 	}
 	header("Location:tb-test-reasons.php");

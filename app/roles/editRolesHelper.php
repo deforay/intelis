@@ -41,7 +41,7 @@ try {
                                 $db->insert("roles_privileges_map", $value);
                         }
                 }
-                $_SESSION['alertMsg'] = _("Role updated successfully");
+                $_SESSION['alertMsg'] = _translate("Role updated successfully");
         }
         $db->commit();
         header("Location:roles.php");

@@ -145,7 +145,7 @@ foreach ($rResult as $aRow) {
     $row[] = ucwords($aRow['unit_status']);
     $row[] = $aRow['updated_datetime'] = DateUtility::humanReadableDateFormat($aRow['updated_datetime'], true);
     if ($usersService->isAllowed("/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php")) {
-        $row[] = '<a href="generic-edit-test-result-units.php?id=' . base64_encode($aRow['unit_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
+        $row[] = '<a href="generic-edit-test-result-units.php?id=' . base64_encode($aRow['unit_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
     }
     $output['aaData'][] = $row;
 }

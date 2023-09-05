@@ -63,18 +63,18 @@ try {
                 WHERE rejection_reason_name like ?";
     $rejectionResult = $db->rawQueryOne($rejectionReasonQuery, [$_POST['newRejectionReason']]);
     if (empty($rejectionResult)) {
-        $data = array(
-            'rejection_reason_name' => $_POST['newRejectionReason'],
-            'rejection_type' => 'general',
-            'rejection_reason_status' => 'active',
-            'updated_datetime' => DateUtility::getCurrentDateTime()
-        );
-        $id = $db->insert('r_eid_sample_rejection_reasons', $data);
-        $_POST['sampleRejectionReason'] = $id;
+      $data = array(
+        'rejection_reason_name' => $_POST['newRejectionReason'],
+        'rejection_type' => 'general',
+        'rejection_reason_status' => 'active',
+        'updated_datetime' => DateUtility::getCurrentDateTime()
+      );
+      $id = $db->insert('r_eid_sample_rejection_reasons', $data);
+      $_POST['sampleRejectionReason'] = $id;
     } else {
-        $_POST['sampleRejectionReason'] = $rejectionResult['rejection_reason_id'];
+      $_POST['sampleRejectionReason'] = $rejectionResult['rejection_reason_id'];
     }
-}
+  }
 
   $eidData = array(
     'sample_received_at_lab_datetime' => $_POST['sampleReceivedDate'],
@@ -115,7 +115,7 @@ try {
   $id = $db->update($tableName, $eidData);
   error_log($db->getLastError());
 
-  $_SESSION['alertMsg'] = _("EID result updated successfully");
+  $_SESSION['alertMsg'] = _translate("EID result updated successfully");
   //Add event log
   $eventType = 'update-vl-result-drc';
   $action = $_SESSION['userName'] . ' updated a result for the EID sample no. ' . $_POST['sampleCode'];

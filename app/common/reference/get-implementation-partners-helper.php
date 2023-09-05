@@ -137,9 +137,9 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
-    $status = '<select class="form-control" name="status[]" id="' . $aRow['i_partner_id'] . '" title="' . _("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['i_partner_status'] . '\')">
-               <option value="active" ' . ($aRow['i_partner_status'] == "active" ? "selected=selected" : "") . '>' . _("Active") . '</option>
-               <option value="inactive" ' . ($aRow['i_partner_status'] == "inactive" ? "selected=selected" : "") . '>' . _("Inactive") . '</option>
+    $status = '<select class="form-control" name="status[]" id="' . $aRow['i_partner_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['i_partner_status'] . '\')">
+               <option value="active" ' . ($aRow['i_partner_status'] == "active" ? "selected=selected" : "") . '>' . _translate("Active") . '</option>
+               <option value="inactive" ' . ($aRow['i_partner_status'] == "inactive" ? "selected=selected" : "") . '>' . _translate("Inactive") . '</option>
                </select><br><br>';
     $row = [];
     $row[] = ($aRow['i_partner_name']);

@@ -90,11 +90,11 @@ unset($_SESSION['controllertrack']);
                                 if (isset($tsResult[0]['totalCount']) && $tsResult[0]['totalCount'] > 0) { ?>
                                     <input type="button" onclick="convertSearchResultToPdf();return false;" value="Print all results" class="btn btn-success btn-sm">&nbsp;&nbsp;
                                     <a href="/hepatitis/results/hepatitis-print-results.php" class="btn btn-success btn-sm">
-                                        <?= _("Continue without printing results"); ?>
+                                        <?= _translate("Continue without printing results"); ?>
                                     </a>
                                 <?php } else { ?>
                                     <a href="/hepatitis/results/hepatitis-print-results.php" class="btn btn-success btn-sm">
-                                        <?= _("Continue"); ?>
+                                        <?= _translate("Continue"); ?>
                                     </a>
                                 <?php } ?>
                             </td>
@@ -126,7 +126,7 @@ unset($_SESSION['controllertrack']);
             function(data) {
                 if (data == "" || data == null || data == undefined) {
                     $.unblockUI();
-                    alert("<?= _("Unable to generate download"); ?>");
+                    alert("<?= _translate("Unable to generate download"); ?>");
                 } else {
                     $.unblockUI();
                     window.open('/download.php?f=' + data, '_blank');

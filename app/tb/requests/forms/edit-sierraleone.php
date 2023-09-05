@@ -188,11 +188,11 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 									<tr>
 										<th scope="row"><label for="requestedDate">Date of request <span class="mandatory">*</span></label></th>
 										<td>
-											<input type="text" value="<?php echo $tbInfo['request_created_datetime']; ?>" class="date-time form-control" id="requestedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date of request date" style="width:100%;" />
+											<input type="text" value="<?php echo $tbInfo['request_created_datetime']; ?>" class="date-time form-control" id="requestedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date of request date" style="width:100%;" />
 										</td>
 										<th scope="row"><label for="requestingClinician">Clinician Name </label></th>
 										<td>
-											<input type="text" class="form-control" value="<?php echo $tbInfo['requesting_clinician']; ?>" id="requestingClinician" name="requestingClinician" placeholder="<?= _("Enter clinician name"); ?>" title="Enter clinician name" style="width:100%;" />
+											<input type="text" class="form-control" value="<?php echo $tbInfo['requesting_clinician']; ?>" id="requestingClinician" name="requestingClinician" placeholder="<?= _translate("Enter clinician name"); ?>" title="Enter clinician name" style="width:100%;" />
 										</td>
 										<td><label class="label-control" for="referringUnit">Referring Unit </label></td>
 										<td>
@@ -470,17 +470,17 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 											</td>
 											<th scope="row"><label class="label-control" for="sampleReceivedDate">Date of Reception </label></th>
 											<td>
-												<input type="text" class="date-time form-control" value="<?php echo $tbInfo['sample_received_at_lab_datetime']; ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
+												<input type="text" class="date-time form-control" value="<?php echo $tbInfo['sample_received_at_lab_datetime']; ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
 											</td>
 										</tr>
 										<tr>
 											<th scope="row"><label class="label-control" for="sampleTestedDateTime">Date of Sample Tested</label></th>
 											<td>
-												<input type="text" value="<?php echo $tbInfo['sample_tested_datetime']; ?>" class="date-time form-control" value="<?php echo $tbInfo['sample_collection_date']; ?>" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample tested" style="width:100%;" />
+												<input type="text" value="<?php echo $tbInfo['sample_tested_datetime']; ?>" class="date-time form-control" value="<?php echo $tbInfo['sample_collection_date']; ?>" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample tested" style="width:100%;" />
 											</td>
 											<th scope="row"><label class="label-control" for="sampleDispatchedDate">Sample Dispatched On</label></th>
 											<td>
-												<input type="text" value="<?php echo $tbInfo['sample_dispatched_datetime']; ?>" class="date-time form-control" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _("Please enter date"); ?>" title="Please choose sample dispatched date" style="width:100%;" />
+												<input type="text" value="<?php echo $tbInfo['sample_dispatched_datetime']; ?>" class="date-time form-control" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please choose sample dispatched date" style="width:100%;" />
 											</td>
 										</tr>
 										<tr>
@@ -492,7 +492,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 											</td>
 											<th scope="row"><label class="label-control" for="testedBy">Date Of Result</label></th>
 											<td>
-												<input type="text" value="<?php echo $tbInfo['result_date']; ?>" class="date-time form-control" value="<?php echo $tbInfo['result_date']; ?>" id="resultDate" name="resultDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter result date" style="width:100%;" />
+												<input type="text" value="<?php echo $tbInfo['result_date']; ?>" class="date-time form-control" value="<?php echo $tbInfo['result_date']; ?>" id="resultDate" name="resultDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter result date" style="width:100%;" />
 											</td>
 
 										</tr>
@@ -524,28 +524,28 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 													if ($tbInfo['reason_for_sample_rejection'] == 9999) {
 														echo '<option value="9999" selected="selected">Unspecified</option>';
 													} ?>
-										<option value="other">Other (Please Specify) </option>
+													<option value="other">Other (Please Specify) </option>
 
 												</select>
 												<input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
 
 											</td>
 											<th class="labels">Recommended Corrective Action</th>
-                                            <td><select name="correctiveAction" id="correctiveAction" class="form-control" title="Please choose Recommended corrective action">
-                                                    <option value="">-- Select --</option>
-                                                    <?php foreach ($correctiveActions as $action) { ?>
-                                                    <option value="<?php echo $action['recommended_corrective_action_id']; ?>" <?php echo ($tbInfo['recommended_corrective_action'] == $action['recommended_corrective_action_id']) ? 'selected="selected"' : ''; ?>><?= $action['recommended_corrective_action_name']; ?></option>
-                                                    <?php } ?>
-                                                </select>
-                                            </td>
-											
+											<td><select name="correctiveAction" id="correctiveAction" class="form-control" title="Please choose Recommended corrective action">
+													<option value="">-- Select --</option>
+													<?php foreach ($correctiveActions as $action) { ?>
+														<option value="<?php echo $action['recommended_corrective_action_id']; ?>" <?php echo ($tbInfo['recommended_corrective_action'] == $action['recommended_corrective_action_id']) ? 'selected="selected"' : ''; ?>><?= $action['recommended_corrective_action_name']; ?></option>
+													<?php } ?>
+												</select>
+											</td>
+
 										</tr>
 										<tr class="show-rejection" style="display:none;">
 
-										<th scope="row"><label class="label-control" for="rejectionDate">Rejection Date<span class="mandatory">*</span></label></th>
+											<th scope="row"><label class="label-control" for="rejectionDate">Rejection Date<span class="mandatory">*</span></label></th>
 											<td><input value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select rejection date" title="Please select the rejection date" /></td>
-													</tr>
-											<tr class="platform microscopy" <?php echo (isset($attributes) && $attributes != "" && in_array("microscopy", $attributes)) ? 'style="display:none;"' : ''; ?>>
+										</tr>
+										<tr class="platform microscopy" <?php echo (isset($attributes) && $attributes != "" && in_array("microscopy", $attributes)) ? 'style="display:none;"' : ''; ?>>
 											<td colspan="4">
 												<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
 													<thead>
@@ -1038,14 +1038,14 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 	}
 
 	function checkRejectionReason() {
-          var rejectionReason = $("#sampleRejectionReason").val();
-          if (rejectionReason == "other") {
-               $("#newRejectionReason").show();
-               $("#newRejectionReason").addClass("isRequired");
-          } else {
-               $("#newRejectionReason").hide();
-               $("#newRejectionReason").removeClass("isRequired");
-               $('#newRejectionReason').val("");
-          }
-     }
+		var rejectionReason = $("#sampleRejectionReason").val();
+		if (rejectionReason == "other") {
+			$("#newRejectionReason").show();
+			$("#newRejectionReason").addClass("isRequired");
+		} else {
+			$("#newRejectionReason").hide();
+			$("#newRejectionReason").removeClass("isRequired");
+			$('#newRejectionReason').val("");
+		}
+	}
 </script>

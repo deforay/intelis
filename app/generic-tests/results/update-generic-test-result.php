@@ -882,7 +882,7 @@ $reasonForChange = $reasonForChangeArr[1];
 																		<input type="text" id="testResult<?= ($indexKey + 1); ?>" value="<?php echo $rows['result']; ?>" name="testResult[]" class="form-control result-focus" value="<?php echo $genericResultInfo['result']; ?>" placeholder="Enter result" title="Please enter final results">
 																	</td>
 																	<td class="testResultUnit">
-																		<select class="form-control resultUnit" id="testResultUnit<?= ($indexKey + 1); ?>" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+																		<select class="form-control resultUnit" id="testResultUnit<?= ($indexKey + 1); ?>" name="testResultUnit[]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>'>
 																			<option value="">--Select--</option>
 																			<?php
 																			foreach ($testResultUnits as $unit) {
@@ -927,7 +927,7 @@ $reasonForChange = $reasonForChangeArr[1];
 																	<input type="text" id="testResult<?= ($indexKey + 1); ?>" name="testResult[]" class="form-control result-focus" placeholder="Enter result" title="Please enter final results">
 																</td>
 																<td class="testResultUnit">
-																	<select class="form-control" id="testResultUnit<?= ($indexKey + 1); ?>" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+																	<select class="form-control" id="testResultUnit<?= ($indexKey + 1); ?>" name="testResultUnit[]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>'>
 																		<option value="">--Select--</option>
 																		<?php
 																		foreach ($testResultUnits as $unit) {
@@ -1005,7 +1005,7 @@ $reasonForChange = $reasonForChangeArr[1];
 												<label class="col-lg-5 control-label" for="approvedOn">Approved On
 													<span class="mandatory review-approve-span" style="display: <?php echo ($genericResultInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span></label>
 												<div class="col-lg-7">
-													<input type="text" value="<?php echo $genericResultInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOn" name="approvedOn" placeholder="<?= _("Please enter date"); ?>" style="width:100%;" />
+													<input type="text" value="<?php echo $genericResultInfo['result_approved_datetime']; ?>" class="form-control dateTime" id="approvedOn" name="approvedOn" placeholder="<?= _translate("Please enter date"); ?>" style="width:100%;" />
 												</div>
 											</div>
 											<div class="col-md-6">
@@ -1172,7 +1172,7 @@ $reasonForChange = $reasonForChangeArr[1];
 		});
 		$("#testType").select2({
 			width: '100%',
-			placeholder: "<?php echo _("Select Test Type"); ?>"
+			placeholder: "<?php echo _translate("Select Test Type"); ?>"
 		});
 		$('#labId').select2({
 			width: '100%',
@@ -1382,7 +1382,7 @@ $reasonForChange = $reasonForChangeArr[1];
 			date2 = new Date(sampleReceivedAtHubOn);
 
 			if (date2.getTime() < date1.getTime()) {
-				alert("<?= _("Sample Received at Hub Date cannot be earlier than Sample Collection Date"); ?>");
+				alert("<?= _translate("Sample Received at Hub Date cannot be earlier than Sample Collection Date"); ?>");
 				$("#sampleReceivedAtHubOn").val("");
 			}
 		}
@@ -1397,7 +1397,7 @@ $reasonForChange = $reasonForChangeArr[1];
 			date2 = new Date(sampleReceivedDate);
 
 			if (date2.getTime() < date1.getTime()) {
-				alert("<?= _("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date"); ?>");
+				alert("<?= _translate("Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date"); ?>");
 				$("#sampleReceivedDate").val("");
 			}
 		}
@@ -1412,7 +1412,7 @@ $reasonForChange = $reasonForChangeArr[1];
 			date2 = new Date(sampleTestingDate);
 
 			if (date2.getTime() < date1.getTime()) {
-				alert("<?= _("Sample Testing Date cannot be earlier than Sample Collection Date"); ?>");
+				alert("<?= _translate("Sample Testing Date cannot be earlier than Sample Collection Date"); ?>");
 				$("#sampleTestingDateAtLab").val("");
 			}
 		}
@@ -1799,11 +1799,11 @@ $reasonForChange = $reasonForChangeArr[1];
 					});
 					$(".dynamicFacilitySelect2").select2({
 						width: '100%',
-						placeholder: "<?php echo _("Select any one of the option"); ?>"
+						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
 					});
 					$(".dynamicSelect2").select2({
 						width: '100%',
-						placeholder: "<?php echo _("Select any one of the option"); ?>"
+						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
 					});
 					if ($('#resultType').val() == 'qualitative') {
 						$('.final-result-row').attr('colspan', 4)
@@ -1874,7 +1874,7 @@ $reasonForChange = $reasonForChangeArr[1];
 			   <input type="text" id="testResult${testCounter}" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
 			</td>
 			<td class="testResultUnit">
-			<select class="form-control" id="testResultUnit${testCounter}" name="testResultUnit[]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>'>
+			<select class="form-control" id="testResultUnit${testCounter}" name="testResultUnit[]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>'>
 					<option value="">--Select--</option>
 					<?php
 					foreach ($testResultUnits as $unit) {

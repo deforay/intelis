@@ -18,8 +18,8 @@ require(APPLICATION_PATH . '/header.php');
                     <span class="fa-solid fa-triangle-exclamation"></span> 404
                 </h1>
                 <h2 style="color:red;text-align: center;font-weight:500;">
-                    <?= _("Sorry! We could not find this page or resource."); ?><br />
-                    <small><?= _("Please contact the System Admin for further support."); ?></small>
+                    <?= _translate("Sorry! We could not find this page or resource."); ?><br />
+                    <small><?= _translate("Please contact the System Admin for further support."); ?></small>
                 </h2>
             </div>
         </div>

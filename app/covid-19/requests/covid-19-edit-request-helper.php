@@ -175,7 +175,7 @@ try {
 		'lab_id' => !empty($_POST['labId']) ? $_POST['labId'] : null,
 		'testing_point' => !empty($_POST['testingPoint']) ? $_POST['testingPoint'] : null,
 		'funding_source' => (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') ? base64_decode($_POST['fundingSource']) : null,
-        'implementing_partner' => (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') ? base64_decode($_POST['implementingPartner']) : null,
+		'implementing_partner' => (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') ? base64_decode($_POST['implementingPartner']) : null,
 		'source_of_alert' => !empty($_POST['sourceOfAlertPOE']) ? $_POST['sourceOfAlertPOE'] : null,
 		'source_of_alert_other' => (!empty($_POST['sourceOfAlertPOE']) && $_POST['sourceOfAlertPOE'] == 'others') ? $_POST['alertPoeOthers'] : null,
 		'patient_id' => !empty($_POST['patientId']) ? $_POST['patientId'] : null,
@@ -366,7 +366,7 @@ try {
 		$db->delete($testTableName);
 		$covid19Data['sample_tested_datetime'] = null;
 	}
-	 //echo "<pre>";print_r($covid19Data);die;
+	//echo "<pre>";print_r($covid19Data);die;
 	$id = 0;
 	if (isset($_POST['covid19SampleId']) && $_POST['covid19SampleId'] != '') {
 		$db = $db->where('covid19_id', $_POST['covid19SampleId']);
@@ -375,7 +375,7 @@ try {
 	}
 
 	if ($id > 0 || $sid > 0 || $pid > 0) {
-		$_SESSION['alertMsg'] = _("Covid-19 request updated successfully");
+		$_SESSION['alertMsg'] = _translate("Covid-19 request updated successfully");
 		//Add event log
 		$eventType = 'update-covid-19-request';
 		$action = $_SESSION['userName'] . ' updated Covid-19 request with the Sample Code/ID  ' . $_POST['sampleCode'] . ' (' . $_POST['covid19SampleId'] . ')';
@@ -383,7 +383,7 @@ try {
 
 		$general->activityLog($eventType, $action, $resource);
 	} else {
-		$_SESSION['alertMsg'] = _("Please try again later");
+		$_SESSION['alertMsg'] = _translate("Please try again later");
 	}
 	error_log($db->getLastError());
 	header("Location:/covid-19/requests/covid-19-requests.php");

@@ -31,7 +31,7 @@ fclose($myfile);
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title><?php echo _("VLSM"); ?> | <?php echo _("New User Registration"); ?></title>
+  <title><?php echo _translate("VLSM"); ?> | <?php echo _translate("New User Registration"); ?></title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.6 -->
@@ -62,7 +62,7 @@ fclose($myfile);
     <div id="loginbox" style="margin-top:140px;margin-bottom:70px;float:right;margin-right:509px;" class="mainbox col-md-3 col-sm-8 ">
       <div class="panel panel-default" style="opacity: 0.93;">
         <div class="panel-heading">
-          <div class="panel-title"><?php echo _("Resgiter new System Admin"); ?></div>
+          <div class="panel-title"><?php echo _translate("Resgiter new System Admin"); ?></div>
         </div>
 
         <div style="padding-top:10px;" class="panel-body">
@@ -70,32 +70,32 @@ fclose($myfile);
           <form id="registerForm" name="registerForm" class="form-horizontal" role="form" method="post" action="registerProcess.php" onsubmit="validateNow();return false;">
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-key"></em></span>
-              <input type="text" class="form-control isRequired" id="secretKey" name="secretKey" placeholder="<?php echo _('Secret Key'); ?>" title="" />
+              <input type="text" class="form-control isRequired" id="secretKey" name="secretKey" placeholder="<?php echo _translate('Secret Key'); ?>" title="" />
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-user"></em></span>
-              <input id="login-username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?php echo _('User Name'); ?>" title="<?php echo _('Please enter the user name'); ?>">
+              <input id="login-username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?php echo _translate('User Name'); ?>" title="<?php echo _translate('Please enter the user name'); ?>">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-envelope"></em></span>
-              <input id="login-email" type="text" class="form-control isRequired" name="email" value="" placeholder="<?php echo _('Email Id'); ?>" title="<?php echo _('Please enter the email id'); ?>">
+              <input id="login-email" type="text" class="form-control isRequired" name="email" value="" placeholder="<?php echo _translate('Email Id'); ?>" title="<?php echo _translate('Please enter the email id'); ?>">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-right-to-bracket"></em></span>
-              <input id="login-id" type="text" class="form-control isRequired" name="loginid" value="" placeholder="<?php echo _('Login Id'); ?>" title="<?php echo _('Please enter the login id'); ?>">
+              <input id="login-id" type="text" class="form-control isRequired" name="loginid" value="" placeholder="<?php echo _translate('Login Id'); ?>" title="<?php echo _translate('Please enter the login id'); ?>">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
-              <input type="password" class="form-control ppwd isRequired" id="confirmPassword" name="password" placeholder="<?php echo _('Password'); ?>" title="<?php echo _('Please enter the password'); ?>" />
+              <input type="password" class="form-control ppwd isRequired" id="confirmPassword" name="password" placeholder="<?php echo _translate('Password'); ?>" title="<?php echo _translate('Please enter the password'); ?>" />
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
-              <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?php echo _('Confirm Password'); ?>" title="" />
+              <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?php echo _translate('Confirm Password'); ?>" title="" />
             </div>
             <div style="margin-top:10px" class="form-group">
               <!-- Button -->
               <div class="col-sm-12 controls">
-                <button class="btn btn-lg btn-primary btn-block" onclick="validateNow();return false;"><?php echo _("Submit"); ?></button>
+                <button class="btn btn-lg btn-primary btn-block" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></button>
               </div>
             </div>
           </form>
@@ -128,7 +128,7 @@ fclose($myfile);
       var pwd = $('#confirmPassword').val();
       var regex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9!@#\$%\^\&*\)\(+=. _-]+){8,}$/;
       if (regex.test(pwd) == false) {
-        alert("<?= _("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?>");
+        alert("<?= _translate("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?>");
         $('.ppwd').focus();
       }
       return regex.test(pwd);

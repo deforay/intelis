@@ -33,7 +33,7 @@ try {
 		}
 
 		if ($lastId > 0) {
-			$_SESSION['alertMsg'] = _("Hepatitis Risk Factor details saved successfully");
+			$_SESSION['alertMsg'] = _translate("Hepatitis Risk Factor details saved successfully");
 			$general->activityLog('Hepatitis Risk Factor details', $_SESSION['userName'] . ' added new risk factor for ' . $_POST['riskFactorName'], 'hepatitis-reference');
 		}
 	}

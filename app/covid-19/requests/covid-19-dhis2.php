@@ -46,21 +46,18 @@ $batResult = $db->rawQuery($batQuery);
 			<div class="col-xs-12">
 				<div class="box">
 
-					<table aria-describedby="table" id="filter" class="table" aria-hidden="true"
-						style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
+					<table aria-describedby="table" id="filter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
 						<tr id="">
 							<td>
 
 								<?php
 								if (isset($_SESSION['privileges']) && in_array("/covid-19/requests/covid-19-add-request.php", $_SESSION['privileges'])) { ?>
 									<?php if ($_SESSION['instanceType'] != 'remoteuser') { ?>
-										<a style=" margin: 0px 5px; " href="javascript:receiveDhis2Data();"
-											class="btn btn-success btn-sm pull-right"> <em class="fa-solid fa-download"></em>
+										<a style=" margin: 0px 5px; " href="javascript:receiveDhis2Data();" class="btn btn-success btn-sm pull-right"> <em class="fa-solid fa-download"></em>
 											Receive Test Requests from DHIS2</a>
-										<a style=" margin: 0px 5px; " href="javascript:sendDhis2Data();"
-											class="btn btn-warning btn-sm pull-right"> <em class="fa-solid fa-upload"></em> Send
+										<a style=" margin: 0px 5px; " href="javascript:sendDhis2Data();" class="btn btn-warning btn-sm pull-right"> <em class="fa-solid fa-upload"></em> Send
 											Results to DHIS2</a>
-									<?php }
+								<?php }
 								} ?>
 
 							</td>
@@ -69,8 +66,7 @@ $batResult = $db->rawQuery($batQuery);
 
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="vlRequestDataTable"
-							class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
@@ -85,16 +81,16 @@ $batResult = $db->rawQuery($batQuery);
 										<th>Case ID</th>
 									<?php } else { ?>
 										<th style="width:10%;">
-											<?= _("Patient ID"); ?>
+											<?= _translate("Patient ID"); ?>
 										</th>
 									<?php } ?>
 									<th style="width:10%;">
-										<?= _("Patient Name"); ?>
+										<?= _translate("Patient Name"); ?>
 									</th>
 									<th>Province/State</th>
 									<th>District/County</th>
 									<th style="width:10%;">
-										<?= _("Previous Result"); ?>
+										<?= _translate("Previous Result"); ?>
 									</th>
 									<th>Last Modified On</th>
 									<th>Status</th>
@@ -111,27 +107,25 @@ $batResult = $db->rawQuery($batQuery);
 						</table>
 						<?php
 						if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') {
-							?>
+						?>
 
 							<div id="printer_data_loading" style="display:none"><span id="loading_message">Loading Printer
 									Details...</span><br />
 								<div class="progress" style="width:100%">
-									<div class="progress-bar progress-bar-striped active" role="progressbar"
-										aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+									<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
 									</div>
 								</div>
 							</div> <!-- /printer_data_loading -->
 							<div id="printer_details" style="display:none">
 								<span id="selected_printer">No printer selected!</span>
-								<button type="button" class="btn btn-success"
-									onclick="changePrinter()">Change/Retry</button>
+								<button type="button" class="btn btn-success" onclick="changePrinter()">Change/Retry</button>
 							</div><br /> <!-- /printer_details -->
 							<div id="printer_select" style="display:none">
 								Zebra Printer Options<br />
 								Printer: <select id="printers"></select>
 							</div> <!-- /printer_select -->
 
-							<?php
+						<?php
 						}
 						?>
 
@@ -153,17 +147,17 @@ $batResult = $db->rawQuery($batQuery);
 <?php
 if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
 	if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
-		?>
+?>
 		<script src="/assets/js/DYMO.Label.Framework.js"></script>
 		<script src="/uploads/barcode-formats/dymo-format.js"></script>
 		<script src="/assets/js/dymo-print.js"></script>
-		<?php
+	<?php
 	} else if ($global['bar_code_printing'] == 'zebra-printer') {
-		?>
-			<script src="/assets/js/zebra-browserprint.js"></script>
-			<script src="/uploads/barcode-formats/zebra-format.js"></script>
-			<script src="/assets/js/zebra-print.js"></script>
-			<?php
+	?>
+		<script src="/assets/js/zebra-browserprint.js"></script>
+		<script src="/uploads/barcode-formats/zebra-format.js"></script>
+		<script src="/assets/js/zebra-print.js"></script>
+<?php
 	}
 }
 ?>
@@ -189,34 +183,34 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			message: '<h3>Receiving test requests from DHIS2<br><img src="/assets/img/loading.gif" /></h3>'
 		});
 		var jqxhr = $.ajax({
-			url: "/covid-19/interop/dhis2/covid-19-receive.php",
-		})
-			.done(function (data) {
+				url: "/covid-19/interop/dhis2/covid-19-receive.php",
+			})
+			.done(function(data) {
 				var response = JSON.parse(data);
 				if (response.received > 0) {
 					msg = '<h3>No. of Records Received : ' + response.received + ' <br><img src="/assets/img/loading.gif" /></h3>'
 				} else {
 					msg = '<h3>No Records received from DHIS2 for the selected date range</h3>'
 				}
-				setTimeout(function () {
+				setTimeout(function() {
 					$.blockUI({
 						message: msg
 					});
 				}, 2500);
 				if (response.processed > 0) {
-					setTimeout(function () {
+					setTimeout(function() {
 						$.blockUI({
 							message: '<h3>No. of Records Received : ' + response.received + ' </h3><h3>Successfully Processed : ' + response.processed + ' </h3>'
 						});
 					}, 6000);
 				}
 			})
-			.fail(function () {
+			.fail(function() {
 				$.unblockUI();
 				alert("Unable to sync with DHIS2. Please contact technical team for assistance.");
 			})
-			.always(function () {
-				setTimeout(function () {
+			.always(function() {
+				setTimeout(function() {
 					$.unblockUI();
 					window.location.href = window.location;
 				}, 9500);
@@ -233,9 +227,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			message: '<h3>Sending Test Results to DHIS2<br><img src="/assets/img/loading.gif" /></h3>'
 		});
 		var jqxhr = $.ajax({
-			url: "/covid-19/interop/dhis2/covid-19-send.php",
-		})
-			.done(function (data) {
+				url: "/covid-19/interop/dhis2/covid-19-send.php",
+			})
+			.done(function(data) {
 				var response = JSON.parse(data);
 				if (response.processed > 0) {
 					msg = '<h3>No. of Results Successfully Sent : ' + response.processed + ' </h3>';
@@ -246,56 +240,56 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					message: msg
 				});
 			})
-			.fail(function () {
+			.fail(function() {
 				$.unblockUI();
 				alert("Unable to sync with DHIS2. Please contact technical team for assistance.");
 			})
-			.always(function () {
+			.always(function() {
 
-				setTimeout(function () {
+				setTimeout(function() {
 					$.unblockUI();
 				}, 4500);
 
 			});
 	}
 
-	$(document).ready(function () {
+	$(document).ready(function() {
 		<?php
 		if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
 			echo "printBarcodeLabel('" . htmlspecialchars($_GET['s']) . "','" . htmlspecialchars($_GET['f']) . "');";
 		}
 		?>
-			$("#facilityName").select2({
-				placeholder: "Select Facilities"
-			});
+		$("#facilityName").select2({
+			placeholder: "Select Facilities"
+		});
 		loadVlRequestData();
 		$('#sampleCollectionDate').daterangepicker({
-			locale: {
-				cancelLabel: "<?= _("Clear"); ?>",
-				format: 'DD-MMM-YYYY',
-				separator: ' to ',
+				locale: {
+					cancelLabel: "<?= _translate("Clear"); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
+				},
+				showDropdowns: true,
+				alwaysShowCalendars: false,
+				startDate: moment().subtract(28, 'days'),
+				endDate: moment(),
+				maxDate: moment(),
+				ranges: {
+					'Today': [moment(), moment()],
+					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+				}
 			},
-			showDropdowns: true,
-			alwaysShowCalendars: false,
-			startDate: moment().subtract(28, 'days'),
-			endDate: moment(),
-			maxDate: moment(),
-			ranges: {
-				'Today': [moment(), moment()],
-				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-				'This Month': [moment().startOf('month'), moment().endOf('month')],
-				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-			}
-		},
-			function (start, end) {
+			function(start, end) {
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
 		$('#sampleCollectionDate').val("");
 
-		$(".showhideCheckBox").change(function () {
+		$(".showhideCheckBox").change(function() {
 			if ($(this).attr('checked')) {
 				idpart = $(this).attr('data-showhide');
 				$("#" + idpart + "-sort").show();
@@ -305,7 +299,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			}
 		});
 
-		$("#showhide").hover(function () { }, function () {
+		$("#showhide").hover(function() {}, function() {
 			$(this).fadeOut('slow')
 		});
 
@@ -329,41 +323,41 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			//"bStateSave" : true,
 			"bRetrieve": true,
 			"aoColumns": [{
-				"sClass": "center"
-			},
+					"sClass": "center"
+				},
 				<?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
-				"sClass": "center"
-			},
+						"sClass": "center"
+					},
 				<?php } ?> {
-			"sClass": "center"
-		}, {
-			"sClass": "center"
-		}, {
-			"sClass": "center"
-		}, {
-			"sClass": "center"
-		}, {
-			"sClass": "center"
-		}, {
-			"sClass": "center"
-		}, {
-			"sClass": "center"
-		}, {
-			"sClass": "center"
-		}, {
-			"sClass": "center"
-		}, {
-			"sClass": "center"
-		},
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				},
 				<?php if (isset($_SESSION['privileges']) && (in_array("/covid-19/requests/covid-19-edit-request.php", $_SESSION['privileges'])) || (in_array("covid-19-view-request.php", $_SESSION['privileges']))) { ?> {
-				"sClass": "center",
-				"bSortable": false
-			},
+						"sClass": "center",
+						"bSortable": false
+					},
 				<?php } ?>
 			],
-		"aaSorting": [
-			[<?php echo ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'vluser') ? 10 : 9 ?>, "desc"]
-		],
+			"aaSorting": [
+				[<?php echo ($sarr['sc_user_type'] == 'remoteuser' || $sarr['sc_user_type'] == 'vluser') ? 10 : 9 ?>, "desc"]
+			],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
 				len = checkBoxes.length;
@@ -373,24 +367,24 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					}
 				}
 			},
-		"bProcessing": true,
+			"bProcessing": true,
 			"bServerSide": true,
-				"sAjaxSource": "/covid-19/requests/get-request-list.php",
-					"fnServerData": function(sSource, aoData, fnCallback) {
-						aoData.push({
-							"name": "source",
-							"value": "dhis2"
-						});
-						$.ajax({
-							"dataType": 'json',
-							"type": "POST",
-							"url": sSource,
-							"data": aoData,
-							"success": fnCallback
-						});
-					}
-	});
-	$.unblockUI();
+			"sAjaxSource": "/covid-19/requests/get-request-list.php",
+			"fnServerData": function(sSource, aoData, fnCallback) {
+				aoData.push({
+					"name": "source",
+					"value": "dhis2"
+				});
+				$.ajax({
+					"dataType": 'json',
+					"type": "POST",
+					"url": sSource,
+					"data": aoData,
+					"success": fnCallback
+				});
+			}
+		});
+		$.unblockUI();
 	}
 
 	function searchVlRequestData() {

@@ -31,14 +31,14 @@ try {
             $db = $db->where('test_failure_reason_id', $testFailureReasonId);
             $lastId = $db->update($tableName, $data);
             if ($lastId > 0) {
-                $_SESSION['alertMsg'] = _("Test Failure reason updated successfully");
+                $_SESSION['alertMsg'] = _translate("Test Failure reason updated successfully");
                 $general->activityLog('Test Failure Reason', $_SESSION['userName'] . ' updated new test failure reason for ' . $_POST['testFailureReason'], 'generic-test-failure-reason');
             }
         } else {
             $id = $db->insert($tableName, $data);
             $lastId = $db->getInsertId();
             if ($lastId > 0) {
-                $_SESSION['alertMsg'] = _("Test Failure reason added successfully");
+                $_SESSION['alertMsg'] = _translate("Test Failure reason added successfully");
                 $general->activityLog('Test Failure Reason', $_SESSION['userName'] . ' added new test failure reason for ' . $_POST['testFailureReason'], 'generic-test-failure-reason');
             }
         }

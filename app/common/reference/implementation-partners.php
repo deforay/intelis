@@ -1,5 +1,5 @@
 <?php
-$title = _("Implementation Partners");
+$title = _translate("Implementation Partners");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -8,10 +8,10 @@ require_once APPLICATION_PATH . '/header.php';
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-gears"></em> <?php echo _("Implementation Partners"); ?></h1>
+		<h1><em class="fa-solid fa-gears"></em> <?php echo _translate("Implementation Partners"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Implementation Partners"); ?></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+			<li class="active"><?php echo _translate("Implementation Partners"); ?></li>
 		</ol>
 	</section>
 
@@ -22,7 +22,7 @@ require_once APPLICATION_PATH . '/header.php';
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if (isset($_SESSION['privileges']) && in_array("geographical-divisions-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-							<a href="add-implementation-partners.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Implementation Partners"); ?></a>
+							<a href="add-implementation-partners.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Implementation Partners"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -30,8 +30,8 @@ require_once APPLICATION_PATH . '/header.php';
 						<table aria-describedby="table" id="partnerTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th scope="row"><?php echo _("Partner Name"); ?></th>
-									<th scope="row"><?php echo _("Status"); ?></th>
+									<th scope="row"><?php echo _translate("Partner Name"); ?></th>
+									<th scope="row"><?php echo _translate("Status"); ?></th>
 									<?php if (isset($_SESSION['privileges']) && in_array("geographical-divisions-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
 										<!-- <th scope="row">Action</th> -->
 									<?php } ?>
@@ -39,7 +39,7 @@ require_once APPLICATION_PATH . '/header.php';
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="3" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+									<td colspan="3" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 
@@ -98,7 +98,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 	function updateStatus(obj, optVal) {
 		if (obj.value != '') {
-			conf = confirm('<?php echo _("Are you sure you want to change the status"); ?>?');
+			conf = confirm('<?php echo _translate("Are you sure you want to change the status"); ?>?');
 			if (conf) {
 				$.post("update-implementation-status.php", {
 						status: obj.value,
@@ -107,7 +107,7 @@ require_once APPLICATION_PATH . '/header.php';
 					function(data) {
 						if (data != "") {
 							oTable.fnDraw();
-							alert('<?php echo _("Updated successfully"); ?>.');
+							alert('<?php echo _translate("Updated successfully"); ?>.');
 						}
 					});
 			} else {

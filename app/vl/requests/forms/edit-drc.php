@@ -18,7 +18,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 	$sampleCode = 'sample_code';
 }
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
-$facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], _("-- Select --"));
+$facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], _translate("-- Select --"));
 
 
 //Get selected state
@@ -111,13 +111,13 @@ $aResult = $db->query($aQuery);
 										<?php } ?>
 
 										<td><label for="serialNo">
-												<?= _("Recency ID"); ?>
+												<?= _translate("Recency ID"); ?>
 											</label></td>
-										<td><input type="text" class="form-control" id="serialNo" name="serialNo" placeholder="<?= _("Recency ID"); ?>" title="<?= _("Recency ID"); ?>" style="width:100%;" value="<?php echo $vlQueryInfo['external_sample_code']; ?>" /></td>
+										<td><input type="text" class="form-control" id="serialNo" name="serialNo" placeholder="<?= _translate("Recency ID"); ?>" title="<?= _translate("Recency ID"); ?>" style="width:100%;" value="<?php echo $vlQueryInfo['external_sample_code']; ?>" /></td>
 
 										<td style=" display:<?php echo ($sCode == '') ? 'none' : ''; ?>"><label for="">Date de réception de léchantillon <span class="mandatory">*</span></label></td>
 										<td style=" display:<?php echo ($sCode == '') ? 'none' : ''; ?>">
-											<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo ($vlQueryInfo['sample_received_at_lab_datetime'] != '' && $vlQueryInfo['sample_received_at_lab_datetime'] != null) ? $vlQueryInfo['sample_received_at_lab_datetime'] : date('d-M-Y H:i:s'); ?>" style="width:100%;" />
+											<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo ($vlQueryInfo['sample_received_at_lab_datetime'] != '' && $vlQueryInfo['sample_received_at_lab_datetime'] != null) ? $vlQueryInfo['sample_received_at_lab_datetime'] : date('d-M-Y H:i:s'); ?>" style="width:100%;" />
 										</td>
 
 
@@ -175,7 +175,7 @@ $aResult = $db->query($aQuery);
 									<tr>
 										<td><label for="">Date de la demande </label></td>
 										<td>
-											<input type="text" class="form-control date" id="dateOfDemand" name="dateOfDemand" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de la demande" value="<?php echo $vlQueryInfo['date_test_ordered_by_physician']; ?>" style="width:100%;" />
+											<input type="text" class="form-control date" id="dateOfDemand" name="dateOfDemand" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de la demande" value="<?php echo $vlQueryInfo['date_test_ordered_by_physician']; ?>" style="width:100%;" />
 										</td>
 										<td><label for="fundingSource">Source de financement </label></td>
 										<td>
@@ -212,7 +212,7 @@ $aResult = $db->query($aQuery);
 								</table>
 								<div class="box-header with-border">
 									<h3 class="box-title">Information sur le patient </h3>&nbsp;&nbsp;&nbsp;
-									<input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" placeholder="Code du patient" title="<?= _("Please enter the Patient ID"); ?>" />&nbsp;&nbsp;
+									<input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" placeholder="Code du patient" title="<?= _translate("Please enter the Patient ID"); ?>" />&nbsp;&nbsp;
 									<a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient
 											Found</strong></span>
 								</div>
@@ -221,17 +221,17 @@ $aResult = $db->query($aQuery);
 										<td style="width: 15% !important;"><label for="artNo">Code du patient <span class="mandatory">*</span></label>
 										</td>
 										<td style="width: 35% !important;">
-											<input type="text" class="form-control isRequired" id="artNo" name="artNo" placeholder="Code du patient" title="<?= _("Please enter the Patient ID"); ?>" value="<?= ($vlQueryInfo['patient_art_no']); ?>" style="width:100%;" />
+											<input type="text" class="form-control isRequired" id="artNo" name="artNo" placeholder="Code du patient" title="<?= _translate("Please enter the Patient ID"); ?>" value="<?= ($vlQueryInfo['patient_art_no']); ?>" style="width:100%;" />
 										</td>
 										<td style="width: 15% !important;"><label for="">Date de naissance </label></td>
 										<td style="width: 35% !important;">
-											<input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _("Please enter date"); ?>" title="Please select date de naissance" onchange="getAge();checkARTInitiationDate();" value="<?= ($vlQueryInfo['patient_dob']); ?>" style="width:100%;" />
+											<input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _translate("Please enter date"); ?>" title="Please select date de naissance" onchange="getAge();checkARTInitiationDate();" value="<?= ($vlQueryInfo['patient_dob']); ?>" style="width:100%;" />
 										</td>
 									</tr>
 									<tr>
 										<td style="width: 15% !important;"><label for="ageInYears">Âge en années <span class="mandatory">*</span></label></td>
 										<td style="width: 35% !important;">
-											<input type="text" class="form-control forceNumeric isRequired" id="ageInYears" name="ageInYears" placeholder="Aannées" title="<?= _("Please enter Patient age") ?>" value="<?= ($vlQueryInfo['patient_age_in_years']); ?>" onchange="clearDOB(this.value);" style="width:100%;" />
+											<input type="text" class="form-control forceNumeric isRequired" id="ageInYears" name="ageInYears" placeholder="Aannées" title="<?= _translate("Please enter Patient age") ?>" value="<?= ($vlQueryInfo['patient_age_in_years']); ?>" onchange="clearDOB(this.value);" style="width:100%;" />
 										</td>
 										<td style="width: 15% !important;"><label for="ageInMonths">Âge en mois </label></td>
 										<td style="width: 35% !important;">
@@ -243,11 +243,11 @@ $aResult = $db->query($aQuery);
 										<td style="width: 35% !important;">
 											<label class="radio-inline" style="padding-left:12px !important;margin-left:0;">&nbsp;&nbsp;M</label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="genderMale" name="gender" value="male" title="<?= _("Please select a gender"); ?>" <?php echo (trim($vlQueryInfo['patient_gender']) == "male") ? 'checked="checked"' : ''; ?>>
+												<input type="radio" class="" id="genderMale" name="gender" value="male" title="<?= _translate("Please select a gender"); ?>" <?php echo (trim($vlQueryInfo['patient_gender']) == "male") ? 'checked="checked"' : ''; ?>>
 											</label>
 											<label class="radio-inline" style="padding-left:12px !important;margin-left:0;">F</label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="genderFemale" name="gender" value="female" title="<?= _("Please select a gender"); ?>" <?php echo (trim($vlQueryInfo['patient_gender']) == "female") ? 'checked="checked"' : ''; ?>>
+												<input type="radio" class="" id="genderFemale" name="gender" value="female" title="<?= _translate("Please select a gender"); ?>" <?php echo (trim($vlQueryInfo['patient_gender']) == "female") ? 'checked="checked"' : ''; ?>>
 											</label>
 										</td>
 										<td style="width: 15% !important;"><label>Régime ARV en cours </label></td>
@@ -279,7 +279,7 @@ $aResult = $db->query($aQuery);
 										</td>
 										<td style="width: 15% !important;" class="du"><label for="">Date du début des ARV </label></td>
 										<td style="width: 35% !important;" class="du">
-											<input type="text" class="form-control date" id="dateOfArtInitiation" name="dateOfArtInitiation" placeholder="<?= _("Please enter date"); ?>" title="Please enter date du début des ARV" value="<?php echo $vlQueryInfo['treatment_initiated_date']; ?>" onchange="checkARTInitiationDate();checkLastVLTestDate();" style="width:100%;" />&nbsp;(Jour/Mois/Année)
+											<input type="text" class="form-control date" id="dateOfArtInitiation" name="dateOfArtInitiation" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date du début des ARV" value="<?php echo $vlQueryInfo['treatment_initiated_date']; ?>" onchange="checkARTInitiationDate();checkLastVLTestDate();" style="width:100%;" />&nbsp;(Jour/Mois/Année)
 										</td>
 									</tr>
 									<tr>
@@ -306,7 +306,7 @@ $aResult = $db->query($aQuery);
 										</td>
 										<td style="width: 15%;"><label for="" class="arvChangedElement">Date du changement de régime ARV </label></td>
 										<td style="width: 35%;">
-											<input type="text" class="form-control date arvChangedElement" id="dateOfArvRegimenChange" name="dateOfArvRegimenChange" placeholder="<?= _("Please enter date"); ?>" title="Please enter date du changement de régime ARV" value="<?php echo $vlQueryInfo['regimen_change_date']; ?>" style="width:100%;" />&nbsp;(Jour/Mois/Année)
+											<input type="text" class="form-control date arvChangedElement" id="dateOfArvRegimenChange" name="dateOfArvRegimenChange" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date du changement de régime ARV" value="<?php echo $vlQueryInfo['regimen_change_date']; ?>" style="width:100%;" />&nbsp;(Jour/Mois/Année)
 										</td>
 									</tr>
 									<tr>
@@ -331,7 +331,7 @@ $aResult = $db->query($aQuery);
 									<tr>
 										<td style="width: 15%;"><label for="">Date dernière charge virale (demande) </label></td>
 										<td style="width: 35%;">
-											<input type="text" class="form-control date" id="lastViralLoadTestDate" name="lastViralLoadTestDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date dernière charge virale" value="<?php echo $vlQueryInfo['last_viral_load_date']; ?>" onchange="checkLastVLTestDate();" style="width:100%;" />
+											<input type="text" class="form-control date" id="lastViralLoadTestDate" name="lastViralLoadTestDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date dernière charge virale" value="<?php echo $vlQueryInfo['last_viral_load_date']; ?>" onchange="checkLastVLTestDate();" style="width:100%;" />
 										</td>
 										<td style="width: 15%;"><label for="lastViralLoadResult">Résultat dernière charge virale </label>
 										</td>
@@ -386,7 +386,7 @@ $aResult = $db->query($aQuery);
 									<tr>
 										<td style="width:25%;"><label for="">Date du prélèvement <span class="mandatory">*</span></label></td>
 										<td style="width:25%;">
-											<input type="text" class="form-control dateTime isRequired" id="sampleCollectionDate" name="sampleCollectionDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date du prélèvement" value="<?php echo $vlQueryInfo['sample_collection_date']; ?>" onchange="checkSampleReceviedDate();checkSampleTestingDate();" style="width:100%;" />
+											<input type="text" class="form-control dateTime isRequired" id="sampleCollectionDate" name="sampleCollectionDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date du prélèvement" value="<?php echo $vlQueryInfo['sample_collection_date']; ?>" onchange="checkSampleReceviedDate();checkSampleTestingDate();" style="width:100%;" />
 										</td>
 										<td style="width:25%;"></td>
 										<td style="width:25%;"></td>
@@ -422,7 +422,7 @@ $aResult = $db->query($aQuery);
 									<tr>
 										<td><label for="">Date de départ au Labo biomol </label></td>
 										<td>
-											<input type="text" class="form-control dateTime" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de départ au Labo biomol" value="<?php echo $vlQueryInfo['sample_dispatched_datetime']; ?>" style="width:100%;" />
+											<input type="text" class="form-control dateTime" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de départ au Labo biomol" value="<?php echo $vlQueryInfo['sample_dispatched_datetime']; ?>" style="width:100%;" />
 										</td>
 										<td></td>
 										<td></td>
@@ -444,7 +444,7 @@ $aResult = $db->query($aQuery);
 										<tr style="<?php echo ($sCode != '') ? 'display:none' : ''; ?>">
 											<td><label for="">Date de réception de l'échantillon </label></td>
 											<td>
-												<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" style="width:100%;" />
+												<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" style="width:100%;" />
 											</td>
 											<td><label for="labId">Nom du laboratoire </label> </td>
 											<td>
@@ -456,7 +456,7 @@ $aResult = $db->query($aQuery);
 										<tr>
 											<td><label for="">Date de réalisation de la charge virale </label></td>
 											<td>
-												<input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" style="width:100%;" />
+												<input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" style="width:100%;" />
 											</td>
 											<td><label for="testingPlatform">Technique utilisée </label></td>
 											<td>
@@ -494,7 +494,7 @@ $aResult = $db->query($aQuery);
 											<td class="newRejectionReason" style="text-align:center;display:none;"><label for="newRejectionReason" class="newRejectionReason" style="display:none;">Autre, à préciser <span class="mandatory">*</span></label></td>
 											<td class="newRejectionReason" style="display:none;"><input type="text" class="form-control newRejectionReason" id="newRejectionReason" name="newRejectionReason" placeholder="Motifs de rejet" title="Please enter motifs de rejet" <?php echo $labFieldDisabled; ?> style="width:100%;display:none;" /></td>
 											<th scope="row" class="rejectionReason" style="display:none;">
-												<?php echo _("Rejection Date"); ?> <span class="mandatory">*</span>
+												<?php echo _translate("Rejection Date"); ?> <span class="mandatory">*</span>
 											</th>
 											<td class="rejectionReason" style="display:none;"><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
 										</tr>
@@ -518,7 +518,7 @@ $aResult = $db->query($aQuery);
 										<?php if (count($reasonForFailure) > 0) { ?>
 											<tr class="reasonForFailure vlResult" style="<?php echo (!isset($vlQueryInfo['result']) || $vlQueryInfo['result'] != 'Failed') ? 'display: none;' : ''; ?>">
 												<th scope="row" class="reasonForFailure">
-													<?php echo _("Reason for Failure"); ?>
+													<?php echo _translate("Reason for Failure"); ?>
 												</th>
 												<td class="reasonForFailure">
 													<select name="reasonForFailure" id="reasonForFailure" class="form-control vlResult" title="Please choose reason for failure" style="width: 100%;">
@@ -554,11 +554,11 @@ $aResult = $db->query($aQuery);
 										<tr>
 											<td class=" reasonForResultChanges" style="visibility:hidden;">
 												<label for="reasonForResultChanges">
-													<?= _("Enter reason for changing the result"); ?> <span class="mandatory">*</span>
+													<?= _translate("Enter reason for changing the result"); ?> <span class="mandatory">*</span>
 												</label>
 											</td>
 											<td colspan="7" class="reasonForResultChanges" style="visibility:hidden;">
-												<textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="<?= _("Enter reason for changing the result"); ?>" title="<?= _("Enter reason for changing the result"); ?>" style="width:100%;"></textarea>
+												<textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="<?= _translate("Enter reason for changing the result"); ?>" title="<?= _translate("Enter reason for changing the result"); ?>" style="width:100%;"></textarea>
 											</td>
 										</tr>
 									</table>

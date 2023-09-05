@@ -8,10 +8,10 @@ require_once APPLICATION_PATH . '/header.php';
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-square-h"></em> <?php echo _("Add Hepatitis Risk Factors"); ?></h1>
+		<h1><em class="fa-solid fa-square-h"></em> <?php echo _translate("Add Hepatitis Risk Factors"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Hepatitis Risk Factors"); ?></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+			<li class="active"><?php echo _translate("Hepatitis Risk Factors"); ?></li>
 		</ol>
 	</section>
 
@@ -20,7 +20,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _translate("indicates required field"); ?> &nbsp;</div>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
@@ -30,19 +30,19 @@ require_once APPLICATION_PATH . '/header.php';
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="riskFactorName" class="col-lg-4 control-label"><?php echo _("Risk Factor Name"); ?><span class="mandatory">*</span></label>
+									<label for="riskFactorName" class="col-lg-4 control-label"><?php echo _translate("Risk Factor Name"); ?><span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="riskFactorName" name="riskFactorName" placeholder="<?php echo _('Risk Factor Name'); ?>" title="<?php echo _('Please enter Risk Factor name'); ?>" onblur='checkNameValidation("r_hepatitis_risk_factors","riskfactor_name",this,null,"<?php echo _("The Risk Factor name that you entered already exists.Enter another name"); ?>",null)' />
+										<input type="text" class="form-control isRequired" id="riskFactorName" name="riskFactorName" placeholder="<?php echo _translate('Risk Factor Name'); ?>" title="<?php echo _translate('Please enter Risk Factor name'); ?>" onblur='checkNameValidation("r_hepatitis_risk_factors","riskfactor_name",this,null,"<?php echo _translate("The Risk Factor name that you entered already exists.Enter another name"); ?>",null)' />
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="riskFactorStatus" class="col-lg-4 control-label"><?php echo _("Risk Factor Status"); ?></label>
+									<label for="riskFactorStatus" class="col-lg-4 control-label"><?php echo _translate("Risk Factor Status"); ?></label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" id="riskFactorStatus" name="riskFactorStatus" placeholder="<?php echo _('Risk Factor Status'); ?>" title="<?php echo _('Please select Risk Factor Status'); ?>">
-											<option value="active"><?php echo _("Active"); ?></option>
-											<option value="inactive"><?php echo _("Inactive"); ?></option>
+										<select class="form-control isRequired" id="riskFactorStatus" name="riskFactorStatus" placeholder="<?php echo _translate('Risk Factor Status'); ?>" title="<?php echo _translate('Please select Risk Factor Status'); ?>">
+											<option value="active"><?php echo _translate("Active"); ?></option>
+											<option value="inactive"><?php echo _translate("Inactive"); ?></option>
 										</select>
 									</div>
 								</div>
@@ -52,8 +52,8 @@ require_once APPLICATION_PATH . '/header.php';
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">
-						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
-						<a href="hepatitis-risk-factor.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
+						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
+						<a href="hepatitis-risk-factor.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
 					</div>
 					<!-- /.box-footer -->
 				</form>

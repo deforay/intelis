@@ -45,10 +45,10 @@ $response = MiscUtility::getJsonFromZip($folder . DIRECTORY_SEPARATOR . 'respons
                         $result['request_data'] = $result['api_params'];
                         $result['response_data'] = [];
                     ?>
-                        <li class="active request" data-name="vl" data-toggle="tab" onclick="openTab('request', 'response')"><a href="javascript:void(0);"><?php echo _("API PARAMS"); ?></a></li>
+                        <li class="active request" data-name="vl" data-toggle="tab" onclick="openTab('request', 'response')"><a href="javascript:void(0);"><?php echo _translate("API PARAMS"); ?></a></li>
                     <?php } else { ?>
-                        <li class="active request" data-name="vl" data-toggle="tab" onclick="openTab('request', 'response')"><a href="javascript:void(0);"><?php echo _("REQUEST"); ?></a></li>
-                        <li class="response" data-name="vl" data-toggle="tab" onclick="openTab('response', 'request')"><a href="javascript:void(0);"><?php echo _("RESPONSE"); ?></a></li>
+                        <li class="active request" data-name="vl" data-toggle="tab" onclick="openTab('request', 'response')"><a href="javascript:void(0);"><?php echo _translate("REQUEST"); ?></a></li>
+                        <li class="response" data-name="vl" data-toggle="tab" onclick="openTab('response', 'request')"><a href="javascript:void(0);"><?php echo _translate("RESPONSE"); ?></a></li>
                     <?php } ?>
                 </ul>
             </div>

@@ -33,7 +33,7 @@ if (isset($directoryMap[$type])) {
     $directoryName = $directoryMap[$type];
     $machineImportScript = realpath(APPLICATION_PATH . DIRECTORY_SEPARATOR . "instruments") . DIRECTORY_SEPARATOR . $directoryName . DIRECTORY_SEPARATOR . $machineImportScript;
 } else {
-    throw new SystemException(_('Invalid Test Type'));
+    throw new SystemException(_translate('Invalid Test Type'));
 }
 
 
@@ -42,5 +42,5 @@ if (file_exists($machineImportScript)) {
     MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results");
     require_once($machineImportScript);
 } else {
-    throw new SystemException(_("Import Script not found"));
+    throw new SystemException(_translate("Import Script not found"));
 }

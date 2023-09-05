@@ -59,10 +59,10 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM"); ?></h1>
+        <h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _translate("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-            <li class="active"><?php echo _("Edit EID Request"); ?></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+            <li class="active"><?php echo _translate("Edit EID Request"); ?></li>
         </ol>
     </section>
     <!-- Main content -->
@@ -132,7 +132,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             <option value=""> -- Select -- </option>
                                             <?php
                                             foreach ($implementingPartnerList as $implementingPartner) {
-                                                ?>
+                                            ?>
                                                 <option value="<?php echo ($implementingPartner['i_partner_id']); ?>" <?php echo ($eidInfo['implementing_partner'] == $implementingPartner['i_partner_id']) ? "selected='selected'" : ""; ?>><?= $implementingPartner['i_partner_name']; ?></option>
                                             <?php } ?>
                                         </select>
@@ -143,7 +143,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             <option value=""> -- Select -- </option>
                                             <?php
                                             foreach ($fundingSourceList as $fundingSource) {
-                                                ?>
+                                            ?>
                                                 <option value="<?php echo ($fundingSource['funding_source_id']); ?>" <?php echo ($eidInfo['funding_source'] == $fundingSource['funding_source_id']) ? "selected='selected'" : ""; ?>><?= $fundingSource['funding_source_name']; ?></option>
                                             <?php } ?>
                                         </select>
@@ -158,9 +158,9 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     <?php } ?>
                                 </tr>
                                 <tr>
-                                <th scope="row"><?= _('Requesting Clinician Name'); ?></th>
-                                        <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Request Clinician Name" title="Please enter request clinician" value="<?php echo $eidInfo['clinician_name']; ?>"/></td>
-                                   
+                                    <th scope="row"><?= _translate('Requesting Clinician Name'); ?></th>
+                                    <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Request Clinician Name" title="Please enter request clinician" value="<?php echo $eidInfo['clinician_name']; ?>" /></td>
+
                                 </tr>
                             </table>
                             <br><br>
@@ -352,7 +352,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                 <tr>
                                     <th class="labels" scope="row">Sample Received Date (at Testing Lab) <span class="mandatory">*</span></th>
                                     <td>
-                                        <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_received_at_lab_datetime']) ?>" onchange="" style="width:100%;" />
+                                        <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_received_at_lab_datetime']) ?>" onchange="" style="width:100%;" />
                                     </td>
                                     <th scope="row"></th>
                                     <td></td>
@@ -421,26 +421,26 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 
                                         </td>
                                         <td class="rejected labels" style="display: none;">Recommended Corrective Action</td>
-                                            <td class="rejected" style="display: none;">
-                                                <select name="correctiveAction" id="correctiveAction" class="form-control" title="Please choose Recommended corrective action">
-															<option value="">-- Select --</option>
-															<?php foreach ($correctiveActions as $action) {
-															?>
-																<option value="<?php echo $action['recommended_corrective_action_id']; ?>" <?php echo ($eidInfo['recommended_corrective_action'] == $action['recommended_corrective_action_id']) ? 'selected="selected"' : ''; ?>><?= $action['recommended_corrective_action_name']; ?></option>
-															<?php }
-															?>
-														</select>
-                                            </td>
-                                       
+                                        <td class="rejected" style="display: none;">
+                                            <select name="correctiveAction" id="correctiveAction" class="form-control" title="Please choose Recommended corrective action">
+                                                <option value="">-- Select --</option>
+                                                <?php foreach ($correctiveActions as $action) {
+                                                ?>
+                                                    <option value="<?php echo $action['recommended_corrective_action_id']; ?>" <?php echo ($eidInfo['recommended_corrective_action'] == $action['recommended_corrective_action_id']) ? 'selected="selected"' : ''; ?>><?= $action['recommended_corrective_action_name']; ?></option>
+                                                <?php }
+                                                ?>
+                                            </select>
+                                        </td>
+
                                     </tr>
                                     <tr>
-                                    <th class="labels" scope="row">Rejection Date<span class="mandatory">*</span></th>
+                                        <th class="labels" scope="row">Rejection Date<span class="mandatory">*</span></th>
                                         <td><input value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date rejection-date isRequired" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please enter sample rejection date" /></td>
                                     </tr>
                                     <tr>
                                         <th class="labels" style="width:25%;">Sample Test Date<span class="mandatory">*</span></th>
                                         <td style="width:25%;">
-                                            <input type="text" class="form-control dateTime isRequired" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Please enter the Sample Tested Date and Time" <?php echo $labFieldDisabled; ?> onchange="" value="<?= DateUtility::humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
+                                            <input type="text" class="form-control dateTime isRequired" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter the Sample Tested Date and Time" <?php echo $labFieldDisabled; ?> onchange="" value="<?= DateUtility::humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
                                         </td>
                                         <th scope="row">Result<span class="mandatory">*</span></th>
                                         <td>
@@ -484,7 +484,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         </td>
                                         <th class="labels" style="width:25%;">Approved On <span class="mandatory review-approve-span" style="display: <?php echo ($eidInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></th>
                                         <td style="width:25%;">
-                                            <input type="text" value="<?= DateUtility::humanReadableDateFormat($eidInfo['result_approved_datetime']); ?>" class="form-control dateTime isRequired" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="<?= _("Please enter date"); ?>" title="Please enter approved on" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+                                            <input type="text" value="<?= DateUtility::humanReadableDateFormat($eidInfo['result_approved_datetime']); ?>" class="form-control dateTime isRequired" id="approvedOnDateTime" name="approvedOnDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter approved on" <?php echo $labFieldDisabled; ?> style="width:100%;" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -506,7 +506,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                         <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
                     <?php } ?>
                     <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
-                    <input type="hidden" class="" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_received_at_lab_datetime']) ?>" />
+                    <input type="hidden" class="" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_received_at_lab_datetime']) ?>" />
                     <input type="hidden" name="revised" id="revised" value="no" />
                     <input type="hidden" name="formId" id="formId" value="1" />
                     <input type="hidden" name="eidSampleId" id="eidSampleId" value="<?php echo ($eidInfo['eid_id']); ?>" />
@@ -715,14 +715,14 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
     }
 
     function checkRejectionReason() {
-          var rejectionReason = $("#sampleRejectionReason").val();
-          if (rejectionReason == "other") {
-               $("#newRejectionReason").show();
-               $("#newRejectionReason").addClass("isRequired");
-          } else {
-               $("#newRejectionReason").hide();
-               $("#newRejectionReason").removeClass("isRequired");
-               $('#newRejectionReason').val("");
-          }
-     }
+        var rejectionReason = $("#sampleRejectionReason").val();
+        if (rejectionReason == "other") {
+            $("#newRejectionReason").show();
+            $("#newRejectionReason").addClass("isRequired");
+        } else {
+            $("#newRejectionReason").hide();
+            $("#newRejectionReason").removeClass("isRequired");
+            $('#newRejectionReason').val("");
+        }
+    }
 </script>

@@ -5,7 +5,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 
-$title = _("View All Requests");
+$title = _translate("View All Requests");
 $hidesrcofreq = false;
 $dateRange = $labName = $srcOfReq = $srcStatus = null;
 
@@ -81,18 +81,17 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 		color: black !important;
 	}
 
-	<?php if (!empty($_GET['id'])) { ?>
-		header {
-			display: none;
-		}
+	<?php if (!empty($_GET['id'])) { ?>header {
+		display: none;
+	}
 
-		.main-sidebar {
-			z-index: -9;
-		}
+	.main-sidebar {
+		z-index: -9;
+	}
 
-		.content-wrapper {
-			margin-left: 0px;
-		}
+	.content-wrapper {
+		margin-left: 0px;
+	}
 
 	<?php } ?>
 </style>
@@ -102,14 +101,14 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 		<!-- Content Header (Page header) -->
 		<section class="content-header">
 			<h1><em class="fa-solid fa-pen-to-square"></em>
-				<?php echo _("Laboratory Test Requests"); ?>
+				<?php echo _translate("Laboratory Test Requests"); ?>
 			</h1>
 			<ol class="breadcrumb">
 				<li><a href="/"><em class="fa-solid fa-chart-pie"></em>
-						<?php echo _("Home"); ?>
+						<?php echo _translate("Home"); ?>
 					</a></li>
 				<li class="active">
-					<?php echo _("Test Request"); ?>
+					<?php echo _translate("Test Request"); ?>
 				</li>
 			</ol>
 		</section>
@@ -120,25 +119,22 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table aria-describedby="table" class="table" aria-hidden="true"
-						style="margin-left:1%;margin-top:20px;width:100%;margin-bottom: 0px;">
+					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:100%;margin-bottom: 0px;">
 						<tr>
 							<td style="width: 10%;"><strong>
-									<?php echo _("Test Type"); ?>&nbsp;:
+									<?php echo _translate("Test Type"); ?>&nbsp;:
 								</strong></td>
 							<td style="width: 50%;">
-								<select class="form-control" name="testType" id="testType"
-									title="Please choose test type" style="width:100%;">
+								<select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;">
 									<option value=""> -- Select -- </option>
 									<?php foreach ($testTypeResult as $testType) { ?>
 										<option value="<?php echo $testType['test_type_id'] ?>" data-short="<?php echo $testType['test_short_code']; ?>"><?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?></option>
 									<?php } ?>
 								</select>
 							</td>
-							<td style="width: 15%;">&nbsp;<input type="button" onclick="searchVlRequestData();"
-									value="<?= _('Search'); ?>" class="btn btn-default btn-sm">
+							<td style="width: 15%;">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-default btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="reset();"><span>
-										<?= _('Reset'); ?>
+										<?= _translate('Reset'); ?>
 									</span></button>
 							</td>
 							<td style="width: 25%;"><a class="btn btn-success btn-sm" href="/generic-tests/requests/add-request.php"><em class="fa-solid fa-add"></em>&nbsp;&nbsp;Add Request</a><a class="btn btn-success btn-sm" href="javascript:void(0);" onclick="exportTestRequests();"><em class="fa-solid fa-cloud-arrow-down"></em>&nbsp;&nbsp;Export Requests</a></td>
@@ -148,98 +144,96 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 					<div class="box-body">
 						<table class="table pull-right" aria-hidden="true" style="margin-right:5px;">
 						</table>
-						<table aria-describedby="table" id="RequestDataTable" class="table table-bordered table-striped"
-							aria-hidden="true">
+						<table aria-describedby="table" id="RequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
 									<th>
-										<?php echo _("Sample Code"); ?>
+										<?php echo _translate("Sample Code"); ?>
 									</th>
 									<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 										<th>
-											<?php echo _("Remote Sample Code"); ?>
+											<?php echo _translate("Remote Sample Code"); ?>
 										</th>
 									<?php } ?>
 									<th>
-										<?php echo _("Test Type"); ?>
+										<?php echo _translate("Test Type"); ?>
 									</th>
 									<th>
-										<?php echo _("Sample Collection Date"); ?>
+										<?php echo _translate("Sample Collection Date"); ?>
 									</th>
 									<th>
-										<?php echo _("Batch Code"); ?>
+										<?php echo _translate("Batch Code"); ?>
 									</th>
 									<th>
-										<?php echo _("Unique ART No"); ?>
+										<?php echo _translate("Unique ART No"); ?>
 									</th>
 									<th>
-										<?php echo _("Patient's Name"); ?>
+										<?php echo _translate("Patient's Name"); ?>
 									</th>
 									<th scope="row">
-										<?php echo _("Testing Lab"); ?>
+										<?php echo _translate("Testing Lab"); ?>
 									</th>
 									<th scope="row">
-										<?php echo _("Facility Name"); ?>
+										<?php echo _translate("Facility Name"); ?>
 									</th>
 									<th>
-										<?php echo _("Province/State"); ?>
+										<?php echo _translate("Province/State"); ?>
 									</th>
 									<th>
-										<?php echo _("District/County"); ?>
+										<?php echo _translate("District/County"); ?>
 									</th>
 									<th>
-										<?php echo _("Sample Type"); ?>
+										<?php echo _translate("Sample Type"); ?>
 									</th>
 									<th>
-										<?php echo _("Result"); ?>
+										<?php echo _translate("Result"); ?>
 									</th>
 									<th>
-										<?php echo _("Last Modified Date"); ?>
+										<?php echo _translate("Last Modified Date"); ?>
 									</th>
 									<th scope="row">
-										<?php echo _("Status"); ?>
+										<?php echo _translate("Status"); ?>
 									</th>
 									<th>
-										<?php echo _("Action"); ?>
+										<?php echo _translate("Action"); ?>
 									</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
 									<td colspan="16" class="dataTables_empty">
-										<?php echo _("Loading data from server"); ?>
+										<?php echo _translate("Loading data from server"); ?>
 									</td>
 								</tr>
 							</tbody>
 						</table>
 						<?php
 						if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') {
-							?>
+						?>
 
 							<div id="printer_data_loading" style="display:none"><span id="loading_message">
-									<?php echo _("Loading Printer Details"); ?>...
+									<?php echo _translate("Loading Printer Details"); ?>...
 								</span><br />
 								<div class="progress" style="width:100%">
-									<div class="progress-bar progress-bar-striped active" role="progressbar"
-										aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+									<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
 									</div>
 								</div>
 							</div> <!-- /printer_data_loading -->
 							<div id="printer_details" style="display:none">
 								<span id="selected_printer">
-									<?php echo _("No printer selected!"); ?>
+									<?php echo _translate("No printer selected!"); ?>
 								</span>
 								<button type="button" class="btn btn-success" onclick="changePrinter()">
-									<?php echo _("Change/Retry"); ?>
+									<?php echo _translate("Change/Retry"); ?>
 								</button>
 							</div><br /> <!-- /printer_details -->
 							<div id="printer_select" style="display:none">
-								<?php echo _("Zebra Printer Options"); ?><br />
-								<?php echo _("Printer"); ?>: <select id="printers"></select>
+								<?php echo _translate("Zebra Printer Options"); ?><br />
+								<?php echo _translate("Printer"); ?>: <select id="printers"></select>
 							</div> <!-- /printer_select -->
 
-							<?php
+						<?php
 						}
 						?>
 
@@ -261,17 +255,17 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 <?php
 if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
 	if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
-		?>
+?>
 		<script src="/assets/js/DYMO.Label.Framework.js"></script>
 		<script src="/configs/dymo-format.js"></script>
 		<script src="/assets/js/dymo-print.js"></script>
-		<?php
+	<?php
 	} else if ($global['bar_code_printing'] == 'zebra-printer') {
-		?>
-			<script src="/assets/js/zebra-browserprint.js.js"></script>
-			<script src="/configs/zebra-format.js"></script>
-			<script src="/assets/js/zebra-print.js"></script>
-			<?php
+	?>
+		<script src="/assets/js/zebra-browserprint.js.js"></script>
+		<script src="/configs/zebra-format.js"></script>
+		<script src="/assets/js/zebra-print.js"></script>
+<?php
 	}
 }
 ?>
@@ -285,7 +279,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	var selectedTests = [];
 	var selectedTestsId = [];
 	var oTable = null;
-	$(document).ready(function () {
+	$(document).ready(function() {
 		<?php
 		if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
 			echo "printBarcodeLabel('" . htmlspecialchars($_GET['s']) . "','" . htmlspecialchars($_GET['f']) . "');";
@@ -293,43 +287,43 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		?>
 		$("#testType").select2({
 			width: '100%',
-			placeholder: "<?php echo _("Select Test Type"); ?>"
+			placeholder: "<?php echo _translate("Select Test Type"); ?>"
 		});
 		$("#facilityName").select2({
-			placeholder: "<?php echo _("Select Facilities"); ?>"
+			placeholder: "<?php echo _translate("Select Facilities"); ?>"
 		});
 		$("#vlLab").select2({
-			placeholder: "<?php echo _("Select Vl Lab"); ?>"
+			placeholder: "<?php echo _translate("Select Vl Lab"); ?>"
 		});
 		$("#batchCode").select2({
-			placeholder: "<?php echo _("Select Batch Code"); ?>"
+			placeholder: "<?php echo _translate("Select Batch Code"); ?>"
 		});
 		loadRequestData();
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').daterangepicker({
-			locale: {
-				cancelLabel: "<?= _("Clear"); ?>",
-				format: 'DD-MMM-YYYY',
-				separator: ' to ',
+				locale: {
+					cancelLabel: "<?= _translate("Clear"); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
+				},
+				showDropdowns: true,
+				alwaysShowCalendars: false,
+				startDate: moment().subtract(28, 'days'),
+				endDate: moment(),
+				maxDate: moment(),
+				ranges: {
+					'Today': [moment(), moment()],
+					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
+				}
 			},
-			showDropdowns: true,
-			alwaysShowCalendars: false,
-			startDate: moment().subtract(28, 'days'),
-			endDate: moment(),
-			maxDate: moment(),
-			ranges: {
-				'Today': [moment(), moment()],
-				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-				'This Month': [moment().startOf('month'), moment().endOf('month')],
-				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-				'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-				'Last 120 Days': [moment().subtract(119, 'days'), moment()],
-				'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-				'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
-			}
-		},
-			function (start, end) {
+			function(start, end) {
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
@@ -354,58 +348,58 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			//"bStateSave" : true,
 			"bRetrieve": true,
 			"aoColumns": [{
-				"sClass": "center"
-			},
-				<?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
 					"sClass": "center"
 				},
+				<?php if ($_SESSION['instanceType'] != 'standalone') { ?> {
+						"sClass": "center"
+					},
 				<?php } ?> {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center",
-				"bSortable": false
-			},
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center",
+					"bSortable": false
+				},
 			],
 			"aaSorting": [
 				[<?php echo ($_SESSION['instanceType'] == 'remoteuser' || $_SESSION['instanceType'] == 'vluser') ? 13 : 12 ?>, "desc"]
 			],
-			"fnDrawCallback": function () {
+			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
 				len = checkBoxes.length;
 				for (c = 0; c < len; c++) {
@@ -417,7 +411,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "/generic-tests/requests/get-request-details.php",
-			"fnServerData": function (sSource, aoData, fnCallback) {
+			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "testType",
 					"value": $("#testType").val()
@@ -466,21 +460,21 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 	function toggleAllVisible() {
 		//alert(tabStatus);
-		$(".checkTests").each(function () {
+		$(".checkTests").each(function() {
 			$(this).prop('checked', false);
 			selectedTests.splice($.inArray(this.value, selectedTests), 1);
 			selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
 			$("#status").prop('disabled', true);
 		});
 		if ($("#checkTestsData").is(':checked')) {
-			$(".checkTests").each(function () {
+			$(".checkTests").each(function() {
 				$(this).prop('checked', true);
 				selectedTests.push(this.value);
 				selectedTestsId.push(this.id);
 			});
 			$("#status").prop('disabled', false);
 		} else {
-			$(".checkTests").each(function () {
+			$(".checkTests").each(function() {
 				$(this).prop('checked', false);
 				selectedTests.splice($.inArray(this.value, selectedTests), 1);
 				selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
@@ -494,14 +488,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		var stValue = $("#status").val();
 		var testIds = $("#checkedTests").val();
 		if (stValue != '' && testIds != '') {
-			conf = confirm("<?php echo _("Do you wish to change the test status ?"); ?>");
+			conf = confirm("<?php echo _translate("Do you wish to change the test status ?"); ?>");
 			if (conf) {
 				$.post("/vl/results/updateTestStatus.php", {
-					status: stValue,
-					id: testIds,
-					format: "html"
-				},
-					function (data) {
+						status: stValue,
+						id: testIds,
+						format: "html"
+					},
+					function(data) {
 						if (data != "") {
 							$("#checkedTests").val('');
 							selectedTests = [];
@@ -510,12 +504,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 							$("#status").val('');
 							$("#status").prop('disabled', true);
 							oTable.fnDraw();
-							alert("<?php echo _("Updated successfully."); ?>");
+							alert("<?php echo _translate("Updated successfully."); ?>");
 						}
 					});
 			}
 		} else {
-			alert("<?php echo _("Please checked atleast one checkbox."); ?>");
+			alert("<?php echo _translate("Please checked atleast one checkbox."); ?>");
 		}
 	}
 
@@ -525,12 +519,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		}
 		$.blockUI();
 		$.post("/generic-tests/requests/export-generic-tests-requests.php", {
-			patientInfo: $('#patientInfo').val(),
-		},
-			function (data) {
+				patientInfo: $('#patientInfo').val(),
+			},
+			function(data) {
 				$.unblockUI();
 				if (data === "" || data === null || data === undefined) {
-					alert("<?php echo _("Unable to generate the export"); ?>");
+					alert("<?php echo _translate("Unable to generate the export"); ?>");
 				} else {
 					window.open('/download.php?d=a&f=' + data, '_blank');
 				}
@@ -548,21 +542,21 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 		function forceResultSync(sampleCode) {
 			$.blockUI({
-				message: "<h3><?php echo _("Trying to sync"); ?> " + sampleCode + "<br><?php echo _("Please wait"); ?>...</h3>"
+				message: "<h3><?php echo _translate("Trying to sync"); ?> " + sampleCode + "<br><?php echo _translate("Please wait"); ?>...</h3>"
 			});
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {
 				var jqxhr = $.ajax({
-					url: "/scheduled-jobs/remote/resultsSync.php?sampleCode=" + sampleCode + "&forceSyncModule=vl",
-				})
-					.done(function (data) {
+						url: "/scheduled-jobs/remote/resultsSync.php?sampleCode=" + sampleCode + "&forceSyncModule=vl",
+					})
+					.done(function(data) {
 						//console.log(data);
 						//alert( "success" );
 					})
-					.fail(function () {
+					.fail(function() {
 						$.unblockUI();
 					})
-					.always(function () {
+					.always(function() {
 						oTable.fnDraw();
 						$.unblockUI();
 					});
@@ -570,46 +564,46 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		}
 	<?php } ?>
 
-		function receiveEMRDataFromFHIR() {
-			$.blockUI({
-				message: "<h3><?php echo _("Trying to sync from EMR/FHIR"); ?> " + "<br><?php echo _("Please wait"); ?>...</h3>"
-			});
+	function receiveEMRDataFromFHIR() {
+		$.blockUI({
+			message: "<h3><?php echo _translate("Trying to sync from EMR/FHIR"); ?> " + "<br><?php echo _translate("Please wait"); ?>...</h3>"
+		});
 
 
-			var jqxhr = $.ajax({
+		var jqxhr = $.ajax({
 				url: "/vl/interop/fhir/vl-receive.php",
 			})
-				.done(function (data) {
-					//console.log(data);
-					//alert( "success" );
-					$.unblockUI();
-					//alert(data.processed + " records added from EMR/FHIR");
-					alert("EMR/FHIR sync completed");
-					if (data.error) {
-						alert(data.error);
-					}
-					oTable.fnDraw();
-					$.unblockUI();
-				})
-				.fail(function () {
-					$.unblockUI();
-				})
-				.always(function () {
-					oTable.fnDraw();
-					$.unblockUI();
-				});
+			.done(function(data) {
+				//console.log(data);
+				//alert( "success" );
+				$.unblockUI();
+				//alert(data.processed + " records added from EMR/FHIR");
+				alert("EMR/FHIR sync completed");
+				if (data.error) {
+					alert(data.error);
+				}
+				oTable.fnDraw();
+				$.unblockUI();
+			})
+			.fail(function() {
+				$.unblockUI();
+			})
+			.always(function() {
+				oTable.fnDraw();
+				$.unblockUI();
+			});
 
-		}
+	}
 
 	function sendEMRDataToFHIR() {
 		$.blockUI({
-			message: "<h3><?php echo _("Trying to sync to EMR/FHIR"); ?> " + "<br><?php echo _("Please wait"); ?>...</h3>"
+			message: "<h3><?php echo _translate("Trying to sync to EMR/FHIR"); ?> " + "<br><?php echo _translate("Please wait"); ?>...</h3>"
 		});
 
 		var jqxhr = $.ajax({
-			url: "/vl/interop/fhir/vl-send.php",
-		})
-			.done(function (data) {
+				url: "/vl/interop/fhir/vl-send.php",
+			})
+			.done(function(data) {
 				//console.log(data);
 				//alert( "success" );
 				$.unblockUI();
@@ -620,10 +614,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				oTable.fnDraw();
 				$.unblockUI();
 			})
-			.fail(function () {
+			.fail(function() {
 				$.unblockUI();
 			})
-			.always(function () {
+			.always(function() {
 				oTable.fnDraw();
 				$.unblockUI();
 			});
@@ -636,12 +630,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$("#facilityName").html('');
 		$("#vlLab").html('');
 		$.post("/common/get-by-province-id.php", {
-			provinceId: provinceId,
-			districts: true,
-			facilities: true,
-			labs: true,
-		},
-			function (data) {
+				provinceId: provinceId,
+				districts: true,
+				facilities: true,
+				labs: true,
+			},
+			function(data) {
 				Obj = $.parseJSON(data);
 				$("#district").html(Obj['districts']);
 				$("#facilityName").html(Obj['facilities']);
@@ -653,11 +647,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$("#facilityName").html('');
 		$("#vlLab").html('');
 		$.post("/common/get-by-district-id.php", {
-			districtId: districtId,
-			facilities: true,
-			labs: true,
-		},
-			function (data) {
+				districtId: districtId,
+				facilities: true,
+				labs: true,
+			},
+			function(data) {
 				Obj = $.parseJSON(data);
 				$("#facilityName").html(Obj['facilities']);
 				$("#vlLab").html(Obj['labs']);

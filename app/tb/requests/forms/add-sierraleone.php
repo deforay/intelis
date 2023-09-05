@@ -60,7 +60,7 @@ if ($_SESSION['accessType'] == 'collection-site') {
 	$sampleCode = 'sample_code';
 	$rKey = '';
 }
-	$pQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
+$pQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
 
 $pdResult = $db->query($pQuery);
 
@@ -146,11 +146,11 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 									<tr>
 										<th scope="row"><label for="requestedDate">Date of request <span class="mandatory">*</span></label></th>
 										<td>
-											<input type="text" class="date-time form-control" id="requestedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date of request date" style="width:100%;" />
+											<input type="text" class="date-time form-control" id="requestedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date of request date" style="width:100%;" />
 										</td>
 										<th scope="row"><label for="requestingClinician">Clinician Name </label></th>
 										<td>
-											<input type="text" class="form-control" id="requestingClinician" name="requestingClinician" placeholder="<?= _("Enter clinician name"); ?>" title="Enter clinician name" style="width:100%;" />
+											<input type="text" class="form-control" id="requestingClinician" name="requestingClinician" placeholder="<?= _translate("Enter clinician name"); ?>" title="Enter clinician name" style="width:100%;" />
 										</td>
 										<td><label class="label-control" for="referringUnit">Referring Unit </label></td>
 										<td>
@@ -434,18 +434,18 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 											</td>
 											<th scope="row"><label class="label-control" for="sampleReceivedDate">Date of Reception </label></th>
 											<td>
-												<input type="text" class="date-time form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
+												<input type="text" class="date-time form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
 											</td>
 										</tr>
 										<tr>
 											<th scope="row"><label class="label-control" for="sampleTestedDateTime">Date of Sample Tested</label></th>
 											<td>
-												<input type="text" class="date-time form-control" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Please enter sample tested" style="width:100%;" />
+												<input type="text" class="date-time form-control" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample tested" style="width:100%;" />
 											</td>
 
 											<th scope="row"><label class="label-control" for="sampleDispatchedDate">Sample Dispatched On</label></th>
 											<td>
-												<input type="text" class="date-time form-control" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _("Please enter date"); ?>" title="Please choose sample dispatched date" style="width:100%;" />
+												<input type="text" class="date-time form-control" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please choose sample dispatched date" style="width:100%;" />
 											</td>
 										</tr>
 										<tr>
@@ -457,7 +457,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 											</td>
 											<th scope="row"><label class="label-control" for="resultDate">Date Of Result</label></th>
 											<td>
-												<input type="text" value="<?php echo $tbInfo['result_date']; ?>" class="date-time form-control" value="<?php echo $tbInfo['result_date']; ?>" id="resultDate" name="resultDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter result date" style="width:100%;" />
+												<input type="text" value="<?php echo $tbInfo['result_date']; ?>" class="date-time form-control" value="<?php echo $tbInfo['result_date']; ?>" id="resultDate" name="resultDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter result date" style="width:100%;" />
 											</td>
 
 										</tr>
@@ -484,19 +484,19 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 
 											</td>
 											<th class="labels">Recommended Corrective Action</th>
-                                            <td><select name="correctiveAction" id="correctiveAction" class="form-control" title="Please choose Recommended corrective action">
-                                                    <option value="">-- Select --</option>
-                                                    <?php foreach ($correctiveActions as $action) { ?>
-                                                    <option value="<?php echo $action['recommended_corrective_action_id']; ?>"><?= $action['recommended_corrective_action_name']; ?></option>
-                                                    <?php } ?>
-                                                </select>
-                                            </td>
+											<td><select name="correctiveAction" id="correctiveAction" class="form-control" title="Please choose Recommended corrective action">
+													<option value="">-- Select --</option>
+													<?php foreach ($correctiveActions as $action) { ?>
+														<option value="<?php echo $action['recommended_corrective_action_id']; ?>"><?= $action['recommended_corrective_action_name']; ?></option>
+													<?php } ?>
+												</select>
+											</td>
 										</tr>
 										<tr class="show-rejection" style="display:none;">
-										<th scope="row"><label class="label-control" for="rejectionDate">Rejection Date<span class="mandatory">*</span></label></th>
+											<th scope="row"><label class="label-control" for="rejectionDate">Rejection Date<span class="mandatory">*</span></label></th>
 											<td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select rejection date" title="Please select the rejection date" /></td>
 
-													</tr>
+										</tr>
 										<tr class="platform microscopy">
 											<td colspan="4">
 												<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">

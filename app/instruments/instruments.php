@@ -8,14 +8,14 @@ require_once APPLICATION_PATH . '/header.php';
   <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1><em class="fa-solid fa-gears"></em>
-      <?php echo _("Instruments"); ?>
+      <?php echo _translate("Instruments"); ?>
     </h1>
     <ol class="breadcrumb">
       <li><a href="/"><em class="fa-solid fa-chart-pie"></em>
-          <?php echo _("Home"); ?>
+          <?php echo _translate("Home"); ?>
         </a></li>
       <li class="active">
-        <?php echo _("Instruments"); ?>
+        <?php echo _translate("Instruments"); ?>
       </li>
     </ol>
   </section>
@@ -27,30 +27,29 @@ require_once APPLICATION_PATH . '/header.php';
         <div class="box">
           <div class="box-header with-border">
             <a href="add-instrument.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em>
-              <?php echo _("Add Instrument"); ?>
+              <?php echo _translate("Add Instrument"); ?>
             </a>
           </div>
           <!-- /.box-header -->
           <div class="box-body">
-            <table aria-describedby="table" id="importConfigDataTable" class="table table-bordered table-striped"
-              aria-hidden="true">
+            <table aria-describedby="table" id="importConfigDataTable" class="table table-bordered table-striped" aria-hidden="true">
               <thead>
                 <tr>
                   <th>
-                    <?php echo _("Instrument Name"); ?>
+                    <?php echo _translate("Instrument Name"); ?>
                   </th>
                   <th>
-                    <?php echo _("Status"); ?>
+                    <?php echo _translate("Status"); ?>
                   </th>
                   <th>
-                    <?php echo _("Action"); ?>
+                    <?php echo _translate("Action"); ?>
                   </th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td colspan="12" class="dataTables_empty">
-                    <?php echo _("Loading data from server"); ?>
+                    <?php echo _translate("Loading data from server"); ?>
                   </td>
                 </tr>
               </tbody>
@@ -68,7 +67,7 @@ require_once APPLICATION_PATH . '/header.php';
 </div>
 <script type="text/javascript">
   var oTable = null;
-  $(document).ready(function () {
+  $(document).ready(function() {
     $.blockUI();
     oTable = $('#importConfigDataTable').dataTable({
       "oLanguage": {
@@ -81,15 +80,15 @@ require_once APPLICATION_PATH . '/header.php';
 
       "bRetrieve": true,
       "aoColumns": [{
-        "sClass": "center"
-      },
-      {
-        "sClass": "center"
-      },
-      {
-        "sClass": "center",
-        "bSortable": false
-      }
+          "sClass": "center"
+        },
+        {
+          "sClass": "center"
+        },
+        {
+          "sClass": "center",
+          "bSortable": false
+        }
       ],
       "aaSorting": [
         [0, "asc"]
@@ -97,7 +96,7 @@ require_once APPLICATION_PATH . '/header.php';
       "bProcessing": true,
       "bServerSide": true,
       "sAjaxSource": "get-instruments.php",
-      "fnServerData": function (sSource, aoData, fnCallback) {
+      "fnServerData": function(sSource, aoData, fnCallback) {
         $.ajax({
           "dataType": 'json',
           "type": "POST",

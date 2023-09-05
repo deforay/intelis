@@ -160,23 +160,23 @@ try {
 	}
 
 	if (!empty($_POST['newRejectionReason'])) {
-        $rejectionReasonQuery = "SELECT rejection_reason_id
+		$rejectionReasonQuery = "SELECT rejection_reason_id
                     FROM r_eid_sample_rejection_reasons
                     WHERE rejection_reason_name like ?";
-        $rejectionResult = $db->rawQueryOne($rejectionReasonQuery, [$_POST['newRejectionReason']]);
-        if (empty($rejectionResult)) {
-            $data = array(
-                'rejection_reason_name' => $_POST['newRejectionReason'],
-                'rejection_type' => 'general',
-                'rejection_reason_status' => 'active',
-                'updated_datetime' => DateUtility::getCurrentDateTime()
-            );
-            $id = $db->insert('r_eid_sample_rejection_reasons', $data);
-            $_POST['sampleRejectionReason'] = $id;
-        } else {
-            $_POST['sampleRejectionReason'] = $rejectionResult['rejection_reason_id'];
-        }
-    }
+		$rejectionResult = $db->rawQueryOne($rejectionReasonQuery, [$_POST['newRejectionReason']]);
+		if (empty($rejectionResult)) {
+			$data = array(
+				'rejection_reason_name' => $_POST['newRejectionReason'],
+				'rejection_type' => 'general',
+				'rejection_reason_status' => 'active',
+				'updated_datetime' => DateUtility::getCurrentDateTime()
+			);
+			$id = $db->insert('r_eid_sample_rejection_reasons', $data);
+			$_POST['sampleRejectionReason'] = $id;
+		} else {
+			$_POST['sampleRejectionReason'] = $rejectionResult['rejection_reason_id'];
+		}
+	}
 
 
 
@@ -265,8 +265,8 @@ try {
 		'province_id' => $_POST['provinceId'] ?? null,
 		'lab_id' => $_POST['labId'] ?? null,
 		'lab_testing_point' => $_POST['labTestingPoint'] ?? null,
-        'funding_source' => (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') ? base64_decode($_POST['fundingSource']) : null,
-        'implementing_partner' => (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') ? base64_decode($_POST['implementingPartner']) : null,
+		'funding_source' => (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') ? base64_decode($_POST['fundingSource']) : null,
+		'implementing_partner' => (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') ? base64_decode($_POST['implementingPartner']) : null,
 		'mother_id' => $_POST['mothersId'] ?? null,
 		'caretaker_contact_consent' => $_POST['caretakerConsentForContact'] ?? null,
 		'caretaker_phone_number' => $_POST['caretakerPhoneNumber'] ?? null,
@@ -386,7 +386,7 @@ try {
 	}
 
 	if ($id === true) {
-		$_SESSION['alertMsg'] = _("EID request updated successfully");
+		$_SESSION['alertMsg'] = _translate("EID request updated successfully");
 		//Add event log
 		$eventType = 'eid-edit-request';
 		$action = $_SESSION['userName'] . ' updated EID request for the Child ID ' . $_POST['childId'];
@@ -394,7 +394,7 @@ try {
 
 		$general->activityLog($eventType, $action, $resource);
 	} else {
-		$_SESSION['alertMsg'] = _("Please try again later");
+		$_SESSION['alertMsg'] = _translate("Please try again later");
 	}
 	header("Location:/eid/requests/eid-requests.php");
 } catch (Exception $exc) {

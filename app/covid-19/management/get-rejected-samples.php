@@ -84,18 +84,18 @@ if (!empty($tResult)) {
 <?php }
 if (!empty($tableResult)) { ?>
     <div class="pull-right">
-        <button class="btn btn-success" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export Excel"); ?></button>
+        <button class="btn btn-success" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export Excel"); ?></button>
     </div>
 <?php } ?>
 <table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped table-hover">
     <thead>
         <tr>
-            <th><?php echo _("Lab Name"); ?></th>
-            <th><?php echo _("Facility Name"); ?></th>
-            <th><?php echo _("Rejection Reason"); ?></th>
-            <th><?php echo _("Reason Category"); ?></th>
-            <th><?php echo _("Recommended Corrective Action"); ?></th>
-            <th><?php echo _("No. of Samples"); ?></th>
+            <th><?php echo _translate("Lab Name"); ?></th>
+            <th><?php echo _translate("Facility Name"); ?></th>
+            <th><?php echo _translate("Rejection Reason"); ?></th>
+            <th><?php echo _translate("Reason Category"); ?></th>
+            <th><?php echo _translate("Recommended Corrective Action"); ?></th>
+            <th><?php echo _translate("No. of Samples"); ?></th>
         </tr>
     </thead>
     <tbody>
@@ -131,7 +131,7 @@ if (!empty($tableResult)) { ?>
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _("Sample Rejection Reasons"); ?>"
+                text: "<?php echo _translate("Sample Rejection Reasons"); ?>"
             },
             credits: {
                 enabled: false
@@ -186,7 +186,7 @@ if (!empty($tableResult)) { ?>
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _("Sample Rejection by Categories"); ?>"
+                text: "<?php echo _translate("Sample Rejection by Categories"); ?>"
             },
             credits: {
                 enabled: false

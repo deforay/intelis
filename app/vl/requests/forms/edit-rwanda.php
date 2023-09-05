@@ -1130,7 +1130,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
      function validateNow() {
           var ARTlength = $("#artNo").val();
           if (ARTlength.length < 10) {
-               alert("<?= _("Patient ART No. should be at least 10 characters long"); ?>");
+               alert("<?= _translate("Patient ART No. should be at least 10 characters long"); ?>");
                //return false;
           }
           flag = deforayValidator.init({

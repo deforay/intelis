@@ -33,7 +33,7 @@ try {
 		}
 
 		if ($lastId > 0) {
-			$_SESSION['alertMsg'] = _("Hepatitis Sample details saved successfully");
+			$_SESSION['alertMsg'] = _translate("Hepatitis Sample details saved successfully");
 			$general->activityLog('Hepatitis Sample Type details', $_SESSION['userName'] . ' added new sample type for ' . $_POST['sampleName'], 'hepatitis-reference');
 		}
 	}

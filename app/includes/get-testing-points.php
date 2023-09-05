@@ -15,7 +15,7 @@ $testingPoints = json_decode($facilityDetails['testing_points'], true);
 
 if (!empty($testingPoints)) { ?>
     <option value="">
-        <?php echo _("-- Select --"); ?>
+        <?php echo _translate("-- Select --"); ?>
     </option>
     <?php foreach ($testingPoints as $point) { ?>
         <option value="<?= $point; ?>" <?php echo (!empty($_POST['oldTestingPoint']) && $_POST['oldTestingPoint'] == $point) ? "selected='selected'" : ""; ?>><?php echo $point; ?></option>

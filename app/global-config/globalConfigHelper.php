@@ -44,7 +44,7 @@ try {
                 "updated_by" => $_SESSION['userId']
             ));
         }
-        $_SESSION['alertMsg'] = _("Logo deleted successfully");
+        $_SESSION['alertMsg'] = _translate("Logo deleted successfully");
     }
 
     if (isset($_FILES['instanceLogo']['name']) && $_FILES['instanceLogo']['name'] != "") {
@@ -249,7 +249,7 @@ try {
         }
     }
 
-    $_SESSION['alertMsg'] = _("Configuration updated successfully");
+    $_SESSION['alertMsg'] = _translate("Configuration updated successfully");
 
     //Add event log
     $eventType = 'general-config-update';

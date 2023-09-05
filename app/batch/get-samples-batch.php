@@ -144,8 +144,8 @@ if (isset($_POST['batchId'])) {
     $(document).ready(function() {
         $('#search').multiselect({
             search: {
-                left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
-                right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _("Search"); ?>..." />',
+                left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
+                right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
             },
             fireSearch: function(value) {
                 return value.length > 2;
@@ -153,17 +153,17 @@ if (isset($_POST['batchId'])) {
             afterMoveToRight: function($left, $right, $options) {
                 const count = $right.find('option').length;
                 if (count > 0) {
-                    $('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+                    $('#alertText').html('<?php echo _translate("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _translate("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _translate("samples per batch"); ?>');
                 } else {
-                    $('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+                    $('#alertText').html('<?php echo _translate("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _translate("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _translate("samples per batch"); ?>');
                 }
             },
             afterMoveToLeft: function($left, $right, $options) {
                 const count = $right.find('option').length;
                 if (count > 0) {
-                    $('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+                    $('#alertText').html('<?php echo _translate("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _translate("testing platform and it has limit of maximum"); ?> ' + count + '/' + noOfSamples + ' <?php echo _translate("samples per batch"); ?>');
                 } else {
-                    $('#alertText').html('<?php echo _("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _("samples per batch"); ?>');
+                    $('#alertText').html('<?php echo _translate("You have picked"); ?> ' + $("#machine option:selected").text() + ' <?php echo _translate("testing platform and it has limit of maximum"); ?> ' + noOfSamples + ' <?php echo _translate("samples per batch"); ?>');
                 }
             }
         });

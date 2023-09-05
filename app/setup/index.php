@@ -25,7 +25,7 @@ $configResult = $db->query($globalConfigQuery);
 $arr = [];
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($configResult); $i++) {
-	$arr[$configResult[$i]['name']] = $configResult[$i]['value'];
+  $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
 }
 
 $db->where("login_id", NULL, 'IS NOT');
@@ -34,7 +34,7 @@ if ($count != 0) {
   header("Location:/login/login.php");
 }
 
-$shortName = _('Lab Sample Management System');
+$shortName = _translate('Lab Sample Management System');
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
   $shortName = 'Sample Tracking';
@@ -50,7 +50,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title><?= _("Register Admin User"); ?> | VLSM</title>
+  <title><?= _translate("Register Admin User"); ?> | VLSM</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
@@ -101,7 +101,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     <div id="loginbox" style="margin-top:80px;float:right;" class="mainbox col-md-4 col-sm-8 ">
       <div class="panel panel-default" style="opacity: 0.98;">
         <div class="panel-heading">
-          <div class="panel-title"><?= _("Register Admin User"); ?></div>
+          <div class="panel-title"><?= _translate("Register Admin User"); ?></div>
         </div>
 
         <div style="padding-top:10px;" class="panel-body">
@@ -109,66 +109,66 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
           <form id="registerForm" name="registerForm" class="form-horizontal" role="form" method="post" action="/setup/registerProcess.php" onsubmit="validateNow();return false;">
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-user"></em></span>
-              <input id="login-username" type="text" class="form-control isRequired" name="userName" value="" placeholder="<?= _("User Name"); ?>" title="Please enter your name">
+              <input id="login-username" type="text" class="form-control isRequired" name="userName" value="" placeholder="<?= _translate("User Name"); ?>" title="Please enter your name">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-envelope"></em></span>
-              <input id="login-email" type="text" class="form-control isRequired" name="email" value="" placeholder="<?= _("Email ID"); ?>" title="Please enter your email id">
+              <input id="login-email" type="text" class="form-control isRequired" name="email" value="" placeholder="<?= _translate("Email ID"); ?>" title="Please enter your email id">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-flag"></em></span>
-              <select class="form-control isRequired readPage select2" name="vl_form" id="vl_form" title="<?php echo _('Please select the viral load form'); ?>">
-												<option value=""><?= _("-- Choose Country of Installation --"); ?></option>
-                        <?php
-													foreach ($formResult as $val) {
-													?>
-														<option value="<?php echo $val['vlsm_country_id']; ?>" <?php echo ($val['vlsm_country_id'] == $arr['vl_form']) ? "selected='selected'" : "" ?>><?php echo $val['form_name']; ?></option>
-													<?php
-													}
-													?>
-												</select>
+              <select class="form-control isRequired readPage select2" name="vl_form" id="vl_form" title="<?php echo _translate('Please select the viral load form'); ?>">
+                <option value=""><?= _translate("-- Choose Country of Installation --"); ?></option>
+                <?php
+                foreach ($formResult as $val) {
+                ?>
+                  <option value="<?php echo $val['vlsm_country_id']; ?>" <?php echo ($val['vlsm_country_id'] == $arr['vl_form']) ? "selected='selected'" : "" ?>><?php echo $val['form_name']; ?></option>
+                <?php
+                }
+                ?>
+              </select>
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-clock"></em></span>
-              <select class="form-control readPage select2 isRequired" id="default_time_zone" name="default_time_zone" placeholder="<?php echo _('Timezone'); ?>" title="<?php echo _('Please choose Timezone'); ?>">
-													<option value=""><?= _("-- Choose Default Time Zone --"); ?></option>
-													<?php
-													$timezone_identifiers = DateTimeZone::listIdentifiers();
+              <select class="form-control readPage select2 isRequired" id="default_time_zone" name="default_time_zone" placeholder="<?php echo _translate('Timezone'); ?>" title="<?php echo _translate('Please choose Timezone'); ?>">
+                <option value=""><?= _translate("-- Choose Default Time Zone --"); ?></option>
+                <?php
+                $timezone_identifiers = DateTimeZone::listIdentifiers();
 
-													foreach ($timezone_identifiers as $value) {
-													?>
-														<option <?= ($arr['default_time_zone'] == $value ? 'selected=selected' : ''); ?> value='<?= $value; ?>'> <?= $value; ?></option>;
-													<?php
-													}
+                foreach ($timezone_identifiers as $value) {
+                ?>
+                  <option <?= ($arr['default_time_zone'] == $value ? 'selected=selected' : ''); ?> value='<?= $value; ?>'> <?= $value; ?></option>;
+                <?php
+                }
 
-													?>
-												</select>
+                ?>
+              </select>
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-language"></em></span>
-                  <select class="form-control isRequired readPage" name="app_locale" id="app_locale" title="<?php echo _('Please select the VLSM Locale'); ?>">
-                        <option value=""><?= _("-- Choose User Locale --"); ?></option>
-                        <?php foreach ($localeLists as $locale) { ?>
-													<option value="<?php echo $locale; ?>" <?php echo (isset($arr['app_locale']) && $arr['app_locale'] == $locale) ? 'selected="selected"' : ''; ?>><?php echo $locale; ?></option>
-												<?php } ?>
-									</select>
+              <select class="form-control isRequired readPage" name="app_locale" id="app_locale" title="<?php echo _translate('Please select the VLSM Locale'); ?>">
+                <option value=""><?= _translate("-- Choose User Locale --"); ?></option>
+                <?php foreach ($localeLists as $locale) { ?>
+                  <option value="<?php echo $locale; ?>" <?php echo (isset($arr['app_locale']) && $arr['app_locale'] == $locale) ? 'selected="selected"' : ''; ?>><?php echo $locale; ?></option>
+                <?php } ?>
+              </select>
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-right-to-bracket"></em></span>
-              <input id="login-id" type="text" class="form-control isRequired" name="loginId" value="" placeholder="<?= _("Login ID"); ?>" title="Please enter your login id">
+              <input id="login-id" type="text" class="form-control isRequired" name="loginId" value="" placeholder="<?= _translate("Login ID"); ?>" title="Please enter your login id">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
-              <input type="password" class="form-control ppwd isRequired" id="confirmPassword" name="password" placeholder="<?= _("Password"); ?>" title="Please enter your password" />
+              <input type="password" class="form-control ppwd isRequired" id="confirmPassword" name="password" placeholder="<?= _translate("Password"); ?>" title="Please enter your password" />
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
-              <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?= _("Confirm Password"); ?>" title="" />
+              <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?= _translate("Confirm Password"); ?>" title="" />
             </div>
             <div style="margin-top:10px" class="form-group">
               <!-- Button -->
               <div class="col-sm-12 controls">
-                <button class="btn btn-lg btn-primary btn-block" onclick="validateNow();return false;"><?= _("Create User"); ?></button>
+                <button class="btn btn-lg btn-primary btn-block" onclick="validateNow();return false;"><?= _translate("Create User"); ?></button>
               </div>
             </div>
           </form>
@@ -201,7 +201,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
       var pwd = $('#confirmPassword').val();
       var regex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9!@#\$%\^\&*\)\(+=. _-]+){8,}$/;
       if (regex.test(pwd) == false) {
-        alert("<?= _("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?>");
+        alert("<?= _translate("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?>");
         $('.ppwd').focus();
       }
       return regex.test(pwd);

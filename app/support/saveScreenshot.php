@@ -51,10 +51,10 @@ try {
 		);
 		$db->where('support_id', $supportId);
 		$db->update($tableName, $fData);
-		$response['message'] = _("Thank you. Your message has been submitted.");
+		$response['message'] = _translate("Thank you. Your message has been submitted.");
 	} elseif (trim($_POST['supportId']) != "") {
 		$supportId = base64_decode($_POST['supportId']);
-		$response['message'] = _("Thank you. Your message has been submitted.");
+		$response['message'] = _translate("Thank you. Your message has been submitted.");
 	}
 
 	//Send mail to support
@@ -146,7 +146,7 @@ try {
 					$db->where('support_id', $supportId);
 					$db->update($tableName, array('status' => 'sent'));
 					$response['status'] = 1;
-					$response['message'] = _("Thank you. Your message has been submitted.");
+					$response['message'] = _translate("Thank you. Your message has been submitted.");
 				}
 			}
 		}

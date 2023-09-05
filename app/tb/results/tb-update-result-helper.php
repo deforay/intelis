@@ -140,23 +140,23 @@ try {
     }
 
     if (!empty($_POST['newRejectionReason'])) {
-		$rejectionReasonQuery = "SELECT rejection_reason_id
+        $rejectionReasonQuery = "SELECT rejection_reason_id
 					FROM r_tb_sample_rejection_reasons
 					WHERE rejection_reason_name like ?";
-		$rejectionResult = $db->rawQueryOne($rejectionReasonQuery, [$_POST['newRejectionReason']]);
-		if (empty($rejectionResult)) {
-			$data = array(
-				'rejection_reason_name' => $_POST['newRejectionReason'],
-				'rejection_type' => 'general',
-				'rejection_reason_status' => 'active',
-				'updated_datetime' => DateUtility::getCurrentDateTime()
-			);
-			$id = $db->insert('r_tb_sample_rejection_reasons', $data);
-			$_POST['sampleRejectionReason'] = $id;
-		} else {
-			$_POST['sampleRejectionReason'] = $rejectionResult['rejection_reason_id'];
-		}
-	}
+        $rejectionResult = $db->rawQueryOne($rejectionReasonQuery, [$_POST['newRejectionReason']]);
+        if (empty($rejectionResult)) {
+            $data = array(
+                'rejection_reason_name' => $_POST['newRejectionReason'],
+                'rejection_type' => 'general',
+                'rejection_reason_status' => 'active',
+                'updated_datetime' => DateUtility::getCurrentDateTime()
+            );
+            $id = $db->insert('r_tb_sample_rejection_reasons', $data);
+            $_POST['sampleRejectionReason'] = $id;
+        } else {
+            $_POST['sampleRejectionReason'] = $rejectionResult['rejection_reason_id'];
+        }
+    }
 
     $tbData = array(
         //'specimen_quality'                    => !empty($_POST['testNumber']) ? $_POST['testNumber'] : null,
@@ -223,7 +223,7 @@ try {
     }
 
     if ($id === true) {
-        $_SESSION['alertMsg'] = _("TB test request updated successfully");
+        $_SESSION['alertMsg'] = _translate("TB test request updated successfully");
         //Add event log
         $eventType = 'tb-add-request';
         $action = $_SESSION['userName'] . ' pdated a TB request with the Sample ID/Code  ' . $_POST['tbSampleId'];
@@ -231,7 +231,7 @@ try {
 
         $general->activityLog($eventType, $action, $resource);
     } else {
-        $_SESSION['alertMsg'] = _("Unable to update this TB sample. Please try again later");
+        $_SESSION['alertMsg'] = _translate("Unable to update this TB sample. Please try again later");
     }
 
     if (!empty($_POST['saveNext']) && $_POST['saveNext'] == 'next') {

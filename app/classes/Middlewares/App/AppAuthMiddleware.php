@@ -38,7 +38,7 @@ class AppAuthMiddleware implements MiddlewareInterface
         } elseif (isset($_SESSION['forcePasswordReset']) && $_SESSION['forcePasswordReset'] == 1) {
 
             // Redirect to the edit profile page if the user is logged in but needs to change their password
-            $_SESSION['alertMsg'] = _("Please change your password to proceed.");
+            $_SESSION['alertMsg'] = _translate("Please change your password to proceed.");
             if (basename($_SESSION['requestedURI']) !== "editProfile.php") {
                 $redirect = new RedirectResponse('/users/editProfile.php');
             }

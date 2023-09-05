@@ -33,11 +33,11 @@ try {
             );
             $db->insert($tableName, $insertData);
             unlink("app/system-admin/secretKey.txt");
-            $_SESSION['alertMsg'] = _("New User Added successfully");
+            $_SESSION['alertMsg'] = _translate("New User Added successfully");
             header("Location:/system-admin/login/login.php");
         }
     } else {
-        $_SESSION['alertMsg'] = _("Invalid Secret Key, Please enter valid key");
+        $_SESSION['alertMsg'] = _translate("Invalid Secret Key, Please enter valid key");
         header("Location:/system-admin/setup/index.php");
     }
 } catch (Exception $exc) {

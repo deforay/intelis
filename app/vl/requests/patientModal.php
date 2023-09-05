@@ -92,31 +92,31 @@ $pResult = $db->get("form_vl vl", 25, "fd.facility_id,
 							<thead>
 								<tr>
 									<th style="width:10%;">
-										<?= _("Select"); ?>
+										<?= _translate("Select"); ?>
 									</th>
 									<th style="width:10%;">
-										<?= _("Patient ID"); ?>
+										<?= _translate("Patient ID"); ?>
 									</th>
 									<th style="width:10%;">
-										<?= _("Patient Name"); ?>
+										<?= _translate("Patient Name"); ?>
 									</th>
 									<th style="width:10%;">
-										<?= _("Age"); ?>
+										<?= _translate("Age"); ?>
 									</th>
 									<th style="width:10%;">
-										<?= _("Gender"); ?>
+										<?= _translate("Gender"); ?>
 									</th>
 									<th style="width:10%;">
-										<?= _("Facility Name"); ?>
+										<?= _translate("Facility Name"); ?>
 									</th>
 									<th style="width:10%;">
-										<?= _("Date and Time"); ?>
+										<?= _translate("Date and Time"); ?>
 									</th>
 									<th style="width:10%;">
-										<?= _("Previous Tested Date"); ?>
+										<?= _translate("Previous Tested Date"); ?>
 									</th>
 									<th style="width:10%;">
-										<?= _("Previous Result"); ?>
+										<?= _translate("Previous Result"); ?>
 									</th>
 								</tr>
 							</thead>

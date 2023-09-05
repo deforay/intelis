@@ -53,10 +53,10 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-sharp fa-solid fa-gears"></em> <?php echo _("Add Test Type"); ?></h1>
+		<h1><em class="fa-sharp fa-solid fa-gears"></em> <?php echo _translate("Add Test Type"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Add Test Type"); ?></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+			<li class="active"><?php echo _translate("Add Test Type"); ?></li>
 		</ol>
 	</section>
 
@@ -65,7 +65,7 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _translate("indicates required field"); ?> &nbsp;</div>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
@@ -75,38 +75,18 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testStandardName" class="col-lg-4 control-label"><?php echo _("Test Standard Name"); ?> <span class="mandatory">*</span></label>
+									<label for="testStandardName" class="col-lg-4 control-label"><?php echo _translate("Test Standard Name"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="testStandardName" name="testStandardName" placeholder='<?php echo _("Test Standard Name"); ?>' title='<?php echo _("Please enter standard name"); ?>' onblur='checkNameValidation("r_test_types","test_standard_name",this,null,"<?php echo _("This test standard name that you entered already exists.Try another name"); ?>",null)' />
+										<input type="text" class="form-control isRequired" id="testStandardName" name="testStandardName" placeholder='<?php echo _translate("Test Standard Name"); ?>' title='<?php echo _translate("Please enter standard name"); ?>' onblur='checkNameValidation("r_test_types","test_standard_name",this,null,"<?php echo _translate("This test standard name that you entered already exists.Try another name"); ?>",null)' />
 									</div>
 								</div>
 							</div>
 
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testGenericName" class="col-lg-4 control-label"><?php echo _("Test Generic Name"); ?> <span class="mandatory">*</span></label>
+									<label for="testGenericName" class="col-lg-4 control-label"><?php echo _translate("Test Generic Name"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="testGenericName" name="testGenericName" placeholder='<?php echo _("Test Generic Name"); ?>' title='<?php echo _("Please enter the test generic name"); ?>' onblur='checkNameValidation("r_test_types","test_generic_name",this,null,"<?php echo _("This test generic name that you entered already exists.Try another name"); ?>",null)' />
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class="row">
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="testShortCode" class="col-lg-4 control-label"><?php echo _("Test Short Code"); ?> <span class="mandatory">*</span></label>
-									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="testShortCode" name="testShortCode" placeholder='<?php echo _("Test Short Code"); ?>' title='<?php echo _("Please enter short code"); ?>' onblur='checkNameValidation("r_test_types","test_short_code",this,null,"<?php echo _("This test short code that you entered already exists.Try another code"); ?>",null);' onchange="alphanumericValidation(this.value);" />
-									</div>
-								</div>
-							</div>
-
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="testLoincCode" class="col-lg-4 control-label"><?php echo _("LOINC Codes"); ?></label>
-									<div class="col-lg-7">
-										<input type="text" class="form-control" id="testLoincCode" name="testLoincCode" placeholder='<?php echo _("Test LOINC Code"); ?>' title='<?php echo _("Please enter test loinc code"); ?>' onblur='checkNameValidation("r_test_types","test_loinc_code",this,null,"<?php echo _("This test loinc code that you entered already exists.Try another code"); ?>",null)' />
+										<input type="text" class="form-control isRequired" id="testGenericName" name="testGenericName" placeholder='<?php echo _translate("Test Generic Name"); ?>' title='<?php echo _translate("Please enter the test generic name"); ?>' onblur='checkNameValidation("r_test_types","test_generic_name",this,null,"<?php echo _translate("This test generic name that you entered already exists.Try another name"); ?>",null)' />
 									</div>
 								</div>
 							</div>
@@ -115,9 +95,29 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testMethod" class="col-lg-4 control-label"><?php echo _("Test Methods"); ?> <span class="mandatory">*</span> <em class="fas fa-edit"></em></label>
+									<label for="testShortCode" class="col-lg-4 control-label"><?php echo _translate("Test Short Code"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired editableSelect" name='testMethod[]' id='testMethod' title="<?php echo _('Please select the test methods'); ?>" multiple>
+										<input type="text" class="form-control isRequired" id="testShortCode" name="testShortCode" placeholder='<?php echo _translate("Test Short Code"); ?>' title='<?php echo _translate("Please enter short code"); ?>' onblur='checkNameValidation("r_test_types","test_short_code",this,null,"<?php echo _translate("This test short code that you entered already exists.Try another code"); ?>",null);' onchange="alphanumericValidation(this.value);" />
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="testLoincCode" class="col-lg-4 control-label"><?php echo _translate("LOINC Codes"); ?></label>
+									<div class="col-lg-7">
+										<input type="text" class="form-control" id="testLoincCode" name="testLoincCode" placeholder='<?php echo _translate("Test LOINC Code"); ?>' title='<?php echo _translate("Please enter test loinc code"); ?>' onblur='checkNameValidation("r_test_types","test_loinc_code",this,null,"<?php echo _translate("This test loinc code that you entered already exists.Try another code"); ?>",null)' />
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="testMethod" class="col-lg-4 control-label"><?php echo _translate("Test Methods"); ?> <span class="mandatory">*</span> <em class="fas fa-edit"></em></label>
+									<div class="col-lg-7">
+										<select class="form-control isRequired editableSelect" name='testMethod[]' id='testMethod' title="<?php echo _translate('Please select the test methods'); ?>" multiple>
 
 										</select>
 									</div>
@@ -125,9 +125,9 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testCategory" class="col-lg-4 control-label"><?php echo _("Test Category"); ?> <span class="mandatory">*</span> <em class="fas fa-edit"></em></label>
+									<label for="testCategory" class="col-lg-4 control-label"><?php echo _translate("Test Category"); ?> <span class="mandatory">*</span> <em class="fas fa-edit"></em></label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired editableSelect" name='testCategory' id='testCategory' title="<?php echo _('Please select the test categories'); ?>">
+										<select class="form-control isRequired editableSelect" name='testCategory' id='testCategory' title="<?php echo _translate('Please select the test categories'); ?>">
 
 										</select>
 									</div>
@@ -138,9 +138,9 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="sampleType" class="col-lg-4 control-label"><?php echo _("Sample/Specimen Types"); ?> <span class="mandatory">*</span></label>
+									<label for="sampleType" class="col-lg-4 control-label"><?php echo _translate("Sample/Specimen Types"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name='sampleType[]' id='sampleType' title="<?php echo _('Please select the sample type'); ?>" multiple>
+										<select class="form-control isRequired" name='sampleType[]' id='sampleType' title="<?php echo _translate('Please select the sample type'); ?>" multiple>
 											<?= $general->generateSelectOptions($sampleTypeInfo, null, '-- Select --') ?>
 										</select>
 									</div>
@@ -148,9 +148,9 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testingReason" class="col-lg-4 control-label"><?php echo _("Reasons for Testing"); ?> <span class="mandatory">*</span> <em class="fas fa-edit"></em></label>
+									<label for="testingReason" class="col-lg-4 control-label"><?php echo _translate("Reasons for Testing"); ?> <span class="mandatory">*</span> <em class="fas fa-edit"></em></label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired editableSelect" name='testingReason[]' id='testingReason' title="<?php echo _('Please select the testing reason'); ?>" multiple>
+										<select class="form-control isRequired editableSelect" name='testingReason[]' id='testingReason' title="<?php echo _translate('Please select the testing reason'); ?>" multiple>
 
 										</select>
 									</div>
@@ -161,9 +161,9 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testFailureReason" class="col-lg-4 control-label"><?php echo _("Test Failure Reasons"); ?> <span class="mandatory">*</span> <em class="fas fa-edit"></em></label>
+									<label for="testFailureReason" class="col-lg-4 control-label"><?php echo _translate("Test Failure Reasons"); ?> <span class="mandatory">*</span> <em class="fas fa-edit"></em></label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired editableSelect" name='testFailureReason[]' id='testFailureReason' title="<?php echo _('Please select the test failure reason'); ?>" multiple>
+										<select class="form-control isRequired editableSelect" name='testFailureReason[]' id='testFailureReason' title="<?php echo _translate('Please select the test failure reason'); ?>" multiple>
 
 										</select>
 									</div>
@@ -171,9 +171,9 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="rejectionReason" class="col-lg-4 control-label"><?php echo _("Sample Rejection Reasons"); ?> <span class="mandatory">*</span> <em class="fas fa-edit"></em></label>
+									<label for="rejectionReason" class="col-lg-4 control-label"><?php echo _translate("Sample Rejection Reasons"); ?> <span class="mandatory">*</span> <em class="fas fa-edit"></em></label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired editableSelect" name='rejectionReason[]' id='rejectionReason' title="<?php echo _('Please select the sample rejection reason'); ?>" multiple>
+										<select class="form-control isRequired editableSelect" name='rejectionReason[]' id='rejectionReason' title="<?php echo _translate('Please select the sample rejection reason'); ?>" multiple>
 
 										</select>
 									</div>
@@ -183,9 +183,9 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="symptoms" class="col-lg-4 control-label"><?php echo _("Symptoms"); ?></label>
+									<label for="symptoms" class="col-lg-4 control-label"><?php echo _translate("Symptoms"); ?></label>
 									<div class="col-lg-7">
-										<select class="form-control" name='symptoms[]' id='symptoms' title="<?php echo _('Please select the symptoms'); ?>" multiple>
+										<select class="form-control" name='symptoms[]' id='symptoms' title="<?php echo _translate('Please select the symptoms'); ?>" multiple>
 											<?= $general->generateSelectOptions($symptomInfo, null, '-- Select --') ?>
 										</select>
 									</div>
@@ -193,47 +193,47 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="status" class="col-lg-4 control-label"><?php echo _("Status"); ?> <span class="mandatory">*</span></label>
+									<label for="status" class="col-lg-4 control-label"><?php echo _translate("Status"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name='status' id='status' title="<?php echo _('Please select the status'); ?>">
-											<option value="active"><?php echo _("Active"); ?></option>
-											<option value="inactive"><?php echo _("Inactive"); ?></option>
+										<select class="form-control isRequired" name='status' id='status' title="<?php echo _translate('Please select the status'); ?>">
+											<option value="active"><?php echo _translate("Active"); ?></option>
+											<option value="inactive"><?php echo _translate("Inactive"); ?></option>
 										</select>
 									</div>
 								</div>
 							</div>
 						</div>
 						<div class="box-header">
-							<h3 class="box-title "><?php echo _("Form Configuration"); ?></h3>
+							<h3 class="box-title "><?php echo _translate("Form Configuration"); ?></h3>
 						</div>
 						<div class="box-body">
 							<table aria-describedby="table" border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
 								<thead>
 									<tr>
-										<th style="text-align:center;width:25%;"><?php echo _("Field Name"); ?> <span class="mandatory">*</span></th>
-										<th style="text-align:center;width:20%;"><?php echo _("Field Type"); ?> <span class="mandatory">*</span></th>
-										<th style="text-align:center;width:10%;"><?php echo _("Is it Mandatory?"); ?> <span class="mandatory">*</span></th>
-										<th style="text-align:center;width:25%;"><?php echo _("Section"); ?> <span class="mandatory">*</span></th>
-										<th style="text-align:center;width:10%;"><?php echo _("Field Order"); ?> </th>
-										<th style="text-align:center;width:10%;"><?php echo _("Action"); ?></th>
+										<th style="text-align:center;width:25%;"><?php echo _translate("Field Name"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:20%;"><?php echo _translate("Field Type"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:10%;"><?php echo _translate("Is it Mandatory?"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:25%;"><?php echo _translate("Section"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:10%;"><?php echo _translate("Field Order"); ?> </th>
+										<th style="text-align:center;width:10%;"><?php echo _translate("Action"); ?></th>
 									</tr>
 								</thead>
 								<tbody id="attributeTable">
 									<tr>
 										<td>
-											<input type="text" name="fieldName[]" id="fieldName1" class="form-control fieldName isRequired" placeholder='<?php echo _("Field Name"); ?>' title='<?php echo _("Please enter field name"); ?>' onblur="checkDublicateName(this, 'fieldName');" />
+											<input type="text" name="fieldName[]" id="fieldName1" class="form-control fieldName isRequired" placeholder='<?php echo _translate("Field Name"); ?>' title='<?php echo _translate("Please enter field name"); ?>' onblur="checkDublicateName(this, 'fieldName');" />
 											<input type="hidden" name="fieldId[]" id="fieldId1" class="form-control isRequired" />
 										</td>
 										<td>
-											<select class="form-control isRequired" name="fieldType[]" id="fieldType1" onchange="changeField(this,'1')" title="<?php echo _('Please select the field type'); ?>">
-												<option value=""> <?php echo _("-- Select --"); ?> </option>
-												<option value="number"><?php echo _("Number"); ?></option>
-												<option value="text"><?php echo _("Text"); ?></option>
-												<option value="date"><?php echo _("Date"); ?></option>
-												<option value="dropdown"><?php echo _("Dropdown"); ?></option>
-												<option value="multiple"><?php echo _("Multiselect Dropdown"); ?></option>
+											<select class="form-control isRequired" name="fieldType[]" id="fieldType1" onchange="changeField(this,'1')" title="<?php echo _translate('Please select the field type'); ?>">
+												<option value=""> <?php echo _translate("-- Select --"); ?> </option>
+												<option value="number"><?php echo _translate("Number"); ?></option>
+												<option value="text"><?php echo _translate("Text"); ?></option>
+												<option value="date"><?php echo _translate("Date"); ?></option>
+												<option value="dropdown"><?php echo _translate("Dropdown"); ?></option>
+												<option value="multiple"><?php echo _translate("Multiselect Dropdown"); ?></option>
 											</select><br>
-											<!--	<textarea name="dropDown[]" id="dropDown1" class="form-control" placeholder='<?php echo _("Drop down values as , separated"); ?>' title='<?php echo _("Please drop down values as comma separated"); ?>' style="display:none;"></textarea>-->
+											<!--	<textarea name="dropDown[]" id="dropDown1" class="form-control" placeholder='<?php echo _translate("Drop down values as , separated"); ?>' title='<?php echo _translate("Please drop down values as comma separated"); ?>' style="display:none;"></textarea>-->
 											<div class="tag-input dropDown1" style="display:none;">
 												<input type="text" name="dropDown[]" id="dropDown1" onkeyup="showTags(event,this,'1')" class="tag-input-field form-control" placeholder="Enter options..." />
 												<input type="hidden" class="fdropDown" id="fdropDown1" name="fdropDown[]" />
@@ -242,24 +242,24 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 											</div>
 										</td>
 										<td>
-											<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField1" title="<?php echo _('Please select is it mandatory'); ?>">
-												<option value="yes"><?php echo _("Yes"); ?></option>
-												<option value="no" selected><?php echo _("No"); ?></option>
+											<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField1" title="<?php echo _translate('Please select is it mandatory'); ?>">
+												<option value="yes"><?php echo _translate("Yes"); ?></option>
+												<option value="no" selected><?php echo _translate("No"); ?></option>
 											</select>
 										</td>
 										<td>
-											<select class="form-control isRequired" name="section[]" id="section1" title="<?php echo _('Please select the section'); ?>" onchange="checkSection('1')">
-												<option value=""> <?php echo _("-- Select --"); ?> </option>
-												<option value="facilitySection"><?php echo _("Facility"); ?></option>
-												<option value="patientSection"><?php echo _("Patient"); ?></option>
-												<option value="specimenSection"><?php echo _("Specimen"); ?></option>
-												<option value="labSection"><?php echo _("Lab"); ?></option>
-												<option value="otherSection"><?php echo _("Other"); ?></option>
+											<select class="form-control isRequired" name="section[]" id="section1" title="<?php echo _translate('Please select the section'); ?>" onchange="checkSection('1')">
+												<option value=""> <?php echo _translate("-- Select --"); ?> </option>
+												<option value="facilitySection"><?php echo _translate("Facility"); ?></option>
+												<option value="patientSection"><?php echo _translate("Patient"); ?></option>
+												<option value="specimenSection"><?php echo _translate("Specimen"); ?></option>
+												<option value="labSection"><?php echo _translate("Lab"); ?></option>
+												<option value="otherSection"><?php echo _translate("Other"); ?></option>
 											</select>
-											<input type="text" name="sectionOther[]" id="sectionOther1" class="form-control auto-complete-tbx" onchange="addNewSection(this.value)" placeholder='<?php echo _("Section Other"); ?>' title='<?php echo _("Please enter section other"); ?>' style="display:none;" />
+											<input type="text" name="sectionOther[]" id="sectionOther1" class="form-control auto-complete-tbx" onchange="addNewSection(this.value)" placeholder='<?php echo _translate("Section Other"); ?>' title='<?php echo _translate("Please enter section other"); ?>' style="display:none;" />
 										</td>
 										<td>
-											<input type="text" name="fieldOrder[]" id="fieldOrder1" class="form-control forceNumeric" placeholder="<?php echo _("Field Order"); ?>" title="<?php echo _("Please enter field order"); ?>" />
+											<input type="text" name="fieldOrder[]" id="fieldOrder1" class="form-control forceNumeric" placeholder="<?php echo _translate("Field Order"); ?>" title="<?php echo _translate("Please enter field order"); ?>" />
 										</td>
 										<td align="center" style="vertical-align:middle;">
 											<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
@@ -270,18 +270,18 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 						</div>
 
 						<div class="box-header">
-							<h3 class="box-title "><?php echo _("Test Results Configuration"); ?></h3>
+							<h3 class="box-title "><?php echo _translate("Test Results Configuration"); ?></h3>
 						</div>
 						<div class="box-body">
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
-										<label for="resultType" class="col-lg-3 control-label"><?php echo _("Result Type"); ?> <span class="mandatory">*</span></label>
+										<label for="resultType" class="col-lg-3 control-label"><?php echo _translate("Result Type"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
 											<select class="form-control isRequired" name='resultConfig[result_type]' id='resultType' onchange="checkResultType();">
-												<option value=""> <?php echo _("-- Select --"); ?> </option>
-												<option value="qualitative"><?php echo _("Qualitative"); ?></option>
-												<option value="quantitative"><?php echo _("Quantitative"); ?></option>
+												<option value=""> <?php echo _translate("-- Select --"); ?> </option>
+												<option value="qualitative"><?php echo _translate("Qualitative"); ?></option>
+												<option value="quantitative"><?php echo _translate("Quantitative"); ?></option>
 											</select>
 										</div>
 									</div>
@@ -308,66 +308,66 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 							</div>
 							<div class="row quantitativeDiv" style="display:none;">
 								<div class="box-header">
-									<h4 class="box-title "><?php echo _("Result Range"); ?></h4>
+									<h4 class="box-title "><?php echo _translate("Result Range"); ?></h4>
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
-										<label for="highValue" class="col-lg-4 control-label"><?php echo _("High Value"); ?> <span class="mandatory">*</span></label>
+										<label for="highValue" class="col-lg-4 control-label"><?php echo _translate("High Value"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control forceNumeric quantitativeResult" id="highValue" name="resultConfig[high_value]" placeholder='<?php echo _("Enter High Value"); ?>' title='<?php echo _("Please enter high value"); ?>' value="<?php echo (isset($testResultAttribute['high_value'])) ? $testResultAttribute['high_value'] : "" ?> " />
+											<input type="text" class="form-control forceNumeric quantitativeResult" id="highValue" name="resultConfig[high_value]" placeholder='<?php echo _translate("Enter High Value"); ?>' title='<?php echo _translate("Please enter high value"); ?>' value="<?php echo (isset($testResultAttribute['high_value'])) ? $testResultAttribute['high_value'] : "" ?> " />
 										</div>
 									</div>
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
-										<label for="thresholdValue" class="col-lg-4 control-label"><?php echo _("Threshold Value"); ?> <span class="mandatory">*</span></label>
+										<label for="thresholdValue" class="col-lg-4 control-label"><?php echo _translate("Threshold Value"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control forceNumeric quantitativeResult" id="thresholdValue" name="resultConfig[threshold_value]" placeholder='<?php echo _("Enter Threshold Value"); ?>' title='<?php echo _("Please enter threshold value"); ?>' value="<?php echo (isset($testResultAttribute['threshold_value'])) ? $testResultAttribute['threshold_value'] : "" ?>" />
+											<input type="text" class="form-control forceNumeric quantitativeResult" id="thresholdValue" name="resultConfig[threshold_value]" placeholder='<?php echo _translate("Enter Threshold Value"); ?>' title='<?php echo _translate("Please enter threshold value"); ?>' value="<?php echo (isset($testResultAttribute['threshold_value'])) ? $testResultAttribute['threshold_value'] : "" ?>" />
 										</div>
 									</div>
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
-										<label for="lowValue" class="col-lg-4 control-label"><?php echo _("Low Value"); ?> <span class="mandatory">*</span></label>
+										<label for="lowValue" class="col-lg-4 control-label"><?php echo _translate("Low Value"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control forceNumeric quantitativeResult" id="lowValue" name="resultConfig[low_value]" placeholder='<?php echo _("Enter Low Value"); ?>' title='<?php echo _("Please enter low value"); ?>' value="<?php echo (isset($testResultAttribute['low_value'])) ? $testResultAttribute['low_value'] : "" ?> " />
+											<input type="text" class="form-control forceNumeric quantitativeResult" id="lowValue" name="resultConfig[low_value]" placeholder='<?php echo _translate("Enter Low Value"); ?>' title='<?php echo _translate("Please enter low value"); ?>' value="<?php echo (isset($testResultAttribute['low_value'])) ? $testResultAttribute['low_value'] : "" ?> " />
 										</div>
 									</div>
 								</div>
 							</div>
 							<div class="row quantitativeDiv" style="display:none;">
 								<div class="box-header">
-									<h4 class="box-title "><?php echo _("Result Interpretation"); ?></h4>
+									<h4 class="box-title "><?php echo _translate("Result Interpretation"); ?></h4>
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
-										<label for="belowThreshold" class="col-lg-4 control-label"><?php echo _("Below Threshold"); ?> <span class="mandatory">*</span></label>
+										<label for="belowThreshold" class="col-lg-4 control-label"><?php echo _translate("Below Threshold"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control quantitativeResult" id="belowThreshold" name="resultConfig[below_threshold]" placeholder='<?php echo _("Enter below threshold"); ?>' title='<?php echo _("Please enter below threshold"); ?>' value="<?php echo (isset($testResultAttribute['below_threshold'])) ? $testResultAttribute['below_threshold'] : "" ?> " />
+											<input type="text" class="form-control quantitativeResult" id="belowThreshold" name="resultConfig[below_threshold]" placeholder='<?php echo _translate("Enter below threshold"); ?>' title='<?php echo _translate("Please enter below threshold"); ?>' value="<?php echo (isset($testResultAttribute['below_threshold'])) ? $testResultAttribute['below_threshold'] : "" ?> " />
 										</div>
 									</div>
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
-										<label for="atThreshold" class="col-lg-4 control-label"><?php echo _("At Threshold"); ?> <span class="mandatory">*</span></label>
+										<label for="atThreshold" class="col-lg-4 control-label"><?php echo _translate("At Threshold"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control quantitativeResult" id="atThreshold" name="resultConfig[at_threshold]" placeholder='<?php echo _("Enter at threshold"); ?>' title='<?php echo _("Please enter at threshold"); ?>' value="<?php echo (isset($testResultAttribute['at_threshold'])) ? $testResultAttribute['at_threshold'] : "" ?> " />
+											<input type="text" class="form-control quantitativeResult" id="atThreshold" name="resultConfig[at_threshold]" placeholder='<?php echo _translate("Enter at threshold"); ?>' title='<?php echo _translate("Please enter at threshold"); ?>' value="<?php echo (isset($testResultAttribute['at_threshold'])) ? $testResultAttribute['at_threshold'] : "" ?> " />
 										</div>
 									</div>
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
-										<label for="aboveThreshold" class="col-lg-4 control-label"><?php echo _("Above Threshold"); ?> <span class="mandatory">*</span></label>
+										<label for="aboveThreshold" class="col-lg-4 control-label"><?php echo _translate("Above Threshold"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control quantitativeResult" id="aboveThreshold" name="resultConfig[above_threshold]" placeholder='<?php echo _("Enter above threshold"); ?>' title='<?php echo _("Please enter above threshold"); ?>' value="<?php echo (isset($testResultAttribute['above_threshold'])) ? $testResultAttribute['above_threshold'] : "" ?> " />
+											<input type="text" class="form-control quantitativeResult" id="aboveThreshold" name="resultConfig[above_threshold]" placeholder='<?php echo _translate("Enter above threshold"); ?>' title='<?php echo _translate("Please enter above threshold"); ?>' value="<?php echo (isset($testResultAttribute['above_threshold'])) ? $testResultAttribute['above_threshold'] : "" ?> " />
 										</div>
 									</div>
 								</div>
 								<div class="col-md-4">
 									<div class="form-group">
-										<label for="resultUnit" class="col-lg-4 control-label"><?php echo _("Test Result Unit"); ?> </label>
+										<label for="resultUnit" class="col-lg-4 control-label"><?php echo _translate("Test Result Unit"); ?> </label>
 										<div class="col-lg-7">
-											<select class="form-control quantitativeResult" id="testResultUnit" name="resultConfig[test_result_unit][]" placeholder='<?php echo _("Enter test result unit"); ?>' title='<?php echo _("Please enter test result unit"); ?>' multiple>
+											<select class="form-control quantitativeResult" id="testResultUnit" name="resultConfig[test_result_unit][]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>' multiple>
 												<?= $general->generateSelectOptions($testResultUnits, null, '-- Select --') ?>
 											</select>
 										</div>
@@ -397,8 +397,8 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 						</div>
 						<!-- /.box-body -->
 						<div class="box-footer">
-							<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
-							<a href="test-type.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
+							<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
+							<a href="test-type.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
 						</div>
 						<!-- /.box-footer -->
 				</form>
@@ -429,22 +429,22 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 		$('input').tooltip();
 		generateRandomString('1');
 		$("#sampleType").select2({
-			placeholder: "<?php echo _("Select Sample Type"); ?>"
+			placeholder: "<?php echo _translate("Select Sample Type"); ?>"
 		});
 		$("#testingReason").select2({
-			placeholder: "<?php echo _("Select Testing Reason"); ?>"
+			placeholder: "<?php echo _translate("Select Testing Reason"); ?>"
 		});
 		$("#testFailureReason").select2({
-			placeholder: "<?php echo _("Select Test Failure Reason"); ?>"
+			placeholder: "<?php echo _translate("Select Test Failure Reason"); ?>"
 		});
 		$("#rejectionReason").select2({
-			placeholder: "<?php echo _("Select Rejection Reason"); ?>"
+			placeholder: "<?php echo _translate("Select Rejection Reason"); ?>"
 		});
 		$("#symptoms").select2({
-			placeholder: "<?php echo _("Select Symptoms"); ?>"
+			placeholder: "<?php echo _translate("Select Symptoms"); ?>"
 		});
 		$("#testResultUnit").select2({
-			placeholder: "<?php echo _("Select Test Result Unit"); ?>"
+			placeholder: "<?php echo _translate("Select Test Result Unit"); ?>"
 		});
 
 		/*	$('.tag-input-field').on('keyup', function(e) {
@@ -595,30 +595,30 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 		g.setAttribute("align", "center");
 		g.setAttribute("style", "vertical-align:middle");
 		tagClass = 'container' + tableRowId;
-		b.innerHTML = '<input type="text" name="fieldName[]" id="fieldName' + tableRowId + '" class="isRequired fieldName form-control" placeholder="<?php echo _('Field Name'); ?>" title="<?php echo _('Please enter field name'); ?>" onblur="checkDublicateName(this, \'fieldName\');"/ ><input type="hidden" name="fieldId[]" id="fieldId' + tableRowId + '" class="form-control isRequired" />';
-		c.innerHTML = '<select class="form-control isRequired" name="fieldType[]" id="fieldType' + tableRowId + '" title="<?php echo _('Please select the field type'); ?>" onchange="changeField(this, ' + tableRowId + ')">\
-                            <option value=""> <?php echo _("-- Select --"); ?> </option>\
-                            <option value="number"><?php echo _("Number"); ?></option>\
-                            <option value="text"><?php echo _("Text"); ?></option>\
-                            <option value="date"><?php echo _("Date"); ?></option>\
-							<option value="dropdown"><?php echo _("Dropdown"); ?></option>\
-							<option value="multiple"><?php echo _("Multiselect Dropdown"); ?></option>\
+		b.innerHTML = '<input type="text" name="fieldName[]" id="fieldName' + tableRowId + '" class="isRequired fieldName form-control" placeholder="<?php echo _translate('Field Name'); ?>" title="<?php echo _translate('Please enter field name'); ?>" onblur="checkDublicateName(this, \'fieldName\');"/ ><input type="hidden" name="fieldId[]" id="fieldId' + tableRowId + '" class="form-control isRequired" />';
+		c.innerHTML = '<select class="form-control isRequired" name="fieldType[]" id="fieldType' + tableRowId + '" title="<?php echo _translate('Please select the field type'); ?>" onchange="changeField(this, ' + tableRowId + ')">\
+                            <option value=""> <?php echo _translate("-- Select --"); ?> </option>\
+                            <option value="number"><?php echo _translate("Number"); ?></option>\
+                            <option value="text"><?php echo _translate("Text"); ?></option>\
+                            <option value="date"><?php echo _translate("Date"); ?></option>\
+							<option value="dropdown"><?php echo _translate("Dropdown"); ?></option>\
+							<option value="multiple"><?php echo _translate("Multiselect Dropdown"); ?></option>\
 						</select><br>\
 						<div class="tag-input dropDown' + tableRowId + '" style="display:none;"><input type="text" name="dropDown[]" id="dropDown' + tableRowId + '" onkeyup="showTags(event,this,' + tableRowId + ')" class="tag-input-field form-control" placeholder="Enter options..." /><input type="hidden" class="fdropDown" id="fdropDown' + tableRowId + '" name="fdropDown[]" /><div class="tag-container container' + tableRowId + '"></div></div>';
-		d.innerHTML = '<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField' + tableRowId + '" title="<?php echo _('Please select is it mandatory'); ?>">\
-                            <option value="yes"><?php echo _("Yes"); ?></option>\
-                            <option value="no" selected><?php echo _("No"); ?></option>\
+		d.innerHTML = '<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField' + tableRowId + '" title="<?php echo _translate('Please select is it mandatory'); ?>">\
+                            <option value="yes"><?php echo _translate("Yes"); ?></option>\
+                            <option value="no" selected><?php echo _translate("No"); ?></option>\
                         </select>';
-		e.innerHTML = '<select class="form-control isRequired" name="section[]" id="section' + tableRowId + '" title="<?php echo _('Please select the section'); ?>" onchange="checkSection(' + tableRowId + ')">\
-                        <option value=""> <?php echo _("-- Select --"); ?> </option>\
-                        <option value="facilitySection"><?php echo _("Facility"); ?></option>\
-						<option value="patientSection"><?php echo _("Patient"); ?></option>\
-						<option value="specimenSection"><?php echo _("Specimen"); ?></option>\
-						<option value="labSection"><?php echo _("Lab"); ?></option>\
-						<option value="otherSection"><?php echo _("Other"); ?></option>\
+		e.innerHTML = '<select class="form-control isRequired" name="section[]" id="section' + tableRowId + '" title="<?php echo _translate('Please select the section'); ?>" onchange="checkSection(' + tableRowId + ')">\
+                        <option value=""> <?php echo _translate("-- Select --"); ?> </option>\
+                        <option value="facilitySection"><?php echo _translate("Facility"); ?></option>\
+						<option value="patientSection"><?php echo _translate("Patient"); ?></option>\
+						<option value="specimenSection"><?php echo _translate("Specimen"); ?></option>\
+						<option value="labSection"><?php echo _translate("Lab"); ?></option>\
+						<option value="otherSection"><?php echo _translate("Other"); ?></option>\
                     </select>\
-                    <input type="text" name="sectionOther[]" onchange="addNewSection(this.value)" id="sectionOther' + tableRowId + '" class="form-control auto-complete-tbx" placeholder="<?php echo _("Section Other"); ?>" title="<?php echo _("Please enter section other"); ?>" style="display:none;"/>';
-		f.innerHTML = '<input type="text" name="fieldOrder[]" id="fieldOrder' + tableRowId + '" class="form-control forceNumeric" placeholder="<?php echo _("Field Order"); ?>" title="<?php echo _("Please enter field order"); ?>" />';
+                    <input type="text" name="sectionOther[]" onchange="addNewSection(this.value)" id="sectionOther' + tableRowId + '" class="form-control auto-complete-tbx" placeholder="<?php echo _translate("Section Other"); ?>" title="<?php echo _translate("Please enter section other"); ?>" style="display:none;"/>';
+		f.innerHTML = '<input type="text" name="fieldOrder[]" id="fieldOrder' + tableRowId + '" class="form-control forceNumeric" placeholder="<?php echo _translate("Field Order"); ?>" title="<?php echo _translate("Please enter field order"); ?>" />';
 		g.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
 		$(a).fadeIn(800);
 
@@ -693,7 +693,7 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 				format: "html"
 			},
 			function(data) {
-				$("#fieldId" + rowId).val("_"+data);
+				$("#fieldId" + rowId).val("_" + data);
 			});
 	}
 

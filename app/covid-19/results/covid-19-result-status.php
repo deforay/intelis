@@ -1,5 +1,5 @@
 <?php
-$title = _("Manage Result Status");
+$title = _translate("Manage Result Status");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -65,10 +65,10 @@ foreach ($rejectionTypeResult as $type) {
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><em class="fa-solid fa-list-check"></em> <?php echo _("Results Approval"); ?></h1>
+    <h1><em class="fa-solid fa-list-check"></em> <?php echo _translate("Results Approval"); ?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-      <li class="active"><?php echo _("Test Request"); ?></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+      <li class="active"><?php echo _translate("Test Request"); ?></li>
     </ol>
   </section>
 
@@ -77,9 +77,9 @@ foreach ($rejectionTypeResult as $type) {
     <a href="javascript:void(0)" style="float:right;color:red;" onclick="hideReasonDiv('rejectReasonDiv')"><em class="fa-solid fa-xmark"></em></a>
     <div class="arrow-right"></div>
     <input type="hidden" name="statusDropDownId" id="statusDropDownId" />
-    <h3 style="color:red;"><?php echo _("Choose Rejection Reason"); ?></h3>
-    <select name="rejectionReason" id="rejectionReason" class="form-control" title="<?php echo _('Please choose reason'); ?>" onchange="updateRejectionReasonStatus(this);">
-      <option value=''> <?php echo _("-- Select --"); ?> </option>
+    <h3 style="color:red;"><?php echo _translate("Choose Rejection Reason"); ?></h3>
+    <select name="rejectionReason" id="rejectionReason" class="form-control" title="<?php echo _translate('Please choose reason'); ?>" onchange="updateRejectionReasonStatus(this);">
+      <option value=''> <?php echo _translate("-- Select --"); ?> </option>
       <?php echo $rejectionReason; ?>
     </select>
 
@@ -91,17 +91,17 @@ foreach ($rejectionTypeResult as $type) {
         <div class="box">
           <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;">
             <tr>
-              <td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
+              <td><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
               <td>
-                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
+                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
               </td>
-              <td>&nbsp;<strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
+              <td>&nbsp;<strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
               <td>
-                <select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
+                <select class="form-control" id="batchCode" name="batchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
                   <option value=""> -- Select -- </option>
                   <?php
                   foreach ($batResult as $code) {
-                    ?>
+                  ?>
                     <option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
                   <?php
                   }
@@ -111,30 +111,30 @@ foreach ($rejectionTypeResult as $type) {
             </tr>
             <tr>
 
-              <td>&nbsp;<strong><?php echo _("Facility Name & Code"); ?>&nbsp;:</strong></td>
+              <td>&nbsp;<strong><?php echo _translate("Facility Name & Code"); ?>&nbsp;:</strong></td>
               <td>
-                <select class="form-control" id="facilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
-                  <option value=""> <?php echo _("-- Select --"); ?> </option>
+                <select class="form-control" id="facilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
+                  <option value=""> <?php echo _translate("-- Select --"); ?> </option>
                   <?php
                   foreach ($fResult as $name) {
-                    ?>
+                  ?>
                     <option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
                   <?php
                   }
                   ?>
                 </select>
               </td>
-              <td>&nbsp;<strong><?php echo _("Show Samples that are"); ?> &nbsp;:</strong></td>
+              <td>&nbsp;<strong><?php echo _translate("Show Samples that are"); ?> &nbsp;:</strong></td>
               <td>
-                <select class="form-control" id="statusFilter" name="statusFilter" title="<?php echo _('Please choose a status'); ?>" style="width:220px;">
-                  <option value="notApprovedOrRejected"> <?php echo _("Not Approved/Rejected"); ?> </option>
-                  <option value="approvedOrRejected"> <?php echo _("Already Approved/Rejected"); ?> </option>
+                <select class="form-control" id="statusFilter" name="statusFilter" title="<?php echo _translate('Please choose a status'); ?>" style="width:220px;">
+                  <option value="notApprovedOrRejected"> <?php echo _translate("Not Approved/Rejected"); ?> </option>
+                  <option value="approvedOrRejected"> <?php echo _translate("Already Approved/Rejected"); ?> </option>
                 </select>
               </td>
             </tr>
             <tr>
-              <td colspan="3">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
-                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _('Reset'); ?></span></button>
+              <td colspan="3">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
 
               </td>
             </tr>
@@ -143,20 +143,20 @@ foreach ($rejectionTypeResult as $type) {
           <div class="box-header with-border">
             <div class="col-md-5 col-sm-5">
               <input type="hidden" name="checkedTests" id="checkedTests" />
-              <select class="form-control" id="status" name="status" title="<?php echo _('Please select test status'); ?>" disabled="disabled" onchange="showSampleRejectionReason()">
-                <option value=""><?php echo _("-- Select at least one sample to apply bulk action --"); ?></option>
-                <option value="7"><?php echo _("Accepted"); ?></option>
-                <option value="4"><?php echo _("Rejected"); ?></option>
-                <option value="2"><?php echo _("Lost"); ?></option>
+              <select class="form-control" id="status" name="status" title="<?php echo _translate('Please select test status'); ?>" disabled="disabled" onchange="showSampleRejectionReason()">
+                <option value=""><?php echo _translate("-- Select at least one sample to apply bulk action --"); ?></option>
+                <option value="7"><?php echo _translate("Accepted"); ?></option>
+                <option value="4"><?php echo _translate("Rejected"); ?></option>
+                <option value="2"><?php echo _translate("Lost"); ?></option>
               </select>
             </div>
             <div style="display:none;" class="col-md-5 col-sm-5 bulkRejectionReason">
-              <select class="form-control" id="bulkRejectionReason" name="bulkRejectionReason" title="<?php echo _('Please select test status'); ?>">
-                <option value=''> <?php echo _("-- Select --"); ?> </option>
+              <select class="form-control" id="bulkRejectionReason" name="bulkRejectionReason" title="<?php echo _translate('Please select test status'); ?>">
+                <option value=''> <?php echo _translate("-- Select --"); ?> </option>
                 <?php echo $rejectionReason; ?>
               </select>
             </div>
-            <div class="col-md-2 col-sm-2"><input type="button" onclick="submitTestStatus();" value="<?php echo _("Apply"); ?>" class="btn btn-success btn-sm"></div>
+            <div class="col-md-2 col-sm-2"><input type="button" onclick="submitTestStatus();" value="<?php echo _translate("Apply"); ?>" class="btn btn-success btn-sm"></div>
           </div>
           <!-- /.box-header -->
           <div class="box-body">
@@ -164,18 +164,18 @@ foreach ($rejectionTypeResult as $type) {
               <thead>
                 <tr>
                   <th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()" /></th>
-                  <th><?php echo _("Sample Code"); ?></th>
+                  <th><?php echo _translate("Sample Code"); ?></th>
                   <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-                    <th><?php echo _("Remote Sample Code"); ?></th>
+                    <th><?php echo _translate("Remote Sample Code"); ?></th>
                   <?php } ?>
-                  <th scope="row"><?php echo _("Sample Collection Date"); ?></th>
-                  <th><?php echo _("Batch Code"); ?></th>
-                  <th><?php echo _("Patient ID"); ?></th>
-                  <th><?php echo _("Paitent Name"); ?></th>
-                  <th scope="row"><?php echo _("Facility Name"); ?></th>
-                  <th><?php echo _("Result"); ?></th>
-                  <th><?php echo _("Last Modified on"); ?></th>
-                  <th scope="row"><?php echo _("Status"); ?></th>
+                  <th scope="row"><?php echo _translate("Sample Collection Date"); ?></th>
+                  <th><?php echo _translate("Batch Code"); ?></th>
+                  <th><?php echo _translate("Patient ID"); ?></th>
+                  <th><?php echo _translate("Paitent Name"); ?></th>
+                  <th scope="row"><?php echo _translate("Facility Name"); ?></th>
+                  <th><?php echo _translate("Result"); ?></th>
+                  <th><?php echo _translate("Last Modified on"); ?></th>
+                  <th scope="row"><?php echo _translate("Status"); ?></th>
                   <?php if (isset($_SESSION['privileges']) && (in_array("/vl/requests/editVlRequest.php", $_SESSION['privileges']))) { ?>
                     <!--<th>Action</th>-->
                   <?php } ?>
@@ -183,7 +183,7 @@ foreach ($rejectionTypeResult as $type) {
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="13" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+                  <td colspan="13" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
                 </tr>
               </tbody>
             </table>
@@ -208,11 +208,11 @@ foreach ($rejectionTypeResult as $type) {
   var selectedTestsId = [];
   $(document).ready(function() {
     $("#facilityName").select2({
-      placeholder: "<?php echo _("Select Facilities"); ?>"
+      placeholder: "<?php echo _translate("Select Facilities"); ?>"
     });
     $('#sampleCollectionDate').daterangepicker({
         locale: {
-          cancelLabel: "<?= _("Clear"); ?>",
+          cancelLabel: "<?= _translate("Clear"); ?>",
           format: 'DD-MMM-YYYY',
           separator: ' to ',
         },
@@ -393,7 +393,7 @@ foreach ($rejectionTypeResult as $type) {
     var stValue = $("#status").val();
     var testIds = $("#checkedTests").val();
     if (stValue != '' && testIds != '') {
-      conf = confirm("<?php echo _("Do you wish to change the test status ?"); ?>");
+      conf = confirm("<?php echo _translate("Do you wish to change the test status ?"); ?>");
       if (conf) {
         $.post("/covid-19/results/update-status.php", {
             status: stValue,
@@ -411,18 +411,18 @@ foreach ($rejectionTypeResult as $type) {
               $("#bulkRejectionReason").val('');
               $(".bulkRejectionReason").hide();
               oTable.fnDraw();
-              alert("<?php echo _("Updated successfully."); ?>");
+              alert("<?php echo _translate("Updated successfully."); ?>");
             }
           });
       }
     } else {
-      alert("<?php echo _("Please be checked atleast one checkbox."); ?>");
+      alert("<?php echo _translate("Please be checked atleast one checkbox."); ?>");
     }
   }
 
   function updateStatus(obj, optVal) {
     if (obj.value == '4') {
-      var confrm = confirm("<?php echo _("Do you wish to overwrite this result?"); ?>");
+      var confrm = confirm("<?php echo _translate("Do you wish to overwrite this result?"); ?>");
       if (confrm) {
         var pos = $("#" + obj.id).offset();
         $("#rejectReasonDiv").show();
@@ -442,7 +442,7 @@ foreach ($rejectionTypeResult as $type) {
       $("#rejectReasonDiv").hide();
     }
     if (obj.value != '') {
-      conf = confirm("<?php echo _("Do you wish to change the status ?"); ?>");
+      conf = confirm("<?php echo _translate("Do you wish to change the status ?"); ?>");
       if (conf) {
         $.post("/covid-19/results/update-status.php", {
             status: obj.value,
@@ -457,7 +457,7 @@ foreach ($rejectionTypeResult as $type) {
               $("#status").val('');
               $("#status").prop('disabled', true);
               oTable.fnDraw();
-              alert("<?php echo _("Updated successfully."); ?>");
+              alert("<?php echo _translate("Updated successfully."); ?>");
             }
           });
       } else {
@@ -468,7 +468,7 @@ foreach ($rejectionTypeResult as $type) {
 
   function updateRejectionReasonStatus(obj) {
     if (obj.value != '') {
-      conf = confirm("<?php echo _("Do you wish to change the status ?"); ?>");
+      conf = confirm("<?php echo _translate("Do you wish to change the status ?"); ?>");
       if (conf) {
         $.post("/covid-19/results/update-status.php", {
             status: '4',
@@ -487,7 +487,7 @@ foreach ($rejectionTypeResult as $type) {
               $("#statusDropDownId").val('');
               $("#rejectionReason").val('');
               oTable.fnDraw();
-              alert("<?php echo _("Updated successfully."); ?>");
+              alert("<?php echo _translate("Updated successfully."); ?>");
             }
           });
       } else {

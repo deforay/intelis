@@ -56,7 +56,7 @@ if (isset($_GET['type'])) {
 	}
 }
 $_GET['type'] = ($_GET['type'] == 'covid19') ? 'covid-19' : $_GET['type'];
-$title = _($title . " | Edit Batch Position");
+$title = _translate($title . " | Edit Batch Position");
 $testType = (isset($_GET['testType'])) ? base64_decode($_GET['testType']) : null;
 
 

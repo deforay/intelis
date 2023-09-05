@@ -37,10 +37,10 @@ $_SESSION['instanceType'] = $systemInfo['sc_user_type'];
 if (!empty(SYSTEM_CONFIG['instanceName'])) {
 	$systemType = SYSTEM_CONFIG['instanceName'];
 } else {
-	$systemType = _("Lab Sample Management Module");
+	$systemType = _translate("Lab Sample Management Module");
 }
 
-$shortName = _('Sample Management System');
+$shortName = _translate('Sample Management System');
 
 if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser') {
 	$shortName = 'Sample Tracking';
@@ -67,7 +67,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title><?php echo $shortName; ?> | <?php echo _("Login"); ?></title>
+	<title><?php echo $shortName; ?> | <?php echo _translate("Login"); ?></title>
 	<!-- Tell the browser to be responsive to screen width -->
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
@@ -156,29 +156,29 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 						<input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>" />
 						<div style="margin-bottom: 5px" class="input-group">
 							<span class="input-group-addon"><em class="fa-solid fa-user"></em></span>
-							<input id="username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?php echo _('User Name'); ?>" title="<?php echo _('Please enter your user name'); ?>" onblur="checkLoginAttempts()">
+							<input id="username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?php echo _translate('User Name'); ?>" title="<?php echo _translate('Please enter your user name'); ?>" onblur="checkLoginAttempts()">
 						</div>
 
 						<div style="margin-bottom: 5px" class="input-group">
 							<span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
-							<input id="password" type="password" class="form-control isRequired" name="password" placeholder="<?php echo _('Password'); ?>" title="<?php echo _('Please enter your password'); ?>">
+							<input id="password" type="password" class="form-control isRequired" name="password" placeholder="<?php echo _translate('Password'); ?>" title="<?php echo _translate('Please enter your password'); ?>">
 						</div>
 						<div style="margin-bottom: 5px;display:none" id="captcha">
 							<div>
 								<img id="capChaw" width="180px" alt="verification" src="/includes/captcha.php" />
-								<a onclick="getCaptcha('capChaw');return false;" class="mandatory"><em class="fa-solid fa-arrows-rotate"></em> <?php echo _("Get New Image"); ?></a>
+								<a onclick="getCaptcha('capChaw');return false;" class="mandatory"><em class="fa-solid fa-arrows-rotate"></em> <?php echo _translate("Get New Image"); ?></a>
 							</div>
 
 							<div style="margin-bottom: 5px" class="input-group">
 								<span class="input-group-addon"><em class="fa-solid fa-shield-halved"></em></span>
-								<input type="text" style="" id="challengeResponse" name="captcha" placeholder="<?php echo _('Please enter the text from the image'); ?>" class="form-control" title="<?php echo _('Please enter the text from the image'); ?>." maxlength="40">
+								<input type="text" style="" id="challengeResponse" name="captcha" placeholder="<?php echo _translate('Please enter the text from the image'); ?>" class="form-control" title="<?php echo _translate('Please enter the text from the image'); ?>." maxlength="40">
 							</div>
 						</div>
 
 						<div style="margin-top:10px" class="form-group">
 							<!-- Button -->
 							<div class="col-sm-12 controls">
-								<button class="btn btn-lg btn-success btn-block" onclick="validateNow();return false;"><?php echo _("Login"); ?></button>
+								<button class="btn btn-lg btn-success btn-block" onclick="validateNow();return false;"><?php echo _translate("Login"); ?></button>
 							</div>
 						</div>
 					</form>
@@ -227,7 +227,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 							},
 							function(data) {
 								if (data == 'fail') {
-									alert('<?php echo _("Text you entered from the image is incorrect. Please try again"); ?>');
+									alert('<?php echo _translate("Text you entered from the image is incorrect. Please try again"); ?>');
 									getCaptcha('capChaw');
 									document.getElementById("challengeResponse").value = "";
 									return false;
@@ -237,7 +237,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 								}
 							});
 					} else {
-						alert('<?php echo _("Please enter the text from the image to proceed."); ?>');
+						alert('<?php echo _translate("Please enter the text from the image to proceed."); ?>');
 						// $('.ppwd').focus();
 						return false;
 					}

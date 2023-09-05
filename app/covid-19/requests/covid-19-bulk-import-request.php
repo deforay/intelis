@@ -19,10 +19,10 @@ $fileName = WEB_ROOT . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR . 'co
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _("Import Test Requests In Bulk"); ?></h1>
+    <h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _translate("Import Test Requests In Bulk"); ?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-      <li class="active"><?php echo _("Import Test Requests In Bulk"); ?></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+      <li class="active"><?php echo _translate("Import Test Requests In Bulk"); ?></li>
     </ol>
   </section>
 

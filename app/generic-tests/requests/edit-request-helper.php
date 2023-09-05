@@ -40,7 +40,7 @@ try {
      $validateField = array($_POST['sampleCode'], $_POST['sampleCollectionDate']);
      $chkValidation = $general->checkMandatoryFields($validateField);
      if ($chkValidation) {
-          $_SESSION['alertMsg'] = _("Please enter all mandatory fields to save the test request");
+          $_SESSION['alertMsg'] = _translate("Please enter all mandatory fields to save the test request");
           header("Location:edit-request.php?id=" . base64_encode($_POST['vlSampleId']));
           die;
      }
@@ -306,7 +306,7 @@ try {
      $id = $db->update($tableName, $vldata);
      error_log($db->getLastError());
      if ($id === true) {
-          $_SESSION['alertMsg'] = _("Request updated successfully");
+          $_SESSION['alertMsg'] = _translate("Request updated successfully");
           //Add event log
 
           $eventType = 'update-test-request';
@@ -315,7 +315,7 @@ try {
 
           $general->activityLog($eventType, $action, $resource);
      } else {
-          $_SESSION['alertMsg'] = _("Please try again later");
+          $_SESSION['alertMsg'] = _translate("Please try again later");
      }
      header("Location:view-requests.php");
 } catch (Exception $exc) {

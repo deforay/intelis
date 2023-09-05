@@ -261,12 +261,12 @@ if (!empty($id)) {
             <hr>
             <table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">
                 <tr style="border-bottom:1px solid #333 !important;">
-                    <th align="center" width="5%"><strong>' . _('Pos.') . '</strong></th>
-                    <th align="center" width="20%"><strong>' . _('Sample Code') . '</strong></th>
-                    <th align="center" width="30%"><strong>' . _('BARCODE') . '</strong></th>
-                    <th align="center" width="20%"><strong>' . _('Remote Sample Code') . '</strong></th>
-                    <th align="center" width="12.5%"><strong>' . _('Patient Code') . '</strong></th>
-                    <th align="center" width="12.5%"><strong>' . _('Test Result') . '</strong></th>
+                    <th align="center" width="5%"><strong>' . _translate('Pos.') . '</strong></th>
+                    <th align="center" width="20%"><strong>' . _translate('Sample Code') . '</strong></th>
+                    <th align="center" width="30%"><strong>' . _translate('BARCODE') . '</strong></th>
+                    <th align="center" width="20%"><strong>' . _translate('Remote Sample Code') . '</strong></th>
+                    <th align="center" width="12.5%"><strong>' . _translate('Patient Code') . '</strong></th>
+                    <th align="center" width="12.5%"><strong>' . _translate('Test Result') . '</strong></th>
                 </tr>';
             $tbl .= '</table>';
         } else {

@@ -141,7 +141,7 @@ foreach ($rResult as $aRow) {
     $row[] = ucwords($aRow['test_reason_status']);
     $row[] = $aRow['updated_datetime'] = DateUtility::humanReadableDateFormat($aRow['updated_datetime'], true);
     if ($usersService->isAllowed("/generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php")) {
-        $row[] = '<a href="generic-edit-testing-reason.php?id=' . base64_encode($aRow['test_reason_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Edit") . '</em></a>';
+        $row[] = '<a href="generic-edit-testing-reason.php?id=' . base64_encode($aRow['test_reason_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
     }
     $output['aaData'][] = $row;
 }

@@ -1,5 +1,5 @@
 <?php
-$title = _("User Login History") . " - " . _("System Admin");
+$title = _translate("User Login History") . " - " . _translate("System Admin");
 
 require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
 $sQuery = "SELECT * FROM user_login_history";
@@ -10,10 +10,10 @@ $sResult = $db->rawQuery($sQuery);
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1> <em class="fa-solid fa-gears"></em> <?php echo _("User Login History"); ?></h1>
+    <h1> <em class="fa-solid fa-gears"></em> <?php echo _translate("User Login History"); ?></h1>
     <ol class="breadcrumb">
-      <li><a href="/system-admin/edit-config/index.php"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-      <li class="active"><?php echo _("Manage User Login History"); ?></li>
+      <li><a href="/system-admin/edit-config/index.php"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+      <li class="active"><?php echo _translate("Manage User Login History"); ?></li>
     </ol>
   </section>
 
@@ -26,15 +26,15 @@ $sResult = $db->rawQuery($sQuery);
         <div class="box">
           <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
             <tr>
-              <td><strong><?php echo _("Date"); ?>&nbsp;:</strong></td>
+              <td><strong><?php echo _translate("Date"); ?>&nbsp;:</strong></td>
               <td>
-                <input type="text" id="userDate" name="userDate" class="form-control daterangefield" placeholder="<?php echo _('Select User Date'); ?>" readonly style="width:220px;background:#fff;" />
+                <input type="text" id="userDate" name="userDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select User Date'); ?>" readonly style="width:220px;background:#fff;" />
               </td>
 
-              <td><strong><?php echo _("Login ID"); ?>&nbsp;:</strong></td>
+              <td><strong><?php echo _translate("Login ID"); ?>&nbsp;:</strong></td>
               <td>
-                <select style="width:220px;" class="form-control" id="loginId" name="loginId" title="<?php echo _('Please select login id'); ?>">
-                  <option value=""> <?php echo _("-- Select --"); ?> </option>
+                <select style="width:220px;" class="form-control" id="loginId" name="loginId" title="<?php echo _translate('Please select login id'); ?>">
+                  <option value=""> <?php echo _translate("-- Select --"); ?> </option>
                   <?php
                   foreach ($sResult as $type) {
                   ?>
@@ -47,30 +47,30 @@ $sResult = $db->rawQuery($sQuery);
             </tr>
             <tr>
               <td colspan="6">
-                &nbsp;<button onclick="searchVlRequestData();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _("Search"); ?></span></button>
+                &nbsp;<button onclick="searchVlRequestData();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _translate("Search"); ?></span></button>
 
-                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _("Clear Search"); ?></span></button>
+                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _translate("Clear Search"); ?></span></button>
               </td>
             </tr>
 
           </table>
           <!-- /.box-header -->
           <div class="box-body">
-            <table aria-describedby="table" id="userLoginHistoryDataTable" class="table table-bordered table-striped" aria-hidden="true" >
+            <table aria-describedby="table" id="userLoginHistoryDataTable" class="table table-bordered table-striped" aria-hidden="true">
               <thead>
                 <tr>
-                  <th><?php echo _("Login Id"); ?></th>
-                  <th><?php echo _("Attempted Datetime"); ?></th>
-                  <th><?php echo _("IP Address"); ?></th>
-                  <th><?php echo _("Browser"); ?></th>
-                  <th><?php echo _("Operating System"); ?></th>
-                  <th scope="row"><?php echo _("Status"); ?></th>
+                  <th><?php echo _translate("Login Id"); ?></th>
+                  <th><?php echo _translate("Attempted Datetime"); ?></th>
+                  <th><?php echo _translate("IP Address"); ?></th>
+                  <th><?php echo _translate("Browser"); ?></th>
+                  <th><?php echo _translate("Operating System"); ?></th>
+                  <th scope="row"><?php echo _translate("Status"); ?></th>
 
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+                  <td colspan="6" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
                 </tr>
               </tbody>
 
@@ -162,7 +162,7 @@ $sResult = $db->rawQuery($sQuery);
 
     $('.daterangefield').daterangepicker({
         locale: {
-          cancelLabel: "<?= _("Clear"); ?>",
+          cancelLabel: "<?= _translate("Clear"); ?>",
           format: 'DD-MMM-YYYY',
           separator: ' to ',
         },

@@ -56,7 +56,7 @@ try {
         // clear/reset token
         $_SESSION['csrf_token'] = null;
         unset($_SESSION['csrf_token']);
-        throw new SystemException(_("Request expired. Please try to login again."));
+        throw new SystemException(_translate("Request expired. Please try to login again."));
     }
 
     /* Crosss Login Block End */
@@ -93,7 +93,7 @@ try {
             (empty($_POST['captcha']) || $_POST['captcha'] != $_SESSION['captchaCode'])
         ) {
             $usersService->userHistoryLog($userName, 'failed');
-            $_SESSION['alertMsg'] = _("You have exhausted the maximum number of login attempts. Please retry login after some time.");
+            $_SESSION['alertMsg'] = _translate("You have exhausted the maximum number of login attempts. Please retry login after some time.");
             header("Location:/login/login.php");
         }
 
@@ -109,11 +109,11 @@ try {
                     )
                 );
             } else {
-                throw new SystemException(_("Please check your login credentials"));
+                throw new SystemException(_translate("Please check your login credentials"));
             }
         } elseif ($userRow['hash_algorithm'] == 'phb' && !password_verify($_POST['password'], $userRow['password'])) {
             $usersService->userHistoryLog($userName, 'failed', $userRow['user_id']);
-            throw new SystemException(_("Please check your login credentials"));
+            throw new SystemException(_translate("Please check your login credentials"));
         }
 
         if (!empty($userRow)) {
@@ -187,16 +187,16 @@ try {
 
             if (!empty($_SESSION['forcePasswordReset']) && $_SESSION['forcePasswordReset'] == 1) {
                 $redirect = "/users/editProfile.php";
-                $_SESSION['alertMsg'] = _("Please change your password to proceed.");
+                $_SESSION['alertMsg'] = _translate("Please change your password to proceed.");
             }
 
             header("Location:" . $redirect);
         } else {
             $usersService->userHistoryLog($userName, 'failed');
-            throw new SystemException(_("Please check your login credentials"));
+            throw new SystemException(_translate("Please check your login credentials"));
         }
     } else {
-        throw new SystemException(_("Please check your login credentials"));
+        throw new SystemException(_translate("Please check your login credentials"));
     }
 } catch (SystemException $exc) {
     $_SESSION['alertMsg'] = $exc->getMessage();

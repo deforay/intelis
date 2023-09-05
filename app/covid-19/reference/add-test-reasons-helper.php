@@ -35,7 +35,7 @@ try {
 		$db->insert($tableName, $data);
 		$lastId = $db->getInsertId();
 
-		$_SESSION['alertMsg'] = _("COVID 19 Test reasons details added successfully");
+		$_SESSION['alertMsg'] = _translate("COVID 19 Test reasons details added successfully");
 		$general->activityLog('add-test-reasons', $_SESSION['userName'] . ' added new reference test reasons' . $_POST['testReasonName'], 'reference-covid19-test-reasons');
 	}
 	header("Location:covid19-test-reasons.php");

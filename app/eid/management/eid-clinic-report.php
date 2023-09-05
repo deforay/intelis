@@ -4,7 +4,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\GeoLocationsService;
 
-$title = _("EID | Clinics Report");
+$title = _translate("EID | Clinics Report");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -69,10 +69,10 @@ foreach ($rejectionTypeResult as $type) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1> <em class="fa-solid fa-book"></em> <?php echo _("Clinic Reports"); ?></h1>
+		<h1> <em class="fa-solid fa-book"></em> <?php echo _translate("Clinic Reports"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Clinic Reports"); ?></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+			<li class="active"><?php echo _translate("Clinic Reports"); ?></li>
 		</ol>
 	</section>
 	<!-- Main content -->
@@ -86,39 +86,39 @@ foreach ($rejectionTypeResult as $type) {
 							<div class="widget-content">
 								<div class="bs-example bs-example-tabs">
 									<ul id="myTab" class="nav nav-tabs">
-										<li class="active"><a href="#highViralLoadReport" data-toggle="tab"><?php echo _("Positivity Report"); ?></a></li>
-										<li><a href="#sampleRjtReport" data-toggle="tab"><?php echo _("Sample Rejection Report"); ?></a></li>
-										<li><a href="#notAvailReport" data-toggle="tab"><?php echo _("Results Not Available Report"); ?></a></li>
-										<li><a href="#incompleteFormReport" data-toggle="tab"><?php echo _("Data Quality Check"); ?></a></li>
+										<li class="active"><a href="#highViralLoadReport" data-toggle="tab"><?php echo _translate("Positivity Report"); ?></a></li>
+										<li><a href="#sampleRjtReport" data-toggle="tab"><?php echo _translate("Sample Rejection Report"); ?></a></li>
+										<li><a href="#notAvailReport" data-toggle="tab"><?php echo _translate("Results Not Available Report"); ?></a></li>
+										<li><a href="#incompleteFormReport" data-toggle="tab"><?php echo _translate("Data Quality Check"); ?></a></li>
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="highViralLoadReport">
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
-													<td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
+													<td><strong><?php echo _translate("Sample Test Date"); ?>&nbsp;:</strong></td>
 													<td>
-														<input type="text" id="hvlSampleTestDate" name="hvlSampleTestDate" class="form-control stDate" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
+														<input type="text" id="hvlSampleTestDate" name="hvlSampleTestDate" class="form-control stDate" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
-													<td>&nbsp;<strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
+													<td>&nbsp;<strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
 													<td>
-														<select class="form-control" id="hvlBatchCode" name="hvlBatchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
-															<option value=""> <?php echo _("-- Select --"); ?> </option>
+														<select class="form-control" id="hvlBatchCode" name="hvlBatchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
+															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<?php
 															foreach ($batResult as $code) {
-																?>
+															?>
 																<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
 															<?php
 															}
 															?>
 														</select>
 													</td>
-													<td>&nbsp;<strong><?php echo _("Sample Type"); ?>&nbsp;:</strong></td>
+													<td>&nbsp;<strong><?php echo _translate("Sample Type"); ?>&nbsp;:</strong></td>
 													<td>
-														<select style="width:220px;" class="form-control" id="hvlSampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
-															<option value=""> <?php echo _("-- Select --"); ?> </option>
+														<select style="width:220px;" class="form-control" id="hvlSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<?php
 															foreach ($sResult as $type) {
-																?>
+															?>
 																<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
 															<?php
 															}
@@ -127,51 +127,51 @@ foreach ($rejectionTypeResult as $type) {
 													</td>
 												</tr>
 												<tr>
-													<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+													<td><strong><?php echo _translate("Province/State"); ?>&nbsp;:</strong></td>
 													<td>
-														<select class="form-control select2-element" id="state" onchange="getByProvince('district','hvlFacilityName',this.value)" name="state" title="<?php echo _('Please select Province/State'); ?>">
-															<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+														<select class="form-control select2-element" id="state" onchange="getByProvince('district','hvlFacilityName',this.value)" name="state" title="<?php echo _translate('Please select Province/State'); ?>">
+															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 														</select>
 													</td>
 
-													<td><strong><?php echo _("District/County"); ?> :</strong></td>
+													<td><strong><?php echo _translate("District/County"); ?> :</strong></td>
 													<td>
-														<select class="form-control select2-element" id="district" name="district" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict('hvlFacilityName',this.value)">
+														<select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('hvlFacilityName',this.value)">
 														</select>
 													</td>
-													<td>&nbsp;<strong><?php echo _("Facility Name"); ?>&nbsp;:</strong></td>
+													<td>&nbsp;<strong><?php echo _translate("Facility Name"); ?>&nbsp;:</strong></td>
 													<td>
-														<select class="form-control" id="hvlFacilityName" name="hvlFacilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
+														<select class="form-control" id="hvlFacilityName" name="hvlFacilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
 
 												</tr>
 												<tr>
-													<td>&nbsp;<strong><?php echo _("Contact Status"); ?>&nbsp;:</strong></td>
+													<td>&nbsp;<strong><?php echo _translate("Contact Status"); ?>&nbsp;:</strong></td>
 													<td>
-														<select class="form-control" id="hvlContactStatus" name="hvlContactStatus" title="<?php echo _('Please select contact status'); ?>" style="width:220px;">
-															<option value=""> <?php echo _("-- Select --"); ?> </option>
-															<option value="yes"><?php echo _("Completed"); ?></option>
-															<option value="no"><?php echo _("Not Completed"); ?></option>
-															<option value="all" selected="selected"><?php echo _("All"); ?></option>
+														<select class="form-control" id="hvlContactStatus" name="hvlContactStatus" title="<?php echo _translate('Please select contact status'); ?>" style="width:220px;">
+															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
+															<option value="yes"><?php echo _translate("Completed"); ?></option>
+															<option value="no"><?php echo _translate("Not Completed"); ?></option>
+															<option value="all" selected="selected"><?php echo _translate("All"); ?></option>
 														</select>
 													</td>
-													<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
+													<td><strong><?php echo _translate("Gender"); ?>&nbsp;:</strong></td>
 													<td>
-														<select name="hvlGender" id="hvlGender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;" onchange="">
-															<option value=""> <?php echo _("-- Select --"); ?> </option>
-															<option value="male"><?php echo _("Male"); ?></option>
-															<option value="female"><?php echo _("Female"); ?></option>
-															<option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
+														<select name="hvlGender" id="hvlGender" class="form-control" title="<?php echo _translate('Please choose gender'); ?>" style="width:220px;" onchange="">
+															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
+															<option value="male"><?php echo _translate("Male"); ?></option>
+															<option value="female"><?php echo _translate("Female"); ?></option>
+															<option value="not_recorded"><?php echo _translate("Not Recorded"); ?></option>
 														</select>
 													</td>
 													<td></td>
 												</tr>
 												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _('Reset'); ?></span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportHighViralLoadInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export to excel"); ?></button>
+													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportHighViralLoadInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
 													</td>
 												</tr>
 											</table>
@@ -179,24 +179,24 @@ foreach ($rejectionTypeResult as $type) {
 											<table aria-describedby="table" id="highViralLoadReportTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
-														<th><?php echo _("Sample Code"); ?></th>
+														<th><?php echo _translate("Sample Code"); ?></th>
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-															<th><?php echo _("Remote Sample Code"); ?></th>
+															<th><?php echo _translate("Remote Sample Code"); ?></th>
 														<?php } ?>
-														<th><?php echo _("Facility Name"); ?></th>
-														<th><?php echo _("Child's ID"); ?></th>
-														<th><?php echo _("Child's Name"); ?></th>
-														<th><?php echo _("Caretaker Phone No"); ?>.</th>
-														<th><?php echo _("Sample Collection Date"); ?></th>
-														<th><?php echo _("Sample Tested Date"); ?></th>
-														<th><?php echo _("Testing Lab"); ?></th>
-														<th><?php echo _("Result"); ?></th>
-														<th><?php echo _("Status"); ?></th>
+														<th><?php echo _translate("Facility Name"); ?></th>
+														<th><?php echo _translate("Child's ID"); ?></th>
+														<th><?php echo _translate("Child's Name"); ?></th>
+														<th><?php echo _translate("Caretaker Phone No"); ?>.</th>
+														<th><?php echo _translate("Sample Collection Date"); ?></th>
+														<th><?php echo _translate("Sample Tested Date"); ?></th>
+														<th><?php echo _translate("Testing Lab"); ?></th>
+														<th><?php echo _translate("Result"); ?></th>
+														<th><?php echo _translate("Status"); ?></th>
 													</tr>
 												</thead>
 												<tbody>
 													<tr>
-														<td colspan="7" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+														<td colspan="7" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
 													</tr>
 												</tbody>
 											</table>
@@ -204,30 +204,30 @@ foreach ($rejectionTypeResult as $type) {
 										<div class="tab-pane fade" id="sampleRjtReport">
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
-													<td><strong><?php echo _("Sample Test Date"); ?>&nbsp;:</strong></td>
+													<td><strong><?php echo _translate("Sample Test Date"); ?>&nbsp;:</strong></td>
 													<td>
-														<input type="text" id="rjtSampleTestDate" name="rjtSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
+														<input type="text" id="rjtSampleTestDate" name="rjtSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
-													<td>&nbsp;<strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
+													<td>&nbsp;<strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
 													<td>
-														<select class="form-control" id="rjtBatchCode" name="rjtBatchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
-															<option value=""> <?php echo _("-- Select --"); ?> </option>
+														<select class="form-control" id="rjtBatchCode" name="rjtBatchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
+															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<?php
 															foreach ($batResult as $code) {
-																?>
+															?>
 																<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
 															<?php
 															}
 															?>
 														</select>
 													</td>
-													<td>&nbsp;<strong><?php echo _("Sample Type"); ?>&nbsp;:</strong></td>
+													<td>&nbsp;<strong><?php echo _translate("Sample Type"); ?>&nbsp;:</strong></td>
 													<td>
-														<select style="width:220px;" class="form-control" id="rjtSampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
-															<option value=""> <?php echo _("-- Select --"); ?> </option>
+														<select style="width:220px;" class="form-control" id="rjtSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<?php
 															foreach ($sResult as $type) {
-																?>
+															?>
 																<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
 															<?php
 															}
@@ -236,38 +236,38 @@ foreach ($rejectionTypeResult as $type) {
 													</td>
 												</tr>
 												<tr>
-													<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+													<td><strong><?php echo _translate("Province/State"); ?>&nbsp;:</strong></td>
 													<td>
-														<select class="form-control select2-element" id="rjtState" onchange="getByProvince('rjtDistrict','rjtFacilityName',this.value)" name="rjtState" title="<?php echo _('Please select Province/State'); ?>">
-															<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+														<select class="form-control select2-element" id="rjtState" onchange="getByProvince('rjtDistrict','rjtFacilityName',this.value)" name="rjtState" title="<?php echo _translate('Please select Province/State'); ?>">
+															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 														</select>
 													</td>
 
-													<td><strong><?php echo _("District/County"); ?> :</strong></td>
+													<td><strong><?php echo _translate("District/County"); ?> :</strong></td>
 													<td>
-														<select class="form-control select2-element" id="rjtDistrict" name="rjtDistrict" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict('rjtFacilityName',this.value)">
+														<select class="form-control select2-element" id="rjtDistrict" name="rjtDistrict" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('rjtFacilityName',this.value)">
 														</select>
 													</td>
-													<td>&nbsp;<strong><?php echo _("Facility Name"); ?>&nbsp;:</strong></td>
+													<td>&nbsp;<strong><?php echo _translate("Facility Name"); ?>&nbsp;:</strong></td>
 													<td>
-														<select class="form-control" id="rjtFacilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
+														<select class="form-control" id="rjtFacilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
 
 												</tr>
 												<tr>
-													<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
+													<td><strong><?php echo _translate("Gender"); ?>&nbsp;:</strong></td>
 													<td>
-														<select name="rjtGender" id="rjtGender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;" onchange="">
-															<option value=""> <?php echo _("-- Select --"); ?> </option>
-															<option value="male"><?php echo _("Male"); ?></option>
-															<option value="female"><?php echo _("Female"); ?></option>
-															<option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
+														<select name="rjtGender" id="rjtGender" class="form-control" title="<?php echo _translate('Please choose gender'); ?>" style="width:220px;" onchange="">
+															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
+															<option value="male"><?php echo _translate("Male"); ?></option>
+															<option value="female"><?php echo _translate("Female"); ?></option>
+															<option value="not_recorded"><?php echo _translate("Not Recorded"); ?></option>
 														</select>
 													</td>
 
-													<td><strong><?php echo _("Rejection Reason"); ?>&nbsp;:</strong></td>
+													<td><strong><?php echo _translate("Rejection Reason"); ?>&nbsp;:</strong></td>
 
 													<td>
 
@@ -278,31 +278,31 @@ foreach ($rejectionTypeResult as $type) {
 													</td>
 												</tr>
 												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _('Reset'); ?></span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportRejectedResultInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export to excel"); ?></button>
+													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportRejectedResultInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
 													</td>
 												</tr>
 											</table>
 											<table aria-describedby="table" id="sampleRjtReportTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
-														<th><?php echo _("Sample Code"); ?></th>
+														<th><?php echo _translate("Sample Code"); ?></th>
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-															<th><?php echo _("Remote Sample Code"); ?></th>
+															<th><?php echo _translate("Remote Sample Code"); ?></th>
 														<?php } ?>
-														<th><?php echo _("Facility Name"); ?></th>
-														<th><?php echo _("Child's ID"); ?></th>
-														<th><?php echo _("Child's Name"); ?></th>
-														<th><?php echo _("Sample Collection Date"); ?></th>
-														<th><?php echo _("VL Lab Name"); ?></th>
-														<th><?php echo _("Rejection Reason"); ?></th>
-														<th><?php echo _("Recommended Corrective action"); ?></th>
+														<th><?php echo _translate("Facility Name"); ?></th>
+														<th><?php echo _translate("Child's ID"); ?></th>
+														<th><?php echo _translate("Child's Name"); ?></th>
+														<th><?php echo _translate("Sample Collection Date"); ?></th>
+														<th><?php echo _translate("VL Lab Name"); ?></th>
+														<th><?php echo _translate("Rejection Reason"); ?></th>
+														<th><?php echo _translate("Recommended Corrective action"); ?></th>
 													</tr>
 												</thead>
 												<tbody>
 													<tr>
-														<td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+														<td colspan="6" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
 													</tr>
 												</tbody>
 											</table>
@@ -310,30 +310,30 @@ foreach ($rejectionTypeResult as $type) {
 										<div class="tab-pane fade" id="notAvailReport">
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
-													<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
+													<td><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
 													<td>
-														<input type="text" id="noResultSampleTestDate" name="noResultSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _('Select Sample Collection Date'); ?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
+														<input type="text" id="noResultSampleTestDate" name="noResultSampleTestDate" class="form-control stDate daterange" placeholder="<?php echo _translate('Select Sample Collection Date'); ?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
-													<td>&nbsp;<strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
+													<td>&nbsp;<strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
 													<td>
-														<select class="form-control" id="noResultBatchCode" name="noResultBatchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
-															<option value=""> <?php echo _("-- Select --"); ?> </option>
+														<select class="form-control" id="noResultBatchCode" name="noResultBatchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
+															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<?php
 															foreach ($batResult as $code) {
-																?>
+															?>
 																<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
 															<?php
 															}
 															?>
 														</select>
 													</td>
-													<td>&nbsp;<strong><?php echo _("Sample Type"); ?>&nbsp;:</strong></td>
+													<td>&nbsp;<strong><?php echo _translate("Sample Type"); ?>&nbsp;:</strong></td>
 													<td>
-														<select style="width:220px;" class="form-control" id="noResultSampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
-															<option value=""> <?php echo _("-- Select --"); ?> </option>
+														<select style="width:220px;" class="form-control" id="noResultSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<?php
 															foreach ($sResult as $type) {
-																?>
+															?>
 																<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
 															<?php
 															}
@@ -342,21 +342,21 @@ foreach ($rejectionTypeResult as $type) {
 													</td>
 												</tr>
 												<tr>
-													<td><strong><?php echo _("Province/State"); ?>&nbsp;:</strong></td>
+													<td><strong><?php echo _translate("Province/State"); ?>&nbsp;:</strong></td>
 													<td>
-														<select class="form-control select2-element" id="noResultState" onchange="getByProvince('noResultDistrict','noResultFacilityName',this.value)" name="rjtState" title="<?php echo _('Please select Province/State'); ?>">
-															<?= $general->generateSelectOptions($state, null, _("-- Select --")); ?>
+														<select class="form-control select2-element" id="noResultState" onchange="getByProvince('noResultDistrict','noResultFacilityName',this.value)" name="rjtState" title="<?php echo _translate('Please select Province/State'); ?>">
+															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 														</select>
 													</td>
 
-													<td><strong><?php echo _("District/County"); ?> :</strong></td>
+													<td><strong><?php echo _translate("District/County"); ?> :</strong></td>
 													<td>
-														<select class="form-control select2-element" id="noResultDistrict" name="noResultDistrict" title="<?php echo _('Please select Province/State'); ?>" onchange="getByDistrict('noResultFacilityName',this.value)">
+														<select class="form-control select2-element" id="noResultDistrict" name="noResultDistrict" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('noResultFacilityName',this.value)">
 														</select>
 													</td>
-													<td>&nbsp;<strong><?php echo _("Facility Name"); ?>&nbsp;:</strong></td>
+													<td>&nbsp;<strong><?php echo _translate("Facility Name"); ?>&nbsp;:</strong></td>
 													<td>
-														<select class="form-control" id="noResultFacilityName" name="facilityName" title="<?php echo _('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
+														<select class="form-control" id="noResultFacilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
@@ -364,41 +364,41 @@ foreach ($rejectionTypeResult as $type) {
 
 												</tr>
 												<tr>
-													<td><strong><?php echo _("Gender"); ?>&nbsp;:</strong></td>
+													<td><strong><?php echo _translate("Gender"); ?>&nbsp;:</strong></td>
 													<td>
-														<select name="noResultGender" id="noResultGender" class="form-control" title="<?php echo _('Please choose gender'); ?>" style="width:220px;" onchange="">
-															<option value=""> <?php echo _("-- Select --"); ?> </option>
-															<option value="male"><?php echo _("Male"); ?></option>
-															<option value="female"><?php echo _("Female"); ?></option>
-															<option value="not_recorded"><?php echo _("Not Recorded"); ?></option>
+														<select name="noResultGender" id="noResultGender" class="form-control" title="<?php echo _translate('Please choose gender'); ?>" style="width:220px;" onchange="">
+															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
+															<option value="male"><?php echo _translate("Male"); ?></option>
+															<option value="female"><?php echo _translate("Female"); ?></option>
+															<option value="not_recorded"><?php echo _translate("Not Recorded"); ?></option>
 														</select>
 													</td>
 												</tr>
 												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _('Reset'); ?></span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportNotAvailableResultInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export to excel"); ?></button>
+													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportNotAvailableResultInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
 													</td>
 												</tr>
 											</table>
 											<table aria-describedby="table" id="notAvailReportTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
-														<th><?php echo _("Sample Code"); ?></th>
+														<th><?php echo _translate("Sample Code"); ?></th>
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-															<th><?php echo _("Remote Sample Code"); ?></th>
+															<th><?php echo _translate("Remote Sample Code"); ?></th>
 														<?php } ?>
-														<th><?php echo _("Facility Name"); ?></th>
-														<th><?php echo _("Child's ID"); ?></th>
-														<th><?php echo _("Child's Name"); ?></th>
-														<th><?php echo _("Sample Collection Date"); ?></th>
-														<th><?php echo _("VL Lab Name"); ?></th>
-														<th><?php echo _("Sample Status"); ?></th>
+														<th><?php echo _translate("Facility Name"); ?></th>
+														<th><?php echo _translate("Child's ID"); ?></th>
+														<th><?php echo _translate("Child's Name"); ?></th>
+														<th><?php echo _translate("Sample Collection Date"); ?></th>
+														<th><?php echo _translate("VL Lab Name"); ?></th>
+														<th><?php echo _translate("Sample Status"); ?></th>
 													</tr>
 												</thead>
 												<tbody>
 													<tr>
-														<td colspan="4" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+														<td colspan="4" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
 													</tr>
 												</tbody>
 											</table>
@@ -406,57 +406,57 @@ foreach ($rejectionTypeResult as $type) {
 										<div class="tab-pane fade" id="incompleteFormReport">
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
-													<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
+													<td><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
 													<td>
-														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Sample Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
+														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Sample Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
 													</td>
-													<td>&nbsp;<strong><?php echo _("Fields"); ?>&nbsp;:</strong></td>
+													<td>&nbsp;<strong><?php echo _translate("Fields"); ?>&nbsp;:</strong></td>
 													<td>
-														<select class="form-control" id="formField" name="formField" multiple="multiple" title="<?php echo _('Please fields'); ?>" style="width:220px;">
-															<option value=""> <?php echo _("-- Select --"); ?> </option>
-															<option value="sample_code"><?php echo _("Sample Code"); ?></option>
-															<option value="sample_collection_date"><?php echo _("Sample Collection Date"); ?></option>
-															<option value="sample_batch_id"><?php echo _("Batch Code"); ?></option>
-															<option value="child_id"><?php echo _("Child ID"); ?></option>
-															<option value="child_name"><?php echo _("Child's Name"); ?></option>
-															<option value="facility_id"><?php echo _("Facility Name"); ?></option>
-															<option value="facility_state"><?php echo _("Province"); ?></option>
-															<option value="facility_district"><?php echo _("County"); ?></option>
-															<option value="specimen_type"><?php echo _("Sample Type"); ?></option>
-															<option value="result"><?php echo _("Result"); ?></option>
-															<option value="result_status"><?php echo _("Status"); ?></option>
+														<select class="form-control" id="formField" name="formField" multiple="multiple" title="<?php echo _translate('Please fields'); ?>" style="width:220px;">
+															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
+															<option value="sample_code"><?php echo _translate("Sample Code"); ?></option>
+															<option value="sample_collection_date"><?php echo _translate("Sample Collection Date"); ?></option>
+															<option value="sample_batch_id"><?php echo _translate("Batch Code"); ?></option>
+															<option value="child_id"><?php echo _translate("Child ID"); ?></option>
+															<option value="child_name"><?php echo _translate("Child's Name"); ?></option>
+															<option value="facility_id"><?php echo _translate("Facility Name"); ?></option>
+															<option value="facility_state"><?php echo _translate("Province"); ?></option>
+															<option value="facility_district"><?php echo _translate("County"); ?></option>
+															<option value="specimen_type"><?php echo _translate("Sample Type"); ?></option>
+															<option value="result"><?php echo _translate("Result"); ?></option>
+															<option value="result_status"><?php echo _translate("Status"); ?></option>
 														</select>
 													</td>
 												</tr>
 
 												<tr>
-													<td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _('Reset'); ?></span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportDataQualityInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export to excel"); ?></button>
+													<td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportDataQualityInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
 													</td>
 												</tr>
 											</table>
 											<table aria-describedby="table" id="incompleteReport" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
-														<th><?php echo _("Sample Code"); ?></th>
+														<th><?php echo _translate("Sample Code"); ?></th>
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-															<th><?php echo _("Remote Sample Code"); ?></th>
+															<th><?php echo _translate("Remote Sample Code"); ?></th>
 														<?php } ?>
-														<th><?php echo _("Sample Collection Date"); ?></th>
-														<th><?php echo _("Batch Code"); ?></th>
-														<th><?php echo _("Child's Name"); ?></th>
-														<th><?php echo _("Facility Name"); ?></th>
-														<th><?php echo _("Province/State"); ?></th>
-														<th><?php echo _("District/County"); ?></th>
-														<th><?php echo _("Sample Type"); ?></th>
-														<th><?php echo _("Result"); ?></th>
-														<th><?php echo _("Status"); ?></th>
+														<th><?php echo _translate("Sample Collection Date"); ?></th>
+														<th><?php echo _translate("Batch Code"); ?></th>
+														<th><?php echo _translate("Child's Name"); ?></th>
+														<th><?php echo _translate("Facility Name"); ?></th>
+														<th><?php echo _translate("Province/State"); ?></th>
+														<th><?php echo _translate("District/County"); ?></th>
+														<th><?php echo _translate("Sample Type"); ?></th>
+														<th><?php echo _translate("Result"); ?></th>
+														<th><?php echo _translate("Status"); ?></th>
 													</tr>
 												</thead>
 												<tbody>
 													<tr>
-														<td colspan="12" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+														<td colspan="12" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
 													</tr>
 												</tbody>
 											</table>
@@ -483,20 +483,20 @@ foreach ($rejectionTypeResult as $type) {
 	var oTableincompleteReport = null;
 	$(document).ready(function() {
 		$("#state,#rjtState,#noResultState").select2({
-			placeholder: "<?php echo _("Select Province"); ?>"
+			placeholder: "<?php echo _translate("Select Province"); ?>"
 		});
 		$("#district,#rjtDistrict,#noResultDistrict").select2({
-			placeholder: "<?php echo _("Select District"); ?>"
+			placeholder: "<?php echo _translate("Select District"); ?>"
 		});
 		$("#hvlFacilityName,#rjtFacilityName,#noResultFacilityName").select2({
-			placeholder: "<?php echo _("Select Facilities"); ?>"
+			placeholder: "<?php echo _translate("Select Facilities"); ?>"
 		});
 		$("#formField").select2({
-			placeholder: "<?php echo _("Select Fields"); ?>"
+			placeholder: "<?php echo _translate("Select Fields"); ?>"
 		});
 		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _("Clear"); ?>",
+					cancelLabel: "<?= _translate("Clear"); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},
@@ -885,14 +885,14 @@ foreach ($rejectionTypeResult as $type) {
 	}
 
 	function updateStatus(id, value) {
-		conf = confirm("<?php echo _("Do you wisht to change the contact completed status?"); ?>");
+		conf = confirm("<?php echo _translate("Do you wisht to change the contact completed status?"); ?>");
 		if (conf) {
 			$.post("/vl/program-management/updateContactCompletedStatus.php", {
 					id: id,
 					value: value
 				},
 				function(data) {
-					alert("<?php echo _("Status updated successfully"); ?>");
+					alert("<?php echo _translate("Status updated successfully"); ?>");
 					oTableViralLoad.fnDraw();
 				});
 		} else {
@@ -905,7 +905,7 @@ foreach ($rejectionTypeResult as $type) {
 			searchVlRequestData();
 		}
 		var markAsComplete = false;
-		confm = confirm("<?php echo _("Do you want to mark these as complete ?"); ?>");
+		confm = confirm("<?php echo _translate("Do you want to mark these as complete ?"); ?>");
 		if (confm) {
 			var markAsComplete = true;
 		}
@@ -921,7 +921,7 @@ foreach ($rejectionTypeResult as $type) {
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _("Unable to generate the excel file"); ?>");
+					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
 					window.open('/download.php?f=' + data, '_blank');
@@ -945,7 +945,7 @@ foreach ($rejectionTypeResult as $type) {
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _("Unable to generate the excel file"); ?>");
+					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
 					window.open('/download.php?f=' + data, '_blank');
@@ -968,7 +968,7 @@ foreach ($rejectionTypeResult as $type) {
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _("Unable to generate the excel file"); ?>");
+					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
 					window.open('/download.php?f=' + data, '_blank');
@@ -989,7 +989,7 @@ foreach ($rejectionTypeResult as $type) {
 				alert(data);
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _("Unable to generate the excel file"); ?>");
+					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
 					window.open('/download.php?f=' + data, '_blank');

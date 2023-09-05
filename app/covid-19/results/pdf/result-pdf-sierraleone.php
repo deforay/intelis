@@ -417,12 +417,11 @@ if (!empty($requestResult)) {
 
         if ($result['reason_for_sample_rejection'] != '') {
             $corrective = '';
-            if($result["recommended_corrective_action_name"]!="")
-            {
-                 $corrective = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Recommended Corrective Action&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;'.$result["recommended_corrective_action_name"];
+            if ($result["recommended_corrective_action_name"] != "") {
+                $corrective = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Recommended Corrective Action&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;' . $result["recommended_corrective_action_name"];
             }
             $html .= '<tr>';
-            $html .= '<td colspan="4" style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">REJECTION REASON : <span style="font-weight:normal;">' . $result['rejection_reason_name'] .$corrective. '</span></td>';
+            $html .= '<td colspan="4" style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">REJECTION REASON : <span style="font-weight:normal;">' . $result['rejection_reason_name'] . $corrective . '</span></td>';
             $html .= '</tr>';
         }
         if (trim($result['lab_tech_comments']) != '') {
@@ -501,7 +500,7 @@ if (!empty($requestResult)) {
         $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"></td>';
         $html .= '</tr>';
         if ($_SESSION['instanceType'] == 'vluser' && $result['data_sync'] == 0) {
-            $generatedAtTestingLab = " | " . _("Report generated at Testing Lab");
+            $generatedAtTestingLab = " | " . _translate("Report generated at Testing Lab");
         } else {
             $generatedAtTestingLab = "";
         }

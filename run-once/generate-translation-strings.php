@@ -81,7 +81,7 @@ foreach ($tablesToTranslate as $tableName => $tableInfo) {
 $translatableStrings = array_unique($translatableStrings);
 
 foreach ($translatableStrings as $string) {
-    echo '_("' . $string . "\");\n";
+    echo '_translate("' . $string . "\");\n";
 }
 
 // Get the content of the output buffer and write it to the file

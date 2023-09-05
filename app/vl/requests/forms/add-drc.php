@@ -21,7 +21,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 	$rKey = '';
 }
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
-$facility = $general->generateSelectOptions($healthFacilities, null, _("-- Select --"));
+$facility = $general->generateSelectOptions($healthFacilities, null, _translate("-- Select --"));
 
 //get ART list
 $aQuery = "SELECT * from r_vl_art_regimen WHERE art_status like 'active' ORDER by parent_art ASC, art_code ASC";
@@ -80,13 +80,13 @@ $sFormat = '';
 										<?php } else { ?>
 											<td><label for="sampleCode">Échantillon ID </label><span class="mandatory">*</span></td>
 											<td>
-												<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'<?= addslashes(_("The Sample Code that you entered already exists. Please try another Sample Code")); ?>',null)" />
+												<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'<?= addslashes(_translate("The Sample Code that you entered already exists. Please try another Sample Code")); ?>',null)" />
 											</td>
 										<?php } ?>
 										<td><label for="serialNo">
-												<?= _("Recency ID"); ?>
+												<?= _translate("Recency ID"); ?>
 											</label></td>
-										<td><input type="text" class="form-control" id="serialNo" name="serialNo" placeholder="<?= _("Recency ID"); ?>" title="<?= _("Recency ID"); ?>" style="width:100%;" /></td>
+										<td><input type="text" class="form-control" id="serialNo" name="serialNo" placeholder="<?= _translate("Recency ID"); ?>" title="<?= _translate("Recency ID"); ?>" style="width:100%;" /></td>
 										<td></td>
 										<td></td>
 									</tr>
@@ -115,11 +115,11 @@ $sFormat = '';
 									<tr>
 										<td><label for="reqClinician">Demandeur </label></td>
 										<td>
-											<input type="text" class="form-control" id="reqClinician" name="reqClinician" placeholder="Demandeur" title="<?= _("Please enter requesting clinician name"); ?>" style="width:100%;" />
+											<input type="text" class="form-control" id="reqClinician" name="reqClinician" placeholder="Demandeur" title="<?= _translate("Please enter requesting clinician name"); ?>" style="width:100%;" />
 										</td>
 										<td><label for="reqClinicianPhoneNumber">Téléphone </label></td>
 										<td>
-											<input type="text" class="form-control forceNumeric" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="<?= _("Please enter phone number"); ?>" style="width:100%;" />
+											<input type="text" class="form-control forceNumeric" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="<?= _translate("Please enter phone number"); ?>" style="width:100%;" />
 										</td>
 										<td><label for="implementingPartner">Partnaire d'appui </label></td>
 										<td>
@@ -138,7 +138,7 @@ $sFormat = '';
 									<tr>
 										<td><label for="">Date de la demande </label></td>
 										<td>
-											<input type="text" class="form-control date" id="dateOfDemand" name="dateOfDemand" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de la demande" style="width:100%;" />
+											<input type="text" class="form-control date" id="dateOfDemand" name="dateOfDemand" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de la demande" style="width:100%;" />
 										</td>
 										<td><label for="fundingSource">Source de financement </label></td>
 										<td>
@@ -167,11 +167,11 @@ $sFormat = '';
 								</table>
 								<div class="box-header with-border">
 									<h3 class="box-title">Information sur le patient </h3>&nbsp;&nbsp;&nbsp;
-									<input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" placeholder="Code du patient" title="<?= _("Please enter the Patient ID"); ?>" />&nbsp;&nbsp;
+									<input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" placeholder="Code du patient" title="<?= _translate("Please enter the Patient ID"); ?>" />&nbsp;&nbsp;
 									<a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>
-										<?= _("Search"); ?>
+										<?= _translate("Search"); ?>
 									</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;
-											<?= _("No Patient Found"); ?>
+											<?= _translate("No Patient Found"); ?>
 										</strong></span>
 								</div>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
@@ -179,18 +179,18 @@ $sFormat = '';
 										<td style="width: 15% !important;"><label for="artNo">Code du Patient <span class="mandatory">*</span></label>
 										</td>
 										<td style="width: 35% !important;">
-											<input type="text" class="form-control isRequired" id="artNo" name="artNo" placeholder="Code du patient" title="<?= _("Please enter the Patient ID"); ?>" onchange="checkPatientDetails('form_vl','patient_art_no',this,null)" />
+											<input type="text" class="form-control isRequired" id="artNo" name="artNo" placeholder="Code du patient" title="<?= _translate("Please enter the Patient ID"); ?>" onchange="checkPatientDetails('form_vl','patient_art_no',this,null)" />
 											<span class="artNoGroup" id="artNoGroup"></span>
 										</td>
 										<td style="width: 15% !important;"><label for="">Date de naissance </label></td>
 										<td style="width: 35% !important;">
-											<input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _("Please enter the Date of Birth"); ?>" title="<?= _("Please enter the Date of Birth"); ?>" onchange="getAge();checkARTInitiationDate();" />
+											<input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _translate("Please enter the Date of Birth"); ?>" title="<?= _translate("Please enter the Date of Birth"); ?>" onchange="getAge();checkARTInitiationDate();" />
 										</td>
 									</tr>
 									<tr>
 										<td style="width: 15% !important;"><label for="ageInYears">Âge en années <span class="mandatory">*</span></label></td>
 										<td style="width: 35% !important;">
-											<input type="text" class="form-control forceNumeric isRequired" id="ageInYears" name="ageInYears" placeholder="Aannées" title="<?= _("Please enter Patient age") ?>" onchange="clearDOB(this.value);" />
+											<input type="text" class="form-control forceNumeric isRequired" id="ageInYears" name="ageInYears" placeholder="Aannées" title="<?= _translate("Please enter Patient age") ?>" onchange="clearDOB(this.value);" />
 										</td>
 										<td style="width:15% !important;"><label for="ageInMonths">Âge en mois </label>
 										</td>
@@ -204,11 +204,11 @@ $sFormat = '';
 										<td style="width: 35% !important;">
 											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">M</label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="genderMale" name="gender" value="male" title="<?= _("Please select a gender"); ?>">
+												<input type="radio" class="" id="genderMale" name="gender" value="male" title="<?= _translate("Please select a gender"); ?>">
 											</label>
 											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">F</label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="genderFemale" name="gender" value="female" title="<?= _("Please select a gender"); ?>">
+												<input type="radio" class="" id="genderFemale" name="gender" value="female" title="<?= _translate("Please select a gender"); ?>">
 											</label>
 										</td>
 										<td style="width: 15% !important;"><label>Régime ARV en cours </label></td>
@@ -239,7 +239,7 @@ $sFormat = '';
 										<td class="du" style="display:none; width: 15% !important;"><label for="">Date du début des ARV
 											</label></td>
 										<td class="du" style="display:none; width: 35% !important;">
-											<input type="text" class="form-control date" id="dateOfArtInitiation" name="dateOfArtInitiation" placeholder="<?= _("Please enter date"); ?>" title="Please enter date du début des ARV" onchange="checkARTInitiationDate();checkLastVLTestDate();" /> &nbsp;(Jour/Mois/Année)
+											<input type="text" class="form-control date" id="dateOfArtInitiation" name="dateOfArtInitiation" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date du début des ARV" onchange="checkARTInitiationDate();checkLastVLTestDate();" /> &nbsp;(Jour/Mois/Année)
 										</td>
 									</tr>
 									<tr>
@@ -264,7 +264,7 @@ $sFormat = '';
 										</td>
 										<td style="width: 15% !important;"><label for="" class="arvChangedElement">Date du changement de régime ARV </label></td>
 										<td style="width: 35% !important;">
-											<input type="text" class="form-control date arvChangedElement" id="dateOfArvRegimenChange" name="dateOfArvRegimenChange" placeholder="<?= _("Please enter date"); ?>" title="Please enter date du changement de régime ARV" /> &nbsp;(Jour/Mois/Année)
+											<input type="text" class="form-control date arvChangedElement" id="dateOfArvRegimenChange" name="dateOfArvRegimenChange" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date du changement de régime ARV" /> &nbsp;(Jour/Mois/Année)
 										</td>
 									</tr>
 									<tr>
@@ -289,7 +289,7 @@ $sFormat = '';
 									<tr>
 										<td style="width:15% !important;"><label for="">Date dernière charge virale (demande) </label></td>
 										<td style="width:35% !important;">
-											<input type="text" class="form-control date" id="lastViralLoadTestDate" name="lastViralLoadTestDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date dernière charge virale" onchange="checkLastVLTestDate();" />
+											<input type="text" class="form-control date" id="lastViralLoadTestDate" name="lastViralLoadTestDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date dernière charge virale" onchange="checkLastVLTestDate();" />
 										</td>
 										<td style="width:15% !important;"><label for="lastViralLoadResult">Résultat dernière charge virale </label></td>
 										<td style="width:35% !important;">
@@ -347,7 +347,7 @@ $sFormat = '';
 										<td><label for="">Date du prélèvement <span class="mandatory">*</span></label>
 										</td>
 										<td>
-											<input type="text" class="form-control dateTime isRequired" id="sampleCollectionDate" name="sampleCollectionDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date du prélèvement" onchange="checkSampleReceviedDate();checkSampleTestingDate();generateSampleCode();" style="width:100%;" />
+											<input type="text" class="form-control dateTime isRequired" id="sampleCollectionDate" name="sampleCollectionDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date du prélèvement" onchange="checkSampleReceviedDate();checkSampleTestingDate();generateSampleCode();" style="width:100%;" />
 										</td>
 										<td></td>
 										<td></td>
@@ -383,7 +383,7 @@ $sFormat = '';
 									<tr>
 										<td><label for="">Date de départ au Labo biomol </label></td>
 										<td>
-											<input type="text" class="form-control dateTime" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de départ au Labo biomol" style="width:100%;" />
+											<input type="text" class="form-control dateTime" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de départ au Labo biomol" style="width:100%;" />
 										</td>
 										<td></td>
 										<td></td>
@@ -406,7 +406,7 @@ $sFormat = '';
 											<td style="width: 25%;"><label for="">Date de réception de l'échantillon
 												</label></td>
 											<td style="width: 25%;">
-												<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de l'échantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" style="width:100%;" />
+												<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de l'échantillon" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate();" style="width:100%;" />
 											</td>
 											<td style="width: 25%;"><label for="labId">Nom du laboratoire </label> </td>
 											<td style="width: 25%;">
@@ -419,7 +419,7 @@ $sFormat = '';
 											<td style="width: 25%;"><label for="sampleTestingDateAtLab">Date de réalisation
 													de la charge virale </label></td>
 											<td style="width: 25%;">
-												<input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+												<input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> style="width:100%;" />
 											</td>
 											<td style="width: 25%;"><label for="testingPlatform">Technique utilisée </label>
 											</td>
@@ -459,7 +459,7 @@ $sFormat = '';
 											<td class="newRejectionReason" style="text-align:center;display:none;"><label for="newRejectionReason" class="newRejectionReason" style="display:none;">Autre, à préciser <span class="mandatory">*</span></label></td>
 											<td class="newRejectionReason" style="display:none;"><input type="text" class="form-control newRejectionReason" id="newRejectionReason" name="newRejectionReason" placeholder="Motifs de rejet" title="Please enter motifs de rejet" <?php echo $labFieldDisabled; ?> style="width:100%;display:none;" /></td>
 											<th scope="row" class="rejectionReason" style="display:none;">
-												<?php echo _("Rejection Date"); ?> <span class="mandatory">*</span>
+												<?php echo _translate("Rejection Date"); ?> <span class="mandatory">*</span>
 											</th>
 											<td class="rejectionReason" style="display:none;"><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
 										</tr>
@@ -482,7 +482,7 @@ $sFormat = '';
 										<?php if (count($reasonForFailure) > 0) { ?>
 											<tr class="reasonForFailure vlResult" style="display: none;">
 												<td class="reasonForFailure" style="display: none;"><label for="reasonForFailure">
-														<?php echo _("Reason for Failure"); ?>
+														<?php echo _translate("Reason for Failure"); ?>
 													</label></td>
 												<td class="reasonForFailure" style="display: none;">
 													<select name="reasonForFailure" id="reasonForFailure" class="form-control" title="Please choose reason for failure" style="width: 100%;">
@@ -855,16 +855,16 @@ $sFormat = '';
 						if (data != "0") {
 							obj = $.parseJSON(data);
 							if (obj.no_of_req_time != null && obj.no_of_req_time > 0) {
-								$("#artNoGroup").html("<small style='color: red'><?= _("No. of times Test Requested for this Patient"); ?> : " + obj.no_of_req_time + "</small>");
+								$("#artNoGroup").html("<small style='color: red'><?= _translate("No. of times Test Requested for this Patient"); ?> : " + obj.no_of_req_time + "</small>");
 							}
 							if (obj.request_created_datetime != null) {
-								$("#artNoGroup").append("<br><small style='color:red'><?= _("Last Test Request Added On LIS/STS"); ?> : " + obj.request_created_datetime + "</small>");
+								$("#artNoGroup").append("<br><small style='color:red'><?= _translate("Last Test Request Added On LIS/STS"); ?> : " + obj.request_created_datetime + "</small>");
 							}
 							if (obj.sample_collection_date != null) {
-								$("#artNoGroup").append("<br><small style='color:red'><?= _("Sample Collection Date for Last Request"); ?> : " + obj.sample_collection_date + "</small>");
+								$("#artNoGroup").append("<br><small style='color:red'><?= _translate("Sample Collection Date for Last Request"); ?> : " + obj.sample_collection_date + "</small>");
 							}
 							if (obj.no_of_tested_time != null && obj.no_of_tested_time > 0) {
-								$("#artNoGroup").append("<br><small style='color:red'><?= _("Total No. of times Patient tested for HIV VL"); ?> : " + obj.no_of_tested_time + "</small >");
+								$("#artNoGroup").append("<br><small style='color:red'><?= _translate("Total No. of times Patient tested for HIV VL"); ?> : " + obj.no_of_tested_time + "</small >");
 							}
 						} else {
 

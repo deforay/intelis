@@ -301,12 +301,12 @@ foreach ($rResult as $aRow) {
           } else {
                $row[] = '<input type="checkbox" name="chkPrinted[]" class="checkPrintedRows" id="chkPrinted' . $aRow['sample_id'] . '"  value="' . $aRow['sample_id'] . '" onclick="checkedPrintedRow(this);"  />';
           }
-          $edit = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _("Print") . '" onclick="convertResultToPdf(' . $aRow['sample_id'] . ')"><em class="fa-solid fa-print"></em> ' . _("Print") . '</a>';
+          $edit = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Print") . '" onclick="convertResultToPdf(' . $aRow['sample_id'] . ')"><em class="fa-solid fa-print"></em> ' . _translate("Print") . '</a>';
      } else {
-          $edit = '<a href="update-generic-test-result.php?id=' . base64_encode($aRow['sample_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _("Enter Result") . '</a>';
+          $edit = '<a href="update-generic-test-result.php?id=' . base64_encode($aRow['sample_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
           if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
                if (isset($_SESSION['privileges']) && !in_array("/generic-tests/requests/edit-locked-generic-samples", $_SESSION['privileges'])) {
-                    $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _("Locked") . '</a>';
+                    $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _translate("Locked") . '</a>';
                }
           }
      }

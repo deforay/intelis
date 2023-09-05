@@ -33,7 +33,7 @@ try {
 			$lastId = $db->getInsertId();
 		}
 		if ($lastId > 0) {
-			$_SESSION['alertMsg'] = _("VL Test Failure Reason Saved Successfully");
+			$_SESSION['alertMsg'] = _translate("VL Test Failure Reason Saved Successfully");
 			$general->activityLog('VL Test Failure Reason', $_SESSION['userName'] . ' added new vl test failure reason for ' . $_POST['failureReason'], 'vl-reference');
 		}
 	}

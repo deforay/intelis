@@ -51,10 +51,10 @@ function getDropDownField($testAttribute, $testAttributeId, $value, $inputClass,
 {
     $fieldName = 'dynamicFields[' . $testAttributeId . ']';
     $isMultiple = $testAttribute['field_type'] == 'multiple' ? true : false;
-    $title = _("Please select an option");
+    $title = _translate("Please select an option");
     if ($isMultiple) {
         $fieldName .= '[]';
-        $title = _("Please select one or more options");
+        $title = _translate("Please select one or more options");
     }
 
     $field = sprintf(
@@ -71,7 +71,7 @@ function getDropDownField($testAttribute, $testAttributeId, $value, $inputClass,
         $testAttribute['field_type'],
         $inputWidth
     );
-    $field .= '<option value="">' . _("-- Select --") . '</option>';
+    $field .= '<option value="">' . _translate("-- Select --") . '</option>';
     foreach (explode(',', $testAttribute['dropdown_options']) as $option) {
         if ($isMultiple) {
             $selected = (!empty($value) && in_array(trim($option), $value)) ? "selected" : "";

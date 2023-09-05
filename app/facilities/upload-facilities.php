@@ -71,14 +71,14 @@ if (isset($_GET['total'])) {
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1><em class="fa-solid fa-hospital"></em>
-			<?php echo _("Upload Facilities in Bulk"); ?>
+			<?php echo _translate("Upload Facilities in Bulk"); ?>
 		</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em>
-					<?php echo _("Home"); ?>
+					<?php echo _translate("Home"); ?>
 				</a></li>
 			<li class="active">
-				<?php echo _("Facilities"); ?>
+				<?php echo _translate("Facilities"); ?>
 			</li>
 		</ol>
 	</section>
@@ -88,7 +88,7 @@ if (isset($_GET['total'])) {
 		<div class="box box-default">
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
-					<?php echo _("indicates required field"); ?> &nbsp;
+					<?php echo _translate("indicates required field"); ?> &nbsp;
 				</div>
 			</div>
 			<!-- /.box-header -->
@@ -99,7 +99,7 @@ if (isset($_GET['total'])) {
 						<div class="row">
 							<div class="col-md-12">
 								<?php if (isset($_GET['total']) && $_GET['total'] > 0) { ?>
-									<h3 style="margin-left:100px; color:green;"><?= _("Total number of records in file"); ?> : <?= $_GET['total']; ?> | <?= _("Number of Facilities added"); ?> : <?= $addedRecords; ?> | <?= _("Number of Facilities not added"); ?> : <?= $_GET['notAdded']; ?></h3>
+									<h3 style="margin-left:100px; color:green;"><?= _translate("Total number of records in file"); ?> : <?= $_GET['total']; ?> | <?= _translate("Number of Facilities added"); ?> : <?= $addedRecords; ?> | <?= _translate("Number of Facilities not added"); ?> : <?= $_GET['notAdded']; ?></h3>
 									<?php if ($_GET['notAdded'] > 0) { ?>
 										<a class="text-success" style="text-decoration:underline;margin-left:74px; margin-bottom:10px;" href="/temporary/INCORRECT-FACILITY-ROWS.xlsx" download>Download the Excel sheet of incorrect rows of facilities</a><br><br>
 									<?php } ?>
@@ -107,11 +107,11 @@ if (isset($_GET['total'])) {
 
 								<div class="form-group">
 									<label for="facilityName" class="col-lg-2 control-label">
-										<?= _("Upload File"); ?> <span class="mandatory">*</span>
+										<?= _translate("Upload File"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-8">
-										<input type="file" class="form-control isRequired" id="facilitiesInfo" name="facilitiesInfo" placeholder="<?php echo _('Facility Name'); ?>" title="<?= _('Click to upload file'); ?>" onblur='checkNameValidation("facility_details","facility_name",this,null,"<?php echo _("The facility name that you entered already exists.Enter another name"); ?>",null)' />
-										<a class="text-primary" style="text-decoration:underline;" href="/files/facilities/Facilities_Bulk_Upload_Excel_Format.xlsx" download><?= _("Click here to download the Excel format for uploading facilities in bulk"); ?></a>
+										<input type="file" class="form-control isRequired" id="facilitiesInfo" name="facilitiesInfo" placeholder="<?php echo _translate('Facility Name'); ?>" title="<?= _translate('Click to upload file'); ?>" onblur='checkNameValidation("facility_details","facility_name",this,null,"<?php echo _translate("The facility name that you entered already exists.Enter another name"); ?>",null)' />
+										<a class="text-primary" style="text-decoration:underline;" href="/files/facilities/Facilities_Bulk_Upload_Excel_Format.xlsx" download><?= _translate("Click here to download the Excel format for uploading facilities in bulk"); ?></a>
 									</div>
 								</div>
 							</div>
@@ -126,10 +126,10 @@ if (isset($_GET['total'])) {
 			<div class="box-footer">
 				<input type="hidden" name="selectedUser" id="selectedUser" />
 				<a class="btn btn-primary" href="javascript:void(0);" onclick="document.getElementById('uploadFacilityForm').submit();return false;">
-					<?php echo _("Submit"); ?>
+					<?php echo _translate("Submit"); ?>
 				</a>
 				<a href="facilities.php" class="btn btn-default">
-					<?php echo _("Cancel"); ?>
+					<?php echo _translate("Cancel"); ?>
 				</a>
 			</div>
 			<!-- /.box-footer -->

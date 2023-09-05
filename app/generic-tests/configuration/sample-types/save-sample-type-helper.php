@@ -29,7 +29,7 @@ try {
         if (!empty($sampleTypeId)) {
             $db = $db->where('sample_type_id', $sampleTypeId);
             $lastId = $db->update($tableName, $data);
-            $_SESSION['alertMsg'] = _("Sample type updated successfully");
+            $_SESSION['alertMsg'] = _translate("Sample type updated successfully");
             if ($lastId > 0) {
                 $general->activityLog('Sample Type', $_SESSION['userName'] . ' updated sample type for ' . $_POST['sampleTypeName'], 'generic-sample-types');
             }
@@ -37,7 +37,7 @@ try {
             $id = $db->insert($tableName, $data);
             $lastId = $db->getInsertId();
             if ($lastId > 0) {
-                $_SESSION['alertMsg'] = _("Sample type added successfully");
+                $_SESSION['alertMsg'] = _translate("Sample type added successfully");
                 $general->activityLog('Sample Type', $_SESSION['userName'] . ' added new sample type for ' . $_POST['sampleTypeName'], 'generic-sample-types');
             }
         }

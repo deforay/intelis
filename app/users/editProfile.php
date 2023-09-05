@@ -37,10 +37,10 @@ $data = $db->get("user_login_history", 25);
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1> <em class="fa-solid fa-gears"></em> <?php echo _("Edit Profile"); ?></h1>
+    <h1> <em class="fa-solid fa-gears"></em> <?php echo _translate("Edit Profile"); ?></h1>
     <ol class="breadcrumb">
-      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-      <li class="active"><?php echo _("Users"); ?></li>
+      <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+      <li class="active"><?php echo _translate("Users"); ?></li>
     </ol>
   </section>
 
@@ -59,9 +59,9 @@ $data = $db->get("user_login_history", 25);
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
-                  <label for="userName" class="col-lg-2 control-label"><?php echo _("Your Full Name"); ?> <span class="mandatory">*</span></label>
+                  <label for="userName" class="col-lg-2 control-label"><?php echo _translate("Your Full Name"); ?> <span class="mandatory">*</span></label>
                   <div class="col-lg-10">
-                    <input type="text" class="form-control isRequired" id="userName" name="userName" placeholder="<?php echo _('Your Full Name'); ?>" title="<?php echo _('Please enter user name'); ?>" value="<?php echo $userInfo['user_name']; ?>" />
+                    <input type="text" class="form-control isRequired" id="userName" name="userName" placeholder="<?php echo _translate('Your Full Name'); ?>" title="<?php echo _translate('Please enter user name'); ?>" value="<?php echo $userInfo['user_name']; ?>" />
                     <input type="hidden" name="userId" id="userId" value="<?php echo base64_encode($userInfo['user_id']); ?>" />
                   </div>
                 </div>
@@ -70,10 +70,10 @@ $data = $db->get("user_login_history", 25);
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="locale" class="col-lg-4 control-label"><?php echo _("Preferred Language"); ?> <span class="mandatory">*</span> </label>
+                  <label for="locale" class="col-lg-4 control-label"><?php echo _translate("Preferred Language"); ?> <span class="mandatory">*</span> </label>
                   <div class="col-lg-8">
-                    <select class="form-control isRequired" name="userLocale" id="userLocale" title="<?php echo _('Please select your Locale'); ?>">
-                      <option value=""><?= _("--Select--"); ?></option>
+                    <select class="form-control isRequired" name="userLocale" id="userLocale" title="<?php echo _translate('Please select your Locale'); ?>">
+                      <option value=""><?= _translate("--Select--"); ?></option>
                       <?php foreach ($localeLists as $locale) { ?>
                         <option value="<?php echo $locale; ?>" <?php echo ($userInfo['user_locale'] == $locale) ? 'selected="selected"' : ''; ?>><?php echo $locale; ?></option>
                       <?php } ?>
@@ -87,17 +87,17 @@ $data = $db->get("user_login_history", 25);
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="email" class="col-lg-4 control-label"><?php echo _("Official Email"); ?> </label>
+                  <label for="email" class="col-lg-4 control-label"><?php echo _translate("Official Email"); ?> </label>
                   <div class="col-lg-8">
-                    <input type="text" class="form-control" id="email" name="email" placeholder="<?php echo _('Official Email'); ?>" title="<?php echo _('Please enter email'); ?>" value="<?php echo $userInfo['email']; ?>" onblur="checkNameValidation('user_details','email',this,'<?php echo "user_id##" . $userInfo['user_id']; ?>','<?php echo _("This email id that you entered already exists.Try another email id"); ?>',null)" />
+                    <input type="text" class="form-control" id="email" name="email" placeholder="<?php echo _translate('Official Email'); ?>" title="<?php echo _translate('Please enter email'); ?>" value="<?php echo $userInfo['email']; ?>" onblur="checkNameValidation('user_details','email',this,'<?php echo "user_id##" . $userInfo['user_id']; ?>','<?php echo _translate("This email id that you entered already exists.Try another email id"); ?>',null)" />
                   </div>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="phoneNo" class="col-lg-4 control-label"><?php echo _("Phone Number"); ?></label>
+                  <label for="phoneNo" class="col-lg-4 control-label"><?php echo _translate("Phone Number"); ?></label>
                   <div class="col-lg-8">
-                    <input type="text" class="form-control" id="phoneNo" name="phoneNo" placeholder="<?php echo _('Phone Number'); ?>" title="<?php echo _('Please enter phone number'); ?>" value="<?php echo $userInfo['phone_number']; ?>" />
+                    <input type="text" class="form-control" id="phoneNo" name="phoneNo" placeholder="<?php echo _translate('Phone Number'); ?>" title="<?php echo _translate('Please enter phone number'); ?>" value="<?php echo $userInfo['phone_number']; ?>" />
                   </div>
                 </div>
               </div>
@@ -106,19 +106,19 @@ $data = $db->get("user_login_history", 25);
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="password" class="col-lg-4 control-label"><?php echo _("Password"); ?> </label>
+                  <label for="password" class="col-lg-4 control-label"><?php echo _translate("Password"); ?> </label>
                   <div class="col-lg-8">
-                    <input type="password" class="form-control ppwd" id="password" name="password" placeholder="<?php echo _('Password'); ?>" title="<?php echo _('Please enter the password'); ?>" /><br>
+                    <input type="password" class="form-control ppwd" id="password" name="password" placeholder="<?php echo _translate('Password'); ?>" title="<?php echo _translate('Please enter the password'); ?>" /><br>
                     <button type="button" id="generatePassword" onclick="passwordType();" class="btn btn-default"><strong>Generate Random Password</strong></button><br>
-                    <code><?= _("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?></code>
+                    <code><?= _translate("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?></code>
                   </div>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="confirmPassword" class="col-lg-4 control-label"><?php echo _("Confirm Password"); ?></label>
+                  <label for="confirmPassword" class="col-lg-4 control-label"><?php echo _translate("Confirm Password"); ?></label>
                   <div class="col-lg-8">
-                    <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?php echo _('Confirm Password'); ?>" title="" />
+                    <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?php echo _translate('Confirm Password'); ?>" title="" />
                   </div>
                 </div>
               </div>
@@ -127,8 +127,8 @@ $data = $db->get("user_login_history", 25);
           </div>
           <!-- /.box-body -->
           <div class="box-footer">
-            <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
-            <a href="/dashboard/index.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
+            <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
+            <a href="/dashboard/index.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
           </div>
           <!-- /.box-footer -->
         </form>
@@ -245,7 +245,7 @@ responsive: true
     var pwd = $('#confirmPassword').val();
     var regex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9!@#\$%\^\&*\)\(+=. _-]+){8,}$/;
     if (regex.test(pwd) == false) {
-      alert("<?= _("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?>");
+      alert("<?= _translate("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?>");
       $('.ppwd').focus();
     }
     return regex.test(pwd);

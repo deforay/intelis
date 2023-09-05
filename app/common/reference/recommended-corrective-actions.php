@@ -1,5 +1,5 @@
 <?php
-$title = _("Recommended Corrective Actions");
+$title = _translate("Recommended Corrective Actions");
 
 require_once APPLICATION_PATH . '/header.php';
 $testType = 'eid';
@@ -18,10 +18,10 @@ if (isset($_GET['testType']) && !empty($_GET['testType'])) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-gears"></em> <?php echo _("Recommended Corrective Actions"); ?></h1>
+		<h1><em class="fa-solid fa-gears"></em> <?php echo _translate("Recommended Corrective Actions"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Recommended Corrective Actions"); ?></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+			<li class="active"><?php echo _translate("Recommended Corrective Actions"); ?></li>
 		</ol>
 	</section>
 
@@ -32,7 +32,7 @@ if (isset($_GET['testType']) && !empty($_GET['testType'])) {
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if (isset($_SESSION['privileges']) && in_array("recommended-corrective-actions.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-							<a href="add-recommended-corrective-action.php?testType=vl" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _("Add Recommended Corrective Actions"); ?></a>
+							<a href="add-recommended-corrective-action.php?testType=vl" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Recommended Corrective Actions"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -40,8 +40,8 @@ if (isset($_GET['testType']) && !empty($_GET['testType'])) {
 						<table aria-describedby="table" id="correctiveActionTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th scope="row"><?php echo _("Recommended Corrective Action Name"); ?></th>
-									<th scope="row"><?php echo _("Status"); ?></th>
+									<th scope="row"><?php echo _translate("Recommended Corrective Action Name"); ?></th>
+									<th scope="row"><?php echo _translate("Status"); ?></th>
 									<?php if (isset($_SESSION['privileges']) && in_array("recommended-corrective-actions.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
 										<th scope="row">Action</th>
 									<?php } ?>
@@ -49,7 +49,7 @@ if (isset($_GET['testType']) && !empty($_GET['testType'])) {
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="3" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+									<td colspan="3" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 

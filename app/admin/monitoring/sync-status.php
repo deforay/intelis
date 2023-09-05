@@ -6,7 +6,7 @@ use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 use App\Services\SystemService;
 
-$title = _("Sources of Requests");
+$title = _translate("Sources of Requests");
 require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
@@ -62,14 +62,14 @@ $activeModules = SystemService::getActiveModules();
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1><em class="fa-solid fa-traffic-light"></em>
-            <?php echo _("Lab Sync Status"); ?>
+            <?php echo _translate("Lab Sync Status"); ?>
         </h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em>
-                    <?php echo _("Home"); ?>
+                    <?php echo _translate("Home"); ?>
                 </a></li>
             <li class="active">
-                <?php echo _("Lab Sync Status"); ?>
+                <?php echo _translate("Lab Sync Status"); ?>
             </li>
         </ol>
     </section>
@@ -79,107 +79,97 @@ $activeModules = SystemService::getActiveModules();
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
-                    <table aria-describedby="table" class="table" aria-hidden="true"
-                        style="margin-left:1%;margin-top:20px;width:98%;">
+                    <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
                         <tr>
                             <td><strong>
-                                    <?php echo _("Province/State"); ?>&nbsp;:
+                                    <?php echo _translate("Province/State"); ?>&nbsp;:
                                 </strong></td>
                             <td>
-                                <select name="province" id="province" onchange="getDistrictByProvince(this.value)"
-                                    class="form-control" title="<?php echo _('Please choose Province/State/Region'); ?>"
-                                    onkeyup="searchVlRequestData()">
-                                    <?= $general->generateSelectOptions($stateNameList, null, _("-- Select --")); ?>
+                                <select name="province" id="province" onchange="getDistrictByProvince(this.value)" class="form-control" title="<?php echo _translate('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
+                                    <?= $general->generateSelectOptions($stateNameList, null, _translate("-- Select --")); ?>
                                 </select>
                             </td>
                             <td><strong>
-                                    <?php echo _("District/County"); ?> :
+                                    <?php echo _translate("District/County"); ?> :
                                 </strong></td>
                             <td>
-                                <select class="form-control" id="district" name="district"
-                                    title="<?php echo _('Please select Province/State'); ?>">
+                                <select class="form-control" id="district" name="district" title="<?php echo _translate('Please select Province/State'); ?>">
                                 </select>
                             </td>
                         </tr>
                         <tr>
                             <td><strong>
-                                    <?php echo _("Lab Name"); ?>&nbsp;:
+                                    <?php echo _translate("Lab Name"); ?>&nbsp;:
                                 </strong></td>
                             <td>
-                                <select class="form-control select2" id="labName" name="labName"
-                                    title="<?php echo _('Please select the Lab name'); ?>">
+                                <select class="form-control select2" id="labName" name="labName" title="<?php echo _translate('Please select the Lab name'); ?>">
                                     <?php echo $general->generateSelectOptions($labNameList, null, '--Select--'); ?>
                                 </select>
                             </td>
 
                             <td>
-                                <!-- <strong><?php echo _("Test Type"); ?>&nbsp;:</strong> -->
+                                <!-- <strong><?php echo _translate("Test Type"); ?>&nbsp;:</strong> -->
                             </td>
                             <td>
-                                <!-- <select id="testType" name="testType" class="form-control" placeholder="<?php echo _('Please select the Test types'); ?>">
-                                    <option value=""><?php echo _("--Select--"); ?></option>
+                                <!-- <select id="testType" name="testType" class="form-control" placeholder="<?php echo _translate('Please select the Test types'); ?>">
+                                    <option value=""><?php echo _translate("--Select--"); ?></option>
                                     <?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
-                                        <option value="vl"><?php echo _("Viral Load"); ?></option>
+                                        <option value="vl"><?php echo _translate("Viral Load"); ?></option>
                                     <?php }
                                     if (!empty($activeModules) && in_array('eid', $activeModules)) { ?>
-                                        <option value="eid"><?php echo _("Early Infant Diagnosis"); ?></option>
+                                        <option value="eid"><?php echo _translate("Early Infant Diagnosis"); ?></option>
                                     <?php }
                                     if (!empty($activeModules) && in_array('covid19', $activeModules)) { ?>
-                                        <option value="covid19"><?php echo _("Covid-19"); ?></option>
+                                        <option value="covid19"><?php echo _translate("Covid-19"); ?></option>
                                     <?php }
                                     if (!empty($activeModules) && in_array('hepatitis', $activeModules)) { ?>
-                                        <option value='hepatitis'><?php echo _("Hepatitis"); ?></option>
+                                        <option value='hepatitis'><?php echo _translate("Hepatitis"); ?></option>
                                     <?php }
                                     if (!empty($activeModules) && in_array('tb', $activeModules)) { ?>
-                                        <option value='tb'><?php echo _("TB"); ?></option>
+                                        <option value='tb'><?php echo _translate("TB"); ?></option>
                                     <?php } ?>
                                 </select> -->
                             </td>
                         </tr>
                         <tr>
                             <td colspan="4">
-                                &nbsp;<a class="btn btn-success pull-right" style="margin-right:5px;"
-                                    href="javascript:void(0);" onclick="exportSyncStatus();"><em
-                                        class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
-                                    <?php echo _("Export Excel"); ?>
+                                &nbsp;<a class="btn btn-success pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportSyncStatus();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
+                                    <?php echo _translate("Export Excel"); ?>
                                 </a>
-                                &nbsp;<button class="btn btn-danger pull-right"
-                                    onclick="document.location.href = document.location"><span>
-                                        <?= _('Reset'); ?>
+                                &nbsp;<button class="btn btn-danger pull-right" onclick="document.location.href = document.location"><span>
+                                        <?= _translate('Reset'); ?>
                                     </span></button>
-                                <input type="button" onclick="loadData();" value="<?= _('Search'); ?>"
-                                    class="btn btn-default pull-right">
+                                <input type="button" onclick="loadData();" value="<?= _translate('Search'); ?>" class="btn btn-default pull-right">
                             </td>
                         </tr>
                     </table>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table aria-describedby="table" id="syncStatusDataTable"
-                            class="table table-bordered table-striped table-hover" aria-hidden="true">
+                        <table aria-describedby="table" id="syncStatusDataTable" class="table table-bordered table-striped table-hover" aria-hidden="true">
                             <thead>
                                 <tr>
                                     <th class="center">
-                                        <?php echo _("Lab Name"); ?>
+                                        <?php echo _translate("Lab Name"); ?>
                                     </th>
-                                    <!-- <th><?php echo _("Request Type"); ?></th> -->
+                                    <!-- <th><?php echo _translate("Request Type"); ?></th> -->
                                     <th class="center">
-                                        <?php echo _("Last Synced on"); ?>
-                                    </th>
-                                    <th class="center">
-                                        <?php echo _("Last Results Sync from Lab"); ?>
+                                        <?php echo _translate("Last Synced on"); ?>
                                     </th>
                                     <th class="center">
-                                        <?php echo _("Last Requests Sync from STS"); ?>
+                                        <?php echo _translate("Last Results Sync from Lab"); ?>
                                     </th>
                                     <th class="center">
-                                        <?php echo _("Version"); ?>
+                                        <?php echo _translate("Last Requests Sync from STS"); ?>
+                                    </th>
+                                    <th class="center">
+                                        <?php echo _translate("Version"); ?>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody id="syncStatusTable">
                                 <tr>
                                     <td colspan="4" class="dataTables_empty">
-                                        <?php echo _("No data available"); ?>
+                                        <?php echo _translate("No data available"); ?>
                                     </td>
                                 </tr>
                             </tbody>
@@ -198,7 +188,7 @@ $activeModules = SystemService::getActiveModules();
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
     var oTable = null;
-    $(document).ready(function () {
+    $(document).ready(function() {
         $('#labName').select2({
             width: '100%',
             placeholder: "Select Testing Lab"
@@ -215,7 +205,7 @@ $activeModules = SystemService::getActiveModules();
         });
         loadData();
 
-        $('#syncStatusDataTable tbody').on('click', 'tr', function () {
+        $('#syncStatusDataTable tbody').on('click', 'tr', function() {
             let facilityId = $(this).attr('data-facilityId');
             let link = "lab-sync-details.php?labId=" + facilityId;
             window.open(link);
@@ -225,12 +215,12 @@ $activeModules = SystemService::getActiveModules();
     function loadData() {
         $.blockUI();
         $.post("/admin/monitoring/get-sync-status.php", {
-            province: $('#province').val(),
-            district: $('#district').val(),
-            labName: $('#labName').val(),
-            testType: $('#testType').val()
-        },
-            function (data) {
+                province: $('#province').val(),
+                district: $('#district').val(),
+                labName: $('#labName').val(),
+                testType: $('#testType').val()
+            },
+            function(data) {
                 $("#syncStatusTable").html(data);
                 //$('#syncStatusDataTable').dataTable();
                 $.unblockUI();
@@ -245,10 +235,10 @@ $activeModules = SystemService::getActiveModules();
     function getDistrictByProvince(provinceId) {
         $("#district").html('');
         $.post("/common/get-by-province-id.php", {
-            provinceId: provinceId,
-            districts: true,
-        },
-            function (data) {
+                provinceId: provinceId,
+                districts: true,
+            },
+            function(data) {
                 Obj = $.parseJSON(data);
                 $("#district").html(Obj['districts']);
             });
@@ -257,10 +247,10 @@ $activeModules = SystemService::getActiveModules();
     function exportSyncStatus() {
         $.blockUI();
         $.post("generate-lab-sync-status-report.php", {},
-            function (data) {
+            function(data) {
                 $.unblockUI();
                 if (data === "" || data === null || data === undefined) {
-                    alert("<?php echo _("Unable to generate the excel file"); ?>");
+                    alert("<?php echo _translate("Unable to generate the excel file"); ?>");
                 } else {
                     window.open('/download.php?f=' + data, '_blank');
                 }

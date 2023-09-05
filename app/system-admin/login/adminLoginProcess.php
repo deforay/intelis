@@ -38,6 +38,6 @@ try {
 } catch (SystemException $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
-    $_SESSION['alertMsg'] = _("Please check your login credentials");
+    $_SESSION['alertMsg'] = _translate("Please check your login credentials");
     header("Location:/system-admin/login/login.php");
 }

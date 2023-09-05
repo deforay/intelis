@@ -62,7 +62,7 @@ try {
             if (isset($_POST['password']) && trim($_POST['password']) != "") {
                 $userRow = $db->rawQueryOne("SELECT `password` FROM user_details as ud WHERE ud.user_id = ?", array($userId));
                 if (password_verify($_POST['password'], $userRow['password'])) {
-                    $_SESSION['alertMsg'] = _("Your new password cannot be same as the current password. Please try another password.");
+                    $_SESSION['alertMsg'] = _translate("Your new password cannot be same as the current password. Please try another password.");
                     header("Location:editProfile.php");
                 }
 
@@ -105,7 +105,7 @@ try {
 
             print_r(json_encode($response));
         } else {
-            $_SESSION['alertMsg'] = _("Your profile changes have been saved. You can continue using the application.");
+            $_SESSION['alertMsg'] = _translate("Your profile changes have been saved. You can continue using the application.");
             header("Location:editProfile.php");
         }
     }

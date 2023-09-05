@@ -7,7 +7,7 @@ use App\Services\CommonService;
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
-$title = _("Covid-19 | Sample Status Report");
+$title = _translate("Covid-19 | Sample Status Report");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -41,10 +41,10 @@ $batResult = $db->rawQuery($batQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-book"></em> <?php echo _("Covid-19 Sample Status Report"); ?></h1>
+		<h1><em class="fa-solid fa-book"></em> <?php echo _translate("Covid-19 Sample Status Report"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-			<li class="active"><?php echo _("Covid-19 Sample Status"); ?></li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+			<li class="active"><?php echo _translate("Covid-19 Sample Status"); ?></li>
 		</ol>
 	</section>
 
@@ -55,14 +55,14 @@ $batResult = $db->rawQuery($batQuery);
 				<div class="box">
 					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
-							<td><strong><?php echo _("Sample Collection Date"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
 							<td>
-								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
-							<td>&nbsp;<strong><?php echo _("Batch Code"); ?>&nbsp;:</strong></td>
+							<td>&nbsp;<strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
 							<td>
-								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _('Please select batch code'); ?>" style="width:220px;">
-									<option value=""> <?php echo _("-- Select --"); ?> </option>
+								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
+									<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 									<?php foreach ($batResult as $code) { ?>
 										<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
 									<?php } ?>
@@ -70,27 +70,27 @@ $batResult = $db->rawQuery($batQuery);
 							</td>
 						</tr>
 						<tr>
-							<td>&nbsp;<strong><?php echo _("Testing Lab"); ?> &nbsp;:</strong></td>
+							<td>&nbsp;<strong><?php echo _translate("Testing Lab"); ?> &nbsp;:</strong></td>
 							<td>
-								<select class="form-control" id="labName" name="labName" title="<?php echo _('Please select facility name'); ?>">
+								<select class="form-control" id="labName" name="labName" title="<?php echo _translate('Please select facility name'); ?>">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
-							<td><strong><?php echo _("Select Sample Received Date At Lab"); ?> :</strong></td>
+							<td><strong><?php echo _translate("Select Sample Received Date At Lab"); ?> :</strong></td>
 							<td>
-								<input type="text" id="sampleReceivedDateAtLab" name="sampleReceivedDateAtLab" class="form-control" placeholder="<?php echo _('Select Sample Received Date At Lab'); ?>" readonly style="background:#fff;" />
+								<input type="text" id="sampleReceivedDateAtLab" name="sampleReceivedDateAtLab" class="form-control" placeholder="<?php echo _translate('Select Sample Received Date At Lab'); ?>" readonly style="background:#fff;" />
 							</td>
 						<tr>
-							<td><strong><?php echo _("Sample Tested Date"); ?> :</strong></td>
+							<td><strong><?php echo _translate("Sample Tested Date"); ?> :</strong></td>
 							<td>
-								<input type="text" id="sampleTestedDate" name="sampleTestedDate" class="form-control" placeholder="<?php echo _('Select Tested Date'); ?>" readonly style="background:#fff;" />
+								<input type="text" id="sampleTestedDate" name="sampleTestedDate" class="form-control" placeholder="<?php echo _translate('Select Tested Date'); ?>" readonly style="background:#fff;" />
 							</td>
 							<td></td>
 							<td></td>
 						</tr>
 						<tr>
-							<td colspan="4">&nbsp;<input type="button" onclick="searchResultData(),searchVlTATData();" value="<?php echo _("Search"); ?>" class="btn btn-success btn-sm">
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _('Reset'); ?></span></button>
+							<td colspan="4">&nbsp;<input type="button" onclick="searchResultData(),searchVlTATData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
 							</td>
 						</tr>
 
@@ -105,21 +105,21 @@ $batResult = $db->rawQuery($batQuery);
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-body">
-						<button class="btn btn-success pull-right" type="button" onclick="covid19ExportTAT()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _("Export to excel"); ?></button>
+						<button class="btn btn-success pull-right" type="button" onclick="covid19ExportTAT()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
 						<table aria-describedby="table" id="covid19RequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th><?php echo _("Covid-19 Sample ID"); ?></th>
-									<th scope="row"><?php echo _("Sample Collection Date"); ?></th>
-									<th><?php echo _("Sample Received Date in Lab"); ?></th>
-									<th scope="row"><?php echo _("Sample Test Date"); ?></th>
-									<th><?php echo _("Sample Print Date"); ?></th>
-									<th><?php echo _("Sample Email Date"); ?></th>
+									<th><?php echo _translate("Covid-19 Sample ID"); ?></th>
+									<th scope="row"><?php echo _translate("Sample Collection Date"); ?></th>
+									<th><?php echo _translate("Sample Received Date in Lab"); ?></th>
+									<th scope="row"><?php echo _translate("Sample Test Date"); ?></th>
+									<th><?php echo _translate("Sample Print Date"); ?></th>
+									<th><?php echo _translate("Sample Email Date"); ?></th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="6" class="dataTables_empty"><?php echo _("Loading data from server"); ?></td>
+									<td colspan="6" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 						</table>
@@ -142,11 +142,11 @@ $batResult = $db->rawQuery($batQuery);
 <script>
 	$(function() {
 		$("#labName").select2({
-			placeholder: "<?php echo _("Select Testing Lab"); ?>"
+			placeholder: "<?php echo _translate("Select Testing Lab"); ?>"
 		});
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _("Clear"); ?>",
+					cancelLabel: "<?= _translate("Clear"); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},
@@ -287,7 +287,7 @@ $batResult = $db->rawQuery($batQuery);
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?php echo _("Unable to generate the excel file"); ?>");
+					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
 				} else {
 					$.unblockUI();
 					window.open('/download.php?f=' + data, '_blank');

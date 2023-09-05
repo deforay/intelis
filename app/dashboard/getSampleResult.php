@@ -350,10 +350,10 @@ if ($table == "form_covid19") {
                     <span data-counter="counterup" data-value="<?= $receivedTotal; ?>"><?php echo $receivedTotal; ?></span>
                 </h3>
                 <small class="font-green-sharp">
-                    <?= _("SAMPLES REGISTERED"); ?>
+                    <?= _translate("SAMPLES REGISTERED"); ?>
                 </small><br>
                 <small class="font-green-sharp" style="font-size:0.75em;">
-                    <?php echo _("In Selected Range"); ?>
+                    <?php echo _translate("In Selected Range"); ?>
                 </small>
             </div>
             <div class="icon font-green-sharp">
@@ -371,10 +371,10 @@ if ($table == "form_covid19") {
                     <span data-counter="counterup" data-value="<?php echo $acceptedTotal; ?>"><?php echo $acceptedTotal; ?></span>
                 </h3>
                 <small class="font-blue-sharp">
-                    <?php echo _("SAMPLES TESTED"); ?>
+                    <?php echo _translate("SAMPLES TESTED"); ?>
                 </small><br>
                 <small class="font-blue-sharp" style="font-size:0.75em;">
-                    <?php echo _("In Selected Range"); ?>
+                    <?php echo _translate("In Selected Range"); ?>
                 </small>
             </div>
             <div class="icon">
@@ -393,10 +393,10 @@ if ($table == "form_covid19") {
                     <span data-counter="counterup" data-value="<?php echo $rejectedTotal; ?>"><?php echo $rejectedTotal; ?></span>
                 </h3>
                 <small class="font-red-haze">
-                    <?php echo _("SAMPLES REJECTED"); ?>
+                    <?php echo _translate("SAMPLES REJECTED"); ?>
                 </small><br>
                 <small class="font-red-haze" style="font-size:0.75em;">
-                    <?php echo _("In Selected Range"); ?>
+                    <?php echo _translate("In Selected Range"); ?>
                 </small>
             </div>
             <div class="icon">
@@ -415,10 +415,10 @@ if ($table == "form_covid19") {
                     <span data-counter="counterup" data-value="<?php echo $waitingTotal; ?>"><?php echo $waitingTotal; ?></span>
                 </h3>
                 <small class="font-purple-soft">
-                    <?php echo _("SAMPLES WITH NO RESULTS"); ?>
+                    <?php echo _translate("SAMPLES WITH NO RESULTS"); ?>
                 </small><br>
                 <small class="font-purple-soft" style="font-size:0.75em;">
-                    <?php echo _("(LAST 6 MONTHS)"); ?>
+                    <?php echo _translate("(LAST 6 MONTHS)"); ?>
                 </small>
 
             </div>
@@ -434,10 +434,10 @@ if ($table == "form_covid19") {
         <div class="display font-purple-soft">
             <div class="number">
                 <h4 class="font-purple-soft" style="font-weight:600;">
-                    <?= _("OVERALL SAMPLE STATUS"); ?>
+                    <?= _translate("OVERALL SAMPLE STATUS"); ?>
                 </h4>
                 <small class="font-purple-soft" style="font-size:0.75em;">
-                    <?= _("(BASED ON SAMPLES COLLECTED IN THE SELECTED DATE RANGE)"); ?>
+                    <?= _translate("(BASED ON SAMPLES COLLECTED IN THE SELECTED DATE RANGE)"); ?>
                 </small>
             </div>
             <div class="icon">
@@ -691,7 +691,7 @@ if ($table == "form_covid19") {
             },
             series: [{
                 showInLegend: false,
-                name: "<?php echo _("Samples"); ?>",
+                name: "<?php echo _translate("Samples"); ?>",
                 data: [<?php
                         foreach ($rejectedResult as $tRow) {
                             echo ($tRow['total']) . ",";
@@ -717,7 +717,7 @@ if ($table == "form_covid19") {
             exporting: {
                 chartOptions: {
                     subtitle: {
-                        text: "<?= _("Overall Sample Status"); ?>",
+                        text: "<?= _translate("Overall Sample Status"); ?>",
                     }
                 }
             },
@@ -726,12 +726,12 @@ if ($table == "form_covid19") {
             },
             xAxis: {
                 categories: [
-                    "<?= _("Samples Tested"); ?>",
-                    "<?= _("Samples Rejected"); ?>",
-                    "<?= _("Samples on Hold"); ?>",
-                    "<?= _("Samples Registered at Testing Lab"); ?>",
-                    "<?= _("Samples Awaiting Approval"); ?>",
-                    "<?= _("Samples Registered at Collection Site"); ?>"
+                    "<?= _translate("Samples Tested"); ?>",
+                    "<?= _translate("Samples Rejected"); ?>",
+                    "<?= _translate("Samples on Hold"); ?>",
+                    "<?= _translate("Samples Registered at Testing Lab"); ?>",
+                    "<?= _translate("Samples Awaiting Approval"); ?>",
+                    "<?= _translate("Samples Registered at Collection Site"); ?>"
                 ]
             },
 

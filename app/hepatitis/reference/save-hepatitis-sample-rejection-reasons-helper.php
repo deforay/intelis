@@ -37,7 +37,7 @@ try {
 			$lastId = $db->getInsertId();
 		}
 		if ($lastId > 0) {
-			$_SESSION['alertMsg'] = _("Hepatitis Sample Rejection Reasons details added successfully");
+			$_SESSION['alertMsg'] = _translate("Hepatitis Sample Rejection Reasons details added successfully");
 			$general->activityLog('Hepatitis Sample Rejection Reasons', $_SESSION['userName'] . ' added new reference Sample Rejection Reasons for  ' . $_POST['rejectionReasonName'], 'hepatitis-reference');
 		}
 	}

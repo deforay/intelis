@@ -191,9 +191,9 @@ try {
     $id = $db->update($tableName, $vldata);
     //var_dump($db->getLastError());die;
     if ($id === true) {
-        $_SESSION['alertMsg'] = _("Lab Tests results updated successfully");
+        $_SESSION['alertMsg'] = _translate("Lab Tests results updated successfully");
     } else {
-        $_SESSION['alertMsg'] = _("Please try again later");
+        $_SESSION['alertMsg'] = _translate("Please try again later");
     }
 
     header("Location:generic-test-results.php");

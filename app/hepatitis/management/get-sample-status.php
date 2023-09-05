@@ -267,13 +267,13 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _("Hepatitis Samples Status Overview"); ?>"
+                text: "<?php echo _translate("Hepatitis Samples Status Overview"); ?>"
             },
             credits: {
                 enabled: false
             },
             tooltip: {
-                pointFormat: "<?php echo _("Hepatitis Samples"); ?> :<strong>{point.y}</strong>"
+                pointFormat: "<?php echo _translate("Hepatitis Samples"); ?> :<strong>{point.y}</strong>"
             },
             plotOptions: {
                 pie: {
@@ -340,13 +340,13 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _("Hepatitis HCV VL Results"); ?>"
+                text: "<?php echo _translate("Hepatitis HCV VL Results"); ?>"
             },
             credits: {
                 enabled: false
             },
             tooltip: {
-                pointFormat: "<?php echo _("Samples"); ?> :<strong>{point.y}</strong>"
+                pointFormat: "<?php echo _translate("Samples"); ?> :<strong>{point.y}</strong>"
             },
             plotOptions: {
                 pie: {
@@ -395,13 +395,13 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _("Hepatitis HBV VL Results"); ?>"
+                text: "<?php echo _translate("Hepatitis HBV VL Results"); ?>"
             },
             credits: {
                 enabled: false
             },
             tooltip: {
-                pointFormat: "<?php echo _("Samples"); ?> :<strong>{point.y}</strong>"
+                pointFormat: "<?php echo _translate("Samples"); ?> :<strong>{point.y}</strong>"
             },
             plotOptions: {
                 pie: {
@@ -423,11 +423,11 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
             series: [{
                 colorByPoint: true,
                 data: [{
-                        name: "<?php echo _("Positive"); ?>",
+                        name: "<?php echo _translate("Positive"); ?>",
                         y: <?php echo (isset($vlSuppressionResult['hbvpositiveResult']) && $vlSuppressionResult['hbvpositiveResult'] > 0) > 0 ? $vlSuppressionResult['hbvpositiveResult'] : 0; ?>
                     },
                     {
-                        name: "<?php echo _("Negative"); ?>",
+                        name: "<?php echo _translate("Negative"); ?>",
                         y: <?php echo (isset($vlSuppressionResult['hbvnegativeResult']) && $vlSuppressionResult['hbvnegativeResult'] > 0) > 0 ? $vlSuppressionResult['hbvnegativeResult'] : 0; ?>
                     },
                 ]
@@ -442,12 +442,12 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                 type: 'line'
             },
             title: {
-                text: "<?php echo _("Hepatitis Laboratory Turnaround Time"); ?>"
+                text: "<?php echo _translate("Hepatitis Laboratory Turnaround Time"); ?>"
             },
             exporting: {
                 chartOptions: {
                     subtitle: {
-                        text: "<?php echo _("Hepatitis Laboratory Turnaround Time"); ?>",
+                        text: "<?php echo _translate("Hepatitis Laboratory Turnaround Time"); ?>",
                     }
                 }
             },
@@ -466,7 +466,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
             },
             yAxis: [{
                 title: {
-                    text: "<?php echo _("Average TAT in Days"); ?>"
+                    text: "<?php echo _translate("Average TAT in Days"); ?>"
                 },
                 labels: {
                     formatter: function() {
@@ -476,7 +476,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
             }, { // Secondary yAxis
                 gridLineWidth: 0,
                 title: {
-                    text: "<?php echo _("No. of Tests"); ?>"
+                    text: "<?php echo _translate("No. of Tests"); ?>"
                 },
                 labels: {
                     format: '{value}'
@@ -506,7 +506,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
 
             series: [{
                     type: 'column',
-                    name: "<?php echo _("No. of Samples Tested"); ?>",
+                    name: "<?php echo _translate("No. of Samples Tested"); ?>",
                     data: [<?php echo implode(",", $result['totalSamples']); ?>],
                     color: '#7CB5ED',
                     yAxis: 1
@@ -516,7 +516,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: "<?php echo _("Result - Printed"); ?>",
+                        name: "<?php echo _translate("Result - Printed"); ?>",
                         data: [<?php echo implode(",", $result['avgResultPrinted']); ?>],
                         color: '#0f3f6e',
                     },
@@ -526,7 +526,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: "<?php echo _("Collected - Received at Lab"); ?>",
+                        name: "<?php echo _translate("Collected - Received at Lab"); ?>",
                         data: [<?php echo implode(",", $result['sampleReceivedDiff']); ?>],
                         color: '#edb47c',
                     },
@@ -536,7 +536,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: "<?php echo _("Received - Tested"); ?>",
+                        name: "<?php echo _translate("Received - Tested"); ?>",
                         data: [<?php echo implode(",", $result['sampleReceivedTested']); ?>],
                         color: '#0f3f6e',
                     },
@@ -546,7 +546,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: "<?php echo _("Collected - Tested"); ?>",
+                        name: "<?php echo _translate("Collected - Tested"); ?>",
                         data: [<?php echo implode(",", $result['sampleTestedDiff']); ?>],
                         color: '#ed7c7d',
                     },
@@ -556,7 +556,7 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: "<?php echo _("Collected - Printed"); ?>",
+                        name: "<?php echo _translate("Collected - Printed"); ?>",
                         data: [<?php echo implode(",", $result['sampleReceivedPrinted']); ?>],
                         color: '#000',
                     },
@@ -575,13 +575,13 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _("Hepatitis Test Reasons"); ?>"
+                text: "<?php echo _translate("Hepatitis Test Reasons"); ?>"
             },
             credits: {
                 enabled: false
             },
             tooltip: {
-                pointFormat: "<?php echo _("Test Reasons"); ?> :<strong>{point.y}</strong>"
+                pointFormat: "<?php echo _translate("Test Reasons"); ?> :<strong>{point.y}</strong>"
             },
             plotOptions: {
                 pie: {

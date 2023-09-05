@@ -36,7 +36,7 @@ foreach ($pdResult as $provinceName) {
 	$province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
 }
 
-$facility = $general->generateSelectOptions($healthFacilities, null, _("-- Select --"));
+$facility = $general->generateSelectOptions($healthFacilities, null, _translate("-- Select --"));
 
 ?>
 
@@ -44,14 +44,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _("-- Selec
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1><em class="fa-solid fa-pen-to-square"></em>
-			<?php echo _("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM"); ?>
+			<?php echo _translate("EARLY INFANT DIAGNOSIS (EID) LABORATORY REQUEST FORM"); ?>
 		</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em>
-					<?php echo _("Home"); ?>
+					<?php echo _translate("Home"); ?>
 				</a></li>
 			<li class="active">
-				<?php echo _("Add EID Request"); ?>
+				<?php echo _translate("Add EID Request"); ?>
 			</li>
 		</ol>
 	</section>
@@ -142,9 +142,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _("-- Selec
 											</select>
 										</td>
 										<td><label for="clinicianName">Demandeur </label></td>
-											<td>
-												<input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Demandeur" title="<?= _("Please enter requesting clinician name"); ?>" style="width:100%;" />
-											</td>
+										<td>
+											<input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Demandeur" title="<?= _translate("Please enter requesting clinician name"); ?>" style="width:100%;" />
+										</td>
 										<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
 											<!-- <tr> -->
 											<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
@@ -154,7 +154,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _("-- Selec
 												</select>
 											</td>
 											<!-- </tr> -->
-										
+
 										<?php } ?>
 									</tr>
 								</table>
@@ -163,7 +163,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _("-- Selec
 								<div class="box-header with-border">
 									<h4>1. Données démographiques mère / enfant </h4><br>
 									<h4 class="box-title">Information sur le patient </h4>&nbsp;&nbsp;&nbsp;
-									<input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" placeholder="Code du patient" title="<?= _("Please enter the Patient ID"); ?>" />&nbsp;&nbsp;
+									<input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" placeholder="Code du patient" title="<?= _translate("Please enter the Patient ID"); ?>" />&nbsp;&nbsp;
 									<a style="margin-top:-0.35%;font-weight:500;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList($('#artPatientNo').val(),0);"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No
 											Patient Found</strong></span>
 								</div>
@@ -483,9 +483,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _("-- Selec
 											</td>
 											<th scope="row" style="width:15%;"><label for="">Date de réception de l'échantillon </label></th>
 											<td style="width:35%;">
-												<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
+												<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
 											</td>
-											
+
 										<tr>
 											<th scope="row" style="width:15%;"><label for="labId">Nom du Laboratoire</label> </th>
 											<td style="width:35%;">
@@ -500,10 +500,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _("-- Selec
 													<option value="yes"> Oui </option>
 													<option value="no"> Non </option>
 												</select>
-											</td>											
+											</td>
 										</tr>
 										<tr>
-										<th scope="row" class="rejected" style="display: none;">Raison du rejet</th>
+											<th scope="row" class="rejected" style="display: none;">Raison du rejet</th>
 											<td class="rejected" style="display: none;">
 
 												<select name="sampleRejectionReason" id="sampleRejectionReason" class="form-control labSection" title="Please choose a Rejection Reason" <?php echo $labFieldDisabled; ?>>
@@ -525,13 +525,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _("-- Selec
 											<th scope="row">Date de rejet<span class="mandatory">*</span></th>
 											<td><input value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date de rejet" title="Veuillez choisir la date rejetée" /></td>
 											<th scope="row">
-												</th>
-												<td></td>
+											</th>
+											<td></td>
 										</tr>
 										<tr>
 											<th scope="row"><label for="">Test effectué le </label></th>
 											<td>
-												<input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _("Please enter date"); ?>" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
+												<input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
 											</td>
 
 

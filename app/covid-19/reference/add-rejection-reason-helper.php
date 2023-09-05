@@ -36,7 +36,7 @@ try {
 		$db->insert($tableName, $data);
 		$lastId = $db->getInsertId();
 
-		$_SESSION['alertMsg'] = _("Covid-19 Sample Rejection Reasons details added successfully");
+		$_SESSION['alertMsg'] = _translate("Covid-19 Sample Rejection Reasons details added successfully");
 		$general->activityLog('add-Sample Rejection Reasons', $_SESSION['userName'] . ' added new reference Sample Rejection Reasons ' . $_POST['rejectionReasonName'], 'reference-covid19-Sample Rejection Reasons');
 	}
 	header("Location:covid19-sample-rejection-reasons.php");

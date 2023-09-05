@@ -33,7 +33,7 @@ try {
 		}
 
 		if ($lastId > 0) {
-			$_SESSION['alertMsg'] = _("Hepatitis Comorbidity details saved successfully");
+			$_SESSION['alertMsg'] = _translate("Hepatitis Comorbidity details saved successfully");
 			$general->activityLog('Hepatitis Comorbidity details', $_SESSION['userName'] . ' added new comorbidity for ' . $_POST['comorbidityName'], 'hepatitis-reference');
 		}
 	}

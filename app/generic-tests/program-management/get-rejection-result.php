@@ -75,14 +75,13 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 }
 
 if (isset($tResult) && count($tResult) > 0) {
-    ?>
+?>
     <div id="container" style="width: 100%; height: 500px; margin: 20px auto;"></div>
 <?php }
 if (isset($tableResult) && count($tableResult) > 0) { ?>
     <div class="pull-right">
-        <button class="btn btn-success" type="button" onclick="exportInexcel()"><em
-                class="fa-solid fa-cloud-arrow-down"></em>
-            <?php echo _("Export Excel"); ?>
+        <button class="btn btn-success" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
+            <?php echo _translate("Export Excel"); ?>
         </button>
     </div>
 <?php } ?>
@@ -90,28 +89,26 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
     <thead>
         <tr>
             <th>
-                <?php echo _("Lab Name"); ?>
+                <?php echo _translate("Lab Name"); ?>
             </th>
             <th>
-                <?php echo _("Facility Name"); ?>
+                <?php echo _translate("Facility Name"); ?>
             </th>
             <th>
-                <?php echo _("Rejection Reason"); ?>
+                <?php echo _translate("Rejection Reason"); ?>
             </th>
             <th>
-                <?php echo _("Reason Category"); ?>
+                <?php echo _translate("Reason Category"); ?>
             </th>
             <th>
-                <?php echo _("No. of Samples"); ?>
+                <?php echo _translate("No. of Samples"); ?>
             </th>
         </tr>
     </thead>
     <tbody>
         <?php if (isset($tableResult) && count($tableResult) > 0) {
             foreach ($tableResult as $tableRow) { ?>
-                <tr data-lab="<?php echo base64_encode($_POST['labName']); ?>"
-                    data-facility="<?php echo base64_encode(implode(',', $_POST['clinicName'])); ?>"
-                    data-daterange="<?= htmlspecialchars($_POST['sampleCollectionDate']); ?>" data-type="rejection">
+                <tr data-lab="<?php echo base64_encode($_POST['labName']); ?>" data-facility="<?php echo base64_encode(implode(',', $_POST['clinicName'])); ?>" data-daterange="<?= htmlspecialchars($_POST['sampleCollectionDate']); ?>" data-type="rejection">
                     <td>
                         <?php echo ($tableRow['labname']); ?>
                     </td>
@@ -128,16 +125,16 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                         <?php echo $tableRow['total']; ?>
                     </td>
                 </tr>
-            <?php }
+        <?php }
         } ?>
     </tbody>
 </table>
 <script>
-    $(function () {
+    $(function() {
         $("#vlRequestDataTable").DataTable();
     });
-    $(document).ready(function () {
-        $('#vlRequestDataTable tbody').on('click', 'tr', function () {
+    $(document).ready(function() {
+        $('#vlRequestDataTable tbody').on('click', 'tr', function() {
             let facilityId = $(this).attr('data-facility');
             let lab = $(this).attr('data-lab');
             let daterange = $(this).attr('data-daterange');
@@ -157,7 +154,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _("Sample Rejection Reasons"); ?>"
+                text: "<?php echo _translate("Sample Rejection Reasons"); ?>"
             },
             credits: {
                 enabled: false
@@ -182,25 +179,25 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                 colorByPoint: true,
                 point: {
                     events: {
-                        click: function (e) {
+                        click: function(e) {
                             e.preventDefault();
                         }
                     }
                 },
                 data: [
-                        <?php
-                        foreach ($tResult as $reasonName => $values) {
-                            ?> {
+                    <?php
+                    foreach ($tResult as $reasonName => $values) {
+                    ?> {
                             name: '<?php echo $reasonName; ?>',
                             y: <?php echo ($values['total']); ?>,
-                                number: '<?php echo ($values['category']); ?>'
-                                },
-                            <?php
-                        }
-                        ?>
-                    ]
-                }]
-            });
+                            number: '<?php echo ($values['category']); ?>'
+                        },
+                    <?php
+                    }
+                    ?>
+                ]
+            }]
+        });
     <?php }
 
     if (isset($rjResult) && count($rjResult) > 0) { ?>
@@ -212,7 +209,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _("Sample Rejection by Categories"); ?>"
+                text: "<?php echo _translate("Sample Rejection by Categories"); ?>"
             },
             credits: {
                 enabled: false
@@ -237,7 +234,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                 colorByPoint: true,
                 point: {
                     events: {
-                        click: function (e) {
+                        click: function(e) {
                             e.preventDefault();
                         }
                     }
@@ -245,9 +242,9 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                 data: [
                     <?php
                     foreach ($rjResult as $key => $total) {
-                        ?> {
-                        name: '<?php echo ($key); ?>',
-                        y: <?php echo ($total); ?>
+                    ?> {
+                            name: '<?php echo ($key); ?>',
+                            y: <?php echo ($total); ?>
                         },
                     <?php
                     }

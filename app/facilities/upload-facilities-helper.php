@@ -61,7 +61,7 @@ try {
         foreach ($resultArray as $rowIndex => $rowData) {
 
             if (empty($rowData['A']) || empty($rowData['D']) || empty($rowData['E']) || empty($rowData['F'])) {
-                $_SESSION['alertMsg'] = _("Please enter all the mandatory fields in the excel sheet");
+                $_SESSION['alertMsg'] = _translate("Please enter all the mandatory fields in the excel sheet");
                 header("Location:/facilities/upload-facilities.php");
                 die;
             }
@@ -136,9 +136,9 @@ try {
         }
 
 
-        $_SESSION['alertMsg'] = _("Facilities added successfully");
+        $_SESSION['alertMsg'] = _translate("Facilities added successfully");
     } else {
-        throw new SystemException(_("Bulk Facility Import File not uploaded") . " - " . $uploadedFile->getError());
+        throw new SystemException(_translate("Bulk Facility Import File not uploaded") . " - " . $uploadedFile->getError());
     }
     header("Location:/facilities/upload-facilities.php?total=$total&notAdded=$notAdded&link=$filename");
 } catch (Exception $exc) {

@@ -16,7 +16,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 <footer class="main-footer">
 
 	<small>
-		<?= _("This project is supported by the U.S. President's Emergency Plan for AIDS Relief (PEPFAR) through the U.S.
+		<?= _translate("This project is supported by the U.S. President's Emergency Plan for AIDS Relief (PEPFAR) through the U.S.
 		Centers for Disease Control and Prevention (CDC)."); ?>
 	</small>
 	<?php if (!empty($supportEmail)) { ?>
@@ -31,7 +31,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		<div class="pull-right">
 			<small>
 				<a href="javascript:syncRemoteData();">
-					<?= _("Force Remote Sync"); ?>
+					<?= _translate("Force Remote Sync"); ?>
 				</a>&nbsp;&nbsp;
 			</small>
 		</div>
@@ -57,7 +57,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 	<br>
 	<div class="syncHistoryDiv" style="float:right;font-size:x-small;<?= $syncHistoryDisplay ?>" class="pull-right">
 		<a href="<?= $syncHistory; ?>" class="text-muted">
-			<?= _("Last synced at"); ?>
+			<?= _translate("Last synced at"); ?>
 			<span class="lastSyncDateTime">
 				<?= $syncLatestTime; ?>
 			</span>
@@ -101,13 +101,13 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 		function syncRemoteData() {
 			if (!navigator.onLine) {
-				alert("<?= _("Please connect to internet to sync with STS"); ?>");
+				alert("<?= _translate("Please connect to internet to sync with STS"); ?>");
 				return false;
 			}
 
 			if (remoteSync) {
 				$.blockUI({
-					message: "<h3><?= _("Preparing for STS sync."); ?><br><?= _("Please wait..."); ?></h3>"
+					message: "<h3><?= _translate("Preparing for STS sync."); ?><br><?= _translate("Please wait..."); ?></h3>"
 				});
 				var jqxhr = $.ajax({
 						url: "/scheduled-jobs/remote/commonDataSync.php",
@@ -118,7 +118,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 					})
 					.fail(function() {
 						$.unblockUI();
-						alert("<?= _("Unable to do STS Sync. Please contact technical team for assistance."); ?>");
+						alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance."); ?>");
 					})
 					.always(function() {
 						$.unblockUI();
@@ -129,7 +129,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 		function syncRequests() {
 			$.blockUI({
-				message: "<h3><?= _("Trying to sync Test Requests"); ?><br><?= _("Please wait..."); ?></h3>"
+				message: "<h3><?= _translate("Trying to sync Test Requests"); ?><br><?= _translate("Please wait..."); ?></h3>"
 			});
 
 			if (remoteSync) {
@@ -142,7 +142,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 					})
 					.fail(function() {
 						$.unblockUI();
-						alert("<?= _("Unable to do STS Sync. Please contact technical team for assistance."); ?>");
+						alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance."); ?>");
 					})
 					.always(function() {
 						$.unblockUI();
@@ -154,7 +154,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		function syncResults() {
 
 			$.blockUI({
-				message: "<h3><?= _("Trying to sync Test Results"); ?><br><?= _("Please wait..."); ?></h3>"
+				message: "<h3><?= _translate("Trying to sync Test Results"); ?><br><?= _translate("Please wait..."); ?></h3>"
 			});
 
 			if (remoteSync) {
@@ -167,7 +167,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 					})
 					.fail(function() {
 						$.unblockUI();
-						alert("<?= _("Unable to do STS Sync. Please contact technical team for assistance."); ?>");
+						alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance."); ?>");
 					})
 					.always(function() {
 						$.unblockUI();
@@ -191,7 +191,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 					},
 					function(data) {
 						$.unblockUI();
-						alert("<?= _("Thank you.Your message has been submitted."); ?>");
+						alert("<?= _translate("Thank you.Your message has been submitted."); ?>");
 					});
 			});
 		} else {
@@ -202,7 +202,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 				},
 				function(data) {
 					$.unblockUI();
-					alert("<?= _("Thank you.Your message has been submitted."); ?>");
+					alert("<?= _translate("Thank you.Your message has been submitted."); ?>");
 				});
 		}
 	}

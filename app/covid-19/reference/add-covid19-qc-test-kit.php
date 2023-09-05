@@ -22,10 +22,10 @@ $covid19Results = $covid19Service->getCovid19Results();
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><em class="fa-solid fa-virus-covid"></em> <?php echo _("Add Covid-19 QC Test Kit"); ?></h1>
+        <h1><em class="fa-solid fa-virus-covid"></em> <?php echo _translate("Add Covid-19 QC Test Kit"); ?></h1>
         <ol class="breadcrumb">
-            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _("Home"); ?></a></li>
-            <li class="active"><?php echo _("Covid-19 QC Test Kit"); ?></li>
+            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+            <li class="active"><?php echo _translate("Covid-19 QC Test Kit"); ?></li>
         </ol>
     </section>
 
@@ -34,7 +34,7 @@ $covid19Results = $covid19Service->getCovid19Results();
 
         <div class="box box-default">
             <div class="box-header with-border">
-                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _("indicates required field"); ?> &nbsp;</div>
+                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _translate("indicates required field"); ?> &nbsp;</div>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -44,19 +44,19 @@ $covid19Results = $covid19Service->getCovid19Results();
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="testKitName" class="col-lg-4 control-label"><?php echo _("Test Kit Name"); ?><span class="mandatory">*</span></label>
+                                    <label for="testKitName" class="col-lg-4 control-label"><?php echo _translate("Test Kit Name"); ?><span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="testKitName" name="testKitName" placeholder="<?php echo _('Test Kit Name'); ?>" title="<?php echo _('Please enter Test Kit name'); ?>" onblur='checkNameValidation("r_covid19_qc_testkits", "testkit_name" , this , null, "<?php echo _("The test kit name that you entered already exists. Enter another name"); ?>", null)' />
+                                        <input type="text" class="form-control isRequired" id="testKitName" name="testKitName" placeholder="<?php echo _translate('Test Kit Name'); ?>" title="<?php echo _translate('Please enter Test Kit name'); ?>" onblur='checkNameValidation("r_covid19_qc_testkits", "testkit_name" , this , null, "<?php echo _translate("The test kit name that you entered already exists. Enter another name"); ?>", null)' />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="testKitStatus" class="col-lg-4 control-label"><?php echo _("Status"); ?> <span class="mandatory">*</span></label>
+                                    <label for="testKitStatus" class="col-lg-4 control-label"><?php echo _translate("Status"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <select class="form-control isRequired" id="testKitStatus" name="testKitStatus" title="<?php echo _('Please select Status'); ?>">
-                                            <option value="active"><?php echo _("Active"); ?></option>
-                                            <option value="inactive"><?php echo _("Inactive"); ?></option>
+                                        <select class="form-control isRequired" id="testKitStatus" name="testKitStatus" title="<?php echo _translate('Please select Status'); ?>">
+                                            <option value="active"><?php echo _translate("Active"); ?></option>
+                                            <option value="inactive"><?php echo _translate("Inactive"); ?></option>
                                         </select>
                                     </div>
                                 </div>
@@ -67,15 +67,15 @@ $covid19Results = $covid19Service->getCovid19Results();
                     <table aria-describedby="table" border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
                         <thead>
                             <tr>
-                                <th style="text-align:center;"><?php echo _("QC Test Label"); ?> <span class="mandatory">*</span></th>
-                                <th style="text-align:center;"><?php echo _("Expected Result"); ?> <span class="mandatory">*</span></th>
-                                <th style="text-align:center;"><?php echo _("Action"); ?></th>
+                                <th style="text-align:center;"><?php echo _translate("QC Test Label"); ?> <span class="mandatory">*</span></th>
+                                <th style="text-align:center;"><?php echo _translate("Expected Result"); ?> <span class="mandatory">*</span></th>
+                                <th style="text-align:center;"><?php echo _translate("Action"); ?></th>
                             </tr>
                         </thead>
                         <tbody id="qcTestTable">
                             <tr>
                                 <td>
-                                    <input type="text" name="qcTestLable[]" id="qcTestLable1" class="form-control isRequired" placeholder='<?php echo _("QC Test Label"); ?>' title='<?php echo _("Please enter QC test label"); ?>' onblur="checkLabelName(this);" />
+                                    <input type="text" name="qcTestLable[]" id="qcTestLable1" class="form-control isRequired" placeholder='<?php echo _translate("QC Test Label"); ?>' title='<?php echo _translate("Please enter QC test label"); ?>' onblur="checkLabelName(this);" />
                                 </td>
                                 <td>
                                     <select id="expectedResult1" name="expectedResult[]" class="isRequired form-control" title="Please enter the expected results">
@@ -90,8 +90,8 @@ $covid19Results = $covid19Service->getCovid19Results();
                     </table>
                     <!-- /.box-body -->
                     <div class="box-footer">
-                        <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _("Submit"); ?></a>
-                        <a href="covid19-qc-test-kits.php" class="btn btn-default"> <?php echo _("Cancel"); ?></a>
+                        <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
+                        <a href="covid19-qc-test-kits.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
                     </div>
                     <!-- /.box-footer -->
                 </form>
@@ -150,7 +150,7 @@ $covid19Results = $covid19Service->getCovid19Results();
         d.setAttribute("align", "center");
         d.setAttribute("style", "vertical-align:middle");
 
-        b.innerHTML = '<input type="text" name="qcTestLable[]" id="qcTestLable' + tableRowId + '" class="isRequired form-control" placeholder="<?php echo _('QC Test Label'); ?>" title="<?php echo _('Please enter qc test label'); ?>" onblur="checkLabelName(this);"/ >';
+        b.innerHTML = '<input type="text" name="qcTestLable[]" id="qcTestLable' + tableRowId + '" class="isRequired form-control" placeholder="<?php echo _translate('QC Test Label'); ?>" title="<?php echo _translate('Please enter qc test label'); ?>" onblur="checkLabelName(this);"/ >';
         c.innerHTML = '<select id="expectedResult' + tableRowId + '" name="expectedResult[]" class="isRequired form-control" title="Please enter the expected results"><option value="">--Select--</option><?php foreach ($covid19Results as $key => $row) { ?><option value="<?php echo $key; ?>"><?php echo $row; ?></option><?php } ?></select>';
         d.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
         $(a).fadeIn(800);

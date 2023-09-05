@@ -183,16 +183,16 @@ $tableResult = $db->rawQuery($sQuery);
     <table aria-describedby="table" class="table collectionTable" cellpadding="1" cellspacing="3" style="margin-top:0px;width: 98%;margin-bottom: 0px;">
         <tr>
             <th style="vertical-align:middle;padding-left: 0px;"><strong>
-                    <?php echo _("Collection Point"); ?>&nbsp;:
+                    <?php echo _translate("Collection Point"); ?>&nbsp;:
                 </strong>
-                <select id="facilityId<?php echo $unique; ?>" name="facilityId" class="form-control" multiple title="<?php echo _('Select facility name to filter'); ?>" style="width:220px;background:#fff;">
+                <select id="facilityId<?php echo $unique; ?>" name="facilityId" class="form-control" multiple title="<?php echo _translate('Select facility name to filter'); ?>" style="width:220px;background:#fff;">
                     <?php foreach ($facilityInfo as $facility) { ?>
                         <option vlaue="<?php echo $facility['facility_id']; ?>"><?php echo $facility['facility_name']; ?>
                         </option>
                     <?php } ?>
                 </select>
             </th>
-            <td colspan="3" style=" display: grid; ">&nbsp;<input type="button" onclick="fetchByFacility();" value="<?= _('Search'); ?>" class="searchBtn btn btn-success btn-sm">
+            <td colspan="3" style=" display: grid; ">&nbsp;<input type="button" onclick="fetchByFacility();" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
             </td>
         </tr>
     </table>
@@ -201,7 +201,7 @@ $tableResult = $db->rawQuery($sQuery);
             <div class="number">
                 <h3 class="font-purple-soft"></h3>
                 <small class="font-purple-soft">
-                    <?php echo _("SAMPLES REGISTERED BY COLLECTION POINT"); ?>
+                    <?php echo _translate("SAMPLES REGISTERED BY COLLECTION POINT"); ?>
                 </small><br>
             </div>
             <div class="icon">
@@ -220,33 +220,33 @@ $tableResult = $db->rawQuery($sQuery);
                 <thead>
                     <tr>
                         <th scope="row">
-                            <?php echo _("Facility Name"); ?>
+                            <?php echo _translate("Facility Name"); ?>
                         </th>
                         <th class="sum">
-                            <?php echo _("Total Samples Registered"); ?>
+                            <?php echo _translate("Total Samples Registered"); ?>
                         </th>
                         <th class="sum">
-                            <?php echo _("Samples Currently Registered at HC"); ?>
+                            <?php echo _translate("Samples Currently Registered at HC"); ?>
                         </th>
                         <th class="sum">
-                            <?php echo _("Samples Currently Registered at VL Lab"); ?>
+                            <?php echo _translate("Samples Currently Registered at VL Lab"); ?>
                             <br>
-                            <?php echo _("(Results not yet available)"); ?>
+                            <?php echo _translate("(Results not yet available)"); ?>
                         </th>
                         <th class="sum">
-                            <?php echo _("Samples with Accepted Results"); ?>
+                            <?php echo _translate("Samples with Accepted Results"); ?>
                         </th>
                         <th class="sum">
-                            <?php echo _("Samples Rejected"); ?>
+                            <?php echo _translate("Samples Rejected"); ?>
                         </th>
                         <th class="sum">
-                            <?php echo _("Samples with Invalid or Failed Results"); ?>
+                            <?php echo _translate("Samples with Invalid or Failed Results"); ?>
                         </th>
                         <th class="sum">
-                            <?php echo _("Samples Reordered"); ?>
+                            <?php echo _translate("Samples Reordered"); ?>
                         </th>
                         <th class="sum">
-                            <?php echo _("Results Printed"); ?>
+                            <?php echo _translate("Results Printed"); ?>
                         </th>
                     </tr>
                 </thead>
@@ -322,7 +322,7 @@ $tableResult = $db->rawQuery($sQuery);
     $(document).ready(function() {
         $('#facilityId<?php echo $unique; ?>').select2({
             width: '100%',
-            placeholder: "<?= _("Select Collection Point(s)"); ?>"
+            placeholder: "<?= _translate("Select Collection Point(s)"); ?>"
         });
     });
     $(function() {

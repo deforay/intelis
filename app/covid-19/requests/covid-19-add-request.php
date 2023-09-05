@@ -6,7 +6,7 @@ use App\Services\UsersService;
 use App\Services\CommonService;
 
 
-$title = _("COVID-19 | Add New Request");
+$title = _translate("COVID-19 | Add New Request");
 require_once APPLICATION_PATH . '/header.php';
 
 ?>

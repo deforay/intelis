@@ -35,7 +35,7 @@ try {
 		$db->insert($tableName, $data);
 		$lastId = $db->getInsertId();
 
-		$_SESSION['alertMsg'] = _("Comorbidity details added successfully");
+		$_SESSION['alertMsg'] = _translate("Comorbidity details added successfully");
 		$general->activityLog('add-comorbidity', $_SESSION['userName'] . ' added new reference comorbidity ' . $_POST['comorbidityName'], 'reference-covid19-comorbidity');
 	}
 	header("Location:covid19-comorbidities.php");
