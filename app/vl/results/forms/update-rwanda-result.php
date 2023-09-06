@@ -774,11 +774,11 @@ $disable = "disabled = 'disabled'";
 </div>
 <script>
 	$(document).ready(function() {
-		$("#vlResult, #vlLog").on('keyup keypress blur change paste', function() {
+		$("#vlLog").on('keyup keypress blur change paste', function() {
 			if ($(this).val() != '') {
 				if ($(this).val() != $(this).val().replace(/[^\d\.]/g, "")) {
 					$(this).val('');
-					alert('Please enter only numeric values for Viral Load Result')
+					alert('Please enter only numeric values for Viral Load Log')
 				}
 			}
 		});
