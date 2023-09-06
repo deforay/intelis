@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-09-06 14:57+0530\n"
-"PO-Revision-Date: 2023-09-06 14:57+0530\n"
+"POT-Creation-Date: 2023-09-06 15:14+0530\n"
+"PO-Revision-Date: 2023-09-06 15:15+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -27,7 +27,8 @@ msgstr "Bienvenue sur la page d’administration"
 #: admin/monitoring/lab-sync-details.php:89
 #: admin/monitoring/sources-of-requests.php:69
 #: admin/monitoring/sync-status.php:69 batch/add-batch-position.php:197
-#: batch/add-batch.php:109 batch/batches.php:89 batch/edit-batch.php:147
+#: batch/add-batch.php:109 batch/batches.php:89
+#: batch/edit-batch-position.php:169 batch/edit-batch.php:147
 #: common/reference/add-funding-sources.php:13
 #: common/reference/add-geographical-divisions.php:20
 #: common/reference/add-implementation-partners.php:13
@@ -988,12 +989,12 @@ msgstr "CHARGE VIRALE"
 #: admin/monitoring/audit-trail.php:103
 #: admin/monitoring/lab-sync-details.php:143
 #: admin/monitoring/sources-of-requests.php:139
-#: admin/monitoring/sync-status.php:120 facilities/addFacility.php:349
-#: facilities/addFacility.php:618 facilities/addFacility.php:923
-#: facilities/editFacility.php:362 facilities/editFacility.php:564
-#: facilities/editFacility.php:591 facilities/editFacility.php:883
-#: facilities/editFacility.php:936 facilities/facilities.php:91
-#: facilities/mapTestType.php:70
+#: admin/monitoring/sync-status.php:120 batch/batches.php:23
+#: facilities/addFacility.php:349 facilities/addFacility.php:618
+#: facilities/addFacility.php:923 facilities/editFacility.php:362
+#: facilities/editFacility.php:564 facilities/editFacility.php:591
+#: facilities/editFacility.php:883 facilities/editFacility.php:936
+#: facilities/facilities.php:91 facilities/mapTestType.php:70
 msgid "Early Infant Diagnosis"
 msgstr "DIAGNOSTIC PRÉCOCE DU NOURRISSON (EID)"
 
@@ -1001,15 +1002,15 @@ msgstr "DIAGNOSTIC PRÉCOCE DU NOURRISSON (EID)"
 #: admin/monitoring/audit-trail.php:106
 #: admin/monitoring/lab-sync-details.php:148
 #: admin/monitoring/sources-of-requests.php:144
-#: admin/monitoring/sync-status.php:123 facilities/addFacility.php:354
-#: facilities/addFacility.php:623 facilities/addFacility.php:924
-#: facilities/editFacility.php:365 facilities/editFacility.php:565
-#: facilities/editFacility.php:592 facilities/editFacility.php:886
-#: facilities/editFacility.php:937 facilities/facilities.php:94
-#: facilities/mapTestType.php:73 instruments/add-instrument.php:116
-#: instruments/add-instrument.php:258 instruments/add-instrument.php:356
-#: instruments/edit-instrument.php:143 instruments/edit-instrument.php:294
-#: instruments/edit-instrument.php:409
+#: admin/monitoring/sync-status.php:123 batch/batches.php:31
+#: facilities/addFacility.php:354 facilities/addFacility.php:623
+#: facilities/addFacility.php:924 facilities/editFacility.php:365
+#: facilities/editFacility.php:565 facilities/editFacility.php:592
+#: facilities/editFacility.php:886 facilities/editFacility.php:937
+#: facilities/facilities.php:94 facilities/mapTestType.php:73
+#: instruments/add-instrument.php:116 instruments/add-instrument.php:258
+#: instruments/add-instrument.php:356 instruments/edit-instrument.php:143
+#: instruments/edit-instrument.php:294 instruments/edit-instrument.php:409
 msgid "Covid-19"
 msgstr "COVID-19"
 
@@ -1017,11 +1018,12 @@ msgstr "COVID-19"
 #: admin/monitoring/audit-trail.php:109
 #: admin/monitoring/lab-sync-details.php:153
 #: admin/monitoring/sources-of-requests.php:149
-#: admin/monitoring/sync-status.php:126 facilities/addFacility.php:359
-#: facilities/addFacility.php:628 facilities/addFacility.php:925
-#: facilities/editFacility.php:368 facilities/editFacility.php:566
-#: facilities/editFacility.php:593 facilities/editFacility.php:938
-#: facilities/facilities.php:97 facilities/mapTestType.php:76
+#: admin/monitoring/sync-status.php:126 batch/batches.php:39
+#: facilities/addFacility.php:359 facilities/addFacility.php:628
+#: facilities/addFacility.php:925 facilities/editFacility.php:368
+#: facilities/editFacility.php:566 facilities/editFacility.php:593
+#: facilities/editFacility.php:938 facilities/facilities.php:97
+#: facilities/mapTestType.php:76
 #: hepatitis/management/hepatitis-clinic-report.php:74
 #: hepatitis/management/hepatitis-sample-rejection-report.php:37
 #: hepatitis/management/hepatitis-sample-status.php:48
@@ -2179,7 +2181,8 @@ msgstr "Échec de l'insertion de l'échantillon"
 msgid "Please check your request parameters."
 msgstr "Veuillez vérifier les paramètres de votre demande."
 
-#: api/v1.1/user/save-user-profile.php:161 batch/save-batch-helper.php:106
+#: api/v1.1/user/save-user-profile.php:161 batch/batches.php:250
+#: batch/save-batch-helper.php:106
 msgid "Something went wrong. Please try again later."
 msgstr "Une erreur s'est produite. Veuillez réessayer plus tard."
 
@@ -2192,12 +2195,13 @@ msgid "Add Batch Controls Position"
 msgstr "Ajouter une position de contrôle de lot"
 
 #: batch/add-batch-position.php:198 batch/add-batch.php:112
-#: mail/vlResultMail.php:234
+#: batch/edit-batch-position.php:170 mail/vlResultMail.php:234
 msgid "Batch"
 msgstr "Lot"
 
 #: batch/add-batch-position.php:206 batch/add-batch.php:225
-#: batch/add-batch.php:228 batch/batches.php:134 batch/edit-batch.php:198
+#: batch/add-batch.php:228 batch/batches.php:134
+#: batch/edit-batch-position.php:178 batch/edit-batch.php:198
 #: batch/edit-batch.php:200 covid-19/management/covid-19-clinic-report.php:100
 #: covid-19/management/covid-19-clinic-report.php:209
 #: covid-19/management/covid-19-clinic-report.php:312
@@ -2861,13 +2865,55 @@ msgstr "Veuillez sélectionner un ou plusieurs échantillons"
 msgid "You have to choose a testing platform to proceed"
 msgstr "Vous devez choisir une plateforme de test pour procéder"
 
-#: batch/batches.php:69
+#: batch/batches.php:15
+msgid "HIV Viral Load"
+msgstr "Charge virale du VIH"
+
+#: batch/batches.php:21
+msgid "Viral Load Test Worksheet"
+msgstr "Feuille de calcul du test de charge virale"
+
+#: batch/batches.php:29
+msgid "EID Test Worksheet"
+msgstr "Feuille de travail pour le test EID"
+
+#: batch/batches.php:37
+msgid "Covid-19 Test Worksheet"
+msgstr "Feuille de travail pour le test Covid-19"
+
+#: batch/batches.php:45
+msgid "Hepatitis Test Worksheet"
+msgstr "Feuille de travail pour le test de l'hépatite"
+
+#: batch/batches.php:48 vl/requests/forms/add-cameroon.php:450
+#: vl/requests/forms/edit-cameroon.php:533
+#: vl/results/forms/update-cameroon-result.php:568
+msgid "Tuberculosis"
+msgstr "Tuberculose"
+
+#: batch/batches.php:54
+msgid "TB Test Worksheet"
+msgstr "Feuille de travail pour le test de la tuberculose"
+
+#: batch/batches.php:57 facilities/addFacility.php:369
+#: facilities/addFacility.php:638 facilities/mapTestType.php:82
+#: instruments/add-instrument.php:131 instruments/add-instrument.php:394
+#: instruments/edit-instrument.php:152 instruments/edit-instrument.php:345
+#: instruments/edit-instrument.php:447
+msgid "Other Lab Tests"
+msgstr "Autres tests de laboratoire"
+
+#: batch/batches.php:63
+msgid "Lab Test Worksheet"
+msgstr "Feuille de travail pour le test en laboratoire"
+
+#: batch/batches.php:67
+msgid "Invalid test type"
+msgstr "Type de test non valide"
+
+#: batch/batches.php:69 batch/batches.php:87
 msgid "Manage Batches for"
 msgstr "Gérer les lots pour"
-
-#: batch/batches.php:87
-msgid "Manage "
-msgstr "Gérer "
 
 #: batch/batches.php:90
 msgid "Manage Batches"
@@ -2908,16 +2954,16 @@ msgid "This action cannot be undone."
 msgstr "Cette action est irréversible."
 
 #: batch/batches.php:248
-msgid "Batch deleted"
-msgstr "Lot supprimé"
-
-#: batch/batches.php:250
-msgid "Something went wrong. Please try again!"
-msgstr "Quelque chose s’est mal passé. Veuillez essayer à nouveau !"
+msgid "Batch deleted successfully"
+msgstr "Suppression par lots réussie"
 
 #: batch/edit-batch-position.php:59
 msgid " | Edit Batch Position"
 msgstr " | Modifier la position du lot"
+
+#: batch/edit-batch-position.php:167
+msgid "Edit Batch Controls Position"
+msgstr "Éditer la position des contrôles de lots"
 
 #: batch/edit-batch.php:7
 msgid " | Edit Batch"
@@ -10274,13 +10320,6 @@ msgstr "Veuillez saisir la longitude"
 msgid "Choose one test type"
 msgstr "Choisir un type de test"
 
-#: facilities/addFacility.php:369 facilities/addFacility.php:638
-#: facilities/mapTestType.php:82 instruments/add-instrument.php:131
-#: instruments/add-instrument.php:394 instruments/edit-instrument.php:152
-#: instruments/edit-instrument.php:345 instruments/edit-instrument.php:447
-msgid "Other Lab Tests"
-msgstr "Autres tests de laboratoire"
-
 #: facilities/addFacility.php:379 facilities/editFacility.php:381
 msgid "Available Platforms"
 msgstr "Plates-formes disponibles"
@@ -16657,12 +16696,6 @@ msgstr "Co-infection"
 msgid "Types of Co-infection"
 msgstr "Types de co-infection"
 
-#: vl/requests/forms/add-cameroon.php:450
-#: vl/requests/forms/edit-cameroon.php:533
-#: vl/results/forms/update-cameroon-result.php:568
-msgid "Tuberculosis"
-msgstr "Tuberculose"
-
 #: vl/requests/forms/add-cameroon.php:451
 #: vl/requests/forms/edit-cameroon.php:534
 #: vl/results/forms/update-cameroon-result.php:569
@@ -17052,6 +17085,15 @@ msgstr ""
 "La date de début du traitement antirétroviral ne peut être antérieure à la "
 "date de naissance du patient"
 
+#~ msgid "Manage "
+#~ msgstr "Gérer "
+
+#~ msgid "Batch deleted"
+#~ msgstr "Lot supprimé"
+
+#~ msgid "Something went wrong. Please try again!"
+#~ msgstr "Quelque chose s’est mal passé. Veuillez essayer à nouveau !"
+
 #~ msgid " | Batches"
 #~ msgstr " | Lots"
 
@@ -17081,9 +17123,6 @@ msgstr ""
 
 #~ msgid "in selected range"
 #~ msgstr "dans la plage sélectionnée"
-
-#~ msgid "Lab Tests"
-#~ msgstr "Tests de laboratoire"
 
 #~ msgid ""
 #~ "Password must be at least 12 characters long and must include AT LEAST "

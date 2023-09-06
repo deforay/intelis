@@ -12,59 +12,59 @@ $_GET = $request->getQueryParams();
 $showPatientName = false;
 $genericHide = '';
 if (isset($_GET['type']) && $_GET['type'] == 'vl') {
-	$_title = "Viral Load";
+	$_title = _translate("HIV Viral Load");
 	$refTable = "form_vl";
 	$refPrimaryColumn = "vl_sample_id";
 	$patientIdColumn = 'patient_art_no';
 	$patientFirstName = 'patient_first_name';
 	$patientLastName = 'patient_last_name';
-	$worksheetName = 'Viral Load Test Worksheet';
+	$worksheetName = _translate("Viral Load Test Worksheet");
 } elseif (isset($_GET['type']) && $_GET['type'] == 'eid') {
-	$_title = "Early Infant Diagnosis";
+	$_title = _translate("Early Infant Diagnosis");
 	$refTable = "form_eid";
 	$refPrimaryColumn = "eid_id";
 	$patientIdColumn = 'child_id';
 	$patientFirstName = 'child_name';
 	$patientLastName = 'child_surname';
-	$worksheetName = 'EID Test Worksheet';
+	$worksheetName = _translate("EID Test Worksheet");
 } elseif (isset($_GET['type']) && $_GET['type'] == 'covid19') {
-	$_title = "Covid-19";
+	$_title = _translate("Covid-19");
 	$refTable = "form_covid19";
 	$refPrimaryColumn = "covid19_id";
 	$patientIdColumn = 'patient_id';
 	$patientFirstName = 'patient_name';
 	$patientLastName = 'patient_surname';
-	$worksheetName = 'Covid-19 Test Worksheet';
+	$worksheetName = _translate('Covid-19 Test Worksheet');
 } elseif (isset($_GET['type']) && $_GET['type'] == 'hepatitis') {
-	$_title = "Hepatitis";
+	$_title = _translate("Hepatitis");
 	$refTable = "form_hepatitis";
 	$refPrimaryColumn = "hepatitis_id";
 	$patientIdColumn = 'patient_id';
 	$patientFirstName = 'patient_name';
 	$patientLastName = 'patient_surname';
-	$worksheetName = 'Hepatitis Test Worksheet';
+	$worksheetName = _translate('Hepatitis Test Worksheet');
 	$showPatientName = true;
 } elseif (isset($_GET['type']) && $_GET['type'] == 'tb') {
-	$_title = "TB";
+	$_title = _translate("Tuberculosis");
 	$refTable = "form_tb";
 	$refPrimaryColumn = "tb_id";
 	$patientIdColumn = 'patient_id';
 	$patientFirstName = 'patient_name';
 	$patientLastName = 'patient_surname';
-	$worksheetName = 'TB Test Worksheet';
+	$worksheetName = _translate('TB Test Worksheet');
 	$showPatientName = true;
 } elseif (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
-	$_title = "Other Lab Tests";
+	$_title = _translate("Other Lab Tests");
 	$refTable = "form_generic";
 	$refPrimaryColumn = "sample_id";
 	$patientIdColumn = 'patient_id';
 	$patientFirstName = 'patient_first_name';
 	$patientLastName = 'patient_last_name';
-	$worksheetName = 'Lab Test Worksheet';
+	$worksheetName = _translate('Lab Test Worksheet');
 	$showPatientName = true;
 	$genericHide = "style='display:none;'";
 } else {
-	throw new SystemException('Invalid test type - ' . $_GET['type'], 500);
+	throw new SystemException(_translate('Invalid test type') . ' - ' . $_GET['type'], 500);
 }
 $title = _translate("Manage Batches for") . " " . $_title;
 
@@ -84,7 +84,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _translate("Manage " . $_title . " Batches"); ?></h1>
+		<h1><em class="fa-solid fa-pen-to-square"></em> <?= _translate("Manage Batches for") . " " . $_title; ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
 			<li class="active"><?php echo _translate("Manage Batches"); ?></li>
@@ -131,22 +131,22 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 						<table aria-describedby="table" id="batchCodeDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th scope="col"><?php echo _translate("Batch Code"); ?></th>
+									<th scope="col"><?= _translate("Batch Code"); ?></th>
 									<?php if (!empty($_GET['type']) && $_GET['type'] == 'generic-tests') { ?>
-										<th scope="col"><?php echo _translate("Test Type"); ?></th>
+										<th scope="col"><?= _translate("Test Type"); ?></th>
 									<?php } ?>
-									<th scope="col"><?php echo _translate("No. of Samples"); ?></th>
-									<th scope="col"><?php echo _translate("No. of Samples Tested"); ?></th>
-									<th scope="col"><?php echo _translate("Tested Date"); ?></th>
-									<th scope="col"><?php echo _translate("Last Modified On"); ?></th>
+									<th scope="col"><?= _translate("No. of Samples"); ?></th>
+									<th scope="col"><?= _translate("No. of Samples Tested"); ?></th>
+									<th scope="col"><?= _translate("Tested Date"); ?></th>
+									<th scope="col"><?= _translate("Last Modified On"); ?></th>
 									<?php if ($usersService->isAllowed("/batch/edit-batch.php?type=" . $_GET['type'])) { ?>
-										<th scope="col"><?php echo _translate("Action"); ?></th>
+										<th scope="col"><?= _translate("Action"); ?></th>
 									<?php } ?>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="5" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
+									<td colspan="5" class="dataTables_empty"><?= _translate("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 						</table>
@@ -245,9 +245,9 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 				},
 				function(data) {
 					if (data == 1) {
-						alert("<?php echo _translate("Batch deleted"); ?>");
+						alert("<?php echo _translate("Batch deleted successfully"); ?>");
 					} else {
-						alert("<?php echo _translate("Something went wrong. Please try again!"); ?>");
+						alert("<?php echo _translate("Something went wrong. Please try again later."); ?>");
 					}
 					oTable.fnDraw();
 				});
