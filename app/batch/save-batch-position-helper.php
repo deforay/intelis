@@ -46,7 +46,7 @@ try {
         ];
         $db = $db->where('batch_id', $_POST['batchId']);
         $db->update($tableName, $data);
-        $_SESSION['alertMsg'] = "Batch position saved";
+        $_SESSION['alertMsg'] = _translate("Samples position in batch saved");
     }
     header("Location:batches.php?type=" . $_POST['type']);
 } catch (Exception $exc) {

@@ -1,10 +1,10 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 
-$title = "Covid-19 | Add Batch";
+$title = _translate("Covid-19 | Confirmation Manifest");;
 
 require_once APPLICATION_PATH . '/header.php';
 

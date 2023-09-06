@@ -192,10 +192,10 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-pen-to-square"></em> Add Batch Controls Position</h1>
+		<h1><em class="fa-solid fa-pen-to-square"></em> <?= _translate("Add Batch Controls Position"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
-			<li class="active">Batch</li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?= _translate("Home"); ?></a></li>
+			<li class="active"><?= _translate("Batch"); ?></li>
 		</ol>
 	</section>
 
@@ -203,7 +203,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 	<section class="content">
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<h4><strong>Batch Code : <?php echo $batchInfo[0]['batch_code']; ?></strong></h4>
+				<h4><strong><?= _translate("Batch Code"); ?> : <?php echo $batchInfo[0]['batch_code']; ?></strong></h4>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">

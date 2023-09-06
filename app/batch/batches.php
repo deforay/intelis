@@ -66,7 +66,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
 } else {
 	throw new SystemException('Invalid test type - ' . $_GET['type'], 500);
 }
-$title = _translate($_title . " | Batches");
+$title = _translate("Manage Batches for") . " " . $_title;
 
 require_once APPLICATION_PATH . '/header.php';
 
