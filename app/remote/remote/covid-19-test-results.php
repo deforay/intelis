@@ -1,14 +1,19 @@
 <?php
 
+use JsonMachine\Items;
 use App\Services\ApiService;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
-use JsonMachine\Items;
+use App\Utilities\MiscUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
+
+ini_set('memory_limit', '1G');
+set_time_limit(30000);
+ini_set('max_execution_time', 30000);
 
 //this file receives the lab results and updates in the remote db
 $jsonResponse = file_get_contents('php://input');
@@ -31,7 +36,7 @@ $transactionId = $general->generateUUID();
 
 $sampleCodes = $facilityIds = [];
 
-if (!empty($jsonResponse) && $jsonResponse != '[]') {
+if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
 
     $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
                         WHERE TABLE_SCHEMA = ? AND table_name='form_covid19'";

@@ -71,10 +71,14 @@ class MiscUtility
 
     public static function isJSON($string): bool
     {
-        return !empty($string) && is_string($string) &&
-            is_array(json_decode($string, true)) &&
-            (json_last_error() == JSON_ERROR_NONE);
+        if (empty($string) || !is_string($string)) {
+            return false;
+        }
+
+        json_decode($string);
+        return json_last_error() === JSON_ERROR_NONE;
     }
+
 
     public static function toJSON($data): ?string
     {

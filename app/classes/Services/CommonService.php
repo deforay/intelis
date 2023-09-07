@@ -706,14 +706,15 @@ class CommonService
     public function updateSyncDateTime($testType, $testTable, $columnForWhereCondition, $sampleIds, $transactionId, $facilityIds, $labId, $syncType): void
     {
         $currentDateTime = DateUtility::getCurrentDateTime();
-        $sampleIdsStr = is_array($sampleIds) ? implode(",", $sampleIds) : implode('","', $sampleIds);
+        $sampleIdsStr = is_array($sampleIds) ? "'" . implode("','", $sampleIds) . "'" : $sampleIds;
 
         if (!empty($sampleIds)) {
             $sql = "UPDATE $testTable SET data_sync = 1,
-                form_attributes = JSON_SET(COALESCE(form_attributes, '{}'), '$.remote{$syncType}Sync', '$currentDateTime', '{$syncType}SyncTransactionId', '$transactionId')
-                WHERE $columnForWhereCondition IN ($sampleIdsStr)";
+                    form_attributes = JSON_SET(COALESCE(form_attributes, '{}'), '$.remote{$syncType}Sync', '$currentDateTime', '{$syncType}SyncTransactionId', '$transactionId')
+                    WHERE $columnForWhereCondition IN ($sampleIdsStr)";
             $this->db->rawQuery($sql);
         }
+
 
         if (!empty($facilityIds)) {
             $facilityIdsStr = implode(",", array_unique(array_filter($facilityIds)));
@@ -723,10 +724,12 @@ class CommonService
             $this->db->rawQuery($sql);
         }
 
-        $sql = "UPDATE facility_details
+        if (!empty($labId)) {
+            $sql = "UPDATE facility_details
             SET facility_attributes = JSON_SET(COALESCE(facility_attributes, '{}'), '$.last{$syncType}Sync', '$currentDateTime', '$.{$testType}Last{$syncType}Sync', '$currentDateTime')
-            WHERE facility_id = $labId";
-        $this->db->rawQuery($sql);
+            WHERE facility_id = ?";
+            $this->db->rawQuery($sql, [$labId]);
+        }
     }
 
     public function updateTestRequestsSyncDateTime($testType, $testTable, $testTablePrimaryKey, $sampleIds, $transactionId, $facilityIds, $labId): void
