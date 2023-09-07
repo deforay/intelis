@@ -291,6 +291,12 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                         <input type="text" class="form-control date" name="motherTreatmentInitiationDate" id="motherTreatmentInitiationDate" placeholder="<?= _translate('Enter date of initiation'); ?>" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['mother_treatment_initiation_date']); ?>" />
                                     </td>
                                 </tr>
+                                <tr>
+                                        <th scope="row"><?= _translate("Mother's HIV Test Date"); ?></th>
+                                        <td>
+                                            <input type="text" class="form-control date" name="motherHivTestDate" id="motherHivTestDate" placeholder="<?= _translate("Enter date of Mother's Hiv Test"); ?>" title="<?= _translate("Enter date of Mother's Hiv Test"); ?>" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['mother_hiv_test_date']); ?>"/>
+                                        </td>
+                                </tr>
                             </table>
 
                             <br><br>

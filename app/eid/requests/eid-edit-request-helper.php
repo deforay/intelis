@@ -89,6 +89,13 @@ try {
 		$_POST['startedArtDate'] = null;
 	}
 
+	if (isset($_POST['motherHivTestDate']) && trim($_POST['motherHivTestDate']) != "") {
+		$motherHivTestDate = explode(" ", $_POST['motherHivTestDate']);
+		$_POST['motherHivTestDate'] = DateUtility::isoDateFormat($motherHivTestDate[0]) . " " . $motherHivTestDate[1];
+	} else {
+		$_POST['motherHivTestDate'] = null;
+	}
+
 	if (isset($_POST['test1Date']) && trim($_POST['test1Date']) != "") {
 		$test1Date = explode(" ", $_POST['test1Date']);
 		$_POST['test1Date'] = DateUtility::isoDateFormat($test1Date[0]) . " " . $test1Date[1];
@@ -146,7 +153,7 @@ try {
 	}
 
 	if (isset($_POST['childStartedArtDate']) && trim($_POST['childStartedArtDate']) != "") {
-		$nextAppointmentDate = explode(" ", $_POST['childStartedArtDate']);
+		$childStartedArtDate = explode(" ", $_POST['childStartedArtDate']);
 		$_POST['childStartedArtDate'] = DateUtility::isoDateFormat($childStartedArtDate[0]) . " " . $childStartedArtDate[1];
 	} else {
 		$_POST['childStartedArtDate'] = null;
@@ -299,6 +306,7 @@ try {
 		'child_treatment_initiation_date' => $_POST['childTreatmentInitiationDate'] ?? null,
 		'mother_cd4' => $_POST['mothercd4'] ?? null,
 		'mother_vl_result' => $motherVlResult,
+		'mother_hiv_test_date' => $_POST['motherHivTestDate'] ?? null,
 		'mother_hiv_status' => $_POST['mothersHIVStatus'] ?? null,
 		'mode_of_delivery' => $_POST['modeOfDelivery'] ?? null,
 		'mode_of_delivery_other' => $_POST['modeOfDeliveryOther'] ?? null,

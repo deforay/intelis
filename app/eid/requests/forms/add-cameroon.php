@@ -302,6 +302,12 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <input type="text" class="form-control date" name="motherTreatmentInitiationDate" id="motherTreatmentInitiationDate" placeholder="<?= _translate('Enter date of initiation'); ?>" />
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <th scope="row"><?= _translate("Mother's HIV Test Date"); ?></th>
+                                        <td>
+                                            <input type="text" class="form-control date" name="motherHivTestDate" id="motherHivTestDate" placeholder="<?= _translate("Enter date of Mother's Hiv Test"); ?>" title="<?= _translate("Enter date of Mother's Hiv Test"); ?>" />
+                                        </td>
+                                    </tr>
                                 </table>
                                 <br>
                                 <hr style="border: 1px solid #ccc;">
