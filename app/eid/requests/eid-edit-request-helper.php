@@ -159,6 +159,27 @@ try {
 		$_POST['childStartedArtDate'] = null;
 	}
 
+	if (isset($_POST['pcr1TestDate']) && trim($_POST['pcr1TestDate']) != "") {
+		$pcr1TestDate = explode(" ", $_POST['pcr1TestDate']);
+		$_POST['pcr1TestDate'] = DateUtility::isoDateFormat($pcr1TestDate[0]) . " " . $pcr1TestDate[1];
+	} else {
+		$_POST['pcr1TestDate'] = null;
+	}
+
+	if (isset($_POST['pcr2TestDate']) && trim($_POST['pcr2TestDate']) != "") {
+		$pcr2TestDate = explode(" ", $_POST['pcr2TestDate']);
+		$_POST['pcr2TestDate'] = DateUtility::isoDateFormat($pcr2TestDate[0]) . " " . $pcr2TestDate[1];
+	} else {
+		$_POST['pcr2TestDate'] = null;
+	}
+
+	if (isset($_POST['pcr3TestDate']) && trim($_POST['pcr3TestDate']) != "") {
+		$pcr3TestDate = explode(" ", $_POST['pcr3TestDate']);
+		$_POST['pcr3TestDate'] = DateUtility::isoDateFormat($pcr3TestDate[0]) . " " . $pcr3TestDate[1];
+	} else {
+		$_POST['pcr3TestDate'] = null;
+	}
+
 	if (isset($_POST['dateOfWeaning']) && trim($_POST['dateOfWeaning']) != "") {
 		$nextAppointmentDate = explode(" ", $_POST['dateOfWeaning']);
 		$_POST['dateOfWeaning'] = DateUtility::isoDateFormat($dateOfWeaning[0]) . " " . $dateOfWeaning[1];
@@ -311,6 +332,13 @@ try {
 		'mode_of_delivery' => $_POST['modeOfDelivery'] ?? null,
 		'mode_of_delivery_other' => $_POST['modeOfDeliveryOther'] ?? null,
 		'mother_art_status' => $_POST['motherArtStatus'] ?? null,
+		'pcr_1_test_date' => $_POST['pcr1TestDate'] ?? null,
+		'pcr_2_test_date' => $_POST['pcr2TestDate'] ?? null,
+		'pcr_3_test_date' => $_POST['pcr3TestDate'] ?? null,
+		'pcr_1_test_result' => $_POST['pcr1TestResult'] ?? null,
+		'pcr_2_test_result' => $_POST['pcr2TestResult'] ?? null,
+		'pcr_3_test_result' => $_POST['pcr3TestResult'] ?? null,
+		'serological_test' => $_POST['serologicalTest'] ?? null,
 		'mother_mtct_risk' => $_POST['motherMtctRisk'] ?? null,
 		'started_art_date' => $_POST['startedArtDate'] ?? null,
 		'is_child_symptomatic' => $_POST['isChildSymptomatic'] ?? null,
@@ -338,6 +366,7 @@ try {
 		'is_cotrimoxazole_being_administered_to_the_infant' => $_POST['isCotrimoxazoleBeingAdministered'] ?? null,
 		'specimen_type' => $_POST['specimenType'] ?? null,
 		'sample_collection_date' => $_POST['sampleCollectionDate'] ?? null,
+		'is_sample_recollected' => $_POST['isSampleRecollected'] ?? null,
 		'sample_dispatched_datetime' => $_POST['sampleDispatchedDate'] ?? null,
 		'rapid_test_performed' => $_POST['rapidTestPerformed'] ?? null,
 		'rapid_test_date' => $_POST['rapidtestDate'] ?? null,

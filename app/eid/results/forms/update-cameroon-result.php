@@ -387,42 +387,64 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                 </tr>
 
                                 <tr>
+                                    <th scope="row"><?= _translate('Requesting Clinician Name'); ?></th>
+                                    <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Request Clinician Name" title="Please enter request clinician" value="<?php echo $eidInfo['clinician_name']; ?>" /></td>
 
-                                    <th scope="row"><?= _translate('Previous PCR test'); ?> </th>
-                                    <td>
-                                        <select class="form-control" title="Please select if Previous PCR Test was done" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore" onchange="setRelatedField(this.value);">
-                                            <option value=''> <?= _translate('-- Select --'); ?> </option>
-                                            <option value="yes" <?php echo ($eidInfo['pcr_test_performed_before'] == 'yes') ? "selected='selected'" : ""; ?>> <?= _translate('Yes'); ?> </option>
-                                            <option value="no" <?php echo ($eidInfo['pcr_test_performed_before'] == 'no') ? "selected='selected'" : ""; ?>> <?= _translate('No'); ?> </option>
-                                        </select>
-                                    </td>
-                                    <th scope="row"><?= _translate('Previous PCR test date'); ?></th>
-                                    <td>
-                                        <input class="form-control date" type="text" name="previousPCRTestDate" id="previousPCRTestDate" placeholder="if yes, test date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['last_pcr_date']); ?>" />
-                                    </td>
+                                    <th scope="row"><?= _translate('Serological Test'); ?> </th>
+                                        <td>
+                                            <select class="form-control" title="<?= _translate('Please select Serological Test'); ?>" name="serologicalTest" id="serologicalTest">
+                                                <option value=''> <?= _translate('-- Select --'); ?> </option>
+                                                <option value="positive" <?php echo ($eidInfo['serological_test'] == 'positive') ? "selected='selected'" : ""; ?>> <?= _translate('Positive'); ?> </option>
+                                                <option value="negative" <?php echo ($eidInfo['serological_test'] == 'negative') ? "selected='selected'" : ""; ?>> <?= _translate('Negative'); ?> </option>
+                                                <option value="notdone" <?php echo ($eidInfo['serological_test'] == 'notdone') ? "selected='selected'" : ""; ?>> <?= _translate('Not Done'); ?> </option>
+                                            </select>
+                                        </td>
                                 </tr>
 
                                 <tr>
-
-                                    <th scope="row"><?= _translate('Previous PCR test Result'); ?></th>
-                                    <td>
-                                        <select class="form-control" name="prePcrTestResult" id="prePcrTestResult">
-                                            <option value=''> <?= _translate('-- Select --'); ?> </option>
-                                            <option value="Detected" <?php echo ($eidInfo['previous_pcr_result'] == 'Detected') ? "selected='selected'" : ""; ?>> <?= _translate('Detected'); ?> </option>
-                                            <option value="Not Detected" <?php echo ($eidInfo['previous_pcr_result'] == 'Not Detected') ? "selected='selected'" : ""; ?>> <?= _translate('Not Detected'); ?> </option>
-                                        </select>
-                                    </td>
-                                    <th scope="row"><?= _translate('Reason for 2nd PCR'); ?></th>
-                                    <td>
-                                        <select class="form-control" name="pcrTestReason" id="pcrTestReason">
-                                            <option value=''> <?= _translate('-- Select --'); ?> </option>
-                                            <option value="Confirmation of positive first EID PCR test result" <?php echo ($eidInfo['reason_for_pcr'] == 'Confirmation of positive first EID PCR test result') ? "selected='selected'" : ""; ?>> <?= _translate('Confirmation of positive first EID PCR test result'); ?> </option>
-                                            <option value="Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months" <?php echo ($eidInfo['reason_for_pcr'] == 'Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months') ? "selected='selected'" : ""; ?>> <?= _translate('Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months'); ?> </option>
-                                            <option value="Positive HIV rapid test result at 9 months or later" <?php echo ($eidInfo['reason_for_pcr'] == 'Positive HIV rapid test result at 9 months or later') ? "selected='selected'" : ""; ?>> <?= _translate('Positive HIV rapid test result at 9 months or later'); ?> </option>
-                                            <option value="Other" <?php echo ($eidInfo['reason_for_pcr'] == 'other') ? "selected='selected'" : ""; ?>> <?= _translate('Other'); ?> </option>
-                                        </select>
-                                    </td>
-                                </tr>
+                                        <th scope="row"><?= _translate('PCR 1 test date'); ?></th>
+                                        <td>
+                                            <input class="form-control date" type="text" name="pcr1TestDate" id="pcr1TestDate" placeholder="<?= _translate('Test date'); ?>" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['pcr_1_test_date']); ?>" />
+                                        </td>
+                                        <th scope="row"><?= _translate('PCR 1 test result'); ?></th>
+                                        <td>
+                                            <select class="form-control" name="pcr1TestResult" id="pcr1TestResult">
+                                                <option value=''> <?= _translate('-- Select --'); ?> </option>
+                                                <option value="Detected" <?php echo ($eidInfo['pcr_1_test_result'] == 'Detected') ? "selected='selected'" : ""; ?>> <?= _translate('Detected'); ?> </option>
+                                                <option value="Not Detected" <?php echo ($eidInfo['pcr_1_test_result'] == 'Not Detected') ? "selected='selected'" : ""; ?>> <?= _translate('Not Detected'); ?> </option>
+                                            </select>
+                                        </td>
+                                      
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"><?= _translate('PCR 2 test date'); ?></th>
+                                        <td>
+                                            <input class="form-control date" type="text" name="pcr2TestDate" id="pcr2TestDate" placeholder="<?= _translate('Test date'); ?>" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['pcr_2_test_date']); ?>" />
+                                        </td>
+                                        <th scope="row"><?= _translate('PCR 2 test result'); ?></th>
+                                        <td>
+                                            <select class="form-control" name="pcr2TestResult" id="pcr2TestResult">
+                                                <option value=''> <?= _translate('-- Select --'); ?> </option>
+                                                <option value="Detected" <?php echo ($eidInfo['pcr_2_test_result'] == 'Detected') ? "selected='selected'" : ""; ?>> <?= _translate('Detected'); ?> </option>
+                                                <option value="Not Detected" <?php echo ($eidInfo['pcr_2_test_result'] == 'Not Detected') ? "selected='selected'" : ""; ?>> <?= _translate('Not Detected'); ?> </option>
+                                            </select>
+                                        </td>
+                                       
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"><?= _translate('PCR 3 test date'); ?></th>
+                                        <td>
+                                            <input class="form-control date" type="text" name="pcr3TestDate" id="pcr3TestDate" placeholder="<?= _translate('Test date'); ?>" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['pcr_3_test_date']); ?>" />
+                                        </td>
+                                        <th scope="row"><?= _translate('PCR 3 test result'); ?></th>
+                                        <td>
+                                            <select class="form-control" name="pcr3TestResult" id="pcr3TestResult">
+                                                <option value=''> <?= _translate('-- Select --'); ?> </option>
+                                                <option value="Detected" <?php echo ($eidInfo['pcr_3_test_result'] == 'Detected') ? "selected='selected'" : ""; ?>> <?= _translate('Detected'); ?> </option>
+                                                <option value="Not Detected" <?php echo ($eidInfo['pcr_3_test_result'] == 'Not Detected') ? "selected='selected'" : ""; ?>> <?= _translate('Not Detected'); ?> </option>
+                                            </select>
+                                        </td>
+                                    </tr>
                                 <tr>
                                     <th scope="row"><?= _translate('Reason for Sample Collection'); ?></th>
                                     <td>
@@ -449,10 +471,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                         <input type="text" name="labTestingPointOther" id="labTestingPointOther" class="form-control" title="<?= _translate('Please specify other point of entry') ?>" placeholder="<?= _translate('Please specify other point of entry') ?>" style="display:<?php echo ($eidInfo['lab_testing_point'] == 'other') ? 'block' : 'none' ?>;" value="<?php echo ($eidInfo['lab_testing_point_other']); ?>" />
                                     </td>
                                 </tr>
-                                <tr>
-                                    <th scope="row"><?= _translate('Requesting Clinician Name'); ?></th>
-                                    <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Request Clinician Name" title="Please enter request clinician" value="<?php echo $eidInfo['clinician_name']; ?>" /></td>
-                                </tr>
+                            
                             </table>
                             <br><br>
                             <table aria-describedby="table" class="table" aria-hidden="true">
@@ -466,8 +485,14 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                     <td style="width:35% !important;">
                                         <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" onchange="generateSampleCode();" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_collection_date']); ?>" />
                                     </td>
-                                    <th style="width:15% !important;"></th>
-                                    <td style="width:35% !important;"></td>
+                                    <th style="width:15% !important;"><?= _translate('Recollected'); ?></th>
+                                        <td style="width:35% !important;">
+                                            <select class="form-control" name="isSampleRecollected" id="isSampleRecollected">
+                                                <option value=''> <?= _translate('-- Select --'); ?> </option>
+                                                <option value="yes" <?php echo ($eidInfo['is_sample_recollected'] == 'yes') ? "selected='selected'" : ""; ?>> <?= _translate('Yes'); ?> </option>
+                                                <option value="no" <?php echo ($eidInfo['is_sample_recollected'] == 'no') ? "selected='selected'" : ""; ?>> <?= _translate('No'); ?> </option>
+                                            </select>
+                                        </td>
                                 </tr>
                                 <tr>
                                     <th scope="row"><?= _translate('Name of health personnel'); ?></th>
