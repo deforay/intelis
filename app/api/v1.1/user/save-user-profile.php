@@ -33,7 +33,9 @@ $app = ContainerRegistry::get(ApiService::class);
 $transactionId = $general->generateUUID();
 
 try {
-    ini_set('memory_limit', -1);
+    ini_set('memory_limit', '1G');
+    set_time_limit(30000);
+    ini_set('max_execution_time', 20000);
     $authToken = $general->getAuthorizationBearerToken();
     $user = $usersService->getUserByToken($authToken);
     if (!empty($origJson)) {
@@ -53,7 +55,7 @@ try {
         if (!empty($user)) {
             $post = $input;
         } else {
-            $post = array_map('htmlspecialchars', $input['post']);
+            $post = $input['post'];
         }
     }
 

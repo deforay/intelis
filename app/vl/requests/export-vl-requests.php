@@ -7,8 +7,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
-ini_set('memory_limit', -1);
-ini_set('max_execution_time', -1);
+ini_set('memory_limit', '1G');
+set_time_limit(30000);
+ini_set('max_execution_time', 30000);
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -104,13 +105,13 @@ foreach ($rResult as $aRow) {
 	$row[] = $aRow['facility_district'];
 	$row[] = $aRow['facility_state'];
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-		if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes'){
+		if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
 			$key = base64_decode('zACCxM1c1AfRevJ/Zpk+PKXpO+ebWjNSgCRa5/Uheh4=');
-			$aRow['patient_art_no'] = $general->crypto('decrypt' ,$aRow['patient_art_no'], $key);
-			$patientFname = $general->crypto('decrypt' ,$patientFname, $key);
-			$patientMname = $general->crypto('decrypt' ,$patientMname, $key);
-			$patientLname = $general->crypto('decrypt' ,$patientLname, $key);
-		 }
+			$aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
+			$patientFname = $general->crypto('decrypt', $patientFname, $key);
+			$patientMname = $general->crypto('decrypt', $patientMname, $key);
+			$patientLname = $general->crypto('decrypt', $patientLname, $key);
+		}
 		$row[] = $aRow['patient_art_no'];
 		$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
 	}

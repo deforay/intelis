@@ -9,7 +9,9 @@ use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
-ini_set('memory_limit', -1);
+ini_set('memory_limit', '1G');
+set_time_limit(30000);
+ini_set('max_execution_time', 20000);
 
 
 

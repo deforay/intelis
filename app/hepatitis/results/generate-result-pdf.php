@@ -9,8 +9,9 @@ use App\Services\CommonService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 
-ini_set('memory_limit', -1);
-ini_set('max_execution_time', -1);
+ini_set('memory_limit', '1G');
+set_time_limit(30000);
+ini_set('max_execution_time', 30000);
 
 
 $tableName1 = "activity_log";

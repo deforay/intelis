@@ -3,7 +3,7 @@
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
-$title = _translate("Audit Trail");
+$title = _translate("API Sync History");
 require_once APPLICATION_PATH . '/header.php';
 
 

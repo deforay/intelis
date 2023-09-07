@@ -7,9 +7,14 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Utilities\MiscUtility;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
+
+ini_set('memory_limit', '1G');
+set_time_limit(30000);
+ini_set('max_execution_time', 30000);
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -37,7 +42,7 @@ try {
 
     $sampleCodes = $facilityIds = [];
     $labId = null;
-    if (!empty($jsonResponse) && $jsonResponse != '[]') {
+    if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
 
 
         $resultData = [];

@@ -5,6 +5,10 @@ if (php_sapi_name() == 'cli') {
     require_once(__DIR__ . "/../../../bootstrap.php");
 }
 
+ini_set('memory_limit', '1G');
+set_time_limit(30000);
+ini_set('max_execution_time', 30000);
+
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
@@ -82,7 +86,7 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
 
     $columnList = [];
 
-    if (!empty($jsonResponse) && $jsonResponse != '[]') {
+    if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
 
         $options = [
             'pointer' => '/result',
@@ -246,7 +250,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
 
     $jsonResponse = $apiService->post($url, $payload);
 
-    if (!empty($jsonResponse) && $jsonResponse != '[]') {
+    if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
 
         $options = [
             'decoder' => new ExtJsonDecoder(true)
@@ -395,7 +399,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 
     $jsonResponse = $apiService->post($url, $payload);
 
-    if (!empty($jsonResponse) && $jsonResponse != '[]') {
+    if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
 
         $options = [
             'decoder' => new ExtJsonDecoder(true)
@@ -528,7 +532,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
     $jsonResponse = $apiService->post($url, $payload);
 
-    if (!empty($jsonResponse) && $jsonResponse != '[]') {
+    if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
         $removeKeys = array(
             'covid19_id',
             'sample_batch_id',
@@ -723,7 +727,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 
     $jsonResponse = $apiService->post($url, $payload);
 
-    if (!empty($jsonResponse) && $jsonResponse != '[]') {
+    if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
         $removeKeys = array(
             'hepatitis_id',
             'sample_batch_id',
@@ -919,7 +923,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
 
     $jsonResponse = $apiService->post($url, $payload);
 
-    if (!empty($jsonResponse) && $jsonResponse != '[]') {
+    if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
         $removeKeys = array(
             'tb_id',
             'sample_batch_id',

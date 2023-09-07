@@ -1,15 +1,12 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
+use GuzzleHttp\Client;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 use App\Utilities\ImageResizeUtility;
-use GuzzleHttp\Client;
-
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+use App\Utilities\MiscUtility;
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
@@ -30,13 +27,13 @@ $uploadedFiles = $request->getUploadedFiles();
 
 $userId = base64_decode($_POST['userId']);
 
+$userInfo = $usersService->getUserInfo($userId);
+
 $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
-
-if (!file_exists($signatureImagePath) && !is_dir($signatureImagePath)) {
-    mkdir($signatureImagePath, 0777, true);
-}
-
+MiscUtility::makeDirectory($signatureImagePath);
 $signatureImagePath = realpath($signatureImagePath);
+
+$signatureImage = null;
 
 try {
     if (trim($_POST['userName']) != '' && trim($_POST['loginId']) != '' && ($_POST['role']) != '') {
@@ -74,15 +71,17 @@ try {
             $tmpFilePath = $file->getStream()->getMetadata('uri');
             $fileSize = $file->getSize();
             $fileMimeType = $file->getClientMediaType();
-            $newFileName = "usign-" . $userId . "." . $fileExtension;
-            $newFilePath = $signatureImagePath . DIRECTORY_SEPARATOR . $newFileName;
-            $file->moveTo($newFilePath);
+            $signatureImage = "usign-" . $userId . "." . $fileExtension;
+            $signatureImage = $signatureImagePath . DIRECTORY_SEPARATOR . $signatureImage;
+            $file->moveTo($signatureImage);
 
             $resizeObj = new ImageResizeUtility();
-            $resizeObj = $resizeObj->setFileName($newFilePath);
+            $resizeObj = $resizeObj->setFileName($signatureImage);
             $resizeObj->resizeToWidth(250);
-            $resizeObj->save($newFilePath);
-            $data['user_signature'] = $newFileName;
+            $resizeObj->save($signatureImage);
+            $data['user_signature'] = $signatureImage;
+        } else {
+            $signatureImage = $userInfo['user_signature'] ?? null;
         }
 
         if (isset($_POST['password']) && trim($_POST['password']) != "") {
@@ -135,26 +134,45 @@ try {
         $systemType = $general->getSystemConfig('sc_user_type');
         if (!empty(SYSTEM_CONFIG['remoteURL']) && $systemType == 'vluser') {
             $_POST['userId'] = $userId;
-            $_POST['loginId'] = null; // We don't want to unintentionally end up creating admin users on STS
-            $_POST['password'] = null; // We don't want to unintentionally end up creating admin users on STS
-            $_POST['hashAlgorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on STS
-            $_POST['role'] = 0; // We don't want to unintentionally end up creating admin users on STS
+            $_POST['loginId'] = null;
+            $_POST['password'] = null;
+            $_POST['hashAlgorithm'] = 'phb';
+            $_POST['role'] = 0;
             $_POST['status'] = 'inactive';
             $_POST['userId'] = base64_encode($userId);
             $apiUrl = SYSTEM_CONFIG['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
-            $post = array(
-                'post' => json_encode($_POST),
-                'sign' => (isset($signatureImagePath) && $signatureImagePath != "") ? curl_file_create($signatureImagePath) : null,
-                'x-api-key' => $general->generateRandomString(18)
-            );
 
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $apiUrl);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, ($post));
-            $result = curl_exec($ch);
-            curl_close($ch);
-            $deResult = json_decode($result, true);
+            $multipart = [
+                [
+                    'name' => 'post',
+                    'contents' => json_encode($_POST)
+                ],
+                [
+                    'name' => 'x-api-key',
+                    'contents' => $general->generateRandomString(18)
+                ]
+            ];
+
+            if (!empty($signatureImage) && MiscUtility::imageExists($signatureImage)) {
+                $multipart[] = [
+                    'name' => 'sign',
+                    'contents' => fopen($signatureImage, 'r')
+                ];
+            }
+
+            $client = new Client();
+            try {
+                $response = $client->post($apiUrl, [
+                    'multipart' => $multipart
+                ]);
+
+                $result = $response->getBody()->getContents();
+                $deResult = json_decode($result, true);
+            } catch (\Exception $e) {
+                // Handle the exception
+                echo "Error: " . $e->getMessage();
+                echo ($e->getTraceAsString());
+            }
         }
     }
 

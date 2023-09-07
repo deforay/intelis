@@ -1,9 +1,10 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 use App\Utilities\ImageResizeUtility;
 
 
@@ -38,7 +39,7 @@ if (!file_exists($signatureImagePath) && !is_dir($signatureImagePath)) {
 
 $signatureImagePath = realpath($signatureImagePath);
 
-
+$signatureImage = null;
 
 try {
     if (trim($_POST['userName']) != '' && trim($_POST['loginId']) != '' && ($_POST['role']) != '' && ($_POST['password']) != '') {
@@ -68,15 +69,15 @@ try {
             $tmpFilePath = $file->getStream()->getMetadata('uri');
             $fileSize = $file->getSize();
             $fileMimeType = $file->getClientMediaType();
-            $newFileName = "usign-" . $userId . "." . $fileExtension;
-            $newFilePath = $signatureImagePath . DIRECTORY_SEPARATOR . $newFileName;
+            $signatureImage = "usign-" . $userId . "." . $fileExtension;
+            $newFilePath = $signatureImagePath . DIRECTORY_SEPARATOR . $signatureImage;
             $file->moveTo($newFilePath);
 
             $resizeObj = new ImageResizeUtility();
             $resizeObj = $resizeObj->setFileName($newFilePath);
             $resizeObj->resizeToWidth(250);
             $resizeObj->save($newFilePath);
-            $data['user_signature'] = $newFileName;
+            $data['user_signature'] = $signatureImage;
         }
 
         if (!empty($_POST['authToken'])) {
@@ -117,7 +118,7 @@ try {
         $apiUrl = SYSTEM_CONFIG['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
         $post = array(
             'post' => json_encode($_POST),
-            'sign' => (isset($signatureImagePath) && $signatureImagePath != "") ? curl_file_create($signatureImagePath) : null,
+            'sign' => (!empty($signatureImage) && MiscUtility::imageExists($signatureImage)) ? curl_file_create($signatureImage) : null,
             'x-api-key' => $general->generateRandomString(18)
         );
 
