@@ -193,7 +193,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                     </tr>
                                     <tr>
                                         <th><?= _translate("Project Name"); ?></th>
-                                        <td><select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
+                                        <td><select class="form-control" name="fundingSource" id="fundingSource" title="<?= _translate('Please choose implementing partner'); ?>" style="width:100%;">
                                                 <option value=""> <?= _translate("-- Select --"); ?> </option>
                                                 <?php
                                                 foreach ($fundingSourceList as $fundingSource) {
@@ -203,7 +203,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                             </select>
                                         </td>
                                         <th><?= _translate("Implementing Partner"); ?></th>
-                                        <td><select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
+                                        <td><select class="form-control" name="implementingPartner" id="implementingPartner" title="<?= _translate('Please choose implementing partner'); ?>" style="width:100%;">
                                                 <option value=""> <?= _translate("-- Select --"); ?> </option>
                                                 <?php
                                                 foreach ($implementingPartnerList as $implementingPartner) {
@@ -283,7 +283,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                             </select>
                                         </td>
                                         <th scope="row"><?= _translate("Payam"); ?></th>
-                                        <td><input class="form-control" id="patientZone" value="<?php echo $covid19Info['patient_zone']; ?>" name="patientZone" placeholder="Case Payam" title="<?= _translate("Please enter the Case Payam"); ?>" style="width:100%;"></td>
+                                        <td><input class="form-control" id="patientZone" value="<?php echo $covid19Info['patient_zone']; ?>" name="patientZone" placeholder="<?= _translate('Case Payam'); ?>" title="<?= _translate("Please enter the Case Payam"); ?>" style="width:100%;"></td>
 
                                     </tr>
                                     <tr>
@@ -320,7 +320,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                     <tr>
                                         <th scope="row"><?= _translate("Type of Test Request"); ?></th>
                                         <td>
-                                            <select name="testTypeRequested" id="testTypeRequested" class="form-control" title="Please choose type of test request" style="width:100%">
+                                            <select name="testTypeRequested" id="testTypeRequested" class="form-control" title="<?= _translate('Please choose type of test request'); ?>" style="width:100%">
                                                 <option value=""><?= _translate("-- Select --"); ?></option>
                                                 <option value="Real Time RT-PCR" <?php echo (isset($covid19Info['type_of_test_requested']) && $covid19Info['type_of_test_requested'] == 'Real Time RT-PCR') ? "selected='selected'" : ""; ?>><?= _translate("Real Time RT-PCR"); ?></option>
                                                 <option value="RDT-Antibody" <?php echo (isset($covid19Info['type_of_test_requested']) && $covid19Info['type_of_test_requested'] == 'RDT-Antibody') ? "selected='selected'" : ""; ?>><?= _translate("RDT-Antibody"); ?></option>
@@ -330,7 +330,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </td>
                                         <th scope="row"><?= _translate("Reason for Test Request"); ?> <span class="mandatory">*</span></th>
                                         <td>
-                                            <select name="reasonForCovid19Test" id="reasonForCovid19Test" class="form-control isRequired" title="Please choose specimen type" style="width:100%">
+                                            <select name="reasonForCovid19Test" id="reasonForCovid19Test" class="form-control isRequired" title="<?= _translate('Please choose specimen type'); ?>" style="width:100%">
                                                 <option value=""><?= _translate("-- Select --"); ?></option>
                                                 <?php echo $general->generateSelectOptions($covid19ReasonsForTesting, $covid19Info['reason_for_covid19_test']); ?>
                                             </select>
@@ -901,33 +901,33 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         });
         $('#labId').select2({
             width: '100%',
-            placeholder: "Select Testing Lab"
+            placeholder: "<?= _translate('Select Testing Lab'); ?>"
         });
         $('#reviewedBy').select2({
             width: '100%',
-            placeholder: "Select Reviewed By"
+            placeholder: "<?= _translate('Select Reviewed By'); ?>"
         });
         if (testCounter == 0) {
             addTestRow();
         }
         $('#patientNationality').select2({
-            placeholder: "Select Nationality"
+            placeholder: "<?= _translate('Select Nationality'); ?>"
         });
 
         $('#patientProvince').select2({
-            placeholder: "Select Case State"
+            placeholder: "<?= _translate('Select Case State'); ?>"
         });
 
         $('#facilityId').select2({
-            placeholder: "Select Clinic/Health Center"
+            placeholder: "<?= _translate('Select Clinic/Health Center'); ?>"
         });
 
         $('#labTechnician').select2({
-            placeholder: "Select Lab Technician"
+            placeholder: "<?= _translate('Select Lab Technician'); ?>"
         });
         $('#authorizedBy').select2({
             width: '100%',
-            placeholder: "Select Authorized By"
+            placeholder: "<?= _translate('Select Authorized By'); ?>"
         });
         getfacilityProvinceDetails($("#facilityId").val());
         getTestingPoints();
@@ -976,7 +976,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         let rowString = `<tr>
                     <td class="text-center">${testCounter}</td>
                     <td>
-                    <select onchange="testMethodChanged(this.value,${testCounter})" class="form-control test-name-table-input" id="testName${testCounter}" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
+                    <select onchange="testMethodChanged(this.value,${testCounter})" class="form-control test-name-table-input" id="testName${testCounter}" name="testName[]" title="<?= _translate('Please enter the name of the Testkit (or) Test Method used'); ?>">
                     <option value="">-- Select --</option>
                     <option value="Real Time RT-PCR">Real Time RT-PCR</option>
                     <option value="RDT-Antibody">RDT-Antibody</option>
@@ -985,12 +985,12 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                     <option value="ELISA">ELISA</option>
                     <option value="other">Others</option>
                 </select>
-                <input type="text" name="testNameOther[]" id="testNameOther${testCounter}" class="form-control testNameOther${testCounter}" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
+                <input type="text" name="testNameOther[]" id="testNameOther${testCounter}" class="form-control testNameOther${testCounter}" title="<?= _translate('Please enter the name of the Testkit (or) Test Method used'); ?>" placeholder="<?= _translate('Please enter the name of the Testkit (or) Test Method used'); ?>" style="display: none;margin-top: 10px;" />
             </td>
-            <td><input type="text" name="testDate[]" id="testDate${testCounter}" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ${testCounter}" /></td>
-            <td><select name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
-            <td class="kitlabels" style="display: none;"><input type="text" name="lotNo[]" id="lotNo${testCounter}" class="form-control kit-fields${testCounter}" placeholder="Kit lot no" title="Please enter the kit lot no. for row ${testCounter}" style="display:none;"/></td>
-            <td class="kitlabels" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control expDate kit-fields${testCounter}" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" style="display:none;"/></td>
+            <td><input type="text" name="testDate[]" id="testDate${testCounter}" class="form-control test-name-table-input dateTime" placeholder="<?= _translate('Tested on'); ?>" title="<?= _translate('Please enter the tested on for row'); ?> ${testCounter}" /></td>
+            <td><select name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="<?= _translate('Please select the Testing Platform for'); ?> ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
+            <td class="kitlabels" style="display: none;"><input type="text" name="lotNo[]" id="lotNo${testCounter}" class="form-control kit-fields${testCounter}" placeholder="<?= _translate('Kit lot no'); ?>" title="<?= _translate('Please enter the kit lot no. for row'); ?> ${testCounter}" style="display:none;"/></td>
+            <td class="kitlabels" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control expDate kit-fields${testCounter}" placeholder="<?= _translate('Expiry date'); ?>" title="<?= _translate('Please enter the expiry date for row'); ?> ${testCounter}" style="display:none;"/></td>
             <td>
                 <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult${testCounter}" title="Please select the result"><?= $general->generateSelectOptions($covid19Results, null, '-- Select --'); ?></select>
             </td>

@@ -87,7 +87,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                     <h3 class="box-title"><?= _translate('HEALTH FACILITY INFORMATION'); ?></h3>
                                 </div>
                                 <div class="box-header with-border">
-                                    <h3 class="box-title" style="font-size:1em;">To be filled by requesting Clinician/Nurse</h3>
+                                    <h3 class="box-title" style="font-size:1em;"><?= _translate('To be filled by requesting Clinician/Nurse'); ?></h3>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
@@ -101,7 +101,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                         <?php } else { ?>
                                             <td><label for="sampleCode"><?= _translate('Sample ID'); ?> </label><span class="mandatory">*</span></td>
                                             <td>
-                                                <input type="text" readonly value="<?php echo $eidInfo[$sampleCode]; ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Sample ID" title="Please enter sample id" style="width:100%;" onchange="" />
+                                                <input type="text" readonly value="<?php echo $eidInfo[$sampleCode]; ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="<?= _translate('Sample ID'); ?>" title="<?= _translate('Please enter sample id'); ?>" style="width:100%;" onchange="" />
                                             </td>
                                         <?php } ?>
                                         <td></td>
@@ -117,7 +117,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                         </td>
                                         <td><label for="district"><?= _translate('District'); ?> </label><span class="mandatory">*</span><br>
                                             <select class="form-control isRequired" name="district" id="district" title="Please choose district" style="width:100%;" onchange="getfacilityDistrictwise(this);">
-                                                <option value=""> -- Select -- </option>
+                                                <option value=""> <?= _translate('-- Select --'); ?> </option>
                                             </select>
                                         </td>
                                         <td><label for="facilityId"><?= _translate('Health Facility'); ?> </label><span class="mandatory">*</span><br>
@@ -134,7 +134,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                         <td>
                                             <label for="fundingSource"><?= _translate('Project Name'); ?> </label><br>
                                             <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
-                                                <option value=""> -- Select -- </option>
+                                                <option value=""> <?= _translate('-- Select --'); ?> </option>
                                                 <?php
                                                 foreach ($fundingSourceList as $fundingSource) {
                                                 ?>
@@ -146,7 +146,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                             <label for="implementingPartner"><?= _translate('Implementing Partner'); ?> </label><br>
 
                                             <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
-                                                <option value=""> -- Select -- </option>
+                                                <option value=""> <?= _translate('-- Select --'); ?> </option>
                                                 <?php
                                                 foreach ($implementingPartnerList as $implementingPartner) {
                                                 ?>
@@ -165,42 +165,42 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
-                                        <th scope="row" style="width:15% !important"><label for="childId"><?= ('CRVS file name'); ?> <span class="mandatory">*</span> </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="childId"><?= _translate('CRVS file name'); ?> <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control isRequired" id="childId" name="childId" placeholder="<?= ('Infant Identification (Patient)'); ?>" title="<?= ('Please enter Exposed Infant Identification'); ?>" style="width:100%;" value="<?php echo $eidInfo['child_id']; ?>" onchange="" />
+                                            <input type="text" class="form-control isRequired" id="childId" name="childId" placeholder="<?= _translate('Infant Identification (Patient)'); ?>" title="<?= _translate('Please enter Exposed Infant Identification'); ?>" style="width:100%;" value="<?php echo $eidInfo['child_id']; ?>" onchange="" />
                                         </td>
-                                        <th scope="row" style="width:15% !important"><label for="childName"><?= ('Infant name'); ?> </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="childName"><?= _translate('Infant name'); ?> </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control " id="childName" name="childName" placeholder="Infant name" title="<?= ('Please enter Infant Name'); ?>" style="width:100%;" value="<?= htmlspecialchars($eidInfo['child_name']); ?>" onchange="" />
+                                            <input type="text" class="form-control " id="childName" name="childName" placeholder="<?= _translate('Infant name'); ?>" title="<?= _translate('Please enter Infant Name'); ?>" style="width:100%;" value="<?= htmlspecialchars($eidInfo['child_name']); ?>" onchange="" />
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row"><label for="childDob"><?= ('Date of Birth'); ?> <span class="mandatory">*</span> </label></th>
+                                        <th scope="row"><label for="childDob"><?= _translate('Date of Birth'); ?> <span class="mandatory">*</span> </label></th>
                                         <td>
-                                            <input type="text" class="form-control isRequired" id="childDob" name="childDob" placeholder="<?= ('Date of birth'); ?>" title="<?= ('Please enter Date of birth'); ?>" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" />
+                                            <input type="text" class="form-control isRequired" id="childDob" name="childDob" placeholder="<?= _translate('Date of birth'); ?>" title="<?= _translate('Please enter Date of birth'); ?>" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" />
                                         </td>
-                                        <th scope="row"><label for="childGender"><?= ('Gender'); ?> <span class="mandatory">*</span> </label></th>
+                                        <th scope="row"><label for="childGender"><?= _translate('Gender'); ?> <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <select class="form-control isRequired" name="childGender" id="childGender">
-                                                <option value=''> -- Select -- </option>
-                                                <option value='male' <?php echo ($eidInfo['child_gender'] == 'male') ? "selected='selected'" : ""; ?>> Male </option>
-                                                <option value='female' <?php echo ($eidInfo['child_gender'] == 'female') ? "selected='selected'" : ""; ?>> Female </option>
+                                                <option value=''> <?= _translate('-- Select --'); ?> </option>
+                                                <option value='male' <?php echo ($eidInfo['child_gender'] == 'male') ? "selected='selected'" : ""; ?>> <?= _translate('Male'); ?> </option>
+                                                <option value='female' <?php echo ($eidInfo['child_gender'] == 'female') ? "selected='selected'" : ""; ?>> <?= _translate('Female'); ?> </option>
 
                                             </select>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row"><?= ('Infant Age (months)'); ?></th>
-                                        <td><input type="number" max=24 maxlength="2" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="<?= ('Age'); ?>" title="<?= ('Age'); ?>" style="width:100%;" onchange="" value="<?= htmlspecialchars($eidInfo['child_age']); ?>" /></td>
-                                        <th scope="row"><?= ('Weight of the day'); ?></th>
-                                        <td><input type="text" class="form-control forceNumeric" id="childWeight" name="childWeight" placeholder="<?= ('Infant weight of the day in Kg'); ?>" title="<?= ('Infant weight of the day'); ?>" style="width:100%;" value="<?= $eidInfo['child_weight']; ?>" /></td>
+                                        <th scope="row"><?= _translate('Infant Age (months)'); ?></th>
+                                        <td><input type="number" max=24 maxlength="2" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="<?= _translate('Age'); ?>" title="<?= _translate('Age'); ?>" style="width:100%;" onchange="" value="<?= htmlspecialchars($eidInfo['child_age']); ?>" /></td>
+                                        <th scope="row"><?= _translate('Weight of the day'); ?></th>
+                                        <td><input type="text" class="form-control forceNumeric" id="childWeight" name="childWeight" placeholder="<?= _translate('Infant weight of the day in Kg'); ?>" title="<?= _translate('Infant weight of the day'); ?>" style="width:100%;" value="<?= $eidInfo['child_weight']; ?>" /></td>
                                     </tr>
                                     <tr>
-                                        <th scope="row"><?= ('Caretaker phone number'); ?></th>
-                                        <td><input type="text" class="form-control " id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="Caretaker Phone Number" title="Caretaker Phone Number" style="width:100%;" value="<?= htmlspecialchars($eidInfo['caretaker_phone_number']); ?>" onchange="" /></td>
+                                        <th scope="row"><?= _translate('Caretaker phone number'); ?></th>
+                                        <td><input type="text" class="form-control " id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="<?= _translate('Caretaker Phone Number'); ?>" title="Caretaker Phone Number" style="width:100%;" value="<?= htmlspecialchars($eidInfo['caretaker_phone_number']); ?>" onchange="" /></td>
 
-                                        <th scope="row"><?= ('Infant caretaker address'); ?></th>
-                                        <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="<?= ('Caretaker Address'); ?>" title="<?= ('Caretaker Address'); ?>" style="width:100%;" onchange=""><?= htmlspecialchars($eidInfo['caretaker_address']); ?></textarea></td>
+                                        <th scope="row"><?= _translate('Infant caretaker address'); ?></th>
+                                        <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="<?= _translate('Caretaker Address'); ?>" title="<?= _translate('Caretaker Address'); ?>" style="width:100%;" onchange=""><?= htmlspecialchars($eidInfo['caretaker_address']); ?></textarea></td>
 
                                     </tr>
                                     <tr>
@@ -367,7 +367,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                         </td>
                                         <th scope="row"><?= _translate('Age (months) breastfeeding stopped'); ?> </th>
                                         <td>
-                                            <input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="Age (months) breastfeeding stopped" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" value="<?php echo ($eidInfo['age_breastfeeding_stopped_in_months']); ?>" />
+                                            <input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="<?= _translate('Age (months) breastfeeding stopped'); ?>" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" value="<?php echo ($eidInfo['age_breastfeeding_stopped_in_months']); ?>" />
                                         </td>
                                     </tr>
 
@@ -383,7 +383,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                         </td>
                                         <th scope="row"><?= _translate('Previous PCR test date'); ?></th>
                                         <td>
-                                            <input class="form-control date" type="text" name="previousPCRTestDate" id="previousPCRTestDate" placeholder="if yes, test date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['last_pcr_date']); ?>" />
+                                            <input class="form-control date" type="text" name="previousPCRTestDate" id="previousPCRTestDate" placeholder="<?= _translate('if yes, test date'); ?>" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['last_pcr_date']); ?>" />
                                         </td>
                                     </tr>
 
@@ -436,7 +436,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                     </tr>
                                     <tr>
                                         <th scope="row"><?= _translate('Requesting Clinician Name'); ?></th>
-                                        <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Request Clinician Name" title="Please enter request clinician" value="<?php echo $eidInfo['clinician_name']; ?>" /></td>
+                                        <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="<?= _translate('Request Clinician Name'); ?>" title="<?= _translate('Please enter request clinician'); ?>" value="<?php echo $eidInfo['clinician_name']; ?>" /></td>
                                     </tr>
                                 </table>
 
@@ -458,11 +458,11 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                     <tr>
                                         <th scope="row"><?= _translate('Name of health personnel'); ?></th>
                                         <td>
-                                            <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Requesting Officer" value="<?= $eidInfo['sample_requestor_name'] ?>" />
+                                            <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="<?= _translate('Requesting Officer'); ?>" value="<?= $eidInfo['sample_requestor_name'] ?>" />
                                         </td>
                                         <th scope="row"><?= _translate('Contact Number'); ?></th>
                                         <td>
-                                            <input class="form-control forceNumeric" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" value="<?= $eidInfo['sample_requestor_phone'] ?>" />
+                                            <input class="form-control forceNumeric" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="<?= _translate('Requesting Officer Phone'); ?>" value="<?= $eidInfo['sample_requestor_phone'] ?>" />
                                         </td>
                                     </tr>
 
@@ -485,33 +485,33 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                                     <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                            <th scope="row"><label for="">Sample Received Date </label></th>
+                                            <th scope="row"><label for=""><?= _translate('Sample Received Date'); ?> </label></th>
                                             <td>
                                                 <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_received_at_lab_datetime']) ?>" onchange="" style="width:100%;" />
                                             </td>
 
                                         <tr>
-                                            <td><label for="labId">Lab Name </label> </td>
+                                            <td><label for="labId"><?= _translate('Lab Name'); ?> </label> </td>
                                             <td>
                                                 <select name="labId" id="labId" class="form-control" title="Please select Testing Lab name" style="width:100%;">
                                                     <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                            <th scope="row">Is Sample Rejected?</th>
+                                            <th scope="row"><?= _translate('Is Sample Rejected?'); ?></th>
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">
-                                                    <option value=''> -- Select -- </option>
-                                                    <option value="yes" <?php echo ($eidInfo['is_sample_rejected'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
-                                                    <option value="no" <?php echo ($eidInfo['is_sample_rejected'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
+                                                    <option value=''> <?= _translate('-- Select --'); ?> </option>
+                                                    <option value="yes" <?php echo ($eidInfo['is_sample_rejected'] == 'yes') ? "selected='selected'" : ""; ?>> <?= _translate('Yes'); ?> </option>
+                                                    <option value="no" <?php echo ($eidInfo['is_sample_rejected'] == 'no') ? "selected='selected'" : ""; ?>> <?= _translate('No'); ?> </option>
                                                 </select>
                                             </td>
 
                                         </tr>
                                         <tr class="show-rejection rejected" style="display:none;">
-                                            <th scope="row" class="rejected" style="display: none;">Reason for Rejection</th>
+                                            <th scope="row" class="rejected" style="display: none;"><?= _translate('Reason for Rejection'); ?></th>
                                             <td class="rejected" style="display: none;">
-                                                <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please choose reason for rejection">
-                                                    <option value="">-- Select --</option>
+                                                <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="<?= _translate('Please choose reason for rejection'); ?>">
+                                                    <option value=""><?= _translate('-- Select --'); ?></option>
                                                     <?php foreach ($rejectionTypeResult as $type) { ?>
                                                         <optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
                                                             <?php
@@ -524,21 +524,21 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                                     <?php } ?>
                                                 </select>
                                             </td>
-                                            <td>Rejection Date<span class="mandatory">*</span></td>
-                                            <td><input value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
+                                            <td><?= _translate('Rejection Date'); ?><span class="mandatory">*</span></td>
+                                            <td><input value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="<?= _translate('Select Rejection Date'); ?>" /></td>
 
                                         </tr>
                                         <tr>
-                                            <td style="width:25%;"><label for="">Sample Test Date </label></td>
+                                            <td style="width:25%;"><label for=""><?= _translate('Sample Test Date'); ?> </label></td>
                                             <td style="width:25%;">
                                                 <input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
                                             </td>
 
 
-                                            <th scope="row">Result</th>
+                                            <th scope="row"><?= _translate('Result'); ?></th>
                                             <td>
                                                 <select class="form-control result-focus" name="result" id="result">
-                                                    <option value=''> -- Select -- </option>
+                                                    <option value=''> <?= _translate('-- Select -- '); ?> </option>
                                                     <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
                                                         <option value="<?php echo $eidResultKey; ?>" <?php echo ($eidInfo['result'] == $eidResultKey) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?> </option>
                                                     <?php } ?>
@@ -546,19 +546,19 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th scope="row">Reviewed On</th>
-                                            <td><input type="text" value="<?php echo $eidInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
-                                            <th scope="row">Reviewed By</th>
+                                            <th scope="row"><?= _translate('Reviewed On'); ?></th>
+                                            <td><input type="text" value="<?php echo $eidInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="<?= _translate('Reviewed on'); ?>" title="Please enter the Reviewed on" /></td>
+                                            <th scope="row"><?= _translate('Reviewed By'); ?></th>
                                             <td>
-                                                <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
+                                                <select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="<?= _translate('Please choose reviewed by'); ?>" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($userInfo, $eidInfo['result_reviewed_by'], '-- Select --'); ?>
                                                 </select>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th scope="row">Approved On</th>
-                                            <td><input type="text" value="<?php echo $eidInfo['result_approved_datetime']; ?>" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime disabled-field form-control" placeholder="Approved on" title="Please enter the Approved on" /></td>
-                                            <th scope="row">Approved By</th>
+                                            <th scope="row"><?= _translate('Approved On'); ?></th>
+                                            <td><input type="text" value="<?php echo $eidInfo['result_approved_datetime']; ?>" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime disabled-field form-control" placeholder="<?= _translate('Approved on'); ?>" title="Please enter the Approved on" /></td>
+                                            <th scope="row"><?= _translate('Approved By'); ?></th>
                                             <td>
                                                 <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($userInfo, $eidInfo['result_approved_by'], '-- Select --'); ?>
@@ -566,8 +566,8 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                             </td>
                                         </tr>
                                         <tr class="change-reason">
-                                            <th scope="row" class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></th>
-                                            <td class="change-reason" style="display: none;"><textarea name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="Enter the reason for changing" title="Please enter the reason for changing"></textarea></td>
+                                            <th scope="row" class="change-reason" style="display: none;"><?= _translate('Reason for Changing'); ?> <span class="mandatory">*</span></th>
+                                            <td class="change-reason" style="display: none;"><textarea name="reasonForChanging" id="reasonForChanging" class="form-control date" placeholder="<?= _translate('Enter the reason for changing'); ?>" title="<?= _translate('Please enter the reason for changing'); ?>"></textarea></td>
                                             <th scope="row"></th>
                                             <td></td>
                                         </tr>
