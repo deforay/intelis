@@ -131,6 +131,7 @@ try {
         'reason_for_failure' => $_POST['reasonForFailure'] ?? null,
         'result_reviewed_by' => $_POST['reviewedBy'] ?? null,
         'result_reviewed_datetime' => $_POST['reviewedOn'] ?? null,
+        'cv_number' => $_POST['cvNumber'] ?? null,
         'vl_focal_person' => $_POST['vlFocalPerson'] ?? null,
         'vl_focal_person_phone_number' => $_POST['vlFocalPersonPhoneNumber'] ?? null,
         'tested_by' => $_POST['testedBy'] ?? null,

@@ -5031,3 +5031,9 @@ UPDATE `s_app_menu` SET `sub_module` = 'tb' WHERE `s_app_menu`.`display_text` = 
 
 -- Amit 4-Sep-2023 version 5.2.3
 UPDATE `system_config` SET `value` = '5.2.3' WHERE `system_config`.`name` = 'sc_version';
+
+
+-- Jeyabanu 7-Sep-2023
+ALTER TABLE `form_vl` ADD `cv_number` INT NULL DEFAULT NULL AFTER `request_clinician_phone_number`;
+ALTER TABLE `audit_form_vl` ADD `cv_number` INT NULL DEFAULT NULL AFTER `request_clinician_phone_number`;
+
