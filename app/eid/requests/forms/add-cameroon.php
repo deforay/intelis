@@ -412,11 +412,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </tr>
 
                                     <tr>
-                                        <th scope="row"><?= _translate('PCR 1 test date'); ?></th>
+                                        <th scope="row"><?= _translate('PCR 1 Test Date'); ?></th>
                                         <td>
                                             <input class="form-control date" type="text" name="pcr1TestDate" id="pcr1TestDate" placeholder="<?= _translate('Test date'); ?>" />
                                         </td>
-                                        <th scope="row"><?= _translate('PCR 1 test result'); ?></th>
+                                        <th scope="row"><?= _translate('PCR 1 Test Result'); ?></th>
                                         <td>
                                             <select class="form-control" name="pcr1TestResult" id="pcr1TestResult">
                                                 <option value=''> <?= _translate('-- Select --'); ?> </option>
@@ -427,11 +427,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                       
                                     </tr>
                                     <tr>
-                                        <th scope="row"><?= _translate('PCR 2 test date'); ?></th>
+                                        <th scope="row"><?= _translate('PCR 2 Test Date'); ?></th>
                                         <td>
                                             <input class="form-control date" type="text" name="pcr2TestDate" id="pcr2TestDate" placeholder="<?= _translate('Test date'); ?>" />
                                         </td>
-                                        <th scope="row"><?= _translate('PCR 2 test result'); ?></th>
+                                        <th scope="row"><?= _translate('PCR 2 Test Result'); ?></th>
                                         <td>
                                             <select class="form-control" name="pcr2TestResult" id="pcr2TestResult">
                                                 <option value=''> <?= _translate('-- Select --'); ?> </option>
@@ -442,11 +442,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                        
                                     </tr>
                                     <tr>
-                                        <th scope="row"><?= _translate('PCR 3 test date'); ?></th>
+                                        <th scope="row"><?= _translate('PCR 3 Test Date'); ?></th>
                                         <td>
                                             <input class="form-control date" type="text" name="pcr3TestDate" id="pcr3TestDate" placeholder="<?= _translate('Test date'); ?>" />
                                         </td>
-                                        <th scope="row"><?= _translate('PCR 3 test result'); ?></th>
+                                        <th scope="row"><?= _translate('PCR 3 Test Result'); ?></th>
                                         <td>
                                             <select class="form-control" name="pcr3TestResult" id="pcr3TestResult">
                                                 <option value=''> <?= _translate('-- Select --'); ?> </option>
