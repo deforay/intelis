@@ -103,7 +103,7 @@ try {
         } else {
             $exist = $batchService->doesBatchCodeExist($_POST['batchCode']);
             if ($exist) {
-                $_SESSION['alertMsg'] = "Something went wrong. Please try again later.";
+                $_SESSION['alertMsg'] = _translate("Something went wrong. Please try again later.");
                 header("Location:batches.php?type=" . $_POST['type']);
             } else {
                 $data = [

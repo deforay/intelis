@@ -25,7 +25,7 @@ class AppMenuService
     {
         $this->db->where('status', 'active');
         $this->db->orderBy("display_order", "asc");
-        $menuData = $this->db->get($this->table, null, ['display_text']);
+        $menuData = $this->db->get($this->table, null, 'display_text');
         $response = [];
         foreach ($menuData as $menu) {
             $response[] = $menu['display_text'];
@@ -36,7 +36,7 @@ class AppMenuService
     public function getMenu($parentId = 0, $menuId = 0)
     {
         $activeModules = SystemService::getActiveModules();
-        $activeModulesInfo = implode("','",$activeModules);
+        $activeModulesInfo = implode("','", $activeModules);
         $this->db->where("module IN ('$activeModulesInfo') AND (sub_module IN ('$activeModulesInfo') OR sub_module IS NULL)");
         $this->db->where('status', 'active');
         if (!empty($menuId) && $menuId > 0) {
