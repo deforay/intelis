@@ -302,6 +302,12 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <input type="text" class="form-control date" name="motherTreatmentInitiationDate" id="motherTreatmentInitiationDate" placeholder="<?= _translate('Enter date of initiation'); ?>" />
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <th scope="row"><?= _translate("Mother's HIV Test Date"); ?></th>
+                                        <td>
+                                            <input type="text" class="form-control date" name="motherHivTestDate" id="motherHivTestDate" placeholder="<?= _translate("Enter date of Mother's Hiv Test"); ?>" title="<?= _translate("Enter date of Mother's Hiv Test"); ?>" />
+                                        </td>
+                                    </tr>
                                 </table>
                                 <br>
                                 <hr style="border: 1px solid #ccc;">
@@ -391,39 +397,61 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </tr>
 
                                     <tr>
-
-                                        <th scope="row"><?= _translate('Previous PCR test'); ?> </th>
+                                    <th scope="row"><?= _translate('Requesting Clinician Name'); ?></th>
+                                        <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="<?= _translate('Request Clinician Name'); ?>" title="<?= _translate('Please enter request clinician'); ?>" /></td>
+                                        <th scope="row"><?= _translate('Serological Test'); ?> </th>
                                         <td>
-                                            <select class="form-control" title="Please select if Previous PCR Test was done" name="pcrTestPerformedBefore" id="pcrTestPerformedBefore" onchange="setRelatedField(this.value);">
+                                            <select class="form-control" title="<?= _translate('Please select Serological Test'); ?>" name="serologicalTest" id="serologicalTest">
                                                 <option value=''> <?= _translate('-- Select --'); ?> </option>
-                                                <option value="yes"> <?= _translate('Yes'); ?> </option>
-                                                <option value="no"> <?= _translate('No'); ?> </option>
+                                                <option value="positive"> <?= _translate('Positive'); ?> </option>
+                                                <option value="negative"> <?= _translate('Negative'); ?> </option>
+                                                <option value="notdone"> <?= _translate('Not Done'); ?> </option>
                                             </select>
                                         </td>
-                                        <th scope="row"><?= _translate('Previous PCR test date'); ?></th>
-                                        <td>
-                                            <input class="form-control date" type="text" name="previousPCRTestDate" id="previousPCRTestDate" placeholder="<?= _translate('if yes, test date'); ?>" />
-                                        </td>
+                                       
                                     </tr>
 
                                     <tr>
-
-                                        <th scope="row"><?= _translate('Previous PCR test Result'); ?></th>
+                                        <th scope="row"><?= _translate('PCR 1 test date'); ?></th>
                                         <td>
-                                            <select class="form-control" name="prePcrTestResult" id="prePcrTestResult">
+                                            <input class="form-control date" type="text" name="pcr1TestDate" id="pcr1TestDate" placeholder="<?= _translate('Test date'); ?>" />
+                                        </td>
+                                        <th scope="row"><?= _translate('PCR 1 test result'); ?></th>
+                                        <td>
+                                            <select class="form-control" name="pcr1TestResult" id="pcr1TestResult">
                                                 <option value=''> <?= _translate('-- Select --'); ?> </option>
                                                 <option value="Detected"> <?= _translate('Detected'); ?> </option>
                                                 <option value="Not Detected"> <?= _translate('Not Detected'); ?> </option>
                                             </select>
                                         </td>
-                                        <th scope="row"><?= _translate('Reason for 2nd PCR'); ?></th>
+                                      
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"><?= _translate('PCR 2 test date'); ?></th>
                                         <td>
-                                            <select class="form-control" name="pcrTestReason" id="pcrTestReason">
+                                            <input class="form-control date" type="text" name="pcr2TestDate" id="pcr2TestDate" placeholder="<?= _translate('Test date'); ?>" />
+                                        </td>
+                                        <th scope="row"><?= _translate('PCR 2 test result'); ?></th>
+                                        <td>
+                                            <select class="form-control" name="pcr2TestResult" id="pcr2TestResult">
                                                 <option value=''> <?= _translate('-- Select --'); ?> </option>
-                                                <option value="Confirmation of positive first EID PCR test result"> <?= _translate('Confirmation of positive first EID PCR test result'); ?> </option>
-                                                <option value="Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months"> Repeat EID PCR test 6 weeks after stopping breastfeeding for children < 9 months </option>
-                                                <option value="Positive HIV rapid test result at 9 months or later"> Positive HIV rapid test result at 9 months or later </option>
-                                                <option value="Other"> Other </option>
+                                                <option value="Detected"> <?= _translate('Detected'); ?> </option>
+                                                <option value="Not Detected"> <?= _translate('Not Detected'); ?> </option>
+                                            </select>
+                                        </td>
+                                       
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"><?= _translate('PCR 3 test date'); ?></th>
+                                        <td>
+                                            <input class="form-control date" type="text" name="pcr3TestDate" id="pcr3TestDate" placeholder="<?= _translate('Test date'); ?>" />
+                                        </td>
+                                        <th scope="row"><?= _translate('PCR 3 test result'); ?></th>
+                                        <td>
+                                            <select class="form-control" name="pcr3TestResult" id="pcr3TestResult">
+                                                <option value=''> <?= _translate('-- Select --'); ?> </option>
+                                                <option value="Detected"> <?= _translate('Detected'); ?> </option>
+                                                <option value="Not Detected"> <?= _translate('Not Detected'); ?> </option>
                                             </select>
                                         </td>
                                     </tr>
@@ -453,10 +481,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <input type="text" name="labTestingPointOther" id="labTestingPointOther" class="form-control" title="<?= _translate('Please specify other point of entry') ?>" placeholder="<?= _translate('Please specify other point of entry') ?>" style="display:none;" />
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <th scope="row"><?= _translate('Requesting Clinician Name'); ?></th>
-                                        <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="<?= _translate('Request Clinician Name'); ?>" title="<?= _translate('Please enter request clinician'); ?>" /></td>
-                                    </tr>
+                                   
                                 </table>
 
                                 <br><br>
@@ -471,8 +496,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td style="width:35% !important;">
                                             <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" onchange="generateSampleCode();" />
                                         </td>
-                                        <th style="width:15% !important;"></th>
-                                        <td style="width:35% !important;"></td>
+                                        <th style="width:15% !important;"><?= _translate('Recollected'); ?></th>
+                                        <td style="width:35% !important;">
+                                            <select class="form-control" name="isSampleRecollected" id="isSampleRecollected">
+                                                <option value=''> <?= _translate('-- Select --'); ?> </option>
+                                                <option value="yes"> <?= _translate('Yes'); ?> </option>
+                                                <option value="no"> <?= _translate('No'); ?> </option>
+                                            </select>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th scope="row"><?= _translate('Name of health personnel'); ?></th>

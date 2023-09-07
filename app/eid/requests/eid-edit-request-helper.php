@@ -89,6 +89,13 @@ try {
 		$_POST['startedArtDate'] = null;
 	}
 
+	if (isset($_POST['motherHivTestDate']) && trim($_POST['motherHivTestDate']) != "") {
+		$motherHivTestDate = explode(" ", $_POST['motherHivTestDate']);
+		$_POST['motherHivTestDate'] = DateUtility::isoDateFormat($motherHivTestDate[0]) . " " . $motherHivTestDate[1];
+	} else {
+		$_POST['motherHivTestDate'] = null;
+	}
+
 	if (isset($_POST['test1Date']) && trim($_POST['test1Date']) != "") {
 		$test1Date = explode(" ", $_POST['test1Date']);
 		$_POST['test1Date'] = DateUtility::isoDateFormat($test1Date[0]) . " " . $test1Date[1];
@@ -146,10 +153,31 @@ try {
 	}
 
 	if (isset($_POST['childStartedArtDate']) && trim($_POST['childStartedArtDate']) != "") {
-		$nextAppointmentDate = explode(" ", $_POST['childStartedArtDate']);
+		$childStartedArtDate = explode(" ", $_POST['childStartedArtDate']);
 		$_POST['childStartedArtDate'] = DateUtility::isoDateFormat($childStartedArtDate[0]) . " " . $childStartedArtDate[1];
 	} else {
 		$_POST['childStartedArtDate'] = null;
+	}
+
+	if (isset($_POST['pcr1TestDate']) && trim($_POST['pcr1TestDate']) != "") {
+		$pcr1TestDate = explode(" ", $_POST['pcr1TestDate']);
+		$_POST['pcr1TestDate'] = DateUtility::isoDateFormat($pcr1TestDate[0]) . " " . $pcr1TestDate[1];
+	} else {
+		$_POST['pcr1TestDate'] = null;
+	}
+
+	if (isset($_POST['pcr2TestDate']) && trim($_POST['pcr2TestDate']) != "") {
+		$pcr2TestDate = explode(" ", $_POST['pcr2TestDate']);
+		$_POST['pcr2TestDate'] = DateUtility::isoDateFormat($pcr2TestDate[0]) . " " . $pcr2TestDate[1];
+	} else {
+		$_POST['pcr2TestDate'] = null;
+	}
+
+	if (isset($_POST['pcr3TestDate']) && trim($_POST['pcr3TestDate']) != "") {
+		$pcr3TestDate = explode(" ", $_POST['pcr3TestDate']);
+		$_POST['pcr3TestDate'] = DateUtility::isoDateFormat($pcr3TestDate[0]) . " " . $pcr3TestDate[1];
+	} else {
+		$_POST['pcr3TestDate'] = null;
 	}
 
 	if (isset($_POST['dateOfWeaning']) && trim($_POST['dateOfWeaning']) != "") {
@@ -299,10 +327,18 @@ try {
 		'child_treatment_initiation_date' => $_POST['childTreatmentInitiationDate'] ?? null,
 		'mother_cd4' => $_POST['mothercd4'] ?? null,
 		'mother_vl_result' => $motherVlResult,
+		'mother_hiv_test_date' => $_POST['motherHivTestDate'] ?? null,
 		'mother_hiv_status' => $_POST['mothersHIVStatus'] ?? null,
 		'mode_of_delivery' => $_POST['modeOfDelivery'] ?? null,
 		'mode_of_delivery_other' => $_POST['modeOfDeliveryOther'] ?? null,
 		'mother_art_status' => $_POST['motherArtStatus'] ?? null,
+		'pcr_1_test_date' => $_POST['pcr1TestDate'] ?? null,
+		'pcr_2_test_date' => $_POST['pcr2TestDate'] ?? null,
+		'pcr_3_test_date' => $_POST['pcr3TestDate'] ?? null,
+		'pcr_1_test_result' => $_POST['pcr1TestResult'] ?? null,
+		'pcr_2_test_result' => $_POST['pcr2TestResult'] ?? null,
+		'pcr_3_test_result' => $_POST['pcr3TestResult'] ?? null,
+		'serological_test' => $_POST['serologicalTest'] ?? null,
 		'mother_mtct_risk' => $_POST['motherMtctRisk'] ?? null,
 		'started_art_date' => $_POST['startedArtDate'] ?? null,
 		'is_child_symptomatic' => $_POST['isChildSymptomatic'] ?? null,
@@ -330,6 +366,7 @@ try {
 		'is_cotrimoxazole_being_administered_to_the_infant' => $_POST['isCotrimoxazoleBeingAdministered'] ?? null,
 		'specimen_type' => $_POST['specimenType'] ?? null,
 		'sample_collection_date' => $_POST['sampleCollectionDate'] ?? null,
+		'is_sample_recollected' => $_POST['isSampleRecollected'] ?? null,
 		'sample_dispatched_datetime' => $_POST['sampleDispatchedDate'] ?? null,
 		'rapid_test_performed' => $_POST['rapidTestPerformed'] ?? null,
 		'rapid_test_date' => $_POST['rapidtestDate'] ?? null,

@@ -5037,3 +5037,25 @@ UPDATE `system_config` SET `value` = '5.2.3' WHERE `system_config`.`name` = 'sc_
 ALTER TABLE `form_vl` ADD `cv_number` INT NULL DEFAULT NULL AFTER `request_clinician_phone_number`;
 ALTER TABLE `audit_form_vl` ADD `cv_number` INT NULL DEFAULT NULL AFTER `request_clinician_phone_number`;
 
+ALTER TABLE `form_eid` ADD `mother_hiv_test_date` DATE NULL DEFAULT NULL AFTER `child_prophylactic_arv_other`;
+ALTER TABLE `audit_form_eid` ADD `mother_hiv_test_date` DATE NULL DEFAULT NULL AFTER `child_prophylactic_arv_other`;
+
+ALTER TABLE `form_eid` ADD `serological_test` VARCHAR(11) NULL DEFAULT NULL AFTER `rapid_test_result`;
+ALTER TABLE `audit_form_eid` ADD `serological_test` VARCHAR(11) NULL DEFAULT NULL AFTER `rapid_test_result`;
+
+ALTER TABLE `form_eid` ADD `pcr_1_test_date` DATE NULL DEFAULT NULL AFTER `serological_test`;
+ALTER TABLE `form_eid` ADD `pcr_1_test_result` VARCHAR(50) NULL DEFAULT NULL AFTER `pcr_1_test_date`;
+ALTER TABLE `form_eid` ADD `pcr_2_test_date` DATE NULL DEFAULT NULL AFTER `pcr_1_test_result`;
+ALTER TABLE `form_eid` ADD `pcr_2_test_result` VARCHAR(50) NULL DEFAULT NULL AFTER `pcr_2_test_date`;
+ALTER TABLE `form_eid` ADD `pcr_3_test_date` DATE NULL DEFAULT NULL AFTER `pcr_2_test_result`;
+ALTER TABLE `form_eid` ADD `pcr_3_test_result` VARCHAR(50) NULL DEFAULT NULL AFTER `pcr_3_test_date`;
+
+ALTER TABLE `audit_form_eid` ADD `pcr_1_test_date` DATE NULL DEFAULT NULL AFTER `serological_test`;
+ALTER TABLE `audit_form_eid` ADD `pcr_1_test_result` VARCHAR(50) NULL DEFAULT NULL AFTER `pcr_1_test_date`;
+ALTER TABLE `audit_form_eid` ADD `pcr_2_test_date` DATE NULL DEFAULT NULL AFTER `pcr_1_test_result`;
+ALTER TABLE `audit_form_eid` ADD `pcr_2_test_result` VARCHAR(50) NULL DEFAULT NULL AFTER `pcr_2_test_date`;
+ALTER TABLE `audit_form_eid` ADD `pcr_3_test_date` DATE NULL DEFAULT NULL AFTER `pcr_2_test_result`;
+ALTER TABLE `audit_form_eid` ADD `pcr_3_test_result` VARCHAR(50) NULL DEFAULT NULL AFTER `pcr_3_test_date`;
+
+ALTER TABLE `form_eid` ADD `is_sample_recollected` VARCHAR(11) NULL DEFAULT NULL AFTER `sample_collection_date`;
+ALTER TABLE `audit_form_eid` ADD `is_sample_recollected` VARCHAR(11) NULL DEFAULT NULL AFTER `sample_collection_date`;
