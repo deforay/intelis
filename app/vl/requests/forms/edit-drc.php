@@ -74,8 +74,7 @@ $aResult = $db->query($aQuery);
 
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required
-					field &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
@@ -126,7 +125,7 @@ $aResult = $db->query($aQuery);
 										<td><label for="province">Province </label><span class="mandatory">*</span></td>
 										<td>
 											<select class="form-control isRequired" name="province" id="province" title="Please choose province" onchange="getfacilityDetails(this);" style="width:100%;">
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php foreach ($pdResult as $provinceName) { ?>
 													<option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo (strtolower($stateResult[0]['facility_state']) . "##" . strtolower($provinceResult[0]['geo_code']) == strtolower($provinceName['geo_name']) . "##" . strtolower($provinceName['geo_code'])) ? "selected='selected'" : "" ?>><?php echo ($provinceName['geo_name']); ?></option>
 												<?php } ?>
@@ -136,7 +135,7 @@ $aResult = $db->query($aQuery);
 										</td>
 										<td>
 											<select class="form-control isRequired" name="district" id="district" title="Veuillez choisir le quartier" style="width:100%;" onchange="getfacilityDistrictwise(this);">
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php foreach ($districtResult as $districtName) { ?>
 													<option value="<?php echo $districtName['facility_district']; ?>" <?php echo ($stateResult[0]['facility_district'] == $districtName['facility_district']) ? "selected='selected'" : "" ?>><?php echo ($districtName['facility_district']); ?></option>
 												<?php } ?>
@@ -163,7 +162,7 @@ $aResult = $db->query($aQuery);
 										<td>
 											<!-- <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire dappui" title="Please enter partenaire dappui" value="< ?php echo $vlQueryInfo['facility_support_partner']; ?>" style="width:100%;"/> -->
 											<select class="form-control select2" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($implementingPartnerList as $implementingPartner) {
 												?>
@@ -180,7 +179,7 @@ $aResult = $db->query($aQuery);
 										<td><label for="fundingSource">Source de financement </label></td>
 										<td>
 											<select class="form-control select2" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($fundingSourceList as $fundingSource) {
 												?>
@@ -199,7 +198,7 @@ $aResult = $db->query($aQuery);
 										<!-- <td><label for="implementingPartner">Partenaire de mise en œuvre </label></td>
 								<td>
 									<select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
-									  <option value=""> -- Sélectionner -- </option>
+									  <option value=""><?= _translate("-- Select --"); ?> </option>
 									  < ?php
 									  foreach($implementingPartnerList as $implementingPartner){
 									  ?>
@@ -253,7 +252,7 @@ $aResult = $db->query($aQuery);
 										<td style="width: 15% !important;"><label>Régime ARV en cours </label></td>
 										<td style="width: 35% !important;">
 											<select class="form-control" name="artRegimen" id="artRegimen" title="Please choose régime ARV en cours" onchange="checkARTRegimenValue();" style="width:100%;">
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php foreach ($aResult as $arv) { ?>
 													<option value="<?php echo $arv['art_code']; ?>" <?php echo ($arv['art_code'] == $vlQueryInfo['current_regimen']) ? 'selected="selected"' : ''; ?>><?php echo $arv['art_code']; ?>
 													</option>
@@ -313,7 +312,7 @@ $aResult = $db->query($aQuery);
 										<td style="width: 15%;"><label for="reasonForRequest">Motif de la demande <span class="mandatory">*</span></label></td>
 										<td style="width: 35%;">
 											<select name="reasonForVLTesting" id="reasonForVLTesting" class="form-control isRequired" title="Please choose motif de la demande" onchange="checkreasonForVLTesting();">
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php foreach ($vlTestReasonResult as $tReason) { ?>
 													<option value="<?php echo $tReason['test_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_vl_testing'] == $tReason['test_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ($tReason['test_reason_name']); ?></option>
 												<?php }
@@ -396,7 +395,7 @@ $aResult = $db->query($aQuery);
 											<td><label for="specimenType">Type d'échantillon <span class="mandatory">*</span></label></td>
 											<td>
 												<select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose type d'échantillon" onchange="checkSpecimenType();" style="width:100%;">
-													<option value=""> -- Sélectionner -- </option>
+													<option value=""><?= _translate("-- Select --"); ?> </option>
 													<?php foreach ($sResult as $type) { ?>
 														<option value="<?php echo $type['sample_id']; ?>" <?php echo ($vlQueryInfo['sample_type'] == $type['sample_id']) ? 'selected="selected"' : ''; ?>><?= $type['sample_name']; ?></option>
 													<?php } ?>
@@ -461,7 +460,7 @@ $aResult = $db->query($aQuery);
 											<td><label for="testingPlatform">Technique utilisée </label></td>
 											<td>
 												<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
-													<option value="">-- Sélectionner --</option>
+													<option value=""><?= _translate("-- Select --"); ?> </option>
 													<?php foreach ($importResult as $mName) { ?>
 														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?>
 														</option>
@@ -473,7 +472,7 @@ $aResult = $db->query($aQuery);
 											<td><label for="">Décision prise </label></td>
 											<td>
 												<select class="form-control" id="isSampleRejected" name="isSampleRejected" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
-													<option value=""> -- Sélectionner -- </option>
+													<option value=""><?= _translate("-- Select --"); ?> </option>
 													<option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>Echantillon accepté</option>
 													<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Echantillon rejeté</option>
 												</select>
@@ -481,7 +480,7 @@ $aResult = $db->query($aQuery);
 											<td class="rejectionReason" style="display:none;"><label for="rejectionReason">Motifs de rejet <span class="mandatory">*</span></label></td>
 											<td class="rejectionReason" style="display:none;">
 												<select class="form-control" id="rejectionReason" name="rejectionReason" title="Please select motifs de rejet" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();" style="width:100%;">
-													<option value=""> -- Sélectionner -- </option>
+													<option value=""><?= _translate("-- Select --"); ?> </option>
 													<?php foreach ($rejectionResult as $rjctReason) { ?>
 														<option value="<?php echo $rjctReason['rejection_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_sample_rejection'] == $rjctReason['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ($rjctReason['rejection_reason_name']); ?></option>
 													<?php } ?>
