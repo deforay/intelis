@@ -81,8 +81,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required
-					field &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
@@ -113,7 +112,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 										<td><label for="province">Province </label></td>
 										<td>
 											<select class="form-control" name="province" id="province" title="Please choose province" <?php echo $disable; ?> style="width:100%;">
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($pdResult as $provinceName) { ?>
 													<option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo (strtolower($stateResult[0]['facility_state']) . "##" . strtolower($provinceResult[0]['geo_code']) == strtolower($provinceName['geo_name']) . "##" . strtolower($provinceName['geo_code'])) ? "selected='selected'" : "" ?>><?php echo ($provinceName['geo_name']); ?></option>
@@ -123,7 +122,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 										<td><label for="district">Zone de santé </label></td>
 										<td>
 											<select class="form-control" name="district" id="district" title="Please choose district" <?php echo $disable; ?> style="width:100%;">
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($districtResult as $districtName) {
 												?>
@@ -153,7 +152,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 										<td>
 											<!-- <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire dappui" title="Please enter partenaire dappui" <?php echo $disable; ?> value="< ?php echo $vlQueryInfo['facility_support_partner']; ?>" style="width:100%;"/> -->
 											<select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" <?php echo $disable; ?> style="width:100%;">
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($implementingPartnerList as $implementingPartner) {
 												?>
@@ -170,7 +169,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 										<td><label for="fundingSource">Source de financement </label></td>
 										<td>
 											<select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" <?php echo $disable; ?> style="width:100%;">
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($fundingSourceList as $fundingSource) {
 												?>
@@ -219,7 +218,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 										<td style="width:15%;"><label>Régime ARV en cours </label></td>
 										<td style="width:35%;">
 											<select class="form-control" name="artRegimen" id="artRegimen" title="Please choose régime ARV en cours" <?php echo $disable; ?> style="width:100%;">
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($aResult as $arv) {
 												?>
@@ -283,7 +282,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 										<td style="width: 15% !important;"><label for="reasonForRequest">Motif de la demande <span class="mandatory">*</span></label></td>
 										<td style="width: 35% !important;">
 											<select name="vlTestReason" id="vlTestReason" class="form-control" title="Please choose motif de la demande" <?php echo $disable; ?>>
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($vlTestReasonResult as $tReason) {
 												?>
@@ -368,7 +367,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 											<td><label for="specimenType">Type déchantillon </label></td>
 											<td>
 												<select name="specimenType" id="specimenType" class="form-control" title="Please choose type déchantillon" <?php echo $disable; ?> style="width:100%;">
-													<option value=""> -- Sélectionner -- </option>
+													<option value=""><?= _translate("-- Select --"); ?> </option>
 													<?php
 													foreach ($sResult as $type) {
 													?>
@@ -436,7 +435,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 										<td><label for="testingPlatform">Technique utilisée <span class="mandatory">*</span></label></td>
 										<td>
 											<select name="testingPlatform" id="testingPlatform" class="form-control isRequired" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
-												<option value="">-- Sélectionner --</option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php foreach ($importResult as $mName) { ?>
 													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?>
 													</option>
@@ -448,7 +447,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 										<td><label for="">Décision prise <span class="mandatory">*</span></label></td>
 										<td>
 											<select class="form-control result-focus isRequired" id="isSampleRejected" name="isSampleRejected" title="<?= _translate('Please select if sample is rejected'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>Echantillon accepté</option>
 												<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Echantillon rejeté</option>
 											</select>
@@ -458,7 +457,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 										<td><label for="rejectionReason">Motifs de rejet <span class="mandatory">*</span></label></td>
 										<td>
 											<select class="form-control" id="rejectionReason" name="rejectionReason" title="<?= _translate('Please select reason for rejection'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();" style="width:100%;">
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php foreach ($rejectionResult as $rjctReason) { ?>
 													<option value="<?php echo $rjctReason['rejection_reason_id']; ?>" <?php echo ($vlQueryInfo['reason_for_sample_rejection'] == $rjctReason['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?php echo ($rjctReason['rejection_reason_name']); ?></option>
 												<?php } ?>

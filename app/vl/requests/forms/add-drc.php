@@ -52,8 +52,7 @@ $sFormat = '';
 
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required
-					field &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
@@ -91,7 +90,7 @@ $sFormat = '';
 										<td></td>
 									</tr>
 									<tr>
-										<td><label for="province">Province </label><span class="mandatory">*</span></td>
+										<td><label for="province"><?= _translate("Province"); ?> </label><span class="mandatory">*</span></td>
 										<td>
 											<select class="form-control isRequired" name="province" id="province" title="Please choose province" onchange="getfacilityDetails(this);" style="width:100%;">
 												<?php echo $province; ?>
@@ -101,7 +100,7 @@ $sFormat = '';
 										</td>
 										<td>
 											<select class="form-control isRequired" name="district" id="district" title="Please choose district" style="width:100%;" onchange="getfacilityDistrictwise(this);">
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 											</select>
 										</td>
 										<td><label for="fName">POINT DE COLLECT </label><span class="mandatory">*</span>
@@ -125,7 +124,7 @@ $sFormat = '';
 										<td>
 											<!-- <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire dappui" title="Please enter partenaire dappui" style="width:100%;"/> -->
 											<select class="form-control select2" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($implementingPartnerList as $implementingPartner) {
 												?>
@@ -143,7 +142,7 @@ $sFormat = '';
 										<td><label for="fundingSource">Source de financement </label></td>
 										<td>
 											<select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($fundingSourceList as $fundingSource) {
 												?>
@@ -214,7 +213,7 @@ $sFormat = '';
 										<td style="width: 15% !important;"><label>Régime ARV en cours </label></td>
 										<td style="width: 35% !important;">
 											<select class="form-control" name="artRegimen" id="artRegimen" title="Please choose régime ARV en cours" onchange="checkARTRegimenValue();">
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php foreach ($aResult as $arv) { ?>
 													<option value="<?php echo $arv['art_code']; ?>"><?php echo $arv['art_code']; ?></option>
 												<?php }
@@ -271,7 +270,7 @@ $sFormat = '';
 										<td style="width: 15% !important;"><label for="reasonForRequest">Motif de la demande <span class="mandatory">*</span></label></td>
 										<td style="width: 35% !important;">
 											<select name="reasonForVLTesting" id="reasonForVLTesting" class="form-control isRequired" title="Please choose motif de la demande" onchange="checkreasonForVLTesting();">
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($testReason as $tReason) {
 												?>
@@ -357,7 +356,7 @@ $sFormat = '';
 											<td><label for="specimenType">Type d'échantillon <span class="mandatory">*</span> </label></td>
 											<td>
 												<select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose type d'échantillon" onchange="checkSpecimenType();" style="width:100%;">
-													<option value=""> -- Sélectionner -- </option>
+													<option value=""><?= _translate("-- Select --"); ?> </option>
 													<?php foreach ($sResult as $type) { ?>
 														<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
 													<?php } ?>
@@ -425,7 +424,7 @@ $sFormat = '';
 											</td>
 											<td style="width: 25%;">
 												<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
-													<option value="">-- Sélectionner --</option>
+													<option value=""><?= _translate("-- Select --"); ?> </option>
 													<?php foreach ($importResult as $mName) { ?>
 														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['config_id']; ?>">
 															<?php echo $mName['machine_name']; ?></option>
@@ -437,7 +436,7 @@ $sFormat = '';
 											<td style="width: 25%;"><label for="">Décision prise </label></td>
 											<td style="width: 25%;">
 												<select class="form-control" id="isSampleRejected" name="isSampleRejected" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
-													<option value=""> -- Sélectionner -- </option>
+													<option value=""><?= _translate("-- Select --"); ?> </option>
 													<option value="no">Echantillon accepté</option>
 													<option value="yes">Echantillon rejeté</option>
 												</select>
@@ -445,7 +444,7 @@ $sFormat = '';
 											<td class="rejectionReason" style="display:none;"><label for="rejectionReason">Motifs de rejet <span class="mandatory">*</span></label></td>
 											<td class="rejectionReason" style="display:none;">
 												<select class="form-control" id="rejectionReason" name="rejectionReason" title="Please select motifs de rejet" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();" style="width:100%;">
-													<option value=""> -- Sélectionner -- </option>
+													<option value=""><?= _translate("-- Select --"); ?> </option>
 													<?php foreach ($rejectionResult as $rjctReason) { ?>
 														<option value="<?php echo $rjctReason['rejection_reason_id']; ?>"><?php echo ($rjctReason['rejection_reason_name']); ?></option>
 													<?php }

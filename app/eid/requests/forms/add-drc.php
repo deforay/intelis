@@ -60,8 +60,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required
-					field &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
@@ -106,7 +105,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										</td>
 										<td>
 											<select class="form-control isRequired" name="district" id="district" title="Please choose district" style="width:100%;" onchange="getfacilityDistrictwise(this);">
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 											</select>
 										</td>
 										<td><label for="facilityId">POINT DE COLLECT </label><span class="mandatory">*</span></td>
@@ -121,7 +120,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<td>
 											<!-- <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire dappui" title="Please enter partenaire dappui" style="width:100%;"/> -->
 											<select class="form-control select2" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($implementingPartnerList as $implementingPartner) {
 												?>
@@ -133,7 +132,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<td><label for="fundingSource">Source de Financement</label></td>
 										<td>
 											<select class="form-control select2" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($fundingSourceList as $fundingSource) {
 												?>
@@ -507,7 +506,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 											<td class="rejected" style="display: none;">
 
 												<select name="sampleRejectionReason" id="sampleRejectionReason" class="form-control labSection" title="Please choose a Rejection Reason" <?php echo $labFieldDisabled; ?>>
-													<option value="">-- Sélectionner --</option>
+													<option value=""><?= _translate("-- Select --"); ?> </option>
 													<?php foreach ($rejectionTypeResult as $type) { ?>
 														<optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
 															<?php

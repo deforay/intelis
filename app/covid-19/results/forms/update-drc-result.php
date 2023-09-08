@@ -168,7 +168,7 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                                     <td><label for="district">Zone de Santé </label><span class="mandatory">*</span></td>
                                     <td>
                                         <select class="form-control isRequired" name="district" id="district" title="Zone de Santé " style="width:100%;" onchange="getfacilityDistrictwise(this);">
-                                            <option value=""> -- Sélectionner -- </option>
+                                            <option value=""><?= _translate("-- Select --"); ?> </option>
                                         </select>
                                     </td>
                                     <td><label for="facilityId">POINT DE COLLECT </label><span class="mandatory">*</span></td>
@@ -546,7 +546,7 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                                                     <td style="width:50%;">
                                                         <input name="symptomId[]" type="hidden" value="<?php echo $symptomId; ?>">
                                                         <select name="symptomDetected[]" id="symptomDetected<?php echo $symptomId; ?>" class="form-control <?php echo $diarrhée; ?>" title="Veuillez choisir la valeur pour <?php echo $symptomName; ?>" style="width:100%">
-                                                            <option value="">-- Sélectionner --</option>
+                                                            <option value=""><?= _translate("-- Select --"); ?> </option>
                                                             <option value='yes' <?php echo (isset($covid19SelectedSymptoms[$symptomId]['value']) && $covid19SelectedSymptoms[$symptomId]['value'] == 'yes') ? "selected='selected'" : ""; ?>> Oui </option>
                                                             <option value='no' <?php echo (isset($covid19SelectedSymptoms[$symptomId]['value']) && $covid19SelectedSymptoms[$symptomId]['value'] == 'no') ? "selected='selected'" : ""; ?>> Non </option>
                                                             <option value='unknown' <?php echo (isset($covid19SelectedSymptoms[$symptomId]['value']) && $covid19SelectedSymptoms[$symptomId]['value'] == 'unknown') ? "selected='selected'" : ""; ?>> Inconnu </option>
@@ -558,14 +558,14 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                                                         ?>
                                                             <label class="diarrhée-sub" for="" style="margin-left:0;<?php echo $display; ?>">Si oui:<br> Sanglante?</label>
                                                             <select name="symptomDetails[13][]" class="form-control diarrhée-sub" style="width:100%;<?php echo $display; ?>">
-                                                                <option value="">-- Sélectionner --</option>
+                                                                <option value=""><?= _translate("-- Select --"); ?> </option>
                                                                 <option value='yes' <?php echo (isset($covid19SelectedSymptoms[$symptomId]['sDetails'][0]) && $covid19SelectedSymptoms[$symptomId]['sDetails'][0] == 'yes') ? "selected='selected'" : ""; ?>> Oui </option>
                                                                 <option value='no' <?php echo (isset($covid19SelectedSymptoms[$symptomId]['sDetails'][0]) && $covid19SelectedSymptoms[$symptomId]['sDetails'][0] == 'no') ? "selected='selected'" : ""; ?>> Non </option>
                                                                 <option value='unknown' <?php echo (isset($covid19SelectedSymptoms[$symptomId]['sDetails'][0]) && $covid19SelectedSymptoms[$symptomId]['sDetails'][0] == 'unknown') ? "selected='selected'" : ""; ?>> Inconnu </option>
                                                             </select>
                                                             <label class="diarrhée-sub" for="" style="margin-left:0;<?php echo $display; ?>">Aqueuse?</label>
                                                             <select name="symptomDetails[13][]" class="form-control diarrhée-sub" style="width:100%;<?php echo $display; ?>">
-                                                                <option value="">-- Sélectionner --</option>
+                                                                <option value=""><?= _translate("-- Select --"); ?> </option>
                                                                 <option value='yes' <?php echo (isset($covid19SelectedSymptoms[$symptomId]['sDetails'][1]) && $covid19SelectedSymptoms[$symptomId]['sDetails'][1] == 'yes') ? "selected='selected'" : ""; ?>> Oui </option>
                                                                 <option value='no' <?php echo (isset($covid19SelectedSymptoms[$symptomId]['sDetails'][1]) && $covid19SelectedSymptoms[$symptomId]['sDetails'][1] == 'no') ? "selected='selected'" : ""; ?>> Non </option>
                                                                 <option value='unknown' <?php echo (isset($covid19SelectedSymptoms[$symptomId]['sDetails'][1]) && $covid19SelectedSymptoms[$symptomId]['sDetails'][1] == 'unknown') ? "selected='selected'" : ""; ?>> Inconnu </option>
@@ -602,7 +602,7 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                                                     <td style="width:50%;">
                                                         <input name="comorbidityId[]" type="hidden" value="<?php echo $comorbiditiesId; ?>">
                                                         <select name="comorbidityDetected[]" class="form-control comorbidity-select" title="<?php echo $comorbiditiesName; ?>" style="width:100%">
-                                                            <option value="">-- Sélectionner --</option>
+                                                            <option value=""><?= _translate("-- Select --"); ?> </option>
                                                             <option value='yes' <?php echo (isset($covid19SelectedComorbidities[$comorbiditiesId]) && $covid19SelectedComorbidities[$comorbiditiesId] == 'yes') ? "selected='selected'" : ""; ?>> Oui </option>
                                                             <option value='no' <?php echo (isset($covid19SelectedComorbidities[$comorbiditiesId]) && $covid19SelectedComorbidities[$comorbiditiesId] == 'no') ? "selected='selected'" : ""; ?>> Non </option>
                                                             <option value='unknown' <?php echo (isset($covid19SelectedComorbidities[$comorbiditiesId]) && $covid19SelectedComorbidities[$comorbiditiesId] == 'unknown') ? "selected='selected'" : ""; ?>> Inconnu </option>
@@ -770,7 +770,7 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                                         <th scope="row" class="show-rejection" style="display:none;">Raison du rejet <span class="mandatory">*</span></th>
                                         <td class="show-rejection" style="display:none;">
                                             <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Raison du rejet">
-                                                <option value="">-- Sélectionner --</option>
+                                                <option value=""><?= _translate("-- Select --"); ?> </option>
                                                 <?php foreach ($rejectionTypeResult as $type) { ?>
                                                     <optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
                                                         <?php
@@ -919,7 +919,7 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                                         <th scope="row">Le résultat est-il autorisé?</th>
                                         <td>
                                             <select name="isResultAuthorized" id="isResultAuthorized" class="disabled-field form-control isRequired" title="Le résultat est-il autorisé?" style="width:100%">
-                                                <option value="">-- Sélectionner --</option>
+                                                <option value=""><?= _translate("-- Select --"); ?> </option>
                                                 <option value='yes' <?php echo ($covid19Info['is_result_authorised'] == 'yes') ? "selected='selected'" : ""; ?>> Oui </option>
                                                 <option value='no' <?php echo ($covid19Info['is_result_authorised'] == 'no') ? "selected='selected'" : ""; ?>> Non </option>
                                             </select>

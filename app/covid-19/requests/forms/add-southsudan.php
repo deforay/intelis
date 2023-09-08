@@ -564,9 +564,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="otherId" class="col-lg-4 control-label">Other Id </label>
+                                    <label for="otherId" class="col-lg-4 control-label">Other ID </label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control" id="otherId" name="otherId" placeholder="Other Id" />
+                                        <input type="text" class="form-control" id="otherId" name="otherId" placeholder="Other ID" />
                                         <input type="hidden" class="form-control isRequired" id="facilityType" name="facilityType" value="1" title="Please select facility type" />
                                     </div>
                                 </div>

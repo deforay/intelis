@@ -1,7 +1,5 @@
 <?php
 
-
-
 $title = _translate("Dashboard");
 
 require_once APPLICATION_PATH . '/header.php';
@@ -93,10 +91,10 @@ require_once APPLICATION_PATH . '/header.php';
 						</a></li>
 				<?php }
 				if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true && array_intersect($_SESSION['modules'], array('tb'))) { ?>
-					<li><a href="#tbDashboard" data-toggle="tab" onclick="generateDashboard('tb');">TB Tests</a></li>
+					<li><a href="#tbDashboard" data-toggle="tab" onclick="generateDashboard('tb');"><?= _translate("TB Tests"); ?></a></li>
 				<?php }
 				if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true && array_intersect($_SESSION['modules'], array('generic-tests'))) { ?>
-					<li><a href="#genericTestsDashboard" data-toggle="tab" onclick="generateDashboard('generic-tests');">Other Lab Tests</a></li>
+					<li><a href="#genericTestsDashboard" data-toggle="tab" onclick="generateDashboard('generic-tests');"><?= _translate("Other Lab Tests"); ?></a></li>
 				<?php }
 				if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] === true) { ?>
 					<li><a href="#recencyDashboard" data-name="recency" data-toggle="tab" onclick="generateDashboard('recency')">

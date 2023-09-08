@@ -168,8 +168,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate('indicates required
-					field'); ?> &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate('indicates required field'); ?> &nbsp;</div>
 			</div>
 			<div class="box-body">
 				<!-- form start -->
@@ -323,8 +322,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 								</div>
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
-										<label for="ageInMonths"><?= _translate('If Age
-											< 1, Age in Month'); ?> </label> <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="<?= _translate('Age in Month'); ?>" title="<?= _translate('Enter age in months'); ?>" <?php echo $disable; ?> value="<?= ($vlQueryInfo['patient_age_in_months']); ?>" />
+										<label for="ageInMonths"><?= _translate('If Age < 1, Age in Month'); ?> </label> <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="<?= _translate('Age in Month'); ?>" title="<?= _translate('Enter age in months'); ?>" <?php echo $disable; ?> value="<?= ($vlQueryInfo['patient_age_in_months']); ?>" />
 									</div>
 								</div>
 							</div>
@@ -633,11 +631,11 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 										<div class="box-body">
 											<div class="row">
 												<div class="col-md-6">
-                                                                      <label for="cvNumber" class="col-lg-5 control-label"><?= _translate('CV Number'); ?> </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input name="cvNumber" id="cvNumber" class="form-control" placeholder="<?= _translate('Enter CV Number'); ?>" title="<?= _translate('Please enter CV Number'); ?>" value="<?= $vlQueryInfo['cv_number']; ?>" <?php echo $labFieldDisabled; ?> >
-                                                                      </div>
-                                                                 </div>
+													<label for="cvNumber" class="col-lg-5 control-label"><?= _translate('CV Number'); ?> </label>
+													<div class="col-lg-7">
+														<input name="cvNumber" id="cvNumber" class="form-control" placeholder="<?= _translate('Enter CV Number'); ?>" title="<?= _translate('Please enter CV Number'); ?>" value="<?= $vlQueryInfo['cv_number']; ?>" <?php echo $labFieldDisabled; ?>>
+													</div>
+												</div>
 												<div class="col-md-6">
 													<label for="testingPlatform" class="col-lg-5 control-label"><?= _translate('VL Testing Platform'); ?><span class="mandatory">*</span> </label>
 													<div class="col-lg-7">
@@ -649,10 +647,10 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														</select>
 													</div>
 												</div>
-												
+
 											</div>
 											<div class="row">
-											<div class="col-md-6">
+												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="sampleReceivedDate"><?= _translate('Date Sample Received at Testing Lab'); ?><span class="mandatory">*</span> </label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate('Sample Received Date'); ?>" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" title="<?= _translate('Please select sample received date'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkSampleReceviedDate()" />
@@ -664,10 +662,10 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														<input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _translate('Sample Testing Date'); ?>" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" title="<?= _translate('Please select sample testing date'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkSampleTestingDate();" />
 													</div>
 												</div>
-												
+
 											</div>
 											<div class="row">
-											<div class="col-md-6">
+												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="resultDispatchedOn"><?= _translate('Date Results Dispatched'); ?><span class="mandatory">*</span> </label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="<?= _translate('Result Dispatched Date'); ?>" value="<?php echo $vlQueryInfo['result_dispatched_datetime']; ?>" title="<?= _translate('Please select result dispatched date'); ?>" <?php echo $labFieldDisabled; ?> />
@@ -684,10 +682,10 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													</div>
 												</div>
 
-												
+
 											</div>
 											<div class="row">
-											<div class="col-md-6 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
+												<div class="col-md-6 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
 													<label class="col-lg-5 control-label" for="rejectionReason"><?= _translate('Rejection Reason'); ?> <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
 														<select name="rejectionReason" id="rejectionReason" class="form-control" title="<?= _translate('Please choose reason'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();">
