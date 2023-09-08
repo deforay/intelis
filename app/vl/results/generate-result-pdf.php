@@ -72,6 +72,19 @@ if (empty($requestResult) || !$requestResult) {
 //set print time
 $printDate = DateUtility::humanReadableDateFormat(date('Y-m-d H:i:s'), true);
 
+if (($_SESSION['instanceType'] == 'vluser') && empty($requestResult[0]['result_printed_on_lis_datetime']))
+{ 
+      $pData = array('result_printed_on_lis_datetime' => date('Y-m-d H:i:s'));
+      $db = $db->where('vl_sample_id', $_POST['id']);
+      $id = $db->update('form_vl', $pData);
+}
+elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestResult[0]['result_printed_on_sts_datetime']))
+{ 
+      $pData = array('result_printed_on_sts_datetime' => date('Y-m-d H:i:s'));
+      $db = $db->where('vl_sample_id', $_POST['id']);
+      $id = $db->update('form_vl', $pData);
+}
+
 $_SESSION['nbPages'] = sizeof($requestResult);
 $_SESSION['aliasPage'] = 1;
 //print_r($requestResult);die;
