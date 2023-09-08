@@ -109,7 +109,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     <td><label for="district">District </label><span class="mandatory">*</span></td>
                                     <td>
                                         <select class="form-control isRequired" name="district" id="district" title="Please choose district" style="width:100%;" onchange="getfacilityDistrictwise(this);">
-                                            <option value=""> -- Sélectionner -- </option>
+                                            <option value=""><?= _translate("-- Select --"); ?> </option>
                                         </select>
                                     </td>
                                     <td><label for="facilityId">Health Facility </label><span class="mandatory">*</span></td>

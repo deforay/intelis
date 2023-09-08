@@ -377,7 +377,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                         </td>
                                     </tr>
                                     <tr>
-                                    <th scope="row"><?= _translate('Requesting Clinician Name'); ?></th>
+                                        <th scope="row"><?= _translate('Requesting Clinician Name'); ?></th>
                                         <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="<?= _translate('Request Clinician Name'); ?>" title="<?= _translate('Please enter request clinician'); ?>" value="<?php echo $eidInfo['clinician_name']; ?>" /></td>
                                         <th scope="row"><?= _translate('Serological Test'); ?> </th>
                                         <td>
@@ -388,7 +388,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                                 <option value="notdone" <?php echo ($eidInfo['serological_test'] == 'notdone') ? "selected='selected'" : ""; ?>> <?= _translate('Not Done'); ?> </option>
                                             </select>
                                         </td>
-                                       
+
                                     </tr>
                                     <tr>
                                         <th scope="row"><?= _translate('PCR 1 Test Date'); ?></th>
@@ -403,7 +403,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                                 <option value="Not Detected" <?php echo ($eidInfo['pcr_1_test_result'] == 'Not Detected') ? "selected='selected'" : ""; ?>> <?= _translate('Not Detected'); ?> </option>
                                             </select>
                                         </td>
-                                      
+
                                     </tr>
                                     <tr>
                                         <th scope="row"><?= _translate('PCR 2 Test Date'); ?></th>
@@ -418,7 +418,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                                 <option value="Not Detected" <?php echo ($eidInfo['pcr_2_test_result'] == 'Not Detected') ? "selected='selected'" : ""; ?>> <?= _translate('Not Detected'); ?> </option>
                                             </select>
                                         </td>
-                                       
+
                                     </tr>
                                     <tr>
                                         <th scope="row"><?= _translate('PCR 3 Test Date'); ?></th>
@@ -460,7 +460,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                             <input type="text" name="labTestingPointOther" id="labTestingPointOther" class="form-control" title="<?= _translate('Please specify other point of entry') ?>" placeholder="<?= _translate('Please specify other point of entry') ?>" style="display:<?php echo ($eidInfo['lab_testing_point'] == 'other') ? 'none' : '' ?>;" value="<?php echo ($eidInfo['lab_testing_point_other']); ?>" />
                                         </td>
                                     </tr>
-                                  
+
                                 </table>
 
                                 <br><br>
@@ -567,7 +567,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                             <th scope="row"><?= _translate('Result'); ?></th>
                                             <td>
                                                 <select class="form-control result-focus" name="result" id="result">
-                                                    <option value=''> <?= _translate('-- Select -- '); ?> </option>
+                                                    <option value=''> <?= _translate('-- Select --'); ?> </option>
                                                     <?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
                                                         <option value="<?php echo $eidResultKey; ?>" <?php echo ($eidInfo['result'] == $eidResultKey) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?> </option>
                                                     <?php } ?>

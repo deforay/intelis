@@ -70,8 +70,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required
-					field &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
@@ -123,7 +122,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 										</td>
 										<td>
 											<select class="form-control isRequired" name="district" id="district" title="Please choose district" style="width:100%;" onchange="getfacilityDistrictwise(this);">
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 											</select>
 										</td>
 										<td><label for="facilityId">POINT DE COLLECT </label><span class="mandatory">*</span></td>
@@ -138,7 +137,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 										<td>
 											<!-- <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire dappui" title="Please enter partenaire dappui" style="width:100%;"/> -->
 											<select class="form-control select2" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($implementingPartnerList as $implementingPartner) {
 												?>
@@ -149,7 +148,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 										<td><label for="fundingSource">Source de Financement</label></td>
 										<td>
 											<select class="form-control select2" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
-												<option value=""> -- Sélectionner -- </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($fundingSourceList as $fundingSource) {
 												?>
@@ -513,8 +512,8 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 											<th scope="row" class="rejected" style="display: none;">Raison du rejet</th>
 											<td class="rejected" style="display: none;">
 
-												<select name="sampleRejectionReason" id="sampleRejectionReason" class="form-control labSection" title="Veuillez choisir la raison du rejet" <?php echo $labFieldDisabled; ?> <option value="">-- Sélectionner --</option>
-													<option value="">-- Sélectionner --</option>
+												<select name="sampleRejectionReason" id="sampleRejectionReason" class="form-control labSection" title="Veuillez choisir la raison du rejet" <?php echo $labFieldDisabled; ?> <option value=""><?= _translate("-- Select --"); ?> </option>
+													<option value=""><?= _translate("-- Select --"); ?> </option>
 													<?php foreach ($rejectionTypeResult as $type) { ?>
 														<optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
 															<?php

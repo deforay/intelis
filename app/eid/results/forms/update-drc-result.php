@@ -105,7 +105,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
 									<td><label for="district">Zone de Santé </label><span class="mandatory">*</span></td>
 									<td>
 										<select class="form-control isRequired" name="district" id="district" title="Please choose district" style="width:100%;" onchange="getfacilityDistrictwise(this);">
-											<option value=""> -- Sélectionner -- </option>
+											<option value=""><?= _translate("-- Select --"); ?> </option>
 										</select>
 									</td>
 									<td><label for="facilityId">POINT DE COLLECT </label><span class="mandatory">*</span></td>
@@ -120,7 +120,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
 									<td>
 										<!-- <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire dappui" title="Please enter partenaire dappui" style="width:100%;"/> -->
 										<select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose partenaire de mise en œuvre" style="width:100%;">
-											<option value=""> -- Sélectionner -- </option>
+											<option value=""><?= _translate("-- Select --"); ?> </option>
 											<?php
 											foreach ($implementingPartnerList as $implementingPartner) {
 											?>
@@ -131,7 +131,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
 									<td><label for="fundingSource">Source de Financement</label></td>
 									<td>
 										<select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
-											<option value=""> -- Sélectionner -- </option>
+											<option value=""><?= _translate("-- Select --"); ?> </option>
 											<?php
 											foreach ($fundingSourceList as $fundingSource) {
 											?>
@@ -482,8 +482,8 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
 									<tr class="rejected" style="display:none;">
 										<th scope="row">Raison du rejet</th>
 										<td>
-											<select name="sampleRejectionReason" id="sampleRejectionReason" class="form-control labSection" title="Veuillez choisir la raison du rejet" <?php echo $labFieldDisabled; ?> <option value="">-- Sélectionner --</option>
-												<option value="">-- Sélectionner --</option>
+											<select name="sampleRejectionReason" id="sampleRejectionReason" class="form-control labSection" title="Veuillez choisir la raison du rejet" <?php echo $labFieldDisabled; ?> <option value=""><?= _translate("-- Select --"); ?> </option>
+												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php foreach ($rejectionTypeResult as $type) { ?>
 													<optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
 														<?php

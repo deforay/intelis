@@ -151,7 +151,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <td><label for="district">Zone de Santé </label><span class="mandatory">*</span></td>
                                         <td>
                                             <select class="form-control isRequired" name="district" id="district" title="Zone de Santé" style="width:100%;" onchange="getfacilityDistrictwise(this);">
-                                                <option value=""> -- Sélectionner -- </option>
+                                                <option value=""><?= _translate("-- Select --"); ?> </option>
                                             </select>
                                         </td>
                                         <td><label for="facilityId">POINT DE COLLECT </label><span class="mandatory">*</span></td>
@@ -244,7 +244,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <th scope="row">Province du patient</th>
                                         <td>
                                             <select class="form-control ajax-select2" id="patientProvince" name="patientProvince" placeholder="Province du patient" style="width:100%;">
-                                                <option value="">-- Sélectionner --</option>
+                                                <option value=""><?= _translate("-- Select --"); ?> </option>
                                                 <?= $general->generateSelectOptions($patienProvince, null, '-- Sélectionner --'); ?>
                                             </select>
                                         </td>
@@ -540,7 +540,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                         <td style="width:50%;">
                                                             <input name="symptomId[]" type="hidden" value="<?php echo $symptomId; ?>">
                                                             <select name="symptomDetected[]" id="symptomDetected<?php echo $symptomId; ?>" class="form-control <?php echo $diarrhée; ?>" title="Veuillez choisir la valeur pour <?php echo $symptomName; ?>" style="width:100%">
-                                                                <option value="">-- Sélectionner --</option>
+                                                                <option value=""><?= _translate("-- Select --"); ?> </option>
                                                                 <option value='yes'> Oui </option>
                                                                 <option value='no'> Non </option>
                                                                 <option value='unknown'> Inconnu </option>
@@ -552,14 +552,14 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                             ?>
                                                                 <label class="diarrhée-sub" for="symptomDetails14" style="margin-left:0;display:none;">Si oui:<br> Sanglante?</label>
                                                                 <select name="symptomDetails[13][]" class="form-control diarrhée-sub" style="width:100%;display:none;">
-                                                                    <option value="">-- Sélectionner --</option>
+                                                                    <option value=""><?= _translate("-- Select --"); ?> </option>
                                                                     <option value='yes'> Oui </option>
                                                                     <option value='no'> Non </option>
                                                                     <option value='unknown'> Inconnu </option>
                                                                 </select>
                                                                 <label class="diarrhée-sub" for="symptomDetails15" style="margin-left:0;display:none;">Aqueuse?</label>
                                                                 <select name="symptomDetails[13][]" class="form-control diarrhée-sub" style="width:100%;display:none;">
-                                                                    <option value="">-- Sélectionner --</option>
+                                                                    <option value=""><?= _translate("-- Select --"); ?> </option>
                                                                     <option value='yes'> Oui </option>
                                                                     <option value='no'> Non </option>
                                                                     <option value='unknown'> Inconnu </option>
@@ -580,7 +580,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <th scope="row" style="width:15% !important"><label for="medicalHistory"></label>Antécédents Médicaux</th>
                                         <td style="width:35% !important;">
                                             <select name="medicalHistory" id="medicalHistory" class="form-control" title="Antécédents Médicaux">
-                                                <option value="">-- Sélectionner --</option>
+                                                <option value=""><?= _translate("-- Select --"); ?> </option>
                                                 <option value="yes">Oui</option>
                                                 <option value="no">Non</option>
                                                 <option value="unknown">Inconnu</option>
@@ -597,7 +597,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                         <td style="width:50%;">
                                                             <input name="comorbidityId[]" type="hidden" value="<?php echo $comorbiditiesId; ?>">
                                                             <select name="comorbidityDetected[]" class="form-control" title="<?php echo $comorbiditiesName; ?>" style="width:100%">
-                                                                <option value="">-- Sélectionner --</option>
+                                                                <option value=""><?= _translate("-- Select --"); ?> </option>
                                                                 <option value='yes'> Oui </option>
                                                                 <option value='no'> Non </option>
                                                                 <option value='unknown'> Inconnu </option>
@@ -873,7 +873,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                             <th scope="row">Le résultat est-il autorisé?</th>
                                             <td>
                                                 <select name="isResultAuthorized" id="isResultAuthorized" class="disabled-field form-control" title="Le résultat est-il autorisé?" style="width:100%">
-                                                    <option value="">-- Sélectionner --</option>
+                                                    <option value=""><?= _translate("-- Select --"); ?> </option>
                                                     <option value='yes'> Oui </option>
                                                     <option value='no'> Non </option>
                                                 </select>
@@ -961,9 +961,9 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="otherId" class="col-lg-4 control-label">Other Id </label>
+                                    <label for="otherId" class="col-lg-4 control-label">Other ID </label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control" id="otherId" name="otherId" placeholder="Other Id" />
+                                        <input type="text" class="form-control" id="otherId" name="otherId" placeholder="Other ID" />
                                         <input type="hidden" class="form-control isRequired" id="facilityType" name="facilityType" value="1" title="Please select facility type" />
                                     </div>
                                 </div>
@@ -1583,7 +1583,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
         b.innerHTML = tableRowId;
         c.innerHTML = '<select onchange="otherCovidTestName(this.value,' + tableRowId + ')" class="form-control test-name-table-input" id="testName' + tableRowId + '" name="testName[]" title="Veuillez saisir le nom du test pour les lignes ' + tableRowId + '"> <option value="">--Select--</option> <option value="PCR/RT-PCR">PCR/RT-PCR</option> <option value="RdRp-SARS Cov-2">RdRp-SARS Cov-2</option> <option value="GeneXpert">GeneXpert</option> <option value="Rapid Antigen Test">Rapid Antigen Test</option><option value="other">Others</option> </select> <input type="text" name="testName[]" id="testName' + tableRowId + '" class="form-control testInputOther' + tableRowId + '" placeholder="Entrez le nom du test ' + tableRowId + '" title="Veuillez saisir le nom du test pour les lignes ' + tableRowId + '" style="display: none;margin-top: 10px;"/>';
         d.innerHTML = '<input type="text" name="testDate[]" id="testDate' + tableRowId + '" class="form-control test-name-table-input dateTime" placeholder="Testé sur"  title="Veuillez sélectionner la Date de l analyse pour la ligne ' + tableRowId + '"/>';
-        e.innerHTML = '<select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult' + tableRowId + '" title="Veuillez sélectionner le résultat pour la ligne ' + tableRowId + '"><option value=""> -- Sélectionner -- </option><?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?> <option value="<?php echo $c19ResultKey; ?>"> <?php echo $c19ResultValue; ?> </option> <?php } ?> </select>';
+        e.innerHTML = '<select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult' + tableRowId + '" title="Veuillez sélectionner le résultat pour la ligne ' + tableRowId + '"><option value=""><?= _translate("-- Select --"); ?> </option><?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?> <option value="<?php echo $c19ResultKey; ?>"> <?php echo $c19ResultValue; ?> </option> <?php } ?> </select>';
         f.innerHTML = '<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
         $(a).fadeIn(800);
         $('.dateTime').datetimepicker({

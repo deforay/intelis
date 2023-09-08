@@ -168,8 +168,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required
-					field &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
 			</div>
 			<div class="box-body">
 				<!-- form start -->
@@ -323,8 +322,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 								</div>
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
-										<label for="ageInMonths">If Age
-											< 1, Age in Month </label> <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" <?php echo $disable; ?> value="<?= ($vlQueryInfo['patient_age_in_months']); ?>" />
+										<label for="ageInMonths">If Age < 1, Age in Month </label> <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" <?php echo $disable; ?> value="<?= ($vlQueryInfo['patient_age_in_months']); ?>" />
 									</div>
 								</div>
 							</div>

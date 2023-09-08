@@ -381,8 +381,7 @@ $reasonForChange = $reasonForChangeArr[1];
 	<section class="content">
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required
-					field &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
 			</div>
 			<div class="box-body">
 				<!-- form start -->
@@ -547,8 +546,7 @@ $reasonForChange = $reasonForChangeArr[1];
 										</div>
 									</div>
 									<div class="col-md-6">
-										<label class="col-lg-5" for="ageInMonths">If Age
-											< 1, Age in Months </label>
+										<label class="col-lg-5" for="ageInMonths">If Age < 1, Age in Months </label>
 												<div class="col-lg-7">
 													<input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" value="<?= htmlspecialchars($genericResultInfo['patient_age_in_months']); ?>" />
 												</div>
