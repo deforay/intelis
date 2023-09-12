@@ -72,6 +72,19 @@ if (empty($requestResult) || !$requestResult) {
 //set print time
 $printDate = DateUtility::humanReadableDateFormat(date('Y-m-d H:i:s'), true);
 
+if (($_SESSION['instanceType'] == 'vluser') && empty($requestResult[0]['result_printed_on_lis_datetime']))
+{ 
+      $pData = array('result_printed_on_lis_datetime' => date('Y-m-d H:i:s'));
+      $db = $db->where('vl_sample_id', $_POST['id']);
+      $id = $db->update('form_vl', $pData);
+}
+elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestResult[0]['result_printed_on_sts_datetime']))
+{ 
+      $pData = array('result_printed_on_sts_datetime' => date('Y-m-d H:i:s'));
+      $db = $db->where('vl_sample_id', $_POST['id']);
+      $id = $db->update('form_vl', $pData);
+}
+
 $_SESSION['nbPages'] = sizeof($requestResult);
 $_SESSION['aliasPage'] = 1;
 //print_r($requestResult);die;
@@ -163,8 +176,16 @@ class MYPDF extends TCPDF
         $this->writeHTMLCell(0, 0, 8, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C');
       }
       $this->SetFont('helvetica', '', 12);
+      if($arr['vl_form'] == 4)
+      {
+        $this->writeHTMLCell(0, 0, 10, $fourthHeading, 'B.P. 7039; stewardship crossroads', 0, 0, 0, true, 'C');
+        
+        $this->writeHTMLCell(0, 0, 15, $hrLine, '<hr>', 0, 0, 0, true, 'C');
+      }
+      else{
       $this->writeHTMLCell(0, 0, 10, $fourthHeading, 'VIRAL LOAD TEST - PATIENT REPORT', 0, 0, 0, true, 'C');
       $this->writeHTMLCell(0, 0, 15, $hrLine, '<hr>', 0, 0, 0, true, 'C');
+      }
     }
   }
 

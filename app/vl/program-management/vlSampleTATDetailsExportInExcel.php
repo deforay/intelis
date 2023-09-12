@@ -25,7 +25,7 @@ $excel = new Spreadsheet();
 $output = [];
 $sheet = $excel->getActiveSheet();
 
-$sQuery = "SELECT vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_lab_datetime,vl.result_printed_datetime,vl.remote_sample_code,vl.external_sample_code,vl.sample_dispatched_datetime,vl.request_created_by, vl.sample_code from form_vl as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date > '1970-01-01')
+$sQuery = "SELECT vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_lab_datetime,vl.result_printed_datetime,vl.remote_sample_code,vl.external_sample_code,vl.sample_dispatched_datetime,vl.request_created_by,vl.result_printed_on_lis_datetime,vl.result_printed_on_sts_datetime, vl.sample_code from form_vl as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date > '1970-01-01')
                         AND (vl.sample_tested_datetime > '1970-01-01' AND DATE(vl.sample_tested_datetime) NOT LIKE '0000-00-00')
                         AND vl.result is not null
                         AND vl.result != ''";
@@ -39,7 +39,7 @@ if (!empty($_SESSION['vlTatData']['sOrder'])) {
 }
 $rResult = $db->rawQuery($sQuery);
 
-$headings = array("Sample Id", "Remote Sample Code", "External Sample Code", "Sample Collection Date", "Sample Dispatch Date", "Sample Received Date in Lab", "Sample Test Date", "Sample Print Date");
+$headings = array("Sample Id", "Remote Sample Code", "External Sample Code", "Sample Collection Date", "Sample Dispatch Date", "Sample Received Date in Lab", "Sample Test Date", "Sample Print Date", "First Printed Date From Remote User","First Printed Date From Vl User");
 
 $colNo = 1;
 
@@ -84,7 +84,7 @@ foreach ($headings as $field => $value) {
 		->setValueExplicit(html_entity_decode($value));
 	$colNo++;
 }
-$sheet->getStyle('A3:H3')->applyFromArray($styleArray);
+$sheet->getStyle('A3:J3')->applyFromArray($styleArray);
 
 $no = 1;
 foreach ($rResult as $aRow) {
@@ -98,6 +98,8 @@ foreach ($rResult as $aRow) {
 	$sampleRecievedDate = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
 	$testDate = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 	$printDate = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
+	$printDateFromRemote = DateUtility::humanReadableDateFormat($aRow['result_printed_on_sts_datetime'] ?? '');
+	$printDateFromVl = DateUtility::humanReadableDateFormat($aRow['result_printed_on_lis_datetime'] ?? '');
 
 
 	$row[] = $aRow['sample_code'];
@@ -108,6 +110,8 @@ foreach ($rResult as $aRow) {
 	$row[] = $sampleRecievedDate;
 	$row[] = $testDate;
 	$row[] = $printDate;
+	$row[] = $printDateFromRemote;
+	$row[] = $printDateFromVl;
 	$output[] = $row;
 	$no++;
 }

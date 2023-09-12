@@ -90,6 +90,20 @@ if (isset($_POST['id']) && trim($_POST['id']) != '') {
 }
 //echo($searchQuery);die;
 $requestResult = $db->query($searchQuery);
+
+if (($_SESSION['instanceType'] == 'vluser') && empty($requestResult[0]['result_printed_on_lis_datetime']))
+{ 
+      $pData = array('result_printed_on_lis_datetime' => date('Y-m-d H:i:s'));
+      $db = $db->where('covid19_id', $_POST['id']);
+      $id = $db->update('form_covid19', $pData);
+}
+elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestResult[0]['result_printed_on_sts_datetime']))
+{ 
+      $pData = array('result_printed_on_sts_datetime' => date('Y-m-d H:i:s'));
+      $db = $db->where('covid19_id', $_POST['id']);
+      $id = $db->update('form_covid19', $pData);
+}
+
 /* Test Results */
 if (isset($_POST['type']) && $_POST['type'] == "qr") {
 	try {
@@ -102,6 +116,7 @@ if (isset($_POST['type']) && $_POST['type'] == "qr") {
 
 $_SESSION['nbPages'] = sizeof($requestResult);
 $_SESSION['aliasPage'] = 1;
+
 //print_r($requestResult);die;
 //header and footer
 class MYPDF extends TCPDF

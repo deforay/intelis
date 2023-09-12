@@ -79,6 +79,20 @@ if (isset($_POST['id']) && trim($_POST['id']) != '') {
 }
 //echo($searchQuery);die;
 $requestResult = $db->query($searchQuery);
+
+if (($_SESSION['instanceType'] == 'vluser') && empty($requestResult[0]['result_printed_on_lis_datetime']))
+{ 
+      $pData = array('result_printed_on_lis_datetime' => date('Y-m-d H:i:s'));
+      $db = $db->where('eid_id', $_POST['id']);
+      $id = $db->update('form_eid', $pData);
+}
+elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestResult[0]['result_printed_on_sts_datetime']))
+{ 
+      $pData = array('result_printed_on_sts_datetime' => date('Y-m-d H:i:s'));
+      $db = $db->where('eid_id', $_POST['id']);
+      $id = $db->update('form_eid', $pData);
+}
+
 $_SESSION['nbPages'] = sizeof($requestResult);
 $_SESSION['aliasPage'] = 1;
 //print_r($requestResult);die;

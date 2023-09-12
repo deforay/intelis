@@ -5060,3 +5060,39 @@ ALTER TABLE `audit_form_eid` ADD `pcr_3_test_result` VARCHAR(50) NULL DEFAULT NU
 
 ALTER TABLE `form_eid` ADD `is_sample_recollected` VARCHAR(11) NULL DEFAULT NULL AFTER `sample_collection_date`;
 ALTER TABLE `audit_form_eid` ADD `is_sample_recollected` VARCHAR(11) NULL DEFAULT NULL AFTER `sample_collection_date`;
+
+-- Jeyabanu 8-Sep-2023
+ALTER TABLE `form_vl` ADD `result_printed_on_sts_datetime` DATETIME NULL DEFAULT NULL AFTER `result_sms_sent_datetime`;
+ALTER TABLE `audit_form_vl` ADD `result_printed_on_sts_datetime` DATETIME NULL DEFAULT NULL AFTER `result_sms_sent_datetime`;
+
+ALTER TABLE `form_eid` ADD `result_printed_on_sts_datetime` DATETIME NULL DEFAULT NULL AFTER `result_printed_datetime`;
+ALTER TABLE `audit_form_eid` ADD `result_printed_on_sts_datetime` DATETIME NULL DEFAULT NULL AFTER `result_printed_datetime`;
+
+ALTER TABLE `form_covid19` ADD `result_printed_on_sts_datetime` DATETIME NULL DEFAULT NULL AFTER `result_printed_datetime`;
+ALTER TABLE `audit_form_covid19` ADD `result_printed_on_sts_datetime` DATETIME NULL DEFAULT NULL AFTER `result_printed_datetime`;
+
+ALTER TABLE `form_hepatitis` ADD `result_printed_on_sts_datetime` DATETIME NULL DEFAULT NULL AFTER `result_printed_datetime`;
+ALTER TABLE `audit_form_hepatitis` ADD `result_printed_on_sts_datetime` DATETIME NULL DEFAULT NULL AFTER `result_printed_datetime`;
+
+ALTER TABLE `form_tb` ADD `result_printed_on_sts_datetime` DATETIME NULL DEFAULT NULL AFTER `result_printed_datetime`;
+ALTER TABLE `audit_form_tb` ADD `result_printed_on_sts_datetime` DATETIME NULL DEFAULT NULL AFTER `result_printed_datetime`;
+
+
+ALTER TABLE `form_vl` ADD `result_printed_on_lis_datetime` DATETIME NULL DEFAULT NULL AFTER `result_printed_on_sts_datetime`;
+ALTER TABLE `audit_form_vl` ADD `result_printed_on_lis_datetime` DATETIME NULL DEFAULT NULL AFTER `result_printed_on_sts_datetime`;
+
+ALTER TABLE `form_eid` ADD `result_printed_on_lis_datetime` DATETIME NULL DEFAULT NULL AFTER `result_printed_on_sts_datetime`;
+ALTER TABLE `audit_form_eid` ADD `result_printed_on_lis_datetime` DATETIME NULL DEFAULT NULL AFTER `result_printed_on_sts_datetime`;
+
+ALTER TABLE `form_covid19` ADD `result_printed_on_lis_datetime` DATETIME NULL DEFAULT NULL AFTER `result_printed_on_sts_datetime`;
+ALTER TABLE `audit_form_covid19` ADD `result_printed_on_lis_datetime` DATETIME NULL DEFAULT NULL AFTER `result_printed_on_sts_datetime`;
+
+ALTER TABLE `form_hepatitis` ADD `result_printed_on_lis_datetime` DATETIME NULL DEFAULT NULL AFTER `result_printed_on_sts_datetime`;
+ALTER TABLE `audit_form_hepatitis` ADD `result_printed_on_lis_datetime` DATETIME NULL DEFAULT NULL AFTER `result_printed_on_sts_datetime`;
+
+ALTER TABLE `form_tb` ADD `result_printed_on_lis_datetime` DATETIME NULL DEFAULT NULL AFTER `result_printed_on_sts_datetime`;
+ALTER TABLE `audit_form_tb` ADD `result_printed_on_lis_datetime` DATETIME NULL DEFAULT NULL AFTER `result_printed_on_sts_datetime`;
+
+ALTER TABLE `form_generic` ADD `result_printed_on_sts_datetime` DATETIME NULL DEFAULT NULL AFTER `result_printed_datetime`;
+ALTER TABLE `form_generic` ADD `result_printed_on_lis_datetime` DATETIME NULL DEFAULT NULL AFTER `result_printed_on_sts_datetime`;
+
