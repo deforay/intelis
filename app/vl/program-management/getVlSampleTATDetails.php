@@ -117,7 +117,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
  * Get data to display
  */
 $aWhere = '';
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_lab_datetime,vl.result_printed_datetime,vl.remote_sample_code,vl.external_sample_code,vl.sample_dispatched_datetime,vl.request_created_by,vl." . $sampleCode . " from form_vl as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date > '1970-01-01')
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_lab_datetime,vl.result_printed_datetime,vl.remote_sample_code,vl.external_sample_code,vl.sample_dispatched_datetime,vl.request_created_by,vl.result_printed_on_lis_datetime,vl.result_printed_on_sts_datetime,vl." . $sampleCode . " from form_vl as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date > '1970-01-01')
                         AND (vl.sample_tested_datetime > '1970-01-01' )
                         AND vl.result is not null
                         AND vl.result != '' ";
@@ -216,6 +216,16 @@ foreach ($rResult as $aRow) {
 	} else {
 		$aRow['sample_dispatched_datetime'] = '';
 	}
+	if (isset($aRow['result_printed_on_sts_datetime']) && trim($aRow['result_printed_on_sts_datetime']) != '' && $aRow['result_printed_on_sts_datetime'] != '0000-00-00 00:00:00') {
+		$aRow['result_printed_on_sts_datetime'] = DateUtility::humanReadableDateFormat($aRow['result_printed_on_sts_datetime']);
+	} else {
+		$aRow['result_printed_datetime'] = '';
+	}
+	if (isset($aRow['result_printed_on_lis_datetime']) && trim($aRow['result_printed_on_lis_datetime']) != '' && $aRow['result_printed_on_lis_datetime'] != '0000-00-00 00:00:00') {
+		$aRow['result_printed_on_lis_datetime'] = DateUtility::humanReadableDateFormat($aRow['result_printed_on_lis_datetime']);
+	} else {
+		$aRow['result_printed_on_lis_datetime'] = '';
+	}
 	$row = [];
 	$row[] = $aRow[$sampleCode];
 	$row[] = $aRow['remote_sample_code'];
@@ -225,6 +235,9 @@ foreach ($rResult as $aRow) {
 	$row[] = $aRow['sample_received_at_lab_datetime'];
 	$row[] = $aRow['sample_tested_datetime'];
 	$row[] = $aRow['result_printed_datetime'];
+	$row[] = $aRow['result_printed_on_sts_datetime'];
+	$row[] = $aRow['result_printed_on_lis_datetime'];
+
 
 	$output['aaData'][] = $row;
 }

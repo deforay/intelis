@@ -297,10 +297,11 @@ if (!empty($id)) {
                     $xplodJsonToArray = explode("_", $jsonToArray[$alphaNumeric[$j]]);
                     if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
                         if (isset($_GET['type']) && $_GET['type'] == 'tb') {
-                            $sampleQuery = "SELECT sample_code,remote_sample_code,result,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn = ?";
+                            $sampleQuery = "SELECT sample_code,remote_sample_code,result,is_encrypted,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn = ?";
                         } else {
-                            $sampleQuery = "SELECT sample_code,remote_sample_code,result,lot_number,lot_expiration_date,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =?";
+                            $sampleQuery = "SELECT sample_code,remote_sample_code,result,lot_number,lot_expiration_date,is_encrypted,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =?";
                         }
+                       
                         $sampleResult = $db->rawQuery($sampleQuery, [$xplodJsonToArray[1]]);
 
                         $lotDetails = '';
@@ -311,6 +312,13 @@ if (!empty($id)) {
                             }
                             $lotExpirationDate .= DateUtility::humanReadableDateFormat($sampleResult[0]['lot_expiration_date']);
                         }
+
+                        if (!empty($sampleResult[0]['is_encrypted']) && $sampleResult[0]['is_encrypted'] == 'yes') {
+                            $key = base64_decode('zACCxM1c1AfRevJ/Zpk+PKXpO+ebWjNSgCRa5/Uheh4=');
+                            $sampleResult[0][$patientIdColumn] = $general->crypto('decrypt', $sampleResult[0][$patientIdColumn], $key);
+                       }
+
+
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
                         $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
                         $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333;width:100%;">';
@@ -353,9 +361,9 @@ if (!empty($id)) {
                     $xplodJsonToArray = explode("_", $jsonToArray[$j]);
                     if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
                         if (isset($_GET['type']) && $_GET['type'] == 'tb') {
-                            $sampleQuery = "SELECT sample_code,remote_sample_code,result,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =?";
+                            $sampleQuery = "SELECT sample_code,remote_sample_code,result,is_encrypted,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =?";
                         } else {
-                            $sampleQuery = "SELECT sample_code,remote_sample_code,result,lot_number,lot_expiration_date,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =?";
+                            $sampleQuery = "SELECT sample_code,remote_sample_code,result,lot_number,lot_expiration_date,is_encrypted,$patientIdColumn, $patientFirstName, $patientLastName from $refTable where $refPrimaryColumn =?";
                         }
                         $sampleResult = $db->rawQuery($sampleQuery, [$xplodJsonToArray[1]]);
 
@@ -367,6 +375,11 @@ if (!empty($id)) {
                             }
                             $lotExpirationDate .= DateUtility::humanReadableDateFormat($sampleResult[0]['lot_expiration_date']);
                         }
+                        if (!empty($sampleResult[0]['is_encrypted']) && $sampleResult[0]['is_encrypted'] == 'yes') {
+                            $key = base64_decode('zACCxM1c1AfRevJ/Zpk+PKXpO+ebWjNSgCRa5/Uheh4=');
+                            $sampleResult[0][$patientIdColumn] = $general->crypto('decrypt', $sampleResult[0][$patientIdColumn], $key);
+                       }
+
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
                         $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
                         $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333;width:100%;">';

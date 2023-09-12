@@ -134,7 +134,7 @@ if (!empty($requestResult)) {
           // set image scale factor
           $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
-
+       
 
           // set font
           $pdf->SetFont('helvetica', '', 18);
@@ -207,6 +207,21 @@ if (!empty($requestResult)) {
                $result['sample_tested_datetime'] = '';
           }
 
+            if (isset($result['treatment_initiated_date']) && trim($result['treatment_initiated_date']) != '' && $result['treatment_initiated_date'] != '0000-00-00 00:00:00') {
+                $expStr = explode(" ", $result['treatment_initiated_date']);
+                $result['treatment_initiated_date'] = date('d/M/Y', strtotime($expStr[0])) . " " . $expStr[1];
+            } else {
+                    $result['treatment_initiated_date'] = '';
+            }
+
+            if (isset($result['last_modified_datetime']) && trim($result['last_modified_datetime']) != '' && $result['last_modified_datetime'] != '0000-00-00 00:00:00') {
+                $expStr = explode(" ", $result['last_modified_datetime']);
+                $result['last_modified_datetime'] = date('d/M/Y', strtotime($expStr[0])) . " " . $expStr[1];
+            } else {
+                    $result['last_modified_datetime'] = '';
+            }
+
+
           if (isset($result['result_reviewed_datetime']) && trim($result['result_reviewed_datetime']) != '' && $result['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", $result['result_reviewed_datetime']);
                $result['result_reviewed_datetime'] = date('d/M/Y', strtotime($expStr[0])) . " " . $expStr[1];
@@ -252,37 +267,17 @@ if (!empty($requestResult)) {
           } else {
                $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $smileyContent;
           }
+
           $html = '<table style="padding:4px 2px 2px 2px;width:100%;">';
           $html .= '<tr>';
 
-          $html .= '<td colspan="3">';
-          $html .= '<table style="padding:2px;">';
-          $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REQUESTING HEALTH FACILITY NAME</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">HEALTH FACILITY CODE</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">STATE</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">COUNTY</td>';
-          $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['facility_name']) . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['facility_code']) . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['facility_state']) . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['facility_district']) . '</td>';
-          $html .= '</tr>';
-          $html .= '</table>';
-          $html .= '</td>';
-          $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td colspan="3">';
-          $html .= '<table style="padding:4px 2px 2px 2px;">';
-          $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">PATIENT NAME</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">UNIQUE ART (TRACNET) NO.</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REASON FOR VL TESTING</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
-          $html .= '</tr>';
+          //$html .= '<td colspan="3">'._translate('').'</td>';
+          //stewardship crossroads
+
+
           $html .= '<tr>';
 
+          $html .= '<td colspan="3">';
           $patientFname = ($general->crypto('doNothing', $result['patient_first_name'], $result['patient_art_no']));
           if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes'){
                $key = base64_decode('zACCxM1c1AfRevJ/Zpk+PKXpO+ebWjNSgCRa5/Uheh4=');
@@ -290,349 +285,184 @@ if (!empty($requestResult)) {
                $patientFname = $general->crypto('decrypt' ,$patientFname, $key);
             }
 
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $patientFname . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['patient_art_no'] . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['test_reason_name']) . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;"></td>';
-          $html .= '</tr>';
-          $html .= '</table>';
-          $html .= '</td>';
-          $html .= '</tr>';
 
-          $html .= '<tr>';
-          $html .= '<td colspan="3">';
-          $html .= '<table style="padding:8px 2px 2px 2px;">';
-          $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">AGE</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">GENDER</td>';
-          if ($result['patient_gender'] == 'female') {
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">BREAST FEEDING</td>';
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">PREGNANCY STATUS</td>';
-          } else {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-          }
-          $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $age . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (str_replace("_", " ", $result['patient_gender'])) . '</td>';
-          if ($result['patient_gender'] == 'female') {
-               $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (str_replace("_", " ", $result['is_patient_breastfeeding'])) . '</td>';
-               $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (str_replace("_", " ", $result['is_patient_pregnant'])) . '</td>';
-          } else {
-               $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
-               $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
-          }
-          $html .= '</tr>';
-
-          $html .= '<tr>';
-          $html .= '<td colspan="2" style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REQUESTING CLINICIAN NAME</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TEL</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">EMAIL</td>';
-          $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . ($result['request_clinician_name']) . '</td>';
-          $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . $result['request_clinician_phone_number'] . '</td>';
-          $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . $result['facility_emails'] . '</td>';
-          $html .= '</tr>';
-          $html .= '</table>';
-          $html .= '</td>';
-          $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
-          $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE ID</td>';
-          $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE COLLECTION DATE</td>';
-          $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE RECEIPT DATE</td>';
-          $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_code'] . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $sampleReceivedDate . " " . $sampleReceivedTime . '</td>';
-          $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE REJECTION STATUS</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE TEST DATE</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">RESULT RELEASE DATE</td>';
-          $html .= '</tr>';
-          $rejectedStatus = (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') ? 'Rejected' : 'Not Rejected';
-          $html .= '<tr>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $rejectedStatus . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $sampleDispatchDate . " " . $sampleDispatchTime . '</td>';
-          $html .= '</tr>';
-
-          $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE TYPE</td>';
-          $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['sample_name']) . '</td>';
-          $html .= '</tr>';
-          // $html .= '<tr>';
-          // $html .= '<td colspan="3" style="line-height:10px;"></td>';
-          // $html .= '</tr>';
-
-          $html .= '<tr>';
-          $html .= '<td colspan="3">';
-          $html .= '<table style="padding:10px 2px 2px 2px;">';
           $logValue = '';
           if ($result['result_value_log'] != '' && $result['result_value_log'] != null && ($result['reason_for_sample_rejection'] == '' || $result['reason_for_sample_rejection'] == null)) {
-               $logValue = '&nbsp;&nbsp;Log Value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['result_value_log'];
+               $logValue = '&nbsp;' . $result['result_value_log'];
           } else {
                if ($isResultNumeric) {
                     $logV = round(log10($result['result']), 2);
-                    $logValue = '&nbsp;&nbsp;Log Value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $logV;
+                    $logValue = '&nbsp;&nbsp;' . $logV;
                } else {
                     $logValue = '';
                }
           }
-          $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;">&nbsp;&nbsp;Viral Load Result (copies/ml)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars($result['result']) . '<br>' . $logValue . '</td><td >' . $smileyContent . '</td></tr>';
-          if ($result['reason_for_sample_rejection'] != '') {
-               $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Rejection Reason&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
-          }
-          if (strpos(strtolower($result['vl_test_platform']), 'abbott') !== false) {
-               $html .= '<tr>';
-               $html .= '<td colspan="3" style="line-height:8px;font-size:8px;padding-top:8px;">Abbott Linear Detection range: 839 copies/ml - 10 million copies/ml</td>';
-               $html .= '</tr>';
-          }
-          //$html .= '<tr><td colspan="3"></td></tr>';
-          $html .= '</table>';
-          $html .= '</td>';
-          $html .= '</tr>';
-          if (trim($showMessage) != '') {
-               $html .= '<tr>';
-               $html .= '<td colspan="3" style="line-height:13px;font-size:' . $messageTextSize . ';text-align:left;">' . $showMessage . '</td>';
-               $html .= '</tr>';
-               $html .= '<tr>';
-               $html .= '<td colspan="3" style="line-height:16px;"></td>';
-               $html .= '</tr>';
-          }
-          if (trim($tndMessage) != '') {
-               $html .= '<tr>';
-               $html .= '<td colspan="3" style="line-height:13px;font-size:18px;text-align:left;">' . $tndMessage . '</td>';
-               $html .= '</tr>';
-               $html .= '<tr>';
-               $html .= '<td colspan="3" style="line-height:16px;"></td>';
-               $html .= '</tr>';
-          }
-          // if (trim($result['lab_tech_comments']) != '') {
-          //      $html .= '<tr>';
-          //      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">LAB COMMENTS&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . ($result['lab_tech_comments']) . '</span></td>';
-          //      $html .= '</tr>';
-          //      $html .= '<tr>';
-          //      $html .= '<td colspan="3" style="line-height:10px;"></td>';
-          //      $html .= '</tr>';
-          // }
-          $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
-          $html .= '</tr>';
-          // $html .= '<tr>';
-          // $html .= '<td colspan="3" style="line-height:14px;"></td>';
-          // $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:15px;font-size:11px;font-weight:bold;">TEST PLATFORM &nbsp;&nbsp;:&nbsp;&nbsp; <span style="font-weight:normal;">' . ($result['vl_test_platform']) . '</span></td>';
-          $html .= '</tr>';
-          // $html .= '<tr>';
-          // $html .= '<td colspan="3" style="line-height:8px;"></td>';
-          // $html .= '</tr>';
-          // if (isset($result['last_viral_load_result']) && $result['last_viral_load_result'] != null) {
-          //      $html .= '<tr>';
-          //      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">PREVIOUS RESULTS</td>';
-          //      $html .= '</tr>';
-          //      $html .= '<tr>';
-          //      $html .= '<td colspan="3" style="line-height:8px;"></td>';
-          //      $html .= '</tr>';
-          //      $html .= '<tr>';
-          //      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Date of Last VL Test&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . $result['last_viral_load_date'] . '</span></td>';
-          //      $html .= '</tr>';
-          //      $html .= '<tr>';
-          //      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Result of previous viral load(copies/ml)&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . $result['last_viral_load_result'] . '</span></td>';
-          //      $html .= '</tr>';
-          // }
-          $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
-          $html .= '</tr>';
-          // $html .= '<tr>';
-          // $html .= '<td colspan="3" style="line-height:8px;"></td>';
-          // $html .= '</tr>';
-          if ($result['is_sample_rejected'] == 'no') {
-               if (!empty($testedBy) && !empty($result['sample_tested_datetime'])) {
-                    $html .= '<tr>';
-                    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TESTED BY</td>';
-                    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-                    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
-                    $html .= '</tr>';
 
-                    $html .= '<tr>';
-                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
-                    if (!empty($testUserSignaturePath) && $pdf->imageExists(($testUserSignaturePath))) {
-                         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testUserSignaturePath . '" style="width:50px;" /></td>';
-                    } else {
-                         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-                    }
-                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
-                    $html .= '</tr>';
-               }
-          }
-          if (!empty($reviewedBy)) {
-               $html .= '<tr>';
-               $html .= '<td colspan="3" style="line-height:8px;"></td>';
-               $html .= '</tr>';
+        
 
-               $html .= '<tr>';
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REVIEWED BY</td>';
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
-               $html .= '</tr>';
-
-               $html .= '<tr>';
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
-               if (!empty($reviewedSignaturePath) && $pdf->imageExists(($reviewedSignaturePath))) {
-                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedSignaturePath . '" style="width:50px;" /></td>';
-               } else {
-                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-               }
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (!empty($result['result_reviewed_datetime']) ? $result['result_reviewed_datetime'] : $result['sample_tested_datetime']) . '</td>';
-               $html .= '</tr>';
-          }
-
-          if (!empty($revisedBy)) {
-
-               $html .= '<tr>';
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REPORT REVISED BY</td>';
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
-               $html .= '</tr>';
-
-               $html .= '<tr>';
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $revisedBy . '</td>';
-               if (!empty($revisedSignaturePath) && $pdf->imageExists($revisedSignaturePath)) {
-                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedSignaturePath . '" style="width:70px;" /></td>';
-               } else {
-                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-               }
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . date('d/M/Y', strtotime($result['revised_on'])) . '</td>';
-               $html .= '</tr>';
-          }
-
-          $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:8px;"></td>';
-          $html .= '</tr>';
-          if (!empty($resultApprovedBy) && !empty($result['result_approved_datetime'])) {
-               $html .= '<tr>';
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">APPROVED BY</td>';
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
-               $html .= '</tr>';
-
-               $html .= '<tr>';
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
-               if (!empty($userSignaturePath) && $pdf->imageExists(($userSignaturePath))) {
-                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $userSignaturePath . '" style="width:50px;" /></td>';
-               } else {
-                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-               }
-
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['result_approved_datetime'] . '</td>';
-               $html .= '</tr>';
-          }
-
-          // $html .= '<tr>';
-          // $html .= '<td colspan="3" style="line-height:2px;"></td>';
-          // $html .= '</tr>';
-
-          // if (!empty($result['lab_tech_comments'])) {
-          //      $html .= '<tr>';
-          //      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Comments</td>';
-          //      $html .= '</tr>';
-          //      $html .= '<tr>';
-          //      $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['lab_tech_comments'] . '</td>';
-          //      $html .= '</tr>';
-          // }
-
-
-          if (!empty($result['lab_tech_comments'])) {
-
-               $html .= '<tr>';
-               $html .= '<td colspan="3" style="line-height:20px;"></td>';
-               $html .= '</tr>';
-               $html .= '<tr>';
-               $html .= '<td colspan="3" style="line-height:11px;font-size:11px;text-align:left;"><strong>Lab Comments:</strong> ' . $result['lab_tech_comments'] . '</td>';
-               $html .= '</tr>';
-
-               $html .= '<tr>';
-               $html .= '<td colspan="3" style="line-height:2px;"></td>';
-               $html .= '</tr>';
-          }
-          $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
-          $html .= '</tr>';
-          // $html .= '<tr>';
-          // $html .= '<td colspan="3" style="line-height:2px;"></td>';
-          // $html .= '</tr>';
+          $html = '<h5 align="center"><u>'. _translate('HIV VIRAL LOAD RESULT SHEET').'</u></h5>';
+         
+          $html .= '<p style="font: size 11px;"><u>'._translate("Information Of Patient").'</u></p>';
+          $html .= '<table style="padding:4px 2px 2px 2px;width:100%;">';
           $html .= '<tr>';
           $html .= '<td colspan="3">';
-          $html .= '<table>';
+          $html .= '<table style="padding:2px;" border="1" cellpadding="8" cellspacing="0">';
           $html .= '<tr>';
-          $html .= '<td style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:10px;height:10px;"/> = VL < = 1000 copies/ml: Continue on current regimen</td>';
-          $html .= '<td style="font-size:10px;text-align:left;">Printed on : ' . $printDate . '&nbsp;&nbsp;' . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">'._translate("Unique code : ").$result['sample_code'].'</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">'._translate("Region : ").$result['facility_state'].'</td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:10px;height:10px;"/> = VL > 1000 copies/ml: copies/ml: Clinical and counselling action required</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Patient Name : ") .$patientFname. '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Age : ") .$age. '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'._translate("Sex : ") .(str_replace("_", " ", $result['patient_gender'])). '</td>';
+          $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' .  _translate("Type of Sample : ") .$result['sample_name'].'</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Contact : ") .$result['patient_mobile_number']. '</td>';
+          $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' ._translate("Date of Sample Collected : ") .$result['sample_collection_date'] . " " . $sampleCollectionTime. '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Collected By : ") . $result['facility_name'].'</td>';
+          $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' .  _translate("Name of Requestor : ") .$result['request_clinician_name'] . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Contact of Requestor : ") .$result['request_clinician_phone_number']. '</td>';
+          $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Treatment center : ') . ($result['labName']) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('ARV initiation date : ') . ($result['treatment_initiated_date']) . '</td>';
+          $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Modifier : ') . ($result['last_modified_by']) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Modification date : ') . ($result['last_modified_datetime']) . '</td>';
           $html .= '</tr>';
           $html .= '</table>';
+
+          $html .= '<br><br>';
+
+          $html .= '<table border="0" style="margin-top:24px;">';
+          $html .= '<tr>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Sample Received Date : ') .'</td>';
+          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' .$sampleReceivedDate . " " . $sampleReceivedTime. '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Viral load serial number : ') .'</td>';
+          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . ($result['vl_test_number']) . '</td>';
+
+          $html .= '</tr>';
+          $html .= '<tr><td></td></tr>';
+          $html .= '<tr>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Test Name : ') .'</td>';
+          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' .$result['vl_test_platform'] . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Sample Tested Date : ') .'</td>';
+          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $result['sample_tested_datetime'] . '</td>';
+          $html .= '</tr>';
+
+          $html .= '<tr><td></td></tr>';
+          $html .= '<tr>';
+          $html .= '<td width="10%" style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Result : ') .'</td>';
+          $html .= '<td width="10%" style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' .htmlspecialchars($result['result']) . '</td>';
+          $html .= '<td width="20%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Result Log : ') .'</td>';
+          $html .= '<td width="10%" style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $logValue . '</td>';
+          $html .= '<td width="20%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Test Done By : ') .'</td>';
+          $html .= '<td width="30%" style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $testedBy. '</td>';
+
+          $html .= '</tr>';
+          $html .= '<tr><td width="100%" style="line-height:20px;font-size:10px;">';
+          $html .= '<br>';
+          $html .= '<p>'._translate("N.B.: The Abbott 0.6ml test has a lower limit of quantification of 40 copies/ml and an upper limit of quantification
+          of 10,000,000 copies/ml. For any results between these limits, the number of copies per ml is reported. When the virus is
+          detected above or below the limits of quantification, this is reported. If the test is successful and no viruses are found
+          detected, the result is reported as undetected target. For a variation in viral load to be significant, it is necessary
+          that the difference between two measurements is at least 0.5 Log10 or a reduction or increase by a factor of 3 of the
+          number of copies/ml.
+          ").'</p>';
+          $html .= '<table border="0" style="margin-top:24px;">';
+          $html .= '<tr>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Comment, if applicable : ') .'</td>';
+          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' .$result['lab_tech_comments'] . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Date : ') .'</td>';
+          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black"></td>';
+
+          $html .= '</tr>';
+          $html .= '<tr><td></td></tr>';
+
+          $html .= '<tr>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Validated by : ') . $reviewedBy  . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Authorized by : ') . $resultApprovedBy .'</td></tr>';
+          if (!empty($reviewedSignaturePath) && $pdf->imageExists(($reviewedSignaturePath))) {
+               $signImg = '<img src="' . $reviewedSignaturePath . '" style="width:50px;" />';
+          } else {
+               $signImg = '';
+          }
+          $html .= '<tr><td></td></tr>';
+          $html .= '<tr><td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Signature : ') . $signImg  . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:right;"></td>';
+
+          $html .= '</tr>';
+
+          $html .= '</table>';
+
+
+
+          $html .= '</td></tr>';
+          $html .= '</table>';
+
           $html .= '</td>';
           $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td colspan="3">';
+          $html .= '<table style="padding:4px 2px 2px 2px;">';
+         
+         
           $html .= '</table>';
-          if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {
-               $pdf->writeHTML($html);
-               $pdf->lastPage();
-               $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';
-               $pdf->Output($filename, "F");
-               if ($draftTextShow) {
-                    //Watermark section
-                    $watermark = new PdfWatermarkHelper();
-                    $watermark->setFullPathToFile($filename);
-                    $fullPathToFile = $filename;
-                    $watermark->Output($filename, "F");
-               }
-               $pages[] = $filename;
-               $page++;
-          }
-          if (isset($_POST['source']) && trim($_POST['source']) == 'print') {
-               //Add event log
-               $eventType = 'print-result';
-               $action = $_SESSION['userName'] . ' generated the test result PDF with Patient ID/Code ' . $result['patient_art_no'];
-               $resource = 'print-test-result';
-               $data = array(
-                    'event_type' => $eventType,
-                    'action' => $action,
-                    'resource' => $resource,
-                    'date_time' => $currentTime
-               );
-               $db->insert($tableName1, $data);
-               //Update print datetime in VL tbl.
-               $vlQuery = "SELECT result_printed_datetime FROM form_vl as vl WHERE vl.vl_sample_id ='" . $result['vl_sample_id'] . "'";
-               $vlResult = $db->query($vlQuery);
-               if ($vlResult[0]['result_printed_datetime'] == null || trim($vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
-                    $db = $db->where('vl_sample_id', $result['vl_sample_id']);
-                    $db->update($tableName2, array('result_printed_datetime' => $currentTime, 'result_dispatched_datetime' => $currentTime));
-               }
-          }
-     }
+      
 
-     if (!empty($pages)) {
-          $resultPdf = new PdfConcatenateHelper();
-          $resultPdf->setFiles($pages);
-          $resultPdf->setPrintHeader(false);
-          $resultPdf->setPrintFooter(false);
-          $resultPdf->concat();
-          $resultFilename = 'VLSM-VL-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
-          $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
-          MiscUtility::removeDirectory($pathFront);
-          unset($_SESSION['rVal']);
-     }
+
+         // if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {
+            $pdf->writeHTML($html);
+            $pdf->lastPage();
+            $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';
+            $pdf->Output($filename, "F");
+            if ($draftTextShow) {
+                 //Watermark section
+                 $watermark = new PdfWatermarkHelper();
+                 $watermark->setFullPathToFile($filename);
+                 $fullPathToFile = $filename;
+                 $watermark->Output($filename, "F");
+            }
+            $pages[] = $filename;
+            $page++;
+      // }
+       if (isset($_POST['source']) && trim($_POST['source']) == 'print') {
+            //Add event log
+            $eventType = 'print-result';
+            $action = $_SESSION['userName'] . ' generated the test result PDF with Patient ID/Code ' . $result['patient_art_no'];
+            $resource = 'print-test-result';
+            $data = array(
+                 'event_type' => $eventType,
+                 'action' => $action,
+                 'resource' => $resource,
+                 'date_time' => $currentTime
+            );
+            $db->insert($tableName1, $data);
+            //Update print datetime in VL tbl.
+            $vlQuery = "SELECT result_printed_datetime FROM form_vl as vl WHERE vl.vl_sample_id ='" . $result['vl_sample_id'] . "'";
+            $vlResult = $db->query($vlQuery);
+            if ($vlResult[0]['result_printed_datetime'] == null || trim($vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
+                 $db = $db->where('vl_sample_id', $result['vl_sample_id']);
+                 $db->update($tableName2, array('result_printed_datetime' => $currentTime, 'result_dispatched_datetime' => $currentTime));
+            }
+       }
+    }
+    if (!empty($pages)) {
+        $resultPdf = new PdfConcatenateHelper();
+        $resultPdf->setFiles($pages);
+        $resultPdf->setPrintHeader(false);
+        $resultPdf->setPrintFooter(false);
+        $resultPdf->concat();
+        $resultFilename = 'VLSM-VL-Test-result-' . date('d-M-Y-H-i-s') . "-" . $general->generateRandomString(6) . '.pdf';
+        $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
+        MiscUtility::removeDirectory($pathFront);
+        unset($_SESSION['rVal']);
+   }
 }
 
 echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename);
