@@ -32,7 +32,7 @@ if (isset($_GET['type'])) {
             $patientIdColumn = 'patient_art_no';
             $patientFirstName = 'patient_first_name';
             $patientLastName = 'patient_last_name';
-            $worksheetName = 'Viral Load Test Worksheet';
+            $worksheetName = _translate('Viral Load Test Worksheet');
             $encryptCol = ",is_encrypted";
             break;
         case 'eid':
@@ -41,7 +41,7 @@ if (isset($_GET['type'])) {
             $patientIdColumn = 'child_id';
             $patientFirstName = 'child_name';
             $patientLastName = 'child_surname';
-            $worksheetName = 'EID Test Worksheet';
+            $worksheetName = _translate('EID Test Worksheet');
             $encryptCol = "";
             break;
         case 'covid19':
@@ -50,7 +50,7 @@ if (isset($_GET['type'])) {
             $patientIdColumn = 'patient_id';
             $patientFirstName = 'patient_name';
             $patientLastName = 'patient_surname';
-            $worksheetName = 'Covid-19 Test Worksheet';
+            $worksheetName = _translate('Covid-19 Test Worksheet');
             $encryptCol = "";
             break;
         case 'hepatitis':
@@ -59,7 +59,7 @@ if (isset($_GET['type'])) {
             $patientIdColumn = 'patient_id';
             $patientFirstName = 'patient_name';
             $patientLastName = 'patient_surname';
-            $worksheetName = 'Hepatitis Test Worksheet';
+            $worksheetName = _translate('Hepatitis Test Worksheet');
             $encryptCol = "";
             $showPatientName = true;
             break;
@@ -69,7 +69,7 @@ if (isset($_GET['type'])) {
             $patientIdColumn = 'patient_id';
             $patientFirstName = 'patient_name';
             $patientLastName = 'patient_surname';
-            $worksheetName = 'TB Test Worksheet';
+            $worksheetName = _translate('TB Test Worksheet');
             $encryptCol = "";
             $showPatientName = true;
             break;
@@ -79,7 +79,7 @@ if (isset($_GET['type'])) {
             $patientIdColumn = 'patient_id';
             $patientFirstName = 'patient_first_name';
             $patientLastName = 'patient_last_name';
-            $worksheetName = 'Lab Test Worksheet';
+            $worksheetName = _translate('Lab Test Worksheet');
             $encryptCol = "";
             $showPatientName = true;
             break;
@@ -175,12 +175,12 @@ if (!empty($id)) {
                 $this->SetFont('helvetica', '', 7);
                 $this->writeHTMLCell(30, 0, 10, 26, $this->text, 0, 0, 0, true, 'A');
                 $this->SetFont('helvetica', '', 13);
-                $this->writeHTMLCell(0, 0, 0, 10, 'Batch Number/Code : ' . $this->batch, 0, 0, 0, true, 'C');
+                $this->writeHTMLCell(0, 0, 0, 10, _translate('Batch Number/Code') . ' : ' . $this->batch, 0, 0, 0, true, 'C');
                 $this->writeHTMLCell(0, 0, 0, 20, $this->worksheetName, 0, 0, 0, true, 'C');
                 $this->SetFont('helvetica', '', 9);
-                $this->writeHTMLCell(0, 0, 144, 10, 'Result On : ' . $this->resulted, 0, 0, 0, true, 'C');
-                $this->writeHTMLCell(0, 0, 144, 16, 'Reviewed On : ' . $this->reviewed, 0, 0, 0, true, 'C');
-                $this->writeHTMLCell(0, 0, 144, 22, 'Created By : ' . $this->createdBy, 0, 0, 0, true, 'C');
+                $this->writeHTMLCell(0, 0, 144, 10, _translate('Result On') . ' : ' . $this->resulted, 0, 0, 0, true, 'C');
+                $this->writeHTMLCell(0, 0, 144, 16, _translate('Reviewed On') . ' : ' . $this->reviewed, 0, 0, 0, true, 'C');
+                $this->writeHTMLCell(0, 0, 144, 22, _translate('Created By') . ' : ' . $this->createdBy, 0, 0, 0, true, 'C');
                 $html = '<hr/>';
                 $this->writeHTMLCell(0, 0, 10, 32, $html, 0, 0, 0, true, 'J');
             }
@@ -204,10 +204,10 @@ if (!empty($id)) {
 
         // set document information
         $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetAuthor('VLSM');
-        $pdf->SetTitle('VLSM BATCH');
-        $pdf->SetSubject('VLSM BATCH');
-        $pdf->SetKeywords('VLSM BATCH');
+        $pdf->SetAuthor(_translate('VLSM BATCH'));
+        $pdf->SetTitle(_translate('VLSM BATCH'));
+        $pdf->SetSubject(_translate('VLSM BATCH'));
+        $pdf->SetKeywords(_translate('VLSM BATCH'));
 
         $pdf->SetMargins(0, 0, 0);
         $pdf->SetHeaderMargin(0);
@@ -278,12 +278,12 @@ if (!empty($id)) {
         } else {
             $tbl = '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">
                     <tr style="border-bottom:1px solid #333 !important;">
-                        <th align="center" width="6%"><strong>Pos.</strong></th>
-                        <th align="center" width="20%"><strong>Sample ID</strong></th>
-                        <th align="center" width="35%"><strong>BARCODE</strong></th>
-                        <th align="center" width="13%"><strong>Patient Code</strong></th>
-                        <th align="center" width="13%"><strong>Lot Number / <br>Exp. Date</strong></th>
-                        <th align="center" width="13%"><strong>Test Result</strong></th>
+                        <th align="center" width="6%"><strong>' . _translate('Pos.') . '</strong></th>
+                        <th align="center" width="20%"><strong>' . _translate('Sample Code') . '</strong></th>
+                        <th align="center" width="35%"><strong>' . _translate('BARCODE') . '</strong></th>
+                        <th align="center" width="13%"><strong>' . _translate('Patient Code') . '</strong></th>
+                        <th align="center" width="13%"><strong>' . _translate('Lot Number / <br>Exp. Date') . '</strong></th>
+                        <th align="center" width="13%"><strong>' . _translate('Test Result') . '</strong></th>
                     </tr>';
             $tbl .= '</table>';
         }
@@ -307,7 +307,7 @@ if (!empty($id)) {
                         } else {
                             $sampleQuery = "SELECT sample_code,remote_sample_code,result,lot_number,lot_expiration_date,$patientIdColumn, $patientFirstName, $patientLastName  $encryptCol from $refTable where $refPrimaryColumn =?";
                         }
-                       
+
                         $sampleResult = $db->rawQuery($sampleQuery, [$xplodJsonToArray[1]]);
 
                         $lotDetails = '';
@@ -322,7 +322,7 @@ if (!empty($id)) {
                         if (!empty($sampleResult[0]['is_encrypted']) && $sampleResult[0]['is_encrypted'] == 'yes') {
                             $key = base64_decode('zACCxM1c1AfRevJ/Zpk+PKXpO+ebWjNSgCRa5/Uheh4=');
                             $sampleResult[0][$patientIdColumn] = $general->crypto('decrypt', $sampleResult[0][$patientIdColumn], $key);
-                       }
+                        }
 
 
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
@@ -371,7 +371,7 @@ if (!empty($id)) {
                         } else {
                             $sampleQuery = "SELECT sample_code,remote_sample_code,result,lot_number,lot_expiration_date,$patientIdColumn, $patientFirstName, $patientLastName $encryptCol from $refTable where $refPrimaryColumn =?";
                         }
-                        
+
                         $sampleResult = $db->rawQuery($sampleQuery, [$xplodJsonToArray[1]]);
 
                         $lotDetails = '';
@@ -385,7 +385,7 @@ if (!empty($id)) {
                         if (!empty($sampleResult[0]['is_encrypted']) && $sampleResult[0]['is_encrypted'] == 'yes') {
                             $key = base64_decode('zACCxM1c1AfRevJ/Zpk+PKXpO+ebWjNSgCRa5/Uheh4=');
                             $sampleResult[0][$patientIdColumn] = $general->crypto('decrypt', $sampleResult[0][$patientIdColumn], $key);
-                       }
+                        }
 
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
                         $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
@@ -435,7 +435,7 @@ if (!empty($id)) {
                     $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
                     $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333;width:100%;">
                             <td align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333">' . $i . '.</td>
-                            <td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333">In-House Controls ' . $i . '</td>
+                            <td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333">' . _translate('In-House Controls') . ' ' . $i . '</td>
                             <td align="center" width="35%" style="vertical-align:middle;border-bottom:1px solid #333"></td>
                             <td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333"></td>
                             <td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333"></td>
@@ -452,7 +452,7 @@ if (!empty($id)) {
                     $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
                     $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333;width:100%;">
                     <td align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sNo . '.</td>
-                    <td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333">Manfacturing Controls ' . $i . '</td>
+                    <td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333">' . _translate('Manfacturing Controls') . ' ' . $i . '</td>
                     <td align="center" width="35%" style="vertical-align:middle;border-bottom:1px solid #333"></td>
                     <td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333"></td>
                     <td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333"></td>
@@ -469,7 +469,7 @@ if (!empty($id)) {
                     $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
                     $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333;width:100%;">
                     <td align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sNo . '.</td>
-                    <td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">Calibrators ' . $i . '</td>
+                    <td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . _translate('Calibrators') . ' ' . $i . '</td>
                     <td align="center" width="35%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>
                     <td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>
                     <td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>
