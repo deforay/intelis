@@ -3,10 +3,10 @@
 use GuzzleHttp\Client;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\ImageResizeUtility;
-use App\Utilities\MiscUtility;
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);

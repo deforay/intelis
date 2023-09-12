@@ -151,6 +151,7 @@ class VlService extends AbstractTestService
             if (in_array(strtolower($params['vlResult']), ['fail', 'failed', 'failure', 'error', 'err', 'invalid'])) {
                 $hivDetection = null;
                 $resultStatus = SAMPLE_STATUS\TEST_FAILED; // Invalid/Failed
+                $finalResult = $params['vlResult'];
             } elseif (in_array(strtolower($params['vlResult']), ['no result', 'no'])) {
                 $hivDetection = null;
                 $resultStatus = SAMPLE_STATUS\NO_RESULT; // No Result

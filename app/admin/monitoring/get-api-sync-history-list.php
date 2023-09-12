@@ -1,19 +1,15 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
-if (session_status() == PHP_SESSION_NONE) {
-     session_start();
-}
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$tableName = "track_api_requests";
 $primaryKey = "api_track_id";
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -25,7 +21,6 @@ $orderColumns = array('transaction_id', 'number_of_records', 'request_type', 'te
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
 
-$sTable = $tableName;
 /*
 * Paging
 */
@@ -93,7 +88,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
 $aWhere = '';
 $sQuery = '';
 
-$sQuery = "SELECT a.* FROM $tableName as a";
+$sQuery = "SELECT a.* FROM track_api_requests as a";
 
 [$startDate, $endDate] = DateUtility::convertDateRange($_POST['dateRange'] ?? '');
 
