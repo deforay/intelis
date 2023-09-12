@@ -101,7 +101,7 @@ try {
             'sampleCollectionDate',
             'patientDob',
             'requestDate',
-            'sampleTestedDateTime',
+            'sampleTestingDateAtLab',
             'sampleDispatchedOn',
             'sampleReceivedDate',
         ];
@@ -327,7 +327,7 @@ try {
             'vl_test_platform' => $data['testingPlatform'] ?? null,
             'sample_received_at_hub_datetime' => DateUtility::isoDateFormat($data['sampleReceivedAtHubOn'] ?? '', true),
             'sample_received_at_lab_datetime' => DateUtility::isoDateFormat($data['sampleReceivedDate'] ?? '', true),
-            'sample_tested_datetime' => DateUtility::isoDateFormat($data['sampleTestedDateTime'] ?? '', true),
+            'sample_tested_datetime' => DateUtility::isoDateFormat($data['sampleTestingDateAtLab'] ?? '', true),
             'sample_dispatched_datetime' => DateUtility::isoDateFormat($data['sampleDispatchedOn'] ?? '', true),
             'result_dispatched_datetime' => DateUtility::isoDateFormat($data['resultDispatchedOn'] ?? '', true),
             'result_value_hiv_detection' => $hivDetection,
