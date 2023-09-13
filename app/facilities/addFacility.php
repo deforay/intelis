@@ -53,7 +53,6 @@ if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']
 }
 $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 
-
 ?>
 <style>
 	.ms-choice {
@@ -409,9 +408,12 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 															<?php echo _translate("-- Select --"); ?>
 														</option>
 													<?php } ?>
-													<?php foreach ($reportFormats['vl'] as $key => $value) { ?>
-														<option value="<?php echo $key; ?>"><?php echo ($value); ?></option>
-													<?php } ?>
+													<?php foreach ($reportFormats['vl'] as $key => $value) {
+														foreach($value as $k=>$v) { ?>
+																<option value="<?php echo $k; ?>"><?php echo ($v); ?></option>
+													<?php
+														}
+													} ?>
 												</select>
 											</div>
 										</div>
@@ -431,9 +433,12 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 															<?php echo _translate("-- Select --"); ?>
 														</option>
 													<?php } ?>
-													<?php foreach ($reportFormats['eid'] as $key => $value) { ?>
-														<option value="<?php echo $key; ?>"><?= ($value); ?></option>
-													<?php } ?>
+													<?php foreach ($reportFormats['eid'] as $key => $value) {
+														foreach($value as $k=>$v) { ?>
+																<option value="<?php echo $k; ?>"><?php echo ($v); ?></option>
+													<?php
+														}
+													} ?>
 												</select>
 											</div>
 										</div>
@@ -453,9 +458,12 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 															<?php echo _translate("-- Select --"); ?>
 														</option>
 													<?php } ?>
-													<?php foreach ($reportFormats['covid19'] as $key => $value) { ?>
-														<option value="<?php echo $key; ?>"><?php echo ($value); ?></option>
-													<?php } ?>
+													<?php foreach ($reportFormats['covid19'] as $key => $value) {
+														foreach($value as $k=>$v) { ?>
+																<option value="<?php echo $k; ?>"><?php echo ($v); ?></option>
+													<?php
+														}
+													} ?>
 												</select>
 											</div>
 										</div>
@@ -475,9 +483,12 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 															<?php echo _translate("-- Select --"); ?>
 														</option>
 													<?php } ?>
-													<?php foreach ($reportFormats['hepatitis'] as $key => $value) { ?>
-														<option value="<?php echo $key; ?>"><?php echo ($value); ?></option>
-													<?php } ?>
+													<?php foreach ($reportFormats['hepatitis'] as $key => $value) {
+														foreach($value as $k=>$v) { ?>
+																<option value="<?php echo $k; ?>"><?php echo ($v); ?></option>
+													<?php
+														}
+													} ?>
 												</select>
 											</div>
 										</div>
@@ -497,9 +508,12 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 															<?php echo _translate("-- Select --"); ?>
 														</option>
 													<?php } ?>
-													<?php foreach ($reportFormats['tb'] as $key => $value) { ?>
-														<option value="<?php echo $key; ?>"><?php echo ($value); ?></option>
-													<?php } ?>
+													<?php foreach ($reportFormats['tb'] as $key => $value) {
+														foreach($value as $k=>$v) { ?>
+																<option value="<?php echo $k; ?>"><?php echo ($v); ?></option>
+													<?php
+														}
+													} ?>
 												</select>
 											</div>
 										</div>

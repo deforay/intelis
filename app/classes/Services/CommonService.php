@@ -490,12 +490,14 @@ class CommonService
         if (!empty($pdfFormatPaths)) {
             $activeReportFormats = array_map(function ($formatPath) {
                 $baseName = basename($formatPath);
+                $countryShortCode = $this->getCountryShortCode();
                 $formatName = str_replace(['.php', 'result-pdf-'], '', $baseName);
-                return ["pdf/$baseName" => strtoupper($formatName)];
+                if($baseName == "result-pdf-$countryShortCode.php")
+                    return ["pdf/$baseName" => "Default"];
+                 else
+                    return ["pdf/$baseName" => strtoupper($formatName)];
             }, $pdfFormatPaths);
         }
-
-        $activeReportFormats["pdf/result-pdf-$countryShortCode.php"] = "Default";
 
         return $activeReportFormats;
     }
