@@ -122,7 +122,7 @@ class MYPDF extends TCPDF
       if (trim($this->logo) != '') {
         error_log($this->logo);
         if ($this->imageExists($this->logo)) {
-          $this->Image($this->logo, 95, 5, 15, '', '', '', 'T');
+          $this->Image($this->logo, 10, 5, 15, '', '', '', 'T');
         } else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
           $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
           $this->Image($imageFilePath, 95, 5, 15, '', '', '', 'T');
@@ -176,16 +176,8 @@ class MYPDF extends TCPDF
         $this->writeHTMLCell(0, 0, 8, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C');
       }
       $this->SetFont('helvetica', '', 12);
-      if($arr['vl_form'] == 4)
-      {
-        $this->writeHTMLCell(0, 0, 10, $fourthHeading, 'B.P. 7039; stewardship crossroads', 0, 0, 0, true, 'C');
-        
-        $this->writeHTMLCell(0, 0, 15, $hrLine, '<hr>', 0, 0, 0, true, 'C');
-      }
-      else{
-      $this->writeHTMLCell(0, 0, 10, $fourthHeading, 'VIRAL LOAD TEST - PATIENT REPORT', 0, 0, 0, true, 'C');
-      $this->writeHTMLCell(0, 0, 15, $hrLine, '<hr>', 0, 0, 0, true, 'C');
-      }
+    //  $this->writeHTMLCell(0, 0, 10, $fourthHeading, 'VIRAL LOAD TEST - PATIENT REPORT', 0, 0, 0, true, 'C');
+    //  $this->writeHTMLCell(0, 0, 15, $hrLine, '<hr>', 0, 0, 0, true, 'C');
     }
   }
 
