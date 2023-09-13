@@ -92,16 +92,20 @@ class UsersService
 
     public function getSharedPrivileges(): array
     {
-        $sql = "SELECT privilege_name, shared_privileges FROM privileges";
+        $sql = "SELECT privilege_name, shared_privileges
+                    FROM privileges";
         $results = $this->db->rawQuery($sql);
         $sharedPrivileges = [];
 
         // Fetch each row from the result set
         foreach ($results as $row) {
             $privileges = json_decode($row['shared_privileges'], true);
-
-            foreach ($privileges as $privilege) {
-                $sharedPrivileges[$privilege] = $row['privilege_name'];
+            if (empty($privileges)) {
+                continue;
+            } else {
+                foreach ($privileges as $privilege) {
+                    $sharedPrivileges[$privilege] = $row['privilege_name'];
+                }
             }
         }
         // Return the array of shared privileges

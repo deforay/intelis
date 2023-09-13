@@ -44,7 +44,12 @@ try {
     }
 
     $systemConfig = ConfigFactory::fromFile($configFile);
+
+    // Detect if debug mode is enabled
     $debugMode = $systemConfig['system']['debug_mode'] ?? false;
+
+    // Detect if script is running in CLI mode
+    $isCli = php_sapi_name() === 'cli';
 } catch (Exception $e) {
     echo "Error loading configuration file: Please ensure the config file is present";
     exit;
@@ -54,7 +59,7 @@ $builder = new ContainerBuilder();
 $builder->useAutowiring(true);
 
 // Enable compilation for better performance in production
-if (!empty($systemConfig['system']['cache_di']) && true === $systemConfig['system']['cache_di']) {
+if (!$isCli && !empty($systemConfig['system']['cache_di']) && true === $systemConfig['system']['cache_di']) {
 
     if (!is_dir(CACHE_PATH)) {
         mkdir(CACHE_PATH, 0777, true);

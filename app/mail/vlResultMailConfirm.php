@@ -86,7 +86,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($selecte
       $pdf->setHeading($global['logo'], $global['header']);
       $pdf->setPageOrientation('L');
       // set document information
-      $pdf->SetCreator(PDF_CREATOR);
+      $pdf->SetCreator(_translate('VLSM'));
       $pdf->SetTitle('VLSM');
       //$pdf->SetSubject('TCPDF Tutorial');
       //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
