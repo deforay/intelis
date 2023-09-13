@@ -99,47 +99,54 @@ if (!empty($requestResult)) {
                     }
                }
           }
+           //$pdf->writeHTMLCell(0, 0, 10, $fourthHeading, 'B.P. 7039; stewardship crossroads', 0, 0, 0, true, 'C');
+         
           // create new PDF document
           $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
           if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
                $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'];
           } else {
                $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $arr['logo'];
           }
-          $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'HIV VIRAL LOAD PATIENT REPORT');
-          // set document information
-          $pdf->SetCreator('VLSM');
-          $pdf->SetTitle('HIV Viral Load Patient Report');
-          //$pdf->SetSubject('TCPDF Tutorial');
-          //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
+        //  $pdf->setHeading($logoPrintInPdf,'','','','');
+          
+               // set header and footer fonts
+               $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+               $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 
-          // set default header data
-          $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+               // set default monospaced font
+               $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-          // set header and footer fonts
-          $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-          $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+               // set margins
+               $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP - 12, PDF_MARGIN_RIGHT);
+               //$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+               $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
-          // set default monospaced font
-          $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+               // set auto page breaks
+               $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
 
-          // set margins
-          $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP + 14, PDF_MARGIN_RIGHT);
-          $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-          $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+               // set image scale factor
+               $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
-          // set auto page breaks
-          $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
+               // set font
+               $pdf->SetFont('helvetica', '', 18);
 
-          // set image scale factor
-          $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-       
-
-          // set font
-          $pdf->SetFont('helvetica', '', 18);
 
           $pdf->AddPage();
+          $logo = '<img style="width:100px;" src="'.$logoPrintInPdf.'" />';
+
+          //$htmlTitle = "<div style='width: 50px; height:50px;border:1px solid;'>CRESAR<br>RESEARCH CENTER FOR ARMY HEALTH<br>MILITARY HEALTH RESEARCH CENTER<br><span>B.P. 7039; stewardship crossroads</span></div>";
+          $header = '<table style="padding:4px 2px 2px 2px;width:100%; border:1px solid black">';
+          $header .= '<tr>';
+          $header .= '<td style="line-height:30px;text-align:center;padding-top:20px;" width="20%">'.$logo.'</td>';
+          $header .= '<td style="text-align:center; font-weight:bold; font-size 20px;" width="80%">'.$result['labName'].'<br>RESEARCH CENTER FOR ARMY HEALTH<br>MILITARY HEALTH RESEARCH CENTER<br><span style="font-size:20px;">B.P. 7039; stewardship crossroads : Tel : 222229161</span></td>';
+          $header .= '</tr>';
+          $header .= '</table>';
+          $pdf->writeHTML($header, true, false, true, false, 'C');
+         // $pdf->writeHTMLCell(0, 0, 15, 28, $htmlTitle, 0, 0, 0, true, 'C');
+          //$pdf->writeHTMLCell(0, 0, 15, 30, '<hr>', 0, 0, 0, true, 'C');
+
           if (!isset($result['facility_code']) || trim($result['facility_code']) == '') {
                $result['facility_code'] = '';
           }
@@ -267,7 +274,7 @@ if (!empty($requestResult)) {
           } else {
                $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $smileyContent;
           }
-
+        
           $html = '<table style="padding:4px 2px 2px 2px;width:100%;">';
           $html .= '<tr>';
 
@@ -328,7 +335,7 @@ if (!empty($requestResult)) {
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Contact of Requestor : ") .$result['request_clinician_phone_number']. '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Treatment center : ') . ($result['labName']) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Treatment center : ') . ( $result['facility_name']) . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('ARV initiation date : ') . ($result['treatment_initiated_date']) . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
