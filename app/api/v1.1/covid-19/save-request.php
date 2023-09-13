@@ -21,6 +21,7 @@ try {
 
     /** @var Slim\Psr7\Request $request */
     $request = $GLOBALS['request'];
+    $noOfFailedRecords = 0;
 
     $origJson = $request->getBody()->getContents();
 
@@ -110,18 +111,22 @@ try {
         }
 
         if (MiscUtility::hasEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
+            $noOfFailedRecords++;
             $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
                 'status' => 'failed',
+                'action' => 'skipped',
                 'message' => _translate("Missing required fields")
             ];
             continue;
         } elseif (DateUtility::hasFutureDates(array_intersect_key($data, array_flip($cantBeFutureDates)))) {
+            $noOfFailedRecords++;
             $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
                 'status' => 'failed',
+                'action' => 'skipped',
                 'message' => _translate("Invalid Dates. Cannot be in the future")
             ];
             continue;
@@ -193,10 +198,12 @@ try {
 
             if (!empty($rowData)) {
                 if ($rowData['result_status'] == SAMPLE_STATUS\ACCEPTED || $rowData['locked'] == 'yes') {
+                    $noOfFailedRecords++;
                     $responseData[$rootKey] = [
                         'transactionId' => $transactionId,
                         'appSampleCode' => $data['appSampleCode'] ?? null,
                         'status' => 'failed',
+                        'action' => 'skipped',
                         'error' => _translate("Sample Locked or Finalized")
                     ];
                     continue;
@@ -232,10 +239,12 @@ try {
             $currentSampleData['action'] = 'inserted';
             $data['covid19SampleId'] = intval($currentSampleData['id']);
             if ($data['covid19SampleId'] == 0) {
+                $noOfFailedRecords++;
                 $responseData[$rootKey] = [
                     'transactionId' => $transactionId,
                     'appSampleCode' => $data['appSampleCode'] ?? null,
                     'status' => 'failed',
+                    'action' => 'skipped',
                     'error' => _translate("Failed to insert sample")
                 ];
                 continue;
@@ -499,16 +508,26 @@ try {
                 'appSampleCode' => $data['appSampleCode'] ?? null,
             ];
         } else {
+            $noOfFailedRecords++;
             $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
                 'status' => 'failed',
+                'action' => 'skipped',
                 'appSampleCode' => $data['appSampleCode'] ?? null,
                 'error' => $db->getLastError()
             ];
         }
     }
+    if ($noOfFailedRecords > 0 && $noOfFailedRecords == iterator_count($input)) {
+        $payloadStatus = 'failed';
+    } elseif ($noOfFailedRecords > 0) {
+        $payloadStatus = 'partial';
+    } else {
+        $payloadStatus = 'success';
+    }
+
     $payload = [
-        'status' => 'success',
+        'status' => $payloadStatus,
         'transactionId' => $transactionId,
         'timestamp' => time(),
         'data' => $responseData ?? []

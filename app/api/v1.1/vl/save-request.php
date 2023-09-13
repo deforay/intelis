@@ -21,6 +21,7 @@ try {
 
     /** @var Slim\Psr7\Request $request */
     $request = $GLOBALS['request'];
+    $noOfFailedRecords = 0;
 
     $origJson = $request->getBody()->getContents();
 
@@ -111,18 +112,22 @@ try {
         }
 
         if (MiscUtility::hasEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
+            $noOfFailedRecords++;
             $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
                 'status' => 'failed',
+                'action' => 'skipped',
                 'message' => _translate("Missing required fields")
             ];
             continue;
         } elseif (DateUtility::hasFutureDates(array_intersect_key($data, array_flip($cantBeFutureDates)))) {
+            $noOfFailedRecords++;
             $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
                 'status' => 'failed',
+                'action' => 'skipped',
                 'message' => _translate("Invalid Dates. Cannot be in the future")
             ];
             continue;
@@ -170,10 +175,12 @@ try {
             $rowData = $db->rawQueryOne($sQuery);
             if (!empty($rowData)) {
                 if ($rowData['result_status'] == 7 || $rowData['locked'] == 'yes') {
+                    $noOfFailedRecords++;
                     $responseData[$rootKey] = [
                         'transactionId' => $transactionId,
                         'appSampleCode' => $data['appSampleCode'] ?? null,
                         'status' => 'failed',
+                        'action' => 'skipped',
                         'error' => _translate("Sample Locked or Finalized")
 
                     ];
@@ -210,10 +217,12 @@ try {
             $currentSampleData['action'] = 'inserted';
             $data['vlSampleId'] = intval($currentSampleData['id']);
             if ($data['vlSampleId'] == 0) {
+                $noOfFailedRecords++;
                 $responseData[$rootKey] = [
                     'transactionId' => $transactionId,
                     'appSampleCode' => $data['appSampleCode'] ?? null,
                     'status' => 'failed',
+                    'action' => 'skipped',
                     'error' => _translate("Failed to insert sample")
                 ];
                 continue;
@@ -237,34 +246,6 @@ try {
         if (isset($data['bdl']) && $data['bdl'] == 'bdl' && $data['isSampleRejected'] == 'no') {
             $data['vlResult'] = 'Below Detection Level';
         }
-
-        // if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
-        //     $finalResult = null;
-        //     $status = SAMPLE_STATUS\REJECTED;
-        // } elseif (isset($data['vlResult']) && trim($data['vlResult']) != '') {
-        //     if (in_array(strtolower($data['vlResult']), ['fail', 'failed', 'failure', 'error', 'err'])) {
-        //         //Result is saved as entered
-        //         $finalResult = $data['vlResult'];
-        //         $status = SAMPLE_STATUS\TEST_FAILED; // Invalid/Failed
-        //     } else {
-
-        //         $interpretedResults = $vlService->interpretViralLoadResult($data['vlResult']);
-
-        //         //Result is saved as entered
-        //         $finalResult = $data['vlResult'];
-        //         $logVal = $interpretedResults['logVal'];
-        //         $absDecimalVal = $interpretedResults['absDecimalVal'];
-        //         $absVal = $interpretedResults['absVal'];
-        //         $txtVal = $interpretedResults['txtVal'];
-        //     }
-        //     $status = SAMPLE_STATUS\PENDING_APPROVAL;
-        //     if (
-        //         isset($globalConfig['vl_auto_approve_api_results']) &&
-        //         $globalConfig['vl_auto_approve_api_results'] == "yes"
-        //     ) {
-        //         $status = SAMPLE_STATUS\ACCEPTED;
-        //     }
-        // }
 
         // Let us process the result entered by the user
         $processedResults = $vlService->processViralLoadResultFromForm($data);
@@ -300,6 +281,8 @@ try {
             'patient_age_in_months' => $data['ageInMonths'] ?? null,
             'is_patient_pregnant' => $data['patientPregnant'] ?? null,
             'is_patient_breastfeeding' => $data['breastfeeding'] ?? null,
+            'no_of_breastfeeding_weeks' => $data['noOfBreastfeedingWeeks'] ?? null,
+            'pregnancy_trimester' => $data['trimester'] ?? null,
             'patient_art_no' => $data['patientArtNo'] ?? null,
             'treatment_initiated_date' => DateUtility::isoDateFormat($data['dateOfArtInitiation'] ?? ''),
             'reason_for_regimen_change' => $data['reasonForArvRegimenChange'] ?? null,
@@ -436,17 +419,27 @@ try {
                 'appSampleCode' => $data['appSampleCode'] ?? null,
             ];
         } else {
+            $noOfFailedRecords++;
             $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
                 'status' => 'failed',
+                'action' => 'skipped',
                 'appSampleCode' => $data['appSampleCode'] ?? null,
                 'error' => $db->getLastError()
             ];
         }
     }
 
+    if ($noOfFailedRecords > 0 && $noOfFailedRecords == iterator_count($input)) {
+        $payloadStatus = 'failed';
+    } elseif ($noOfFailedRecords > 0) {
+        $payloadStatus = 'partial';
+    } else {
+        $payloadStatus = 'success';
+    }
+
     $payload = [
-        'status' => 'success',
+        'status' => $payloadStatus,
         'transactionId' => $transactionId,
         'timestamp' => time(),
         'data' => $responseData ?? []

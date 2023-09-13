@@ -54,7 +54,7 @@ if (!empty($requestResult)) {
 
         $pdf->setHeading($logoPrintInPdf, $headerText, $result['labName'], '', $result['lab_id'], $arr['vl_form']);
         // set document information
-        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetCreator(_translate('VLSM'));
         //$pdf->SetAuthor('Pal');
         $pdf->SetTitle('PROGRAMME NATIONAL DE LUTTE CONTRE LE SIDA ET IST');
         //$pdf->SetSubject('TCPDF Tutorial');

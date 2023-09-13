@@ -106,7 +106,7 @@ if (!empty($requestResult)) {
 
 		$pdf->setHeading($logoPrintInPdf, $headerText, $result['labName'], '', $result['lab_id']);
 		// set document information
-		$pdf->SetCreator(PDF_CREATOR);
+		$pdf->SetCreator(_translate('VLSM'));
 		$pdf->SetTitle('PROGRAMME NATIONAL DE LUTTE CONTRE LE SIDA ET IST');
 
 		// set default header data

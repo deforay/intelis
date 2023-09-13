@@ -45,7 +45,8 @@ if command -v apache2 &> /dev/null; then
 else
     echo "Installing and configuring Apache..."
     apt install -y apache2
-    a2enmod rewrite headers deflate env
+    a2dismod mpm_event
+    a2enmod rewrite headers deflate env mpm_prefork
     service apache2 restart || { echo "Failed to restart Apache2. Exiting..."; exit 1; }
     setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www
 fi

@@ -70,6 +70,8 @@ try {
         vl.patient_age_in_months                             as ageInMonths,
         vl.is_patient_pregnant                               as patientPregnant,
         vl.is_patient_breastfeeding                          as breastfeeding,
+        vl.no_of_breastfeeding_weeks                         as noOfBreastfeedingWeeks,
+        vl.pregnancy_trimester                               as trimester,
         vl.patient_art_no                                    as artNo,
         vl.treatment_initiated_date                          as dateOfArtInitiation,
         vl.regimen_change_date                               as dateOfArvRegimenChange,

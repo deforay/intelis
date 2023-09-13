@@ -37,7 +37,8 @@
 
     ```bash
     sudo apt install -y apache2;
-    sudo a2enmod rewrite headers deflate env;
+    sudo a2dismod mpm_event;
+    sudo a2enmod rewrite headers deflate env mpm_prefork;
     sudo service apache2 restart;
     sudo setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www;
 

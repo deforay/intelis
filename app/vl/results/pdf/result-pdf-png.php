@@ -36,7 +36,7 @@ if (!empty($requestResult)) {
           }
           $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName']);
           // set document information
-          $pdf->SetCreator(PDF_CREATOR);
+          $pdf->SetCreator(_translate('VLSM'));
           //$pdf->SetAuthor('Pal');
           $pdf->SetTitle('Viral Load Test Result');
           //$pdf->SetSubject('TCPDF Tutorial');

@@ -155,10 +155,6 @@ if (!empty($id)) {
                 $this->createdBy = $createdBy;
                 $this->worksheetName = $worksheetName;
             }
-            public function imageExists($filePath): bool
-            {
-                return (!empty($filePath) && file_exists($filePath) && !is_dir($filePath) && filesize($filePath) > 0 && false !== getimagesize($filePath));
-            }
             //Page header
             public function Header()
             {
@@ -167,7 +163,7 @@ if (!empty($id)) {
                 //$this->Image($imageFilePath, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
                 // Set font
                 if (trim($this->logo) != "") {
-                    if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+                    if (MiscUtility::imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                         $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                         $this->Image($imageFilePath, 15, 10, 15, '', '', '', 'T');
                     }
@@ -203,7 +199,7 @@ if (!empty($id)) {
         $pdf->setHeading($logo, $headerText, $bResult[0]['batch_code'], $resulted, $reviewed, $bResult[0]['user_name'], $worksheetName);
 
         // set document information
-        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetCreator(_translate('VLSM'));
         $pdf->SetAuthor(_translate('VLSM BATCH'));
         $pdf->SetTitle(_translate('VLSM BATCH'));
         $pdf->SetSubject(_translate('VLSM BATCH'));
