@@ -15,7 +15,7 @@ $fieldName = $_POST['fieldName'];
 $value = trim($_POST['value']);
 $fnct = $_POST['fnct'];
 $data = 0;
-$multiple = array();
+$multiple = [];
 if (!empty($value) && !empty($fieldName) && !empty($tableName)) {
     $isMultiple = !empty($_POST['type']) && $_POST['type'] == "multiple";
     if ($isMultiple) {

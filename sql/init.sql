@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Sep 07, 2023 at 10:45 AM
+-- Generation Time: Sep 11, 2023 at 06:41 PM
 -- Server version: 5.7.39
 -- PHP Version: 7.4.33
 
@@ -217,6 +217,7 @@ CREATE TABLE `audit_form_eid` (
   `remote_sample_code` varchar(100) DEFAULT NULL,
   `external_sample_code` varchar(256) DEFAULT NULL,
   `sample_collection_date` datetime NOT NULL,
+  `is_sample_recollected` varchar(11) DEFAULT NULL,
   `sample_dispatched_datetime` datetime DEFAULT NULL,
   `sample_received_at_hub_datetime` datetime DEFAULT NULL,
   `sample_received_at_lab_datetime` datetime DEFAULT NULL,
@@ -261,6 +262,7 @@ CREATE TABLE `audit_form_eid` (
   `child_weight` int(11) DEFAULT NULL,
   `child_prophylactic_arv` text,
   `child_prophylactic_arv_other` text,
+  `mother_hiv_test_date` date DEFAULT NULL,
   `mother_hiv_status` varchar(16) DEFAULT NULL,
   `next_appointment_date` date DEFAULT NULL,
   `no_of_exposed_children` int(11) DEFAULT NULL,
@@ -312,6 +314,13 @@ CREATE TABLE `audit_form_eid` (
   `rapid_test_performed` varchar(255) DEFAULT NULL,
   `rapid_test_date` date DEFAULT NULL,
   `rapid_test_result` varchar(32) DEFAULT NULL,
+  `serological_test` varchar(11) DEFAULT NULL,
+  `pcr_1_test_date` date DEFAULT NULL,
+  `pcr_1_test_result` varchar(50) DEFAULT NULL,
+  `pcr_2_test_date` date DEFAULT NULL,
+  `pcr_2_test_result` varchar(50) DEFAULT NULL,
+  `pcr_3_test_date` date DEFAULT NULL,
+  `pcr_3_test_result` varchar(50) DEFAULT NULL,
   `sample_collection_reason` text,
   `lab_id` int(11) DEFAULT NULL,
   `lab_testing_point` text,
@@ -836,6 +845,7 @@ CREATE TABLE `audit_form_vl` (
   `request_clinician_name` text,
   `test_requested_on` date DEFAULT NULL,
   `request_clinician_phone_number` varchar(32) DEFAULT NULL,
+  `cv_number` int(11) DEFAULT NULL,
   `sample_testing_date` datetime DEFAULT NULL,
   `vl_focal_person` text,
   `vl_focal_person_phone_number` text,
@@ -1418,6 +1428,7 @@ CREATE TABLE `form_eid` (
   `remote_sample_code` varchar(100) DEFAULT NULL,
   `external_sample_code` varchar(256) DEFAULT NULL,
   `sample_collection_date` datetime NOT NULL,
+  `is_sample_recollected` varchar(11) DEFAULT NULL,
   `sample_dispatched_datetime` datetime DEFAULT NULL,
   `sample_received_at_hub_datetime` datetime DEFAULT NULL,
   `sample_received_at_lab_datetime` datetime DEFAULT NULL,
@@ -1462,6 +1473,7 @@ CREATE TABLE `form_eid` (
   `child_weight` int(11) DEFAULT NULL,
   `child_prophylactic_arv` text,
   `child_prophylactic_arv_other` text,
+  `mother_hiv_test_date` date DEFAULT NULL,
   `mother_hiv_status` varchar(16) DEFAULT NULL,
   `next_appointment_date` date DEFAULT NULL,
   `no_of_exposed_children` int(11) DEFAULT NULL,
@@ -1513,6 +1525,13 @@ CREATE TABLE `form_eid` (
   `rapid_test_performed` varchar(255) DEFAULT NULL,
   `rapid_test_date` date DEFAULT NULL,
   `rapid_test_result` varchar(32) DEFAULT NULL,
+  `serological_test` varchar(11) DEFAULT NULL,
+  `pcr_1_test_date` date DEFAULT NULL,
+  `pcr_1_test_result` varchar(50) DEFAULT NULL,
+  `pcr_2_test_date` date DEFAULT NULL,
+  `pcr_2_test_result` varchar(50) DEFAULT NULL,
+  `pcr_3_test_date` date DEFAULT NULL,
+  `pcr_3_test_result` varchar(50) DEFAULT NULL,
   `sample_collection_reason` text,
   `lab_id` int(11) DEFAULT NULL,
   `lab_testing_point` text,
@@ -2102,6 +2121,7 @@ CREATE TABLE `form_vl` (
   `request_clinician_name` text,
   `test_requested_on` date DEFAULT NULL,
   `request_clinician_phone_number` varchar(32) DEFAULT NULL,
+  `cv_number` int(11) DEFAULT NULL,
   `sample_testing_date` datetime DEFAULT NULL,
   `vl_focal_person` text,
   `vl_focal_person_phone_number` text,

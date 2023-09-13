@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-09-08 14:56+0530\n"
-"PO-Revision-Date: 2023-09-08 14:57+0530\n"
+"POT-Creation-Date: 2023-09-12 15:58+0530\n"
+"PO-Revision-Date: 2023-09-12 16:00+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -402,7 +402,7 @@ msgstr "Rechercher"
 #: vl/program-management/highViralLoad.php:984
 #: vl/program-management/sampleRejectionReport.php:146
 #: vl/program-management/vl-export-data.php:574
-#: vl/program-management/vl-sample-status.php:211
+#: vl/program-management/vl-sample-status.php:217
 #: vl/program-management/vlControlReport.php:96
 #: vl/program-management/vlMonitoringReport.php:326
 #: vl/program-management/vlSuppressedTargetReport.php:259
@@ -522,7 +522,7 @@ msgstr "Enregistré le"
 #: vl/program-management/highViralLoad.php:778
 #: vl/program-management/highViralLoad.php:908
 #: vl/program-management/vl-export-data.php:531
-#: vl/program-management/vl-sample-status.php:182
+#: vl/program-management/vl-sample-status.php:188
 #: vl/program-management/vlMonitoringReport.php:291
 #: vl/program-management/vlWeeklyReport.php:181
 #: vl/program-management/vlWeeklyReport.php:276
@@ -1210,7 +1210,8 @@ msgstr "Synchronisé sur"
 msgid "Action"
 msgstr "Action"
 
-#: admin/monitoring/audit-trail.php:116 batch/generate-batch-pdf.php:265
+#: admin/monitoring/audit-trail.php:116 batch/generate-batch-pdf.php:271
+#: batch/generate-batch-pdf.php:282
 #: covid-19/management/covid-19-clinic-report.php:181
 #: covid-19/management/covid-19-clinic-report.php:285
 #: covid-19/management/covid-19-clinic-report.php:384
@@ -2066,7 +2067,7 @@ msgid "Sample added to Batch on"
 msgstr "Échantillon ajouté au lot le"
 
 #: admin/monitoring/sources-of-requests.php:228
-#: batch/generate-batch-pdf.php:269
+#: batch/generate-batch-pdf.php:275 batch/generate-batch-pdf.php:286
 #: covid-19/requests/forms/add-cameroon.php:426
 #: covid-19/requests/forms/edit-cameroon.php:465
 #: covid-19/results/add-covid-19-qc-data.php:183
@@ -2973,19 +2974,19 @@ msgstr "Vous devez choisir une plateforme de test pour procéder"
 msgid "HIV Viral Load"
 msgstr "Charge virale du VIH"
 
-#: batch/batches.php:21
+#: batch/batches.php:21 batch/generate-batch-pdf.php:35
 msgid "Viral Load Test Worksheet"
 msgstr "Feuille de calcul du test de charge virale"
 
-#: batch/batches.php:29
+#: batch/batches.php:29 batch/generate-batch-pdf.php:44
 msgid "EID Test Worksheet"
 msgstr "Feuille de travail pour le test EID"
 
-#: batch/batches.php:37
+#: batch/batches.php:37 batch/generate-batch-pdf.php:53
 msgid "Covid-19 Test Worksheet"
 msgstr "Feuille de travail pour le test Covid-19"
 
-#: batch/batches.php:45
+#: batch/batches.php:45 batch/generate-batch-pdf.php:62
 msgid "Hepatitis Test Worksheet"
 msgstr "Feuille de travail pour le test de l'hépatite"
 
@@ -2995,7 +2996,7 @@ msgstr "Feuille de travail pour le test de l'hépatite"
 msgid "Tuberculosis"
 msgstr "Tuberculose"
 
-#: batch/batches.php:54
+#: batch/batches.php:54 batch/generate-batch-pdf.php:72
 msgid "TB Test Worksheet"
 msgstr "Feuille de travail pour le test de la tuberculose"
 
@@ -3007,7 +3008,7 @@ msgstr "Feuille de travail pour le test de la tuberculose"
 msgid "Other Lab Tests"
 msgstr "Autres tests de laboratoire"
 
-#: batch/batches.php:63
+#: batch/batches.php:63 batch/generate-batch-pdf.php:82
 msgid "Lab Test Worksheet"
 msgstr "Feuille de travail pour le test en laboratoire"
 
@@ -3041,7 +3042,7 @@ msgstr "Nombre d'échantillons"
 #: generic-tests/program-management/get-sample-status.php:333
 #: hepatitis/management/get-sample-status.php:509
 #: tb/management/getSampleStatus.php:448
-#: vl/program-management/getSampleStatus.php:452
+#: vl/program-management/getSampleStatus.php:455
 msgid "No. of Samples Tested"
 msgstr "Nombre d'échantillons testés"
 
@@ -3081,15 +3082,44 @@ msgstr "Éditer un lot"
 msgid "This batch code already exists.Try another code"
 msgstr "Ce code de lot existe déjà, essayez un autre code"
 
-#: batch/generate-batch-pdf.php:264
+#: batch/generate-batch-pdf.php:178
+msgid "Batch Number/Code"
+msgstr "Numéro/code de lot"
+
+#: batch/generate-batch-pdf.php:181
+msgid "Result On"
+msgstr "Résultat sur"
+
+#: batch/generate-batch-pdf.php:182
+#: covid-19/requests/forms/edit-cameroon.php:555
+#: covid-19/results/forms/update-cameroon-result.php:520
+#: eid/requests/forms/add-cameroon.php:588
+#: eid/requests/forms/edit-cameroon.php:578
+#: eid/results/forms/update-cameroon-result.php:586
+#: vl/requests/forms/add-cameroon.php:611
+#: vl/requests/forms/edit-cameroon.php:708
+#: vl/results/forms/update-cameroon-result.php:731
+msgid "Reviewed On"
+msgstr "Évalué sur"
+
+#: batch/generate-batch-pdf.php:183
+msgid "Created By"
+msgstr "Créé Par"
+
+#: batch/generate-batch-pdf.php:207 batch/generate-batch-pdf.php:208
+#: batch/generate-batch-pdf.php:209 batch/generate-batch-pdf.php:210
+msgid "VLSM BATCH"
+msgstr "VLSM BATCH"
+
+#: batch/generate-batch-pdf.php:270 batch/generate-batch-pdf.php:281
 msgid "Pos."
 msgstr "Pos."
 
-#: batch/generate-batch-pdf.php:266
+#: batch/generate-batch-pdf.php:272 batch/generate-batch-pdf.php:283
 msgid "BARCODE"
 msgstr "BARCODE"
 
-#: batch/generate-batch-pdf.php:267
+#: batch/generate-batch-pdf.php:273
 #: covid-19/management/covid-19-clinic-report.php:183
 #: covid-19/management/covid-19-clinic-report.php:287
 #: covid-19/management/covid-19-clinic-report.php:386
@@ -3177,9 +3207,25 @@ msgstr "BARCODE"
 msgid "Remote Sample Code"
 msgstr "Code d'échantillon prélevé à l'extérieur du labo"
 
-#: batch/generate-batch-pdf.php:268
+#: batch/generate-batch-pdf.php:274 batch/generate-batch-pdf.php:284
 msgid "Patient Code"
 msgstr "Code du patient"
+
+#: batch/generate-batch-pdf.php:285
+msgid "Lot Number / <br>Exp. Date"
+msgstr "Numéro de lot / <br>Date d'exp. Date d'expiration"
+
+#: batch/generate-batch-pdf.php:438
+msgid "In-House Controls"
+msgstr "Contrôles internes"
+
+#: batch/generate-batch-pdf.php:455
+msgid "Manfacturing Controls"
+msgstr "Contrôles de fabrication"
+
+#: batch/generate-batch-pdf.php:472
+msgid "Calibrators"
+msgstr "Calibrateurs"
 
 #: batch/get-batches.php:188 batch/get-batches.php:190
 #: common/reference/get-corrective-actions-helper.php:163
@@ -5746,7 +5792,7 @@ msgstr "Select Labs"
 #: tb/management/tb-sample-rejection-report.php:153
 #: vl/program-management/sampleRejectionReport.php:200
 #: vl/program-management/vl-export-data.php:848
-#: vl/program-management/vl-sample-status.php:365
+#: vl/program-management/vl-sample-status.php:377
 msgid "Unable to generate excel"
 msgstr "Impossible de générer le fichier excel"
 
@@ -5837,7 +5883,7 @@ msgstr "Echantillon-Date d'envoie de l'email"
 #: generic-tests/program-management/generic-sample-status.php:203
 #: hepatitis/management/hepatitis-sample-status.php:148
 #: tb/management/tb-sample-status.php:147
-#: vl/program-management/vl-sample-status.php:207
+#: vl/program-management/vl-sample-status.php:213
 msgid "Select Testing Lab"
 msgstr "Enregistré au laboratoire de test"
 
@@ -6317,8 +6363,8 @@ msgstr "Covid-19-Imprimer le résultat"
 #: hepatitis/management/get-sample-status.php:349
 #: hepatitis/management/get-sample-status.php:404
 #: tb/management/getSampleStatus.php:339
-#: vl/program-management/getSampleStatus.php:286
-#: vl/program-management/getSampleStatus.php:347
+#: vl/program-management/getSampleStatus.php:289
+#: vl/program-management/getSampleStatus.php:350
 msgid "Samples"
 msgstr "Échantillons"
 
@@ -6352,7 +6398,7 @@ msgstr "COVID-19 Délai d'exécution du laboratoire"
 #: generic-tests/program-management/get-sample-status.php:293
 #: hepatitis/management/get-sample-status.php:469
 #: tb/management/getSampleStatus.php:408
-#: vl/program-management/getSampleStatus.php:412
+#: vl/program-management/getSampleStatus.php:415
 msgid "Average TAT in Days"
 msgstr "TAT moyen en jours"
 
@@ -6361,7 +6407,7 @@ msgstr "TAT moyen en jours"
 #: generic-tests/program-management/get-sample-status.php:303
 #: hepatitis/management/get-sample-status.php:479
 #: tb/management/getSampleStatus.php:418
-#: vl/program-management/getSampleStatus.php:422
+#: vl/program-management/getSampleStatus.php:425
 msgid "No. of Tests"
 msgstr "Nombre de tests"
 
@@ -6370,7 +6416,7 @@ msgstr "Nombre de tests"
 #: generic-tests/program-management/get-sample-status.php:343
 #: hepatitis/management/get-sample-status.php:519
 #: tb/management/getSampleStatus.php:458
-#: vl/program-management/getSampleStatus.php:462
+#: vl/program-management/getSampleStatus.php:465
 msgid "Result - Printed"
 msgstr "Résultat - Imprimé"
 
@@ -6379,7 +6425,7 @@ msgstr "Résultat - Imprimé"
 #: generic-tests/program-management/get-sample-status.php:353
 #: hepatitis/management/get-sample-status.php:529
 #: tb/management/getSampleStatus.php:468
-#: vl/program-management/getSampleStatus.php:472
+#: vl/program-management/getSampleStatus.php:475
 msgid "Collected - Received at Lab"
 msgstr "Collecté - Reçu au laboratoire"
 
@@ -6388,7 +6434,7 @@ msgstr "Collecté - Reçu au laboratoire"
 #: generic-tests/program-management/get-sample-status.php:363
 #: hepatitis/management/get-sample-status.php:539
 #: tb/management/getSampleStatus.php:478
-#: vl/program-management/getSampleStatus.php:482
+#: vl/program-management/getSampleStatus.php:485
 msgid "Received - Tested"
 msgstr "Reçu - Testé"
 
@@ -6397,7 +6443,7 @@ msgstr "Reçu - Testé"
 #: generic-tests/program-management/get-sample-status.php:373
 #: hepatitis/management/get-sample-status.php:549
 #: tb/management/getSampleStatus.php:488
-#: vl/program-management/getSampleStatus.php:492
+#: vl/program-management/getSampleStatus.php:495
 msgid "Collected - Tested"
 msgstr "Collecté - Testé"
 
@@ -6406,7 +6452,7 @@ msgstr "Collecté - Testé"
 #: generic-tests/program-management/get-sample-status.php:383
 #: hepatitis/management/get-sample-status.php:559
 #: tb/management/getSampleStatus.php:498
-#: vl/program-management/getSampleStatus.php:502
+#: vl/program-management/getSampleStatus.php:505
 msgid "Collected - Printed"
 msgstr "Collecté - Imprimé"
 
@@ -8648,17 +8694,6 @@ msgstr "Révisé par"
 msgid "Please choose reviewed by"
 msgstr "Veuillez choisir examiné par"
 
-#: covid-19/requests/forms/edit-cameroon.php:555
-#: covid-19/results/forms/update-cameroon-result.php:520
-#: eid/requests/forms/add-cameroon.php:588
-#: eid/requests/forms/edit-cameroon.php:578
-#: eid/results/forms/update-cameroon-result.php:586
-#: vl/requests/forms/add-cameroon.php:611
-#: vl/requests/forms/edit-cameroon.php:708
-#: vl/results/forms/update-cameroon-result.php:731
-msgid "Reviewed On"
-msgstr "Évalué sur"
-
 #: covid-19/requests/forms/edit-cameroon.php:556
 #: covid-19/results/forms/update-cameroon-result.php:521
 #: eid/requests/forms/add-cameroon.php:589
@@ -9340,7 +9375,7 @@ msgstr "Veuillez saisir la ville/le village de l'affaire"
 msgid "Please enter the Authorized on"
 msgstr "Veuillez saisir le numéro autorisé sur"
 
-#: covid-19/results/generate-result-pdf.php:233
+#: covid-19/results/generate-result-pdf.php:248
 #: covid-19/results/pdf/result-pdf-cameroon.php:505
 #: covid-19/results/pdf/result-pdf-drc-1.php:102
 #: covid-19/results/pdf/result-pdf-drc-2.php:84
@@ -12309,14 +12344,14 @@ msgid "Sample Dispatch Date"
 msgstr "Date d'envoi de l'échantillon"
 
 #: generic-tests/program-management/get-sample-status.php:219
-#: vl/program-management/getSampleStatus.php:280
+#: vl/program-management/getSampleStatus.php:283
 msgid "Samples Status Overview (N = "
 msgstr "Aperçu de l'état des échantillons (N = "
 
 #: generic-tests/program-management/get-sample-status.php:269
 #: generic-tests/program-management/get-sample-status.php:274
-#: vl/program-management/getSampleStatus.php:388
-#: vl/program-management/getSampleStatus.php:393
+#: vl/program-management/getSampleStatus.php:391
+#: vl/program-management/getSampleStatus.php:396
 msgid "Laboratory Turnaround Time"
 msgstr "Délai d'exécution du laboratoire"
 
@@ -16277,9 +16312,13 @@ msgstr "Moyenne"
 msgid "SD"
 msgstr "SD"
 
-#: vl/program-management/getSampleStatus.php:341
+#: vl/program-management/getSampleStatus.php:344
 msgid "VL Suppression (N = "
 msgstr "Suppression de la VL (N = "
+
+#: vl/program-management/getSampleStatus.php:515
+msgid "Collected - Printed First Time"
+msgstr "Recueilli - Imprimé pour la première fois"
 
 #: vl/program-management/getSuppressedTargetReport.php:152
 #: vl/program-management/getSuppressedTargetReport.php:157
@@ -16345,6 +16384,14 @@ msgstr "VL | Rapport sur l'état de l'échantillon"
 #: vl/program-management/vl-sample-status.php:60
 msgid "VL Sample Status Report"
 msgstr "Rapport sur l'état de l'échantillon VL"
+
+#: vl/program-management/vl-sample-status.php:178
+msgid "First Printed Date From Remote User"
+msgstr "Date de la première impression Par l'utilisateur distant"
+
+#: vl/program-management/vl-sample-status.php:181
+msgid "First Printed Date From Vl User"
+msgstr "Date de la première impression De l'utilisateur Vl"
 
 #: vl/program-management/vlControlReport.php:2
 #: vl/program-management/vlControlReport.php:22
@@ -17699,6 +17746,152 @@ msgstr "Veuillez sélectionner si l'échantillon est rejeté"
 #: vl/results/forms/update-drc-result.php:459
 msgid "Please select reason for rejection"
 msgstr "Veuillez sélectionner la raison du rejet"
+
+#: vl/results/pdf/result-pdf-cameroon.php:303
+msgid "HIV VIRAL LOAD RESULT SHEET"
+msgstr "FEUILLE DE RÉSULTAT DE LA CHARGE VIRALE DU VIH"
+
+#: vl/results/pdf/result-pdf-cameroon.php:305
+msgid "Information Of Patient"
+msgstr "Informations sur le patient"
+
+#: vl/results/pdf/result-pdf-cameroon.php:311
+msgid "Unique code : "
+msgstr "Code unique :"
+
+#: vl/results/pdf/result-pdf-cameroon.php:312
+msgid "Region : "
+msgstr "Région : "
+
+#: vl/results/pdf/result-pdf-cameroon.php:315
+msgid "Patient Name : "
+msgstr "Nom du patient :"
+
+#: vl/results/pdf/result-pdf-cameroon.php:316
+msgid "Age : "
+msgstr "Âge : "
+
+#: vl/results/pdf/result-pdf-cameroon.php:316
+msgid "Sex : "
+msgstr "Sexe :"
+
+#: vl/results/pdf/result-pdf-cameroon.php:319
+msgid "Type of Sample : "
+msgstr "Type d'échantillon :"
+
+#: vl/results/pdf/result-pdf-cameroon.php:320
+msgid "Contact : "
+msgstr "Contact : "
+
+#: vl/results/pdf/result-pdf-cameroon.php:323
+msgid "Date of Sample Collected : "
+msgstr "Date du prélèvement de l'échantillon :"
+
+#: vl/results/pdf/result-pdf-cameroon.php:324
+msgid "Collected By : "
+msgstr "Recueillis par :"
+
+#: vl/results/pdf/result-pdf-cameroon.php:327
+msgid "Name of Requestor : "
+msgstr "Nom du demandeur :"
+
+#: vl/results/pdf/result-pdf-cameroon.php:328
+msgid "Contact of Requestor : "
+msgstr "Contact du demandeur :"
+
+#: vl/results/pdf/result-pdf-cameroon.php:331
+msgid "Treatment center : "
+msgstr "Centre de traitement :"
+
+#: vl/results/pdf/result-pdf-cameroon.php:332
+msgid "ARV initiation date : "
+msgstr "Date d'instauration des ARV :"
+
+#: vl/results/pdf/result-pdf-cameroon.php:335
+msgid "Modifier : "
+msgstr "Modificateur :"
+
+#: vl/results/pdf/result-pdf-cameroon.php:336
+msgid "Modification date : "
+msgstr "Date de modification :"
+
+#: vl/results/pdf/result-pdf-cameroon.php:344
+msgid "Sample Received Date : "
+msgstr "Date de réception de l'échantillon :"
+
+#: vl/results/pdf/result-pdf-cameroon.php:346
+msgid "Viral load serial number : "
+msgstr "Numéro de série de la charge virale :"
+
+#: vl/results/pdf/result-pdf-cameroon.php:352
+msgid "Test Name : "
+msgstr "Nom du test :"
+
+#: vl/results/pdf/result-pdf-cameroon.php:354
+msgid "Sample Tested Date : "
+msgstr "Échantillon testé Date :"
+
+#: vl/results/pdf/result-pdf-cameroon.php:360
+msgid "Result : "
+msgstr "Résultat :"
+
+#: vl/results/pdf/result-pdf-cameroon.php:362
+msgid "Result Log : "
+msgstr "Journal des résultats :"
+
+#: vl/results/pdf/result-pdf-cameroon.php:364
+msgid "Test Done By : "
+msgstr "Test effectué par :"
+
+#: vl/results/pdf/result-pdf-cameroon.php:370
+msgid ""
+"N.B.: The Abbott 0.6ml test has a lower limit of quantification of 40 copies/"
+"ml and an upper limit of quantification\n"
+"          of 10,000,000 copies/ml. For any results between these limits, the "
+"number of copies per ml is reported. When the virus is\n"
+"          detected above or below the limits of quantification, this is "
+"reported. If the test is successful and no viruses are found\n"
+"          detected, the result is reported as undetected target. For a "
+"variation in viral load to be significant, it is necessary\n"
+"          that the difference between two measurements is at least 0.5 Log10 "
+"or a reduction or increase by a factor of 3 of the\n"
+"          number of copies/ml.\n"
+"          "
+msgstr ""
+"N.B. : Le test Abbott 0,6 ml a une limite inférieure de quantification de 40 "
+"copies/ml et une limite supérieure de quantification de 10 000 000 copies/"
+"ml\n"
+"          de 10 000 000 copies/ml. Pour tout résultat compris entre ces "
+"limites, le nombre de copies par ml est indiqué. Lorsque le virus est\n"
+"          est détecté au-dessus ou au-dessous des limites de quantification, "
+"il en est fait mention. Si le test est réussi et qu'aucun virus n'est "
+"détecté, le résultat est indiqué comme \"non détecté\"\n"
+"          détecté, le résultat est indiqué comme cible non détectée. Pour "
+"qu'une variation de la charge virale soit significative, il faut\n"
+"          que la différence entre deux mesures soit d'au moins 0,5 Log10 ou "
+"que le nombre de copies/ml soit réduit ou augmenté d'un facteur 3\n"
+"          nombre de copies/ml.\n"
+"          "
+
+#: vl/results/pdf/result-pdf-cameroon.php:379
+msgid "Comment, if applicable : "
+msgstr "Commentaire, le cas échéant :"
+
+#: vl/results/pdf/result-pdf-cameroon.php:381
+msgid "Date : "
+msgstr "Date : "
+
+#: vl/results/pdf/result-pdf-cameroon.php:388
+msgid "Validated by : "
+msgstr "Validé par :"
+
+#: vl/results/pdf/result-pdf-cameroon.php:389
+msgid "Authorized by : "
+msgstr "Autorisé par :"
+
+#: vl/results/pdf/result-pdf-cameroon.php:396
+msgid "Signature : "
+msgstr "SIGNATURE : "
 
 #: vl/results/vlPrintResult.php:181 vl/results/vlPrintResult.php:184
 #: vl/results/vlPrintResult.php:429 vl/results/vlPrintResult.php:432

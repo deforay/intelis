@@ -5016,6 +5016,7 @@ ALTER TABLE `audit_form_vl` ADD `sync_patient_identifiers` VARCHAR(10) NULL DEFA
 
 -- Jeyabanu 29-08-2023
 ALTER TABLE `form_generic` ADD `laboratory_number` VARCHAR(100) NULL DEFAULT NULL AFTER `patient_id`;
+ALTER TABLE `audit_form_generic` ADD `laboratory_number` VARCHAR(100) NULL DEFAULT NULL AFTER `patient_id`;
 
 
 -- Jeyabanu 31-08-2023

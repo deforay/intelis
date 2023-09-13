@@ -519,7 +519,7 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 	});
 
 	function showTags(e, obj, cls) {
-		var options = new Array();
+		let options = new Array();
 		if (e.key === ',' || e.key === 'Enter') {
 			var val = obj.value;
 			if (val.length > 0) {
