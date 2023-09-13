@@ -300,6 +300,8 @@ try {
             'patient_age_in_months' => $data['ageInMonths'] ?? null,
             'is_patient_pregnant' => $data['patientPregnant'] ?? null,
             'is_patient_breastfeeding' => $data['breastfeeding'] ?? null,
+            'no_of_breastfeeding_weeks' => $data['noOfBreastfeedingWeeks'] ?? null,
+            'pregnancy_trimester' => $data['trimester'] ?? null,
             'patient_art_no' => $data['patientArtNo'] ?? null,
             'treatment_initiated_date' => DateUtility::isoDateFormat($data['dateOfArtInitiation'] ?? ''),
             'reason_for_regimen_change' => $data['reasonForArvRegimenChange'] ?? null,
