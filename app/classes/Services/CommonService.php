@@ -492,9 +492,9 @@ class CommonService
                 $baseName = basename($formatPath);
                 $countryShortCode = $this->getCountryShortCode();
                 $formatName = str_replace(['.php', 'result-pdf-'], '', $baseName);
-                if($baseName == "result-pdf-$countryShortCode.php")
+                if ($baseName == "result-pdf-$countryShortCode.php")
                     return ["pdf/$baseName" => "Default"];
-                 else
+                else
                     return ["pdf/$baseName" => strtoupper($formatName)];
             }, $pdfFormatPaths);
         }
@@ -747,6 +747,12 @@ class CommonService
     public function getBarcodeImageContent($code, $type = 'C39', $width = 2, $height = 30, $color = array(0, 0, 0)): string
     {
         $barcodeobj = new TCPDFBarcode($code, $type);
+        return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, $height, $color));
+    }
+
+    public function get2DBarcodeImageContent($code, $type = 'QRCODE', $width = 2, $height = 30, $color = array(0, 0, 0))
+    {
+        $barcodeobj = new \TCPDF2DBarcode($code, $type);
         return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, $height, $color));
     }
 
