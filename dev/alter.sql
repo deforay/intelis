@@ -5096,3 +5096,5 @@ ALTER TABLE `audit_form_tb` ADD `result_printed_on_lis_datetime` DATETIME NULL D
 ALTER TABLE `form_generic` ADD `result_printed_on_sts_datetime` DATETIME NULL DEFAULT NULL AFTER `result_printed_datetime`;
 ALTER TABLE `form_generic` ADD `result_printed_on_lis_datetime` DATETIME NULL DEFAULT NULL AFTER `result_printed_on_sts_datetime`;
 
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Default Phone Prefix', 'default_phone_prefix', NULL, 'general', 'no', NULL, NULL, 'active'), ('Minimum Length of Phone Number', 'min_phone_length', NULL, 'general', 'no', NULL, NULL, 'active');
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Maximum Length of Phone Number', 'max_phone_length', NULL, 'general', 'no', NULL, NULL, 'active');

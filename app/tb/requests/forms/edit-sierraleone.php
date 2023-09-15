@@ -110,6 +110,9 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 $condition = "status ='active' AND test_type='tb'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
+$countryCode = $arr['default_phone_prefix'];
+$minNumberOfDigits = $arr['min_phone_length'];
+$maxNumberOfDigits = $arr['max_phone_length'];
 
 ?>
 
@@ -268,7 +271,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 										<th scope="row">Complete Address<span class="mandatory">*</span></th>
 										<td><input type="text" class="form-control isRequired" id="patientAddress" name="patientAddress" placeholder="Patient Complete Address" title="Patient Complete Address" style="width:100%;" onchange="" value="<?php echo ($tbInfo['patient_address']); ?>" /></td>
 										<th scope="row">Telephone</th>
-										<td><input type="text" class="form-control" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Patient phone number" title="Patient phone number" style="width:100%;" onchange="" value="<?php echo ($tbInfo['patient_phone']); ?>" /></td>
+										<td><input type="text" class="form-control phone-number" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Patient phone number" title="Patient phone number" style="width:100%;" onchange="" value="<?php echo ($tbInfo['patient_phone']); ?>" /></td>
 									</tr>
 									<tr>
 										<th scope="row"><label for="typeOfPatient">Type of patient<span class="mandatory">*</span> </label></th>
@@ -997,7 +1000,35 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 					});
 			}
 		});
-	});
+	  // Apply validation to all input fields with class 'phone-number'
+	  $('.phone-number').on('change', function () {
+          const phoneNumber = $(this).val();
+          const countryCode = "<?php echo $countryCode; ?>"
+          const minDigits = <?php echo $minNumberOfDigits; ?>;
+          const maxDigits = <?php echo $maxNumberOfDigits; ?>;
+
+          if (!validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
+            alert('Invalid phone number. Please enter with proper country code minimun length of <?php echo $minNumberOfDigits; ?> & maximum length of <?php echo $maxNumberOfDigits; ?>');
+          }
+          });
+
+    });
+
+        function validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits) {
+               // Remove all non-numeric characters from the phone number
+               const numericPhoneNumber = phoneNumber.replace(/\D/g, '');
+
+               // Check if the phone number starts with the country code
+               if (!phoneNumber.startsWith(countryCode)) {
+                    return false;
+               }
+               // Check the length of the phone number
+               const lengthWithoutCountryCode = numericPhoneNumber.length - countryCode.replace(/\D/g, '').length;
+               if (lengthWithoutCountryCode < minDigits || lengthWithoutCountryCode > maxDigits) {
+                    return false;
+               }
+               return true;
+        }
 
 	function checkIsResultAuthorized() {
 		if ($('#isResultAuthorized').val() == 'no') {

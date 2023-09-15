@@ -245,6 +245,12 @@ $batResult = $db->rawQuery($batQuery);
 				{
 					"sClass": "center"
 				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
 			],
 			"aaSorting": [
 				[0, "asc"]

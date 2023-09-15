@@ -42,6 +42,10 @@ $aResult = $db->query($aQuery);
 
 $sKey = '';
 $sFormat = '';
+
+$countryCode = $arr['default_phone_prefix'];
+$minNumberOfDigits = $arr['min_phone_length'];
+$maxNumberOfDigits = $arr['max_phone_length'];
 ?>
 <style>
      .table>tbody>tr>td {
@@ -269,7 +273,7 @@ $sFormat = '';
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="patientPhoneNumber">Phone Number<span class="mandatory">*</span></label>
-                                                       <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control forceNumeric isRequired" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" />
+                                                       <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control isRequired phone-number" maxlength="<?php echo $maxNumberOfDigits; ?>" placeholder="Enter Phone Number" title="Enter phone number" />
                                                   </div>
                                              </div>
                                         </div>
@@ -1143,6 +1147,23 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                }
                $.unblockUI();
           });
+
+
+        
+
+          // Apply validation to all input fields with class 'phone-number'
+          $('.phone-number').on('change', function () {
+          const phoneNumber = $(this).val();
+          const countryCode = "<?php echo $countryCode; ?>"
+          const minDigits = <?php echo $minNumberOfDigits; ?>;
+          const maxDigits = <?php echo $maxNumberOfDigits; ?>;
+
+          if (!validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
+               alert('Invalid phone number. Please enter with proper country code minimun length of <?php echo $minNumberOfDigits; ?> & maximum length of <?php echo $maxNumberOfDigits; ?>');
+          }
+          });
+
+
      });
 
      // $(document).on('select2:open', (e) => {
@@ -1155,7 +1176,22 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      //           value.focus();
      //      })
      // });
+     // Validation function
+     function validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits) {
+               // Remove all non-numeric characters from the phone number
+               const numericPhoneNumber = phoneNumber.replace(/\D/g, '');
 
+               // Check if the phone number starts with the country code
+               if (!phoneNumber.startsWith(countryCode)) {
+                    return false;
+               }
+               // Check the length of the phone number
+               const lengthWithoutCountryCode = numericPhoneNumber.length - countryCode.replace(/\D/g, '').length;
+               if (lengthWithoutCountryCode < minDigits || lengthWithoutCountryCode > maxDigits) {
+                    return false;
+               }
+               return true;
+          }
      function showTesting(chosenClass) {
           $(".viralTestData").val('');
           $(".hideTestData").hide();

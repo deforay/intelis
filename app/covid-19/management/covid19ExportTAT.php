@@ -33,7 +33,7 @@ if (isset($_SESSION['covid19TATQuery']) && trim($_SESSION['covid19TATQuery']) !=
   $output = [];
   $sheet = $excel->getActiveSheet();
 
-  $headings = array("Covid-19 Sample Id", "Sample Collection Date", "Sample Received Date in Lab", "Sample Test Date", "Sample Print Date", "Sample Email Date");
+  $headings = array("Covid-19 Sample Id", "Sample Collection Date", "Sample Received Date in Lab", "Sample Test Date", "Sample Print Date", "Sample Email Date","First Printed Date From Remote User","First Printed Date From Vl User");
 
   $colNo = 1;
 
@@ -53,7 +53,7 @@ if (isset($_SESSION['covid19TATQuery']) && trim($_SESSION['covid19TATQuery']) !=
     )
   );
 
-  $sheet->mergeCells('A1:AE1');
+  $sheet->mergeCells('A1:AG1');
   $nameValue = '';
   foreach ($_POST as $key => $value) {
     if (trim($value) != '' && trim($value) != '-- Select --') {
@@ -68,7 +68,7 @@ if (isset($_SESSION['covid19TATQuery']) && trim($_SESSION['covid19TATQuery']) !=
       ->setValueExplicit(html_entity_decode($value));
     $colNo++;
   }
-  $sheet->getStyle('A3:F3')->applyFromArray($styleArray);
+  $sheet->getStyle('A3:H3')->applyFromArray($styleArray);
 
   $no = 1;
   foreach ($rResult as $aRow) {
@@ -100,12 +100,27 @@ if (isset($_SESSION['covid19TATQuery']) && trim($_SESSION['covid19TATQuery']) !=
       $mailDate = '';
     }
 
+    if (isset($aRow['result_printed_on_sts_datetime']) && trim($aRow['result_printed_on_sts_datetime']) != '' && $aRow['result_printed_on_sts_datetime'] != '0000-00-00 00:00:00') {
+      $printDateSts = DateUtility::humanReadableDateFormat($aRow['result_printed_on_sts_datetime']);
+    } else {
+      $printDateSts = '';
+    }
+
+    if (isset($aRow['result_printed_on_lis_datetime']) && trim($aRow['result_printed_on_lis_datetime']) != '' && $aRow['result_printed_on_lis_datetime'] != '0000-00-00 00:00:00') {
+      $printDateLis = DateUtility::humanReadableDateFormat($aRow['result_printed_on_lis_datetime']);
+    } else {
+      $printDateLis = '';
+    }
+  
+
     $row[] = $aRow['sample_code'];
     $row[] = $sampleCollectionDate;
     $row[] = $sampleRecievedDate;
     $row[] = $testDate;
     $row[] = $printDate;
     $row[] = $mailDate;
+    $row[] = $printDateSts;
+    $row[] = $printDateLis;
     $output[] = $row;
     $no++;
   }

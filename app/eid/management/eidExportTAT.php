@@ -19,7 +19,7 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$sQuery = "select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime,vl.request_created_by,vl.sample_code, vl.remote_sample_code from form_eid as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date > '1970-01-01' AND DATE(vl.sample_collection_date) NOT LIKE '0000-00-00')
+$sQuery = "select vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_lab_datetime,vl.result_printed_datetime,vl.result_mail_datetime,vl.request_created_by,vl.sample_code, vl.remote_sample_code,vl.result_printed_on_lis_datetime,vl.result_printed_on_sts_datetime from form_eid as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date > '1970-01-01' AND DATE(vl.sample_collection_date) NOT LIKE '0000-00-00')
                         AND (vl.sample_tested_datetime > '1970-01-01' AND DATE(vl.sample_tested_datetime) NOT LIKE '0000-00-00')
                         AND vl.result is not null
                         AND vl.result != '' ";
@@ -37,7 +37,7 @@ $excel = new Spreadsheet();
 $output = [];
 $sheet = $excel->getActiveSheet();
 
-$headings = array("EID Sample Id", "Sample Collection Date", "Sample Received Date in Lab", "Sample Test Date", "Sample Print Date", "Sample Email Date");
+$headings = array("EID Sample Id", "Sample Collection Date", "Sample Received Date in Lab", "Sample Test Date", "Sample Print Date", "Sample Email Date","First Printed Date From Remote User","First Printed Date From Vl User");
 
 $colNo = 1;
 
@@ -71,7 +71,7 @@ foreach ($headings as $field => $value) {
 		->setValueExplicit(html_entity_decode($value));
 	$colNo++;
 }
-$sheet->getStyle('A3:F3')->applyFromArray($styleArray);
+$sheet->getStyle('A3:H3')->applyFromArray($styleArray);
 
 $no = 1;
 foreach ($rResult as $aRow) {
@@ -83,6 +83,8 @@ foreach ($rResult as $aRow) {
 	$testDate = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 	$printDate = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 	$mailDate = DateUtility::humanReadableDateFormat($aRow['result_mail_datetime'] ?? '');
+	$printDateSts = DateUtility::humanReadableDateFormat($aRow['result_printed_on_sts_datetime'] ?? '');
+	$printDateLis = DateUtility::humanReadableDateFormat($aRow['result_printed_on_lis_datetime'] ?? '');
 
 	$row[] = $aRow['sample_code'];
 	$row[] = $sampleCollectionDate;
@@ -90,6 +92,8 @@ foreach ($rResult as $aRow) {
 	$row[] = $testDate;
 	$row[] = $printDate;
 	$row[] = $mailDate;
+	$row[] = $printDateSts;
+	$row[] = $printDateLis;
 	$output[] = $row;
 	$no++;
 }

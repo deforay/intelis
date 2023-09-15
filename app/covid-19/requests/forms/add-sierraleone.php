@@ -52,6 +52,10 @@ $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
 
+$countryCode = $arr['default_phone_prefix'];
+$minNumberOfDigits = $arr['min_phone_length'];
+$maxNumberOfDigits = $arr['max_phone_length'];
+
 ?>
 
 <div class="content-wrapper">
@@ -208,11 +212,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value='male'> Male </option>
                                                 <option value='female'> Female </option>
                                                 <option value='other'> Other </option>
-
                                             </select>
                                         </td>
                                         <th scope="row">Phone number</th>
-                                        <td><input type="text" class="form-control " id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Phone Number" title="Case Phone Number" style="width:100%;" onchange="" /></td>
+                                        <td><input type="text" class="form-control phone-number" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Phone Number" title="Case Phone Number" style="width:100%;" onchange="" /></td>
                                     </tr>
                                     <tr>
                                         <th scope="row">Address</th>
@@ -1134,7 +1137,35 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             });
         <?php } ?>
 
+         // Apply validation to all input fields with class 'phone-number'
+         $('.phone-number').on('change', function () {
+          const phoneNumber = $(this).val();
+          const countryCode = "<?php echo $countryCode; ?>"
+          const minDigits = <?php echo $minNumberOfDigits; ?>;
+          const maxDigits = <?php echo $maxNumberOfDigits; ?>;
+
+          if (!validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
+            alert('Invalid phone number. Please enter with proper country code minimun length of <?php echo $minNumberOfDigits; ?> & maximum length of <?php echo $maxNumberOfDigits; ?>');
+          }
+          });
+
     });
+
+        function validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits) {
+               // Remove all non-numeric characters from the phone number
+               const numericPhoneNumber = phoneNumber.replace(/\D/g, '');
+
+               // Check if the phone number starts with the country code
+               if (!phoneNumber.startsWith(countryCode)) {
+                    return false;
+               }
+               // Check the length of the phone number
+               const lengthWithoutCountryCode = numericPhoneNumber.length - countryCode.replace(/\D/g, '').length;
+               if (lengthWithoutCountryCode < minDigits || lengthWithoutCountryCode > maxDigits) {
+                    return false;
+               }
+               return true;
+        }
 
     let testCounter = 1;
 

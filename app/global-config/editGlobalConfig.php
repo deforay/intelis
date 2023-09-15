@@ -351,7 +351,38 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 										<code><?php echo _translate("You can enter multiple emails by separating them with commas"); ?></code>
 									</div>
 								</div><br />
-							</div>
+								<div class="row">
+									<div class="col-md-7" style="height:38px;">
+										<div class="form-group" style="height:38px;">
+											<label for="support_email" class="col-lg-4 control-label"><?php echo _translate("Default Phone Prefix"); ?></label>
+											<div class="col-lg-8">
+												<input type="text" class="form-control readPage" id="default_phone_prefix" name="default_phone_prefix" placeholder="<?php echo _translate('eg. +232, +91'); ?>" title="<?php echo _translate('Please enter manager email'); ?>" value="<?php echo $arr['default_phone_prefix']; ?>" />
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-7" style="height:38px;">
+										<div class="form-group" style="height:38px;">
+											<label for="support_email" class="col-lg-4 control-label"><?php echo _translate("Minimum Length of Phone Number"); ?></label>
+											<div class="col-lg-8">
+											<input type="text" class="form-control forceNumeric readPage isNumeric" id="min_phone_length" name="min_phone_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter minimun length of phone number'); ?>" value="<?php echo ($arr['min_phone_length'] == '') ? '' : $arr['min_phone_length']; ?>" style="max-width:60px;" />
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-7" style="height:38px;">
+										<div class="form-group" style="height:38px;">
+											<label for="support_email" class="col-lg-4 control-label"><?php echo _translate("Maximum Length of Phone Number"); ?></label>
+											<div class="col-lg-8">
+											<input type="text" class="form-control forceNumeric readPage isNumeric" id="max_phone_length" name="max_phone_length" placeholder="<?php echo _translate('Max'); ?>" title="<?php echo _translate('Please enter maximun length of phone number'); ?>" value="<?php echo ($arr['max_phone_length'] == '') ? '' : $arr['max_phone_length']; ?>" style="max-width:60px;" />
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								</div>
 						</div>
 						<?php if (SYSTEM_CONFIG['modules']['vl']) { ?>
 							<div class="panel panel-default">

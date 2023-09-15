@@ -115,6 +115,9 @@ $batResult = $db->rawQuery($batQuery);
 									<th scope="row"><?php echo _translate("Sample Test Date"); ?></th>
 									<th><?php echo _translate("Sample Print Date"); ?></th>
 									<th><?php echo _translate("Sample Email Date"); ?></th>
+									<th><?php echo _translate("First Printed Date From Remote User"); ?></th>
+									<th><?php echo _translate("First Printed Date From Vl User"); ?></th>
+
 								</tr>
 							</thead>
 							<tbody>
@@ -212,6 +215,12 @@ $batResult = $db->rawQuery($batQuery);
 			"iDisplayLength": 10,
 			"bRetrieve": true,
 			"aoColumns": [{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
 					"sClass": "center"
 				},
 				{

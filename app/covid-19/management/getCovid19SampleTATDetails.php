@@ -105,6 +105,8 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.sample_collection_date,
 					vl.result_printed_datetime,
 					vl.result_mail_datetime,
 					vl.request_created_by,
+					vl.result_printed_on_sts_datetime,
+					vl.result_printed_on_lis_datetime,
 					vl.$sampleCode
 					FROM form_covid19 as vl
 					INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
@@ -224,6 +226,16 @@ foreach ($rResult as $aRow) {
 	} else {
 		$aRow['result_mail_datetime'] = '';
 	}
+	if (isset($aRow['result_printed_on_sts_datetime']) && trim($aRow['result_printed_on_sts_datetime']) != '' && $aRow['result_printed_on_sts_datetime'] != '0000-00-00 00:00:00') {
+		$aRow['result_printed_on_sts_datetime'] = DateUtility::humanReadableDateFormat($aRow['result_printed_on_sts_datetime']);
+	} else {
+		$aRow['result_printed_on_sts_datetime'] = '';
+	}
+	if (isset($aRow['result_printed_on_lis_datetime']) && trim($aRow['result_printed_on_lis_datetime']) != '' && $aRow['result_printed_on_lis_datetime'] != '0000-00-00 00:00:00') {
+		$aRow['result_printed_on_lis_datetime'] = DateUtility::humanReadableDateFormat($aRow['result_printed_on_lis_datetime']);
+	} else {
+		$aRow['result_printed_on_lis_datetime'] = '';
+	}
 	$row = [];
 	$row[] = $aRow[$sampleCode];
 	$row[] = $aRow['sample_collection_date'];
@@ -231,6 +243,8 @@ foreach ($rResult as $aRow) {
 	$row[] = $aRow['sample_tested_datetime'];
 	$row[] = $aRow['result_printed_datetime'];
 	$row[] = $aRow['result_mail_datetime'];
+	$row[] = $aRow['result_printed_on_sts_datetime'];
+	$row[] = $aRow['result_printed_on_lis_datetime'];
 	$output['aaData'][] = $row;
 }
 

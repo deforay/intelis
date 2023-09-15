@@ -42,8 +42,8 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 } else {
 	$sampleCode = 'sample_code';
 }
-$aColumns = array('vl.' . $sampleCode, "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_received_at_lab_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_mail_datetime,'%d-%b-%Y')");
-$orderColumns = array('vl.' . $sampleCode, 'vl.sample_collection_date', 'vl.sample_received_at_lab_datetime', 'vl.sample_tested_datetime', 'vl.result_printed_datetime', 'vl.result_mail_datetime');
+$aColumns = array('vl.' . $sampleCode, "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_received_at_lab_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_mail_datetime,'%d-%b-%Y')","DATE_FORMAT(vl.result_printed_on_sts_datetime,'%d-%b-%Y')","DATE_FORMAT(vl.result_printed_on_lis_datetime,'%d-%b-%Y')");
+$orderColumns = array('vl.' . $sampleCode, 'vl.sample_collection_date', 'vl.sample_received_at_lab_datetime', 'vl.sample_tested_datetime', 'vl.result_printed_datetime', 'vl.result_mail_datetime','vl.result_printed_on_sts_datetime','vl.result_printed_on_lis_datetime');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -219,7 +219,7 @@ foreach ($rResult as $aRow) {
 	if (isset($aRow['result_printed_on_sts_datetime']) && trim($aRow['result_printed_on_sts_datetime']) != '' && $aRow['result_printed_on_sts_datetime'] != '0000-00-00 00:00:00') {
 		$aRow['result_printed_on_sts_datetime'] = DateUtility::humanReadableDateFormat($aRow['result_printed_on_sts_datetime']);
 	} else {
-		$aRow['result_printed_datetime'] = '';
+		$aRow['result_printed_on_sts_datetime'] = '';
 	}
 	if (isset($aRow['result_printed_on_lis_datetime']) && trim($aRow['result_printed_on_lis_datetime']) != '' && $aRow['result_printed_on_lis_datetime'] != '0000-00-00 00:00:00') {
 		$aRow['result_printed_on_lis_datetime'] = DateUtility::humanReadableDateFormat($aRow['result_printed_on_lis_datetime']);
