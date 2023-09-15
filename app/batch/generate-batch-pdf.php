@@ -93,8 +93,6 @@ $globalConfig = $general->getGlobalConfig();
 
 $barcodeFormat = $globalConfig['barcode_format'] ?? 'C39';
 
-$barcodeFormat = isset($barcodeFormat) && $barcodeFormat != null ? $barcodeFormat : 'C39';
-
 if (!empty($id)) {
 
     MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "barcode");
@@ -328,7 +326,11 @@ if (!empty($id)) {
 
                             $tbl .= '<td  align="center" width="5%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
                             $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['sample_code'] . '</td>';
-                            $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
+                            if($barcodeFormat == 'QRCODE'){
+                                $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
+                            }else{
+                                $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
+                            }
                             $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['remote_sample_code'] . '</td>';
                             $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;border-bottom:1px solid #333;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
                             $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['result'] . '</td>';
@@ -336,7 +338,11 @@ if (!empty($id)) {
 
                             $tbl .= '<td  align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
                             $tbl .= '<td  align="center" width="18%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['sample_code'] . '</td>';
-                            $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
+                            if($barcodeFormat == 'QRCODE'){
+                                $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
+                            }else{
+                                $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
+                            }
                             $tbl .= '<td  align="center" width="15%" style="vertical-align:middle;border-bottom:1px solid #333;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
                             $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $lotDetails . '</td>';
                             $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['result'] . '</td>';
@@ -390,7 +396,11 @@ if (!empty($id)) {
 
                             $tbl .= '<td  align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
                             $tbl .= '<td  align="center" width="18%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['sample_code'] . '</td>';
-                            $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
+                            if($barcodeFormat == 'QRCODE'){
+                                $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
+                            }else{
+                                $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
+                            }
                             $tbl .= '<td  align="center" width="18%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['remote_sample_code'] . '</td>';
                             $tbl .= '<td  align="center" width="15%" style="vertical-align:middle;border-bottom:1px solid #333;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
                             $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['result'] . '</td>';
@@ -398,7 +408,11 @@ if (!empty($id)) {
 
                             $tbl .= '<td  align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
                             $tbl .= '<td  align="center" width="18%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['sample_code'] . '</td>';
-                            $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
+                            if($barcodeFormat == 'QRCODE'){
+                                $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
+                            }else{
+                                $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
+                            }
                             $tbl .= '<td  align="center" width="15%" style="vertical-align:middle;border-bottom:1px solid #333;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
                             $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $lotDetails . '</td>';
                             $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['result'] . '</td>';
@@ -509,7 +523,11 @@ if (!empty($id)) {
                 if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
                     $tbl .= '<td align="center" width="5%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
                     $tbl .= '<td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sample['sample_code'] . '</td>';
-                    $tbl .= '<td align="center" width="30%" style="vertical-align:middle;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($sample['sample_code'], $barcodeFormat) . '"></td>';
+                    if($barcodeFormat == 'QRCODE'){
+                        $tbl .= '<td align="center" width="30%" style="vertical-align:middle;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="' . $general->get2DBarcodeImageContent($sample['sample_code'], $barcodeFormat) . '"></td>';
+                    }else{
+                        $tbl .= '<td align="center" width="30%" style="vertical-align:middle;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($sample['sample_code'], $barcodeFormat) . '"></td>';
+                    }
                     $tbl .= '<td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sample['remote_sample_code'] . '</td>';
                     $tbl .= '<td align="center" width="12.5%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $patientIdentifier . '</td>';
                     $tbl .= '<td align="center" width="12.5%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sample['result'] . '</td>';
@@ -517,7 +535,11 @@ if (!empty($id)) {
 
                     $tbl .= '<td align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
                     $tbl .= '<td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sample['sample_code'] . '</td>';
-                    $tbl .= '<td align="center" width="35%" style="vertical-align:middle;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($sample['sample_code'], $barcodeFormat) . '"></td>';
+                    if($barcodeFormat == 'QRCODE'){
+                        $tbl .= '<td align="center" width="35%" style="vertical-align:middle;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="' . $general->get2DBarcodeImageContent($sample['sample_code'], $barcodeFormat) . '"></td>';
+                    }else{
+                        $tbl .= '<td align="center" width="35%" style="vertical-align:middle;border-bottom:1px solid #333;"><img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($sample['sample_code'], $barcodeFormat) . '"></td>';
+                    }
                     $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $patientIdentifier . '</td>';
                     $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $lotDetails . '</td>';
                     $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sample['result'] . '</td>';

@@ -275,6 +275,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 													<option value="C39" <?php echo ('C39' == $arr['barcode_format']) ? "selected='selected'" : "" ?>><?php echo _translate("C39"); ?></option>
 													<option value="C39+" <?php echo ('C39+' == $arr['barcode_format']) ? "selected='selected'" : "" ?>><?php echo _translate("C39+"); ?></option>
 													<option value="C128" <?php echo ('C128' == $arr['barcode_format']) ? "selected='selected'" : "" ?>><?php echo _translate("C128"); ?></option>
+													<option value="QRCODE" <?php echo ('QRCODE' == $arr['barcode_format']) ? "selected='selected'" : "" ?>><?php echo _translate("QRCODE"); ?></option>
 												</select>
 											</div>
 										</div>
