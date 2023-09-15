@@ -917,7 +917,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
         });
 
           // Apply validation to all input fields with class 'phone-number'
-          $('.phone-number').on('change', function () {
+          $('.phone-number').on('blur', function () {
           const phoneNumber = $(this).val();
           const countryCode = "<?php echo $countryCode; ?>"
           const minDigits = <?php echo $minNumberOfDigits; ?>;
@@ -927,6 +927,12 @@ $maxNumberOfDigits = $arr['max_phone_length'];
             alert('Invalid phone number. Please enter with proper country code minimun length of <?php echo $minNumberOfDigits; ?> & maximum length of <?php echo $maxNumberOfDigits; ?>');
           }
           });
+
+          $('.phone-number').on('focus', function () {
+               if($(this).val()=="")
+                    $(this).val("<?php echo $countryCode; ?>");
+          });
+
 
     });
 
