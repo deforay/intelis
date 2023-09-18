@@ -36,7 +36,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         _translate("Remote Sample Code"),
         _translate("Testing Lab Name"),
         _translate("Tested By"),
-        _translate("Test Number"),
+        _translate("Number of Times Tested"),
         _translate("District"),
         _translate("State"),
         _translate("Collection Site"),

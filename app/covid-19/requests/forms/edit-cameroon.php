@@ -354,9 +354,9 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 <?php echo $general->generateSelectOptions($specimenTypeResult, $covid19Info['specimen_type']); ?>
                                             </select>
                                         </td>
-                                        <th scope="row"><label for="testNumber"><?= _translate("Test Number"); ?></label></th>
+                                        <th scope="row"><label for="testNumber"><?= _translate("Number of Times Tested"); ?></label></th>
                                         <td>
-                                            <select class="form-control" name="testNumber" id="testNumber" title="<?= _translate("Test Number"); ?>" style="width:100%;">
+                                            <select class="form-control" name="testNumber" id="testNumber" title="<?= _translate("Number of Times Tested"); ?>" style="width:100%;">
                                                 <option value=""><?= _translate("--Select--"); ?></option>
                                                 <?php foreach (range(1, 5) as $element) {
                                                     $selected = (isset($covid19Info['test_number']) && $covid19Info['test_number'] == $element) ? "selected='selected'" : "";

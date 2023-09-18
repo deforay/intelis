@@ -128,15 +128,15 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 								</div>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
-										<td><label class="label-control" for="province">Health Facility/POE State </label><span class="mandatory">*</span></td>
+										<td><label class="label-control" for="province">Health Facility/POE Region </label><span class="mandatory">*</span></td>
 										<td>
-											<select class="form-control select2 isRequired" name="province" id="province" title="Please choose State" onchange="getfacilityDetails(this);" style="width:100%;">
+											<select class="form-control select2 isRequired" name="province" id="province" title="Please choose region" onchange="getfacilityDetails(this);" style="width:100%;">
 												<?php echo $province; ?>
 											</select>
 										</td>
-										<td><label class="label-control" for="district">Health Facility/POE County </label><span class="mandatory">*</span></td>
+										<td><label class="label-control" for="district">Health Facility/POE District </label><span class="mandatory">*</span></td>
 										<td>
-											<select class="form-control select2 isRequired" name="district" id="district" title="Please choose County" style="width:100%;" onchange="getfacilityDistrictwise(this);">
+											<select class="form-control select2 isRequired" name="district" id="district" title="Please choose district" style="width:100%;" onchange="getfacilityDistrictwise(this);">
 												<option value=""> -- Select -- </option>
 											</select>
 										</td>
@@ -876,7 +876,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 		});
 
 		$('#patientProvince').select2({
-			placeholder: "Select Patient State"
+			placeholder: "Select Patient Region"
 		});
 
 		$('#isResultAuthorized').change(function(e) {
@@ -914,41 +914,34 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 					});
 			}
 		});
-	  // Apply validation to all input fields with class 'phone-number'
-	  $('.phone-number').on('blur', function () {
-          const phoneNumber = $(this).val();
-          const countryCode = "<?php echo $countryCode; ?>"
-          const minDigits = <?php echo $minNumberOfDigits; ?>;
-          const maxDigits = <?php echo $maxNumberOfDigits; ?>;
+		// Apply validation to all input fields with class 'phone-number'
+		$('.phone-number').on('blur', function() {
+			const phoneNumber = $(this).val();
+			if (phoneNumber == "") {
+				return;
+			} else if (phoneNumber == "<?php echo $countryCode; ?>") {
+				$(this).val("")
+				return;
+			}
+			const countryCode = "<?= $countryCode ?? null; ?>"
+			const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
+			const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
 
-          if (!validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
-            alert('Invalid phone number. Please enter with proper country code minimun length of <?php echo $minNumberOfDigits; ?> & maximum length of <?php echo $maxNumberOfDigits; ?>');
-          }
-          });
+			if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
+				alert('Invalid phone number. Please enter with proper country code minimum length of ' + minDigits + ' & maximum length of ' + maxDigits);
+			}
+		});
 
-		  $('.phone-number').on('focus', function () {
-               if($(this).val()=="")
-                    $(this).val("<?php echo $countryCode; ?>");
-          });
+		$('.phone-number').on('focus', function() {
+			if ($(this).val() == "") {
+				$(this).val("<?php echo $countryCode ?? null; ?>")
+			};
+		});
 
 
-    });
+	});
 
-        function validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits) {
-               // Remove all non-numeric characters from the phone number
-               const numericPhoneNumber = phoneNumber.replace(/\D/g, '');
 
-               // Check if the phone number starts with the country code
-               if (!phoneNumber.startsWith(countryCode)) {
-                    return false;
-               }
-               // Check the length of the phone number
-               const lengthWithoutCountryCode = numericPhoneNumber.length - countryCode.replace(/\D/g, '').length;
-               if (lengthWithoutCountryCode < minDigits || lengthWithoutCountryCode > maxDigits) {
-                    return false;
-               }
-               return true;
-        }
 
 	function checkIsResultAuthorized() {
 		if ($('#isResultAuthorized').val() == 'no') {

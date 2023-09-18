@@ -312,8 +312,8 @@ if (!empty($requestResult)) {
         $html .= '<table style="padding:3px;">';
         $html .= '<tr>';
         $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:40%">HEALTH FACILITY</td>';
-        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">STATE</td>';
         $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">REGION</td>';
+        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">DISTRICT</td>';
         $html .= '</tr>';
         $html .= '<tr>';
         $html .= '<td style="line-height:17px;font-size:12px;text-align:left;"><span style="font-weight:bold;">' . $result['facility_name'] . '</span></td>';
@@ -358,7 +358,7 @@ if (!empty($requestResult)) {
         $html .= '<tr>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">TB PATIENT CATEGORY</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . (str_replace("-", " ", $typeOfPatient)) . '</td>';
-        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">STATE & REGION</td>';
+        $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">REGION</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . $fstate . '</td>';
         $html .= '</tr>';
 
@@ -463,12 +463,11 @@ if (!empty($requestResult)) {
 
         if ($result['reason_for_sample_rejection'] != '') {
             $corrective = '';
-            if($result["recommended_corrective_action_name"]!="")
-            {
-                 $corrective = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="font-weight:bold;">RECOMMENDED CORRECTIVE ACTION</span>&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;'.$result["recommended_corrective_action_name"];
+            if ($result["recommended_corrective_action_name"] != "") {
+                $corrective = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="font-weight:bold;">RECOMMENDED CORRECTIVE ACTION</span>&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;' . $result["recommended_corrective_action_name"];
             }
             $html .= '<tr>';
-            $html .= '<td colspan="4" style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">REJECTION REASON : <span style="font-weight:normal;">' . $result['rejection_reason_name'] . $corrective .'</span></td>';
+            $html .= '<td colspan="4" style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;">REJECTION REASON : <span style="font-weight:normal;">' . $result['rejection_reason_name'] . $corrective . '</span></td>';
             $html .= '</tr>';
         }
         if (trim($result['lab_tech_comments']) != '') {
@@ -563,5 +562,4 @@ if (!empty($requestResult)) {
             }
         }
     }
-   
 }

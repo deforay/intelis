@@ -329,9 +329,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <?php echo $general->generateSelectOptions($specimenTypeResult, null, '-- Select --'); ?>
                                             </select>
                                         </td>
-                                        <th scope="row"><label for="testNumber"><?= _translate("Test Number"); ?></label></th>
+                                        <th scope="row"><label for="testNumber"><?= _translate("Number of Times Tested"); ?></label></th>
                                         <td>
-                                            <select class="form-control" name="testNumber" id="testNumber" title="<?= _translate('Test Number'); ?>" style="width:100%;">
+                                            <select class="form-control" name="testNumber" id="testNumber" title="<?= _translate('Number of Times Tested'); ?>" style="width:100%;">
                                                 <option value=""><?= _translate("--Select--"); ?></option>
                                                 <?php foreach (range(1, 5) as $element) {
                                                     echo '<option value="' . $element . '">' . $element . '</option>';

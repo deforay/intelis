@@ -5,7 +5,6 @@
 # Make the script executable: chmod +x ubuntu-setup.sh.
 # Run the script: ./ubuntu-setup.sh.
 
-
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
     echo "Please run as root."
@@ -22,7 +21,6 @@ for cmd in "apt"; do
         exit 1
     fi
 done
-
 
 # START OF SCRIPT - BE CAREFUL OF WHAT YOU CHANGE BELOW THIS LINE
 
@@ -131,8 +129,6 @@ else
     mv composer.phar /usr/local/bin/composer
 fi
 
-
-
 # VLSM Setup
 echo "Cloning VLSM repository..."
 git clone https://github.com/deforay/vlsm.git /var/www/vlsm
@@ -145,9 +141,6 @@ composer update
 echo "Importing init.sql into the vlsm database..."
 mysql -u root -p"$mysql_root_password" vlsm < /var/www/vlsm/sql/init.sql
 
-echo "Renaming config.production.dist.php to config.production.php..."
-mv /var/www/vlsm/configs/config.production.dist.php /var/www/vlsm/configs/config.production.php
-
 echo "Adding VLSM to hosts file..."
 echo "127.0.0.1 vlsm" | tee -a /etc/hosts
 
@@ -159,6 +152,37 @@ service apache2 restart || { echo "Failed to restart Apache2. Exiting..."; exit 
 
 echo "Adding cron job for VLSM..."
 echo "* * * * * cd /var/www/vlsm/ && ./vendor/bin/crunz schedule:run" | tee -a /var/spool/cron/crontabs/root
+
+echo "Renaming config.production.dist.php to config.production.php..."
+mv /var/www/vlsm/configs/config.production.dist.php /var/www/vlsm/configs/config.production.php
+
+# Update VLSM config.production.php with database credentials
+sed -i "s/\$systemConfig\['database'\]\['host'\]\s*=\s*'';/\$systemConfig\['database'\]\['host'\] = 'localhost';/g" /var/www/vlsm/configs/config.production.php
+sed -i "s/\$systemConfig\['database'\]\['username'\]\s*=\s*'';/\$systemConfig\['database'\]\['username'\] = 'root';/g" /var/www/vlsm/configs/config.production.php
+sed -i "s/\$systemConfig\['database'\]\['password'\]\s*=\s*'';/\$systemConfig\['database'\]\['password'\] = '$mysql_root_password';/g" /var/www/vlsm/configs/config.production.php
+
+# Prompt for Remote STS URL
+read -p "Please enter the Remote STS URL (can be blank if you choose so): " remote_sts_url
+
+# Update VLSM config.production.php with Remote STS URL if provided
+if [ ! -z "$remote_sts_url" ]; then
+    sed -i "s|\$systemConfig\['remoteURL'\]\s*=\s*'';|\$systemConfig\['remoteURL'\] = '$remote_sts_url';|g" /var/www/vlsm/configs/config.production.php
+
+    # Run the PHP script for remote data sync
+    echo "Running remote data sync script. Please wait..."
+    php /var/www/vlsm/app/scheduled-jobs/remote/commonDataSync.php &
+
+    # Get the PID of the last background command (the PHP script)
+    pid=$!
+
+    # Show a simple progress indicator
+    while kill -0 $pid 2>/dev/null; do
+        echo -n "."
+        sleep 1
+    done
+
+    echo "Remote data sync script completed."
+fi
 
 
 echo "Setup complete. Proceed to VLSM setup."

@@ -146,7 +146,7 @@ if (!empty($requestResult)) {
           if (!isset($result['facility_district']) || trim($result['facility_district']) == '') {
                $result['facility_district'] = '';
           }
-          if (!isset($result['facility_name']) || trim($result['facility_name']) == '') { 
+          if (!isset($result['facility_name']) || trim($result['facility_name']) == '') {
                $result['facility_name'] = '';
           }
           if (!isset($result['labName']) || trim($result['labName']) == '') {
@@ -257,8 +257,8 @@ if (!empty($requestResult)) {
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REQUESTING HEALTH FACILITY NAME</td>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">HEALTH FACILITY CODE</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">STATE</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">COUNTY</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REGION</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DISTRICT</td>';
           $html .= '</tr>';
           $html .= '<tr>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['facility_name']) . '</td>';
@@ -383,11 +383,10 @@ if (!empty($requestResult)) {
           $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;">&nbsp;&nbsp;Viral Load Result (copies/ml)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars($result['result']) . '<br>' . $logValue . '</td><td >' . $smileyContent . '</td></tr>';
           if ($result['reason_for_sample_rejection'] != '') {
                $corrective = '';
-               if($result["recommended_corrective_action_name"]!="")
-               {
-                    $corrective = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Recommended Corrective Action&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;'.$result["recommended_corrective_action_name"];
+               if ($result["recommended_corrective_action_name"] != "") {
+                    $corrective = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Recommended Corrective Action&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;' . $result["recommended_corrective_action_name"];
                }
-               $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Rejection Reason&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . $corrective .'</td></tr>';
+               $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Rejection Reason&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . $corrective . '</td></tr>';
           }
           if (strpos(strtolower($result['vl_test_platform']), 'abbott') !== false) {
                $html .= '<tr>';
@@ -408,7 +407,7 @@ if (!empty($requestResult)) {
           }
           if (trim($tndMessage) != '') {
                $html .= '<tr>';
-             //  $html .= '<td colspan="3" style="line-height:13px;font-size:18px;text-align:left;">' . $tndMessage . '</td>';
+               //  $html .= '<td colspan="3" style="line-height:13px;font-size:18px;text-align:left;">' . $tndMessage . '</td>';
                $html .= '</tr>';
                $html .= '<tr>';
                $html .= '<td colspan="3" style="line-height:16px;"></td>';
@@ -583,7 +582,7 @@ if (!empty($requestResult)) {
           $html .= '</td>';
           $html .= '</tr>';
           $html .= '</table>';
-          
+
           if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {
                $pdf->writeHTML($html);
                $pdf->lastPage();

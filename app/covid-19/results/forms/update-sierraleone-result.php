@@ -142,6 +142,9 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 <option value="clinic" <?php echo (isset($covid19Info['source_of_alert']) && $covid19Info['source_of_alert'] == 'clinic') ? "selected='selected'" : ""; ?>>Clinic</option>
                                                 <option value="sentinel-site" <?php echo (isset($covid19Info['source_of_alert']) && $covid19Info['source_of_alert'] == 'sentinel-site') ? "selected='selected'" : ""; ?>>Sentinel Site</option>
                                                 <option value="screening" <?php echo (isset($covid19Info['source_of_alert']) && $covid19Info['source_of_alert'] == 'screening') ? "selected='selected'" : ""; ?>>Screening</option>
+                                                <option value="airport" <?php echo (isset($covid19Info['source_of_alert']) && $covid19Info['source_of_alert'] == 'airport') ? "selected='selected'" : ""; ?>>Airport</option>
+                                                <option value="land-borders" <?php echo (isset($covid19Info['source_of_alert']) && $covid19Info['source_of_alert'] == 'land-borders') ? "selected='selected'" : ""; ?>>Land Borders</option>
+                                                <option value="sea-borders" <?php echo (isset($covid19Info['source_of_alert']) && $covid19Info['source_of_alert'] == 'sea-borders') ? "selected='selected'" : ""; ?>>Sea Borders</option>
                                                 <option value="others" <?php echo (isset($covid19Info['source_of_alert']) && $covid19Info['source_of_alert'] == 'others') ? "selected='selected'" : ""; ?>>Others</option>
                                             </select>
                                         </td>
@@ -188,7 +191,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row" style="width:15% !important"><label for="patientId">Case ID <span class="mandatory">*</span> </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="patientId">Case ID </label></th>
                                         <td style="width:35% !important">
                                             <input type="text" class="form-control" id="patientId" name="patientId" placeholder="Identification" title="Please enter ID" style="width:100%;" value="<?php echo $covid19Info['patient_id']; ?>" />
                                         </td>
@@ -293,7 +296,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row"><label for="testNumber">Test Number</label></th>
+                                        <th scope="row"><label for="testNumber">Number of Times Tested</label></th>
                                         <td>
                                             <select class="form-control" name="testNumber" id="testNumber" title="Prélévement" style="width:100%;">
                                                 <option value="">--Select--</option>

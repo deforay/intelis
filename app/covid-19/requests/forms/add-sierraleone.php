@@ -113,6 +113,9 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                 <option value="clinic">Clinic</option>
                                                 <option value="sentinel-site">Sentinel Site</option>
                                                 <option value="screening">Screening</option>
+                                                <option value="airport">Airport</option>
+                                                <option value="land-borders">Land Borders</option>
+                                                <option value="sea-borders">Sea Borders</option>
                                                 <option value="others">Others</option>
                                             </select>
                                         </td>
@@ -122,15 +125,15 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><label for="province">Health Facility/POE State </label><span class="mandatory">*</span></td>
+                                        <td><label for="province">Health Facility/POE Region </label><span class="mandatory">*</span></td>
                                         <td>
-                                            <select class="form-control select2 isRequired" name="province" id="province" title="Please choose State" onchange="getfacilityDetails(this);" style="width:100%;">
+                                            <select class="form-control select2 isRequired" name="province" id="province" title="Please choose region" onchange="getfacilityDetails(this);" style="width:100%;">
                                                 <?php echo $province; ?>
                                             </select>
                                         </td>
-                                        <td><label for="district">Health Facility/POE County </label><span class="mandatory">*</span></td>
+                                        <td><label for="district">Health Facility/POE District </label><span class="mandatory">*</span></td>
                                         <td>
-                                            <select class="form-control select2 isRequired" name="district" id="district" title="Please choose County" style="width:100%;" onchange="getfacilityDistrictwise(this);">
+                                            <select class="form-control select2 isRequired" name="district" id="district" title="Please choose district" style="width:100%;" onchange="getfacilityDistrictwise(this);">
                                                 <option value=""> -- Select -- </option>
                                             </select>
                                         </td>
@@ -178,11 +181,11 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
                                     <tr>
-                                        <th scope="row" style="width:15% !important"><label for="patientId">Case ID <span class="mandatory">*</span> </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="patientId">Case ID </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="Case Identification" title="Please enter Case ID" style="width:100%;" onchange="" />
+                                            <input type="text" class="form-control" id="patientId" name="patientId" placeholder="Case Identification" title="Please enter Case ID" style="width:100%;" onchange="" />
                                         </td>
-                                        <th scope="row" style="width:15% !important"><label for="externalSampleCode">DHIS2 Case ID </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="externalSampleCode">DHIS2/EMR Case ID </label></th>
                                         <td style="width:35% !important"><input type="text" class="form-control" id="externalSampleCode" name="externalSampleCode" placeholder="DHIS2 Case ID" title="Please enter DHIS2 Case ID" style="width:100%;" /></td>
                                     </tr>
                                     <tr>
@@ -221,22 +224,22 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                         <th scope="row">Address</th>
                                         <td><textarea class="form-control " id="patientAddress" name="patientAddress" placeholder="Address" title="Case Address" style="width:100%;" onchange=""></textarea></td>
 
-                                        <th scope="row">State</th>
+                                        <th scope="row">Region</th>
                                         <td>
-                                            <select class="form-control " name="patientProvince" id="patientProvince" title="Please Case State" onchange="getPatientDistrictDetails(this);" style="width:100%;">
+                                            <select class="form-control " name="patientProvince" id="patientProvince" title="Please enter region" onchange="getPatientDistrictDetails(this);" style="width:100%;">
                                                 <?php echo $province; ?>
                                             </select>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">County</th>
+                                        <th scope="row">District</th>
                                         <td>
-                                            <select class="form-control select2" name="patientDistrict" id="patientDistrict" title="Please Case County" style="width:100%;">
+                                            <select class="form-control select2" name="patientDistrict" id="patientDistrict" title="Please enter district" style="width:100%;">
                                                 <option value=""> -- Select -- </option>
                                             </select>
                                         </td>
-                                        <th scope="row">Payam</th>
-                                        <td><input class="form-control" id="patientZone" name="patientZone" placeholder="Case Payam" title="Please enter the Case Payam" style="width:100%;"></td>
+                                        <th scope="row">Chiefdom</th>
+                                        <td><input class="form-control" id="patientZone" name="patientZone" placeholder="Case Chiefdom" title="Please enter the Case Chiefdom" style="width:100%;"></td>
 
                                     </tr>
                                     <tr>
@@ -274,7 +277,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                         <td>
                                             <select class="form-control" name="vaccinationType" id="vaccinationType" title="Please select the Type of Vaccination" onchange="addNewVaccinationType();">
                                                 <option value=''> -- Select -- </option>
-                                                <option value='jansen & jansen'> JANSEN & JANSEN </option>
+                                                <option value='johnson & johnson'> JOHNSON & JOHNSON </option>
                                                 <option value='astrazeneca'> ASTRAZENECA </option>
                                                 <option value='sinopham'> SINOPHAM </option>
                                                 <option value='pfizer'> PFIZER </option>
@@ -335,19 +338,12 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                 <?php echo $general->generateSelectOptions($specimenTypeResult, null, '-- Select --'); ?>
                                             </select>
                                         </td>
-                                        <th scope="row"><label for="specimenTakenBeforeAntibiotics">Specimen Taken Before Antibiotics</label></th>
-                                        <td>
-                                            <select class="form-control" name="specimenTakenBeforeAntibiotics" id="specimenTakenBeforeAntibiotics" title="Please select the Options">
-                                                <option value=''> -- Select -- </option>
-                                                <option value='yes'> Yes </option>
-                                                <option value='no'> No </option>
-                                                <option value='unknown'> Unknown </option>
-                                            </select>
-                                        </td>
+                                        <th scope="row"></th>
+                                        <td></td>
 
                                     </tr>
                                     <tr>
-                                        <th scope="row"><label for="testNumber">Test Number</label></th>
+                                        <th scope="row"><label for="testNumber">Number of Times Tested”</label></th>
                                         <td>
                                             <select class="form-control" name="testNumber" id="testNumber" title="Prélévement" style="width:100%;">
                                                 <option value="">--Select--</option>
@@ -653,9 +649,9 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="state" class="col-lg-4 control-label">Province/State <span class="mandatory">*</span></label>
+                                    <label for="state" class="col-lg-4 control-label">Region <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <select name="state" id="state" class="form-control isRequired" title="Please choose province/state">
+                                        <select name="state" id="state" class="form-control isRequired" title="Please choose province/region">
                                             <option value=""> -- Select -- </option>
                                             <?php
                                             foreach ($pResult as $province) {
@@ -666,7 +662,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                             ?>
                                             <option value="other">Other</option>
                                         </select>
-                                        <input type="text" class="form-control" name="provinceNew" id="provinceNew" placeholder="Enter Province/State" title="Please enter province/state" style="margin-top:4px;display:none;" />
+                                        <input type="text" class="form-control" name="provinceNew" id="provinceNew" placeholder="Enter Region" title="Please enter province/region" style="margin-top:4px;display:none;" />
                                     </div>
                                 </div>
                             </div>
@@ -690,9 +686,9 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="district" class="col-lg-4 control-label">District/County <span class="mandatory">*</span></label>
+                                    <label for="district" class="col-lg-4 control-label">District <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="district" name="district" placeholder="District/County" title="Please enter district/county" />
+                                        <input type="text" class="form-control isRequired" id="district" name="district" placeholder="District" title="Please enter district" />
                                     </div>
                                 </div>
                             </div>
@@ -1111,7 +1107,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
         });
 
         $('#patientProvince').select2({
-            placeholder: "Select Case State"
+            placeholder: "Select Case Region"
         });
         $('#authorizedBy').select2({
             width: '100%',
@@ -1137,41 +1133,33 @@ $maxNumberOfDigits = $arr['max_phone_length'];
             });
         <?php } ?>
 
-         // Apply validation to all input fields with class 'phone-number'
-         $('.phone-number').on('blur', function () {
-          const phoneNumber = $(this).val();
-          const countryCode = "<?php echo $countryCode; ?>"
-          const minDigits = <?php echo $minNumberOfDigits; ?>;
-          const maxDigits = <?php echo $maxNumberOfDigits; ?>;
+        // Apply validation to all input fields with class 'phone-number'
+        $('.phone-number').on('blur', function() {
+            const phoneNumber = $(this).val();
+            if (phoneNumber == "") {
+                return;
+            } else if (phoneNumber == "<?php echo $countryCode; ?>") {
+                $(this).val("")
+                return;
+            }
+            const countryCode = "<?= $countryCode ?? null; ?>"
+            const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
+            const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
 
-          if (!validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
-            alert('Invalid phone number. Please enter with proper country code minimun length of <?php echo $minNumberOfDigits; ?> & maximum length of <?php echo $maxNumberOfDigits; ?>');
-          }
-          });
+            if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
+                alert('Invalid phone number. Please enter with proper country code minimum length of ' + minDigits + ' & maximum length of ' + maxDigits);
+            }
+        });
 
-          $('.phone-number').on('focus', function () {
-               if($(this).val()=="")
-                    $(this).val("<?php echo $countryCode; ?>");
-          });
+        $('.phone-number').on('focus', function() {
+            if ($(this).val() == "") {
+                $(this).val("<?php echo $countryCode ?? null; ?>")
+            };
+        });
 
 
     });
 
-        function validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits) {
-               // Remove all non-numeric characters from the phone number
-               const numericPhoneNumber = phoneNumber.replace(/\D/g, '');
-
-               // Check if the phone number starts with the country code
-               if (!phoneNumber.startsWith(countryCode)) {
-                    return false;
-               }
-               // Check the length of the phone number
-               const lengthWithoutCountryCode = numericPhoneNumber.length - countryCode.replace(/\D/g, '').length;
-               if (lengthWithoutCountryCode < minDigits || lengthWithoutCountryCode > maxDigits) {
-                    return false;
-               }
-               return true;
-        }
 
     let testCounter = 1;
 

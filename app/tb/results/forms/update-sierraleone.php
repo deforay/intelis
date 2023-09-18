@@ -145,15 +145,15 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 								</div>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
-										<td><label class="label-control" for="province">Health Facility/POE State </label></td>
+										<td><label class="label-control" for="province">Health Facility/POE Region </label></td>
 										<td>
-											<select class="form-control select2" name="province" id="province" title="Please choose State" onchange="getfacilityDetails(this);" style="width:100%;">
+											<select class="form-control select2" name="province" id="province" title="Please choose Region" onchange="getfacilityDetails(this);" style="width:100%;">
 												<?php echo $province; ?>
 											</select>
 										</td>
-										<td><label class="label-control" for="district">Health Facility/POE County </label></td>
+										<td><label class="label-control" for="district">Health Facility/POE district </label></td>
 										<td>
-											<select class="form-control select2" name="district" id="district" title="Please choose County" style="width:100%;" onchange="getfacilityDistrictwise(this);">
+											<select class="form-control select2" name="district" id="district" title="Please choose district" style="width:100%;" onchange="getfacilityDistrictwise(this);">
 												<option value=""> -- Select -- </option>
 											</select>
 										</td>
@@ -834,7 +834,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		});
 
 		$('#patientProvince').select2({
-			placeholder: "Select Patient State"
+			placeholder: "Select Patient Region"
 		});
 
 		$('#isResultAuthorized').change(function(e) {

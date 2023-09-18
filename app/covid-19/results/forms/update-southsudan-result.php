@@ -291,7 +291,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row"><label for="testNumber">Test Number</label></th>
+                                        <th scope="row"><label for="testNumber">Number of Times Tested</label></th>
                                         <td>
                                             <select class="form-control" name="testNumber" id="testNumber" title="Prélévement" style="width:100%;">
                                                 <option value="">--Select--</option>

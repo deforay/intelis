@@ -126,7 +126,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                         <div class="row">
                                              <div class="col-xs-4 col-md-4">
                                                   <div class="form-group">
-                                                       <label for="province">State/Province <span class="mandatory">*</span></label>
+                                                       <label for="province">Region <span class="mandatory">*</span></label>
                                                        <select class="form-control isRequired" name="province" id="province" title="Please choose state" style="width:100%;" onchange="getProvinceDistricts(this);">
                                                             <?php echo $province; ?>
                                                        </select>
@@ -134,8 +134,8 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                              </div>
                                              <div class="col-xs-4 col-md-4">
                                                   <div class="form-group">
-                                                       <label for="district">District/County <span class="mandatory">*</span></label>
-                                                       <select class="form-control isRequired" name="district" id="district" title="Please choose county" style="width:100%;" onchange="getFacilities(this);">
+                                                       <label for="district">District <span class="mandatory">*</span></label>
+                                                       <select class="form-control isRequired" name="district" id="district" title="Please choose district" style="width:100%;" onchange="getFacilities(this);">
                                                             <option value=""> -- Select -- </option>
                                                        </select>
                                                   </div>
@@ -1150,54 +1150,35 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           });
 
 
-        
+
 
           // Apply validation to all input fields with class 'phone-number'
-          $('.phone-number').on('blur', function () {
-          const phoneNumber = $(this).val();
-          const countryCode = "<?php echo $countryCode; ?>";
-          const minDigits = <?php echo $minNumberOfDigits; ?>;
-          const maxDigits = <?php echo $maxNumberOfDigits; ?>;
+          $('.phone-number').on('blur', function() {
+               const phoneNumber = $(this).val();
+               if (phoneNumber == "") {
+                    return;
+               } else if (phoneNumber == "<?php echo $countryCode; ?>") {
+                    $(this).val("")
+                    return;
+               }
+               const countryCode = "<?= $countryCode ?? null; ?>"
+               const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
+               const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
 
-          if (!validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
-               alert('Invalid phone number. Please enter with proper country code minimun length of <?php echo $minNumberOfDigits; ?> & maximum length of <?php echo $maxNumberOfDigits; ?>');
-          }
+               if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
+                    alert('Invalid phone number. Please enter with proper country code minimum length of ' + minDigits + ' & maximum length of ' + maxDigits);
+               }
           });
 
-          $('.phone-number').on('focus', function () {
-               if($(this).val()=="")
-                    $(this).val("<?php echo $countryCode; ?>");
+          $('.phone-number').on('focus', function() {
+               if ($(this).val() == "") {
+                    $(this).val("<?php echo $countryCode ?? null; ?>")
+               };
           });
 
 
      });
 
-     // $(document).on('select2:open', (e) => {
-     //      const selectId = e.target.id
-
-     //      $(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function(
-     //           key,
-     //           value,
-     //      ) {
-     //           value.focus();
-     //      })
-     // });
-     // Validation function
-     function validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits) {
-               // Remove all non-numeric characters from the phone number
-               const numericPhoneNumber = phoneNumber.replace(/\D/g, '');
-
-               // Check if the phone number starts with the country code
-               if (!phoneNumber.startsWith(countryCode)) {
-                    return false;
-               }
-               // Check the length of the phone number
-               const lengthWithoutCountryCode = numericPhoneNumber.length - countryCode.replace(/\D/g, '').length;
-               if (lengthWithoutCountryCode < minDigits || lengthWithoutCountryCode > maxDigits) {
-                    return false;
-               }
-               return true;
-          }
      function showTesting(chosenClass) {
           $(".viralTestData").val('');
           $(".hideTestData").hide();

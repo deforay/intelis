@@ -35,6 +35,30 @@ jQuery('#ageInYears').on('input', function () {
 });
 
 class Utilities {
+
+    static validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits) {
+        // Remove all non-numeric characters from the phone number
+        const numericPhoneNumber = phoneNumber.replace(/\D/g, '');
+
+        // Check if the phone number starts with the country code, if countryCode is not null or empty
+        if (countryCode && !phoneNumber.startsWith(countryCode)) {
+            return false;
+        }
+
+        // Calculate the length of the phone number without the country code
+        const countryCodeLength = countryCode ? countryCode.replace(/\D/g, '').length : 0;
+        const lengthWithoutCountryCode = numericPhoneNumber.length - countryCodeLength;
+
+        // Check the length of the phone number
+        if (minDigits && lengthWithoutCountryCode < minDigits) {
+            return false;
+        }
+        if (maxDigits && lengthWithoutCountryCode > maxDigits) {
+            return false;
+        }
+        return true;
+    }
+
     static async copyToClipboard(text) {
         let succeed;
         try {

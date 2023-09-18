@@ -101,16 +101,16 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                         <td></td>
                                     </tr>
                                     <tr>
-                                        <td class="labels"><label for="province">Health Facility/POE State </label><span class="mandatory">*</span></td>
+                                        <td class="labels"><label for="province">Health Facility/POE Region </label><span class="mandatory">*</span></td>
                                         <td>
-                                            <select class="form-control isRequired" name="province" id="province" title="Please choose State" onchange="getfacilityDetails(this);" style="width:100%;">
+                                            <select class="form-control isRequired" name="province" id="province" title="Please choose region" onchange="getfacilityDetails(this);" style="width:100%;">
                                                 <?php echo $province; ?>
                                             </select>
                                         </td>
-                                        <td class="labels"><label for="district">Health Facility/POE County
+                                        <td class="labels"><label for="district">Health Facility/POE District
                                             </label><span class="mandatory">*</span></td>
                                         <td>
-                                            <select class="form-control isRequired" name="district" id="district" title="Please choose County" style="width:100%;" onchange="getfacilityDistrictwise(this);">
+                                            <select class="form-control isRequired" name="district" id="district" title="Please choose district" style="width:100%;" onchange="getfacilityDistrictwise(this);">
                                                 <option value=""> -- Select -- </option>
                                             </select>
                                         </td>
@@ -298,7 +298,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                             </select>
                                         </td>
 
-                                        <th scope="row" class="labels">If yes, test date :<span class="mandatory">*</span></th>
+                                        <th scope="row" class="labels">If yes, test date :</th>
                                         <td>
                                             <input class="form-control date" type="text" name="rapidtestDate" id="rapidtestDate" placeholder="if yes, test date" />
                                         </td>
@@ -784,12 +784,12 @@ $maxNumberOfDigits = $arr['max_phone_length'];
         }
     }
     $(document).ready(function() {
-        $('#rapidTestPerformed').on('change', function() {
-            if ($(this).val() == 'yes')
-                $('#rapidtestDate').addClass('isRequired');
-            else
-                $('#rapidtestDate').removeClass('isRequired');
-        });
+        // $('#rapidTestPerformed').on('change', function() {
+        //     if ($(this).val() == 'yes')
+        //         $('#rapidtestDate').addClass('isRequired');
+        //     else
+        //         $('#rapidtestDate').removeClass('isRequired');
+        // });
         $('.pcrBox').hide();
         $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
@@ -916,41 +916,33 @@ $maxNumberOfDigits = $arr['max_phone_length'];
             }
         });
 
-          // Apply validation to all input fields with class 'phone-number'
-          $('.phone-number').on('blur', function () {
-          const phoneNumber = $(this).val();
-          const countryCode = "<?php echo $countryCode; ?>"
-          const minDigits = <?php echo $minNumberOfDigits; ?>;
-          const maxDigits = <?php echo $maxNumberOfDigits; ?>;
+        // Apply validation to all input fields with class 'phone-number'
+        $('.phone-number').on('blur', function() {
+            const phoneNumber = $(this).val();
+            if (phoneNumber == "") {
+                return;
+            } else if (phoneNumber == "<?php echo $countryCode; ?>") {
+                $(this).val("")
+                return;
+            }
+            const countryCode = "<?= $countryCode ?? null; ?>"
+            const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
+            const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
 
-          if (!validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
-            alert('Invalid phone number. Please enter with proper country code minimun length of <?php echo $minNumberOfDigits; ?> & maximum length of <?php echo $maxNumberOfDigits; ?>');
-          }
-          });
+            if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
+                alert('Invalid phone number. Please enter with proper country code minimum length of ' + minDigits + ' & maximum length of ' + maxDigits);
+            }
+        });
 
-          $('.phone-number').on('focus', function () {
-               if($(this).val()=="")
-                    $(this).val("<?php echo $countryCode; ?>");
-          });
+        $('.phone-number').on('focus', function() {
+            if ($(this).val() == "") {
+                $(this).val("<?php echo $countryCode ?? null; ?>")
+            };
+        });
 
 
     });
 
-    function validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits) {
-               // Remove all non-numeric characters from the phone number
-               const numericPhoneNumber = phoneNumber.replace(/\D/g, '');
-
-               // Check if the phone number starts with the country code
-               if (!phoneNumber.startsWith(countryCode)) {
-                    return false;
-               }
-               // Check the length of the phone number
-               const lengthWithoutCountryCode = numericPhoneNumber.length - countryCode.replace(/\D/g, '').length;
-               if (lengthWithoutCountryCode < minDigits || lengthWithoutCountryCode > maxDigits) {
-                    return false;
-               }
-               return true;
-          }
 
     function getMachine(value) {
         $.post("/instruments/get-machine-names-by-instrument.php", {

@@ -151,6 +151,9 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                 <option value="clinic" <?php echo (isset($covid19Info['source_of_alert']) && $covid19Info['source_of_alert'] == 'clinic') ? "selected='selected'" : ""; ?>>Clinic</option>
                                                 <option value="sentinel-site" <?php echo (isset($covid19Info['source_of_alert']) && $covid19Info['source_of_alert'] == 'sentinel-site') ? "selected='selected'" : ""; ?>>Sentinel Site</option>
                                                 <option value="screening" <?php echo (isset($covid19Info['source_of_alert']) && $covid19Info['source_of_alert'] == 'screening') ? "selected='selected'" : ""; ?>>Screening</option>
+                                                <option value="airport" <?php echo (isset($covid19Info['source_of_alert']) && $covid19Info['source_of_alert'] == 'airport') ? "selected='selected'" : ""; ?>>Airport</option>
+                                                <option value="land-borders" <?php echo (isset($covid19Info['source_of_alert']) && $covid19Info['source_of_alert'] == 'land-borders') ? "selected='selected'" : ""; ?>>Land Borders</option>
+                                                <option value="sea-borders" <?php echo (isset($covid19Info['source_of_alert']) && $covid19Info['source_of_alert'] == 'sea-borders') ? "selected='selected'" : ""; ?>>Sea Borders</option>
                                                 <option value="others" <?php echo (isset($covid19Info['source_of_alert']) && $covid19Info['source_of_alert'] == 'others') ? "selected='selected'" : ""; ?>>Others</option>
                                             </select>
                                         </td>
@@ -160,15 +163,15 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><label for="province">Health Facility/POE State </label><span class="mandatory">*</span></td>
+                                        <td><label for="province">Health Facility/POE Region </label><span class="mandatory">*</span></td>
                                         <td>
                                             <select class="form-control select2 isRequired" name="province" id="province" title="Please choose State" onchange="getfacilityDetails(this);" style="width:100%;">
                                                 <?php echo $province; ?>
                                             </select>
                                         </td>
-                                        <td><label for="district">Health Facility/POE County </label><span class="mandatory">*</span></td>
+                                        <td><label for="district">Health Facility/POE District </label><span class="mandatory">*</span></td>
                                         <td>
-                                            <select class="form-control select2 isRequired" name="district" id="district" title="Please choose County" style="width:100%;" onchange="getfacilityDistrictwise(this);">
+                                            <select class="form-control select2 isRequired" name="district" id="district" title="Please choose district" style="width:100%;" onchange="getfacilityDistrictwise(this);">
                                                 <option value=""> -- Select -- </option>
                                             </select>
                                         </td>
@@ -210,11 +213,11 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
-                                        <th scope="row" style="width:15% !important"><label for="patientId">Case ID <span class="mandatory">*</span> </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="patientId">Case ID </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="Identification" title="Please enter ID" style="width:100%;" value="<?php echo $covid19Info['patient_id']; ?>" />
+                                            <input type="text" class="form-control" id="patientId" name="patientId" placeholder="Identification" title="Please enter ID" style="width:100%;" value="<?php echo $covid19Info['patient_id']; ?>" />
                                         </td>
-                                        <th scope="row" style="width:15% !important"><label for="externalSampleCode">DHIS2 Case ID <span class="mandatory">*</span> </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="externalSampleCode">DHIS2/EMR Case ID <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important"><input type="text" class="form-control" id="externalSampleCode" name="externalSampleCode" placeholder="DHIS2 Case ID" title="Please enter DHIS2 Case ID" style="width:100%;" value="<?php echo $covid19Info['external_sample_code']; ?>" /></td>
                                     </tr>
                                     <tr>
@@ -253,7 +256,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                         <th scope="row">Case address</th>
                                         <td><textarea class="form-control " id="patientAddress" name="patientAddress" placeholder="Address" title="Address" style="width:100%;" onchange=""><?php echo $covid19Info['patient_address']; ?></textarea></td>
 
-                                        <th scope="row">Case State</th>
+                                        <th scope="row">Case Region</th>
                                         <td>
                                             <select class="form-control select2" name="patientProvince" id="patientProvince" title="Please Case State" onchange="getPatientDistrictDetails(this.value);" style="width:100%;">
                                                 <?= $general->generateSelectOptions($provinceInfo, $patientProvince, '-- Select --'); ?>
@@ -261,14 +264,14 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">County</th>
+                                        <th scope="row">District</th>
                                         <td>
-                                            <select class="form-control select2" name="patientDistrict" id="patientDistrict" title="Please Case County" style="width:100%;">
+                                            <select class="form-control select2" name="patientDistrict" id="patientDistrict" title="Please Case district" style="width:100%;">
                                                 <?= $general->generateSelectOptions($provinceInfo, $patientProvince, '-- Select --'); ?>
                                             </select>
                                         </td>
-                                        <th scope="row">Payam</th>
-                                        <td><input class="form-control" id="patientZone" value="<?php echo $covid19Info['patient_zone']; ?>" name="patientZone" placeholder="Case Payam" title="Please enter the Case Payam" style="width:100%;"></td>
+                                        <th scope="row">Chiefdom</th>
+                                        <td><input class="form-control" id="patientZone" value="<?php echo $covid19Info['patient_zone']; ?>" name="patientZone" placeholder="Case Chiefdom" title="Please enter the Case Chiefdom" style="width:100%;"></td>
 
                                     </tr>
                                     <tr>
@@ -306,7 +309,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                         <td>
                                             <select class="form-control" name="vaccinationType" id="vaccinationType" title="Please select the Type of Vaccination" onchange="addNewVaccinationType();">
                                                 <option value=''> -- Select -- </option>
-                                                <option value='jansen & jansen' <?php echo ($covid19Info['vaccination_type'] == 'jansen & jansen') ? "selected='selected'" : ""; ?>> JANSEN & JANSEN </option>
+                                                <option value='johnson & johnson' <?php echo ($covid19Info['vaccination_type'] == 'johnson & johnson') ? "selected='selected'" : ""; ?>> JOHNSON & JOHNSON </option>
                                                 <option value='astrazeneca' <?php echo ($covid19Info['vaccination_type'] == 'astrazeneca') ? "selected='selected'" : ""; ?>> ASTRAZENECA </option>
                                                 <option value='sinopham' <?php echo ($covid19Info['vaccination_type'] == 'sinopham') ? "selected='selected'" : ""; ?>> SINOPHAM </option>
                                                 <option value='pfizer' <?php echo ($covid19Info['vaccination_type'] == 'pfizer') ? "selected='selected'" : ""; ?>> PFIZER </option>
@@ -367,19 +370,12 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                 <?php echo $general->generateSelectOptions($specimenTypeResult, $covid19Info['specimen_type']); ?>
                                             </select>
                                         </td>
-                                        <th scope="row"><label for="specimenTakenBeforeAntibiotics">Specimen Taken Before Antibiotics</label></th>
-                                        <td>
-                                            <select class="form-control" name="specimenTakenBeforeAntibiotics" id="specimenTakenBeforeAntibiotics" title="Please select the Options">
-                                                <option value=''> -- Select -- </option>
-                                                <option value='yes' <?php echo (isset($covid19Info['specimen_taken_before_antibiotics']) && $covid19Info['specimen_taken_before_antibiotics'] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
-                                                <option value='no' <?php echo (isset($covid19Info['specimen_taken_before_antibiotics']) && $covid19Info['specimen_taken_before_antibiotics'] == 'no') ? "selected='selected'" : ""; ?>> No </option>
-                                                <option value='unknown' <?php echo (isset($covid19Info['specimen_taken_before_antibiotics']) && $covid19Info['specimen_taken_before_antibiotics'] == 'unknown') ? "selected='selected'" : ""; ?>> Unknown </option>
-                                            </select>
-                                        </td>
+                                        <th scope="row"></th>
+                                        <td></td>
 
                                     </tr>
                                     <tr>
-                                        <th scope="row"><label for="testNumber">Test Number</label></th>
+                                        <th scope="row"><label for="testNumber">Number of Times Tested”</label></th>
                                         <td>
                                             <select class="form-control" name="testNumber" id="testNumber" title="Prélévement" style="width:100%;">
                                                 <option value="">--Select--</option>
@@ -978,7 +974,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
         });
 
         $('#patientProvince').select2({
-            placeholder: "Select Case State"
+            placeholder: "Select Case Region"
         });
 
         $('#facilityId').select2({
@@ -1031,41 +1027,33 @@ $maxNumberOfDigits = $arr['max_phone_length'];
         <?php if ($kitShow) { ?>
             $('.kitlabels').show();
         <?php } ?>
-     // Apply validation to all input fields with class 'phone-number'
-    $('.phone-number').on('blur', function () {
-          const phoneNumber = $(this).val();
-          const countryCode = "<?php echo $countryCode; ?>"
-          const minDigits = <?php echo $minNumberOfDigits; ?>;
-          const maxDigits = <?php echo $maxNumberOfDigits; ?>;
+        // Apply validation to all input fields with class 'phone-number'
+        $('.phone-number').on('blur', function() {
+            const phoneNumber = $(this).val();
+            if (phoneNumber == "") {
+                return;
+            } else if (phoneNumber == "<?php echo $countryCode; ?>") {
+                $(this).val("")
+                return;
+            }
+            const countryCode = "<?= $countryCode ?? null; ?>"
+            const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
+            const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
 
-          if (!validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
-            alert('Invalid phone number. Please enter with proper country code minimun length of <?php echo $minNumberOfDigits; ?> & maximum length of <?php echo $maxNumberOfDigits; ?>');
-          }
-          });
+            if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
+                alert('Invalid phone number. Please enter with proper country code minimum length of ' + minDigits + ' & maximum length of ' + maxDigits);
+            }
+        });
 
-          $('.phone-number').on('focus', function () {
-               if($(this).val()=="")
-                    $(this).val("<?php echo $countryCode; ?>");
-          });
+        $('.phone-number').on('focus', function() {
+            if ($(this).val() == "") {
+                $(this).val("<?php echo $countryCode ?? null; ?>")
+            };
+        });
 
 
     });
 
-        function validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits) {
-               // Remove all non-numeric characters from the phone number
-               const numericPhoneNumber = phoneNumber.replace(/\D/g, '');
-
-               // Check if the phone number starts with the country code
-               if (!phoneNumber.startsWith(countryCode)) {
-                    return false;
-               }
-               // Check the length of the phone number
-               const lengthWithoutCountryCode = numericPhoneNumber.length - countryCode.replace(/\D/g, '').length;
-               if (lengthWithoutCountryCode < minDigits || lengthWithoutCountryCode > maxDigits) {
-                    return false;
-               }
-               return true;
-        }
 
 
     function addTestRow() {
