@@ -344,9 +344,9 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row" class="labels">Age (months) breastfeeding stopped :<span class="mandatory">*</span></th>
+                                        <th scope="row" class="labels">Age (months) breastfeeding stopped :</th>
                                         <td>
-                                            <input type="number" class="form-control isRequired" style="max-width:200px;display:inline;" placeholder="Age (months) breastfeeding stopped" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" />
+                                            <input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="Age (months) breastfeeding stopped" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" />
                                         </td>
 
                                         <th scope="row" class="labels">Type of Test :<span class="mandatory">*</span>

@@ -205,7 +205,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 								</div>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
-										<th scope="row"><label for="patientId">Unique ART Number </label></th>
+										<th scope="row"><label for="patientId">TB Registration Unique ID </label></th>
 										<td>
 											<input type="text" value="<?php echo $tbInfo['patient_id']; ?>" class="form-control" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
 										</td>
@@ -215,7 +215,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										</td>
 									</tr>
 									<tr>
-										<th scope="row"><label for="lastName">Sur name </label></th>
+										<th scope="row"><label for="lastName">Surname </label></th>
 										<td>
 											<input type="text" value="<?php echo $tbInfo['patient_surname']; ?>" class="form-control " id="lastName" name="lastName" placeholder="Last name" title="Please enter Last name" style="width:100%;" onchange="" />
 										</td>
@@ -325,7 +325,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 											</select>
 											<input type="text" id="sampleTypeOther" name="sampleTypeOther" placeholder="Enter sample type of others" title="Please enter the sample type if others" style="display: none;" />
 										</td>
-										<th scope="row">
+										<!-- <th scope="row">
 											<label class="label-control" for="testNumber">Specimen Number</label>
 										</th>
 										<td>
@@ -336,7 +336,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													echo '<option value="' . $element . '"' . $selected . '>' . $element . '</option>';
 												} ?>
 											</select>
-										</td>
+										</td> -->
 									</tr>
 									<tr>
 										<th scope="row">

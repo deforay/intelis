@@ -178,7 +178,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										</td>
 									</tr>
 									<tr>
-										<th scope="row"><label for="lastName">Sur name </label></th>
+										<th scope="row"><label for="lastName">Surname </label></th>
 										<td>
 											<input type="text" class="form-control " id="lastName" name="lastName" placeholder="Last name" title="Please enter Last name" style="width:100%;" onchange="" />
 										</td>

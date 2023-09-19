@@ -194,7 +194,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 								</div>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
-										<th scope="row"><label for="patientId">Unique ART Number<span class="mandatory">*</span></label></th>
+										<th scope="row"><label for="patientId">TB Registration Unique ID<span class="mandatory">*</span></label></th>
 										<td>
 											<input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
 										</td>
@@ -204,7 +204,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 										</td>
 									</tr>
 									<tr>
-										<th scope="row"><label for="lastName">Sur name </label></th>
+										<th scope="row"><label for="lastName">Surname </label></th>
 										<td>
 											<input type="text" class="form-control " id="lastName" name="lastName" placeholder="Last name" title="Please enter Last name" style="width:100%;" onchange="" />
 										</td>
@@ -358,7 +358,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 										</td>
 									</tr>
 									<tr>
-										<th scope="row">
+										<!-- <th scope="row">
 											<label class="label-control" for="testNumber">Specimen Number</label>
 										</th>
 										<td>
@@ -368,7 +368,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 													echo '<option value="' . $element . '">' . $element . '</option>';
 												} ?>
 											</select>
-										</td>
+										</td> -->
 										<th scope="row">
 											<label class="label-control" for="testTypeRequested">Test(s) requested <span class="mandatory">*</span></label>
 										</th>
@@ -391,26 +391,8 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 									</tr>
 									<tr>
 										<th scope="row">
-											<label class="label-control" for="testTypeRequested">
-												Number of sputum samples sent with this form<span class="mandatory">*</span>
-											</label>
-										</th>
-										<td>
-											<input type="text" class="form-control forceNumeric isRequired" id="numberOfSputumSamples" name="numberOfSputumSamples" placeholder="Enter Number Of Sputum Samples" title="Please enter the Number Of Sputum Samples" />
-										</td>
-										<th scope="row">
-											<label class="label-control" for="testTypeRequested">
-												Date of collection of first sputum samples<span class="mandatory">*</span>
-											</label>
-										</th>
-										<td>
-											<input type="text" class="form-control isRequired" id="firstSputumSamplesCollectionDate" name="firstSputumSamplesCollectionDate" placeholder="Enter the Collection Of First Sputum Samples" title="Please enter the collection Of First Sputum Samples" style="width:100%;" />
-										</td>
-									</tr>
-									<tr>
-										<th scope="row">
 											<label class="label-control">
-												Name of signature of person requesting examination<span class="mandatory">*</span>
+												Name or signature of person requesting examination<span class="mandatory">*</span>
 											</label>
 										</th>
 										<td>
