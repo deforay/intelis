@@ -156,9 +156,10 @@ if (!empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes
           $vlQueryInfo['patient_last_name'] = $general->crypto('decrypt' ,$patientLastName, $key);
 	}
  }
-
-// $patientFullName = trim($patientFirstName ?? ' ' . $patientMiddleName ?? ' ' . $patientLastName ?? '');
-
+else
+{
+     $patientFullName = trim($patientFirstName ?? ' ' . $patientMiddleName ?? ' ' . $patientLastName ?? '');
+}
 
 ?>
 <style>
