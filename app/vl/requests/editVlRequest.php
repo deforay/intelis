@@ -141,23 +141,21 @@ $fundingSourceList = $general->getFundingSources();
 $implementingPartnerList = $general->getImplementationPartners();
 
 
-if (!empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes'){
-	$key = base64_decode('zACCxM1c1AfRevJ/Zpk+PKXpO+ebWjNSgCRa5/Uheh4=');
-	$vlQueryInfo['patient_art_no'] = $general->crypto('decrypt' ,$vlQueryInfo['patient_art_no'], $key);
-	if($patientFirstName!=''){
-          $vlQueryInfo['patient_first_name'] = $general->crypto('decrypt' ,$patientFirstName, $key);
-	}
+if (!empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes') {
+     $key = base64_decode('zACCxM1c1AfRevJ/Zpk+PKXpO+ebWjNSgCRa5/Uheh4=');
+     $vlQueryInfo['patient_art_no'] = $general->crypto('decrypt', $vlQueryInfo['patient_art_no'], $key);
+     if ($patientFirstName != '') {
+          $vlQueryInfo['patient_first_name'] = $general->crypto('decrypt', $patientFirstName, $key);
+     }
 
-	if($patientMiddleName!=''){
-          $vlQueryInfo['patient_middle_name'] = $general->crypto('decrypt' ,$patientMiddleName, $key);
-	}
-  
-	if($patientLastName!=''){
-          $vlQueryInfo['patient_last_name'] = $general->crypto('decrypt' ,$patientLastName, $key);
-	}
- }
-else
-{
+     if ($patientMiddleName != '') {
+          $vlQueryInfo['patient_middle_name'] = $general->crypto('decrypt', $patientMiddleName, $key);
+     }
+
+     if ($patientLastName != '') {
+          $vlQueryInfo['patient_last_name'] = $general->crypto('decrypt', $patientLastName, $key);
+     }
+} else {
      $patientFullName = trim($patientFirstName ?? ' ' . $patientMiddleName ?? ' ' . $patientLastName ?? '');
 }
 
