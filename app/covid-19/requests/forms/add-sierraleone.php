@@ -913,10 +913,13 @@ $maxNumberOfDigits = $arr['max_phone_length'];
     function generateSampleCode() {
         var pName = $("#province").val();
         var sDate = $("#sampleCollectionDate").val();
+        var provinceCode = $("#province").find(":selected").attr("data-code");
+        $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
+
         if (pName != '' && sDate != '') {
             $.post("/covid-19/requests/generateSampleCode.php", {
                     sampleCollectionDate: sDate,
-                    provinceCode: pName
+                    provinceCode: provinceCode
                 },
                 function(data) {
                     var sCodeKey = JSON.parse(data);
@@ -985,6 +988,10 @@ $maxNumberOfDigits = $arr['max_phone_length'];
         if ($('#isResultAuthorized').val() != "yes") {
             $('#authorizedBy,#authorizedOn').removeClass('isRequired');
         }
+        var provinceCode = $("#province").find(":selected").attr("data-code");
+        var provinceId = $("#province").find(":selected").attr("data-province-id");
+        $("#provinceId").val(provinceId);
+
         flag = deforayValidator.init({
             formId: 'addCovid19RequestForm'
         });
@@ -995,7 +1002,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
             <?php
             if ($arr['covid19_sample_code'] == 'auto' || $arr['covid19_sample_code'] == 'YY' || $arr['covid19_sample_code'] == 'MMYY') {
             ?>
-                insertSampleCode('addCovid19RequestForm', 'covid19SampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 3, 'sampleCollectionDate');
+                insertSampleCode('addCovid19RequestForm', 'covid19SampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 3, 'sampleCollectionDate',provinceCode,provinceId);
             <?php
             } else {
             ?>
@@ -1134,7 +1141,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
         <?php } ?>
 
         // Apply validation to all input fields with class 'phone-number'
-        $('.phone-number').on('blur', function() {
+        $('.phone-number').on('change', function() {
             const phoneNumber = $(this).val();
             if (phoneNumber == "") {
                 return;

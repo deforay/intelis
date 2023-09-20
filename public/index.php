@@ -19,7 +19,6 @@ use function Laminas\Stratigility\middleware;
 // Create a server request object from the globals
 $request = ServerRequestFactory::fromGlobals();
 
-
 // Instantiate the middleware pipeline
 $middlewarePipe = new MiddlewarePipe();
 

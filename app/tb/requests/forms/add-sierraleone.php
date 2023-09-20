@@ -64,6 +64,9 @@ $pQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_d
 
 $pdResult = $db->query($pQuery);
 
+$province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
+
+
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
 $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+");
 
@@ -693,10 +696,13 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 	function generateSampleCode() {
 		var pName = $("#province").val();
 		var sDate = $("#sampleCollectionDate").val();
+		var provinceCode = $("#province").find(":selected").attr("data-code");
+          $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
+
 		if (pName != '' && sDate != '') {
 			$.post("/tb/requests/generate-sample-code.php", {
 					sampleCollectionDate: sDate,
-					provinceCode: pName
+					provinceCode: provinceCode
 				},
 				function(data) {
 					var sCodeKey = JSON.parse(data);
@@ -765,6 +771,12 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 		if ($('#isResultAuthorized').val() != "yes") {
 			$('#authorizedBy,#authorizedOn').removeClass('isRequired');
 		}
+
+		var provinceCode = $("#province").find(":selected").attr("data-code");
+        var provinceId = $("#province").find(":selected").attr("data-province-id");
+        $("#provinceId").val(provinceId);
+
+
 		flag = deforayValidator.init({
 			formId: 'addTbRequestForm'
 		});
@@ -774,7 +786,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 			<?php
 			if ($arr['tb_sample_code'] == 'auto' || $arr['tb_sample_code'] == 'YY' || $arr['tb_sample_code'] == 'MMYY') {
 			?>
-				insertSampleCode('addTbRequestForm', 'tbSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 3, 'sampleCollectionDate');
+				insertSampleCode('addTbRequestForm', 'tbSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 3, 'sampleCollectionDate',provinceCode,provinceId);
 			<?php
 			} else {
 			?>
@@ -897,7 +909,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 			}
 		});
 		// Apply validation to all input fields with class 'phone-number'
-		$('.phone-number').on('blur', function() {
+		$('.phone-number').on('change', function() {
 			const phoneNumber = $(this).val();
 			if (phoneNumber == "") {
 				return;
