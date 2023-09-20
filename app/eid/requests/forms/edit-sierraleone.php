@@ -930,7 +930,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
         });
         getMachine($("#eidPlatform").val());
         // Apply validation to all input fields with class 'phone-number'
-        $('.phone-number').on('blur', function() {
+        $('.phone-number').on('change', function() {
             const phoneNumber = $(this).val();
             if (phoneNumber == "") {
                 return;

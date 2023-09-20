@@ -672,10 +672,13 @@ $maxNumberOfDigits = $arr['max_phone_length'];
     function generateSampleCode() {
         var pName = $("#province").val();
         var sDate = $("#sampleCollectionDate").val();
+        var provinceCode = $("#province").find(":selected").attr("data-code");
+          $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
+
         if (pName != '' && sDate != '') {
             $.post("/eid/requests/generateSampleCode.php", {
                     sampleCollectionDate: sDate,
-                    pName: pName
+                    provinceCode : provinceCode
                 },
                 function(data) {
                     var sCodeKey = JSON.parse(data);
@@ -741,9 +744,14 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 
 
     function validateNow() {
+        var provinceCode = $("#province").find(":selected").attr("data-code");
+        var provinceId = $("#province").find(":selected").attr("data-province-id");
+        $("#provinceId").val(provinceId);
+
         flag = deforayValidator.init({
             formId: 'addEIDRequestForm'
         });
+        
 
         if (flag) {
             // $('.btn-disabled').attr('disabled', 'yes');
@@ -752,7 +760,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
             <?php
             if ($arr['eid_sample_code'] == 'auto' || $arr['eid_sample_code'] == 'YY' || $arr['eid_sample_code'] == 'MMYY') {
             ?>
-                insertSampleCode('addEIDRequestForm', 'eidSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 3, 'sampleCollectionDate');
+                insertSampleCode('addEIDRequestForm', 'eidSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 3, 'sampleCollectionDate',provinceCode, provinceId);
             <?php
             } else {
             ?>
@@ -917,7 +925,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
         });
 
         // Apply validation to all input fields with class 'phone-number'
-        $('.phone-number').on('blur', function() {
+        $('.phone-number').on('change', function() {
             const phoneNumber = $(this).val();
             if (phoneNumber == "") {
                 return;

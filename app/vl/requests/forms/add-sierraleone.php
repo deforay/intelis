@@ -1153,7 +1153,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 
           // Apply validation to all input fields with class 'phone-number'
-          $('.phone-number').on('blur', function() {
+          $('.phone-number').on('change', function() {
                const phoneNumber = $(this).val();
                if (phoneNumber == "") {
                     return;
@@ -1239,15 +1239,18 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      function generateSampleCode() {
           var pName = $("#province").val();
           var sDate = $("#sampleCollectionDate").val();
+          var provinceCode = $("#province").find(":selected").attr("data-code");
           $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
+
           if (pName != '' && sDate != '') {
                $.post("/vl/requests/generateSampleCode.php", {
-                         sampleCollectionDate: sDate
+                         sampleCollectionDate: sDate,
+                         provinceCode : provinceCode
                     },
                     function(data) {
                          var sCodeKey = JSON.parse(data);
                          $("#sampleCode").val(sCodeKey.sampleCode);
-                         $("#sampleCodeInText").html(sCodeKey.sampleCode);
+                         $("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
                          $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
                          $("#sampleCodeKey").val(sCodeKey.maxId);
                          checkSampleNameValidation('form_vl', '<?php echo $sampleCode; ?>', 'sampleCode', null, 'This sample number already exists.Try another number', null)
@@ -1473,9 +1476,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
      function validateNow() {
           var format = '<?php echo $arr['sample_code']; ?>';
-          var sCodeLentgh = $("#sampleCode").val();
+          var sCodeLength = $("#sampleCode").val();
           var minLength = '<?php echo $arr['min_length']; ?>';
-          if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
+          var provinceCode = $("#province").find(":selected").attr("data-code");
+          var provinceId = $("#province").find(":selected").attr("data-province-id");
+          $("#provinceId").val(provinceId);
+
+
+          if ((format == 'alphanumeric' || format == 'numeric') && sCodeLength.length < minLength && sCodeLength != '') {
                alert("Sample id length must be a minimum length of " + minLength + " characters");
                return false;
           }
@@ -1492,7 +1500,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $(".btn-disabled").prop("onclick", null).off("click");
                $.blockUI();
                <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
-                    insertSampleCode('vlRequestFormSs', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', '1', 'sampleCollectionDate');
+                    insertSampleCode('vlRequestFormSs', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', '1', 'sampleCollectionDate',provinceCode,provinceId);
                <?php } else { ?>
                     document.getElementById('vlRequestFormSs').submit();
                <?php } ?>
@@ -1501,9 +1509,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
      function validateSaveNow() {
           var format = '<?php echo $arr['sample_code']; ?>';
-          var sCodeLentgh = $("#sampleCode").val();
+          var sCodeLength = $("#sampleCode").val();
           var minLength = '<?php echo $arr['min_length']; ?>';
-          if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
+          var provinceCode = $("#province").find(":selected").attr("data-code");
+          var provinceId = $("#province").find(":selected").attr("data-province-id");
+          $("#provinceId").val(provinceId);
+
+          if ((format == 'alphanumeric' || format == 'numeric') && sCodeLength.length < minLength && sCodeLength != '') {
                alert("Sample id length must be a minimum length of " + minLength + " characters");
                return false;
           }
@@ -1519,7 +1531,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $(".btn-disabled").prop("onclick", null).off("click");
                $.blockUI();
                <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
-                    insertSampleCode('vlRequestFormSs', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 1, 'sampleCollectionDate');
+                    insertSampleCode('vlRequestFormSs', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 1, 'sampleCollectionDate',provinceCode,provinceId);
                <?php } else { ?>
                     document.getElementById('vlRequestFormSs').submit();
                <?php } ?>
