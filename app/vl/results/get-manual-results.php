@@ -303,7 +303,7 @@ foreach ($rResult as $aRow) {
      $patientMname = $general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_art_no']);
      $patientLname = $general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_art_no']);
      if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-          $key = base64_decode('zACCxM1c1AfRevJ/Zpk+PKXpO+ebWjNSgCRa5/Uheh4=');
+          $key = base64_decode($general->getGlobalConfig('key'));
           $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
           $patientFname = $general->crypto('decrypt', $patientFname, $key);
           $patientMname = $general->crypto('decrypt', $patientMname, $key);

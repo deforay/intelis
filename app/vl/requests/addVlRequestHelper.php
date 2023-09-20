@@ -330,7 +330,7 @@ try {
 
 
     if ($_POST['syncPatientIdentifiers'] === 'no') {
-        $key = base64_decode('zACCxM1c1AfRevJ/Zpk+PKXpO+ebWjNSgCRa5/Uheh4=');
+        $key = base64_decode($general->getGlobalConfig('key'));
         $encryptedPatientId = $general->crypto('encrypt', $vlData['patient_art_no'], $key);
         $encryptedPatientFirstName = $general->crypto('encrypt', $vlData['patient_first_name'], $key);
         $encryptedPatientMiddleName = $general->crypto('encrypt', $vlData['patient_middle_name'], $key);

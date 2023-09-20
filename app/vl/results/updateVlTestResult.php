@@ -223,7 +223,7 @@ if ($vlQueryInfo['patient_last_name'] != '') {
 }
 
 if (!empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes') {
-	$key = base64_decode('zACCxM1c1AfRevJ/Zpk+PKXpO+ebWjNSgCRa5/Uheh4=');
+	$key = base64_decode($general->getGlobalConfig('key'));
 	$vlQueryInfo['patient_art_no'] = $general->crypto('decrypt', $vlQueryInfo['patient_art_no'], $key);
 	if ($patientFirstName != '') {
 		$patientFirstName = $general->crypto('decrypt', $patientFirstName, $key);
