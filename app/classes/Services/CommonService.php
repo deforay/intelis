@@ -152,7 +152,7 @@ class CommonService
         });
     }
 
-    public function getDataByTableAndFields($table, $fields, $option = true, $condition = null)
+    public function getDataByTableAndFields($table, $fields, $option = true, $condition = null, $group = null)
     {
         if (!is_array($fields)) {
             $fields = [$fields];
@@ -162,7 +162,10 @@ class CommonService
         if ($condition) {
             $query .= " WHERE " . $condition;
         }
-
+        
+        if (!empty($group)) {
+            $query .= " GROUP BY " . $group;
+        }
         $results = $this->db->rawQuery($query);
         if ($option) {
             foreach ($results as $row) {

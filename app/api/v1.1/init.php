@@ -125,11 +125,15 @@ $data['nationalityList'] = $nationalityList;
 $data['labTechniciansList'] = $app->generateSelectOptions($labTechniciansList);
 $data['sampleStatusList'] = $app->generateSelectOptions($statusList);
 
-$rejectionReason = [];
 $modules = SYSTEM_CONFIG['modules'];
 
+$rejectionReasson = [];
 foreach ($modules as $module => $status) {
+    $rejectionResult = [];$rejectionTypeResult = [];$reasons[$module] = [];
     if ($status) {
+        if($module == 'common'){
+            continue;
+        }
         $module = ($module == 'generic-tests') ? 'generic' : $module;
 
         $condition = " rejection_reason_status ='active' ";
@@ -138,19 +142,22 @@ foreach ($modules as $module => $status) {
         }
         $rejectionTypeResult = $general->getDataByTableAndFields('r_' . $module . '_sample_rejection_reasons', array('rejection_type'), false, $condition, 'rejection_type');
         foreach ($rejectionTypeResult as $key => $type) {
-            $rejectionReason[$module][$key]['show'] = ucwords($type['rejection_type']);
+            $reasons[$module][$key]['show'] = ucwords($type['rejection_type']);
             $condition = " rejection_reason_status ='active' AND rejection_type LIKE '" . $type['rejection_type'] . "'";
             if ($updatedDateTime) {
                 $condition .= " AND updated_datetime >= '$updatedDateTime'";
             }
             $rejectionResult = $general->getDataByTableAndFields('r_' . $module . '_sample_rejection_reasons', array('rejection_reason_id', 'rejection_reason_name'), false, $condition);
             foreach ($rejectionResult as $subKey => $reject) {
-                $rejectionReason[$module][$key]['reasons'][$subKey]['value'] = $reject['rejection_reason_id'];
-                $rejectionReason[$module][$key]['reasons'][$subKey]['show'] = ($reject['rejection_reason_name']);
+                $reasons[$module][$key]['reasons'][$subKey]['value'] = $reject['rejection_reason_id'];
+                $reasons[$module][$key]['reasons'][$subKey]['show'] = ($reject['rejection_reason_name']);
             }
         }
     }
+    $rejectionReason[$module] = $reasons[$module];
 }
+// print_r($responseRejections);die;
+
 if (
     isset($applicationConfig['modules']['covid19'])
     && $applicationConfig['modules']['covid19'] === true
