@@ -98,7 +98,7 @@ try {
             vl.lab_id                                            as labId,
             vl.vl_test_platform                                  as testingPlatform,
             vl.sample_received_at_hub_datetime                   as sampleReceivedAtHubOn,
-            vl.sample_received_at_lab_datetime                as sampleReceivedDate,
+            vl.sample_received_at_lab_datetime                   as sampleReceivedDate,
             vl.sample_tested_datetime                            as sampleTestingDateAtLab,
             vl.sample_dispatched_datetime                        as sampleDispatchedOn,
             vl.result_dispatched_datetime                        as resultDispatchedOn,
