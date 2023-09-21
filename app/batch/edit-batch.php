@@ -13,30 +13,32 @@ require_once APPLICATION_PATH . '/header.php';
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 
+$testType = $_GET['type'] ?? 'vl';
+$genericTestType = base64_decode($_GET['testType']);
 $title = "Viral Load";
 $refTable = "form_vl";
 $refPrimaryColumn = "vl_sample_id";
-if (isset($_GET['type']) && $_GET['type'] == 'vl') {
+if (isset($testType) && $testType == 'vl') {
 	$title = "Viral Load";
 	$refTable = "form_vl";
 	$refPrimaryColumn = "vl_sample_id";
-} elseif (isset($_GET['type']) && $_GET['type'] == 'eid') {
+} elseif (isset($testType) && $testType == 'eid') {
 	$title = "Early Infant Diagnosis";
 	$refTable = "form_eid";
 	$refPrimaryColumn = "eid_id";
-} elseif (isset($_GET['type']) && $_GET['type'] == 'covid19') {
+} elseif (isset($testType) && $testType == 'covid19') {
 	$title = "Covid-19";
 	$refTable = "form_covid19";
 	$refPrimaryColumn = "covid19_id";
-} elseif (isset($_GET['type']) && $_GET['type'] == 'hepatitis') {
+} elseif (isset($testType) && $testType == 'hepatitis') {
 	$title = "Hepatitis";
 	$refTable = "form_hepatitis";
 	$refPrimaryColumn = "hepatitis_id";
-} elseif (isset($_GET['type']) && $_GET['type'] == 'tb') {
+} elseif (isset($testType) && $testType == 'tb') {
 	$title = "TB";
 	$refTable = "form_tb";
 	$refPrimaryColumn = "tb_id";
-} elseif (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
+} elseif (isset($testType) && $testType == 'generic-tests') {
 	$title = "Other Lab Tests";
 	$refTable = "form_generic";
 	$refPrimaryColumn = "sample_id";
@@ -52,7 +54,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$healthFacilites = $facilitiesService->getHealthFacilities($_GET['type']);
+$healthFacilites = $facilitiesService->getHealthFacilities($testType);
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
 // Sanitized values from $request object
@@ -60,7 +62,6 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
-$testType = (isset($_GET['testType'])) ? base64_decode($_GET['testType']) : null;
 
 $batchQuery = "SELECT * from batch_details as b_d
                     LEFT JOIN instruments as i_c ON i_c.config_id=b_d.machine
@@ -81,9 +82,9 @@ $bQuery = "(SELECT vl.sample_code,vl.sample_batch_id,
                     AND vl.sample_code NOT LIKE ''
                     AND vl.sample_batch_id = ?";
 
-if (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
+/* if (isset($testType) && $testType == 'generic-tests') {
 	$bQuery .= " AND vl.test_type = ?";
-}
+} */
 
 $bQuery .= ") UNION
 
@@ -103,8 +104,8 @@ $bQuery .= ") UNION
                         AND (vl.result is NULL or vl.result = '')
                         AND vl.sample_code!=''
                         ORDER BY vl.last_modified_datetime ASC)";
-$result = $db->rawQuery($bQuery, [$id, $testType]);
-$testPlatformResult = $general->getTestingPlatforms($_GET['type']);
+$result = $db->rawQuery($bQuery, [$id]);
+$testPlatformResult = $general->getTestingPlatforms($testType);
 
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
@@ -246,12 +247,12 @@ $testPlatformResult = $general->getTestingPlatforms($_GET['type']);
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">
-						<input type="hidden" name="type" id="type" value="<?php echo $_GET['type']; ?>" />
+						<input type="hidden" name="type" id="type" value="<?php echo $testType; ?>" />
 						<input type="hidden" name="batchId" id="batchId" value="<?php echo $batchInfo[0]['batch_id']; ?>" />
 						<input type="hidden" name="selectedSample" id="selectedSample" />
 						<input type="hidden" name="positions" id="positions" value="<?php echo $batchInfo[0]['position_type']; ?>" />
 						<a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
-						<a href="batches.php?type=<?php echo $_GET['type']; ?>" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
+						<a href="batches.php?type=<?php echo $testType; ?>" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
 					</div>
 					<!-- /.box-footer -->
 				</form>
@@ -407,9 +408,9 @@ $testPlatformResult = $general->getTestingPlatforms($_GET['type']);
 		$.post("get-samples-batch.php", {
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
 				sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
-				type: '<?php echo $_GET['type']; ?>',
+				type: '<?php echo $testType; ?>',
 				batchId: $("#batchId").val(),
-				testType: '<?php echo $testType; ?>',
+				genericTestType: '<?php echo $genericTestType; ?>',
 				fName: fName
 			},
 			function(data) {

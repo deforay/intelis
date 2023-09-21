@@ -58,8 +58,8 @@ if (is_array($_POST['fName']) && !empty($_POST['fName'])) {
     $swhere[] = $where[] = " vl.facility_id IN (" . implode(',', $_POST['fName']) . ")";
 }
 
-if (isset($_POST['testType']) && $_POST['testType'] != "") {
-    $swhere[] = $where[] = " vl.test_type = '" . $_POST['testType'] . "'";
+if (isset($_POST['genericTestType']) && $_POST['genericTestType'] != "") {
+    $swhere[] = $where[] = " vl.test_type = '" . $_POST['genericTestType'] . "'";
 }
 
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {

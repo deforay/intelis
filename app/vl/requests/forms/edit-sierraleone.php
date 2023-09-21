@@ -1125,8 +1125,9 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 		var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
 		var collectDate = $("#sampleCollectionDate").toString();
 		var dispatchDate = $("#sampleDispatchedDate").toString();
-		if ($("#sampleDispatchedDate").val() == "" || (collectDate >= dispatchDate))
+		if (collectDate < dispatchDate) {
 			$("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
+		}
 
 		$('#sampleDispatchedDate').datetimepicker({
 			changeMonth: true,

@@ -755,6 +755,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             minDate: minDate,
+            maxDate: "Today",
             startDate: minDate,
         });
         $('#labId').select2({

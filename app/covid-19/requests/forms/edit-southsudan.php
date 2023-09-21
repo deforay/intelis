@@ -859,6 +859,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
             dateFormat: 'dd-M-yy',
             timeFormat: "HH:mm",
             minDate: minDate,
+            maxDate: "Today",
             startDate: minDate,
         });
 
