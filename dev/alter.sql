@@ -5098,3 +5098,6 @@ ALTER TABLE `form_generic` ADD `result_printed_on_lis_datetime` DATETIME NULL DE
 
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Default Phone Prefix', 'default_phone_prefix', NULL, 'general', 'no', NULL, NULL, 'active'), ('Minimum Length of Phone Number', 'min_phone_length', NULL, 'general', 'no', NULL, NULL, 'active');
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Maximum Length of Phone Number', 'max_phone_length', NULL, 'general', 'no', NULL, NULL, 'active');
+
+-- Amit 21-Sep-2023 version 5.2.4
+UPDATE `system_config` SET `value` = '5.2.4' WHERE `system_config`.`name` = 'sc_version';
