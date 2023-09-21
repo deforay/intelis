@@ -1135,12 +1135,12 @@ $reasonForChange = $reasonForChangeArr[1];
 				var dt2 = $('#sampleDispatchedDate');
 				var startDate = $(this).datetimepicker('getDate');
 				var minDate = $(this).datetimepicker('getDate');
-				dt2.datetimepicker('setDate', minDate);
+				//dt2.datetimepicker('setDate', minDate);
 				startDate.setDate(startDate.getDate() + 1000000);
 				dt2.datetimepicker('option', 'maxDate', "Today");
 				dt2.datetimepicker('option', 'minDate', minDate);
 				dt2.datetimepicker('option', 'minDateTime', minDate);
-				dt2.val($(this).val());
+				//dt2.val($(this).val());
 			}
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();

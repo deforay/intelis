@@ -697,7 +697,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 		var pName = $("#province").val();
 		var sDate = $("#sampleCollectionDate").val();
 		var provinceCode = $("#province").find(":selected").attr("data-code");
-          $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
+		$("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
 
 		if (pName != '' && sDate != '') {
 			$.post("/tb/requests/generate-sample-code.php", {
@@ -773,8 +773,8 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 		}
 
 		var provinceCode = $("#province").find(":selected").attr("data-code");
-        var provinceId = $("#province").find(":selected").attr("data-province-id");
-        $("#provinceId").val(provinceId);
+		var provinceId = $("#province").find(":selected").attr("data-province-id");
+		$("#provinceId").val(provinceId);
 
 
 		flag = deforayValidator.init({
@@ -786,7 +786,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 			<?php
 			if ($arr['tb_sample_code'] == 'auto' || $arr['tb_sample_code'] == 'YY' || $arr['tb_sample_code'] == 'MMYY') {
 			?>
-				insertSampleCode('addTbRequestForm', 'tbSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 3, 'sampleCollectionDate',provinceCode,provinceId);
+				insertSampleCode('addTbRequestForm', 'tbSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 3, 'sampleCollectionDate', provinceCode, provinceId);
 			<?php
 			} else {
 			?>
@@ -809,12 +809,12 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 				var dt2 = $('#sampleDispatchedDate');
 				var startDate = $(this).datetimepicker('getDate');
 				var minDate = $(this).datetimepicker('getDate');
-				dt2.datetimepicker('setDate', minDate);
+				//dt2.datetimepicker('setDate', minDate);
 				startDate.setDate(startDate.getDate() + 1000000);
 				dt2.datetimepicker('option', 'maxDate', "+1Y");
 				dt2.datetimepicker('option', 'minDate', minDate);
 				dt2.datetimepicker('option', 'minDateTime', minDate);
-				dt2.val($(this).val());
+				//dt2.val($(this).val());
 			}
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();

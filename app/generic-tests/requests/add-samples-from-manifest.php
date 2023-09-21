@@ -315,7 +315,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				var dt2 = $('#sampleDispatchedDate');
 				var startDate = $(this).datetimepicker('getDate');
 				var minDate = $(this).datetimepicker('getDate');
-				//dt2.datetimepicker('setDate', minDate);
+				////dt2.datetimepicker('setDate', minDate);
 				startDate.setDate(startDate.getDate() + 1000000);
 				dt2.datetimepicker('option', 'maxDate', "Today");
 				dt2.datetimepicker('option', 'minDate', minDate);

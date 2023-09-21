@@ -1002,7 +1002,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
             <?php
             if ($arr['covid19_sample_code'] == 'auto' || $arr['covid19_sample_code'] == 'YY' || $arr['covid19_sample_code'] == 'MMYY') {
             ?>
-                insertSampleCode('addCovid19RequestForm', 'covid19SampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 3, 'sampleCollectionDate',provinceCode,provinceId);
+                insertSampleCode('addCovid19RequestForm', 'covid19SampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 3, 'sampleCollectionDate', provinceCode, provinceId);
             <?php
             } else {
             ?>
@@ -1066,12 +1066,12 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                 var dt2 = $('#sampleDispatchedDate');
                 var startDate = $(this).datetimepicker('getDate');
                 var minDate = $(this).datetimepicker('getDate');
-                dt2.datetimepicker('setDate', minDate);
+                //dt2.datetimepicker('setDate', minDate);
                 startDate.setDate(startDate.getDate() + 1000000);
                 dt2.datetimepicker('option', 'maxDate', "Today");
                 dt2.datetimepicker('option', 'minDate', minDate);
                 dt2.datetimepicker('option', 'minDateTime', minDate);
-                dt2.val($(this).val());
+                //dt2.val($(this).val());
             }
         }).click(function() {
             $('.ui-datepicker-calendar').show();
