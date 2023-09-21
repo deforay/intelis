@@ -769,6 +769,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $('#approvedBy').select2({
                placeholder: "Select Approved By"
           });
+          $('#artRegimen').select2({
+			placeholder: "Select ART Regimen"
+		});
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {

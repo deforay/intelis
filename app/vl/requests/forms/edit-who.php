@@ -1004,6 +1004,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		$('#province').select2({
 			placeholder: "Province"
 		});
+		$('#artRegimen').select2({
+			placeholder: "Select ART Regimen"
+		});
 		//getAge();
 
 		getfacilityProvinceDetails($("#fName").val());

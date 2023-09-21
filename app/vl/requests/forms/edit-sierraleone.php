@@ -1170,6 +1170,9 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 		$('#province').select2({
 			placeholder: "Province"
 		});
+		$('#artRegimen').select2({
+			placeholder: "Select ART Regimen"
+		});
 		//getAge();
 
 		getfacilityProvinceDetails($("#fName").val());
