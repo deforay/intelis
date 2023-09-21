@@ -768,6 +768,10 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                placeholder: "Select Approved By"
           });
 
+          $('#artRegimen').select2({
+			placeholder: "Select ART Regimen"
+		});
+
           getfacilityProvinceDetails($("#fName").val());
 
           getAge();
