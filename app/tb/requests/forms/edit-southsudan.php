@@ -758,6 +758,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 			dateFormat: 'dd-M-yy',
 			timeFormat: "HH:mm",
 			minDate: minDate,
+			maxDate: "Today",
 			startDate: minDate,
 		});
 

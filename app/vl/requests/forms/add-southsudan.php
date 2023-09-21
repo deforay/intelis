@@ -888,6 +888,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $('#province').select2({
                placeholder: "Province"
           });
+          $('#artRegimen').select2({
+			placeholder: "Select ART Regimen"
+		});
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {

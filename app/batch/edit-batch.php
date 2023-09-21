@@ -14,6 +14,7 @@ $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 
 $testType = $_GET['type'] ?? 'vl';
+$genericTestType = base64_decode($_GET['testType']);
 $title = "Viral Load";
 $refTable = "form_vl";
 $refPrimaryColumn = "vl_sample_id";
@@ -409,7 +410,7 @@ $testPlatformResult = $general->getTestingPlatforms($testType);
 				sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
 				type: '<?php echo $testType; ?>',
 				batchId: $("#batchId").val(),
-				testType: '<?php echo $testType; ?>',
+				genericTestType: '<?php echo $genericTestType; ?>',
 				fName: fName
 			},
 			function(data) {
