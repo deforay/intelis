@@ -21,6 +21,7 @@ use App\Services\FacilitiesService;
 use App\Services\InstrumentsService;
 use App\Services\TestResultsService;
 use App\Helpers\PdfConcatenateHelper;
+use App\Helpers\BatchPdfHelper;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 use App\Services\GeoLocationsService;
@@ -139,7 +140,8 @@ $builder->addDefinitions([
     ErrorResponseGenerator::class => DI\create(ErrorResponseGenerator::class)
         ->constructor($debugMode),
     PdfConcatenateHelper::class => DI\create(PdfConcatenateHelper::class),
-    PdfWatermarkHelper::class => DI\create(PdfWatermarkHelper::class)
+    PdfWatermarkHelper::class => DI\create(PdfWatermarkHelper::class),
+    BatchPdfHelper::class => DI\create(BatchPdfHelper::class)
 ]);
 
 

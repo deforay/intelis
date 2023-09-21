@@ -162,7 +162,7 @@ class CommonService
         if ($condition) {
             $query .= " WHERE " . $condition;
         }
-        
+
         if (!empty($group)) {
             $query .= " GROUP BY " . $group;
         }
@@ -750,7 +750,7 @@ class CommonService
     public function getBarcodeImageContent($code, $type = 'C39', $width = 2, $height = 30, $color = array(0, 0, 0)): string
     {
         $barcodeobj = new TCPDFBarcode($code, $type);
-        return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, $height, $color));
+        return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, 15, $color));
     }
 
     public function get2DBarcodeImageContent($code, $type = 'QRCODE', $width = 2, $height = 30, $color = array(0, 0, 0))
