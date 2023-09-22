@@ -31,7 +31,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
 	$refTable = "form_generic";
 	$refPrimaryColumn = "sample_id";
 }
-$_GET['type'] = ($_GET['type'] == 'covid19') ? 'covid-19' : $_GET['type'];
+$testType = ($_GET['type'] == 'covid19') ? 'covid-19' : $_GET['type'];
 
 $title = _translate($title . " | Add Batch Position");
 require_once APPLICATION_PATH . '/header.php';
@@ -62,18 +62,18 @@ if (empty($batchInfo)) {
 }
 //Get batch controls order
 $newJsonToArray = [];
-if (isset($configControl[$_GET['type']]['noHouseCtrl']) && trim($configControl[$_GET['type']]['noHouseCtrl']) != '' && $configControl[$_GET['type']]['noHouseCtrl'] > 0) {
-	foreach (range(1, $configControl[$_GET['type']]['noHouseCtrl']) as $h) {
+if (isset($configControl[$testType]['noHouseCtrl']) && trim($configControl[$testType]['noHouseCtrl']) != '' && $configControl[$testType]['noHouseCtrl'] > 0) {
+	foreach (range(1, $configControl[$testType]['noHouseCtrl']) as $h) {
 		$newJsonToArray[] = "no_of_in_house_controls_" . $h;
 	}
 }
-if (isset($configControl[$_GET['type']]['noManufacturerCtrl']) && trim($configControl[$_GET['type']]['noManufacturerCtrl']) != '' && $configControl[$_GET['type']]['noManufacturerCtrl'] > 0) {
-	foreach (range(1, $configControl[$_GET['type']]['noManufacturerCtrl']) as $m) {
+if (isset($configControl[$testType]['noManufacturerCtrl']) && trim($configControl[$testType]['noManufacturerCtrl']) != '' && $configControl[$testType]['noManufacturerCtrl'] > 0) {
+	foreach (range(1, $configControl[$testType]['noManufacturerCtrl']) as $m) {
 		$newJsonToArray[] = "no_of_manufacturer_controls_" . $m;
 	}
 }
-if (isset($configControl[$_GET['type']]['noCalibrators']) && trim($configControl[$_GET['type']]['noCalibrators']) != '' && $configControl[$_GET['type']]['noCalibrators'] > 0) {
-	foreach (range(1, $configControl[$_GET['type']]['noCalibrators']) as $c) {
+if (isset($configControl[$testType]['noCalibrators']) && trim($configControl[$testType]['noCalibrators']) != '' && $configControl[$testType]['noCalibrators'] > 0) {
+	foreach (range(1, $configControl[$testType]['noCalibrators']) as $c) {
 		$newJsonToArray[] = "no_of_calibrators_" . $c;
 	}
 }
@@ -146,20 +146,20 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 		$newContent .= '<li class="ui-state-default" id="s_' . $remainSampleNewArray[$ns] . '">' . $label . '</li>';
 	}
 } else {
-	if (isset($configControl[$_GET['type']]['noHouseCtrl']) && trim($configControl[$_GET['type']]['noHouseCtrl']) != '' && $configControl[$_GET['type']]['noHouseCtrl'] > 0) {
-		foreach (range(1, $configControl[$_GET['type']]['noHouseCtrl']) as $h) {
+	if (isset($configControl[$testType]['noHouseCtrl']) && trim($configControl[$testType]['noHouseCtrl']) != '' && $configControl[$testType]['noHouseCtrl'] > 0) {
+		foreach (range(1, $configControl[$testType]['noHouseCtrl']) as $h) {
 			$displayOrder[] = "no_of_in_house_controls_" . $h;
 			$content .= '<li class="ui-state-default" id="no_of_in_house_controls_' . $h . '">In-House Controls ' . $h . '</li>';
 		}
 	}
-	if (isset($configControl[$_GET['type']]['noManufacturerCtrl']) && trim($configControl[$_GET['type']]['noManufacturerCtrl']) != '' && $configControl[$_GET['type']]['noManufacturerCtrl'] > 0) {
-		foreach (range(1, $configControl[$_GET['type']]['noManufacturerCtrl']) as $m) {
+	if (isset($configControl[$testType]['noManufacturerCtrl']) && trim($configControl[$testType]['noManufacturerCtrl']) != '' && $configControl[$testType]['noManufacturerCtrl'] > 0) {
+		foreach (range(1, $configControl[$testType]['noManufacturerCtrl']) as $m) {
 			$displayOrder[] = "no_of_manufacturer_controls_" . $m;
 			$content .= '<li class="ui-state-default" id="no_of_manufacturer_controls_' . $m . '">Manufacturer Controls ' . $m . '</li>';
 		}
 	}
-	if (isset($configControl[$_GET['type']]['noCalibrators']) && trim($configControl[$_GET['type']]['noCalibrators']) != '' && $configControl[$_GET['type']]['noCalibrators'] > 0) {
-		foreach (range(1, $configControl[$_GET['type']]['noCalibrators']) as $c) {
+	if (isset($configControl[$testType]['noCalibrators']) && trim($configControl[$testType]['noCalibrators']) != '' && $configControl[$testType]['noCalibrators'] > 0) {
+		foreach (range(1, $configControl[$testType]['noCalibrators']) as $c) {
 			$displayOrder[] = "no_of_calibrators_" . $c;
 			$content .= '<li class="ui-state-default" id="no_of_calibrators_' . $c . '">Calibrators ' . $c . '</li>';
 		}

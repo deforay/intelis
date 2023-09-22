@@ -17,7 +17,6 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var BatchService $batchService */
 $batchService = ContainerRegistry::get(BatchService::class);
-
 $tableName = "batch_details";
 try {
     $labelOrder = '';
