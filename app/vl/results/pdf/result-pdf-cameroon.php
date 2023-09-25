@@ -315,7 +315,7 @@ if (!empty($requestResult)) {
           $html .= '<td colspan="3">';
           $html .= '<table style="padding:2px;" border="1" cellpadding="8" cellspacing="0">';
           $html .= '<tr>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">'._translate("Unique code : ").$result['sample_code'].'</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">'._translate("Unique code : ").$result['patient_art_no'].'</td>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">'._translate("Region : ").$result['facility_state'].'</td>';
           $html .= '</tr>';
           $html .= '<tr>';
