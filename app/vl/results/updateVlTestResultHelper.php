@@ -37,7 +37,7 @@ try {
         $testingPlatform = $platForm[0];
     }
 
-    $_POST['sampleReceivedOn'] = DateUtility::isoDateFormat($_POST['sampleReceivedOn'] ?? '', true);
+    $_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($_POST['sampleReceivedDate'] ?? '', true);
     $_POST['sampleReceivedAtHubOn'] = DateUtility::isoDateFormat($_POST['sampleReceivedAtHubOn'] ?? '', true);
     $_POST['approvedOnDateTime'] = DateUtility::isoDateFormat($_POST['approvedOnDateTime'] ?? '', true);
     $_POST['sampleTestingDateAtLab'] = DateUtility::isoDateFormat($_POST['sampleTestingDateAtLab'] ?? '', true);
@@ -114,7 +114,7 @@ try {
         'lab_id' => $_POST['labId'] ?? null,
         'vl_test_platform' => $testingPlatform ?? null,
         'sample_received_at_hub_datetime' => $_POST['sampleReceivedAtHubOn'],
-        'sample_received_at_lab_datetime' => $_POST['sampleReceivedOn'],
+        'sample_received_at_lab_datetime' => $_POST['sampleReceivedDate'],
         'sample_tested_datetime' => $_POST['sampleTestingDateAtLab'],
         'result_dispatched_datetime' => $_POST['resultDispatchedOn'] ?? null,
         'is_sample_rejected' => $isRejected,

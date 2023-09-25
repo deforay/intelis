@@ -540,7 +540,7 @@ if (!empty($requestResult)) {
                         $h = 185;
                     }
                 } else {
-                    $h = 148.5;
+                    $h = 142.5;
                 }
                 if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty(SYSTEM_CONFIG['remoteURL'])) {
                     $remoteUrl = rtrim(SYSTEM_CONFIG['remoteURL'], "/");

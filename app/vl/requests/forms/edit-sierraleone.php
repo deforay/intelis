@@ -577,7 +577,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 																$vlTestReasonResultRow = $db->query($vlTestReasonQueryRow);
 																$checked = '';
 																$display = '';
-																if (trim($vlQueryInfo['reason_for_vl_testing']) == 'routine' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'routine') {
+																if (trim($vlQueryInfo['reason_for_vl_testing']) == $vlTestReasonResultRow[0]['test_reason_id']) {
 																	$checked = 'checked="checked"';
 																	$display = 'block';
 																} else {
@@ -741,12 +741,12 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 											</div>
 											<div class="row" style="display:none;">
 
-												<div class="col-md-4">
+												<!--<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="emailHf">Email for HF </label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control isEmail" id="emailHf" name="emailHf" placeholder="Email for HF" title="Please enter email for hf" value="<?php echo $facilityResult[0]['facility_emails']; ?>" />
 													</div>
-												</div>
+												</div>-->
 											</div>
 										</div>
 									</div>

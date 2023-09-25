@@ -464,7 +464,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                                 $checked = '';
                                                                                 $display = '';
                                                                                 $vlValue = '';
-                                                                                if (trim($vlQueryInfo['reason_for_vl_testing']) == 'controlVlTesting' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'controlVlTesting') {
+                                                                                if (trim($vlQueryInfo['reason_for_vl_testing']) == $vlTestReasonResultRow[0]['test_reason_id']) {
                                                                                      $checked = 'checked="checked"';
                                                                                      $display = 'block';
                                                                                 } else {

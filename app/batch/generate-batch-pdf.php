@@ -110,27 +110,18 @@ if (!empty($id)) {
     if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
         $dateQuery = "SELECT ct.*,
                         covid19.sample_tested_datetime,
-                        result_reviewed_datetime, lot_number,
-                        lot_expiration_date, result_printed_datetime
+                        covid19.result_reviewed_datetime, ct.test_name, ct.kit_lot_no, ct.kit_expiry_date, covid19.lot_number,
+                        covid19.lot_expiration_date, covid19.result_printed_datetime
                     FROM $refTable as covid19
                     LEFT JOIN covid19_tests as ct on covid19.covid19_id = ct.covid19_id
                     WHERE sample_batch_id='" . $id . "' AND (covid19.sample_tested_datetime IS NOT NULL AND covid19.sample_tested_datetime not like '' AND covid19.sample_tested_datetime  not like '0000-00-00 00:00:00') GROUP BY covid19.covid19_id LIMIT 1";
     } else {
         $dateQuery = "SELECT sample_tested_datetime,result_reviewed_datetime from $refTable where sample_batch_id='" . $id . "' AND (sample_tested_datetime IS NOT NULL AND sample_tested_datetime not like '' AND sample_tested_datetime  not like '0000-00-00 00:00:00') LIMIT 1";
     }
-    $dateResult = $db->query($dateQuery);
-    $resulted = '';
-    $reviewed = '';
-    $createdBy = '';
-    if (isset($dateResult[0]['sample_tested_datetime']) && $dateResult[0]['sample_tested_datetime'] != '' && $dateResult[0]['sample_tested_datetime'] != null && $dateResult[0]['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-        $sampleTestedDate = explode(" ", $dateResult[0]['sample_tested_datetime']);
-        $resulted = DateUtility::humanReadableDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
-    }
-    if (isset($dateResult[0]['result_reviewed_datetime']) && $dateResult[0]['result_reviewed_datetime'] != '' && $dateResult[0]['result_reviewed_datetime'] != null && $dateResult[0]['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
-        $resultReviewdDate = explode(" ", $dateResult[0]['result_reviewed_datetime']);
-        $reviewed = DateUtility::humanReadableDateFormat($resultReviewdDate[0]) . " " . $resultReviewdDate[1];
-    }
-
+    // die($dateQuery);
+    $dateResult = $db->rawQueryOne($dateQuery);
+    $resulted = (isset($dateResult['sample_tested_datetime']) && $dateResult['sample_tested_datetime'] != '' && $dateResult['sample_tested_datetime'] != null && $dateResult['sample_tested_datetime'] != '0000-00-00 00:00:00')?DateUtility::humanReadableDateFormat($dateResult['sample_tested_datetime'], true):null;
+    $reviewed = (isset($dateResult['result_reviewed_datetime']) && $dateResult['result_reviewed_datetime'] != '' && $dateResult['result_reviewed_datetime'] != null && $dateResult['result_reviewed_datetime'] != '0000-00-00 00:00:00')?DateUtility::humanReadableDateFormat($dateResult['result_reviewed_datetime'], true):null;
     if (!empty($bResult)) {
         // create new PDF document
         $pdf = new BatchPdfHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -178,30 +169,29 @@ if (!empty($id)) {
         $pdf->AddPage();
         if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
             if (isset($dateResult['kit_expiry_date']) && $dateResult['kit_expiry_date'] != "" && $dateResult['kit_expiry_date'] != null) {
-                $dateResult['kit_expiry_date'] = date("d-M-Y", strtotime($dateResult['kit_expiry_date']));
+                $dateResult['kit_expiry_date'] = DateUtility::humanReadableDateFormat($dateResult['kit_expiry_date']);
             }
             if (isset($dateResult['lot_expiration_date']) && $dateResult['lot_expiration_date'] != "" && $dateResult['lot_expiration_date'] != null) {
-                $dateResult['lot_expiration_date'] = date("d-M-Y", strtotime($dateResult['lot_expiration_date']));
+                $dateResult['lot_expiration_date'] = DateUtility::humanReadableDateFormat($dateResult['lot_expiration_date']);
             }
             if (isset($dateResult['result_printed_datetime']) && $dateResult['result_printed_datetime'] != "" && $dateResult['result_printed_datetime'] != null) {
-                $dateResult['result_printed_datetime'] = date("d-M-Y", strtotime($dateResult['result_printed_datetime']));
+                $dateResult['result_printed_datetime'] = DateUtility::humanReadableDateFormat($dateResult['result_printed_datetime'],true);
             }
             $tbl = '<table cellspacing="2" cellpadding="6" style="width:100%;" border="0">
                 <tr>
-                    <th style="font-weight: bold;">Reagent/Kit Name :</th><td>' . ((isset($dateResult['test_name']) && $dateResult['test_name'] != "") ? $dateResult['test_name'] : "") . '</td>
-                    <th style="font-weight: bold;">Lot Number :</th><td>' . ((isset($dateResult['kit_lot_no']) && $dateResult['kit_lot_no'] != "") ? $dateResult['kit_lot_no'] : $dateResult['lot_number']) . '</td>
+                    <th style="font-weight: bold;">' . _translate('Reagent/Kit Name') . ' :</th><td style="width:20%;">' . ((isset($dateResult['covid19_test_name']) && $dateResult['covid19_test_name'] != "") ? $dateResult['covid19_test_name'] : $dateResult['test_name']) . '</td>
+                    <th style="font-weight: bold;">' . _translate('Lot Number') . ' :</th><td>' . ((isset($dateResult['kit_lot_no']) && $dateResult['kit_lot_no'] != "") ? $dateResult['kit_lot_no'] : $dateResult['lot_number']) . '</td>
+                    <th style="font-weight: bold;width:20%;">' . _translate('Lot Expiry Date') . ' :</th><td>' . ((isset($dateResult['kit_expiry_date']) && $dateResult['kit_expiry_date'] != "") ? $dateResult['kit_expiry_date'] : $dateResult['lot_expiration_date']) . '</td>
                 </tr>
                 <tr>
-                    <th style="font-weight: bold;">Lot Expiry Date :</th><td>' . ((isset($dateResult['kit_expiry_date']) && $dateResult['kit_expiry_date'] != "") ? $dateResult['kit_expiry_date'] : $dateResult['lot_expiration_date']) . '</td>
-                    <th style="font-weight: bold;">Printed By :</th><td>' . $_SESSION['userName'] . '</td>
-                    </tr>
-                    <tr>
-                    <th style="font-weight: bold;">Printed Date/Time :</th><td colspan="3">' . date("d-M-Y h:i:A") . '</td>
+                    <th style="font-weight: bold;">' . _translate('Printed By') . ' :</th><td>' . $_SESSION['userName'] . '</td>
+                    <th style="font-weight: bold;">' . _translate('Printed On') . ':</th><td colspan="2">' . date("d-M-Y h:i:A") . '</td>
                 </tr>
             </table>
+            <br>
             <hr>
             <table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">
-                <tr style="border-bottom:1px solid #333 !important;">
+                <tr>
                     <th align="center" width="5%"><strong>' . _translate('Pos.') . '</strong></th>
                     <th align="center" width="20%"><strong>' . _translate('Sample Code') . '</strong></th>
                     <th align="center" width="30%"><strong>' . _translate('BARCODE') . '</strong></th>
@@ -209,18 +199,18 @@ if (!empty($id)) {
                     <th align="center" width="12.5%"><strong>' . _translate('Patient Code') . '</strong></th>
                     <th align="center" width="12.5%"><strong>' . _translate('Test Result') . '</strong></th>
                 </tr>';
-            $tbl .= '</table>';
+            $tbl .= '</table><hr>';
         } else {
             $tbl = '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">
-                    <tr style="border-bottom:1px solid #333 !important;">
-                        <th align="center" width="6%"><strong>' . _translate('Pos.') . '</strong></th>
+                    <tr>
+                        <th align="center" width="5%"><strong>' . _translate('Pos.') . '</strong></th>
                         <th align="center" width="20%"><strong>' . _translate('Sample Code') . '</strong></th>
-                        <th align="center" width="35%"><strong>' . _translate('BARCODE') . '</strong></th>
-                        <th align="center" width="13%"><strong>' . _translate('Patient Code') . '</strong></th>
-                        <th align="center" width="13%"><strong>' . _translate('Lot Number / <br>Exp. Date') . '</strong></th>
-                        <th align="center" width="13%"><strong>' . _translate('Test Result') . '</strong></th>
+                        <th align="center" width="30%"><strong>' . _translate('BARCODE') . '</strong></th>
+                        <th align="center" width="20%"><strong>' . _translate('Patient Code') . '</strong></th>
+                        <th align="center" width="12.5%"><strong>' . _translate('Lot Number / <br>Exp. Date') . '</strong></th>
+                        <th align="center" width="12.5%"><strong>' . _translate('Test Result') . '</strong></th>
                     </tr>';
-            $tbl .= '</table>';
+            $tbl .= '</table><hr>';
         }
         if (isset($bResult[0]['label_order']) && trim($bResult[0]['label_order']) != '') {
             $jsonToArray = json_decode($bResult[0]['label_order'], true);
@@ -261,32 +251,24 @@ if (!empty($id)) {
 
 
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
-                        $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
-                        $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333;width:100%;">';
-                        if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
-
-                            $tbl .= '<td  align="center" width="10%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
-                            $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['sample_code'] . '</td>';
-                            if ($barcodeFormat == 'QRCODE') {
-                                $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
-                            } else {
-                                $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;border-bottom:1px solid #333;line-height:30px;"><br><img style="width:200px;height:25px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"><br></td>';
-                            }
-                            $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['remote_sample_code'] . '</td>';
-                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;border-bottom:1px solid #333;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
-                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['result'] . '</td>';
+                        $tbl .= '<p></p><table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
+                        $tbl .= '<tr nobr="true" style="width:100%;">';
+                        
+                        $tbl .= '<td  align="center" width="5%" style="vertical-align:middle;">' . $sampleCounter . '.</td>';
+                        $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;">' . $sampleResult[0]['sample_code'] . '</td>';
+                        if ($barcodeFormat == 'QRCODE') {
+                            $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;"><img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
                         } else {
-
-                            $tbl .= '<td  align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
-                            $tbl .= '<td  align="center" width="18%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['sample_code'] . '</td>';
-                            if ($barcodeFormat == 'QRCODE') {
-                                $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
-                            } else {
-                                $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;line-height:30px;"><br><img style="width:200px;height:25px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"><br></td>';
-                            }
-                            $tbl .= '<td  align="center" width="15%" style="vertical-align:middle;border-bottom:1px solid #333;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
-                            $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $lotDetails . '</td>';
-                            $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['result'] . '</td>';
+                            $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;line-height:30px;"><br><img style="width:200px;height:25px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"><br></td>';
+                        }
+                        if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
+                            $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;">' . $sampleResult[0]['remote_sample_code'] . '</td>';
+                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
+                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . ucwords($sampleResult[0]['result']) . '</td>';
+                        } else {
+                            $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
+                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . $lotDetails . '</td>';
+                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . ucwords($sampleResult[0]['result']) . '</td>';
                         }
                         $tbl .= '</tr>';
                         $tbl .= '</table>';
@@ -294,14 +276,14 @@ if (!empty($id)) {
                         $label = str_replace("_", " ", $jsonToArray[$alphaNumeric[$j]]);
                         $label = str_replace("in house", "In-House", $label);
                         $label = (str_replace("no of ", " ", $label));
-                        $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
-                        $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333;width:100%;">';
-                        $tbl .= '<td align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
-                        $tbl .= '<td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $label . '</td>';
-                        $tbl .= '<td align="center" width="35%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>';
-                        $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>';
-                        $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>';
-                        $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>';
+                        $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
+                        $tbl .= '<tr nobr="true" style="width:100%;">';
+                        $tbl .= '<td align="center" width="6%" style="vertical-align:middle;">' . $sampleCounter . '.</td>';
+                        $tbl .= '<td align="center" width="20%" style="vertical-align:middle;">' . $label . '</td>';
+                        $tbl .= '<td align="center" width="35%" style="vertical-align:middle;"></td>';
+                        $tbl .= '<td align="center" width="13%" style="vertical-align:middle;"></td>';
+                        $tbl .= '<td align="center" width="13%" style="vertical-align:middle;"></td>';
+                        $tbl .= '<td align="center" width="13%" style="vertical-align:middle;"></td>';
                         $tbl .= '</tr>';
                         $tbl .= '</table>';
                     }
@@ -331,32 +313,24 @@ if (!empty($id)) {
                         }
 
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
-                        $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
-                        $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333;width:100%;">';
-                        if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
-
-                            $tbl .= '<td  align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
-                            $tbl .= '<td  align="center" width="18%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['sample_code'] . '</td>';
-                            if ($barcodeFormat == 'QRCODE') {
-                                $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
-                            } else {
-                                $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;line-height:30px;"><br><img style="width:200px;height:25px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"><br></td>';
-                            }
-                            $tbl .= '<td  align="center" width="18%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['remote_sample_code'] . '</td>';
-                            $tbl .= '<td  align="center" width="15%" style="vertical-align:middle;border-bottom:1px solid #333;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
-                            $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['result'] . '</td>';
+                        $tbl .= '<p></p><table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
+                        $tbl .= '<tr>';
+                        
+                        $tbl .= '<td  align="center" width="5%" style="vertical-align:middle;">' . $sampleCounter . '.</td>';
+                        $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;">' . $sampleResult[0]['sample_code'] . '</td>';
+                        if ($barcodeFormat == 'QRCODE') {
+                            $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;"><img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
                         } else {
-
-                            $tbl .= '<td  align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
-                            $tbl .= '<td  align="center" width="18%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['sample_code'] . '</td>';
-                            if ($barcodeFormat == 'QRCODE') {
-                                $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;"><img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
-                            } else {
-                                $tbl .= '<td  align="center" width="35%" style="vertical-align:middle !important;border-bottom:1px solid #333;line-height:30px;"><br><img style="width:200px;height:25px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"><br></td>';
-                            }
-                            $tbl .= '<td  align="center" width="15%" style="vertical-align:middle;border-bottom:1px solid #333;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
-                            $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $lotDetails . '</td>';
-                            $tbl .= '<td  align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleResult[0]['result'] . '</td>';
+                            $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;line-height:30px;"><br><img style="width:200px;height:25px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"><br></td>';
+                        }
+                        if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
+                            $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;">' . $sampleResult[0]['remote_sample_code'] . '</td>';
+                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
+                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . ucwords($sampleResult[0]['result']) . '</td>';
+                        } else {
+                            $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
+                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . $lotDetails . '</td>';
+                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . ucwords($sampleResult[0]['result']) . '</td>';
                         }
                         $tbl .= '</tr>';
                         $tbl .= '</table>';
@@ -364,14 +338,14 @@ if (!empty($id)) {
                         $label = str_replace("_", " ", $jsonToArray[$j]);
                         $label = str_replace("in house", "In-House", $label);
                         $label = (str_replace("no of ", " ", $label));
-                        $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
-                        $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333;width:100%;">';
-                        $tbl .= '<td align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
-                        $tbl .= '<td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $label . '</td>';
-                        $tbl .= '<td align="center" width="35%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>';
-                        $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>';
-                        $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>';
-                        $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>';
+                        $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
+                        $tbl .= '<tr nobr="true" style="width:100%;">';
+                        $tbl .= '<td align="center" width="6%" style="vertical-align:middle;">' . $sampleCounter . '.</td>';
+                        $tbl .= '<td align="center" width="20%" style="vertical-align:middle;">' . $label . '</td>';
+                        $tbl .= '<td align="center" width="35%" style="vertical-align:middle;"></td>';
+                        $tbl .= '<td align="center" width="13%" style="vertical-align:middle;"></td>';
+                        $tbl .= '<td align="center" width="13%" style="vertical-align:middle;"></td>';
+                        $tbl .= '<td align="center" width="13%" style="vertical-align:middle;"></td>';
                         $tbl .= '</tr>';
                         $tbl .= '</table>';
                     }
@@ -383,8 +357,8 @@ if (!empty($id)) {
             if (isset($bResult[0]['number_of_in_house_controls']) && $bResult[0]['number_of_in_house_controls'] != '' && $bResult[0]['number_of_in_house_controls'] != null) {
                 $noOfInHouseControls = $bResult[0]['number_of_in_house_controls'];
                 for ($i = 1; $i <= $bResult[0]['number_of_in_house_controls']; $i++) {
-                    $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
-                    $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333;width:100%;">
+                    $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
+                    $tbl .= '<tr nobr="true" style="width:100%;">
                             <td align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333">' . $i . '.</td>
                             <td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333">' . _translate('In-House Controls') . ' ' . $i . '</td>
                             <td align="center" width="35%" style="vertical-align:middle;border-bottom:1px solid #333"></td>
@@ -400,9 +374,9 @@ if (!empty($id)) {
                 $noOfManufacturerControls = $bResult[0]['number_of_manufacturer_controls'];
                 for ($i = 1; $i <= $bResult[0]['number_of_manufacturer_controls']; $i++) {
                     $sNo = $noOfInHouseControls + $i;
-                    $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
-                    $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333;width:100%;">
-                    <td align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sNo . '.</td>
+                    $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
+                    $tbl .= '<tr nobr="true" style="width:100%;">
+                    <td align="center" width="6%" style="vertical-align:middle;">' . $sNo . '.</td>
                     <td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333">' . _translate('Manfacturing Controls') . ' ' . $i . '</td>
                     <td align="center" width="35%" style="vertical-align:middle;border-bottom:1px solid #333"></td>
                     <td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333"></td>
@@ -417,14 +391,14 @@ if (!empty($id)) {
                 $noOfCalibrators = $bResult[0]['number_of_calibrators'];
                 for ($i = 1; $i <= $bResult[0]['number_of_calibrators']; $i++) {
                     $sNo = $noOfInHouseControls + $noOfManufacturerControls + $i;
-                    $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
-                    $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333;width:100%;">
-                    <td align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sNo . '.</td>
-                    <td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . _translate('Calibrators') . ' ' . $i . '</td>
-                    <td align="center" width="35%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>
-                    <td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>
-                    <td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>
-                    <td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;"></td>
+                    $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
+                    $tbl .= '<tr nobr="true" style="width:100%;">
+                    <td align="center" width="6%" style="vertical-align:middle;">' . $sNo . '.</td>
+                    <td align="center" width="20%" style="vertical-align:middle;">' . _translate('Calibrators') . ' ' . $i . '</td>
+                    <td align="center" width="35%" style="vertical-align:middle;"></td>
+                    <td align="center" width="13%" style="vertical-align:middle;"></td>
+                    <td align="center" width="13%" style="vertical-align:middle;"></td>
+                    <td align="center" width="13%" style="vertical-align:middle;"></td>
                     </tr>';
                     $tbl .= '</table>';
                 }
@@ -461,29 +435,22 @@ if (!empty($id)) {
 
                 $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
                 $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333 !important;width:100%;">';
-                if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
-                    $tbl .= '<td align="center" width="5%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
-                    $tbl .= '<td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sample['sample_code'] . '</td>';
-                    if ($barcodeFormat == 'QRCODE') {
-                        $tbl .= '<td align="center" width="30%" style="vertical-align:middle;border-bottom:1px solid #333;"><img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sample['sample_code'], $barcodeFormat) . '"></td>';
-                    } else {
-                        $tbl .= '<td align="center" width="30%" style="vertical-align:middle;border-bottom:1px solid #333;"><img style="width:200px;height:25px;" src="' . $general->getBarcodeImageContent($sample['sample_code'], $barcodeFormat) . '"><br></td>';
-                    }
-                    $tbl .= '<td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sample['remote_sample_code'] . '</td>';
-                    $tbl .= '<td align="center" width="12.5%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $patientIdentifier . '</td>';
-                    $tbl .= '<td align="center" width="12.5%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sample['result'] . '</td>';
+                
+                $tbl .= '<td align="center" width="5%" style="vertical-align:middle;">' . $sampleCounter . '.</td>';
+                $tbl .= '<td align="center" width="20%" style="vertical-align:middle;">' . $sample['sample_code'] . '</td>';
+                if ($barcodeFormat == 'QRCODE') {
+                    $tbl .= '<td align="center" width="30%" style="vertical-align:middle;"><img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sample['sample_code'], $barcodeFormat) . '"></td>';
                 } else {
-
-                    $tbl .= '<td align="center" width="6%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sampleCounter . '.</td>';
-                    $tbl .= '<td align="center" width="20%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sample['sample_code'] . '</td>';
-                    if ($barcodeFormat == 'QRCODE') {
-                        $tbl .= '<td align="center" width="35%" style="vertical-align:middle;border-bottom:1px solid #333;"><img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sample['sample_code'], $barcodeFormat) . '"></td>';
-                    } else {
-                        $tbl .= '<td align="center" width="35%" style="vertical-align:middle;border-bottom:1px solid #333;"><br><img style="width:200px;height:25px;" src="' . $general->getBarcodeImageContent($sample['sample_code'], $barcodeFormat) . '"><br></td>';
-                    }
-                    $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $patientIdentifier . '</td>';
-                    $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $lotDetails . '</td>';
-                    $tbl .= '<td align="center" width="13%" style="vertical-align:middle;border-bottom:1px solid #333;">' . $sample['result'] . '</td>';
+                    $tbl .= '<td align="center" width="30%" style="vertical-align:middle;line-height:30px;"><img style="width:200px;height:25px;" src="' . $general->getBarcodeImageContent($sample['sample_code'], $barcodeFormat) . '"><br></td>';
+                }
+                if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
+                    $tbl .= '<td align="center" width="20%" style="vertical-align:middle;">' . $sample['remote_sample_code'] . '</td>';
+                    $tbl .= '<td align="center" width="12.5%" style="vertical-align:middle;">' . $patientIdentifier . '</td>';
+                    $tbl .= '<td align="center" width="12.5%" style="vertical-align:middle;">' . $sample['result'] . '</td>';
+                } else {
+                    $tbl .= '<td align="center" width="20%" style="vertical-align:middle;">' . $patientIdentifier . '</td>';
+                    $tbl .= '<td align="center" width="12.5%" style="vertical-align:middle;">' . $lotDetails . '</td>';
+                    $tbl .= '<td align="center" width="12.5%" style="vertical-align:middle;">' . $sample['result'] . '</td>';
                 }
                 $tbl .= '</tr>';
                 $tbl .= '</table>';
