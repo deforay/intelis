@@ -61,6 +61,8 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, $facilit
 $testingLabs = $facilitiesService->getTestingLabs('vl');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "-- Select --");
 
+$sampleStatusData = $general->getSampleStatus();
+
 //Funding source list
 $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
 $fundingSourceList = $db->query($fundingSourceQry);
@@ -204,21 +206,14 @@ foreach ($srcResults as $list) {
 							<td>
 								<select name="status" id="status" class="form-control" title="<?php echo _translate('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
 									<option value="" selected=selected><?php echo _translate("All Status"); ?></option>
-									<option value="7">
-										<?php echo _translate("Accepted"); ?>
-									</option>
-									<option value="4">
-										<?php echo _translate("Rejected"); ?>
-									</option>
-									<option value="8">
-										<?php echo _translate("Awaiting Approval"); ?>
-									</option>
-									<option value="6">
-										<?php echo _translate("Registered At Testing Lab"); ?>
-									</option>
-									<option value="10">
-										<?php echo _translate("Expired"); ?>
-									</option>
+									<?php
+										foreach($sampleStatusData as $sample)
+										{
+											?>
+											<option value="<?= $sample['status_id']; ?>"><?= $sample['status_name'] ?></option>
+											<?php
+										}
+									?>
 								</select>
 							</td>
 							<td><strong>
@@ -226,7 +221,7 @@ foreach ($srcResults as $list) {
 								</strong></td>
 							<td>
 								<select name="showReordSample" id="showReordSample" class="form-control" title="Please choose record sample">
-									<option value=""> -- Select -- </option>
+									<option value=""><?=  _translate('-- Select --'); ?></option>
 									<option value="yes">
 										<?php echo _translate("Yes"); ?>
 									</option>
@@ -237,7 +232,6 @@ foreach ($srcResults as $list) {
 							</td>
 						</tr>
 						<tr>
-
 							<td colspan="2">
 								<div class="col-md-12">
 									<div class="col-md-6">

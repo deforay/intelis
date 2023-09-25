@@ -839,4 +839,11 @@ class CommonService
         $srcResults = $this->db->rawQuery($srcQuery);
         return $srcResults;
     }
+
+    public function getSampleStatus()
+    {
+        $this->db->where("status", "active");
+        $this->db->orderBy('status_name', "ASC");
+        return $this->db->get('r_sample_status');
+    }
 }
