@@ -101,10 +101,6 @@ $sResult = $db->rawQuery($sQuery);
         color: #333 !important;
         font-size: 16px;
     }
-
-    #alertText {
-        text-shadow: 1px 1px #eee;
-    }
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -236,12 +232,12 @@ $sResult = $db->rawQuery($sQuery);
             <!-- /.box-header -->
             <div class="box-body batchDiv" style="<?php echo $genericHide; ?>">
                 <!-- form start -->
-                <form class="form-horizontal" method="post" name="addBatchForm" id="addBatchForm" autocomplete="off" action="save-batch-helper.php">
+                <form class="form-horizontal" method="post" style="display:none;" name="addBatchForm" id="addBatchForm" autocomplete="off" action="save-batch-helper.php">
                     <div class="box-body">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-10">
                                 <div class="form-group">
-                                    <label for="batchCode" class="col-lg-4 control-label">
+                                    <label for="batchCode" class="col-lg-2 control-label">
                                         <?php echo _translate("Batch Code"); ?> <span class="mandatory">*</span>
                                     </label>
                                     <div class="col-lg-7" style="margin-left:3%;">
@@ -255,24 +251,8 @@ $sResult = $db->rawQuery($sQuery);
                         </div>
 
                         <div class="row" id="sampleDetails">
-                            <div class="col-md-5">
-                                <select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
-
-                                </select>
-                            </div>
-
-                            <div class="col-md-2">
-                                <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
-                                <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
-                                <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
-                                <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
-                            </div>
-
-                            <div class="col-md-5">
-                                <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
-                            </div>
                         </div>
-                        <div class="row col-md-12" id="alertText" style="font-size:20px;"></div>
+                        <div class="row col-md-12" id="alertText" style=""></div>
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
@@ -305,31 +285,6 @@ $sResult = $db->rawQuery($sQuery);
         $("#testType").select2({
             width: '100%',
             placeholder: "<?php echo _translate("Select Test Type"); ?>"
-        });
-        $('#search').multiselect({
-            search: {
-                left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
-                right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
-            },
-            fireSearch: function(value) {
-                return value.length > 2;
-            },
-            afterMoveToRight: function($left, $right, $options) {
-                const count = $right.find('option').length;
-                if (count > 0) {
-                    $('#alertText').html("<?php echo _translate("You have picked"); ?> " + $("#machine option:selected").text() + " <?php echo _translate("testing platform and it has limit of maximum"); ?> " + count + '/' + noOfSamples + " <?php echo _translate("samples per batch"); ?>");
-                } else {
-                    $('#alertText').html("<?php echo _translate("You have picked"); ?> " + $("#machine option:selected").text() + " <?php echo _translate("testing platform and it has limit of maximum"); ?> " + noOfSamples + " <?php echo _translate("samples per batch"); ?>");
-                }
-            },
-            afterMoveToLeft: function($left, $right, $options) {
-                const count = $right.find('option').length;
-                if (count > 0) {
-                    $('#alertText').html("<?php echo _translate("You have picked"); ?> " + $("#machine option:selected").text() + " <?php echo _translate("testing platform and it has limit of maximum"); ?> " + count + '/' + noOfSamples + " <?php echo _translate("samples per batch"); ?>");
-                } else {
-                    $('#alertText').html("<?php echo _translate("You have picked"); ?> " + $("#machine option:selected").text() + " <?php echo _translate("testing platform and it has limit of maximum"); ?> " + noOfSamples + " <?php echo _translate("samples per batch"); ?>");
-                }
-            }
         });
         $("#facilityName").select2({
             placeholder: "<?php echo _translate("Select Facilities"); ?>"
@@ -433,6 +388,7 @@ $sResult = $db->rawQuery($sQuery);
             function(data) {
                 if (data != "") {
                     $("#sampleDetails").html(data);
+                    $("#addBatchForm").show();
                 }
             });
         $.unblockUI();
@@ -445,9 +401,8 @@ $sResult = $db->rawQuery($sQuery);
             $("#platform").val($("#machine").val());
             var selected = $(this).find('option:selected');
             noOfSamples = selected.data('no-of-samples');
-            $('#alertText').html("<?php echo _translate("You have picked"); ?> " + $("#machine option:selected").text() + " <?php echo _translate("testing platform and it has limit of maximum"); ?> " + noOfSamples + " <?php echo _translate("samples per batch"); ?>");
+            $('#alertText').html("<?php echo _translate("Maximum number of samples allowed for the selected platform"); ?> : " + noOfSamples);
         } else {
-            $('.ms-list').html('');
             $('#alertText').html('');
         }
     });

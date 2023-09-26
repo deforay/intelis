@@ -131,3 +131,19 @@ form table tr td>label,
     padding-right: 0;
     overflow-y: auto;
 }
+
+.sampleCounterDiv {
+    width: 100%;
+    background: #3c8dbc;
+    padding: 0.5em;
+    color: #fff;
+    margin-top: 0.5em;
+}
+
+#alertText {
+    color: red;
+    font-weight: bold;
+    font-size: 1.3em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}

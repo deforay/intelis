@@ -143,10 +143,6 @@ $sResult = $db->rawQuery($sQuery);
 		color: #333 !important;
 		font-size: 16px;
 	}
-
-	#alertText {
-		text-shadow: 1px 1px #eee;
-	}
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -248,6 +244,7 @@ $sResult = $db->rawQuery($sQuery);
 								<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
 
 								</select>
+								<div class="sampleCounterDiv"><?= _translate("Number of unselected samples"); ?> : <span id="unselectedCount"></span></div>
 							</div>
 
 							<div class="col-md-2">
@@ -265,9 +262,10 @@ $sResult = $db->rawQuery($sQuery);
 									<?php }
 									} ?>
 								</select>
+								<div class="sampleCounterDiv"><?= _translate("Number of selected samples"); ?> : <span id="selectedCount"></span></div>
 							</div>
 						</div>
-						<div class="row" id="alertText" style="font-size:18px;"></div>
+						<div class="row" id="alertText"></div>
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">
@@ -325,33 +323,7 @@ $sResult = $db->rawQuery($sQuery);
 			document.getElementById('editBatchForm').submit();
 		}
 	}
-	//$("#auditRndNo").multiselect({height: 100,minWidth: 150});
 	$(document).ready(function() {
-		$('#search').multiselect({
-			search: {
-				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
-				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
-			},
-			fireSearch: function(value) {
-				return value.length > 2;
-			},
-			afterMoveToRight: function($left, $right, $options) {
-				const count = $right.find('option').length;
-				if (count > 0) {
-					$('#alertText').html("<?php echo _translate("You have picked"); ?> " + $("#machine option:selected").text() + " <?php echo _translate("testing platform and it has limit of maximum"); ?> " + count + '/' + noOfSamples + " <?php echo _translate("samples per batch"); ?>");
-				} else {
-					$('#alertText').html("<?php echo _translate("You have picked"); ?> " + $("#machine option:selected").text() + " <?php echo _translate("testing platform and it has limit of maximum"); ?> " + noOfSamples + " <?php echo _translate("samples per batch"); ?>");
-				}
-			},
-			afterMoveToLeft: function($left, $right, $options) {
-				const count = $right.find('option').length;
-				if (count > 0) {
-					$('#alertText').html("<?php echo _translate("You have picked"); ?> " + $("#machine option:selected").text() + " <?php echo _translate("testing platform and it has limit of maximum"); ?> " + count + '/' + noOfSamples + " <?php echo _translate("samples per batch"); ?>");
-				} else {
-					$('#alertText').html("<?php echo _translate("You have picked"); ?> " + $("#machine option:selected").text() + " <?php echo _translate("testing platform and it has limit of maximum"); ?> " + noOfSamples + " <?php echo _translate("samples per batch"); ?>");
-				}
-			}
-		});
 		$("#facilityName").select2({
 			placeholder: "<?php echo _translate('Select Facilities'); ?>"
 		});
@@ -443,7 +415,7 @@ $sResult = $db->rawQuery($sQuery);
 					if ($("#batchId").val() > 0) {
 						$("#search").html(data);
 					} else {
-						// $("#sampleDetails").html(data);
+						//$("#sampleDetails").html(data);
 					}
 				}
 			});
@@ -467,10 +439,9 @@ $sResult = $db->rawQuery($sQuery);
 			getSampleCodeDetails();
 			var selected = $(this).find('option:selected');
 			noOfSamples = selected.data('no-of-samples');
-			$('#alertText').html('You have picked ' + $("#machine option:selected").text() + ' and it has limit of maximum ' + noOfSamples + ' samples to make it a batch');
+			$('#alertText').html("<?php echo _translate("Maximum number of samples allowed for the selected platform"); ?> : " + noOfSamples);
 		} else {
-			$('.ms-list').html('');
-			$('#alertText').html('');
+			//$('#alertText').html('');
 		}
 	});
 </script>
