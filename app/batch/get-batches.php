@@ -88,7 +88,6 @@ if (isset($_POST['iSortCol_0'])) {
  * on very large tables, and MySQL's regex functionality is very limited
  */
 
-$sWhere[] = " vl.sample_batch_id = b.batch_id";
 $sWhere[] = " b.test_type like '" . $_POST['type'] . "'";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", $_POST['sSearch']);
@@ -152,7 +151,7 @@ $sQuery = $sQuery . ' GROUP BY b.batch_id';
 
 if (!empty($sOrder)) {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
-    $sQuery = $sQuery . ' order by ' . $sOrder;
+    $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }
 
 [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
@@ -198,7 +197,7 @@ foreach ($rResult as $aRow) {
         }
     }
     if ($pdf) {
-        $printBarcode = '<a href="generate-batch-pdf.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" target="_blank"  rel="noopener" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _translate("Print Batch PDF") . '"><em class="fa-solid fa-barcode"></em> ' . _translate("Print Batch PDF") . '</a>';
+        $printBarcode = '<a href="/batch/generate-batch-pdf.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" target="_blank"  rel="noopener" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _translate("Print Batch PDF") . '"><em class="fa-solid fa-barcode"></em> ' . _translate("Print Batch PDF") . '</a>';
     }
 
     if (($aRow['total_samples'] == 0 || $aRow['testcount'] == 0) && $delete) {
