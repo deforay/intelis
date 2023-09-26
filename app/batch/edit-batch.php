@@ -22,26 +22,32 @@ if (isset($testType) && $testType == 'vl') {
 	$title = "Viral Load";
 	$refTable = "form_vl";
 	$refPrimaryColumn = "vl_sample_id";
+	$sampleTypeTable = "r_vl_sample_type";
 } elseif (isset($testType) && $testType == 'eid') {
 	$title = "Early Infant Diagnosis";
 	$refTable = "form_eid";
 	$refPrimaryColumn = "eid_id";
+	$sampleTypeTable = "r_eid_sample_type";
 } elseif (isset($testType) && $testType == 'covid19') {
 	$title = "Covid-19";
 	$refTable = "form_covid19";
 	$refPrimaryColumn = "covid19_id";
+	$sampleTypeTable = "r_covid19_sample_type";
 } elseif (isset($testType) && $testType == 'hepatitis') {
 	$title = "Hepatitis";
 	$refTable = "form_hepatitis";
 	$refPrimaryColumn = "hepatitis_id";
+	$sampleTypeTable = "r_hepatitis_sample_type";
 } elseif (isset($testType) && $testType == 'tb') {
 	$title = "TB";
 	$refTable = "form_tb";
 	$refPrimaryColumn = "tb_id";
+	$sampleTypeTable = "r_tb_sample_type";
 } elseif (isset($testType) && $testType == 'generic-tests') {
 	$title = "Other Lab Tests";
 	$refTable = "form_generic";
 	$refPrimaryColumn = "sample_id";
+	$sampleTypeTable = "r_generic_sample_types";
 }
 
 
@@ -106,6 +112,9 @@ $bQuery .= ") UNION
                         ORDER BY vl.last_modified_datetime ASC)";
 $result = $db->rawQuery($bQuery, [$id]);
 $testPlatformResult = $general->getTestingPlatforms($testType);
+
+$sQuery = "SELECT * FROM $sampleTypeTable where status='active'";
+$sResult = $db->rawQuery($sQuery);
 
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
@@ -179,6 +188,21 @@ $testPlatformResult = $general->getTestingPlatforms($testType);
 						<select id="positions-type" class="form-control" title="<?php echo _translate('Please select the postion'); ?>">
 							<option value="numeric" <?php echo ($batchInfo[0]['position_type'] == "numeric") ? 'selected="selected"' : ''; ?>><?php echo _translate("Numeric"); ?></option>
 							<option value="alpha-numeric" <?php echo ($batchInfo[0]['position_type'] == "alpha-numeric") ? 'selected="selected"' : ''; ?>><?php echo _translate("Alpha Numeric"); ?></option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th scope="col"><?php echo _("Sample Type"); ?></th>
+					<td>
+						<select class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
+							<option value=""> <?php echo _("-- Select --"); ?> </option>
+							<?php
+							foreach ($sResult as $type) {
+							?>
+								<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
+							<?php
+							}
+							?>
 						</select>
 					</td>
 				</tr>
@@ -411,7 +435,8 @@ $testPlatformResult = $general->getTestingPlatforms($testType);
 				type: '<?php echo $testType; ?>',
 				batchId: $("#batchId").val(),
 				genericTestType: '<?php echo $genericTestType; ?>',
-				fName: fName
+				fName: fName,
+				sName: $("#sampleType").val()
 			},
 			function(data) {
 				if (data != "") {

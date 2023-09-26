@@ -218,7 +218,6 @@ $state = $geolocationService->getProvinces("yes");
 															</span></button>
 													</td>
 												</tr>
-
 											</table>
 											<span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;" id="showhide" class="">
 												<div class="row" style="background:#e0e0e0;float: right !important;padding: 15px;margin-top: -30px;">
@@ -283,6 +282,7 @@ $state = $geolocationService->getProvinces("yes");
 																<?php echo _translate("Remote Sample Code"); ?>
 															</th>
 														<?php } ?>
+														<th><?php echo _translate("Batch Code"); ?></th>
 														<th>
 															<?php echo _translate("Unique ART No."); ?>
 														</th>
@@ -529,6 +529,7 @@ $state = $geolocationService->getProvinces("yes");
 																<?php echo _translate("Remote Sample Code"); ?>
 															</th>
 														<?php } ?>
+														<th><?php echo _translate("Batch Code"); ?></th>
 														<th>
 															<?php echo _translate("Unique ART No"); ?>
 														</th>
@@ -772,12 +773,15 @@ $state = $geolocationService->getProvinces("yes");
 					"sClass": "center"
 				},
 				{
+					"sClass": "center"
+				},
+				{
 					"sClass": "center",
 					"bSortable": false
 				},
 			],
 			"aaSorting": [
-				[<?php echo ($_SESSION['instanceType'] == 'remoteuser' || $_SESSION['instanceType'] == 'vluser') ? 11 : 10 ?>, "desc"]
+				[<?php echo ($_SESSION['instanceType'] == 'remoteuser' || $_SESSION['instanceType'] == 'vluser') ? 12 : 11 ?>, "desc"]
 			],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
@@ -917,12 +921,15 @@ $state = $geolocationService->getProvinces("yes");
 					"sClass": "center"
 				},
 				{
+					"sClass": "center"
+				},
+				{
 					"sClass": "center",
 					"bSortable": false
 				},
 			],
 			"aaSorting": [
-				[<?php echo ($_SESSION['instanceType'] == 'remoteuser' || $_SESSION['instanceType'] == 'vluser') ? 11 : 10 ?>, "desc"]
+				[<?php echo ($_SESSION['instanceType'] == 'remoteuser' || $_SESSION['instanceType'] == 'vluser') ? 12 : 11 ?>, "desc"]
 			],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chkPrinted[]");
