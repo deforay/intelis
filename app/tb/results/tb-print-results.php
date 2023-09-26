@@ -186,6 +186,7 @@ $state = $geolocationService->getProvinces("yes");
                                                         <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
                                                             <th><?php echo _translate("Remote Sample Code"); ?></th>
                                                         <?php } ?>
+                                                        <th><?php echo _translate("Batch Code"); ?></th>
                                                         <th><?php echo _translate("Patient ID"); ?></th>
                                                         <th><?php echo _translate("Patient Name"); ?></th>
                                                         <th scope="row"><?php echo _translate("Facility Name"); ?></th>
@@ -333,6 +334,7 @@ $state = $geolocationService->getProvinces("yes");
                                                         <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
                                                             <th><?php echo _translate("Remote Sample Code"); ?></th>
                                                         <?php } ?>
+                                                        <th><?php echo _translate("Batch Code"); ?></th>
                                                         <th><?php echo _translate("Patient ID"); ?></th>
                                                         <th><?php echo _translate("Patient Name"); ?></th>
                                                         <th scope="row"><?php echo _translate("Facility Name"); ?></th>
@@ -537,12 +539,15 @@ $state = $geolocationService->getProvinces("yes");
                     "sClass": "center"
                 },
                 {
+                    "sClass": "center"
+                },
+                {
                     "sClass": "center",
                     "bSortable": false
                 },
             ],
             "aaSorting": [
-                [<?= ($_SESSION['instanceType'] != 'standalone') ? 8 : 7; ?>, "desc"]
+                [<?= ($_SESSION['instanceType'] != 'standalone') ? 9 : 8; ?>, "desc"]
             ],
             "fnDrawCallback": function() {
                 var checkBoxes = document.getElementsByName("chk[]");
@@ -660,12 +665,15 @@ $state = $geolocationService->getProvinces("yes");
                     "sClass": "center"
                 },
                 {
+                    "sClass": "center"
+                },
+                {
                     "sClass": "center",
                     "bSortable": false
                 },
             ],
             "aaSorting": [
-                [<?= ($_SESSION['instanceType'] != 'standalone') ? 8 : 7; ?>, "desc"]
+                [<?= ($_SESSION['instanceType'] != 'standalone') ? 9 : 8; ?>, "desc"]
             ],
             "fnDrawCallback": function() {
                 var checkBoxes = document.getElementsByName("chkPrinted[]");

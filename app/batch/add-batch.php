@@ -9,7 +9,7 @@ use App\Registries\ContainerRegistry;
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-
+$sampleTypeStatus = "status";
 if (isset($_GET['type']) && $_GET['type'] == 'vl') {
     $title = "Viral Load";
     $sampleTypeTable = "r_vl_sample_type";
@@ -28,6 +28,7 @@ if (isset($_GET['type']) && $_GET['type'] == 'vl') {
 } elseif (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
     $title = "Other Lab Tests";
     $sampleTypeTable = "r_generic_sample_types";
+    $sampleTypeStatus = "sample_type_status";
     $genericHide = "display:none;";
 }
 
@@ -72,7 +73,7 @@ $testTypeQuery = "SELECT * FROM r_test_types
                     ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
 
-$sQuery = "SELECT * FROM $sampleTypeTable where status='active'";
+$sQuery = "SELECT * FROM $sampleTypeTable where  $sampleTypeStatus='active'";
 $sResult = $db->rawQuery($sQuery);
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
