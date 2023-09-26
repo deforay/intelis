@@ -17,22 +17,28 @@ $general = ContainerRegistry::get(CommonService::class);
 if (isset($_POST['type']) && $_POST['type'] == 'vl') {
     $refTable = "form_vl";
     $refPrimaryColumn = "vl_sample_id";
+    $sampleTypeColumn = "sample_type";
 } elseif (isset($_POST['type']) && $_POST['type'] == 'eid') {
     $refTable = "form_eid";
     $refPrimaryColumn = "eid_id";
+    $sampleTypeColumn = "specimen_type";
 } elseif (isset($_POST['type']) && $_POST['type'] == 'covid19') {
     $refTable = "form_covid19";
     $refPrimaryColumn = "covid19_id";
+    $sampleTypeColumn = "specimen_type";
 } elseif (isset($_POST['type']) && $_POST['type'] == 'hepatitis') {
     $refTable = "form_hepatitis";
     $refPrimaryColumn = "hepatitis_id";
     $showPatientName = true;
+    $sampleTypeColumn = "specimen_type";
 } elseif (isset($_POST['type']) && $_POST['type'] == 'tb') {
     $refTable = "form_tb";
     $refPrimaryColumn = "tb_id";
+    $sampleTypeColumn = "specimen_type";
 } elseif (isset($_POST['type']) && $_POST['type'] == 'generic-tests') {
     $refTable = "form_generic";
     $refPrimaryColumn = "sample_id";
+    $sampleTypeColumn = "sample_type";
 }
 
 $request = $GLOBALS['request'];
@@ -48,6 +54,8 @@ $query = "(SELECT vl.sample_code,vl.$refPrimaryColumn,vl.facility_id,vl.result_s
 
 $where[] = " (vl.is_sample_rejected IS NULL OR vl.is_sample_rejected = '' OR vl.is_sample_rejected = 'no') AND (vl.reason_for_sample_rejection IS NULL OR vl.reason_for_sample_rejection ='' OR vl.reason_for_sample_rejection = 0) AND (vl.result is NULL or vl.result = '') AND vl.sample_code!=''";
 
+$sample = $_POST['sName'];
+
 if (isset($_POST['batchId'])) {
     $where[] = " (sample_batch_id = '" . $_POST['batchId'] . "' OR sample_batch_id IS NULL OR sample_batch_id = '')";
 } else {
@@ -55,7 +63,11 @@ if (isset($_POST['batchId'])) {
 }
 
 if (is_array($_POST['fName']) && !empty($_POST['fName'])) {
-    $swhere[] = $where[] = " vl.facility_id IN (" . implode(',', $_POST['fName']) . ")";
+    $swhere[] = " vl.facility_id IN (" . implode(',', $_POST['fName']) . ")";
+}
+
+if (trim($sample) != '') {
+    $swhere[] = $where[] = " vl.$sampleTypeColumn='" . $sample . "'";
 }
 
 if (isset($_POST['genericTestType']) && $_POST['genericTestType'] != "") {

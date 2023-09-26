@@ -12,16 +12,22 @@ $_GET = $request->getQueryParams();
 
 if (isset($_GET['type']) && $_GET['type'] == 'vl') {
     $title = "Viral Load";
+    $sampleTypeTable = "r_vl_sample_type";
 } elseif (isset($_GET['type']) && $_GET['type'] == 'eid') {
     $title = "Early Infant Diagnosis";
+    $sampleTypeTable = "r_eid_sample_type";
 } elseif (isset($_GET['type']) && $_GET['type'] == 'covid19') {
     $title = "Covid-19";
+    $sampleTypeTable = "r_covid19_sample_type";
 } elseif (isset($_GET['type']) && $_GET['type'] == 'hepatitis') {
     $title = "Hepatitis";
+    $sampleTypeTable = "r_hepatitis_sample_type";
 } elseif (isset($_GET['type']) && $_GET['type'] == 'tb') {
     $title = "TB";
+    $sampleTypeTable = "r_tb_sample_type";
 } elseif (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
     $title = "Other Lab Tests";
+    $sampleTypeTable = "r_generic_sample_types";
     $genericHide = "display:none;";
 }
 
@@ -65,6 +71,9 @@ $testTypeQuery = "SELECT * FROM r_test_types
                     WHERE test_status='active'
                     ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
+
+$sQuery = "SELECT * FROM $sampleTypeTable where status='active'";
+$sResult = $db->rawQuery($sQuery);
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
 <style>
@@ -198,8 +207,19 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                             </option>
                         </select>
                     </td>
-                    <th scope="col"></th>
-                    <td></td>
+                    <th scope="col"><?php echo _("Sample Type"); ?></th>
+					<td>
+						<select class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
+							<option value=""> <?php echo _("-- Select --"); ?> </option>
+							<?php
+							foreach ($sResult as $type) {
+							?>
+								<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
+							<?php
+							}
+							?>
+						</select>
+					</td>
                 </tr>
                 <tr>
                     <td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _translate('Filter Samples'); ?>" class="btn btn-success btn-sm">
@@ -362,7 +382,8 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                 sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
                 type: '<?php echo $_GET['type']; ?>',
                 testType: $('#testType').val(),
-                fName: fName
+                fName: fName,
+                sName: $("#sampleType").val()
             },
             function(data) {
                 if (data != "") {
