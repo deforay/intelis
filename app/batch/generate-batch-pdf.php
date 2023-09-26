@@ -120,8 +120,8 @@ if (!empty($id)) {
     }
     // die($dateQuery);
     $dateResult = $db->rawQueryOne($dateQuery);
-    $resulted = (isset($dateResult['sample_tested_datetime']) && $dateResult['sample_tested_datetime'] != '' && $dateResult['sample_tested_datetime'] != null && $dateResult['sample_tested_datetime'] != '0000-00-00 00:00:00')?DateUtility::humanReadableDateFormat($dateResult['sample_tested_datetime'], true):null;
-    $reviewed = (isset($dateResult['result_reviewed_datetime']) && $dateResult['result_reviewed_datetime'] != '' && $dateResult['result_reviewed_datetime'] != null && $dateResult['result_reviewed_datetime'] != '0000-00-00 00:00:00')?DateUtility::humanReadableDateFormat($dateResult['result_reviewed_datetime'], true):null;
+    $resulted = (isset($dateResult['sample_tested_datetime']) && $dateResult['sample_tested_datetime'] != '' && $dateResult['sample_tested_datetime'] != null && $dateResult['sample_tested_datetime'] != '0000-00-00 00:00:00') ? DateUtility::humanReadableDateFormat($dateResult['sample_tested_datetime'], true) : null;
+    $reviewed = (isset($dateResult['result_reviewed_datetime']) && $dateResult['result_reviewed_datetime'] != '' && $dateResult['result_reviewed_datetime'] != null && $dateResult['result_reviewed_datetime'] != '0000-00-00 00:00:00') ? DateUtility::humanReadableDateFormat($dateResult['result_reviewed_datetime'], true) : null;
     if (!empty($bResult)) {
         // create new PDF document
         $pdf = new BatchPdfHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -175,7 +175,7 @@ if (!empty($id)) {
                 $dateResult['lot_expiration_date'] = DateUtility::humanReadableDateFormat($dateResult['lot_expiration_date']);
             }
             if (isset($dateResult['result_printed_datetime']) && $dateResult['result_printed_datetime'] != "" && $dateResult['result_printed_datetime'] != null) {
-                $dateResult['result_printed_datetime'] = DateUtility::humanReadableDateFormat($dateResult['result_printed_datetime'],true);
+                $dateResult['result_printed_datetime'] = DateUtility::humanReadableDateFormat($dateResult['result_printed_datetime'], true);
             }
             $tbl = '<table cellspacing="2" cellpadding="6" style="width:100%;" border="0">
                 <tr>
@@ -253,7 +253,7 @@ if (!empty($id)) {
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
                         $tbl .= '<p></p><table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
                         $tbl .= '<tr nobr="true" style="width:100%;">';
-                        
+
                         $tbl .= '<td  align="center" width="5%" style="vertical-align:middle;">' . $sampleCounter . '.</td>';
                         $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;">' . $sampleResult[0]['sample_code'] . '</td>';
                         if ($barcodeFormat == 'QRCODE') {
@@ -315,7 +315,7 @@ if (!empty($id)) {
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
                         $tbl .= '<p></p><table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
                         $tbl .= '<tr>';
-                        
+
                         $tbl .= '<td  align="center" width="5%" style="vertical-align:middle;">' . $sampleCounter . '.</td>';
                         $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;">' . $sampleResult[0]['sample_code'] . '</td>';
                         if ($barcodeFormat == 'QRCODE') {
@@ -435,7 +435,7 @@ if (!empty($id)) {
 
                 $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
                 $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333 !important;width:100%;">';
-                
+
                 $tbl .= '<td align="center" width="5%" style="vertical-align:middle;">' . $sampleCounter . '.</td>';
                 $tbl .= '<td align="center" width="20%" style="vertical-align:middle;">' . $sample['sample_code'] . '</td>';
                 if ($barcodeFormat == 'QRCODE') {

@@ -218,7 +218,7 @@ $sResult = $db->rawQuery($sQuery);
 								<div class="form-group">
 									<label for="batchCode" class="col-lg-4 control-label"><?php echo _translate("Batch Code"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<input type="text" class="form-control isRequired" id="batchCode" name="batchCode" placeholder="<?php echo _translate('Batch Code'); ?>" title="<?php echo _translate('Please enter batch code'); ?>" value="<?php echo $batchInfo[0]['batch_code']; ?>" onblur="checkNameValidation('batch_details','batch_code',this,'<?php echo "batch_id##" . $id; ?>','<?php echo _translate("This batch code already exists.Try another code"); ?>',null)" />
+										<input type="text" class="form-control isRequired" id="batchCode" name="batchCode" readonly="readonly" placeholder="<?php echo _translate('Batch Code'); ?>" title="<?php echo _translate('Please enter batch code'); ?>" value="<?php echo $batchInfo[0]['batch_code']; ?>" onblur="checkNameValidation('batch_details','batch_code',this,'<?php echo "batch_id##" . $id; ?>','<?php echo _translate("This batch code already exists.Try another code"); ?>',null)" />
 									</div>
 								</div>
 							</div>
@@ -355,7 +355,7 @@ $sResult = $db->rawQuery($sQuery);
 				endDate = end.format('YYYY-MM-DD');
 			});
 		$('#sampleCollectionDate').val("");
-		var unSelectedLength = $('.search > option').length - $(".search :selected").length;
+		//var unSelectedLength = $('.search > option').length - $(".search :selected").length;
 
 		<?php
 		$r = 1;

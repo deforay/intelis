@@ -27,26 +27,39 @@ class CommonService
     public function getQueryResultAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null): array
     {
         try {
-            // Prepare and execute the main query
-            if (isset($limit) && isset($offset)) {
-                $sql = $sql . " LIMIT $offset,$limit ";
-                $queryResult = $this->db->rawQuery($sql, $params);
+            $count = 0;
+            $limitOffsetSet = isset($limit) && isset($offset);
+            // Modify the SQL query to include limit and offset if they are set.
+            $limitSql = "";
+            if ($limitOffsetSet) {
+                $limitSql = " LIMIT $offset,$limit";
+            }
 
-                // Prepare and execute the count query
-                $countSql = preg_replace('/SELECT.*? FROM/si', 'SELECT COUNT(*) as qCount FROM', $sql, 1);
-                $count = $this->db->rawQueryOne($countSql)['qCount'];
+            // Execute the main query.
+            $queryResult = $this->db->rawQuery($sql . $limitSql, $params);
+
+            // If limit and offset are set, execute the count query.
+            if ($limitOffsetSet) {
+                if (stripos($sql, 'GROUP BY') !== false) {
+                    // If the query contains GROUP BY
+                    $countSql = "SELECT COUNT(*) as totalCount FROM ($sql) as subquery";
+                    $count = (int)$this->db->rawQueryOne($countSql)['totalCount'];
+                } else {
+                    // If the query does not contain GROUP BY
+                    $countSql = preg_replace('/SELECT.*? FROM/si', 'SELECT COUNT(*) as qCount FROM', $sql, 1);
+                    $count = (int)$this->db->rawQueryOne($countSql)['qCount'];
+                }
             } else {
-                $queryResult = $this->db->rawQuery($sql, $params);
                 $count = count($queryResult);
             }
-            if ($count == "") {
-                $count = 0;
-            }
+
             return [$queryResult, $count];
         } catch (Exception $e) {
             throw new SystemException($e->getMessage());
         }
     }
+
+
 
     /**
      *
@@ -750,7 +763,7 @@ class CommonService
     public function getBarcodeImageContent($code, $type = 'C39', $width = 2, $height = 30, $color = array(0, 0, 0)): string
     {
         $barcodeobj = new TCPDFBarcode($code, $type);
-        return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, 15, $color));
+        return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, $height, $color));
     }
 
     public function get2DBarcodeImageContent($code, $type = 'QRCODE', $width = 2, $height = 30, $color = array(0, 0, 0))
