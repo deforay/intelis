@@ -292,7 +292,11 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                 right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
             },
             fireSearch: function(value) {
+                console.log(value);
                 return value.length > 2;
+            },
+            startup: function($left, $right, $options) {
+                alert($left.find('option').length);
             },
             afterMoveToRight: function($left, $right, $options) {
                 const count = $right.find('option').length;

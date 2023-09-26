@@ -30,6 +30,8 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+$keyFromGlobalConfig = $general->getGlobalConfig('key');
+
 /** @var DateUtility $dateTimeUtil */
 $dateTimeUtil = new DateUtility();
 $headerStyleArray = [
@@ -51,6 +53,7 @@ $sQuery = "SELECT
                vl.patient_gender,
                vl.is_patient_pregnant,
                vl.is_patient_breastfeeding,
+               vl.is_encrypted,
                DATE_FORMAT(vl.treatment_initiated_date,'%d-%b-%Y') as artStartDate,
                vl.current_regimen,
                DATE_FORMAT(vl.date_of_initiation_of_current_regimen,'%d-%b-%Y') as regStartDate,
@@ -129,6 +132,11 @@ if (!$rResult) {
      return null;
 }
 foreach ($rResult as $aRow) {
+
+     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] === 'yes') {
+          $aRow['patient_art_no'] = CommonService::decrypt($aRow['patient_art_no'], base64_decode($keyFromGlobalConfig));
+     }
+     unset($aRow['is_encrypted']);
      $patientId = $aRow['patient_art_no'];
      $vfData[] = $aRow;
      $vlnsData[] = $aRow;
