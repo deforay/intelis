@@ -120,6 +120,7 @@ if (isset($_POST['batchId'])) {
             <?php }
             } ?>
         </select>
+        <div class="sampleCounterDiv"><?= _translate("Number of unselected samples"); ?> : <span id="unselectedCount"></span></div>
     </div>
 
     <div class="col-md-2">
@@ -137,11 +138,22 @@ if (isset($_POST['batchId'])) {
             <?php }
             } ?>
         </select>
+        <div class="sampleCounterDiv"><?= _translate("Number of selected samples"); ?> : <span id="selectedCount"></span></div>
     </div>
 <?php } ?>
 
 <script>
+    function updateCounts($left, $right) {
+        let selectedCount = $right.find('option').length;
+        $("#unselectedCount").html($left.find('option').length);
+        $("#selectedCount").html(selectedCount);
+        let alertText = selectedCount > 0 ?
+            "<?php echo _translate('Number of samples selected out of maximum number of samples allowed for the selected platform'); ?> : " + selectedCount + '/' + noOfSamples :
+            "<?php echo _translate('Maximum number of samples allowed for the selected platform'); ?> : " + noOfSamples;
+        $('#alertText').html(alertText);
+    }
     $(document).ready(function() {
+
         $('#search').multiselect({
             search: {
                 left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
@@ -150,22 +162,16 @@ if (isset($_POST['batchId'])) {
             fireSearch: function(value) {
                 return value.length > 2;
             },
+            startUp: function($left, $right) {
+                updateCounts($left, $right);
+            },
             afterMoveToRight: function($left, $right, $options) {
-                const count = $right.find('option').length;
-                if (count > 0) {
-                    $('#alertText').html("<?php echo _translate("You have picked"); ?> " + $("#machine option:selected").text() + " <?php echo _translate("testing platform and it has limit of maximum"); ?> " + count + '/' + noOfSamples + " <?php echo _translate("samples per batch"); ?>");
-                } else {
-                    $('#alertText').html("<?php echo _translate("You have picked"); ?> " + $("#machine option:selected").text() + " <?php echo _translate("testing platform and it has limit of maximum"); ?> " + noOfSamples + " <?php echo _translate("samples per batch"); ?>");
-                }
+                updateCounts($left, $right);
             },
             afterMoveToLeft: function($left, $right, $options) {
-                const count = $right.find('option').length;
-                if (count > 0) {
-                    $('#alertText').html("<?php echo _translate("You have picked"); ?> " + $("#machine option:selected").text() + " <?php echo _translate("testing platform and it has limit of maximum"); ?> " + count + '/' + noOfSamples + " <?php echo _translate("samples per batch"); ?>");
-                } else {
-                    $('#alertText').html("<?php echo _translate("You have picked"); ?> " + $("#machine option:selected").text() + " <?php echo _translate("testing platform and it has limit of maximum"); ?> " + noOfSamples + " <?php echo _translate("samples per batch"); ?>");
-                }
+                updateCounts($left, $right);
             }
         });
+
     });
 </script>
