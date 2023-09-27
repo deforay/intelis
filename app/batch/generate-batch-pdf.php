@@ -110,18 +110,30 @@ if (!empty($id)) {
     if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
         $dateQuery = "SELECT ct.*,
                         covid19.sample_tested_datetime,
-                        covid19.result_reviewed_datetime, ct.test_name, ct.kit_lot_no, ct.kit_expiry_date, covid19.lot_number,
-                        covid19.lot_expiration_date, covid19.result_printed_datetime
-                    FROM $refTable as covid19
+                        covid19.result_reviewed_datetime,
+                        ct.test_name,
+                        ct.kit_lot_no,
+                        ct.kit_expiry_date,
+                        covid19.lot_number,
+                        CASE
+                            WHEN covid19.lot_expiration_date IS NULL OR covid19.lot_expiration_date = '0000-00-00' THEN NULL
+                            ELSE DATE_FORMAT(covid19.lot_expiration_date, '%d-%b-%Y')
+                        END AS lot_expiration_date,
+                        covid19.result_printed_datetime
+                    FROM form_covid19 as covid19
                     LEFT JOIN covid19_tests as ct on covid19.covid19_id = ct.covid19_id
-                    WHERE sample_batch_id='" . $id . "' AND (covid19.sample_tested_datetime IS NOT NULL AND covid19.sample_tested_datetime not like '' AND covid19.sample_tested_datetime  not like '0000-00-00 00:00:00') GROUP BY covid19.covid19_id LIMIT 1";
+                    WHERE sample_batch_id='$id'
+                    GROUP BY covid19.covid19_id";
     } else {
-        $dateQuery = "SELECT sample_tested_datetime,result_reviewed_datetime from $refTable where sample_batch_id='" . $id . "' AND (sample_tested_datetime IS NOT NULL AND sample_tested_datetime not like '' AND sample_tested_datetime  not like '0000-00-00 00:00:00') LIMIT 1";
+        $dateQuery = "SELECT sample_tested_datetime,
+                        result_reviewed_datetime
+                        FROM $refTable
+                        WHERE sample_batch_id='$id'";
     }
     // die($dateQuery);
     $dateResult = $db->rawQueryOne($dateQuery);
-    $resulted = (isset($dateResult['sample_tested_datetime']) && $dateResult['sample_tested_datetime'] != '' && $dateResult['sample_tested_datetime'] != null && $dateResult['sample_tested_datetime'] != '0000-00-00 00:00:00') ? DateUtility::humanReadableDateFormat($dateResult['sample_tested_datetime'], true) : null;
-    $reviewed = (isset($dateResult['result_reviewed_datetime']) && $dateResult['result_reviewed_datetime'] != '' && $dateResult['result_reviewed_datetime'] != null && $dateResult['result_reviewed_datetime'] != '0000-00-00 00:00:00') ? DateUtility::humanReadableDateFormat($dateResult['result_reviewed_datetime'], true) : null;
+    $resulted = DateUtility::humanReadableDateFormat($dateResult['sample_tested_datetime'] ?? '', true);
+    $reviewed = DateUtility::humanReadableDateFormat($dateResult['result_reviewed_datetime'] ?? '', true);
     if (!empty($bResult)) {
         // create new PDF document
         $pdf = new BatchPdfHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -168,15 +180,11 @@ if (!empty($id)) {
         // add a page
         $pdf->AddPage();
         if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
-            if (isset($dateResult['kit_expiry_date']) && $dateResult['kit_expiry_date'] != "" && $dateResult['kit_expiry_date'] != null) {
-                $dateResult['kit_expiry_date'] = DateUtility::humanReadableDateFormat($dateResult['kit_expiry_date']);
-            }
-            if (isset($dateResult['lot_expiration_date']) && $dateResult['lot_expiration_date'] != "" && $dateResult['lot_expiration_date'] != null) {
-                $dateResult['lot_expiration_date'] = DateUtility::humanReadableDateFormat($dateResult['lot_expiration_date']);
-            }
-            if (isset($dateResult['result_printed_datetime']) && $dateResult['result_printed_datetime'] != "" && $dateResult['result_printed_datetime'] != null) {
-                $dateResult['result_printed_datetime'] = DateUtility::humanReadableDateFormat($dateResult['result_printed_datetime'], true);
-            }
+
+            $dateResult['kit_expiry_date'] = DateUtility::humanReadableDateFormat($dateResult['kit_expiry_date'] ?? '');
+            $dateResult['lot_expiration_date'] = DateUtility::humanReadableDateFormat($dateResult['lot_expiration_date'] ?? '');
+            $dateResult['result_printed_datetime'] = DateUtility::humanReadableDateFormat($dateResult['result_printed_datetime'] ?? '', true);
+
             $tbl = '<table cellspacing="2" cellpadding="6" style="width:100%;" border="0">
                 <tr>
                     <th style="font-weight: bold;">' . _translate('Reagent/Kit Name') . ' :</th><td style="width:20%;">' . ((isset($dateResult['covid19_test_name']) && $dateResult['covid19_test_name'] != "") ? $dateResult['covid19_test_name'] : $dateResult['test_name']) . '</td>
@@ -198,8 +206,8 @@ if (!empty($id)) {
                     <th align="center" width="20%"><strong>' . _translate('Remote Sample Code') . '</strong></th>
                     <th align="center" width="12.5%"><strong>' . _translate('Patient Code') . '</strong></th>
                     <th align="center" width="12.5%"><strong>' . _translate('Test Result') . '</strong></th>
-                </tr>';
-            $tbl .= '</table><hr>';
+                </tr>
+            </table><hr>';
         } else {
             $tbl = '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">
                     <tr>
@@ -209,8 +217,8 @@ if (!empty($id)) {
                         <th align="center" width="20%"><strong>' . _translate('Patient Code') . '</strong></th>
                         <th align="center" width="12.5%"><strong>' . _translate('Lot Number / <br>Exp. Date') . '</strong></th>
                         <th align="center" width="12.5%"><strong>' . _translate('Test Result') . '</strong></th>
-                    </tr>';
-            $tbl .= '</table><hr>';
+                    </tr>
+                </table><hr>';
         }
         if (isset($bResult[0]['label_order']) && trim($bResult[0]['label_order']) != '') {
             $jsonToArray = json_decode($bResult[0]['label_order'], true);
@@ -228,16 +236,37 @@ if (!empty($id)) {
                     $xplodJsonToArray = explode("_", $jsonToArray[$alphaNumeric[$j]]);
                     if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
                         if (isset($_GET['type']) && $_GET['type'] == 'tb') {
-                            $sampleQuery = "SELECT sample_code,remote_sample_code,result,$patientIdColumn, $patientFirstName, $patientLastName  $encryptCol from $refTable where $refPrimaryColumn = ?";
+                            $sampleQuery = "SELECT sample_code,
+                                                    remote_sample_code,result,
+                                                    $patientIdColumn,
+                                                    $patientFirstName,
+                                                    $patientLastName
+                                                    $encryptCol
+                                                    FROM
+                                                    $refTable
+                                                    WHERE $refPrimaryColumn = ?";
                         } else {
-                            $sampleQuery = "SELECT sample_code,remote_sample_code,result,lot_number,lot_expiration_date,$patientIdColumn, $patientFirstName, $patientLastName  $encryptCol from $refTable where $refPrimaryColumn =?";
+                            $sampleQuery = "SELECT sample_code,
+                                                    remote_sample_code,
+                                                    result,
+                                                    lot_number,
+                                                    CASE
+                                                        WHEN lot_expiration_date IS NULL OR lot_expiration_date = '0000-00-00' THEN NULL
+                                                        ELSE DATE_FORMAT(lot_expiration_date, '%d-%b-%Y')
+                                                    END AS lot_expiration_date,
+                                                    $patientIdColumn,
+                                                    $patientFirstName,
+                                                    $patientLastName  $encryptCol
+                                                    FROM
+                                                    $refTable
+                                                    WHERE $refPrimaryColumn =?";
                         }
 
                         $sampleResult = $db->rawQuery($sampleQuery, [$xplodJsonToArray[1]]);
 
                         $lotDetails = '';
                         $lotExpirationDate = '';
-                        if (isset($sampleResult[0]['lot_expiration_date']) && $sampleResult[0]['lot_expiration_date'] != '' && $sampleResult[0]['lot_expiration_date'] != null && $sampleResult[0]['lot_expiration_date'] != '0000-00-00') {
+                        if (!empty($sampleResult[0]['lot_expiration_date'])) {
                             if (trim($sampleResult[0]['lot_number']) != '') {
                                 $lotExpirationDate .= '<br>';
                             }
@@ -251,7 +280,8 @@ if (!empty($id)) {
 
 
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
-                        $tbl .= '<p></p><table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
+                        $tbl .= '<p></p>
+                                <table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
                         $tbl .= '<tr nobr="true" style="width:100%;">';
 
                         $tbl .= '<td  align="center" width="5%" style="vertical-align:middle;">' . $sampleCounter . '.</td>';
@@ -259,7 +289,7 @@ if (!empty($id)) {
                         if ($barcodeFormat == 'QRCODE') {
                             $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;"><img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
                         } else {
-                            $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;line-height:30px;"><br><img style="width:200px;height:25px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"><br></td>';
+                            $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;line-height:30px;"><img style="width:200px;height:25px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
                         }
                         if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
                             $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;">' . $sampleResult[0]['remote_sample_code'] . '</td>';
@@ -292,20 +322,41 @@ if (!empty($id)) {
                     $xplodJsonToArray = explode("_", $jsonToArray[$j]);
                     if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
                         if (isset($_GET['type']) && $_GET['type'] == 'tb') {
-                            $sampleQuery = "SELECT sample_code,remote_sample_code,result,$patientIdColumn, $patientFirstName, $patientLastName  $encryptCol from $refTable where $refPrimaryColumn =?";
+                            $sampleQuery = "SELECT sample_code,
+                                            remote_sample_code
+                                            result
+                                            $patientIdColumn,
+                                            $patientFirstName,
+                                            $patientLastName
+                                            $encryptCol
+                                            FROM $refTable
+                                            WHERE $refPrimaryColumn =?";
                         } else {
-                            $sampleQuery = "SELECT sample_code,remote_sample_code,result,lot_number,lot_expiration_date,$patientIdColumn, $patientFirstName, $patientLastName $encryptCol from $refTable where $refPrimaryColumn =?";
+                            $sampleQuery = "SELECT sample_code,
+                                                remote_sample_code,
+                                                result,
+                                                lot_number,
+                                                CASE
+                                                    WHEN lot_expiration_date IS NULL OR lot_expiration_date = '0000-00-00' THEN NULL
+                                                    ELSE DATE_FORMAT(lot_expiration_date, '%d-%b-%Y')
+                                                END AS lot_expiration_date,
+                                                $patientIdColumn,
+                                                $patientFirstName,
+                                                $patientLastName
+                                                $encryptCol
+                                                FROM $refTable
+                                                WHERE $refPrimaryColumn =?";
                         }
 
                         $sampleResult = $db->rawQuery($sampleQuery, [$xplodJsonToArray[1]]);
 
                         $lotDetails = '';
                         $lotExpirationDate = '';
-                        if (isset($sampleResult[0]['lot_expiration_date']) && $sampleResult[0]['lot_expiration_date'] != '' && $sampleResult[0]['lot_expiration_date'] != null && $sampleResult[0]['lot_expiration_date'] != '0000-00-00') {
+                        if (!empty($sampleResult[0]['lot_expiration_date'])) {
                             if (trim($sampleResult[0]['lot_number']) != '') {
                                 $lotExpirationDate .= '<br>';
                             }
-                            $lotExpirationDate .= DateUtility::humanReadableDateFormat($sampleResult[0]['lot_expiration_date']);
+                            $lotExpirationDate .= DateUtility::humanReadableDateFormat($sampleResult[0]['lot_expiration_date'] ?? '');
                         }
                         if (!empty($sampleResult[0]['is_encrypted']) && $sampleResult[0]['is_encrypted'] == 'yes') {
                             $key = base64_decode($general->getGlobalConfig('key'));
@@ -321,7 +372,7 @@ if (!empty($id)) {
                         if ($barcodeFormat == 'QRCODE') {
                             $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;"><img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
                         } else {
-                            $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;line-height:30px;"><br><img style="width:200px;height:25px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"><br></td>';
+                            $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;line-height:30px;"><img style="width:200px;height:25px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
                         }
                         if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
                             $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;">' . $sampleResult[0]['remote_sample_code'] . '</td>';
@@ -404,7 +455,17 @@ if (!empty($id)) {
                 }
             }
             $sampleCounter = ($noOfInHouseControls + $noOfManufacturerControls + $noOfCalibrators + 1);
-            $sQuery = "SELECT sample_code,remote_sample_code,lot_number,lot_expiration_date,result,$patientIdColumn from $refTable where sample_batch_id=$id";
+            $sQuery = "SELECT sample_code,
+                            remote_sample_code,
+                            lot_number,
+                            CASE
+                                WHEN lot_expiration_date IS NULL OR lot_expiration_date = '0000-00-00' THEN NULL
+                                ELSE DATE_FORMAT(lot_expiration_date, '%d-%b-%Y')
+                            END AS lot_expiration_date,
+                            result,
+                            $patientIdColumn
+                            FROM $refTable
+                            WHERE sample_batch_id=$id";
             $result = $db->query($sQuery);
             $sampleCounter = 1;
             if (isset($bResult[0]['position_type']) && $bResult[0]['position_type'] == 'alpha-numeric') {
@@ -420,7 +481,7 @@ if (!empty($id)) {
 
                 $lotDetails = '';
                 $lotExpirationDate = '';
-                if (isset($sample['lot_expiration_date']) && $sample['lot_expiration_date'] != '' && $sample['lot_expiration_date'] != null && $sample['lot_expiration_date'] != '0000-00-00') {
+                if (!empty($sample['lot_expiration_date'])) {
                     if (trim($sample['lot_number']) != '') {
                         $lotExpirationDate .= '<br>';
                     }
@@ -433,15 +494,15 @@ if (!empty($id)) {
                     $patientIdentifier = trim($patientIdentifier . " " . $patientFirstName . " " . $patientLastName);
                 }
 
-                $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">';
-                $tbl .= '<tr nobr="true" style="border-bottom:1px solid #333 !important;width:100%;">';
+                $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
+                $tbl .= '<tr nobr="true">';
 
                 $tbl .= '<td align="center" width="5%" style="vertical-align:middle;">' . $sampleCounter . '.</td>';
                 $tbl .= '<td align="center" width="20%" style="vertical-align:middle;">' . $sample['sample_code'] . '</td>';
                 if ($barcodeFormat == 'QRCODE') {
                     $tbl .= '<td align="center" width="30%" style="vertical-align:middle;"><img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sample['sample_code'], $barcodeFormat) . '"></td>';
                 } else {
-                    $tbl .= '<td align="center" width="30%" style="vertical-align:middle;line-height:30px;"><img style="width:200px;height:25px;" src="' . $general->getBarcodeImageContent($sample['sample_code'], $barcodeFormat) . '"><br></td>';
+                    $tbl .= '<td align="center" width="30%" style="vertical-align:middle;line-height:30px;"><img style="width:200px;height:25px;" src="' . $general->getBarcodeImageContent($sample['sample_code'], $barcodeFormat) . '"></td>';
                 }
                 if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
                     $tbl .= '<td align="center" width="20%" style="vertical-align:middle;">' . $sample['remote_sample_code'] . '</td>';
