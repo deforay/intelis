@@ -29,8 +29,8 @@ $primaryKey = "sample_id";
  * you want to insert a non-database field (for example a counter or static image)
  */
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'vl.patient_id', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_type_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'vl.patient_id', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_type_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name');
+$aColumns = array('vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code','b.batch_code', 'vl.patient_id', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_type_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+$orderColumns = array('vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_type_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name');
 if (!empty($_POST['from']) && $_POST['from'] == "enterresult") {
      $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_type_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
      $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_type_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name');
@@ -152,7 +152,8 @@ vl.sample_received_at_hub_datetime,
 vl.sample_received_at_testing_lab_datetime,
 vl.result_dispatched_datetime,
 vl.result_printed_datetime,
-vl.result_approved_by
+vl.result_approved_by,
+b.batch_code
 
 FROM form_generic as vl
 LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
@@ -330,9 +331,9 @@ foreach ($rResult as $aRow) {
      if ($_SESSION['instanceType'] != 'standalone') {
           $row[] = $aRow['remote_sample_code'];
      }
-     if (!empty($_POST['from']) && $_POST['from'] == "enterresult") {
+    // if (!empty($_POST['from']) && $_POST['from'] == "enterresult") {
           $row[] = $aRow['batch_code'];
-     }
+     //}
      $row[] = $aRow['patient_id'];
      $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
      $row[] = ucwords($aRow['facility_name']);
