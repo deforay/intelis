@@ -101,13 +101,13 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 		function syncRemoteData() {
 			if (!navigator.onLine) {
-				alert("<?= _translate("Please connect to internet to sync with STS"); ?>");
+				alert("<?= _translate("Please connect to internet to sync with STS", true); ?>");
 				return false;
 			}
 
 			if (remoteSync) {
 				$.blockUI({
-					message: "<h3><?= _translate("Preparing for STS sync."); ?><br><?= _translate("Please wait..."); ?></h3>"
+					message: "<h3><?= _translate("Preparing for STS sync.", true); ?><br><?= _translate("Please wait..."); ?></h3>"
 				});
 				var jqxhr = $.ajax({
 						url: "/scheduled-jobs/remote/commonDataSync.php",
@@ -118,7 +118,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 					})
 					.fail(function() {
 						$.unblockUI();
-						alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance."); ?>");
+						alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance.", true); ?>");
 					})
 					.always(function() {
 						$.unblockUI();
@@ -129,7 +129,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 		function syncRequests() {
 			$.blockUI({
-				message: "<h3><?= _translate("Trying to sync Test Requests"); ?><br><?= _translate("Please wait..."); ?></h3>"
+				message: "<h3><?= _translate("Trying to sync Test Requests", true); ?><br><?= _translate("Please wait..."); ?></h3>"
 			});
 
 			if (remoteSync) {
@@ -154,7 +154,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		function syncResults() {
 
 			$.blockUI({
-				message: "<h3><?= _translate("Trying to sync Test Results"); ?><br><?= _translate("Please wait..."); ?></h3>"
+				message: "<h3><?= _translate("Trying to sync Test Results", true); ?><br><?= _translate("Please wait..."); ?></h3>"
 			});
 
 			if (remoteSync) {
@@ -167,7 +167,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 					})
 					.fail(function() {
 						$.unblockUI();
-						alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance."); ?>");
+						alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance.", true); ?>");
 					})
 					.always(function() {
 						$.unblockUI();
@@ -202,7 +202,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 				},
 				function(data) {
 					$.unblockUI();
-					alert("<?= _translate("Thank you.Your message has been submitted."); ?>");
+					alert("<?= _translate("Thank you.Your message has been submitted.", true); ?>");
 				});
 		}
 	}
@@ -269,7 +269,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		$alertMsg = $_SESSION['alertMsg'] ?? '';
 		if ($alertMsg !== '') {
 		?>
-			alert("<?php echo $alertMsg; ?>");
+			alert("<?= $alertMsg; ?>");
 		<?php
 			unset($_SESSION['alertMsg']);
 		}
@@ -297,7 +297,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 				return bond._id;
 			},
 			ajax: {
-				placeholder: "Type one or more character to search",
+				placeholder: "<?= _translate("Type one or more character to search", true); ?>",
 				url: "/includes/get-data-list-for-generic.php",
 				dataType: 'json',
 				delay: 250,

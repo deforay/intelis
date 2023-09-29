@@ -245,9 +245,9 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 				},
 				function(data) {
 					if (data == 1) {
-						alert("<?php echo _translate("Batch deleted successfully"); ?>");
+						alert("<?= _translate("Batch deleted successfully", true); ?>");
 					} else {
-						alert("<?php echo _translate("Something went wrong. Please try again later."); ?>");
+						alert("<?= _translate("Something went wrong. Please try again later.", true); ?>");
 					}
 					oTable.fnDraw();
 				});

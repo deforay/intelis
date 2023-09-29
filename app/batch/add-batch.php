@@ -209,18 +209,18 @@ $sResult = $db->rawQuery($sQuery);
                         </select>
                     </td>
                     <th scope="col"><?php echo _("Sample Type"); ?></th>
-					<td>
-						<select class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
-							<option value=""> <?php echo _("-- Select --"); ?> </option>
-							<?php
-							foreach ($sResult as $type) {
-							?>
-								<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
-							<?php
-							}
-							?>
-						</select>
-					</td>
+                    <td>
+                        <select class="form-control" id="sampleType" name="sampleType" title="<?php echo _('Please select sample type'); ?>">
+                            <option value=""> <?php echo _("-- Select --"); ?> </option>
+                            <?php
+                            foreach ($sResult as $type) {
+                            ?>
+                                <option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
+                            <?php
+                            }
+                            ?>
+                        </select>
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _translate('Filter Samples'); ?>" class="btn btn-success btn-sm">
@@ -327,12 +327,12 @@ $sResult = $db->rawQuery($sQuery);
         var selected = $("#machine").find('option:selected');
         noOfSamples = selected.data('no-of-samples');
         if (noOfSamples < selVal.length) {
-            alert("<?= _translate("You have selected more than allowed number of samples"); ?>");
+            alert("<?= _translate("You have selected more than allowed number of samples", true); ?>");
             return false;
         }
 
         if (selVal == "") {
-            alert("<?= _translate("Please select one or more samples"); ?>");
+            alert("<?= _translate("Please select one or more samples", true); ?>");
             return false;
         }
 
@@ -372,7 +372,7 @@ $sResult = $db->rawQuery($sQuery);
         var machine = $("#machine").val();
         if (machine == null || machine == '') {
             $.unblockUI();
-            alert("<?php echo _translate("You have to choose a testing platform to proceed"); ?>");
+            alert("<?= _translate("You have to choose a testing platform to proceed", true); ?>");
             return false;
         }
         var fName = $("#facilityName").val();
@@ -381,7 +381,7 @@ $sResult = $db->rawQuery($sQuery);
         $.post("get-samples-batch.php", {
                 sampleCollectionDate: $("#sampleCollectionDate").val(),
                 sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
-                type: '<?php echo $_GET['type']; ?>',
+                type: '<?= $_GET['type']; ?>',
                 testType: $('#testType').val(),
                 fName: fName,
                 sName: $("#sampleType").val()
@@ -402,7 +402,7 @@ $sResult = $db->rawQuery($sQuery);
             $("#platform").val($("#machine").val());
             var selected = $(this).find('option:selected');
             noOfSamples = selected.data('no-of-samples');
-            $('#alertText').html("<?php echo _translate("Maximum number of samples allowed for the selected platform"); ?> : " + noOfSamples);
+            $('#alertText').html("<?= _translate("Maximum number of samples allowed for the selected platform", true); ?> : " + noOfSamples);
         } else {
             $('#alertText').html('');
         }

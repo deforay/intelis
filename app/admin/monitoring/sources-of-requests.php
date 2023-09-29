@@ -461,7 +461,7 @@ foreach ($sources as $list) {
             function(data) {
                 $.unblockUI();
                 if (data === "" || data === null || data === undefined) {
-                    alert("<?php echo _translate("Unable to generate the excel file"); ?>");
+                    alert("<?= _translate("Unable to generate the excel file", true); ?>");
                 } else {
                     window.open('/download.php?d=a&f=' + data, '_blank');
                 }
