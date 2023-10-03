@@ -133,21 +133,21 @@ class GeoLocationsService
     {
 
         $response = [];
-        if(is_array($provinceId)){
-            $provinceId = implode(',',$provinceId);
+        if (is_array($provinceId)) {
+            $provinceId = implode(',', $provinceId);
         }
         if ($districts === true) {
-            $districtSql = "SELECT geo_id, geo_name from geographical_divisions WHERE geo_parent IN ($provinceId) AND geo_status='active'";
+            $districtSql = "SELECT geo_id, geo_name from geographical_divisions WHERE geo_parent IN ($provinceId) AND geo_status='active' ORDER BY geo_name";
             $response['districts'] = $this->db->rawQuery($districtSql);
         }
 
         if ($facilities === true) {
-            $facilitySql = "SELECT facility_id, facility_name, facility_code from facility_details WHERE (facility_type = 1 or facility_type = 3) AND facility_state_id IN ($provinceId) AND status='active'";
+            $facilitySql = "SELECT facility_id, facility_name, facility_code from facility_details WHERE facility_state_id IN ($provinceId) AND status='active' ORDER BY facility_name";
             $response['facilities'] = $this->db->rawQuery($facilitySql);
         }
 
         if ($labs === true) {
-            $facilitySql = "SELECT facility_id, facility_name from facility_details WHERE facility_type = 2  AND facility_state_id IN ($provinceId) AND status='active'";
+            $facilitySql = "SELECT facility_id, facility_name from facility_details WHERE facility_type = 2  AND facility_state_id IN ($provinceId) AND status='active' ORDER BY facility_name";
             $response['labs'] = $this->db->rawQuery($facilitySql);
         }
 
@@ -160,12 +160,12 @@ class GeoLocationsService
         $response = [];
 
         if ($facilities === true) {
-            $facilitySql = "SELECT facility_id, facility_name, facility_code from facility_details WHERE (facility_type = 1 or facility_type = 3) AND facility_district_id = $districtId AND status='active'";
+            $facilitySql = "SELECT facility_id, facility_name, facility_code from facility_details WHERE facility_district_id = $districtId AND status='active' ORDER BY facility_name";
             $response['facilities'] = $this->db->rawQuery($facilitySql);
         }
 
         if ($labs === true) {
-            $labSql = "SELECT facility_id, facility_name from facility_details WHERE facility_type = 2  AND facility_district_id = $districtId AND status='active'";
+            $labSql = "SELECT facility_id, facility_name from facility_details WHERE facility_type = 2  AND facility_district_id = $districtId AND status='active' ORDER BY facility_name";
             $response['labs'] = $this->db->rawQuery($labSql);
         }
 

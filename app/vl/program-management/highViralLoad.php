@@ -9,6 +9,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
+
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 //config  query
@@ -21,8 +22,14 @@ for ($i = 0; $i < sizeof($configResult); $i++) {
 }
 $sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
-$fQuery = "SELECT * FROM facility_details where status='active' AND (facility_type = 1 or facility_type = 3) ";
+
+$fQuery = "SELECT * FROM facility_details WHERE status='active' ";
+
+if (!empty($_SESSION['facilityMap'])) {
+	$fQuery .= " AND facility_id IN (" . $_SESSION['facilityMap'] . ")";
+}
 $fResult = $db->rawQuery($fQuery);
+
 $batQuery = "SELECT batch_code FROM batch_details where test_type = 'vl' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
 //sample rejection reason
@@ -155,7 +162,7 @@ $state = $geolocationService->getProvinces("yes");
 																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php foreach ($fResult as $name) { ?>
-																<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
+																<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . " - " . $name['facility_code']); ?></option>
 															<?php } ?>
 														</select>
 													</td>
@@ -334,7 +341,7 @@ $state = $geolocationService->getProvinces("yes");
 														<select class="form-control vfvlnsfilters" id="vfVlnsfacilityName" name="vfVlnsfacilityName" title="<?php echo _translate('Please select facility name'); ?>" style="width:220px;">
 															<option value=""><?php echo _translate('-- Select --'); ?></option>
 															<?php foreach ($fResult as $name) { ?>
-																<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
+																<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . " - " . $name['facility_code']); ?></option>
 															<?php } ?>
 														</select>
 													</td>
@@ -429,7 +436,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php
 															foreach ($fResult as $name) {
 															?>
-																<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
+																<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . " - " . $name['facility_code']); ?></option>
 															<?php
 															}
 															?>
@@ -654,7 +661,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php
 															foreach ($fResult as $name) {
 															?>
-																<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
+																<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . " - " . $name['facility_code']); ?></option>
 															<?php
 															}
 															?>
