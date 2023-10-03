@@ -1278,10 +1278,12 @@ if (!empty($patientData)) {
     function generateSampleCode() {
         var pName = $("#province").val();
         var sDate = $("#sampleCollectionDate").val();
+        var provinceCode = $("#province").find(":selected").attr("data-code");
+
         if (pName != '' && sDate != '') {
             $.post("/covid-19/requests/generateSampleCode.php", {
                     sampleCollectionDate: sDate,
-                    provinceCode: pName
+                    provinceCode: provinceCode
                 },
                 function(data) {
                     var sCodeKey = JSON.parse(data);

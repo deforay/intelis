@@ -649,10 +649,12 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 	function generateSampleCode() {
 		var pName = $("#province").val();
 		var sDate = $("#sampleCollectionDate").val();
+		var provinceCode = $("#province").find(":selected").attr("data-code");
+
 		if (pName != '' && sDate != '') {
 			$.post("/tb/requests/generate-sample-code.php", {
 					sampleCollectionDate: sDate,
-					provinceCode: pName
+					provinceCode: provinceCode
 				},
 				function(data) {
 					var sCodeKey = JSON.parse(data);

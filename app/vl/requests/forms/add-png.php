@@ -137,6 +137,16 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											Information</td>
 									</tr>
 									<tr>
+									<th scope="row" style="width:15% !important"><label for="childId"><?= _translate('Encrypt PII'); ?> <span class="mandatory">*</span> </label></th>
+											<td>
+													<select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control isRequired" title="<?= _translate('Select Patient is from Defence Forces'); ?>">
+														<option value=""><?= _translate('--Select--'); ?></option>
+														<option value="no" selected='selected'><?= _translate('No'); ?></option>
+														<option value="yes"><?= _translate('Yes'); ?></option>
+													</select>
+											</td>
+									</tr>
+									<tr>
 										<td>
 											<label for="artNo" class="labels">Patient ID <span class="mandatory">*</span></label>
 										</td>

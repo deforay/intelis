@@ -126,6 +126,7 @@ try {
 		'implementing_partner' => $_POST['implementingPartner'] ?? null,
 		'funding_source' => $_POST['fundingSource'] ?? null,
 		'patient_id' => $_POST['patientId'] ?? null,
+		'sync_patient_identifiers' => $_POST['syncPatientIdentifiers'] ?? null,
 		'patient_name' => $_POST['firstName'] ?? null,
 		'patient_surname' => $_POST['lastName'] ?? null,
 		'patient_dob' => isset($_POST['patientDob']) ? DateUtility::isoDateFormat($_POST['patientDob']) : null,
@@ -204,6 +205,18 @@ try {
 				$riskFactorsData["riskfactors_detected"] = (isset($value) && $value == 'other') ? $_POST['riskFactorsOther'][$id] : $value;
 				$db->insert("hepatitis_risk_factors", $riskFactorsData);
 			}
+		}
+
+		if ($_POST['syncPatientIdentifiers'] === 'no') {
+			$key = base64_decode($general->getGlobalConfig('key'));
+			$encryptedPatientId = $general->crypto('encrypt', $hepatitisData['patient_id'], $key);
+			$encryptedPatientName = $general->crypto('encrypt', $hepatitisData['patient_name'], $key);
+			$encryptedPatientSurName = $general->crypto('encrypt', $hepatitisData['patient_surname'], $key);
+	
+			$hepatitisData['patient_id'] = $encryptedPatientId;
+			$hepatitisData['patient_name'] = $encryptedPatientName;
+			$hepatitisData['patient_surname'] = $encryptedPatientSurName;
+			$hepatitisData['is_encrypted'] = 'yes';
 		}
 
 		$id = 0;

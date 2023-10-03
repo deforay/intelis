@@ -126,6 +126,18 @@ $testPlatformList = [];
 foreach ($testPlatformResult as $row) {
     $testPlatformList[$row['machine_name']] = $row['machine_name'];
 }
+
+if (!empty($hepatitisInfo['is_encrypted']) && $hepatitisInfo['is_encrypted'] == 'yes'){
+	$key = base64_decode($general->getGlobalConfig('key'));
+	$hepatitisInfo['patient_id'] = $general->crypto('decrypt' ,$hepatitisInfo['patient_id'], $key);
+	if($hepatitisInfo['patient_name']!=''){
+        $hepatitisInfo['patient_name'] = $general->crypto('decrypt' ,$hepatitisInfo['patient_name'], $key);
+	}
+    if($hepatitisInfo['patient_surname']!=''){
+        $hepatitisInfo['patient_surname'] = $general->crypto('decrypt' ,$hepatitisInfo['patient_surname'], $key);
+	}
+}
+
 $fileArray = array(
     1 => 'forms/edit-southsudan.php',
     2 => 'forms/edit-sierraleone.php',

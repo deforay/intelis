@@ -235,6 +235,16 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 								</div>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
+                                        <th scope="row" style="width:15% !important"><label for="childId"><?= _translate('Encrypt PII'); ?> <span class="mandatory">*</span> </label></th>
+                                            <td>
+                                                    <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control isRequired" title="<?= _translate('Encrypt PII'); ?>">
+                                                        <option value=""><?= _translate('--Select--'); ?></option>
+                                                        <option value="no" <?php echo ($tbInfo['sync_patient_identifiers'] == "no") ? "selected='selected'" : ""; ?>><?= _translate('No'); ?></option>
+                                                        <option value="yes" <?php echo ($tbInfo['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
+                                                    </select>
+                                            </td>
+                                    </tr> 
+									<tr>
 										<th scope="row"><label for="patientId">TB Registration Unique ID<span class="mandatory">*</span></label></th>
 										<td>
 											<input type="text" value="<?php echo $tbInfo['patient_id']; ?>" class="form-control isRequired" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
@@ -757,10 +767,12 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 	function generateSampleCode() {
 		var pName = $("#province").val();
 		var sDate = $("#sampleCollectionDate").val();
+		var provinceCode = $("#province").find(":selected").attr("data-code");
+
 		if (pName != '' && sDate != '') {
 			$.post("/tb/requests/generate-sample-code.php", {
 					sampleCollectionDate: sDate,
-					provinceCode: pName
+					provinceCode: provinceCode
 				},
 				function(data) {
 					var sCodeKey = JSON.parse(data);

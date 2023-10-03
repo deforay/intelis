@@ -208,6 +208,7 @@ try {
 		'flight_airport_of_departure' => !empty($_POST['airportOfDeparture']) ? $_POST['airportOfDeparture'] : null,
 		'flight_transit' => !empty($_POST['transit']) ? $_POST['transit'] : null,
 		'reason_of_visit' => !empty($_POST['reasonOfVisit']) ? $_POST['reasonOfVisit'] : null,
+		'sync_patient_identifiers' => $_POST['syncPatientIdentifiers'] ?? null,
 		'is_sample_collected' => !empty($_POST['isSampleCollected']) ? $_POST['isSampleCollected'] : null,
 		'reason_for_covid19_test' => !empty($_POST['reasonForCovid19Test']) ? $_POST['reasonForCovid19Test'] : null,
 		'type_of_test_requested' => !empty($_POST['testTypeRequested']) ? $_POST['testTypeRequested'] : null,

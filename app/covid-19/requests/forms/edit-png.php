@@ -220,7 +220,16 @@ $fundingSourceOptions = $general->generateSelectOptions($fundingSourceArray, $co
                                     <h3 class="box-title">PATIENT INFORMATION</h3>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-
+                                    <tr>
+                                        <th scope="row" style="width:15% !important"><label for="childId"><?= _translate('Encrypt PII'); ?> <span class="mandatory">*</span> </label></th>
+                                            <td>
+                                                    <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control isRequired" title="<?= _translate('Encrypt PII'); ?>">
+                                                        <option value=""><?= _translate('--Select--'); ?></option>
+                                                        <option value="no" <?php echo ($covid19Info['sync_patient_identifiers'] == "no") ? "selected='selected'" : ""; ?>><?= _translate('No'); ?></option>
+                                                        <option value="yes" <?php echo ($covid19Info['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
+                                                    </select>
+                                            </td>
+                                    </tr>
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="firstName">Patient first name <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
@@ -779,10 +788,12 @@ $fundingSourceOptions = $general->generateSelectOptions($fundingSourceArray, $co
     function generateSampleCode() {
         var pName = $("#province").val();
         var sDate = $("#sampleCollectionDate").val();
+        var provinceCode = $("#province").find(":selected").attr("data-code");
+
         if (pName != '' && sDate != '') {
             $.post("/covid-19/requests/generateSampleCode.php", {
                     sampleCollectionDate: sDate,
-                    provinceCode: pName
+                    provinceCode: provinceCode
                 },
                 function(data) {
                     var sCodeKey = JSON.parse(data);
