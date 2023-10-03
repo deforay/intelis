@@ -346,6 +346,19 @@ try {
 		$db->delete($testTableName);
 		$covid19Data['sample_tested_datetime'] = null;
 	}
+
+	if ($_POST['syncPatientIdentifiers'] === 'no') {
+        $key = base64_decode($general->getGlobalConfig('key'));
+        $encryptedPatientId = $general->crypto('encrypt', $covid19Data['patient_id'], $key);
+        $encryptedPatientName = $general->crypto('encrypt', $covid19Data['patient_name'], $key);
+        $encryptedPatientSurName = $general->crypto('encrypt', $covid19Data['patient_surname'], $key);
+
+        $covid19Data['patient_id'] = $encryptedPatientId;
+        $covid19Data['patient_name'] = $encryptedPatientName;
+        $covid19Data['patient_surname'] = $encryptedPatientSurName;
+        $covid19Data['is_encrypted'] = 'yes';
+    }
+
 	$id = 0;
 
 	if (!empty($_POST['covid19SampleId'])) {

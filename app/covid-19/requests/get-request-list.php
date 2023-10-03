@@ -120,7 +120,7 @@ $sQuery = "SELECT vl.*, f.*,  ts.status_name, b.batch_code, r.result as resultTx
           rs.rejection_reason_name,
           r_f_s.funding_source_name,
           c.iso_name as nationality,
-          r_i_p.i_partner_name FROM form_covid19 as vl
+          r_i_p.i_partner_name, vl.is_encrypted FROM form_covid19 as vl
           LEFT JOIN r_countries as c ON vl.patient_nationality=c.id
           LEFT JOIN r_covid19_results as r ON vl.result=r.result_id
           LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
@@ -294,10 +294,6 @@ foreach ($rResult as $aRow) {
           $aRow['last_modified_datetime'] = '';
      }
 
-     //  $patientFname = ($general->crypto('doNothing',$aRow['patient_first_name'],$aRow['patient_art_no']));
-     //  $patientMname = ($general->crypto('doNothing',$aRow['patient_middle_name'],$aRow['patient_art_no']));
-     //  $patientLname = ($general->crypto('doNothing',$aRow['patient_surname'],$aRow['patient_art_no']));
-
 
      $row = [];
 
@@ -306,13 +302,20 @@ foreach ($rResult as $aRow) {
      if ($_SESSION['instanceType'] != 'standalone') {
           $row[] = $aRow['remote_sample_code'];
      }
+    
+     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+          $key = base64_decode($general->getGlobalConfig('key'));
+          $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
+          $aRow['patient_name'] = $general->crypto('decrypt', $aRow['patient_name'], $key);
+          $aRow['patient_surname'] = $general->crypto('decrypt', $aRow['patient_surname'], $key);
+     }
+
      $row[] = $aRow['sample_collection_date'];
      $row[] = $aRow['batch_code'];
      $row[] = ($aRow['lab_name']);
      $row[] = ($aRow['facility_name']);
      $row[] = $aRow['patient_id'];
      $row[] = $aRow['patient_name'] . " " . $aRow['patient_surname'];
-
      $row[] = ($aRow['facility_state']);
      $row[] = ($aRow['facility_district']);
      $row[] = (is_numeric($aRow['result'])) ? ($aRow['resultTxt']) : ($aRow['result']);

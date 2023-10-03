@@ -80,16 +80,24 @@ $covid19TestQuery = "SELECT * FROM covid19_tests WHERE covid19_id=$id ORDER BY t
 $covid19TestInfo = $db->rawQuery($covid19TestQuery);
 
 $disable = "disabled = 'disabled'";
-if (isset($vlQueryInfo['result_reviewed_datetime']) && trim($vlQueryInfo['result_reviewed_datetime']) != '' && $vlQueryInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
-	$expStr = explode(" ", $vlQueryInfo['result_reviewed_datetime']);
-	$vlQueryInfo['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+if (isset($covid19Info['result_reviewed_datetime']) && trim($covid19Info['result_reviewed_datetime']) != '' && $covid19Info['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", $covid19Info['result_reviewed_datetime']);
+	$covid19Info['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
-	$vlQueryInfo['result_reviewed_datetime'] = '';
+	$covid19Info['result_reviewed_datetime'] = '';
 }
 //Recommended corrective actions
 $condition = "status ='active' AND test_type='covid19'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
+if (!empty($covid19Info['is_encrypted']) && $covid19Info['is_encrypted'] == 'yes') {
+	$key = base64_decode($general->getGlobalConfig('key'));
+	$covid19Info['patient_id'] = $general->crypto('decrypt', $covid19Info['patient_id'], $key);
+	$covid19Info['patient_name'] = $general->crypto('decrypt', $covid19Info['patient_name'], $key);
+	
+	$covid19Info['patient_surname'] = $general->crypto('decrypt', $covid19Info['patient_surname'], $key);
+	
+}
 
 ?>
 <style>

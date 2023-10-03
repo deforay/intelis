@@ -173,6 +173,16 @@ if (isset($eidInfo['result_dispatched_datetime']) && trim($eidInfo['result_dispa
 $condition = "status ='active' AND test_type='eid'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
+
+if (!empty($eidInfo['is_encrypted']) && $eidInfo['is_encrypted'] == 'yes'){
+	$key = base64_decode($general->getGlobalConfig('key'));
+	$eidInfo['child_id'] = $general->crypto('decrypt' ,$eidInfo['child_id'], $key);
+	if($eidInfo['child_name']!=''){
+        $eidInfo['child_name'] = $general->crypto('decrypt' ,$eidInfo['child_name'], $key);
+	}
+}
+
+
 $fileArray = array(
     1 => 'forms/edit-southsudan.php',
     2 => 'forms/edit-sierraleone.php',

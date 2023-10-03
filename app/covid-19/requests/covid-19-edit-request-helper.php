@@ -367,6 +367,19 @@ try {
 		$covid19Data['sample_tested_datetime'] = null;
 	}
 	//echo "<pre>";print_r($covid19Data);die;
+
+	if ($_POST['syncPatientIdentifiers'] === 'no') {
+        $key = base64_decode($general->getGlobalConfig('key'));
+        $encryptedPatientId = $general->crypto('encrypt', $covid19Data['patient_id'], $key);
+        $encryptedPatientName = $general->crypto('encrypt', $covid19Data['patient_name'], $key);
+        $encryptedPatientSurName = $general->crypto('encrypt', $covid19Data['patient_surname'], $key);
+
+        $covid19Data['patient_id'] = $encryptedPatientId;
+        $covid19Data['patient_name'] = $encryptedPatientName;
+        $covid19Data['patient_surname'] = $encryptedPatientSurName;
+        $covid19Data['is_encrypted'] = 'yes';
+    }
+
 	$id = 0;
 	if (isset($_POST['covid19SampleId']) && $_POST['covid19SampleId'] != '') {
 		$db = $db->where('covid19_id', $_POST['covid19SampleId']);
