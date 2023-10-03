@@ -115,13 +115,11 @@ class FacilitiesService
             $this->db->join("facility_details f", "map.facility_id=f.facility_id", "INNER");
             $this->db->joinWhere("facility_details f", "f.facility_type", $facilityType);
             } */
-
+            $userfacilityMap = null;
             $this->db->where("user_id", $userId);
             $response = $this->db->getValue("user_facility_map", "facility_id", null);
             if ($this->db->count > 0) {
                 $userfacilityMap = implode(",", $response);
-            } else {
-                $userfacilityMap = null;
             }
             return $userfacilityMap;
         });
@@ -160,7 +158,7 @@ class FacilitiesService
         return once(function () use ($testType, $byPassFacilityMap, $allColumns, $condition, $onlyActive, $userId) {
             $userId = $userId ?: $_SESSION['userId'] ?: null;
             if (!$byPassFacilityMap && !empty($userId)) {
-                $facilityMap = $this->getUserFacilityMap($userId);
+                $facilityMap = $_SESSION['facilityMap'] ?? $this->getUserFacilityMap($userId);
                 if (!empty($facilityMap)) {
                     $this->db->where("`facility_id` IN (" . $facilityMap . ")");
                 }
@@ -191,9 +189,8 @@ class FacilitiesService
             } else {
 
                 $response = [];
-                $cols = array("facility_id", "facility_name");
 
-                $results = $this->db->get("facility_details", null, $cols);
+                $results = $this->db->get("facility_details", null, "facility_id,facility_name");
 
                 foreach ($results as $row) {
                     $response[$row['facility_id']] = $row['facility_name'];
@@ -261,8 +258,7 @@ class FacilitiesService
                 return $this->db->get("facility_details");
             } else {
                 $response = [];
-                $cols = array("facility_id", "facility_name");
-                $results = $this->db->get("facility_details", null, $cols);
+                $results = $this->db->get("facility_details", null, "facility_id,facility_name");
                 foreach ($results as $row) {
                     $response[$row['facility_id']] = $row['facility_name'];
                 }

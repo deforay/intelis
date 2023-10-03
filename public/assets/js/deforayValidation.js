@@ -316,7 +316,7 @@ function deforayValidatorInternal(formInputs, useTitleToShowMessage) {
                     errorMsg = elementTitle;
                 }
                 else {
-                    errorMsg = "Please make sure password and confirm password are same";
+                    errorMsg = "Please make sure password and confirm password are the same";
                 }
             }
             else {

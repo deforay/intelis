@@ -305,12 +305,12 @@ $sResult = $db->rawQuery($sQuery);
 		var selected = $("#machine").find('option:selected');
 		noOfSamples = selected.data('no-of-samples');
 		if (noOfSamples < selVal.length) {
-			alert("<?= _translate("You have selected more than allowed number of samples"); ?>");
+			alert("<?= _translate("You have selected more than allowed number of samples", true); ?>");
 			return false;
 		}
 
 		if (selVal == "") {
-			alert("<?= _translate("Please select one or more samples"); ?>");
+			alert("<?= _translate("Please select one or more samples", true); ?>");
 			return false;
 		}
 
@@ -325,7 +325,7 @@ $sResult = $db->rawQuery($sQuery);
 	}
 	$(document).ready(function() {
 		$("#facilityName").select2({
-			placeholder: "<?php echo _translate('Select Facilities'); ?>"
+			placeholder: "<?= _translate('Select Facilities', true); ?>"
 		});
 		setTimeout(function() {
 			$("#search_rightSelected").trigger('click');
@@ -439,7 +439,7 @@ $sResult = $db->rawQuery($sQuery);
 			getSampleCodeDetails();
 			var selected = $(this).find('option:selected');
 			noOfSamples = selected.data('no-of-samples');
-			$('#alertText').html("<?php echo _translate("Maximum number of samples allowed for the selected platform"); ?> : " + noOfSamples);
+			$('#alertText').html("<?= _translate("Maximum number of samples allowed for the selected platform", true); ?> : " + noOfSamples);
 		} else {
 			//$('#alertText').html('');
 		}

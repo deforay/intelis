@@ -227,8 +227,7 @@ $sFormat = '';
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="ageInMonths">If Age
-                                                            < 1, Age in Months </label> <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" />
+                                                       <label for="ageInMonths">If Age < 1, Age in Months </label> <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" />
                                                   </div>
                                              </div>
                                         </div>
@@ -241,9 +240,9 @@ $sFormat = '';
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="gender">Gender</label><br>
+                                                       <label for="gender">Gender <span class="mandatory">*</span></label><br>
                                                        <label class="radio-inline" style="margin-left:0px;">
-                                                            <input type="radio" class="" id="genderMale" name="gender" value="male" title="Please check gender">Male
+                                                            <input type="radio" class="isRequired" id="genderMale" name="gender" value="male" title="Please check gender">Male
                                                        </label>
                                                        <label class="radio-inline" style="margin-left:0px;">
                                                             <input type="radio" class="" id="genderFemale" name="gender" value="female" title="Please check gender">Female
@@ -889,8 +888,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                placeholder: "Province"
           });
           $('#artRegimen').select2({
-			placeholder: "Select ART Regimen"
-		});
+               placeholder: "Select ART Regimen"
+          });
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {

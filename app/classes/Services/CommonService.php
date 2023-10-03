@@ -317,7 +317,7 @@ class CommonService
     public function getUserMappedProvinces($facilityMap = null)
     {
         return once(function () use ($facilityMap) {
-            $facilityMap = $facilityMap ?? $_SESSION['facilityMap'];
+            $facilityMap = $facilityMap ?? $_SESSION['facilityMap'] ?? null;
 
             $query = "SELECT gd.geo_name, gd.geo_id, gd.geo_code
                         FROM geographical_divisions as gd";

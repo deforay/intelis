@@ -495,12 +495,12 @@ foreach ($rejectionTypeResult as $type) {
               $("#bulkRejectionReason").val('');
               $(".bulkRejectionReason").hide();
               oTable.fnDraw();
-              alert("<?= _translate("Updated successfully."); ?>");
+              alert("<?= _translate("Updated successfully.", true); ?>");
             }
           });
       }
     } else {
-      alert("<?= _translate("Please select at least one checkbox"); ?>");
+      alert("<?= _translate("Please select at least one checkbox", true); ?>");
     }
   }
 
@@ -541,7 +541,7 @@ foreach ($rejectionTypeResult as $type) {
               $("#status").val('');
               $("#status").prop('disabled', true);
               oTable.fnDraw();
-              alert("<?= _translate("Updated successfully."); ?>");
+              alert("<?= _translate("Updated successfully.", true); ?>");
             }
           });
       } else {
@@ -571,7 +571,7 @@ foreach ($rejectionTypeResult as $type) {
               $("#statusDropDownId").val('');
               $("#rejectionReason").val('');
               oTable.fnDraw();
-              alert("<?= _translate("Updated successfully."); ?>");
+              alert("<?= _translate("Updated successfully.", true); ?>");
             }
           });
       } else {
