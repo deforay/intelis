@@ -180,6 +180,7 @@ try {
         'funding_source' => !empty($_POST['fundingSource']) ? $_POST['fundingSource'] : null,
         'referring_unit' => !empty($_POST['referringUnit']) ? $_POST['referringUnit'] : null,
         'patient_id' => !empty($_POST['patientId']) ? $_POST['patientId'] : null,
+        'sync_patient_identifiers' => $_POST['syncPatientIdentifiers'] ?? null,
         'patient_type' => !empty($_POST['typeOfPatient']) ? json_encode($_POST['typeOfPatient']) : null,
         'patient_name' => !empty($_POST['firstName']) ? $_POST['firstName'] : null,
         'patient_surname' => !empty($_POST['lastName']) ? $_POST['lastName'] : null,
@@ -251,6 +252,18 @@ try {
     } else {
         $db = $db->where('tb_id', $_POST['tbSampleId']);
         $db->delete($testTableName);
+    }
+
+    if ($_POST['syncPatientIdentifiers'] === 'no') {
+        $key = base64_decode($general->getGlobalConfig('key'));
+        $encryptedPatientId = $general->crypto('encrypt', $tbData['patient_id'], $key);
+        $encryptedPatientName = $general->crypto('encrypt', $tbData['patient_name'], $key);
+        $encryptedPatientSurName = $general->crypto('encrypt', $tbData['patient_surname'], $key);
+
+        $tbData['patient_id'] = $encryptedPatientId;
+        $tbData['patient_name'] = $encryptedPatientName;
+        $tbData['patient_surname'] = $encryptedPatientSurName;
+        $tbData['is_encrypted'] = 'yes';
     }
 
     if (!empty($_POST['tbSampleId'])) {

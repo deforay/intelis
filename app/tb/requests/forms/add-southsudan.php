@@ -167,7 +167,17 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 									<a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
 								</div>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-									<tr>
+								<tr>
+                                <th scope="row" style="width:15% !important"><label for="childId"><?= _translate('Encrypt PII'); ?> <span class="mandatory">*</span> </label></th>
+                                        <td>
+                                                <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control isRequired" title="<?= _translate('Select Patient is from Defence Forces'); ?>">
+                                                    <option value=""><?= _translate('--Select--'); ?></option>
+                                                    <option value="no" selected='selected'><?= _translate('No'); ?></option>
+                                                    <option value="yes"><?= _translate('Yes'); ?></option>
+                                                </select>
+                                        </td>
+                                </tr>	
+								<tr>
 										<th scope="row"><label for="patientId">Unique ART Number</label></th>
 										<td>
 											<input type="text" class="form-control" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
@@ -585,10 +595,12 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 	function generateSampleCode() {
 		var pName = $("#province").val();
 		var sDate = $("#sampleCollectionDate").val();
+		var provinceCode = $("#province").find(":selected").attr("data-code");
+
 		if (pName != '' && sDate != '') {
 			$.post("/tb/requests/generate-sample-code.php", {
 					sampleCollectionDate: sDate,
-					provinceCode: pName
+					provinceCode: provinceCode
 				},
 				function(data) {
 					var sCodeKey = JSON.parse(data);

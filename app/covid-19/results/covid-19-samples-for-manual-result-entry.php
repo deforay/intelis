@@ -142,7 +142,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,b.*,ts.*,f.facility_name,
           f.facility_state,
           f.facility_district,
           u_d.user_name as reviewedBy,
-          a_u_d.user_name as approvedBy
+          a_u_d.user_name as approvedBy, vl.is_encrypted
           FROM form_covid19 as vl
           LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
           LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
@@ -241,7 +241,12 @@ foreach ($rResult as $aRow) {
           }
      }
 
-
+     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+          $key = base64_decode($general->getGlobalConfig('key'));
+          $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
+          $aRow['patient_name'] = $general->crypto('decrypt', $aRow['patient_name'], $key);
+          $aRow['patient_surname'] = $general->crypto('decrypt', $aRow['patient_surname'], $key);
+     }
 
      $row[] = $aRow['sample_code'];
      if ($_SESSION['instanceType'] != 'standalone') {

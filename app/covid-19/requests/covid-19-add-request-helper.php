@@ -208,6 +208,7 @@ try {
 		'flight_airport_of_departure' => !empty($_POST['airportOfDeparture']) ? $_POST['airportOfDeparture'] : null,
 		'flight_transit' => !empty($_POST['transit']) ? $_POST['transit'] : null,
 		'reason_of_visit' => !empty($_POST['reasonOfVisit']) ? $_POST['reasonOfVisit'] : null,
+		'sync_patient_identifiers' => $_POST['syncPatientIdentifiers'] ?? null,
 		'is_sample_collected' => !empty($_POST['isSampleCollected']) ? $_POST['isSampleCollected'] : null,
 		'reason_for_covid19_test' => !empty($_POST['reasonForCovid19Test']) ? $_POST['reasonForCovid19Test'] : null,
 		'type_of_test_requested' => !empty($_POST['testTypeRequested']) ? $_POST['testTypeRequested'] : null,
@@ -346,6 +347,19 @@ try {
 		$db->delete($testTableName);
 		$covid19Data['sample_tested_datetime'] = null;
 	}
+
+	if ($_POST['syncPatientIdentifiers'] === 'no') {
+        $key = base64_decode($general->getGlobalConfig('key'));
+        $encryptedPatientId = $general->crypto('encrypt', $covid19Data['patient_id'], $key);
+        $encryptedPatientName = $general->crypto('encrypt', $covid19Data['patient_name'], $key);
+        $encryptedPatientSurName = $general->crypto('encrypt', $covid19Data['patient_surname'], $key);
+
+        $covid19Data['patient_id'] = $encryptedPatientId;
+        $covid19Data['patient_name'] = $encryptedPatientName;
+        $covid19Data['patient_surname'] = $encryptedPatientSurName;
+        $covid19Data['is_encrypted'] = 'yes';
+    }
+
 	$id = 0;
 
 	if (!empty($_POST['covid19SampleId'])) {

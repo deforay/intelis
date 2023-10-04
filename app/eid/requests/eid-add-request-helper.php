@@ -401,7 +401,18 @@ try {
 	$eidData['request_created_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;
 	$eidData['last_modified_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;
 
+	if ($_POST['syncPatientIdentifiers'] === 'no') {
+        $key = base64_decode($general->getGlobalConfig('key'));
+        $encryptedChildId = $general->crypto('encrypt', $eidData['child_id'], $key);
+        $encryptedChildName = $general->crypto('encrypt', $eidData['child_name'], $key);
+        $encryptedChildSurName = $general->crypto('encrypt', $eidData['child_surname'], $key);
 
+        $eidData['child_id'] = $encryptedChildId;
+        $eidData['child_name'] = $encryptedChildName;
+        $eidData['child_surname'] = $encryptedChildSurName;
+        $eidData['is_encrypted'] = 'yes';
+    }
+	
 	if (isset($_POST['eidSampleId']) && $_POST['eidSampleId'] != '') {
 		$db = $db->where('eid_id', $_POST['eidSampleId']);
 		$id = $db->update($tableName, $eidData);

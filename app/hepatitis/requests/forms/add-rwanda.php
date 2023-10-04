@@ -76,6 +76,16 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Sample ID" title="Please enter sample id" style="width:100%;" onchange="checkSampleNameValidation('form_hepatitis','<?php echo $sampleCode; ?>',this.id,null,'The sample id that you entered already exists. Please try another sample id',null)" readonly />
                                             </td>
                                         <?php } ?>
+                                        <div class="col-md-12">
+                                                  <label class="col-lg-2 control-label" for="syncPatientIdentifiers"><?= _translate('Encrypt PII'); ?> <span class="mandatory">*</span></label>
+                                                  <div class="col-lg-3">
+                                                       <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control isRequired" title="<?= _translate('Select Patient is from Defence Forces'); ?>">
+                                                            <option value=""><?= _translate('--Select--'); ?></option>
+                                                            <option value="no" selected='selected'><?= _translate('No'); ?></option>
+                                                            <option value="yes"><?= _translate('Yes'); ?></option>
+                                                       </select>
+                                                  </div>
+                                             </div>
                                         <th scope="row"><label for="patientId">Patient Code <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="Patient Code" title="Please enter Patient Code" style="width:100%;" onchange="" />
@@ -477,12 +487,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     function generateSampleCode() {
 
         var pName = $("#province").val();
+        var provinceCode = $("#province").find(":selected").attr("data-code");
+
         var sDate = $("#sampleCollectionDate").val();
         var hepatitisTestType = $("#hepatitisTestType").val();
         if (pName != '' && sDate != '' && hepatitisTestType != '') {
             $.post("/hepatitis/requests/generate-sample-code.php", {
                     sampleCollectionDate: sDate,
-                    provinceCode: pName,
+                    provinceCode: provinceCode,
                     prefix: hepatitisTestType
                 },
                 function(data) {

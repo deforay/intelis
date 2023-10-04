@@ -103,6 +103,7 @@ try {
 		'lab_id' => $_POST['labId'] ?? null,
 		'implementing_partner' => $_POST['implementingPartner'] ?? null,
 		'funding_source' => $_POST['fundingSource'] ?? null,
+		'sync_patient_identifiers' => $_POST['syncPatientIdentifiers'] ?? null,
 		'patient_id' => $_POST['patientId'] ?? null,
 		'patient_name' => $_POST['firstName'] ?? null,
 		'patient_surname' => $_POST['lastName'] ?? null,
@@ -191,6 +192,18 @@ try {
 			}
 		}
 
+		if ($_POST['syncPatientIdentifiers'] === 'no') {
+			$key = base64_decode($general->getGlobalConfig('key'));
+			$encryptedPatientId = $general->crypto('encrypt', $hepatitisData['patient_id'], $key);
+			$encryptedPatientName = $general->crypto('encrypt', $hepatitisData['patient_name'], $key);
+			$encryptedPatientSurName = $general->crypto('encrypt', $hepatitisData['patient_surname'], $key);
+	
+			$hepatitisData['patient_id'] = $encryptedPatientId;
+			$hepatitisData['patient_name'] = $encryptedPatientName;
+			$hepatitisData['patient_surname'] = $encryptedPatientSurName;
+			$hepatitisData['is_encrypted'] = 'yes';
+		}
+
 		$id = false;
 		if (isset($_POST['hepatitisSampleId']) && $_POST['hepatitisSampleId'] != '') {
 			$db = $db->where('hepatitis_id', $_POST['hepatitisSampleId']);
@@ -199,6 +212,8 @@ try {
 	} else {
 		$id = false;
 	}
+
+	
 
 	if ($id === true) {
 		$_SESSION['alertMsg'] = _translate("Hepatitis test request added successfully");

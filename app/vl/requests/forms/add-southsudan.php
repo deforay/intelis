@@ -206,6 +206,16 @@ $sFormat = '';
                                    </div>
                                    <div class="box-body">
                                         <div class="row">
+                                             <div class="col-md-12">
+                                                  <label class="col-lg-2 control-label" for="syncPatientIdentifiers"><?= _translate('Encrypt PII'); ?> <span class="mandatory">*</span></label>
+                                                  <div class="col-lg-3">
+                                                       <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control isRequired" title="<?= _translate('Select Patient is from Defence Forces'); ?>">
+                                                            <option value=""><?= _translate('--Select--'); ?></option>
+                                                            <option value="no" selected='selected'><?= _translate('No'); ?></option>
+                                                            <option value="yes"><?= _translate('Yes'); ?></option>
+                                                       </select>
+                                                  </div>
+                                             </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="artNo">ART (TRACNET) No. <span class="mandatory">*</span></label>
@@ -1084,9 +1094,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      function generateSampleCode() {
           var sDate = $("#sampleCollectionDate").val();
           $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
+          var provinceCode = $("#province").find(":selected").attr("data-code");
+
           if (sDate != '') {
                $.post("/vl/requests/generateSampleCode.php", {
-                         sampleCollectionDate: sDate
+                         sampleCollectionDate: sDate,
+                         provinceCode: provinceCode
                     },
                     function(data) {
                          var sCodeKey = JSON.parse(data);

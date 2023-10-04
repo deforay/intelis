@@ -142,6 +142,13 @@ if (isset($countryResult) && sizeof($countryResult) > 0) {
 $condition = "status ='active' AND test_type='covid19'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
+if (!empty($covid19Info['is_encrypted']) && $covid19Info['is_encrypted'] == 'yes'){
+	$key = base64_decode($general->getGlobalConfig('key'));
+	$covid19Info['patient_id'] = $general->crypto('decrypt' ,$covid19Info['patient_id'], $key);
+	if($covid19Info['patient_name']!=''){
+        $covid19Info['patient_name'] = $general->crypto('decrypt' ,$covid19Info['patient_name'], $key);
+	}
+}
 
 $fileArray = array(
     1 => 'forms/edit-southsudan.php',

@@ -5101,3 +5101,28 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remot
 
 -- Amit 21-Sep-2023 version 5.2.4
 UPDATE `system_config` SET `value` = '5.2.4' WHERE `system_config`.`name` = 'sc_version';
+
+-- Jeyabanu 29-Sep-2023
+ALTER TABLE `form_eid` ADD `is_encrypted` VARCHAR(10) NULL DEFAULT 'no' AFTER `province_id`;
+ALTER TABLE `audit_form_eid` ADD `is_encrypted` VARCHAR(10) NULL DEFAULT 'no' AFTER `province_id`;
+
+ALTER TABLE `form_eid` ADD `sync_patient_identifiers` VARCHAR(10) NULL DEFAULT 'yes' AFTER `is_encrypted`;
+ALTER TABLE `audit_form_eid` ADD `sync_patient_identifiers` VARCHAR(10) NULL DEFAULT 'yes' AFTER `is_encrypted`;
+
+ALTER TABLE `form_covid19` ADD `is_encrypted` VARCHAR(10) NULL DEFAULT 'no' AFTER `province_id`;
+ALTER TABLE `audit_form_covid19` ADD `is_encrypted` VARCHAR(10) NULL DEFAULT 'no' AFTER `province_id`;
+
+ALTER TABLE `form_covid19` ADD `sync_patient_identifiers` VARCHAR(10) NULL DEFAULT 'yes' AFTER `is_encrypted`;
+ALTER TABLE `audit_form_covid19` ADD `sync_patient_identifiers` VARCHAR(10) NULL DEFAULT 'yes' AFTER `is_encrypted`;
+
+ALTER TABLE `form_hepatitis` ADD `is_encrypted` VARCHAR(10) NULL DEFAULT 'no' AFTER `province_id`;
+ALTER TABLE `audit_form_hepatitis` ADD `is_encrypted` VARCHAR(10) NULL DEFAULT 'no' AFTER `province_id`;
+
+ALTER TABLE `form_hepatitis` ADD `sync_patient_identifiers` VARCHAR(10) NULL DEFAULT 'yes' AFTER `is_encrypted`;
+ALTER TABLE `audit_form_hepatitis` ADD `sync_patient_identifiers` VARCHAR(10) NULL DEFAULT 'yes' AFTER `is_encrypted`;
+
+ALTER TABLE `form_tb` ADD `is_encrypted` VARCHAR(10) NULL DEFAULT 'no' AFTER `other_referring_unit`;
+ALTER TABLE `audit_form_tb` ADD `is_encrypted` VARCHAR(10) NULL DEFAULT 'no' AFTER `other_referring_unit`;
+
+ALTER TABLE `form_tb` ADD `sync_patient_identifiers` VARCHAR(10) NULL DEFAULT 'yes' AFTER `is_encrypted`;
+ALTER TABLE `audit_form_tb` ADD `sync_patient_identifiers` VARCHAR(10) NULL DEFAULT 'yes' AFTER `is_encrypted`;
