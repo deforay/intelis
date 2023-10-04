@@ -506,7 +506,7 @@ foreach ($rejectionTypeResult as $type) {
 
   function updateStatus(obj, optVal) {
     if (obj.value == '4') {
-      var confrm = confirm("Do you wish to overwrite this result?");
+      var confrm = confirm("<?= _translate("Do you wish to overwrite this result?", true); ?>");
       if (confrm) {
         var pos = $("#" + obj.id).offset();
         $("#rejectReasonDiv").show();
@@ -526,7 +526,7 @@ foreach ($rejectionTypeResult as $type) {
       $("#rejectReasonDiv").hide();
     }
     if (obj.value != '') {
-      conf = confirm("<?= _translate("Do you wish to change the status ?"); ?>");
+      conf = confirm("<?= _translate("Do you wish to change the status?", true); ?>");
       if (conf) {
         $.post("/vl/results/updateTestStatus.php", {
             status: obj.value,
@@ -552,7 +552,7 @@ foreach ($rejectionTypeResult as $type) {
 
   function updateRejectionReasonStatus(obj) {
     if (obj.value != '') {
-      conf = confirm("<?= _translate("Do you wish to change the status ?"); ?>");
+      conf = confirm("<?= _translate("Do you wish to change the status?", true); ?>");
       if (conf) {
         $.post("/vl/results/updateTestStatus.php", {
             status: '4',
@@ -571,7 +571,7 @@ foreach ($rejectionTypeResult as $type) {
               $("#statusDropDownId").val('');
               $("#rejectionReason").val('');
               oTable.fnDraw();
-              alert("<?= _translate("Updated successfully.", true); ?>");
+              alert("<?= _translate("Updated successfully", true); ?>");
             }
           });
       } else {

@@ -533,7 +533,7 @@ $sFormat = '';
                                                                            <input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _translate('Sample Testing Date'); ?>" title="<?= _translate('Please select sample testing date'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkSampleTestingDate();" />
                                                                       </div>
                                                                  </div>
-                                                                
+
                                                             </div>
                                                             <div class="row">
                                                                  <div class="col-md-6">
@@ -845,7 +845,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                //if (provinceName) {
                $.post("/includes/siteInformationDropdownOptions.php", {
                          pName: pName,
-                         testType: 'eid'
+                         testType: 'vl'
                     },
                     function(data) {
                          if (data != "") {
@@ -877,7 +877,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $.post("/includes/siteInformationDropdownOptions.php", {
                          dName: dName,
                          cliName: cName,
-                         testType: 'eid'
+                         testType: 'vl'
                     },
                     function(data) {
                          if (data != "") {
