@@ -25,6 +25,8 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var CommonService $commonService */
 $general = ContainerRegistry::get(CommonService::class);
 
+$formId = $general->getGlobalConfig('vl_form');
+
 
 $healthFacilities = $facilitiesService->getHealthFacilities('vl');
 $testingLabs = $facilitiesService->getTestingLabs('vl');
@@ -60,7 +62,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 $testReason = $general->fetchDataFromTable('r_vl_test_reasons');
 $pdResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 0 AND geo_status='active'");
 //get suspected treatment failure at
-$suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatment_failure_at FROM form_vl where vlsm_country_id='" . $arr['vl_form'] . "'";
+$suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatment_failure_at FROM form_vl";
 $suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQuery);
 
 //get vl test reason list
@@ -121,7 +123,7 @@ $fileArray = array(
     7 => 'forms/add-rwanda.php'
 );
 
-require($fileArray[$arr['vl_form']]);
+require($fileArray[$formId]);
 
 ?>
 

@@ -935,7 +935,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		$('#sampleReceivedOn,#sampleTestingDateAtLab,#resultDispatchedOn').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			onChangeMonthYear: function(year, month, widget) {
@@ -948,7 +948,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			$('.ui-datepicker-calendar').show();
 		});
 
-		$('#sampleReceivedOn,#sampleTestingDateAtLab,#resultDispatchedOn').mask('99-aaa-9999 99:99');
+		$('#sampleReceivedOn,#sampleTestingDateAtLab,#resultDispatchedOn').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ;?> 99:99');
 
 		//$("#hivDetection, #isSampleRejected").trigger('change');
 

@@ -50,10 +50,10 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-gears"></em> <?php echo _translate("Edit General Configuration"); ?></h1>
+		<h1><em class="fa-solid fa-gears"></em> <?php echo _translate("System Configuration"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
-			<li class="active"><?php echo _translate("Manage General Config"); ?></li>
+			<li class="active"><?php echo _translate("System Configuration"); ?></li>
 		</ol>
 	</section>
 
@@ -141,6 +141,17 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 														<?php echo _translate("Please make sure logo image size of"); ?>: <code>80x80</code>
 													</div>
 												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-7">
+										<div class="form-group">
+											<label for="gui_date_format" class="col-lg-4 control-label"><?php echo _translate("Date Format"); ?> <span class="mandatory">*</span></label>
+											<div class="col-lg-8">
+												<select class="form-control isRequired readPage" name="gui_date_format" id="gui_date_format" title="<?php echo _translate('Please select the date format'); ?>">
+													<option value="d-M-Y" <?php echo ('d-M-Y' == $arr['gui_date_format']) ? "selected='selected'" : "" ?>><?php echo date('d-M-Y'); ?></option>
+													<option value="d-m-Y" <?php echo ('d-m-Y' == $arr['gui_date_format']) ? "selected='selected'" : "" ?>><?php echo date('d-m-Y'); ?></option>
+												</select>
 											</div>
 										</div>
 									</div>
@@ -1311,9 +1322,9 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								<div class="row">
 									<div class="col-md-12">
 										<div class="form-group">
-											<label for="app_menu_name" class="col-lg-2 control-label"><?php echo _translate("APP Menu Name"); ?></label>
+											<label for="app_menu_name" class="col-lg-2 control-label"><?php echo _translate("Mobile APP Menu Name"); ?></label>
 											<div class="col-lg-4">
-												<input type="text" class="form-control readPage" id="app_menu_name" name="app_menu_name" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter sample code min length'); ?>" value="<?php echo $arr['app_menu_name']; ?>" />
+												<input type="text" class="form-control readPage" id="app_menu_name" name="app_menu_name" placeholder="<?php echo _translate('Name'); ?>" title="<?php echo _translate('Please enter name'); ?>" value="<?php echo $arr['app_menu_name']; ?>" />
 											</div>
 										</div>
 									</div>
@@ -1328,9 +1339,9 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								<div class="row">
 									<div class="col-md-7" style="height:38px;">
 										<div class="form-group" style="height:38px;">
-											<label for="sync_path" class="col-lg-4 control-label"><?php echo _translate("Dashboard URL"); ?></label>
+											<label for="vldashboard_url" class="col-lg-4 control-label"><?php echo _translate("National Dashboard URL"); ?></label>
 											<div class="col-lg-8">
-												<input type="text" class="form-control readPage" id="vldashboard_url" name="vldashboard_url" placeholder="https://dashboard.example.org" title="<?php echo _translate('Please enter dashboard URL'); ?>" value="<?php echo $arr['vldashboard_url']; ?>" />
+												<input type="text" class="form-control readPage" id="vldashboard_url" name="vldashboard_url" placeholder="https://dashboard.example.org" title="<?php echo _translate('Please enter the National Dashboard URL'); ?>" value="<?php echo $arr['vldashboard_url']; ?>" />
 											</div>
 										</div>
 									</div>
@@ -1391,7 +1402,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									</div>
 								</div>
 
-								<div class="row">
+								<!-- <div class="row">
 									<div class="col-md-7">
 										<div class="form-group">
 											<label for="r_mandatory_fields" class="col-lg-4 control-label"><?php echo _translate("Mandatory Fields for COMPLETED Result PDF"); ?>: </label>
@@ -1432,7 +1443,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 
 									</div>
 
-								</div>
+								</div> -->
 
 							</div>
 

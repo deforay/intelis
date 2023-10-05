@@ -50,7 +50,8 @@
         "league/csv": "^9.8",
         "ifsnop/mysqldump-php": "^2.12",
         "symfony/console": "^5.4",
-        "gettext/gettext": "^5.7"
+        "gettext/gettext": "^5.7",
+        "carbondate/carbon": "^1.33"
     },
     "suggest": {
         "dcarbone/php-fhir-generated": "Needed for FHIR Parsing",

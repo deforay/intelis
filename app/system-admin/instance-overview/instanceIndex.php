@@ -227,8 +227,8 @@ $data = $db->rawQuery($instanceValues);
         $('.date-time').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd-M-yy',
-            timeFormat: "HH:mm:ss",
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {
                 setTimeout(function() {

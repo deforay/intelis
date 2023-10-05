@@ -21,8 +21,6 @@ $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
 $tableName = "form_hepatitis";
-$configSyncQuery = "SELECT `value` FROM global_config where `name`='sync_path'";
-$configSyncResult = $db->rawQuery($configSyncQuery);
 //get vl result mail sent list
 $resultmailSentQuery = "SELECT result_mail_datetime
                         FROM form_hepatitis
@@ -120,15 +118,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != '') {
             $db = $db->where('hepatitis_id', $sampleResult[0]['hepatitis_id']);
             $db->update($tableName, array('is_result_mail_sent' => 'yes', 'result_mail_datetime' => DateUtility::getCurrentDateTime()));
          }
-         //put file in sync path
-         $configSyncResult[0]['value'] = realpath($configSyncResult[0]['value']);
-         if (file_exists($configSyncResult[0]['value']) && $_POST['storeFile'] == 'yes') {
-            if (!file_exists($configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email") && !is_dir($configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email")) {
-               mkdir($configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email", 0777, true);
-            }
-            copy(realpath($pathFront . DIRECTORY_SEPARATOR . $_POST['pdfFile1']), realpath($configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email" . DIRECTORY_SEPARATOR . $_POST['pdfFile1']));
-            copy(realpath($pathFront . DIRECTORY_SEPARATOR . $_POST['pdfFile2']), realpath($configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email" . DIRECTORY_SEPARATOR . $_POST['pdfFile2']));
-         }
+
          $_SESSION['alertMsg'] = 'Email sent successfully';
          header('location:/hepatitis/mail/mail-hepatitis-results.php');
       } else {

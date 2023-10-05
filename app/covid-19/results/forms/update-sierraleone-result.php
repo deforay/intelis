@@ -735,7 +735,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
             onSelect: function() {
                 $(this).change();
             },
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             timeFormat: "HH:mm",
             // minDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -816,7 +816,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         $('.dateTime').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {
@@ -835,7 +835,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
             onSelect: function() {
                 $(this).change();
             },
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -849,7 +849,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
             onSelect: function() {
                 $(this).change();
             },
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             timeFormat: "HH:mm",
             // minDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"

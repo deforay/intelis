@@ -21,8 +21,6 @@ $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
 $tableName = "form_covid19";
-$configSyncQuery = "SELECT `value` FROM global_config where `name`='sync_path'";
-$configSyncResult = $db->rawQuery($configSyncQuery);
 //get vl result mail sent list
 $resultmailSentQuery = "SELECT result_mail_datetime FROM form_covid19 where MONTH(result_mail_datetime) = MONTH(CURRENT_DATE())";
 $resultmailSentResult = $db->rawQuery($resultmailSentQuery);
@@ -117,14 +115,6 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != '') {
             $sampleResult = $db->rawQuery($sampleQuery);
             $db = $db->where('covid19_id', $sampleResult[0]['covid19_id']);
             $db->update($tableName, array('is_result_mail_sent' => 'yes', 'result_mail_datetime' => DateUtility::getCurrentDateTime()));
-         }
-         //put file in sync path
-         if (file_exists($configSyncResult[0]['value']) && $_POST['storeFile'] == 'yes') {
-            if (!file_exists($configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email") && !is_dir($configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email")) {
-               mkdir($configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email");
-            }
-            copy(realpath($pathFront . DIRECTORY_SEPARATOR . $_POST['pdfFile1']), realpath($configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email" . DIRECTORY_SEPARATOR . $_POST['pdfFile1']));
-            copy(realpath($pathFront . DIRECTORY_SEPARATOR . $_POST['pdfFile2']), realpath($configSyncResult[0]['value'] . DIRECTORY_SEPARATOR . "result-email" . DIRECTORY_SEPARATOR . $_POST['pdfFile2']));
          }
          $_SESSION['alertMsg'] = 'Email sent successfully';
          header('location:/covid-19/mail/mail-covid-19-results.php');

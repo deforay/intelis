@@ -26,6 +26,9 @@ $vlService = ContainerRegistry::get(VlService::class);
 /** @var CommonService $commonService */
 $general = ContainerRegistry::get(CommonService::class);
 
+
+$formId = $general->getGlobalConfig('vl_form');
+
 $healthFacilities = $facilitiesService->getHealthFacilities('vl');
 $testingLabs = $facilitiesService->getTestingLabs('vl');
 
@@ -80,7 +83,7 @@ $vlTestReasonResult = $db->query($vlTestReasonQuery);
 //get suspected treatment failure at
 $suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatment_failure_at
                                         FROM form_vl where vlsm_country_id= ?";
-$suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQuery, [$arr['vl_form']]);
+$suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQuery, [$formId]);
 
 $vlQuery = "SELECT * FROM form_vl WHERE vl_sample_id=?";
 $vlQueryInfo = $db->rawQueryOne($vlQuery, [$id]);
@@ -141,23 +144,21 @@ $fundingSourceList = $general->getFundingSources();
 $implementingPartnerList = $general->getImplementationPartners();
 
 
-if (!empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes'){
-	$key = base64_decode($general->getGlobalConfig('key'));
-	$vlQueryInfo['patient_art_no'] = $general->crypto('decrypt' ,$vlQueryInfo['patient_art_no'], $key);
-	if($patientFirstName!=''){
-          $vlQueryInfo['patient_first_name'] = $general->crypto('decrypt' ,$patientFirstName, $key);
-	}
+if (!empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes') {
+     $key = base64_decode($general->getGlobalConfig('key'));
+     $vlQueryInfo['patient_art_no'] = $general->crypto('decrypt', $vlQueryInfo['patient_art_no'], $key);
+     if ($patientFirstName != '') {
+          $vlQueryInfo['patient_first_name'] = $general->crypto('decrypt', $patientFirstName, $key);
+     }
 
-	if($patientMiddleName!=''){
-          $vlQueryInfo['patient_middle_name'] = $general->crypto('decrypt' ,$patientMiddleName, $key);
-	}
-  
-	if($patientLastName!=''){
-          $vlQueryInfo['patient_last_name'] = $general->crypto('decrypt' ,$patientLastName, $key);
-	}
- }
-else
-{
+     if ($patientMiddleName != '') {
+          $vlQueryInfo['patient_middle_name'] = $general->crypto('decrypt', $patientMiddleName, $key);
+     }
+
+     if ($patientLastName != '') {
+          $vlQueryInfo['patient_last_name'] = $general->crypto('decrypt', $patientLastName, $key);
+     }
+} else {
      $patientFullName = trim($patientFirstName ?? ' ' . $patientMiddleName ?? ' ' . $patientLastName ?? '');
 }
 
@@ -211,7 +212,7 @@ $fileArray = array(
      7 => 'forms/edit-rwanda.php'
 );
 
-require_once($fileArray[$arr['vl_form']]);
+require_once($fileArray[$formId]);
 
 
 ?>

@@ -302,14 +302,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$('.dateTime').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			onSelect: function(date) {
 				var dt2 = $('#sampleDispatchedDate');
 				var startDate = $(this).datetimepicker('getDate');
 				var minDate = $(this).datetimepicker('getDate');
-				////dt2.datetimepicker('setDate', minDate);
 				startDate.setDate(startDate.getDate() + 1000000);
 				dt2.datetimepicker('option', 'maxDate', "Today");
 				dt2.datetimepicker('option', 'minDate', minDate);

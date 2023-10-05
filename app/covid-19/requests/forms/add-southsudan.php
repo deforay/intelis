@@ -996,7 +996,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         $('#sampleCollectionDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
@@ -1020,7 +1020,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             onSelect: function() {
                 $(this).change();
             },
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             timeFormat: "HH:mm",
             // minDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -1118,7 +1118,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             onSelect: function() {
                 $(this).change();
             },
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -1132,7 +1132,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             onSelect: function() {
                 $(this).change();
             },
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             timeFormat: "HH:mm",
             // minDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -1143,7 +1143,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         /* ('.dateTime').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {

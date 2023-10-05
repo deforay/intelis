@@ -7,7 +7,8 @@ use App\Registries\ContainerRegistry;
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
-
+$_SESSION['dateFormat'] = 'dd-m-yy';
+$_SESSION['jsDateFormatMask'] = '99-99-9999';
 
 if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
      $sampleClass = '';
@@ -83,8 +84,8 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
      $splitChanges = explode('vlsm', $vlQueryInfo['reason_for_vl_result_changes']);
      for ($c = 0; $c < count($splitChanges); $c++) {
           $getData = explode("##", $splitChanges[$c]);
-          $expStr = explode(" ", $getData[2]);
-          $changedDate = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+          $changedDate = explode(" ", $getData[2]);
+          $changedDate = DateUtility::humanReadableDateFormat($changedDate, true);
           $rch .= '<tr><td>' . ($getData[0]) . '</td><td>' . ($getData[1]) . '</td><td style="text-align:center;">' . $changedDate . '</td></tr>';
      }
      $rch .= '</tbody>';
@@ -614,7 +615,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                            </select>
                                                                       </div>
                                                                  </div>
-                                                                
+
                                                             </div>
                                                             <div class="row">
                                                                  <div class="col-md-6">
@@ -629,7 +630,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                            <input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _translate('Sample Testing Date'); ?>" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" title="<?= _translate('Please select sample testing date'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkSampleTestingDate();" />
                                                                       </div>
                                                                  </div>
-                                             
+
                                                             </div>
                                                             <div class="row">
                                                                  <div class="col-md-6">

@@ -323,7 +323,6 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($_POST['
                <div class="col-lg-12" style="text-align:center;padding-left:0;">
                   <a href="/hepatitis/mail/mail-hepatitis-results.php" class="btn btn-default"> Cancel</a>&nbsp;
                   <a class="btn btn-primary" href="javascript:void(0);" onclick="confirmResultMail();"><em class="fa-solid fa-paper-plane"></em> Send</a>
-                  <div><code><?php echo ($global['sync_path'] == '') ? 'Please enter "Sync Path" in General Config to enable file sharing via shared folder' : '' ?></code></div>
                   <p style="margin-top:10px;"><a class="send-mail" href="<?php echo ($downloadFile1); ?>" target="_blank" rel="noopener" style="text-decoration:none;">Click here to download the result only pdf</a></p>
                   <p style="margin-top:10px;"><a class="send-mail" href="<?php echo ($downloadFile2); ?>" target="_blank" rel="noopener" style="text-decoration:none;">Click here to download the result pdf </a></p>
                </div>
@@ -334,18 +333,6 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($_POST['
 </div>
 <script>
    function confirmResultMail() {
-      <?php
-      if ($global['sync_path'] != '') {
-      ?>
-         conf = confirm("Do you also want to store this file on the shared directory <?php echo $global['sync_path']; ?> ?");
-         if (conf) {
-            $("#storeFile").val('yes');
-         } else {
-            $("#storeFile").val('no');
-         }
-      <?php
-      }
-      ?>
       $.blockUI();
       document.getElementById('vlResultMailConfirmForm').submit();
    }

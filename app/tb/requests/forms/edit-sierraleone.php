@@ -243,7 +243,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                         <option value="yes" <?php echo ($tbInfo['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
                                                     </select>
                                             </td>
-                                    </tr> 
+                                    </tr>
 									<tr>
 										<th scope="row"><label for="patientId">TB Registration Unique ID<span class="mandatory">*</span></label></th>
 										<td>
@@ -854,7 +854,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 		$('#sampleCollectionDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			// yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
@@ -884,7 +884,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 		$('#sampleDispatchedDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
 			timeFormat: "HH:mm",
 			minDate: minDate,
 			startDate: minDate,
@@ -893,7 +893,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 		$("#firstSputumSamplesCollectionDate").datepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
 			maxDate: "Today",
 			yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
 			onSelect: function(dateText, inst) {

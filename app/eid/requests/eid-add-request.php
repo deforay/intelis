@@ -151,7 +151,7 @@ require($fileArray[$arr['vl_form']]);
             onSelect: function() {
                 $(this).change();
             },
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -162,7 +162,7 @@ require($fileArray[$arr['vl_form']]);
         $("#childDob").datepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             minDate: "-48m",
             maxDate: "Today",
             onSelect: function(dateText, inst) {
@@ -176,11 +176,11 @@ require($fileArray[$arr['vl_form']]);
         $("#mothersDob").datepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             maxDate: "Today",
             yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
             onSelect: function(dateText, inst) {
-              //  $("#sampleCollectionDate").datepicker("option", "minDate", $("#patientDob").datepicker("getDate"));
+                //  $("#sampleCollectionDate").datepicker("option", "minDate", $("#patientDob").datepicker("getDate"));
                 $(this).change();
             }
         }).click(function() {
@@ -191,7 +191,7 @@ require($fileArray[$arr['vl_form']]);
         $('.dateTime').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {
@@ -203,8 +203,9 @@ require($fileArray[$arr['vl_form']]);
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
-        $('.date').mask('99-aaa-9999');
-        $('.dateTime').mask('99-aaa-9999 99:99');
+        let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ;?>';
+        $('.date').mask(dateFormatMask);
+        $('.dateTime').mask(dateFormatMask + ' 99:99');
     });
 
     var patientSearchTimeout = null;
@@ -282,7 +283,7 @@ require($fileArray[$arr['vl_form']]);
     }
 
     function calculateAgeInMonths() {
-        var dateOfBirth = moment($("#childDob").val(), "DD-MMM-YYYY");
+        var dateOfBirth = moment($("#childDob").val(), '<?= $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY'; ?>');
         $("#childAge").val(moment().diff(dateOfBirth, 'months'));
     }
 </script>

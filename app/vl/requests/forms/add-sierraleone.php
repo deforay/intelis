@@ -990,7 +990,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $('#sampleCollectionDate').datetimepicker({
                changeMonth: true,
                changeYear: true,
-               dateFormat: 'dd-M-yy',
+               dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
                timeFormat: "HH:mm",
                maxDate: "Today",
                onSelect: function(date) {

@@ -29,7 +29,7 @@ abstract class AbstractTestService
     public function generateSampleCode($testTable, $params)
     {
 
-        $formId = $this->commonService->getGlobalConfig('form_id');
+        $formId = $this->commonService->getGlobalConfig('vl_form');
         $userType = $this->commonService->getSystemConfig('sc_user_type');
 
         $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;

@@ -3,113 +3,77 @@
 namespace App\Utilities;
 
 use Exception;
-use DateTimeImmutable;
+use Carbon\Carbon;
 
 class DateUtility
 {
-    // Function to get the verify if date is in Y-m-d or specified format
     public static function isDateFormatValid($date, $format = 'Y-m-d', $strict = true): bool
     {
         $date = trim($date);
 
         if (empty($date) || 'undefined' === $date || 'null' === $date) {
-            $response = false;
-        } else {
-            try {
-                $dateTime = DateTimeImmutable::createFromFormat($format, $date);
-                if ($strict) {
-                    $errors = DateTimeImmutable::getLastErrors();
-                    if (
-                        empty($dateTime)
-                        || !empty($errors['warning_count'])
-                        || !empty($errors['error_count'])
-                    ) {
-                        $response = false;
-                    }
-                }
-                $response = $dateTime !== false;
-            } catch (Exception $e) {
-                $response = false;
-            }
+            return false;
         }
-        return $response;
+
+        try {
+            $carbonDate = Carbon::createFromFormat($format, $date);
+            return $strict ? $carbonDate->format($format) === $date : true;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
-    // Function to verify if date is valid or not
     public static function isDateValid($date): bool
     {
         $date = trim($date);
 
         if (empty($date) || 'undefined' === $date || 'null' === $date) {
-            $response = false;
-        } else {
-            try {
-                $dateTime = new DateTimeImmutable($date);
-                $errors = DateTimeImmutable::getLastErrors();
-                if (
-                    !empty($errors['warning_count'])
-                    || !empty($errors['error_count'])
-                ) {
-                    $response = false;
-                } else {
-                    $response = true;
-                }
-            } catch (Exception $e) {
-                error_log($e->getMessage());
-                $response = false;
-            }
+            return false;
         }
 
-        return $response;
+        try {
+            new Carbon($date);
+            return true;
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            return false;
+        }
     }
 
-    // Returns the given date in d-M-Y format
-    // (with or without time depending on the $includeTime parameter)
-    public static function humanReadableDateFormat($date, $includeTime = false, $format = "d-M-Y")
+    public static function humanReadableDateFormat($date, $includeTime = false, $format = null)
     {
-        if (false === self::isDateValid($date)) {
+        if (!self::isDateValid($date)) {
             return null;
-        } else {
-
-            if ($includeTime === true) {
-                $format = $format . " H:i";
-            }
-
-            return (new DateTimeImmutable($date))->format($format);
         }
+
+        $format = $format ??  $_SESSION['phpDateFormat'] ?? 'd-M-Y';
+
+        $format = $includeTime ? $format . " H:i" : $format;
+        return Carbon::parse($date)->format($format);
     }
 
-    // Returns current date time in Y-m-d H:i:s format or any specified format
     public static function getCurrentDateTime($format = 'Y-m-d H:i:s')
     {
-        return (new DateTimeImmutable())->format($format);
+        return Carbon::now()->format($format);
     }
 
-    // Returns the given date in Y-m-d format
     public static function isoDateFormat($date, $includeTime = false)
     {
-        return once(function () use ($date, $includeTime) {
-            if (false === self::isDateValid($date)) {
-                return null;
-            } else {
-                $format = "Y-m-d";
-                if ($includeTime === true) {
-                    $format = $format . " H:i:s";
-                }
-                return (new DateTimeImmutable($date))->format($format);
-            }
-        });
-    }
-
-    // returns age array in year, months, days
-    public static function ageInYearMonthDays($dateOfBirth)
-    {
-        if (false === self::isDateValid($dateOfBirth)) {
+        if (!self::isDateValid($date)) {
             return null;
         }
-        $bday = new DateTimeImmutable($dateOfBirth);
-        $today = new DateTimeImmutable();
-        $diff = $today->diff($bday);
+
+        $format = $includeTime ? "Y-m-d H:i:s" : "Y-m-d";
+        return Carbon::parse($date)->format($format);
+    }
+
+    public static function ageInYearMonthDays($dateOfBirth)
+    {
+        if (!self::isDateValid($dateOfBirth)) {
+            return null;
+        }
+
+        $diff = Carbon::now()->diff(Carbon::parse($dateOfBirth));
         return [
             "year" => $diff->y,
             "months" => $diff->m,
@@ -119,35 +83,23 @@ class DateUtility
 
     public static function dateDiff($dateString1, $dateString2, $format = null)
     {
-        if (false === self::isDateValid($dateString1) || false === self::isDateValid($dateString2)) {
+        if (!self::isDateValid($dateString1) || !self::isDateValid($dateString2)) {
             return null;
         }
-        $datetime1 = new DateTimeImmutable($dateString1);
-        $datetime2 = new DateTimeImmutable($dateString2);
-        $interval = $datetime1->diff($datetime2);
-        if ($format === null) {
-            return $interval->format('%a days');
-        } else {
-            return $interval->format($format);
-        }
+
+        $interval = Carbon::parse($dateString1)->diff(Carbon::parse($dateString2));
+        return $format === null ? $interval->format('%a days') : $interval->format($format);
     }
 
-
-    /**
-     * Checks if the given date string or date array contains any future dates.
-     *
-     * @param string|array $dates The date string or date array to check.
-     * @return bool Returns true if any date is in the future, false otherwise.
-     */
     public static function hasFutureDates($dates): bool
     {
-        $now = new DateTimeImmutable();
+        $now = Carbon::now();
         $dates = is_array($dates) ? $dates : [$dates];
 
         foreach ($dates as $dateStr) {
             if (!empty($dateStr) && $dateStr != "") {
-                $date = DateTimeImmutable::createFromFormat('Y-m-d', $dateStr);
-                if ($date > $now) {
+                $date = Carbon::createFromFormat('Y-m-d', $dateStr);
+                if ($date->greaterThan($now)) {
                     return true;
                 }
             }
@@ -161,6 +113,7 @@ class DateUtility
         if (empty($dateRange)) {
             return ['', ''];
         }
+
         $dates = explode("to", $dateRange ?? '');
         $dates = array_map('trim', $dates);
 

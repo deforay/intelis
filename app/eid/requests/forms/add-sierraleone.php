@@ -867,7 +867,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
         $('#sampleCollectionDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",

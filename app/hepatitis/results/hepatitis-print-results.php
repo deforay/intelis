@@ -203,7 +203,7 @@ $state = $geolocationService->getProvinces("yes");
                                                         <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
                                                             <th><?php echo _translate("Remote Sample Code"); ?></th>
                                                         <?php } ?>
-                                                        <th><?php echo _translate("Batch Code"); ?></th> 
+                                                        <th><?php echo _translate("Batch Code"); ?></th>
                                                         <th><?php echo _translate("Patient ID"); ?></th>
                                                         <th><?php echo _translate("Patient Name"); ?></th>
                                                         <th scope="row"><?php echo _translate("Facility Name"); ?></th>

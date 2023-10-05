@@ -911,7 +911,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		/*$("#sampleCollectionDate").datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			onSelect: function(date) {
@@ -928,7 +928,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		$('#sampleDispatchedDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
 			timeFormat: "HH:mm",
 			yearRange: "-100:+100",
 		});*/
@@ -936,7 +936,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		$('#sampleCollectionDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			// yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
@@ -966,7 +966,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		$('#sampleDispatchedDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
 			timeFormat: "HH:mm",
 			minDate: minDate,
 			startDate: minDate,

@@ -1,9 +1,14 @@
 <script type="text/javascript">
     $(document).ready(function() {
+
+        let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ?>';
+        $('.date').mask(dateFormatMask);
+        $('.dateTime').mask(dateFormatMask + ' 99:99');
+
         $('.date').datepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             timeFormat: "hh:mm",
             maxDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -13,7 +18,7 @@
         $('.dateTime').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {
@@ -24,8 +29,6 @@
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
-        $('.date').mask('99-aaa-9999');
-        $('.dateTime').mask('99-aaa-9999 99:99');
     });
 
 

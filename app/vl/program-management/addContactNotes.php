@@ -155,7 +155,7 @@ if (isset($vlResult[0]['sample_collection_date']) && trim($vlResult[0]['sample_c
     $('.date').datepicker({
       changeMonth: true,
       changeYear: true,
-      dateFormat: 'dd-M-yy',
+      dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
       timeFormat: "HH:mm",
       yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
     });

@@ -1087,7 +1087,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -1097,7 +1097,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 		$('.dateTime').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			onChangeMonthYear: function(year, month, widget) {
@@ -1109,8 +1109,9 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
-		$('.date').mask('99-aaa-9999');
-		$('.dateTime').mask('99-aaa-9999 99:99');
+		let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
+		$('.date').mask(dateFormatMask);
+		$('.dateTime').mask(dateFormatMask + ' 99:99');
 
 		$('.result-focus').change(function(e) {
 			var status = false;
@@ -1144,7 +1145,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 		$('#sampleCollectionDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			// yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
@@ -1174,7 +1175,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 		$('#sampleDispatchedDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			minDate: minDate,
 			startDate: minDate,
@@ -1803,7 +1804,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 					$('.dateTime').datetimepicker({
 						changeMonth: true,
 						changeYear: true,
-						dateFormat: 'dd-M-yy',
+						dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 						timeFormat: "HH:mm",
 						maxDate: "Today",
 						onChangeMonthYear: function(year, month, widget) {
@@ -1914,7 +1915,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 			onSelect: function() {
 				$(this).change();
 			},
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -1928,7 +1929,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 			onSelect: function() {
 				$(this).change();
 			},
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			// minDate: "Today",
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -1939,7 +1940,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 		$('.dateTime').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			onChangeMonthYear: function(year, month, widget) {

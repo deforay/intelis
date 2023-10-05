@@ -176,7 +176,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                                     <option value="yes"><?= _translate('Yes'); ?></option>
                                                 </select>
                                         </td>
-                                </tr>	
+                                </tr>
 								<tr>
 										<th scope="row"><label for="patientId">Unique ART Number</label></th>
 										<td>
@@ -693,7 +693,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 		$('#sampleCollectionDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
 			timeFormat: "HH:mm",
 			maxDate: "+1Y",
 			// yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",

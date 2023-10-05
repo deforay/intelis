@@ -1100,7 +1100,7 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
         $("#sampleCollectionDate").datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onSelect: function(date) {
@@ -1117,7 +1117,7 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
         $('#sampleDispatchedDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             timeFormat: "HH:mm",
             yearRange: "-100:+100",
         });
@@ -1417,7 +1417,7 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
         $('.dateTime').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {

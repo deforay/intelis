@@ -269,7 +269,7 @@ foreach ($pdResult as $provinceName) {
             onSelect: function() {
                 $(this).change();
             },
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             timeFormat: "HH:mm",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
@@ -279,7 +279,7 @@ foreach ($pdResult as $provinceName) {
         $('.date-time').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {
@@ -293,8 +293,9 @@ foreach ($pdResult as $provinceName) {
             $('.ui-datepicker-calendar').show();
         });
 
-        $('.date').mask('99-aaa-9999');
-        $('.dateTime').mask('99-aaa-9999 99:99');
+        let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ;?>';
+        $('.date').mask(dateFormatMask);
+        $('.dateTime').mask(dateFormatMask + ' 99:99');
     });
 
     function validateNow() {

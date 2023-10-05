@@ -231,7 +231,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                                         <option value="yes" <?php echo ($eidInfo['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
                                                     </select>
                                             </td>
-                                    </tr>    
+                                    </tr>
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="childId">Exposed Infant Identification <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
@@ -966,12 +966,12 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 
 
 
-        $('#sampleCollectionDate, #sampleReceivedDate').mask('99-aaa-9999 99:99');
+        $('#sampleCollectionDate, #sampleReceivedDate').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ;?> 99:99');
 
         $('#sampleCollectionDate, #sampleReceivedDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             timeFormat: "HH:mm",
             onChangeMonthYear: function(year, month, widget) {
                 setTimeout(function() {

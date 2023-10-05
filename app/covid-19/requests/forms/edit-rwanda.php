@@ -181,7 +181,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                         <option value="yes" <?php echo ($covid19Info['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
                                                     </select>
                                             </td>
-                                    </tr> 
+                                    </tr>
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="firstName">First Name <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
@@ -842,7 +842,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         $('.dateTime').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {

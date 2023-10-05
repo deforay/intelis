@@ -94,9 +94,9 @@ if (!empty($covid19Info['is_encrypted']) && $covid19Info['is_encrypted'] == 'yes
 	$key = base64_decode($general->getGlobalConfig('key'));
 	$covid19Info['patient_id'] = $general->crypto('decrypt', $covid19Info['patient_id'], $key);
 	$covid19Info['patient_name'] = $general->crypto('decrypt', $covid19Info['patient_name'], $key);
-	
+
 	$covid19Info['patient_surname'] = $general->crypto('decrypt', $covid19Info['patient_surname'], $key);
-	
+
 }
 
 ?>
@@ -179,7 +179,7 @@ if ($arr['vl_form'] == 1) {
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -189,7 +189,7 @@ if ($arr['vl_form'] == 1) {
 		$('.dateTime').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			onChangeMonthYear: function(year, month, widget) {
@@ -205,7 +205,7 @@ if ($arr['vl_form'] == 1) {
 		$('#sampleCollectionDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			onChangeMonthYear: function(year, month, widget) {
@@ -225,7 +225,7 @@ if ($arr['vl_form'] == 1) {
 		$('#sampleReceivedDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			onChangeMonthYear: function(year, month, widget) {
@@ -245,7 +245,7 @@ if ($arr['vl_form'] == 1) {
 		$('.dateTime').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			onChangeMonthYear: function(year, month, widget) {
@@ -258,8 +258,8 @@ if ($arr['vl_form'] == 1) {
 			$('.ui-datepicker-calendar').show();
 		});
 
-		//$('.date').mask('99-aaa-9999');
-		//$('.dateTime').mask('99-aaa-9999 99:99');
+		//$('.date').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ?>');
+		//$('.dateTime').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ?> 99:99');
 		<?php if (isset($covid19Info['result']) && $covid19Info['result'] != "") { ?>
 			$('.result-focus').change(function(e) {
 				var status = false;

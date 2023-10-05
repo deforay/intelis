@@ -580,12 +580,12 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 
 
 
-        $('#sampleCollectionDate, #sampleReceivedDate').mask('99-aaa-9999 99:99');
+        $('#sampleCollectionDate, #sampleReceivedDate').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ;?> 99:99');
 
         $('#sampleCollectionDate, #sampleReceivedDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             timeFormat: "HH:mm",
             onChangeMonthYear: function(year, month, widget) {
                 setTimeout(function() {

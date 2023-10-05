@@ -210,7 +210,7 @@ require($fileArray[$arr['vl_form']]);
             onSelect: function() {
                 $(this).change();
             },
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -221,7 +221,7 @@ require($fileArray[$arr['vl_form']]);
         $('.date-time').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {
@@ -238,7 +238,7 @@ require($fileArray[$arr['vl_form']]);
         $("#patientDob").datepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             maxDate: "Today",
             yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
             onSelect: function(dateText, inst) {
@@ -252,7 +252,7 @@ require($fileArray[$arr['vl_form']]);
         $('#sampleCollectionDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {
@@ -272,7 +272,7 @@ require($fileArray[$arr['vl_form']]);
         $('#sampleReceivedDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd-M-yy',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {
@@ -289,8 +289,9 @@ require($fileArray[$arr['vl_form']]);
             $('.ui-datepicker-calendar').show();
         });
 
-        //$('.date').mask('99-aaa-9999');
-        //$('.dateTime').mask('99-aaa-9999 99:99');
+        // let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ;?>';
+        // $('.date').mask(dateFormatMask);
+        // $('.dateTime').mask(dateFormatMask + ' 99:99');
 
         $('#isSampleRejected').change(function(e) {
             changeReject(this.value);
@@ -370,7 +371,7 @@ require($fileArray[$arr['vl_form']]);
 
 
     function calculateAgeInYears() {
-        var dateOfBirth = moment($("#patientDob").val(), "DD-MMM-YYYY");
+        var dateOfBirth = moment($("#patientDob").val(), '<?= $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY'; ?>');
         $("#patientAge").val(moment().diff(dateOfBirth, 'years'));
     }
 </script>

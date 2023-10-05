@@ -1070,7 +1070,7 @@ $reasonForChange = $reasonForChangeArr[1];
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -1080,7 +1080,7 @@ $reasonForChange = $reasonForChangeArr[1];
 		$('.dateTime').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			onChangeMonthYear: function(year, month, widget) {
@@ -1092,8 +1092,9 @@ $reasonForChange = $reasonForChangeArr[1];
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
-		$('.date').mask('99-aaa-9999');
-		$('.dateTime').mask('99-aaa-9999 99:99');
+		let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
+		$('.date').mask(dateFormatMask);
+		$('.dateTime').mask(dateFormatMask + ' 99:99');
 
 		$('.result-focus').change(function(e) {
 			var status = false;
@@ -1127,7 +1128,7 @@ $reasonForChange = $reasonForChangeArr[1];
 		$('#sampleCollectionDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			// yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
@@ -1157,7 +1158,7 @@ $reasonForChange = $reasonForChangeArr[1];
 		$('#sampleDispatchedDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			minDate: minDate,
 			startDate: minDate,
@@ -1785,7 +1786,7 @@ $reasonForChange = $reasonForChangeArr[1];
 					$('.dateTime').datetimepicker({
 						changeMonth: true,
 						changeYear: true,
-						dateFormat: 'dd-M-yy',
+						dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 						timeFormat: "HH:mm",
 						maxDate: "Today",
 						onChangeMonthYear: function(year, month, widget) {
@@ -1898,7 +1899,7 @@ $reasonForChange = $reasonForChangeArr[1];
 			onSelect: function() {
 				$(this).change();
 			},
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -1912,7 +1913,7 @@ $reasonForChange = $reasonForChangeArr[1];
 			onSelect: function() {
 				$(this).change();
 			},
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			// minDate: "Today",
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -1923,7 +1924,7 @@ $reasonForChange = $reasonForChangeArr[1];
 		$('.dateTime').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			onChangeMonthYear: function(year, month, widget) {

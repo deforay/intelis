@@ -208,7 +208,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
                                                         <option value="yes" <?php echo ($tbInfo['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
                                                     </select>
                                             </td>
-                                    </tr> 
+                                    </tr>
 									<tr>
 										<th scope="row"><label for="patientId">Unique ART Number</label></th>
 										<td>
@@ -736,7 +736,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		$('#sampleCollectionDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			// yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
@@ -766,7 +766,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		$('#sampleDispatchedDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
 			timeFormat: "HH:mm",
 			minDate: minDate,
 			maxDate: "Today",

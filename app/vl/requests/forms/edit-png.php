@@ -290,7 +290,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim($vlQueryInfo['clinic_date']) != '
                                                         <option value="yes" <?php echo ($vlQueryInfo['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
                                                     </select>
                                             </td>
-                                    </tr>    
+                                    </tr>
 									<tr>
 										<td class="labels">
 											<label for="artNo">Patient ID <span class="mandatory">*</span></label>
@@ -839,20 +839,21 @@ if (isset($vlQueryInfo['clinic_date']) && trim($vlQueryInfo['clinic_date']) != '
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
 			timeFormat: "HH:mm",
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
-		$('.date').mask('99-aaa-9999');
+		let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ;?>';
+        $('.date').mask(dateFormatMask);
 
-		$('#sampleCollectionDate,#sampleReceivedDate,#testDate,#failedTestDate').mask('99-aaa-9999 99:99');
+		$('#sampleCollectionDate,#sampleReceivedDate,#testDate,#failedTestDate').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ;?> 99:99');
 
 		$('#sampleCollectionDate,#sampleReceivedDate,#testDate,#failedTestDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
 			timeFormat: "HH:mm",
 			onChangeMonthYear: function(year, month, widget) {
 				setTimeout(function() {

@@ -52,6 +52,8 @@ $aResult = $db->query($aQuery);
 
 $sKey = '';
 $sFormat = '';
+
+
 ?>
 <style>
      .table>tbody>tr>td {

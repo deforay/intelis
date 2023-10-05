@@ -1,13 +1,10 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 use App\Utilities\ImageResizeUtility;
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -20,8 +17,10 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$tableName = "global_config";
 $instanceTableName = "s_vlsm_instance";
+
+$currentDateTime = DateUtility::getCurrentDateTime();
+
 try {
 
     //remove instance table data
@@ -34,17 +33,16 @@ try {
     $removedImage = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $_POST['removedLogoImage']);
     if (isset($_POST['removedLogoImage']) && trim($_POST['removedLogoImage']) != "" && !empty($removedImage) && file_exists($removedImage)) {
         unlink($removedImage);
-        $data = array('value' => null);
+        $data = ['value' => null];
         $db = $db->where('name', 'logo');
-        $id = $db->update($tableName, $data);
+        $id = $db->update("global_config", $data);
         if ($id) {
             $db = $db->where('name', 'logo');
-            $db->update($tableName, array(
-                "updated_on" => DateUtility::getCurrentDateTime(),
+            $db->update("global_config", [
+                "updated_on" => $currentDateTime,
                 "updated_by" => $_SESSION['userId']
-            ));
+            ]);
         }
-        $_SESSION['alertMsg'] = _translate("Logo deleted successfully");
     }
 
     if (isset($_FILES['instanceLogo']['name']) && $_FILES['instanceLogo']['name'] != "") {
@@ -67,12 +65,12 @@ try {
             $db->update($instanceTableName, $image);
         }
     }
-    $instanceData = array(
+    $instanceData = [
         'instance_facility_name' => $_POST['fName'],
         'instance_facility_code' => $_POST['fCode'],
         'instance_facility_type' => $_POST['instance_type'],
-        'instance_update_on' => DateUtility::getCurrentDateTime(),
-    );
+        'instance_update_on' => $currentDateTime,
+    ];
     $db = $db->where('vlsm_instance_id', $_SESSION['instanceId']);
     $updateInstance = $db->update($instanceTableName, $instanceData);
     if ($updateInstance > 0) {
@@ -104,77 +102,46 @@ try {
 
             $data = array('value' => $imageName);
             $db = $db->where('name', 'logo');
-            $id = $db->update($tableName, $data);
+            $id = $db->update("global_config", $data);
             if ($id) {
                 $db = $db->where('name', 'logo');
-                $db->update($tableName, array(
-                    "updated_on" => DateUtility::getCurrentDateTime(),
+                $db->update("global_config", [
+                    "updated_on" => $currentDateTime,
                     "updated_by" => $_SESSION['userId']
-                ));
+                ]);
             }
         }
     }
-    if (!isset($_POST['r_mandatory_fields'])) {
-        $data = array('value' => null);
-        $db = $db->where('name', 'r_mandatory_fields');
-        $id = $db->update($tableName, $data);
-        if ($id) {
-            $db = $db->where('name', 'logo');
-            $db->update($tableName, array(
-                "updated_on" => DateUtility::getCurrentDateTime(),
-                "updated_by" => $_SESSION['userId']
-            ));
-        }
-    }
+    // if (!isset($_POST['r_mandatory_fields'])) {
+    //     $data = ['value' => null];
+    //     $db = $db->where('name', 'r_mandatory_fields');
+    //     $id = $db->update("global_config", $data);
+    //     if ($id) {
+    //         $db = $db->where('name', 'r_mandatory_fields');
+    //         $db->update("global_config", [
+    //             "updated_on" => $currentDateTime,
+    //             "updated_by" => $_SESSION['userId']
+    //         ]);
+    //     }
+    // }
+
+
+    unset($_SESSION['APP_LOCALE']);
 
     foreach ($_POST as $fieldName => $fieldValue) {
         if ($fieldName != 'removedLogoImage') {
             if ($fieldName == 'r_mandatory_fields') {
                 $fieldValue = implode(',', $fieldValue);
             }
-            unset($_SESSION['APP_LOCALE']);
             $data = array('value' => $fieldValue);
             $db = $db->where('name', $fieldName);
-            $id = $db->update($tableName, $data);
+            $id = $db->update("global_config", $data);
             if ($id) {
                 $db = $db->where('name', $fieldName);
-                $db->update($tableName, array(
-                    "updated_on" => DateUtility::getCurrentDateTime(),
+                $db->update("global_config", [
+                    "updated_on" => $currentDateTime,
                     "updated_by" => $_SESSION['userId']
-                ));
-            }
-            //Generate syn sub folder
-            if ($fieldName == 'sync_path' && trim($fieldValue) != '') {
-                //root folder creation
-                if (!file_exists($fieldValue)) {
-                    mkdir($fieldValue);
-                }
-                //request folder creation
-                if (!file_exists($fieldValue . DIRECTORY_SEPARATOR . "request")) {
-                    mkdir($fieldValue . DIRECTORY_SEPARATOR . "request");
-                }
-                if (!file_exists($fieldValue . DIRECTORY_SEPARATOR . "request" . DIRECTORY_SEPARATOR . "new")) {
-                    mkdir($fieldValue . DIRECTORY_SEPARATOR . "request" . DIRECTORY_SEPARATOR . "new");
-                }
-                if (!file_exists($fieldValue . DIRECTORY_SEPARATOR . "request" . DIRECTORY_SEPARATOR . "synced")) {
-                    mkdir($fieldValue . DIRECTORY_SEPARATOR . "request" . DIRECTORY_SEPARATOR . "synced");
-                }
-                if (!file_exists($fieldValue . DIRECTORY_SEPARATOR . "request" . DIRECTORY_SEPARATOR . "error")) {
-                    mkdir($fieldValue . DIRECTORY_SEPARATOR . "request" . DIRECTORY_SEPARATOR . "error");
-                }
-                //result folder creation
-                if (!file_exists($fieldValue . DIRECTORY_SEPARATOR . "result")) {
-                    mkdir($fieldValue . DIRECTORY_SEPARATOR . "result");
-                }
-                if (!file_exists($fieldValue . DIRECTORY_SEPARATOR . "result" . DIRECTORY_SEPARATOR . "new")) {
-                    mkdir($fieldValue . DIRECTORY_SEPARATOR . "result" . DIRECTORY_SEPARATOR . "new");
-                }
-                if (!file_exists($fieldValue . DIRECTORY_SEPARATOR . "result" . DIRECTORY_SEPARATOR . "synced")) {
-                    mkdir($fieldValue . DIRECTORY_SEPARATOR . "result" . DIRECTORY_SEPARATOR . "synced");
-                }
-                if (!file_exists($fieldValue . DIRECTORY_SEPARATOR . "result" . DIRECTORY_SEPARATOR . "error")) {
-                    mkdir($fieldValue . DIRECTORY_SEPARATOR . "result" . DIRECTORY_SEPARATOR . "error");
-                }
+                ]);
             }
         }
     }
@@ -184,42 +151,42 @@ try {
     if (isset($_POST['lockApprovedVlSamples']) && trim($_POST['lockApprovedVlSamples']) != "") {
         $data = array('value' => trim($_POST['lockApprovedVlSamples']));
         $db = $db->where('name', 'lock_approved_vl_samples');
-        $id = $db->update($tableName, $data);
+        $id = $db->update("global_config", $data);
     }
     if (isset($_POST['vl_monthly_target']) && trim($_POST['vl_monthly_target']) != "") {
         $data = array('value' => trim($_POST['vl_monthly_target']));
         $db = $db->where('name', 'vl_monthly_target');
-        $id = $db->update($tableName, $data);
+        $id = $db->update("global_config", $data);
     }
     if (isset($_POST['vl_suppression_target']) && trim($_POST['vl_suppression_target']) != "") {
         $data = array('value' => trim($_POST['vl_suppression_target']));
         $db = $db->where('name', 'vl_suppression_target');
-        $id = $db->update($tableName, $data);
+        $id = $db->update("global_config", $data);
     }
     if (isset($_POST['lockApprovedEidSamples']) && trim($_POST['lockApprovedEidSamples']) != "") {
         $data = array('value' => trim($_POST['lockApprovedEidSamples']));
         $db = $db->where('name', 'lock_approved_eid_samples');
-        $id = $db->update($tableName, $data);
+        $id = $db->update("global_config", $data);
     }
     if (isset($_POST['lockApprovedCovid19Samples']) && trim($_POST['lockApprovedCovid19Samples']) != "") {
         $data = array('value' => trim($_POST['lockApprovedCovid19Samples']));
         $db = $db->where('name', 'lock_approved_covid19_samples');
-        $id = $db->update($tableName, $data);
+        $id = $db->update("global_config", $data);
     }
     if (isset($_POST['covid19ReportQrCode']) && trim($_POST['covid19ReportQrCode']) != "") {
         $data = array('value' => trim($_POST['covid19ReportQrCode']));
         $db = $db->where('name', 'covid19_report_qr_code');
-        $id = $db->update($tableName, $data);
+        $id = $db->update("global_config", $data);
     }
 
     if (isset($_POST['covid19ReportType']) && trim($_POST['covid19ReportType']) != "") {
         $data = array('value' => trim($_POST['covid19ReportType']));
         $db = $db->where('name', 'covid19_report_type');
-        $id = $db->update($tableName, $data);
+        $id = $db->update("global_config", $data);
         if ($id) {
             $db = $db->where('name', 'logo');
-            $db->update($tableName, array(
-                "updated_on" => DateUtility::getCurrentDateTime(),
+            $db->update("global_config", array(
+                "updated_on" => $currentDateTime,
                 "updated_by" => $_SESSION['userId']
             ));
         }
@@ -227,11 +194,11 @@ try {
     if (isset($_POST['covid19PositiveConfirmatoryTestsRequiredByCentralLab']) && trim($_POST['covid19PositiveConfirmatoryTestsRequiredByCentralLab']) != "") {
         $data = array('value' => trim($_POST['covid19PositiveConfirmatoryTestsRequiredByCentralLab']));
         $db = $db->where('name', 'covid19_positive_confirmatory_tests_required_by_central_lab');
-        $id = $db->update($tableName, $data);
+        $id = $db->update("global_config", $data);
         if ($id) {
             $db = $db->where('name', 'logo');
-            $db->update($tableName, array(
-                "updated_on" => DateUtility::getCurrentDateTime(),
+            $db->update("global_config", array(
+                "updated_on" => $currentDateTime,
                 "updated_by" => $_SESSION['userId']
             ));
         }
@@ -239,11 +206,11 @@ try {
     if (isset($_POST['covid19TestsTableInResultsPdf']) && trim($_POST['covid19TestsTableInResultsPdf']) != "") {
         $data = array('value' => trim($_POST['covid19TestsTableInResultsPdf']));
         $db = $db->where('name', 'covid19_tests_table_in_results_pdf');
-        $id = $db->update($tableName, $data);
+        $id = $db->update("global_config", $data);
         if ($id) {
             $db = $db->where('name', 'logo');
-            $db->update($tableName, array(
-                "updated_on" => DateUtility::getCurrentDateTime(),
+            $db->update("global_config", array(
+                "updated_on" => $currentDateTime,
                 "updated_by" => $_SESSION['userId']
             ));
         }

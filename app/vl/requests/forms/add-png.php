@@ -694,19 +694,20 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
 			timeFormat: "HH:mm",
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
-		$('.date').mask('99-aaa-9999');
-		$('#sampleCollectionDate,#sampleReceivedDate,#sampleTestingDateAtLab,#failedTestDate').mask('99-aaa-9999 99:99');
+		let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ;?>';
+        $('.date').mask(dateFormatMask);
+		$('#sampleCollectionDate,#sampleReceivedDate,#sampleTestingDateAtLab,#failedTestDate').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ;?> 99:99');
 
 		$('#sampleCollectionDate,#sampleReceivedDate,#sampleTestingDateAtLab,#failedTestDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: 'dd-M-yy',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
 			timeFormat: "HH:mm",
 			onChangeMonthYear: function(year, month, widget) {
 				setTimeout(function() {

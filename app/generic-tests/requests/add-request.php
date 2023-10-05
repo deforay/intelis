@@ -819,7 +819,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $('#sampleCollectionDate').datetimepicker({
                changeMonth: true,
                changeYear: true,
-               dateFormat: 'dd-M-yy',
+               dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                timeFormat: "HH:mm",
                maxDate: "Today",
                onSelect: function(date) {
@@ -1383,7 +1383,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $('.date').datepicker({
                changeMonth: true,
                changeYear: true,
-               dateFormat: 'dd-M-yy',
+               dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                timeFormat: "hh:mm",
                maxDate: "Today",
                yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -1393,7 +1393,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $('.dateTime').datetimepicker({
                changeMonth: true,
                changeYear: true,
-               dateFormat: 'dd-M-yy',
+               dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                timeFormat: "HH:mm",
                maxDate: "Today",
                onChangeMonthYear: function(year, month, widget) {
@@ -1404,8 +1404,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }).click(function() {
                $('.ui-datepicker-calendar').show();
           });
-          $('.date').mask('99-aaa-9999');
-          $('.dateTime').mask('99-aaa-9999 99:99');
+          let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
+          $('.date').mask(dateFormatMask);
+          $('.dateTime').mask(dateFormatMask + ' 99:99');
      });
 
      function checkSampleReceviedDate() {
@@ -1619,7 +1620,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          $('.dateTime').datetimepicker({
                               changeMonth: true,
                               changeYear: true,
-                              dateFormat: 'dd-M-yy',
+                              dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                               timeFormat: "HH:mm",
                               maxDate: "Today",
                               onChangeMonthYear: function(year, month, widget) {
@@ -1716,7 +1717,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                onSelect: function() {
                     $(this).change();
                },
-               dateFormat: 'dd-M-yy',
+               dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                timeFormat: "HH:mm",
                maxDate: "Today",
                yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -1730,7 +1731,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                onSelect: function() {
                     $(this).change();
                },
-               dateFormat: 'dd-M-yy',
+               dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                timeFormat: "HH:mm",
                // minDate: "Today",
                yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -1741,7 +1742,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $('.dateTime').datetimepicker({
                changeMonth: true,
                changeYear: true,
-               dateFormat: 'dd-M-yy',
+               dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                timeFormat: "HH:mm",
                maxDate: "Today",
                onChangeMonthYear: function(year, month, widget) {
