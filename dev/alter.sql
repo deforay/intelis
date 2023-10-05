@@ -5126,3 +5126,5 @@ ALTER TABLE `audit_form_tb` ADD `is_encrypted` VARCHAR(10) NULL DEFAULT 'no' AFT
 
 ALTER TABLE `form_tb` ADD `sync_patient_identifiers` VARCHAR(10) NULL DEFAULT 'yes' AFTER `is_encrypted`;
 ALTER TABLE `audit_form_tb` ADD `sync_patient_identifiers` VARCHAR(10) NULL DEFAULT 'yes' AFTER `is_encrypted`;
+
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Viral Load Export Format', 'vl_excel_export_format', 'default', 'VL', 'no', NULL, '', 'active');

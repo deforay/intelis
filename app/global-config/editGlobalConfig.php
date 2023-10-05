@@ -157,7 +157,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 										<div class="form-group">
 											<label for="vl_form" class="col-lg-4 control-label"><?php echo _translate("Choose Country of Installation"); ?> <span class="mandatory">*</span> </label>
 											<div class="col-lg-8">
-												<select class="form-control isRequired readPage select2" name="vl_form" id="vl_form" title="<?php echo _translate('Please select the viral load form'); ?>">
+												<select class="form-control isRequired readPage select2" name="vl_form" id="vl_form" title="<?php echo _translate('Please select the viral load form'); ?>" onchange="showExportFormat();">
 													<?php
 													foreach ($formResult as $val) {
 													?>
@@ -601,6 +601,20 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 														<option value=""><?php echo _translate("--Select--"); ?></option>
 														<option value="yes" <?php echo (isset($arr['vl_interpret_and_convert_results']) && $arr['vl_interpret_and_convert_results'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _translate("Yes"); ?></option>
 														<option value="no" <?php echo (isset($arr['vl_interpret_and_convert_results']) && $arr['vl_interpret_and_convert_results'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _translate("No"); ?></option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="vl_excel_export_format" class="col-lg-2 control-label"><?php echo _translate("Viral Load Export Format"); ?></label>
+												<div class="col-lg-4">
+													<select id="vl_excel_export_format" name="vl_excel_export_format" type="text" class="form-control readPage" title="<?php echo _translate('Please select Interpret and Convert VL Results'); ?>">
+														<option value=""><?php echo _translate("--Select--"); ?></option>
+														<option value="default" <?php echo (isset($arr['vl_excel_export_format']) && $arr['vl_excel_export_format'] == 'default') ? "selected='selected'" : ''; ?>><?php echo _translate("Default Format"); ?></option>
+														<option value="cresar" <?php echo (isset($arr['vl_excel_export_format']) && $arr['vl_excel_export_format'] == 'cresar') ? "selected='selected'" : ''; ?>><?php echo _translate("CRESAR Format"); ?></option>
 													</select>
 												</div>
 											</div>
@@ -1885,6 +1899,19 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 		$("#" + id1).val('');
 		$("#" + id1).attr("disabled", 'disabled').removeClass('isRequired');
 		$("#" + id2).attr("disabled", false).addClass('isRequired');
+	}
+
+	function showExportFormat()
+	{
+		var formName = $("#vl_form").val();
+		if(formName==3)
+		{
+
+		}
+		else
+		{
+
+		}
 	}
 </script>
 <?php require_once APPLICATION_PATH . '/footer.php'; ?>
