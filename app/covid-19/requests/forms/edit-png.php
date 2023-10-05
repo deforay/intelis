@@ -220,15 +220,15 @@ $fundingSourceOptions = $general->generateSelectOptions($fundingSourceArray, $co
                                     <h3 class="box-title">PATIENT INFORMATION</h3>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                    <tr>
-                                        <th scope="row" style="width:15% !important"><label for="childId"><?= _translate('Encrypt PII'); ?> <span class="mandatory">*</span> </label></th>
-                                            <td>
-                                                    <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control isRequired" title="<?= _translate('Encrypt PII'); ?>">
-                                                        <option value=""><?= _translate('--Select--'); ?></option>
-                                                        <option value="no" <?php echo ($covid19Info['sync_patient_identifiers'] == "no") ? "selected='selected'" : ""; ?>><?= _translate('No'); ?></option>
-                                                        <option value="yes" <?php echo ($covid19Info['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
-                                                    </select>
-                                            </td>
+                                    <tr class="encryptPIIContainer">
+                                        <th scope="row" style="width:15% !important"><label for="childId"><?= _translate('Encrypt PII'); ?> </label></th>
+                                        <td>
+                                            <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control" title="<?= _translate('Encrypt PII'); ?>">
+                                                <option value=""><?= _translate('--Select--'); ?></option>
+                                                <option value="no" <?php echo ($covid19Info['sync_patient_identifiers'] == "no") ? "selected='selected'" : ""; ?>><?= _translate('No'); ?></option>
+                                                <option value="yes" <?php echo ($covid19Info['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
+                                            </select>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="firstName">Patient first name <span class="mandatory">*</span> </label></th>
@@ -1068,7 +1068,7 @@ $fundingSourceOptions = $general->generateSelectOptions($fundingSourceArray, $co
         $('.dateTime').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {

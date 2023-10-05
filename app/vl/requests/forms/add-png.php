@@ -136,15 +136,15 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 										<td colspan="6" style="font-size: 18px; font-weight: bold;">Section 2: Patient
 											Information</td>
 									</tr>
-									<tr>
-									<th scope="row" style="width:15% !important"><label for="childId"><?= _translate('Encrypt PII'); ?> <span class="mandatory">*</span> </label></th>
-											<td>
-													<select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control isRequired" title="<?= _translate('Select Patient is from Defence Forces'); ?>">
-														<option value=""><?= _translate('--Select--'); ?></option>
-														<option value="no" selected='selected'><?= _translate('No'); ?></option>
-														<option value="yes"><?= _translate('Yes'); ?></option>
-													</select>
-											</td>
+									<tr class="encryptPIIContainer">
+										<th scope="row" style="width:15% !important"><label for="childId"><?= _translate('Encrypt PII'); ?> </label></th>
+										<td>
+											<select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control" title="<?= _translate('Encrypt Patient Identifying Information'); ?>">
+												<option value=""><?= _translate('--Select--'); ?></option>
+												<option value="no" selected='selected'><?= _translate('No'); ?></option>
+												<option value="yes"><?= _translate('Yes'); ?></option>
+											</select>
+										</td>
 									</tr>
 									<tr>
 										<td>
@@ -694,20 +694,20 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
-		let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ;?>';
-        $('.date').mask(dateFormatMask);
-		$('#sampleCollectionDate,#sampleReceivedDate,#sampleTestingDateAtLab,#failedTestDate').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ;?> 99:99');
+		let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
+		$('.date').mask(dateFormatMask);
+		$('#sampleCollectionDate,#sampleReceivedDate,#sampleTestingDateAtLab,#failedTestDate').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?> 99:99');
 
 		$('#sampleCollectionDate,#sampleReceivedDate,#sampleTestingDateAtLab,#failedTestDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			onChangeMonthYear: function(year, month, widget) {
 				setTimeout(function() {

@@ -222,15 +222,15 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 
 
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                <tr>
-                                    <th scope="row" style="width:15% !important"><label for="childId"><?= _translate('Encrypt PII'); ?> <span class="mandatory">*</span> </label></th>
-                                            <td>
-                                                    <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control isRequired" title="<?= _translate('Encrypt PII'); ?>">
-                                                        <option value=""><?= _translate('--Select--'); ?></option>
-                                                        <option value="no" <?php echo ($eidInfo['sync_patient_identifiers'] == "no") ? "selected='selected'" : ""; ?>><?= _translate('No'); ?></option>
-                                                        <option value="yes" <?php echo ($eidInfo['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
-                                                    </select>
-                                            </td>
+                                    <tr class="encryptPIIContainer">
+                                        <th scope="row" style="width:15% !important"><label for="childId"><?= _translate('Encrypt PII'); ?> </label></th>
+                                        <td>
+                                            <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control" title="<?= _translate('Encrypt PII'); ?>">
+                                                <option value=""><?= _translate('--Select--'); ?></option>
+                                                <option value="no" <?php echo ($eidInfo['sync_patient_identifiers'] == "no") ? "selected='selected'" : ""; ?>><?= _translate('No'); ?></option>
+                                                <option value="yes" <?php echo ($eidInfo['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
+                                            </select>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="childId">Exposed Infant Identification <span class="mandatory">*</span> </label></th>
@@ -966,12 +966,12 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 
 
 
-        $('#sampleCollectionDate, #sampleReceivedDate').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ;?> 99:99');
+        $('#sampleCollectionDate, #sampleReceivedDate').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?> 99:99');
 
         $('#sampleCollectionDate, #sampleReceivedDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             onChangeMonthYear: function(year, month, widget) {
                 setTimeout(function() {

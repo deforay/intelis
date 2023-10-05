@@ -147,6 +147,20 @@ try {
     }
 
 
+    $dateFormat = $_POST['gui_date_format'] ?? 'd-M-Y';
+    $_SESSION['phpDateFormat'] = $dateFormat;
+
+    if ($dateFormat == 'd-m-Y') {
+        $_SESSION['jsDateFieldFormat'] = 'dd-mm-yy';
+        $_SESSION['jsDateRangeFormat'] = 'DD-MM-YYYY';
+        $_SESSION['jsDateFormatMask'] = '99-99-9999';
+    } else {
+        $_SESSION['jsDateFieldFormat'] = 'dd-M-yy';
+        $_SESSION['jsDateRangeFormat'] = 'DD-MMM-YYYY';
+        $_SESSION['jsDateFormatMask'] = '99-aaa-9999';
+    }
+
+
     /* For Lock approve sample updates */
     if (isset($_POST['lockApprovedVlSamples']) && trim($_POST['lockApprovedVlSamples']) != "") {
         $data = array('value' => trim($_POST['lockApprovedVlSamples']));

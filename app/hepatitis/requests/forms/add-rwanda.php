@@ -76,16 +76,16 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Sample ID" title="Please enter sample id" style="width:100%;" onchange="checkSampleNameValidation('form_hepatitis','<?php echo $sampleCode; ?>',this.id,null,'The sample id that you entered already exists. Please try another sample id',null)" readonly />
                                             </td>
                                         <?php } ?>
-                                        <div class="col-md-12">
-                                                  <label class="col-lg-2 control-label" for="syncPatientIdentifiers"><?= _translate('Encrypt PII'); ?> <span class="mandatory">*</span></label>
-                                                  <div class="col-lg-3">
-                                                       <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control isRequired" title="<?= _translate('Select Patient is from Defence Forces'); ?>">
-                                                            <option value=""><?= _translate('--Select--'); ?></option>
-                                                            <option value="no" selected='selected'><?= _translate('No'); ?></option>
-                                                            <option value="yes"><?= _translate('Yes'); ?></option>
-                                                       </select>
-                                                  </div>
-                                             </div>
+                                        <div class="col-md-12 encryptPIIContainer">
+                                            <label class="col-lg-2 control-label" for="syncPatientIdentifiers"><?= _translate('Encrypt PII'); ?> </label>
+                                            <div class="col-lg-3">
+                                                <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control" title="<?= _translate('Encrypt Patient Identifying Information'); ?>">
+                                                    <option value=""><?= _translate('--Select--'); ?></option>
+                                                    <option value="no" selected='selected'><?= _translate('No'); ?></option>
+                                                    <option value="yes"><?= _translate('Yes'); ?></option>
+                                                </select>
+                                            </div>
+                                        </div>
                                         <th scope="row"><label for="patientId">Patient Code <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="Patient Code" title="Please enter Patient Code" style="width:100%;" onchange="" />

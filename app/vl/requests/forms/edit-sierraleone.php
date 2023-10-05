@@ -316,16 +316,16 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 							</div>
 							<div class="box-body">
 								<div class="row">
-									<div class="col-md-12">
-                                                  <label class="col-lg-5 control-label" for="syncPatientIdentifiers"><?= _translate('Patient is from Defence Forces (Patient Name and Patient ID will not be synced between LIS and STS)'); ?> <span class="mandatory">*</span></label>
-                                                  <div class="col-lg-5">
-                                                       <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control isRequired" title="<?= _translate('Select Patient is from Defence Forces'); ?>">
-                                                            <option value=""><?= _translate('--Select--'); ?></option>
-                                                            <option value="no" <?php echo ($vlQueryInfo['sync_patient_identifiers'] == "no") ? "selected='selected'" : ""; ?>><?= _translate('No'); ?></option>
-                                                            <option value="yes" <?php echo ($vlQueryInfo['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
-                                                       </select>
-                                                  </div>
-                                    </div>
+									<div class="col-md-12 encryptPIIContainer">
+										<label class="col-lg-5 control-label" for="syncPatientIdentifiers"><?= _translate('Patient is from Defence Forces (Patient Name and Patient ID will not be synced between LIS and STS)'); ?> <span class="mandatory">*</span></label>
+										<div class="col-lg-5">
+											<select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control" title="<?= _translate('Encrypt Patient Identifying Information'); ?>">
+												<option value=""><?= _translate('--Select--'); ?></option>
+												<option value="no" <?php echo ($vlQueryInfo['sync_patient_identifiers'] == "no") ? "selected='selected'" : ""; ?>><?= _translate('No'); ?></option>
+												<option value="yes" <?php echo ($vlQueryInfo['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
+											</select>
+										</div>
+									</div>
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for="artNo">ART (TRACNET) No. <span class="mandatory">*</span></label>
@@ -1087,7 +1087,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 		/*$("#sampleCollectionDate").datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			onSelect: function(date) {
@@ -1104,7 +1104,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 		$('#sampleDispatchedDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			yearRange: "-100:+100",
 		});*/
@@ -1112,7 +1112,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 		$('#sampleCollectionDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			// yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
@@ -1142,7 +1142,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 		$('#sampleDispatchedDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			minDate: minDate,
 			startDate: minDate,

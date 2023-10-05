@@ -170,16 +170,16 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             Found</strong></span>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                <tr>
-                                <th scope="row" style="width:15% !important"><label for="childId"><?= _translate('Encrypt PII'); ?> <span class="mandatory">*</span> </label></th>
+                                    <tr class="encryptPIIContainer">
+                                        <th scope="row" style="width:15% !important"><label for="childId"><?= _translate('Encrypt PII'); ?> </label></th>
                                         <td>
-                                                <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control isRequired" title="<?= _translate('Select Patient is from Defence Forces'); ?>">
-                                                    <option value=""><?= _translate('--Select--'); ?></option>
-                                                    <option value="no" selected='selected'><?= _translate('No'); ?></option>
-                                                    <option value="yes"><?= _translate('Yes'); ?></option>
-                                                </select>
+                                            <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control" title="<?= _translate('Encrypt Patient Identifying Information'); ?>">
+                                                <option value=""><?= _translate('--Select--'); ?></option>
+                                                <option value="no" selected='selected'><?= _translate('No'); ?></option>
+                                                <option value="yes"><?= _translate('Yes'); ?></option>
+                                            </select>
                                         </td>
-                                </tr>
+                                    </tr>
                                     <tr>
                                         <th scope="row" style="width:15% !important" class="labels"><label for="childId">Infant Code <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
@@ -724,7 +724,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         $('#sampleCollectionDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",

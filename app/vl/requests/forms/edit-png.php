@@ -281,16 +281,16 @@ if (isset($vlQueryInfo['clinic_date']) && trim($vlQueryInfo['clinic_date']) != '
 										<td colspan="6" style="font-size: 18px; font-weight: bold;">Section 2: Patient
 											Information</td>
 									</tr>
-									<tr>
-                                    <th scope="row" style="width:15% !important"><label for="childId"><?= _translate('Encrypt PII'); ?> <span class="mandatory">*</span> </label></th>
-                                            <td>
-                                                    <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control isRequired" title="<?= _translate('Encrypt PII'); ?>">
-                                                        <option value=""><?= _translate('--Select--'); ?></option>
-                                                        <option value="no" <?php echo ($vlQueryInfo['sync_patient_identifiers'] == "no") ? "selected='selected'" : ""; ?>><?= _translate('No'); ?></option>
-                                                        <option value="yes" <?php echo ($vlQueryInfo['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
-                                                    </select>
-                                            </td>
-                                    </tr>
+									<tr class="encryptPIIContainer">
+										<th scope="row" style="width:15% !important"><label for="childId"><?= _translate('Encrypt PII'); ?> </label></th>
+										<td>
+											<select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control" title="<?= _translate('Encrypt PII'); ?>">
+												<option value=""><?= _translate('--Select--'); ?></option>
+												<option value="no" <?php echo ($vlQueryInfo['sync_patient_identifiers'] == "no") ? "selected='selected'" : ""; ?>><?= _translate('No'); ?></option>
+												<option value="yes" <?php echo ($vlQueryInfo['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
+											</select>
+										</td>
+									</tr>
 									<tr>
 										<td class="labels">
 											<label for="artNo">Patient ID <span class="mandatory">*</span></label>
@@ -839,21 +839,21 @@ if (isset($vlQueryInfo['clinic_date']) && trim($vlQueryInfo['clinic_date']) != '
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
-		let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ;?>';
-        $('.date').mask(dateFormatMask);
+		let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
+		$('.date').mask(dateFormatMask);
 
-		$('#sampleCollectionDate,#sampleReceivedDate,#testDate,#failedTestDate').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ;?> 99:99');
+		$('#sampleCollectionDate,#sampleReceivedDate,#testDate,#failedTestDate').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?> 99:99');
 
 		$('#sampleCollectionDate,#sampleReceivedDate,#testDate,#failedTestDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			onChangeMonthYear: function(year, month, widget) {
 				setTimeout(function() {

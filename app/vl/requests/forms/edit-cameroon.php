@@ -245,10 +245,10 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 
                                    <div class="box-body">
                                         <div class="row">
-                                             <div class="col-md-12">
+                                             <div class="col-md-12 encryptPIIContainer">
                                                   <label class="col-lg-5 control-label" for="syncPatientIdentifiers"><?= _translate('Patient is from Defence Forces (Patient Name and Patient ID will not be synced between LIS and STS)'); ?> <span class="mandatory">*</span></label>
                                                   <div class="col-lg-5">
-                                                       <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control isRequired" title="<?= _translate('Select Patient is from Defence Forces'); ?>">
+                                                       <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control" title="<?= _translate('Encrypt Patient Identifying Information'); ?>">
                                                             <option value=""><?= _translate('--Select--'); ?></option>
                                                             <option value="no" <?php echo ($vlQueryInfo['sync_patient_identifiers'] == "no") ? "selected='selected'" : ""; ?>><?= _translate('No'); ?></option>
                                                             <option value="yes" <?php echo ($vlQueryInfo['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>

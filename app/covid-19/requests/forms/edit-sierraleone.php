@@ -212,15 +212,15 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                     <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                    <tr>
-                                        <th scope="row" style="width:15% !important"><label for="childId"><?= _translate('Encrypt PII'); ?> <span class="mandatory">*</span> </label></th>
-                                            <td>
-                                                    <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control isRequired" title="<?= _translate('Encrypt PII'); ?>">
-                                                        <option value=""><?= _translate('--Select--'); ?></option>
-                                                        <option value="no" <?php echo ($covid19Info['sync_patient_identifiers'] == "no") ? "selected='selected'" : ""; ?>><?= _translate('No'); ?></option>
-                                                        <option value="yes" <?php echo ($covid19Info['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
-                                                    </select>
-                                            </td>
+                                    <tr class="encryptPIIContainer">
+                                        <th scope="row" style="width:15% !important"><label for="childId"><?= _translate('Encrypt PII'); ?> </label></th>
+                                        <td>
+                                            <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control" title="<?= _translate('Encrypt PII'); ?>">
+                                                <option value=""><?= _translate('--Select--'); ?></option>
+                                                <option value="no" <?php echo ($covid19Info['sync_patient_identifiers'] == "no") ? "selected='selected'" : ""; ?>><?= _translate('No'); ?></option>
+                                                <option value="yes" <?php echo ($covid19Info['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
+                                            </select>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="patientId">Case ID </label></th>
@@ -918,7 +918,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
         $('#sampleCollectionDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
@@ -947,7 +947,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
         $('#sampleDispatchedDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             minDate: minDate,
             startDate: minDate,
@@ -959,7 +959,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
             onSelect: function() {
                 $(this).change();
             },
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             // minDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -1102,7 +1102,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
         $('.dateTime').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {
@@ -1121,7 +1121,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
             onSelect: function() {
                 $(this).change();
             },
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -1135,7 +1135,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
             onSelect: function() {
                 $(this).change();
             },
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             // minDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"

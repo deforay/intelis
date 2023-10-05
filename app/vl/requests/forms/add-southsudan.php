@@ -206,10 +206,10 @@ $sFormat = '';
                                    </div>
                                    <div class="box-body">
                                         <div class="row">
-                                             <div class="col-md-12">
-                                                  <label class="col-lg-2 control-label" for="syncPatientIdentifiers"><?= _translate('Encrypt PII'); ?> <span class="mandatory">*</span></label>
+                                             <div class="col-md-12 encryptPIIContainer">
+                                                  <label class="col-lg-2 control-label" for="syncPatientIdentifiers"><?= _translate('Encrypt PII'); ?> </label>
                                                   <div class="col-lg-3">
-                                                       <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control isRequired" title="<?= _translate('Select Patient is from Defence Forces'); ?>">
+                                                       <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control" title="<?= _translate('Encrypt Patient Identifying Information'); ?>">
                                                             <option value=""><?= _translate('--Select--'); ?></option>
                                                             <option value="no" selected='selected'><?= _translate('No'); ?></option>
                                                             <option value="yes"><?= _translate('Yes'); ?></option>
@@ -850,7 +850,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $('#sampleCollectionDate').datetimepicker({
                changeMonth: true,
                changeYear: true,
-               dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+               dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                timeFormat: "HH:mm",
                maxDate: "Today",
                onSelect: function(date) {

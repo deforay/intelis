@@ -181,16 +181,16 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <h3 class="box-title"><?= _translate("CHILD'S IDENTIFICATION"); ?></h3>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                <tr>
-                                <th scope="row" style="width:15% !important"><label for="childId"><?= _translate('Encrypt PII'); ?> <span class="mandatory">*</span> </label></th>
+                                    <tr class="encryptPIIContainer">
+                                        <th scope="row" style="width:15% !important"><label for="childId"><?= _translate('Encrypt PII'); ?> </label></th>
                                         <td>
-                                                <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control isRequired" title="<?= _translate('Select Patient is from Defence Forces'); ?>">
-                                                    <option value=""><?= _translate('--Select--'); ?></option>
-                                                    <option value="no" selected='selected'><?= _translate('No'); ?></option>
-                                                    <option value="yes"><?= _translate('Yes'); ?></option>
-                                                </select>
+                                            <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control" title="<?= _translate('Encrypt Patient Identifying Information'); ?>">
+                                                <option value=""><?= _translate('--Select--'); ?></option>
+                                                <option value="no" selected='selected'><?= _translate('No'); ?></option>
+                                                <option value="yes"><?= _translate('Yes'); ?></option>
+                                            </select>
                                         </td>
-                                </tr>
+                                    </tr>
 
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="childId"><?= _translate('CRVS file name'); ?> <span class="mandatory">*</span> </label></th>
@@ -406,7 +406,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </tr>
 
                                     <tr>
-                                    <th scope="row"><?= _translate('Requesting Clinician Name'); ?></th>
+                                        <th scope="row"><?= _translate('Requesting Clinician Name'); ?></th>
                                         <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="<?= _translate('Request Clinician Name'); ?>" title="<?= _translate('Please enter request clinician'); ?>" /></td>
                                         <th scope="row"><?= _translate('Serological Test'); ?> </th>
                                         <td>
@@ -417,7 +417,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value="notdone"> <?= _translate('Not Done'); ?> </option>
                                             </select>
                                         </td>
-                                       
+
                                     </tr>
 
                                     <tr>
@@ -433,7 +433,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value="Not Detected"> <?= _translate('Not Detected'); ?> </option>
                                             </select>
                                         </td>
-                                      
+
                                     </tr>
                                     <tr>
                                         <th scope="row"><?= _translate('PCR 2 Test Date'); ?></th>
@@ -448,7 +448,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <option value="Not Detected"> <?= _translate('Not Detected'); ?> </option>
                                             </select>
                                         </td>
-                                       
+
                                     </tr>
                                     <tr>
                                         <th scope="row"><?= _translate('PCR 3 Test Date'); ?></th>
@@ -490,7 +490,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <input type="text" name="labTestingPointOther" id="labTestingPointOther" class="form-control" title="<?= _translate('Please specify other point of entry') ?>" placeholder="<?= _translate('Please specify other point of entry') ?>" style="display:none;" />
                                         </td>
                                     </tr>
-                                   
+
                                 </table>
 
                                 <br><br>
