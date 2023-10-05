@@ -182,7 +182,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 	function selectedTestType() {
 		$.blockUI({
-			message: '<h3><?= _translate("Trying to get mapped facilities"); ?> <br><?php echo _translate("Please wait"); ?>...</h3>'
+			message: '<h3><?= _translate("Trying to get mapped facilities", true); ?> <br><?php echo _translate("Please wait", true); ?>...</h3>'
 		});
 		$.post("getTestTypeFacilitiesHelper.php", {
 				mappingType: "<?= $mappingType; ?>",

@@ -164,12 +164,8 @@ try {
         }
     }
 
-    if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
-        $reviewedOn = explode(" ", $_POST['reviewedOn']);
-        $_POST['reviewedOn'] = DateUtility::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-    } else {
-        $_POST['reviewedOn'] = null;
-    }
+
+    $_POST['reviewedOn'] = DateUtility::isoDateFormat($_POST['reviewedOn'] ?? '');
 
     if (isset($_POST['treatmentIndication']) && $_POST['treatmentIndication'] == "Other") {
         $_POST['treatmentIndication'] = $_POST['newTreatmentIndication'] . '_Other';

@@ -53,13 +53,15 @@ $GLOBALS['facilityMap'] = $_SESSION['facilityMap'];
 
 function getFacilitiesDropdown($provinceName = null, $districtRequested = null, $usersService = null): string
 {
+	/** @var MysqliDb $db */
 	$db = $GLOBALS['db'];
+
 	$option = $GLOBALS['option'];
 	$testType = $GLOBALS['testType'];
-	$facilityMap = $GLOBALS['facilityMap'];
 	$facilityTypeTable = $GLOBALS['facilityTypeTable'];
 
 	$db->where("f.status", 'active');
+	$db->orderBy("f.facility_name", "ASC");
 
 	if (!empty($provinceName)) {
 		$db->where("f.facility_state", $provinceName);
@@ -72,8 +74,8 @@ function getFacilitiesDropdown($provinceName = null, $districtRequested = null, 
 	$db->join("$facilityTypeTable h", "h.facility_id=f.facility_id", "INNER");
 	$db->joinWhere("$facilityTypeTable h", "h.test_type", $testType);
 
-	if (!empty($facilityMap)) {
-		$db->where("f.facility_id IN (" . $facilityMap . ")");
+	if (!empty($_SESSION['facilityMap'])) {
+		$db->where("f.facility_id IN (" . $_SESSION['facilityMap'] . ")");
 	}
 
 	$facilityInfo = $db->get('facility_details f');
@@ -103,14 +105,17 @@ function getFacilitiesDropdown($provinceName = null, $districtRequested = null, 
 
 function getDistrictDropdown($selectedProvince = null, $selectedDistrict = null)
 {
+	/** @var MysqliDb $db */
 	$db = $GLOBALS['db'];
 	$option = $GLOBALS['option'];
-	$facilityMap = $GLOBALS['facilityMap'];
 
 	if (!empty($selectedProvince)) {
 		if (is_numeric($selectedProvince)) {
 			$db->where("geo_parent", $selectedProvince);
-			$districtInfo = $db->setQueryOption('DISTINCT')->get('geographical_divisions', null, array('geo_id', 'geo_name'));
+			$db->orderBy("geo_name", "ASC");
+
+			$districtInfo = $db->setQueryOption('DISTINCT')
+								->get('geographical_divisions', null, 'geo_id, geo_name');
 			$district = $option;
 			foreach ($districtInfo as $pdRow) {
 				$selected = '';
@@ -126,10 +131,12 @@ function getDistrictDropdown($selectedProvince = null, $selectedDistrict = null)
 		}
 	}
 
-	if (!empty($facilityMap)) {
-		$db->where("f.facility_id IN (" . $facilityMap . ")");
+	if (!empty($_SESSION['facilityMap'])) {
+		$db->where("f.facility_id IN (" . $_SESSION['facilityMap'] . ")");
 	}
-	$facilityInfo = $db->setQueryOption('DISTINCT')->get('facility_details f', null, array('facility_district'));
+	$db->orderBy("f.facility_name", "ASC");
+	$facilityInfo = $db->setQueryOption('DISTINCT')
+						->get('facility_details f', null, 'facility_district');
 
 	$district = $option;
 	foreach ($facilityInfo as $pdRow) {
@@ -184,18 +191,20 @@ if (!empty($facilityIdRequested)) {
 
 function getProvinceDropdown($selectedProvince = null)
 {
+	/** @var MysqliDb $db */
 	$db = $GLOBALS['db'];
 	$option = $GLOBALS['option'];
-	$facilityMap = $GLOBALS['facilityMap'];
 
-	if (!empty($facilityMap)) {
+	if (!empty($_SESSION['facilityMap'])) {
 		$db->join("facility_details f", "f.facility_state=p.geo_name", "INNER");
 		//$db->joinWhere("facility_details f", "h.test_type", $testType);
-		$db->where("f.facility_id IN (" . $facilityMap . ")");
+		$db->where("f.facility_id IN (" . $_SESSION['facilityMap'] . ")");
 	}
 
 	$db->where("p.geo_parent = 0");
-	$pdResult = $db->setQueryOption('DISTINCT')->get('geographical_divisions p', null, array('geo_id', 'geo_name', 'geo_code'));
+	$db->orderBy("p.geo_name", "ASC");
+	$pdResult = $db->setQueryOption('DISTINCT')
+					->get('geographical_divisions p', null, 'geo_id,geo_name,geo_code');
 	//$pdResult = $db->get('geographical_divisions p');
 	$state = $option;
 	foreach ($pdResult as $pdRow) {
