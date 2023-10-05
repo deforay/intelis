@@ -155,6 +155,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 			$row[] = $aRow['facility_district'];
 			$row[] = $aRow['facility_name'];
 			$row[] = "Reference Lab";
+			$row[] = ""; //Category Of testing site
 			$row[] = $aRow['funding_source_name'] ?? null;
 			$row[] = $aRow['cv_number'];
 			$row[] = ""; //TAT
@@ -167,6 +168,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 					$patientLname = $general->crypto('decrypt', $patientLname, $key);
 				}
 			}
+			$row[] = $aRow['patient_art_no'];
 			$row[] = $aRow['current_arv_protocol'];
 			$row[] = $gender;
 			$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
@@ -272,18 +274,9 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		$excel = new Spreadsheet();
 		$sheet = $excel->getActiveSheet();
 		$sheet->setTitle('VL Results');
-		//$sheet->getStyle('A3:AP3')->applyFromArray($styleArray);
-		/*$sheet->getStyle('A3')->applyFromArray(
-			array(
-				'fill' => array(
-					'type' => Fill::FILL_SOLID,
-					'color' => array('rgb' => 'red')
-				)
-			)
-		);*/
-
+		
 		$sheet
-			->getStyle('A3:AP3')
+			->getStyle('A3:AQ3')
 			->getFill()
 			->setFillType(Fill::FILL_SOLID)
 			->getStartColor()

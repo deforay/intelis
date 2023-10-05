@@ -153,7 +153,7 @@ $sQuery = "SELECT vl.vl_sample_id,
                rs.rejection_reason_name,
                r_c_a.recommended_corrective_action_name,
                tr.test_reason_name,
-               r_f_s.funding_source_name,
+               r_f_s.funding_source_name as funding_source_name,
                r_i_p.i_partner_name,
                rs.rejection_reason_name as rejection_reason
 
