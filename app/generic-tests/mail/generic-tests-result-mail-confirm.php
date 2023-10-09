@@ -66,7 +66,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($_POST['
             $this->SetFont('helvetica', 'B', 7);
             $this->writeHTMLCell(30, 0, 16, 28, $this->text, 0, 0, 0, true, 'A');
             $this->SetFont('helvetica', '', 18);
-            $this->writeHTMLCell(0, 0, 10, 18, 'OTHER TEST RESULT', 0, 0, 0, true, 'C');
+            $this->writeHTMLCell(0, 0, 10, 18, 'OTHER LAB TEST RESULT', 0, 0, 0, true, 'C');
             $this->writeHTMLCell(0, 0, 15, 36, '<hr>', 0, 0, 0, true, 'C');
          }
 
