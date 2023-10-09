@@ -34,7 +34,6 @@ if (isset($_GET['type'])) {
             $patientFirstName = 'patient_first_name';
             $patientLastName = 'patient_last_name';
             $worksheetName = _translate('Viral Load Test Worksheet');
-            $encryptCol = ",is_encrypted";
             break;
         case 'eid':
             $refTable = "form_eid";
@@ -43,7 +42,6 @@ if (isset($_GET['type'])) {
             $patientFirstName = 'child_name';
             $patientLastName = 'child_surname';
             $worksheetName = _translate('EID Test Worksheet');
-            $encryptCol = "";
             break;
         case 'covid19':
             $refTable = "form_covid19";
@@ -52,7 +50,6 @@ if (isset($_GET['type'])) {
             $patientFirstName = 'patient_name';
             $patientLastName = 'patient_surname';
             $worksheetName = _translate('Covid-19 Test Worksheet');
-            $encryptCol = "";
             break;
         case 'hepatitis':
             $refTable = "form_hepatitis";
@@ -61,7 +58,6 @@ if (isset($_GET['type'])) {
             $patientFirstName = 'patient_name';
             $patientLastName = 'patient_surname';
             $worksheetName = _translate('Hepatitis Test Worksheet');
-            $encryptCol = "";
             $showPatientName = true;
             break;
         case 'tb':
@@ -71,7 +67,6 @@ if (isset($_GET['type'])) {
             $patientFirstName = 'patient_name';
             $patientLastName = 'patient_surname';
             $worksheetName = _translate('TB Test Worksheet');
-            $encryptCol = "";
             $showPatientName = true;
             break;
         case 'generic-tests':
@@ -81,7 +76,6 @@ if (isset($_GET['type'])) {
             $patientFirstName = 'patient_first_name';
             $patientLastName = 'patient_last_name';
             $worksheetName = _translate('Lab Test Worksheet');
-            $encryptCol = "";
             $showPatientName = true;
             break;
         default:
@@ -237,11 +231,10 @@ if (!empty($id)) {
                     if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
                         if (isset($_GET['type']) && $_GET['type'] == 'tb') {
                             $sampleQuery = "SELECT sample_code,
-                                                    remote_sample_code,result,
+                                                    remote_sample_code,result,is_encrypted,
                                                     $patientIdColumn,
                                                     $patientFirstName,
                                                     $patientLastName
-                                                    $encryptCol
                                                     FROM
                                                     $refTable
                                                     WHERE $refPrimaryColumn = ?";
@@ -249,14 +242,14 @@ if (!empty($id)) {
                             $sampleQuery = "SELECT sample_code,
                                                     remote_sample_code,
                                                     result,
-                                                    lot_number,
+                                                    lot_number,is_encrypted
                                                     CASE
                                                         WHEN lot_expiration_date IS NULL OR lot_expiration_date = '0000-00-00' THEN NULL
                                                         ELSE DATE_FORMAT(lot_expiration_date, '%d-%b-%Y')
                                                     END AS lot_expiration_date,
                                                     $patientIdColumn,
                                                     $patientFirstName,
-                                                    $patientLastName  $encryptCol
+                                                    $patientLastName 
                                                     FROM
                                                     $refTable
                                                     WHERE $refPrimaryColumn =?";
@@ -323,19 +316,18 @@ if (!empty($id)) {
                     if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
                         if (isset($_GET['type']) && $_GET['type'] == 'tb') {
                             $sampleQuery = "SELECT sample_code,
-                                            remote_sample_code
-                                            result
+                                            remote_sample_code,
+                                            result,is_encrypted,
                                             $patientIdColumn,
                                             $patientFirstName,
                                             $patientLastName
-                                            $encryptCol
                                             FROM $refTable
                                             WHERE $refPrimaryColumn =?";
                         } else {
                             $sampleQuery = "SELECT sample_code,
                                                 remote_sample_code,
                                                 result,
-                                                lot_number,
+                                                lot_number,is_encrypted
                                                 CASE
                                                     WHEN lot_expiration_date IS NULL OR lot_expiration_date = '0000-00-00' THEN NULL
                                                     ELSE DATE_FORMAT(lot_expiration_date, '%d-%b-%Y')
@@ -343,7 +335,6 @@ if (!empty($id)) {
                                                 $patientIdColumn,
                                                 $patientFirstName,
                                                 $patientLastName
-                                                $encryptCol
                                                 FROM $refTable
                                                 WHERE $refPrimaryColumn =?";
                         }
