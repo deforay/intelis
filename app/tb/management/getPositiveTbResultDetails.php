@@ -189,18 +189,22 @@ if (!empty($sOrder)) {
 }
 $_SESSION['highTbResult'] = $sQuery;
 
-[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+$rResult = $db->rawQuery($sQuery);
 
 
-$_SESSION['highTbResultCount'] = $resultCount;
+//[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
+$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+$_SESSION['highViralResultCount'] = $iTotal;
+
 
 /*
          * Output
         */
 $output = array(
     "sEcho" => intval($_POST['sEcho']),
-    "iTotalRecords" => $resultCount,
-    "iTotalDisplayRecords" => $resultCount,
+    "iTotalRecords" => $iTotal,
+    "iTotalDisplayRecords" => $iTotal,
     "aaData" => []
 );
 
@@ -228,6 +232,13 @@ foreach ($rResult as $aRow) {
     if ($_SESSION['instanceType'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];
     }
+    if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+        $key = base64_decode($general->getGlobalConfig('key'));
+        $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
+        $patientFname = $general->crypto('decrypt', $patientFname, $key);
+        $patientMname = $general->crypto('decrypt', $patientMname, $key);
+
+   }
     $row[] = ($aRow['facility_name']);
     $row[] = $aRow['patient_id'];
     $row[] = ($patientFname . " " . $patientMname);

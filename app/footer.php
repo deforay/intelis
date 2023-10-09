@@ -325,6 +325,20 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 			}
 		});
 	}
+	<?php
+		if($arr['display_encrypt_pii_option']=="yes")
+		{
+	?>
+			$('.encryptPIIContainer').show();
+	<?php
+		}
+		else
+		{
+			?>
+			$('.encryptPIIContainer').hide();
+			<?php
+		}
+		?>
 </script>
 </body>
 

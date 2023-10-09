@@ -74,6 +74,13 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQ
 			$patientLname = '';
 		}
 
+		if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+			$key = base64_decode($general->getGlobalConfig('key'));
+			$aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
+			$patientFname = $general->crypto('decrypt', $patientFname, $key);
+			$patientLname = $general->crypto('decrypt', $patientLname, $key);
+	   }
+
 		$row[] = $no;
 		$row[] = $aRow[$sampleCode];
 		$row[] = ($aRow['facility_name']);

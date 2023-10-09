@@ -127,7 +127,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
           * SQL queries
           * Get data to display
           */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS *, l.facility_name as labName FROM form_hepatitis as vl
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, l.facility_name as labName FROM form_hepatitis as vl
             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
             LEFT JOIN facility_details as l ON vl.lab_id=l.facility_id
             INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
@@ -241,6 +241,13 @@ foreach ($rResult as $aRow) {
     if ($_SESSION['instanceType'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];
     }
+    if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+        $key = base64_decode($general->getGlobalConfig('key'));
+        $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
+        $patientFname = $general->crypto('decrypt', $patientFname, $key);
+        $patientLname = $general->crypto('decrypt', $patientLname, $key);
+
+   }
     $row[] = $aRow['sample_collection_date'];
     $row[] = $aRow['batch_code'];
     $row[] = $aRow['patient_id'];

@@ -53,6 +53,8 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 
 $testingLabs = $facilitiesService->getTestingLabs('hepatitis');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
+
+
 ?>
 <style>
 	.select2-selection__choice {

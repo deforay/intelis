@@ -5135,6 +5135,10 @@ INSERT INTO `global_config`
 VALUES
 ('Date Format', 'gui_date_format', 'd-M-Y', 'general', 'no', null, null, 'active');
 
+
+-- Jeyabanu 06-Oct-2023
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Display Encrypt PII Option', 'display_encrypt_pii_option', 'no', 'general', 'no', NULL, '42f0b39d-75ec-4de5-99cc-e1886b444cfd-2985fd', 'active');
+
 -- Thana 09-Oct-2023
 UPDATE `privileges` SET `resource_id` = 'generic-results' WHERE `privileges`.`privilege_id` = 260;
 UPDATE `privileges` SET `shared_privileges`='["/generic-tests/mail/mail-generic-tests-results.php","/generic-tests/mail/generic-tests-result-mail-confirm.php"]' WHERE `privilege_name` = '/generic-tests/results/generic-print-result.php';

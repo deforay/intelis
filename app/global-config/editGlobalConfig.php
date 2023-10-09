@@ -155,6 +155,17 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 											</div>
 										</div>
 									</div>
+									<div class="col-md-7">
+										<div class="form-group">
+											<label for="gui_date_format" class="col-lg-4 control-label"><?php echo _translate("Display Encrypt PII Option"); ?> <span class="mandatory">*</span></label>
+											<div class="col-lg-8">
+												<select class="form-control isRequired readPage" name="display_encrypt_pii_option" id="display_encrypt_pii_option" title="<?php echo _translate('Please select the date format'); ?>">
+													<option value="yes" <?php echo ('yes' == $arr['display_encrypt_pii_option']) ? "selected='selected'" : "" ?>><?php echo _translate('Yes'); ?></option>
+													<option value="no" <?php echo ('no' == $arr['display_encrypt_pii_option']) ? "selected='selected'" : "" ?>><?php echo _translate('No'); ?></option>
+												</select>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>

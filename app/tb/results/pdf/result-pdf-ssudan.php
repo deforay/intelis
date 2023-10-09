@@ -307,6 +307,13 @@ if (!empty($requestResult)) {
             $fstate = $result['facility_state'];
         }
 
+        if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
+            $key = base64_decode($general->getGlobalConfig('key'));
+            $result['patient_id'] = $general->crypto('decrypt', $result['patient_id'], $key);
+            $patientFname = $general->crypto('decrypt', $patientFname, $key);
+            $patientLname = $general->crypto('decrypt', $patientLname, $key);
+       }
+
         $html = '<br><br>';
 
         $html .= '<table style="padding:3px;">';

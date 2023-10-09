@@ -164,6 +164,17 @@ if (isset($tbInfo['result_approved_datetime']) && trim($tbInfo['result_approved_
 $condition = "status ='active' AND test_type='tb'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
+if (!empty($tbInfo['is_encrypted']) && $tbInfo['is_encrypted'] == 'yes'){
+	$key = base64_decode($general->getGlobalConfig('key'));
+	$tbInfo['patient_id'] = $general->crypto('decrypt' ,$tbInfo['patient_id'], $key);
+	if($tbInfo['patient_name']!=''){
+        $tbInfo['patient_name'] = $general->crypto('decrypt' ,$tbInfo['patient_name'], $key);
+	}
+    if($tbInfo['patient_surname']!=''){
+        $tbInfo['patient_surname'] = $general->crypto('decrypt' ,$tbInfo['patient_surname'], $key);
+	}
+}
+
 $fileArray = array(
     1 => 'forms/update-southsudan.php',
     2 => 'forms/update-sierraleone.php',

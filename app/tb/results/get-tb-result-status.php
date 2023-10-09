@@ -230,6 +230,12 @@ foreach ($rResult as $aRow) {
     if ($_SESSION['instanceType'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];
     }
+    if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+        $key = base64_decode($general->getGlobalConfig('key'));
+        $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
+        $patientFname = $general->crypto('decrypt', $patientFname, $key);
+        $patientLname = $general->crypto('decrypt', $patientLname, $key);
+   }
     $row[] = $aRow['sample_collection_date'];
     $row[] = $aRow['batch_code'];
     $row[] = $aRow['patient_id'];
