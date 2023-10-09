@@ -184,6 +184,17 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 											Patient Found</strong></span>
 								</div>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
+									<tr class="encryptPIIContainer">
+										<th scope="row" style="width:15% !important"><label for="childId">chiffrer pii </label></th>
+										<td>
+											<select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control" title="<?= _translate('Encrypt PII'); ?>">
+												<option value=""><?= _translate('--Select--'); ?></option>
+												<option value="no" <?php echo ($eidInfo['sync_patient_identifiers'] == "no") ? "selected='selected'" : ""; ?>>Non</option>
+												<option value="yes" <?php echo ($eidInfo['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>>Oui</option>
+											</select>
+										</td>
+									</tr>
+								
 									<tr>
 										<th scope="row">
 											<h5 style="font-weight:bold;font-size:1.1em;">ID de la mère</h5>

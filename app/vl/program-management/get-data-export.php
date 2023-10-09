@@ -157,7 +157,6 @@ $sQuery = "SELECT vl.vl_sample_id,
                r_i_p.i_partner_name,
                rs.rejection_reason_name as rejection_reason
 
-
                FROM form_vl as vl
 
                LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id

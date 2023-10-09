@@ -113,7 +113,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
  * SQL queries
  * Get data to display
  */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,
                     f.*,s.*,fd.facility_name as labName,
                     ts.status_name
                     FROM form_hepatitis as vl
@@ -224,6 +224,11 @@ foreach ($rResult as $aRow) {
     if ($sarr['sc_user_type'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];
     }
+    if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+        $key = base64_decode($general->getGlobalConfig('key'));
+        $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
+        $patientName = $general->crypto('decrypt', $patientName, $key);
+   }
     $row[] = ($aRow['facility_name']);
     $row[] = $aRow['patient_id'];
     $row[] = ($patientName);

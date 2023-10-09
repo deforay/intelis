@@ -97,6 +97,11 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViral
           if ($_SESSION['instanceType'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];
           }
+          if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+               $key = base64_decode($general->getGlobalConfig('key'));
+               $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
+               $patientFname = $general->crypto('decrypt', $patientFname, $key);
+          }
           $row[] = ($aRow['facility_name']);
           $row[] = $aRow['patient_id'];
           $row[] = ($patientFname);

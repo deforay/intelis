@@ -5134,3 +5134,7 @@ INSERT INTO `global_config`
 (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`)
 VALUES
 ('Date Format', 'gui_date_format', 'd-M-Y', 'general', 'no', null, null, 'active');
+
+
+-- Jeyabanu 06-Oct-2023
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Display Encrypt PII Option', 'display_encrypt_pii_option', 'no', 'general', 'no', NULL, '42f0b39d-75ec-4de5-99cc-e1886b444cfd-2985fd', 'active');
