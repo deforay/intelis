@@ -359,6 +359,63 @@ require_once APPLICATION_PATH . "/vl/vl.js.php";
 			<?php //}
 			?>
 		});
+
+		$("#vlFocalPerson").select2({
+			placeholder: "Enter Request Focal name",
+			minimumInputLength: 0,
+			width: '100%',
+			allowClear: true,
+			id: function(bond) {
+				return bond._id;
+			},
+			ajax: {
+				placeholder: "Type one or more character tp search",
+				url: "/includes/get-data-list.php",
+				dataType: 'json',
+				delay: 250,
+				data: function(params) {
+					return {
+						fieldName: 'vl_focal_person',
+						tableName: 'form_vl',
+						q: params.term, // search term
+						page: params.page
+					};
+				},
+				processResults: function(data, params) {
+					params.page = params.page || 1;
+					return {
+						results: data.result,
+						pagination: {
+							more: (params.page * 30) < data.total_count
+						}
+					};
+				},
+				//cache: true
+			},
+			escapeMarkup: function(markup) {
+				return markup;
+			}
+		});
+
+		$("#vlFocalPerson").change(function() {
+			$.blockUI();
+			var search = $(this).val();
+			if ($.trim(search) != '') {
+				$.get("/includes/get-data-list.php", {
+						fieldName: 'vl_focal_person',
+						tableName: 'form_vl',
+						returnField: 'vl_focal_person_phone_number',
+						limit: 1,
+						q: search,
+					},
+					function(data) {
+						if (data != "") {
+							$("#vlFocalPersonPhoneNumber").val(data);
+						}
+					});
+			}
+			$.unblockUI();
+		});
 	});
 </script>
 

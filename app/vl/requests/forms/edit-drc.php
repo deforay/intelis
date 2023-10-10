@@ -160,7 +160,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 										</td>
 										<td><label for="reqClinicianPhoneNumber">Téléphone </label></td>
 										<td>
-											<input type="text" class="form-control forceNumeric phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" style="width:100%;" />
+											<input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" style="width:100%;" />
 										</td>
 										<td><label for="supportPartner">Partenaire dappui </label></td>
 										<td>
@@ -283,7 +283,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 									<tr>
 									<td><label for="patientPhoneNumber">Numéro de portable du patient </label></td>
 										<td>
-											<input type="text" class="form-control forceNumeric phone-number" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="<?php echo $vlQueryInfo['patient_mobile_number']; ?>" style="width:100%;" />
+											<input type="text" class="form-control phone-number" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="<?php echo $vlQueryInfo['patient_mobile_number']; ?>" style="width:100%;" />
 										</td>
 									</tr>
 									<tr>
@@ -633,7 +633,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
             const countryCode = "<?= $countryCode ?? null; ?>"
             const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
             const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
-
+			
             if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
                 alert('Invalid phone number. Please enter with proper country code minimum length of ' + minDigits + ' & maximum length of ' + maxDigits);
             }

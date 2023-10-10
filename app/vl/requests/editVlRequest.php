@@ -148,16 +148,17 @@ if (!empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes
      $key = base64_decode($general->getGlobalConfig('key'));
      $vlQueryInfo['patient_art_no'] = $general->crypto('decrypt', $vlQueryInfo['patient_art_no'], $key);
      if ($patientFirstName != '') {
-          $vlQueryInfo['patient_first_name'] = $general->crypto('decrypt', $patientFirstName, $key);
+          $vlQueryInfo['patient_first_name'] = $patientFirstName = $general->crypto('decrypt', $patientFirstName, $key);
      }
 
      if ($patientMiddleName != '') {
-          $vlQueryInfo['patient_middle_name'] = $general->crypto('decrypt', $patientMiddleName, $key);
+          $patientMiddleName = $general->crypto('decrypt', $patientMiddleName, $key);
      }
 
      if ($patientLastName != '') {
-          $vlQueryInfo['patient_last_name'] = $general->crypto('decrypt', $patientLastName, $key);
+          $vlQueryInfo['patient_last_name']  = $patientLastName = $general->crypto('decrypt', $patientLastName, $key);
      }
+     $patientFullName = $patientFirstName." ".$patientMiddleName." ".$patientLastName;
 } else {
      $patientFullName = trim($patientFirstName ?? ' ' . $patientMiddleName ?? ' ' . $patientLastName ?? '');
 }

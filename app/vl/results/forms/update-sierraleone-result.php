@@ -665,7 +665,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														<label for="vlFocalPerson" class="col-lg-5 control-label">VL Focal
 															Person <span class="mandatory">*</span></label>
 														<div class="col-lg-7">
-															<input type="text" class="form-control labSection isRequired" id="vlFocalPerson" name="vlFocalPerson" placeholder="VL Focal Person" title="Please enter vl focal person name" value="<?= ($vlQueryInfo['vl_focal_person']); ?>" />
+														<select class="form-control labSection ajax-select2" id="vlFocalPerson" name="vlFocalPerson" title="Please enter VL Focal Person">
+															<option value="<?= ($vlQueryInfo['vl_focal_person']); ?>" selected='selected'> <?= ($vlQueryInfo['vl_focal_person']); ?></option>
+														</select>
 														</div>
 													</div>
 													<div class="col-md-4">
@@ -684,10 +686,10 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														</div>
 													</div>
 													<div class="col-md-4">
-														<label class="col-lg-5 control-label" for="sampleReceivedOn">Date
+														<label class="col-lg-5 control-label" for="sampleReceivedDate">Date
 															Sample Received at Testing Lab <span class="mandatory">*</span></label>
 														<div class="col-lg-7">
-															<input type="text" class="form-control labSection isRequired" id="sampleReceivedOn" name="sampleReceivedOn" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" />
+															<input type="text" class="form-control labSection isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" />
 														</div>
 													</div>
 													<div class="col-md-4">

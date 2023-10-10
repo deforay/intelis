@@ -239,13 +239,13 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="ageInYears">If DOB unknown, Age in Years </label>
-                                                       <input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="3" placeholder="Age in Years" title="Enter age in years" />
+                                                       <input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="3" placeholder="Age in Years" title="Enter age in years" onchange="clearDOB(this.value);" />
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="ageInMonths">If Age
-                                                            < 1, Age in Months </label> <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" />
+                                                            < 1, Age in Months </label> <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" onchange="clearDOB(this.value);"/>
                                                   </div>
                                              </div>
                                         </div>
@@ -587,6 +587,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                                       <select name="suspendLastVLTestSampleType" id="suspendLastVLTestSampleType" class="form-control viralTestData" title="Please choose sample type">
                                                                            <option value=""> -- Select -- </option>
                                                                            <?php foreach ($sResult as $name) { ?>
+                                                                                <option value="<?php echo $name['sample_id']; ?>"><?= $name['sample_name']; ?></option>
                                                                            <?php } ?>
                                                                       </select>
                                                                  </div>

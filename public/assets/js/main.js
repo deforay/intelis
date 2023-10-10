@@ -72,6 +72,7 @@ class Utilities {
 
     static getAgeFromDob(dob) {
         let dobDate = dayjs(dob);
+        alert(dobDate);
         if (dob != '' && dobDate.isValid()) {
             let currentDate = dayjs();
             let ageInYears = currentDate.diff(dobDate, 'year');

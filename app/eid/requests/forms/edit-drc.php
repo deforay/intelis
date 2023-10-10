@@ -48,6 +48,10 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
 $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", $eidInfo['mother_treatment']) : [];
 $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", $eidInfo['child_treatment']) : [];
 
+$countryCode = $arr['default_phone_prefix'];
+$minNumberOfDigits = $arr['min_phone_length'];
+$maxNumberOfDigits = $arr['max_phone_length'];
+
 ?>
 
 <div class="content-wrapper">
@@ -262,7 +266,7 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 										<th scope="row">Age en mois</th>
 										<td><input type="number" value="<?= htmlspecialchars($eidInfo['child_age']); ?>" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age en mois" title="Age en mois" style="width:100%;" onchange="$('#childDob').val('')" /></td>
 										<th scope="row"></th>
-										<td></td>
+										<td></td>	
 									</tr>
 
 								</table>
@@ -792,5 +796,28 @@ $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", 
 			}
 		});
 
+		// Apply validation to all input fields with class 'phone-number'
+		$('.phone-number').on('change', function() {
+            const phoneNumber = $(this).val();
+            if (phoneNumber == "") {
+                return;
+            } else if (phoneNumber == "<?php echo $countryCode; ?>") {
+                $(this).val("")
+                return;
+            }
+            const countryCode = "<?= $countryCode ?? null; ?>"
+            const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
+            const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
+
+            if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
+                alert('Invalid phone number. Please enter with proper country code minimum length of ' + minDigits + ' & maximum length of ' + maxDigits);
+            }
+        });
+
+        $('.phone-number').on('focus', function() {
+            if ($(this).val() == "") {
+                $(this).val("<?php echo $countryCode ?? null; ?>")
+            };
+        });
 	});
 </script>

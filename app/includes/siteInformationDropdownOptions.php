@@ -141,7 +141,7 @@ function getDistrictDropdown($selectedProvince = null, $selectedDistrict = null)
 	$district = $option;
 	foreach ($facilityInfo as $pdRow) {
 		$selected = '';
-		if (strtolower($selectedDistrict) == strtolower($pdRow['facility_district'])) {
+		if ($selectedDistrict == $pdRow['facility_district']) {
 			$selected = "selected='selected'";
 		}
 		$district .= "<option $selected value='" . $pdRow['facility_district'] . "'>" . ($pdRow['facility_district']) . "</option>";
@@ -160,8 +160,8 @@ if (!empty($facilityIdRequested)) {
 		$facilityInfo['contact_person'] = $labContactUser['user_name'];
 	}
 
-	$provinceOptions = getProvinceDropdown($facilityInfo['facility_state']);
-	$districtOptions = getDistrictDropdown($facilityInfo['facility_state'], $facilityInfo['facility_district']);
+	$provinceOptions = getProvinceDropdown($facilityInfo['facility_state_id']);
+	$districtOptions = getDistrictDropdown($facilityInfo['facility_state_id'], $facilityInfo['facility_district_id']);
 	echo $provinceOptions . "###" . $districtOptions . "###" . $facilityInfo['contact_person'];
 } elseif (!empty($provinceRequested) && !empty($districtRequested) && $_POST['requestType'] == 'patient') {
 	$provinceName = explode("##", $provinceRequested);
@@ -196,7 +196,7 @@ function getProvinceDropdown($selectedProvince = null)
 	$option = $GLOBALS['option'];
 
 	if (!empty($_SESSION['facilityMap'])) {
-		$db->join("facility_details f", "f.facility_state=p.geo_name", "INNER");
+		$db->join("facility_details f", "f.facility_state_id=p.geo_id", "INNER");
 		//$db->joinWhere("facility_details f", "h.test_type", $testType);
 		$db->where("f.facility_id IN (" . $_SESSION['facilityMap'] . ")");
 	}
@@ -209,7 +209,7 @@ function getProvinceDropdown($selectedProvince = null)
 	$state = $option;
 	foreach ($pdResult as $pdRow) {
 		$selected = '';
-		if (strtolower($selectedProvince) == strtolower($pdRow['geo_name'])) {
+		if ($selectedProvince == $pdRow['geo_id']) {
 			$selected = "selected='selected'";
 		}
 		$state .= "<option data-code='" . $pdRow['geo_code'] . "' data-province-id='" . $pdRow['geo_id'] . "' data-name='" . $pdRow['geo_name'] . "' value='" . $pdRow['geo_name'] . "##" . $pdRow['geo_code'] . "' $selected>" . ($pdRow['geo_name']) . "</option>";

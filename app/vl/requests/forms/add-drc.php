@@ -123,7 +123,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 										</td>
 										<td><label for="reqClinicianPhoneNumber">Téléphone </label></td>
 										<td>
-											<input type="text" class="form-control forceNumeric phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="<?= _translate("Please enter phone number"); ?>" style="width:100%;" />
+											<input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="<?= _translate("Please enter phone number"); ?>" style="width:100%;" />
 										</td>
 										<td><label for="implementingPartner">Partnaire d'appui </label></td>
 										<td>
@@ -242,7 +242,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 									<tr>
 										<td><label for="patientPhoneNumber">Numéro de portable du patient </label></td>
 										<td>
-											<input type="text" class="form-control forceNumeric phone-number" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" style="width:100%;" />
+											<input type="text" class="form-control phone-number" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" style="width:100%;" />
 										</td>
 									</tr>
 									<tr>

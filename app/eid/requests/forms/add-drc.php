@@ -149,7 +149,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 										</td>
 										<td><label for="reqClinicianPhoneNumber">Demander le numéro de téléphone du clinicien </label></td>
 										<td>
-											<input type="text" class="form-control forceNumeric phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" style="width:100%;" />
+											<input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" style="width:100%;" />
 										</td>
 										<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
 											 <tr> 
