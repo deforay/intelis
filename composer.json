@@ -51,7 +51,8 @@
         "ifsnop/mysqldump-php": "^2.12",
         "symfony/console": "^5.4",
         "gettext/gettext": "^5.7",
-        "carbondate/carbon": "^1.33"
+        "carbondate/carbon": "^1.33",
+        "nesbot/carbon": "*"
     },
     "suggest": {
         "dcarbone/php-fhir-generated": "Needed for FHIR Parsing",

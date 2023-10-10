@@ -5138,3 +5138,8 @@ VALUES
 
 -- Jeyabanu 06-Oct-2023
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Display Encrypt PII Option', 'display_encrypt_pii_option', 'no', 'general', 'no', NULL, '42f0b39d-75ec-4de5-99cc-e1886b444cfd-2985fd', 'active');
+
+-- Thana 09-Oct-2023
+UPDATE `privileges` SET `resource_id` = 'generic-results' WHERE `privileges`.`privilege_id` = 260;
+UPDATE `privileges` SET `shared_privileges`='["/generic-tests/mail/mail-generic-tests-results.php","/generic-tests/mail/generic-tests-result-mail-confirm.php"]' WHERE `privilege_name` = '/generic-tests/results/generic-print-result.php';
+INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'generic-tests', NULL, 'no', 'Send Result Mail', '/generic-tests/mail/mail-generic-tests-results.php', '/generic-tests/mail/generic-tests-result-mail-confirm.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestResultMenu', '62', '88', 'active', CURRENT_TIMESTAMP);
