@@ -39,6 +39,10 @@ if (!isset($provinceResult[0]['geo_code']) || $provinceResult[0]['geo_code'] == 
 $aQuery = "SELECT * from r_vl_art_regimen WHERE art_status like 'active' ORDER by parent_art ASC, art_code ASC";
 $aResult = $db->query($aQuery);
 
+$countryCode = $arr['default_phone_prefix'];
+$minNumberOfDigits = $arr['min_phone_length'];
+$maxNumberOfDigits = $arr['max_phone_length'];
+
 ?>
 
 <style>
@@ -156,7 +160,7 @@ $aResult = $db->query($aQuery);
 										</td>
 										<td><label for="reqClinicianPhoneNumber">Téléphone </label></td>
 										<td>
-											<input type="text" class="form-control forceNumeric" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" style="width:100%;" />
+											<input type="text" class="form-control forceNumeric phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" style="width:100%;" />
 										</td>
 										<td><label for="supportPartner">Partenaire dappui </label></td>
 										<td>
@@ -272,6 +276,14 @@ $aResult = $db->query($aQuery);
 												<?php } ?>
 											</select>
 											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="Enter Régime ARV" title="Please enter régime ARV" style="width:100%;margin-top:1vh;display:none;">
+										</td>
+										
+										
+									</tr>
+									<tr>
+									<td><label for="patientPhoneNumber">Numéro de portable du patient </label></td>
+										<td>
+											<input type="text" class="form-control forceNumeric phone-number" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="<?php echo $vlQueryInfo['patient_mobile_number']; ?>" style="width:100%;" />
 										</td>
 									</tr>
 									<tr>
@@ -608,6 +620,32 @@ $aResult = $db->query($aQuery);
 
 
 	$(document).ready(function() {
+
+		 // Apply validation to all input fields with class 'phone-number'
+		 $('.phone-number').on('change', function() {
+            const phoneNumber = $(this).val();
+            if (phoneNumber == "") {
+                return;
+            } else if (phoneNumber == "<?php echo $countryCode; ?>") {
+                $(this).val("")
+                return;
+            }
+            const countryCode = "<?= $countryCode ?? null; ?>"
+            const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
+            const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
+
+            if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
+                alert('Invalid phone number. Please enter with proper country code minimum length of ' + minDigits + ' & maximum length of ' + maxDigits);
+            }
+        });
+
+        $('.phone-number').on('focus', function() {
+            if ($(this).val() == "") {
+                $(this).val("<?php echo $countryCode ?? null; ?>")
+            };
+        });
+
+
 		getVlResults($("#testingPlatform").val());
 		if ($("#status").val() == 4) {
 			$(".rejectionReason").show();

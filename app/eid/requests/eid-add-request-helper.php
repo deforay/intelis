@@ -295,6 +295,7 @@ try {
 		'no_of_infected_children' => $_POST['noOfInfectedChildren'] ?? null,
 		'mother_arv_protocol' => $_POST['motherArvProtocol'] ?? null,
 		'mother_treatment_initiation_date' => $_POST['motherTreatmentInitiationDate'] ?? null,
+		'sync_patient_identifiers' => $_POST['syncPatientIdentifiers'] ?? null,
 		'child_id' => $_POST['childId'] ?? null,
 		'child_name' => $_POST['childName'] ?? null,
 		'child_dob' => $_POST['childDob'] ?? null,

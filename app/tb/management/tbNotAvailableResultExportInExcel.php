@@ -103,6 +103,11 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
             $row[] = $aRow['remote_sample_code'];
         }
         // $row[] = ($patientFname);
+        if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+            $key = base64_decode($general->getGlobalConfig('key'));
+            $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
+            $aRow['patient_name'] = $general->crypto('decrypt', $aRow['patient_name'], $key);
+       }
         $row[] = $aRow['facility_name'];
         $row[] = $aRow['patient_id'];
         $row[] = ($aRow['patient_name']);

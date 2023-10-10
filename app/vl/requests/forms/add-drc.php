@@ -29,6 +29,11 @@ $aResult = $db->query($aQuery);
 
 $sKey = '';
 $sFormat = '';
+
+$countryCode = $arr['default_phone_prefix'];
+$minNumberOfDigits = $arr['min_phone_length'];
+$maxNumberOfDigits = $arr['max_phone_length'];
+
 ?>
 
 <style>
@@ -118,7 +123,7 @@ $sFormat = '';
 										</td>
 										<td><label for="reqClinicianPhoneNumber">Téléphone </label></td>
 										<td>
-											<input type="text" class="form-control forceNumeric" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="<?= _translate("Please enter phone number"); ?>" style="width:100%;" />
+											<input type="text" class="form-control forceNumeric phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="<?= _translate("Please enter phone number"); ?>" style="width:100%;" />
 										</td>
 										<td><label for="implementingPartner">Partnaire d'appui </label></td>
 										<td>
@@ -232,6 +237,12 @@ $sFormat = '';
 												<?php } ?>
 											</select>
 											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="Enter Régime ARV" title="Please enter régime ARV" style="margin-top:1vh;display:none;">
+										</td>
+									</tr>
+									<tr>
+										<td><label for="patientPhoneNumber">Numéro de portable du patient </label></td>
+										<td>
+											<input type="text" class="form-control forceNumeric phone-number" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" style="width:100%;" />
 										</td>
 									</tr>
 									<tr>
@@ -848,6 +859,30 @@ $sFormat = '';
 
 
 	$(document).ready(function() {
+
+		 // Apply validation to all input fields with class 'phone-number'
+		 $('.phone-number').on('change', function() {
+            const phoneNumber = $(this).val();
+            if (phoneNumber == "") {
+                return;
+            } else if (phoneNumber == "<?php echo $countryCode; ?>") {
+                $(this).val("")
+                return;
+            }
+            const countryCode = "<?= $countryCode ?? null; ?>"
+            const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
+            const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
+
+            if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
+                alert('Invalid phone number. Please enter with proper country code minimum length of ' + minDigits + ' & maximum length of ' + maxDigits);
+            }
+        });
+
+        $('.phone-number').on('focus', function() {
+            if ($(this).val() == "") {
+                $(this).val("<?php echo $countryCode ?? null; ?>")
+            };
+        });
 
 		$("#artNo").on('input', function() {
 

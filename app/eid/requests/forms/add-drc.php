@@ -37,6 +37,9 @@ foreach ($pdResult as $provinceName) {
 }
 
 $facility = $general->generateSelectOptions($healthFacilities, null, _translate("-- Select --"));
+$countryCode = $arr['default_phone_prefix'];
+$minNumberOfDigits = $arr['min_phone_length'];
+$maxNumberOfDigits = $arr['max_phone_length'];
 
 ?>
 
@@ -144,15 +147,19 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<td>
 											<input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Demandeur" title="<?= _translate("Please enter requesting clinician name"); ?>" style="width:100%;" />
 										</td>
+										<td><label for="reqClinicianPhoneNumber">Demander le numéro de téléphone du clinicien </label></td>
+										<td>
+											<input type="text" class="form-control forceNumeric phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" style="width:100%;" />
+										</td>
 										<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
-											<!-- <tr> -->
+											 <tr> 
 											<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
 											<td>
 												<select name="labId" id="labId" class="form-control isRequired" title="Nom du Laboratoire" style="width:100%;">
 													<?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
 												</select>
 											</td>
-											<!-- </tr> -->
+											</tr>
 
 										<?php } ?>
 									</tr>
@@ -779,6 +786,30 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 				$("#motherViralLoadText").val('');
 			}
 		});
+
+		 // Apply validation to all input fields with class 'phone-number'
+		 $('.phone-number').on('change', function() {
+            const phoneNumber = $(this).val();
+            if (phoneNumber == "") {
+                return;
+            } else if (phoneNumber == "<?php echo $countryCode; ?>") {
+                $(this).val("")
+                return;
+            }
+            const countryCode = "<?= $countryCode ?? null; ?>"
+            const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
+            const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
+
+            if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
+                alert('Invalid phone number. Please enter with proper country code minimum length of ' + minDigits + ' & maximum length of ' + maxDigits);
+            }
+        });
+
+        $('.phone-number').on('focus', function() {
+            if ($(this).val() == "") {
+                $(this).val("<?php echo $countryCode ?? null; ?>")
+            };
+        });
 
 
 	});
