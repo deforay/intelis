@@ -35,6 +35,8 @@ $sarr = $general->getSystemConfig();
 
 $skin = "skin-blue";
 
+$trainingMode = isset($arr['training_mode']) && trim($arr['training_mode']) == 'yes' ? true : false;
+
 $logoName = "<img src='/assets/img/flask.png' style='margin-top:-5px;max-width:22px;'> <span style=''>LIS</span>";
 $smallLogoName = "<img src='/assets/img/flask.png'>";
 $systemType = _translate("Lab Sample Management Module");
@@ -109,21 +111,24 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 			width: auto;
 			overflow-y: scroll !important;
 		}
-		marquee {
-			background: crimson;
-			font-size: large;
-			position: initial;
+
+		.trainingMarquee {
+			max-height: 50px;
+			padding-top: 10px;
+			font-weight: bold;
+			color: #fff;
+			width: 700px;
+			overflow: hidden;
+			white-space: nowrap;
+			font-size: 1.5em;
+			text-transform: capitalize;
 		}
 	</style>
 </head>
 
 <body class="hold-transition <?= $skin; ?> sidebar-mini" id="lis-body" style="margin-top:50px !important;">
 	<div class="wrapper">
-		<?php if (isset($arr['training_mode']) && trim($arr['training_mode']) == 'yes') { ?>
-			<marquee behavior="scroll" scrollamount="5">
-				<p><?php echo ($arr['training_mode_text']); ?></p>
-			</marquee>
-		<?php } ?>
+
 		<header class="main-header">
 			<a href="<?= $_SESSION['landingPage']; ?>" class="logo" style="position: fixed;top: 0;">
 				<span class="logo-mini"><strong>
@@ -145,6 +150,13 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 								<?= $systemType; ?>
 							</span>
 						</a>
+					</li>
+					<li>
+						<?php if ($trainingMode) { ?>
+							<marquee class="trainingMarquee" behavior="scroll" scrollamount="5" style="">
+								<?= ($arr['training_mode_text']); ?>
+							</marquee>
+						<?php } ?>
 					</li>
 				</ul>
 				<div class="navbar-custom-menu">
