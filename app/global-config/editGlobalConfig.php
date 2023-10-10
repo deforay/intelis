@@ -287,6 +287,19 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 										</div>
 									</div>
 								</div>
+								
+								<div class="row">
+									<div class="col-md-7">
+										<div class="form-group">
+											<label for="training_mode" class="col-lg-4 control-label"><?php echo _translate("If Training Mode"); ?> </label>
+											<div class="col-lg-8">
+												<input type="radio" class="readPage" id="training_mode_yes" name="training_mode" value="yes" <?php echo ($arr['training_mode'] == 'yes') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _translate("Yes"); ?>&nbsp;&nbsp;
+												<input type="radio" class="readPage" id="training_mode_no" name="training_mode" value="no" <?php echo ($arr['training_mode'] == 'no') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _translate("No"); ?>
+												<input type="text" <?php echo ($arr['training_mode'] == 'yes')?'':'style="display:none"';?> value="<?php echo $arr['training_mode_text'];?>" id="training_mode_text" name="training_mode_text" class="form-control readPage" placeholder="Enter the training mode text" title="Please enter the training mode text here"/>
+											</div>
+										</div>
+									</div>
+								</div>
 
 								<div class="row">
 									<div class="col-md-7" style="height:38px;">
@@ -1862,6 +1875,13 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 		}
 	});
 
+	$("input:radio[name=training_mode]").click(function() {
+		if(this.value == 'yes'){
+			$('#training_mode_text').show();
+		}else{
+			$('#training_mode_text').hide();
+		}
+	});
 	$("input:radio[name=generic_sample_code]").click(function() {
 		if (this.value == 'MMYY' || this.value == 'YY') {
 			$('#generic_auto-sample-eg').show();
