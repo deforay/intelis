@@ -109,11 +109,21 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 			width: auto;
 			overflow-y: scroll !important;
 		}
+		marquee {
+			background: crimson;
+			font-size: large;
+			position: initial;
+		}
 	</style>
 </head>
 
 <body class="hold-transition <?= $skin; ?> sidebar-mini" id="lis-body" style="margin-top:50px !important;">
 	<div class="wrapper">
+		<?php if (isset($arr['training_mode']) && trim($arr['training_mode']) == 'yes') { ?>
+			<marquee behavior="scroll" scrollamount="5">
+				<p><?php echo ($arr['training_mode_text']); ?></p>
+			</marquee>
+		<?php } ?>
 		<header class="main-header">
 			<a href="<?= $_SESSION['landingPage']; ?>" class="logo" style="position: fixed;top: 0;">
 				<span class="logo-mini"><strong>
