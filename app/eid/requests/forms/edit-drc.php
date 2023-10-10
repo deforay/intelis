@@ -198,7 +198,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 											</select>
 										</td>
 									</tr>
-								
+
 									<tr>
 										<th scope="row">
 											<h5 style="font-weight:bold;font-size:1.1em;">ID de la mère</h5>
@@ -266,7 +266,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 										<th scope="row">Age en mois</th>
 										<td><input type="number" value="<?= htmlspecialchars($eidInfo['child_age']); ?>" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age en mois" title="Age en mois" style="width:100%;" onchange="$('#childDob').val('')" /></td>
 										<th scope="row"></th>
-										<td></td>	
+										<td></td>
 									</tr>
 
 								</table>
@@ -798,26 +798,26 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 
 		// Apply validation to all input fields with class 'phone-number'
 		$('.phone-number').on('change', function() {
-            const phoneNumber = $(this).val();
-            if (phoneNumber == "") {
-                return;
-            } else if (phoneNumber == "<?php echo $countryCode; ?>") {
-                $(this).val("")
-                return;
-            }
-            const countryCode = "<?= $countryCode ?? null; ?>"
-            const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
-            const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
+			const phoneNumber = $(this).val();
+			if (phoneNumber == "") {
+				return;
+			} else if (phoneNumber == "<?php echo $countryCode; ?>") {
+				$(this).val("")
+				return;
+			}
+			const countryCode = "<?= $countryCode ?? null; ?>"
+			const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
+			const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
 
-            if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
-                alert('Invalid phone number. Please enter with proper country code minimum length of ' + minDigits + ' & maximum length of ' + maxDigits);
-            }
-        });
+			if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
+				alert('<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>');
+			}
+		});
 
-        $('.phone-number').on('focus', function() {
-            if ($(this).val() == "") {
-                $(this).val("<?php echo $countryCode ?? null; ?>")
-            };
-        });
+		$('.phone-number').on('focus', function() {
+			if ($(this).val() == "") {
+				$(this).val("<?php echo $countryCode ?? null; ?>")
+			};
+		});
 	});
 </script>

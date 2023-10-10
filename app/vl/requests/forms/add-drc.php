@@ -860,29 +860,29 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 
 	$(document).ready(function() {
 
-		 // Apply validation to all input fields with class 'phone-number'
-		 $('.phone-number').on('change', function() {
-            const phoneNumber = $(this).val();
-            if (phoneNumber == "") {
-                return;
-            } else if (phoneNumber == "<?php echo $countryCode; ?>") {
-                $(this).val("")
-                return;
-            }
-            const countryCode = "<?= $countryCode ?? null; ?>"
-            const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
-            const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
+		// Apply validation to all input fields with class 'phone-number'
+		$('.phone-number').on('change', function() {
+			const phoneNumber = $(this).val();
+			if (phoneNumber == "") {
+				return;
+			} else if (phoneNumber == "<?php echo $countryCode; ?>") {
+				$(this).val("")
+				return;
+			}
+			const countryCode = "<?= $countryCode ?? null; ?>"
+			const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
+			const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
 
-            if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
-                alert('Invalid phone number. Please enter with proper country code minimum length of ' + minDigits + ' & maximum length of ' + maxDigits);
-            }
-        });
+			if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
+				alert('<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>');
+			}
+		});
 
-        $('.phone-number').on('focus', function() {
-            if ($(this).val() == "") {
-                $(this).val("<?php echo $countryCode ?? null; ?>")
-            };
-        });
+		$('.phone-number').on('focus', function() {
+			if ($(this).val() == "") {
+				$(this).val("<?php echo $countryCode ?? null; ?>")
+			};
+		});
 
 		$("#artNo").on('input', function() {
 
@@ -922,7 +922,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 		$('#sampleCollectionDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "+1Y",
 			// yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",

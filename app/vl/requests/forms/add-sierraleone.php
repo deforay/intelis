@@ -1180,7 +1180,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
 
                if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
-                    alert('Invalid phone number. Please enter with proper country code minimum length of ' + minDigits + ' & maximum length of ' + maxDigits);
+                    alert('<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>');
                }
           });
 
