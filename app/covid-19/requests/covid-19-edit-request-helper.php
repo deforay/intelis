@@ -369,7 +369,7 @@ try {
 	}
 	//echo "<pre>";print_r($covid19Data);die;
 
-	if ($_POST['syncPatientIdentifiers'] === 'no') {
+	if (isset($_POST['syncPatientIdentifiers']) && $_POST['syncPatientIdentifiers'] == 'no') {
         $key = base64_decode($general->getGlobalConfig('key'));
         $encryptedPatientId = $general->crypto('encrypt', $covid19Data['patient_id'], $key);
         $encryptedPatientName = $general->crypto('encrypt', $covid19Data['patient_name'], $key);

@@ -348,7 +348,7 @@ try {
 		$covid19Data['sample_tested_datetime'] = null;
 	}
 
-	if ($_POST['syncPatientIdentifiers'] === 'no') {
+	if (isset($_POST['syncPatientIdentifiers']) && $_POST['syncPatientIdentifiers'] == 'no') {
         $key = base64_decode($general->getGlobalConfig('key'));
         $encryptedPatientId = $general->crypto('encrypt', $covid19Data['patient_id'], $key);
         $encryptedPatientName = $general->crypto('encrypt', $covid19Data['patient_name'], $key);

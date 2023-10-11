@@ -264,7 +264,7 @@ try {
         $db->delete($testTableName);
     }
 
-    if ($_POST['syncPatientIdentifiers'] === 'no') {
+    if (isset($_POST['syncPatientIdentifiers']) && $_POST['syncPatientIdentifiers'] == 'no') {
         $key = base64_decode($general->getGlobalConfig('key'));
         $encryptedPatientId = $general->crypto('encrypt', $tbData['patient_id'], $key);
         $encryptedPatientName = $general->crypto('encrypt', $tbData['patient_name'], $key);
