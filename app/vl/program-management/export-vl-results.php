@@ -148,7 +148,15 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		}
 
 		$row[] = $no;
-
+		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
+			if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+				$key = base64_decode($general->getGlobalConfig('key'));
+				$aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
+				$patientFname = $general->crypto('decrypt', $patientFname, $key);
+				$patientMname = $general->crypto('decrypt', $patientMname, $key);
+				$patientLname = $general->crypto('decrypt', $patientLname, $key);
+			}
+		}
 		if($arr['vl_form']== 4 && $arr['vl_excel_export_format']=="cresar")
 		{
 			$row[] = $aRow['facility_state'];
@@ -159,15 +167,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 			$row[] = $aRow['funding_source_name'] ?? null;
 			$row[] = $aRow['cv_number'];
 			$row[] = ""; //TAT
-			if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-				if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-					$key = base64_decode($general->getGlobalConfig('key'));
-					$aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
-					$patientFname = $general->crypto('decrypt', $patientFname, $key);
-					$patientMname = $general->crypto('decrypt', $patientMname, $key);
-					$patientLname = $general->crypto('decrypt', $patientLname, $key);
-				}
-			}
+			
 			$row[] = $aRow['patient_art_no'];
 			$row[] = $aRow['current_arv_protocol'];
 			$row[] = $gender;

@@ -689,7 +689,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														<label class="col-lg-5 control-label" for="sampleReceivedDate">Date
 															Sample Received at Testing Lab <span class="mandatory">*</span></label>
 														<div class="col-lg-7">
-															<input type="text" class="form-control labSection isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" />
+															<input type="text" class="form-control dateTime labSection isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" />
 														</div>
 													</div>
 													<div class="col-md-4">
