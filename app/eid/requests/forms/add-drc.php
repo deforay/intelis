@@ -152,17 +152,17 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 											<input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" style="width:100%;" />
 										</td>
 										<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
-											 <tr> 
-											<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
-											<td>
-												<select name="labId" id="labId" class="form-control isRequired" title="Nom du Laboratoire" style="width:100%;">
-													<?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
-												</select>
-											</td>
-											</tr>
-
-										<?php } ?>
+									<tr>
+										<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
+										<td>
+											<select name="labId" id="labId" class="form-control isRequired" title="Nom du Laboratoire" style="width:100%;">
+												<?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
+											</select>
+										</td>
 									</tr>
+
+								<?php } ?>
+								</tr>
 								</table>
 								<br><br>
 
@@ -787,29 +787,29 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 			}
 		});
 
-		 // Apply validation to all input fields with class 'phone-number'
-		 $('.phone-number').on('change', function() {
-            const phoneNumber = $(this).val();
-            if (phoneNumber == "") {
-                return;
-            } else if (phoneNumber == "<?php echo $countryCode; ?>") {
-                $(this).val("")
-                return;
-            }
-            const countryCode = "<?= $countryCode ?? null; ?>"
-            const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
-            const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
+		// Apply validation to all input fields with class 'phone-number'
+		$('.phone-number').on('change', function() {
+			const phoneNumber = $(this).val();
+			if (phoneNumber == "") {
+				return;
+			} else if (phoneNumber == "<?php echo $countryCode; ?>") {
+				$(this).val("")
+				return;
+			}
+			const countryCode = "<?= $countryCode ?? null; ?>"
+			const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
+			const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
 
-            if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
-                alert('Invalid phone number. Please enter with proper country code minimum length of ' + minDigits + ' & maximum length of ' + maxDigits);
-            }
-        });
+			if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
+				alert('<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>');
+			}
+		});
 
-        $('.phone-number').on('focus', function() {
-            if ($(this).val() == "") {
-                $(this).val("<?php echo $countryCode ?? null; ?>")
-            };
-        });
+		$('.phone-number').on('focus', function() {
+			if ($(this).val() == "") {
+				$(this).val("<?php echo $countryCode ?? null; ?>")
+			};
+		});
 
 
 	});

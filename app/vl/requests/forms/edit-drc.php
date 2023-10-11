@@ -277,11 +277,11 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 											</select>
 											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="Enter Régime ARV" title="Please enter régime ARV" style="width:100%;margin-top:1vh;display:none;">
 										</td>
-										
-										
+
+
 									</tr>
 									<tr>
-									<td><label for="patientPhoneNumber">Numéro de portable du patient </label></td>
+										<td><label for="patientPhoneNumber">Numéro de portable du patient </label></td>
 										<td>
 											<input type="text" class="form-control phone-number" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="<?php echo $vlQueryInfo['patient_mobile_number']; ?>" style="width:100%;" />
 										</td>
@@ -621,29 +621,29 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 
 	$(document).ready(function() {
 
-		 // Apply validation to all input fields with class 'phone-number'
-		 $('.phone-number').on('change', function() {
-            const phoneNumber = $(this).val();
-            if (phoneNumber == "") {
-                return;
-            } else if (phoneNumber == "<?php echo $countryCode; ?>") {
-                $(this).val("")
-                return;
-            }
-            const countryCode = "<?= $countryCode ?? null; ?>"
-            const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
-            const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
-			
-            if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
-                alert('Invalid phone number. Please enter with proper country code minimum length of ' + minDigits + ' & maximum length of ' + maxDigits);
-            }
-        });
+		// Apply validation to all input fields with class 'phone-number'
+		$('.phone-number').on('change', function() {
+			const phoneNumber = $(this).val();
+			if (phoneNumber == "") {
+				return;
+			} else if (phoneNumber == "<?php echo $countryCode; ?>") {
+				$(this).val("")
+				return;
+			}
+			const countryCode = "<?= $countryCode ?? null; ?>"
+			const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
+			const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
 
-        $('.phone-number').on('focus', function() {
-            if ($(this).val() == "") {
-                $(this).val("<?php echo $countryCode ?? null; ?>")
-            };
-        });
+			if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
+				alert('<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>');
+			}
+		});
+
+		$('.phone-number').on('focus', function() {
+			if ($(this).val() == "") {
+				$(this).val("<?php echo $countryCode ?? null; ?>")
+			};
+		});
 
 
 		getVlResults($("#testingPlatform").val());
@@ -684,7 +684,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 		$('#sampleCollectionDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "+1Y",
 			// yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
@@ -711,7 +711,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 		$('#sampleDispatchedDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			minDate: minDate,
 			startDate: minDate,

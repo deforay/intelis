@@ -245,7 +245,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="ageInMonths">If Age
-                                                            < 1, Age in Months </label> <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" onchange="clearDOB(this.value);"/>
+                                                            < 1, Age in Months </label> <input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" onchange="clearDOB(this.value);" />
                                                   </div>
                                              </div>
                                         </div>
@@ -284,7 +284,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="patientPhoneNumber">Phone Number<span class="mandatory">*</span></label>
-                                                       <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control isRequired phone-number" maxlength="<?php echo $maxNumberOfDigits; ?>" placeholder="Enter Phone Number" title="Enter phone number" />
+                                                       <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control isRequired phone-number" maxlength="<?php echo strlen($countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="Enter Phone Number" title="Enter phone number" />
                                                   </div>
                                              </div>
                                         </div>
@@ -991,7 +991,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $('#sampleCollectionDate').datetimepicker({
                changeMonth: true,
                changeYear: true,
-               dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+               dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                timeFormat: "HH:mm",
                maxDate: "Today",
                onSelect: function(date) {
@@ -1039,8 +1039,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                placeholder: "Province"
           });
           $('#artRegimen').select2({
-			placeholder: "Select ART Regimen"
-		});
+               placeholder: "Select ART Regimen"
+          });
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
@@ -1180,7 +1180,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
 
                if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
-                    alert('Invalid phone number. Please enter with proper country code minimum length of ' + minDigits + ' & maximum length of ' + maxDigits);
+                    alert('<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>');
                }
           });
 

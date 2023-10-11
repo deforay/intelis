@@ -386,7 +386,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for="patientPhoneNumber">Phone Number</label>
-											<input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control phone-number" maxlength="<?php echo $maxNumberOfDigits; ?>" placeholder="Enter Phone Number" title="Enter phone number" value="<?= ($vlQueryInfo['patient_mobile_number']); ?>" />
+											<input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control phone-number" maxlength="<?php echo strlen($countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="Enter Phone Number" title="Enter phone number" value="<?= ($vlQueryInfo['patient_mobile_number']); ?>" />
 										</div>
 									</div>
 								</div>
@@ -1358,7 +1358,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 			const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
 
 			if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
-				alert('Invalid phone number. Please enter with proper country code minimum length of ' + minDigits + ' & maximum length of ' + maxDigits);
+				alert('<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>');
 			}
 		});
 
