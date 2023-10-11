@@ -178,7 +178,7 @@ try {
 		'implementing_partner' => (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') ? base64_decode($_POST['implementingPartner']) : null,
 		'source_of_alert' => !empty($_POST['sourceOfAlertPOE']) ? $_POST['sourceOfAlertPOE'] : null,
 		'source_of_alert_other' => (!empty($_POST['sourceOfAlertPOE']) && $_POST['sourceOfAlertPOE'] == 'others') ? $_POST['alertPoeOthers'] : null,
-		'sync_patient_identifiers' => $_POST['syncPatientIdentifiers'] ?? null,
+		'sync_patient_identifiers' => $_POST['encryptPII'] ?? null,
 		'patient_id' => !empty($_POST['patientId']) ? $_POST['patientId'] : null,
 		'patient_name' => !empty($_POST['firstName']) ? $_POST['firstName'] : null,
 		'patient_surname' => !empty($_POST['lastName']) ? $_POST['lastName'] : null,
@@ -369,7 +369,7 @@ try {
 	}
 	//echo "<pre>";print_r($covid19Data);die;
 
-	if (isset($_POST['syncPatientIdentifiers']) && $_POST['syncPatientIdentifiers'] == 'no') {
+	if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
         $key = base64_decode($general->getGlobalConfig('key'));
         $encryptedPatientId = $general->crypto('encrypt', $covid19Data['patient_id'], $key);
         $encryptedPatientName = $general->crypto('encrypt', $covid19Data['patient_name'], $key);

@@ -416,7 +416,7 @@ try {
 	$eidData['request_created_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;
 	$eidData['last_modified_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;
 
-	if (isset($_POST['syncPatientIdentifiers']) && $_POST['syncPatientIdentifiers'] == 'no') {
+	if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
         $key = base64_decode($general->getGlobalConfig('key'));
         $encryptedChildId = $general->crypto('encrypt', $eidData['child_id'], $key);
         $encryptedChildName = $general->crypto('encrypt', $eidData['child_name'], $key);

@@ -170,7 +170,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 									<tr class="encryptPIIContainer">
 										<th scope="row" style="width:15% !important"><label for="childId"><?= _translate('Encrypt PII'); ?> </label></th>
 										<td>
-											<select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control" title="<?= _translate('Encrypt Patient Identifying Information'); ?>">
+											<select name="encryptPII" id="encryptPII" class="form-control" title="<?= _translate('Encrypt Patient Identifying Information'); ?>">
 												<option value=""><?= _translate('--Select--'); ?></option>
 												<option value="no" selected='selected'><?= _translate('No'); ?></option>
 												<option value="yes"><?= _translate('Yes'); ?></option>

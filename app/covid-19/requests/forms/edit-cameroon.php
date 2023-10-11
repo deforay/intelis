@@ -224,17 +224,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                     <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em><?= _translate("Search"); ?></a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;<?= _translate("No Patient Found"); ?></strong></span>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                    <tr class="encryptPIIContainer">
-                                        <th scope="row" style="width:15% !important"><label for="childId"><?= _translate('Encrypt PII'); ?> </label></th>
-                                        <td>
-                                            <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control" title="<?= _translate('Encrypt Patient Identifying Information'); ?>">
-                                                <option value=""><?= _translate('--Select--'); ?></option>
-                                                <option value="no" <?php echo ($covid19Info['sync_patient_identifiers'] == "no") ? "selected='selected'" : ""; ?>><?= _translate('No'); ?></option>
-                                                <option value="yes" <?php echo ($covid19Info['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
-                                            </select>
-                                        </td>
-                                    </tr>
-
+                                   
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="patientId"><?= _translate("Case ID"); ?> <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
