@@ -109,7 +109,8 @@ if (!empty($requestResult)) {
           } else {
                $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $arr['logo'];
           }
-          //  $pdf->setHeading($logoPrintInPdf,'','','','');
+          $arr['training_mode_text'] = (isset($arr['training_mode']) && $arr['training_mode'] == 'yes') ? $arr['training_mode_text'] : null;
+          $pdf->setHeading($logoPrintInPdf, null, null, null, null, $arr['training_mode_text']);
 
           // set header and footer fonts
           $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));

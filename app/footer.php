@@ -326,19 +326,25 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		});
 	}
 	<?php
-		if($arr['display_encrypt_pii_option']=="yes")
-		{
+	if ($arr['display_encrypt_pii_option'] == "yes") {
 	?>
-			$('.encryptPIIContainer').show();
+		$('.encryptPIIContainer').show();
 	<?php
-		}
-		else
-		{
-			?>
-			$('.encryptPIIContainer').hide();
-			<?php
-		}
-		?>
+	} else {
+	?>
+		$('.encryptPIIContainer').hide();
+	<?php
+	}
+	?>
+
+	function formatStringToSnakeCase(inputStr) {
+		// Remove special characters except underscore
+		var result = inputStr.replace(/[^a-zA-Z0-9_ ]/g, '');
+		// Convert to lowercase
+		result = result.toLowerCase();
+		// Replace spaces with underscore
+		return result.replace(/ /g, '_');
+	}
 </script>
 </body>
 
