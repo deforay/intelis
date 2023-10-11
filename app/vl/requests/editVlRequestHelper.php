@@ -315,7 +315,7 @@ try {
      }
      $vlData = array_merge($vlData, $pngSpecificFields);
 
-     if ($_POST['syncPatientIdentifiers'] === 'no') {
+     if (isset($_POST['syncPatientIdentifiers']) && $_POST['syncPatientIdentifiers'] == 'no') {
           $key = base64_decode($general->getGlobalConfig('key'));
           $encryptedPatientId = $general->crypto('encrypt', $vlData['patient_art_no'], $key);
           $encryptedPatientFirstName = $general->crypto('encrypt', $vlData['patient_first_name'], $key);
