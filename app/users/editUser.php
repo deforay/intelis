@@ -87,7 +87,6 @@ $ftResult = $db->rawQuery($fQuery);
 ?>
 
 <link href="/assets/css/jasny-bootstrap.min.css" rel="stylesheet" />
-<link rel="stylesheet" type="text/css" href="/assets/css/toastify.min.css">
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -347,7 +346,6 @@ $ftResult = $db->rawQuery($fQuery);
 </div>
 <script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
-<script type="text/javascript" src="/assets/js/toastify.js"></script>
 
 <script type="text/javascript">
      function clearUserSignature(img) {

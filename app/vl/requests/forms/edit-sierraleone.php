@@ -794,7 +794,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 												<div class="col-md-4">
 													<label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL Focal Person Phone Number</label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control forceNumeric labSection" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" value="<?= ($vlQueryInfo['vl_focal_person_phone_number']); ?>" />
+														<input type="text" class="form-control forceNumeric labSection  phone-number" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" value="<?= ($vlQueryInfo['vl_focal_person_phone_number']); ?>" />
 													</div>
 												</div>
 											</div>
@@ -832,7 +832,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 													</div>
 												</div>
 												<div class="col-md-4">
-													<label class="col-lg-5 control-label" for="isSampleRejected">Sample Rejection <span class="mandatory result-span"></span></label>
+													<label class="col-lg-5 control-label" for="isSampleRejected">Is Sample Rejected? <span class="mandatory result-span mandatory"></span></label>
 													<div class="col-lg-7">
 														<select name="isSampleRejected" id="isSampleRejected" class="form-control labSection" title="Please check if sample is rejected or not">
 															<option value="">-- Select --</option>
@@ -844,7 +844,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 											</div>
 											<div class="row">
 												<div class="col-md-4 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
-													<label class="col-lg-5 control-label" for="rejectionReason">Rejection Reason </label>
+													<label class="col-lg-5 control-label" for="rejectionReason">Rejection Reason <span class="mandatory result-span mandatory"></span></label>
 													<div class="col-lg-7">
 														<select name="rejectionReason" id="rejectionReason" class="form-control labSection" title="Please choose reason" onchange="checkRejectionReason();">
 															<option value="">-- Select --</option>
@@ -933,7 +933,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 										</div>
 										<div class="row">
 											<div class="col-md-4" style="margin-top: 10px;">
-												<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
+												<label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="review-approve-span  mandatory" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 												<div class="col-lg-7">
 													<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
 														<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '-- Select --'); ?>
@@ -941,7 +941,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 												</div>
 											</div>
 											<div class="col-md-4">
-												<label class="col-lg-5 control-label" for="reviewedOn">Reviewed On <span class="review-approve-span" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
+												<label class="col-lg-5 control-label" for="reviewedOn">Reviewed On <span class="review-approve-span  mandatory" style="display: <?php echo ($vlQueryInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span></label>
 												<div class="col-lg-7">
 													<input type="text" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
 												</div>
@@ -1018,6 +1018,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 			</div>
 	</section>
 </div>
+
 <script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
 <script type="text/javascript">
 	let provinceName = true;
@@ -1357,20 +1358,31 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 		});
 
 		// Apply validation to all input fields with class 'phone-number'
-		$('.phone-number').on('change', function() {
-			const phoneNumber = $(this).val();
-			if (phoneNumber == "") {
+		$('.phone-number').on('change, input, blur', function() {
+			if (this.value == "") {
 				return;
-			} else if (phoneNumber == "<?php echo $countryCode; ?>") {
+			} else if (this.value == "<?php echo $countryCode; ?>") {
 				$(this).val("")
 				return;
+			}
+			if (!this.value.match(/^\+?[0-9]*$/)) {
+				this.value = this.value.replace(/[^+0-9]/g, '');
+				if (this.value[0] !== '+' && this.value.length > 0) {
+					this.value = '+' + this.value;
+				}
 			}
 			const countryCode = "<?= $countryCode ?? null; ?>"
 			const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
 			const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
 
-			if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
-				alert('<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>');
+			if (!Utilities.validatePhoneNumber(this.value, countryCode, minDigits, maxDigits)) {
+				Toastify({
+					text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>",
+					duration: 3000,
+					style: {
+						background: 'red',
+					}
+				}).showToast();
 			}
 		});
 

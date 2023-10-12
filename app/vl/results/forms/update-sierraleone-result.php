@@ -673,7 +673,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													<div class="col-md-4">
 														<label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL Focal Person Phone Number<span class="mandatory">*</span></label>
 														<div class="col-lg-7">
-															<input type="text" class="form-control forceNumeric labSection isRequired" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" value="<?= ($vlQueryInfo['vl_focal_person_phone_number']); ?>" />
+															<input type="text" class="form-control forceNumeric labSection isRequired  phone-number" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" value="<?= ($vlQueryInfo['vl_focal_person_phone_number']); ?>" />
 														</div>
 													</div>
 												</div>
@@ -715,8 +715,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													</div>
 
 													<div class="col-md-4">
-														<label class="col-lg-5 control-label" for="isSampleRejected">Sample
-															Rejected? <span class="mandatory">*</span> </label>
+														<label class="col-lg-5 control-label" for="isSampleRejected">Is Sample Rejected? <span class="mandatory">*</span> </label>
 														<div class="col-lg-7">
 															<select name="isSampleRejected" id="isSampleRejected" class="form-control labSection isRequired" title="Please check if sample is rejected or not">
 																<option value="">-- Select --</option>

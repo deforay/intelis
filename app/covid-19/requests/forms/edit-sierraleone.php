@@ -212,7 +212,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                     <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                   
+
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="patientId">Case ID </label></th>
                                         <td style="width:35% !important">
@@ -656,6 +656,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
     <!-- /.content -->
 </div>
 
+
 <script type="text/javascript">
     changeProvince = true;
     changeFacility = true;
@@ -1031,20 +1032,31 @@ $maxNumberOfDigits = $arr['max_phone_length'];
             $('.kitlabels').show();
         <?php } ?>
         // Apply validation to all input fields with class 'phone-number'
-        $('.phone-number').on('change', function() {
-            const phoneNumber = $(this).val();
-            if (phoneNumber == "") {
+        $('.phone-number').on('change, input, blur', function() {
+            if (this.value == "") {
                 return;
-            } else if (phoneNumber == "<?php echo $countryCode; ?>") {
+            } else if (this.value == "<?php echo $countryCode; ?>") {
                 $(this).val("")
                 return;
+            }
+            if (!this.value.match(/^\+?[0-9]*$/)) {
+                this.value = this.value.replace(/[^+0-9]/g, '');
+                if (this.value[0] !== '+' && this.value.length > 0) {
+                    this.value = '+' + this.value;
+                }
             }
             const countryCode = "<?= $countryCode ?? null; ?>"
             const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
             const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
 
-            if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
-                alert('<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>');
+            if (!Utilities.validatePhoneNumber(this.value, countryCode, minDigits, maxDigits)) {
+                Toastify({
+                    text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>",
+                    duration: 3000,
+                    style: {
+                        background: 'red',
+                    }
+                }).showToast();
             }
         });
 

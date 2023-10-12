@@ -609,6 +609,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 	</section>
 	<!-- /.content -->
 </div>
+
 <script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
 <script type="text/javascript">
 	changeProvince = true;
@@ -622,20 +623,31 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 	$(document).ready(function() {
 
 		// Apply validation to all input fields with class 'phone-number'
-		$('.phone-number').on('change', function() {
-			const phoneNumber = $(this).val();
-			if (phoneNumber == "") {
+		$('.phone-number').on('change, input, blur', function() {
+			if (this.value == "") {
 				return;
-			} else if (phoneNumber == "<?php echo $countryCode; ?>") {
+			} else if (this.value == "<?php echo $countryCode; ?>") {
 				$(this).val("")
 				return;
+			}
+			if (!this.value.match(/^\+?[0-9]*$/)) {
+				this.value = this.value.replace(/[^+0-9]/g, '');
+				if (this.value[0] !== '+' && this.value.length > 0) {
+					this.value = '+' + this.value;
+				}
 			}
 			const countryCode = "<?= $countryCode ?? null; ?>"
 			const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
 			const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
 
-			if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
-				alert('<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>');
+			if (!Utilities.validatePhoneNumber(this.value, countryCode, minDigits, maxDigits)) {
+				Toastify({
+					text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>",
+					duration: 3000,
+					style: {
+						background: 'red',
+					}
+				}).showToast();
 			}
 		});
 

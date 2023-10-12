@@ -66,6 +66,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 </footer>
 </div>
 
+<script type="text/javascript" src="/assets/js/toastify.js"></script>
 <script type="text/javascript" src="/assets/js/jquery-ui-timepicker-addon.js"></script>
 <script type="text/javascript" src="/assets/js/js.cookie.js"></script>
 <script type="text/javascript" src="/assets/js/select2.min.js"></script>

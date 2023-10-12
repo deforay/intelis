@@ -657,7 +657,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                                  <div class="col-md-4">
                                                                       <label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label labels">VL Focal Person Phone Number</label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control forceNumeric" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" />
+                                                                           <input type="text" class="form-control forceNumeric phone-number" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" />
                                                                       </div>
                                                                  </div>
                                                             </div>
@@ -675,7 +675,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label labels" for="sampleTestingDateAtLab">Sample Testing Date <span class="result-span">*</span></label>
+                                                                      <label class="col-lg-5 control-label labels" for="sampleTestingDateAtLab">Sample Testing Date <span class="result-span mandatory">*</span></label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control result-fields dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" onchange="checkSampleTestingDate();" disabled />
                                                                       </div>
@@ -684,7 +684,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                             </div>
                                                             <div class="row">
                                                                  <div class="col-md-4">
-                                                                      <label for="testingPlatform" class="col-lg-5 control-label labels">VL Testing Platform <span class="result-span">*</span></label>
+                                                                      <label for="testingPlatform" class="col-lg-5 control-label labels">VL Testing Platform <span class="result-span mandatory">*</span></label>
                                                                       <div class="col-lg-7">
                                                                            <select name="testingPlatform" id="testingPlatform" class="form-control result-optional" title="Please choose VL Testing Platform" onchange="hivDetectionChange();">
                                                                                 <option value="">-- Select --</option>
@@ -695,7 +695,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-4">
-                                                                      <label class="col-lg-5 control-label labels" for="isSampleRejected">Sample Rejected? <span class="result-span">*</span></label>
+                                                                      <label class="col-lg-5 control-label labels" for="isSampleRejected">Is Sample Rejected? <span class="result-span mandatory">*</span></label>
                                                                       <div class="col-lg-7">
                                                                            <select name="isSampleRejected" id="isSampleRejected" class="form-control" title="Please check if sample is rejected or not">
                                                                                 <option value="">-- Select --</option>
@@ -707,7 +707,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                             </div>
                                                             <div class="row">
                                                                  <div class="col-md-4 rejectionReason" style="display:none;">
-                                                                      <label class="col-lg-5 control-label labels" for="rejectionReason">Rejection Reason </label>
+                                                                      <label class="col-lg-5 control-label labels" for="rejectionReason">Rejection Reason <span class="result-span mandatory">*</span> </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" onchange="checkRejectionReason();">
                                                                                 <option value="">-- Select --</option>
@@ -798,7 +798,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                        </div>
                                                        <div class="row">
                                                             <div class="col-md-4">
-                                                                 <label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="review-approve-span" style="display: none;">*</span> </label>
+                                                                 <label class="col-lg-5 control-label" for="reviewedBy">Reviewed By <span class="review-approve-span mandatory" style="display: none;">*</span> </label>
                                                                  <div class="col-lg-7">
                                                                       <select name="reviewedBy" id="reviewedBy" class="select2 form-control labels" title="Please choose reviewed by" style="width: 100%;">
                                                                            <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
@@ -806,7 +806,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-4">
-                                                                 <label class="col-lg-5 control-label labels" for="reviewedOn">Reviewed On <span class="review-approve-span" style="display: none;">*</span> </label>
+                                                                 <label class="col-lg-5 control-label labels" for="reviewedOn">Reviewed On <span class="review-approve-span mandatory" style="display: none;">*</span> </label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" name="reviewedOn" id="reviewedOn" class="dateTime form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" />
                                                                  </div>
@@ -906,6 +906,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 }
 ?>
 <!-- BARCODESTUFF END -->
+
 
 <script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
 <script type="text/javascript" src="/assets/js/moment.min.js"></script>
@@ -1179,20 +1180,33 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 
           // Apply validation to all input fields with class 'phone-number'
-          $('.phone-number').on('change', function() {
-               const phoneNumber = $(this).val();
-               if (phoneNumber == "") {
+          $('.phone-number').on('change, input, blur', function() {
+
+               if (this.value == "") {
                     return;
-               } else if (phoneNumber == "<?php echo $countryCode; ?>") {
+               } else if (this.value == "<?php echo $countryCode; ?>") {
                     $(this).val("")
                     return;
+               }
+
+               if (!this.value.match(/^\+?[0-9]*$/)) {
+                    this.value = this.value.replace(/[^+0-9]/g, '');
+                    if (this.value[0] !== '+' && this.value.length > 0) {
+                         this.value = '+' + this.value;
+                    }
                }
                const countryCode = "<?= $countryCode ?? null; ?>"
                const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
                const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
 
-               if (!Utilities.validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits)) {
-                    alert('<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>');
+               if (!Utilities.validatePhoneNumber(this.value, countryCode, minDigits, maxDigits)) {
+                    Toastify({
+                         text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>",
+                         duration: 3000,
+                         style: {
+                              background: 'red',
+                         }
+                    }).showToast();
                }
           });
 
