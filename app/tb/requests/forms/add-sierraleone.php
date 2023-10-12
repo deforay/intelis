@@ -808,8 +808,6 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 
 	$(document).ready(function() {
 
-		Utilities.autoSelectSingleOption('facilityId');
-		Utilities.autoSelectSingleOption('specimenType');
 		$('#sampleCollectionDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,

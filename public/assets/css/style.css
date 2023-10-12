@@ -110,7 +110,8 @@ form table tr td>label,
 
 /* option active styles */
 .resultInputContainer datalist option:hover,
-.resultInputContainer datalist option:focus {
+.resultInputContainer datalist option:focus,
+.resultInputContainer datalist option.selected {
     color: #fff;
     background-color: #3C8DBC;
     outline: 0 none;
@@ -149,6 +150,6 @@ form table tr td>label,
 }
 
 
-.encryptPIIContainer{
-    display:none;
+.encryptPIIContainer {
+    display: none;
 }

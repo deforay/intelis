@@ -499,10 +499,12 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-4">
-                                                                 <label for="rmTestingVlValue" class="col-lg-3 control-label">VL Result</label>
-                                                                 <div class="col-lg-7">
-                                                                      <input type="text" class="form-control forceNumeric viralTestData" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
-                                                                      (copies/ml)
+                                                                 <label for="rmTestingVlValue" class="col-lg-3 control-label">Previous VL Result</label>
+                                                                 <div class="col-lg-7 resultInputContainer">
+                                                                      <input list="rmTestingPossibleVlResults" class="form-control" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= ($vlQueryInfo['last_vl_date_routine']); ?>">
+                                                                      <datalist id="rmTestingPossibleVlResults" title="Please enter viral load result">
+
+                                                                      </datalist>
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-4">
@@ -537,10 +539,12 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-4">
-                                                                 <label for="repeatTestingVlValue" class="col-lg-3 control-label">VL Result</label>
-                                                                 <div class="col-lg-7">
-                                                                      <input type="text" class="form-control forceNumeric viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
-                                                                      (copies/ml)
+                                                                 <label for="repeatTestingVlValue" class="col-lg-3 control-label">Previous VL Result</label>
+                                                                 <div class="col-lg-7 resultInputContainer">
+                                                                      <input list="repeatTestingPossibleVlResults" class="form-control" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= ($vlQueryInfo['last_vl_date_routine']); ?>">
+                                                                      <datalist id="repeatTestingPossibleVlResults" title="Please enter viral load result">
+
+                                                                      </datalist>
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-4">
@@ -575,10 +579,12 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-4">
-                                                                 <label for="suspendTreatmentVlValue" class="col-lg-3 control-label">VL Result</label>
-                                                                 <div class="col-lg-7">
-                                                                      <input type="text" class="form-control forceNumeric viralTestData" id="suspendTreatmentVlValue" name="suspendTreatmentVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
-                                                                      (copies/ml)
+                                                                 <label for="suspendTreatmentVlValue" class="col-lg-3 control-label">Previous VL Result</label>
+                                                                 <div class="col-lg-7 resultInputContainer">
+                                                                      <input list="suspendTreatmentPossibleVlResults" class="form-control" id="suspendTreatmentVlValue" name="suspendTreatmentVlValue" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= ($vlQueryInfo['last_vl_date_routine']); ?>">
+                                                                      <datalist id="suspendTreatmentPossibleVlResults" title="Please enter viral load result">
+
+                                                                      </datalist>
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-4">
@@ -921,6 +927,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
      $(document).ready(function() {
 
+          $("#lineOfTreatment").on('change', function() {
+               if ($(this).val() == '1') {
+                    $("#lineOfTreatmentFailureAssessed").val('N/A');
+                    $("#regimenInitiatedOn").val($("#dateOfArtInitiation").val());
+               };
+          });
           $("#artNo").on('input', function() {
 
                let artNo = $.trim($(this).val());
@@ -1197,6 +1209,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $(".viralTestData").val('');
           $(".hideTestData").hide();
           $("." + chosenClass).show();
+
+          getVlResults(null, chosenClass + 'PossibleVlResults', chosenClass + 'VlValue');
 
           if ($("#selectedSample").val() != "") {
                patientInfo = JSON.parse($("#selectedSample").val());
@@ -1671,6 +1685,29 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     $("#vlResult").val('');
                }
           }
+     }
+
+     function getVlResults(testingPlatformId, datalistId, vlResultId) {
+
+          let platformId = null;
+          if (testingPlatformId) {
+               const testingVal = $('#' + testingPlatformId).val();
+               if (testingVal != "") {
+                    let str1 = testingVal.split("##")
+                    platformId = str1[3];
+               }
+          }
+          $("#" + datalistId).html('');
+          $.post("/vl/requests/getVlResults.php", {
+                    instrumentId: platformId,
+               },
+               function(data) {
+                    // alert(data);
+                    if (data != "") {
+                         $("#" + datalistId).html(data);
+                         $("#" + vlResultId).attr("disabled", false);
+                    }
+               });
      }
 
      function vlResultChange(value) {
