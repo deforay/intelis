@@ -191,7 +191,10 @@ foreach ($rResult as $aRow) {
      }
 
      $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow[$decrypt]));
-
+     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+          $key = base64_decode($general->getGlobalConfig('key'));
+          $patientFname = $general->crypto('decrypt', $patientFname, $key);
+     }
      $row = [];
      $row[] = $aRow['sample_code'];
      if ($_SESSION['instanceType'] != 'standalone') {

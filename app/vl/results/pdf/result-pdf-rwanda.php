@@ -155,6 +155,13 @@ if (!empty($requestResult)) {
           $tndMessage = '';
           $messageTextSize = '15px';
 
+          if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
+               $key = base64_decode($general->getGlobalConfig('key'));
+               $result['patient_art_no'] = $general->crypto('decrypt', $result['patient_art_no'], $key);
+               $result['patient_first_name'] = $general->crypto('decrypt',  $result['patient_first_name'], $key);
+               $result['patient_last_name'] = $general->crypto('decrypt',  $result['patient_last_name'], $key);
+          }
+
 
           if (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'suppressed') {
                $smileyContent = '<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
@@ -228,6 +235,12 @@ if (!empty($requestResult)) {
                $html .= '<tr>';
 
                $patientFname = ($general->crypto('doNothing', $result['patient_first_name'], $result['patient_art_no']));
+
+               if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
+                    $key = base64_decode($general->getGlobalConfig('key'));
+                    $result['patient_art_no'] = $general->crypto('decrypt', $result['patient_art_no'], $key);
+                    $patientFname = $general->crypto('decrypt', $patientFname, $key);
+               }
 
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $patientFname . '</td>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['patient_mobile_number'] . '</td>';

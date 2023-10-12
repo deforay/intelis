@@ -604,7 +604,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                             <div class="col-md-4">
                                                                  <label for="reqClinicianPhoneNumber" class="col-lg-5 control-label">Phone Number</label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control forceNumeric" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter request clinician phone number" />
+                                                                      <input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter request clinician phone number" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-4">

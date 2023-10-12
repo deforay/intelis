@@ -253,6 +253,13 @@ foreach ($rResult as $aRow) {
      $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));
      $patientLname = ($general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']));
 
+     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+          $key = base64_decode($general->getGlobalConfig('key'));
+          $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
+          $patientFname = $general->crypto('decrypt', $patientFname, $key);
+          $patientLname = $general->crypto('decrypt', $patientLname, $key);
+     }
+
      $row = [];
      $row[] = $aRow['sample_code'];
      if ($_SESSION['instanceType'] != 'standalone') {

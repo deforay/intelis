@@ -174,7 +174,12 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         } else {
             $sourceOfArtPOE = $aRow['source_of_alert_other'];
         }
-
+        if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+            $key = base64_decode($general->getGlobalConfig('key'));
+            $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
+            $patientFname = $general->crypto('decrypt', $patientFname, $key);
+            $patientLname = $general->crypto('decrypt', $patientLname, $key);
+        }
 
         $row[] = $no;
         if ($_SESSION['instanceType'] == 'standalone') {
