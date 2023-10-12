@@ -242,7 +242,7 @@ if (!empty($id)) {
                             $sampleQuery = "SELECT sample_code,
                                                     remote_sample_code,
                                                     result,
-                                                    lot_number,is_encrypted
+                                                    lot_number,is_encrypted,
                                                     CASE
                                                         WHEN lot_expiration_date IS NULL OR lot_expiration_date = '0000-00-00' THEN NULL
                                                         ELSE DATE_FORMAT(lot_expiration_date, '%d-%b-%Y')
@@ -327,7 +327,7 @@ if (!empty($id)) {
                             $sampleQuery = "SELECT sample_code,
                                                 remote_sample_code,
                                                 result,
-                                                lot_number,is_encrypted
+                                                lot_number,is_encrypted,
                                                 CASE
                                                     WHEN lot_expiration_date IS NULL OR lot_expiration_date = '0000-00-00' THEN NULL
                                                     ELSE DATE_FORMAT(lot_expiration_date, '%d-%b-%Y')

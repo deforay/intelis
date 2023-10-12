@@ -197,6 +197,12 @@ if (!empty($requestResult)) {
         $html .= '<tr>';
         $patientFname = ($general->crypto('doNothing', $result['patient_name'], $result['patient_id']));
         $patientLname = ($general->crypto('doNothing', $result['patient_surname'], $result['patient_id']));
+        if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
+            $key = base64_decode($general->getGlobalConfig('key'));
+            $result['patient_id'] = $general->crypto('decrypt', $result['patient_id'], $key);
+            $patientFname = $general->crypto('decrypt', $patientFname, $key);
+            $patientLname = $general->crypto('decrypt', $patientLname, $key);
+        }
 
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $patientLname . ' ' . $patientFname . '</td>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['facility_name']) . '</td>';

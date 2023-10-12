@@ -213,9 +213,9 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                    <div class="box-body">
                                         <div class="row">
                                              <div class="col-md-12 encryptPIIContainer">
-                                                  <label class="col-lg-2 control-label" for="syncPatientIdentifiers"><?= _translate('Encrypt PII'); ?> </label>
+                                                  <label class="col-lg-2 control-label" for="encryptPII"><?= _translate('Encrypt PII'); ?> </label>
                                                   <div class="col-lg-3">
-                                                       <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control" title="<?= _translate('Encrypt Patient Identifying Information'); ?>">
+                                                       <select name="encryptPII" id="encryptPII" class="form-control" title="<?= _translate('Encrypt Patient Identifying Information'); ?>">
                                                             <option value=""><?= _translate('--Select--'); ?></option>
                                                             <option value="no" selected='selected'><?= _translate('No'); ?></option>
                                                             <option value="yes"><?= _translate('Yes'); ?></option>
@@ -604,7 +604,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                             <div class="col-md-4">
                                                                  <label for="reqClinicianPhoneNumber" class="col-lg-5 control-label">Phone Number</label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" class="form-control forceNumeric" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter request clinician phone number" />
+                                                                      <input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter request clinician phone number" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-4">

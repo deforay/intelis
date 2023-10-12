@@ -192,7 +192,7 @@ try {
         'patient_has_active_tb' => $_POST['activeTB'] ?? null,
         'patient_active_tb_phase' => $_POST['tbPhase'] ?? null,
         'patient_art_no' => $_POST['artNo'] ?? null,
-        'sync_patient_identifiers' => $_POST['syncPatientIdentifiers'] ?? null,
+        'sync_patient_identifiers' => $_POST['encryptPII'] ?? null,
         'is_patient_new' => $_POST['isPatientNew'] ?? null,
         'treatment_duration' => $_POST['treatmentDuration'] ?? null,
         'treatment_indication' => $_POST['treatmentIndication'] ?? null,
@@ -325,7 +325,7 @@ try {
     $vlData['patient_last_name'] = $general->crypto('doNothing', $_POST['patientLastName'], $vlData['patient_art_no']);
 
 
-    if (isset($_POST['syncPatientIdentifiers']) && $_POST['syncPatientIdentifiers'] == 'no') {
+    if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
         $key = base64_decode($general->getGlobalConfig('key'));
         $encryptedPatientId = $general->crypto('encrypt', $vlData['patient_art_no'], $key);
         $encryptedPatientFirstName = $general->crypto('encrypt', $vlData['patient_first_name'], $key);

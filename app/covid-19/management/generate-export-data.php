@@ -193,6 +193,12 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		$row[] = ($aRow['facility_state']);
 		$row[] = ($aRow['facility_name']);
 		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
+			if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+				$key = base64_decode($general->getGlobalConfig('key'));
+				$aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
+				$patientFname = $general->crypto('decrypt', $patientFname, $key);
+				$patientLname = $general->crypto('decrypt', $patientLname, $key);
+		   	}
 			$row[] = $aRow['patient_id'];
 			$row[] = $patientFname . " " . $patientLname;
 		}

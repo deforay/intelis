@@ -45,6 +45,7 @@ try {
             if ($_POST['section'][$index] == 'otherSection') {
                 $_POST['sectionOther'][$index] = trim($_POST['sectionOther'][$index]);
                 $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['field_name'] = $_POST['fieldName'][$index];
+                $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['field_code'] = $_POST['fieldCode'][$index];
                 $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['field_type'] = $_POST['fieldType'][$index];
                 $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['mandatory_field'] = $_POST['mandatoryField'][$index];
                 $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['section'] = $_POST['section'][$index];
@@ -55,6 +56,7 @@ try {
                 }
             } else {
                 $testAttribute[$_POST['section'][$index]][$_POST['fieldId'][$index]]['field_name'] = $_POST['fieldName'][$index];
+                $testAttribute[$_POST['section'][$index]][$_POST['fieldId'][$index]]['field_code'] = $_POST['fieldCode'][$index];
                 $testAttribute[$_POST['section'][$index]][$_POST['fieldId'][$index]]['field_type'] = $_POST['fieldType'][$index];
                 $testAttribute[$_POST['section'][$index]][$_POST['fieldId'][$index]]['mandatory_field'] = $_POST['mandatoryField'][$index];
                 $testAttribute[$_POST['section'][$index]][$_POST['fieldId'][$index]]['section'] = $_POST['section'][$index];

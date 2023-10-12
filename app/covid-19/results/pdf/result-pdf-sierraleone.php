@@ -110,6 +110,13 @@ if (!empty($requestResult)) {
         $patientFname = ($general->crypto('doNothing', $result['patient_name'], $result['patient_id']));
         $patientLname = ($general->crypto('doNothing', $result['patient_surname'], $result['patient_id']));
 
+        if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
+            $key = base64_decode($general->getGlobalConfig('key'));
+            $result['patient_id'] = $general->crypto('decrypt', $result['patient_id'], $key);
+            $patientFname = $general->crypto('decrypt', $patientFname, $key);
+            $patientLname = $general->crypto('decrypt', $patientLname, $key);
+        }
+
         $signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%covid19%' AND signatory_status like 'active' ORDER BY display_order ASC";
         $signResults = $db->rawQuery($signQuery, array($result['lab_id']));
 

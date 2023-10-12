@@ -136,14 +136,20 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
-    $row = [];
+    $row = []; $edit = ''; $clone = '';
     $row[] = ($aRow['test_standard_name']);
     $row[] = ($aRow['test_generic_name']);
     $row[] = ($aRow['test_short_code']);
     $row[] = ($aRow['test_loinc_code']);
     $row[] = ucwords($aRow['test_status']);
     if ($usersService->isAllowed("/generic-tests/configuration/edit-test-type.php")) {
-        $row[] = '<a href="edit-test-type.php?id=' . base64_encode($aRow['test_type_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
+        $edit = '<a href="edit-test-type.php?id=' . base64_encode($aRow['test_type_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
+    }
+    if ($usersService->isAllowed("/generic-tests/configuration/edit-test-type.php")) {
+        $clone = '<a href="clone-test-type.php?id=' . base64_encode($aRow['test_type_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Clone") . '"><em class="fa-solid fa-copy"></em> ' . _translate("Clone") . '</em></a>';
+    }
+    if((isset($edit) && !empty($edit)) || isset($clone) && !empty($clone)){
+        $row[] = $edit . $clone ;
     }
     $output['aaData'][] = $row;
 }

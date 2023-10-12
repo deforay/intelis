@@ -253,6 +253,12 @@ $html .= '</tr>';
 
 $patientFname = ($general->crypto('doNothing', $result['patient_name'], $result['patient_id']));
 $patientLname = ($general->crypto('doNothing', $result['patient_surname'], $result['patient_id']));
+if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
+    $key = base64_decode($general->getGlobalConfig('key'));
+    $result['patient_id'] = $general->crypto('decrypt', $result['patient_id'], $key);
+    $patientFname = $general->crypto('decrypt', $patientFname, $key);
+    $patientLname = $general->crypto('decrypt', $patientLname, $key);
+}
 $html .= '<tr>';
 $html .= '<td width="40%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Noms<br><span style="font-size:10px;font-weight:normal;">Full Name</span></td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:12px;text-align:center;">:</td>';

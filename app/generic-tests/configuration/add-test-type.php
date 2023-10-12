@@ -210,10 +210,11 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 							<table aria-describedby="table" border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
 								<thead>
 									<tr>
-										<th style="text-align:center;width:25%;"><?php echo _translate("Field Name"); ?> <span class="mandatory">*</span></th>
-										<th style="text-align:center;width:20%;"><?php echo _translate("Field Type"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:20%;"><?php echo _translate("Field Name"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:15%;"><?php echo _translate("Field Code"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:15%;"><?php echo _translate("Field Type"); ?> <span class="mandatory">*</span></th>
 										<th style="text-align:center;width:10%;"><?php echo _translate("Is it Mandatory?"); ?> <span class="mandatory">*</span></th>
-										<th style="text-align:center;width:25%;"><?php echo _translate("Section"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:20%;"><?php echo _translate("Section"); ?> <span class="mandatory">*</span></th>
 										<th style="text-align:center;width:10%;"><?php echo _translate("Field Order"); ?> </th>
 										<th style="text-align:center;width:10%;"><?php echo _translate("Action"); ?></th>
 									</tr>
@@ -223,6 +224,9 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 										<td>
 											<input type="text" name="fieldName[]" id="fieldName1" class="form-control fieldName isRequired" placeholder='<?php echo _translate("Field Name"); ?>' title='<?php echo _translate("Please enter field name"); ?>' onblur="checkDublicateName(this, 'fieldName');" />
 											<input type="hidden" name="fieldId[]" id="fieldId1" class="form-control isRequired" />
+										</td>
+										<td>
+											<input type="text" name="fieldCode[]" id="fieldCode1" class="form-control fieldCode isRequired" placeholder='<?php echo _translate("Field Code"); ?>' title='<?php echo _translate("Please enter field code"); ?>' onblur="checkDublicateName(this, 'fieldCode');" onchange="this.value=formatStringToSnakeCase(this.value)" />
 										</td>
 										<td>
 											<select class="form-control isRequired" name="fieldType[]" id="fieldType1" onchange="changeField(this,'1')" title="<?php echo _translate('Please select the field type'); ?>">
@@ -591,12 +595,14 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 		var e = a.insertCell(3);
 		var f = a.insertCell(4);
 		var g = a.insertCell(5);
+		var h = a.insertCell(6);
 
-		g.setAttribute("align", "center");
-		g.setAttribute("style", "vertical-align:middle");
+		h.setAttribute("align", "center");
+		h.setAttribute("style", "vertical-align:middle");
 		tagClass = 'container' + tableRowId;
 		b.innerHTML = '<input type="text" name="fieldName[]" id="fieldName' + tableRowId + '" class="isRequired fieldName form-control" placeholder="<?php echo _translate('Field Name'); ?>" title="<?php echo _translate('Please enter field name'); ?>" onblur="checkDublicateName(this, \'fieldName\');"/ ><input type="hidden" name="fieldId[]" id="fieldId' + tableRowId + '" class="form-control isRequired" />';
-		c.innerHTML = '<select class="form-control isRequired" name="fieldType[]" id="fieldType' + tableRowId + '" title="<?php echo _translate('Please select the field type'); ?>" onchange="changeField(this, ' + tableRowId + ')">\
+		c.innerHTML = '<input type="text" name="fieldCode[]" id="fieldCode' + tableRowId + '" class="form-control fieldCode isRequired" placeholder="<?php echo _translate("Field Code"); ?>" title="<?php echo _translate("Please enter field code"); ?>" onblur="checkDublicateName(this, \'fieldCode\');" onchange="this.value=formatStringToSnakeCase(this.value)"/>';
+		d.innerHTML = '<select class="form-control isRequired" name="fieldType[]" id="fieldType' + tableRowId + '" title="<?php echo _translate('Please select the field type'); ?>" onchange="changeField(this, ' + tableRowId + ')">\
                             <option value=""> <?php echo _translate("-- Select --"); ?> </option>\
                             <option value="number"><?php echo _translate("Number"); ?></option>\
                             <option value="text"><?php echo _translate("Text"); ?></option>\
@@ -605,11 +611,11 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 							<option value="multiple"><?php echo _translate("Multiselect Dropdown"); ?></option>\
 						</select><br>\
 						<div class="tag-input dropDown' + tableRowId + '" style="display:none;"><input type="text" name="dropDown[]" id="dropDown' + tableRowId + '" onkeyup="showTags(event,this,' + tableRowId + ')" class="tag-input-field form-control" placeholder="Enter options..." /><input type="hidden" class="fdropDown" id="fdropDown' + tableRowId + '" name="fdropDown[]" /><div class="tag-container container' + tableRowId + '"></div></div>';
-		d.innerHTML = '<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField' + tableRowId + '" title="<?php echo _translate('Please select is it mandatory'); ?>">\
+		e.innerHTML = '<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField' + tableRowId + '" title="<?php echo _translate('Please select is it mandatory'); ?>">\
                             <option value="yes"><?php echo _translate("Yes"); ?></option>\
                             <option value="no" selected><?php echo _translate("No"); ?></option>\
                         </select>';
-		e.innerHTML = '<select class="form-control isRequired" name="section[]" id="section' + tableRowId + '" title="<?php echo _translate('Please select the section'); ?>" onchange="checkSection(' + tableRowId + ')">\
+		f.innerHTML = '<select class="form-control isRequired" name="section[]" id="section' + tableRowId + '" title="<?php echo _translate('Please select the section'); ?>" onchange="checkSection(' + tableRowId + ')">\
                         <option value=""> <?php echo _translate("-- Select --"); ?> </option>\
                         <option value="facilitySection"><?php echo _translate("Facility"); ?></option>\
 						<option value="patientSection"><?php echo _translate("Patient"); ?></option>\
@@ -618,8 +624,8 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 						<option value="otherSection"><?php echo _translate("Other"); ?></option>\
                     </select>\
                     <input type="text" name="sectionOther[]" onchange="addNewSection(this.value)" id="sectionOther' + tableRowId + '" class="form-control auto-complete-tbx" placeholder="<?php echo _translate("Section Other"); ?>" title="<?php echo _translate("Please enter section other"); ?>" style="display:none;"/>';
-		f.innerHTML = '<input type="text" name="fieldOrder[]" id="fieldOrder' + tableRowId + '" class="form-control forceNumeric" placeholder="<?php echo _translate("Field Order"); ?>" title="<?php echo _translate("Please enter field order"); ?>" />';
-		g.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
+		g.innerHTML = '<input type="text" name="fieldOrder[]" id="fieldOrder' + tableRowId + '" class="form-control forceNumeric" placeholder="<?php echo _translate("Field Order"); ?>" title="<?php echo _translate("Please enter field order"); ?>" />';
+		h.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
 		$(a).fadeIn(800);
 
 		$(".auto-complete-tbx").autocomplete({

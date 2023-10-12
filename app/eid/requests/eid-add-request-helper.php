@@ -295,7 +295,7 @@ try {
 		'no_of_infected_children' => $_POST['noOfInfectedChildren'] ?? null,
 		'mother_arv_protocol' => $_POST['motherArvProtocol'] ?? null,
 		'mother_treatment_initiation_date' => $_POST['motherTreatmentInitiationDate'] ?? null,
-		'sync_patient_identifiers' => $_POST['syncPatientIdentifiers'] ?? null,
+		'sync_patient_identifiers' => $_POST['encryptPII'] ?? null,
 		'child_id' => $_POST['childId'] ?? null,
 		'child_name' => $_POST['childName'] ?? null,
 		'child_dob' => $_POST['childDob'] ?? null,
@@ -402,7 +402,7 @@ try {
 	$eidData['request_created_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;
 	$eidData['last_modified_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;
 
-	if (isset($_POST['syncPatientIdentifiers']) && $_POST['syncPatientIdentifiers'] == 'no') {
+	if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
         $key = base64_decode($general->getGlobalConfig('key'));
         $encryptedChildId = $general->crypto('encrypt', $eidData['child_id'], $key);
         $encryptedChildName = $general->crypto('encrypt', $eidData['child_name'], $key);

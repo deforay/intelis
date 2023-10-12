@@ -126,7 +126,7 @@ try {
 		'implementing_partner' => $_POST['implementingPartner'] ?? null,
 		'funding_source' => $_POST['fundingSource'] ?? null,
 		'patient_id' => $_POST['patientId'] ?? null,
-		'sync_patient_identifiers' => $_POST['syncPatientIdentifiers'] ?? null,
+		'sync_patient_identifiers' => $_POST['encryptPII'] ?? null,
 		'patient_name' => $_POST['firstName'] ?? null,
 		'patient_surname' => $_POST['lastName'] ?? null,
 		'patient_dob' => isset($_POST['patientDob']) ? DateUtility::isoDateFormat($_POST['patientDob']) : null,
@@ -207,7 +207,7 @@ try {
 			}
 		}
 
-		if (isset($_POST['syncPatientIdentifiers']) && $_POST['syncPatientIdentifiers'] == 'no') {
+		if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
 			$key = base64_decode($general->getGlobalConfig('key'));
 			$encryptedPatientId = $general->crypto('encrypt', $hepatitisData['patient_id'], $key);
 			$encryptedPatientName = $general->crypto('encrypt', $hepatitisData['patient_name'], $key);

@@ -85,6 +85,11 @@ if (isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm']) 
           }
 
           $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow[$decrypt]));
+          if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+               $key = base64_decode($general->getGlobalConfig('key'));
+               $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
+               $patientFname = $general->crypto('decrypt', $patientFname, $key);
+          }
 
           $row[] = $aRow['sample_code'];
           if ($sarr['sc_user_type'] != 'standalone') {

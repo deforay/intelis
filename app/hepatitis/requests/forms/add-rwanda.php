@@ -77,9 +77,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
                                         <?php } ?>
                                         <div class="col-md-12 encryptPIIContainer">
-                                            <label class="col-lg-2 control-label" for="syncPatientIdentifiers"><?= _translate('Encrypt PII'); ?> </label>
+                                            <label class="col-lg-2 control-label" for="encryptPII"><?= _translate('Encrypt PII'); ?> </label>
                                             <div class="col-lg-3">
-                                                <select name="syncPatientIdentifiers" id="syncPatientIdentifiers" class="form-control" title="<?= _translate('Encrypt Patient Identifying Information'); ?>">
+                                                <select name="encryptPII" id="encryptPII" class="form-control" title="<?= _translate('Encrypt Patient Identifying Information'); ?>">
                                                     <option value=""><?= _translate('--Select--'); ?></option>
                                                     <option value="no" selected='selected'><?= _translate('No'); ?></option>
                                                     <option value="yes"><?= _translate('Yes'); ?></option>

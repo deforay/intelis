@@ -96,6 +96,12 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
         $row[] = ($aRow['facility_district']);
         $row[] = ($aRow['facility_state']);
         if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
+            if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+                $key = base64_decode($general->getGlobalConfig('key'));
+                $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
+                $patientFname = $general->crypto('decrypt', $patientFname, $key);
+                $patientLname = $general->crypto('decrypt', $patientLname, $key);
+           }
             $row[] = $aRow['patient_id'];
             $row[] = $patientFname . " " . $patientLname;
         }

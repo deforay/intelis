@@ -105,14 +105,14 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='editTestTypeForm' id='editTestTypeForm' autocomplete="off" action="editTestTypeHelper.php">
+				<form class="form-horizontal" method='post' name='cloneTestTypeForm' id='cloneTestTypeForm' autocomplete="off" action="addTestTypeHelper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="testStandardName" class="col-lg-4 control-label"><?php echo _translate("Test Standard Name"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="testStandardName" name="testStandardName" placeholder='<?php echo _translate("Test Standard Name"); ?>' title='<?php echo _translate("Please enter standard name"); ?>' value="<?php echo $testTypeInfo['test_standard_name']; ?>" onblur="checkNameValidation('r_test_types','test_standard_name',this,'<?php echo "test_type_id##" . $testTypeInfo['test_type_id']; ?>','<?php echo _translate("This test standard name that you entered already exists.Try another name"); ?>',null)" />
+										<input type="text" class="form-control isRequired" id="testStandardName" name="testStandardName" placeholder='<?php echo _translate("Test Standard Name"); ?>' title='<?php echo _translate("Please enter standard name"); ?>' onblur="checkNameValidation('r_test_types','test_standard_name',this,'<?php echo "test_type_id##" . $testTypeInfo['test_type_id']; ?>','<?php echo _translate("This test standard name that you entered already exists.Try another name"); ?>',null)" />
 										<input type="hidden" name="testTypeId" id="testTypeId" value="<?php echo base64_encode($testTypeInfo['test_type_id']); ?>" />
 									</div>
 								</div>
@@ -122,7 +122,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 								<div class="form-group">
 									<label for="testGenericName" class="col-lg-4 control-label"><?php echo _translate("Test Generic Name"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="testGenericName" name="testGenericName" placeholder='<?php echo _translate("Test Generic Name"); ?>' title='<?php echo _translate("Please enter the test generic name"); ?>' value="<?php echo $testTypeInfo['test_generic_name']; ?>" onblur="checkNameValidation('r_test_types','test_generic_name',this,'<?php echo "test_type_id##" . $testTypeInfo['test_type_id']; ?>','<?php echo _translate("This test generic name that you entered already exists.Try another name"); ?>',null)" />
+										<input type="text" class="form-control isRequired" id="testGenericName" name="testGenericName" placeholder='<?php echo _translate("Test Generic Name"); ?>' title='<?php echo _translate("Please enter the test generic name"); ?>' onblur="checkNameValidation('r_test_types','test_generic_name',this,'<?php echo "test_type_id##" . $testTypeInfo['test_type_id']; ?>','<?php echo _translate("This test generic name that you entered already exists.Try another name"); ?>',null)" />
 									</div>
 								</div>
 							</div>
@@ -133,7 +133,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 								<div class="form-group">
 									<label for="testShortCode" class="col-lg-4 control-label"><?php echo _translate("Test Short Code"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="testShortCode" name="testShortCode" placeholder='<?php echo _translate("Test Short Code"); ?>' title='<?php echo _translate("Please enter short code"); ?>' onblur="checkNameValidation('r_test_types','test_short_code',this,'<?php echo "test_type_id##" . $testTypeInfo['test_type_id']; ?>','<?php echo _translate("This test short code that you entered already exists.Try another code"); ?>',null)" value="<?php echo $testTypeInfo['test_short_code']; ?>" onchange="alphanumericValidation(this.value);" />
+										<input type="text" class="form-control isRequired" id="testShortCode" name="testShortCode" placeholder='<?php echo _translate("Test Short Code"); ?>' title='<?php echo _translate("Please enter short code"); ?>' onblur="checkNameValidation('r_test_types','test_short_code',this,'<?php echo "test_type_id##" . $testTypeInfo['test_type_id']; ?>','<?php echo _translate("This test short code that you entered already exists.Try another code"); ?>',null)" onchange="alphanumericValidation(this.value);" />
 									</div>
 								</div>
 							</div>
@@ -142,7 +142,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 								<div class="form-group">
 									<label for="testLoincCode" class="col-lg-4 control-label"><?php echo _translate("LOINC Codes"); ?></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="testLoincCode" name="testLoincCode" placeholder='<?php echo _translate("Test LOINC Code"); ?>' title='<?php echo _translate("Please enter test loinc code"); ?>' value="<?php echo $testTypeInfo['test_loinc_code']; ?>" onblur="checkNameValidation('r_test_types','test_loinc_code',this,'<?php echo "test_type_id##" . $testTypeInfo['test_type_id']; ?>','<?php echo _translate("This test loinc code that you entered already exists.Try another code"); ?>',null)" value="<?php echo $testTypeInfo['test_loinc_code']; ?>" />
+										<input type="text" class="form-control" id="testLoincCode" name="testLoincCode" placeholder='<?php echo _translate("Test LOINC Code"); ?>' title='<?php echo _translate("Please enter test loinc code"); ?>' onblur="checkNameValidation('r_test_types','test_loinc_code',this,'<?php echo "test_type_id##" . $testTypeInfo['test_type_id']; ?>','<?php echo _translate("This test loinc code that you entered already exists.Try another code"); ?>',null)" />
 									</div>
 								</div>
 							</div>
@@ -751,12 +751,12 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 
 	function validateNow() {
 		flag = deforayValidator.init({
-			formId: 'editTestTypeForm'
+			formId: 'cloneTestTypeForm'
 		});
 
 		if (flag) {
 			$.blockUI();
-			document.getElementById('editTestTypeForm').submit();
+			document.getElementById('cloneTestTypeForm').submit();
 		}
 	}
 
