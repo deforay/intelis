@@ -5152,3 +5152,7 @@ INSERT INTO `global_config`
 VALUES
 ('Training Mode', 'training_mode', 'no', 'common', 'no', CURRENT_TIMESTAMP, null, 'active'),
 ('Training Mode Text', 'training_mode_text', 'TRAINING SERVER', 'common', 'no', CURRENT_TIMESTAMP, null, 'active');
+
+-- Thana 12-Oct-2023
+UPDATE `privileges` SET `shared_privileges` = '[\"/generic-tests/configuration/add-test-type.php\",\"/generic-tests/configuration/edit-test-type.php\",\"/generic-tests/configuration/clone-test-type.php\"]' WHERE `privileges`.`privilege_name` = '/generic-tests/configuration/test-type.php';
+UPDATE `s_app_menu` SET `inner_pages` = '/generic-tests/configuration/add-test-type.php,/generic-tests/configuration/edit-test-type.php,/generic-tests/configuration/clone-test-type.php' WHERE `s_app_menu`.`link` = '/generic-tests/configuration/test-type.php';
