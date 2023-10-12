@@ -158,7 +158,7 @@ if (!empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes
      if ($patientLastName != '') {
           $vlQueryInfo['patient_last_name']  = $patientLastName = $general->crypto('decrypt', $patientLastName, $key);
      }
-     $patientFullName = $patientFirstName." ".$patientMiddleName." ".$patientLastName;
+     $patientFullName = $patientFirstName . " " . $patientMiddleName . " " . $patientLastName;
 } else {
      $patientFullName = trim($patientFirstName ?? ' ' . $patientMiddleName ?? ' ' . $patientLastName ?? '');
 }
@@ -218,7 +218,7 @@ require_once($fileArray[$formId]);
 
 ?>
 
-<script type="text/javascript" src="/assets/js/datalist-css.min.js"></script>
+<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
 
 <?php
 

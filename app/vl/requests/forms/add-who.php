@@ -763,7 +763,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 ?>
 <!-- BARCODESTUFF END -->
 
-<script type="text/javascript" src="/assets/js/datalist-css.min.js"></script>
+<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
 <script type="text/javascript" src="/assets/js/moment.min.js"></script>
 <script>
      let provinceName = true;
@@ -831,7 +831,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $('#sampleCollectionDate').datetimepicker({
                changeMonth: true,
                changeYear: true,
-               dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+               dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                timeFormat: "HH:mm",
                maxDate: "Today",
                onSelect: function(date) {
@@ -879,8 +879,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                placeholder: "Province"
           });
           $('#artRegimen').select2({
-			placeholder: "Select ART Regimen"
-		});
+               placeholder: "Select ART Regimen"
+          });
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {

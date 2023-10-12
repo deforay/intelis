@@ -512,7 +512,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 											<div class="col-xs-3 col-md-3">
 												<div class="form-group">
 													<label for="">Date of Initiation of Current Regimen </label>
-													<input type="text" class="form-control date" style="width:100%;" name="regimenInitiatedOn" id="regimenInitiatedOn" placeholder="Current Regimen Initiated On" title="Please enter current regimen initiated on" value="<?php echo $vlQueryInfo['date_of_initiation_of_current_regimen']; ?>">
+													<input type="text" class="form-control date" style="width:100%;" name="regimenInitiatedOn" id="regimenInitiatedOn" placeholder="Current Regimen Initiated On" title="Please enter current regimen initiated on" value="<?= DateUtility::humanReadableDateFormat($vlQueryInfo['date_of_initiation_of_current_regimen'] ?? ''); ?>">
 												</div>
 											</div>
 											<div class="col-xs-3 col-md-3">
@@ -1018,7 +1018,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 			</div>
 	</section>
 </div>
-<script type="text/javascript" src="/assets/js/datalist-css.min.js"></script>
+<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
 <script type="text/javascript">
 	let provinceName = true;
 	let facilityName = true;

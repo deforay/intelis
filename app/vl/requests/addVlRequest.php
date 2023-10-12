@@ -127,7 +127,7 @@ require($fileArray[$formId]);
 
 ?>
 
-<script type="text/javascript" src="/assets/js/datalist-css.min.js"></script>
+<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
 
 <?php
 // Common JS functions in a PHP file

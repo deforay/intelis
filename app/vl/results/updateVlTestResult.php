@@ -301,7 +301,7 @@ if ($arr['vl_form'] == 1) {
 }
 
 ?>
-<script type="text/javascript" src="/assets/js/datalist-css.min.js"></script>
+<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
 <?php
 // Common JS functions in a PHP file
 // Why PHP? Because we can use PHP variables in the JS code
@@ -312,7 +312,7 @@ require_once APPLICATION_PATH . "/vl/vl.js.php";
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -322,7 +322,7 @@ require_once APPLICATION_PATH . "/vl/vl.js.php";
 		$('.dateTime').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			onChangeMonthYear: function(year, month, widget) {
@@ -334,9 +334,9 @@ require_once APPLICATION_PATH . "/vl/vl.js.php";
 		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
-		let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ;?>';
-        $('.date').mask(dateFormatMask);
-        $('.dateTime').mask(dateFormatMask + ' 99:99');
+		let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
+		$('.date').mask(dateFormatMask);
+		$('.dateTime').mask(dateFormatMask + ' 99:99');
 
 		$('.result-focus').change(function(e) {
 			<?php //if (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] != "") {

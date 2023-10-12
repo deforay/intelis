@@ -1053,7 +1053,7 @@ $reasonForChange = $reasonForChangeArr[1];
 </div>
 </section>
 </div>
-<script type="text/javascript" src="/assets/js/datalist-css.min.js"></script>
+<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
 
 <script>
 	let provinceName = true;
