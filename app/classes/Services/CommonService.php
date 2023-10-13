@@ -275,7 +275,6 @@ class CommonService
 
     public function crypto($action, $inputString, $key)
     {
-        return $inputString;
         if (!empty($inputString) && $action === 'encrypt') {
             return self::encrypt($inputString, $key);
         } elseif (!empty($inputString) && $action === 'decrypt') {

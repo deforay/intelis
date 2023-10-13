@@ -385,8 +385,8 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 									</div>
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
-											<label for="patientPhoneNumber">Phone Number</label>
-											<input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control phone-number" maxlength="<?php echo strlen($countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="Enter Phone Number" title="Enter phone number" value="<?= ($vlQueryInfo['patient_mobile_number']); ?>" />
+											<label for="patientPhoneNumber">Phone Number<span class="mandatory">*</span></label>
+											<input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control phone-number isRequired" maxlength="<?php echo strlen($countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="Enter Phone Number" title="Enter phone number" value="<?= ($vlQueryInfo['patient_mobile_number']); ?>" />
 										</div>
 									</div>
 								</div>
@@ -430,8 +430,8 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 										<div class="row">
 											<div class="col-xs-3 col-md-3">
 												<div class="form-group">
-													<label for="">How long has this Patient been on treatment?</label>
-													<select class="form-control" id="treatmentDuration" name="treatmentDuration" title="Please choose treatment duration" style="width:100%;">
+													<label for="">How long has this Patient been on treatment?<span class="mandatory">*</span></label>
+													<select class="form-control isRequired" id="treatmentDuration" name="treatmentDuration" title="Please choose treatment duration" style="width:100%;">
 														<option value=""> — Select-- </option>
 														<option value="6 Months - < 1 year" <?php echo ($vlQueryInfo['treatment_duration'] == '6 Months - < 1 year') ? "selected='selected'" : "" ?>> 6 Months - < 1 year </option>
 														<option value="1 - 2 years" <?php echo ($vlQueryInfo['treatment_duration'] == '1 - 2 years') ? "selected='selected'" : "" ?>> 1 - 2 years </option>
@@ -442,14 +442,14 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 											</div>
 											<div class="col-xs-3 col-md-3">
 												<div class="form-group">
-													<label for="">Date of Treatment Initiation</label>
-													<input type="text" class="form-control date" name="dateOfArtInitiation" id="dateOfArtInitiation" placeholder="Date Of Treatment Initiated" title="Date Of treatment initiated" value="<?php echo $vlQueryInfo['treatment_initiated_date']; ?>" style="width:100%;" onchange="checkARTInitiationDate();">
+													<label for="">Date of Treatment Initiation<span class="mandatory">*</span></label>
+													<input type="text" class="form-control date isRequired" name="dateOfArtInitiation" id="dateOfArtInitiation" placeholder="Date Of Treatment Initiated" title="Date Of treatment initiated" value="<?php echo $vlQueryInfo['treatment_initiated_date']; ?>" style="width:100%;" onchange="checkARTInitiationDate();">
 												</div>
 											</div>
 											<div class="col-xs-3 col-md-3">
 												<div class="form-group">
-													<label for="">Indication for Treatment Initiation</label>
-													<select class="form-control" id="treatmentIndication" name="treatmentIndication" title="Please choose Treatment Indication" style="width:100%;" onchange="checkIndicationForTreatmentValue();">
+													<label for="">Indication for Treatment Initiation<span class="mandatory">*</span></label>
+													<select class="form-control isRequired" id="treatmentIndication" name="treatmentIndication" title="Please choose Treatment Indication" style="width:100%;" onchange="checkIndicationForTreatmentValue();">
 														<option value=""> — Select-- </option>
 														<option value="PMTCT" <?php echo ($vlQueryInfo['treatment_indication'] == 'PMTCT') ? "selected='selected'" : "" ?>> PMTCT </option>
 														<option value="Child under 15 years" <?php echo ($vlQueryInfo['treatment_indication'] == 'Child under 15 years') ? "selected='selected'" : "" ?>> Child under 15 years </option>
@@ -464,8 +464,8 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 
 											<div class="col-xs-3 col-md-3">
 												<div class="form-group">
-													<label for="artRegimen">Current Regimen</label>
-													<select class="form-control" id="artRegimen" name="artRegimen" title="Please choose ART Regimen" style="width:100%;" onchange="checkARTRegimenValue();">
+													<label for="artRegimen">Current Regimen<span class="mandatory">*</span></label>
+													<select class="form-control isRequired" id="artRegimen" name="artRegimen" title="Please choose ART Regimen" style="width:100%;" onchange="checkARTRegimenValue();">
 														<option value="">-- Select --</option>
 														<?php foreach ($artRegimenResult as $heading) { ?>
 															<optgroup label="<?= $heading['headings']; ?>">
@@ -488,8 +488,8 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 
 											<div class="col-xs-3 col-md-3">
 												<div class="form-group">
-													<label for="">Which Treatment Line is Patient On? </label>
-													<select name="lineOfTreatment" id="lineOfTreatment" class="form-control" title="Please Select Line of Treatment">
+													<label for="">Which Treatment Line is Patient On? <span class="mandatory">*</span></label>
+													<select name="lineOfTreatment" id="lineOfTreatment" class="form-control isRequired" title="Please Select Line of Treatment">
 														<option value="">-- Select --</option>
 														<option value="1" <?php echo ($vlQueryInfo['line_of_treatment'] == '1') ? "selected='selected'" : "" ?>>First</option>
 														<option value="2" <?php echo ($vlQueryInfo['line_of_treatment'] == '2') ? "selected='selected'" : "" ?>>Second</option>
@@ -499,8 +499,8 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 											</div>
 											<div class="col-xs-3 col-md-3">
 												<div class="form-group">
-													<label for="">If not on first line, how was failure assessed? </label>
-													<select name="lineOfTreatmentFailureAssessed" id="lineOfTreatmentFailureAssessed" class="form-control" title="Please Select Failure Assessed">
+													<label for="">If not on first line, how was failure assessed?<span class="mandatory">*</span></label>
+													<select name="lineOfTreatmentFailureAssessed" id="lineOfTreatmentFailureAssessed" class="form-control isRequired" title="Please Select Failure Assessed">
 														<option value="">-- Select --</option>
 														<option value="N/A" <?php echo ($vlQueryInfo['line_of_treatment_failure_assessed'] == 'N/A') ? "selected='selected'" : "" ?>>N/A</option>
 														<option value="Virological" <?php echo ($vlQueryInfo['line_of_treatment_failure_assessed'] == 'Virological') ? "selected='selected'" : "" ?>>Virological</option>
@@ -511,14 +511,14 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 											</div>
 											<div class="col-xs-3 col-md-3">
 												<div class="form-group">
-													<label for="">Date of Initiation of Current Regimen </label>
-													<input type="text" class="form-control date" style="width:100%;" name="regimenInitiatedOn" id="regimenInitiatedOn" placeholder="Current Regimen Initiated On" title="Please enter current regimen initiated on" value="<?= DateUtility::humanReadableDateFormat($vlQueryInfo['date_of_initiation_of_current_regimen'] ?? ''); ?>">
+													<label for="">Date of Initiation of Current Regimen<span class="mandatory">*</span></label>
+													<input type="text" class="form-control date isRequired" style="width:100%;" name="regimenInitiatedOn" id="regimenInitiatedOn" placeholder="Current Regimen Initiated On" title="Please enter current regimen initiated on" value="<?= DateUtility::humanReadableDateFormat($vlQueryInfo['date_of_initiation_of_current_regimen'] ?? ''); ?>">
 												</div>
 											</div>
 											<div class="col-xs-3 col-md-3">
 												<div class="form-group">
-													<label for="arvAdherence">ARV Adherence </label>
-													<select name="arvAdherence" id="arvAdherence" class="form-control" title="Please choose adherence">
+													<label for="arvAdherence">ARV Adherence<span class="mandatory">*</span> </label>
+													<select name="arvAdherence" id="arvAdherence" class="form-control isRequired" title="Please choose adherence">
 														<option value=""> -- Select -- </option>
 														<option value="good" <?php echo ($vlQueryInfo['arv_adherance_percentage'] == 'good') ? "selected='selected'" : "" ?>>Good >= 95%</option>
 														<option value="fair" <?php echo ($vlQueryInfo['arv_adherance_percentage'] == 'fair') ? "selected='selected'" : "" ?>>Fair (85-94%)</option>
@@ -552,8 +552,8 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 											</div>
 											<div class="col-xs-3 col-md-3">
 												<div class="form-group">
-													<label for="">Patient has active TB </label>
-													<select name="activeTB" id="activeTB" class="form-control" title="Please check if Patient has active TB or not">
+													<label for="">Patient has active TB<span class="mandatory">*</span> </label>
+													<select name="activeTB" id="activeTB" class="form-control isRequired" title="Please check if Patient has active TB or not">
 														<option value="">-- Select --</option>
 														<option value="yes" <?php echo ($vlQueryInfo['patient_has_active_tb'] == 'yes') ? "selected='selected'" : "" ?>>Yes</option>
 														<option value="no" <?php echo ($vlQueryInfo['patient_has_active_tb'] == 'no') ? "selected='selected'" : "" ?>>No</option>
