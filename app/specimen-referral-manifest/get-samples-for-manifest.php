@@ -22,9 +22,9 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
-	$sCode = 'remote_sample_code';
+	$sampleCode = 'remote_sample_code';
 } else if ($_SESSION['instanceType'] == 'vluser' || $_SESSION['instanceType'] == 'standalone') {
-	$sCode = 'sample_code';
+	$sampleCode = 'sample_code';
 }
 
 $module = (!empty($_POST['module'])) ? $_POST['module'] : "";
@@ -32,17 +32,17 @@ $testType = (!empty($_POST['testType'])) ? $_POST['testType'] : "";
 
 $query = "";
 if ($module == 'vl') {
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.vl_sample_id FROM form_vl as vl ";
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.vl_sample_id, vl.patient_art_no as `patient_id` FROM form_vl as vl ";
 } else if ($module == 'eid') {
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.eid_id FROM form_eid as vl ";
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.eid_id, vl.child_id as `patient_id` FROM form_eid as vl ";
 } else if ($module == 'covid19') {
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.covid19_id FROM form_covid19 as vl ";
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.covid19_id, vl.patient_id FROM form_covid19 as vl ";
 } else if ($module == 'hepatitis') {
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.hepatitis_id FROM form_hepatitis as vl ";
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.hepatitis_id, vl.patient_id FROM form_hepatitis as vl ";
 } else if ($module == 'tb') {
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.tb_id FROM form_tb as vl ";
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.tb_id, vl.patient_id FROM form_tb as vl ";
 } else if ($module == 'generic-tests') {
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.sample_id FROM form_generic as vl ";
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.sample_id, vl.patient_id FROM form_generic as vl ";
 }
 $where = [];
 $where[] = " (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') ";
@@ -102,7 +102,7 @@ $result = $db->rawQuery($query);
 				<select id="sampleCode" name="sampleCode[]" multiple="multiple" class="search">
 					<?php
 					foreach ($result as $sample) {
-						if (!empty($sample[$sCode])) {
+						if (!empty($sample[$sampleCode])) {
 							if ($module == 'vl') {
 								$sampleId  = $sample['vl_sample_id'];
 								//$sampleCode  = $sample['vl_sample_id'];
@@ -118,7 +118,7 @@ $result = $db->rawQuery($query);
 								$sampleId  = $sample['sample_id'];
 							}
 					?>
-							<option value="<?php echo $sampleId; ?>"><?php echo ($sample[$sCode]); ?></option>
+							<option value="<?php echo $sampleId; ?>"><?= $sample[$sampleCode] . " (" . $sample['patient_id'] . ")"; ?></option>
 					<?php
 						}
 					}

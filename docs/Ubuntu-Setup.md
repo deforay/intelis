@@ -102,15 +102,30 @@
 
     ```
 
+    ```bash
+    # Get total RAM and calculate 75%
+    TOTAL_RAM=$(awk '/MemTotal/ {print $2}' /proc/meminfo)
+    RAM_75_PERCENT=$((TOTAL_RAM*3/4/1024))M
+
+    for phpini in /etc/php/7.4/apache2/php.ini /etc/php/7.4/cli/php.ini; do
+        grep -qE '^error_reporting = E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED & ~E_WARNING' $phpini || sed -i "s/^error_reporting = .*/error_reporting = E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED & ~E_WARNING/" $phpini
+        sed -i "s/^post_max_size = .*/post_max_size = 1G/" $phpini
+        sed -i "s/^upload_max_filesize = .*/upload_max_filesize = 1G/" $phpini
+        sed -i "s/^memory_limit = .*/memory_limit = $RAM_75_PERCENT/" $phpini
+    done
+    ```
+
 ## phpMyAdmin Setup
 
 * **Download Latest phpMyAdmin and place it in www folder**:
 
 	```bash
-	wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
-	tar xzf phpMyAdmin-latest-all-languages.tar.gz;
-	sudo mv phpMyAdmin-*-all-languages /var/www/phpmyadmin;
-	rm phpMyAdmin-latest-all-languages.tar.gz;
+	echo "Downloading and setting up phpMyAdmin..."
+    wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
+    tar xzf phpMyAdmin-latest-all-languages.tar.gz
+    DIR_NAME=$(tar tzf phpMyAdmin-latest-all-languages.tar.gz | head -1 | cut -f1 -d"/") # Get the directory name from the tar file.
+    mv $DIR_NAME /var/www/phpmyadmin # Move using the determined directory name
+    rm phpMyAdmin-latest-all-languages.tar.gz
 
 	```
 * **Configuring Apache for phpMyAdmin**:

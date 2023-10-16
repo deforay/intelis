@@ -90,7 +90,7 @@ $barcodeFormat = $globalConfig['barcode_format'] ?? 'C39';
 
 if (!empty($id)) {
 
-    MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "barcode");
+    MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "batches");
 
     $logo = $globalConfig['logo'] ?? '';
     $headerText = $globalConfig['header'] ?? '';
@@ -249,7 +249,7 @@ if (!empty($id)) {
                                                     END AS lot_expiration_date,
                                                     $patientIdColumn,
                                                     $patientFirstName,
-                                                    $patientLastName 
+                                                    $patientLastName
                                                     FROM
                                                     $refTable
                                                     WHERE $refPrimaryColumn =?";
@@ -517,7 +517,7 @@ if (!empty($id)) {
 
         $pdf->writeHTML($tbl);
         $filename = "VLSM-" . trim($bResult[0]['batch_code']) . '-' . date('d-m-Y-h-i-s') . '-' . $general->generateRandomString(12) . '.pdf';
-        $pdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . 'barcode' . DIRECTORY_SEPARATOR . $filename);
+        $pdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . 'batches' . DIRECTORY_SEPARATOR . $filename);
         exit;
     }
 }

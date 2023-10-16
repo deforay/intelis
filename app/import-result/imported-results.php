@@ -46,7 +46,7 @@ if ($module == 'vl') {
 } else if ($module == 'eid') {
 
 	$rejectionTypeQuery = "SELECT DISTINCT rejection_type
-								FROM r_eid_sample_rejection_reason
+								FROM r_eid_sample_rejection_reasons
 								WHERE rejection_reason_status ='active'";
 	$rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 
