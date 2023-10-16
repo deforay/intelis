@@ -32,20 +32,34 @@ $testType = (!empty($_POST['testType'])) ? $_POST['testType'] : "";
 
 $query = "";
 if ($module == 'vl') {
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.vl_sample_id FROM form_vl as vl ";
+	$patientId = 'patient_art_no';
+	$sampleId  = 'vl_sample_id';
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.patient_art_no,vl.vl_sample_id,vl.sample_package_id,pd.package_id FROM form_vl as vl ";
 } else if ($module == 'eid') {
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.eid_id FROM form_eid as vl ";
+	$patientId = 'child_id';
+	$sampleId  = 'eid_id';
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.eid_id,vl.child_id,vl.sample_package_id,pd.package_id FROM form_eid as vl ";
 } else if ($module == 'covid19') {
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.covid19_id FROM form_covid19 as vl ";
+	$patientId = 'patient_id';
+	$sampleId  = 'covid19_id';
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.covid19_id,vl.patient_id,vl.sample_package_id,pd.package_id FROM form_covid19 as vl ";
 } else if ($module == 'hepatitis') {
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.hepatitis_id FROM form_hepatitis as vl ";
+	$patientId = 'patient_id';
+	$sampleId  = 'hepatitis_id';
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.hepatitis_id,vl.patient_id,vl.sample_package_id,pd.package_id FROM form_hepatitis as vl ";
 } else if ($module == 'tb') {
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.tb_id FROM form_tb as vl ";
+	$patientId = 'patient_id';
+	$sampleId  = 'tb_id';
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.tb_id,vl.sample_vl.patient_id,package_id,pd.package_id FROM form_tb as vl ";
 } else if ($module == 'generic-tests') {
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.sample_id FROM form_generic as vl ";
+	$patientId = 'patient_id';
+	$sampleId  = 'sample_id';
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.sample_id,vl.patient_id,vl.sample_package_id,pd.package_id FROM form_generic as vl ";
 }
+$query .= " LEFT JOIN package_details as pd ON vl.sample_package_id = pd.package_id ";
+
 $where = [];
-$where[] = " (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') ";
+$where[] = " (vl.remote_sample_code IS NOT NULL) ";
 if (isset($_POST['daterange']) && trim($_POST['daterange']) != '') {
 	$dateRange = explode("to", $_POST['daterange']);
 	//print_r($dateRange);die;
@@ -64,7 +78,7 @@ if (!empty($_SESSION['facilityMap'])) {
 }
 
 if (!empty($_POST['testingLab'])) {
-	$where[] = " (lab_id IN(" . $_POST['testingLab'] . ") OR (lab_id like '' OR lab_id is null OR lab_id = 0))";
+	$where[] = " (vl.lab_id IN(" . $_POST['testingLab'] . ") OR (vl.lab_id like '' OR vl.lab_id is null OR vl.lab_id = 0))";
 }
 
 if (!empty($_POST['facility'])) {
@@ -72,13 +86,17 @@ if (!empty($_POST['facility'])) {
 }
 
 if (!empty($_POST['operator'])) {
-	$where[] = " (request_created_by like '" . $_POST['operator'] . "'  OR (request_created_by like '' OR request_created_by is null OR request_created_by = 0))";
+	// $where[] = " (request_created_by like '" . $_POST['operator'] . "'  OR (request_created_by like '' OR request_created_by is null OR request_created_by = 0))";
 }
 
 if (!empty($_POST['testType'])) {
 	$where[] = " test_type = " . $_POST['testType'];
 }
-
+if (isset($_POST['pkgId']) && !empty($_POST['pkgId'])) {
+    $where[] = " (pd.package_id = '" . $_POST['pkgId'] . "' OR pd.package_id IS NULL OR pd.package_id = '')";
+} else{
+	$where[] = "(vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') ";
+}
 if (!empty($_POST['sampleType']) && ($module == 'vl' || $module == 'generic-tests')) {
 	$where[] = " (sample_type IN(" . $_POST['sampleType'] . ")  OR (sample_type like '' OR sample_type is null OR sample_type = 0))";
 } else if (isset($_POST['sampleType']) && $_POST['sampleType'] != "" && $module != 'vl') {
@@ -88,111 +106,58 @@ if (!empty($where)) {
 	$query .= " where " . implode(" AND ", $where);
 }
 $query .= " ORDER BY vl.request_created_datetime ASC";
-//die($query);
+// die($query);
 $result = $db->rawQuery($query);
 
 ?>
-<div class="col-md-9 col-md-offset-1">
-	<div class="form-group">
-		<div class="col-md-12">
-			<div class="col-md-12">
-				<div style="width:60%;margin:0 auto;clear:both;">
-					<a href="#" id="select-all-samplecode" style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
-				</div><br /><br />
-				<select id="sampleCode" name="sampleCode[]" multiple="multiple" class="search">
-					<?php
-					foreach ($result as $sample) {
-						if (!empty($sample[$sCode])) {
-							if ($module == 'vl') {
-								$sampleId  = $sample['vl_sample_id'];
-								//$sampleCode  = $sample['vl_sample_id'];
-							} else if ($module == 'eid') {
-								$sampleId  = $sample['eid_id'];
-							} else if ($module == 'covid19') {
-								$sampleId  = $sample['covid19_id'];
-							} else if ($module == 'hepatitis') {
-								$sampleId  = $sample['hepatitis_id'];
-							} else if ($module == 'tb') {
-								$sampleId  = $sample['tb_id'];
-							} else if ($module == 'generic-tests') {
-								$sampleId  = $sample['sample_id'];
-							}
-					?>
-							<option value="<?php echo $sampleId; ?>"><?php echo ($sample[$sCode]); ?></option>
-					<?php
-						}
-					}
-					?>
-				</select>
-			</div>
-		</div>
-	</div>
+<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
+<script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
+<div class="col-md-5">
+	<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
+		<?php foreach ($result as $sample) { if (!empty($sample[$sCode])) { if ((!isset($sample['sample_package_id']) || !isset($sample['package_id'])) || ($sample['sample_package_id'] != $sample['package_id'])) { ?>
+				<option value="<?php echo $sample[$sampleId]; ?>"><?php echo ($sample[$sCode] . ' - ' . $sample[$patientId]); ?></option>
+		<?php } } }?>
+	</select>
+	<div class="sampleCounterDiv"><?= _translate("Number of unselected samples"); ?> : <span id="unselectedCount"></span></div>
+</div>
+
+<div class="col-md-2">
+	<button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
+	<button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
+	<button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
+	<button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
+</div>
+
+<div class="col-md-5">
+	<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
+		<?php foreach ($result as $sample) { if (!empty($sample[$sCode])) { if (isset($sample['package_id']) && isset($sample['sample_package_id']) && $sample['sample_package_id'] == $sample['package_id']) { ?>
+				<option value="<?php echo $sample[$sampleId]; ?>"><?php echo ($sample[$sCode] . ' - ' . $sample[$patientId]); ?></option>
+		<?php } } }?>
+	</select>
+	<div class="sampleCounterDiv"><?= _translate("Number of selected samples"); ?> : <span id="selectedCount"></span></div>
 </div>
 <script>
 	$(document).ready(function() {
-		$('.search').multiSelect({
-			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
-			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
-			afterInit: function(ms) {
-				var that = this,
-					$selectableSearch = that.$selectableUl.prev(),
-					$selectionSearch = that.$selectionUl.prev(),
-					selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
-					selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
+		
+		$('#search').multiselect({
+            search: {
+                left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
+                right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
+            },
+            fireSearch: function(value) {
+                return value.length > 2;
+            },
+            startUp: function($left, $right) {
+                updateCounts($left, $right);
+            },
+            afterMoveToRight: function($left, $right, $options) {
+                updateCounts($left, $right);
+            },
+            afterMoveToLeft: function($left, $right, $options) {
+                updateCounts($left, $right);
+            }
+        });
 
-				that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-					.on('keydown', function(e) {
-						if (e.which === 40) {
-							that.$selectableUl.focus();
-							return false;
-						}
-					});
-
-				that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-					.on('keydown', function(e) {
-						if (e.which == 40) {
-							that.$selectionUl.focus();
-							return false;
-						}
-					});
-			},
-			afterSelect: function() {
-				//button disabled/enabled
-				if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-					alert("You have selected maximum number of samples - " + this.qs2.cache().matchedResultsCount);
-					$("#packageSubmit").attr("disabled", false);
-					$("#packageSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
-					$("#packageSubmit").attr("disabled", false);
-					$("#packageSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
-					alert("You have already selected Maximum no. of sample " + noOfSamples);
-					$("#packageSubmit").attr("disabled", true);
-					$("#packageSubmit").css("pointer-events", "none");
-				}
-				this.qs1.cache();
-				this.qs2.cache();
-			},
-			afterDeselect: function() {
-				//button disabled/enabled
-				if (this.qs2.cache().matchedResultsCount == 0) {
-					$("#packageSubmit").attr("disabled", true);
-					$("#packageSubmit").css("pointer-events", "none");
-				} else if (this.qs2.cache().matchedResultsCount == noOfSamples) {
-					alert("You have selected maximum number of samples - " + this.qs2.cache().matchedResultsCount);
-					$("#packageSubmit").attr("disabled", false);
-					$("#packageSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount <= noOfSamples) {
-					$("#packageSubmit").attr("disabled", false);
-					$("#packageSubmit").css("pointer-events", "auto");
-				} else if (this.qs2.cache().matchedResultsCount > noOfSamples) {
-					$("#packageSubmit").attr("disabled", true);
-					$("#packageSubmit").css("pointer-events", "none");
-				}
-				this.qs1.cache();
-				this.qs2.cache();
-			}
-		});
 		$('#select-all-samplecode').click(function() {
 			$('#sampleCode').multiSelect('select_all');
 			return false;
@@ -204,4 +169,17 @@ $result = $db->rawQuery($query);
 			return false;
 		});
 	});
+
+	function updateCounts($left, $right) {
+        let selectedCount = $right.find('option').length;
+		if(selectedCount > 0){
+			$("#packageSubmit").attr("disabled", false);
+			$("#packageSubmit").css("pointer-events", "auto");
+		}else{
+			$("#packageSubmit").attr("disabled", true);
+			$("#packageSubmit").css("pointer-events", "none");
+		}
+        $("#unselectedCount").html($left.find('option').length);
+        $("#selectedCount").html(selectedCount);
+    }
 </script>

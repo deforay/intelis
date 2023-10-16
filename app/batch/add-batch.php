@@ -253,7 +253,7 @@ $sResult = $db->rawQuery($sQuery);
 
                         <div class="row" id="sampleDetails">
                         </div>
-                        <div class="row col-md-12" id="alertText" style=""></div>
+                        <div class="row col-md-12" id="alertText"></div>
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">

@@ -123,27 +123,27 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field &nbsp;</div>
 			</div>
-			<!-- /.box-header -->
-			<div class="box-body">
-				<?php $hide = "";
-				if ($module == 'generic-tests') {
-					$hide = "hide " ?>
-					<div class="row">
-						<div class="col-xs-4 col-md-4">
-							<div class="form-group" style="margin-left:30px; margin-top:30px;">
-								<label for="testType">Test Type</label>
-								<select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getManifestCodeForm(this.value)">
-									<option value=""> -- Select -- </option>
-									<?php foreach ($testTypeResult as $testType) { ?>
-										<option value="<?php echo $testType['test_type_id'] ?>"><?php echo $testType['test_standard_name'] ?></option>
-									<?php } ?>
-								</select>
+			<form class="<?php echo $hide; ?>form-horizontal" method="post" name="addSpecimenReferralManifestForm" id="addSpecimenReferralManifestForm" autocomplete="off" action="add-manifest-helper.php">
+				<!-- /.box-header -->
+				<div class="box-body">
+					<?php $hide = "";
+					if ($module == 'generic-tests') {
+						$hide = "hide " ?>
+						<div class="row">
+							<div class="col-xs-4 col-md-4">
+								<div class="form-group" style="margin-left:30px; margin-top:30px;">
+									<label for="testType">Test Type</label>
+									<select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getManifestCodeForm(this.value)">
+										<option value=""> -- Select -- </option>
+										<?php foreach ($testTypeResult as $testType) { ?>
+											<option value="<?php echo $testType['test_type_id'] ?>"><?php echo $testType['test_standard_name'] ?></option>
+										<?php } ?>
+									</select>
+								</div>
 							</div>
 						</div>
-					</div>
-				<?php } ?>
-				<!-- form start -->
-				<form class="<?php echo $hide; ?>form-horizontal" method="post" name="addSpecimenReferralManifestForm" id="addSpecimenReferralManifestForm" autocomplete="off" action="add-manifest-helper.php">
+					<?php } ?>
+					<!-- form start -->
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
@@ -223,34 +223,23 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 
 					<br>
 					<div class="row" id="sampleDetails">
-						<div class="col-md-9 col-md-offset-1">
-							<div class="form-group">
-								<div class="col-md-12">
-									<div class="col-md-12">
-										<div style="width:60%;margin:0 auto;clear:both;">
-											<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
-										</div><br /><br />
-										<select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search"></select>
-									</div>
-								</div>
-							</div>
-						</div>
+						
 					</div>
 					<div class="row" id="alertText" style="font-size:18px;"></div>
-			</div>
-			<!-- /.box-body -->
-			<div class="box-footer">
-				<a id="packageSubmit" class="btn btn-primary" href="javascript:void(0);" title="Please select machine" onclick="validateNow();return false;" style="pointer-events:none;" disabled>Save </a>
-				<a href="view-manifests.php?t=<?= ($_GET['t']); ?>" class="btn btn-default"> Cancel</a>
-			</div>
-			<!-- /.box-footer -->
+				</div>
+				<!-- /.box-body -->
+				<div class="box-footer">
+				<input type="hidden" name="selectedSample" id="selectedSample" />
+				<input type="hidden" name="type" id="type" value="<?php echo $_GET['type']; ?>" />
+					<a id="packageSubmit" class="btn btn-primary" href="javascript:void(0);" title="Please select machine" onclick="validateNow();return false;" style="pointer-events:none;" disabled>Save </a>
+					<a href="view-manifests.php?t=<?= ($_GET['t']); ?>" class="btn btn-default"> Cancel</a>
+				</div>
+				<!-- /.box-footer -->
 			</form>
-			<!-- /.row -->
 		</div>
-</div>
-<!-- /.box -->
-</section>
-<!-- /.content -->
+	<!-- /.row -->
+	</section>
+	<!-- /.content -->
 </div>
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
@@ -261,6 +250,15 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 	sortedTitle = [];
 
 	function validateNow() {
+		var selVal = [];
+        $('#search_to option').each(function(i, selected) {
+            selVal[i] = $(selected).val();
+        });
+        $("#selectedSample").val(selVal);
+		if (selVal == "") {
+            alert("<?= _translate("Please select one or more samples", true); ?>");
+            return false;
+        }
 		flag = deforayValidator.init({
 			formId: 'addSpecimenReferralManifestForm'
 		});
@@ -276,35 +274,35 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 			placeholder: "<?php echo _translate("Select Test Type"); ?>"
 		});
 		$('#daterange').daterangepicker({
-				locale: {
-					cancelLabel: "<?= _translate("Clear"); ?>",
-					format: 'DD-MMM-YYYY',
-					separator: ' to ',
-				},
-				showDropdowns: true,
-				alwaysShowCalendars: false,
-				startDate: moment().subtract(28, 'days'),
-				endDate: moment(),
-				maxDate: moment(),
-				ranges: {
-					'Today': [moment(), moment()],
-					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
-					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
-				}
+			locale: {
+				cancelLabel: "<?= _translate("Clear"); ?>",
+				format: 'DD-MMM-YYYY',
+				separator: ' to ',
 			},
-			function(start, end) {
-				startDate = start.format('YYYY-MM-DD');
-				endDate = end.format('YYYY-MM-DD');
-			});
+			showDropdowns: true,
+			alwaysShowCalendars: false,
+			startDate: moment().subtract(28, 'days'),
+			endDate: moment(),
+			maxDate: moment(),
+			ranges: {
+				'Today': [moment(), moment()],
+				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+				'This Month': [moment().startOf('month'), moment().endOf('month')],
+				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+				'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+				'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+				'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+				'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
+			}
+		},
+		function(start, end) {
+			startDate = start.format('YYYY-MM-DD');
+			endDate = end.format('YYYY-MM-DD');
+		});
 		/*$(".select2").select2();
 		$(".select2").select2({
 			tags: true
@@ -374,7 +372,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 			}
 		});
 
-		$('#select-all-samplecode').click(function() {
+		/* $('#select-all-samplecode').click(function() {
 			$('#sampleCode').multiSelect('select_all');
 			return false;
 		});
@@ -383,7 +381,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 			$("#packageSubmit").attr("disabled", true);
 			$("#packageSubmit").css("pointer-events", "none");
 			return false;
-		});
+		}); */
 	});
 
 	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {

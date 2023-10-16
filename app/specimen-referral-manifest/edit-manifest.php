@@ -297,7 +297,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 						</div>
 					</div>
 					<div class="row" id="sampleDetails">
-						<div class="col-md-9 col-md-offset-1">
+						<!-- <div class="col-md-9 col-md-offset-1">
 							<div class="form-group">
 								<div class="col-md-12">
 									<div style="width:60%;margin:0 auto;clear:both;">
@@ -326,13 +326,14 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 									</select>
 								</div>
 							</div>
-						</div>
+						</div> -->
 					</div>
 					<div class="row" id="alertText" style="font-size:18px;"></div>
 			</div>
 			<!-- /.box-body -->
 			<div class="box-footer">
-				<input type="hidden" name="packageId" value="<?php echo $pResult['package_id']; ?>" />
+				<input type="hidden" name="selectedSample" id="selectedSample" />
+				<input type="hidden" name="packageId" id="packageId" value="<?php echo $pResult['package_id']; ?>" />
 				<input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title="" readonly value="<?= htmlspecialchars($module); ?>" />
 				<a id="packageSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
 				<a href="javascript:history.go(-1);" class="btn btn-default"> Cancel</a>
@@ -354,6 +355,15 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 	noOfSamples = 100;
 
 	function validateNow() {
+		var selVal = [];
+        $('#search_to option').each(function(i, selected) {
+            selVal[i] = $(selected).val();
+        });
+        $("#selectedSample").val(selVal);
+		if (selVal == "") {
+            alert("<?= _translate("Please select one or more samples", true); ?>");
+            return false;
+        }
 		flag = deforayValidator.init({
 			formId: 'editSpecimenReferralManifestForm'
 		});
@@ -366,31 +376,37 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 
 	//$("#auditRndNo").multiselect({height: 100,minWidth: 150});
 	$(document).ready(function() {
-		//getSampleCodeDetails();
+		getSampleCodeDetails();
 		$('#daterange').daterangepicker({
-				locale: {
-					cancelLabel: "<?= _translate("Clear"); ?>",
-					format: 'DD-MMM-YYYY',
-					separator: ' to ',
-				},
-				showDropdowns: true,
-				alwaysShowCalendars: false,
-				startDate: moment().subtract(28, 'days'),
-				endDate: moment(),
-				maxDate: moment(),
-				ranges: {
-					'Today': [moment(), moment()],
-					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-				}
+			locale: {
+				cancelLabel: "<?= _translate("Clear"); ?>",
+				format: 'DD-MMM-YYYY',
+				separator: ' to ',
 			},
-			function(start, end) {
-				startDate = start.format('YYYY-MM-DD');
-				endDate = end.format('YYYY-MM-DD');
-			});
+			showDropdowns: true,
+			alwaysShowCalendars: false,
+			startDate: moment().subtract(28, 'days'),
+			endDate: moment(),
+			maxDate: moment(),
+			ranges: {
+				'Today': [moment(), moment()],
+				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+				'This Month': [moment().startOf('month'), moment().endOf('month')],
+				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+				'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+				'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+				'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+				'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
+			}
+		},
+		function(start, end) {
+			startDate = start.format('YYYY-MM-DD');
+			endDate = end.format('YYYY-MM-DD');
+		});
 		$(".select2").select2();
 		$(".select2").select2({
 			tags: true
@@ -503,6 +519,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 					facility: $('#facility').val(),
 					daterange: $('#daterange').val(),
 					sampleType: $('#sampleType').val(),
+					pkgId: $('#packageId').val(),
 					operator: $('#operator').val()
 				},
 				function(data) {
