@@ -114,9 +114,13 @@ $result = $db->rawQuery($query);
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 <div class="col-md-5">
 	<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
-		<?php foreach ($result as $sample) { if (!empty($sample[$sCode])) { if ((!isset($sample['sample_package_id']) || !isset($sample['package_id'])) || ($sample['sample_package_id'] != $sample['package_id'])) { ?>
-				<option value="<?php echo $sample[$sampleId]; ?>"><?php echo ($sample[$sCode] . ' - ' . $sample[$patientId]); ?></option>
-		<?php } } }?>
+		<?php foreach ($result as $sample) { 
+			if (!empty($sample[$sampleCode])) { 
+				if ((!isset($sample['sample_package_id']) || !isset($sample['package_id'])) || ($sample['sample_package_id'] != $sample['package_id'])) { ?>
+					<option value="<?php echo $sample[$sampleId]; ?>"><?php echo ($sample[$sampleCode] . ' - ' . $sample[$patientId]); ?></option>
+				<?php } 
+			} 
+		}?>
 	</select>
 	<div class="sampleCounterDiv"><?= _translate("Number of unselected samples"); ?> : <span id="unselectedCount"></span></div>
 </div>
@@ -130,9 +134,13 @@ $result = $db->rawQuery($query);
 
 <div class="col-md-5">
 	<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
-		<?php foreach ($result as $sample) { if (!empty($sample[$sCode])) { if (isset($sample['package_id']) && isset($sample['sample_package_id']) && $sample['sample_package_id'] == $sample['package_id']) { ?>
-				<option value="<?php echo $sample[$sampleId]; ?>"><?php echo ($sample[$sCode] . ' - ' . $sample[$patientId]); ?></option>
-		<?php } } }?>
+		<?php foreach ($result as $sample) { 
+			if (!empty($sample[$sampleCode])) { 
+				if (isset($sample['package_id']) && isset($sample['sample_package_id']) && $sample['sample_package_id'] == $sample['package_id']) { ?>
+				<option value="<?php echo $sample[$sampleId]; ?>"><?php echo ($sample[$sampleCode] . ' - ' . $sample[$patientId]); ?></option>
+				<?php } 
+			} 
+		}?>
 	</select>
 	<div class="sampleCounterDiv"><?= _translate("Number of selected samples"); ?> : <span id="selectedCount"></span></div>
 </div>
