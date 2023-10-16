@@ -219,6 +219,11 @@ foreach ($rResult as $aRow) {
     if ($sarr['sc_user_type'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];
     }
+    if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+        $key = base64_decode($general->getGlobalConfig('key'));
+        $aRow['child_id'] = $general->crypto('decrypt', $aRow['child_id'], $key);
+        $childName = $general->crypto('decrypt', $childName, $key);
+   }
     $row[] = ($aRow['facility_name']);
     $row[] = $aRow['child_id'];
     $row[] = ($childName);

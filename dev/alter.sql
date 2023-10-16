@@ -5156,3 +5156,14 @@ VALUES
 -- Thana 12-Oct-2023
 UPDATE `privileges` SET `shared_privileges` = '[\"/generic-tests/configuration/add-test-type.php\",\"/generic-tests/configuration/edit-test-type.php\",\"/generic-tests/configuration/clone-test-type.php\"]' WHERE `privileges`.`privilege_name` = '/generic-tests/configuration/test-type.php';
 UPDATE `s_app_menu` SET `inner_pages` = '/generic-tests/configuration/add-test-type.php,/generic-tests/configuration/edit-test-type.php,/generic-tests/configuration/clone-test-type.php' WHERE `s_app_menu`.`link` = '/generic-tests/configuration/test-type.php';
+
+
+-- Jeyabanu 16-Oct-2023
+ALTER TABLE `form_vl` CHANGE `patient_art_no` `patient_art_no` VARCHAR(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_vl` CHANGE `patient_first_name` `patient_first_name` VARCHAR(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_vl` CHANGE `patient_middle_name` `patient_middle_name` VARCHAR(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_vl` CHANGE `patient_last_name` `patient_last_name` VARCHAR(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+
+ALTER TABLE `form_eid` CHANGE `child_id` `child_id` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_eid` CHANGE `child_name` `child_name` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_eid` CHANGE `child_surname` `child_surname` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;

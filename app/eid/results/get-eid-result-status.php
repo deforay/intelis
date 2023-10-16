@@ -235,6 +235,13 @@ foreach ($rResult as $aRow) {
     if ($_SESSION['instanceType'] != 'standalone') {
         $row[] = $aRow['remote_sample_code'];
     }
+    if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+        $key = base64_decode($general->getGlobalConfig('key'));
+        $aRow['child_id'] = $general->crypto('decrypt', $aRow['child_id'], $key);
+        $aRow['child_name'] = $general->crypto('decrypt', $aRow['child_name'], $key);
+        $aRow['mother_id'] = $general->crypto('decrypt', $aRow['mother_id'], $key);
+        $aRow['mother_name'] = $general->crypto('decrypt', $aRow['mother_name'], $key);
+   }
     $row[] = $aRow['sample_collection_date'];
     $row[] = $aRow['batch_code'];
     $row[] = $aRow['child_id'];

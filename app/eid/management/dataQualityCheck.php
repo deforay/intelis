@@ -191,16 +191,21 @@ foreach ($rResult as $aRow) {
           $decrypt = 'sample_code';
      }
 
-     $patientFname = ($general->crypto('doNothing', $aRow['child_name'], $aRow[$decrypt]));
+     $childName = ($general->crypto('doNothing', $aRow['child_name'], $aRow[$decrypt]));
 
      $row = [];
      $row[] = $aRow['sample_code'];
      if ($_SESSION['instanceType'] != 'standalone') {
           $row[] = $aRow['remote_sample_code'];
      }
+     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+          $key = base64_decode($general->getGlobalConfig('key'));
+          $aRow['child_id'] = $general->crypto('decrypt', $aRow['child_id'], $key);
+          $childName = $general->crypto('decrypt', $childName, $key);
+     }
      $row[] = $aRow['sample_collection_date'];
      $row[] = $aRow['batch_code'];
-     $row[] = ($patientFname);
+     $row[] = ($childName);
      $row[] = ($aRow['facility_name']);
      $row[] = ($aRow['facility_state']);
      $row[] = ($aRow['facility_district']);
