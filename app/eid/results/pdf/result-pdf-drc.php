@@ -201,6 +201,11 @@ if (!empty($requestResult)) {
             }
         }
 
+        if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
+            $key = base64_decode($general->getGlobalConfig('key'));
+            $result['child_id'] = $general->crypto('decrypt', $result['child_id'], $key);
+       }
+
         $html = '<table style="padding:0px 2px 2px 2px;">';
         $html .= '<tr>';
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Échantillon id</td>';
