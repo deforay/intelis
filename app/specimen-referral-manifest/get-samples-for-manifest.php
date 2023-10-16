@@ -22,9 +22,9 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
-	$sCode = 'remote_sample_code';
+	$sampleCode = 'remote_sample_code';
 } else if ($_SESSION['instanceType'] == 'vluser' || $_SESSION['instanceType'] == 'standalone') {
-	$sCode = 'sample_code';
+	$sampleCode = 'sample_code';
 }
 
 $module = (!empty($_POST['module'])) ? $_POST['module'] : "";

@@ -433,7 +433,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         </td>
 
                                     </tr>
-                                    <tr>
+                                    <tr class="show-rejection rejected" style="display:none;">
                                         <th class="labels" scope="row">Rejection Date<span class="mandatory">*</span></th>
                                         <td><input value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date rejection-date isRequired" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please enter sample rejection date" /></td>
                                     </tr>

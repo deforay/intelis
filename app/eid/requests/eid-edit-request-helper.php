@@ -413,8 +413,10 @@ try {
 		'last_modified_datetime' => DateUtility::getCurrentDateTime()
 	);
 
+
 	$eidData['request_created_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;
 	$eidData['last_modified_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;
+
 
 	if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
         $key = base64_decode($general->getGlobalConfig('key'));
@@ -422,9 +424,18 @@ try {
         $encryptedChildName = $general->crypto('encrypt', $eidData['child_name'], $key);
         $encryptedChildSurName = $general->crypto('encrypt', $eidData['child_surname'], $key);
 
+		$encryptedMotherId = $general->crypto('encrypt', $eidData['mother_id'], $key);
+        $encryptedotherName = $general->crypto('encrypt', $eidData['mother_name'], $key);
+        $encryptedMotherSurName = $general->crypto('encrypt', $eidData['mother_surname'], $key);
+
         $eidData['child_id'] = $encryptedChildId;
         $eidData['child_name'] = $encryptedChildName;
         $eidData['child_surname'] = $encryptedChildSurName;
+
+		$eidData['mother_id'] = $encryptedMotherId;
+        $eidData['mother_name'] = $encryptedotherName;
+        $eidData['mother_surname'] = $encryptedMotherSurName;
+
         $eidData['is_encrypted'] = 'yes';
     }
 

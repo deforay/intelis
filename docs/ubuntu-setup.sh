@@ -95,14 +95,60 @@ echo "Configuring PHP 7.4..."
 a2dismod $(ls /etc/apache2/mods-enabled | grep -oP '^php\d\.\d') -f
 a2enmod php7.4
 update-alternatives --set php /usr/bin/php7.4
+# Before adding `apc.enable_cli=1` to php.ini, check if it's not already there
+grep -qF 'apc.enable_cli=1' /etc/php/7.4/cli/php.ini || echo "apc.enable_cli=1" | tee -a /etc/php/7.4/cli/php.ini
+service apache2 restart || { echo "Failed to restart Apache2. Exiting..."; exit 1; }
+
+
+Alright, I will include the requested changes in your script.
+
+Here's the modified part of the script:
+
+Adjusting the php.ini settings:
+error_reporting will be set as requested.
+post_max_size and upload_max_filesize will both be set to 1G.
+memory_limit will be set to 75% of system RAM.
+Here's how the script is modified:
+
+bash
+Copy code
+...
+
+# PHP Setup
+echo "Installing PHP 7.4..."
+add-apt-repository ppa:ondrej/php -y
+apt update
+apt install -y php7.4 openssl php7.4-common php7.4-cli php7.4-json php7.4-mysql php7.4-zip php7.4-gd php7.4-mbstring php7.4-curl php7.4-xml php7.4-xmlrpc php7.4-bcmath php7.4-gmp php7.4-intl php7.4-imagick php-mime-type php7.4-apcu
+service apache2 restart || { echo "Failed to restart Apache2. Exiting..."; exit 1; }
+
+echo "Configuring PHP 7.4..."
+a2dismod $(ls /etc/apache2/mods-enabled | grep -oP '^php\d\.\d') -f
+a2enmod php7.4
+update-alternatives --set php /usr/bin/php7.4
 echo "apc.enable_cli=1" | tee -a /etc/php/7.4/cli/php.ini
 service apache2 restart || { echo "Failed to restart Apache2. Exiting..."; exit 1; }
+
+# Modify php.ini as needed
+echo "Modifying PHP configurations..."
+
+# Get total RAM and calculate 75%
+TOTAL_RAM=$(awk '/MemTotal/ {print $2}' /proc/meminfo)
+RAM_75_PERCENT=$((TOTAL_RAM*3/4/1024))M
+
+for phpini in /etc/php/7.4/apache2/php.ini /etc/php/7.4/cli/php.ini; do
+    grep -qE '^error_reporting = E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED & ~E_WARNING' $phpini || sed -i "s/^error_reporting = .*/error_reporting = E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED & ~E_WARNING/" $phpini
+    sed -i "s/^post_max_size = .*/post_max_size = 1G/" $phpini
+    sed -i "s/^upload_max_filesize = .*/upload_max_filesize = 1G/" $phpini
+    sed -i "s/^memory_limit = .*/memory_limit = $RAM_75_PERCENT/" $phpini
+done
+
 
 # phpMyAdmin Setup
 echo "Downloading and setting up phpMyAdmin..."
 wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
 tar xzf phpMyAdmin-latest-all-languages.tar.gz
-mv phpMyAdmin-*-all-languages /var/www/phpmyadmin
+DIR_NAME=$(tar tzf phpMyAdmin-latest-all-languages.tar.gz | head -1 | cut -f1 -d"/") # Get the directory name from the tar file.
+mv $DIR_NAME /var/www/phpmyadmin # Move using the determined directory name
 rm phpMyAdmin-latest-all-languages.tar.gz
 
 echo "Configuring Apache for phpMyAdmin..."
