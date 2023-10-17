@@ -132,6 +132,7 @@ $sQuery = "SELECT
                vl.result_value_log,
                vl.result_value_absolute,
                vl.result,
+               vl.result_value_hiv_detection,
                vl.current_regimen,
                vl.is_patient_pregnant,
                vl.is_patient_breastfeeding,
@@ -410,12 +411,9 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['status_name'];
 
      if ($editRequest) {
-          if ($_SESSION['instanceType'] == 'vluser' && $aRow['result_status'] == 9)
-          {
+          if ($_SESSION['instanceType'] == 'vluser' && $aRow['result_status'] == 9) {
                $edit = '';
-          } 
-          else
-          {
+          } else {
                $edit = '<a href="editVlRequest.php?id=' . base64_encode($aRow['vl_sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
           }
           if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes' && !$usersService->isAllowed("/vl/requests/edit-locked-vl-samples")) {

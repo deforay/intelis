@@ -152,7 +152,7 @@ class VlService extends AbstractTestService
                 $hivDetection = null;
                 $resultStatus = SAMPLE_STATUS\TEST_FAILED; // Invalid/Failed
                 $finalResult = $params['vlResult'];
-            } elseif (in_array(strtolower($params['vlResult']), ['no result', 'no'])) {
+            } elseif (in_array(strtolower($params['vlResult']), ['noresult', 'no result', 'no'])) {
                 $hivDetection = null;
                 $resultStatus = SAMPLE_STATUS\NO_RESULT; // No Result
             } else {
@@ -164,14 +164,13 @@ class VlService extends AbstractTestService
                 $absVal = $interpretedResults['absVal'] ?? null;
                 $txtVal = $interpretedResults['txtVal'] ?? null;
             }
-            $hivDetection = $hivDetection ?? '';
-            $finalResult = ($hivDetection != '') ? $hivDetection . ' ' . $finalResult : $finalResult;
         } elseif (!empty($params['vlLog']) && is_numeric($params['vlLog'])) {
             $resultStatus = SAMPLE_STATUS\PENDING_APPROVAL; // Awaiting Approval
             $finalResult = pow(10, $params['vlLog']);
-            $hivDetection = $hivDetection ?? '';
-            $finalResult = ($hivDetection != '') ? $hivDetection . ' ' . $finalResult : $finalResult;
         }
+
+        $hivDetection = $hivDetection ?? '';
+        $finalResult = trim($hivDetection . ' ' . $finalResult);
 
         if (
             !empty($params['api']) &&

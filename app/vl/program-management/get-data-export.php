@@ -376,8 +376,8 @@ foreach ($rResult as $aRow) {
      $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
      $row[] = ($aRow['sample_name']);
      $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
-     $row[] = $aRow['result_value_hiv_detection'] . " " .$aRow['result'];
-     $row[] = ($aRow['status_name']);
+     $row[] = $aRow['result'];
+     $row[] = $aRow['status_name'];
      $row[] = $aRow['funding_source_name'] ?? null;
      $row[] = $aRow['i_partner_name'] ?? null;
      $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);

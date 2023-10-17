@@ -59,16 +59,13 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		)
 	);
 
-	if($arr['vl_form']== 4 && $arr['vl_excel_export_format']=="cresar")
-	{
-		$headings = array(_translate('No.'), _translate("Region of sending facility"), _translate("District of sending facility"), _translate("Sending facility"), _translate("Name of reference Lab"), _translate("Category of testing site"), _translate("Project"), _translate("CV Number"),  _translate("TAT"),_translate("Sample ID"), _translate("Existing ART Code"), _translate("ARV Protocol"), _translate("Gender"), _translate("Date of Birth"), _translate("Age"), _translate("Age Range"), _translate("Requested by contact"), _translate("Sample collection date"),  _translate("Sample reception date"), _translate("Sample Type"), _translate("Treatment start date"), _translate("Treatment Protocol"), _translate("Was sample send to another reference lab"), _translate("If sample was send to another lab, give name of lab"), _translate("Sample Rejected"), _translate("Sample Tested"), _translate("Test Platform"), _translate("Test platform detection limit"),_translate("Invalid test (yes or no)"),_translate("Invalid sample repeated (yes or no)"),_translate("Error codes (yes or no)"),_translate("Error codes values"),_translate("Tests repeated due to error codes (yes or no)"),_translate("New CV number"),_translate("Date of test"),_translate("Date of repeat test"),_translate("Result sent back to facility (yes or no)"),_translate("Date of result sent to facility"),_translate("Result Type"),_translate("Result Value"),_translate("Result Value Log"),_translate("Is suppressed"),_translate("Communication of rejected samples or high viral load (yes, no or NA)"),_translate("Observations"));	
-	}
-	else
-	{
+	if ($arr['vl_form'] == 4 && $arr['vl_excel_export_format'] == "cresar") {
+		$headings = array(_translate('No.'), _translate("Region of sending facility"), _translate("District of sending facility"), _translate("Sending facility"), _translate("Name of reference Lab"), _translate("Category of testing site"), _translate("Project"), _translate("CV Number"),  _translate("TAT"), _translate("Sample ID"), _translate("Existing ART Code"), _translate("ARV Protocol"), _translate("Gender"), _translate("Date of Birth"), _translate("Age"), _translate("Age Range"), _translate("Requested by contact"), _translate("Sample collection date"),  _translate("Sample reception date"), _translate("Sample Type"), _translate("Treatment start date"), _translate("Treatment Protocol"), _translate("Was sample send to another reference lab"), _translate("If sample was send to another lab, give name of lab"), _translate("Sample Rejected"), _translate("Sample Tested"), _translate("Test Platform"), _translate("Test platform detection limit"), _translate("Invalid test (yes or no)"), _translate("Invalid sample repeated (yes or no)"), _translate("Error codes (yes or no)"), _translate("Error codes values"), _translate("Tests repeated due to error codes (yes or no)"), _translate("New CV number"), _translate("Date of test"), _translate("Date of repeat test"), _translate("Result sent back to facility (yes or no)"), _translate("Date of result sent to facility"), _translate("Result Type"), _translate("Result Value"), _translate("Result Value Log"), _translate("Is suppressed"), _translate("Communication of rejected samples or high viral load (yes, no or NA)"), _translate("Observations"));
+	} else {
 		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-			$headings = array("No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Testing Lab", "Health Facility Code", "District/County", "Province/State", "Unique ART No.",  "Patient Name", "Date of Birth", "Age", "Gender", "Patient Cellphone Number","Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Current Regimen", "Date of Initiation of Current Regimen", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "ARV Adherence", "Indication for Viral Load Testing", "Requesting Clinican","Requesting Clinican Cellphone Number", "Request Date", "Is Sample Rejected?", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result (cp/ml)", "Result (log)", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+			$headings = array("No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Testing Lab", "Health Facility Code", "District/County", "Province/State", "Unique ART No.",  "Patient Name", "Date of Birth", "Age", "Gender", "Patient Cellphone Number", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Current Regimen", "Date of Initiation of Current Regimen", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "ARV Adherence", "Indication for Viral Load Testing", "Requesting Clinican", "Requesting Clinican Cellphone Number", "Request Date", "Is Sample Rejected?", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result (cp/ml)", "Result (log)", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 		} else {
-			$headings = array("No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Testing Lab", "Health Facility Code", "District/County", "Province/State", "Date of Birth", "Age", "Gender", "Patient Cellphone Number","Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Current Regimen", "Date of Initiation of Current Regimen", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "ARV Adherence", "Indication for Viral Load Testing", "Requesting Clinican", "Requesting Clinican Cellphone Number","Request Date", "Is Sample Rejected?", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result (cp/ml)", "Result (log)", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+			$headings = array("No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Testing Lab", "Health Facility Code", "District/County", "Province/State", "Date of Birth", "Age", "Gender", "Patient Cellphone Number", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Current Regimen", "Date of Initiation of Current Regimen", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "ARV Adherence", "Indication for Viral Load Testing", "Requesting Clinican", "Requesting Clinican Cellphone Number", "Request Date", "Is Sample Rejected?", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result (cp/ml)", "Result (log)", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 		}
 	}
 
@@ -76,7 +73,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		unset($headings[$key]);
 	}
 
-	
+
 	//$sheet->getStyle('A3:AI3')->applyFromArray($styleArray);
 
 	$no = 1;
@@ -157,8 +154,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 				$patientLname = $general->crypto('decrypt', $patientLname, $key);
 			}
 		}
-		if($arr['vl_form']== 4 && $arr['vl_excel_export_format']=="cresar")
-		{
+		if ($arr['vl_form'] == 4 && $arr['vl_excel_export_format'] == "cresar") {
 			$row[] = $aRow['facility_state'];
 			$row[] = $aRow['facility_district'];
 			$row[] = $aRow['facility_name'];
@@ -183,7 +179,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 			$row[] = ''; //Was sample send to another reference lab
 			$row[] = ''; //If sample was send to another lab, give name of lab
 			$row[] = $sampleRejection;
-			if($aRow['sample_tested_datetime']!="")
+			if ($aRow['sample_tested_datetime'] != "")
 				$row[] = "Yes";
 			else
 				$row[] = "No";
@@ -207,9 +203,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 			$row[] = $aRow['rejection_reason'];
 			$row[] = "";    //Observations
 
-		}
-		else
-		{
+		} else {
 			$row[] = $aRow["sample_code"];
 
 			if ($_SESSION['instanceType'] != 'standalone') {
@@ -243,7 +237,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 			$row[] = $aRow['rejection_reason'];
 			$row[] = $aRow['recommended_corrective_action_name'];
 			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
-			$row[] = $aRow['result_value_hiv_detection'] . " " .$aRow['result'];
+			$row[] = $aRow['result'];
 			$row[] = $logVal;
 			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
 			$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
@@ -252,8 +246,8 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 			$row[] = $aRow['i_partner_name'] ?? null;
 			$row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
 		}
-			$output[] = $row;
-			$no++;
+		$output[] = $row;
+		$no++;
 	}
 
 	if (isset($_SESSION['vlResultQueryCount']) && $_SESSION['vlResultQueryCount'] > 75000) {
@@ -276,7 +270,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		$excel = new Spreadsheet();
 		$sheet = $excel->getActiveSheet();
 		$sheet->setTitle('VL Results');
-		
+
 		$sheet
 			->getStyle('A3:AQ3')
 			->getFill()
