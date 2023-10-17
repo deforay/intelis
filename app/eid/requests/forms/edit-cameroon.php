@@ -57,6 +57,11 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
     $facilityQuery = "SELECT * FROM facility_details WHERE facility_id= ? AND status='active'";
     $facilityResult = $db->rawQuery($facilityQuery, array($eidInfo['facility_id']));
 }
+
+$countryCode = $arr['default_phone_prefix'];
+$minNumberOfDigits = $arr['min_phone_length'];
+$maxNumberOfDigits = $arr['max_phone_length'];
+
 ?>
 
 
@@ -164,6 +169,16 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
+                                <tr class="encryptPIIContainer">
+                                        <th scope="row" style="width:15% !important"><label for="childId"><?= _translate('Encrypt PII'); ?> </label></th>
+                                        <td>
+                                            <select name="encryptPII" id="encryptPII" class="form-control" title="<?= _translate('Encrypt PII'); ?>">
+                                                <option value=""><?= _translate('--Select--'); ?></option>
+                                                <option value="no" <?php echo ($covid19Info['sync_patient_identifiers'] == "no") ? "selected='selected'" : ""; ?>><?= _translate('No'); ?></option>
+                                                <option value="yes" <?php echo ($covid19Info['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
+                                            </select>
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="childId"><?= _translate('CRVS file name'); ?> <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
@@ -197,7 +212,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                     </tr>
                                     <tr>
                                         <th scope="row"><?= _translate('Caretaker phone number'); ?></th>
-                                        <td><input type="text" class="form-control " id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="<?= _translate('Caretaker Phone Number'); ?>" title="Caretaker Phone Number" style="width:100%;" value="<?= htmlspecialchars($eidInfo['caretaker_phone_number']); ?>" onchange="" /></td>
+                                        <td><input type="text" class="form-control phone-number" id="caretakerPhoneNumber" name="caretakerPhoneNumber" maxlength="<?php echo strlen($countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Caretaker Phone Number'); ?>" title="Caretaker Phone Number" style="width:100%;" value="<?= htmlspecialchars($eidInfo['caretaker_phone_number']); ?>" onchange="" /></td>
 
                                         <th scope="row"><?= _translate('Infant caretaker address'); ?></th>
                                         <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="<?= _translate('Caretaker Address'); ?>" title="<?= _translate('Caretaker Address'); ?>" style="width:100%;" onchange=""><?= htmlspecialchars($eidInfo['caretaker_address']); ?></textarea></td>
@@ -492,7 +507,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                         </td>
                                         <th scope="row"><?= _translate('Contact Number'); ?></th>
                                         <td>
-                                            <input class="form-control forceNumeric" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="<?= _translate('Requesting Officer Phone'); ?>" value="<?= $eidInfo['sample_requestor_phone'] ?>" />
+                                            <input class="form-control phone-number" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" maxlength="<?php echo strlen($countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Requesting Officer Phone'); ?>" value="<?= $eidInfo['sample_requestor_phone'] ?>" />
                                         </td>
                                     </tr>
 
@@ -843,6 +858,41 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
         showOtherARV();
         showArvProtocolOtherOption();
         showTestingPointOther();
+    // Apply validation to all input fields with class 'phone-number'
+    $('.phone-number').on('change, input, blur', function() {
 
+if (this.value == "") {
+     return;
+} else if (this.value == "<?php echo $countryCode; ?>") {
+     $(this).val("")
+     return;
+}
+
+if (!this.value.match(/^\+?[0-9]*$/)) {
+     this.value = this.value.replace(/[^+0-9]/g, '');
+     if (this.value[0] !== '+' && this.value.length > 0) {
+          this.value = '+' + this.value;
+     }
+}
+const countryCode = "<?= $countryCode ?? null; ?>"
+const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
+const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
+
+if (!Utilities.validatePhoneNumber(this.value, countryCode, minDigits, maxDigits)) {
+     Toastify({
+          text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>",
+          duration: 3000,
+          style: {
+               background: 'red',
+          }
+     }).showToast();
+}
+});
+
+$('.phone-number').on('focus', function() {
+if ($(this).val() == "") {
+     $(this).val("<?php echo $countryCode ?? null; ?>")
+};
+});
     });
 </script>

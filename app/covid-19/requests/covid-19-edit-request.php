@@ -148,6 +148,10 @@ if (!empty($covid19Info['is_encrypted']) && $covid19Info['is_encrypted'] == 'yes
 	if($covid19Info['patient_name']!=''){
         $covid19Info['patient_name'] = $general->crypto('decrypt' ,$covid19Info['patient_name'], $key);
 	}
+    if($covid19Info['patient_surname']!=''){
+        $covid19Info['patient_surname'] = $general->crypto('decrypt' ,$covid19Info['patient_surname'], $key);
+	}
+    
 }
 
 $fileArray = array(

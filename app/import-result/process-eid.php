@@ -225,7 +225,7 @@ try {
             } else {
                 $data['is_sample_rejected'] = 'no';
                 $data['reason_for_sample_rejection'] = null;
-                $data['result_status'] = $status[$i];
+                $data['result_status'] = $status[$i] ?? 7;
             }
             //get bacth code
             $bquery = "SELECT * FROM batch_details WHERE batch_code= ?";

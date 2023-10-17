@@ -83,6 +83,13 @@ try {
 		$_POST['approvedOn'] = null;
 	}
 
+	if (isset($_POST['authorizedOn']) && trim($_POST['authorizedOn']) != "") {
+		$authorizedOn = explode(" ", $_POST['authorizedOn']);
+		$_POST['authorizedOn'] = DateUtility::isoDateFormat($authorizedOn[0]) . " " . $authorizedOn[1];
+	} else {
+		$_POST['authorizedOn'] = null;
+	}
+
 	$covid19Data = array(
 		'sample_received_at_lab_datetime' => $_POST['sampleReceivedDate'],
 		'lab_id' => $_POST['labId'] ?? null,
@@ -98,7 +105,7 @@ try {
 		'result_approved_datetime' => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] : null,
 		'is_result_authorised' => $_POST['isResultAuthorized'] ?? null,
 		'authorized_by' => $_POST['authorizedBy'] ?? null,
-		'authorized_on' => isset($_POST['authorizedOn']) ? DateUtility::isoDateFormat($_POST['authorizedOn']) : null,
+		'authorized_on' => (isset($_POST['authorizedOn']) && $_POST['authorizedOn'] != '') ? $_POST['authorizedOn'] : null,
 		'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
 		'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
 		'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
