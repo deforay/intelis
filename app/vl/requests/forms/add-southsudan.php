@@ -1297,6 +1297,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
           var str1 = text.split("##");
           var str = str1[0];
+          console.log(str.toLowerCase());
           if ((text == 'GeneXpert' || str.toLowerCase() == 'genexpert') && $('#isSampleRejected').val() != 'yes') {
                $('.hivDetection').prop('disabled', false);
                $('.hivDetection').show();
