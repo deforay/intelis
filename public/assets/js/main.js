@@ -97,7 +97,7 @@ class Utilities {
 
     static autoSelectSingleOption(selectId) {
         let nonEmptyOptions = $('#' + selectId).find("option[value!='']");
-        alert(nonEmptyOptions.length);
+      //  alert(nonEmptyOptions.length);
         if (nonEmptyOptions.length === 1) {
             $('#' + selectId).val(nonEmptyOptions.val()).trigger('change');
         }

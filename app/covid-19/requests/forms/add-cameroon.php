@@ -55,6 +55,11 @@ if ($_SESSION['accessType'] == 'collection-site') {
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
+
+$countryCode = $arr['default_phone_prefix'];
+$minNumberOfDigits = $arr['min_phone_length'];
+$maxNumberOfDigits = $arr['max_phone_length'];
+
 ?>
 
 <div class="content-wrapper">
@@ -246,7 +251,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </select>
                                         </td>
                                         <th scope="row"><?= _translate("Phone number"); ?></th>
-                                        <td><input type="text" class="form-control " id="patientPhoneNumber" name="patientPhoneNumber" placeholder="<?= _translate('Phone Number'); ?>" title="<?= _translate('Case Phone Number'); ?>" style="width:100%;" onchange="" /></td>
+                                        <td><input type="text" class="form-control phone-number" id="patientPhoneNumber" name="patientPhoneNumber" maxlength="<?php echo strlen($countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Phone Number'); ?>" title="<?= _translate('Case Phone Number'); ?>" style="width:100%;" onchange="" /></td>
                                     </tr>
                                     <tr>
                                         <th scope="row"><?= _translate("Address"); ?></th>
@@ -1086,6 +1091,43 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                 checkPostive();
             });
         <?php } ?>
+
+           // Apply validation to all input fields with class 'phone-number'
+    $('.phone-number').on('change, input, blur', function() {
+
+if (this.value == "") {
+     return;
+} else if (this.value == "<?php echo $countryCode; ?>") {
+     $(this).val("")
+     return;
+}
+
+if (!this.value.match(/^\+?[0-9]*$/)) {
+     this.value = this.value.replace(/[^+0-9]/g, '');
+     if (this.value[0] !== '+' && this.value.length > 0) {
+          this.value = '+' + this.value;
+     }
+}
+const countryCode = "<?= $countryCode ?? null; ?>"
+const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
+const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
+
+if (!Utilities.validatePhoneNumber(this.value, countryCode, minDigits, maxDigits)) {
+     Toastify({
+          text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>",
+          duration: 3000,
+          style: {
+               background: 'red',
+          }
+     }).showToast();
+}
+});
+
+$('.phone-number').on('focus', function() {
+if ($(this).val() == "") {
+     $(this).val("<?php echo $countryCode ?? null; ?>")
+};
+});
 
     });
 

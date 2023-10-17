@@ -92,6 +92,9 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
      $rch .= '</table>';
 }
 
+$countryCode = $arr['default_phone_prefix'];
+$minNumberOfDigits = $arr['min_phone_length'];
+$maxNumberOfDigits = $arr['max_phone_length'];
 
 
 ?>
@@ -313,7 +316,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="patientPhoneNumber"><?= _translate('Phone Number'); ?></label>
-                                                       <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" value="<?= ($vlQueryInfo['patient_mobile_number']); ?>" class="form-control forceNumeric" maxlength="15" placeholder="<?= _translate('Enter Phone Number'); ?>" title="<?= _translate('Enter phone number'); ?>" />
+                                                       <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" value="<?= ($vlQueryInfo['patient_mobile_number']); ?>" class="form-control phone-number" maxlength="<?php echo strlen($countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Enter Phone Number'); ?>" title="<?= _translate('Enter phone number'); ?>" />
                                                   </div>
                                              </div>
 
@@ -397,7 +400,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                   <div class="col-md-3">
                                                        <div class="form-group">
                                                             <label for="reqClinicianPhoneNumber" class=""><?= _translate('Contact Number'); ?> </label>
-                                                            <input type="text" class="form-control forceNumeric" id="reqClinicianPhoneNumber" value="<?= $vlQueryInfo['request_clinician_phone_number']; ?>" name="reqClinicianPhoneNumber" maxlength="15" placeholder="<?= _translate('Phone Number'); ?>" title="<?= _translate('Please enter request clinician phone number'); ?>" />
+                                                            <input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" value="<?= $vlQueryInfo['request_clinician_phone_number']; ?>" name="reqClinicianPhoneNumber" maxlength="<?php echo strlen($countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Phone Number'); ?>" title="<?= _translate('Please enter request clinician phone number'); ?>" />
                                                        </div>
                                                   </div>
                                              </div>
@@ -465,7 +468,8 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                                 $checked = '';
                                                                                 $display = '';
                                                                                 $vlValue = '';
-                                                                                if (trim($vlQueryInfo['reason_for_vl_testing']) == $vlTestReasonResultRow[0]['test_reason_id']) {
+                                                                              //  if (trim($vlQueryInfo['reason_for_vl_testing']) == $vlTestReasonResultRow[0]['test_reason_id']) {
+                                                                                if (trim($vlQueryInfo['reason_for_vl_testing']) == 'controlVlTesting' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'controlVlTesting') {
                                                                                      $checked = 'checked="checked"';
                                                                                      $display = 'block';
                                                                                 } else {
@@ -1166,6 +1170,43 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                }
           }
      });
+
+                    // Apply validation to all input fields with class 'phone-number'
+                    $('.phone-number').on('change, input, blur', function() {
+
+if (this.value == "") {
+     return;
+} else if (this.value == "<?php echo $countryCode; ?>") {
+     $(this).val("")
+     return;
+}
+
+if (!this.value.match(/^\+?[0-9]*$/)) {
+     this.value = this.value.replace(/[^+0-9]/g, '');
+     if (this.value[0] !== '+' && this.value.length > 0) {
+          this.value = '+' + this.value;
+     }
+}
+const countryCode = "<?= $countryCode ?? null; ?>"
+const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
+const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
+
+if (!Utilities.validatePhoneNumber(this.value, countryCode, minDigits, maxDigits)) {
+     Toastify({
+          text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>",
+          duration: 3000,
+          style: {
+               background: 'red',
+          }
+     }).showToast();
+}
+});
+
+$('.phone-number').on('focus', function() {
+if ($(this).val() == "") {
+     $(this).val("<?php echo $countryCode ?? null; ?>")
+};
+});
 
      function checkRejectionReason() {
           var rejectionReason = $("#rejectionReason").val();

@@ -88,6 +88,10 @@ foreach ($pdResult as $provinceName) {
 
 $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['facility_id'], '-- Select --');
 
+$countryCode = $arr['default_phone_prefix'];
+$minNumberOfDigits = $arr['min_phone_length'];
+$maxNumberOfDigits = $arr['max_phone_length'];
+
 ?>
 
 
@@ -224,7 +228,16 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                     <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em><?= _translate("Search"); ?></a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;<?= _translate("No Patient Found"); ?></strong></span>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                   
+                                    <tr class="encryptPIIContainer">
+                                        <th scope="row" style="width:15% !important"><label for="childId"><?= _translate('Encrypt PII'); ?> </label></th>
+                                        <td>
+                                            <select name="encryptPII" id="encryptPII" class="form-control" title="<?= _translate('Encrypt PII'); ?>">
+                                                <option value=""><?= _translate('--Select--'); ?></option>
+                                                <option value="no" <?php echo ($covid19Info['sync_patient_identifiers'] == "no") ? "selected='selected'" : ""; ?>><?= _translate('No'); ?></option>
+                                                <option value="yes" <?php echo ($covid19Info['sync_patient_identifiers'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
+                                            </select>
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="patientId"><?= _translate("Case ID"); ?> <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
@@ -263,7 +276,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                             </select>
                                         </td>
                                         <th scope="row"><?= _translate("Phone number"); ?></th>
-                                        <td><input type="text" class="form-control " id="patientPhoneNumber" name="patientPhoneNumber" placeholder="<?= _translate("Phone Number"); ?>" title="<?= _translate("Phone Number"); ?>" style="width:100%;" value="<?php echo $covid19Info['patient_phone_number']; ?>" /></td>
+                                        <td><input type="text" class="form-control phone-number" id="patientPhoneNumber" name="patientPhoneNumber" maxlength="<?php echo strlen($countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate("Phone Number"); ?>" title="<?= _translate("Phone Number"); ?>" style="width:100%;" value="<?php echo $covid19Info['patient_phone_number']; ?>" /></td>
                                     </tr>
                                     <tr>
                                         <th scope="row"><?= _translate("Case address"); ?></th>
@@ -971,6 +984,43 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
         <?php if ($kitShow) { ?>
             $('.kitlabels').show();
         <?php } ?>
+
+           // Apply validation to all input fields with class 'phone-number'
+    $('.phone-number').on('change, input, blur', function() {
+
+if (this.value == "") {
+     return;
+} else if (this.value == "<?php echo $countryCode; ?>") {
+     $(this).val("")
+     return;
+}
+
+if (!this.value.match(/^\+?[0-9]*$/)) {
+     this.value = this.value.replace(/[^+0-9]/g, '');
+     if (this.value[0] !== '+' && this.value.length > 0) {
+          this.value = '+' + this.value;
+     }
+}
+const countryCode = "<?= $countryCode ?? null; ?>"
+const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
+const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
+
+if (!Utilities.validatePhoneNumber(this.value, countryCode, minDigits, maxDigits)) {
+     Toastify({
+          text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>",
+          duration: 3000,
+          style: {
+               background: 'red',
+          }
+     }).showToast();
+}
+});
+
+$('.phone-number').on('focus', function() {
+if ($(this).val() == "") {
+     $(this).val("<?php echo $countryCode ?? null; ?>")
+};
+});
     });
 
 
