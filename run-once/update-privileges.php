@@ -19,7 +19,7 @@ $sharedPrivileges = [
     '/import-result/importedStatistics.php?t=covid19' => '/import-result/import-file.php?t=covid19',
     '/import-result/importedStatistics.php?t=hepatitis' => '/import-result/import-file.php?t=hepatitis',
     '/import-result/importedStatistics.php?t=tb' => '/import-result/import-file.php?t=tb',
-    '/import-result/importedStatistics.php?t=generic-tests' => '?t=generic-tests',
+    '/import-result/importedStatistics.php?t=generic-tests' => '/import-result/import-file.php?t=generic-tests',
     'mapTestType.php' => 'addFacility.php',
     'implementation-partners.php' => 'geographical-divisions-details.php',
     'add-implementation-partners.php' => 'geographical-divisions-details.php',
@@ -38,6 +38,7 @@ $sharedGenericPrivileges = [
     '/generic-tests/results/update-generic-test-result.php' => '/generic-tests/results/generic-test-results.php',
     '/generic-tests/configuration/add-test-type.php' => '/generic-tests/configuration/test-type.php',
     '/generic-tests/configuration/edit-test-type.php' => '/generic-tests/configuration/test-type.php',
+    '/generic-tests/configuration/clone-test-type.php' => '/generic-tests/configuration/test-type.php',
     '/generic-tests/configuration/sample-types/generic-add-sample-type.php' => '/generic-tests/configuration/sample-types/generic-sample-type.php',
     '/generic-tests/configuration/sample-types/generic-edit-sample-type.php' => '/generic-tests/configuration/sample-types/generic-sample-type.php',
     '/generic-tests/configuration/testing-reasons/generic-add-testing-reason.php' => '/generic-tests/configuration/testing-reasons/generic-testing-reason.php',
@@ -199,7 +200,7 @@ $db->rawQuery($sql);
 
 $privilegesToUpdate = [];
 foreach ($sharedPrivileges as $key => $value) {
-    if (!isset($privilegesToUpdate[$value])) {
+    if (!array_key_exists($value, $privilegesToUpdate)) {
         $privilegesToUpdate[$value] = [];
     }
     $privilegesToUpdate[$value][] = $key;

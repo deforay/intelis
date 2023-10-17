@@ -5167,3 +5167,16 @@ ALTER TABLE `form_vl` CHANGE `patient_last_name` `patient_last_name` VARCHAR(512
 ALTER TABLE `form_eid` CHANGE `child_id` `child_id` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `form_eid` CHANGE `child_name` `child_name` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
 ALTER TABLE `form_eid` CHANGE `child_surname` `child_surname` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+
+-- Amit 17-Oct-2023
+CREATE TABLE `scheduled_jobs` (
+ `job_id` int NOT NULL AUTO_INCREMENT,
+ `job` text COLLATE utf8mb4_general_ci,
+ `requested_on` datetime DEFAULT CURRENT_TIMESTAMP,
+ `requested_by` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+ `scheduled_on` datetime DEFAULT NULL,
+ `run_once` varchar(3) COLLATE utf8mb4_general_ci NULL DEFAULT 'no',
+ `completed_on` datetime DEFAULT NULL,
+ `status` varchar(20) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'pending',
+ PRIMARY KEY (`job_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

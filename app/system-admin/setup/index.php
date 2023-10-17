@@ -58,31 +58,31 @@ fclose($myfile);
 </head>
 
 <body class="">
-  <div class="container-fluid">
-    <div id="loginbox" style="margin-top:140px;margin-bottom:70px;float:right;margin-right:509px;" class="mainbox col-md-3 col-sm-8 ">
+  <div class="container-fluid" style="margin-top:10em;">
+    <div id="loginbox" style="margin-left:35%;padding:0;" class="mainbox col-md-4 col-sm-8 ">
       <div class="panel panel-default" style="opacity: 0.93;">
         <div class="panel-heading">
-          <div class="panel-title"><?php echo _translate("Resgiter new System Admin"); ?></div>
+          <div class="panel-title"><?= _translate("Resgiter new System Admin"); ?></div>
         </div>
 
         <div style="padding-top:10px;" class="panel-body">
           <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
-          <form id="registerForm" name="registerForm" class="form-horizontal" role="form" method="post" action="registerProcess.php" onsubmit="validateNow();return false;">
+          <form id="registerForm" name="registerForm" class="form-horizontal" autocomplete="no" role="form" method="post" action="registerProcess.php" onsubmit="validateNow();return false;">
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-key"></em></span>
-              <input type="text" class="form-control isRequired" id="secretKey" name="secretKey" placeholder="<?php echo _translate('Secret Key'); ?>" title="" />
+              <input type="text" class="form-control isRequired" id="secretKey" name="secretKey" placeholder="<?= _translate('Secret Key'); ?>" title="" autocomplete="no" />
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-user"></em></span>
-              <input id="login-username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?php echo _translate('User Name'); ?>" title="<?php echo _translate('Please enter the user name'); ?>">
+              <input id="login-username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?= _translate('User Name'); ?>" title="<?php echo _translate('Please enter the user name'); ?>" autocomplete="no">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-envelope"></em></span>
-              <input id="login-email" type="text" class="form-control isRequired" name="email" value="" placeholder="<?php echo _translate('Email Id'); ?>" title="<?php echo _translate('Please enter the email id'); ?>">
+              <input id="login-email" type="text" class="form-control isRequired" name="email" value="" placeholder="<?= _translate('Email ID'); ?>" title="<?php echo _translate('Please enter the email id'); ?>">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-right-to-bracket"></em></span>
-              <input id="login-id" type="text" class="form-control isRequired" name="loginid" value="" placeholder="<?php echo _translate('Login Id'); ?>" title="<?php echo _translate('Please enter the login id'); ?>">
+              <input id="login-id" type="text" class="form-control isRequired" name="loginid" value="" placeholder="<?= _translate('Login ID'); ?>" title="<?php echo _translate('Please enter the login id'); ?>">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
@@ -95,7 +95,7 @@ fclose($myfile);
             <div style="margin-top:10px" class="form-group">
               <!-- Button -->
               <div class="col-sm-12 controls">
-                <button class="btn btn-lg btn-primary btn-block" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></button>
+                <button class="btn btn-lg btn-primary btn-block" onclick="validateNow();return false;"><?= _translate("Submit"); ?></button>
               </div>
             </div>
           </form>
