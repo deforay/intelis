@@ -142,6 +142,7 @@ $sQuery = "SELECT vl.vl_sample_id,
                vl.line_of_treatment,
                vl.vl_test_platform,
                vl.vl_result_category,
+               vl.result_value_hiv_detection,
                s.sample_name as sample_name,
                b.batch_code,
                ts.status_name,
@@ -375,7 +376,7 @@ foreach ($rResult as $aRow) {
      $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
      $row[] = ($aRow['sample_name']);
      $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
-     $row[] = $aRow['result'];
+     $row[] = $aRow['result_value_hiv_detection'] . " " .$aRow['result'];
      $row[] = ($aRow['status_name']);
      $row[] = $aRow['funding_source_name'] ?? null;
      $row[] = $aRow['i_partner_name'] ?? null;

@@ -12,7 +12,6 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 
 
-
 $lResult = $facilitiesService->getTestingLabs('vl', true, true);
 
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
@@ -908,6 +907,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 	let resultValue = null;
 
 	$(document).ready(function() {
+		hivDetectionChange();
 
 		autoFillFocalDetails();
 		$('#labId').select2({
@@ -1150,7 +1150,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		if (!text) return;
 		var str1 = text.split("##");
 		var str = str1[0];
-		if ((text == 'GeneXpert' || str.toLowerCase() == 'genexpert') && $('#isSampleRejected').val() != 'yes') {
+		if ((str.trim() == 'GeneXpert' || str.toLowerCase() == 'genexpert') && $('#isSampleRejected').val() != 'yes') {
 			$('.hivDetection').prop('disabled', false);
 			$('.hivDetection').show();
 		} else {

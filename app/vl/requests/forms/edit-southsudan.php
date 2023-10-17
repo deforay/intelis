@@ -626,7 +626,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													</div>
 												</div>
 											</div>
-											<div class="row" style="display:none;">
+										<!--	<div class="row" style="display:none;">
 
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="emailHf">Email for HF </label>
@@ -634,7 +634,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														<input type="text" class="form-control isEmail" id="emailHf" name="emailHf" placeholder="Email for HF" title="Please enter email for hf" value="<?php echo $facilityResult[0]['facility_emails']; ?>" />
 													</div>
 												</div>
-											</div>
+											</div>--->
 										</div>
 									</div>
 									<?php if ($usersService->isAllowed('/vl/results/vlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
@@ -1382,7 +1382,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		}
 		var str1 = text.split("##");
 		var str = str1[0];
-		if ((text == 'GeneXpert' || str.toLowerCase() == 'genexpert') && $('#isSampleRejected').val() != 'yes') {
+		if ((str.trim() == 'GeneXpert' || str.toLowerCase() == 'genexpert') && $('#isSampleRejected').val() != 'yes') {
 			$('.hivDetection').prop('disabled', false);
 			$('.hivDetection').show();
 		} else {
