@@ -75,7 +75,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViral
                ->setValueExplicit(html_entity_decode($value));
           $colNo++;
      }
-     $sheet->getStyle('A3:H3')->applyFromArray($styleArray);
+     $sheet->getStyle('A3:I3')->applyFromArray($styleArray);
 
      foreach ($rResult as $aRow) {
           $row = [];
@@ -112,7 +112,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim($_SESSION['rejectedViral
           $output[] = $row;
      }
 
-     if (isset($_SESSION['rejectedViralLoadResultCount']) && $_SESSION['rejectedViralLoadResultCount'] > 1) {
+     if (isset($_SESSION['rejectedViralLoadResultCount']) && $_SESSION['rejectedViralLoadResultCount'] > 75000) {
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-COVID19-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.csv';
           $file = new SplFileObject($fileName, 'w');
           $file->setCsvControl(",", "\r\n");
