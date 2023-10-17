@@ -573,7 +573,7 @@ foreach ($rejectionTypeResult as $type) {
 						$("#checkedTestsIdValue").val('');
 						$("#comments").val('');
 					});
-				// $.unblockUI();
+				$.unblockUI();
 			} else {
 				oTable.fnDraw();
 			}
