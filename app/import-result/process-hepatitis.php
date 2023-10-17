@@ -279,7 +279,7 @@ try {
                 $data['is_sample_rejected'] = 'yes';
                 $data['reason_for_sample_rejection'] = $rejectedReasonId[$i];
             } else {
-                $data['result_status'] = $status[$i];
+                $data['result_status'] = $status[$i] ?? 7;
                 $data['is_sample_rejected'] = 'no';
                 $data['reason_for_sample_rejection'] = null;
                 $data[$resultField] = trim($accResult[$i]['result']);

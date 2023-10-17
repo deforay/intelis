@@ -271,8 +271,7 @@ try {
                 $data['result_value_absolute_decimal'] = null;
                 $data['result'] = null;
             } else {
-                $data['result_status'] = $status[$i];
-
+                $data['result_status'] = $status[$i] ?? 7;
                 $data['is_sample_rejected'] = 'no';
                 $data['reason_for_sample_rejection'] = null;
             }
