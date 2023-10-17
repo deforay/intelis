@@ -14,15 +14,18 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+// echo "<pre>";print_r($_POST);die;
 $packageTable = "package_details";
 try {
+    $selectedSample = explode(",", $_POST['selectedSample']);
+    $uniqueSampleId = array_unique($selectedSample);
     if (isset($_POST['packageCode']) && trim($_POST['packageCode']) != "") {
         $data = array(
             'package_code'              => $_POST['packageCode'],
             'module'                    => $_POST['module'],
             'added_by'                  => $_SESSION['userId'],
             'lab_id'                    => $_POST['testingLab'],
-            'number_of_samples'         => count($_POST['sampleCode']),
+            'number_of_samples'         => count($selectedSample),
             'package_status'            => 'pending',
             'request_created_datetime'  => DateUtility::getCurrentDateTime(),
             'last_modified_datetime' => DateUtility::getCurrentDateTime()
@@ -31,7 +34,7 @@ try {
         $db->insert($packageTable, $data);
         $lastId = $db->getInsertId();
         if ($lastId > 0) {
-            for ($j = 0; $j < count($_POST['sampleCode']); $j++) {
+            for ($j = 0; $j < count($selectedSample); $j++) {
                 $value = array(
                     'sample_package_id' => $lastId,
                     'sample_package_code' => $_POST['packageCode'],
@@ -40,22 +43,22 @@ try {
                     'data_sync' => 0
                 );
                 if ($_POST['module'] == 'vl') {
-                    $db = $db->where('vl_sample_id', $_POST['sampleCode'][$j]);
+                    $db = $db->where('vl_sample_id', $uniqueSampleId[$j]);
                     $db->update('form_vl', $value);
                 } else if ($_POST['module'] == 'eid') {
-                    $db = $db->where('eid_id', $_POST['sampleCode'][$j]);
+                    $db = $db->where('eid_id', $uniqueSampleId[$j]);
                     $db->update('form_eid', $value);
                 } else if ($_POST['module'] == 'covid19') {
-                    $db = $db->where('covid19_id', $_POST['sampleCode'][$j]);
+                    $db = $db->where('covid19_id', $uniqueSampleId[$j]);
                     $db->update('form_covid19', $value);
                 } else if ($_POST['module'] == 'hepatitis') {
-                    $db = $db->where('hepatitis_id', $_POST['sampleCode'][$j]);
+                    $db = $db->where('hepatitis_id', $uniqueSampleId[$j]);
                     $db->update('form_hepatitis', $value);
                 } else if ($_POST['module'] == 'tb') {
-                    $db = $db->where('tb_id', $_POST['sampleCode'][$j]);
+                    $db = $db->where('tb_id', $uniqueSampleId[$j]);
                     $db->update('form_tb', $value);
                 } else if ($_POST['module'] == 'generic-tests') {
-                    $db = $db->where('sample_id', $_POST['sampleCode'][$j]);
+                    $db = $db->where('sample_id', $uniqueSampleId[$j]);
                     $db->update('form_generic', $value);
                 }
             }
