@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS `audit_form_vl`;
 DROP TABLE IF EXISTS `audit_form_eid`;
 DROP TABLE IF EXISTS `audit_form_covid19`;
 DROP TABLE IF EXISTS `audit_form_hepatitis`;
+DROP TABLE IF EXISTS `audit_form_tb`;
 DROP TABLE IF EXISTS `audit_form_generic`;
 
 
