@@ -40,7 +40,7 @@ foreach ($sampleResult as $sampleRow) {
         $provinceResult = $db->rawQueryOne($provinceQuery, [$sampleRow['province_id']]);
         $provinceCode = $provinceResult['geo_code'];
     }
-    // ONLY IF SAMPLE CODE IS NOT ALREADY GENERATED
+    // ONLY IF SAMPLE ID IS NOT ALREADY GENERATED
     if ($sampleRow['sample_code'] == null || $sampleRow['sample_code'] == '' || $sampleRow['sample_code'] == 'null') {
 
         $sampleCodeParams = [];

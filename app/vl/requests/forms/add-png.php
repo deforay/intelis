@@ -50,7 +50,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for="sampleCode" class="labels">Laboratory ID <span class="mandatory">*</span></label>
-											<input type="text" class="form-control sampleCode isRequired" id="sampleCode" name="sampleCode" placeholder="Enter Laboratory ID" title="Please enter laboratory ID" style="width:100%;" onblur="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'This sample code already exists. Please try another Sample Code.',null)" readonly="readonly" />
+											<input type="text" class="form-control sampleCode isRequired" id="sampleCode" name="sampleCode" placeholder="Enter Laboratory ID" title="Please enter laboratory ID" style="width:100%;" onblur="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'This sample id already exists. Please try another Sample ID.',null)" readonly="readonly" />
 										</div>
 									</div>
 

@@ -29,9 +29,9 @@ if (isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm']) 
      $output = [];
      $sheet = $excel->getActiveSheet();
 
-     $headings = array('Sample Code', 'Remote Sample Code', "Sample Collection Date", "Batch Code", "Unique ART No.", "Patient's Name", "Facility Name", "Province/State", "District/County", "Sample Type", "Result", "Status");
+     $headings = array('Sample ID', 'Remote Sample ID', "Sample Collection Date", "Batch Code", "Unique ART No.", "Patient's Name", "Facility Name", "Province/State", "District/County", "Sample Type", "Result", "Status");
      if ($sarr['sc_user_type'] == 'standalone') {
-          if (($key = array_search("Remote Sample Code", $headings)) !== false) {
+          if (($key = array_search("Remote Sample ID", $headings)) !== false) {
                unset($headings[$key]);
           }
      }
@@ -113,13 +113,13 @@ if (isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm']) 
           }
           $row[] = $sampleCollectionDate;
           $row[] = $aRow['batch_code'];
-          if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes'){
+          if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
                $key = base64_decode($general->getGlobalConfig('key'));
-               $aRow['patient_art_no'] = $general->crypto('decrypt' ,$aRow['patient_art_no'], $key);
-               $patientFname = $general->crypto('decrypt' ,$patientFname, $key);
-               $patientMname = $general->crypto('decrypt' ,$patientMname, $key);
-               $patientLname = $general->crypto('decrypt' ,$patientLname, $key);
-            }
+               $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
+               $patientFname = $general->crypto('decrypt', $patientFname, $key);
+               $patientMname = $general->crypto('decrypt', $patientMname, $key);
+               $patientLname = $general->crypto('decrypt', $patientLname, $key);
+          }
           $row[] = $aRow['patient_art_no'];
           if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
                $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);

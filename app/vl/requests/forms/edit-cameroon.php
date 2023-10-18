@@ -145,7 +145,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                             <input type="hidden" class="<?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" value="<?php echo $vlQueryInfo[$sampleCode]; ?>" />
                                                        <?php } else { ?>
                                                             <label for="sampleCode"><?= _translate('Sample ID'); ?> <span class="mandatory">*</span></label>
-                                                            <input type="text" value="<?= ($vlQueryInfo['sample_code']); ?>" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" readonly="readonly" <?php echo $maxLength; ?> placeholder="<?= _translate('Enter Sample ID'); ?>" title="<?= _translate('Please enter sample id'); ?>" style="width:100%;" onblur="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'This sample code already exists. Try another',null)" />
+                                                            <input type="text" value="<?= ($vlQueryInfo['sample_code']); ?>" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" readonly="readonly" <?php echo $maxLength; ?> placeholder="<?= _translate('Enter Sample ID'); ?>" title="<?= _translate('Please enter sample id'); ?>" style="width:100%;" onblur="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'This sample id already exists. Try another',null)" />
                                                        <?php } ?>
                                                   </div>
                                              </div>
@@ -468,7 +468,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                                                 $checked = '';
                                                                                 $display = '';
                                                                                 $vlValue = '';
-                                                                              //  if (trim($vlQueryInfo['reason_for_vl_testing']) == $vlTestReasonResultRow[0]['test_reason_id']) {
+                                                                                //  if (trim($vlQueryInfo['reason_for_vl_testing']) == $vlTestReasonResultRow[0]['test_reason_id']) {
                                                                                 if (trim($vlQueryInfo['reason_for_vl_testing']) == 'controlVlTesting' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'controlVlTesting') {
                                                                                      $checked = 'checked="checked"';
                                                                                      $display = 'block';
@@ -605,7 +605,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                                  <div class="col-md-6">
                                                                       <label for="cvNumber" class="col-lg-5 control-label"><?= _translate('CV Number'); ?> </label>
                                                                       <div class="col-lg-7">
-                                                                           <input name="cvNumber" id="cvNumber" class="form-control" placeholder="<?= _translate('Enter CV Number'); ?>" title="<?= _translate('Please enter CV Number'); ?>" value="<?= $vlQueryInfo['cv_number']; ?>" <?php echo $labFieldDisabled; ?> >
+                                                                           <input name="cvNumber" id="cvNumber" class="form-control" placeholder="<?= _translate('Enter CV Number'); ?>" title="<?= _translate('Please enter CV Number'); ?>" value="<?= $vlQueryInfo['cv_number']; ?>" <?php echo $labFieldDisabled; ?>>
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-6">
@@ -656,7 +656,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                             </div>
 
                                                             <div class="row">
-                                                            <div class="col-md-6 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
+                                                                 <div class="col-md-6 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
                                                                       <label class="col-lg-5 control-label" for="rejectionReason"><?= _translate('Rejection Reason'); ?> </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="rejectionReason" id="rejectionReason" class="form-control" title="<?= _translate('Please choose reason'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();">
@@ -770,8 +770,8 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                        <button type="button" class="btn btn-success" onclick="changePrinter()">Change/Retry</button>
                                                   </div><br /> <!-- /printer_details -->
                                                   <div id="printer_select" style="display:none">
-                                                  <?= _translate('Zebra Printer Options'); ?><br />
-                                                  <?= _translate('Printer:'); ?> <select id="printers"></select>
+                                                       <?= _translate('Zebra Printer Options'); ?><br />
+                                                       <?= _translate('Printer:'); ?> <select id="printers"></select>
                                                   </div> <!-- /printer_select -->
                                              <?php } ?>
                                              <!-- BARCODESTUFF END -->
@@ -1171,42 +1171,42 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      });
 
-                    // Apply validation to all input fields with class 'phone-number'
-                    $('.phone-number').on('change, input, blur', function() {
+     // Apply validation to all input fields with class 'phone-number'
+     $('.phone-number').on('change, input, blur', function() {
 
-if (this.value == "") {
-     return;
-} else if (this.value == "<?php echo $countryCode; ?>") {
-     $(this).val("")
-     return;
-}
-
-if (!this.value.match(/^\+?[0-9]*$/)) {
-     this.value = this.value.replace(/[^+0-9]/g, '');
-     if (this.value[0] !== '+' && this.value.length > 0) {
-          this.value = '+' + this.value;
-     }
-}
-const countryCode = "<?= $countryCode ?? null; ?>"
-const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
-const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
-
-if (!Utilities.validatePhoneNumber(this.value, countryCode, minDigits, maxDigits)) {
-     Toastify({
-          text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>",
-          duration: 3000,
-          style: {
-               background: 'red',
+          if (this.value == "") {
+               return;
+          } else if (this.value == "<?php echo $countryCode; ?>") {
+               $(this).val("")
+               return;
           }
-     }).showToast();
-}
-});
 
-$('.phone-number').on('focus', function() {
-if ($(this).val() == "") {
-     $(this).val("<?php echo $countryCode ?? null; ?>")
-};
-});
+          if (!this.value.match(/^\+?[0-9]*$/)) {
+               this.value = this.value.replace(/[^+0-9]/g, '');
+               if (this.value[0] !== '+' && this.value.length > 0) {
+                    this.value = '+' + this.value;
+               }
+          }
+          const countryCode = "<?= $countryCode ?? null; ?>"
+          const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
+          const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
+
+          if (!Utilities.validatePhoneNumber(this.value, countryCode, minDigits, maxDigits)) {
+               Toastify({
+                    text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>",
+                    duration: 3000,
+                    style: {
+                         background: 'red',
+                    }
+               }).showToast();
+          }
+     });
+
+     $('.phone-number').on('focus', function() {
+          if ($(this).val() == "") {
+               $(this).val("<?php echo $countryCode ?? null; ?>")
+          };
+     });
 
      function checkRejectionReason() {
           var rejectionReason = $("#rejectionReason").val();

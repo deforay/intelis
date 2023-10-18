@@ -150,13 +150,13 @@ $state = $geolocationService->getProvinces("yes");
                                                 <div class="row" style="background:#e0e0e0;float: right !important;padding: 15px;margin-top: -30px;">
                                                     <div class="col-md-12">
                                                         <div class="col-md-3">
-                                                            <input type="checkbox" onclick="fnShowHide(this.value);" value="1" id="iCol1" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol1"><?php echo _translate("Sample Code"); ?></label>
+                                                            <input type="checkbox" onclick="fnShowHide(this.value);" value="1" id="iCol1" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol1"><?php echo _translate("Sample ID"); ?></label>
                                                         </div>
                                                         <?php $i = 1;
                                                         if ($_SESSION['instanceType'] != 'standalone') {
                                                             $i = 2; ?>
                                                             <div class="col-md-3">
-                                                                <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Remote Sample Code"); ?></label>
+                                                                <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
                                                             </div>
                                                         <?php } ?>
 
@@ -199,9 +199,9 @@ $state = $geolocationService->getProvinces("yes");
                                                 <thead>
                                                     <tr>
                                                         <th><input type="checkbox" id="checkRowsData" onclick="toggleAllVisible()" /></th>
-                                                        <th><?php echo _translate("Sample Code"); ?></th>
+                                                        <th><?php echo _translate("Sample ID"); ?></th>
                                                         <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-                                                            <th><?php echo _translate("Remote Sample Code"); ?></th>
+                                                            <th><?php echo _translate("Remote Sample ID"); ?></th>
                                                         <?php } ?>
                                                         <th><?php echo _translate("Batch Code"); ?></th>
                                                         <th><?php echo _translate("Patient ID"); ?></th>
@@ -303,13 +303,13 @@ $state = $geolocationService->getProvinces("yes");
                                                 <div class="row" style="background:#e0e0e0;float: right !important;padding: 15px;margin-top: -30px;">
                                                     <div class="col-md-12">
                                                         <div class="col-md-3">
-                                                            <input type="checkbox" onclick="printfnShowHide(this.value);" value="1" id="printiCol1" data-showhide="sample_code" class="printShowhideCheckBox" /> <label for="printiCol1"><?php echo _translate("Sample Code"); ?></label>
+                                                            <input type="checkbox" onclick="printfnShowHide(this.value);" value="1" id="printiCol1" data-showhide="sample_code" class="printShowhideCheckBox" /> <label for="printiCol1"><?php echo _translate("Sample ID"); ?></label>
                                                         </div>
                                                         <?php $i = 1;
                                                         if ($_SESSION['instanceType'] != 'standalone') {
                                                             $i = 2; ?>
                                                             <div class="col-md-3">
-                                                                <input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i; ?>" id="printiCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Remote Sample Code"); ?></label>
+                                                                <input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i; ?>" id="printiCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
                                                             </div>
                                                         <?php } ?>
 
@@ -351,9 +351,9 @@ $state = $geolocationService->getProvinces("yes");
                                                 <thead>
                                                     <tr>
                                                         <th><input type="checkbox" id="checkPrintedRowsData" onclick="toggleAllPrintedVisible()" /></th>
-                                                        <th><?php echo _translate("Sample Code"); ?></th>
+                                                        <th><?php echo _translate("Sample ID"); ?></th>
                                                         <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-                                                            <th><?php echo _translate("Remote Sample Code"); ?></th>
+                                                            <th><?php echo _translate("Remote Sample ID"); ?></th>
                                                         <?php } ?>
                                                         <th><?php echo _translate("Batch Code"); ?></th>
                                                         <th><?php echo _translate("Patient ID"); ?></th>

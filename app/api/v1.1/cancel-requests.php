@@ -50,7 +50,7 @@ $testTypePrimary = [
     'generic-tests' => 'sample_id'
 ];
 try {
-    $sQuery = 'SELECT * FROM '.$testType[$input['testType']].' as vl
+    $sQuery = 'SELECT * FROM ' . $testType[$input['testType']] . ' as vl
     LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status';
 
     $where = [];
@@ -60,7 +60,7 @@ try {
         $uniqueId = implode("','", $uniqueId);
         $where[] = " vl.unique_id IN ('$uniqueId')";
     }
-    /* To check the sample code filter */
+    /* To check the sample id filter */
     $sampleCode = $input['sampleCode'] ?? [];
     if (!empty($sampleCode)) {
         $sampleCode = implode("','", $sampleCode);
@@ -68,22 +68,22 @@ try {
     }
 
     /* To skip some status */
-    // $where[] = " (vl.result_status NOT IN (4, 7, 8)) "; 
+    // $where[] = " (vl.result_status NOT IN (4, 7, 8)) ";
     $where = ' WHERE ' . implode(' AND ', $where);
     $rowData = $db->rawQuery($sQuery);
     $response = [];
-    foreach($rowData as $key=>$row){
-        if(isset($row['result_status']) && !empty($row['result_status'])){
-            if(!in_array($row['result_status'],[4,7,8])){
+    foreach ($rowData as $key => $row) {
+        if (isset($row['result_status']) && !empty($row['result_status'])) {
+            if (!in_array($row['result_status'], [4, 7, 8])) {
                 $db->where($testTypePrimary[$input['testType']], $row[$testTypePrimary[$input['testType']]]);
-                $status = $db->update($testType[$input['testType']],array('result_status' => 12));
-                if($status){
+                $status = $db->update($testType[$input['testType']], array('result_status' => 12));
+                if ($status) {
                     $response[$key]['status'] = 'success';
-                }else{
+                } else {
                     $response[$key]['status'] = 'fail';
                     $response[$key]['message'] = 'Already cancelled';
                 }
-            }else{
+            } else {
                 $response[$key]['status'] = 'fail';
                 $response[$key]['message'] = 'Cancellation not allowed';
             }
@@ -95,7 +95,7 @@ try {
         'timestamp' => time(),
         'data' => $response
     ];
-}catch (SystemException $exc) {
+} catch (SystemException $exc) {
 
     // http_response_code(500);
     $payload = [

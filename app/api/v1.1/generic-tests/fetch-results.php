@@ -85,7 +85,7 @@ try {
         $where[] = " unique_id IN ('$uniqueId')";
     }
 
-    /* To check the sample code filter */
+    /* To check the sample id filter */
     $sampleCode = $input['sampleCode'] ?? [];
     if (!empty($sampleCode)) {
         $sampleCode = implode("','", $sampleCode);

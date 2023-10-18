@@ -51,9 +51,9 @@ require_once APPLICATION_PATH . '/header.php';
 						<table aria-describedby="table" id="tbManifestDataTable" class="table table-bordered table-striped table-vcenter">
 							<thead>
 								<tr>
-									<th><?php echo _translate("Sample Code"); ?></th>
+									<th><?php echo _translate("Sample ID"); ?></th>
 									<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-										<th><?php echo _translate("Remote Sample Code"); ?></th>
+										<th><?php echo _translate("Remote Sample ID"); ?></th>
 									<?php } ?>
 									<th><?php echo _translate("Sample Collection Date"); ?></th>
 									<th><?php echo _translate("Batch Code"); ?></th>
@@ -262,7 +262,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$('.dateTime').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			onSelect: function(date) {

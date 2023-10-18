@@ -154,10 +154,10 @@ $batResult = $db->rawQuery($batQuery);
 										<?php echo _translate("Sample ID"); ?>
 									</th>
 									<th>
-										<?php echo _translate("Remote Sample Code"); ?>
+										<?php echo _translate("Remote Sample ID"); ?>
 									</th>
 									<th>
-										<?php echo _translate("External Sample Code"); ?>
+										<?php echo _translate("External Sample ID"); ?>
 									</th>
 									<th scope="row">
 										<?php echo _translate("Sample Collection Date"); ?>

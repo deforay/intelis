@@ -29,7 +29,7 @@ try {
     $uploadedFile = $uploadedFiles['facilitiesInfo'];
     $fileName = $uploadedFile->getClientFilename();
 
-
+    $uploadOption = $_POST['uploadOption'];
 
     $ranNumber = "BULK-FACILITIES-" . strtoupper($general->generateRandomString(16));
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
@@ -98,11 +98,46 @@ try {
                 'status' => 'active'
             );
 
-            if ((isset($facilityCheck['facility_id']) && $facilityCheck['facility_id'] != "") || (isset($facilityCodeCheck['facility_id']) && $facilityCodeCheck['facility_id'] != "")) {
-                array_push($facilityNotAdded, $rowData);
-            } else {
-                $db->insert('facility_details', $data);
-                error_log($db->getLastError());
+
+            if($uploadOption=="facility_name_match")
+            {
+                if ((isset($facilityCheck['facility_id']) && $facilityCheck['facility_id'] != "") && (($facilityCodeCheck['facility_id'])=="")) {
+                    $db->where("facility_id",$facilityCheck['facility_id']);
+                    $db->update('facility_details', $data);
+                    error_log($db->getLastError());
+                } else {
+                    array_push($facilityNotAdded, $rowData);
+                }
+            }
+            elseif($uploadOption=="facility_code_match")
+            {
+                if ((isset($facilityCodeCheck['facility_id']) && $facilityCodeCheck['facility_id'] != "") && (($facilityCheck['facility_id'])=="")) {
+                    $db->where("facility_id",$facilityCodeCheck['facility_id']);
+                    $db->update('facility_details', $data);
+                    error_log($db->getLastError());
+                } else {
+                    array_push($facilityNotAdded, $rowData);
+                }
+            }
+            elseif($uploadOption=="facility_name_code_match")
+            {
+                if ((isset($facilityCheck['facility_id']) && $facilityCheck['facility_id'] != "") && (isset($facilityCodeCheck['facility_id']) && $facilityCodeCheck['facility_id'] != "")) {
+                    $db->where("facility_id",$facilityCheck['facility_id']);
+                    $db->update('facility_details', $data);
+                    error_log($db->getLastError());
+                }
+                else
+                {
+                    array_push($facilityNotAdded, $rowData);
+                }
+            }
+            elseif($uploadOption=="default"){
+                if ((isset($facilityCheck['facility_id']) && $facilityCheck['facility_id'] != "") || (isset($facilityCodeCheck['facility_id']) && $facilityCodeCheck['facility_id'] != "")) {
+                    array_push($facilityNotAdded, $rowData);
+                } else {
+                    $db->insert('facility_details', $data);
+                    error_log($db->getLastError());
+                }
             }
         }
 
@@ -140,7 +175,7 @@ try {
     } else {
         throw new SystemException(_translate("Bulk Facility Import File not uploaded") . " - " . $uploadedFile->getError());
     }
-    header("Location:/facilities/upload-facilities.php?total=$total&notAdded=$notAdded&link=$filename");
+    header("Location:/facilities/upload-facilities.php?total=$total&notAdded=$notAdded&link=$filename&option=$uploadOption");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

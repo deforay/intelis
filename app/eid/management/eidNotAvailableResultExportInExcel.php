@@ -33,9 +33,9 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
     $excel = new Spreadsheet();
     $output = [];
     $sheet = $excel->getActiveSheet();
-    $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Child Id.", "Child's Name", "Sample Collection Date", "Lab Name", "Sample Status");
+    $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Child Id.", "Child's Name", "Sample Collection Date", "Lab Name", "Sample Status");
     if ($sarr['sc_user_type'] == 'standalone') {
-        if (($key = array_search("Remote Sample Code", $headings)) !== false) {
+        if (($key = array_search("Remote Sample ID", $headings)) !== false) {
             unset($headings[$key]);
         }
     }

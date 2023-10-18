@@ -127,13 +127,13 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
                         <div class="row" style="background:#e0e0e0;padding: 15px;margin-top: -5px;">
                             <div class="col-md-12">
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _translate("Sample Code"); ?></label>
+                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _translate("Sample ID"); ?></label>
                                 </div>
                                 <?php $i = 0;
                                 if ($_SESSION['instanceType'] != 'standalone') {
                                     $i = 1; ?>
                                     <div class="col-md-3">
-                                        <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Remote Sample Code"); ?></label>
+                                        <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
                                     </div>
                                 <?php } ?>
                                 <div class="col-md-3">
@@ -180,9 +180,9 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
                         <table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
                                 <tr>
-                                    <th><?php echo _translate("Sample Code"); ?></th>
+                                    <th><?php echo _translate("Sample ID"); ?></th>
                                     <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-                                        <th><?php echo _translate("Remote Sample Code"); ?></th>
+                                        <th><?php echo _translate("Remote Sample ID"); ?></th>
                                     <?php } ?>
                                     <th><?php echo _translate("Batch Code"); ?></th>
                                     <th scope="row"><?php echo _translate("Facility Name"); ?></th>

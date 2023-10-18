@@ -214,11 +214,11 @@ foreach ($rejectionTypeResult as $type) {
 								<tr>
 									<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()" /></th>
 									<th>
-										<?php echo _translate("Sample Code"); ?>
+										<?php echo _translate("Sample ID"); ?>
 									</th>
 									<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 										<th>
-											<?php echo _translate("Remote Sample Code"); ?>
+											<?php echo _translate("Remote Sample ID"); ?>
 										</th>
 									<?php } ?>
 									<th scope="row">

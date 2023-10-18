@@ -195,9 +195,9 @@ if (!empty($id)) {
             <table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">
                 <tr>
                     <th align="center" width="5%"><strong>' . _translate('Pos.') . '</strong></th>
-                    <th align="center" width="20%"><strong>' . _translate('Sample Code') . '</strong></th>
+                    <th align="center" width="20%"><strong>' . _translate('Sample ID') . '</strong></th>
                     <th align="center" width="30%"><strong>' . _translate('BARCODE') . '</strong></th>
-                    <th align="center" width="20%"><strong>' . _translate('Remote Sample Code') . '</strong></th>
+                    <th align="center" width="20%"><strong>' . _translate('Remote Sample ID') . '</strong></th>
                     <th align="center" width="12.5%"><strong>' . _translate('Patient Code') . '</strong></th>
                     <th align="center" width="12.5%"><strong>' . _translate('Test Result') . '</strong></th>
                 </tr>
@@ -206,7 +206,7 @@ if (!empty($id)) {
             $tbl = '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;">
                     <tr>
                         <th align="center" width="5%"><strong>' . _translate('Pos.') . '</strong></th>
-                        <th align="center" width="20%"><strong>' . _translate('Sample Code') . '</strong></th>
+                        <th align="center" width="20%"><strong>' . _translate('Sample ID') . '</strong></th>
                         <th align="center" width="30%"><strong>' . _translate('BARCODE') . '</strong></th>
                         <th align="center" width="20%"><strong>' . _translate('Patient Code') . '</strong></th>
                         <th align="center" width="12.5%"><strong>' . _translate('Lot Number / <br>Exp. Date') . '</strong></th>

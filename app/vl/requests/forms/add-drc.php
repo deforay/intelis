@@ -84,7 +84,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 										<?php } else { ?>
 											<td><label for="sampleCode">Échantillon ID </label><span class="mandatory">*</span></td>
 											<td>
-												<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'<?= addslashes(_translate("The Sample Code that you entered already exists. Please try another Sample Code")); ?>',null)" />
+												<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'<?= addslashes(_translate("The Sample ID that you entered already exists. Please try another Sample ID")); ?>',null)" />
 											</td>
 										<?php } ?>
 										<td><label for="serialNo">

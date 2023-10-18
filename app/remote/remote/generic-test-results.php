@@ -29,6 +29,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 //$app = \App\Registries\ContainerRegistry::get(ApiService::class);
 
 try {
+    $db->startTransaction();
     //this file receives the lab results and updates in the remote db
     $jsonResponse = file_get_contents('php://input');
 
@@ -113,7 +114,7 @@ try {
 
 
             try {
-                // Checking if Remote Sample Code is set, if not set we will check if Sample Code is set
+                // Checking if Remote Sample ID is set, if not set we will check if Sample ID is set
                 if (isset($lab['remote_sample_code']) && $lab['remote_sample_code'] != '') {
                     //error_log("INSIDE REMOTE");
                     $sQuery = "SELECT sample_id,sample_code,remote_sample_code,remote_sample_code_key
@@ -179,11 +180,14 @@ try {
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'generic-tests', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
 
     $general->updateResultSyncDateTime('generic', 'form_generic', $sampleCodes, $transactionId, $facilityIds, $labId);
-
-    echo $payload;
+    $db->commit();
 } catch (Exception $e) {
+    $db->rollback();
+
     error_log($db->getLastError());
     error_log($e->getMessage());
     error_log($e->getTraceAsString());
     throw new SystemException($e->getMessage(), $e->getCode(), $e);
 }
+
+echo $payload;

@@ -180,9 +180,9 @@ $state = $geolocationService->getProvinces("yes");
 											<table aria-describedby="table" id="highViralLoadReportTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
-														<th><?php echo _translate("Sample Code"); ?></th>
+														<th><?php echo _translate("Sample ID"); ?></th>
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-															<th><?php echo _translate("Remote Sample Code"); ?></th>
+															<th><?php echo _translate("Remote Sample ID"); ?></th>
 														<?php } ?>
 														<th scope="row"><?php echo _translate("Facility Name"); ?></th>
 														<th><?php echo _translate("Patient's ID"); ?></th>
@@ -285,9 +285,9 @@ $state = $geolocationService->getProvinces("yes");
 											<table aria-describedby="table" id="sampleRjtReportTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
-														<th><?php echo _translate("Sample Code"); ?></th>
+														<th><?php echo _translate("Sample ID"); ?></th>
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-															<th><?php echo _translate("Remote Sample Code"); ?></th>
+															<th><?php echo _translate("Remote Sample ID"); ?></th>
 														<?php } ?>
 														<th scope="row"><?php echo _translate("Facility Name"); ?></th>
 														<th><?php echo _translate("Patient's ID"); ?></th>
@@ -381,9 +381,9 @@ $state = $geolocationService->getProvinces("yes");
 											<table aria-describedby="table" id="notAvailReportTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
-														<th><?php echo _translate("Sample Code"); ?></th>
+														<th><?php echo _translate("Sample ID"); ?></th>
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-															<th><?php echo _translate("Remote Sample Code"); ?></th>
+															<th><?php echo _translate("Remote Sample ID"); ?></th>
 														<?php } ?>
 														<th scope="row"><?php echo _translate("Facility Name"); ?></th>
 														<th><?php echo _translate("Patient's ID"); ?></th>
@@ -412,7 +412,7 @@ $state = $geolocationService->getProvinces("yes");
 													<td>
 														<select class="form-control" id="formField" name="formField" multiple="multiple" title="<?php echo _translate('Please fields'); ?>" style="width:220px;">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
-															<option value="sample_code"><?php echo _translate("Sample Code"); ?></option>
+															<option value="sample_code"><?php echo _translate("Sample ID"); ?></option>
 															<option value="sample_collection_date"><?php echo _translate("Sample Collection Date"); ?></option>
 															<option value="sample_batch_id"><?php echo _translate("Batch Code"); ?></option>
 															<option value="patient_id"><?php echo _translate("Patient ID"); ?></option>
@@ -435,9 +435,9 @@ $state = $geolocationService->getProvinces("yes");
 											<table aria-describedby="table" id="incompleteReport" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
-														<th><?php echo _translate("Sample Code"); ?></th>
+														<th><?php echo _translate("Sample ID"); ?></th>
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-															<th><?php echo _translate("Remote Sample Code"); ?></th>
+															<th><?php echo _translate("Remote Sample ID"); ?></th>
 														<?php } ?>
 														<th scope="row"><?php echo _translate("Sample Collection Date"); ?></th>
 														<th><?php echo _translate("Batch Code"); ?></th>

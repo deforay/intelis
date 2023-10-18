@@ -46,7 +46,7 @@ foreach ($sampleResult as $sampleRow) {
     } else {
         $_POST['testDate'] = null;
     }
-    // ONLY IF SAMPLE CODE IS NOT ALREADY GENERATED
+    // ONLY IF SAMPLE ID IS NOT ALREADY GENERATED
     if ($sampleRow['sample_code'] == null || $sampleRow['sample_code'] == '' || $sampleRow['sample_code'] == 'null') {
 
         $sampleCodeParams = [];

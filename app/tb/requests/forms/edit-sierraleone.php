@@ -155,7 +155,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 										<?php } else { ?>
 											<th scope="row" style="width: 14%;"><label class="label-control" for="sampleCode">Sample ID </label><span class="mandatory">*</span></th>
 											<td style="width: 18%;">
-												<input type="text" value="<?php echo $tbInfo['sample_code']; ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly="readonly" placeholder="Sample ID" title="Please enter sample code" style="width:100%;" onchange="checkSampleNameValidation('form_tb','<?php echo $sampleCode; ?>',this.id,null,'The sample id that you entered already exists. Please try another sample id',null)" />
+												<input type="text" value="<?php echo $tbInfo['sample_code']; ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly="readonly" placeholder="Sample ID" title="Please enter sample id" style="width:100%;" onchange="checkSampleNameValidation('form_tb','<?php echo $sampleCode; ?>',this.id,null,'The sample id that you entered already exists. Please try another sample id',null)" />
 											</td>
 										<?php } ?>
 										<th scope="row"></th>

@@ -212,7 +212,7 @@ try {
 			$encryptedPatientId = $general->crypto('encrypt', $hepatitisData['patient_id'], $key);
 			$encryptedPatientName = $general->crypto('encrypt', $hepatitisData['patient_name'], $key);
 			$encryptedPatientSurName = $general->crypto('encrypt', $hepatitisData['patient_surname'], $key);
-	
+
 			$hepatitisData['patient_id'] = $encryptedPatientId;
 			$hepatitisData['patient_name'] = $encryptedPatientName;
 			$hepatitisData['patient_surname'] = $encryptedPatientSurName;

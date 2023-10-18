@@ -1314,7 +1314,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           var sCodeLentgh = $("#sampleCode").val();
           var minLength = '<?php echo $arr['min_length']; ?>';
           if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
-               alert("Sample id length must be a minimum length of " + minLength + " characters");
+               alert("Sample ID length must be a minimum length of " + minLength + " characters");
                return false;
           }
 
@@ -1342,7 +1342,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           var sCodeLentgh = $("#sampleCode").val();
           var minLength = '<?php echo $arr['min_length']; ?>';
           if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
-               alert("Sample id length must be a minimum length of " + minLength + " characters");
+               alert("Sample ID length must be a minimum length of " + minLength + " characters");
                return false;
           }
           flag = deforayValidator.init({

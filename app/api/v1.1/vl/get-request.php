@@ -178,7 +178,7 @@ try {
             $where[] = " (request_created_by = '" . $user['user_id'] . "')";
         }
     }
-    /* To check the sample code filter */
+    /* To check the sample id filter */
 
     if (!empty($input['sampleCode'])) {
         $sampleCode = $input['sampleCode'];

@@ -356,14 +356,14 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 
 	function validateNow() {
 		var selVal = [];
-        $('#search_to option').each(function(i, selected) {
-            selVal[i] = $(selected).val();
-        });
-        $("#selectedSample").val(selVal);
+		$('#search_to option').each(function(i, selected) {
+			selVal[i] = $(selected).val();
+		});
+		$("#selectedSample").val(selVal);
 		if (selVal == "") {
-            alert("<?= _translate("Please select one or more samples", true); ?>");
-            return false;
-        }
+			alert("<?= _translate("Please select one or more samples", true); ?>");
+			return false;
+		}
 		flag = deforayValidator.init({
 			formId: 'editSpecimenReferralManifestForm'
 		});
@@ -378,35 +378,35 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 	$(document).ready(function() {
 		getSampleCodeDetails();
 		$('#daterange').daterangepicker({
-			locale: {
-				cancelLabel: "<?= _translate("Clear"); ?>",
-				format: 'DD-MMM-YYYY',
-				separator: ' to ',
+				locale: {
+					cancelLabel: "<?= _translate("Clear"); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
+				},
+				showDropdowns: true,
+				alwaysShowCalendars: false,
+				startDate: moment().subtract(28, 'days'),
+				endDate: moment(),
+				maxDate: moment(),
+				ranges: {
+					'Today': [moment(), moment()],
+					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
+				}
 			},
-			showDropdowns: true,
-			alwaysShowCalendars: false,
-			startDate: moment().subtract(28, 'days'),
-			endDate: moment(),
-			maxDate: moment(),
-			ranges: {
-				'Today': [moment(), moment()],
-				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-				'This Month': [moment().startOf('month'), moment().endOf('month')],
-				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-				'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-				'Last 120 Days': [moment().subtract(119, 'days'), moment()],
-				'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-				'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')]
-			}
-		},
-		function(start, end) {
-			startDate = start.format('YYYY-MM-DD');
-			endDate = end.format('YYYY-MM-DD');
-		});
+			function(start, end) {
+				startDate = start.format('YYYY-MM-DD');
+				endDate = end.format('YYYY-MM-DD');
+			});
 		$(".select2").select2();
 		$(".select2").select2({
 			tags: true
@@ -414,8 +414,8 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 
 
 		$('.search').multiSelect({
-			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
-			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
+			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample ID'>",
+			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample ID'>",
 			afterInit: function(ms) {
 				var that = this,
 					$selectableSearch = that.$selectableUl.prev(),

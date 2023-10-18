@@ -27,9 +27,9 @@ if (isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm']) 
      $output = [];
      $sheet = $excel->getActiveSheet();
 
-     $headings = array('Sample Code', 'Remote Sample Code', "Sample Collection Date", "Batch Code", "Child Id.", "Child's Name", "Facility Name", "Province/State", "District/County", "Sample Type", "Result", "Status");
+     $headings = array('Sample ID', 'Remote Sample ID', "Sample Collection Date", "Batch Code", "Child Id.", "Child's Name", "Facility Name", "Province/State", "District/County", "Sample Type", "Result", "Status");
      if ($sarr['sc_user_type'] == 'standalone') {
-          if (($key = array_search("Remote Sample Code", $headings)) !== false) {
+          if (($key = array_search("Remote Sample ID", $headings)) !== false) {
                unset($headings[$key]);
           }
      }

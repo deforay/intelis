@@ -105,7 +105,7 @@ $batResult = $db->rawQuery($batQuery);
 						<div class="row" style="background:#e0e0e0;float: right !important;padding: 15px;">
 							<div class="col-md-12">
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0" data-showhide="vlsm_country_id" class="showhideCheckBox" /> <label for="iCol0">Sample Code</label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0" data-showhide="vlsm_country_id" class="showhideCheckBox" /> <label for="iCol0">Sample ID</label>
 								</div>
 								<div class="col-md-3">
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="1" id="iCol1" data-showhide="sample_collection_date" class="showhideCheckBox" /> <label for="iCol1">Sample Collection Date</label>
@@ -143,7 +143,7 @@ $batResult = $db->rawQuery($batQuery);
 						<table aria-describedby="table" id="vlTestResultStatusDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th>Sample Code</th>
+									<th>Sample ID</th>
 									<th>Sample Collection Date</th>
 									<th>Batch Code</th>
 									<th>Unique ART No</th>

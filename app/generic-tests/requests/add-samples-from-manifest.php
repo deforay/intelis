@@ -62,11 +62,11 @@ require_once APPLICATION_PATH . '/header.php';
 							<thead>
 								<tr>
 									<th>
-										<?php echo _translate("Sample Code"); ?>
+										<?php echo _translate("Sample ID"); ?>
 									</th>
 									<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 										<th>
-											<?php echo _translate("Remote Sample Code"); ?>
+											<?php echo _translate("Remote Sample ID"); ?>
 										</th>
 									<?php } ?>
 									<th>
@@ -308,7 +308,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$('.dateTime').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			onSelect: function(date) {

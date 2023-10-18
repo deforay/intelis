@@ -310,7 +310,7 @@ try {
           //Add event log
 
           $eventType = 'update-test-request';
-          $action = $_SESSION['userName'] . ' updated a request data with the sample code ' . $_POST['sampleCode'];
+          $action = $_SESSION['userName'] . ' updated a request data with the sample id ' . $_POST['sampleCode'];
           $resource = 'vl-request-ss';
 
           $general->activityLog($eventType, $action, $resource);

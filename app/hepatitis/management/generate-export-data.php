@@ -23,7 +23,7 @@ $hepatitisResults = $hepatitisService->getHepatitisResults();
 if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQuery']) != "") {
 
 	$rResult = $db->rawQuery($_SESSION['hepatitisResultQuery']);
-	$headings = array("S.No.", "Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner");
+	$headings = array("S.No.", "Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner");
 	$output = [];
 
 	$colNo = 1;
@@ -79,7 +79,7 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQ
 			$aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
 			$patientFname = $general->crypto('decrypt', $patientFname, $key);
 			$patientLname = $general->crypto('decrypt', $patientLname, $key);
-	   }
+		}
 
 		$row[] = $no;
 		$row[] = $aRow[$sampleCode];

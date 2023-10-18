@@ -43,7 +43,7 @@ try {
             header("Location:/covid-19/results/covid-19-add-confirmation-manifest.php");
         }
     } else {
-        $_SESSION['alertMsg'] = "Please select the sample code to processed";
+        $_SESSION['alertMsg'] = "Please select the sample id to processed";
         header("Location:/covid-19/results/covid-19-edit-confirmation-manifest.php?id='" . base64_encode($_POST['manifestId']) . "'");
     }
 } catch (Exception $exc) {

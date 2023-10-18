@@ -32,8 +32,8 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 
     $headings = array(
         _translate("S. No."),
-        _translate("Sample Code"),
-        _translate("Remote Sample Code"),
+        _translate("Sample ID"),
+        _translate("Remote Sample ID"),
         _translate("Testing Lab Name"),
         _translate("Tested By"),
         _translate("Number of Times Tested"),
@@ -91,7 +91,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         _translate("Date result released")
     );
 
-    if ($_SESSION['instanceType'] == 'standalone' && ($key = array_search("Remote Sample Code", $headings)) !== false) {
+    if ($_SESSION['instanceType'] == 'standalone' && ($key = array_search("Remote Sample ID", $headings)) !== false) {
         unset($headings[$key]);
     }
 

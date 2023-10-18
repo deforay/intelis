@@ -27,9 +27,9 @@ if (isset($_SESSION['highTbResult']) && trim($_SESSION['highTbResult']) != "") {
      $excel = new Spreadsheet();
      $output = [];
      $sheet = $excel->getActiveSheet();
-     $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient ART no.", "Patient's Name", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
+     $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART no.", "Patient's Name", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
      if ($sarr['sc_user_type'] == 'standalone') {
-          if (($key = array_search("Remote Sample Code", $headings)) !== false) {
+          if (($key = array_search("Remote Sample ID", $headings)) !== false) {
                unset($headings[$key]);
           }
      }
