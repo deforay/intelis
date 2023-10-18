@@ -5180,3 +5180,7 @@ CREATE TABLE `scheduled_jobs` (
  `status` varchar(20) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'pending',
  PRIMARY KEY (`job_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+-- Amit 18-Oct-2023 version 5.2.5
+UPDATE `system_config` SET `value` = '5.2.5' WHERE `system_config`.`name` = 'sc_version';
