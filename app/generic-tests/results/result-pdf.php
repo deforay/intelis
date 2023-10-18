@@ -369,7 +369,7 @@ if (!empty($requestResult)) {
           $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE CODE</td>';
+          $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE ID</td>';
           $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">LABORATORY NUMBER</td>';
           $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE COLLECTION DATE</td>';
           $html .= '</tr>';

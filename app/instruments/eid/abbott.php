@@ -96,7 +96,7 @@ try {
 
                     $sampleCode = $sheetData[$sampleIdCol];
 
-                    if ($sampleCode == "SAMPLE CODE" || $sampleCode == "") {
+                    if ($sampleCode == "SAMPLE ID" || $sampleCode == "") {
                         continue;
                     }
 

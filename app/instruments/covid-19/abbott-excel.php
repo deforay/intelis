@@ -92,7 +92,7 @@ try {
             $txtVal = "";
             $resultFlag = "";
 
-            $sampleCode = $record['SAMPLE CODE'];
+            $sampleCode = $record['SAMPLE ID'];
             $sampleType = $record['SAMPLE TYPE'];
 
             //$batchCode = $record[$batchCodeCol];

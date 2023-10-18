@@ -346,7 +346,7 @@ try {
                 $_POST['sampleCode'] = $_POST['sampleCodeFormat'] . $maxId;
                 $_POST['sampleCodeKey'] = $maxId;
             } else {
-                $_SESSION['alertMsg'] = _translate("Please check your sample Code");
+                $_SESSION['alertMsg'] = _translate("Please check your Sample ID");
                 header("Location:add-request.php");
             }
         }

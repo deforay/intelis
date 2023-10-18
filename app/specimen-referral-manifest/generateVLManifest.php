@@ -259,7 +259,7 @@ if (trim($id) != '') {
             $tbl .= '<br><table nobr="true" style="width:100%;" border="1" cellpadding="2">';
             $tbl .=     '<tr nobr="true">
                         <td  style="font-size:11px;width:5%;"><strong>S/N</strong></td>
-                        <td  style="font-size:11px;width:12%;"><strong>SAMPLE CODE</strong></td>
+                        <td  style="font-size:11px;width:12%;"><strong>SAMPLE ID</strong></td>
                         <td  style="font-size:11px;width:15%;"><strong>HEALTH FACILITY, DISTRICT</strong></td>
                         <td  style="font-size:11px;width:15%;"><strong>PATIENT</strong></td>
                         <td  style="font-size:11px;width:5%;"><strong>AGE</strong></td>
