@@ -151,7 +151,7 @@ class GenericTestsService extends AbstractTestService
                     error_log($this->db->getLastQuery());
                 }
             } else {
-                // If this sample code exists, let us regenerate the sample code and insert
+                // If this sample id exists, let us regenerate the sample id and insert
                 $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
                 return $this->insertSample($params);
             }

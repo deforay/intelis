@@ -169,7 +169,7 @@ foreach ($rejectionTypeResult as $type) {
 							<div class="box-header with-border">
 								<ul style="list-style: none;float: right;">
 									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation" style="color:#e8000b;"></em>
-										<?= _translate("Sample Code/ID not from VLSM"); ?>
+										<?= _translate("Sample ID/ID not from VLSM"); ?>
 									</li>
 									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation" style="color:#86c0c8;"></em>
 										<?= _translate("Result already exists for this sample"); ?>
@@ -195,7 +195,7 @@ foreach ($rejectionTypeResult as $type) {
 								<thead>
 									<tr>
 										<th style="width: 23%;">
-											<?= _translate("Sample Code/ID"); ?>
+											<?= _translate("Sample ID/ID"); ?>
 										</th>
 										<th style="width: 11%;">
 											<?= _translate("Sample Collection Date"); ?>
@@ -440,7 +440,7 @@ foreach ($rejectionTypeResult as $type) {
 
 	function toggleTest(obj, sampleCode) {
 		if (sampleCode == '') {
-			alert("Please enter sample code");
+			alert("Please enter sample id");
 			$("#" + obj.id).val('');
 			return false;
 		}

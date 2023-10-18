@@ -254,7 +254,7 @@ $state = $geolocationService->getProvinces("yes");
 							<thead>
 								<tr>
 									<th>
-										<?php echo _translate("Sample Code"); ?>
+										<?php echo _translate("Sample ID"); ?>
 									</th>
 									<th>
 										<?php echo _translate("Batch Code"); ?>

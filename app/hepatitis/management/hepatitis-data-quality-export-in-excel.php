@@ -27,9 +27,9 @@ if (isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm']) 
      $output = [];
      $sheet = $excel->getActiveSheet();
 
-     $headings = array('Sample Code', 'Remote Sample Code', "Sample Collection Date", "Batch Code", "Patient Id.", "Patient's Name", "Facility Name", "Province/State", "District/County", "Sample Type", 'vl.hcv_vl_result', 'vl.hbv_vl_result', "Status");
+     $headings = array('Sample ID', 'Remote Sample ID', "Sample Collection Date", "Batch Code", "Patient Id.", "Patient's Name", "Facility Name", "Province/State", "District/County", "Sample Type", 'vl.hcv_vl_result', 'vl.hbv_vl_result', "Status");
      if ($_SESSION['instanceType'] == 'standalone') {
-          if (($key = array_search("Remote Sample Code", $headings)) !== false) {
+          if (($key = array_search("Remote Sample ID", $headings)) !== false) {
                unset($headings[$key]);
           }
      }

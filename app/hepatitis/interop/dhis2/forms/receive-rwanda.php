@@ -235,7 +235,7 @@ foreach ($trackedEntityInstances as $tracker) {
                 $formData['lab_id'] = null;
             }
         } else {
-            $processingErrors[] = 'Lab ID not found: ' . $uniqueID . ' ==== Hep Sample Code : ' . $formData['external_sample_code'];
+            $processingErrors[] = 'Lab ID not found: ' . $uniqueID . ' ==== Hep Sample ID : ' . $formData['external_sample_code'];
             continue;
         }
 

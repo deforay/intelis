@@ -114,7 +114,7 @@ if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonR
         }
 
         try {
-            // Checking if Remote Sample Code is set, if not set we will check if Sample Code is set
+            // Checking if Remote Sample ID is set, if not set we will check if Sample ID is set
             if (isset($lab['remote_sample_code']) && $lab['remote_sample_code'] != '') {
                 $sQuery = "SELECT covid19_id,sample_code,remote_sample_code,remote_sample_code_key
                             FROM form_covid19 WHERE remote_sample_code= ?";

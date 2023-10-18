@@ -333,7 +333,7 @@ try {
         $db = $db->where('sample_id', $_POST['vlSampleId']);
         $id = $db->update($tableName, $vldata);
     } else {
-        //check existing sample code
+        //check existing sample id
 
         $existSampleQuery = "SELECT " . $sampleCode . "," . $sampleCodeKey . " FROM form_generic where " . $sampleCode . " ='" . trim($_POST['sampleCode']) . "'";
         $existResult = $db->rawQuery($existSampleQuery);
@@ -346,7 +346,7 @@ try {
                 $_POST['sampleCode'] = $_POST['sampleCodeFormat'] . $maxId;
                 $_POST['sampleCodeKey'] = $maxId;
             } else {
-                $_SESSION['alertMsg'] = _translate("Please check your sample ID");
+                $_SESSION['alertMsg'] = _translate("Please check your sample Code");
                 header("Location:add-request.php");
             }
         }
@@ -368,7 +368,7 @@ try {
         //Add event log
 
         $eventType = 'add-test-request';
-        $action = $_SESSION['userName'] . ' added a new request data with the sample code ' . $_POST['sampleCode'];
+        $action = $_SESSION['userName'] . ' added a new request data with the sample id ' . $_POST['sampleCode'];
         $resource = 'lab-test-request';
 
         $general->activityLog($eventType, $action, $resource);

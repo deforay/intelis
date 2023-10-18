@@ -348,7 +348,7 @@ try {
     if ($id === true) {
         $_SESSION['alertMsg'] = _translate("VL request added successfully");
         $eventType = 'add-vl-request-sudan';
-        $action = $_SESSION['userName'] . ' added a new request with the sample code ' . $_POST['sampleCode'];
+        $action = $_SESSION['userName'] . ' added a new request with the sample id ' . $_POST['sampleCode'];
         $resource = 'vl-request';
 
         $general->activityLog($eventType, $action, $resource);

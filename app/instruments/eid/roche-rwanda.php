@@ -103,7 +103,7 @@ try {
 
             $sampleCode = $rowData[$sampleIdCol];
 
-            if ($sampleCode == "SAMPLE ID" || $sampleCode == "") {
+            if ($sampleCode == "SAMPLE CODE" || $sampleCode == "") {
                 continue;
             }
 
@@ -260,7 +260,7 @@ try {
     $_SESSION['alertMsg'] = "Results imported successfully";
     //Add event log
     $eventType = 'import';
-    $action = $_SESSION['userName'] . ' imported a new test result with the sample code ' . $sampleCode;
+    $action = $_SESSION['userName'] . ' imported a new test result with the sample id ' . $sampleCode;
     $resource = 'import-results-manually';
     $general->activityLog($eventType, $action, $resource);
 

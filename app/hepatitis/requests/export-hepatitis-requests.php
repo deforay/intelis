@@ -29,11 +29,11 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 
     $output = [];
     if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-        $headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner");
+        $headings = array("S. No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner");
     } else {
-        $headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner");
+        $headings = array("S. No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Sample Received On", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner");
     }
-    if ($_SESSION['instanceType'] == 'standalone' && ($key = array_search('Remote Sample Code', $headings)) !== false) {
+    if ($_SESSION['instanceType'] == 'standalone' && ($key = array_search('Remote Sample ID', $headings)) !== false) {
         unset($headings[$key]);
     }
 
@@ -101,7 +101,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
                 $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
                 $patientFname = $general->crypto('decrypt', $patientFname, $key);
                 $patientLname = $general->crypto('decrypt', $patientLname, $key);
-           }
+            }
             $row[] = $aRow['patient_id'];
             $row[] = $patientFname . " " . $patientLname;
         }

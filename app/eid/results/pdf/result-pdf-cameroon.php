@@ -261,7 +261,7 @@ if (!empty($requestResult)) {
             $patientFname = $general->crypto('decrypt', $patientFname, $key);
             $result['mother_id'] = $general->crypto('decrypt', $result['mother_id'], $key);
             //$aRow['mother_name'] = $general->crypto('decrypt', $aRow['mother_name'], $key);
-       }
+        }
 
         $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['labName']) . '</td>';
         $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $patientFname . '</td>';
@@ -327,7 +327,7 @@ if (!empty($requestResult)) {
         $html .= '<td colspan="3" style="line-height:5px;"></td>';
         $html .= '</tr>';
         $html .= '<tr>';
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE ID</td>';
+        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE CODE</td>';
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE COLLECTION DATE</td>';
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE RECEIPT DATE</td>';
         $html .= '</tr>';

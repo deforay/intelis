@@ -283,14 +283,14 @@ if (!empty($requestResult)) {
 
           $patientFname = ($general->crypto('doNothing', $result['patient_first_name'], $result['patient_art_no']));
 
-          
-if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
-     $key = base64_decode($general->getGlobalConfig('key'));
-     $result['patient_art_no'] = $general->crypto('decrypt', $result['patient_art_no'], $key);
-     if ($patientFname != '') {
-          $patientFname = $general->crypto('decrypt', $patientFname, $key);
-     }
-} 
+
+          if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
+               $key = base64_decode($general->getGlobalConfig('key'));
+               $result['patient_art_no'] = $general->crypto('decrypt', $result['patient_art_no'], $key);
+               if ($patientFname != '') {
+                    $patientFname = $general->crypto('decrypt', $patientFname, $key);
+               }
+          }
 
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $patientFname . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['patient_art_no'] . '</td>';
@@ -344,7 +344,7 @@ if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
           $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE ID</td>';
+          $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE CODE</td>';
           $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE COLLECTION DATE</td>';
           $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE RECEIPT DATE</td>';
           $html .= '</tr>';

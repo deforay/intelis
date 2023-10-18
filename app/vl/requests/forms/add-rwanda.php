@@ -100,7 +100,7 @@ $sFormat = '';
                                                             <input type="hidden" class="<?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" />
                                                        <?php } else { ?>
                                                             <label for="sampleCode">Sample ID <span class="mandatory">*</span></label>
-                                                            <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" readonly="readonly" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" style="width:100%;" onblur="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'This sample code already exists. Try another',null)" />
+                                                            <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" readonly="readonly" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" style="width:100%;" onblur="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'This sample id already exists. Try another',null)" />
                                                        <?php } ?>
                                                   </div>
                                              </div>
@@ -182,16 +182,16 @@ $sFormat = '';
                                    </div>
                                    <div class="box-body">
                                         <div class="row">
-                                        <div class="col-md-12 encryptPIIContainer">
-                                             <label class="col-lg-5 control-label" for="encryptPII"><?= _translate('Patient is from Defence Forces (Patient Name and Patient ID will not be synced between LIS and STS)'); ?> <span class="mandatory">*</span></label>
-                                             <div class="col-lg-5">
-                                                  <select name="encryptPII" id="encryptPII" class="form-control" title="<?= _translate('Encrypt Patient Identifying Information'); ?>">
-                                                       <option value=""><?= _translate('--Select--'); ?></option>
-                                                       <option value="no" selected='selected'><?= _translate('No'); ?></option>
-                                                       <option value="yes"><?= _translate('Yes'); ?></option>
-                                                  </select>
+                                             <div class="col-md-12 encryptPIIContainer">
+                                                  <label class="col-lg-5 control-label" for="encryptPII"><?= _translate('Patient is from Defence Forces (Patient Name and Patient ID will not be synced between LIS and STS)'); ?> <span class="mandatory">*</span></label>
+                                                  <div class="col-lg-5">
+                                                       <select name="encryptPII" id="encryptPII" class="form-control" title="<?= _translate('Encrypt Patient Identifying Information'); ?>">
+                                                            <option value=""><?= _translate('--Select--'); ?></option>
+                                                            <option value="no" selected='selected'><?= _translate('No'); ?></option>
+                                                            <option value="yes"><?= _translate('Yes'); ?></option>
+                                                       </select>
+                                                  </div>
                                              </div>
-                                        </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="artNo">ART (TRACNET) No. <span class="mandatory">*</span></label>
@@ -780,8 +780,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                placeholder: "Select Approved By"
           });
           $('#artRegimen').select2({
-			placeholder: "Select ART Regimen"
-		});
+               placeholder: "Select ART Regimen"
+          });
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
@@ -885,7 +885,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           if (pName != '' && sDate != '') {
                $.post("/vl/requests/generateSampleCode.php", {
                          sampleCollectionDate: sDate,
-                         provinceCode : provinceCode
+                         provinceCode: provinceCode
                     },
                     function(data) {
                          var sCodeKey = JSON.parse(data);
@@ -1126,7 +1126,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           var ARTlength = $("#artNo").val();
           var minLength = '<?php echo $arr['min_length']; ?>';
           if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
-               alert("Sample id length must be a minimum length of " + minLength + " characters");
+               alert("Sample ID length must be a minimum length of " + minLength + " characters");
                return false;
           }
           if (ARTlength.length < 10) {
@@ -1165,7 +1165,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           var ARTlength = $("#artNo").val();
           var minLength = '<?php echo $arr['min_length']; ?>';
           if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
-               alert("Sample id length must be a minimum length of " + minLength + " characters");
+               alert("Sample ID length must be a minimum length of " + minLength + " characters");
                return false;
           }
           if (ARTlength.length < 10) {

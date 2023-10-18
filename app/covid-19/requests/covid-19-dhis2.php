@@ -70,7 +70,7 @@ $batResult = $db->rawQuery($batQuery);
 							<thead>
 								<tr>
 									<!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
-									<th>Sample Code</th>
+									<th>Sample ID</th>
 									<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 										<th>Remote Sample <br />Code</th>
 									<?php } ?>

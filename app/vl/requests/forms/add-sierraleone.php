@@ -1526,7 +1526,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 
           if ((format == 'alphanumeric' || format == 'numeric') && sCodeLength.length < minLength && sCodeLength != '') {
-               alert("Sample id length must be a minimum length of " + minLength + " characters");
+               alert("Sample ID length must be a minimum length of " + minLength + " characters");
                return false;
           }
 
@@ -1558,7 +1558,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $("#provinceId").val(provinceId);
 
           if ((format == 'alphanumeric' || format == 'numeric') && sCodeLength.length < minLength && sCodeLength != '') {
-               alert("Sample id length must be a minimum length of " + minLength + " characters");
+               alert("Sample ID length must be a minimum length of " + minLength + " characters");
                return false;
           }
           flag = deforayValidator.init({

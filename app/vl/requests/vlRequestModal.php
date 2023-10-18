@@ -101,7 +101,7 @@ $batResult = $db->rawQuery($batQuery);
               <thead>
                 <tr>
                   <th>Select</th>
-                  <th>Sample Code</th>
+                  <th>Sample ID</th>
                   <th>Sample Collection Date</th>
                   <th>Batch Code</th>
                   <th>Unique ART No</th>

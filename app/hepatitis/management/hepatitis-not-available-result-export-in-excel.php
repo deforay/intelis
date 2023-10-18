@@ -25,9 +25,9 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
     $excel = new Spreadsheet();
     $output = [];
     $sheet = $excel->getActiveSheet();
-    $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient Id.", "Patient's Name", "Sample Collection Date", "Lab Name", "Sample Status");
+    $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient Id.", "Patient's Name", "Sample Collection Date", "Lab Name", "Sample Status");
     if ($_SESSION['instanceType'] == 'standalone') {
-        if (($key = array_search("Remote Sample Code", $headings)) !== false) {
+        if (($key = array_search("Remote Sample ID", $headings)) !== false) {
             unset($headings[$key]);
         }
     }
@@ -97,7 +97,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
             $key = base64_decode($general->getGlobalConfig('key'));
             $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
             $aRow['patient_name'] = $general->crypto('decrypt', $aRow['patient_name'], $key);
-       }
+        }
         $row[] = $aRow['facility_name'];
         $row[] = $aRow['patient_id'];
         $row[] = ($aRow['patient_name']);

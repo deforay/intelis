@@ -210,44 +210,44 @@ if (isset($arr['rs_field']) && trim($arr['rs_field']) != '') {
 						<div class="row">
 							<div class="col-md-9">
 								<div class="form-group">
-								<label for="rs_field" class="col-lg-3 control-label"><?php echo _translate("Choose Fields"); ?> *</label>
-								<div class="col-lg-9">
-									<div style="width:100%;margin:0 auto;clear:both;">
-									<a href="#" id="select-all-field" style="float:left" class="btn btn-info btn-xs"><?php echo _translate("Select All"); ?>&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href="#" id="deselect-all-field" style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;<?php echo _translate("Deselect All"); ?></a>
-									</div><br /><br />
-									<select id="rs_field" name="rs_field[]" multiple="multiple" class="search isRequired" title="Please select email fields">
-										<option value="Sample ID" <?php echo (in_array("Sample ID", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Sample ID"); ?></option>
-										<option value="Urgency" <?php echo (in_array("Urgency", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Urgency"); ?></option>
-										<option value="Province" <?php echo (in_array("Province", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Province/State"); ?></option>
-										<option value="District Name" <?php echo (in_array("District Name", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("District/County"); ?></option>
-										<option value="Clinic Name" <?php echo (in_array("Clinic Name", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Clinic Name"); ?></option>
-										<option value="Clinician Name" <?php echo (in_array("Clinician Name", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Clinician Name"); ?></option>
-										<option value="Sample Collection Date" <?php echo (in_array("Sample Collection Date", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Sample Collection Date"); ?></option>
-										<option value="Sample Received Date" <?php echo (in_array("Sample Received Date", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Sample Received Date"); ?></option>
-										<option value="Collected by (Initials)" <?php echo (in_array("Collected by (Initials)", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Collected by (Initials)"); ?></option>
-										<option value="Gender" <?php echo (in_array("Gender", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Gender"); ?></option>
-										<option value="Date Of Birth" <?php echo (in_array("Date Of Birth", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Date Of Birth"); ?></option>
-										<option value="Age in years" <?php echo (in_array("Age in years", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Age in years"); ?></option>
-										<option value="Age in months" <?php echo (in_array("Age in months", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Age in months"); ?></option>
-										<option value="Is Patient Pregnant?" <?php echo (in_array("Is Patient Pregnant?", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Is Patient Pregnant"); ?>?</option>
-										<option value="Is Patient Breastfeeding?" <?php echo (in_array("Is Patient Breastfeeding?", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Is Patient Breastfeeding"); ?>?</option>
-										<option value="Patient ID/ART/TRACNET" <?php echo (in_array("Patient ID/ART/TRACNET", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Patient ID/ART/TRACNET"); ?></option>
-										<option value="Patient consent to SMS Notification?" <?php echo (in_array("Patient consent to SMS Notification?", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Patient consent to SMS Notification"); ?>?</option>
-										<option value="Patient Mobile Number" <?php echo (in_array("Patient Mobile Number", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Patient Mobile Number"); ?></option>
-										<option value="Reason For Generic Test" <?php echo (in_array("Reason For VL Test", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Reason For VL Test"); ?></option>
-										<option value="Lab Name" <?php echo (in_array("Lab Name", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Lab Name"); ?></option>
-										<option value="Lab ID" <?php echo (in_array("Lab ID", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Lab ID"); ?></option>
-										<option value="VL Testing Platform" <?php echo (in_array("VL Testing Platform", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("VL Testing Platform"); ?></option>
-										<option value="Specimen type" <?php echo (in_array("Specimen type", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Specimen type"); ?></option>
-										<option value="Sample Testing Date" <?php echo (in_array("Sample Testing Date", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Sample Testing Date"); ?></option>
-										<option value="Is Sample Rejected" <?php echo (in_array("Is Sample Rejected", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Is Sample Rejected"); ?></option>
-										<option value="Rejection Reason" <?php echo (in_array("Rejection Reason", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Rejection Reason"); ?></option>
-										<option value="Reviewed By" <?php echo (in_array("Reviewed By", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Reviewed By"); ?></option>
-										<option value="Approved By" <?php echo (in_array("Approved By", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Approved By"); ?></option>
-										<option value="Lab Tech. Comments" <?php echo (in_array("Lab Tech. Comments", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Lab Tech. Comments"); ?></option>
-										<option value="Status" <?php echo (in_array("Status", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Status"); ?></option>
-									</select>
-								</div>
+									<label for="rs_field" class="col-lg-3 control-label"><?php echo _translate("Choose Fields"); ?> *</label>
+									<div class="col-lg-9">
+										<div style="width:100%;margin:0 auto;clear:both;">
+											<a href="#" id="select-all-field" style="float:left" class="btn btn-info btn-xs"><?php echo _translate("Select All"); ?>&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href="#" id="deselect-all-field" style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;<?php echo _translate("Deselect All"); ?></a>
+										</div><br /><br />
+										<select id="rs_field" name="rs_field[]" multiple="multiple" class="search isRequired" title="Please select email fields">
+											<option value="Sample ID" <?php echo (in_array("Sample ID", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Sample ID"); ?></option>
+											<option value="Urgency" <?php echo (in_array("Urgency", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Urgency"); ?></option>
+											<option value="Province" <?php echo (in_array("Province", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Province/State"); ?></option>
+											<option value="District Name" <?php echo (in_array("District Name", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("District/County"); ?></option>
+											<option value="Clinic Name" <?php echo (in_array("Clinic Name", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Clinic Name"); ?></option>
+											<option value="Clinician Name" <?php echo (in_array("Clinician Name", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Clinician Name"); ?></option>
+											<option value="Sample Collection Date" <?php echo (in_array("Sample Collection Date", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Sample Collection Date"); ?></option>
+											<option value="Sample Received Date" <?php echo (in_array("Sample Received Date", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Sample Received Date"); ?></option>
+											<option value="Collected by (Initials)" <?php echo (in_array("Collected by (Initials)", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Collected by (Initials)"); ?></option>
+											<option value="Gender" <?php echo (in_array("Gender", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Gender"); ?></option>
+											<option value="Date Of Birth" <?php echo (in_array("Date Of Birth", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Date Of Birth"); ?></option>
+											<option value="Age in years" <?php echo (in_array("Age in years", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Age in years"); ?></option>
+											<option value="Age in months" <?php echo (in_array("Age in months", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Age in months"); ?></option>
+											<option value="Is Patient Pregnant?" <?php echo (in_array("Is Patient Pregnant?", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Is Patient Pregnant"); ?>?</option>
+											<option value="Is Patient Breastfeeding?" <?php echo (in_array("Is Patient Breastfeeding?", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Is Patient Breastfeeding"); ?>?</option>
+											<option value="Patient ID/ART/TRACNET" <?php echo (in_array("Patient ID/ART/TRACNET", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Patient ID/ART/TRACNET"); ?></option>
+											<option value="Patient consent to SMS Notification?" <?php echo (in_array("Patient consent to SMS Notification?", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Patient consent to SMS Notification"); ?>?</option>
+											<option value="Patient Mobile Number" <?php echo (in_array("Patient Mobile Number", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Patient Mobile Number"); ?></option>
+											<option value="Reason For Generic Test" <?php echo (in_array("Reason For VL Test", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Reason For VL Test"); ?></option>
+											<option value="Lab Name" <?php echo (in_array("Lab Name", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Lab Name"); ?></option>
+											<option value="Lab ID" <?php echo (in_array("Lab ID", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Lab ID"); ?></option>
+											<option value="VL Testing Platform" <?php echo (in_array("VL Testing Platform", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("VL Testing Platform"); ?></option>
+											<option value="Specimen type" <?php echo (in_array("Specimen type", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Specimen type"); ?></option>
+											<option value="Sample Testing Date" <?php echo (in_array("Sample Testing Date", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Sample Testing Date"); ?></option>
+											<option value="Is Sample Rejected" <?php echo (in_array("Is Sample Rejected", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Is Sample Rejected"); ?></option>
+											<option value="Rejection Reason" <?php echo (in_array("Rejection Reason", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Rejection Reason"); ?></option>
+											<option value="Reviewed By" <?php echo (in_array("Reviewed By", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Reviewed By"); ?></option>
+											<option value="Approved By" <?php echo (in_array("Approved By", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Approved By"); ?></option>
+											<option value="Lab Tech. Comments" <?php echo (in_array("Lab Tech. Comments", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Lab Tech. Comments"); ?></option>
+											<option value="Status" <?php echo (in_array("Status", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Status"); ?></option>
+										</select>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -347,8 +347,8 @@ if (isset($arr['rs_field']) && trim($arr['rs_field']) != '') {
 		$('#sampleCollectionDate').val("");
 
 		$('.search').multiSelect({
-			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
-			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample Code'>",
+			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample ID'>",
+			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample ID'>",
 			afterInit: function(ms) {
 				var that = this,
 					$selectableSearch = that.$selectableUl.prev(),
@@ -395,7 +395,7 @@ if (isset($arr['rs_field']) && trim($arr['rs_field']) != '') {
 				this.qs1.cache();
 				this.qs2.cache();
 			}
-			
+
 		});
 
 		$('#select-all-sample').click(function() {

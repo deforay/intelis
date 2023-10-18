@@ -93,7 +93,7 @@ try {
             $txtVal = "";
             $resultFlag = "";
 
-            $sampleCode = $record['SAMPLE ID'];
+            $sampleCode = $record['SAMPLE CODE'];
             $sampleType = $record['SAMPLE TYPE'];
 
             //$batchCode = $record[$batchCodeCol];
@@ -224,7 +224,7 @@ try {
     $_SESSION['alertMsg'] = "Results imported successfully";
     //Add event log
     $eventType = 'import';
-    $action = $_SESSION['userName'] . ' imported a new test result with the sample code ' . $sampleCode;
+    $action = $_SESSION['userName'] . ' imported a new test result with the sample id ' . $sampleCode;
     $resource = 'import-results-manually';
     $general->activityLog($eventType, $action, $resource);
 

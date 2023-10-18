@@ -33,8 +33,8 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 
 	$output = [];
 
-	$headings = array("S. No.", "Sample Code", "Remote Sample Code", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Symptoms Presented in last 14 days", "Co-morbidities", "Is Sample Rejected?", "Rejection Reason", "Recommended Corrective Action","Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
-	if ($_SESSION['instanceType'] == 'standalone' && ($key = array_search("Remote Sample Code", $headings)) !== false) {
+	$headings = array("S. No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Symptoms Presented in last 14 days", "Co-morbidities", "Is Sample Rejected?", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
+	if ($_SESSION['instanceType'] == 'standalone' && ($key = array_search("Remote Sample ID", $headings)) !== false) {
 		unset($headings[$key]);
 	}
 
@@ -95,11 +95,11 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		}
 
 		if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-            $key = base64_decode($general->getGlobalConfig('key'));
-            $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
-            $patientFname = $general->crypto('decrypt', $patientFname, $key);
-            $patientLname = $general->crypto('decrypt', $patientLname, $key);
-        }
+			$key = base64_decode($general->getGlobalConfig('key'));
+			$aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
+			$patientFname = $general->crypto('decrypt', $patientFname, $key);
+			$patientLname = $general->crypto('decrypt', $patientLname, $key);
+		}
 
 		$row[] = $no;
 		if ($_SESSION['instanceType'] == 'standalone') {

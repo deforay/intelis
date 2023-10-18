@@ -33,7 +33,7 @@ if (isset($_SESSION['covid19TATQuery']) && trim($_SESSION['covid19TATQuery']) !=
   $output = [];
   $sheet = $excel->getActiveSheet();
 
-  $headings = array("Covid-19 Sample Id", "Sample Collection Date", "Sample Received Date in Lab", "Sample Test Date", "Sample Print Date", "Sample Email Date","First Printed Date From Remote User","First Printed Date From Vl User");
+  $headings = array("Covid-19 Sample ID", "Sample Collection Date", "Sample Received Date in Lab", "Sample Test Date", "Sample Print Date", "Sample Email Date", "First Printed Date From Remote User", "First Printed Date From Vl User");
 
   $colNo = 1;
 
@@ -111,7 +111,7 @@ if (isset($_SESSION['covid19TATQuery']) && trim($_SESSION['covid19TATQuery']) !=
     } else {
       $printDateLis = '';
     }
-  
+
 
     $row[] = $aRow['sample_code'];
     $row[] = $sampleCollectionDate;
