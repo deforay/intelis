@@ -303,7 +303,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
             $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code']]);
             if (!empty($existingSampleResult)) {
 
-                $removeMoreKeys = array(
+                $removeMoreKeys = [
                     'sample_code',
                     'sample_code_key',
                     'sample_code_format',
@@ -342,7 +342,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
                     'data_sync',
                     'result_printed_datetime',
                     'vl_result_category'
-                );
+                ];
 
                 $request = array_diff_key($request, array_flip($removeMoreKeys));
 
@@ -412,7 +412,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
         $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db']]);
         $columnList = array_map('current', $allColResult);
 
-        $removeKeys = array(
+        $removeKeys = [
             'eid_id',
             'sample_batch_id',
             'result',
@@ -424,7 +424,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
             'result_approved_by',
             'result_approved_datetime',
             'data_sync'
-        );
+        ];
 
         $columnList = array_diff($columnList, $removeKeys);
         $counter = 0;
@@ -448,7 +448,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
             $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code']]);
             if ($existingSampleResult) {
 
-                $removeMoreKeys = array(
+                $removeMoreKeys = [
                     'sample_code',
                     'sample_code_key',
                     'sample_code_format',
@@ -477,7 +477,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
                     'last_modified_by',
                     'result_printed_datetime',
                     'last_modified_datetime'
-                );
+                ];
 
                 $request = array_diff_key($request, array_flip($removeMoreKeys));
 
@@ -533,7 +533,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
     $jsonResponse = $apiService->post($url, $payload);
 
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
-        $removeKeys = array(
+        $removeKeys = [
             'covid19_id',
             'sample_batch_id',
             'result',
@@ -548,7 +548,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
             //'last_modified_by',
             //'request_created_datetime',
             'data_sync'
-        );
+        ];
 
 
         $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
@@ -586,7 +586,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
             $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code']]);
             if ($existingSampleResult) {
 
-                $removeMoreKeys = array(
+                $removeMoreKeys = [
                     'sample_code',
                     'sample_code_key',
                     'sample_code_format',
@@ -619,7 +619,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                     'result_printed_datetime',
                     'result_dispatched_datetime',
                     'last_modified_datetime'
-                );
+                ];
 
                 $request = array_diff_key($request, array_flip($removeMoreKeys));
 
@@ -728,7 +728,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
     $jsonResponse = $apiService->post($url, $payload);
 
     if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
-        $removeKeys = array(
+        $removeKeys = [
             'hepatitis_id',
             'sample_batch_id',
             'result',
@@ -747,7 +747,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
             //'last_modified_by',
             //'request_created_datetime',
             'data_sync'
-        );
+        ];
 
 
 

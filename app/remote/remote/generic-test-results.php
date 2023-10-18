@@ -29,6 +29,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 //$app = \App\Registries\ContainerRegistry::get(ApiService::class);
 
 try {
+    $db->startTransaction();
     //this file receives the lab results and updates in the remote db
     $jsonResponse = file_get_contents('php://input');
 
@@ -179,11 +180,14 @@ try {
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'generic-tests', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
 
     $general->updateResultSyncDateTime('generic', 'form_generic', $sampleCodes, $transactionId, $facilityIds, $labId);
-
-    echo $payload;
+    $db->commit();
 } catch (Exception $e) {
+    $db->rollback();
+
     error_log($db->getLastError());
     error_log($e->getMessage());
     error_log($e->getTraceAsString());
     throw new SystemException($e->getMessage(), $e->getCode(), $e);
 }
+
+echo $payload;
