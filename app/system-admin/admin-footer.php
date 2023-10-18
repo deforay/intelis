@@ -55,6 +55,10 @@
     $(".manage").addClass('active');
     $(".allMenu").removeClass('active');
     $(".userLoginMenu").addClass('active');
+  } else if (splitsUrl == 'log-files.php') {
+    $(".manage").addClass('active');
+    $(".allMenu").removeClass('active');
+    $(".logFileMenu").addClass('active');
   } else {
     $(".allMenu").removeClass('active');
     $(".dashboardMenu").addClass('active');
