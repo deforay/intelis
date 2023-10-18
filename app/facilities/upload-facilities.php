@@ -107,6 +107,20 @@ if (isset($_GET['total'])) {
 
 								<div class="form-group">
 									<label for="facilityName" class="col-lg-2 control-label">
+										<?= _translate("Upload Options"); ?> <span class="mandatory">*</span>
+									</label>
+									<div class="col-lg-5">
+										<select name="uploadOption" id="uploadOption" class="form-control">
+											<option value="default" <?php echo ($_GET['option']=='default') ? 'selected="selected"' : ''; ?>><?= _translate("Don't update duplicates (default)"); ?></option>
+											<option value="facility_name_match" <?php echo ($_GET['option']=='facility_name_match') ? 'selected="selected"' : ''; ?>><?= _translate("Update if Facility Name matches"); ?></option>
+											<option value="facility_code_match" <?php echo ($_GET['option']=='facility_code_match') ? 'selected="selected"' : ''; ?>><?= _translate("Update if Facility Code matches"); ?></option>
+											<option value="facility_name_code_match" <?php echo ($_GET['option']=='facility_name_code_match') ? 'selected="selected"' : ''; ?>><?= _translate("Update if Facility Name and Facility Code match"); ?></option>
+										</select>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label for="facilityName" class="col-lg-2 control-label">
 										<?= _translate("Upload File"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-8">
