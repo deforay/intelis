@@ -172,7 +172,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                     <h3 class="box-title">PATIENT INFORMATION</h3>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                   
+
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="firstName">First Name <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">

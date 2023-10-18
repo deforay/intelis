@@ -32,7 +32,7 @@ $calcQuery = $_SESSION['samplewiseReportsCalc'];
 $calcResult = $db->rawQuery($calcQuery);
 
 $totalCalculationHeadings = array('No. of Samples Requested', 'No. of Samples Acknowledged', 'No. of Samples Received at Testing Lab', 'No. of Samples Tested', 'No. of Results Returned');
-$headings = array('Name of the Clinic', 'External ID', "Electronic Test request Date and Time", "STS Sample Code", "Request Acknowledged Date Time", "Samples Received At Lab", "Date Time of Sample added to Batch", "Test Result", "Result Received/Entered Date and Time", "Result Approved Date and Time", "Result Return Date and Time", "Last Modified On");
+$headings = array('Name of the Clinic', 'External ID', "Electronic Test request Date and Time", "STS Sample ID", "Request Acknowledged Date Time", "Samples Received At Lab", "Date Time of Sample added to Batch", "Test Result", "Result Received/Entered Date and Time", "Result Approved Date and Time", "Result Return Date and Time", "Last Modified On");
 
 $outputCalc = [];
 $output = [];

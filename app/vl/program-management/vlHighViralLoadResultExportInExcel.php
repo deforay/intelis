@@ -26,9 +26,9 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
      $excel = new Spreadsheet();
      $output = [];
      $sheet = $excel->getActiveSheet();
-     $headings = array('Sample Code', 'Remote Sample Code', "Facility Name", "Patient ART no.", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
+     $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART no.", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
      if ($sarr['sc_user_type'] == 'standalone') {
-          $headings = array('Sample Code', "Facility Name", "Patient ART no.", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
+          $headings = array('Sample ID', "Facility Name", "Patient ART no.", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
      }
      if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
           if (($key = array_search("Patient's Name", $headings)) !== false) {
@@ -139,13 +139,13 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
           if ($sarr['sc_user_type'] != 'standalone') {
                $row[] = $aRow['remote_sample_code'];
           }
-          if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes'){
+          if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
                $key = base64_decode($general->getGlobalConfig('key'));
-               $aRow['patient_art_no'] = $general->crypto('decrypt' ,$aRow['patient_art_no'], $key);
-               $patientFname = $general->crypto('decrypt' ,$patientFname, $key);
-               $patientMname = $general->crypto('decrypt' ,$patientMname, $key);
-               $patientLname = $general->crypto('decrypt' ,$patientLname, $key);
-            }
+               $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
+               $patientFname = $general->crypto('decrypt', $patientFname, $key);
+               $patientMname = $general->crypto('decrypt', $patientMname, $key);
+               $patientLname = $general->crypto('decrypt', $patientLname, $key);
+          }
           $row[] = ($aRow['facility_name']);
           $row[] = $aRow['patient_art_no'];
           if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {

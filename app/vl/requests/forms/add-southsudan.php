@@ -85,7 +85,7 @@ $sFormat = '';
                                              <div class="col-xs-4 col-md-4">
                                                   <div class="form-group">
                                                        <label for="sampleCode">Sample ID <span class="mandatory">*</span></label>
-                                                       <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" style="width:100%;" readonly onblur="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'This sample number already exists.Try another number',null)" />
+                                                       <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter Sample ID" style="width:100%;" readonly onblur="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'This sample number already exists.Try another number',null)" />
                                                   </div>
                                              </div>
                                              <div class="col-xs-4 col-md-4">
@@ -1333,7 +1333,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           var sCodeLentgh = $("#sampleCode").val();
           var minLength = '<?php echo $arr['min_length']; ?>';
           if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
-               alert("Sample id length must be a minimum length of " + minLength + " characters");
+               alert("Sample ID length must be a minimum length of " + minLength + " characters");
                return false;
           }
 
@@ -1361,7 +1361,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           var sCodeLentgh = $("#sampleCode").val();
           var minLength = '<?php echo $arr['min_length']; ?>';
           if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
-               alert("Sample id length must be a minimum length of " + minLength + " characters");
+               alert("Sample ID length must be a minimum length of " + minLength + " characters");
                return false;
           }
           flag = deforayValidator.init({

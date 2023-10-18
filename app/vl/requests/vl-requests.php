@@ -207,12 +207,11 @@ foreach ($srcResults as $list) {
 								<select name="status" id="status" class="form-control" title="<?php echo _translate('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
 									<option value="" selected=selected><?php echo _translate("All Status"); ?></option>
 									<?php
-										foreach($sampleStatusData as $sample)
-										{
-											?>
-											<option value="<?= $sample['status_id']; ?>"><?= $sample['status_name'] ?></option>
-											<?php
-										}
+									foreach ($sampleStatusData as $sample) {
+									?>
+										<option value="<?= $sample['status_id']; ?>"><?= $sample['status_name'] ?></option>
+									<?php
+									}
 									?>
 								</select>
 							</td>
@@ -221,7 +220,7 @@ foreach ($srcResults as $list) {
 								</strong></td>
 							<td>
 								<select name="showReordSample" id="showReordSample" class="form-control" title="Please choose record sample">
-									<option value=""><?=  _translate('-- Select --'); ?></option>
+									<option value=""><?= _translate('-- Select --'); ?></option>
 									<option value="yes">
 										<?php echo _translate("Yes"); ?>
 									</option>
@@ -550,14 +549,14 @@ foreach ($srcResults as $list) {
 							<div class="col-md-12">
 								<div class="col-md-3">
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol0">
-										<?php echo _translate("Sample Code"); ?>
+										<?php echo _translate("Sample ID"); ?>
 									</label>
 								</div>
 								<?php $i = 0;
 								if ($_SESSION['instanceType'] != 'standalone') {
 									$i = 1; ?>
 									<div class="col-md-3">
-										<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Remote Sample Code"); ?></label>
+										<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
 									</div>
 								<?php } ?>
 								<div class="col-md-3">
@@ -604,11 +603,11 @@ foreach ($srcResults as $list) {
 								<tr>
 									<!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
 									<th>
-										<?php echo _translate("Sample Code"); ?>
+										<?php echo _translate("Sample ID"); ?>
 									</th>
 									<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 										<th>
-											<?php echo _translate("Remote Sample Code"); ?>
+											<?php echo _translate("Remote Sample ID"); ?>
 										</th>
 									<?php } ?>
 									<th>

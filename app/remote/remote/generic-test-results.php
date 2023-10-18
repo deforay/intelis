@@ -113,7 +113,7 @@ try {
 
 
             try {
-                // Checking if Remote Sample Code is set, if not set we will check if Sample Code is set
+                // Checking if Remote Sample ID is set, if not set we will check if Sample ID is set
                 if (isset($lab['remote_sample_code']) && $lab['remote_sample_code'] != '') {
                     //error_log("INSIDE REMOTE");
                     $sQuery = "SELECT sample_id,sample_code,remote_sample_code,remote_sample_code_key

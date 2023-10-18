@@ -63,7 +63,7 @@ abstract class AbstractTestService
             $mnthYr = $month . $year;
         } elseif ($sampleCodeFormat == 'YY') {
             $mnthYr = $year;
-        }else{
+        } else {
             $mnthYr = $month . $year;
         }
 
@@ -135,7 +135,7 @@ abstract class AbstractTestService
                         WHERE $sampleCodeCol= ?";
         $checkResult = $this->db->rawQueryOne($checkQuery, [$sampleCodeGenerator['sampleCode']]);
         if (!empty($checkResult)) {
-            error_log("DUP::: Sample Code ====== " . $sampleCodeGenerator['sampleCode']);
+            error_log("DUP::: Sample ID ====== " . $sampleCodeGenerator['sampleCode']);
             error_log("DUP::: Sample Key Code ====== " . $maxId);
             $params['maxCodeKeyVal'] = $maxId;
             return $this->generateSampleCode($testTable, $params);

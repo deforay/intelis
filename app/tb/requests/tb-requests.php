@@ -308,9 +308,9 @@ foreach ($srcResults as $list) {
                             <thead>
                                 <tr>
                                     <!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
-                                    <th><?php echo _translate("Sample Code"); ?></th>
+                                    <th><?php echo _translate("Sample ID"); ?></th>
                                     <?php if ($_SESSION['instanceType'] != 'standalone') { ?>
-                                        <th><?php echo _translate("Remote Sample Code"); ?></th>
+                                        <th><?php echo _translate("Remote Sample ID"); ?></th>
                                     <?php } ?>
                                     <th><?php echo _translate("Sample Collection Date"); ?></th>
                                     <th><?php echo _translate("Batch Code"); ?></th>

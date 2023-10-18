@@ -113,7 +113,7 @@ $resultColumn = getColumns($db, $tableName);
 										<?php } ?>
 									</select>
 								</td>
-								<td>&nbsp;<strong><?php echo _translate("Sample Code"); ?>&nbsp;:</strong></td>
+								<td>&nbsp;<strong><?php echo _translate("Sample ID"); ?>&nbsp;:</strong></td>
 								<td>
 									<input type="text" value="<?= htmlspecialchars($_POST['sampleCode']); ?>" name="sampleCode" id="sampleCode" class="form-control" />
 								</td>
@@ -235,7 +235,7 @@ $resultColumn = getColumns($db, $tableName);
 
 								</table>
 							<?php } else {
-								echo '<h3 align="center">Records are not available for this sample code. Please enter  valid sample code</h3>';
+								echo '<h3 align="center">Records are not available for this sample id. Please enter  valid sample id</h3>';
 							}
 							?>
 						</div>

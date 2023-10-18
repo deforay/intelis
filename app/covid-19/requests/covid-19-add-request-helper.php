@@ -349,16 +349,16 @@ try {
 	}
 
 	if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
-        $key = base64_decode($general->getGlobalConfig('key'));
-        $encryptedPatientId = $general->crypto('encrypt', $covid19Data['patient_id'], $key);
-        $encryptedPatientName = $general->crypto('encrypt', $covid19Data['patient_name'], $key);
-        $encryptedPatientSurName = $general->crypto('encrypt', $covid19Data['patient_surname'], $key);
+		$key = base64_decode($general->getGlobalConfig('key'));
+		$encryptedPatientId = $general->crypto('encrypt', $covid19Data['patient_id'], $key);
+		$encryptedPatientName = $general->crypto('encrypt', $covid19Data['patient_name'], $key);
+		$encryptedPatientSurName = $general->crypto('encrypt', $covid19Data['patient_surname'], $key);
 
-        $covid19Data['patient_id'] = $encryptedPatientId;
-        $covid19Data['patient_name'] = $encryptedPatientName;
-        $covid19Data['patient_surname'] = $encryptedPatientSurName;
-        $covid19Data['is_encrypted'] = 'yes';
-    }
+		$covid19Data['patient_id'] = $encryptedPatientId;
+		$covid19Data['patient_name'] = $encryptedPatientName;
+		$covid19Data['patient_surname'] = $encryptedPatientSurName;
+		$covid19Data['is_encrypted'] = 'yes';
+	}
 
 	$id = 0;
 
@@ -371,7 +371,7 @@ try {
 		$_SESSION['alertMsg'] = _translate("Covid-19 test request added successfully");
 		//Add event log
 		$eventType = 'covid-19-add-request';
-		$action = $_SESSION['userName'] . ' added a new Covid-19 request with the Sample Code/ID ' . $_POST['sampleCode'] . ' (' . $_POST['covid19SampleId'] . ')';
+		$action = $_SESSION['userName'] . ' added a new Covid-19 request with the Sample ID/ID ' . $_POST['sampleCode'] . ' (' . $_POST['covid19SampleId'] . ')';
 		$resource = 'covid-19-add-request';
 
 		$general->activityLog($eventType, $action, $resource);

@@ -37,7 +37,7 @@ $excel = new Spreadsheet();
 $output = [];
 $sheet = $excel->getActiveSheet();
 
-$headings = array("EID Sample Id", "Sample Collection Date", "Sample Received Date in Lab", "Sample Test Date", "Sample Print Date", "Sample Email Date","First Printed Date From Remote User","First Printed Date From Vl User");
+$headings = array("EID Sample ID", "Sample Collection Date", "Sample Received Date in Lab", "Sample Test Date", "Sample Print Date", "Sample Email Date", "First Printed Date From Remote User", "First Printed Date From Vl User");
 
 $colNo = 1;
 

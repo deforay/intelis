@@ -105,7 +105,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                             <input type="hidden" class="<?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" />
                                                        <?php } else { ?>
                                                             <label for="sampleCode"><?= _translate('Sample ID'); ?> <span class="mandatory">*</span></label>
-                                                            <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" readonly="readonly" <?php echo $maxLength; ?> placeholder="<?= _translate('Enter Sample ID'); ?>" title="<?= _translate('Please enter sample id'); ?>" style="width:100%;" onblur="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'This sample code already exists. Try another',null)" />
+                                                            <input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" readonly="readonly" <?php echo $maxLength; ?> placeholder="<?= _translate('Enter Sample ID'); ?>" title="<?= _translate('Please enter sample id'); ?>" style="width:100%;" onblur="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'This sample id already exists. Try another',null)" />
                                                        <?php } ?>
                                                   </div>
                                              </div>
@@ -560,7 +560,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                             </div>
 
                                                             <div class="row">
-                                                            <div class="col-md-6 rejectionReason" style="display:none;">
+                                                                 <div class="col-md-6 rejectionReason" style="display:none;">
                                                                       <label class="col-lg-5 control-label" for="rejectionReason"><?= _translate('Rejection Reason'); ?> </label>
                                                                       <div class="col-lg-7">
                                                                            <select name="rejectionReason" id="rejectionReason" class="form-control" title="<?= _translate('Please choose reason'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();">
@@ -674,7 +674,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                        <button type="button" class="btn btn-success" onclick="changePrinter()"><?= _translate('Change/Retry'); ?></button>
                                                   </div><br /> <!-- /printer_details -->
                                                   <div id="printer_select" style="display:none">
-                                                  <?= _translate('Zebra Printer Options'); ?><br />
+                                                       <?= _translate('Zebra Printer Options'); ?><br />
                                                        <?= _translate('Printer:'); ?> <select id="printers"></select>
                                                   </div> <!-- /printer_select -->
                                              <?php } ?>
@@ -905,7 +905,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           if (sDate != '') {
                $.post("/vl/requests/generateSampleCode.php", {
                          sampleCollectionDate: sDate,
-                         provinceCode : provinceCode
+                         provinceCode: provinceCode
                     },
                     function(data) {
                          var sCodeKey = JSON.parse(data);
@@ -1105,42 +1105,42 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      });
 
-               // Apply validation to all input fields with class 'phone-number'
-               $('.phone-number').on('change, input, blur', function() {
+     // Apply validation to all input fields with class 'phone-number'
+     $('.phone-number').on('change, input, blur', function() {
 
-if (this.value == "") {
-     return;
-} else if (this.value == "<?php echo $countryCode; ?>") {
-     $(this).val("")
-     return;
-}
-
-if (!this.value.match(/^\+?[0-9]*$/)) {
-     this.value = this.value.replace(/[^+0-9]/g, '');
-     if (this.value[0] !== '+' && this.value.length > 0) {
-          this.value = '+' + this.value;
-     }
-}
-const countryCode = "<?= $countryCode ?? null; ?>"
-const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
-const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
-
-if (!Utilities.validatePhoneNumber(this.value, countryCode, minDigits, maxDigits)) {
-     Toastify({
-          text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>",
-          duration: 3000,
-          style: {
-               background: 'red',
+          if (this.value == "") {
+               return;
+          } else if (this.value == "<?php echo $countryCode; ?>") {
+               $(this).val("")
+               return;
           }
-     }).showToast();
-}
-});
 
-$('.phone-number').on('focus', function() {
-if ($(this).val() == "") {
-     $(this).val("<?php echo $countryCode ?? null; ?>")
-};
-});
+          if (!this.value.match(/^\+?[0-9]*$/)) {
+               this.value = this.value.replace(/[^+0-9]/g, '');
+               if (this.value[0] !== '+' && this.value.length > 0) {
+                    this.value = '+' + this.value;
+               }
+          }
+          const countryCode = "<?= $countryCode ?? null; ?>"
+          const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
+          const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
+
+          if (!Utilities.validatePhoneNumber(this.value, countryCode, minDigits, maxDigits)) {
+               Toastify({
+                    text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>",
+                    duration: 3000,
+                    style: {
+                         background: 'red',
+                    }
+               }).showToast();
+          }
+     });
+
+     $('.phone-number').on('focus', function() {
+          if ($(this).val() == "") {
+               $(this).val("<?php echo $countryCode ?? null; ?>")
+          };
+     });
 
 
      function validateNow() {
@@ -1150,7 +1150,7 @@ if ($(this).val() == "") {
           var ARTlength = $("#artNo").val();
           var minLength = '<?php echo $arr['min_length']; ?>';
           if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
-               alert("Sample id length must be a minimum length of " + minLength + " characters");
+               alert("Sample ID length must be a minimum length of " + minLength + " characters");
                return false;
           }
 
@@ -1186,7 +1186,7 @@ if ($(this).val() == "") {
           var ARTlength = $("#artNo").val();
           var minLength = '<?php echo $arr['min_length']; ?>';
           if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
-               alert("Sample id length must be a minimum length of " + minLength + " characters");
+               alert("Sample ID length must be a minimum length of " + minLength + " characters");
                return false;
           }
 

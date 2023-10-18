@@ -261,7 +261,7 @@ if (!empty($requestResult)) {
             $patientFname = $general->crypto('decrypt', $patientFname, $key);
             $result['mother_id'] = $general->crypto('decrypt', $result['mother_id'], $key);
             //$aRow['mother_name'] = $general->crypto('decrypt', $aRow['mother_name'], $key);
-       }
+        }
 
         $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['labName']) . '</td>';
         $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $patientFname . '</td>';

@@ -272,11 +272,11 @@ $state = $geolocationService->getProvinces("yes");
 												<thead>
 													<tr>
 														<th>
-															<?php echo _translate("Sample Code"); ?>
+															<?php echo _translate("Sample ID"); ?>
 														</th>
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 															<th>
-																<?php echo _translate("Remote Sample Code"); ?>
+																<?php echo _translate("Remote Sample ID"); ?>
 															</th>
 														<?php } ?>
 														<th scope="row">
@@ -550,11 +550,11 @@ $state = $geolocationService->getProvinces("yes");
 												<thead>
 													<tr>
 														<th>
-															<?php echo _translate("Sample Code"); ?>
+															<?php echo _translate("Sample ID"); ?>
 														</th>
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 															<th>
-																<?php echo _translate("Remote Sample Code"); ?>
+																<?php echo _translate("Remote Sample ID"); ?>
 															</th>
 														<?php } ?>
 														<th scope="row">
@@ -752,11 +752,11 @@ $state = $geolocationService->getProvinces("yes");
 												<thead>
 													<tr>
 														<th>
-															<?php echo _translate("Sample Code"); ?>
+															<?php echo _translate("Sample ID"); ?>
 														</th>
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 															<th>
-																<?php echo _translate("Remote Sample Code"); ?>
+																<?php echo _translate("Remote Sample ID"); ?>
 															</th>
 														<?php } ?>
 														<th scope="row">
@@ -806,7 +806,7 @@ $state = $geolocationService->getProvinces("yes");
 																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="sample_code">
-																<?php echo _translate("Sample Code"); ?>
+																<?php echo _translate("Sample ID"); ?>
 															</option>
 															<option value="sample_collection_date">
 																<?php echo _translate("Sample Collection Date"); ?>
@@ -870,11 +870,11 @@ $state = $geolocationService->getProvinces("yes");
 												<thead>
 													<tr>
 														<th>
-															<?php echo _translate("Sample Code"); ?>
+															<?php echo _translate("Sample ID"); ?>
 														</th>
 														<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 															<th>
-																<?php echo _translate("Remote Sample Code"); ?>
+																<?php echo _translate("Remote Sample ID"); ?>
 															</th>
 														<?php } ?>
 														<th scope="row">

@@ -32,9 +32,9 @@ if (isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm']) 
      $output = [];
      $sheet = $excel->getActiveSheet();
 
-     $headings = array('Sample Code', 'Remote Sample Code', "Sample Collection Date", "Batch Code", "Patient Id.", "Patient Name", "Facility Name", "Province/State", "District/County", "Sample Type", "Result", "Status");
+     $headings = array('Sample ID', 'Remote Sample ID', "Sample Collection Date", "Batch Code", "Patient Id.", "Patient Name", "Facility Name", "Province/State", "District/County", "Sample Type", "Result", "Status");
      if ($sarr['sc_user_type'] == 'standalone') {
-          $headings = array("Sample Code", "Sample Collection Date", "Batch Code", "Patient Id.",  "Patient Name", "Facility Name", "Province/State", "District/County", "Sample Type", "Result", "Status");
+          $headings = array("Sample ID", "Sample Collection Date", "Batch Code", "Patient Id.",  "Patient Name", "Facility Name", "Province/State", "District/County", "Sample Type", "Result", "Status");
      }
 
      $colNo = 1;

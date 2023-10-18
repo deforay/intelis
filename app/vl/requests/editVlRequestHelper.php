@@ -339,7 +339,7 @@ try {
           $_SESSION['alertMsg'] = _translate("VL request updated successfully");
 
           $eventType = 'update-vl-request-sudan';
-          $action = $_SESSION['userName'] . ' updated request with the sample code ' . $_POST['sampleCode'];
+          $action = $_SESSION['userName'] . ' updated request with the sample id ' . $_POST['sampleCode'];
           $resource = 'vl-request';
 
           $general->activityLog($eventType, $action, $resource);

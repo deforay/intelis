@@ -213,7 +213,7 @@ foreach ($sources as $list) {
                                         <?php echo _translate("Electronic Test request Date and Time"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _translate("STS Sample Code"); ?>
+                                        <?php echo _translate("STS Sample ID"); ?>
                                     </th>
                                     <th>
                                         <?php echo _translate("Request Acknowledged Date Time"); ?>

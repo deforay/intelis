@@ -103,7 +103,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                         <?php } else { ?>
                                             <td><label for="sampleCode"><?= _translate("Sample ID"); ?> </label><span class="mandatory">*</span></td>
                                             <td>
-                                                <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly="readonly" placeholder="Sample ID" title="Please enter sample code" style="width:100%;" onchange="checkSampleNameValidation('form_covid19','<?php echo $sampleCode; ?>',this.id,null,'The sample id that you entered already exists. Please try another sample id',null)" />
+                                                <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly="readonly" placeholder="Sample ID" title="Please enter sample id" style="width:100%;" onchange="checkSampleNameValidation('form_covid19','<?php echo $sampleCode; ?>',this.id,null,'The Sample ID that you entered already exists. Please try another Sample ID',null)" />
                                             </td>
                                         <?php } ?>
                                         <td><label for="sourceOfAlertPOE"><?= _translate("Source of Alert / POE"); ?></label></td>
@@ -203,7 +203,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr class="encryptPIIContainer">
-                                        <th scope="row" style="width:15% !important"><label for="encryptPII"><?= _translate('Encrypt PII'); ?>  </label></th>
+                                        <th scope="row" style="width:15% !important"><label for="encryptPII"><?= _translate('Encrypt PII'); ?> </label></th>
                                         <td>
                                             <select name="encryptPII" id="encryptPII" class="form-control" title="<?= _translate('Encrypt Patient Identifying Information'); ?>">
                                                 <option value=""><?= _translate('--Select--'); ?></option>
@@ -1092,42 +1092,42 @@ $maxNumberOfDigits = $arr['max_phone_length'];
             });
         <?php } ?>
 
-           // Apply validation to all input fields with class 'phone-number'
-    $('.phone-number').on('change, input, blur', function() {
+        // Apply validation to all input fields with class 'phone-number'
+        $('.phone-number').on('change, input, blur', function() {
 
-if (this.value == "") {
-     return;
-} else if (this.value == "<?php echo $countryCode; ?>") {
-     $(this).val("")
-     return;
-}
+            if (this.value == "") {
+                return;
+            } else if (this.value == "<?php echo $countryCode; ?>") {
+                $(this).val("")
+                return;
+            }
 
-if (!this.value.match(/^\+?[0-9]*$/)) {
-     this.value = this.value.replace(/[^+0-9]/g, '');
-     if (this.value[0] !== '+' && this.value.length > 0) {
-          this.value = '+' + this.value;
-     }
-}
-const countryCode = "<?= $countryCode ?? null; ?>"
-const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
-const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
+            if (!this.value.match(/^\+?[0-9]*$/)) {
+                this.value = this.value.replace(/[^+0-9]/g, '');
+                if (this.value[0] !== '+' && this.value.length > 0) {
+                    this.value = '+' + this.value;
+                }
+            }
+            const countryCode = "<?= $countryCode ?? null; ?>"
+            const minDigits = "<?= $minNumberOfDigits ?? null; ?>"
+            const maxDigits = "<?= $maxNumberOfDigits ?? null; ?>"
 
-if (!Utilities.validatePhoneNumber(this.value, countryCode, minDigits, maxDigits)) {
-     Toastify({
-          text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>",
-          duration: 3000,
-          style: {
-               background: 'red',
-          }
-     }).showToast();
-}
-});
+            if (!Utilities.validatePhoneNumber(this.value, countryCode, minDigits, maxDigits)) {
+                Toastify({
+                    text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>",
+                    duration: 3000,
+                    style: {
+                        background: 'red',
+                    }
+                }).showToast();
+            }
+        });
 
-$('.phone-number').on('focus', function() {
-if ($(this).val() == "") {
-     $(this).val("<?php echo $countryCode ?? null; ?>")
-};
-});
+        $('.phone-number').on('focus', function() {
+            if ($(this).val() == "") {
+                $(this).val("<?php echo $countryCode ?? null; ?>")
+            };
+        });
 
     });
 

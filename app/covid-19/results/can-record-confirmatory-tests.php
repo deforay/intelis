@@ -114,7 +114,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 						<div class="row" style="background:#e0e0e0;padding: 15px;margin-top: -5px;">
 							<div class="col-md-12">
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol0">Sample Code</label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol0">Sample ID</label>
 								</div>
 								<?php $i = 0;
 								if ($_SESSION['instanceType'] != 'standalone') {
@@ -167,7 +167,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 						<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th>Sample Code</th>
+									<th>Sample ID</th>
 									<?php if ($_SESSION['instanceType'] != 'standalone') { ?>
 										<th>Remote Sample <br />Code</th>
 									<?php } ?>

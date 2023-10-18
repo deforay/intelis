@@ -60,7 +60,7 @@ if (isset($vlResult[0]['sample_collection_date']) && trim($vlResult[0]['sample_c
           <div class="box-body">
             <table aria-describedby="table" class="table" aria-hidden="true">
               <tr>
-                <td><strong>Sample Code:<small><?php echo $vlResult[0]['sample_code']; ?></small></strong></td>
+                <td><strong>Sample ID:<small><?php echo $vlResult[0]['sample_code']; ?></small></strong></td>
                 <td><strong>Contacted Date:<small><?php echo $vlResult[0]['sample_collection_date']; ?></small></strong></td>
                 <td><strong>Patient Name:<small><?php echo $vlResult[0]['patient_first_name'] . " " . $vlResult[0]['patient_last_name']; ?></small></strong></td>
                 <td><strong>Patient Code:<small><?php echo $vlResult[0]['patient_art_no']; ?></small></strong></td>
@@ -155,7 +155,7 @@ if (isset($vlResult[0]['sample_collection_date']) && trim($vlResult[0]['sample_c
     $('.date').datepicker({
       changeMonth: true,
       changeYear: true,
-      dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+      dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
       timeFormat: "HH:mm",
       yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
     });
