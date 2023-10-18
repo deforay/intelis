@@ -96,6 +96,8 @@ require_once APPLICATION_PATH . '/header.php';
 													<select name="facilities[]" id="search" class="form-control" size="8" multiple="multiple">
 
 													</select>
+													<div class="sampleCounterDiv"><?= _translate("Number of unselected samples"); ?> : <span id="unselectedCount"></span></div>
+
 												</div>
 
 												<div class="col-md-2">
@@ -107,6 +109,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 												<div class="col-md-5">
 													<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple"></select>
+													<div class="sampleCounterDiv"><?= _translate("Number of selected samples"); ?> : <span id="selectedCount"></span></div>
 												</div>
 
 											</div>
@@ -150,10 +153,26 @@ require_once APPLICATION_PATH . '/header.php';
 			},
 			fireSearch: function(value) {
 				return value.length > 2;
-			}
+			},
+			startUp: function($left, $right) {
+                updateCounts($left, $right);
+            },
+            afterMoveToRight: function($left, $right, $options) {
+                updateCounts($left, $right);
+            },
+            afterMoveToLeft: function($left, $right, $options) {
+                updateCounts($left, $right);
+            }
 		});
 
 	});
+
+	function updateCounts($left, $right) {
+        let selectedCount = $right.find('option').length;
+        $("#unselectedCount").html($left.find('option').length);
+        $("#selectedCount").html(selectedCount);
+       
+    }
 
 	function validateNow() {
 
