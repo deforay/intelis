@@ -171,7 +171,6 @@ require_once APPLICATION_PATH . '/header.php';
         let selectedCount = $right.find('option').length;
         $("#unselectedCount").html($left.find('option').length);
         $("#selectedCount").html(selectedCount);
-       
     }
 
 	function validateNow() {
