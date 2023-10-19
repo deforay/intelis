@@ -89,8 +89,14 @@ if (isset($_POST['breastfeeding']) && trim($_POST['breastfeeding']) != '') {
      $sWhere[] = " vl.is_patient_breastfeeding = '" . $_POST['breastfeeding'] . "' ";
 }
 
-if (isset($_POST['minAge']) && isset($_POST['maxAge']) && ($_POST['maxAge'] >= $_POST['minAge'])) {
-     $sWhere[] = " vl.patient_age_in_years BETWEEN " . $_POST['minAge'] . " AND " . $_POST['maxAge'] . "";
+if (isset($_POST['minAge']) && isset($_POST['maxAge'])) {
+     if(is_numeric($_POST['minAge']) && is_numeric($_POST['maxAge']) && ($_POST['maxAge'] >= $_POST['minAge']))
+     {
+          $sWhere[] = " vl.patient_age_in_years BETWEEN " . $_POST['minAge'] . " AND ".$_POST['maxAge']."";
+     }
+     else{
+          echo "age"; exit();
+     }
 }
 
 /* Sample collection date filter */

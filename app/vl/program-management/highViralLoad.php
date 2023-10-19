@@ -377,7 +377,7 @@ $state = $geolocationService->getProvinces("yes");
 														</strong></td>
 													<td>
 														<select class="form-control select2-element" id="breastfeeding" name="breastfeeding" title="<?php echo _translate('Please select Province/State'); ?>">
-														<option value="">
+															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<option value="yes">
@@ -385,7 +385,8 @@ $state = $geolocationService->getProvinces("yes");
 															</option>
 															<option value="no">
 																<?php echo _translate("No"); ?>
-															</option>														</select>
+															</option>														
+														</select>
 													</td>
 													<td>
 														<strong><?php echo _translate("Age Range"); ?>&nbsp;:</strong>
@@ -1087,7 +1088,10 @@ $state = $geolocationService->getProvinces("yes");
 				withAlphaNum: 'yes',
 			},
 			function(data) {
-				if (data == "" || data == null || data == undefined) {
+				if(data == "age"){
+					$.unblockUI();
+					alert("Age range is incorrect");
+				} else if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
 					alert("<?php echo _translate("No data found matching the selected parameters"); ?>");
 				} else {
