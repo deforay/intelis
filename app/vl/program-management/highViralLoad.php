@@ -355,6 +355,46 @@ $state = $geolocationService->getProvinces("yes");
 													<td>
 														<input type="text" id="vfVlnsSampleTestDate" name="vfVlnsSampleTestDate" class="form-control vfvlnsfilters daterangefield" placeholder="<?php echo _translate('Select Tested Date'); ?>" style="width:220px;background:#fff;" />
 													</td>
+													<td><strong>
+															<?php echo _translate("Pregnancy"); ?>&nbsp;:
+														</strong></td>
+													<td>
+														<select class="form-control select2-element" id="pregnancy" name="pregnancy" title="<?php echo _translate('Please select pregnancy'); ?>">
+														<option value="">
+																<?php echo _translate("-- Select --"); ?>
+															</option>
+															<option value="yes">
+																<?php echo _translate("Yes"); ?>
+															</option>
+															<option value="no">
+																<?php echo _translate("No"); ?>
+															</option>														</select>
+													</td>
+												</tr>
+												<tr>
+													<td><strong>
+															<?php echo _translate("Breastfeeding"); ?>&nbsp;:
+														</strong></td>
+													<td>
+														<select class="form-control select2-element" id="breastfeeding" name="breastfeeding" title="<?php echo _translate('Please select Province/State'); ?>">
+														<option value="">
+																<?php echo _translate("-- Select --"); ?>
+															</option>
+															<option value="yes">
+																<?php echo _translate("Yes"); ?>
+															</option>
+															<option value="no">
+																<?php echo _translate("No"); ?>
+															</option>														</select>
+													</td>
+													<td>
+														<strong>Minimum Age:&nbsp;&nbsp;&nbsp;&nbsp;</strong>
+														<input type="number" id="min_age" class="form-control" name="min_age" min="0" max="120" value="0">
+															</td>
+															<td>
+														<strong style="margin-left:5px;">Maximum Age:&nbsp;&nbsp;&nbsp;&nbsp;</strong>
+														<input type="number" id="max_age" name="max_age" class="form-control" min="0" max="120" value="120">
+													</td>
 												</tr>
 												<tr>
 													<td colspan="6">
@@ -1037,6 +1077,10 @@ $state = $geolocationService->getProvinces("yes");
 				state: $('#vfVlnsState').val(),
 				district: $('#vfVlnsDistrict').val(),
 				facilityName: $('#vfVlnsfacilityName').val(),
+				pregnancy: $('#pregnancy').val(),
+				breastfeeding: $('#breastfeeding').val(),
+				minAge: $('#min_age').val(),
+				maxAge: $('#max_age').val(),
 				withAlphaNum: 'yes',
 			},
 			function(data) {

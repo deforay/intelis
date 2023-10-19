@@ -76,6 +76,19 @@ if (isset($_POST['district']) && trim($_POST['district']) != '') {
 if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
      $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
+
+if (isset($_POST['pregnancy']) && trim($_POST['pregnancy']) != '') {
+     $sWhere[] = " vl.is_patient_pregnant = '" . $_POST['pregnancy'] . "' ";
+}
+
+if (isset($_POST['breastfeeding']) && trim($_POST['breastfeeding']) != '') {
+     $sWhere[] = " vl.is_patient_breastfeeding = '" . $_POST['breastfeeding'] . "' ";
+}
+
+if (isset($_POST['minAge']) && isset($_POST['maxAge']) && ($_POST['maxAge'] > $_POST['minAge'])) {
+     $sWhere[] = " vl.patient_age_in_years BETWEEN " . $_POST['minAge'] . " AND ".$_POST['maxAge']."";
+}
+
 /* Sample collection date filter */
 $sampleCollectionDate = $dateTimeUtil->convertDateRange($_POST['sampleCollectionDate']);
 if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
@@ -104,6 +117,7 @@ if (!empty($sWhere)) {
      $sQuery = $sQuery . ' WHERE ' . $sWhere;
 }
 $sQuery = $sQuery . " ORDER BY f.facility_name asc, patient_art_no asc, sample_collection_date asc";
+
 $rResult = $db->rawQuery($sQuery);
 // Separate the data into two arrays
 $vfData = [];
