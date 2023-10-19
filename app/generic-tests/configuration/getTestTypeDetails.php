@@ -27,7 +27,7 @@ $sTable = $tableName;
 /*
  * Paging
  */
-$sLimit = "";
+$sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
     $sLimit = $_POST['iDisplayLength'];
@@ -136,7 +136,9 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
-    $row = []; $edit = ''; $clone = '';
+    $row = [];
+    $edit = '';
+    $clone = '';
     $row[] = ($aRow['test_standard_name']);
     $row[] = ($aRow['test_generic_name']);
     $row[] = ($aRow['test_short_code']);
@@ -148,8 +150,8 @@ foreach ($rResult as $aRow) {
     if ($usersService->isAllowed("/generic-tests/configuration/edit-test-type.php")) {
         $clone = '<a href="clone-test-type.php?id=' . base64_encode($aRow['test_type_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Clone") . '"><em class="fa-solid fa-copy"></em> ' . _translate("Clone") . '</em></a>';
     }
-    if((isset($edit) && !empty($edit)) || isset($clone) && !empty($clone)){
-        $row[] = $edit . $clone ;
+    if ((isset($edit) && !empty($edit)) || isset($clone) && !empty($clone)) {
+        $row[] = $edit . $clone;
     }
     $output['aaData'][] = $row;
 }
