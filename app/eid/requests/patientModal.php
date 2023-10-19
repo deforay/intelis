@@ -112,49 +112,49 @@ $pResult = $db->get("form_eid vl", 25, "fd.facility_id,
 								$artNoList = [];
 								foreach ($pResult as $patient) {
 									$value = $patient['child_id'] . strtolower($patient['child_name']) . strtolower($patient['child_surname']) . $patient['mother_age_in_years'] . strtolower($patient['child_gender']) . strtolower($patient['facility_name']);
-									if (!in_array($value, $artNoList)) {
-										$artNoList[] = $value;
-										//$patientDetails = $patient['child_name'] . "##" . $patient['child_surname'] . "##" . $patient['child_gender'] . "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['child_dob']) . "##" . $patient['child_age'] . "##" . $patient['caretaker_phone_number'] .  "##" . $patient['child_id'] .  "##" . $patient['mother_id'] .  "##" . $patient['caretaker_address'] .  "##" . $patient['mother_name'] .  "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['mother_dob']) .  "##" . $patient['mother_marital_status'];
+									//if (!in_array($value, $artNoList)) {
+									$artNoList[] = $value;
+									//$patientDetails = $patient['child_name'] . "##" . $patient['child_surname'] . "##" . $patient['child_gender'] . "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['child_dob']) . "##" . $patient['child_age'] . "##" . $patient['caretaker_phone_number'] .  "##" . $patient['child_id'] .  "##" . $patient['mother_id'] .  "##" . $patient['caretaker_address'] .  "##" . $patient['mother_name'] .  "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['mother_dob']) .  "##" . $patient['mother_marital_status'];
 
-										$patientDetails = json_encode(
-											array(
-												"name" => $patient['child_name'] . " " . $patient['child_surname'],
-												"gender" => $patient['child_gender'],
-												"dob" => DateUtility::humanReadableDateFormat($patient['child_dob']),
-												"age" => $patient['child_age'],
-												"caretaker_no" => $patient['caretaker_phone_number'],
-												"child_id" => $patient['child_id'],
-												"mother_id" => $patient['mother_id'],
-												"caretaker_address" => $patient['caretaker_address'],
-												"mother_name" => $patient['mother_name'],
-												"mother_dob" => DateUtility::humanReadableDateFormat($patient['mother_dob']),
-												"mother_marital_status" => $patient['mother_marital_status'],
-											)
-										);
+									$patientDetails = json_encode(
+										array(
+											"name" => $patient['child_name'] . " " . $patient['child_surname'],
+											"gender" => $patient['child_gender'],
+											"dob" => DateUtility::humanReadableDateFormat($patient['child_dob']),
+											"age" => $patient['child_age'],
+											"caretaker_no" => $patient['caretaker_phone_number'],
+											"child_id" => $patient['child_id'],
+											"mother_id" => $patient['mother_id'],
+											"caretaker_address" => $patient['caretaker_address'],
+											"mother_name" => $patient['mother_name'],
+											"mother_dob" => DateUtility::humanReadableDateFormat($patient['mother_dob']),
+											"mother_marital_status" => $patient['mother_marital_status'],
+										)
+									);
 								?>
-										<tr>
-											<td><input type="radio" id="patient<?php echo $patient['eid_id']; ?>" name="patient" value='<?php echo $patientDetails; ?>' onclick="getPatientDetails(this.value);"></td>
-											<td>
-												<?php echo $patient['child_id']; ?>
-											</td>
-											<td>
-												<?php echo ($patient['child_name']) . " " . $patient['child_surname']; ?>
-											</td>
-											<td>
-												<?php echo $patient['child_age']; ?>
-											</td>
-											<td>
-												<?php echo (str_replace("_", " ", $patient['child_gender'])); ?>
-											</td>
-											<td>
-												<?= $patient['facility_name']; ?>
-											</td>
-											<td>
-												<?= DateUtility::humanReadableDateFormat($patient['request_created_datetime'], true); ?>
-											</td>
-										</tr>
+									<tr>
+										<td><input type="radio" id="patient<?php echo $patient['eid_id']; ?>" name="patient" value='<?php echo $patientDetails; ?>' onclick="getPatientDetails(this.value);"></td>
+										<td>
+											<?php echo $patient['child_id']; ?>
+										</td>
+										<td>
+											<?php echo ($patient['child_name']) . " " . $patient['child_surname']; ?>
+										</td>
+										<td>
+											<?php echo $patient['child_age']; ?>
+										</td>
+										<td>
+											<?php echo (str_replace("_", " ", $patient['child_gender'])); ?>
+										</td>
+										<td>
+											<?= $patient['facility_name']; ?>
+										</td>
+										<td>
+											<?= DateUtility::humanReadableDateFormat($patient['request_created_datetime'], true); ?>
+										</td>
+									</tr>
 								<?php
-									}
+									//}
 								}
 								?>
 							</tbody>

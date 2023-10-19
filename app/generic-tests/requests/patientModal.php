@@ -122,50 +122,50 @@ $pResult = $db->get("form_generic vl", 25, "fd.facility_id,
 								$artNoList = [];
 								foreach ($pResult as $patient) {
 									$value = $patient['patient_id'] . strtolower($patient['patient_first_name']) . strtolower($patient['patient_last_name']) . $patient['patient_age_in_years'] . strtolower($patient['patient_gender']) . strtolower($patient['facility_name']);
-									if (!in_array($value, $artNoList)) {
-										$artNoList[] = $value;
-										$patientDetails = json_encode(
-											array(
-												"name" => $patient['patient_first_name'] . " " . $patient['patient_last_name'],
-												"gender" => $patient['patient_gender'],
-												"dob" => DateUtility::humanReadableDateFormat($patient['patient_dob']),
-												"age_in_years" => $patient['patient_age_in_years'],
-												"age_in_months" => $patient['patient_age_in_months'],
-												"is_pregnant" => $patient['is_patient_pregnant'],
-												"is_breastfeeding" => $patient['is_patient_breastfeeding'],
-												"mobile" => $patient['patient_mobile_number'],
-												"consent_to_receive_sms" => $patient['consent_to_receive_sms'],
-												"patient_id" => $patient['patient_id'],
-												"sample_tested_datetime" => DateUtility::humanReadableDateFormat($patient['sample_tested_datetime'])
-											)
-										); ?>
+									//if (!in_array($value, $artNoList)) {
+									$artNoList[] = $value;
+									$patientDetails = json_encode(
+										array(
+											"name" => $patient['patient_first_name'] . " " . $patient['patient_last_name'],
+											"gender" => $patient['patient_gender'],
+											"dob" => DateUtility::humanReadableDateFormat($patient['patient_dob']),
+											"age_in_years" => $patient['patient_age_in_years'],
+											"age_in_months" => $patient['patient_age_in_months'],
+											"is_pregnant" => $patient['is_patient_pregnant'],
+											"is_breastfeeding" => $patient['is_patient_breastfeeding'],
+											"mobile" => $patient['patient_mobile_number'],
+											"consent_to_receive_sms" => $patient['consent_to_receive_sms'],
+											"patient_id" => $patient['patient_id'],
+											"sample_tested_datetime" => DateUtility::humanReadableDateFormat($patient['sample_tested_datetime'])
+										)
+									); ?>
 
-										<tr>
-											<td><input type="radio" id="patient<?php echo $patient['sample_id']; ?>" name="patient" value='<?php echo $patientDetails; ?>' onclick="getPatientDetails(this.value);"></td>
-											<td>
-												<?= $patient['patient_id']; ?>
-											</td>
-											<td>
-												<?php echo ($patient['patient_first_name']) . " " . $patient['patient_last_name']; ?>
-											</td>
-											<td>
-												<?php echo $patient['patient_age_in_years']; ?>
-											</td>
-											<td>
-												<?= str_replace("_", " ", $patient['patient_gender']); ?>
-											</td>
-											<td>
-												<?= $patient['facility_name']; ?>
-											</td>
-											<td>
-												<?= DateUtility::humanReadableDateFormat($patient['request_created_datetime'], true); ?>
-											</td>
-											<td>
-												<?php echo DateUtility::humanReadableDateFormat($patient['sample_tested_datetime']); ?>
-											</td>
-										</tr>
+									<tr>
+										<td><input type="radio" id="patient<?php echo $patient['sample_id']; ?>" name="patient" value='<?php echo $patientDetails; ?>' onclick="getPatientDetails(this.value);"></td>
+										<td>
+											<?= $patient['patient_id']; ?>
+										</td>
+										<td>
+											<?php echo ($patient['patient_first_name']) . " " . $patient['patient_last_name']; ?>
+										</td>
+										<td>
+											<?php echo $patient['patient_age_in_years']; ?>
+										</td>
+										<td>
+											<?= str_replace("_", " ", $patient['patient_gender']); ?>
+										</td>
+										<td>
+											<?= $patient['facility_name']; ?>
+										</td>
+										<td>
+											<?= DateUtility::humanReadableDateFormat($patient['request_created_datetime'], true); ?>
+										</td>
+										<td>
+											<?php echo DateUtility::humanReadableDateFormat($patient['sample_tested_datetime']); ?>
+										</td>
+									</tr>
 								<?php
-									}
+									//}
 								}
 								?>
 							</tbody>

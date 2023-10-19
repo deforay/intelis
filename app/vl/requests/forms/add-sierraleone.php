@@ -501,7 +501,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                             <div class="col-md-4">
                                                                  <label for="rmTestingVlValue" class="col-lg-3 control-label">Previous VL Result</label>
                                                                  <div class="col-lg-7 resultInputContainer">
-                                                                      <input list="rmTestingPossibleVlResults" class="form-control" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= ($vlQueryInfo['last_vl_date_routine']); ?>">
+                                                                      <input list="rmTestingPossibleVlResults" class="form-control" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Select or Type VL Result" title="Please enter viral load result" value="">
                                                                       <datalist id="rmTestingPossibleVlResults" title="Please enter viral load result">
 
                                                                       </datalist>
@@ -541,7 +541,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                             <div class="col-md-4">
                                                                  <label for="repeatTestingVlValue" class="col-lg-3 control-label">Previous VL Result</label>
                                                                  <div class="col-lg-7 resultInputContainer">
-                                                                      <input list="repeatTestingPossibleVlResults" class="form-control" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= ($vlQueryInfo['last_vl_date_routine']); ?>">
+                                                                      <input list="repeatTestingPossibleVlResults" class="form-control" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Select or Type VL Result" title="Please enter viral load result" value="">
                                                                       <datalist id="repeatTestingPossibleVlResults" title="Please enter viral load result">
 
                                                                       </datalist>
@@ -581,7 +581,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                             <div class="col-md-4">
                                                                  <label for="suspendTreatmentVlValue" class="col-lg-3 control-label">Previous VL Result</label>
                                                                  <div class="col-lg-7 resultInputContainer">
-                                                                      <input list="suspendTreatmentPossibleVlResults" class="form-control" id="suspendTreatmentVlValue" name="suspendTreatmentVlValue" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= ($vlQueryInfo['last_vl_date_routine']); ?>">
+                                                                      <input list="suspendTreatmentPossibleVlResults" class="form-control" id="suspendTreatmentVlValue" name="suspendTreatmentVlValue" placeholder="Select or Type VL Result" title="Please enter viral load result" value="">
                                                                       <datalist id="suspendTreatmentPossibleVlResults" title="Please enter viral load result">
 
                                                                       </datalist>

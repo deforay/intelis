@@ -250,27 +250,31 @@ class CommonService
 
     public static function decrypt($encrypted, $key): string
     {
-        $decoded = sodium_base642bin($encrypted, SODIUM_BASE64_VARIANT_URLSAFE);
-        if (empty($decoded)) {
-            throw new SystemException('The message encoding failed');
-        }
-        if (mb_strlen($decoded, '8bit') < (SODIUM_CRYPTO_SECRETBOX_NONCEBYTES + SODIUM_CRYPTO_SECRETBOX_MACBYTES)) {
-            throw new SystemException('The message was truncated');
-        }
-        $nonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
-        $ciphertext = mb_substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
+        try {
+            $decoded = sodium_base642bin($encrypted, SODIUM_BASE64_VARIANT_URLSAFE);
+            if (empty($decoded)) {
+                throw new SystemException('The message encoding failed');
+            }
+            if (mb_strlen($decoded, '8bit') < (SODIUM_CRYPTO_SECRETBOX_NONCEBYTES + SODIUM_CRYPTO_SECRETBOX_MACBYTES)) {
+                throw new SystemException('The message was truncated');
+            }
+            $nonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
+            $ciphertext = mb_substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');
 
-        $plain = sodium_crypto_secretbox_open(
-            $ciphertext,
-            $nonce,
-            $key
-        );
-        if ($plain === false) {
-            throw new SystemException('The message was tampered with in transit');
+            $plain = sodium_crypto_secretbox_open(
+                $ciphertext,
+                $nonce,
+                $key
+            );
+            if ($plain === false) {
+                throw new SystemException('The message was tampered with in transit');
+            }
+            sodium_memzero($ciphertext);
+            sodium_memzero($key);
+            return $plain;
+        } catch (\SodiumException $e) {
+            return $encrypted;
         }
-        sodium_memzero($ciphertext);
-        sodium_memzero($key);
-        return $plain;
     }
 
     public function crypto($action, $inputString, $key)

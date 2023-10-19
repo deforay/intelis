@@ -254,6 +254,7 @@ try {
         $db->delete($testTableName);
     }
 
+    $tbData['is_encrypted'] = 'no';
     if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
         $key = base64_decode($general->getGlobalConfig('key'));
         $encryptedPatientId = $general->crypto('encrypt', $tbData['patient_id'], $key);

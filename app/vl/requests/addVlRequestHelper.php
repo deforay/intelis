@@ -325,6 +325,7 @@ try {
     $vlData['patient_last_name'] = $general->crypto('doNothing', $_POST['patientLastName'], $vlData['patient_art_no']);
 
 
+    $vlData['is_encrypted'] = 'no';
     if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
         $key = base64_decode($general->getGlobalConfig('key'));
         $encryptedPatientId = $general->crypto('encrypt', $vlData['patient_art_no'], $key);

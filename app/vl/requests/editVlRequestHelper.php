@@ -315,6 +315,7 @@ try {
      }
      $vlData = array_merge($vlData, $pngSpecificFields);
 
+     $vlData['is_encrypted'] = 'no';
      if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
           $key = base64_decode($general->getGlobalConfig('key'));
           $encryptedPatientId = $general->crypto('encrypt', $vlData['patient_art_no'], $key);
