@@ -198,6 +198,13 @@ class VlService extends AbstractTestService
     public function interpretViralLoadResult($result, $unit = null, $defaultLowVlResultText = null): ?array
     {
         return once(function () use ($result, $unit, $defaultLowVlResultText) {
+
+            $vlResultType = $this->checkViralLoadValueType($result);
+
+            if ($vlResultType == 'empty') {
+                return null;
+            }
+
             $finalResult = $vlResult = trim(htmlspecialchars_decode($result));
             $vlResult = str_ireplace(['c/ml', 'cp/ml', 'copies/ml', 'cop/ml', 'copies'], '', $vlResult);
             $vlResult = str_ireplace('-', '', $vlResult);
@@ -206,7 +213,7 @@ class VlService extends AbstractTestService
             if ($vlResult == "-1.00") {
                 $finalResult = $vlResult = "Not Detected";
             }
-            if (is_numeric($vlResult)) {
+            if ($vlResultType == 'numeric') {
                 //passing only number
                 return $this->interpretViralLoadNumericResult($vlResult, $unit);
             } else {
@@ -225,7 +232,7 @@ class VlService extends AbstractTestService
         }
 
         // If result is numeric, then process it as a number
-        if (is_numeric($result)) {
+        if ($this->checkViralLoadValueType($result) == 'numeric') {
             return $this->interpretViralLoadNumericResult($result, $unit);
         }
 
@@ -321,7 +328,7 @@ class VlService extends AbstractTestService
         }
 
         // If result is NOT numeric, then process it as a text result
-        if (!is_numeric($result)) {
+        if ($this->checkViralLoadValueType($result) == 'text') {
             return $this->interpretViralLoadTextResult($result, $unit);
         }
 
@@ -329,45 +336,45 @@ class VlService extends AbstractTestService
         $originalResultValue = $result;
 
 
-        if (is_numeric($result)) {
+        $interpretAndConvertResult = $this->commonService->getGlobalConfig('vl_interpret_and_convert_results');
 
-            $interpretAndConvertResult = $this->commonService->getGlobalConfig('vl_interpret_and_convert_results');
+        $interpretAndConvertResult = !empty($interpretAndConvertResult) && $interpretAndConvertResult === 'yes';
 
-            $interpretAndConvertResult = !empty($interpretAndConvertResult) && $interpretAndConvertResult === 'yes';
-
-            if (!empty($unit) && strpos($unit, 'Log') !== false && is_numeric($result)) {
-                $logVal = (float) $result;
-                $originalResultValue =
-                    $vlResult = $absVal =
-                    $absDecimalVal = round(round(pow(10, $logVal) * 100) / 100);
-            } elseif (!empty($unit) && strpos($unit, '10') !== false) {
-                $unitArray = explode(".", $unit);
-                $exponentArray = explode("*", $unitArray[0]);
-                $multiplier = pow((float) $exponentArray[0], (float) $exponentArray[1]);
-                $vlResult = $result * $multiplier;
-                $unit = $unitArray[1];
-            } elseif (strpos($result, 'E+') !== false || strpos($result, 'E-') !== false) {
-                if (strpos($result, '< 2.00E+1') !== false) {
-                    $vlResult = "< 20";
-                } else {
-                    // incase there are some brackets in the result
-                    $resultArray = explode("(", $result);
-
-                    $absVal = ($resultArray[0]);
-                    $vlResult = $absDecimalVal = (float) $resultArray[0];
-                    $logVal = round(log10($absDecimalVal), 2);
-                }
+        if (!empty($unit) && strpos($unit, 'Log') !== false && is_numeric($result)) {
+            $logVal = (float) $result;
+            $originalResultValue =
+                $vlResult = $absVal =
+                $absDecimalVal = round(round(pow(10, $logVal) * 100) / 100);
+        } elseif (!empty($unit) && strpos($unit, '10') !== false) {
+            $unitArray = explode(".", $unit);
+            $exponentArray = explode("*", $unitArray[0]);
+            $multiplier = pow((float) $exponentArray[0], (float) $exponentArray[1]);
+            $vlResult = $result * $multiplier;
+            $unit = $unitArray[1];
+        } elseif (strpos($result, 'E+') !== false || strpos($result, 'E-') !== false) {
+            if (strpos($result, '< 2.00E+1') !== false) {
+                $vlResult = "< 20";
+                $absVal = $absDecimalVal = 20;
             } else {
-                $absVal = ($result);
-                $vlResult = $absDecimalVal = (float) trim($result);
-                $logVal = round(log10($absDecimalVal), 2);
-                $txtVal = null;
-            }
+                // incase there are some brackets in the result
+                $resultArray = explode("(", $result);
 
-            if ($interpretAndConvertResult) {
-                $originalResultValue = $vlResult;
+                $absVal = ($resultArray[0]);
+                $vlResult = $absDecimalVal = (float) $resultArray[0];
+                $logVal = round(log10($absDecimalVal), 2);
             }
+        } elseif (strpos($result, '<')) {
+        } else {
+            $absVal = ($result);
+            $vlResult = $absDecimalVal = (float) trim($result);
+            $logVal = round(log10($absDecimalVal), 2);
+            $txtVal = null;
         }
+
+        if ($interpretAndConvertResult) {
+            $originalResultValue = $vlResult;
+        }
+
 
         return [
             'logVal' => $logVal,
@@ -534,5 +541,29 @@ class VlService extends AbstractTestService
                                             FROM r_vl_test_reasons
                                                 WHERE `test_reason_status` LIKE 'active'
                                                 AND (parent_reason IS NULL OR parent_reason = 0)");
+    }
+
+    function checkViralLoadValueType($input)
+    {
+        // Check if it's null or empty
+        if (is_null($input) || trim($input) == '') {
+            return 'empty';
+        }
+
+        // Check if it contains a numeric value
+        if (preg_match('/([\d\.]+(e[\+\-]?\d+)?)/i', $input)) {
+            return 'numeric';
+        }
+
+        // If not null and not numeric, it's text
+        return 'text';
+    }
+
+    public function extractViralLoadValue($input): ?float
+    {
+        if (preg_match('/([\d\.]+(e[\+\-]?\d+)?)/i', $input, $matches)) {
+            return floatval($matches[1]);
+        }
+        return null;
     }
 }

@@ -1,13 +1,17 @@
 <?php
 
+use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
+
+/** @var VlService $vlService */
+$vlService = ContainerRegistry::get(VlService::class);
 
 
 // Define the style array for border
@@ -85,8 +89,8 @@ if (isset($_POST['breastfeeding']) && trim($_POST['breastfeeding']) != '') {
      $sWhere[] = " vl.is_patient_breastfeeding = '" . $_POST['breastfeeding'] . "' ";
 }
 
-if (isset($_POST['minAge']) && isset($_POST['maxAge']) && ($_POST['maxAge'] > $_POST['minAge'])) {
-     $sWhere[] = " vl.patient_age_in_years BETWEEN " . $_POST['minAge'] . " AND ".$_POST['maxAge']."";
+if (isset($_POST['minAge']) && isset($_POST['maxAge']) && ($_POST['maxAge'] >= $_POST['minAge'])) {
+     $sWhere[] = " vl.patient_age_in_years BETWEEN " . $_POST['minAge'] . " AND " . $_POST['maxAge'] . "";
 }
 
 /* Sample collection date filter */
@@ -119,9 +123,16 @@ if (!empty($sWhere)) {
 $sQuery = $sQuery . " ORDER BY f.facility_name asc, patient_art_no asc, sample_collection_date asc";
 
 $rResult = $db->rawQuery($sQuery);
+
+if (!$rResult) {
+     return null;
+}
+
 // Separate the data into two arrays
 $vfData = [];
 $vlnsData = [];
+
+
 $patientIds = [];
 $output = [];
 $headings = [
@@ -142,9 +153,6 @@ $headings = [
 $vfData = [];
 $vlnsData = [];
 $patientIds = [];
-if (!$rResult) {
-     return null;
-}
 foreach ($rResult as $aRow) {
 
      if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] === 'yes') {
@@ -152,6 +160,7 @@ foreach ($rResult as $aRow) {
      }
      unset($aRow['is_encrypted']);
      $patientId = $aRow['patient_art_no'];
+     $aRow['result'] = $vlService->extractViralLoadValue($aRow['result']);
      $vfData[] = $aRow;
      $vlnsData[] = $aRow;
      // Check if patient id already there in array
