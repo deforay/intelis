@@ -59,7 +59,7 @@ $sTable = $tableName;
 /*
  * Paging
  */
-$sLimit = "";
+$sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
     $sLimit = $_POST['iDisplayLength'];
@@ -299,7 +299,7 @@ foreach ($rResult as $aRow) {
         $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
         $patientFname = $general->crypto('decrypt', $patientFname, $key);
         $patientLname = $general->crypto('decrypt', $patientLname, $key);
-   }
+    }
     $row[] = $aRow['batch_code'];
     $row[] = $aRow['patient_id'];
     $row[] = ($patientFname . " " . $patientLname);

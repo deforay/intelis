@@ -56,7 +56,7 @@ $sTable = $tableName;
 /*
 * Paging
 */
-$sLimit = "";
+$sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
     $sLimit = $_POST['iDisplayLength'];
@@ -229,7 +229,7 @@ foreach ($rResult as $aRow) {
         $key = base64_decode($general->getGlobalConfig('key'));
         $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
         $aRow['patient_name'] = $general->crypto('decrypt', $aRow['patient_name'], $key);
-   }
+    }
     $row[] = $aRow['sample_collection_date'];
     $row[] = $aRow['batch_code'];
     $row[] = ($aRow['facility_name']);

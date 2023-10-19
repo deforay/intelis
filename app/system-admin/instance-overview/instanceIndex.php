@@ -81,7 +81,7 @@ $data = $db->rawQuery($instanceValues);
                                     <td><?php echo date('d-M-Y H:i:s', strtotime($project['instance_update_on'])); ?></td>
                                 </tr>
                                 <tr>
-                                    <th><?php echo _translate("Vl Last Sync"); ?></th>
+                                    <th><?php echo _translate("VL Last Sync"); ?></th>
                                     <td><span class="editSpan vlLastSync"><?php echo date('d-M-Y H:i:s', strtotime($project['vl_last_dash_sync'])); ?></span>
                                         <input class="editInput vlLastSync form-control input-sm date-time" type="text" name="vl_last_dash_sync" value="<?php echo date('d-M-Y H:i:s', strtotime($project['vl_last_dash_sync'])); ?>" readonly style="display: none;background:#fff;">
                                     </td>
@@ -227,7 +227,7 @@ $data = $db->rawQuery($instanceValues);
         $('.date-time').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {

@@ -32,7 +32,7 @@ $orderColumns = array('p.manifest_id', 'p.module', 'p.manifest_code', 'p.manifes
 /*
          * Paging
          */
-$sLimit = "";
+$sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
     $sLimit = $_POST['iDisplayLength'];

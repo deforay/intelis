@@ -43,8 +43,8 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
         */
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name','r_c_a.recommended_corrective_action_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name','r_c_a.recommended_corrective_action_name');
+$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name', 'r_c_a.recommended_corrective_action_name');
+$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name', 'r_c_a.recommended_corrective_action_name');
 
 if ($sarr['sc_user_type'] == 'standalone') {
     $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
@@ -58,7 +58,7 @@ $sTable = $tableName;
 /*
          * Paging
          */
-$sLimit = "";
+$sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
     $sLimit = $_POST['iDisplayLength'];
@@ -123,11 +123,11 @@ for ($i = 0; $i < count($aColumns); $i++) {
          * Get data to display
         */
 $aWhere = '';
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,fd.facility_name as labName,rsrr.rejection_reason_name,r_c_a.recommended_corrective_action_name FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
-LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id 
-LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type 
-LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
-JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection 
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,fd.facility_name as labName,rsrr.rejection_reason_name,r_c_a.recommended_corrective_action_name FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id
+LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
+LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
 LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
 where vl.is_sample_rejected='yes' ";
 if (isset($_POST['rjtBatchCode']) && trim($_POST['rjtBatchCode']) != '') {
@@ -229,7 +229,7 @@ foreach ($rResult as $aRow) {
         $key = base64_decode($general->getGlobalConfig('key'));
         $aRow['child_id'] = $general->crypto('decrypt', $aRow['child_id'], $key);
         $childName = $general->crypto('decrypt', $childName, $key);
-   }
+    }
     $row[] = ($aRow['facility_name']);
     $row[] = $aRow['child_id'];
     $row[] = $childName;
