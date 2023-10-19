@@ -60,7 +60,8 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 	);
 
 	if ($arr['vl_form'] == 4 && $arr['vl_excel_export_format'] == "cresar") {
-		$headings = array(_translate('No.'), _translate("Region of sending facility"), _translate("District of sending facility"), _translate("Sending facility"), _translate("Name of reference Lab"), _translate("Category of testing site"), _translate("Project"), _translate("CV Number"),  _translate("TAT"), _translate("Sample ID"), _translate("Existing ART Code"), _translate("ARV Protocol"), _translate("Gender"), _translate("Date of Birth"), _translate("Age"), _translate("Age Range"), _translate("Requested by contact"), _translate("Sample collection date"),  _translate("Sample reception date"), _translate("Sample Type"), _translate("Treatment start date"), _translate("Treatment Protocol"), _translate("Was sample send to another reference lab"), _translate("If sample was send to another lab, give name of lab"), _translate("Sample Rejected"), _translate("Sample Tested"), _translate("Test Platform"), _translate("Test platform detection limit"), _translate("Invalid test (yes or no)"), _translate("Invalid sample repeated (yes or no)"), _translate("Error codes (yes or no)"), _translate("Error codes values"), _translate("Tests repeated due to error codes (yes or no)"), _translate("New CV number"), _translate("Date of test"), _translate("Date of repeat test"), _translate("Result sent back to facility (yes or no)"), _translate("Date of result sent to facility"), _translate("Result Type"), _translate("Result Value"), _translate("Result Value Log"), _translate("Is suppressed"), _translate("Communication of rejected samples or high viral load (yes, no or NA)"), _translate("Observations"));
+		//$headings = array(_translate('No.'), _translate("Region of sending facility"), _translate("District of sending facility"), _translate("Sending facility"), _translate("Name of reference Lab"), _translate("Category of testing site"), _translate("Project"), _translate("CV Number"),  _translate("TAT"), _translate("Sample ID"), _translate("Existing ART Code"), _translate("ARV Protocol"), _translate("Gender"), _translate("Date of Birth"), _translate("Age"), _translate("Age Range"), _translate("Requested by contact"), _translate("Sample collection date"),  _translate("Sample reception date"), _translate("Sample Type"), _translate("Treatment start date"), _translate("Treatment Protocol"), _translate("Was sample send to another reference lab"), _translate("If sample was send to another lab, give name of lab"), _translate("Sample Rejected"), _translate("Sample Tested"), _translate("Test Platform"), _translate("Test platform detection limit"), _translate("Invalid test (yes or no)"), _translate("Invalid sample repeated (yes or no)"), _translate("Error codes (yes or no)"), _translate("Error codes values"), _translate("Tests repeated due to error codes (yes or no)"), _translate("New CV number"), _translate("Date of test"), _translate("Date of repeat test"), _translate("Result sent back to facility (yes or no)"), _translate("Date of result sent to facility"), _translate("Result Type"), _translate("Result Value"), _translate("Result Value Log"), _translate("Is suppressed"), _translate("Communication of rejected samples or high viral load (yes, no or NA)"), _translate("Observations"));
+		$headings = array(_translate('No.'),_translate("Sample ID"),_translate('Region of sending facility'),_translate('District of sending facility'),_translate('Sending facility'),_translate('Project'),_translate('Existing ART Code'),_translate('Date of Birth'),_translate('Age'),_translate('Patient Name'),_translate('Gender'),_translate('Sample collection date'),_translate('Sample Type'),_translate('Requested by contact'),_translate('Treatment start date'),_translate("Treatment Protocol"),_translate('ARV Protocol'),_translate('CV Number'),_translate('Test Platform'), _translate("Test platform detection limit"),_translate("Sample reception date"),_translate("Sample Tested"), _translate("Date of test"),_translate("Date of result sent to facility"), _translate("Sample Rejected") ,_translate("Communication of rejected samples or high viral load (yes, no or NA)") ,_translate("Result Value"), _translate("Result Value Log"),  _translate("Is suppressed"), _translate("Name of reference Lab"), _translate("Category of testing site"),_translate("TAT"),_translate("Age Range"),_translate("Was sample send to another reference lab"), _translate("If sample was send to another lab, give name of lab"),_translate("Invalid test (yes or no)"),_translate("Invalid sample repeated (yes or no)"), _translate("Error codes (yes or no)"), _translate("Error codes values"), _translate("Tests repeated due to error codes (yes or no)"), _translate("New CV number"), _translate("Date of repeat test"),_translate("Result sent back to facility (yes or no)"),_translate("Result Type"), _translate("Observations"));
 	} else {
 		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
 			$headings = array("No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Testing Lab", "Health Facility Code", "District/County", "Province/State", "Unique ART No.",  "Patient Name", "Date of Birth", "Age", "Gender", "Patient Cellphone Number", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Current Regimen", "Date of Initiation of Current Regimen", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "ARV Adherence", "Indication for Viral Load Testing", "Requesting Clinican", "Requesting Clinican Cellphone Number", "Request Date", "Is Sample Rejected?", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result (cp/ml)", "Result (log)", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
@@ -155,52 +156,58 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 			}
 		}
 		if ($arr['vl_form'] == 4 && $arr['vl_excel_export_format'] == "cresar") {
+			$row[] = $aRow['sample_code'];
 			$row[] = $aRow['facility_state'];
 			$row[] = $aRow['facility_district'];
 			$row[] = $aRow['facility_name'];
-			$row[] = "Reference Lab";
-			$row[] = ""; //Category Of testing site
 			$row[] = $aRow['funding_source_name'] ?? null;
-			$row[] = $aRow['cv_number'];
-			$row[] = ""; //TAT
-			$row[] = $aRow['sample_code'];
 			$row[] = $aRow['patient_art_no'];
-			$row[] = $aRow['current_arv_protocol'];
-			$row[] = $gender;
 			$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
 			$row[] = $aRow['patient_age_in_years'];
-			$row[] = ''; //Age range
-			$row[] = $aRow['request_clinician_name'];
+			$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+			$row[] = $gender;
 			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
 			$row[] = $aRow['sample_name'] ?: null;
+			$row[] = $aRow['request_clinician_name'];
 			$row[] = DateUtility::humanReadableDateFormat($aRow['treatment_initiated_date']);
 			$row[] = $aRow['line_of_treatment'];
-			$row[] = ''; //Was sample send to another reference lab
-			$row[] = ''; //If sample was send to another lab, give name of lab
-			$row[] = $sampleRejection;
+			$row[] = $aRow['current_arv_protocol'];
+			$row[] = $aRow['cv_number'];
+			$row[] = $aRow['vl_test_platform'];
+			if(!empty($aRow['vl_test_platform'])){
+				$row[] = $aRow['lower_limit']." - ".$aRow['higher_limit']; //Test platform detection limit
+			}
+			else
+			{
+				$row[] = "";
+			}
+			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
 			if ($aRow['sample_tested_datetime'] != "")
 				$row[] = "Yes";
 			else
 				$row[] = "No";
-			$row[] = $aRow['vl_test_platform'];
-			$row[] = ""; //Test platform detection limit
+			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
+			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_dispatched_datetime']);
+			$row[] = $sampleRejection;
+			$row[] = $aRow['rejection_reason'];
+			$row[] = $aRow['result'];
+			$row[] = $logVal;
+			$row[] = $aRow['vl_result_category'];
+			$row[] = "Reference Lab";
+			$row[] = ""; //Category Of testing site
+			$row[] = ""; //TAT
+			$row[] = ''; //Age range
+			$row[] = ''; //Was sample send to another reference lab
+			$row[] = ''; //If sample was send to another lab, give name of lab
 			$row[] = ""; //Invalid test (yes or no);
 			$row[] = ""; //Invalid sample repeated (yes or no)
 			$row[] = "";  //Error codes (yes or no)
 			$row[] = ""; //Error codes values
 			$row[] = "";   //Tests repeated due to error codes (yes or no)
 			$row[] = "";    //New CV Number
-			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
 			$row[] = "";    //Date of repeat test
 			$row[] = "";     //Result sent back to facility (yes or no)
-			$row[] = "";     //Date of result sent to facility
-			$row[] = "";
 			$ROW[] = ""; //Result type
-			$row[] = $aRow['result'];
-			$row[] = $logVal;
-			$row[] = $aRow['vl_result_category'];
-			$row[] = $aRow['rejection_reason'];
 			$row[] = "";    //Observations
 
 		} else {
@@ -272,7 +279,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		$sheet->setTitle('VL Results');
 
 		$sheet
-			->getStyle('A3:AQ3')
+			->getStyle('A3:AS3')
 			->getFill()
 			->setFillType(Fill::FILL_SOLID)
 			->getStartColor()
