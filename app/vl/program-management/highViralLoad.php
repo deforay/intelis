@@ -388,12 +388,15 @@ $state = $geolocationService->getProvinces("yes");
 															</option>														</select>
 													</td>
 													<td>
-														<strong>Minimum Age:&nbsp;&nbsp;&nbsp;&nbsp;</strong>
-														<input type="number" id="min_age" class="form-control" name="min_age" min="0" max="120" value="0">
-															</td>
-															<td>
-														<strong style="margin-left:5px;">Maximum Age:&nbsp;&nbsp;&nbsp;&nbsp;</strong>
-														<input type="number" id="max_age" name="max_age" class="form-control" min="0" max="120" value="120">
+														<strong><?php echo _translate("Age Range"); ?>&nbsp;:</strong>
+													</td>
+													<td>
+														<div class="col-sm-6">
+															<input type="number" id="min_age" class="form-control" name="min_age" min="0" max="120" value="0">
+														</div>
+														<div class="col-sm-6">
+															<input type="number" id="max_age" name="max_age" class="form-control" min="0" max="120" value="120">
+														</div>
 													</td>
 												</tr>
 												<tr>
