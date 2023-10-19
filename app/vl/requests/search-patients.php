@@ -12,7 +12,6 @@ $_POST = $request->getParsedBody();
 
 $artNo = $_POST['artPatientNo'];
 
-$count = 0;
 $pQuery = "SELECT count(*) as 'count' FROM form_vl
                 WHERE patient_art_no like '%$artNo%'
                 OR patient_first_name like '%$artNo%'

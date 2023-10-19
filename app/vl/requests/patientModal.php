@@ -26,8 +26,9 @@ $pResult = $db->get("form_vl vl", 25, "fd.facility_id,
 			vl_sample_id,
             patient_first_name,
             patient_last_name,
-            patient_dob,
             patient_age_in_years,
+            patient_dob,
+            patient_gender,
             patient_age_in_months,
             is_patient_pregnant,
             is_patient_breastfeeding,
@@ -125,64 +126,65 @@ $pResult = $db->get("form_vl vl", 25, "fd.facility_id,
 								$artNoList = [];
 								foreach ($pResult as $patient) {
 									$value = $patient['patient_art_no'] . strtolower($patient['patient_first_name']) . strtolower($patient['patient_last_name']) . $patient['patient_age_in_years'] . strtolower($patient['patient_gender']) . strtolower($patient['facility_name']);
-									if (!in_array($value, $artNoList)) {
-										$artNoList[] = $value;
-										$patientDetails = json_encode(
-											array(
-												"name" => $patient['patient_first_name'] . " " . $patient['patient_last_name'],
-												"gender" => $patient['patient_gender'],
-												"dob" => DateUtility::humanReadableDateFormat($patient['patient_dob']),
-												"age_in_years" => $patient['patient_age_in_years'],
-												"age_in_months" => $patient['patient_age_in_months'],
-												"is_pregnant" => $patient['is_patient_pregnant'],
-												"is_breastfeeding" => $patient['is_patient_breastfeeding'],
-												"mobile" => $patient['patient_mobile_number'],
-												"consent_to_receive_sms" => $patient['consent_to_receive_sms'],
-												"treatment_initiated_date" => DateUtility::humanReadableDateFormat($patient['treatment_initiated_date']),
-												"current_regimen" => $patient['current_regimen'],
-												"last_viral_load_date" => DateUtility::humanReadableDateFormat($patient['last_viral_load_date']),
-												"last_viral_load_result" => $patient['last_viral_load_result'],
-												"number_of_enhanced_sessions" => $patient['number_of_enhanced_sessions'],
-												"patient_art_no" => $patient['patient_art_no'],
-												"sync_patient_identifiers" => $patient['sync_patient_identifiers'],
-												"is_patient_new" => $patient['is_patient_new'],
-												"sample_tested_datetime" => DateUtility::humanReadableDateFormat($patient['sample_tested_datetime']),
-												"result" => $patient['result'],
-											)
-										);
+									//if (!in_array($value, $artNoList)) {
+									$artNoList[] = $value;
+									$patientDetails = json_encode(
+										array(
+											"name" => $patient['patient_first_name'] . " " . $patient['patient_last_name'],
+											"gender" => $patient['patient_gender'],
+											"dob" => DateUtility::humanReadableDateFormat($patient['patient_dob']),
+											"age_in_years" => $patient['patient_age_in_years'],
+											"age_in_months" => $patient['patient_age_in_months'],
+											"is_pregnant" => $patient['is_patient_pregnant'],
+											"is_breastfeeding" => $patient['is_patient_breastfeeding'],
+											"mobile" => $patient['patient_mobile_number'],
+											"consent_to_receive_sms" => $patient['consent_to_receive_sms'],
+											"treatment_initiated_date" => DateUtility::humanReadableDateFormat($patient['treatment_initiated_date']),
+											"current_regimen" => $patient['current_regimen'],
+											"last_viral_load_date" => DateUtility::humanReadableDateFormat($patient['last_viral_load_date']),
+											"last_viral_load_result" => $patient['last_viral_load_result'],
+											"number_of_enhanced_sessions" => $patient['number_of_enhanced_sessions'],
+											"patient_art_no" => $patient['patient_art_no'],
+											"sync_patient_identifiers" => $patient['sync_patient_identifiers'],
+											"is_patient_new" => $patient['is_patient_new'],
+											"sample_tested_datetime" => DateUtility::humanReadableDateFormat($patient['sample_tested_datetime']),
+											"result" => $patient['result'],
+										)
+									);
 
 								?>
 
-										<tr>
-											<td><input type="radio" id="patient<?php echo $patient['vl_sample_id']; ?>" name="patient" value='
-<?php echo $patientDetails; ?>' onclick="getPatientDetails(this.value);"></td>
-											<td>
-												<?php echo $patient['patient_art_no']; ?>
-											</td>
-											<td>
-												<?php echo ($patient['patient_first_name']) . " " . $patient['patient_last_name']; ?>
-											</td>
-											<td>
-												<?php echo $patient['patient_age_in_years']; ?>
-											</td>
-											<td>
-												<?= str_replace("_", " ", $patient['patient_gender']); ?>
-											</td>
-											<td>
-												<?= $patient['facility_name']; ?>
-											</td>
-											<td>
-												<?= DateUtility::humanReadableDateFormat($patient['request_created_datetime'], true); ?>
-											</td>
-											<td>
-												<?php echo DateUtility::humanReadableDateFormat($patient['sample_tested_datetime']); ?>
-											</td>
-											<td>
-												<?php echo $patient['result']; ?>
-											</td>
-										</tr>
+									<tr>
+										<td>
+											<input type="radio" id="patient<?php echo $patient['vl_sample_id']; ?>" name="patient" value='<?= $patientDetails; ?>' onclick="getPatientDetails(this.value);">
+										</td>
+										<td>
+											<?php echo $patient['patient_art_no']; ?>
+										</td>
+										<td>
+											<?php echo ($patient['patient_first_name']) . " " . $patient['patient_last_name']; ?>
+										</td>
+										<td>
+											<?php echo $patient['patient_age_in_years']; ?>
+										</td>
+										<td>
+											<?= str_replace("_", " ", $patient['patient_gender']); ?>
+										</td>
+										<td>
+											<?= $patient['facility_name']; ?>
+										</td>
+										<td>
+											<?= DateUtility::humanReadableDateFormat($patient['request_created_datetime'], true); ?>
+										</td>
+										<td>
+											<?php echo DateUtility::humanReadableDateFormat($patient['sample_tested_datetime']); ?>
+										</td>
+										<td>
+											<?php echo $patient['result']; ?>
+										</td>
+									</tr>
 								<?php
-									}
+									//}
 								}
 								?>
 							</tbody>

@@ -369,6 +369,7 @@ try {
 	}
 	//echo "<pre>";print_r($covid19Data);die;
 
+	$covid19Data['is_encrypted'] = 'no';
 	if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
 		$key = base64_decode($general->getGlobalConfig('key'));
 		$encryptedPatientId = $general->crypto('encrypt', $covid19Data['patient_id'], $key);
