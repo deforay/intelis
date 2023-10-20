@@ -232,7 +232,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                     </tr>
                                     <tr>
                                         <th scope="row">Numéro de téléphone</th>
-                                        <td><input type="text" class="form-control " id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Numéro de téléphone" title="Numéro de téléphone" style="width:100%;" onchange="" /></td>
+                                        <td><input type="text" class="form-control phone-number" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Numéro de téléphone" title="Numéro de téléphone" style="width:100%;" onchange="" /></td>
 
                                         <th scope="row">Courriel du patient</th>
                                         <td><input type="text" class="form-control " id="patientEmail" name="patientEmail" placeholder="Courriel du patient" title="Courriel du patient" style="width:100%;" /></td>
@@ -1015,7 +1015,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                 <div class="form-group">
                                     <label for="phoneNo" class="col-lg-4 control-label">Phone Number</label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control forceNumeric" id="phoneNo" name="phoneNo" placeholder="Phone Number" onblur="checkNameValidation('facility_details','facility_mobile_numbers',this,null,'The mobile no that you entered already exists.Enter another mobile no.',null)" />
+                                        <input type="text" class="form-control phone-number" id="phoneNo" name="phoneNo" placeholder="Phone Number" onblur="checkNameValidation('facility_details','facility_mobile_numbers',this,null,'The mobile no that you entered already exists.Enter another mobile no.',null)" />
                                     </div>
                                 </div>
                             </div>

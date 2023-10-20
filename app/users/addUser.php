@@ -91,7 +91,7 @@ $ftResult = $db->rawQuery($fQuery);
                                         <div class="form-group">
                                              <label for="phoneNo" class="col-lg-4 control-label"><?php echo _translate("Phone Number"); ?> </label>
                                              <div class="col-lg-7">
-                                                  <input type="text" class="form-control" id="phoneNo" name="phoneNo" placeholder="<?php echo _translate('Phone Number'); ?>" title="<?php echo _translate('Please enter phone number'); ?>" />
+                                                  <input type="text" class="form-control phone-number" id="phoneNo" name="phoneNo" placeholder="<?php echo _translate('Phone Number'); ?>" title="<?php echo _translate('Please enter phone number'); ?>" />
                                              </div>
                                         </div>
                                    </div>

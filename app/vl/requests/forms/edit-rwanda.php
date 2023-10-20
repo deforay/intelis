@@ -276,7 +276,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
                                                             <label for="patientPhoneNumber">Phone Number</label>
-                                                            <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control forceNumeric" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" value="<?= ($vlQueryInfo['patient_mobile_number']); ?>" />
+                                                            <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control phone-number" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" value="<?= ($vlQueryInfo['patient_mobile_number']); ?>" />
                                                        </div>
                                                   </div>
                                              </div>
@@ -551,7 +551,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                  <div class="col-md-4">
                                                                       <label for="reqClinicianPhoneNumber" class="col-lg-5 control-label">Phone Number <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control forceNumeric  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter request clinician phone number" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" />
+                                                                           <input type="text" class="form-control phone-number  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter request clinician phone number" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" />
                                                                       </div>
                                                                  </div>
                                                                  <!--  <div class="col-md-4">
@@ -571,7 +571,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                  <div class="col-md-4">
                                                                       <label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL Shipper Phone Number <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" class="form-control forceNumeric  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl shipper phone number" value="<?= ($vlQueryInfo['vl_focal_person_phone_number']); ?>" />
+                                                                           <input type="text" class="form-control phone-number  <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl shipper phone number" value="<?= ($vlQueryInfo['vl_focal_person_phone_number']); ?>" />
                                                                       </div>
                                                                  </div>
                                                                  <!-- <div class="col-md-4">

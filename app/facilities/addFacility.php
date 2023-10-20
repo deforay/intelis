@@ -224,7 +224,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 										<?php echo _translate("Phone Number"); ?>
 									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control forceNumeric" id="phoneNo" name="phoneNo" placeholder="<?php echo _translate('Phone Number'); ?>" onblur='checkNameValidation("facility_details","facility_mobile_numbers",this,null,"<?php echo _translate("The mobile no that you entered already exists.Enter another mobile no."); ?>",null)' />
+										<input type="text" class="form-control phone-number" id="phoneNo" name="phoneNo" placeholder="<?php echo _translate('Phone Number'); ?>" onblur='checkNameValidation("facility_details","facility_mobile_numbers",this,null,"<?php echo _translate("The mobile no that you entered already exists.Enter another mobile no."); ?>",null)' />
 									</div>
 								</div>
 							</div>

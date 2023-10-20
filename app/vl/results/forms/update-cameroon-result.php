@@ -362,7 +362,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
 										<label for="patientPhoneNumber"><?= _translate('Phone Number'); ?></label>
-										<input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control forceNumeric" maxlength="15" placeholder="<?= _translate('Enter Phone Number'); ?>" title="<?= _translate('Enter phone number'); ?>" value="<?= ($vlQueryInfo['patient_mobile_number']); ?>" <?php echo $disable; ?> />
+										<input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control phone-number" maxlength="15" placeholder="<?= _translate('Enter Phone Number'); ?>" title="<?= _translate('Enter phone number'); ?>" value="<?= ($vlQueryInfo['patient_mobile_number']); ?>" <?php echo $disable; ?> />
 									</div>
 								</div>
 								<div class="row femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "" : "none" ?>" ;>

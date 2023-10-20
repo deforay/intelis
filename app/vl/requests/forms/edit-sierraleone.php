@@ -745,7 +745,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 												<div class="col-md-4">
 													<label for="reqClinicianPhoneNumber" class="col-lg-5 control-label">Phone Number</label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control forceNumeric" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter request clinician phone number" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" />
+														<input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter request clinician phone number" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" />
 													</div>
 												</div>
 												<div class="col-md-4">
@@ -794,7 +794,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 												<div class="col-md-4">
 													<label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL Focal Person Phone Number</label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control forceNumeric labSection  phone-number" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" value="<?= ($vlQueryInfo['vl_focal_person_phone_number']); ?>" />
+														<input type="text" class="form-control labSection  phone-number" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter vl focal person phone number" value="<?= ($vlQueryInfo['vl_focal_person_phone_number']); ?>" />
 													</div>
 												</div>
 											</div>

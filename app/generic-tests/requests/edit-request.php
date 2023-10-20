@@ -613,7 +613,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 									<div class="col-md-6">
 										<label class="col-lg-5" for="patientPhoneNumber">Phone Number</label>
 										<div class="col-lg-7">
-											<input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control forceNumeric" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" value="<?= htmlspecialchars($genericResultInfo['patient_mobile_number']); ?>" />
+											<input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control phone-number" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" value="<?= htmlspecialchars($genericResultInfo['patient_mobile_number']); ?>" />
 										</div>
 									</div>
 									<div class="col-md-6 femaleSection" style="display:<?php echo ($genericResultInfo['patient_gender'] == 'female' || $genericResultInfo['patient_gender'] == '' || $genericResultInfo['patient_gender'] == null) ? "" : "none" ?>" ;>
@@ -712,7 +712,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 												<label class="col-lg-5" for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">
 													Focal Person Phone Number</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control forceNumeric labSection" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter focal person phone number" value="<?= htmlspecialchars($genericResultInfo['testing_lab_focal_person_phone_number']); ?>" />
+													<input type="text" class="form-control phone-number labSection" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter focal person phone number" value="<?= htmlspecialchars($genericResultInfo['testing_lab_focal_person_phone_number']); ?>" />
 												</div>
 											</div>
 										</div>

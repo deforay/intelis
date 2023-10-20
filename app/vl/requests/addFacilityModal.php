@@ -148,7 +148,7 @@ $pResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 
                 <div class="form-group">
                   <label for="phoneNo" class="col-lg-4 control-label">Phone Number</label>
                   <div class="col-lg-7">
-                    <input type="text" class="form-control" id="phoneNo" name="phoneNo" placeholder="Phone Number" />
+                    <input type="text" class="form-control phone-number" id="phoneNo" name="phoneNo" placeholder="Phone Number" />
                   </div>
                 </div>
               </div>

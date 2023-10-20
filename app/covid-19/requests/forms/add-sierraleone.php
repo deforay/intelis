@@ -679,7 +679,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                 <div class="form-group">
                                     <label for="phoneNo" class="col-lg-4 control-label">Phone Number</label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control forceNumeric" id="phoneNo" name="phoneNo" placeholder="Phone Number" onblur="checkNameValidation('facility_details','facility_mobile_numbers',this,null,'The mobile no that you entered already exists.Enter another mobile no.',null)" />
+                                        <input type="text" class="form-control phone-number" id="phoneNo" name="phoneNo" placeholder="Phone Number" onblur="checkNameValidation('facility_details','facility_mobile_numbers',this,null,'The mobile no that you entered already exists.Enter another mobile no.',null)" />
                                     </div>
                                 </div>
                             </div>

@@ -225,7 +225,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </select>
                                         </td>
                                         <th scope="row">Phone number</th>
-                                        <td><input type="text" class="form-control " id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Phone Number" title="Case Phone Number" style="width:100%;" onchange="" /></td>
+                                        <td><input type="text" class="form-control phone-number" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Phone Number" title="Case Phone Number" style="width:100%;" onchange="" /></td>
                                     </tr>
                                     <tr>
                                         <th scope="row">Address</th>
@@ -634,7 +634,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <div class="form-group">
                                     <label for="phoneNo" class="col-lg-4 control-label">Phone Number</label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control forceNumeric" id="phoneNo" name="phoneNo" placeholder="Phone Number" onblur="checkNameValidation('facility_details','facility_mobile_numbers',this,null,'The mobile no that you entered already exists.Enter another mobile no.',null)" />
+                                        <input type="text" class="form-control phone-number" id="phoneNo" name="phoneNo" placeholder="Phone Number" onblur="checkNameValidation('facility_details','facility_mobile_numbers',this,null,'The mobile no that you entered already exists.Enter another mobile no.',null)" />
                                     </div>
                                 </div>
                             </div>

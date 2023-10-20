@@ -123,7 +123,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											<label for="reqClinicianPhoneNumber">Clinic/Ward Telephone </label>
 										</td>
 										<td style="width:20%">
-											<input type="text" class="form-control forceNumeric" name="reqClinicianPhoneNumber" id="reqClinicianPhoneNumber" placeholder="Telephone" title="Enter Telephone" style="width:100%;">
+											<input type="text" class="form-control phone-number" name="reqClinicianPhoneNumber" id="reqClinicianPhoneNumber" placeholder="Telephone" title="Enter Telephone" style="width:100%;">
 										</td>
 										<td style="width:10%" class="labels">
 											<label for="requestDate">Date Requested</label>

@@ -256,7 +256,7 @@ $fundingSourceOptions = $general->generateSelectOptions($fundingSourceArray, $co
                                     </tr>
                                     <tr>
                                         <th scope="row"><label for="patientPhoneNumber">Patient phone</label></th>
-                                        <td><input type="text" class="form-control " value="<?php echo $covid19Info['patient_phone_number']; ?>" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Patient phone" title="Please enter the patient phone" style="width:100%;" /></td>
+                                        <td><input type="text" class="form-control phone-number" value="<?php echo $covid19Info['patient_phone_number']; ?>" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Patient phone" title="Please enter the patient phone" style="width:100%;" /></td>
 
                                         <th scope="row"><label for="patientAddress">Patient Address</label></th>
                                         <td><textarea class="form-control " id="patientAddress" name="patientAddress" placeholder="Patient Address" title="Please enter the Patient Address" style="width:100%;"><?php echo $covid19Info['patient_address']; ?></textarea></td>

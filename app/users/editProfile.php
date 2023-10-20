@@ -98,7 +98,7 @@ $data = $db->get("user_login_history", 25);
                 <div class="form-group">
                   <label for="phoneNo" class="col-lg-4 control-label"><?php echo _translate("Phone Number"); ?></label>
                   <div class="col-lg-8">
-                    <input type="text" class="form-control" id="phoneNo" name="phoneNo" placeholder="<?php echo _translate('Phone Number'); ?>" title="<?php echo _translate('Please enter phone number'); ?>" value="<?php echo $userInfo['phone_number']; ?>" />
+                    <input type="text" class="form-control phone-number" id="phoneNo" name="phoneNo" placeholder="<?php echo _translate('Phone Number'); ?>" title="<?php echo _translate('Please enter phone number'); ?>" value="<?php echo $userInfo['phone_number']; ?>" />
                   </div>
                 </div>
               </div>

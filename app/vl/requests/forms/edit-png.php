@@ -268,7 +268,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim($vlQueryInfo['clinic_date']) != '
 											<label for="reqClinicianPhoneNumber">Clinic/Ward Telephone </label>
 										</td>
 										<td>
-											<input type="text" class="form-control forceNumeric" name="reqClinicianPhoneNumber" id="reqClinicianPhoneNumber" placeholder="Telephone" title="Enter Telephone" style="width:100%;" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>">
+											<input type="text" class="form-control phone-number" name="reqClinicianPhoneNumber" id="reqClinicianPhoneNumber" placeholder="Telephone" title="Enter Telephone" style="width:100%;" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>">
 										</td>
 										<td class="labels">
 											<label for="requestDate">Date Requested </label>

@@ -422,7 +422,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
                                              <div class="col-md-6">
                                                   <label class="col-lg-5" for="patientPhoneNumber">Phone Number</label>
                                                   <div class="col-lg-7">
-                                                       <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control forceNumeric" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" />
+                                                       <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control phone-number" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" />
                                                   </div>
                                              </div>
                                              <div class="col-md-6 femaleSection">
@@ -509,7 +509,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
                                                        <div class="col-md-6">
                                                             <label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label labels"> Focal Person Phone Number</label>
                                                             <div class="col-lg-7">
-                                                                 <input type="text" class="form-control forceNumeric" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter focal person phone number" />
+                                                                 <input type="text" class="form-control phone-number" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" placeholder="Phone Number" title="Please enter focal person phone number" />
                                                             </div>
                                                        </div>
                                                   </div>

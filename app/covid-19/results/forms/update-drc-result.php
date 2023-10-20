@@ -244,7 +244,7 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                                 </tr>
                                 <tr>
                                     <th scope="row">Numéro de téléphone</th>
-                                    <td><input type="text" class="form-control " id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Numéro de téléphone" title="Numéro de téléphone" style="width:100%;" value="<?php echo $covid19Info['patient_phone_number']; ?>" /></td>
+                                    <td><input type="text" class="form-control phone-number" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="Numéro de téléphone" title="Numéro de téléphone" style="width:100%;" value="<?php echo $covid19Info['patient_phone_number']; ?>" /></td>
                                     <th scope="row">Courriel du patient</th>
                                     <td><input type="text" class="form-control " id="patientEmail" name="patientEmail" placeholder="Courriel du patient" title="Province du patient" style="width:100%;" value="<?php echo $covid19Info['patient_email']; ?>" /></td>
                                 </tr>
