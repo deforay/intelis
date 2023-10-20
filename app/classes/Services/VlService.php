@@ -363,7 +363,8 @@ class VlService extends AbstractTestService
                 $vlResult = $absDecimalVal = (float) $resultArray[0];
                 $logVal = round(log10($absDecimalVal), 2);
             }
-        } elseif (strpos($result, '<')) {
+        } elseif ($result == '< 839') {
+            $vlResult = $txtVal = 'Below Detection Limit';
         } else {
             $absVal = ($result);
             $vlResult = $absDecimalVal = (float) trim($result);
