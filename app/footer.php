@@ -287,7 +287,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		?> showModal('/addInstanceDetails.php', 900, 420);
 		<?php } ?>
 
-		$('.phone-number').on('input change', function () {
+		$('.phone-number').on('change blur', function () {
     var phoneNumber = $(this).val();
 
     $.ajax({
