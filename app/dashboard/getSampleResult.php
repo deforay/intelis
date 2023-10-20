@@ -104,6 +104,10 @@ if ($_SESSION['instanceType'] != 'remoteuser') {
             $whereCondition = " covid19.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
         } elseif (isset($_POST['type']) && trim($_POST['type']) == 'tb') {
             $whereCondition = " tb.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
+        } elseif (isset($_POST['type']) && trim($_POST['type']) == 'hepatitis') {
+            $whereCondition = " hepatitis.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
+        } elseif (isset($_POST['type']) && trim($_POST['type']) == 'generic-tests') {
+            $whereCondition = " generic.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
         } else {
             $whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  AND ";
         }

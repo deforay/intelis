@@ -149,8 +149,8 @@ try {
                 $_POST['reasonForVLTesting'] = $_POST['newreasonForVLTesting'];
             }
             $reasonQuery = "SELECT test_reason_id FROM r_vl_test_reasons
-                        WHERE test_reason_name='" . $_POST['reasonForVLTesting'] . "'";
-            $reasonResult = $db->rawQuery($reasonQuery);
+                        WHERE test_reason_name= ?";
+            $reasonResult = $db->rawQuery($reasonQuery, [$_POST['reasonForVLTesting']]);
             if (isset($reasonResult[0]['test_reason_id']) && $reasonResult[0]['test_reason_id'] != '') {
                 $_POST['reasonForVLTesting'] = $reasonResult[0]['test_reason_id'];
             } else {
