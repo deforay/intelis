@@ -77,6 +77,11 @@ if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
      $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
 
+if (isset($_POST['gender']) && $_POST['gender'] != '') {
+     $sWhere[] = ' vl.patient_gender = "' . $_POST['gender'] . '"';
+ }
+ 
+
 if (isset($_POST['pregnancy']) && trim($_POST['pregnancy']) != '') {
      $sWhere[] = " vl.is_patient_pregnant = '" . $_POST['pregnancy'] . "' ";
 }

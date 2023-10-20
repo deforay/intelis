@@ -356,6 +356,28 @@ $state = $geolocationService->getProvinces("yes");
 														<input type="text" id="vfVlnsSampleTestDate" name="vfVlnsSampleTestDate" class="form-control vfvlnsfilters daterangefield" placeholder="<?php echo _translate('Select Tested Date'); ?>" style="width:220px;background:#fff;" />
 													</td>
 													<td><strong>
+															<?php echo _translate("Gender"); ?>&nbsp;:
+														</strong></td>
+													<td>
+														<select name="vfvlnGender" id="vfvlnGender" class="form-control" title="<?php echo _translate('Please choose gender'); ?>" style="width:170px;" onchange="hideFemaleDetails(this.value,'pregnancy','breastfeeding');">
+															<option value="">
+																<?php echo _translate("-- Select --"); ?>
+															</option>
+															<option value="male">
+																<?php echo _translate("Male"); ?>
+															</option>
+															<option value="female">
+																<?php echo _translate("Female"); ?>
+															</option>
+															<option value="not_recorded">
+																<?php echo _translate("Not Recorded"); ?>
+															</option>
+														</select>
+													</td>
+													
+												</tr>
+												<tr>
+													<td><strong>
 															<?php echo _translate("Pregnancy"); ?>&nbsp;:
 														</strong></td>
 													<td>
@@ -370,8 +392,6 @@ $state = $geolocationService->getProvinces("yes");
 																<?php echo _translate("No"); ?>
 															</option>														</select>
 													</td>
-												</tr>
-												<tr>
 													<td><strong>
 															<?php echo _translate("Breastfeeding"); ?>&nbsp;:
 														</strong></td>
@@ -1081,6 +1101,7 @@ $state = $geolocationService->getProvinces("yes");
 				state: $('#vfVlnsState').val(),
 				district: $('#vfVlnsDistrict').val(),
 				facilityName: $('#vfVlnsfacilityName').val(),
+				gender:$('#vfvlnGender').val(),
 				pregnancy: $('#pregnancy').val(),
 				breastfeeding: $('#breastfeeding').val(),
 				minAge: $('#min_age').val(),
