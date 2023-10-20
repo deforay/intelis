@@ -52,7 +52,8 @@
         "symfony/console": "^5.4",
         "gettext/gettext": "^5.7",
         "carbondate/carbon": "^1.33",
-        "nesbot/carbon": "*"
+        "nesbot/carbon": "*",
+        "brick/phonenumber": "^0.5.0"
     },
     "suggest": {
         "dcarbone/php-fhir-generated": "Needed for FHIR Parsing",

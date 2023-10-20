@@ -286,6 +286,36 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		if (empty($_SESSION['instanceFacilityName'])) {
 		?> showModal('/addInstanceDetails.php', 900, 420);
 		<?php } ?>
+
+		$('.phone-number').on('input change', function () {
+    var phoneNumber = $(this).val();
+
+    $.ajax({
+        type: 'POST',
+        url: '/includes/validatePhoneNumber.php',
+        data: { phoneNumber: phoneNumber },
+        success: function (response) {
+            if (!response.isValid) {
+                Toastify({
+                    text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>",
+                    duration: 3000,
+                    style: {
+                        background: 'red',
+                    }
+                }).showToast();
+            }
+        },
+        error: function () {
+            console.error("An error occurred while validating the phone number.");
+        }
+    });
+});
+
+$('.phone-number').on('focus', function() {
+          if ($(this).val() == "") {
+               $(this).val("<?php echo $countryCode ?? null; ?>")
+          };
+     });
 	});
 
 	function editableSelect(id, _fieldName, table, _placeholder) {
@@ -346,6 +376,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		// Replace spaces with underscore
 		return result.replace(/ /g, '_');
 	}
+	
 </script>
 </body>
 
