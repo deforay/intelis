@@ -74,7 +74,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 <script type="text/javascript" src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script type="text/javascript" src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/js/dayjs.min.js"></script>
+<script type="text/javascript" src="/assets/js/dayjs.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/dayjs.min.js") ?>"></script>
 <script type="text/javascript" src='/assets/js/main.js?v=<?= filemtime(WEB_ROOT . "/assets/js/main.js") ?>'></script>
 <script type="text/javascript" src="/assets/js/app.min.js"></script>
 <script type="text/javascript" src="/assets/js/deforayValidation.js"></script>
@@ -287,35 +287,37 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 		?> showModal('/addInstanceDetails.php', 900, 420);
 		<?php } ?>
 
-		$('.phone-number').on('change blur', function () {
-    var phoneNumber = $(this).val();
+		$('.phone-number').on('change blur', function() {
+			var phoneNumber = $(this).val();
 
-    $.ajax({
-        type: 'POST',
-        url: '/includes/validatePhoneNumber.php',
-        data: { phoneNumber: phoneNumber },
-        success: function (response) {
-            if (!response.isValid) {
-                Toastify({
-                    text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>",
-                    duration: 3000,
-                    style: {
-                        background: 'red',
-                    }
-                }).showToast();
-            }
-        },
-        error: function () {
-            console.error("An error occurred while validating the phone number.");
-        }
-    });
-});
+			$.ajax({
+				type: 'POST',
+				url: '/includes/validatePhoneNumber.php',
+				data: {
+					phoneNumber: phoneNumber
+				},
+				success: function(response) {
+					if (!response.isValid) {
+						Toastify({
+							text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', true) ?>",
+							duration: 3000,
+							style: {
+								background: 'red',
+							}
+						}).showToast();
+					}
+				},
+				error: function() {
+					console.error("An error occurred while validating the phone number.");
+				}
+			});
+		});
 
-$('.phone-number').on('focus', function() {
-          if ($(this).val() == "") {
-               $(this).val("<?php echo $countryCode ?? null; ?>")
-          };
-     });
+		$('.phone-number').on('focus', function() {
+			if ($(this).val() == "") {
+				$(this).val("<?php echo $countryCode ?? null; ?>")
+			};
+		});
 	});
 
 	function editableSelect(id, _fieldName, table, _placeholder) {
@@ -376,7 +378,6 @@ $('.phone-number').on('focus', function() {
 		// Replace spaces with underscore
 		return result.replace(/ /g, '_');
 	}
-	
 </script>
 </body>
 

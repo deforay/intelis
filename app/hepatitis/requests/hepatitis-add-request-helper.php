@@ -192,6 +192,7 @@ try {
 			}
 		}
 
+		$hepatitisData['is_encrypted'] = 'no';
 		if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
 			$key = base64_decode($general->getGlobalConfig('key'));
 			$encryptedPatientId = $general->crypto('encrypt', $hepatitisData['patient_id'], $key);
