@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Oct 16, 2023 at 05:04 PM
+-- Generation Time: Oct 23, 2023 at 04:53 PM
 -- Server version: 5.7.39
 -- PHP Version: 7.4.33
 
@@ -4774,6 +4774,23 @@ INSERT INTO `r_vl_test_reasons` (`test_reason_id`, `test_reason_name`, `parent_r
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `scheduled_jobs`
+--
+
+CREATE TABLE `scheduled_jobs` (
+  `job_id` int(11) NOT NULL,
+  `job` text,
+  `requested_on` datetime DEFAULT CURRENT_TIMESTAMP,
+  `requested_by` varchar(256) DEFAULT NULL,
+  `scheduled_on` datetime DEFAULT NULL,
+  `run_once` varchar(3) DEFAULT 'no',
+  `completed_on` datetime DEFAULT NULL,
+  `status` varchar(20) NOT NULL DEFAULT 'pending'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `support`
 --
 
@@ -4801,13 +4818,6 @@ CREATE TABLE `system_admin` (
   `system_admin_password` mediumtext
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `system_admin`
---
-
-INSERT INTO `system_admin` (`system_admin_id`, `system_admin_name`, `system_admin_email`, `system_admin_login`, `system_admin_password`) VALUES
-(1, 'rwadmin', NULL, 'rwadmin', '123');
-
 -- --------------------------------------------------------
 
 --
@@ -4827,7 +4837,7 @@ CREATE TABLE `system_config` (
 INSERT INTO `system_config` (`display_name`, `name`, `value`) VALUES
 ('Testing Lab ID', 'sc_testing_lab_id', ''),
 ('User Type', 'sc_user_type', 'vluser'),
-('Version', 'sc_version', '5.2.4'),
+('Version', 'sc_version', '5.2.5'),
 ('Email Id', 'sup_email', NULL),
 ('Password', 'sup_password', NULL);
 
@@ -6021,6 +6031,12 @@ ALTER TABLE `r_vl_test_reasons`
   ADD PRIMARY KEY (`test_reason_id`);
 
 --
+-- Indexes for table `scheduled_jobs`
+--
+ALTER TABLE `scheduled_jobs`
+  ADD PRIMARY KEY (`job_id`);
+
+--
 -- Indexes for table `support`
 --
 ALTER TABLE `support`
@@ -6649,6 +6665,12 @@ ALTER TABLE `r_vl_test_reasons`
   MODIFY `test_reason_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10000;
 
 --
+-- AUTO_INCREMENT for table `scheduled_jobs`
+--
+ALTER TABLE `scheduled_jobs`
+  MODIFY `job_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `support`
 --
 ALTER TABLE `support`
@@ -6658,13 +6680,13 @@ ALTER TABLE `support`
 -- AUTO_INCREMENT for table `system_admin`
 --
 ALTER TABLE `system_admin`
-  MODIFY `system_admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `system_admin_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `s_app_menu`
 --
 ALTER TABLE `s_app_menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=181;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=183;
 
 --
 -- AUTO_INCREMENT for table `s_available_country_forms`
