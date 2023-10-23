@@ -768,6 +768,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 		}
 		if ($.trim(patientArray['current_regimen']) != '') {
 			$("#artRegimen").val($.trim(patientArray['current_regimen']));
+			$('#artRegimen').trigger('change');
 		}
 		if ($.trim(patientArray['is_patient_new']) != '') {
 			if (patientArray['is_patient_new'] == 'yes') {
