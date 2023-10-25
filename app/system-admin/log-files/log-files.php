@@ -39,7 +39,7 @@ $sResult = $db->rawQuery($sQuery);
 					<!-- /.box-header -->
 					<div class="box-body">
 						<!-- <span><i class="fa fa-trash" style="color: red; background"></i></span> -->
-						<pre class="logViewer hide" style="white-space: pre-wrap;"><code id="logViewer"></code></pre>
+						<pre class="logViewer hide" id="logViewer" style="white-space: pre-wrap;"></pre>
 					</div>
 					<!-- /.box-body -->
 				</div>

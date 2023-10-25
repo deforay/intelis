@@ -230,22 +230,26 @@ class CommonService
 
     public static function encrypt($message, $key): string
     {
-        $nonce = random_bytes(
-            SODIUM_CRYPTO_SECRETBOX_NONCEBYTES
-        );
+        try {
+            $nonce = random_bytes(
+                SODIUM_CRYPTO_SECRETBOX_NONCEBYTES
+            );
 
-        $cipher = sodium_bin2base64(
-            $nonce .
-                sodium_crypto_secretbox(
-                    $message,
-                    $nonce,
-                    $key
-                ),
-            SODIUM_BASE64_VARIANT_URLSAFE
-        );
-        sodium_memzero($message);
-        sodium_memzero($key);
-        return $cipher;
+            $cipher = sodium_bin2base64(
+                $nonce .
+                    sodium_crypto_secretbox(
+                        $message,
+                        $nonce,
+                        $key
+                    ),
+                SODIUM_BASE64_VARIANT_URLSAFE
+            );
+            sodium_memzero($message);
+            sodium_memzero($key);
+            return $cipher;
+        } catch (\SodiumException $e) {
+            return $message;
+        }
     }
 
     public static function decrypt($encrypted, $key): string

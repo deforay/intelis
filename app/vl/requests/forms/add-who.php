@@ -1445,6 +1445,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
           if ($.trim(patientArray['current_regimen']) != '') {
                $("#artRegimen").val($.trim(patientArray['current_regimen']));
+               $('#artRegimen').trigger('change');
           }
 
           if ($.trim(patientArray['sample_tested_datetime']) != '') {
