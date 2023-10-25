@@ -132,15 +132,16 @@ service apache2 restart || { echo "Failed to restart Apache2. Exiting..."; exit 
 echo "Modifying PHP configurations..."
 
 # Get total RAM and calculate 75%
-TOTAL_RAM=$(awk '/MemTotal/ {print $2}' /proc/meminfo)
-RAM_75_PERCENT=$((TOTAL_RAM*3/4/1024))M
+TOTAL_RAM=$(awk '/MemTotal/ {print $2}' /proc/meminfo) || exit 1
+RAM_75_PERCENT=$((TOTAL_RAM*3/4/1024))M || RAM_75_PERCENT=1G
 
 for phpini in /etc/php/7.4/apache2/php.ini /etc/php/7.4/cli/php.ini; do
-    grep -qE '^error_reporting = E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED & ~E_WARNING' $phpini || sed -i "s/^error_reporting = .*/error_reporting = E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED & ~E_WARNING/" $phpini
-    sed -i "s/^post_max_size = .*/post_max_size = 1G/" $phpini
-    sed -i "s/^upload_max_filesize = .*/upload_max_filesize = 1G/" $phpini
-    sed -i "s/^memory_limit = .*/memory_limit = $RAM_75_PERCENT/" $phpini
+    grep -qE '^error_reporting[[:space:]=].*' $phpini || sed -i "s/^error_reporting[[:space:]=].*/error_reporting = E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED & ~E_WARNING/" $phpini
+    sed -i "s/^post_max_size[[:space:]=].*/post_max_size = 1G/" $phpini
+    sed -i "s/^upload_max_filesize[[:space:]=].*/upload_max_filesize = 1G/" $phpini
+    sed -i "s/^memory_limit[[:space:]=].*/memory_limit = $RAM_75_PERCENT/" $phpini
 done
+
 
 
 # phpMyAdmin Setup
