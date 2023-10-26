@@ -208,6 +208,8 @@ if (!empty($requestResult)) {
                $sampleDispatchTime = $expStr[1];
           }
 
+          $finalDate = date('d/M/Y', strtotime('+1 day', strtotime($result['sample_tested_datetime'])));
+
           if (isset($result['sample_tested_datetime']) && trim($result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", $result['sample_tested_datetime']);
                $result['sample_tested_datetime'] = date('d/M/Y', strtotime($expStr[0])) . " " . $expStr[1];
@@ -387,7 +389,7 @@ if (!empty($requestResult)) {
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Comment, if applicable : ') . '</td>';
           $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $result['lab_tech_comments'] . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Date : ') . '</td>';
-          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black"></td>';
+          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">'.$finalDate.'</td>';
 
           $html .= '</tr>';
           $html .= '<tr><td></td></tr>';
