@@ -61,6 +61,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
 $countryCode = $arr['default_phone_prefix'];
 $minNumberOfDigits = $arr['min_phone_length'];
 $maxNumberOfDigits = $arr['max_phone_length'];
+$specimenTypeResult = $eidService->getEidSampleTypes();
 
 ?>
 
@@ -299,7 +300,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row"><?= _translate("Mother's HIV Test Date"); ?></th>
+                                        <th scope="row"><?= _translate("Date of HIV diagnosis"); ?></th>
                                         <td>
                                             <input type="text" class="form-control date" name="motherHivTestDate" id="motherHivTestDate" placeholder="<?= _translate("Enter date of Mother's Hiv Test"); ?>" title="<?= _translate("Enter date of Mother's Hiv Test"); ?>" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['mother_hiv_test_date']); ?>" />
                                         </td>
@@ -491,6 +492,15 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                         <td style="width:35% !important;">
                                             <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" onchange="generateSampleCode();" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_collection_date']); ?>" />
                                         </td>
+                                        <th scope="row" style="width:15% !important" class="labels">Sample Type <span class="mandatory">*</span> </th>
+                                        <td style="width:35% !important;">
+                                            <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%">
+                                                <?php echo $general->generateSelectOptions($specimenTypeResult, $eidInfo['specimen_type'], '-- Select --'); ?>
+                                            </select>
+                                        </td>
+                                       
+                                    </tr>
+                                    <tr>
                                         <th style="width:15% !important;"><?= _translate('Recollected'); ?></th>
                                         <td style="width:35% !important;">
                                             <select class="form-control" name="isSampleRecollected" id="isSampleRecollected">
@@ -499,18 +509,18 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                 <option value="no" <?php echo ($eidInfo['is_sample_recollected'] == 'no') ? "selected='selected'" : ""; ?>> <?= _translate('No'); ?> </option>
                                             </select>
                                         </td>
-                                    </tr>
-                                    <tr>
                                         <th scope="row"><?= _translate('Name of health personnel'); ?></th>
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="<?= _translate('Requesting Officer'); ?>" value="<?= $eidInfo['sample_requestor_name'] ?>" />
                                         </td>
+                                       
+                                    </tr>
+                                        <tr>
                                         <th scope="row"><?= _translate('Contact Number'); ?></th>
                                         <td>
                                             <input class="form-control phone-number" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" maxlength="<?php echo strlen($countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Requesting Officer Phone'); ?>" value="<?= $eidInfo['sample_requestor_phone'] ?>" />
                                         </td>
                                     </tr>
-
                                 </table>
 
 

@@ -154,6 +154,7 @@ $sQuery = "SELECT vl.vl_sample_id,
                f.facility_district,
                u_d.user_name as reviewedBy,
                a_u_d.user_name as approvedBy,
+               c_u_d.user_name as createdBy,
                rs.rejection_reason_name,
                r_c_a.recommended_corrective_action_name,
                tr.test_reason_name,
@@ -169,6 +170,7 @@ $sQuery = "SELECT vl.vl_sample_id,
                LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
                LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
                LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+               LEFT JOIN user_details as c_u_d ON c_u_d.user_id=vl.request_created_by
                LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
                LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by
                LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
@@ -336,9 +338,15 @@ if (!empty($sWhere)) {
 $sQuery = $sQuery . ' WHERE ' . $sWhere;
 
 if (!empty($sOrder)) {
-     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
-     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
+     if ($arr['vl_form'] == 4 && $arr['vl_excel_export_format'] == "cresar") {
+          $sQuery = $sQuery . ' ORDER BY vl.request_created_datetime';
+     }
+     else{
+          $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+          $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
+     }
 }
+
 
 $_SESSION['vlResultQuery'] = $sQuery;
 

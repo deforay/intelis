@@ -141,7 +141,7 @@ if (!empty($requestResult)) {
           $header = '<table style="padding:4px 2px 2px 2px;width:100%; border:1px solid black">';
           $header .= '<tr>';
           $header .= '<td style="line-height:30px;text-align:center;padding-top:20px;" width="20%">' . $logo . '</td>';
-          $header .= '<td style="text-align:center; font-weight:bold; font-size 20px;" width="80%">' . $result['labName'] . '<br>RESEARCH CENTER FOR ARMY HEALTH<br>MILITARY HEALTH RESEARCH CENTER<br><span style="font-size:20px;">B.P. 7039; stewardship crossroads : Tel : 222229161</span></td>';
+          $header .= '<td style="text-align:center; font-weight:bold; font-size 20px;" width="80%">' . $result['labName'] . '<br>'._translate('RESEARCH CENTER FOR ARMY HEALTH').'<br>'._translate('MILITARY HEALTH RESEARCH CENTER').'<br><span style="font-size:20px;">B.P. 7039;'. _translate('stewardship crossroads').' : Tel : 222229161</span></td>';
           $header .= '</tr>';
           $header .= '</table>';
           $pdf->writeHTML($header, true, false, true, false, 'C');
@@ -340,7 +340,7 @@ if (!empty($requestResult)) {
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('ARV initiation date : ') . ($result['treatment_initiated_date']) . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Modifier : ') . ($result['last_modified_by']) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Modifier : ') . ($result['modifiedBy']) . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Modification date : ') . ($result['last_modified_datetime']) . '</td>';
           $html .= '</tr>';
           $html .= '</table>';
@@ -367,10 +367,10 @@ if (!empty($requestResult)) {
           $html .= '<tr>';
           $html .= '<td width="10%" style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Result : ') . '</td>';
           $html .= '<td width="10%" style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . htmlspecialchars($result['result']) . '</td>';
-          $html .= '<td width="20%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Result Log : ') . '</td>';
+          $html .= '<td width="20%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Results (log) : ') . '</td>';
           $html .= '<td width="10%" style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $logValue . '</td>';
           $html .= '<td width="20%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Test Done By : ') . '</td>';
-          $html .= '<td width="30%" style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $testedBy . '</td>';
+          $html .= '<td width="30%" style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' .$result['labName'] . '</td>';
 
           $html .= '</tr>';
           $html .= '<tr><td width="100%" style="line-height:20px;font-size:10px;">';
@@ -401,7 +401,13 @@ if (!empty($requestResult)) {
                $signImg = '';
           }
           $html .= '<tr><td></td></tr>';
-          $html .= '<tr><td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Signature : ') . $signImg  . '</td>';
+          if(!empty($signImg)){
+               $html .= '<tr><td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Signature : ') . $signImg  . '</td>';
+          }
+          else
+          {
+               $html .= '<tr><td style="line-height:10px;font-size:10px;text-align:left;"></td>';
+          }
           $html .= '<td style="line-height:10px;font-size:10px;text-align:right;"></td>';
 
           $html .= '</tr>';
