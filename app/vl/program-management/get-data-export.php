@@ -338,16 +338,9 @@ if (!empty($sWhere)) {
 $sQuery = $sQuery . ' WHERE ' . $sWhere;
 
 if (!empty($sOrder)) {
-     if ($arr['vl_form'] == 4 && $arr['vl_excel_export_format'] == "cresar") {
-          $sQuery = $sQuery . ' ORDER BY vl.request_created_datetime';
-     }
-     else{
-          $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
-          $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
-     }
+     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }
-
-
 $_SESSION['vlResultQuery'] = $sQuery;
 
 [$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);

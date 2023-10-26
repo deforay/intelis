@@ -77,6 +77,11 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 
 	//$sheet->getStyle('A3:AI3')->applyFromArray($styleArray);
 
+	if ($arr['vl_form'] == 4 && $arr['vl_excel_export_format'] == "cresar") {
+		usort($rResult, function($a, $b) {
+			return $a['request_created_datetime'] <=> $b['request_created_datetime'];
+		});
+	}
 	$no = 1;
 	foreach ($rResult as $aRow) {
 		$row = [];
