@@ -363,7 +363,7 @@ $sFormat = '';
                                                             <div class="form-group">
                                                                  <label for="patientPregnant">Is Patient Pregnant? </label><br>
                                                                  <label class="radio-inline">
-                                                                      <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Please check one"> Yes
+                                                                      <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Is Patient Pregnant?"> Yes
                                                                  </label>
                                                                  <label class="radio-inline">
                                                                       <input type="radio" class="" id="pregNo" name="patientPregnant" value="no"> No
@@ -374,7 +374,7 @@ $sFormat = '';
                                                             <div class="form-group">
                                                                  <label for="breastfeeding">Is Patient Breastfeeding? </label><br>
                                                                  <label class="radio-inline">
-                                                                      <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Please check one"> Yes
+                                                                      <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Is Patient Breastfeeding?"> Yes
                                                                  </label>
                                                                  <label class="radio-inline">
                                                                       <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no"> No

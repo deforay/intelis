@@ -429,7 +429,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
                                                   <label class="col-lg-5" for="patientPregnant">Is Patient Pregnant? </label>
                                                   <div class="col-lg-7">
                                                        <label class="radio-inline">
-                                                            <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Please check one"> Yes
+                                                            <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="Is Patient Pregnant?"> Yes
                                                        </label>
                                                        <label class="radio-inline">
                                                             <input type="radio" class="" id="pregNo" name="patientPregnant" value="no"> No
@@ -442,7 +442,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
                                                   <label class="col-lg-5" for="breastfeeding">Is Patient Breastfeeding? </label>
                                                   <div class="col-lg-7">
                                                        <label class="radio-inline">
-                                                            <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Please check one"> Yes
+                                                            <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="Is Patient Breastfeeding?"> Yes
                                                        </label>
                                                        <label class="radio-inline">
                                                             <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no"> No
