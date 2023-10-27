@@ -1,9 +1,10 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Utilities\ValidationUtility;
+use App\Registries\ContainerRegistry;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -38,11 +39,14 @@ $instanceId = $general->getInstanceId();
 
 try {
 
-     $validateField = array($_POST['vlSampleId'], $_POST['sampleCode'], $_POST['sampleCollectionDate']);
-     $chkValidation = $general->checkMandatoryFields($validateField);
-     if ($chkValidation) {
+     $mandatoryFields = [
+          $_POST['vlSampleId'],
+          $_POST['sampleCode'],
+          $_POST['sampleCollectionDate']
+     ];
+     if (ValidationUtility::validateMandatoryFields($mandatoryFields) === false) {
           $_SESSION['alertMsg'] = _translate("Please enter all mandatory fields to save the test request");
-          header("Location:editVlRequest.php?id=" . base64_encode($_POST['vlSampleId']));
+          header("Location:addVlRequest.php");
           die;
      }
 

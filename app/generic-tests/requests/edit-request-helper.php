@@ -37,11 +37,13 @@ $absVal = null;
 $txtVal = null;
 $resultStatus = null;
 try {
-     $validateField = array($_POST['sampleCode'], $_POST['sampleCollectionDate']);
-     $chkValidation = $general->checkMandatoryFields($validateField);
-     if ($chkValidation) {
+     $mandatoryFields = [
+          $_POST['sampleCode'],
+          $_POST['sampleCollectionDate']
+     ];
+     if (ValidationUtility::validateMandatoryFields($mandatoryFields) === false) {
           $_SESSION['alertMsg'] = _translate("Please enter all mandatory fields to save the test request");
-          header("Location:edit-request.php?id=" . base64_encode($_POST['vlSampleId']));
+          header("Location:addVlRequest.php");
           die;
      }
 

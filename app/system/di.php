@@ -9,6 +9,7 @@ use App\Services\BatchService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\ValidationUtility;
 use App\Services\CommonService;
 use App\Services\SystemService;
 use App\Services\AppMenuService;
@@ -137,6 +138,7 @@ $builder->addDefinitions([
     ImageResizeUtility::class => DI\create(ImageResizeUtility::class),
     CaptchaUtility::class => DI\create(CaptchaUtility::class),
     MiscUtility::class => DI\create(MiscUtility::class),
+    ValidationUtility::class => DI\create(ValidationUtility::class),
     ErrorResponseGenerator::class => DI\create(ErrorResponseGenerator::class)
         ->constructor($debugMode),
     PdfConcatenateHelper::class => DI\create(PdfConcatenateHelper::class),

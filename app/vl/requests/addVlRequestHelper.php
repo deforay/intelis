@@ -4,6 +4,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
+use App\Utilities\ValidationUtility;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -24,7 +25,6 @@ $finalResult = null;
 $systemType = $general->getSystemConfig('sc_user_type');
 $formId = $general->getGlobalConfig('vl_form');
 
-
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
@@ -34,19 +34,21 @@ $instanceId = $general->getInstanceId();
 
 try {
 
-    $validateField = array($_POST['vlSampleId'], $_POST['sampleCode'], $_POST['sampleCollectionDate']);
-    $chkValidation = $general->checkMandatoryFields($validateField);
-    if ($chkValidation) {
+    $mandatoryFields = [
+        $_POST['vlSampleId'],
+        $_POST['sampleCode'],
+        $_POST['sampleCollectionDate']
+    ];
+    if (ValidationUtility::validateMandatoryFields($mandatoryFields) === false) {
         $_SESSION['alertMsg'] = _translate("Please enter all mandatory fields to save the test request");
         header("Location:addVlRequest.php");
         die;
     }
 
-
-    $resultStatus = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
-
     if ($_SESSION['instanceType'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') {
         $resultStatus = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+    } else {
+        $resultStatus = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
     }
 
     //add province

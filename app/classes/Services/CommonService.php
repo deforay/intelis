@@ -216,18 +216,6 @@ class CommonService
         });
     }
 
-    // checking if the provided field list has any empty or null values
-    public function checkMandatoryFields($field): bool
-    {
-        foreach ($field as $chkField) {
-            if (empty(trim($chkField))) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public static function encrypt($message, $key): string
     {
         try {

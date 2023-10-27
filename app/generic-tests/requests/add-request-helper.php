@@ -1,9 +1,10 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\GenericTestsService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Utilities\ValidationUtility;
+use App\Registries\ContainerRegistry;
+use App\Services\GenericTestsService;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -34,9 +35,11 @@ $vl_result_category = null;
 $systemType = $general->getSystemConfig('sc_user_type');
 try {
 
-    $validateField = array($_POST['sampleCode'], $_POST['sampleCollectionDate']);
-    $chkValidation = $general->checkMandatoryFields($validateField);
-    if ($chkValidation) {
+    $mandatoryFields = [
+        $_POST['sampleCode'],
+        $_POST['sampleCollectionDate']
+    ];
+    if (ValidationUtility::validateMandatoryFields($mandatoryFields) === false) {
         $_SESSION['alertMsg'] = _translate("Please enter all mandatory fields to save the test request");
         header("Location:addVlRequest.php");
         die;
