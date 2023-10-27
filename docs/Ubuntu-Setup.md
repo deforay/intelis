@@ -67,7 +67,31 @@
 3. **MySQL Configuration**:
 
     ```bash
-    awk 'BEGIN {added=0} /skip-external-locking|mysqlx-bind-address/ { if (added == 0) { print; print "sql_mode ="; print "innodb_strict_mode = 0"; added=1; next; } } { print }' /etc/mysql/mysql.conf.d/mysqld.cnf > tmpfile && mv tmpfile /etc/mysql/mysql.conf.d/mysqld.cnf;
+    sudo -s;
+    echo "Configuring MySQL...";
+    desired_sql_mode="sql_mode =";
+    desired_innodb_strict_mode="innodb_strict_mode = 0";
+    config_file="/etc/mysql/mysql.conf.d/mysqld.cnf";
+
+    awk -v dsm="$desired_sql_mode" -v dism="$desired_innodb_strict_mode" \
+    'BEGIN { sql_mode_added=0; innodb_strict_mode_added=0; }
+    /sql_mode[[:space:]]*=/ {
+        if ($0 ~ dsm) {sql_mode_added=1;}
+        else {print ";" $0;}
+        next;
+    }
+    /innodb_strict_mode[[:space:]]*=/ {
+        if ($0 ~ dism) {innodb_strict_mode_added=1;}
+        else {print ";" $0;}
+        next;
+    }
+    /skip-external-locking|mysqlx-bind-address/ {
+        print;
+        if (sql_mode_added == 0) {print dsm; sql_mode_added=1;}
+        if (innodb_strict_mode_added == 0) {print dism; innodb_strict_mode_added=1;}
+        next;
+    }
+    { print; }' $config_file > tmpfile && mv tmpfile $config_file;
 
     ```
 4. **Restart MySQL**
@@ -82,6 +106,7 @@
 1. **Install PHP 7.4**:
 
     ```bash
+    sudo -s;
     add-apt-repository ppa:ondrej/php -y;
     apt update;
     apt -y install php7.4 openssl php7.4-common php7.4-cli \
@@ -95,6 +120,7 @@
 
     ```bash
     # Disable all PHP versions
+    sudo -s;
     a2dismod $(ls /etc/apache2/mods-enabled | grep -oP '^php\d\.\d') -f
     a2enmod php7.4;
 
@@ -108,6 +134,7 @@
 
     ```bash
     # Get total RAM and calculate 75%
+    sudo -s;
     TOTAL_RAM=$(awk '/MemTotal/ {print $2}' /proc/meminfo) || exit 1
     RAM_75_PERCENT=$((TOTAL_RAM*3/4/1024))M || RAM_75_PERCENT=1G
 
@@ -136,6 +163,7 @@
 * **Download Latest phpMyAdmin and place it in www folder**:
 
 	```bash
+    sudo -s;
 	echo "Downloading and setting up phpMyAdmin..."
     wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
     tar xzf phpMyAdmin-latest-all-languages.tar.gz
@@ -147,8 +175,30 @@
 * **Configuring Apache for phpMyAdmin**:
 
 	```bash
-	awk 'BEGIN {added=0} /ServerAdmin|DocumentRoot/ { if (added == 0) { print; print "Alias /phpmyadmin /var/www/phpmyadmin"; added=1; next; } } { print }' /etc/apache2/sites-available/000-default.conf > tmpfile && mv tmpfile /etc/apache2/sites-available/000-default.conf;
-	service apache2 restart;
+    sudo -s;
+	desired_alias="Alias /phpmyadmin /var/www/phpmyadmin"
+    config_file="/etc/apache2/sites-available/000-default.conf"
+
+    # Check if the desired alias already exists
+    if ! grep -q "$desired_alias" $config_file; then
+        awk -v da="$desired_alias" \
+        'BEGIN {added=0; alias_added=0}
+        /Alias \/phpmyadmin[[:space:]]/ {
+            if ($0 !~ da) {print ";" $0} else {alias_added=1; print $0}
+            next;
+        }
+        /ServerAdmin|DocumentRoot/ {
+            print;
+            if (added == 0 && alias_added == 0) {
+                print da;
+                added=1;
+            }
+            next;
+        }
+        { print }' $config_file > tmpfile && mv tmpfile $config_file
+    fi
+
+    service apache2 restart;
 
 	```
 
