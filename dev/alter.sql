@@ -5184,3 +5184,7 @@ CREATE TABLE `scheduled_jobs` (
 
 -- Amit 18-Oct-2023 version 5.2.5
 UPDATE `system_config` SET `value` = '5.2.5' WHERE `system_config`.`name` = 'sc_version';
+
+-- Jeyabanu 26-Oct-2023
+ALTER TABLE `form_vl` CHANGE `cv_number` `cv_number` VARCHAR(20) NULL DEFAULT NULL;
+ALTER TABLE `temp_sample_import` ADD `cv_number` VARCHAR(20) NULL DEFAULT NULL AFTER `lab_phone_number`;

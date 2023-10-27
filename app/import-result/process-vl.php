@@ -186,7 +186,7 @@ try {
                     } elseif ($vldata['vl_result_category'] == 'rejected') {
                         $data['result_status'] = SAMPLE_STATUS\REJECTED;
                     }
-
+                    $data['cv_number'] = $rResult['cv_number'];
                     $data['sample_code'] = $rResult['sample_code'];
                     if (!empty($vlResult)) {
                         $data['vlsm_country_id'] = $arr['vl_form'];
@@ -260,6 +260,7 @@ try {
                 'result_dispatched_datetime' => null,
                 'vl_test_platform' => $accResult[$i]['vl_test_platform'],
                 'import_machine_name' => $accResult[$i]['import_machine_name'],
+                'cv_number' => $accResult[$i]['cv_number'],
             );
 
             if ($accResult[$i]['result_status'] == '4') {
