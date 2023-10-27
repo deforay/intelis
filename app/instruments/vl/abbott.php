@@ -82,6 +82,11 @@ try {
                     $num = count($sheetData);
                     $row++;
                     if ($row < $skip) {
+                        if($row == 5)
+                        {
+                            $cvNumberVar = explode(' ',$sheetData[1]);
+                            $cvNumber = $cvNumberVar[1];
+                        }
                         if ($row == 8) {
                             $testingDateArray = $testResultsService->abbottTestingDateFormatter($sheetData[1], $sheetData[2]);
                             $dateFormat = $testingDateArray['dateFormat'];
@@ -234,6 +239,7 @@ try {
             $data = array(
                 'module' => 'vl',
                 'lab_id' => base64_decode($_POST['labId']),
+                'cv_number' => $cvNumber,
                 'vl_test_platform' => $_POST['vltestPlatform'],
                 'import_machine_name' => $_POST['configMachineName'],
                 'result_reviewed_by' => $_SESSION['userId'],

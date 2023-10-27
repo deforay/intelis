@@ -455,7 +455,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 								<div class="row">
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
-											<label for=""><?= _translate('Date of ART Initiation'); ?></label>
+											<label for=""><?= _translate('Treatment Start Date'); ?></label>
 											<input type="text" class="form-control date" name="dateOfArtInitiation" id="dateOfArtInitiation" placeholder="<?= _translate('Date Of Treatment Initiated'); ?>" title="<?= _translate('Date Of treatment initiated'); ?>" value="<?php echo $vlQueryInfo['treatment_initiated_date']; ?>" <?php echo $disable; ?> style="width:100%;">
 										</div>
 									</div>

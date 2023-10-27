@@ -13,6 +13,8 @@ use App\Services\EidService;
 $eidService = ContainerRegistry::get(EidService::class);
 $eidResults = $eidService->getEidResults();
 
+$specimenTypeResult = $eidService->getEidSampleTypes();
+
 $labFieldDisabled = '';
 // $rejectionReason = '';
 $rKey = '';
@@ -315,7 +317,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row"><?= _translate("Mother's HIV Test Date"); ?></th>
+                                        <th scope="row"><?= _translate("Date of HIV diagnosis"); ?></th>
                                         <td>
                                             <input type="text" class="form-control date" name="motherHivTestDate" id="motherHivTestDate" placeholder="<?= _translate("Enter date of Mother's Hiv Test"); ?>" title="<?= _translate("Enter date of Mother's Hiv Test"); ?>" />
                                         </td>
@@ -508,6 +510,14 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                         <td style="width:35% !important;">
                                             <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" onchange="generateSampleCode();" />
                                         </td>
+                                        <th scope="row" style="width:15% !important" class="labels">Sample Type <span class="mandatory">*</span> </th>
+                                        <td style="width:35% !important;">
+                                            <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%">
+                                                <?php echo $general->generateSelectOptions($specimenTypeResult, null, '-- Select --'); ?>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th style="width:15% !important;"><?= _translate('Recollected'); ?></th>
                                         <td style="width:35% !important;">
                                             <select class="form-control" name="isSampleRecollected" id="isSampleRecollected">
@@ -516,12 +526,12 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                 <option value="no"> <?= _translate('No'); ?> </option>
                                             </select>
                                         </td>
-                                    </tr>
-                                    <tr>
                                         <th scope="row"><?= _translate('Name of health personnel'); ?></th>
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="<?= _translate('Requesting Officer'); ?>" />
                                         </td>
+                                    </tr>
+                                    <tr>
                                         <th scope="row"><?= _translate('Contact Number'); ?></th>
                                         <td>
                                             <input class="form-control phone-number" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" maxlength="<?php echo strlen($countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Requesting Officer Phone'); ?>" />

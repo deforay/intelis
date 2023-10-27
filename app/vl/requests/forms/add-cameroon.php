@@ -372,7 +372,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                   <div class="row">
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
-                                                                 <label for=""><?= _translate('Date of ART Initiation'); ?></label>
+                                                                 <label for=""><?= _translate('Treatment Start Date'); ?></label>
                                                                  <input type="text" class="form-control date" name="dateOfArtInitiation" id="dateOfArtInitiation" placeholder="<?= _translate('Date of ART Initiation'); ?>" title="<?= _translate('Date of treatment initiation'); ?>" style="width:100%;" onchange="checkARTInitiationDate();">
                                                             </div>
                                                        </div>
