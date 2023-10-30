@@ -52,7 +52,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
     if (isset($_POST['labName']) && trim($_POST['labName']) != '') {
         $sWhere[] = ' vl.lab_id = "' . $_POST['labName'] . '"';
     }
-    if (isset($_POST['clinicName']) && is_array($_POST['clinicName']) && !empty($_POST['clinicName'])) {
+    if (is_array($_POST['clinicName']) && !empty($_POST['clinicName'])) {
         $sWhere[] = " vl.facility_id IN (" . implode(',', $_POST['clinicName']) . ")";
     }
     if (!empty($_SESSION['facilityMap'])) {

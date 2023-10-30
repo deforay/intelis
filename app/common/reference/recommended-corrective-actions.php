@@ -10,7 +10,7 @@ $testType = 'eid';
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 
-if (isset($_GET['testType']) && !empty($_GET['testType'])) {
+if (!empty($_GET['testType'])) {
 	$testType = $_GET['testType'];
 }
 ?>

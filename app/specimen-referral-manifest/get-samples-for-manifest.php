@@ -92,7 +92,7 @@ if (!empty($_POST['operator'])) {
 if (!empty($_POST['testType'])) {
 	$where[] = " test_type = " . $_POST['testType'];
 }
-if (isset($_POST['pkgId']) && !empty($_POST['pkgId'])) {
+if (!empty($_POST['pkgId'])) {
     $where[] = " (pd.package_id = '" . $_POST['pkgId'] . "' OR pd.package_id IS NULL OR pd.package_id = '')";
 } else{
 	$where[] = "(vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') ";

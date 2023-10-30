@@ -34,12 +34,8 @@ try {
             'decoder' => new ExtJsonDecoder(true)
         ]);
         $appVersion = iterator_to_array($appVersion)['appVersion'];
-    } catch (PathNotFoundException $ex) {
-        // handle error, perhaps log it, or set a default value
-        error_log("The path '/appVersion' was not found in the JSON data.");
-    }
 
-    try {
+
 
         $input = Items::fromString($origJson, [
             'pointer' => '/data',

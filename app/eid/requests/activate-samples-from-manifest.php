@@ -65,7 +65,7 @@ foreach ($sampleResult as $sampleRow) {
         $db = $db->where('eid_id', $sampleRow['eid_id']);
         $id = $db->update('form_eid', $eidData);
         if ($id === true) {
-            $status = $id;
+            $status = true;
         }
     }
 }

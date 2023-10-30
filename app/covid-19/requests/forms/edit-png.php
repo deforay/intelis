@@ -220,7 +220,7 @@ $fundingSourceOptions = $general->generateSelectOptions($fundingSourceArray, $co
                                     <h3 class="box-title">PATIENT INFORMATION</h3>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                   
+
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="firstName">Patient first name <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
@@ -321,7 +321,7 @@ $fundingSourceOptions = $general->generateSelectOptions($fundingSourceArray, $co
                                             <table aria-describedby="table" id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true">
                                                 <?php $index = 0;
                                                 foreach ($covid19Symptoms as $symptomId => $symptomName) {
-                                                    $diarrhée = "";
+                                                    $diarrhea = "";
                                                     $display = "display:none;";
                                                     if ($symptomId == 13) {
                                                         $display = (isset($covid19SelectedSymptoms[$symptomId]['value']) && $covid19SelectedSymptoms[$symptomId]['value'] == "yes") ? "" : 'display:none;';
@@ -330,7 +330,7 @@ $fundingSourceOptions = $general->generateSelectOptions($fundingSourceArray, $co
                                                         <th style="width:50%;"><label for="symptomDetected<?php echo $symptomId; ?>"><?php echo $symptomName; ?></label></th>
                                                         <td style="width:50%;">
                                                             <input name="symptomId[]" type="hidden" value="<?php echo $symptomId; ?>">
-                                                            <select name="symptomDetected[]" id="symptomDetected<?php echo $symptomId; ?>" class="form-control <?php echo $diarrhée; ?>" title="Please select the <?php echo $symptomName; ?>" style="width:100%">
+                                                            <select name="symptomDetected[]" id="symptomDetected<?php echo $symptomId; ?>" class="form-control <?php echo $diarrhea; ?>" title="Please select the <?php echo $symptomName; ?>" style="width:100%">
                                                                 <option value="">-- Select --</option>
                                                                 <option value='yes' <?php echo (isset($covid19SelectedSymptoms[$symptomId]) && $covid19SelectedSymptoms[$symptomId] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
                                                                 <option value='no' <?php echo (isset($covid19SelectedSymptoms[$symptomId]) && $covid19SelectedSymptoms[$symptomId] == 'no') ? "selected='selected'" : ""; ?>> No </option>

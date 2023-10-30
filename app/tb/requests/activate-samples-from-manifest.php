@@ -74,7 +74,7 @@ foreach ($sampleResult as $sampleRow) {
         $db = $db->where('tb_id', $sampleRow['tb_id']);
         $id = $db->update('form_tb', $tbData);
         if ($id === true) {
-            $status = $id;
+            $status = true;
         }
     }
 }

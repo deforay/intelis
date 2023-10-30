@@ -108,6 +108,13 @@ class DateUtility
         return false;
     }
 
+    public static function isDateGreaterThan($inputDate, $comparisonDate)
+    {
+        $parsedInputDate = Carbon::parse($inputDate);
+        $parsedComparisonDate = Carbon::parse($comparisonDate);
+        return $parsedInputDate->gt($parsedComparisonDate);
+    }
+
     public static function convertDateRange(?string $dateRange): array
     {
         if (empty($dateRange)) {

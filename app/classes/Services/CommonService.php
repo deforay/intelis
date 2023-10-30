@@ -167,6 +167,7 @@ class CommonService
 
     public function getDataByTableAndFields($table, $fields, $option = true, $condition = null, $group = null)
     {
+        $response = [];
         if (!is_array($fields)) {
             $fields = [$fields];
         }
@@ -214,18 +215,6 @@ class CommonService
             }
             return $this->db->query($configQuery);
         });
-    }
-
-    // checking if the provided field list has any empty or null values
-    public function checkMandatoryFields($field): bool
-    {
-        foreach ($field as $chkField) {
-            if (empty(trim($chkField))) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public static function encrypt($message, $key): string
@@ -460,6 +449,7 @@ class CommonService
 
     public function getRejectionReasons($testType): array
     {
+        $rejReaons = [];
         $rejArray = ['general', 'whole blood', 'plasma', 'dbs', 'testing'];
         if (in_array($testType, ['vl', 'eid', 'covid19', 'hepatitis', 'tb', 'generic-tests'])) {
             foreach ($rejArray as $rej) {

@@ -525,9 +525,9 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                             <table aria-describedby="table" id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true">
                                                 <?php $index = 0;
                                                 foreach ($covid19Symptoms as $symptomId => $symptomName) {
-                                                    $diarrhée = "";
+                                                    $diarrhea = "";
                                                     if ($symptomId == 13) {
-                                                        $diarrhée = "diarrhée";
+                                                        $diarrhea = "diarrhée";
                                                     } ?>
                                                     <tr class="row<?php echo $index; ?>">
                                                         <!-- <td style="display: flex;">
@@ -539,7 +539,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                         <th style="width:50%;"><?php echo $symptomName; ?></th>
                                                         <td style="width:50%;">
                                                             <input name="symptomId[]" type="hidden" value="<?php echo $symptomId; ?>">
-                                                            <select name="symptomDetected[]" id="symptomDetected<?php echo $symptomId; ?>" class="form-control <?php echo $diarrhée; ?>" title="Veuillez choisir la valeur pour <?php echo $symptomName; ?>" style="width:100%">
+                                                            <select name="symptomDetected[]" id="symptomDetected<?php echo $symptomId; ?>" class="form-control <?php echo $diarrhea; ?>" title="Veuillez choisir la valeur pour <?php echo $symptomName; ?>" style="width:100%">
                                                                 <option value=""><?= _translate("-- Select --"); ?> </option>
                                                                 <option value='yes'> Oui </option>
                                                                 <option value='no'> Non </option>
