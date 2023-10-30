@@ -76,7 +76,7 @@ foreach ($sampleResult as $sampleRow) {
         $db = $db->where('hepatitis_id', $sampleRow['hepatitis_id']);
         $id = $db->update('form_hepatitis', $hepatitisData);
         if ($id === true) {
-            $status = $id;
+            $status = true;
         }
     }
 }

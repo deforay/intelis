@@ -308,7 +308,7 @@ $fundingSourceOptions = $general->generateSelectOptions($fundingSourceArray, $co
                                         <table aria-describedby="table" id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true">
                                             <?php $index = 0;
                                             foreach ($covid19Symptoms as $symptomId => $symptomName) {
-                                                $diarrhée = "";
+                                                $diarrhea = "";
                                                 $display = "display:none;";
                                                 if ($symptomId == 13) {
                                                     $display = (isset($covid19SelectedSymptoms[$symptomId]['value']) && $covid19SelectedSymptoms[$symptomId]['value'] == "yes") ? "" : 'display:none;';
@@ -317,7 +317,7 @@ $fundingSourceOptions = $general->generateSelectOptions($fundingSourceArray, $co
                                                     <th style="width:50%;"><label for="symptomDetected<?php echo $symptomId; ?>"><?php echo $symptomName; ?></label></th>
                                                     <td style="width:50%;">
                                                         <input name="symptomId[]" type="hidden" value="<?php echo $symptomId; ?>">
-                                                        <select name="symptomDetected[]" id="symptomDetected<?php echo $symptomId; ?>" class="form-control <?php echo $diarrhée; ?>" title="Please select the <?php echo $symptomName; ?>" style="width:100%">
+                                                        <select name="symptomDetected[]" id="symptomDetected<?php echo $symptomId; ?>" class="form-control <?php echo $diarrhea; ?>" title="Please select the <?php echo $symptomName; ?>" style="width:100%">
                                                             <option value="">-- Select --</option>
                                                             <option value='yes' <?php echo (isset($covid19SelectedSymptoms[$symptomId]) && $covid19SelectedSymptoms[$symptomId] == 'yes') ? "selected='selected'" : ""; ?>> Yes </option>
                                                             <option value='no' <?php echo (isset($covid19SelectedSymptoms[$symptomId]) && $covid19SelectedSymptoms[$symptomId] == 'no') ? "selected='selected'" : ""; ?>> No </option>
@@ -1039,7 +1039,7 @@ $fundingSourceOptions = $general->generateSelectOptions($fundingSourceArray, $co
         $('.dateTime').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {

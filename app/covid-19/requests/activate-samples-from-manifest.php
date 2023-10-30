@@ -71,7 +71,7 @@ foreach ($sampleResult as $sampleRow) {
         $db = $db->where('covid19_id', $sampleRow['covid19_id']);
         $id = $db->update('form_covid19', $covid19Data);
         if ($id === true) {
-            $status = $id;
+            $status = true;
         }
     }
 }

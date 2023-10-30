@@ -73,7 +73,7 @@ foreach ($sampleResult as $sampleRow) {
         $db = $db->where('vl_sample_id', $sampleRow['vl_sample_id']);
         $id = $db->update('form_vl', $vldata);
         if ($id === true) {
-            $status = $id;
+            $status = true;
         }
     }
 }

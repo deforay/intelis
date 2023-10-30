@@ -272,6 +272,6 @@ $pResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 
   }
 
   function goBack() {
-    window.parent.location.href = window.parent.location.href;
+    window.parent.location = window.parent.location.href;
   }
 </script>

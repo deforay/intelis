@@ -529,10 +529,10 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                                         <table aria-describedby="table" id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true">
                                             <?php $index = 0;
                                             foreach ($covid19Symptoms as $symptomId => $symptomName) {
-                                                $diarrhée = "";
+                                                $diarrhea = "";
                                                 $display = "display:none;";
                                                 if ($symptomId == 13) {
-                                                    $diarrhée = "diarrhée";
+                                                    $diarrhea = "diarrhée";
                                                     $display = (isset($covid19SelectedSymptoms[$symptomId]['value']) && $covid19SelectedSymptoms[$symptomId]['value'] == "yes") ? "" : 'display:none;';
                                                 } ?>
                                                 <tr class="row<?php echo $index; ?>">
@@ -545,7 +545,7 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                                                     <th style="width:50%;"><?php echo $symptomName; ?></th>
                                                     <td style="width:50%;">
                                                         <input name="symptomId[]" type="hidden" value="<?php echo $symptomId; ?>">
-                                                        <select name="symptomDetected[]" id="symptomDetected<?php echo $symptomId; ?>" class="form-control <?php echo $diarrhée; ?>" title="Veuillez choisir la valeur pour <?php echo $symptomName; ?>" style="width:100%">
+                                                        <select name="symptomDetected[]" id="symptomDetected<?php echo $symptomId; ?>" class="form-control <?php echo $diarrhea; ?>" title="Veuillez choisir la valeur pour <?php echo $symptomName; ?>" style="width:100%">
                                                             <option value=""><?= _translate("-- Select --"); ?> </option>
                                                             <option value='yes' <?php echo (isset($covid19SelectedSymptoms[$symptomId]['value']) && $covid19SelectedSymptoms[$symptomId]['value'] == 'yes') ? "selected='selected'" : ""; ?>> Oui </option>
                                                             <option value='no' <?php echo (isset($covid19SelectedSymptoms[$symptomId]['value']) && $covid19SelectedSymptoms[$symptomId]['value'] == 'no') ? "selected='selected'" : ""; ?>> Non </option>
@@ -1100,7 +1100,7 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
         $("#sampleCollectionDate").datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onSelect: function(date) {
@@ -1117,7 +1117,7 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
         $('#sampleDispatchedDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             yearRange: "-100:+100",
         });
@@ -1417,7 +1417,7 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
         $('.dateTime').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {

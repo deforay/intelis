@@ -52,8 +52,6 @@ $covid19SelectedComorbidities = $covid19Service->getCovid19ComorbiditiesByFormId
 // Getting the list of Provinces, Districts and Facilities
 
 $rKey = '';
-$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
-
 
 if ($_SESSION['instanceType'] == 'remoteuser') {
     $sampleCodeKey = 'remote_sample_code_key';
@@ -62,23 +60,13 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     } else {
         $sampleCode = 'sample_code';
     }
-    //check user exist in user_facility_map table
-    $chkUserFcMapQry = "SELECT user_id from user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-    $chkUserFcMapResult = $db->query($chkUserFcMapQry);
-    if ($chkUserFcMapResult) {
-        $pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
-    }
     $rKey = 'R';
 } else {
     $sampleCodeKey = 'sample_code_key';
     $sampleCode = 'sample_code';
     $rKey = '';
 }
-$pdResult = $db->query($pdQuery);
-$province = "<option value=''> -- Sélectionner -- </option>";
-foreach ($pdResult as $provinceName) {
-    $province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
-}
+$province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 
 $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['facility_id'], '-- Sélectionner --');
 
@@ -86,7 +74,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
 $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 
 // Province
-$pQuery = "SELECT DISTINCT patient_province FROM form_covid19 where patient_province is not null";
+$pQuery = "SELECT DISTINCT patient_province FROM form_covid19 WHERE patient_province is not null";
 $pResult = $db->rawQuery($pQuery);
 $patienProvince = [];
 foreach ($pResult as $row) {
@@ -94,7 +82,7 @@ foreach ($pResult as $row) {
 }
 $patienProvince["other"] = "Other";
 // District
-$cQuery = "SELECT DISTINCT patient_district FROM form_covid19 where patient_district is not null";
+$cQuery = "SELECT DISTINCT patient_district FROM form_covid19 WHERE patient_district is not null";
 $cResult = $db->rawQuery($cQuery);
 $pateitnDistrict = [];
 foreach ($cResult as $row) {
@@ -103,7 +91,7 @@ foreach ($cResult as $row) {
 $pateitnDistrict["other"] = "Other";
 
 // Zones
-$zQuery = "SELECT DISTINCT patient_zone FROM form_covid19 where patient_zone is not null";
+$zQuery = "SELECT DISTINCT patient_zone FROM form_covid19 WHERE patient_zone is not null";
 $zResult = $db->rawQuery($zQuery);
 $patienZones = [];
 foreach ($zResult as $row) {
@@ -233,7 +221,7 @@ if (!empty($patientData)) {
                                     <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No Patient Found</strong></span>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                   
+
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="lastName">Nom de famille <span class="mandatory">*</span></label></th>
                                         <td style="width:35% !important">
@@ -568,10 +556,10 @@ if (!empty($patientData)) {
                                             <table aria-describedby="table" id="symptomsTable" class="table table-bordered table-striped" aria-hidden="true">
                                                 <?php $index = 0;
                                                 foreach ($covid19Symptoms as $symptomId => $symptomName) {
-                                                    $diarrhée = "";
+                                                    $diarrhea = "";
                                                     $display = "display:none;";
                                                     if ($symptomId == 13) {
-                                                        $diarrhée = "diarrhée";
+                                                        $diarrhea = "diarrhée";
                                                         $display = (isset($covid19SelectedSymptoms[$symptomId]['value']) && $covid19SelectedSymptoms[$symptomId]['value'] == "yes") ? "" : 'display:none;';
                                                     }
                                                 ?>
@@ -585,7 +573,7 @@ if (!empty($patientData)) {
                                                         <th style="width:50%;"><?php echo $symptomName; ?></th>
                                                         <td style="width:50%;">
                                                             <input name="symptomId[]" type="hidden" value="<?php echo $symptomId; ?>">
-                                                            <select name="symptomDetected[]" id="symptomDetected<?php echo $symptomId; ?>" class="form-control <?php echo $diarrhée; ?>" title="Veuillez choisir la valeur pour <?php echo $symptomName; ?>" style="width:100%">
+                                                            <select name="symptomDetected[]" id="symptomDetected<?php echo $symptomId; ?>" class="form-control <?php echo $diarrhea; ?>" title="Veuillez choisir la valeur pour <?php echo $symptomName; ?>" style="width:100%">
                                                                 <option value=""><?= _translate("-- Select --"); ?> </option>
                                                                 <option value='yes' <?php echo (isset($covid19SelectedSymptoms[$symptomId]['value']) && $covid19SelectedSymptoms[$symptomId]['value'] == 'yes') ? "selected='selected'" : ""; ?>> Oui </option>
                                                                 <option value='no' <?php echo (isset($covid19SelectedSymptoms[$symptomId]['value']) && $covid19SelectedSymptoms[$symptomId]['value'] == 'no') ? "selected='selected'" : ""; ?>> Non </option>
@@ -1389,7 +1377,7 @@ if (!empty($patientData)) {
         $('#sampleCollectionDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "+1Y",
             // yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>",
@@ -1416,7 +1404,7 @@ if (!empty($patientData)) {
         $('#sampleDispatchedDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             minDate: minDate,
             startDate: minDate,
@@ -1716,7 +1704,7 @@ if (!empty($patientData)) {
         $('.dateTime').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {

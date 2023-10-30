@@ -167,6 +167,7 @@ class CommonService
 
     public function getDataByTableAndFields($table, $fields, $option = true, $condition = null, $group = null)
     {
+        $response = [];
         if (!is_array($fields)) {
             $fields = [$fields];
         }
@@ -448,6 +449,7 @@ class CommonService
 
     public function getRejectionReasons($testType): array
     {
+        $rejReaons = [];
         $rejArray = ['general', 'whole blood', 'plasma', 'dbs', 'testing'];
         if (in_array($testType, ['vl', 'eid', 'covid19', 'hepatitis', 'tb', 'generic-tests'])) {
             foreach ($rejArray as $rej) {

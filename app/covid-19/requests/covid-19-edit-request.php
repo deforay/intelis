@@ -13,8 +13,6 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
-
-
 ?>
 <style>
     .ui_tpicker_second_label,
@@ -40,8 +38,6 @@ $db = ContainerRegistry::get('db');
 
 $labFieldDisabled = '';
 
-
-
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
@@ -61,7 +57,7 @@ $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_covid19_sample_reje
 $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 
 //sample rejection reason
-$rejectionQuery = "SELECT * FROM r_covid19_sample_rejection_reasons where rejection_reason_status = 'active'";
+$rejectionQuery = "SELECT * FROM r_covid19_sample_rejection_reasons WHERE rejection_reason_status = 'active'";
 $rejectionResult = $db->rawQuery($rejectionQuery);
 
 
@@ -72,10 +68,10 @@ $_GET = $request->getQueryParams();
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
 //$id = ($_GET['id']);
-$covid19Query = "SELECT * from form_covid19 where covid19_id=?";
+$covid19Query = "SELECT * from form_covid19 WHERE covid19_id=?";
 $covid19Info = $db->rawQueryOne($covid19Query, array($id));
 
-$covid19TestQuery = "SELECT * from covid19_tests where covid19_id=? ORDER BY test_id ASC";
+$covid19TestQuery = "SELECT * from covid19_tests WHERE covid19_id=? ORDER BY test_id ASC";
 $covid19TestInfo = $db->rawQuery($covid19TestQuery, array($id));
 
 /** @var CommonService $commonService */
@@ -107,29 +103,11 @@ if ($arr['covid19_sample_code'] == 'auto' || $arr['covid19_sample_code'] == 'aut
     }
 }
 
+$sampleCollectionDate = $covid19Info['sample_collection_date'];
+$covid19Info['sample_collection_date'] = DateUtility::humanReadableDateFormat($covid19Info['sample_collection_date'] ?? '', true);
+$covid19Info['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($covid19Info['result_reviewed_datetime'] ?? '', true);
+$covid19Info['result_approved_datetime'] = DateUtility::humanReadableDateFormat($covid19Info['result_approved_datetime'] ?? '', true);
 
-if (isset($covid19Info['sample_collection_date']) && trim($covid19Info['sample_collection_date']) != '' && $covid19Info['sample_collection_date'] != '0000-00-00 00:00:00') {
-    $sampleCollectionDate = $covid19Info['sample_collection_date'];
-    $expStr = explode(" ", $covid19Info['sample_collection_date']);
-    $covid19Info['sample_collection_date'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
-} else {
-    $sampleCollectionDate = '';
-    $covid19Info['sample_collection_date'] = '';
-}
-
-if (isset($covid19Info['result_reviewed_datetime']) && trim($covid19Info['result_reviewed_datetime']) != '' && $covid19Info['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
-    $reviewedOn = explode(" ", $covid19Info['result_reviewed_datetime']);
-    $covid19Info['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-} else {
-    $covid19Info['result_reviewed_datetime'] = '';
-}
-
-if (isset($covid19Info['result_approved_datetime']) && trim($covid19Info['result_approved_datetime']) != '' && $covid19Info['result_approved_datetime'] != '0000-00-00 00:00:00') {
-    $approvedOn = explode(" ", $covid19Info['result_approved_datetime']);
-    $covid19Info['result_approved_datetime'] = DateUtility::humanReadableDateFormat($approvedOn[0]) . " " . $approvedOn[1];
-} else {
-    $covid19Info['result_approved_datetime'] = '';
-}
 $countryResult = $general->fetchDataFromTable('r_countries');
 $countyData = [];
 if (isset($countryResult) && sizeof($countryResult) > 0) {
@@ -142,16 +120,15 @@ if (isset($countryResult) && sizeof($countryResult) > 0) {
 $condition = "status ='active' AND test_type='covid19'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
-if (!empty($covid19Info['is_encrypted']) && $covid19Info['is_encrypted'] == 'yes'){
-	$key = base64_decode($general->getGlobalConfig('key'));
-	$covid19Info['patient_id'] = $general->crypto('decrypt' ,$covid19Info['patient_id'], $key);
-	if($covid19Info['patient_name']!=''){
-        $covid19Info['patient_name'] = $general->crypto('decrypt' ,$covid19Info['patient_name'], $key);
-	}
-    if($covid19Info['patient_surname']!=''){
-        $covid19Info['patient_surname'] = $general->crypto('decrypt' ,$covid19Info['patient_surname'], $key);
-	}
-    
+if (!empty($covid19Info['is_encrypted']) && $covid19Info['is_encrypted'] == 'yes') {
+    $key = base64_decode($general->getGlobalConfig('key'));
+    $covid19Info['patient_id'] = $general->crypto('decrypt', $covid19Info['patient_id'], $key);
+    if ($covid19Info['patient_name'] != '') {
+        $covid19Info['patient_name'] = $general->crypto('decrypt', $covid19Info['patient_name'], $key);
+    }
+    if ($covid19Info['patient_surname'] != '') {
+        $covid19Info['patient_surname'] = $general->crypto('decrypt', $covid19Info['patient_surname'], $key);
+    }
 }
 
 $fileArray = array(
@@ -201,7 +178,7 @@ require($fileArray[$arr['vl_form']]);
             onSelect: function() {
                 $(this).change();
             },
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -213,7 +190,7 @@ require($fileArray[$arr['vl_form']]);
         $("#patientDob").datepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             maxDate: "Today",
             yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
             onSelect: function(dateText, inst) {
@@ -228,7 +205,7 @@ require($fileArray[$arr['vl_form']]);
         $('.dateTime').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {
@@ -244,7 +221,7 @@ require($fileArray[$arr['vl_form']]);
         $('#sampleCollectionDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {
@@ -264,7 +241,7 @@ require($fileArray[$arr['vl_form']]);
         $('#sampleReceivedDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {

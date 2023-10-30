@@ -73,7 +73,7 @@ try {
     $rowData = $db->rawQuery($sQuery);
     $response = [];
     foreach ($rowData as $key => $row) {
-        if (isset($row['result_status']) && !empty($row['result_status'])) {
+        if (!empty($row['result_status'])) {
             if (!in_array($row['result_status'], [4, 7, 8])) {
                 $db->where($testTypePrimary[$input['testType']], $row[$testTypePrimary[$input['testType']]]);
                 $status = $db->update($testType[$input['testType']], array('result_status' => 12));
