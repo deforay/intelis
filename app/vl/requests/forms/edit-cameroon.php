@@ -188,7 +188,15 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                   <div class="">
                                                        <label for="fName"><?= _translate('Clinic/Health Center'); ?> <span class="mandatory">*</span></label>
                                                        <select class="form-control isRequired" id="fName" name="fName" title="<?= _translate('Please select a clinic/health center name'); ?>" style="width:100%;" onchange="fillFacilityDetails();">
-                                                            <?php echo $facility; ?>
+                                                            <option value=""> <?= _translate('-- Select --'); ?> </option>
+                                                            <?php //echo $facility;
+                                                                 foreach($healthFacilitiesAllColumns as $facility)
+                                                                 {
+                                                                      ?>
+                                                                 <option value="<?php echo $facility['facility_id']; ?>" <?php echo ($vlQueryInfo['facility_id']==$facility['facility_id']) ? "selected='selected'" : ""; ?> data-code="<?php echo $facility['facility_code']; ?>"><?php echo $facility['facility_name']; ?></option>
+                                                                      <?php
+                                                                 }
+                                                                 ?>
                                                        </select>
                                                   </div>
                                              </div>

@@ -30,6 +30,8 @@ $general = ContainerRegistry::get(CommonService::class);
 $formId = $general->getGlobalConfig('vl_form');
 
 $healthFacilities = $facilitiesService->getHealthFacilities('vl');
+$healthFacilitiesAllColumns = $facilitiesService->getHealthFacilities('vl',false,true);
+
 $testingLabs = $facilitiesService->getTestingLabs('vl');
 
 

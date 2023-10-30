@@ -110,7 +110,15 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                         </td>
                                         <td><label for="facilityId"><?= _translate('Health Facility'); ?> </label><span class="mandatory">*</span><br>
                                             <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose service provider" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
-                                                <?php echo $facility; ?>
+                                                <option value=""> <?= _translate('-- Select --'); ?> </option>
+                                                <?php //echo $facility;
+                                                    foreach($healthFacilitiesAllColumns as $facility)
+                                                    {
+                                                        ?>
+                                                    <option value="<?php echo $facility['facility_id']; ?>" data-code="<?php echo $facility['facility_code']; ?>"><?php echo $facility['facility_name']; ?></option>
+                                                        <?php
+                                                    }
+                                                    ?>
                                             </select>
                                         </td>
                                         <td>

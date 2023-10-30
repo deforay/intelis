@@ -31,6 +31,9 @@ $formId = $general->getGlobalConfig('vl_form');
 $healthFacilities = $facilitiesService->getHealthFacilities('vl');
 $testingLabs = $facilitiesService->getTestingLabs('vl');
 
+$healthFacilitiesAllColumns = $facilitiesService->getHealthFacilities('vl',false,true);
+
+
 //get import config
 $condition = "status = 'active'";
 $importResult = $general->fetchDataFromTable('instruments', $condition);

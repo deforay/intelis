@@ -127,8 +127,16 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                             </select>
                                         </td>
                                         <td><label for="facilityId"><?= _translate('Health Facility'); ?> </label><span class="mandatory">*</span><br>
-                                            <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose service provider" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
-                                                <?php echo $facility; ?>
+                                            <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose service provider" style="width:100%;" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
+                                                <option value=""> <?= _translate('-- Select --'); ?> </option>
+                                                <?php //echo $facility;
+                                                    foreach($healthFacilitiesAllColumns as $facility)
+                                                    {
+                                                        ?>
+                                                    <option value="<?php echo $facility['facility_id']; ?>" <?php echo ($eidInfo['facility_id']==$facility['facility_id']) ? "selected='selected'" : ""; ?> data-code="<?php echo $facility['facility_code']; ?>"><?php echo $facility['facility_name']; ?></option>
+                                                        <?php
+                                                    }
+                                                    ?>
                                             </select>
                                         </td>
                                         <td>

@@ -53,6 +53,8 @@ $fundingSourceList = $general->getFundingSources();
 $implementingPartnerList = $general->getImplementationPartners();
 
 $healthFacilities = $facilitiesService->getHealthFacilities('eid');
+$healthFacilitiesAllColumns = $facilitiesService->getHealthFacilities('eid',false,true);
+
 $testingLabs = $facilitiesService->getTestingLabs('eid');
 $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 $userInfo = [];
