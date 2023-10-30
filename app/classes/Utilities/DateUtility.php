@@ -4,6 +4,7 @@ namespace App\Utilities;
 
 use Exception;
 use Carbon\Carbon;
+use InvalidArgumentException;
 
 class DateUtility
 {
@@ -15,12 +16,9 @@ class DateUtility
             return false;
         }
 
-        try {
-            $carbonDate = Carbon::createFromFormat($format, $date);
-            return $strict ? $carbonDate->format($format) === $date : true;
-        } catch (Exception $e) {
-            return false;
-        }
+        $carbonDate = self::parseDate($date, [$format]);
+
+        return $carbonDate && ($strict ? $carbonDate->format($format) === $date : true);
     }
 
     public static function isDateValid($date): bool
@@ -31,13 +29,7 @@ class DateUtility
             return false;
         }
 
-        try {
-            new Carbon($date);
-            return true;
-        } catch (Exception $e) {
-            error_log($e->getMessage());
-            return false;
-        }
+        return self::parseDate($date) !== null;
     }
 
     public static function humanReadableDateFormat($date, $includeTime = false, $format = null)
@@ -91,15 +83,16 @@ class DateUtility
         return $format === null ? $interval->format('%a days') : $interval->format($format);
     }
 
-    public static function hasFutureDates($dates): bool
+
+    public static function hasFutureDates($dates, ?array $formats = null): bool
     {
         $now = Carbon::now();
         $dates = is_array($dates) ? $dates : [$dates];
 
         foreach ($dates as $dateStr) {
-            if (!empty($dateStr) && $dateStr != "") {
-                $date = Carbon::createFromFormat('Y-m-d', $dateStr);
-                if ($date->greaterThan($now)) {
+            if (!empty($dateStr)) {
+                $date = self::parseDate($dateStr, $formats);
+                if ($date && $date->greaterThan($now)) {
                     return true;
                 }
             }
@@ -107,6 +100,26 @@ class DateUtility
 
         return false;
     }
+    private static function parseDate(string $dateStr, ?array $formats = null): ?Carbon
+    {
+        if ($formats) {
+            foreach ($formats as $format) {
+                try {
+                    return Carbon::createFromFormat($format, $dateStr);
+                } catch (Exception $e) {
+                    continue;
+                }
+            }
+        }
+        try {
+            return Carbon::parse($dateStr);
+        } catch (Exception $e) {
+            error_log("Invalid or unparseable date $dateStr");
+        }
+
+        return null;
+    }
+
 
     public static function isDateGreaterThan($inputDate, $comparisonDate)
     {
