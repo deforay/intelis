@@ -133,20 +133,6 @@ service apache2 restart || {
     exit 1
 }
 
-Alright, I will include the requested changes in your script.
-
-Here's the modified part of the script:
-
-Adjusting the php.ini settings:
-error_reporting will be set as requested.
-post_max_size and upload_max_filesize will both be set to 1G.
-memory_limit will be set to 75% of system RAM.
-Here's how the script is modified:
-
-bash
-Copy code
-...
-
 # PHP Setup
 echo "Installing PHP 7.4..."
 add-apt-repository ppa:ondrej/php -y
