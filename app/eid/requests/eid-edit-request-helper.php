@@ -146,7 +146,7 @@ try {
 	}
 
 	if (isset($_POST['childStartedCotrimDate']) && trim($_POST['childStartedCotrimDate']) != "") {
-		$nextAppointmentDate = explode(" ", $_POST['childStartedCotrimDate']);
+		$childStartedCotrimDate = explode(" ", $_POST['childStartedCotrimDate']);
 		$_POST['childStartedCotrimDate'] = DateUtility::isoDateFormat($childStartedCotrimDate[0]) . " " . $childStartedCotrimDate[1];
 	} else {
 		$_POST['childStartedCotrimDate'] = null;
@@ -298,7 +298,7 @@ try {
 		'mother_id' => $_POST['mothersId'] ?? null,
 		'caretaker_contact_consent' => $_POST['caretakerConsentForContact'] ?? null,
 		'caretaker_phone_number' => $_POST['caretakerPhoneNumber'] ?? null,
-		'caretaker_address' => isset($_POST['caretakerAddress']) ? $_POST['caretakerPhoneNumber'] : null,
+		'caretaker_address' => isset($_POST['caretakerAddress']) ? $_POST['caretakerAddress'] : null,
 		'previous_sample_code' => $_POST['previousSampleCode'] ?? null,
 		'clinical_assessment' => $_POST['clinicalAssessment'] ?? null,
 		'clinician_name' => $_POST['clinicianName'] ?? null,

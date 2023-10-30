@@ -141,7 +141,7 @@ try {
 	}
 
 	if (isset($_POST['childStartedCotrimDate']) && trim($_POST['childStartedCotrimDate']) != "") {
-		$nextAppointmentDate = explode(" ", $_POST['childStartedCotrimDate']);
+		$childStartedCotrimDate = explode(" ", $_POST['childStartedCotrimDate']);
 		$_POST['childStartedCotrimDate'] = DateUtility::isoDateFormat($childStartedCotrimDate[0]) . " " . $childStartedCotrimDate[1];
 	} else {
 		$_POST['childStartedCotrimDate'] = null;
