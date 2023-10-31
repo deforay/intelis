@@ -140,8 +140,8 @@ if (!empty($requestResult)) {
           //$htmlTitle = "<div style='width: 50px; height:50px;border:1px solid;'>CRESAR<br>RESEARCH CENTER FOR ARMY HEALTH<br>MILITARY HEALTH RESEARCH CENTER<br><span>B.P. 7039; stewardship crossroads</span></div>";
           $header = '<table style="padding:4px 2px 2px 2px;width:100%; border:1px solid black">';
           $header .= '<tr>';
-          $header .= '<td style="line-height:30px;text-align:center;padding-top:20px;" width="20%">' . $logo . '</td>';
-          $header .= '<td style="text-align:center; font-weight:bold; font-size 20px;" width="80%">' . $result['labName'] . '<br>'._translate('RESEARCH CENTER FOR ARMY HEALTH').'<br>'._translate('MILITARY HEALTH RESEARCH CENTER').'<br><span style="font-size:20px;">B.P. 7039;'. _translate('stewardship crossroads').' : Tel : 222229161</span></td>';
+          $header .= '<td style="line-height:30px;text-align:center;padding-top:20px;" width="15%">' . $logo . '</td>';
+          $header .= '<td width="85%">' . $result['labName'] . "<br><span style='font-weight:bold;font-size:10px;'>CENTRE DE RECHERCHE POUR LA SANTÉ DES ARMÉES<br>MILITARY HEALTH RESEARCH CENTER</span><br><span style='font-size:10px;'>B.P.7039;carrefour de l'intendance : Tel : 222229161</span></td>";
           $header .= '</tr>';
           $header .= '</table>';
           $pdf->writeHTML($header, true, false, true, false, 'C');
@@ -206,6 +206,11 @@ if (!empty($requestResult)) {
                $expStr = explode(" ", $currentTime);
                $sampleDispatchDate = date('d/M/Y', strtotime($expStr[0]));
                $sampleDispatchTime = $expStr[1];
+          }
+
+          $modified = "No";
+          if(!empty($result['modified_by'])){
+               $modified = "Yes";
           }
 
           $finalDate = date('d/M/Y', strtotime('+1 day', strtotime($result['sample_tested_datetime'])));
@@ -342,7 +347,7 @@ if (!empty($requestResult)) {
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('ARV initiation date : ') . ($result['treatment_initiated_date']) . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Modifier : ') . ($result['modifiedBy']) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Modifier : ') . ($modified) . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Modification date : ') . ($result['last_modified_datetime']) . '</td>';
           $html .= '</tr>';
           $html .= '</table>';
