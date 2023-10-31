@@ -30,11 +30,13 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'recency') {
     $recencyWhere = " reason_for_vl_testing = 9999 ";
     $sampleStatusOverviewContainer = "recencySampleStatusOverviewContainer";
     $samplesVlOverview = "recencySmplesVlOverview";
+    $samplesResultview = "recencySampleResultView";
     $labAverageTat = "recencyLabAverageTat";
 } else {
     $recencyWhere = " IFNULL(reason_for_vl_testing, 0)  != 9999 ";
     $sampleStatusOverviewContainer = "vlSampleStatusOverviewContainer";
     $samplesVlOverview = "vlSmplesVlOverview";
+    $samplesResultview = "vlSampleResultView";
     $labAverageTat = "vlLabAverageTat";
 }
 
@@ -155,6 +157,36 @@ if (!empty($sWhere)) {
 }
 $vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
 
+
+/** Get results that are not blank */
+$sampleResultQuery = "SELECT 
+            SUM(CASE WHEN vl.result REGEXP '^-?[0-9]+$' THEN 1 ELSE 0 END) AS numberValue,
+            SUM(CASE WHEN vl.result like 'TND' OR vl.result like 'Target Not Detected' OR vl.result like 'Below Detection Level' OR vl.result like 'HIV-1 Not Detected' THEN 1 ELSE 0 END) AS charValue
+            FROM " . $table . " as vl
+            JOIN facility_details as f ON vl.lab_id=f.facility_id
+            LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
+
+            if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+                $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
+            }
+            if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+                $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
+            }
+            if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
+                $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $labEndDate . '"';
+            }
+            if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
+                $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
+            }
+            if (!empty($_POST['labName'])) {
+                $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
+            }
+            if (!empty($sWhere)) {
+                $sampleResultQuery .= " where " . implode(" AND ", $sWhere);
+            }
+            $sampleResultQueryResult = $db->rawQueryOne($sampleResultQuery);
+
+
 //get LAB TAT
 if ($start_date == '' && $end_date == '') {
     $date = strtotime(date('Y-m-d') . ' -1 year');
@@ -246,6 +278,11 @@ foreach ($tatResult as $sRow) {
     <div class="box">
         <div class="box-body">
             <div id="<?php echo $samplesVlOverview; ?>" style="float:right;width:100%;margin: 0 auto;"></div>
+        </div>
+    </div>
+    <div class="box">
+        <div class="box-body">
+            <div id="<?php echo $samplesResultview; ?>" style="float:right;width:100%;margin: 0 auto;"></div>
         </div>
     </div>
 </div>
@@ -381,6 +418,63 @@ foreach ($tatResult as $sRow) {
         });
     <?php
     }
+
+    /* For new pie chart for not blank results */
+if(!empty($sampleResultQueryResult))
+{
+    ?>
+ Highcharts.setOptions({
+            colors: ['#7CB5ED', '#808080']
+        });
+        $('#<?php echo $samplesResultview; ?>').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: "<?php echo _translate("HIV Viral Load Detection (N = " . ($sampleResultQueryResult['numberValue'] + $sampleResultQueryResult['charValue']) . ")"); ?>"
+            },
+            credits: {
+                enabled: false
+            },
+            tooltip: {
+                pointFormat: "<?php echo _translate("Viral Load Detection"); ?> :<strong>{point.y}</strong>"
+            },
+            plotOptions: {
+                pie: {
+                    size: '100%',
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        useHTML: true,
+                        format: '<div style="padding-bottom:10px;"><strong>{point.name}</strong>: {point.y}</div>',
+                        style: {
+                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        },
+                        distance: 10
+                    },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                colorByPoint: true,
+                data: [{
+                        name: '<?php echo "Viral Load Detected"; ?>',
+                        y: <?php echo (isset($sampleResultQueryResult['numberValue']) && $sampleResultQueryResult['numberValue'] > 0) > 0 ? $sampleResultQueryResult['numberValue'] : 0; ?>
+                    },
+                    {
+                        name: '<?php echo "Viral Load Not Detected"; ?>',
+                        y: <?php echo (isset($sampleResultQueryResult['charValue']) && $sampleResultQueryResult['charValue'] > 0) > 0 ? $sampleResultQueryResult['charValue'] : 0; ?>
+                    },
+                ]
+            }]
+        });
+    <?php
+}
+
     if (!empty($result)) {
     ?>
         $('#<?php echo $labAverageTat; ?>').highcharts({
