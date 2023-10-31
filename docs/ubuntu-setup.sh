@@ -133,20 +133,6 @@ service apache2 restart || {
     exit 1
 }
 
-Alright, I will include the requested changes in your script.
-
-Here's the modified part of the script:
-
-Adjusting the php.ini settings:
-error_reporting will be set as requested.
-post_max_size and upload_max_filesize will both be set to 1G.
-memory_limit will be set to 75% of system RAM.
-Here's how the script is modified:
-
-bash
-Copy code
-...
-
 # PHP Setup
 echo "Installing PHP 7.4..."
 add-apt-repository ppa:ondrej/php -y
@@ -304,7 +290,6 @@ mv /var/www/vlsm/configs/config.production.dist.php /var/www/vlsm/configs/config
 
 # Update VLSM config.production.php with database credentials
 config_file="/var/www/vlsm/configs/config.production.php"
-mysql_root_password="your_mysql_root_password_here" # Ensure this variable is set
 
 desired_db_host="\$systemConfig['database']['host'] = 'localhost';"
 desired_db_username="\$systemConfig['database']['username'] = 'root';"
@@ -328,9 +313,12 @@ update_config "\$systemConfig\['database'\]\['password'\]\s*=\s*'';" "$desired_d
 # Prompt for Remote STS URL
 read -p "Please enter the Remote STS URL (can be blank if you choose so): " remote_sts_url
 
+# Define desired_sts_url
+desired_sts_url="\$systemConfig['remoteURL'] = '$remote_sts_url';"
+
 # Update VLSM config.production.php with Remote STS URL if provided
 if [ ! -z "$remote_sts_url" ]; then
-    sed -i "s|\$systemConfig\['remoteURL'\]\s*=\s*'';|\$systemConfig\['remoteURL'\] = '$remote_sts_url';|g" /var/www/vlsm/configs/config.production.php
+    update_config "\$systemConfig\['remoteURL'\]\s*=\s*'';" "$desired_sts_url" "$config_file"
 
     # Run the PHP script for remote data sync
     echo "Running remote data sync script. Please wait..."
