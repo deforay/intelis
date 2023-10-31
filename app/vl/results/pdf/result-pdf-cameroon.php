@@ -347,7 +347,7 @@ if (!empty($requestResult)) {
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('ARV initiation date : ') . ($result['treatment_initiated_date']) . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Modifier : ') . ($modified) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Modified : ') . ($modified) . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Modification date : ') . ($result['last_modified_datetime']) . '</td>';
           $html .= '</tr>';
           $html .= '</table>';
