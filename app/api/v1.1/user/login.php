@@ -64,7 +64,7 @@ try {
                 $remoteUser = "no";
             }
 
-            $tokenData = $usersService->getAuthToken($userResult['api_token']);
+            $tokenData = $usersService->getAuthToken($userResult['api_token'], $userResult['user_id']);
 
 
             $data = [];

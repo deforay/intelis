@@ -246,13 +246,13 @@ class UsersService
     }
 
 
-    public function getAuthToken(?string $token): array
+    public function getAuthToken(?string $token, $uId = null): ?array
     {
         $result = $this->getUserByToken($token) ?? null;
-
+        
         if (!empty($result)) {
             $tokenExpiration = $result['api_token_exipiration_days'] ?? 0;
-
+            
             $id = false;
             $data = [];
             // Tokens with expiration = 0 are tokens that never expire
@@ -271,6 +271,12 @@ class UsersService
             $result['token_updated'] = $id === true && !empty($data);
             $result['new_token'] = $result['token_updated'] ? $data['api_token'] : null;
             $result['token'] = $result['api_token'] ?? null;
+        } else {
+            $data['api_token'] = $this->generateAuthToken();
+            $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
+            $this->db = $this->db->where('user_id', $uId);
+            $id = $this->db->update($this->table, $data);
+            $result['token'] = $data['api_token'] ?? null;
         }
 
         return $result;
