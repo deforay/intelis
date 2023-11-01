@@ -111,7 +111,7 @@ try {
 
     $vlData = array(
         'vlsm_instance_id' => $instanceId,
-        'lab_id' => $_POST['labId'] ?? null,
+       // 'lab_id' => $_POST['labId'] ?? null,
         'vl_test_platform' => $testingPlatform ?? null,
         'sample_received_at_hub_datetime' => $_POST['sampleReceivedAtHubOn'],
         'sample_received_at_lab_datetime' => $_POST['sampleReceivedDate'],
@@ -170,7 +170,6 @@ try {
     }
 
     $vlData['vl_result_category'] = $vlService->getVLResultCategory($vlData['result_status'], $vlData['result']);
-
 
     $db = $db->where('vl_sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vlData);

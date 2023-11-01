@@ -768,6 +768,16 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                                       </div>
                                                                  </div>
                                                             </div>
+                                                            <div class="row">
+                                                                 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label" for="testedBy"><?= _translate('Tested By'); ?> </label>
+                                                                      <div class="col-lg-7">
+                                                                           <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose tested by" style="width: 100%;">
+                                                                                <?= $general->generateSelectOptions($userInfo, $vlQueryInfo['tested_by'], '-- Select --'); ?>
+                                                                           </select>                                                                      
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
                                                        </div>
                                                   </div>
                                              <?php } ?>
@@ -838,6 +848,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      facilityName = true;
      $(document).ready(function() {
 
+          $("#vlResult").trigger('change');
+
           if ($(".specialResults:checked").length > 0) {
                $('#vlResult, #vlLog').val('');
                $('#vlResult,#vlLog').attr('readonly', true);
@@ -862,6 +874,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           });
           $('#approvedBy').select2({
                placeholder: "Select Approved By"
+          });
+
+          $('#testedBy').select2({
+               placeholder: "<?= _translate('Select Tested By'); ?>"
           });
 
           getfacilityProvinceDetails($("#fName").val());
