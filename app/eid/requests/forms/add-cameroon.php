@@ -545,12 +545,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                             </td>
 
                                         <tr>
-                                            <td><label for="labId"><?= _translate('Lab Name'); ?> </label> </td>
-                                            <td>
-                                                <select name="labId" id="labId" class="form-control" title="Please select Testing Lab name" style="width:100%;">
-                                                    <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
-                                                </select>
-                                            </td>
+                                            
                                             <th scope="row"><?= _translate('Is Sample Rejected?'); ?></th>
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">

@@ -145,6 +145,18 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                         </td>
                                     </tr>
                                     <tr>
+                                    <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
+                                            <!-- <tr> -->
+                                            <td><label for="labId"><?= _translate('Lab Name'); ?> <span class="mandatory">*</span></label> </td>
+                                            <td>
+                                            <select name="labId" id="labId" class="form-control" title="Please select Testing Lab name" style="width:100%;">
+                                                    <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
+                                                </select>
+                                            </td>
+                                            <!-- </tr> -->
+                                        <?php } ?>
+                                    </tr>
+                                    <tr>
                                         <td>
                                             <label for="fundingSource"><?= _translate('Project Name'); ?> </label><br>
                                             <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
@@ -531,12 +543,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                             </td>
 
                                         <tr>
-                                            <td><label for="labId"><?= _translate('Lab Name'); ?> </label> </td>
-                                            <td>
-                                                <select name="labId" id="labId" class="form-control" title="Please select Testing Lab name" style="width:100%;">
-                                                    <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
-                                                </select>
-                                            </td>
+                                           
                                             <th scope="row"><?= _translate('Is Sample Rejected?'); ?></th>
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">
