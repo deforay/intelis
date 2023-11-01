@@ -37,7 +37,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 } else {
      $sampleCode = 'sample_code';
 }
-
+$lResult = $facilitiesService->getTestingLabs('vl', true, true);
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], '<?= _translate("-- Select --"); ?>');
 //regimen heading
@@ -242,7 +242,15 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                        </select>
                                                   </div>
                                              </div>
-
+                                             <div class="col-md-3 col-md-3">
+                                                  <label for="labId">Testing Lab <span class="mandatory">*</span></label>
+                                                  <select name="labId" id="labId" class="select2 form-control isRequired" title="Please choose lab" onchange="autoFillFocalDetails();setSampleDispatchDate();" style="width:100%;">
+                                                       <option value="">-- Select --</option>
+                                                       <?php foreach ($lResult as $labName) { ?>
+                                                            <option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>" <?php echo ($labName['facility_id'] == $vlQueryInfo['lab_id']) ? 'selected="selected"' : ''; ?>><?= $labName['facility_name']; ?></option>
+                                                       <?php } ?>
+                                                  </select>
+                                             </div>
                                         </div>
 
                                    </div>
