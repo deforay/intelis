@@ -450,7 +450,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                        </td>
                                        <td><br><br><br>
                                         D  = <?= _translate('Detected'); ?><br>
-                                        ND = D - <?= _translate('Not Detected'); ?>
+                                        ND = <?= _translate('Not Detected'); ?>
                                     </td>
                                     </tr>
                                     <tr>
