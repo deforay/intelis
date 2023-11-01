@@ -409,8 +409,8 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 														</option>
 													<?php } ?>
 													<?php foreach ($reportFormats['vl'] as $key => $value) {
-														foreach($value as $k=>$v) { ?>
-																<option value="<?php echo $k; ?>"><?php echo ($v); ?></option>
+														foreach ($value as $k => $v) { ?>
+															<option value="<?php echo $k; ?>"><?php echo ($v); ?></option>
 													<?php
 														}
 													} ?>
@@ -434,8 +434,8 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 														</option>
 													<?php } ?>
 													<?php foreach ($reportFormats['eid'] as $key => $value) {
-														foreach($value as $k=>$v) { ?>
-																<option value="<?php echo $k; ?>"><?php echo ($v); ?></option>
+														foreach ($value as $k => $v) { ?>
+															<option value="<?php echo $k; ?>"><?php echo ($v); ?></option>
 													<?php
 														}
 													} ?>
@@ -459,8 +459,8 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 														</option>
 													<?php } ?>
 													<?php foreach ($reportFormats['covid19'] as $key => $value) {
-														foreach($value as $k=>$v) { ?>
-																<option value="<?php echo $k; ?>"><?php echo ($v); ?></option>
+														foreach ($value as $k => $v) { ?>
+															<option value="<?php echo $k; ?>"><?php echo ($v); ?></option>
 													<?php
 														}
 													} ?>
@@ -484,8 +484,8 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 														</option>
 													<?php } ?>
 													<?php foreach ($reportFormats['hepatitis'] as $key => $value) {
-														foreach($value as $k=>$v) { ?>
-																<option value="<?php echo $k; ?>"><?php echo ($v); ?></option>
+														foreach ($value as $k => $v) { ?>
+															<option value="<?php echo $k; ?>"><?php echo ($v); ?></option>
 													<?php
 														}
 													} ?>
@@ -509,8 +509,8 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 														</option>
 													<?php } ?>
 													<?php foreach ($reportFormats['tb'] as $key => $value) {
-														foreach($value as $k=>$v) { ?>
-																<option value="<?php echo $k; ?>"><?php echo ($v); ?></option>
+														foreach ($value as $k => $v) { ?>
+															<option value="<?php echo $k; ?>"><?php echo ($v); ?></option>
 													<?php
 														}
 													} ?>
@@ -884,7 +884,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 				var testOrg = '';
 				if (testType[i] == 'vl') {
 					testOrg = 'Viral Load';
-					var extraDiv = '<td><input type="text" class=" isRequired" name="supMonTar[]" id ="supMonTar' + i + '" value="" title="<?php echo _translate("Please enter Suppressed monthly target"); ?>"/></td>';
+					var extraDiv = '<td><input type="text" class=" isRequired" name="supMonTar[]" id ="supMonTar' + i + '" value="" title="<?php echo _translate("Please enter Suppressed monthly target", true); ?>"/></td>';
 				} else if (testType[i] == 'eid') {
 					testOrg = 'Early Infant Diagnosis';
 					var extraDiv = '<td></td>';
@@ -902,7 +902,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 					var extraDiv = '<td></td>';
 				}
 				div += '<tr><td>' + testOrg + '<input type="hidden" name="testData[]" id ="testData' + i + '" value="' + testType[i] + '" /></td>';
-				div += '<td><input type="text" class=" isRequired" name="monTar[]" id ="monTar' + i + '" value="" title="<?php echo _translate("Please enter monthly target"); ?>"/></td>';
+				div += '<td><input type="text" class=" isRequired" name="monTar[]" id ="monTar' + i + '" value="" title="<?php echo _translate("Please enter monthly target", true); ?>"/></td>';
 				div += extraDiv;
 				div += '</tr>';
 			}
@@ -928,20 +928,20 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 	function addNewRow() {
 		testCounter++;
 		let rowString = `<tr>
-			<td style="width:14%;"><input type="text" class="form-control" name="signName[]" id="signName${testCounter}" placeholder="<?php echo _translate("Name"); ?>" title="<?php echo _translate("Please enter the name"); ?>"></td>
-			<td style="width:14%;"><input type="text" class="form-control" name="designation[]" id="designation${testCounter}" placeholder="<?php echo _translate("Designation"); ?>" title="<?php echo _translate("Please enter the Designation"); ?>"></td>
-			<td style="width:14%;"><input type="file" name="signature[]" id="signature${testCounter}" placeholder="Signature" title="<?php echo _translate("Please enter the Signature"); ?>"></td>
+			<td style="width:14%;"><input type="text" class="form-control" name="signName[]" id="signName${testCounter}" placeholder="<?php echo _translate("Name"); ?>" title="<?php echo _translate("Please enter the name", true); ?>"></td>
+			<td style="width:14%;"><input type="text" class="form-control" name="designation[]" id="designation${testCounter}" placeholder="<?php echo _translate("Designation", true); ?>" title="<?php echo _translate("Please enter the Designation", true); ?>"></td>
+			<td style="width:14%;"><input type="file" name="signature[]" id="signature${testCounter}" placeholder="Signature" title="<?php echo _translate("Please enter the Signature", true); ?>"></td>
 			<td style="width:14%;">
-				<select class="select2" id="testSignType${testCounter}" name="testSignType[${testCounter}][]" title="<?php echo _translate("Choose one test type"); ?>" multiple>
-					<option value="vl"><?php echo _translate("Viral Load"); ?></option>
-					<option value="eid"><?php echo _translate("Early Infant Diagnosis"); ?></option>
-					<option value="covid19"><?php echo _translate("Covid-19"); ?></option>
-					<option value='hepatitis'><?php echo _translate("Hepatitis"); ?></option>
+				<select class="select2" id="testSignType${testCounter}" name="testSignType[${testCounter}][]" title="<?php echo _translate("Choose one test type", true); ?>" multiple>
+					<option value="vl"><?php echo _translate("Viral Load", true); ?></option>
+					<option value="eid"><?php echo _translate("Early Infant Diagnosis", true); ?></option>
+					<option value="covid19"><?php echo _translate("Covid-19", true); ?></option>
+					<option value='hepatitis'><?php echo _translate("Hepatitis", true); ?></option>
 				</select>
 			</td>
-			<td style="width:14%;"><input type="number" class="form-control" name="sortOrder[]" id="sortOrder${testCounter}" placeholder="<?php echo _translate("Display Order"); ?>" title="<?php echo _translate("Please enter the Display Order"); ?>"></td>
+			<td style="width:14%;"><input type="number" class="form-control" name="sortOrder[]" id="sortOrder${testCounter}" placeholder="<?php echo _translate("Display Order", true); ?>" title="<?php echo _translate("Please enter the Display Order", true); ?>"></td>
 			<td style="width:14%;">
-				<select class="form-control" id="signStatus${testCounter}" name="signStatus[]" title="<?php echo _translate("Please select the status"); ?>">
+				<select class="form-control" id="signStatus${testCounter}" name="signStatus[]" title="<?php echo _translate("Please select the status", true); ?>">
 					<option value="active"><?php echo _translate("Active"); ?></option>
 					<option value="inactive"><?php echo _translate("Inactive"); ?></option>
 				</select>

@@ -224,7 +224,6 @@ else
     php composer-setup.php
     if [ $? -ne 0 ]; then
         echo "Failed to install Composer."
-        exit 1
     fi
     php -r "unlink('composer-setup.php');"
     mv composer.phar /usr/local/bin/composer
@@ -247,6 +246,7 @@ echo "127.0.0.1 vlsm" | tee -a /etc/hosts
 
 echo "Updating Apache configuration for VLSM..."
 config_file="/etc/apache2/sites-available/000-default.conf"
+temp_file="/tmp/000-default.conf.tmp"
 desired_document_root='    DocumentRoot "/var/www/vlsm/public"'
 desired_server_name='    ServerName vlsm'
 desired_directory_block=$(
@@ -267,13 +267,21 @@ if ! grep -qF "$desired_document_root" $config_file ||
     ! grep -qF "$desired_directory_block" $config_file; then
 
     # Replace the DocumentRoot directive
-    sed -i "/DocumentRoot/c\\$desired_document_root" $config_file
+    sed "/DocumentRoot/c\\
+$desired_document_root" $config_file >$temp_file && mv $temp_file $config_file
 
     # Comment out any existing, incorrect ServerName and Directory block for /var/www/vlsm/public
-    sed -i "/ServerName vlsm/,/<\/Directory>/s/^/;/" $config_file
+    sed "/ServerName vlsm/,/<\/Directory>/s/^/#/" $config_file >$temp_file && mv $temp_file $config_file
 
     # Append the desired ServerName and Directory block after the DocumentRoot directive
-    sed -i "/$desired_document_root/a\\$desired_server_name\n\n$desired_directory_block" $config_file
+    # As appending with sed can be tricky, especially with multi-line strings, use awk instead
+    awk -v dr="$desired_document_root" -v sn="$desired_server_name" -v db="$desired_directory_block" '
+        {print}
+        $0 ~ dr {
+            print sn "\n"
+            print db
+        }
+    ' $config_file >$temp_file && mv $temp_file $config_file
 fi
 
 # Restart the Apache service, and exit if the restart fails

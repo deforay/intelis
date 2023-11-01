@@ -402,10 +402,10 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 												<option value=""><?php echo _translate("-- Select --"); ?></option>
 											<?php } ?>
 											<?php foreach ($reportFormats['vl'] as $key => $value) {
-														foreach($value as $k=>$v) { ?>
-																<option value="<?php echo $k; ?>" <?php echo ($formats['vl'] == $k) ? "selected='selected'" : ""; ?>><?php echo ($v); ?></option>
+												foreach ($value as $k => $v) { ?>
+													<option value="<?php echo $k; ?>" <?php echo ($formats['vl'] == $k) ? "selected='selected'" : ""; ?>><?php echo ($v); ?></option>
 											<?php
-											}
+												}
 											} ?>
 										</select>
 									</div>
@@ -731,7 +731,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 	// });
 
 	function validateNow() {
-	
+
 		var selVal = [];
 		$('#search_to option').each(function(i, selected) {
 			selVal[i] = $(selected).val();
@@ -882,12 +882,12 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 						else
 							var supM = '';
 						testOrg = 'Viral Load';
-						var extraDiv = '<td><input type="text" class="" name="supMonTar[]" id ="supMonTar' + i + '" value="' + supM + '" title="<?php echo _translate('Please enter Suppressed monthly target'); ?>"/></td>';
+						var extraDiv = '<td><input type="text" class="" name="supMonTar[]" id ="supMonTar' + i + '" value="' + supM + '" title="<?php echo _translate('Please enter Suppressed monthly target', true); ?>"/></td>';
 					} else if (testType[i] == 'eid') {
-						testOrg = '<?php echo _translate("Early Infant Diagnosis"); ?>';
+						testOrg = '<?php echo _translate("Early Infant Diagnosis", true); ?>';
 						var extraDiv = '<td></td>';
 					} else if (testType[i] == 'covid19') {
-						testOrg = '<?php echo _translate("Covid-19"); ?>';
+						testOrg = '<?php echo _translate("Covid-19", true); ?>';
 						var extraDiv = '<td></td>';
 					} else if (testType[i] == 'hepatitis') {
 						testOrg = 'Hepatitis';
@@ -901,7 +901,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 					}
 
 					div += '<tr><td>' + testOrg + '<input type="hidden" name="testData[]" id ="testData' + i + '" value="' + testType[i] + '" /></td>';
-					div += '<td><input type="text" class="" name="monTar[]" id ="monTar' + i + '" value="' + oldMonTar + '" title="<?php echo _translate('Please enter monthly target'); ?>"/></td>';
+					div += '<td><input type="text" class="" name="monTar[]" id ="monTar' + i + '" value="' + oldMonTar + '" title="<?php echo _translate('Please enter monthly target', true); ?>"/></td>';
 					div += extraDiv;
 					div += '</tr>';
 				}
@@ -931,23 +931,23 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 	function addNewRow() {
 		testCounter++;
 		let rowString = `<tr>
-			<td style="width:14%;"><input type="text" class="form-control" name="signName[]" id="signName${testCounter}" placeholder="<?php echo _translate('Name'); ?>" title="<?php echo _translate('Please enter the name'); ?>"></td>
-			<td style="width:14%;"><input type="text" class="form-control" name="designation[]" id="designation${testCounter}" placeholder="<?php echo _translate('Designation'); ?>" title="<?php echo _translate('Please enter the Designation'); ?>"></td>
-			<td style="width:14%;"><input type="file" name="signature[]" id="signature${testCounter}" placeholder="<?php echo _translate('Signature'); ?>" title="<?php echo _translate('Please enter the Signature'); ?>"></td>
+			<td style="width:14%;"><input type="text" class="form-control" name="signName[]" id="signName${testCounter}" placeholder="<?php echo _translate('Name', true); ?>" title="<?php echo _translate('Please enter the name', true); ?>"></td>
+			<td style="width:14%;"><input type="text" class="form-control" name="designation[]" id="designation${testCounter}" placeholder="<?php echo _translate('Designation', true); ?>" title="<?php echo _translate('Please enter the Designation', true); ?>"></td>
+			<td style="width:14%;"><input type="file" name="signature[]" id="signature${testCounter}" placeholder="<?php echo _translate('Signature', true); ?>" title="<?php echo _translate('Please enter the Signature', true); ?>"></td>
 			<td style="width:14%;">
-				<select class="select2" id="testSignType${testCounter}" name="testSignType[${testCounter}][]" title="<?php echo _translate('Choose one test type'); ?>" multiple>
-					<option value="vl"><?php echo _translate("Viral Load"); ?></option>
-					<option value="eid"><?php echo _translate("Early Infant Diagnosis"); ?></option>
-					<option value="covid19"><?php echo _translate("Covid-19"); ?></option>
-					<option value='hepatitis'><?php echo _translate("Hepatitis"); ?></option>
-					<option value='tb'><?php echo _translate("TB"); ?></option>
+				<select class="select2" id="testSignType${testCounter}" name="testSignType[${testCounter}][]" title="<?php echo _translate('Choose one test type', true); ?>" multiple>
+					<option value="vl"><?php echo _translate("Viral Load", true); ?></option>
+					<option value="eid"><?php echo _translate("Early Infant Diagnosis", true); ?></option>
+					<option value="covid19"><?php echo _translate("Covid-19", true); ?></option>
+					<option value='hepatitis'><?php echo _translate("Hepatitis", true); ?></option>
+					<option value='tb'><?php echo _translate("TB", true); ?></option>
 				</select>
 			</td>
-			<td style="width:14%;"><input type="text" class="form-control" name="sortOrder[]" id="sortOrder${testCounter}" placeholder="<?php echo _translate('Display Order'); ?>" title="<?php echo _translate('Please enter the Display Order'); ?>"></td>
+			<td style="width:14%;"><input type="text" class="form-control" name="sortOrder[]" id="sortOrder${testCounter}" placeholder="<?php echo _translate('Display Order', true); ?>" title="<?php echo _translate('Please enter the Display Order', true); ?>"></td>
 			<td style="width:14%;">
-				<select class="form-control" id="signStatus${testCounter}" name="signStatus[]" title="<?php echo _translate('Please select the status'); ?>">
-					<option value="active"><?php echo _translate("Active"); ?></option>
-					<option value="inactive"><?php echo _translate("Inactive"); ?></option>
+				<select class="form-control" id="signStatus${testCounter}" name="signStatus[]" title="<?php echo _translate('Please select the status', true); ?>">
+					<option value="active"><?php echo _translate("Active", true); ?></option>
+					<option value="inactive"><?php echo _translate("Inactive", true); ?></option>
 				</select>
 			</td>
 			<td style="vertical-align:middle;text-align: center;width:10%;">
