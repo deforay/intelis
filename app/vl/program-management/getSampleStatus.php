@@ -420,7 +420,7 @@ foreach ($tatResult as $sRow) {
     }
 
     /* For new pie chart for not blank results */
-if(!empty($sampleResultQueryResult))
+if(!empty($sampleResultQueryResult) && ($sampleResultQueryResult['numberValue'] + $sampleResultQueryResult['charValue'])>0)
 {
     ?>
  Highcharts.setOptions({
