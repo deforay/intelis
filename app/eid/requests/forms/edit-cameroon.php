@@ -116,17 +116,17 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                         <td></td>
                                     </tr>
                                     <tr>
-                                        <td><label for="province"><?= _translate('Province'); ?> </label><span class="mandatory">*</span></br>
+                                        <td style="width:25%"><label for="province"><?= _translate('Province'); ?> </label><span class="mandatory">*</span></br>
                                             <select class="form-control isRequired" name="province" id="province" title="Please choose province" onchange="getfacilityDetails(this);" style="width:100%;">
                                                 <?php echo $province; ?>
                                             </select>
                                         </td>
-                                        <td><label for="district"><?= _translate('District'); ?> </label><span class="mandatory">*</span><br>
+                                        <td style="width:25%"><label for="district"><?= _translate('District'); ?> </label><span class="mandatory">*</span><br>
                                             <select class="form-control isRequired" name="district" id="district" title="Please choose district" style="width:100%;" onchange="getfacilityDistrictwise(this);">
                                                 <option value=""> <?= _translate('-- Select --'); ?> </option>
                                             </select>
                                         </td>
-                                        <td><label for="facilityId"><?= _translate('Health Facility'); ?> </label><span class="mandatory">*</span><br>
+                                        <td style="width:25%"><label for="facilityId"><?= _translate('Health Facility'); ?> </label><span class="mandatory">*</span><br>
                                             <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose service provider" style="width:100%;" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
                                                 <option value=""> <?= _translate('-- Select --'); ?> </option>
                                                 <?php //echo $facility;
@@ -139,25 +139,14 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                                     ?>
                                             </select>
                                         </td>
-                                        <td>
+                                        <td style="width:25%">
                                             <label for="fCode"><?= _translate('Clinic/Health Center Code'); ?> </label><br>
                                             <input type="text" class="form-control" style="width:100%;" name="fCode" id="fCode" placeholder="<?= _translate('Clinic/Health Center Code'); ?>" title="<?= _translate('Please enter clinic/health center code'); ?>" value="<?php echo $facilityResult[0]['facility_code']; ?>">
                                         </td>
                                     </tr>
+                                    
                                     <tr>
-                                    <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
-                                            <!-- <tr> -->
-                                            <td><label for="labId"><?= _translate('Lab Name'); ?> <span class="mandatory">*</span></label> </td>
-                                            <td>
-                                            <select name="labId" id="labId" class="form-control" title="Please select Testing Lab name" style="width:100%;">
-                                                    <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
-                                                </select>
-                                            </td>
-                                            <!-- </tr> -->
-                                        <?php } ?>
-                                    </tr>
-                                    <tr>
-                                        <td>
+                                        <td style="width:25%">
                                             <label for="fundingSource"><?= _translate('Project Name'); ?> </label><br>
                                             <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
                                                 <option value=""> <?= _translate('-- Select --'); ?> </option>
@@ -168,7 +157,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                                 <?php } ?>
                                             </select>
                                         </td>
-                                        <td>
+                                        <td style="width:25%">
                                             <label for="implementingPartner"><?= _translate('Implementing Partner'); ?> </label><br>
 
                                             <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
@@ -178,6 +167,12 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                                 ?>
                                                     <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $eidInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
                                                 <?php } ?>
+                                            </select>
+                                        </td>
+                                        <td style="width:25%">
+                                            <label for="labId"><?= _translate('Lab Name'); ?> <span class="mandatory">*</span></label>
+                                            <select name="labId" id="labId" class="form-control isRequired" title="<?= _translate('Please select Testing Lab name'); ?>" style="width:100%;">
+                                            <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
                                             </select>
                                         </td>
                                     </tr>
