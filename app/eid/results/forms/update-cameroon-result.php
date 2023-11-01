@@ -108,44 +108,39 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <td class="labels"><label for="province"><?= _translate('Health Facility/POE State'); ?> </label><span class="mandatory">*</span></td>
-                                    <td>
-                                        <select class="form-control isRequired" name="province" id="province" title="<?= _translate('Please choose province'); ?>" onchange="getfacilityDetails(this);" style="width:100%;">
+                                    <td style="width:25%"><label for="province"><?= _translate('Province'); ?> </label><span class="mandatory">*</span></br>
+                                        <select class="form-control isRequired" name="province" id="province" title="Please choose province" onchange="getfacilityDetails(this);" style="width:100%;">
                                             <?php echo $province; ?>
                                         </select>
                                     </td>
-                                    <td class="labels"><label for="district"><?= _translate('Health Facility/POE County'); ?> </label><span class="mandatory">*</span></td>
-                                    <td>
-                                        <select class="form-control isRequired" name="district" id="district" title="<?= _translate('Please choose district'); ?>" style="width:100%;" onchange="getfacilityDistrictwise(this);">
+                                    <td style="width:25%"><label for="district"><?= _translate('District'); ?> </label><span class="mandatory">*</span><br>
+                                        <select class="form-control isRequired" name="district" id="district" title="Please choose district" style="width:100%;" onchange="getfacilityDistrictwise(this);">
                                             <option value=""> <?= _translate('-- Select --'); ?> </option>
                                         </select>
                                     </td>
-                                    <td class="labels"><label for="facilityId"><?= _translate('Health Facility/POE'); ?> </label><span class="mandatory">*</span></td>
-                                    <td>
-                                        <select class="form-control isRequired " name="facilityId" id="facilityId" title="<?= _translate('Please choose service provider'); ?>" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
-                                            <?php echo $facility; ?>
+                                    <td style="width:25%"><label for="facilityId"><?= _translate('Health Facility'); ?> </label><span class="mandatory">*</span><br>
+                                        <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose service provider" style="width:100%;" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
+                                            <option value=""> <?= _translate('-- Select --'); ?> </option>
+                                            <?php //echo $facility;
+                                                foreach($healthFacilitiesAllColumns as $facility)
+                                                {
+                                                    ?>
+                                                <option value="<?php echo $facility['facility_id']; ?>" <?php echo ($eidInfo['facility_id']==$facility['facility_id']) ? "selected='selected'" : ""; ?> data-code="<?php echo $facility['facility_code']; ?>"><?php echo $facility['facility_name']; ?></option>
+                                                    <?php
+                                                }
+                                                ?>
                                         </select>
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label for="fCode"><?= _translate('Clinic/Health Center Code'); ?> </label>
+                                    <td style="width:25%">
+                                        <label for="fCode"><?= _translate('Clinic/Health Center Code'); ?> </label><br>
+                                        <input type="text" class="form-control" style="width:100%;" name="fCode" id="fCode" placeholder="<?= _translate('Clinic/Health Center Code'); ?>" title="<?= _translate('Please enter clinic/health center code'); ?>" value="<?php echo $facilityResult[0]['facility_code']; ?>">
                                     </td>
-                                    <td> <input type="text" class="form-control" style="width:100%;" name="fCode" id="fCode" placeholder="<?= _translate('Clinic/Health Center Code'); ?>" title="<?= _translate('Please enter clinic/health center code'); ?>" value="<?php echo $facilityResult[0]['facility_code']; ?>">
-                                    </td>
-                                    <?php if ($sarr['sc_user_type'] == 'remoteuser' && $_SESSION['accessType'] == 'collection-site') { ?>
-                                        <th class="labels" scope="row"><?= _translate('Testing Laboratory'); ?> <span class="mandatory">*</span></th>
-                                        <td>
-                                            <select name="labId" id="labId" class="select2 form-control isRequired" title="<?= _translate('Please select Testing Testing Laboratory'); ?>" style="width:100%;">
-                                                <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
-                                            </select>
-                                        </td>
-                                    <?php } ?>
                                 </tr>
+                                
                                 <tr>
-                                    <td>
+                                    <td style="width:25%">
                                         <label for="fundingSource"><?= _translate('Project Name'); ?> </label><br>
-                                        <select class="form-control" name="fundingSource" id="fundingSource" title="<?= _translate('Please choose implementing partner'); ?>" style="width:100%;">
+                                        <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
                                             <option value=""> <?= _translate('-- Select --'); ?> </option>
                                             <?php
                                             foreach ($fundingSourceList as $fundingSource) {
@@ -154,16 +149,22 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                             <?php } ?>
                                         </select>
                                     </td>
-                                    <td>
+                                    <td style="width:25%">
                                         <label for="implementingPartner"><?= _translate('Implementing Partner'); ?> </label><br>
 
-                                        <select class="form-control" name="implementingPartner" id="implementingPartner" title="<?= _translate('Please choose implementing partner'); ?>" style="width:100%;">
+                                        <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
                                             <option value=""> <?= _translate('-- Select --'); ?> </option>
                                             <?php
                                             foreach ($implementingPartnerList as $implementingPartner) {
                                             ?>
                                                 <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $eidInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
                                             <?php } ?>
+                                        </select>
+                                    </td>
+                                    <td style="width:25%">
+                                        <label for="labId"><?= _translate('Lab Name'); ?> <span class="mandatory">*</span></label>
+                                        <select name="labId" id="labId" class="form-control isRequired" title="<?= _translate('Please select Testing Lab name'); ?>" style="width:100%;">
+                                        <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
                                         </select>
                                     </td>
                                 </tr>

@@ -60,10 +60,10 @@ $districtResult = [];
 if (trim($stateName) != '') {
 	$districtQuery = "SELECT DISTINCT facility_district from facility_details where facility_state='" . $stateName . "' AND status='active'";
 	$districtResult = $db->query($districtQuery);
-	$facilityQuery = "SELECT * from facility_details where `status`='active' AND facility_type='2'";
-	$lResult = $db->query($facilityQuery);
+	/* $facilityQuery = "SELECT * from facility_details where `status`='active' AND facility_type='2'";
+	$lResult = $db->query($facilityQuery); */
 }
-
+$lResult = $facilitiesService->getTestingLabs('vl', true, true);
 //set reason for changes history
 $rch = '';
 $allChange = [];
@@ -291,7 +291,15 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 										</select>
 									</div>
 								</div>
-
+								<div class="col-md-3 col-md-3">
+									<label for="labId">Testing Lab <span class="mandatory">*</span></label>
+									<select name="labId" id="labId" class="select2 form-control isRequired" title="Please choose lab" onchange="autoFillFocalDetails();setSampleDispatchDate();" style="width:100%;">
+										<option value="">-- Select --</option>
+										<?php foreach ($lResult as $labName) { ?>
+											<option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>" <?php echo ($labName['facility_id'] == $vlQueryInfo['lab_id']) ? 'selected="selected"' : ''; ?>><?= $labName['facility_name']; ?></option>
+										<?php } ?>
+									</select>
+								</div>
 							</div>
 						</div>
 

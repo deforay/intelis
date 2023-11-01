@@ -100,17 +100,17 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                         <td></td>
                                     </tr>
                                     <tr>
-                                        <td><label for="province"><?= _translate('Province'); ?> </label><span class="mandatory">*</span><br>
+                                        <td style="width:25%"><label for="province"><?= _translate('Province'); ?> </label><span class="mandatory">*</span><br>
                                             <select class="form-control isRequired" name="province" id="province" title="<?= _translate('Please choose province'); ?>" onchange="getfacilityDetails(this);">
                                                 <?php echo $province; ?>
                                             </select>
                                         </td>
-                                        <td><label for="district"><?= _translate('District'); ?> </label><span class="mandatory">*</span><br>
+                                        <td style="width:25%"><label for="district"><?= _translate('District'); ?> </label><span class="mandatory">*</span><br>
                                             <select class="form-control isRequired" name="district" id="district" title="Please choose district" onchange="getfacilityDistrictwise(this);">
                                                 <option value=""> -- Select -- </option>
                                             </select>
                                         </td>
-                                        <td><label for="facilityId"><?= _translate('Health Facility'); ?> </label><span class="mandatory">*</span><br>
+                                        <td style="width:25%"><label for="facilityId"><?= _translate('Health Facility'); ?> </label><span class="mandatory">*</span><br>
                                             <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose service provider" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
                                                 <option value=""> <?= _translate('-- Select --'); ?> </option>
                                                 <?php //echo $facility;
@@ -123,7 +123,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                     ?>
                                             </select>
                                         </td>
-                                        <td>
+                                        <td style="width:25%">
                                             <label for="fCode"><?= _translate('Clinic/Health Center Code'); ?> </label><br>
                                             <input type="text" class="form-control" style="width:100%;" name="fCode" id="fCode" placeholder="<?= _translate('Clinic/Health Center Code'); ?>" title="<?= _translate('Please enter clinic/health center code'); ?>">
                                         </td>
@@ -152,19 +152,9 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                 <?php } ?>
                                             </select>
                                         </td>-->
-                                        <?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
-                                            <!-- <tr> -->
-                                            <td><label for="labId"><?= _translate('Lab Name'); ?> <span class="mandatory">*</span></label> </td>
-                                            <td>
-                                                <select name="labId" id="labId" class="form-control isRequired" title="<?= _translate('Please select Testing Lab name'); ?>" style="width:100%;">
-                                                    <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
-                                                </select>
-                                            </td>
-                                            <!-- </tr> -->
-                                        <?php } ?>
                                     </tr>
                                     <tr>
-                                        <td>
+                                        <td style="width:25%">
                                             <label for="fundingSource"><?= _translate('Project Name'); ?> </label><br>
                                             <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
                                                 <option value=""> <?= _translate('-- Select --'); ?> </option>
@@ -175,7 +165,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                 <?php } ?>
                                             </select>
                                         </td>
-                                        <td>
+                                        <td style="width:25%">
                                             <label for="implementingPartner"><?= _translate('Implementing Partner'); ?> </label><br>
 
                                             <select class="form-control" name="implementingPartner" id="implementingPartner" title="<?= _translate('Please choose implementing partner'); ?>" style="width:100%;">
@@ -185,6 +175,12 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                 ?>
                                                     <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
                                                 <?php } ?>
+                                            </select>
+                                        </td>
+                                        <td style="width:25%">
+                                            <label for="labId"><?= _translate('Lab Name'); ?> <span class="mandatory">*</span></label>
+                                            <select name="labId" id="labId" class="form-control isRequired" title="<?= _translate('Please select Testing Lab name'); ?>" style="width:100%;">
+                                                <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
                                             </select>
                                         </td>
                                     </tr>

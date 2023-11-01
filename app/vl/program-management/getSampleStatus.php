@@ -420,7 +420,7 @@ foreach ($tatResult as $sRow) {
     }
 
     /* For new pie chart for not blank results */
-if(!empty($sampleResultQueryResult) && ($sampleResultQueryResult['numberValue'] + $sampleResultQueryResult['charValue'])>0)
+if(!empty($sampleResultQueryResult) && ($sampleResultQueryResult['numberValue'] + $sampleResultQueryResult['charValue']) > 0)
 {
     ?>
  Highcharts.setOptions({
@@ -473,8 +473,9 @@ if(!empty($sampleResultQueryResult) && ($sampleResultQueryResult['numberValue'] 
             }]
         });
     <?php
-}
-
+}else { ?>
+    $('#<?php echo $samplesResultview; ?>').hide();
+<?php }
     if (!empty($result)) {
     ?>
         $('#<?php echo $labAverageTat; ?>').highcharts({
