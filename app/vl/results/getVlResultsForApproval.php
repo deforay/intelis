@@ -1,14 +1,10 @@
 <?php
 
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-
-if (session_status() == PHP_SESSION_NONE) {
-     session_start();
-}
-
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -18,6 +14,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
 
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
@@ -167,29 +164,15 @@ $output = [
      "aaData" => []
 ];
 
-$vlRequest = false;
-$vlView = false;
-if (isset($_SESSION['privileges']) && (in_array("/vl/requests/editVlRequest.php", $_SESSION['privileges']))) {
-     $vlRequest = true;
-}
-if (isset($_SESSION['privileges']) && (in_array("viewVlRequest.php", $_SESSION['privileges']))) {
-     $vlView = true;
-}
-
 foreach ($rResult as $aRow) {
-     if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-          $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-     } else {
-          $aRow['sample_collection_date'] = '';
-     }
 
-
+     $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 
      $status = '<select class="form-control"  name="status[]" id="' . $aRow['vl_sample_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,' . $aRow['status_id'] . ')">
                <option value="">' . _translate("-- Select --") . '</option>
-               <option value="7" ' . ($aRow['status_id'] == "7" ? "selected=selected" : "") . '>' . _translate("Accepted") . '</option>
-               <option value="4" ' . ($aRow['status_id'] == "4"  ? "selected=selected" : "") . '>' . _translate("Rejected") . '</option>
-               <option value="2" ' . ($aRow['status_id'] == "2"  ? "selected=selected" : "") . '>' . _translate("Lost") . '</option>
+               <option value="' . SAMPLE_STATUS\ACCEPTED . '" ' . ($aRow['status_id'] == SAMPLE_STATUS\ACCEPTED ? "selected=selected" : "") . '>' . _translate("Accepted") . '</option>
+               <option value="' . SAMPLE_STATUS\REJECTED . '" ' . ($aRow['status_id'] == SAMPLE_STATUS\REJECTED  ? "selected=selected" : "") . '>' . _translate("Rejected") . '</option>
+               <option value="' . SAMPLE_STATUS\LOST_OR_MISSING . '" ' . ($aRow['status_id'] == SAMPLE_STATUS\LOST_OR_MISSING  ? "selected=selected" : "") . '>' . _translate("Lost") . '</option>
                </select><br><br>';
 
      $row = [];
@@ -217,7 +200,7 @@ foreach ($rResult as $aRow) {
      $row[] = ($aRow['facility_name']);
      $row[] = ($aRow['sample_name']);
      $row[] = $aRow['result'];
-     $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
+     $row[] = DateUtility::humanReadableDateFormat($aRow['vl.last_modified_datetime'], true);
      $row[] = $status;
      //$row[] = '<a href="updateVlTestResult.php?id=' . base64_encode($aRow['vl_sample_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result"><em class="fa-solid fa-pen-to-square"></em> Result</a>';
 

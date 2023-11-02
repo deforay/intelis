@@ -180,6 +180,7 @@ done
 # phpMyAdmin Setup
 echo "Downloading and setting up phpMyAdmin..."
 wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
+rm -rf /var/www/phpmyadmin
 tar xzf phpMyAdmin-latest-all-languages.tar.gz
 DIR_NAME=$(tar tzf phpMyAdmin-latest-all-languages.tar.gz | head -1 | cut -f1 -d"/") # Get the directory name from the tar file.
 mv $DIR_NAME /var/www/phpmyadmin                                                     # Move using the determined directory name
