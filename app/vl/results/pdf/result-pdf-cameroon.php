@@ -356,8 +356,8 @@ if (!empty($requestResult)) {
           $html .= '<tr>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Sample Received Date : ') . '</td>';
           $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $sampleReceivedDate . " " . $sampleReceivedTime . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Viral load serial number : ') . '</td>';
-          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . ($result['vl_test_number']) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Viral Load Serial Number : ') . '</td>';
+          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . ($result['sample_code']) . '</td>';
 
           $html .= '</tr>';
           $html .= '<tr><td></td></tr>';
