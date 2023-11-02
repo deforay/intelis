@@ -86,7 +86,7 @@ if (!empty($requestResult)) {
                $userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
           }
           $_SESSION['aliasPage'] = $page;
-          if (!isset($result['labName'])) {
+          if (empty($result['labName'])) {
                $result['labName'] = '';
           }
           $draftTextShow = false;
@@ -110,7 +110,7 @@ if (!empty($requestResult)) {
                $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $arr['logo'];
           }
           $arr['training_mode_text'] = (isset($arr['training_mode']) && $arr['training_mode'] == 'yes') ? $arr['training_mode_text'] : null;
-          $pdf->setHeading($logoPrintInPdf, null, null, null, null, $arr['training_mode_text']);
+         // $pdf->setHeading($logoPrintInPdf, null, null, null, null, $arr['training_mode_text']);
 
           // set header and footer fonts
           $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
@@ -160,9 +160,7 @@ if (!empty($requestResult)) {
           if (!isset($result['facility_name']) || trim($result['facility_name']) == '') {
                $result['facility_name'] = '';
           }
-          if (!isset($result['labName']) || trim($result['labName']) == '') {
-               $result['labName'] = '';
-          }
+         
           //Set Age
           $age = 'Unknown';
           if (isset($result['patient_dob']) && trim($result['patient_dob']) != '' && $result['patient_dob'] != '0000-00-00') {
@@ -208,9 +206,9 @@ if (!empty($requestResult)) {
                $sampleDispatchTime = $expStr[1];
           }
 
-          $modified = "No";
+          $modified = _translate("No");
           if(!empty($result['modified_by'])){
-               $modified = "Yes";
+               $modified = _translate("Yes");
           }
 
           $finalDate = date('d/M/Y', strtotime('+1 day', strtotime($result['sample_tested_datetime'])));
@@ -377,7 +375,7 @@ if (!empty($requestResult)) {
           $html .= '<td width="20%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Results (log) : ') . '</td>';
           $html .= '<td width="10%" style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $logValue . '</td>';
           $html .= '<td width="20%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Test Done By : ') . '</td>';
-          $html .= '<td width="30%" style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' .$result['labName'] . '</td>';
+          $html .= '<td width="30%" style="line-height:10px;font-size:10px;text-align:left; border: 1px solid black">' .$result['labName'] . '</td>';
 
           $html .= '</tr>';
           $html .= '<tr><td width="100%" style="line-height:20px;font-size:10px;">';

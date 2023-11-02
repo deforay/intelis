@@ -671,6 +671,17 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                                       </div>
                                                                  </div>
                                                             </div>
+                                                            <div class="row">
+                                                                 <div class="col-md-6">
+                                                                      <label class="col-lg-5 control-label" for="testedBy"><?= _translate('Tested By'); ?> </label>
+                                                                      <div class="col-lg-7">
+                                                                           <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose tested by" style="width: 100%;">
+                                                                                <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+                                                                           </select>                                                                      
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+
                                                        </div>
                                                   </div>
                                              <?php }
@@ -796,6 +807,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           });
           $('#approvedBy').select2({
                placeholder: "<?= _translate('Select Approved By'); ?>"
+          });
+          $('#testedBy').select2({
+               placeholder: "<?= _translate('Select Tested By'); ?>"
           });
           // BARCODESTUFF START
           <?php

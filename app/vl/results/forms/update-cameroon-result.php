@@ -269,7 +269,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 									<div class="form-group">
 										<label for="fundingSource"><?= _translate("Project Name"); ?></label>
 										<select <?php echo $disable; ?> class="form-control" name="fundingSource" id="fundingSource" title="<?= _translate('Please choose implementing partner'); ?>" style="width:100%;">
-											<option value=""> -- Select -- </option>
+											<option value=""> <?= _translate("-- Select --"); ?> </option>
 											<?php
 											foreach ($fundingSourceList as $fundingSource) {
 											?>
@@ -292,8 +292,8 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 									</div>
 								</div>
 								<div class="col-md-3 col-md-3">
-									<label for="labId">Testing Lab <span class="mandatory">*</span></label>
-									<select name="labId" id="labId" class="select2 form-control isRequired" title="Please choose lab" onchange="autoFillFocalDetails();setSampleDispatchDate();" style="width:100%;">
+									<label for="labId"><?= _translate("Testing Lab"); ?> <span class="mandatory">*</span></label>
+									<select <?php echo $disable; ?> name="labId" id="labId" class="select2 form-control isRequired" title="Please choose lab" onchange="autoFillFocalDetails();setSampleDispatchDate();" style="width:100%;">
 										<option value="">-- Select --</option>
 										<?php foreach ($lResult as $labName) { ?>
 											<option data-focalperson="<?php echo $labName['contact_person']; ?>" data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>" value="<?php echo $labName['facility_id']; ?>" <?php echo ($labName['facility_id'] == $vlQueryInfo['lab_id']) ? 'selected="selected"' : ''; ?>><?= $labName['facility_name']; ?></option>
@@ -763,7 +763,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="approvedBy"><?= _translate('Approved By'); ?><span class="mandatory">*</span> </label>
 													<div class="col-lg-7">
-														<select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" <?php echo $labFieldDisabled; ?>>
+														<select name="approvedBy" id="approvedBy" class="form-control isRequired" title="Please choose approved by" <?php echo $labFieldDisabled; ?>>
 															<option value=""><?= _translate('-- Select --'); ?></option>
 															<?php foreach ($userResult as $uName) { ?>
 																<option value="<?php echo $uName['user_id']; ?>" <?php echo ($vlQueryInfo['result_approved_by'] == $uName['user_id']) ? "selected=selected" : ""; ?>><?php echo ($uName['user_name']); ?></option>
@@ -778,6 +778,16 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													</div>
 												</div>
 											</div>
+											<div class="row">
+                                                <div class="col-md-6">
+                                                    <label class="col-lg-5 control-label" for="testedBy"><?= _translate('Tested By'); ?> <span class="mandatory">*</span> </label>
+                                                        <div class="col-lg-7">
+                                                            <select name="testedBy" id="testedBy" class="select2 form-control isRequired" title="Please choose tested by" style="width: 100%;">
+                                                                <?= $general->generateSelectOptions($userInfo, $vlQueryInfo['tested_by'], '-- Select --'); ?>
+                                                            </select>                                                                      
+                                                        </div>
+                                                </div>
+                                            </div>
 										</div>
 									</div>
 						</div>
