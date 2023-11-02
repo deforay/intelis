@@ -124,7 +124,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 					function(data) {
 						if (data != "") {
 							oTable.fnDraw();
-							alert('<?php echo _translate("Updated successfully"); ?>.');
+							alert('<?php echo _translate("Updated successfully", true); ?>.');
 						}
 					});
 			} else {
