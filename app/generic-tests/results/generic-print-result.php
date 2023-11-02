@@ -995,7 +995,7 @@ $state = $geolocationService->getProvinces("yes");
 		}
 		if (rowsLength != 0 && rowsLength > 100) {
 			$.unblockUI();
-			alert("<?php echo _translate("You have selected"); ?> " + rowsLength + " <?php echo _translate("results out of the maximum allowed 100 at a time"); ?>");
+			alert("<?php echo _translate("You have selected"); ?> " + rowsLength + " <?php echo _translate("results out of the maximum allowed 100 at a time", true); ?>");
 			return false;
 		} else if (totalCount != 0 && totalCount > 100 && rowsLength == 0) {
 			$.unblockUI();

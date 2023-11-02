@@ -1,9 +1,9 @@
 <?php
 
+use App\Utilities\DateUtility;
+use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Utilities\DateUtility;
 
 if (session_status() == PHP_SESSION_NONE) {
      session_start();
@@ -183,9 +183,6 @@ foreach ($rResult as $aRow) {
           $aRow['sample_collection_date'] = '';
      }
 
-     $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_art_no']));
-     $patientMname = ($general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_art_no']));
-     $patientLname = ($general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_art_no']));
 
 
      $status = '<select class="form-control"  name="status[]" id="' . $aRow['vl_sample_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,' . $aRow['status_id'] . ')">
@@ -207,7 +204,12 @@ foreach ($rResult as $aRow) {
           $patientFname = $general->crypto('decrypt', $patientFname, $key);
           $patientMname = $general->crypto('decrypt', $patientMname, $key);
           $patientLname = $general->crypto('decrypt', $patientLname, $key);
+     } else {
+          $patientFname = $aRow['patient_first_name'];
+          $patientMname = $aRow['patient_middle_name'];
+          $patientLname = $aRow['patient_last_name'];
      }
+
      $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
      $row[] = $aRow['batch_code'];
      $row[] = $aRow['patient_art_no'];

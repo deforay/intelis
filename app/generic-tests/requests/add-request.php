@@ -906,7 +906,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     return bond._id;
                },
                ajax: {
-                    placeholder: "Type one or more character tp search",
+                    placeholder: "Type one or more character to search",
                     url: "/includes/get-data-list.php",
                     dataType: 'json',
                     delay: 250,
@@ -963,7 +963,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     return bond._id;
                },
                ajax: {
-                    placeholder: "Type one or more character tp search",
+                    placeholder: "Type one or more character to search",
                     url: "/includes/get-data-list.php",
                     dataType: 'json',
                     delay: 250,
