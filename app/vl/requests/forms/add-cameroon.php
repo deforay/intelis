@@ -142,13 +142,12 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                   <div class="">
                                                        <label for="fName"><?= _translate('Clinic/Health Center'); ?> <span class="mandatory">*</span></label>
                                                        <select class="form-control isRequired" id="fName" name="fName" title="<?= _translate('Please select a clinic/health center name'); ?>" style="width:100%;" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
-                                                       <option value=""> <?= _translate('-- Select --'); ?> </option>
+                                                            <option value=""> <?= _translate('-- Select --'); ?> </option>
                                                             <?php //echo $facility;
-                                                            foreach($healthFacilitiesAllColumns as $facility)
-                                                            {
-                                                                 ?>
-                                                            <option value="<?php echo $facility['facility_id']; ?>" data-code="<?php echo $facility['facility_code']; ?>"><?php echo $facility['facility_name']; ?></option>
-                                                                 <?php
+                                                            foreach ($healthFacilitiesAllColumns as $facility) {
+                                                            ?>
+                                                                 <option value="<?php echo $facility['facility_id']; ?>" data-code="<?php echo $facility['facility_code']; ?>"><?php echo $facility['facility_name']; ?></option>
+                                                            <?php
                                                             }
                                                             ?>
                                                        </select>
@@ -685,7 +684,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                                       <div class="col-lg-7">
                                                                            <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose tested by" style="width: 100%;">
                                                                                 <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
-                                                                           </select>                                                                      
+                                                                           </select>
                                                                       </div>
                                                                  </div>
                                                             </div>
@@ -775,16 +774,16 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               if (data != "0") {
                                    obj = $.parseJSON(data);
                                    if (obj.no_of_req_time != null && obj.no_of_req_time > 0) {
-                                        $("#artNoGroup").html("<small style='color: red'><?= _translate("No. of times Test Requested for this Patient"); ?> : " + obj.no_of_req_time + "</small>");
+                                        $("#artNoGroup").html("<small style='color: red'><?= _translate("No. of times Test Requested for this Patient", true); ?> : " + obj.no_of_req_time + "</small>");
                                    }
                                    if (obj.request_created_datetime != null) {
-                                        $("#artNoGroup").append("<br><small style='color:red'><?= _translate("Last Test Request Added On LIS/STS"); ?> : " + obj.request_created_datetime + "</small>");
+                                        $("#artNoGroup").append("<br><small style='color:red'><?= _translate("Last Test Request Added On LIS/STS", true); ?> : " + obj.request_created_datetime + "</small>");
                                    }
                                    if (obj.sample_collection_date != null) {
-                                        $("#artNoGroup").append("<br><small style='color:red'><?= _translate("Sample Collection Date for Last Request"); ?> : " + obj.sample_collection_date + "</small>");
+                                        $("#artNoGroup").append("<br><small style='color:red'><?= _translate("Sample Collection Date for Last Request", true); ?> : " + obj.sample_collection_date + "</small>");
                                    }
                                    if (obj.no_of_tested_time != null && obj.no_of_tested_time > 0) {
-                                        $("#artNoGroup").append("<br><small style='color:red'><?= _translate("Total No. of times Patient tested for HIV VL"); ?> : " + obj.no_of_tested_time + "</small >");
+                                        $("#artNoGroup").append("<br><small style='color:red'><?= _translate("Total No. of times Patient tested for HIV VL", true); ?> : " + obj.no_of_tested_time + "</small >");
                                    }
                               } else {
 

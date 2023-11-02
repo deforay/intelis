@@ -92,17 +92,17 @@ if (isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm']) 
           // }
 
           if ($aRow['patient_first_name'] != '') {
-               $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_art_no']));
+               $patientFname = $aRow['patient_first_name'];
           } else {
                $patientFname = '';
           }
           if ($aRow['patient_middle_name'] != '') {
-               $patientMname = ($general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_art_no']));
+               $patientMname = $aRow['patient_middle_name'];
           } else {
                $patientMname = '';
           }
           if ($aRow['patient_last_name'] != '') {
-               $patientLname = ($general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_art_no']));
+               $patientLname = $aRow['patient_last_name'];
           } else {
                $patientLname = '';
           }

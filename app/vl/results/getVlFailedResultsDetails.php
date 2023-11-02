@@ -235,9 +235,9 @@ foreach ($rResult as $aRow) {
         $aRow['last_modified_datetime'] = '';
     }
 
-    $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_art_no']));
-    $patientMname = ($general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_art_no']));
-    $patientLname = ($general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_art_no']));
+    $patientFname = $aRow['patient_first_name'];
+    $patientMname = $aRow['patient_middle_name'];
+    $patientLname = $aRow['patient_last_name'];
 
     $row = [];
     $row[] = '<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['vl_sample_id'] . '"  value="' . $aRow['vl_sample_id'] . '" onchange="resetBtnShowHide();" onclick="toggleTest(this);"  />';

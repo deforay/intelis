@@ -1233,7 +1233,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 				return bond._id;
 			},
 			ajax: {
-				placeholder: "Type one or more character tp search",
+				placeholder: "Type one or more character to search",
 				url: "/includes/get-data-list.php",
 				dataType: 'json',
 				delay: 250,
@@ -1290,7 +1290,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 				return bond._id;
 			},
 			ajax: {
-				placeholder: "Type one or more character tp search",
+				placeholder: "Type one or more character to search",
 				url: "/includes/get-data-list.php",
 				dataType: 'json',
 				delay: 250,
