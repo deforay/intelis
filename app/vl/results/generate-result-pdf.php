@@ -34,6 +34,7 @@ if ((isset($_POST['id']) && !empty(trim($_POST['id']))) || (isset($_POST['sample
                   vltr.test_reason_name,
 				  vl.control_vl_testing_type,
 				  vl.coinfection_type,
+				  vl.reason_for_vl_testing_other,
                   l.facility_name as labName,
                   u_d.user_name as reviewedBy,
                   a_u_d.user_name as approvedBy,
@@ -205,7 +206,7 @@ if ($arr['vl_form'] == 1) {
 } elseif ($arr['vl_form'] == 3) {
 	include('pdf/result-pdf-drc.php');
 } elseif ($arr['vl_form'] == 4) {
-	include('pdf/result-pdf-cameroon-1.php');
+	include('pdf/result-pdf-cameroon.php');
 } elseif ($arr['vl_form'] == 5) {
 	include('pdf/result-pdf-png.php');
 } elseif ($arr['vl_form'] == 6) {

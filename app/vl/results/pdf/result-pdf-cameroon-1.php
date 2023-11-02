@@ -300,6 +300,12 @@ if (!empty($requestResult)) {
                $result['test_reason_name'] = "Control VL Testing";
                $testReasonType = empty($result['control_vl_testing_type']) ? '' : ' - '.$result['control_vl_testing_type'];
           }
+          elseif($result['test_reason_name']=="other")
+          {
+               $result['test_reason_name'] = "Other Reason";
+               $testReasonType = empty($result['reason_for_vl_testing_other']) ? '' : ' - '.$result['reason_for_vl_testing_other'];
+
+          }
 
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $patientFname . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['patient_art_no'] . '</td>';
