@@ -253,7 +253,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 		function forceSyncRequestsByManifestCode(manifestCode, forceSyncModule) {
 			$.blockUI({
-				message: "<h3><?php echo _translate("Trying to sync Relevant Manifest Code Test Requests"); ?><br><?php echo _translate("Please wait"); ?>...</h3>"
+				message: "<h3><?php echo _translate("Trying to sync Relevant Manifest Code Test Requests", true); ?><br><?php echo _translate("Please wait", true); ?>...</h3>"
 			});
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {
@@ -288,7 +288,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 	function activateSamplesFromManifest() {
 		if ($("#testDate").val() == "") {
-			alert("<?= _translate("Please select when the samples were received at the Testing Lab"); ?>");
+			alert("<?= _translate("Please select when the samples were received at the Testing Lab", true); ?>");
 			return false;
 		}
 		$.blockUI();
@@ -298,7 +298,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			},
 			function(data) {
 				if (data > 0) {
-					alert("<?php echo _translate("Samples from this Manifest have been activated"); ?>");
+					alert("<?php echo _translate("Samples from this Manifest have been activated", true); ?>");
 					$('.activateSample').hide();
 				}
 				oTable.fnDraw();
