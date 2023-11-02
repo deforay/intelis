@@ -32,6 +32,7 @@ if ((isset($_POST['id']) && !empty(trim($_POST['id']))) || (isset($_POST['sample
                   imp.i_partner_name,
                   rst.sample_name,
                   vltr.test_reason_name,
+				  vl.sample_code,
 				  vl.control_vl_testing_type,
 				  vl.coinfection_type,
 				  vl.reason_for_vl_testing_other,
