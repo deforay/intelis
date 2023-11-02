@@ -289,10 +289,21 @@ if (!empty($requestResult)) {
                $result['patient_art_no'] = $general->crypto('decrypt', $result['patient_art_no'], $key);
                $patientFname = $general->crypto('decrypt', $patientFname, $key);
           }
+          $testReasonType = "";
+          if($result['test_reason_name']=="coinfection")
+          {
+               $result['test_reason_name'] = "Co-infection";
+               $testReasonType = empty($result['coinfection_type']) ? '' : ' - '.$result['coinfection_type'];
+          }
+          elseif($result['test_reason_name']=="controlVlTesting")
+          {
+               $result['test_reason_name'] = "Control VL Testing";
+               $testReasonType = empty($result['control_vl_testing_type']) ? '' : ' - '.$result['control_vl_testing_type'];
+          }
 
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $patientFname . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['patient_art_no'] . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['test_reason_name']) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['test_reason_name'] . $testReasonType . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;"></td>';
           $html .= '</tr>';
           $html .= '</table>';
@@ -315,10 +326,10 @@ if (!empty($requestResult)) {
           $html .= '</tr>';
           $html .= '<tr>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $age . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (str_replace("_", " ", $result['patient_gender'])) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(str_replace("_", " ", $result['patient_gender'])) . '</td>';
           if ($result['patient_gender'] == 'female') {
-               $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (str_replace("_", " ", $result['is_patient_breastfeeding'])) . '</td>';
-               $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (str_replace("_", " ", $result['is_patient_pregnant'])) . '</td>';
+               $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(str_replace("_", " ", $result['is_patient_breastfeeding'])) . '</td>';
+               $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(str_replace("_", " ", $result['is_patient_pregnant'])) . '</td>';
           } else {
                $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
                $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';

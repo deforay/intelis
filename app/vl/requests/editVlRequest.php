@@ -145,6 +145,10 @@ $fundingSourceList = $general->getFundingSources();
 //Implementing partner list
 $implementingPartnerList = $general->getImplementationPartners();
 
+$artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
+$artRegimenResult = $db->rawQuery($artRegimenQuery);
+$aQuery = "SELECT * FROM r_vl_art_regimen where art_status ='active'";
+$aResult = $db->query($aQuery);
 
 if (!empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes') {
      $key = base64_decode($general->getGlobalConfig('key'));

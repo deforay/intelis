@@ -40,11 +40,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 $lResult = $facilitiesService->getTestingLabs('vl', true, true);
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], '<?= _translate("-- Select --"); ?>');
-//regimen heading
-$artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
-$artRegimenResult = $db->rawQuery($artRegimenQuery);
-$aQuery = "SELECT * from r_vl_art_regimen where art_status ='active'";
-$aResult = $db->query($aQuery);
+
 //facility details
 if (isset($vlQueryInfo['facility_id']) && $vlQueryInfo['facility_id'] > 0) {
      $facilityQuery = "SELECT * FROM facility_details WHERE facility_id= ? AND status='active'";
@@ -286,7 +282,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="dob"><?= _translate('Date of Birth'); ?> <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
-                                                       <input type="text" name="dob" id="dob" value="<?= $vlQueryInfo['patient_dob'] ?>" class="form-control date <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" placeholder="<?= _translate('Enter DOB'); ?>" title="Enter dob" onchange="getAge();checkARTInitiationDate();" />
+                                                       <input type="text" name="dob" id="dob" value="<?= $vlQueryInfo['patient_dob'] ?>" class="form-control date" placeholder="<?= _translate('Enter DOB'); ?>" title="Enter dob" onchange="getAge();checkARTInitiationDate();" />
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -448,8 +444,18 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
                                                                  <label for=""> <?= _translate('Current ARV Protocol'); ?></label>
-                                                                 <input type="text" class="form-control" style="width:100%;" value="<?php echo ($vlQueryInfo['current_arv_protocol']); ?>" name="currentArvProtocol" id="currentArvProtocol" placeholder="<?= _translate('Current ARV Protocol'); ?>" title="<?= _translate('Please enter current ARV protocol'); ?>">
-                                                            </div>
+                                                                 <select class="form-control" id="artRegimen" name="artRegimen" title="Please choose ART Regimen" style="width:100%;" onchange="checkARTRegimenValue();">
+														<option value="">-- Select --</option>
+														<?php foreach ($artRegimenResult as $heading) { ?>
+															<optgroup label="<?= $heading['headings']; ?>">
+																<?php foreach ($aResult as $regimen) {
+																	if ($heading['headings'] == $regimen['headings']) { ?>
+																		<option value="<?php echo $regimen['art_code']; ?>" <?php echo ($vlQueryInfo['current_regimen'] == $regimen['art_code']) ? "selected='selected'" : "" ?>><?php echo $regimen['art_code']; ?></option>
+																<?php }
+																} ?>
+															</optgroup>
+														<?php } ?>
+													</select>                                                            </div>
                                                        </div>
                                                        <!--  <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
@@ -1242,6 +1248,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
      function validateNow() {
           var ARTlength = $("#artNo").val();
+          var dob = $("#dob").val();
+          var age = $("#ageInYears").val();
+
           if (ARTlength.length < 10) {
                alert("<?= _translate("Patient ART No. should be at least 10 characters long"); ?>");
                //return false;
@@ -1249,6 +1258,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           flag = deforayValidator.init({
                formId: 'vlRequestFormCameroon'
           });
+
+          if(dob=="" && age=="")
+          {
+               alert("Please Enter DOB or Age in years");
+               return false;
+          }
 
           $('.isRequired').each(function() {
                ($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')

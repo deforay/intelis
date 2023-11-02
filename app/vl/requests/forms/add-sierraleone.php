@@ -34,11 +34,7 @@ if ($_SESSION['accessType'] == 'collection-site') {
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
-//regimen heading
-$artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
-$artRegimenResult = $db->rawQuery($artRegimenQuery);
-$aQuery = "SELECT * FROM r_vl_art_regimen where art_status ='active'";
-$aResult = $db->query($aQuery);
+
 
 $sKey = '';
 $sFormat = '';

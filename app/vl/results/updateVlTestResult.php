@@ -240,6 +240,10 @@ if (!empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes
 
 $patientFullName = trim(implode(" ", array($patientFirstName, $patientMiddleName, $patientLastName)));
 
+$artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
+$artRegimenResult = $db->rawQuery($artRegimenQuery);
+$aQuery = "SELECT * from r_vl_art_regimen WHERE art_status = 'active'";
+$aResult = $db->query($aQuery);
 
 ?>
 <style>

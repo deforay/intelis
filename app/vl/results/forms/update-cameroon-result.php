@@ -19,10 +19,7 @@ $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 
 $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], '-- Select --');
 
-$artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
-$artRegimenResult = $db->rawQuery($artRegimenQuery);
-$aQuery = "SELECT * from r_vl_art_regimen WHERE art_status = 'active'";
-$aResult = $db->query($aQuery);
+
 
 //facility details
 if (isset($vlQueryInfo['facility_id']) && $vlQueryInfo['facility_id'] > 0) {
@@ -230,7 +227,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											}
 											?>
 										</select>
-									</div>/
+									</div>
 								</div>
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
@@ -482,8 +479,23 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for=""> <?= _translate('Current ARV Protocol'); ?></label>
-											<input type="text" class="form-control" style="width:100%;" value="<?php echo ($vlQueryInfo['current_arv_protocol']); ?>" name="currentArvProtocol" id="currentArvProtocol" placeholder="<?= _translate('Current ARV Protocol'); ?>" title="<?= _translate('Please enter current ARV protocol'); ?>" <?php echo $disable; ?>>
-										</div>
+											<select class="form-control <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="artRegimen" name="artRegimen" title="<?= _translate('Please choose ART Regimen'); ?>" <?php echo $disable; ?> style="width:100%;" onchange="checkARTValue();">
+													<option value=""><?= _translate('-- Select --'); ?></option>
+													<?php foreach ($artRegimenResult as $heading) { ?>
+														<optgroup label="<?= $heading['headings']; ?>">
+															<?php
+															foreach ($aResult as $regimen) {
+																if ($heading['headings'] == $regimen['headings']) {
+															?>
+																	<option value="<?php echo $regimen['art_code']; ?>" <?php echo $disable; ?> <?php echo ($vlQueryInfo['current_regimen'] == $regimen['art_code']) ? "selected='selected'" : "" ?>><?php echo $regimen['art_code']; ?></option>
+															<?php
+																}
+															}
+															?>
+														</optgroup>
+													<?php } ?>
+													<option value="other">Other</option>
+												</select>										</div>
 									</div>
 
 								</div>

@@ -43,12 +43,6 @@ $lResult = $facilitiesService->getTestingLabs('vl', true, true);
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, null, '<?= _translate("-- Select --"); ?>');
 
-//regimen heading
-$artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
-$artRegimenResult = $db->rawQuery($artRegimenQuery);
-
-$aQuery = "SELECT * from r_vl_art_regimen where art_status ='active'";
-$aResult = $db->query($aQuery);
 
 $sKey = '';
 $sFormat = '';
@@ -247,7 +241,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="dob"><?= _translate('Date of Birth'); ?> <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "<span class='mandatory'>*</span>" : ''; ?></label>
-                                                       <input type="text" name="dob" id="dob" class="form-control date <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" placeholder="<?= _translate('Enter DOB'); ?>" title="<?= _translate('Enter dob'); ?>" onchange="getAge();checkARTInitiationDate();" />
+                                                       <input type="text" name="dob" id="dob" class="form-control date" placeholder="<?= _translate('Enter DOB'); ?>" title="<?= _translate('Enter dob'); ?>" onchange="getAge();checkARTInitiationDate();" />
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -407,7 +401,22 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
                                                                  <label for=""> <?= _translate('Current ARV Protocol'); ?></label>
-                                                                 <input type="text" class="form-control" style="width:100%;" name="currentArvProtocol" id="currentArvProtocol" placeholder="<?= _translate('Current ARV Protocol'); ?>" title="<?= _translate('Please enter current ARV protocol'); ?>">
+                                                                 <select class="form-control" id="artRegimen" name="artRegimen" title="<?= _translate('Please choose ART Regimen'); ?>" style="width:100%;" onchange="checkARTRegimenValue();">
+                                                                      <option value=""><?= _translate('-- Select --'); ?></option>
+                                                                      <?php foreach ($artRegimenResult as $heading) { ?>
+                                                                           <optgroup label="<?= $heading['headings']; ?>">
+                                                                                <?php
+                                                                                foreach ($aResult as $regimen) {
+                                                                                     if ($heading['headings'] == $regimen['headings']) {
+                                                                                ?>
+                                                                                          <option value="<?php echo $regimen['art_code']; ?>"><?php echo $regimen['art_code']; ?></option>
+                                                                                <?php
+                                                                                     }
+                                                                                }
+                                                                                ?>
+                                                                           </optgroup>
+                                                                      <?php } ?>
+                                                                 </select>
                                                             </div>
                                                        </div>
                                                   </div>
@@ -473,7 +482,6 @@ $maxNumberOfDigits = $arr['max_phone_length'];
                                                                       </select>
                                                                  </div>
                                                             </div>
-
                                                        </div>
                                                        <div class="row">
                                                             <div class="col-md-8">
@@ -1142,8 +1150,15 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           var sCodeLentgh = $("#sampleCode").val();
           var ARTlength = $("#artNo").val();
           var minLength = '<?php echo $arr['min_length']; ?>';
+          var dob = $("#dob").val();
+          var age = $("#ageInYears").val();
           if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
                alert("Sample ID length must be a minimum length of " + minLength + " characters");
+               return false;
+          }
+          if(dob=="" && age=="")
+          {
+               alert("Please Enter DOB or Age in years");
                return false;
           }
 

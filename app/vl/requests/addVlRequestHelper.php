@@ -205,7 +205,6 @@ try {
         'regimen_change_date' => DateUtility::isoDateFormat($_POST['dateOfArvRegimenChange']),
         'line_of_treatment' => $_POST['lineOfTreatment'] ?? null,
         'line_of_treatment_failure_assessed' => $_POST['lineOfTreatmentFailureAssessed'] ?? null,
-        'current_arv_protocol' => $_POST['currentArvProtocol'] ?? null,
         'date_of_initiation_of_current_regimen' => DateUtility::isoDateFormat($_POST['regimenInitiatedOn']),
         'patient_mobile_number' => $_POST['patientPhoneNumber'] ?? null,
         'consent_to_receive_sms' => $_POST['receiveSms'] ?? 'no',

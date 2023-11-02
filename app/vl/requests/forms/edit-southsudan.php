@@ -39,11 +39,7 @@ $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 
 $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], '-- Select --');
 
-//regimen heading
-$artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
-$artRegimenResult = $db->rawQuery($artRegimenQuery);
-$aQuery = "SELECT * from r_vl_art_regimen where art_status ='active'";
-$aResult = $db->query($aQuery);
+
 //facility details
 if (isset($vlQueryInfo['facility_id']) && $vlQueryInfo['facility_id'] > 0) {
 	$facilityQuery = "SELECT * FROM facility_details WHERE facility_id= ? AND status='active'";

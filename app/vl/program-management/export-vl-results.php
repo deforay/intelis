@@ -178,7 +178,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 			$row[] = $aRow['request_clinician_name'];
 			$row[] = DateUtility::humanReadableDateFormat($aRow['treatment_initiated_date']);
 			$row[] = $aRow['line_of_treatment'];
-			$row[] = $aRow['current_arv_protocol'];
+			$row[] = $aRow['current_regimen'];
 			$row[] = $aRow['cv_number'];
 			$row[] = $aRow['vl_test_platform'];
 			if(!empty($aRow['vl_test_platform'])){
