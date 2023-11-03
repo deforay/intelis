@@ -246,7 +246,7 @@ unzip master.zip -d /var/www/vlsm
 mv /var/www/vlsm/vlsm-master/* /var/www/vlsm
 
 # Remove the empty directory and the downloaded zip file
-rmdir /var/www/vlsm/vlsm-master
+rm -rf /var/www/vlsm/vlsm-master
 rm master.zip
 
 echo "Running composer update in VLSM folder..."
