@@ -58,11 +58,19 @@ if (!empty($applicationConfig['instanceName'])) {
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 
+
 if (!$usersService->isAllowed($request)) {
 	http_response_code(401);
 	throw new SystemException(_translate('Unauthorized access. You do not have permission to access this page.'), 401);
 }
-
+$countryCode = $arr['default_phone_prefix'];
+$minNumberOfDigits = $arr['min_phone_length'];
+if($arr['max_phone_length']!=""){
+	$maxNumberOfDigits = $arr['max_phone_length'];
+}
+else{
+	$maxNumberOfDigits = 15;
+}
 $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 ?>
 <!DOCTYPE html>

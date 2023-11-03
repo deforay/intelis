@@ -61,9 +61,6 @@ $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
 
-$countryCode = $arr['default_phone_prefix'];
-$minNumberOfDigits = $arr['min_phone_length'];
-$maxNumberOfDigits = $arr['max_phone_length'];
 ?>
 
 <div class="content-wrapper">

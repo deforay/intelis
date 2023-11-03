@@ -46,9 +46,7 @@ $artRegimenResult = $db->rawQuery($artRegimenQuery);
 $aQuery = "SELECT * FROM r_vl_art_regimen where art_status ='active'";
 $aResult = $db->query($aQuery);
 
-$countryCode = $arr['default_phone_prefix'];
-$minNumberOfDigits = $arr['min_phone_length'];
-$maxNumberOfDigits = $arr['max_phone_length'];
+
 ?>
 
 <div class="content-wrapper">

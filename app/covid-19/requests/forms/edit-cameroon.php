@@ -88,9 +88,6 @@ foreach ($pdResult as $provinceName) {
 
 $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['facility_id'], '-- Select --');
 
-$countryCode = $arr['default_phone_prefix'];
-$minNumberOfDigits = $arr['min_phone_length'];
-$maxNumberOfDigits = $arr['max_phone_length'];
 
 ?>
 

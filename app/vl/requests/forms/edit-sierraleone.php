@@ -144,9 +144,6 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 	$vlQueryInfo['treatment_indication'] = "Other";
 }
 
-$countryCode = $arr['default_phone_prefix'];
-$minNumberOfDigits = $arr['min_phone_length'];
-$maxNumberOfDigits = $arr['max_phone_length'];
 ?>
 <style>
 	.table>tbody>tr>td {

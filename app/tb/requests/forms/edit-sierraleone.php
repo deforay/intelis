@@ -110,9 +110,6 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 $condition = "status ='active' AND test_type='tb'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
-$countryCode = $arr['default_phone_prefix'];
-$minNumberOfDigits = $arr['min_phone_length'];
-$maxNumberOfDigits = $arr['max_phone_length'];
 
 ?>
 

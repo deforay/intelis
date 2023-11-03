@@ -30,9 +30,6 @@ $aResult = $db->query($aQuery);
 $sKey = '';
 $sFormat = '';
 
-$countryCode = $arr['default_phone_prefix'];
-$minNumberOfDigits = $arr['min_phone_length'];
-$maxNumberOfDigits = $arr['max_phone_length'];
 
 ?>
 

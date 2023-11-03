@@ -43,10 +43,6 @@ foreach ($pdResult as $provinceName) {
 }
 
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
-$countryCode = $arr['default_phone_prefix'];
-$minNumberOfDigits = $arr['min_phone_length'];
-$maxNumberOfDigits = $arr['max_phone_length'];
-
 ?>
 <style>
     .prevResult { margin-right:5px;}

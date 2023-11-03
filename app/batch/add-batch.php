@@ -75,6 +75,9 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 
 $sQuery = "SELECT * FROM $sampleTypeTable where  $sampleTypeStatus='active'";
 $sResult = $db->rawQuery($sQuery);
+
+$fundingSourceList = $general->getFundingSources();
+
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
 <style>
@@ -221,6 +224,19 @@ $sResult = $db->rawQuery($sQuery);
                             ?>
                         </select>
                     </td>
+                </tr>
+                <tr>
+                    <td><label for="fundingSource">Funding Partner</label></td>
+                        <td>
+                            <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
+                               <option value=""> -- Select -- </option>
+                                <?php
+                                 foreach ($fundingSourceList as $fundingSource) {
+                                ?>
+                                <option value="<?php echo ($fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
+                                <?php } ?>
+                            </select>
+                        </td>
                 </tr>
                 <tr>
                     <td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _translate('Filter Samples'); ?>" class="btn btn-success btn-sm">
@@ -384,7 +400,8 @@ $sResult = $db->rawQuery($sQuery);
                 type: '<?= $_GET['type']; ?>',
                 testType: $('#testType').val(),
                 fName: fName,
-                sName: $("#sampleType").val()
+                sName: $("#sampleType").val(),
+                fundingSource: $("#fundingSource").val(),
             },
             function(data) {
                 if (data != "") {

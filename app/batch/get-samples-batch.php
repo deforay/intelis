@@ -89,6 +89,11 @@ if (isset($_POST['sampleReceivedAtLab']) && trim($_POST['sampleReceivedAtLab']) 
         $swhere[] = $where[] = ' DATE(sample_received_at_lab_datetime) >= "' . $sampleReceivedStartDate . '" AND DATE(sample_received_at_lab_datetime) <= "' . $sampleReceivedEndDate . '"';
     }
 }
+
+if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
+    $swhere[] = $where[] = ' funding_source = "' . $_POST['fundingSource'] . '"';
+}
+
 if (!empty($where)) {
     $query = $query . ' WHERE ' . implode(" AND ", $where);
 }
