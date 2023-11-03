@@ -232,7 +232,18 @@ fi
 
 # VLSM Setup
 echo "Cloning VLSM repository..."
-git clone https://github.com/deforay/vlsm.git /var/www/vlsm
+mv /var/www/vlsm /var/www/vlsm-$(date +%Y-%m-%d)
+wget https://github.com/deforay/vlsm/archive/refs/heads/master.zip
+
+# Unzip the file into the /var/www/vlsm directory
+unzip master.zip -d /var/www/vlsm
+
+# Move the unzipped content to the parent directory
+mv /var/www/vlsm/vlsm-master/* /var/www/vlsm
+
+# Remove the empty directory and the downloaded zip file
+rmdir /var/www/vlsm/vlsm-master
+rm master.zip
 
 echo "Running composer update in VLSM folder..."
 cd /var/www/vlsm
