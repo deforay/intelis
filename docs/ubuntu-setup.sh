@@ -232,7 +232,9 @@ fi
 
 # VLSM Setup
 echo "Cloning VLSM repository..."
-mv /var/www/vlsm /var/www/vlsm-$(date +%Y-%m-%d)
+if [ -d "/var/www/vlsm" ]; then
+    mv /var/www/vlsm /var/www/vlsm-$(date +%Y-%m-%d)
+fi
 wget https://github.com/deforay/vlsm/archive/refs/heads/master.zip
 
 # Unzip the file into the /var/www/vlsm directory
