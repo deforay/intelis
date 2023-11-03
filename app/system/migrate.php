@@ -10,6 +10,11 @@ require_once(__DIR__ . "/../../bootstrap.php");
 use PhpMyAdmin\SqlParser\Parser;
 use App\Registries\ContainerRegistry;
 
+// Ensure the script only runs for VERSION >= 5.2.5
+if (version_compare(VERSION, '5.2.5', '<')) {
+    exit("This script requires VERSION 5.2.5 or higher. Current version: " . VERSION . "\n");
+}
+
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 

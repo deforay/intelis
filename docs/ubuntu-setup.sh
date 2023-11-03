@@ -233,17 +233,22 @@ else
 fi
 
 # VLSM Setup
-echo "Cloning VLSM repository..."
-if [ -d "/var/www/vlsm" ]; then
-    mv /var/www/vlsm /var/www/vlsm-$(date +%Y-%m-%d)
-fi
+echo "Downloading VLSM..."
 wget https://github.com/deforay/vlsm/archive/refs/heads/master.zip
 
-# Unzip the file into the /var/www/vlsm directory
-unzip master.zip -d /var/www/vlsm
+# Unzip the file into a temporary directory
+temp_dir=$(mktemp -d)
+unzip master.zip -d "$temp_dir"
 
-# Move the unzipped content to the parent directory
-mv /var/www/vlsm/vlsm-master/* /var/www/vlsm
+# backup old code if it exists
+if [ -d "/var/www/vlsm" ]; then
+    cp -R /var/www/vlsm /var/www/vlsm-$(date +%Y-%m-%d)
+else
+    mkdir -p /var/www/vlsm/
+fi
+
+# Copy the unzipped content to the /var/www/vlsm directory, overwriting any existing files
+cp -R "$temp_dir/vlsm-master/"* /var/www/vlsm/
 
 # Remove the empty directory and the downloaded zip file
 rm -rf /var/www/vlsm/vlsm-master
@@ -306,11 +311,29 @@ service apache2 restart || {
     exit 1
 }
 
-echo "Adding cron job for VLSM..."
-echo "* * * * * cd /var/www/vlsm/ && ./vendor/bin/crunz schedule:run" | tee -a /var/spool/cron/crontabs/root
+# cron job
+cron_job="* * * * * cd /var/www/vlsm/ && ./vendor/bin/crunz schedule:run"
 
-echo "Renaming config.production.dist.php to config.production.php..."
-mv /var/www/vlsm/configs/config.production.dist.php /var/www/vlsm/configs/config.production.php
+# Check if the cron job already exists
+if ! crontab -l | grep -qF "$cron_job"; then
+    echo "Adding cron job for VLSM..."
+    (
+        crontab -l
+        echo "$cron_job"
+    ) | crontab -
+else
+    echo "Cron job for VLSM already exists. Skipping."
+fi
+
+target_file="/var/www/vlsm/configs/config.production.php"
+source_file="/var/www/vlsm/configs/config.production.dist.php"
+
+if [ ! -e "$target_file" ]; then
+    echo "Renaming config.production.dist.php to config.production.php..."
+    mv "$source_file" "$target_file"
+else
+    echo "File config.production.php already exists. Skipping renaming."
+fi
 
 # Update VLSM config.production.php with database credentials
 config_file="/var/www/vlsm/configs/config.production.php"
@@ -348,7 +371,7 @@ if [ ! -z "$remote_sts_url" ]; then
     echo "Running remote data sync script. Please wait..."
     php /var/www/vlsm/app/scheduled-jobs/remote/commonDataSync.php &
 
-    # Get the PID of the last background command (the PHP script)
+    # Get the PID of the commonDataSync.php script
     pid=$!
 
     # Show a simple progress indicator
@@ -359,5 +382,20 @@ if [ ! -z "$remote_sts_url" ]; then
 
     echo "Remote data sync script completed."
 fi
+
+# Run the PHP script for migrations
+echo "Running migrations. Please wait..."
+php /var/www/vlsm/app/system/migrate.php -y &
+
+# Get the PID of the migrate.php script
+pid=$!
+
+# Show a simple progress indicator
+while kill -0 $pid 2>/dev/null; do
+    echo -n "."
+    sleep 1
+done
+
+echo "Migration script completed."
 
 echo "Setup complete. Proceed to VLSM setup."
