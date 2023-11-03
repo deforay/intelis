@@ -58,9 +58,6 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
     $facilityResult = $db->rawQuery($facilityQuery, array($eidInfo['facility_id']));
 }
 
-$countryCode = $arr['default_phone_prefix'];
-$minNumberOfDigits = $arr['min_phone_length'];
-$maxNumberOfDigits = $arr['max_phone_length'];
 $specimenTypeResult = $eidService->getEidSampleTypes();
 
 ?>

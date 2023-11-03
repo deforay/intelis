@@ -115,6 +115,7 @@ $testPlatformResult = $general->getTestingPlatforms($testType);
 
 $sQuery = "SELECT * FROM $sampleTypeTable where status='active'";
 $sResult = $db->rawQuery($sQuery);
+$fundingSourceList = $general->getFundingSources();
 
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
@@ -202,6 +203,19 @@ $sResult = $db->rawQuery($sQuery);
 						</select>
 					</td>
 				</tr>
+				<tr>
+                    <td><label for="fundingSource">Funding Partner</label></td>
+                        <td>
+                            <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
+                               <option value=""> -- Select -- </option>
+                                <?php
+                                 foreach ($fundingSourceList as $fundingSource) {
+                                ?>
+                                <option value="<?php echo ($fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
+                                <?php } ?>
+                            </select>
+                        </td>
+                </tr>
 				<tr>
 					<td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _translate('Filter Samples'); ?>" class="btn btn-success btn-sm">
 						&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _translate("Reset Filters"); ?></span></button>
@@ -408,7 +422,8 @@ $sResult = $db->rawQuery($sQuery);
 				batchId: $("#batchId").val(),
 				genericTestType: '<?php echo $genericTestType; ?>',
 				fName: fName,
-				sName: $("#sampleType").val()
+				sName: $("#sampleType").val(),
+				fundingSource: $("#fundingSource").val(),
 			},
 			function(data) {
 				if (data != "") {

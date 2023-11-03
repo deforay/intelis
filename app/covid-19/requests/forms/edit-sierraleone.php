@@ -91,10 +91,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
 $patientProvinceInfo = explode('##', $covid19Info['patient_province']);
 $patientProvince = $patientProvinceInfo[0];
 
-$countryCode = $arr['default_phone_prefix'];
-$minNumberOfDigits = $arr['min_phone_length'];
-$maxNumberOfDigits = $arr['max_phone_length'];
-
 ?>
 
 
