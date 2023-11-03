@@ -178,37 +178,40 @@ for phpini in /etc/php/7.4/apache2/php.ini /etc/php/7.4/cli/php.ini; do
 done
 
 # phpMyAdmin Setup
-echo "Downloading and setting up phpMyAdmin..."
-wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
-tar xzf phpMyAdmin-latest-all-languages.tar.gz
-DIR_NAME=$(tar tzf phpMyAdmin-latest-all-languages.tar.gz | head -1 | cut -f1 -d"/") # Get the directory name from the tar file.
-mv $DIR_NAME /var/www/phpmyadmin                                                     # Move using the determined directory name
-rm phpMyAdmin-latest-all-languages.tar.gz
+if [ ! -d "/var/www/phpmyadmin" ]; then
+    # phpMyAdmin Setup
+    echo "Downloading and setting up phpMyAdmin..."
+    wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
+    tar xzf phpMyAdmin-latest-all-languages.tar.gz
+    DIR_NAME=$(tar tzf phpMyAdmin-latest-all-languages.tar.gz | head -1 | cut -f1 -d"/")
+    mv $DIR_NAME /var/www/phpmyadmin
+    rm phpMyAdmin-latest-all-languages.tar.gz
 
-echo "Configuring Apache for phpMyAdmin..."
-desired_alias="Alias /phpmyadmin /var/www/phpmyadmin"
-config_file="/etc/apache2/sites-available/000-default.conf"
+    echo "Configuring Apache for phpMyAdmin..."
+    desired_alias="Alias /phpmyadmin /var/www/phpmyadmin"
+    config_file="/etc/apache2/sites-available/000-default.conf"
 
-# Check if the desired alias already exists
-if ! grep -q "$desired_alias" $config_file; then
-    awk -v da="$desired_alias" \
-        'BEGIN {added=0; alias_added=0}
-    /Alias \/phpmyadmin[[:space:]]/ {
-        if ($0 !~ da) {print ";" $0} else {alias_added=1; print $0}
-        next;
-    }
-    /ServerAdmin|DocumentRoot/ {
-        print;
-        if (added == 0 && alias_added == 0) {
-            print da;
-            added=1;
+    # Check if the desired alias already exists
+    if ! grep -q "$desired_alias" $config_file; then
+        awk -v da="$desired_alias" \
+            'BEGIN {added=0; alias_added=0}
+        /Alias \/phpmyadmin[[:space:]]/ {
+            if ($0 !~ da) {print ";" $0} else {alias_added=1; print $0}
+            next;
         }
-        next;
-    }
-    { print }' $config_file >tmpfile && mv tmpfile $config_file
-fi
+        /ServerAdmin|DocumentRoot/ {
+            print;
+            if (added == 0 && alias_added == 0) {
+                print da;
+                added=1;
+            }
+            next;
+        }
+        { print }' $config_file >tmpfile && mv tmpfile $config_file
+    fi
 
-service apache2 restart
+    service apache2 restart
+fi
 
 # Composer Setup
 echo "Checking for Composer..."
@@ -231,7 +234,20 @@ fi
 
 # VLSM Setup
 echo "Cloning VLSM repository..."
-git clone https://github.com/deforay/vlsm.git /var/www/vlsm
+if [ -d "/var/www/vlsm" ]; then
+    mv /var/www/vlsm /var/www/vlsm-$(date +%Y-%m-%d)
+fi
+wget https://github.com/deforay/vlsm/archive/refs/heads/master.zip
+
+# Unzip the file into the /var/www/vlsm directory
+unzip master.zip -d /var/www/vlsm
+
+# Move the unzipped content to the parent directory
+mv /var/www/vlsm/vlsm-master/* /var/www/vlsm
+
+# Remove the empty directory and the downloaded zip file
+rm -rf /var/www/vlsm/vlsm-master
+rm master.zip
 
 echo "Running composer update in VLSM folder..."
 cd /var/www/vlsm
