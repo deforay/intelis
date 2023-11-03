@@ -100,7 +100,7 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 	function setCrossLogin() {
 		StorageHelper.storeInSessionStorage('crosslogin', 'true');
 	}
-	<?php if (isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?>
+	<?php if (!empty(trim(SYSTEM_CONFIG['remoteURL'])) && isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?>
 		remoteSync = true;
 
 		function syncRemoteData() {
@@ -253,18 +253,22 @@ $maxNumberOfDigits = $arr['max_phone_length'];
 
 			// Every 5 mins check if STS is reachable
 			(function checkSTSConnection() {
-				$.ajax({
-					url: '<?= SYSTEM_CONFIG['remoteURL'] ?? null; ?>' + '/api/version.php',
-					cache: false,
-					success: function(data) {
-						$('.is-remote-server-reachable').fadeIn(1000);
-						$('.is-remote-server-reachable').css('color', '#4dbc3c');
-					},
-					error: function() {
-						$('.is-remote-server-reachable').fadeIn(1000);
-						$('.is-remote-server-reachable').css('color', 'red');
-					}
-				});
+				if (<?= empty(trim(SYSTEM_CONFIG['remoteURL'])) ? 1 : 0 ?>) {
+					$('.is-remote-server-reachable').hide();
+				} else {
+					$.ajax({
+						url: '<?= SYSTEM_CONFIG['remoteURL']; ?>' + '/api/version.php',
+						cache: false,
+						success: function(data) {
+							$('.is-remote-server-reachable').fadeIn(1000);
+							$('.is-remote-server-reachable').css('color', '#4dbc3c');
+						},
+						error: function() {
+							$('.is-remote-server-reachable').fadeIn(1000);
+							$('.is-remote-server-reachable').css('color', 'red');
+						}
+					});
+				}
 				setTimeout(checkSTSConnection, 15 * 60 * 1000);
 			})();
 		}
