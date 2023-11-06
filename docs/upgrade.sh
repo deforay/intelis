@@ -102,8 +102,8 @@ echo "Please enter your MySQL root password:"
 read -s mysql_root_password
 
 # Ask for the backup location and create it if it doesn't exist
-read -p "Enter the backup location [/var/backup/]: " backup_location
-backup_location="${backup_location:-/var/backup/}"
+read -p "Enter the backup location [/var/vlsm-backup/db/]: " backup_location
+backup_location="${backup_location:-/var/vlsm-backup/db/}"
 
 # Create the backup directory if it does not exist
 if [ ! -d "$backup_location" ]; then
@@ -151,7 +151,8 @@ wget -q -O vlsm-new-version.zip https://github.com/deforay/vlsm/archive/refs/hea
 # Backup Old VLSM Folder
 echo "Backing up old VLSM folder..."
 timestamp=$(date +%Y%m%d-%H%M%S) # Using this timestamp for consistency with database backup filenames
-backup_folder="$vlsm_path-backup-$timestamp"
+backup_folder="/var/vlsm-backup/www/vlsm-backup-$timestamp"
+mkdir -p "$backup_folder"
 cp -R "$vlsm_path" "$backup_folder"
 
 # Unzip New VLSM Version
@@ -221,5 +222,22 @@ if [[ "$run_once_answer" =~ ^[Yy][Ee][Ss]$ ]]; then
         done
     fi
 fi
+
+# Run the PHP script for remote data sync
+echo "Running remote data sync script. Please wait..."
+php "$vlsm_path/app/scheduled-jobs/remote/commonDataSync.php" &
+
+# Get the PID of the commonDataSync.php script
+pid=$!
+
+# Show a simple progress indicator
+while kill -0 $pid 2>/dev/null; do
+    echo -n "."
+    sleep 1
+done
+
+echo "Remote data sync completed."
+
+service apache2 restart
 
 echo "VLSM update complete."

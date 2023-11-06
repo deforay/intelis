@@ -250,7 +250,7 @@ unzip master.zip -d "$temp_dir"
 
 # backup old code if it exists
 if [ -d "$vlsm_path" ]; then
-    cp -R "$vlsm_path" "$vlsm_path"-$(date +%Y-%m-%d)
+    cp -R "$vlsm_path" "$vlsm_path"-$(date +%Y%m%d-%H%M%S)
 else
     mkdir -p "$vlsm_path"
 fi
@@ -274,52 +274,60 @@ sudo -u www-data composer update
 echo "Importing init.sql into the vlsm database..."
 mysql -u root -p"$mysql_root_password" vlsm <"$vlsm_path/sql/init.sql"
 
-echo "Adding VLSM to hosts file..."
-echo "127.0.0.1 vlsm" | tee -a /etc/hosts
+# Ask user for the hostname
+read -p "Enter the hostname [vlsm]: " hostname
+hostname="${hostname:-vlsm}"
 
-echo "Updating Apache configuration for VLSM..."
-config_file="/etc/apache2/sites-available/000-default.conf"
-temp_file="/tmp/000-default.conf.tmp"
-desired_document_root='    DocumentRoot "/var/www/vlsm/public"'
-desired_server_name='    ServerName vlsm'
-desired_directory_block=$(
-    cat <<EOF
-    <Directory "/var/www/vlsm/public">
-        AddDefaultCharset UTF-8
-        Options -Indexes -MultiViews +FollowSymLinks
-        AllowOverride All
-        Order allow,deny
-        Allow from all
-    </Directory>
-EOF
-)
+# Check if the hostname entry is already in /etc/hosts
+if ! grep -q "127.0.0.1 $hostname" /etc/hosts; then
+    echo "Adding $hostname to hosts file..."
+    echo "127.0.0.1 $hostname" | tee -a /etc/hosts
+else
+    echo "$hostname entry is already in the hosts file."
+fi
+# Define the desired configuration using the variable for VLSM installation path
+vlsm_config_block="DocumentRoot \"$vlsm_path/public\"
+ServerName $hostname
+<Directory \"$vlsm_path/public\">
+    Options Indexes FollowSymLinks
+    AllowOverride All
+    Require all granted
+</Directory>"
 
-# Check if the desired configurations already exist
-if ! grep -qF "$desired_document_root" $config_file ||
-    ! grep -qF "$desired_server_name" $config_file ||
-    ! grep -qF "$desired_directory_block" $config_file; then
+# Path to the default Apache2 vhost file
+apache_vhost_file="/etc/apache2/sites-available/000-default.conf"
 
-    # Replace the DocumentRoot directive
-    sed "/DocumentRoot/c\\
-$desired_document_root" $config_file >$temp_file && mv $temp_file $config_file
+# Make a backup of the current Apache2 vhost file
+cp "$apache_vhost_file" "${apache_vhost_file}.bak"
 
-    # Comment out any existing, incorrect ServerName and Directory block for /var/www/vlsm/public
-    sed "/ServerName vlsm/,/<\/Directory>/s/^/#/" $config_file >$temp_file && mv $temp_file $config_file
+# Convert newlines to a unique pattern for single-line pattern matching
+pattern=$(echo "$vlsm_config_block" | tr '\n' '\a')
 
-    # Append the desired ServerName and Directory block after the DocumentRoot directive
-    # As appending with sed can be tricky, especially with multi-line strings, use awk instead
-    awk -v dr="$desired_document_root" -v sn="$desired_server_name" -v db="$desired_directory_block" '
-        {print}
-        $0 ~ dr {
-            print sn "\n"
-            print db
-        }
-    ' $config_file >$temp_file && mv $temp_file $config_file
+# Check if the pattern already exists in the file
+if ! grep -qza "$pattern" "$apache_vhost_file"; then
+    # The pattern doesn't exist, so we insert/update the configuration
+
+    # Replace the existing DocumentRoot line with the desired configuration
+    # Restore newlines from the unique pattern before using awk
+    vlsm_config_block=$(echo "$vlsm_config_block" | tr '\a' '\n')
+    awk -v vlsm_config_block="$vlsm_config_block" \
+        'BEGIN {printed=0}
+    /DocumentRoot/ && !printed {
+        print vlsm_config_block;
+        printed=1;
+        next;
+    }
+    {print}' "$apache_vhost_file" >temp_vhost && mv temp_vhost "$apache_vhost_file"
+
+    # No need to check for ServerName and <Directory> separately as they are included in the block
+    echo "Apache configuration has been updated."
+else
+    echo "Apache configuration is already set as desired."
 fi
 
-# Restart the Apache service, and exit if the restart fails
+# Restart Apache to apply changes
 service apache2 restart || {
-    echo "Failed to restart Apache2. Exiting..."
+    echo "Failed to restart Apache. Please check the configuration."
     exit 1
 }
 
@@ -385,7 +393,7 @@ if [ ! -z "$remote_sts_url" ]; then
 
     # Run the PHP script for remote data sync
     echo "Running remote data sync script. Please wait..."
-    php /var/www/vlsm/app/scheduled-jobs/remote/commonDataSync.php &
+    php "$vlsm_path/app/scheduled-jobs/remote/commonDataSync.php" &
 
     # Get the PID of the commonDataSync.php script
     pid=$!
@@ -440,5 +448,7 @@ if [[ "$run_once_answer" =~ ^[Yy][Ee][Ss]$ ]]; then
         done
     fi
 fi
+
+service apache2 restart
 
 echo "Setup complete. Proceed to VLSM setup."
