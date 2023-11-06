@@ -24,6 +24,20 @@ done
 
 # START OF SCRIPT - BE CAREFUL OF WHAT YOU CHANGE BELOW THIS LINE
 
+spinner() {
+    local pid=$!
+    local delay=0.75
+    local spinstr='|/-\'
+    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
+        local temp=${spinstr#?}
+        printf " [%c]  " "$spinstr"
+        local spinstr=$temp${spinstr%"$temp"}
+        sleep $delay
+        printf "\b\b\b\b\b\b"
+    done
+    printf "    \b\b\b\b"
+}
+
 # Initial Setup
 echo "Updating software packages..."
 apt update && apt upgrade -y && apt autoremove -y
@@ -343,9 +357,10 @@ sed -i "s|\$systemConfig\['database'\]\['host'\]\s*=.*|\$systemConfig['database'
 sed -i "s|\$systemConfig\['database'\]\['username'\]\s*=.*|\$systemConfig['database']['username'] = 'root';|" "$config_file"
 sed -i "s|\$systemConfig\['database'\]\['password'\]\s*=.*|\$systemConfig['database']['password'] = '$escaped_mysql_root_password';|" "$config_file"
 
-# Run the PHP script for migrations
-echo "Running migrations. Please wait..."
-php /var/www/vlsm/app/system/migrate.php -yq &
+# Run Migrations
+echo "Running migrations..."
+php "$vlsm_path/app/system/migrate.php" -yq &
+spinner
 
 # Get the PID of the migrate.php script
 pid=$!

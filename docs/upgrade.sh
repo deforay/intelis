@@ -54,6 +54,20 @@ echo "Updating Ubuntu packages..."
 apt update && apt upgrade -y
 apt autoremove -y
 
+spinner() {
+    local pid=$!
+    local delay=0.75
+    local spinstr='|/-\'
+    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
+        local temp=${spinstr#?}
+        printf " [%c]  " "$spinstr"
+        local spinstr=$temp${spinstr%"$temp"}
+        sleep $delay
+        printf "\b\b\b\b\b\b"
+    done
+    printf "    \b\b\b\b"
+}
+
 # Function to list databases and get the database list
 get_databases() {
     echo "Fetching available databases..."
@@ -70,10 +84,11 @@ get_databases() {
 backup_database() {
     local IFS=$'\n'
     local db_list=($(mysql -u root -p"$mysql_root_password" -e "SHOW DATABASES;" | sed 1d | egrep -v 'information_schema|mysql|performance_schema|sys'))
+    local timestamp=$(date +%Y%m%d-%H%M%S) # Adding timestamp with hours, minutes, and seconds
     for i in "$@"; do
         local db="${db_list[$i - 1]}"
         echo "Backing up database: $db"
-        mysqldump -u root -p"$mysql_root_password" "$db" | gzip >"${backup_location}/${db}_$(date +%Y-%m-%d).sql.gz"
+        mysqldump -u root -p"$mysql_root_password" "$db" | gzip >"${backup_location}/${db}_${timestamp}.sql.gz"
         if [[ $? -eq 0 ]]; then
             echo "Backup of $db completed successfully."
         else
@@ -135,7 +150,7 @@ wget -q -O vlsm-new-version.zip https://github.com/deforay/vlsm/archive/refs/hea
 
 # Backup Old VLSM Folder
 echo "Backing up old VLSM folder..."
-timestamp=$(date +%Y%m%d-%H%M%S)
+timestamp=$(date +%Y%m%d-%H%M%S) # Using this timestamp for consistency with database backup filenames
 backup_folder="$vlsm_path-backup-$timestamp"
 cp -R "$vlsm_path" "$backup_folder"
 
@@ -162,7 +177,8 @@ sudo -u www-data composer update
 
 # Run Migrations
 echo "Running migrations..."
-php app/system/migrate.php -yq
+php "$vlsm_path/app/system/migrate.php" -yq &
+spinner
 
 # Ask User to Run 'run-once' Scripts
 echo "Do you want to run scripts from $vlsm_path/run-once/? (yes/no)"
