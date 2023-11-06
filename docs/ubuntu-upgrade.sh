@@ -72,18 +72,18 @@ unzip vlsm-new-version.zip -d "$temp_dir"
 
 # Copy the unzipped content to the VLSM directory, overwriting any existing files
 echo "Updating VLSM files..."
-cp -RT "$temp_dir/vlsm-master/" /var/www/vlsm/
+cp -RT "$temp_dir/vlsm-master/" "$vlsm_path"
 
 # Cleanup downloaded and temporary files
 rm vlsm-new-version.zip
 rm -r "$temp_dir"
 
 # Set proper permissions
-chown -R www-data:www-data /var/www/vlsm
+chown -R www-data:www-data "$vlsm_path"
 
 # Run Composer Update as www-data
 echo "Running composer update as www-data user..."
-cd /var/www/vlsm
+cd "$vlsm_path"
 sudo -u www-data composer update
 
 # Run Migrations
@@ -91,13 +91,13 @@ echo "Running migrations..."
 php app/system/migrate.php -yq
 
 # Ask User to Run 'run-once' Scripts
-echo "Do you want to run scripts from /var/www/vlsm/run-once/? (yes/no)"
+echo "Do you want to run scripts from $vlsm_path/run-once/? (yes/no)"
 read -r run_once_answer
 
 if [[ "$run_once_answer" =~ ^[Yy][Ee][Ss]$ ]]; then
     # List the files in run-once directory
     echo "Available scripts to run:"
-    files=(/var/www/vlsm/run-once/*.php)
+    files=("$vlsm_path/run-once/"*.php)
     for i in "${!files[@]}"; do
         filename=$(basename "${files[$i]}")
         echo "$((i + 1))) $filename"
