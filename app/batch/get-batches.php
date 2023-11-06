@@ -182,6 +182,7 @@ if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
 foreach ($rResult as $aRow) {
     $deleteBatch = '';
     $edit = '';
+    $editPositionLink = '';
     if ($editBatch) {
         if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
             $edit = '<a href="edit-batch.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '&testType=' . base64_encode($aRow['test_type']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>&nbsp;';
@@ -191,9 +192,9 @@ foreach ($rResult as $aRow) {
     }
     if ($editPosition) {
         if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
-            $editPosition = '<a href="edit-batch-position.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '&testType=' . base64_encode($aRow['test_type']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _translate("Edit Position") . '"><em class="fa-solid fa-arrow-down-1-9"></em> ' . _translate("Edit Position") . '</a>';
+            $editPositionLink = '<a href="edit-batch-position.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '&testType=' . base64_encode($aRow['test_type']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _translate("Edit Position") . '"><em class="fa-solid fa-arrow-down-1-9"></em> ' . _translate("Edit Position") . '</a>';
         } else {
-            $editPosition = '<a href="edit-batch-position.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _translate("Edit Position") . '"><em class="fa-solid fa-arrow-down-1-9"></em> ' . _translate("Edit Position") . '</a>';
+            $editPositionLink = '<a href="edit-batch-position.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _translate("Edit Position") . '"><em class="fa-solid fa-arrow-down-1-9"></em> ' . _translate("Edit Position") . '</a>';
         }
     }
     if ($pdf) {
@@ -217,8 +218,8 @@ foreach ($rResult as $aRow) {
     $row[] = DateUtility::humanReadableDateFormat($aRow['last_tested_date'] ?? '', true);
     $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '', true);
 
-    if ($editBatch || $editPosition || $pdf || (($aRow['total_samples'] == 0 || $aRow['testcount'] == 0) && $delete)) {
-        $row[] = $edit . '&nbsp;' . $printBarcode . '&nbsp;' . $editPosition . '&nbsp;' . $deleteBatch;
+    if ($editBatch || $editPosition || $pdf || $aRow['total_samples'] == 0 || $aRow['testcount'] == 0 || $delete) {
+        $row[] = $edit . '&nbsp;' . $printBarcode . '&nbsp;' . $editPositionLink . '&nbsp;' . $deleteBatch;
     }
 
     $output['aaData'][] = $row;
