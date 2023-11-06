@@ -136,7 +136,7 @@
     # Get total RAM and calculate 75%
     sudo -s;
     TOTAL_RAM=$(awk '/MemTotal/ {print $2}' /proc/meminfo) || exit 1
-    RAM_75_PERCENT=$((TOTAL_RAM*3/4/1024))M || RAM_75_PERCENT=1G
+    RAM_75_PERCENT=$((TOTAL_RAM * 3 / 4 / 1024))M || RAM_75_PERCENT=1G
 
     desired_error_reporting="error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT & ~E_NOTICE"
     desired_post_max_size="post_max_size = 1G"
@@ -146,15 +146,14 @@
     for phpini in /etc/php/7.4/apache2/php.ini /etc/php/7.4/cli/php.ini; do
         awk -v er="$desired_error_reporting" -v pms="$desired_post_max_size" \
             -v umf="$desired_upload_max_filesize" -v ml="$desired_memory_limit" \
-        '{
+            '{
             if ($0 ~ /^error_reporting[[:space:]]*=/) {print ";" $0 "\n" er; next}
             if ($0 ~ /^post_max_size[[:space:]]*=/) {print ";" $0 "\n" pms; next}
             if ($0 ~ /^upload_max_filesize[[:space:]]*=/) {print ";" $0 "\n" umf; next}
             if ($0 ~ /^memory_limit[[:space:]]*=/) {print ";" $0 "\n" ml; next}
             print $0
-        }' $phpini > temp.ini && mv temp.ini $phpini
+        }' $phpini >temp.ini && mv temp.ini $phpini
     done
-
 
     ```
 
@@ -164,25 +163,29 @@
 
 	```bash
     sudo -s;
-	echo "Downloading and setting up phpMyAdmin..."
-    wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
-    tar xzf phpMyAdmin-latest-all-languages.tar.gz
-    DIR_NAME=$(tar tzf phpMyAdmin-latest-all-languages.tar.gz | head -1 | cut -f1 -d"/") # Get the directory name from the tar file.
-    mv $DIR_NAME /var/www/phpmyadmin # Move using the determined directory name
-    rm phpMyAdmin-latest-all-languages.tar.gz
+	if [ ! -d "/var/www/phpmyadmin" ]; then
+        # phpMyAdmin Setup
+        echo "Downloading and setting up phpMyAdmin..."
+        wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
+        tar xzf phpMyAdmin-latest-all-languages.tar.gz
+        DIR_NAME=$(tar tzf phpMyAdmin-latest-all-languages.tar.gz | head -1 | cut -f1 -d"/")
+        mv $DIR_NAME /var/www/phpmyadmin
+        rm phpMyAdmin-latest-all-languages.tar.gz
+    fi
 
 	```
 * **Configuring Apache for phpMyAdmin**:
 
 	```bash
     sudo -s;
-	desired_alias="Alias /phpmyadmin /var/www/phpmyadmin"
+	echo "Configuring Apache for phpMyAdmin..."
+    desired_alias="Alias /phpmyadmin /var/www/phpmyadmin"
     config_file="/etc/apache2/sites-available/000-default.conf"
 
     # Check if the desired alias already exists
     if ! grep -q "$desired_alias" $config_file; then
         awk -v da="$desired_alias" \
-        'BEGIN {added=0; alias_added=0}
+            'BEGIN {added=0; alias_added=0}
         /Alias \/phpmyadmin[[:space:]]/ {
             if ($0 !~ da) {print ";" $0} else {alias_added=1; print $0}
             next;
@@ -195,22 +198,35 @@
             }
             next;
         }
-        { print }' $config_file > tmpfile && mv tmpfile $config_file
+        { print }' $config_file >tmpfile && mv tmpfile $config_file
     fi
 
-    service apache2 restart;
+    service apache2 restart
 
 	```
 
 ## Composer Setup
 
-* **Install Composer**:
+* **Install/Update Composer**:
 
     ```bash
-    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-    php composer-setup.php
-    php -r "unlink('composer-setup.php');"
-    mv composer.phar /usr/local/bin/composer;
+    echo "Checking for Composer..."
+    if command -v composer &>/dev/null; then
+        echo "Composer is already installed. Updating..."
+        composer self-update
+    else
+        echo "Installing Composer..."
+        php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+        HASH=$(wget -q -O - https://composer.github.io/installer.sig)
+        echo "Installer hash: $HASH"
+        php -r "if (hash('SHA384', file_get_contents('composer-setup.php')) !== '$HASH') { unlink('composer-setup.php'); echo 'Invalid installer' . PHP_EOL; exit(1); }"
+        php composer-setup.php
+        if [ $? -ne 0 ]; then
+            echo "Failed to install Composer."
+        fi
+        php -r "unlink('composer-setup.php');"
+        mv composer.phar /usr/local/bin/composer
+    fi
 
     ```
 

@@ -52,18 +52,12 @@ else
     setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www
 fi
 
-# MySQL Setup
-if command -v mysql &>/dev/null; then
-    echo "MySQL is already installed. Skipping installation..."
-else
-    echo "Installing MySQL..."
-    apt install -y mysql-server
-
-    # Prompt for MySQL root password and confirmation
-    mysql_root_password=""
-    mysql_root_password_confirm=""
+# Prompt for MySQL root password and confirmation
+mysql_root_password=""
+mysql_root_password_confirm=""
+while :; do # Infinite loop to keep asking until a correct password is provided
     while [ -z "$mysql_root_password" ] || [ "$mysql_root_password" != "$mysql_root_password_confirm" ]; do
-        read -sp "Please enter the MySQL root password you want to set (cannot be blank): " mysql_root_password
+        read -sp "Please enter the MySQL root password (cannot be blank): " mysql_root_password
         echo
         read -sp "Please confirm the MySQL root password: " mysql_root_password_confirm
         echo
@@ -75,42 +69,59 @@ else
         fi
     done
 
-    # Set MySQL root password and create databases
-    echo "Setting MySQL root password and creating databases..."
-    mysql -e "CREATE DATABASE vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
-    mysql -e "CREATE DATABASE interfacing CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
-    mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$mysql_root_password'; FLUSH PRIVILEGES;"
+    # MySQL Setup
+    if command -v mysql &>/dev/null; then
+        echo "MySQL is already installed. Verifying password..."
+        if mysqladmin ping -u root -p"$mysql_root_password" &>/dev/null; then
+            echo "Password verified."
+            break # Exit the loop if the password is correct
+        else
+            echo "Password incorrect or MySQL server unreachable. Please try again."
+            mysql_root_password="" # Reset password variables to prompt again
+            mysql_root_password_confirm=""
+        fi
+    else
+        echo "Installing MySQL..."
+        apt install -y mysql-server
 
-    echo "Configuring MySQL..."
-    desired_sql_mode="sql_mode ="
-    desired_innodb_strict_mode="innodb_strict_mode = 0"
-    config_file="/etc/mysql/mysql.conf.d/mysqld.cnf"
+        # Set MySQL root password and create databases
+        echo "Setting MySQL root password and creating databases..."
+        mysql -e "CREATE DATABASE vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+        mysql -e "CREATE DATABASE interfacing CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+        mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$mysql_root_password'; FLUSH PRIVILEGES;"
 
-    awk -v dsm="$desired_sql_mode" -v dism="$desired_innodb_strict_mode" \
-        'BEGIN { sql_mode_added=0; innodb_strict_mode_added=0; }
-    /sql_mode[[:space:]]*=/ {
-        if ($0 ~ dsm) {sql_mode_added=1;}
-        else {print ";" $0;}
-        next;
-    }
-    /innodb_strict_mode[[:space:]]*=/ {
-        if ($0 ~ dism) {innodb_strict_mode_added=1;}
-        else {print ";" $0;}
-        next;
-    }
-    /skip-external-locking|mysqlx-bind-address/ {
-        print;
-        if (sql_mode_added == 0) {print dsm; sql_mode_added=1;}
-        if (innodb_strict_mode_added == 0) {print dism; innodb_strict_mode_added=1;}
-        next;
-    }
-    { print; }' $config_file >tmpfile && mv tmpfile $config_file
+        echo "Configuring MySQL..."
+        desired_sql_mode="sql_mode ="
+        desired_innodb_strict_mode="innodb_strict_mode = 0"
+        config_file="/etc/mysql/mysql.conf.d/mysqld.cnf"
 
-    service mysql restart || {
-        echo "Failed to restart MySQL. Exiting..."
-        exit 1
-    }
-fi
+        awk -v dsm="$desired_sql_mode" -v dism="$desired_innodb_strict_mode" \
+            'BEGIN { sql_mode_added=0; innodb_strict_mode_added=0; }
+            /sql_mode[[:space:]]*=/ {
+                if ($0 ~ dsm) {sql_mode_added=1;}
+                else {print ";" $0;}
+                next;
+            }
+            /innodb_strict_mode[[:space:]]*=/ {
+                if ($0 ~ dism) {innodb_strict_mode_added=1;}
+                else {print ";" $0;}
+                next;
+            }
+            /skip-external-locking|mysqlx-bind-address/ {
+                print;
+                if (sql_mode_added == 0) {print dsm; sql_mode_added=1;}
+                if (innodb_strict_mode_added == 0) {print dism; innodb_strict_mode_added=1;}
+                next;
+            }
+            { print; }' $config_file >tmpfile && mv tmpfile $config_file
+
+        service mysql restart || {
+            echo "Failed to restart MySQL. Exiting..."
+            exit 1
+        }
+        break # Exit the loop after installing MySQL and setting the password
+    fi
+done
 
 # PHP Setup
 echo "Installing PHP 7.4..."
@@ -254,9 +265,13 @@ cp -R "$temp_dir/vlsm-master/"* /var/www/vlsm/
 rm -rf /var/www/vlsm/vlsm-master
 rm master.zip
 
-echo "Running composer update in VLSM folder..."
+# Set proper permissions
+chown -R www-data:www-data /var/www/vlsm
+
+# Run Composer Update as www-data
+echo "Running composer update as www-data user..."
 cd /var/www/vlsm
-composer update
+sudo -u www-data composer update
 
 # Import init.sql into the vlsm database
 echo "Importing init.sql into the vlsm database..."
@@ -357,6 +372,21 @@ update_config "\$systemConfig\['database'\]\['host'\]\s*=\s*'';" "$desired_db_ho
 update_config "\$systemConfig\['database'\]\['username'\]\s*=\s*'';" "$desired_db_username" "$config_file"
 update_config "\$systemConfig\['database'\]\['password'\]\s*=\s*'';" "$desired_db_password" "$config_file"
 
+# Run the PHP script for migrations
+echo "Running migrations. Please wait..."
+php /var/www/vlsm/app/system/migrate.php -yq &
+
+# Get the PID of the migrate.php script
+pid=$!
+
+# Show a simple progress indicator
+while kill -0 $pid 2>/dev/null; do
+    echo -n "."
+    sleep 1
+done
+
+echo "Migration script completed."
+
 # Prompt for Remote STS URL
 read -p "Please enter the Remote STS URL (can be blank if you choose so): " remote_sts_url
 
@@ -383,19 +413,50 @@ if [ ! -z "$remote_sts_url" ]; then
     echo "Remote data sync script completed."
 fi
 
-# Run the PHP script for migrations
-echo "Running migrations. Please wait..."
-php /var/www/vlsm/app/system/migrate.php -y &
+# Ask User to Run 'run-once' Scripts
+echo "Do you want to run scripts from /var/www/vlsm/run-once/? (yes/no)"
+read -r run_once_answer
 
-# Get the PID of the migrate.php script
-pid=$!
+# Ask User to Run 'run-once' Scripts
+echo "Do you want to run scripts from /var/www/vlsm/run-once/? (yes/no)"
+read -r run_once_answer
 
-# Show a simple progress indicator
-while kill -0 $pid 2>/dev/null; do
-    echo -n "."
-    sleep 1
-done
+if [[ "$run_once_answer" =~ ^[Yy][Ee][Ss]$ ]]; then
+    # List the files in run-once directory
+    echo "Available scripts to run:"
+    files=(/var/www/vlsm/run-once/*.php)
+    for i in "${!files[@]}"; do
+        filename=$(basename "${files[$i]}")
+        echo "$((i + 1))) $filename"
+    done
 
-echo "Migration script completed."
+    # Ask which files to run
+    echo "Enter the numbers of the scripts you want to run separated by commas (e.g., 1,3,6) or type 'all' to run them all."
+    read -r files_to_run
+
+    # Run selected files
+    if [[ "$files_to_run" == "all" ]]; then
+        for file in "${files[@]}"; do
+            echo "Running $file..."
+            sudo -u www-data php "$file"
+        done
+    else
+        IFS=',' read -ra ADDR <<<"$files_to_run"
+        for i in "${ADDR[@]}"; do
+            # Remove any spaces in the input and correct the array index
+            i=$(echo "$i" | xargs)
+            file_index=$((i - 1))
+
+            # Check if the selected index is within the range of available files
+            if [[ $file_index -ge 0 ]] && [[ $file_index -lt ${#files[@]} ]]; then
+                file="${files[$file_index]}"
+                echo "Running $file..."
+                sudo -u www-data php "$file"
+            else
+                echo "Invalid selection: $i. Please select a number between 1 and ${#files[@]}. Skipping."
+            fi
+        done
+    fi
+fi
 
 echo "Setup complete. Proceed to VLSM setup."

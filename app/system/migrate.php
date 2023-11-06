@@ -23,8 +23,9 @@ $currentVersion = $db->getValue('system_config', 'value');
 $migrationFiles = glob(APPLICATION_PATH . '/../dev/migrations/*.sql');
 usort($migrationFiles, 'version_compare');
 
-$options = getopt("y");  // Parse command line options
+$options = getopt("yq");  // Parse command line options for -y and -q
 $autoContinueOnError = isset($options['y']);  // Set a flag if -y option is provided
+$quietMode = isset($options['q']);  // Set a flag if -q option is provided
 
 foreach ($migrationFiles as $file) {
     $version = basename($file, '.sql');
@@ -38,7 +39,9 @@ foreach ($migrationFiles as $file) {
             $query = $statement->build();
             $db->rawQuery($query);
             if ($db->getLastErrno()) {
-                echo "Error executing query: " . $db->getLastError() . "\n";
+                if (!$quietMode) {  // Only show error messages if -q option is not provided
+                    echo "Error executing query: " . $db->getLastError() . "\n";
+                }
                 if (!$autoContinueOnError) {  // Only prompt user if -y option is not provided
                     echo "Do you want to continue? (y/n): ";
                     $handle = fopen("php://stdin", "r");
