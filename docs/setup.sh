@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # To use this script:
-# Save the above code into a file, for example, ubuntu-setup.sh.
-# Make the script executable: chmod +x ubuntu-setup.sh.
-# Run the script: ./ubuntu-setup.sh.
+# Save the above code into a file, for example, setup.sh.
+# Make the script executable: chmod +x setup.sh.
+# Run the script: ./setup.sh.
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
@@ -137,27 +137,6 @@ echo "Configuring PHP 7.4..."
 a2dismod $(ls /etc/apache2/mods-enabled | grep -oP '^php\d\.\d') -f
 a2enmod php7.4
 update-alternatives --set php /usr/bin/php7.4
-# Before adding `apc.enable_cli=1` to php.ini, check if it's not already there
-grep -qF 'apc.enable_cli=1' /etc/php/7.4/cli/php.ini || echo "apc.enable_cli=1" | tee -a /etc/php/7.4/cli/php.ini
-service apache2 restart || {
-    echo "Failed to restart Apache2. Exiting..."
-    exit 1
-}
-
-# PHP Setup
-echo "Installing PHP 7.4..."
-add-apt-repository ppa:ondrej/php -y
-apt update
-apt install -y php7.4 openssl php7.4-common php7.4-cli php7.4-json php7.4-mysql php7.4-zip php7.4-gd php7.4-mbstring php7.4-curl php7.4-xml php7.4-xmlrpc php7.4-bcmath php7.4-gmp php7.4-intl php7.4-imagick php-mime-type php7.4-apcu
-service apache2 restart || {
-    echo "Failed to restart Apache2. Exiting..."
-    exit 1
-}
-
-echo "Configuring PHP 7.4..."
-a2dismod $(ls /etc/apache2/mods-enabled | grep -oP '^php\d\.\d') -f
-a2enmod php7.4
-update-alternatives --set php /usr/bin/php7.4
 echo "apc.enable_cli=1" | tee -a /etc/php/7.4/cli/php.ini
 service apache2 restart || {
     echo "Failed to restart Apache2. Exiting..."
@@ -243,6 +222,10 @@ else
     mv composer.phar /usr/local/bin/composer
 fi
 
+# Ask user for VLSM installation path
+read -p "Enter the VLSM installation path [/var/www/vlsm]: " vlsm_path
+vlsm_path="${vlsm_path:-/var/www/vlsm}"
+
 # VLSM Setup
 echo "Downloading VLSM..."
 wget https://github.com/deforay/vlsm/archive/refs/heads/master.zip
@@ -252,30 +235,30 @@ temp_dir=$(mktemp -d)
 unzip master.zip -d "$temp_dir"
 
 # backup old code if it exists
-if [ -d "/var/www/vlsm" ]; then
-    cp -R /var/www/vlsm /var/www/vlsm-$(date +%Y-%m-%d)
+if [ -d "$vlsm_path" ]; then
+    cp -R "$vlsm_path" "$vlsm_path"-$(date +%Y-%m-%d)
 else
-    mkdir -p /var/www/vlsm/
+    mkdir -p "$vlsm_path"
 fi
 
 # Copy the unzipped content to the /var/www/vlsm directory, overwriting any existing files
-cp -R "$temp_dir/vlsm-master/"* /var/www/vlsm/
+cp -R "$temp_dir/vlsm-master/"* "$vlsm_path"
 
 # Remove the empty directory and the downloaded zip file
-rm -rf /var/www/vlsm/vlsm-master
+rm -rf "$temp_dir/vlsm-master/"
 rm master.zip
 
 # Set proper permissions
-chown -R www-data:www-data /var/www/vlsm
+chown -R www-data:www-data "$vlsm_path"
 
 # Run Composer Update as www-data
 echo "Running composer update as www-data user..."
-cd /var/www/vlsm
+cd "$vlsm_path"
 sudo -u www-data composer update
 
 # Import init.sql into the vlsm database
 echo "Importing init.sql into the vlsm database..."
-mysql -u root -p"$mysql_root_password" vlsm </var/www/vlsm/sql/init.sql
+mysql -u root -p"$mysql_root_password" vlsm <"$vlsm_path/sql/init.sql"
 
 echo "Adding VLSM to hosts file..."
 echo "127.0.0.1 vlsm" | tee -a /etc/hosts
@@ -340,37 +323,25 @@ else
     echo "Cron job for VLSM already exists. Skipping."
 fi
 
-target_file="/var/www/vlsm/configs/config.production.php"
+# Update VLSM config.production.php with database credentials
+config_file="/var/www/vlsm/configs/config.production.php"
 source_file="/var/www/vlsm/configs/config.production.dist.php"
 
-if [ ! -e "$target_file" ]; then
+if [ ! -e "$config_file" ]; then
     echo "Renaming config.production.dist.php to config.production.php..."
-    mv "$source_file" "$target_file"
+    mv "$source_file" "$config_file"
 else
     echo "File config.production.php already exists. Skipping renaming."
 fi
 
-# Update VLSM config.production.php with database credentials
-config_file="/var/www/vlsm/configs/config.production.php"
+# Escape special characters in password for sed
+# This uses Perl's quotemeta which is more reliable when dealing with many special characters
+escaped_mysql_root_password=$(perl -e 'print quotemeta $ARGV[0]' -- "$mysql_root_password")
 
-desired_db_host="\$systemConfig['database']['host'] = 'localhost';"
-desired_db_username="\$systemConfig['database']['username'] = 'root';"
-desired_db_password="\$systemConfig['database']['password'] = '$mysql_root_password';"
-
-# Function to ensure idempotent configuration updates
-function update_config {
-    local pattern=$1
-    local replacement=$2
-    local file=$3
-
-    grep -qF "$replacement" "$file" ||
-        sed -i "s/$pattern/$replacement/g" "$file"
-}
-
-# Update the configurations if necessary
-update_config "\$systemConfig\['database'\]\['host'\]\s*=\s*'';" "$desired_db_host" "$config_file"
-update_config "\$systemConfig\['database'\]\['username'\]\s*=\s*'';" "$desired_db_username" "$config_file"
-update_config "\$systemConfig\['database'\]\['password'\]\s*=\s*'';" "$desired_db_password" "$config_file"
+# Use sed to update database configurations, using | as a delimiter instead of /
+sed -i "s|\$systemConfig\['database'\]\['host'\]\s*=.*|\$systemConfig['database']['host'] = 'localhost';|" "$config_file"
+sed -i "s|\$systemConfig\['database'\]\['username'\]\s*=.*|\$systemConfig['database']['username'] = 'root';|" "$config_file"
+sed -i "s|\$systemConfig\['database'\]\['password'\]\s*=.*|\$systemConfig['database']['password'] = '$escaped_mysql_root_password';|" "$config_file"
 
 # Run the PHP script for migrations
 echo "Running migrations. Please wait..."
@@ -414,17 +385,13 @@ if [ ! -z "$remote_sts_url" ]; then
 fi
 
 # Ask User to Run 'run-once' Scripts
-echo "Do you want to run scripts from /var/www/vlsm/run-once/? (yes/no)"
-read -r run_once_answer
-
-# Ask User to Run 'run-once' Scripts
-echo "Do you want to run scripts from /var/www/vlsm/run-once/? (yes/no)"
+echo "Do you want to run scripts from $vlsm_path/run-once/? (yes/no)"
 read -r run_once_answer
 
 if [[ "$run_once_answer" =~ ^[Yy][Ee][Ss]$ ]]; then
     # List the files in run-once directory
     echo "Available scripts to run:"
-    files=(/var/www/vlsm/run-once/*.php)
+    files=("$vlsm_path/run-once/"*.php)
     for i in "${!files[@]}"; do
         filename=$(basename "${files[$i]}")
         echo "$((i + 1))) $filename"
