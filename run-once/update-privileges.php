@@ -67,6 +67,8 @@ $sharedVLPrivileges = [
     '/batch/edit-batch-position.php?type=vl' => '/batch/edit-batch.php?type=vl',
     '/vl/results/updateVlTestResult.php' => '/vl/results/vlTestResult.php',
     '/vl/results/vl-failed-results.php' => '/vl/results/vlTestResult.php',
+    '/mail/vlResultMail.php' => '/mail/vlResultMail.php',
+    '/mail/vlResultMailConfirm.php' => '/mail/vlResultMail.php',
     '/vl/reference/add-vl-art-code-details.php' => '/vl/reference/vl-art-code-details.php',
     '/vl/reference/edit-vl-art-code-details.php' => '/vl/reference/vl-art-code-details.php',
     '/vl/reference/add-vl-results.php' => '/vl/reference/vl-art-code-details.php',

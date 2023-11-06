@@ -5196,6 +5196,8 @@ ALTER TABLE `form_vl` CHANGE `cv_number` `cv_number` VARCHAR(20) NULL DEFAULT NU
 ALTER TABLE `audit_form_vl` CHANGE `cv_number` `cv_number` VARCHAR(20) NULL DEFAULT NULL;
 ALTER TABLE `temp_sample_import` ADD `cv_number` VARCHAR(20) NULL DEFAULT NULL AFTER `lab_phone_number`;
 
+-- Jeyabanu 03-Nov-2023
+INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'vl', NULL, 'no', 'E-mail Test Result', '/mail/vlResultMail.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlResultMailMenu', '70', '101', 'active', CURRENT_TIMESTAMP);
 -- Thana 06-Nov-2023
 UPDATE `privileges`
 SET `shared_privileges` = '["/batch/delete-batch.php?type=hepatitis","/batch/edit-batch-position.php?type=hepatitis"]'

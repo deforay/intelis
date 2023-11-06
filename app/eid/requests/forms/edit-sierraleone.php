@@ -873,7 +873,7 @@ $aResult = $db->query($aQuery);
         var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
         var collectDate = $("#sampleCollectionDate").toString();
         var dispatchDate = $("#sampleDispatchedDate").toString();
-        if ($("#sampleDispatchedDate").val() == "" || (collectDate >= dispatchDate))
+        if ($("#sampleDispatchedDate").val() == "" || (collectDate > dispatchDate))
             $("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
 
         $('#sampleDispatchedDate').datetimepicker({

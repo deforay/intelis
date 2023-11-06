@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # To use this script:
-# Save the code into a file, for example, ubuntu-upgrade.sh.
-# Make the script executable: chmod +x ubuntu-upgrade.sh.
-# Run the script: sudo ./ubuntu-upgrade.sh.
+# Save the code into a file, for example, upgrade.sh.
+# Make the script executable: chmod +x upgrade.sh.
+# Run the script: sudo ./upgrade.sh.
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
@@ -46,7 +46,6 @@ if ! command -v composer &>/dev/null; then
 fi
 
 # Proceed with the rest of the script if all checks pass
-# ...
 
 echo "All system checks passed. Continuing with the update..."
 
@@ -55,13 +54,103 @@ echo "Updating Ubuntu packages..."
 apt update && apt upgrade -y
 apt autoremove -y
 
+spinner() {
+    local pid=$!
+    local delay=0.75
+    local spinstr='|/-\'
+    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
+        local temp=${spinstr#?}
+        printf " [%c]  " "$spinstr"
+        local spinstr=$temp${spinstr%"$temp"}
+        sleep $delay
+        printf "\b\b\b\b\b\b"
+    done
+    printf "    \b\b\b\b"
+}
+
+# Function to list databases and get the database list
+get_databases() {
+    echo "Fetching available databases..."
+    local IFS=$'\n'
+    databases=($(mysql -u root -p"$mysql_root_password" -e "SHOW DATABASES;" | sed 1d | egrep -v 'information_schema|mysql|performance_schema|sys'))
+    local -i cnt=1
+    for db in "${databases[@]}"; do
+        echo "$cnt) $db"
+        let cnt++
+    done
+}
+
+# Function to back up selected databases
+backup_database() {
+    local IFS=$'\n'
+    local db_list=($(mysql -u root -p"$mysql_root_password" -e "SHOW DATABASES;" | sed 1d | egrep -v 'information_schema|mysql|performance_schema|sys'))
+    local timestamp=$(date +%Y%m%d-%H%M%S) # Adding timestamp with hours, minutes, and seconds
+    for i in "$@"; do
+        local db="${db_list[$i - 1]}"
+        echo "Backing up database: $db"
+        mysqldump -u root -p"$mysql_root_password" "$db" | gzip >"${backup_location}/${db}_${timestamp}.sql.gz"
+        if [[ $? -eq 0 ]]; then
+            echo "Backup of $db completed successfully."
+        else
+            echo "Failed to backup database: $db"
+        fi
+    done
+}
+
+# Ask for MySQL root password
+echo "Please enter your MySQL root password:"
+read -s mysql_root_password
+
+# Ask for the backup location and create it if it doesn't exist
+read -p "Enter the backup location [/var/backup/]: " backup_location
+backup_location="${backup_location:-/var/backup/}"
+
+# Create the backup directory if it does not exist
+if [ ! -d "$backup_location" ]; then
+    echo "Backup directory does not exist. Creating it now..."
+    mkdir -p "$backup_location"
+    if [ $? -ne 0 ]; then
+        echo "Failed to create backup directory. Please check your permissions."
+        exit 1
+    fi
+fi
+
+# Change to the backup directory
+cd "$backup_location" || exit
+
+# List databases and ask for user choice
+get_databases
+echo "Enter the numbers of the databases you want to backup, separated by space or comma, or type 'all' for all databases:"
+read -r input_selections
+
+# Convert input selection to array indexes
+selected_indexes=()
+if [[ "$input_selections" == "all" ]]; then
+    selected_indexes=("${!databases[@]}")
+else
+    # Split input by space and comma
+    IFS=', ' read -ra selections <<<"$input_selections"
+
+    for selection in "${selections[@]}"; do
+        if [[ "$selection" =~ ^[0-9]+$ ]]; then
+            # Subtract 1 to convert from human-readable number to zero-indexed array
+            selected_indexes+=($(($selection - 1)))
+        else
+            echo "Invalid selection: $selection. Ignoring."
+        fi
+    done
+fi
+
+# Backup the selected databases
+backup_database "${selected_indexes[@]}"
+
 # Download New Version of VLSM from GitHub
 echo "Downloading new version of VLSM from GitHub..."
 wget -q -O vlsm-new-version.zip https://github.com/deforay/vlsm/archive/refs/heads/master.zip
 
 # Backup Old VLSM Folder
 echo "Backing up old VLSM folder..."
-timestamp=$(date +%Y%m%d-%H%M%S)
+timestamp=$(date +%Y%m%d-%H%M%S) # Using this timestamp for consistency with database backup filenames
 backup_folder="$vlsm_path-backup-$timestamp"
 cp -R "$vlsm_path" "$backup_folder"
 
@@ -88,7 +177,8 @@ sudo -u www-data composer update
 
 # Run Migrations
 echo "Running migrations..."
-php app/system/migrate.php -yq
+php "$vlsm_path/app/system/migrate.php" -yq &
+spinner
 
 # Ask User to Run 'run-once' Scripts
 echo "Do you want to run scripts from $vlsm_path/run-once/? (yes/no)"
