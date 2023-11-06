@@ -265,9 +265,13 @@ cp -R "$temp_dir/vlsm-master/"* /var/www/vlsm/
 rm -rf /var/www/vlsm/vlsm-master
 rm master.zip
 
-echo "Running composer update in VLSM folder..."
+# Set proper permissions
+chown -R www-data:www-data /var/www/vlsm
+
+# Run Composer Update as www-data
+echo "Running composer update as www-data user..."
 cd /var/www/vlsm
-composer update
+sudo -u www-data composer update
 
 # Import init.sql into the vlsm database
 echo "Importing init.sql into the vlsm database..."
@@ -407,6 +411,52 @@ if [ ! -z "$remote_sts_url" ]; then
     done
 
     echo "Remote data sync script completed."
+fi
+
+# Ask User to Run 'run-once' Scripts
+echo "Do you want to run scripts from /var/www/vlsm/run-once/? (yes/no)"
+read -r run_once_answer
+
+# Ask User to Run 'run-once' Scripts
+echo "Do you want to run scripts from /var/www/vlsm/run-once/? (yes/no)"
+read -r run_once_answer
+
+if [[ "$run_once_answer" =~ ^[Yy][Ee][Ss]$ ]]; then
+    # List the files in run-once directory
+    echo "Available scripts to run:"
+    files=(/var/www/vlsm/run-once/*.php)
+    for i in "${!files[@]}"; do
+        filename=$(basename "${files[$i]}")
+        echo "$((i + 1))) $filename"
+    done
+
+    # Ask which files to run
+    echo "Enter the numbers of the scripts you want to run separated by commas (e.g., 1,3,6) or type 'all' to run them all."
+    read -r files_to_run
+
+    # Run selected files
+    if [[ "$files_to_run" == "all" ]]; then
+        for file in "${files[@]}"; do
+            echo "Running $file..."
+            sudo -u www-data php "$file"
+        done
+    else
+        IFS=',' read -ra ADDR <<<"$files_to_run"
+        for i in "${ADDR[@]}"; do
+            # Remove any spaces in the input and correct the array index
+            i=$(echo "$i" | xargs)
+            file_index=$((i - 1))
+
+            # Check if the selected index is within the range of available files
+            if [[ $file_index -ge 0 ]] && [[ $file_index -lt ${#files[@]} ]]; then
+                file="${files[$file_index]}"
+                echo "Running $file..."
+                sudo -u www-data php "$file"
+            else
+                echo "Invalid selection: $i. Please select a number between 1 and ${#files[@]}. Skipping."
+            fi
+        done
+    fi
 fi
 
 echo "Setup complete. Proceed to VLSM setup."
