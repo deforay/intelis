@@ -285,7 +285,6 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                 <input type="radio" class="" id="reason1" name="reasonForCovid19Test" value="1" title="Cas suspect de COVID-1" onchange="checkSubReason(this,'Cas_suspect_de_COVID_19');">
                                                 <strong>Cas suspect de COVID-19</strong>
                                             </label>
-
                                         </td>
                                     </tr>
                                     <tr class="Cas_suspect_de_COVID_19 hide-reasons" style="display: none;">
