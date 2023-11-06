@@ -1168,7 +1168,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 		var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
 		var collectDate = $("#sampleCollectionDate").toString();
 		var dispatchDate = $("#sampleDispatchedDate").toString();
-		if (collectDate < dispatchDate) {
+		if (collectDate > dispatchDate) {
 			$("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
 		}
 
