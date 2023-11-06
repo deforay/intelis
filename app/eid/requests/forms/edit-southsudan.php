@@ -717,7 +717,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
             }
         });
 
-        $("#labId,#facilityId,#sampleCollectionDate").trigger('change');
+        //$("#labId,#facilityId,#sampleCollectionDate").trigger('change');
 
         $('#result').on('change', function() {
             if ($(this).data("result") != "" && $(this).data("result") != $(this).val()) {
@@ -755,7 +755,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
         var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
         var collectDate = $("#sampleCollectionDate").toString();
         var dispatchDate = $("#sampleDispatchedDate").toString();
-        if ($("#sampleDispatchedDate").val() == "" || (collectDate >= dispatchDate))
+        if ($("#sampleDispatchedDate").val() == "" || (collectDate > dispatchDate))
             $("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
 
         $('#sampleDispatchedDate').datetimepicker({
