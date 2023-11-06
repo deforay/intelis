@@ -758,7 +758,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		var minDate = $('#sampleCollectionDate').datetimepicker('getDate');
 		var collectDate = $("#sampleCollectionDate").toString();
 		var dispatchDate = $("#sampleDispatchedDate").toString();
-		if (collectDate < dispatchDate) {
+		if (collectDate > dispatchDate) {
 			$("#sampleDispatchedDate").val($('#sampleCollectionDate').val());
 		}
 

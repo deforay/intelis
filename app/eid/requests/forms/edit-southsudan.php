@@ -717,7 +717,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
             }
         });
 
-        //$("#labId,#facilityId,#sampleCollectionDate").trigger('change');
+        $("#labId,#facilityId,#sampleCollectionDate").trigger('change');
 
         $('#result').on('change', function() {
             if ($(this).data("result") != "" && $(this).data("result") != $(this).val()) {
