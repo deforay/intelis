@@ -32,9 +32,7 @@ class ErrorResponseGenerator
             $logger = new Logger('error_logger');
 
             $handler = new RotatingFileHandler(ROOT_PATH . '/logs/logfile.log', 30, Logger::ERROR, true, 0777);
-
             $handler->setFilenameFormat('{date}-{filename}', 'Y-m-d');
-
             $logger->pushHandler($handler);
 
             $httpCode = (http_response_code() == 200) ? 500 : http_response_code();
@@ -42,9 +40,15 @@ class ErrorResponseGenerator
             $errorMessage = $exception->getMessage() ??
                 _translate('Sorry, something went wrong. Please try again later.');
 
-            // Log the error with Monolog, including the stack trace
+            // Include file and line where the error was thrown
+            $errorFile = $exception->getFile();
+            $errorLine = $exception->getLine();
+
+            // Log the error with Monolog, including the file, line, and stack trace
             $logger->error('Error: ' . $exception->getMessage(), [
                 'exception' => $httpCode . " : " . $exception,
+                'file' => $errorFile, // File where the error occurred
+                'line' => $errorLine, // Line number of the error
                 'stacktrace' => $exception->getTraceAsString()
             ]);
 
