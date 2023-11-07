@@ -56,8 +56,7 @@
         "phpmyadmin/sql-parser": "^5.8"
     },
     "suggest": {
-        "dcarbone/php-fhir-generated": "Needed for FHIR Parsing",
-        "aranyasen/hl7": "Needed for HL7 Parsing"
+        "dcarbone/php-fhir-generated": "Needed for FHIR Parsing"
     },
     "autoload": {
         "psr-4": {
