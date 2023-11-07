@@ -151,7 +151,7 @@ echo "Backing up old VLSM folder..."
 timestamp=$(date +%Y%m%d-%H%M%S) # Using this timestamp for consistency with database backup filenames
 backup_folder="/var/vlsm-backup/www/vlsm-backup-$timestamp"
 mkdir -p "$backup_folder"
-rsync -a --delete --exclude 'public/temporary/' "$vlsm_path/" "$backup_folder/" &
+rsync -a --delete --exclude "$vlsm_path/public/temporary/" "$vlsm_path/" "$backup_folder/" &
 spinner # This will show the spinner until the above process is completed
 
 # Download New Version of VLSM from GitHub
