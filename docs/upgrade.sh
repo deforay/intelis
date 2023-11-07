@@ -146,13 +146,19 @@ fi
 # Backup the selected databases
 backup_database "${selected_indexes[@]}"
 
-# Backup Old VLSM Folder
-echo "Backing up old VLSM folder..."
-timestamp=$(date +%Y%m%d-%H%M%S) # Using this timestamp for consistency with database backup filenames
-backup_folder="/var/vlsm-backup/www/vlsm-backup-$timestamp"
-mkdir -p "$backup_folder"
-rsync -a --delete --exclude "$vlsm_path/public/temporary/" "$vlsm_path/" "$backup_folder/" &
-spinner # This will show the spinner until the above process is completed
+# Ask the user if they want to backup the VLSM folder
+read -p "Do you want to backup the VLSM folder before updating? (yes/no) " backup_vlsm_answer
+if [[ "$backup_vlsm_answer" =~ ^[Yy][Ee][Ss]$ ]]; then
+    # Backup Old VLSM Folder
+    echo "Backing up old VLSM folder..."
+    timestamp=$(date +%Y%m%d-%H%M%S) # Using this timestamp for consistency with database backup filenames
+    backup_folder="/var/vlsm-backup/www/vlsm-backup-$timestamp"
+    mkdir -p "$backup_folder"
+    rsync -a --delete --exclude "public/temporary/" "$vlsm_path/" "$backup_folder/" &
+    spinner # This will show the spinner until the above process is completed
+else
+    echo "Skipping VLSM folder backup as per user request."
+fi
 
 # Download New Version of VLSM from GitHub
 echo "Downloading new version of VLSM from GitHub..."
