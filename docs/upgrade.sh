@@ -171,7 +171,10 @@ unzip vlsm-new-version.zip -d "$temp_dir"
 
 # Copy the unzipped content to the VLSM directory, overwriting any existing files
 echo "Updating VLSM files..."
-cp -RT "$temp_dir/vlsm-master/" "$vlsm_path"
+cp -RT "$temp_dir/vlsm-master/" "$vlsm_path" &
+cp_pid=$!         # Save the process ID of the cp command
+spinner "$cp_pid" # Start the spinner
+wait $cp_pid      # Wait for the copy process to finish
 
 # Cleanup downloaded and temporary files
 rm vlsm-new-version.zip
