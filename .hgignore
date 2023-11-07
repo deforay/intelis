@@ -2,8 +2,8 @@ syntax: glob
 !configs/config.*.dist.php
 
 syntax: regexp
-public/uploads/(?!.htaccess)
-public/temporary/(?!.htaccess)
+^public/uploads/(?!index\.php|\.htaccess).*
+^public/temporary/(?!index\.php|\.htaccess).*
 vendor/*
 cache/(?!.htaccess)
 vendor/dcarbone/(?!.htaccess)

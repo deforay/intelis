@@ -11,25 +11,33 @@ require_once(__DIR__ . "/../../bootstrap.php");
 use App\Utilities\MiscUtility;
 use App\Registries\ContainerRegistry;
 
+// Default duration to delete
+$defaultDurationToDelete = 180;
 
-$cleanup = array(
-    APPLICATION_PATH . DIRECTORY_SEPARATOR .  'backups',
+// Get the number of days from command line argument, if provided
+$days = $argv[1] ?? $defaultDurationToDelete; // $argv[0] is the script name itself
+$durationToDelete = $days * 86400; // Convert days to seconds
+
+$cleanup = [
+    APPLICATION_PATH . DIRECTORY_SEPARATOR . 'backups',
     WEB_ROOT . DIRECTORY_SEPARATOR . 'temporary',
-);
+];
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
-$durationToDelete = 180 * 86400; // 180 days
-
 foreach ($cleanup as $folder) {
     if (file_exists($folder)) {
         foreach (new DirectoryIterator($folder) as $fileInfo) {
+            // Skip if it's .htaccess or index.php in the temporary directory
             if (
-                !$fileInfo->isDot()
-                && !$fileInfo->getFilename() == 'index.php'
-                && (time() - $fileInfo->getCTime() >= $durationToDelete)
+                $fileInfo->getPathname() === WEB_ROOT . DIRECTORY_SEPARATOR . 'temporary' . DIRECTORY_SEPARATOR . '.htaccess' ||
+                $fileInfo->getFilename() === 'index.php'
             ) {
+                continue;
+            }
+
+            if (!$fileInfo->isDot() && (time() - $fileInfo->getCTime() >= $durationToDelete)) {
                 if ($fileInfo->isFile() || $fileInfo->isLink()) {
                     unlink($fileInfo->getRealPath());
                 } elseif ($fileInfo->isDir()) {
