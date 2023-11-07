@@ -23,6 +23,13 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 <script src="/assets/js/deforayValidation.js"></script>
 <style>
+	.select2-selection__placeholder{
+		display: block;
+	}
+	#select2-labId-container {
+		display: block;
+		margin-top: 7px !important;
+	}
 	b {
 		font-size: 12px;
 	}
@@ -54,25 +61,19 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 							<div class="box">
 								<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;">
 									<tr>
-										<td>
-											<label class="radio-inline" style="margin-left:0;">
-                                                <input type="radio" id="labTypeLis" class="labType" name="userType" value="lis" title="Please choose type of system" onchange="changeLabType('lis', 'sts');">
-                                                <strong>LIS</strong>
-                                            </label>
+										<td colspan="4">
+											<select name="userType" id="userType" title="Please select the user type" class="form-control" onchange="changeLabType(this.value);" style=" background: aliceblue; ">
+												<option value="">-- Select User Type --</option>
+												<option value="lis">LIS with Remote Ordering Enabled</option>
+												<option value="sts">Sample Tracking System(STS)</option>
+												<option value="standalone">Standalone (no Remote Ordering)</option>
+											</select>
 										</td>
-										<td>
-											<label class="radio-inline" style="margin-left:0;">
-                                                <input type="radio" id="labTypeSts" class="labType" name="userType" value="sts" title="Please choose type of system" onchange="changeLabType('sts', 'lis');">
-                                                <strong>STS</strong>
-                                            </label>
-										</td>
-										<td></td>
-										<td></td>
 									</tr>
 									<tr>
 										<td class="lis hide"><strong>Lab Name&nbsp;<span class="mandatory">*</span></strong> <br>
 										</td>
-										<td class="lis hide">
+										<td class="lis hide" colspan="3">
 											<select name="labId" id="labId" title="Please select the lab name" class="form-control lis-input">
 												<option value="">-- Select --</option>
 												<?php foreach($labResults as $row){ ?>
@@ -140,6 +141,18 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 			width: '100%',
 			placeholder: "Select Testing Lab"
 		});
+		<?php if(!isset($labResults[0]) || empty($labResults[0]) || count( $labResults)  == 0){ ?>
+			async function callFun(){
+				window.parent.syncRemoteData();
+			}
+			callFun().then(
+				function(value) {
+					location.reload();
+				},function(error){
+					console.log(error);
+				}
+			);
+		<?php } ?>
 	});
 	<?php if (isset($_SESSION['success']) && trim($_SESSION['success']) != "") { ?>
 		window.parent.closeModal();
@@ -152,6 +165,10 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 	<?php } ?>
 
 	function validateNow() {
+		if($('#userType').val() == ''){
+			alert('Please select the user type');
+			$('#userType').focus();
+		}
 		flag = deforayValidator.init({
 			formId: 'addInstance'
 		});
@@ -161,12 +178,23 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 		}
 	}
 
-	function changeLabType(active, inactive){
-		console.log(active + ' => '+inactive)
-		$('.'+active).removeClass('hide');
-		$('.'+active+'-input').addClass('isRequired');
-		$('.'+inactive).addClass('hide');
-		$('.'+inactive+'-input').removeClass('isRequired');
-		$('.'+inactive+'-input,.'+active+'-input').val('').trigger('change');
+	function changeLabType(value){
+		if(value == 'lis' || value == 'standalone'){
+			$('.lis').removeClass('hide');
+			$('.lis-input').addClass('isRequired');
+			$('.sts').addClass('hide');
+			$('.sts-input').removeClass('isRequired');
+			$('.sts-input,lis-input').val('').trigger('change');
+		}else if(value == 'sts'){
+			$('.sts').removeClass('hide');
+			$('.sts-input').addClass('isRequired');
+			$('.lis').addClass('hide');
+			$('.lis-input').removeClass('isRequired');
+			$('.lis-input,sts-input').val('').trigger('change');
+		}else{
+			$('.lis, .sts').addClass('hide');
+			$('.lis-input,sts-input').removeClass('isRequired');
+			$('.lis-input,sts-input').val('').trigger('change');
+		}
 	}
 </script>
