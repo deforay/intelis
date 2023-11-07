@@ -39,3 +39,4 @@ docker/mysql/data/(?!.htaccess)
 interop/dhis2/examples/(?!index.php)
 backups/(?!index.php)
 backup/(?!index.php)
+^vendor/*

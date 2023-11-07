@@ -30,7 +30,11 @@ $quietMode = isset($options['q']);  // Set a flag if -q option is provided
 
 foreach ($migrationFiles as $file) {
     $version = basename($file, '.sql');
-    if (version_compare($version, $currentVersion, '>=')) {
+    if (version_compare($version, $currentVersion, '>')) {
+        if (!$quietMode) { // Only output messages if -q option is not provided
+            echo "Migrating to version $version...\n";
+        }
+
         $sql_contents = file_get_contents($file);
         $parser = new Parser($sql_contents);
 
@@ -54,6 +58,10 @@ foreach ($migrationFiles as $file) {
                     }
                 }
             }
+        }
+
+        if (!$quietMode) { // Only output messages if -q option is not provided
+            echo "Migration to version $version completed.\n";
         }
 
         $db->where('name', 'sc_version')->update('system_config', ['value' => $version]);

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Oct 23, 2023 at 04:53 PM
+-- Generation Time: Nov 07, 2023 at 09:32 AM
 -- Server version: 5.7.39
 -- PHP Version: 7.4.33
 
@@ -864,7 +864,7 @@ CREATE TABLE `audit_form_vl` (
   `request_clinician_name` text,
   `test_requested_on` date DEFAULT NULL,
   `request_clinician_phone_number` varchar(32) DEFAULT NULL,
-  `cv_number` int(11) DEFAULT NULL,
+  `cv_number` varchar(20) DEFAULT NULL,
   `sample_testing_date` datetime DEFAULT NULL,
   `vl_focal_person` text,
   `vl_focal_person_phone_number` text,
@@ -1071,7 +1071,8 @@ CREATE TABLE `covid19_imported_controls` (
   `status` varchar(255) DEFAULT NULL,
   `vlsm_country_id` varchar(10) DEFAULT NULL,
   `file_name` varchar(255) DEFAULT NULL,
-  `imported_date_time` datetime DEFAULT NULL
+  `imported_date_time` datetime DEFAULT NULL,
+  `import_machine_file_name` varchar(256) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -1175,7 +1176,8 @@ CREATE TABLE `eid_imported_controls` (
   `status` varchar(255) DEFAULT NULL,
   `vlsm_country_id` varchar(10) DEFAULT NULL,
   `file_name` varchar(255) DEFAULT NULL,
-  `imported_date_time` datetime DEFAULT NULL
+  `imported_date_time` datetime DEFAULT NULL,
+  `import_machine_file_name` varchar(256) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -1790,18 +1792,13 @@ CREATE TABLE `form_generic` (
 -- Triggers `form_generic`
 --
 DELIMITER $$
-CREATE TRIGGER `form_generic_data__ai` AFTER INSERT ON `form_generic` FOR EACH ROW INSERT INTO `audit_form_generic` SELECT 'insert', NULL, NOW(), d.*
-    FROM `form_generic` AS d WHERE d.sample_id = NEW.sample_id
+CREATE TRIGGER `form_form_generic_data__ai` AFTER INSERT ON `form_generic` FOR EACH ROW INSERT INTO `audit_form_generic` SELECT 'ai', NULL, NOW(), d.*
+            FROM `form_generic` AS d WHERE d.sample_id = NEW.sample_id
 $$
 DELIMITER ;
 DELIMITER $$
-CREATE TRIGGER `form_generic_data__au` AFTER UPDATE ON `form_generic` FOR EACH ROW INSERT INTO `audit_form_generic` SELECT 'update', NULL, NOW(), d.*
-    FROM `form_generic` AS d WHERE d.sample_id = NEW.sample_id
-$$
-DELIMITER ;
-DELIMITER $$
-CREATE TRIGGER `form_generic_data__bd` BEFORE DELETE ON `form_generic` FOR EACH ROW INSERT INTO `audit_form_generic` SELECT 'delete', NULL, NOW(), d.*
-    FROM `form_generic` AS d WHERE d.sample_id = OLD.sample_id
+CREATE TRIGGER `form_form_generic_data__au` AFTER UPDATE ON `form_generic` FOR EACH ROW INSERT INTO `audit_form_generic` SELECT 'au', NULL, NOW(), d.*
+            FROM `form_generic` AS d WHERE d.sample_id = NEW.sample_id
 $$
 DELIMITER ;
 
@@ -2160,7 +2157,7 @@ CREATE TABLE `form_vl` (
   `request_clinician_name` text,
   `test_requested_on` date DEFAULT NULL,
   `request_clinician_phone_number` varchar(32) DEFAULT NULL,
-  `cv_number` int(11) DEFAULT NULL,
+  `cv_number` varchar(20) DEFAULT NULL,
   `sample_testing_date` datetime DEFAULT NULL,
   `vl_focal_person` text,
   `vl_focal_person_phone_number` text,
@@ -2488,7 +2485,7 @@ CREATE TABLE `global_config` (
 --
 
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES
-('App Locale/Language', 'app_locale', 'en_US', 'common', 'no', NULL, NULL, 'active'),
+('App Locale/Language', 'app_locale', 'fr_CM', 'common', 'no', NULL, NULL, 'active'),
 ('App Menu Name', 'app_menu_name', 'VLSM', 'app', 'no', '2022-02-18 16:28:05', NULL, 'active'),
 ('Auto Approval', 'auto_approval', 'yes', 'general', 'no', '2022-02-18 16:28:05', NULL, 'inactive'),
 ('Barcode Format', 'barcode_format', 'C39', 'general', 'no', '2022-02-18 16:28:05', 'daemon', 'active'),
@@ -2539,7 +2536,7 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remot
 ('Show Participant Name in Manifest', 'hepatitis_show_participant_name_in_manifest', 'yes', 'HEPATITIS', 'no', NULL, NULL, 'active'),
 ('Result PDF High Viral Load Message', 'h_vl_msg', '', 'vl', 'no', '2022-02-18 16:28:05', 'daemon', 'active'),
 ('Import Non matching Sample Results from Machine generated file', 'import_non_matching_sample', 'yes', 'general', 'no', '2022-02-18 16:28:05', 'daemon', 'active'),
-('Instance Type ', 'instance_type', 'Viral Load Lab', 'general', 'no', '2022-02-18 16:28:05', 'daemon', 'active'),
+('Instance Type ', 'instance_type', 'Both', 'general', 'no', '2022-02-18 16:28:05', 'daemon', 'active'),
 ('Key', 'key', NULL, 'general', 'yes', NULL, NULL, 'active'),
 ('Lock Approved Covid-19 Samples', 'lock_approved_covid19_samples', 'no', 'covid19', 'no', '2022-02-18 16:28:05', NULL, 'active'),
 ('Lock Approved EID Samples', 'lock_approved_eid_samples', 'no', 'eid', 'no', '2022-02-18 16:28:05', NULL, 'active'),
@@ -2577,7 +2574,7 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remot
 ('Vldashboard Url', 'vldashboard_url', NULL, 'general', 'yes', '2022-02-18 16:28:05', 'daemon', 'active'),
 ('VL Auto Approve API Results', 'vl_auto_approve_api_results', 'no', 'vl', 'no', NULL, NULL, 'active'),
 ('Viral Load Export Format', 'vl_excel_export_format', 'default', 'VL', 'no', NULL, '', 'active'),
-('Viral Load Form', 'vl_form', '1', 'general', 'no', '2022-02-18 16:28:05', 'daemon', 'active'),
+('Viral Load Form', 'vl_form', '4', 'general', 'no', '2022-02-18 16:28:05', 'daemon', 'active'),
 ('Interpret and Convert VL Results', 'vl_interpret_and_convert_results', 'no', 'VL', 'yes', NULL, NULL, 'active'),
 ('VL Monthly Target', 'vl_monthly_target', 'no', 'vl', 'no', '2022-02-18 16:28:05', '', 'active'),
 ('VL Report QR Code', 'vl_report_qr_code', 'yes', 'vl', 'no', NULL, NULL, 'active'),
@@ -3069,7 +3066,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 (279, 'generic-results', '/generic-tests/results/generic-result-approval.php', NULL, 'Approve Test Results', NULL, 'always'),
 (280, 'generic-management', '/generic-tests/program-management/generic-sample-status.php', NULL, 'Sample Status Report', NULL, 'always'),
 (281, 'generic-management', '/generic-tests/program-management/generic-export-data.php', NULL, 'Export Report in Excel', NULL, 'always'),
-(282, 'generic-management', '/generic-tests/results/generic-print-result.php', '[\"/generic-tests/mail/mail-generic-tests-results.php\", \"/generic-tests/mail/generic-tests-result-mail-confirm.php\"]', 'Export Report in PDF', NULL, 'always'),
+(282, 'generic-management', '/generic-tests/results/generic-print-result.php', NULL, 'Export Report in PDF', NULL, 'always'),
 (283, 'generic-management', '/generic-tests/program-management/sample-rejection-report.php', NULL, 'Sample Rejection Report', NULL, 'always'),
 (284, 'generic-management', '/generic-tests/program-management/generic-monthly-threshold-report.php', NULL, 'Monthly Threshold Report', NULL, 'always'),
 (300, 'vl-reference', '/vl/reference/add-vl-results.php', NULL, 'Add VL Result Types', NULL, 'always'),
@@ -3079,7 +3076,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 (319, 'covid-19-results', '/covid-19/results//import-result/import-file.php?t=covid19', NULL, 'Import Result from Files', NULL, 'always'),
 (320, 'hepatitis-results', '/import-result/import-file.php?t=hepatitis', '[\"/import-result/imported-results.php?t=hepatitis\", \"/import-result/importedStatistics.php?t=hepatitis\"]', 'Import Result from Files', NULL, 'always'),
 (321, 'tb-results', '/import-result/import-file.php?t=tb', '[\"/import-result/imported-results.php?t=tb\", \"/import-result/importedStatistics.php?t=tb\"]', 'Import Result from Files', NULL, 'always'),
-(322, 'generic-results', '/import-result/import-file.php?t=generic-tests', NULL, 'Import Result from Files', NULL, 'always'),
+(322, 'generic-results', '/import-result/import-file.php?t=generic-tests', '[\"/import-result/importedStatistics.php?t=generic-tests\"]', 'Import Result from Files', NULL, 'always'),
 (323, 'vl-requests', '/specimen-referral-manifest/view-manifests.php?t=vl', NULL, 'View VL Manifests', 7, 'sts'),
 (324, 'eid-requests', '/specimen-referral-manifest/view-manifests.php?t=eid', NULL, 'View EID Manifests', 7, 'sts'),
 (325, 'covid-19-requests', '/specimen-referral-manifest/view-manifests.php?t=covid19', NULL, 'View COVID-19 Manifests', 7, 'sts'),
@@ -3129,17 +3126,6 @@ CREATE TABLE `province_details` (
   `updated_datetime` datetime DEFAULT NULL,
   `data_sync` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `province_details`
---
-
-INSERT INTO `province_details` (`province_id`, `province_name`, `province_code`, `updated_datetime`, `data_sync`) VALUES
-(3, 'Eastern', 'ES', '2018-01-17 15:31:19', 1),
-(7, 'Northern', 'NR', '2018-01-17 15:31:19', 1),
-(9, 'Southern', 'SO', '2018-01-17 15:31:19', 1),
-(10, 'Western', 'WE', '2018-01-17 15:31:19', 1),
-(11, 'Kigali City', 'KC', '2019-05-23 12:32:22', 0);
 
 -- --------------------------------------------------------
 
@@ -3288,7 +3274,7 @@ CREATE TABLE `roles` (
 INSERT INTO `roles` (`role_id`, `role_name`, `role_code`, `status`, `access_type`, `landing_page`) VALUES
 (1, 'Admin', 'AD', 'active', 'testing-lab', '/dashboard/index.php'),
 (2, 'Remote Order', 'REMOTEORDER', 'active', 'collection-site', '/dashboard/index.php'),
-(3, 'Lab Technician', 'LABTECH', 'active', NULL, '/dashboard/index.php'),
+(3, 'Lab Technician', 'LABTECH', 'active', 'testing-lab', '/dashboard/index.php'),
 (4, 'API User', 'API', 'active', 'testing-lab', NULL);
 
 -- --------------------------------------------------------
@@ -3308,174 +3294,216 @@ CREATE TABLE `roles_privileges_map` (
 --
 
 INSERT INTO `roles_privileges_map` (`map_id`, `role_id`, `privilege_id`) VALUES
-(3181, 3, 4),
-(3182, 3, 28),
-(3183, 3, 43),
-(3184, 3, 48),
-(3185, 3, 24),
-(3186, 3, 80),
-(3188, 3, 16),
-(3189, 3, 17),
-(3191, 3, 18),
-(3193, 3, 23),
-(3194, 3, 34),
-(3195, 3, 40),
-(3196, 3, 33),
-(3197, 3, 59),
-(3198, 3, 57),
-(3199, 3, 22),
-(3200, 3, 56),
-(3201, 3, 12),
-(3202, 3, 13),
-(3203, 3, 14),
-(3211, 3, 21),
-(3213, 3, 31),
-(3214, 3, 20),
-(4555, 2, 24),
-(4559, 2, 121),
-(4560, 2, 86),
-(4561, 2, 144),
-(4562, 2, 87),
-(4563, 2, 88),
-(4564, 2, 74),
-(4565, 2, 91),
-(4566, 2, 75),
-(4567, 2, 141),
-(4568, 2, 210),
-(4569, 2, 76),
-(4570, 2, 80),
-(4572, 2, 84),
-(4573, 2, 85),
-(4574, 2, 176),
-(4575, 2, 178),
-(4576, 2, 179),
-(4577, 2, 153),
-(4578, 2, 166),
-(4579, 2, 165),
-(4580, 2, 152),
-(4581, 2, 18),
-(4582, 2, 34),
-(4583, 2, 40),
-(4584, 2, 23),
-(4585, 2, 70),
-(4586, 2, 33),
-(4587, 2, 143),
-(4588, 2, 59),
-(4589, 2, 57),
-(4590, 2, 22),
-(4591, 2, 56),
-(4592, 2, 13),
-(4593, 2, 89),
-(4594, 2, 14),
-(4595, 2, 140),
-(4596, 2, 12),
-(4597, 2, 20),
-(5024, 1, 184),
-(5025, 1, 219),
-(5026, 1, 224),
-(5027, 1, 185),
-(5028, 1, 183),
-(5029, 1, 183),
-(5030, 1, 220),
-(5031, 1, 187),
-(5032, 1, 226),
-(5033, 1, 208),
-(5034, 1, 125),
-(5035, 1, 128),
-(5036, 1, 126),
-(5037, 1, 129),
-(5038, 1, 124),
-(5039, 1, 123),
-(5040, 1, 127),
-(5041, 1, 131),
-(5042, 1, 167),
-(5043, 1, 4),
-(5044, 1, 65),
-(5045, 1, 5),
-(5046, 1, 64),
-(5047, 1, 6),
-(5048, 1, 66),
-(5049, 1, 7),
-(5050, 1, 8),
-(5051, 1, 9),
-(5052, 1, 10),
-(5053, 1, 11),
-(5054, 1, 25),
-(5055, 1, 39),
-(5056, 1, 26),
-(5057, 1, 28),
-(5058, 1, 43),
-(5059, 1, 48),
-(5060, 1, 49),
-(5061, 1, 230),
-(5062, 1, 231),
-(5063, 1, 232),
-(5064, 1, 1),
-(5065, 1, 2),
-(5066, 1, 3),
-(5067, 1, 130),
-(5068, 1, 225),
-(5069, 1, 24),
-(5075, 1, 191),
-(5076, 1, 192),
-(5077, 1, 78),
-(5078, 1, 79),
-(5079, 1, 77),
-(5080, 1, 121),
-(5081, 1, 86),
-(5082, 1, 144),
-(5083, 1, 87),
-(5084, 1, 88),
-(5085, 1, 74),
-(5086, 1, 91),
-(5087, 1, 75),
-(5088, 1, 141),
-(5089, 1, 210),
-(5090, 1, 76),
-(5091, 1, 80),
-(5093, 1, 84),
-(5094, 1, 85),
-(5095, 1, 170),
-(5097, 1, 171),
-(5099, 1, 169),
-(5100, 1, 176),
-(5101, 1, 188),
-(5102, 1, 178),
-(5103, 1, 179),
-(5104, 1, 177),
-(5105, 1, 153),
-(5106, 1, 174),
-(5107, 1, 186),
-(5108, 1, 154),
-(5109, 1, 212),
-(5110, 1, 166),
-(5111, 1, 165),
-(5112, 1, 152),
-(5113, 1, 164),
-(5114, 1, 16),
-(5115, 1, 17),
-(5117, 1, 18),
-(5119, 1, 34),
-(5120, 1, 63),
-(5121, 1, 40),
-(5122, 1, 23),
-(5123, 1, 70),
-(5124, 1, 33),
-(5126, 1, 143),
-(5127, 1, 59),
-(5128, 1, 57),
-(5129, 1, 22),
-(5130, 1, 168),
-(5131, 1, 56),
-(5132, 1, 13),
-(5133, 1, 89),
-(5134, 1, 14),
-(5135, 1, 140),
-(5141, 1, 209),
-(5143, 1, 12),
-(5144, 1, 21),
-(5145, 1, 31),
-(5146, 1, 20);
+(5288, 1, 183),
+(5289, 1, 184),
+(5290, 1, 185),
+(5291, 1, 187),
+(5292, 1, 208),
+(5293, 1, 219),
+(5294, 1, 220),
+(5295, 1, 224),
+(5296, 1, 226),
+(5297, 1, 347),
+(5298, 1, 348),
+(5299, 1, 349),
+(5300, 1, 350),
+(5301, 1, 351),
+(5302, 1, 352),
+(5303, 1, 353),
+(5304, 1, 354),
+(5305, 1, 355),
+(5306, 1, 123),
+(5307, 1, 124),
+(5308, 1, 125),
+(5309, 1, 126),
+(5310, 1, 127),
+(5311, 1, 128),
+(5312, 1, 129),
+(5313, 1, 131),
+(5314, 1, 167),
+(5315, 1, 4),
+(5316, 1, 5),
+(5317, 1, 6),
+(5318, 1, 64),
+(5319, 1, 65),
+(5320, 1, 66),
+(5321, 1, 415),
+(5322, 1, 7),
+(5323, 1, 8),
+(5324, 1, 9),
+(5325, 1, 10),
+(5326, 1, 11),
+(5327, 1, 25),
+(5328, 1, 26),
+(5329, 1, 39),
+(5330, 1, 28),
+(5331, 1, 43),
+(5332, 1, 48),
+(5333, 1, 49),
+(5334, 1, 230),
+(5335, 1, 231),
+(5336, 1, 232),
+(5337, 1, 1),
+(5338, 1, 2),
+(5339, 1, 3),
+(5340, 1, 300),
+(5341, 1, 301),
+(5342, 1, 130),
+(5343, 1, 225),
+(5344, 1, 24),
+(5345, 1, 191),
+(5346, 1, 192),
+(5347, 1, 111),
+(5348, 1, 112),
+(5349, 1, 113),
+(5350, 1, 114),
+(5351, 1, 100),
+(5352, 1, 101),
+(5353, 1, 102),
+(5354, 1, 105),
+(5355, 1, 106),
+(5356, 1, 107),
+(5357, 1, 122),
+(5358, 1, 145),
+(5359, 1, 108),
+(5360, 1, 109),
+(5361, 1, 110),
+(5362, 1, 181),
+(5363, 1, 182),
+(5364, 1, 97),
+(5365, 1, 95),
+(5366, 1, 96),
+(5367, 1, 211),
+(5368, 1, 142),
+(5369, 1, 180),
+(5370, 1, 319),
+(5371, 1, 98),
+(5372, 1, 99),
+(5373, 1, 103),
+(5374, 1, 221),
+(5375, 1, 222),
+(5376, 1, 223),
+(5377, 1, 77),
+(5378, 1, 78),
+(5379, 1, 79),
+(5380, 1, 86),
+(5381, 1, 87),
+(5382, 1, 88),
+(5383, 1, 121),
+(5384, 1, 144),
+(5385, 1, 76),
+(5386, 1, 74),
+(5387, 1, 75),
+(5388, 1, 210),
+(5389, 1, 141),
+(5390, 1, 91),
+(5391, 1, 318),
+(5392, 1, 80),
+(5393, 1, 84),
+(5394, 1, 85),
+(5395, 1, 16),
+(5396, 1, 17),
+(5397, 1, 18),
+(5398, 1, 22),
+(5399, 1, 23),
+(5400, 1, 33),
+(5401, 1, 34),
+(5402, 1, 40),
+(5403, 1, 56),
+(5404, 1, 57),
+(5405, 1, 59),
+(5406, 1, 63),
+(5407, 1, 70),
+(5408, 1, 143),
+(5409, 1, 168),
+(5410, 1, 12),
+(5411, 1, 13),
+(5412, 1, 14),
+(5413, 1, 209),
+(5414, 1, 140),
+(5415, 1, 89),
+(5416, 1, 20),
+(5417, 1, 21),
+(5418, 1, 31),
+(5419, 1, 317),
+(5420, 3, 4),
+(5421, 3, 28),
+(5422, 3, 43),
+(5423, 3, 48),
+(5424, 3, 24),
+(5425, 3, 108),
+(5426, 3, 181),
+(5427, 3, 182),
+(5428, 3, 97),
+(5429, 3, 95),
+(5430, 3, 96),
+(5431, 3, 211),
+(5432, 3, 180),
+(5433, 3, 319),
+(5434, 3, 99),
+(5435, 3, 77),
+(5436, 3, 78),
+(5437, 3, 79),
+(5438, 3, 76),
+(5439, 3, 74),
+(5440, 3, 75),
+(5441, 3, 210),
+(5442, 3, 91),
+(5443, 3, 318),
+(5444, 3, 80),
+(5445, 3, 84),
+(5446, 3, 85),
+(5447, 3, 16),
+(5448, 3, 17),
+(5449, 3, 18),
+(5450, 3, 22),
+(5451, 3, 23),
+(5452, 3, 33),
+(5453, 3, 34),
+(5454, 3, 40),
+(5455, 3, 56),
+(5456, 3, 57),
+(5457, 3, 59),
+(5458, 3, 70),
+(5459, 3, 12),
+(5460, 3, 13),
+(5461, 3, 14),
+(5462, 3, 209),
+(5463, 3, 89),
+(5464, 3, 20),
+(5465, 3, 21),
+(5466, 3, 31),
+(5467, 3, 317),
+(5468, 2, 24),
+(5469, 2, 86),
+(5470, 2, 87),
+(5471, 2, 88),
+(5472, 2, 121),
+(5473, 2, 144),
+(5474, 2, 76),
+(5475, 2, 74),
+(5476, 2, 75),
+(5477, 2, 210),
+(5478, 2, 141),
+(5479, 2, 91),
+(5480, 2, 80),
+(5481, 2, 84),
+(5482, 2, 85),
+(5483, 2, 22),
+(5484, 2, 23),
+(5485, 2, 33),
+(5486, 2, 34),
+(5487, 2, 40),
+(5488, 2, 56),
+(5489, 2, 57),
+(5490, 2, 59),
+(5491, 2, 70),
+(5492, 2, 12),
+(5493, 2, 13),
+(5494, 2, 14),
+(5495, 2, 209),
+(5496, 2, 89),
+(5497, 2, 20);
 
 -- --------------------------------------------------------
 
@@ -5049,7 +5077,8 @@ INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_te
 (177, 'admin', NULL, 'no', 'Recommended Corrective Actions', '/vl/reference/vl-recommended-corrective-actions.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vl-recommended-corrective-actions', 10, 39, 'active', '2023-08-02 14:27:09'),
 (178, 'admin', NULL, 'no', 'Recommended Corrective Actions', '/common/reference/recommended-corrective-actions.php?testType=eid', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-recommended-corrective-actions\r\n', 11, 40, 'active', '2023-08-26 01:03:01'),
 (179, 'admin', NULL, 'no', 'Recommended Corrective Actions', '/common/reference/recommended-corrective-actions.php?testType=eid', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-recommended-corrective-actions\r\n', 12, 41, 'active', '2023-08-26 01:03:01'),
-(180, 'generic-tests', NULL, 'no', 'Send Result Mail', '/generic-tests/mail/mail-generic-tests-results.php', '/generic-tests/mail/generic-tests-result-mail-confirm.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestResultMenu', 62, 88, 'active', '2023-10-16 17:03:43');
+(180, 'generic-tests', NULL, 'no', 'Send Result Mail', '/generic-tests/mail/mail-generic-tests-results.php', '/generic-tests/mail/generic-tests-result-mail-confirm.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestResultMenu', 62, 88, 'active', '2023-10-16 17:03:43'),
+(181, 'vl', NULL, 'no', 'E-mail Test Result', '/mail/vlResultMail.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlResultMailMenu', 70, 101, 'active', '2023-11-07 12:38:20');
 
 -- --------------------------------------------------------
 
@@ -5129,6 +5158,7 @@ CREATE TABLE `temp_sample_import` (
   `lab_id` int(11) DEFAULT NULL,
   `lab_contact_person` varchar(255) DEFAULT NULL,
   `lab_phone_number` varchar(255) DEFAULT NULL,
+  `cv_number` varchar(20) DEFAULT NULL,
   `sample_received_at_vl_lab_datetime` varchar(255) DEFAULT NULL,
   `sample_tested_datetime` varchar(255) DEFAULT NULL,
   `result_dispatched_datetime` varchar(255) DEFAULT NULL,
@@ -5332,7 +5362,8 @@ CREATE TABLE `vl_imported_controls` (
   `status` varchar(255) DEFAULT NULL,
   `vlsm_country_id` varchar(10) DEFAULT NULL,
   `file_name` varchar(255) DEFAULT NULL,
-  `imported_date_time` datetime DEFAULT NULL
+  `imported_date_time` datetime DEFAULT NULL,
+  `import_machine_file_name` varchar(256) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -6398,7 +6429,7 @@ ALTER TABLE `privileges`
 -- AUTO_INCREMENT for table `province_details`
 --
 ALTER TABLE `province_details`
-  MODIFY `province_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `province_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `qc_covid19`
@@ -6434,7 +6465,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `roles_privileges_map`
 --
 ALTER TABLE `roles_privileges_map`
-  MODIFY `map_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5147;
+  MODIFY `map_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5498;
 
 --
 -- AUTO_INCREMENT for table `r_countries`
@@ -6686,7 +6717,7 @@ ALTER TABLE `system_admin`
 -- AUTO_INCREMENT for table `s_app_menu`
 --
 ALTER TABLE `s_app_menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=183;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=184;
 
 --
 -- AUTO_INCREMENT for table `s_available_country_forms`
