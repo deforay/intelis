@@ -72,7 +72,8 @@ spinner() {
 get_databases() {
     echo "Fetching available databases..."
     local IFS=$'\n'
-    databases=($(mysql -u root -p"$mysql_root_password" -e "SHOW DATABASES;" | sed 1d | egrep -v 'information_schema|mysql|performance_schema|sys'))
+    # Exclude the databases you do not want to back up from the list
+    databases=($(mysql -u root -p"$mysql_root_password" -e "SHOW DATABASES;" | sed 1d | egrep -v 'information_schema|mysql|performance_schema|sys|phpmyadmin'))
     local -i cnt=1
     for db in "${databases[@]}"; do
         echo "$cnt) $db"
@@ -83,10 +84,11 @@ get_databases() {
 # Function to back up selected databases
 backup_database() {
     local IFS=$'\n'
-    local db_list=($(mysql -u root -p"$mysql_root_password" -e "SHOW DATABASES;" | sed 1d | egrep -v 'information_schema|mysql|performance_schema|sys'))
+    # Now we use the 'databases' array from 'get_databases' function instead of querying again
+    local db_list=("${databases[@]}")
     local timestamp=$(date +%Y%m%d-%H%M%S) # Adding timestamp with hours, minutes, and seconds
     for i in "$@"; do
-        local db="${db_list[$i - 1]}"
+        local db="${db_list[$i]}"
         echo "Backing up database: $db"
         mysqldump -u root -p"$mysql_root_password" "$db" | gzip >"${backup_location}/${db}_${timestamp}.sql.gz"
         if [[ $? -eq 0 ]]; then
@@ -144,16 +146,17 @@ fi
 # Backup the selected databases
 backup_database "${selected_indexes[@]}"
 
-# Download New Version of VLSM from GitHub
-echo "Downloading new version of VLSM from GitHub..."
-wget -q -O vlsm-new-version.zip https://github.com/deforay/vlsm/archive/refs/heads/master.zip
-
 # Backup Old VLSM Folder
 echo "Backing up old VLSM folder..."
 timestamp=$(date +%Y%m%d-%H%M%S) # Using this timestamp for consistency with database backup filenames
 backup_folder="/var/vlsm-backup/www/vlsm-backup-$timestamp"
 mkdir -p "$backup_folder"
-cp -R "$vlsm_path" "$backup_folder"
+rsync -a --delete --exclude 'public/temporary/' "$vlsm_path/" "$backup_folder/" &
+spinner # This will show the spinner until the above process is completed
+
+# Download New Version of VLSM from GitHub
+echo "Downloading new version of VLSM from GitHub..."
+wget -q -O vlsm-new-version.zip https://github.com/deforay/vlsm/archive/refs/heads/master.zip
 
 # Unzip New VLSM Version
 echo "Unzipping new VLSM version..."
