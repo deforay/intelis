@@ -165,7 +165,10 @@ if (!empty($tbInfo['is_encrypted']) && $tbInfo['is_encrypted'] == 'yes'){
 	}
 }
 
-
+$minPatientIdLength = 0;
+if(isset($arr['tb_min_patient_id_length']) && $arr['tb_min_patient_id_length'] != ""){
+    $minPatientIdLength = $arr['tb_min_patient_id_length'];
+}
 
 $fileArray = array(
     1 => 'forms/edit-southsudan.php',

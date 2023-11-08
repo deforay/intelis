@@ -138,6 +138,11 @@ if (!empty($hepatitisInfo['is_encrypted']) && $hepatitisInfo['is_encrypted'] == 
 	}
 }
 
+$minPatientIdLength = 0;
+if(isset($arr['hepatitis_min_patient_id_length']) && $arr['hepatitis_min_patient_id_length'] != ""){
+    $minPatientIdLength = $arr['hepatitis_min_patient_id_length'];
+}
+
 $fileArray = array(
     1 => 'forms/edit-southsudan.php',
     2 => 'forms/edit-sierraleone.php',

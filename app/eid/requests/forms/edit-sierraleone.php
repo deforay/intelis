@@ -193,7 +193,7 @@ $aResult = $db->query($aQuery);
                                     <tr>
                                         <th scope="row" style="width:15% !important" class="labels"><label for="childId">Infant Code <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control isRequired" id="childId" name="childId" placeholder="Infant Identification (Patient)" title="Please enter Exposed Infant Identification" style="width:100%;" value="<?php echo $eidInfo['child_id']; ?>" oninput="showPatientList($(this).val(),1500);" />
+                                            <input type="text" class="form-control isRequired patientId" id="childId" name="childId" placeholder="Infant Identification (Patient)" title="Please enter Exposed Infant Identification" style="width:100%;" value="<?php echo $eidInfo['child_id']; ?>" oninput="showPatientList($(this).val(),1500);" />
                                         </td>
                                         <th scope="row" style="width:15% !important" class="labels"><label for="childName">Infant name<span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">

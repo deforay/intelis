@@ -231,7 +231,7 @@ $aResult = $db->query($aQuery);
 										<td style="width: 15% !important;"><label for="artNo">Code du patient <span class="mandatory">*</span></label>
 										</td>
 										<td style="width: 35% !important;">
-											<input type="text" class="form-control isRequired" id="artNo" name="artNo" placeholder="Code du patient" title="<?= _translate("Please enter the Patient ID"); ?>" value="<?= ($vlQueryInfo['patient_art_no']); ?>" style="width:100%;" />
+											<input type="text" class="form-control isRequired patientId" id="artNo" name="artNo" placeholder="Code du patient" title="<?= _translate("Please enter the Patient ID"); ?>" value="<?= ($vlQueryInfo['patient_art_no']); ?>" style="width:100%;" />
 										</td>
 										<td style="width: 15% !important;"><label for="">Date de naissance </label></td>
 										<td style="width: 35% !important;">

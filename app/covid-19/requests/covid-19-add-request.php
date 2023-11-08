@@ -96,6 +96,10 @@ if (isset($countryResult) && sizeof($countryResult) > 0) {
 $condition = "status ='active' AND test_type='covid19'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
+$minPatientIdLength = 0;
+if(isset($arr['covid19_min_patient_id_length']) && $arr['covid19_min_patient_id_length'] != ""){
+    $minPatientIdLength = $arr['covid19_min_patient_id_length'];
+}
 
 
 $fileArray = array(

@@ -306,6 +306,11 @@ $mandatoryClass = "";
 if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') {
 	$mandatoryClass = "isRequired";
 }
+
+$minPatientIdLength = 0;
+if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_length'] != ""){
+    $minPatientIdLength = $arr['generic_min_patient_id_length'];
+}
 ?><!-- Content Wrapper. Contains page content -->
 <style>
 	.ui_tpicker_second_label {
@@ -535,7 +540,7 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 									<div class="col-md-6">
 										<label class="col-lg-5" for="artNo">EPID Number <?php if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?><span class="mandatory">*</span><?php } ?></label>
 										<div class="col-lg-7">
-											<input type="text" name="artNo" id="artNo" class="form-control <?= $mandatoryClass; ?>" placeholder="Enter EPID Number" title="Enter EPID Number" value="<?= htmlspecialchars($genericResultInfo['patient_id']); ?>" />
+											<input type="text" name="artNo" id="artNo" class="form-control <?= $mandatoryClass; ?> patientId" placeholder="Enter EPID Number" title="Enter EPID Number" value="<?= htmlspecialchars($genericResultInfo['patient_id']); ?>" />
 										</div>
 
 									</div>

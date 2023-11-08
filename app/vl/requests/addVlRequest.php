@@ -81,6 +81,11 @@ $artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
 $artRegimenResult = $db->rawQuery($artRegimenQuery);
 $aQuery = "SELECT * FROM r_vl_art_regimen where art_status ='active'";
 $aResult = $db->query($aQuery);
+
+$minPatientIdLength = 0;
+if(isset($arr['vl_min_patient_id_length']) && $arr['vl_min_patient_id_length'] != ""){
+    $minPatientIdLength = $arr['vl_min_patient_id_length'];
+}
 ?>
 <style>
     .ui_tpicker_second_label {

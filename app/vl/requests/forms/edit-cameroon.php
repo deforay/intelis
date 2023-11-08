@@ -272,7 +272,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="artNo"><?= _translate('Unique ART (TRACNET) No.'); ?> <span class="mandatory">*</span></label>
-                                                       <input type="text" name="artNo" id="artNo" value="<?= $vlQueryInfo['patient_art_no'] ?>" class="form-control isRequired" placeholder="<?= _translate('Enter ART Number'); ?>" title="<?= _translate('Enter art number'); ?>" onchange="checkPatientDetails('form_vl','patient_art_no',this,null)" />
+                                                       <input type="text" name="artNo" id="artNo" value="<?= $vlQueryInfo['patient_art_no'] ?>" class="form-control isRequired patientId" placeholder="<?= _translate('Enter ART Number'); ?>" title="<?= _translate('Enter art number'); ?>" onchange="checkPatientDetails('form_vl','patient_art_no',this,null)" />
                                                        <span class="artNoGroup" id="artNoGroup"></span>
                                                   </div>
                                              </div>
