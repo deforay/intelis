@@ -170,20 +170,20 @@ foreach ($rResult as $aRow) {
           $aRow['patient_art_no'] = CommonService::decrypt($aRow['patient_art_no'], base64_decode($keyFromGlobalConfig));
      }
      unset($aRow['is_encrypted']);
-     $patientId = $aRow['patient_art_no'];
+     $patientId = trim($aRow['patient_art_no']);
      $aRow['result'] = $vlService->extractViralLoadValue($aRow['result']);
      $vfData[] = $aRow;
      $vlnsData[] = $aRow;
      // Check if patient id already there in array
-     if (in_array($patientId, $patientIds)) {
+     if (in_array(trim($patientId), $patientIds)) {
           // If there we remove vlsndata for this dublication
           foreach ($vlnsData as $key => $vlnsDataRow) {
-               if ($vlnsDataRow['patient_art_no'] === $patientId) {
+               if ($vlnsDataRow['patient_art_no'] === trim($patientId)) {
                     unset($vlnsData[$key]);
                }
           }
      } else {
-          $patientIds[] = $patientId;
+          $patientIds[] = trim($patientId);
      }
 }
 foreach ($vlnsData as $vlnsKey => $vlnsDataRow) {
