@@ -178,7 +178,7 @@ foreach ($rResult as $aRow) {
      if (in_array(trim($patientId), $patientIds)) {
           // If there we remove vlsndata for this dublication
           foreach ($vlnsData as $key => $vlnsDataRow) {
-               if ($vlnsDataRow['patient_art_no'] === trim($patientId)) {
+               if (trim($vlnsDataRow['patient_art_no']) === trim($patientId)) {
                     unset($vlnsData[$key]);
                }
           }
