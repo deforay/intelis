@@ -198,7 +198,9 @@ class CommonService
             if ($this->db == null || empty($tableName)) {
                 return false;
             }
-
+            // Check is array or not
+            $fieldName = is_array($fieldName) ? implode(",", $fieldName) : $fieldName; 
+            
             $fieldName = ($fieldName != null) ? $fieldName : '*';
 
             $configQuery = "SELECT $fieldName FROM $tableName";

@@ -56,8 +56,7 @@
         "phpmyadmin/sql-parser": "^5.8"
     },
     "suggest": {
-        "dcarbone/php-fhir-generated": "Needed for FHIR Parsing",
-        "aranyasen/hl7": "Needed for HL7 Parsing"
+        "dcarbone/php-fhir-generated": "Needed for FHIR Parsing"
     },
     "autoload": {
         "psr-4": {
@@ -67,5 +66,12 @@
     "config": {},
     "require-dev": {
         "symfony/var-dumper": "^5.4"
+    },
+    "scripts": {
+        "cleanup": "php app/scheduled-jobs/cleanup.php 60",
+        "db-backup": "php app/scheduled-jobs/db-backups.php",
+        "fix-privileges": "php run-once/update-privileges.php",
+        "fix-audit-tables": "php run-once/fix-audit-tables.php",
+        "migrate": "php app/system/migrate.php -y"
     }
 }

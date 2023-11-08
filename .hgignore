@@ -1,30 +1,8 @@
+# Ignore configuration files that are not distribution templates
 syntax: glob
 !configs/config.*.dist.php
 
-syntax: regexp
-public/uploads/(?!.htaccess)
-public/temporary/(?!.htaccess)
-vendor/*
-cache/(?!.htaccess)
-vendor/dcarbone/(?!.htaccess)
-docker/mysql/data/(?!.htaccess)
-interop/dhis2/examples/(?!index.php)
-backups/(?!index.php)
-backup/(?!index.php)
-.*\.idea$
-.*\.pid$
-.*\.log$
-.*\.vendor$
-error_log
-\.DS_Store$
-[Tt]humbs\.db$
-
-syntax: glob
-error.log
-errors.log
-npm-debug.log
-Thumbs.db
-Thumbs.db.orig
+# Ignore common system files and directories
 .DS_Store
 .DS_Store.orig
 .env
@@ -32,12 +10,33 @@ Thumbs.db.orig
 .git/*
 .gitattributes
 .gitignore
-configs/config.*.php
-configs/bg.png
-configs/bg.jpg
-secretKey.txt
-.user.ini
-rector.php
 **/node_modules/
-.dccache
-phpstan.neon
+.user.ini
+*.db
+*.log
+*.orig
+*.pid
+*.idea
+*.vendor
+*error_log
+*.DS_Store
+*.neon
+configs/config.*.php
+configs/*.png
+configs/*.jpg
+secretKey.txt
+rector.php
+vendor/
+
+# Now switching to regexp syntax for more complex patterns
+syntax: regexp
+^public/uploads/(?!index\.php|\.htaccess).*
+^public/temporary/(?!index\.php|\.htaccess).*
+
+# Ignore everything in these directories except .htaccess or index.php
+cache/(?!.htaccess)
+docker/mysql/data/(?!.htaccess)
+interop/dhis2/examples/(?!index.php)
+backups/(?!index.php)
+backup/(?!index.php)
+^vendor/*

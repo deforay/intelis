@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 
 // only run from command line
