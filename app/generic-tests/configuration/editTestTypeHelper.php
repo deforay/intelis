@@ -35,7 +35,7 @@ foreach ($_POST['fdropDown'] as $val) {
 }
 try {
     if (!empty($_POST['testStandardName']) && $testTypeId > 0) {
-        $cnt = count($_POST['fieldId']);
+        $cnt = count($_POST['fieldName']);
         $sortFieldOrder = $_POST['fieldOrder'];
         sort($sortFieldOrder);
         $fieldName = $fieldId = $fieldType = $dropDown = $mandatoryField = $section = $sectionOther = $fieldOrder = [];
@@ -67,7 +67,7 @@ try {
                 }
             }
         }
-        // echo '<pre>'; print_r($testAttribute); die;
+        // echo "<pre> => " . $cnt;print_r($_POST); print_r($testAttribute); die;
         //Result Type
         $testResultAttribute['result_type'] = $_POST['resultType'];
         if (isset($_POST['resultType']) && $_POST['resultType'] == 'quantitative') {

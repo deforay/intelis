@@ -5202,3 +5202,5 @@ INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_te
 UPDATE `privileges`
 SET `shared_privileges` = '["/batch/delete-batch.php?type=hepatitis","/batch/edit-batch-position.php?type=hepatitis"]'
 WHERE `privilege_name` = '/batch/edit-batch.php?type=hepatitis';
+-- Thana 10-Nov-2023
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'generic-requests', '/generic-tests/requests/clone-request.php', NULL, 'Clone Generic Tests', '7', 'always');

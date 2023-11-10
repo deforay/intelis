@@ -162,7 +162,6 @@ class GenericTestsService extends AbstractTestService
             error_log('Insert lab tests Sample : ' . $e->getMessage());
             $id = 0;
         }
-
         if ($returnSampleData === true) {
             return [
                 'id' => max($id, 0),

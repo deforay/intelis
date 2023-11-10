@@ -23,3 +23,6 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remot
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Minimum Patient ID Length', 'hepatitis_min_patient_id_length', NULL, 'hepatitis', 'no', NULL, NULL, 'active');
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Minimum Patient ID Length', 'tb_min_patient_id_length', NULL, 'tb', 'no', NULL, NULL, 'active');
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Minimum Patient ID Length', 'generic_min_patient_id_length', NULL, 'generic', 'no', NULL, NULL, 'active');
+
+-- Thana 10-Nov-2023
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'generic-requests', '/generic-tests/requests/clone-request.php', NULL, 'Clone Generic Tests', '7', 'always');
