@@ -152,7 +152,7 @@ foreach ($rResult as $aRow) {
                </select><br><br>';
     $row = [];
     $row[] = ($aRow['rejection_reason_name']);
-    $row[] = ($aRow['rejection_type']);
+    $row[] = ucwords($aRow['rejection_type']);
     $row[] = ($aRow['rejection_reason_code']);
     if ($usersService->isAllowed("/generic-tests/configuration/sample-rejection-reasons/generic-edit-sample-rejection-reasons.php") && $sarr['sc_user_type'] != 'vluser') {
         $row[] = $status;

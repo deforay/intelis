@@ -133,6 +133,7 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 </div>
 <script src="/assets/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/assets/js/select2.min.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.blockUI.js"></script>
 <link rel="stylesheet" media="all" type="text/css" href="/assets/css/select2.live.min.css" />
 <!-- DataTables -->
 <script type="text/javascript">
@@ -143,6 +144,9 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 		});
 		<?php if(!isset($labResults[0]) || empty($labResults[0]) || count( $labResults)  == 0){ ?>
 			async function callFun(){
+				$.blockUI({
+					message: "<h3><?= _translate("Trying to sync Lab Details", true); ?><br><?= _translate("Please wait..."); ?></h3>"
+				});
 				window.parent.syncRemoteData();
 			}
 			callFun().then(

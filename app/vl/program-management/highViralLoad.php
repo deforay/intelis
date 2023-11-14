@@ -95,69 +95,61 @@ $state = $geolocationService->getProvinces("yes");
 										<div class="tab-pane fade in active" id="highViralLoadReport">
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Sample Test Date"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<input type="text" id="hvlSampleTestDate" name="hvlSampleTestDate" class="form-control highViralLoadReportFilter stDate" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:170px;background:#fff;" onchange="setSampleTestDate(this)" />
+													<td style="width: 23.33%;">
+														<input type="text" id="hvlSampleTestDate" name="hvlSampleTestDate" class="form-control highViralLoadReportFilter stDate" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:100%;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
-													<td>&nbsp;<strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Batch Code"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select class="form-control highViralLoadReportFilter" id="hvlBatchCode" name="hvlBatchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:170px;">
+													<td style="width: 23.33%;">
+														<select class="form-control select2 highViralLoadReportFilter" id="hvlBatchCode" name="hvlBatchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:100%;">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
-															<?php
-															foreach ($batResult as $code) {
-															?>
+															<?php foreach ($batResult as $code) { ?>
 																<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
-															<?php
-															}
-															?>
+															<?php } ?>
 														</select>
 													</td>
-													<td>&nbsp;<strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Sample Type"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select style="width:170px;" class="form-control highViralLoadReportFilter" id="hvlSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+													<td style="width: 23.33%;">
+														<select style="width:100%;" class="form-control select2 highViralLoadReportFilter" id="hvlSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
-															<?php
-															foreach ($sResult as $type) {
-															?>
+															<?php foreach ($sResult as $type) { ?>
 																<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
-															<?php
-															}
-															?>
+															<?php } ?>
 														</select>
 													</td>
 												</tr>
 												<tr>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Province/State"); ?>&nbsp;:
 														</strong></td>
-													<td>
+													<td style="width: 23.33%;">
 														<select class="form-control highViralLoadReportFilter select2-element" id="state" onchange="getByProvince('district','hvlFacilityName',this.value)" name="state" title="<?php echo _translate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 														</select>
 													</td>
 
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("District/County"); ?> :
 														</strong></td>
-													<td>
+													<td style="width: 23.33%;">
 														<select class="form-control highViralLoadReportFilter select2-element" id="district" name="district" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('hvlFacilityName',this.value)">
 														</select>
 													</td>
-													<td>&nbsp;<strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Facility Name & Code"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select class="form-control highViralLoadReportFilter" id="hvlFacilityName" name="hvlFacilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:170px;">
+													<td style="width: 23.33%;">
+														<select class="form-control highViralLoadReportFilter" id="hvlFacilityName" name="hvlFacilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:100%;">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -166,14 +158,13 @@ $state = $geolocationService->getProvinces("yes");
 															<?php } ?>
 														</select>
 													</td>
-
 												</tr>
 												<tr>
-													<td>&nbsp;<strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Contact Status"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select class="form-control highViralLoadReportFilter" id="hvlContactStatus" name="hvlContactStatus" title="<?php echo _translate('Please select contact status'); ?>" style="width:170px;">
+													<td style="width: 23.33%;">
+														<select class="form-control select2 highViralLoadReportFilter" id="hvlContactStatus" name="hvlContactStatus" title="<?php echo _translate('Please select contact status'); ?>" style="width:100%;">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -188,11 +179,11 @@ $state = $geolocationService->getProvinces("yes");
 															</option>
 														</select>
 													</td>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Gender"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select name="hvlGender" id="hvlGender" class="form-control highViralLoadReportFilter" title="<?php echo _translate('Please choose gender'); ?>" style="width:170px;" onchange="hideFemaleDetails(this.value,'hvlPatientPregnant','hvlPatientBreastfeeding');">
+													<td style="width: 23.33%;">
+														<select name="hvlGender" id="hvlGender" class="form-control select2 highViralLoadReportFilter" title="<?php echo _translate('Please choose gender'); ?>" style="width:100%;" onchange="hideFemaleDetails(this.value,'hvlPatientPregnant','hvlPatientBreastfeeding');">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -207,11 +198,11 @@ $state = $geolocationService->getProvinces("yes");
 															</option>
 														</select>
 													</td>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Pregnant"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select name="hvlPatientPregnant" id="hvlPatientPregnant" class="form-control highViralLoadReportFilter" title="<?php echo _translate('Please choose pregnant option'); ?>">
+													<td style="width: 23.33%;">
+														<select name="hvlPatientPregnant" id="hvlPatientPregnant" class="form-control select2 highViralLoadReportFilter" title="<?php echo _translate('Please choose pregnant option'); ?>">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -226,11 +217,11 @@ $state = $geolocationService->getProvinces("yes");
 
 												</tr>
 												<tr>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Breastfeeding"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select name="hvlPatientBreastfeeding" id="hvlPatientBreastfeeding" class="form-control highViralLoadReportFilter" title="<?php echo _translate('Please choose option'); ?>">
+													<td style="width: 23.33%;">
+														<select name="hvlPatientBreastfeeding" id="hvlPatientBreastfeeding" class="form-control select2 highViralLoadReportFilter" title="<?php echo _translate('Please choose option'); ?>">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -242,11 +233,11 @@ $state = $geolocationService->getProvinces("yes");
 															</option>
 														</select>
 													</td>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Export with Patient Name"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select name="patientInfo" id="patientInfo" class="form-control highViralLoadReportFilter" title="<?php echo _translate('Please choose community sample'); ?>" style="width:170px;">
+													<td style="width: 23.33%;">
+														<select name="patientInfo" id="patientInfo" class="form-control select2 highViralLoadReportFilter" title="<?php echo _translate('Please choose community sample'); ?>" style="width:100%;">
 															<option value="yes">
 																<?php echo _translate("Yes"); ?>
 															</option>
@@ -320,24 +311,24 @@ $state = $geolocationService->getProvinces("yes");
 										<div class="tab-pane fade" id="highVlVirologicFailureReport">
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 												<tr>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Province/State"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select class="form-control vfvlnsfilters select2-element" id="vfVlnsState" onchange="getByProvince('vfVlnsDistrict','vfVlnsfacilityName',this.value)" name="vfVlnsState" title="<?php echo _translate('Please select Province/State'); ?>">
+													<td style="width: 23.33%;">
+														<select class="form-control vfvlnsfilters select2 select2-element" id="vfVlnsState" onchange="getByProvince('vfVlnsDistrict','vfVlnsfacilityName',this.value)" name="vfVlnsState" title="<?php echo _translate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 														</select>
 													</td>
 
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("District/County"); ?> :
 														</strong></td>
-													<td>
-														<select class="form-control vfvlnsfilters select2-element" id="vfVlnsDistrict" name="vfVlnsDistrict" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('vfVlnsfacilityName',this.value)">
+													<td style="width: 23.33%;">
+														<select class="form-control vfvlnsfilters select2 select2-element" id="vfVlnsDistrict" name="vfVlnsDistrict" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('vfVlnsfacilityName',this.value)">
 														</select>
 													</td>
-													<td><strong><?php echo _translate("Facility Name"); ?> :</strong></td>
-													<td>
+													<td style="width: 10%;"><strong><?php echo _translate("Facility Name"); ?> :</strong></td>
+													<td style="width: 23.33%;">
 														<select class="form-control vfvlnsfilters" id="vfVlnsfacilityName" name="vfVlnsfacilityName" title="<?php echo _translate('Please select facility name'); ?>" style="width:220px;">
 															<option value=""><?php echo _translate('-- Select --'); ?></option>
 															<?php foreach ($fResult as $name) { ?>
@@ -347,19 +338,19 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 												</tr>
 												<tr>
-													<td><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
-													<td>
-														<input type="text" id="vfVlnsSampleCollectionDate" name="vfVlnsSampleCollectionDate" class="form-control vfvlnsfilters daterangefield" placeholder="<?php echo _translate('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
+													<td style="width: 10%;"><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
+													<td style="width: 23.33%;">
+														<input type="text" id="vfVlnsSampleCollectionDate" name="vfVlnsSampleCollectionDate" class="form-control vfvlnsfilters daterangefield" placeholder="<?php echo _translate('Select Collection Date'); ?>" style="background:#fff;" />
 													</td>
-													<td><strong><?php echo _translate("Sample Tested Date"); ?>&nbsp;:</strong></td>
-													<td>
-														<input type="text" id="vfVlnsSampleTestDate" name="vfVlnsSampleTestDate" class="form-control vfvlnsfilters daterangefield" placeholder="<?php echo _translate('Select Tested Date'); ?>" style="width:220px;background:#fff;" />
+													<td style="width: 10%;"><strong><?php echo _translate("Sample Tested Date"); ?>&nbsp;:</strong></td>
+													<td style="width: 23.33%;">
+														<input type="text" id="vfVlnsSampleTestDate" name="vfVlnsSampleTestDate" class="form-control vfvlnsfilters daterangefield" placeholder="<?php echo _translate('Select Tested Date'); ?>" style="background:#fff;" />
 													</td>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Gender"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select name="vfvlnGender" id="vfvlnGender" class="form-control" title="<?php echo _translate('Please choose gender'); ?>" style="width:170px;" onchange="hideFemaleDetails(this.value,'pregnancy','breastfeeding');">
+													<td style="width: 23.33%;">
+														<select name="vfvlnGender" id="vfvlnGender" class="form-control select2" title="<?php echo _translate('Please choose gender'); ?>" style="width:100%;" onchange="hideFemaleDetails(this.value,'pregnancy','breastfeeding');">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -377,11 +368,11 @@ $state = $geolocationService->getProvinces("yes");
 													
 												</tr>
 												<tr>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Pregnancy"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select class="form-control select2-element" id="pregnancy" name="pregnancy" title="<?php echo _translate('Please select pregnancy'); ?>">
+													<td style="width: 23.33%;">
+														<select class="form-control select2 select2-element" id="pregnancy" name="pregnancy" title="<?php echo _translate('Please select pregnancy'); ?>">
 														<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -392,11 +383,11 @@ $state = $geolocationService->getProvinces("yes");
 																<?php echo _translate("No"); ?>
 															</option>														</select>
 													</td>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Breastfeeding"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select class="form-control select2-element" id="breastfeeding" name="breastfeeding" title="<?php echo _translate('Please select Province/State'); ?>">
+													<td style="width: 23.33%;">
+														<select class="form-control select2 select2-element" id="breastfeeding" name="breastfeeding" title="<?php echo _translate('Please select Province/State'); ?>">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -408,7 +399,7 @@ $state = $geolocationService->getProvinces("yes");
 															</option>														
 														</select>
 													</td>
-													<td>
+													<td style="width: 10%;">
 														<strong><?php echo _translate("Age Range"); ?>&nbsp;:</strong>
 													</td>
 													<td>
@@ -431,17 +422,17 @@ $state = $geolocationService->getProvinces("yes");
 										<div class="tab-pane fade" id="sampleRjtReport">
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Sample Test Date"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<input type="text" id="rjtSampleTestDate" name="rjtSampleTestDate" class="form-control sampleRjtReportFilter stDate daterange" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:170px;background:#fff;" onchange="setSampleTestDate(this)" />
+													<td style="width: 23.33%;">
+														<input type="text" id="rjtSampleTestDate" name="rjtSampleTestDate" class="form-control sampleRjtReportFilter stDate daterange" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:100%;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
-													<td>&nbsp;<strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Batch Code"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select class="form-control sampleRjtReportFilter" id="rjtBatchCode" name="rjtBatchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:170px;">
+													<td style="width: 23.33%;">
+														<select class="form-control select2 sampleRjtReportFilter" id="rjtBatchCode" name="rjtBatchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:100%;">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -454,11 +445,11 @@ $state = $geolocationService->getProvinces("yes");
 															?>
 														</select>
 													</td>
-													<td>&nbsp;<strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Sample Type"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select style="width:170px;" class="form-control sampleRjtReportFilter" id="rjtSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+													<td style="width: 23.33%;">
+														<select style="width:100%;" class="form-control select2 sampleRjtReportFilter" id="rjtSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -473,27 +464,27 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 												</tr>
 												<tr>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Province/State"); ?>&nbsp;:
 														</strong></td>
-													<td>
+													<td style="width: 23.33%;">
 														<select class="form-control sampleRjtReportFilter select2-element" id="rjtState" onchange="getByProvince('rjtDistrict','rjtFacilityName',this.value)" name="rjtState" title="<?php echo _translate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 														</select>
 													</td>
 
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("District/County"); ?> :
 														</strong></td>
-													<td>
+													<td style="width: 23.33%;">
 														<select class="form-control sampleRjtReportFilter select2-element" id="rjtDistrict" name="rjtDistrict" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('rjtFacilityName',this.value)">
 														</select>
 													</td>
-													<td>&nbsp;<strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Facility Name & Code"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select class="form-control sampleRjtReportFilter" id="rjtFacilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:170px;">
+													<td style="width: 23.33%;">
+														<select class="form-control sampleRjtReportFilter" id="rjtFacilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:100%;">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -509,11 +500,11 @@ $state = $geolocationService->getProvinces("yes");
 
 												</tr>
 												<tr>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Gender"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select name="rjtGender" id="rjtGender" class="form-control sampleRjtReportFilter" title="<?php echo _translate('Please choose gender'); ?>" style="width:170px;" onchange="hideFemaleDetails(this.value,'rjtPatientPregnant','rjtPatientBreastfeeding');">
+													<td style="width: 23.33%;">
+														<select name="rjtGender" id="rjtGender" class="form-control select2 sampleRjtReportFilter" title="<?php echo _translate('Please choose gender'); ?>" style="width:100%;" onchange="hideFemaleDetails(this.value,'rjtPatientPregnant','rjtPatientBreastfeeding');">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -528,11 +519,11 @@ $state = $geolocationService->getProvinces("yes");
 															</option>
 														</select>
 													</td>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Pregnant"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select name="rjtPatientPregnant" id="rjtPatientPregnant" class="form-control sampleRjtReportFilter" title="<?php echo _translate('Please choose pregnant option'); ?>">
+													<td style="width: 23.33%;">
+														<select name="rjtPatientPregnant" id="rjtPatientPregnant" class="form-control select2 sampleRjtReportFilter" title="<?php echo _translate('Please choose pregnant option'); ?>">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -544,11 +535,11 @@ $state = $geolocationService->getProvinces("yes");
 															</option>
 														</select>
 													</td>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Breastfeeding"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select name="rjtPatientBreastfeeding" id="rjtPatientBreastfeeding" class="form-control sampleRjtReportFilter" title="<?php echo _translate('Please choose option'); ?>">
+													<td style="width: 23.33%;">
+														<select name="rjtPatientBreastfeeding" id="rjtPatientBreastfeeding" class="form-control select2 sampleRjtReportFilter" title="<?php echo _translate('Please choose option'); ?>">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -563,11 +554,11 @@ $state = $geolocationService->getProvinces("yes");
 
 												</tr>
 												<tr>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Rejection Reason"); ?>&nbsp;:
 														</strong></td>
 													<td colspan="3">
-														<select name="rejectionReason" id="rejectionReason" class="form-control sampleRjtReportFilter" title="Please choose reason" onchange="checkRejectionReason();">
+														<select name="rejectionReason" id="rejectionReason" class="form-control select2 sampleRjtReportFilter" title="Please choose reason" onchange="checkRejectionReason();">
 															<option value="">-- Select --</option>
 															<?php foreach ($rejectionTypeResult as $type) { ?>
 																<optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
@@ -585,11 +576,11 @@ $state = $geolocationService->getProvinces("yes");
 															<?php } ?>
 														</select>
 													</td>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Export with Patient Name"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select name="patientRejectedInfo" id="patientRejectedInfo" class="form-control sampleRjtReportFilter" title="<?php echo _translate('Please choose community sample'); ?>" style="width:170px;">
+													<td style="width: 23.33%;">
+														<select name="patientRejectedInfo" id="patientRejectedInfo" class="form-control select2 sampleRjtReportFilter" title="<?php echo _translate('Please choose community sample'); ?>" style="width:100%;">
 															<option value="yes">
 																<?php echo _translate("Yes"); ?>
 															</option>
@@ -656,17 +647,17 @@ $state = $geolocationService->getProvinces("yes");
 										<div class="tab-pane fade" id="notAvailReport">
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<input type="text" id="noResultSampleTestDate" name="noResultSampleTestDate" class="form-control notAvailReportFilter stDate daterange" placeholder="<?php echo _translate('Select Sample Collection Date'); ?>" readonly style="width:170px;background:#fff;" onchange="setSampleTestDate(this)" />
+													<td style="width: 23.33%;">
+														<input type="text" id="noResultSampleTestDate" name="noResultSampleTestDate" class="form-control notAvailReportFilter stDate daterange" placeholder="<?php echo _translate('Select Sample Collection Date'); ?>" readonly style="width:100%;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
-													<td>&nbsp;<strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Batch Code"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select class="form-control notAvailReportFilter" id="noResultBatchCode" name="noResultBatchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:170px;">
+													<td style="width: 23.33%;">
+														<select class="form-control select2 notAvailReportFilter" id="noResultBatchCode" name="noResultBatchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:100%;">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -679,11 +670,11 @@ $state = $geolocationService->getProvinces("yes");
 															?>
 														</select>
 													</td>
-													<td>&nbsp;<strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Sample Type"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select style="width:170px;" class="form-control notAvailReportFilter" id="noResultSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+													<td style="width: 23.33%;">
+														<select style="width:100%;" class="form-control select2 notAvailReportFilter" id="noResultSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -698,27 +689,27 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 												</tr>
 												<tr>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Province/State"); ?>&nbsp;:
 														</strong></td>
-													<td>
+													<td style="width: 23.33%;">
 														<select class="form-control notAvailReportFilter select2-element" id="noResultState" onchange="getByProvince('noResultDistrict','noResultFacilityName',this.value)" name="rjtState" title="<?php echo _translate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 														</select>
 													</td>
 
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("District/County"); ?> :
 														</strong></td>
-													<td>
+													<td style="width: 23.33%;">
 														<select class="form-control notAvailReportFilter select2-element" id="noResultDistrict" name="noResultDistrict" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('noResultFacilityName',this.value)">
 														</select>
 													</td>
-													<td>&nbsp;<strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Facility Name & Code"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select class="form-control notAvailReportFilter" id="noResultFacilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:170px;">
+													<td style="width: 23.33%;">
+														<select class="form-control notAvailReportFilter" id="noResultFacilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:100%;">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -734,11 +725,11 @@ $state = $geolocationService->getProvinces("yes");
 
 												</tr>
 												<tr>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Gender"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select name="noResultGender" id="noResultGender" class="form-control notAvailReportFilter" title="<?php echo _translate('Please choose gender'); ?>" style="width:170px;" onchange="hideFemaleDetails(this.value,'noResultPatientPregnant','noResultPatientBreastfeeding');">
+													<td style="width: 23.33%;">
+														<select name="noResultGender" id="noResultGender" class="form-control select2 notAvailReportFilter" title="<?php echo _translate('Please choose gender'); ?>" style="width:100%;" onchange="hideFemaleDetails(this.value,'noResultPatientPregnant','noResultPatientBreastfeeding');">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -753,11 +744,11 @@ $state = $geolocationService->getProvinces("yes");
 															</option>
 														</select>
 													</td>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Pregnant"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select name="noResultPatientPregnant" id="noResultPatientPregnant" class="form-control notAvailReportFilter" title="<?php echo _translate('Please choose pregnant option'); ?>">
+													<td style="width: 23.33%;">
+														<select name="noResultPatientPregnant" id="noResultPatientPregnant" class="form-control select2 notAvailReportFilter" title="<?php echo _translate('Please choose pregnant option'); ?>">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -769,11 +760,11 @@ $state = $geolocationService->getProvinces("yes");
 															</option>
 														</select>
 													</td>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Breastfeeding"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select name="noResultPatientBreastfeeding" id="noResultPatientBreastfeeding" class="form-control notAvailReportFilter" title="<?php echo _translate('Please choose option'); ?>">
+													<td style="width: 23.33%;">
+														<select name="noResultPatientBreastfeeding" id="noResultPatientBreastfeeding" class="form-control select2 notAvailReportFilter" title="<?php echo _translate('Please choose option'); ?>">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -787,11 +778,11 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 												</tr>
 												<tr>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Export with Patient Name"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select name="patientNtAvailInfo" id="patientNtAvailInfo" class="form-control notAvailReportFilter" title="<?php echo _translate('Please choose community sample'); ?>" style="width:170px;">
+													<td style="width: 23.33%;">
+														<select name="patientNtAvailInfo" id="patientNtAvailInfo" class="form-control select2 notAvailReportFilter" title="<?php echo _translate('Please choose community sample'); ?>" style="width:100%;">
 															<option value="yes">
 																<?php echo _translate("Yes"); ?>
 															</option>
@@ -855,17 +846,17 @@ $state = $geolocationService->getProvinces("yes");
 										<div class="tab-pane fade" id="incompleteFormReport">
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control incompleteFormReportFilter" placeholder="<?php echo _translate('Select Sample Collection Date'); ?>" readonly style="width:170px;background:#fff;" />
+													<td style="width: 23.33%;">
+														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control incompleteFormReportFilter" placeholder="<?php echo _translate('Select Sample Collection Date'); ?>" readonly style="width:100%;background:#fff;" />
 													</td>
-													<td>&nbsp;<strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Fields"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select class="form-control incompleteFormReportFilter" id="formField" name="formField" multiple="multiple" title="<?php echo _translate('Please fields'); ?>" style="width:170px;">
+													<td style="width: 23.33%;">
+														<select class="form-control incompleteFormReportFilter" id="formField" name="formField" multiple="multiple" title="<?php echo _translate('Please fields'); ?>" style="width:100%;">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -904,11 +895,11 @@ $state = $geolocationService->getProvinces("yes");
 															</option>
 														</select>
 													</td>
-													<td><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Export with Patient Name"); ?>&nbsp;:
 														</strong></td>
-													<td>
-														<select name="patientVlQualityInfo" id="patientVlQualityInfo" class="form-control incompleteFormReportFilter" title="<?php echo _translate('Please choose community sample'); ?>" style="width:170px;">
+													<td style="width: 23.33%;">
+														<select name="patientVlQualityInfo" id="patientVlQualityInfo" class="form-control select2 incompleteFormReportFilter" title="<?php echo _translate('Please choose community sample'); ?>" style="width:100%;">
 															<option value="yes">
 																<?php echo _translate("Yes"); ?>
 															</option>
@@ -1004,22 +995,28 @@ $state = $geolocationService->getProvinces("yes");
 	var oTableincompleteReport = null;
 	$(document).ready(function() {
 		$("#state,#rjtState,#noResultState").select2({
-			width: '170px',
+			width: '100%',
 			placeholder: "<?php echo _translate("Select Province"); ?>"
 		});
 		$("#district,#rjtDistrict,#noResultDistrict").select2({
-			width: '170px',
+			width: '100%',
 			placeholder: "<?php echo _translate("Select District"); ?>"
 		});
 		$("#hvlFacilityName,#rjtFacilityName,#noResultFacilityName").select2({
-			width: '170px',
+			width: '100%',
 			placeholder: "<?php echo _translate("Select Facilities"); ?>"
 		});
 		$("#formField").select2({
-			width: '170px',
+			width: '100%',
 			placeholder: "<?php echo _translate("Select Fields"); ?>"
 		});
+		
+		$(".select2").select2({
+			width: '100%',
+			placeholder: "<?php echo _translate("Select Option"); ?>"
+		});
 		$("#vfVlnsfacilityName").select2({
+			width: '100%',
 			placeholder: "<?php echo _translate("Select Facilities"); ?>"
 		});
 		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate,#vfVlnsSampleCollectionDate,#vfVlnsSampleTestDate').daterangepicker({

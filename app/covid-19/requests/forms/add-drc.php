@@ -199,7 +199,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="patientId">N&deg; EPID </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control" id="patientId" name="patientId" placeholder="N&deg; EPID" title="N&deg; EPID" style="width:100%;" <?= ($generateAutomatedPatientCode) ? "readonly='readonly'" : "" ?> />
+                                            <input type="text" class="form-control patientId" id="patientId" name="patientId" placeholder="N&deg; EPID" title="N&deg; EPID" style="width:100%;" <?= ($generateAutomatedPatientCode) ? "readonly='readonly'" : "" ?> />
                                         </td>
                                         <th scope="row"><label for="patientDob">Date de naissance</label></th>
                                         <td>

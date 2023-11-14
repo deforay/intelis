@@ -23,12 +23,13 @@ try {
 
 		$data = array(
 			'rejection_reason_name' 	=> $_POST['rejectionReasonName'],
-			'rejection_type' 			=> $_POST['rejectionType'],
-			'rejection_reason_code'	=> $_POST['rejectionReasonCode'],
+			'rejection_reason_code'		=> $_POST['rejectionReasonCode'],
 			'rejection_reason_status' 	=> $_POST['rejectionReasonStatus'],
 			'updated_datetime' 			=> DateUtility::getCurrentDateTime()
 		);
-
+		if (isset($_POST['rejectionType']) && $_POST['rejectionType'] != "") {
+			$data["rejection_type"] = $_POST["rejectionType"];
+		}
 		if (isset($_POST['rejectionReasonId']) && $_POST['rejectionReasonId'] != "") {
 			$db = $db->where($primaryKey, base64_decode($_POST['rejectionReasonId']));
 			$lastId = $db->update($tableName, $data);

@@ -35,7 +35,7 @@ foreach ($_POST['fdropDown'] as $val) {
 try {
     // echo '<pre>'; print_r($_POST['resultConfig']['test_result_unit']); die;
     if (!empty($_POST['testStandardName'])) {
-        $cnt = count($_POST['fieldId']);
+        $cnt = count($_POST['fieldName  ']);
         $sortFieldOrder = $_POST['fieldOrder'];
         sort($sortFieldOrder);
         $fieldName = $fieldId = $fieldType = $dropDown = $mandatoryField = $section = $sectionOther = $fieldOrder = [];
@@ -67,7 +67,8 @@ try {
                 }
             }
         }
-        //print_r(json_encode($testAttribute));die;
+        // echo "<pre> => " . $cnt;
+        // print_r(json_encode($testAttribute));die;
         if (!is_numeric($_POST['testCategory'])) {
             $_POST['testCategory'] = $generic->quickInsert('r_generic_test_categories', array('test_category_name', 'test_category_status'), array($_POST['testCategory'], 'active'));
         }

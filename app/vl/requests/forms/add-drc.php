@@ -190,7 +190,7 @@ $sFormat = '';
 										<td style="width: 15% !important;"><label for="artNo">Code du Patient <span class="mandatory">*</span></label>
 										</td>
 										<td style="width: 35% !important;">
-											<input type="text" class="form-control isRequired" id="artNo" name="artNo" placeholder="Code du patient" title="<?= _translate("Please enter the Patient ID"); ?>" onchange="checkPatientDetails('form_vl','patient_art_no',this,null)" />
+											<input type="text" class="form-control isRequired patientId" id="artNo" name="artNo" placeholder="Code du patient" title="<?= _translate("Please enter the Patient ID"); ?>" onchange="checkPatientDetails('form_vl','patient_art_no',this,null)" />
 											<span class="artNoGroup" id="artNoGroup"></span>
 										</td>
 										<td style="width: 15% !important;"><label for="">Date de naissance </label></td>

@@ -170,7 +170,7 @@ foreach ($fResult as $fDetails) {
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="patientId">Patient ID <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
+                                            <input type="text" class="form-control isRequired patientId" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
                                         </td>
                                         <th scope="row"><label for="patientDob">Date of Birth <span class="mandatory">*</span> </label></th>
                                         <td>

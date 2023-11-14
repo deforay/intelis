@@ -78,6 +78,11 @@ foreach ($rejectionTypeResult as $type) {
 $condition = "status ='active' AND test_type='tb'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
+$minPatientIdLength = 0;
+if(isset($arr['tb_min_patient_id_length']) && $arr['tb_min_patient_id_length'] != ""){
+    $minPatientIdLength = $arr['tb_min_patient_id_length'];
+}
+
 $fileArray = array(
     1 => 'forms/add-southsudan.php',
     2 => 'forms/add-sierraleone.php',

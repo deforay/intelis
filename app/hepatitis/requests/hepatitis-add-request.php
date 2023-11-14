@@ -90,6 +90,12 @@ $testPlatformList = [];
 foreach ($testPlatformResult as $row) {
     $testPlatformList[$row['machine_name']] = $row['machine_name'];
 }
+
+$minPatientIdLength = 0;
+if(isset($arr['hepatitis_min_patient_id_length']) && $arr['hepatitis_min_patient_id_length'] != ""){
+    $minPatientIdLength = $arr['hepatitis_min_patient_id_length'];
+}
+
 $fileArray = array(
     1 => 'forms/add-southsudan.php',
     2 => 'forms/add-sierraleone.php',

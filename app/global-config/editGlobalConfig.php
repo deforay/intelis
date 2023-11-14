@@ -512,7 +512,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="min_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Sample ID Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
+												<label for="min_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Sample ID Length"); ?> <span class="mandatory" style="display:<?php echo ($arr['sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
 												<div class="col-lg-10">
 													<input type="text" class="form-control forceNumeric readPage isNumeric <?php echo ($arr['sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="min_length" name="min_length" <?php echo ($arr['sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter sample id min length'); ?>" value="<?php echo ($arr['sample_code'] == 'auto') ? '' : $arr['min_length']; ?>" style="max-width:60px;" />
 												</div>
@@ -522,9 +522,19 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="min_length" class="col-lg-2 control-label"><?php echo _translate("Maximum Sample ID Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
+												<label for="min_length" class="col-lg-2 control-label"><?php echo _translate("Maximum Sample ID Length"); ?> <span class="mandatory" style="display:<?php echo ($arr['sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
 												<div class="col-lg-10">
 													<input type="text" class="form-control forceNumeric readPage isNumeric <?php echo ($arr['sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="max_length" name="max_length" <?php echo ($arr['sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _translate('Max'); ?>" title="<?php echo _translate('Please enter sample id max length'); ?>" value="<?php echo ($arr['sample_code'] == 'auto') ? '' : $arr['max_length']; ?>" style="max-width:60px;" />
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="vl_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
+												<div class="col-lg-10">
+													<input type="text" class="form-control forceNumeric isNumeric" id="vl_min_patient_id_length" name="vl_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter patient id min length'); ?>" value="<?php echo ($arr['vl_min_patient_id_length'] == '') ? '' : $arr['vl_min_patient_id_length']; ?>" style="max-width:60px;" />
 												</div>
 											</div>
 										</div>
@@ -729,6 +739,16 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 											</div>
 										</div>
 									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="eid_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
+												<div class="col-lg-10">
+													<input type="text" class="form-control forceNumeric isNumeric" id="eid_min_patient_id_length" name="eid_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter patient id min length'); ?>" value="<?php echo ($arr['eid_min_patient_id_length'] == '') ? '' : $arr['eid_min_patient_id_length']; ?>" style="max-width:60px;" />
+												</div>
+											</div>
+										</div>
+									</div>
 									<?php if (isset($arr['lock_approved_eid_samples']) && $arr['lock_approved_eid_samples'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
@@ -888,6 +908,17 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 												<label for="covid19_max_length" class="col-lg-2 control-label"><?php echo _translate("Maximum Sample ID Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['covid19_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
 												<div class="col-lg-4">
 													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['covid19_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="covid19_max_length" name="covid19_max_length" <?php echo ($arr['covid19_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _translate('Max'); ?>" title="<?php echo _translate('Please enter sample id max length'); ?>" value="<?php echo ($arr['covid19_sample_code'] == 'auto') ? '' : $arr['max_length']; ?>" />
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="covid19_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
+												<div class="col-lg-10">
+													<input type="text" class="form-control forceNumeric isNumeric" id="covid19_min_patient_id_length" name="covid19_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter patient id min length'); ?>" value="<?php echo ($arr['covid19_min_patient_id_length'] == '') ? '' : $arr['covid19_min_patient_id_length']; ?>" style="max-width:60px;" />
 												</div>
 											</div>
 										</div>
@@ -1061,6 +1092,16 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 											</div>
 										</div>
 									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="hepatitis_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
+												<div class="col-lg-10">
+													<input type="text" class="form-control forceNumeric isNumeric" id="hepatitis_min_patient_id_length" name="hepatitis_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter patient id min length'); ?>" value="<?php echo ($arr['hepatitis_min_patient_id_length'] == '') ? '' : $arr['hepatitis_min_patient_id_length']; ?>" style="max-width:60px;" />
+												</div>
+											</div>
+										</div>
+									</div>
 									<?php if (isset($arr['hepatitis_sample_expiry_after_days']) && $arr['hepatitis_sample_expiry_after_days'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
@@ -1180,6 +1221,16 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 											</div>
 										</div>
 									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="tb_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
+												<div class="col-lg-10">
+													<input type="text" class="form-control forceNumeric isNumeric" id="tb_min_patient_id_length" name="tb_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter patient id min length'); ?>" value="<?php echo ($arr['tb_min_patient_id_length'] == '') ? '' : $arr['tb_min_patient_id_length']; ?>" style="max-width:60px;" />
+												</div>
+											</div>
+										</div>
+									</div>
 									<?php if (isset($arr['tb_sample_expiry_after_days']) && $arr['tb_sample_expiry_after_days'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
@@ -1295,6 +1346,16 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 												<label for="generic_max_length" class="col-lg-2 control-label"><?php echo _translate("Maximum Sample ID Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['generic_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
 												<div class="col-lg-4">
 													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['generic_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="generic_max_length" name="generic_max_length" <?php echo ($arr['generic_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _translate('Max'); ?>" title="<?php echo _translate('Please enter sample id max length'); ?>" value="<?php echo ($arr['generic_sample_code'] == 'auto') ? '' : $arr['generic_max_length']; ?>" />
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="generic_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
+												<div class="col-lg-10">
+													<input type="text" class="form-control forceNumeric isNumeric" id="generic_min_patient_id_length" name="generic_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter patient id min length'); ?>" value="<?php echo ($arr['generic_min_patient_id_length'] == '') ? '' : $arr['generic_min_patient_id_length']; ?>" style="max-width:60px;" />
 												</div>
 											</div>
 										</div>

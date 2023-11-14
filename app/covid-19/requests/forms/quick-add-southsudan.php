@@ -116,7 +116,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr>
                                         <th scope="row"><label for="patientId">Case ID <span class="mandatory">*</span> </label></th>
                                         <td>
-                                            <input type="text" class="form-control isRequired" id="patientId" name="patientId" placeholder="Case Identification" title="Please enter Case ID" style="width:100%;" onchange="" />
+                                            <input type="text" class="form-control isRequired patientId" id="patientId" name="patientId" placeholder="Case Identification" title="Please enter Case ID" style="width:100%;" onchange="" />
                                         </td>
 
                                         <th scope="row"><label for="externalSampleCode">DHIS2 Case ID </label></th>

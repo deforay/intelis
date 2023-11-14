@@ -212,7 +212,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 									<tr>
 										<th scope="row"><label for="patientId">Unique ART Number</label></th>
 										<td>
-											<input type="text" value="<?php echo $tbInfo['patient_id']; ?>" class="form-control" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
+											<input type="text" value="<?php echo $tbInfo['patient_id']; ?>" class="form-control patientId" id="patientId" name="patientId" placeholder="Patient Identification" title="Please enter Patient ID" style="width:100%;" onchange="" />
 										</td>
 										<th scope="row"><label for="firstName">First Name <span class="mandatory">*</span> </label></th>
 										<td>

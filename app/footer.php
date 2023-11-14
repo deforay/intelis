@@ -322,6 +322,23 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 				$(this).val("<?php echo $countryCode ?? null; ?>")
 			};
 		});
+
+		$('.patientId').on('change', function(){
+			var patientId = $(this).val();
+			
+			var minLength = '<?php echo $minPatientIdLength; ?>';
+					if (patientId.length < minLength) {
+						Toastify({
+							text: "<?= _translate('Minimum length for Patient Id is ', true) ?>"+minLength,
+							duration: 3000,
+							style: {
+								background: 'red',
+							}
+						}).showToast();
+					}
+
+
+		});
 	});
 
 	function editableSelect(id, _fieldName, table, _placeholder) {

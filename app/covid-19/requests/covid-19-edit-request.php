@@ -131,6 +131,11 @@ if (!empty($covid19Info['is_encrypted']) && $covid19Info['is_encrypted'] == 'yes
     }
 }
 
+$minPatientIdLength = 0;
+if(isset($arr['covid19_min_patient_id_length']) && $arr['covid19_min_patient_id_length'] != ""){
+    $minPatientIdLength = $arr['covid19_min_patient_id_length'];
+}
+
 $fileArray = array(
     1 => 'forms/edit-southsudan.php',
     2 => 'forms/edit-sierraleone.php',

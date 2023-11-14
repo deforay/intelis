@@ -296,7 +296,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim($vlQueryInfo['clinic_date']) != '
 											<label for="artNo">Patient ID <span class="mandatory">*</span></label>
 										</td>
 										<td>
-											<input type="text" class="form-control isRequired" placeholder="Enter Patient ID" name="artNo" id="artNo" title="Please enter Clinic ID" value="<?= ($vlQueryInfo['patient_art_no']); ?>" style="width:100%;" />
+											<input type="text" class="form-control isRequired patientId" placeholder="Enter Patient ID" name="artNo" id="artNo" title="Please enter Clinic ID" value="<?= ($vlQueryInfo['patient_art_no']); ?>" style="width:100%;" />
 										</td>
 										<td class="labels">
 											<label for="gender">Gender &nbsp;&nbsp;</label>

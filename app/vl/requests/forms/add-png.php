@@ -151,7 +151,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 											<label for="artNo" class="labels">Patient ID <span class="mandatory">*</span></label>
 										</td>
 										<td>
-											<input type="text" class="form-control isRequired" placeholder="Enter Patient ID" name="artNo" id="artNo" title="Please enter Patient ID" style="width:100%;" />
+											<input type="text" class="form-control isRequired patientId" placeholder="Enter Patient ID" name="artNo" id="artNo" title="Please enter Patient ID" style="width:100%;" />
 											<span class="artNoGroup" id="artNoGroup"></span>
 
 										</td>

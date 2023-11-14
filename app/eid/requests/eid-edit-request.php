@@ -197,6 +197,11 @@ if (!empty($eidInfo['is_encrypted']) && $eidInfo['is_encrypted'] == 'yes'){
 
 }
 
+$minPatientIdLength = 0;
+if(isset($arr['eid_min_patient_id_length']) && $arr['eid_min_patient_id_length'] != ""){
+    $minPatientIdLength = $arr['eid_min_patient_id_length'];
+}
+
 
 $fileArray = array(
     1 => 'forms/edit-southsudan.php',

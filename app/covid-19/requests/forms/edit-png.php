@@ -234,7 +234,7 @@ $fundingSourceOptions = $general->generateSelectOptions($fundingSourceArray, $co
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="patientId">Patient ID if admitted in ward <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control isRequired" value="<?php echo $covid19Info['patient_id']; ?>" id="patientId" name="patientId" placeholder="Patient ID" title="Please enter the Patient ID" style="width:100%;" />
+                                            <input type="text" class="form-control isRequired patientId" value="<?php echo $covid19Info['patient_id']; ?>" id="patientId" name="patientId" placeholder="Patient ID" title="Please enter the Patient ID" style="width:100%;" />
                                         </td>
                                         <th scope="row"><label for="patientDob">Patient date of birth<span class="mandatory">*</span> </label></th>
                                         <td>

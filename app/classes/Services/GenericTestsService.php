@@ -162,7 +162,6 @@ class GenericTestsService extends AbstractTestService
             error_log('Insert lab tests Sample : ' . $e->getMessage());
             $id = 0;
         }
-
         if ($returnSampleData === true) {
             return [
                 'id' => max($id, 0),
@@ -323,4 +322,51 @@ class GenericTestsService extends AbstractTestService
                                 AND tu.unit_status='active'";
         return $this->db->query($testResultUnitQry);
     }
+
+    public function fetchRelaventDataUsingTestAttributeId($fcode){
+        if (!empty($fcode)) {
+            // First get the collection of fcode from the following fcode
+            $this->db->where("(JSON_SEARCH(test_form_config, 'one', '$fcode') IS NOT NULL) OR (test_form_config IS NOT NULL)");
+            
+            $this->db->orderBy('updated_datetime', "DESC");
+            $testTypeResult = $this->db->getOne('r_test_types', 'test_form_config');
+            $testType = json_decode($testTypeResult['test_form_config'], true);
+            $fcodes = [];
+            if(isset($testType) && !empty($testType)) {
+                foreach ($testType as $section => $sectionArray) {
+                    foreach ($sectionArray as $key => $value) {
+                        if($value['field_code'] == $fcode){
+                            $fcodes[] = $key;
+                        }
+                    }
+                }
+            }
+            // print_r($fcodes);echo "<br>";
+            // After that we get the list of available values from following fcodes
+            if(isset($fcodes) && count($fcodes) > 0) {
+                foreach($fcodes as $value) {
+                    $this->db->where("(JSON_SEARCH(test_type_form, 'all', '$value') IS NOT NULL) OR (test_type_form IS NOT NULL)");
+                }
+                $this->db->orderBy('last_modified_datetime', "DESC");
+                $result =  $this->db->getOne('form_generic', 'test_type_form');
+                if($result){
+                    $response = [];
+                    foreach((array) json_decode($result['test_type_form']) as $key => $value) {
+                        if(in_array($key, $fcodes)) {
+                            $response[] = $value;
+                        }
+                        // print_r($key);echo "<br>";
+                    }
+                    // print_r($response);
+                    return $response[0];
+                }else{
+                    return null;
+                }
+            }
+
+            return null;
+        }else{
+            return null;
+        }
+    }    
 }

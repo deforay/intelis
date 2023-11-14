@@ -68,3 +68,4 @@ foreach ($migrationFiles as $file) {
         $db->commit();  // Commit the transaction if no error occurred
     }
 }
+

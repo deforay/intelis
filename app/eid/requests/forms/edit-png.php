@@ -235,7 +235,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label for="childId">Exposed Infant Identification <span class="mandatory">*</span> </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control isRequired" id="childId" name="childId" placeholder="Exposed Infant Identification (Patient)" title="Please enter Exposed Infant Identification" style="width:100%;" onchange="" value="<?php echo $eidInfo['child_id']; ?>" />
+                                            <input type="text" class="form-control isRequired patientId" id="childId" name="childId" placeholder="Exposed Infant Identification (Patient)" title="Please enter Exposed Infant Identification" style="width:100%;" onchange="" value="<?php echo $eidInfo['child_id']; ?>" />
                                         </td>
                                         <th scope="row" style="width:15% !important"><label for="childName">Infant name </label></th>
                                         <td style="width:35% !important">

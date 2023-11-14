@@ -168,7 +168,10 @@ if (!empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes
 } else {
      $patientFullName = trim($patientFirstName ?? ' ' . $patientMiddleName ?? ' ' . $patientLastName ?? '');
 }
-
+$minPatientIdLength = 0;
+if(isset($arr['vl_min_patient_id_length']) && $arr['vl_min_patient_id_length'] != ""){
+    $minPatientIdLength = $arr['vl_min_patient_id_length'];
+}
 ?>
 <style>
      .ui_tpicker_second_label {
