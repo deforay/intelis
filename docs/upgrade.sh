@@ -189,7 +189,7 @@ cd "$vlsm_path"
 sudo -u www-data composer update
 
 # Run Migrations
-echo "Running migrations..."
+echo "Running database migrations..."
 php "$vlsm_path/app/system/migrate.php" -yq &
 spinner
 

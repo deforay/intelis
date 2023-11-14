@@ -366,7 +366,7 @@ sed -i "s|\$systemConfig\['database'\]\['username'\]\s*=.*|\$systemConfig['datab
 sed -i "s|\$systemConfig\['database'\]\['password'\]\s*=.*|\$systemConfig['database']['password'] = '$escaped_mysql_root_password';|" "$config_file"
 
 # Run Migrations
-echo "Running migrations..."
+echo "Running database migrations..."
 php "$vlsm_path/app/system/migrate.php" -yq &
 spinner
 
