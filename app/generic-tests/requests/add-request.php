@@ -1249,7 +1249,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $('.isRequired').each(function() {
                ($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
           });
-          $("#saveNext").val('save');
           if (flag) {
                $('.btn-disabled').attr('disabled', 'yes');
                $(".btn-disabled").prop("onclick", null).off("click");
@@ -1262,7 +1261,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      }
 
-     function validateSaveNow(option = null) {
+     function validateSaveNow(option = 'next') {
           var format = '<?php echo $arr['sample_code']; ?>';
           var sCodeLentgh = $("#sampleCode").val();
           var minLength = '<?php echo $arr['min_length']; ?>';

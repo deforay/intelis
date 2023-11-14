@@ -387,9 +387,11 @@ try {
 
         if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
             header("Location:add-request.php");
-        } if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'clone') {
+        } 
+        if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'clone') {
             header("Location:clone-request.php?id=" . base64_encode($_POST['vlSampleId']));
-        }  else {
+        }
+        if(!isset($_POST['saveNext']) || empty($_POST['saveNext'])){
             header("Location:view-requests.php");
         }
     } else {
