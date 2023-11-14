@@ -1604,6 +1604,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     function(data) {
                          //  console.log(data);
                          data = JSON.parse(data);
+                         $("#facilitySection,#labSection,#resultSection,#otherSection").html('');
+                         $('.patientSectionInput').remove();
                          if (typeof(data.facilitySection) != "undefined" && data.facilitySection !== null && data.facilitySection.length > 0) {
                               $("#facilitySection").html(data.facilitySection);
                          }
