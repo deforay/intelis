@@ -52,7 +52,7 @@ class Fhir
 
 	public function getFHIRReference($referencePath)
 	{
-		$client = new Client(['http_version' => 2.0]);
+		$client = new Client();
 		$headers = [
 			'Content-Type' => $this->getContentType(),
 			'Authorization' => $this->getBearerToken()
@@ -77,7 +77,7 @@ class Fhir
 
 		$this->requestUrl = $this->getFhirURL() . $path . $urlParams;
 
-		$client = new Client(['http_version' => 2.0]);
+		$client = new Client();
 		$headers = [
 			'Content-Type' => $this->getContentType(),
 			'Authorization' => $this->getBearerToken()
@@ -96,7 +96,7 @@ class Fhir
 	public function post($path = null, $body = [])
 	{
 
-		$client = new Client(['http_version' => 2.0]);
+		$client = new Client();
 		$headers = [
 			'Content-Type' => $this->getContentType(),
 			'Authorization' => $this->getBearerToken()

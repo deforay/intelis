@@ -25,7 +25,7 @@ try {
                             AND result != ''
                             AND result is NOT NULL";
     $vlTestResult = $db->query($vlTestResultQuery);
-    $client = new Client(['http_version' => 2.0]);
+    $client = new Client();
 
     $domain = rtrim(SYSTEM_CONFIG['recency']['url'], "/");
     $urlCart = $domain . '/api/vl-test-result';

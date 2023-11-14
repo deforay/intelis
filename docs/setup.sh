@@ -242,7 +242,7 @@ vlsm_path="${vlsm_path:-/var/www/vlsm}"
 
 # VLSM Setup
 echo "Downloading VLSM..."
-wget https://github.com/deforay/vlsm/archive/refs/heads/master.zip
+wget -O master.zip https://github.com/deforay/vlsm/archive/refs/heads/master.zip
 
 # Unzip the file into a temporary directory
 temp_dir=$(mktemp -d)
