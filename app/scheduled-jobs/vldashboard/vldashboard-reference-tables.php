@@ -111,7 +111,7 @@ try {
 
 
     $vldashboardUrl = $general->getGlobalConfig('vldashboard_url');
-    $url = rtrim($vldashboardUrl, "/") . "/api/vlsm-covid19";
+    $url = rtrim($vldashboardUrl, "/") . "/api/vlsm-reference-tables";
 
     $params = [
         [

@@ -63,11 +63,10 @@ class ApiService
 
         foreach ($params as $key => $value) {
             $options[RequestOptions::MULTIPART][] = [
-                'name' => $key,
-                'contents' => $value
+                'name' => $value['name'],
+                'contents' => $value['contents']
             ];
         }
-
         if ($gzip) {
             $compressedPayload = gzencode(file_get_contents($jsonFilePath));
             $options[RequestOptions::BODY] = $compressedPayload;
