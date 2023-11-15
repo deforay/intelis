@@ -53,6 +53,9 @@ $sQuery = "SELECT
                DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y') as sampleDate,
                f.facility_name,
                f.facility_code,
+               s.sample_name,
+               i.machine_name,
+               l.facility_name as labName,
                vl.patient_age_in_years,
                vl.patient_gender,
                vl.is_patient_pregnant,
@@ -63,7 +66,10 @@ $sQuery = "SELECT
                DATE_FORMAT(vl.date_of_initiation_of_current_regimen,'%d-%b-%Y') as regStartDate,
                vl.result
           FROM form_vl as vl
-          LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id";
+          LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+          LEFT JOIN r_vl_sample_type as s ON vl.sample_type=s.sample_id
+          LEFT JOIN instruments as i ON vl.vl_test_platform=i.machine_name
+          INNER JOIN facility_details as l ON vl.lab_id=l.facility_id";
 
 $sWhere[] =  " vl.vl_result_category = 'not suppressed' AND vl.patient_age_in_years IS NOT NULL AND vl.patient_gender IS NOT NULL AND vl.current_regimen IS NOT NULL ";
 
@@ -151,6 +157,9 @@ $headings = [
      'Sample Date',
      'Facility Name',
      'Facility Code',
+     'Sample Name',
+     'Testing Platorm',
+     'Lab Name',
      'Age',
      'Gender',
      'Pregnant',
@@ -210,7 +219,7 @@ foreach ($headings as $field => $value) {
      $vlnsSheet->setCellValue(Coordinate::stringFromColumnIndex($vlnsColNo) . '1', html_entity_decode($value));
      $vlnsColNo++;
 }
-$vfSheet->getStyle('A1:L1')->applyFromArray($headerStyleArray);
+$vfSheet->getStyle('A1:O1')->applyFromArray($headerStyleArray);
 $currentPatientId = null;
 $startRow = 2; // Start from the second row as the first row is the header
 foreach ($vfData as $rowNo => $rowData) {
@@ -241,11 +250,11 @@ $highestCol = $vfSheet->getHighestColumn(); // e.g 'F'
 // Apply the border style to all cells
 $vfSheet->getStyle('A1:' . $highestCol . $highestRow)->applyFromArray($styleArray);
 
-foreach (range('A', 'L') as $columnID) {
+foreach (range('A', 'O') as $columnID) {
      $vfSheet->getColumnDimension($columnID)->setAutoSize(true);
 }
 
-$vlnsSheet->getStyle('A1:L1')->applyFromArray($headerStyleArray);
+$vlnsSheet->getStyle('A1:O1')->applyFromArray($headerStyleArray);
 foreach ($vlnsData as $rowNo => $rowData) {
      $colNo = 1;
      $rRowCount = $rowNo + 1;
@@ -265,7 +274,7 @@ $highestCol = $vlnsSheet->getHighestColumn(); // e.g 'F'
 
 $vlnsSheet->getStyle('A1:' . $highestCol . $highestRow)->applyFromArray($styleArray);
 
-foreach (range('A', 'I') as $columnID) {
+foreach (range('A', 'O') as $columnID) {
      $vlnsSheet->getColumnDimension($columnID)->setAutoSize(true);
 }
 
