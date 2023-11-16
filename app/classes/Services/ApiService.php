@@ -36,12 +36,15 @@ class ApiService
             $compressedPayload = gzencode(json_encode($payload));
             $options[RequestOptions::BODY] = $compressedPayload;
             $options[RequestOptions::HEADERS]['Content-Encoding'] = 'gzip';
+            // Remove the JSON option as we are manually setting the body
+            unset($options[RequestOptions::JSON]);
         }
 
         $response = $client->post($url, $options);
 
         return $response->getBody()->getContents();
     }
+
 
     public function postFile($url, $fileName, $jsonFilePath, $params = [], $gzip = false)
     {

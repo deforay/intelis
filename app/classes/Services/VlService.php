@@ -279,31 +279,7 @@ class VlService extends AbstractTestService
                 $txtVal = null;
                 break;
             default:
-                if (strpos($result, "<") !== false) {
-                    $result = (float) trim(str_replace("<", "", $result));
-                    if (!empty($unit) && strpos($unit, 'Log') !== false) {
-                        $logVal = $result;
-                        $absVal = $absDecimalVal = round(round(pow(10, $logVal) * 100) / 100);
-                        $vlResult = $originalResultValue = "< " . $absDecimalVal;
-                    } else {
-                        $vlResult = $absVal = $absDecimalVal = $result;
-                        $logVal = round(log10($absDecimalVal), 2);
-                    }
-                    $txtVal = null;
-                } elseif (strpos($result, ">") !== false) {
-                    $result = (float) trim(str_replace(">", "", $result));
-                    if (!empty($unit) && strpos($unit, 'Log') !== false) {
-                        $logVal = $result;
-                        $absDecimalVal = round(round(pow(10, $logVal) * 100) / 100);
-                        $vlResult = $originalResultValue = ">" . $absDecimalVal;
-                    } else {
-                        $vlResult = $absVal = $absDecimalVal = $result;
-                        $logVal = round(log10($absDecimalVal), 2);
-                    }
-                    $txtVal = null;
-                } else {
-                    $vlResult = $txtVal = $result;
-                }
+                $vlResult = $txtVal = $result;
                 break;
         }
         if ($interpretAndConvertResult) {
@@ -365,6 +341,28 @@ class VlService extends AbstractTestService
             }
         } elseif ($result == '< 839') {
             $vlResult = $txtVal = 'Below Detection Limit';
+        } elseif (strpos($result, "<") !== false) {
+            $result = (float) trim(str_replace("<", "", $result));
+            if (!empty($unit) && strpos($unit, 'Log') !== false) {
+                $logVal = $result;
+                $absVal = $absDecimalVal = round(round(pow(10, $logVal) * 100) / 100);
+                $vlResult = $originalResultValue = "< " . $absDecimalVal;
+            } else {
+                $vlResult = $absVal = $absDecimalVal = $result;
+                $logVal = round(log10($absDecimalVal), 2);
+            }
+            $txtVal = null;
+        } elseif (strpos($result, ">") !== false) {
+            $result = (float) trim(str_replace(">", "", $result));
+            if (!empty($unit) && strpos($unit, 'Log') !== false) {
+                $logVal = $result;
+                $absDecimalVal = round(round(pow(10, $logVal) * 100) / 100);
+                $vlResult = $originalResultValue = ">" . $absDecimalVal;
+            } else {
+                $vlResult = $absVal = $absDecimalVal = $result;
+                $logVal = round(log10($absDecimalVal), 2);
+            }
+            $txtVal = null;
         } else {
             $absVal = ($result);
             $vlResult = $absDecimalVal = (float) trim($result);
@@ -544,7 +542,7 @@ class VlService extends AbstractTestService
                                                 AND (parent_reason IS NULL OR parent_reason = 0)");
     }
 
-    function checkViralLoadValueType($input)
+    public function checkViralLoadValueType($input)
     {
         // Check if it's null or empty
         if (is_null($input) || trim($input) == '') {

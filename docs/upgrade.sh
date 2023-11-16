@@ -1,9 +1,10 @@
 #!/bin/bash
 
 # To use this script:
-# Save the code into a file, for example, upgrade.sh.
-# Make the script executable: chmod +x upgrade.sh.
-# Run the script: sudo ./upgrade.sh.
+# cd ~;
+# wget -O upgrade.sh https://raw.githubusercontent.com/deforay/vlsm/master/docs/upgrade.sh
+# sudo chmod u+x upgrade.sh;
+# sudo ./upgrade.sh;
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then

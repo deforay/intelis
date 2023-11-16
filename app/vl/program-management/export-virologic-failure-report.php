@@ -89,8 +89,8 @@ if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
 
 if (isset($_POST['gender']) && $_POST['gender'] != '') {
      $sWhere[] = ' vl.patient_gender = "' . $_POST['gender'] . '"';
- }
- 
+}
+
 
 if (isset($_POST['pregnancy']) && trim($_POST['pregnancy']) != '') {
      $sWhere[] = " vl.is_patient_pregnant = '" . $_POST['pregnancy'] . "' ";
@@ -100,42 +100,42 @@ if (isset($_POST['breastfeeding']) && trim($_POST['breastfeeding']) != '') {
      $sWhere[] = " vl.is_patient_breastfeeding = '" . $_POST['breastfeeding'] . "' ";
 }
 
-if (isset($_POST['minAge']) && isset($_POST['maxAge'])) {
-     if(is_numeric($_POST['minAge']) && is_numeric($_POST['maxAge']) && ($_POST['maxAge'] >= $_POST['minAge']))
-     {
-          $sWhere[] = " vl.patient_age_in_years BETWEEN " . $_POST['minAge'] . " AND ".$_POST['maxAge']."";
-     }
-     else{
-          echo "age"; exit();
-     }
+if (
+     is_numeric($_POST['minAge']) &&
+     is_numeric($_POST['maxAge']) &&
+     $_POST['maxAge'] >= $_POST['minAge']
+) {
+     $sWhere[] = " vl.patient_age_in_years BETWEEN {$_POST['minAge']} AND {$_POST['maxAge']} ";
 }
 
 /* Sample collection date filter */
-$sampleCollectionDate = $dateTimeUtil->convertDateRange($_POST['sampleCollectionDate']);
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-     if (trim($sampleCollectionDate[0]) == trim($sampleCollectionDate[1])) {
-          $sWhere[] =  '  DATE(vl.sample_collection_date) = "' . $sampleCollectionDate[0] . '"';
+if (!empty(trim($_POST['sampleCollectionDate']))) {
+     [$sampleCollectionDateStart, $sampleCollectionDateEnd] = $dateTimeUtil->convertDateRange($_POST['sampleCollectionDate']);
+
+     if ($sampleCollectionDateStart == $sampleCollectionDateEnd) {
+          $sWhere[] =  "DATE(vl.sample_collection_date) = '$sampleCollectionDateStart'";
      } else {
-          $sWhere[] =  '  DATE(vl.sample_collection_date) >= "' . $sampleCollectionDate[0] . '" AND DATE(vl.sample_collection_date) <= "' . $sampleCollectionDate[1] . '"';
+          $sWhere[] =  "DATE(vl.sample_collection_date) BETWEEN '$sampleCollectionDateStart' AND '$sampleCollectionDateEnd'";
      }
 }
 /* Sample test date filter */
-$sampleTestDate = $dateTimeUtil->convertDateRange($_POST['sampleTestDate']);
-if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-     if (trim($sampleTestDate[0]) == trim($sampleTestDate[1])) {
-          $sWhere[] = '  DATE(vl.sample_tested_datetime) = "' . $sampleTestDate[0] . '"';
+
+if (!empty(trim($_POST['sampleTestDate']))) {
+     [$sampleTestDateStart, $sampleTestDateEnd] = $dateTimeUtil->convertDateRange($_POST['sampleTestDate']);
+
+     if ($sampleTestDateStart == $sampleTestDateEnd) {
+          $sWhere[] =  "DATE(vl.sample_tested_datetime) = '$sampleTestDateStart'";
      } else {
-          $sWhere[] =  '  DATE(vl.sample_tested_datetime) >= "' . $sampleTestDate[0] . '" AND DATE(vl.sample_tested_datetime) <= "' . $sampleTestDate[1] . '"';
+          $sWhere[] =  "DATE(vl.sample_tested_datetime) BETWEEN '$sampleTestDateStart' AND '$sampleTestDateEnd'";
      }
 }
 
 if (!empty($_SESSION['facilityMap'])) {
-     $sWhere[] =  "  vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
+     $sWhere[] = "vl.facility_id IN ({$_SESSION['facilityMap']})";
 }
 
 if (!empty($sWhere)) {
-     $sWhere = implode(" AND ", $sWhere);
-     $sQuery = $sQuery . ' WHERE ' . $sWhere;
+     $sQuery = $sQuery . " WHERE " . implode(" AND ", $sWhere);
 }
 $sQuery = $sQuery . " ORDER BY f.facility_name asc, patient_art_no asc, sample_collection_date asc";
 

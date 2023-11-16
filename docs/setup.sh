@@ -1,9 +1,10 @@
 #!/bin/bash
 
 # To use this script:
-# Save the above code into a file, for example, setup.sh.
-# Make the script executable: chmod +x setup.sh.
-# Run the script: ./setup.sh.
+# cd ~;
+# wget -O setup.sh https://raw.githubusercontent.com/deforay/vlsm/master/docs/setup.sh
+# sudo chmod u+x setup.sh;
+# sudo ./setup.sh;
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
