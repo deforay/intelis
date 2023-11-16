@@ -2,6 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\PatientsService;
 use App\Utilities\DateUtility;
 
 
@@ -15,6 +16,9 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var PatientsService $patientsService */
+$patientsService = ContainerRegistry::get(PatientsService::class);
 
 // echo "<pre>";print_r($_POST);die;
 
@@ -204,6 +208,10 @@ try {
 			$hepatitisData['patient_surname'] = $encryptedPatientSurName;
 			$hepatitisData['is_encrypted'] = 'yes';
 		}
+
+			     //Update patient Information in Patients Table
+				 $patientsService->savePatient($_POST,'form_hepatitis');
+
 
 		$id = false;
 		if (isset($_POST['hepatitisSampleId']) && $_POST['hepatitisSampleId'] != '') {

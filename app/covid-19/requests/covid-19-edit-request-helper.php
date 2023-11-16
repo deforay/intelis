@@ -272,17 +272,8 @@ try {
 		}
 	}
 
-	//saving this patient into patients table
-	if (!empty($_POST['patientCodeKey']) && !empty($_POST['patientCodePrefix'])) {
-		$patientData['patientCodePrefix'] = $_POST['patientCodePrefix'];
-		$patientData['patientCodeKey'] = $_POST['patientCodeKey'];
-	}
-	$patientData['patientId'] = $_POST['patientId'];
-	$patientData['patientFirstName'] = $_POST['firstName'];
-	$patientData['patientLastName'] = $_POST['lastName'];
-	$patientData['patientGender'] = $_POST['patientGender'];
-	$patientData['registeredBy'] = $_SESSION['userId'];
-	$patientsService->updatePatient($patientData);
+     //Update patient Information in Patients Table
+     $patientsService->updatePatient($_POST,'form_covid19');
 
 	$covid19Data['last_modified_by'] = $_SESSION['userId'];
 	$covid19Data['lab_technician'] = (!empty($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId'];

@@ -7,6 +7,7 @@ use App\Services\ApiService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\PatientsService;
 use App\Utilities\DateUtility;
 
 
@@ -27,6 +28,8 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var ApiService $app */
 $app = ContainerRegistry::get(ApiService::class);
 
+/** @var PatientsService $patientsService */
+$patientsService = ContainerRegistry::get(PatientsService::class);
 
 /* echo "<pre>";
 print_r($_POST);
@@ -277,6 +280,10 @@ try {
 			$covid19Data['lab_manager'] = $facility['contact_person'];
 		}
 	}
+
+	     //Update patient Information in Patients Table
+		 $patientsService->savePatient($_POST,'form_covid19');
+
 
 	//if (isset($_POST['asymptomatic']) && $_POST['asymptomatic'] != "yes") {
 	$db = $db->where('covid19_id', $_POST['covid19SampleId']);

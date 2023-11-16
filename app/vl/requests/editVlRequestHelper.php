@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\VlService;
+use App\Services\PatientsService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Utilities\ValidationUtility;
@@ -14,6 +15,9 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);
+
+/** @var PatientsService $patientsService */
+$patientsService = ContainerRegistry::get(PatientsService::class);
 
 $formId = $general->getGlobalConfig('vl_form');
 
@@ -124,6 +128,9 @@ try {
 
      // Let us process the result entered by the user
      $processedResults = $vlService->processViralLoadResultFromForm($_POST);
+
+     //Update patient Information in Patients Table
+     $patientsService->updatePatient($_POST,'form_vl');
 
      $isRejected = $processedResults['isRejected'];
      $finalResult = $processedResults['finalResult'];

@@ -26,3 +26,12 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remot
 
 -- Thana 10-Nov-2023
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'generic-requests', '/generic-tests/requests/clone-request.php', NULL, 'Clone Generic Tests', '7', 'always');
+-- Jeyabanu 14-Nov-2023
+ALTER TABLE `patients` ADD `is_encrypted` VARCHAR(10) NULL DEFAULT 'no' AFTER `patient_id`;
+ALTER TABLE `patients` ADD `patient_phone_number` VARCHAR(50) NULL DEFAULT NULL AFTER `patient_gender`;
+ALTER TABLE `patients` ADD `patient_age_in_years` INT NULL DEFAULT NULL AFTER `patient_phone_number`;
+ALTER TABLE `patients` ADD `patient_dob` DATE NULL DEFAULT NULL AFTER `patient_age_in_years`;
+ALTER TABLE `patients` ADD `patient_address` TEXT NULL DEFAULT NULL AFTER `patient_dob`;
+ALTER TABLE `patients` ADD `is_patient_pregnant` VARCHAR(10) NULL DEFAULT NULL AFTER `patient_address`;
+ALTER TABLE `patients` ADD `is_patient_breastfeeding` VARCHAR(10) NULL DEFAULT NULL AFTER `is_patient_pregnant`;
+ALTER TABLE `patients` ADD `patient_age_in_months` INT NULL DEFAULT NULL AFTER `patient_age_in_years`;

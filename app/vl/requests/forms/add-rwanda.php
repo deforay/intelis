@@ -716,9 +716,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
                let artNo = $.trim($(this).val());
 
-               if (artNo.length < 10) {
-                    $("#artNoGroup").html('<small style="color:red;font-weight:bold;">Patient ART No. should be at least 10 characters long</small><br>');
-               }
                if (artNo.length > 3) {
 
                     $.post("/common/patient-last-request-details.php", {
@@ -741,11 +738,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                                         $("#artNoGroup").append("<br><small style='color:red'><?= _translate("Total No. of times Patient tested for HIV VL", true); ?> : " + obj.no_of_tested_time + "</small >");
                                    }
                               } else {
-                                   if (artNo.length < 10) {
-                                        $("#artNoGroup").html('<small style="color:red;font-weight:bold;">Patient ART No. should be at least 10 characters long</small><br>');
-                                   } else {
-                                        $("#artNoGroup").html('');
-                                   }
+                                   $("#artNoGroup").html('');
                               }
                          });
                }
@@ -1117,16 +1110,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
           var format = '<?php echo $arr['sample_code']; ?>';
           var sCodeLentgh = $("#sampleCode").val();
-          var ARTlength = $("#artNo").val();
+         
           var minLength = '<?php echo $arr['min_length']; ?>';
           if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
                alert("Sample ID length must be a minimum length of " + minLength + " characters");
                return false;
           }
-          if (ARTlength.length < 10) {
-               alert("<?= _translate("Patient ART No. should be at least 10 characters long"); ?>");
-               //return false;
-          }
+         
           flag = deforayValidator.init({
                formId: 'vlRequestFormRwd'
           });
@@ -1156,16 +1146,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      function validateSaveNow() {
           var format = '<?php echo $arr['sample_code']; ?>';
           var sCodeLentgh = $("#sampleCode").val();
-          var ARTlength = $("#artNo").val();
+         
           var minLength = '<?php echo $arr['min_length']; ?>';
           if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
                alert("Sample ID length must be a minimum length of " + minLength + " characters");
                return false;
           }
-          if (ARTlength.length < 10) {
-               alert("<?= _translate("Patient ART No. should be at least 10 characters long"); ?>");
-               //return false;
-          }
+         
           flag = deforayValidator.init({
                formId: 'vlRequestFormRwd'
           });
