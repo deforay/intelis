@@ -1244,14 +1244,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function validateNow() {
-          var ARTlength = $("#artNo").val();
+         
           var dob = $("#dob").val();
           var age = $("#ageInYears").val();
 
-          if (ARTlength.length < 10) {
-               alert("<?= _translate("Patient ART No. should be at least 10 characters long"); ?>");
-               //return false;
-          }
+        
           flag = deforayValidator.init({
                formId: 'vlRequestFormCameroon'
           });

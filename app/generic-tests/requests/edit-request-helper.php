@@ -2,6 +2,7 @@
 
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Services\PatientsService;
 use App\Utilities\ValidationUtility;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
@@ -20,6 +21,10 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var GenericTestsService $genericTestsService */
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
+
+/** @var PatientsService $patientsService */
+$patientsService = ContainerRegistry::get(PatientsService::class);
+
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -275,6 +280,9 @@ try {
      } elseif ($_POST['sampleCodeCol'] != '') {
           $vldata['sample_code'] = (isset($_POST['sampleCodeCol']) && $_POST['sampleCodeCol'] != '') ? $_POST['sampleCodeCol'] : null;
      }
+
+              //Update patient Information in Patients Table
+              $patientsService->updatePatient($_POST,'form_generic');
 
 
      if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {

@@ -226,7 +226,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
                                                             <label for="artNo">ART (TRACNET) No. <span class="mandatory">*</span></label>
-                                                            <input type="text" name="artNo" id="artNo" class="form-control isRequired patientId" placeholder="Enter ART Number" title="Enter art number" value="<?= ($vlQueryInfo['patient_art_no']); ?>" onchange="if(this.value.length<10) alert('ART No. should be at least 10 characters long');" />
+                                                            <input type="text" name="artNo" id="artNo" class="form-control isRequired patientId" placeholder="Enter ART Number" title="Enter art number" value="<?= ($vlQueryInfo['patient_art_no']); ?>" />
                                                        </div>
                                                   </div>
                                                   <div class="col-xs-3 col-md-3">
@@ -1138,11 +1138,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
      }
 
      function validateNow() {
-          var ARTlength = $("#artNo").val();
-          if (ARTlength.length < 10) {
-               alert("<?= _translate("Patient ART No. should be at least 10 characters long"); ?>");
-               //return false;
-          }
+        
           flag = deforayValidator.init({
                formId: 'vlRequestFormRwd'
           });

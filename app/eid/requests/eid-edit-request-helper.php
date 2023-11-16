@@ -3,6 +3,7 @@
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Utilities\DateUtility;
+use App\Services\PatientsService;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -15,10 +16,8 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-// echo "<pre>";
-// var_dump($_POST);
-// die;
-
+/** @var PatientsService $patientsService */
+$patientsService = ContainerRegistry::get(PatientsService::class);
 
 $tableName = "form_eid";
 $tableName1 = "activity_log";
@@ -439,6 +438,9 @@ try {
 
 		$eidData['is_encrypted'] = 'yes';
 	}
+
+	     //Update patient Information in Patients Table
+		 $patientsService->updatePatient($_POST,'form_eid');
 
 
 	if (isset($_POST['eidSampleId']) && $_POST['eidSampleId'] != '') {

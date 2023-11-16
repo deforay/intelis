@@ -785,10 +785,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $("#artNo").on('input', function() {
 
                let artNo = $.trim($(this).val());
-               /*
-               if (artNo.length < 10) {
-                    $("#artNoGroup").html('<small style="color:red;font-weight:bold;">Patient ART No. should be 10 characters long</small><br>');
-               }*/
+              
                if (artNo.length > 3) {
 
                     $.post("/common/patient-last-request-details.php", {

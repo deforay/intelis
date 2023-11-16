@@ -327,16 +327,16 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 			var patientId = $(this).val();
 			
 			var minLength = '<?php echo $minPatientIdLength; ?>';
-					if (patientId.length < minLength) {
-						Toastify({
-							text: "<?= _translate('Minimum length for Patient Id is ', true) ?>"+minLength,
-							duration: 3000,
-							style: {
-								background: 'red',
-							}
-						}).showToast();
-					}
 
+					if (patientId.length < minLength) {
+						$(".lengthErr").remove();
+						var txt = '<?= _translate('Please enter minimum length for Patient Id : '); ?>'+minLength;
+						$(this).parent().append('<span class="lengthErr" style="color:red;">'+txt+'</span>');
+					}
+					else{
+						$(".lengthErr").remove();
+					}
+					
 
 		});
 	});

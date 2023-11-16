@@ -2,6 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\PatientsService;
 use App\Utilities\DateUtility;
 
 
@@ -15,6 +16,10 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var PatientsService $patientsService */
+$patientsService = ContainerRegistry::get(PatientsService::class);
+
 
 // echo "<pre>";
 // var_dump($_POST);die;
@@ -392,6 +397,7 @@ try {
 		// 'last_modified_by' 									=> $_SESSION['userId'],
 		'last_modified_datetime' => DateUtility::getCurrentDateTime()
 	);
+	
 
 
 	if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "vluser" || $sarr['sc_user_type'] == "standalone")) {
@@ -424,6 +430,10 @@ try {
 
 		$eidData['is_encrypted'] = 'yes';
 	}
+
+	     //Update patient Information in Patients Table
+		 $patientsService->savePatient($_POST,'form_eid');
+
 
 	if (isset($_POST['eidSampleId']) && $_POST['eidSampleId'] != '') {
 		$db = $db->where('eid_id', $_POST['eidSampleId']);
