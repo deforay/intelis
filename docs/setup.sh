@@ -367,18 +367,18 @@ sed -i "s|\$systemConfig\['database'\]\['username'\]\s*=.*|\$systemConfig['datab
 sed -i "s|\$systemConfig\['database'\]\['password'\]\s*=.*|\$systemConfig['database']['password'] = '$escaped_mysql_root_password';|" "$config_file"
 
 # Run Migrations
+# Run the database migrations
 echo "Running database migrations..."
 php "$vlsm_path/app/system/migrate.php" -yq &
-spinner
 
 # Get the PID of the migrate.php script
 pid=$!
 
-# Show a simple progress indicator
-while kill -0 $pid 2>/dev/null; do
-    echo -n "."
-    sleep 1
-done
+# Use the spinner function for visual feedback
+spinner "$pid"
+
+# Wait for the migration script to complete
+wait $pid
 
 echo "Migration script completed."
 
@@ -395,17 +395,13 @@ if [ ! -z "$remote_sts_url" ]; then
     # Run the PHP script for remote data sync
     echo "Running remote data sync script. Please wait..."
     php "$vlsm_path/app/scheduled-jobs/remote/commonDataSync.php" &
-
     # Get the PID of the commonDataSync.php script
     pid=$!
-
-    # Show a simple progress indicator
-    while kill -0 $pid 2>/dev/null; do
-        echo -n "."
-        sleep 1
-    done
-
-    echo "Remote data sync script completed."
+    # Use the spinner function for visual feedback
+    spinner "$pid"
+    # Wait for the remote data sync script to complete
+    wait $pid
+    echo "Remote data sync completed."
 fi
 
 # Ask User to Run 'run-once' Scripts
