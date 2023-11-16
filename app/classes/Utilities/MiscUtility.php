@@ -189,4 +189,13 @@ class MiscUtility
 
         return mkdir($path, $mode, $recursive);
     }
+
+    // Regular expression to match scientific notation
+    // Example: 2.00E+1, 1.23e4, -1.23E-4, etc.
+    public static function isScientificNotation($str)
+    {
+        $scientificRegex = '/^-?\d+(\.\d+)?[eE][+-]?\d+$/';
+
+        return preg_match($scientificRegex, $str) === 1;
+    }
 }

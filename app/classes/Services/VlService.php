@@ -6,6 +6,7 @@ use Exception;
 use SAMPLE_STATUS;
 use App\Utilities\DateUtility;
 use App\Abstracts\AbstractTestService;
+use App\Utilities\MiscUtility;
 
 
 class VlService extends AbstractTestService
@@ -279,7 +280,31 @@ class VlService extends AbstractTestService
                 $txtVal = null;
                 break;
             default:
-                $vlResult = $txtVal = $result;
+                if (strpos($result, "<") !== false) {
+                    $result = (float) trim(str_replace("<", "", $result));
+                    if (!empty($unit) && strpos($unit, 'Log') !== false) {
+                        $logVal = $result;
+                        $absVal = $absDecimalVal = round(round(pow(10, $logVal) * 100) / 100);
+                        $vlResult = $originalResultValue = "< " . $absDecimalVal;
+                    } else {
+                        $vlResult = $absVal = $absDecimalVal = $result;
+                        $logVal = round(log10($absDecimalVal), 2);
+                    }
+                    $txtVal = null;
+                } elseif (strpos($result, ">") !== false) {
+                    $result = (float) trim(str_replace(">", "", $result));
+                    if (!empty($unit) && strpos($unit, 'Log') !== false) {
+                        $logVal = $result;
+                        $absDecimalVal = round(round(pow(10, $logVal) * 100) / 100);
+                        $vlResult = $originalResultValue = ">" . $absDecimalVal;
+                    } else {
+                        $vlResult = $absVal = $absDecimalVal = $result;
+                        $logVal = round(log10($absDecimalVal), 2);
+                    }
+                    $txtVal = null;
+                } else {
+                    $vlResult = $txtVal = $result;
+                }
                 break;
         }
         if ($interpretAndConvertResult) {
@@ -341,28 +366,6 @@ class VlService extends AbstractTestService
             }
         } elseif ($result == '< 839') {
             $vlResult = $txtVal = 'Below Detection Limit';
-        } elseif (strpos($result, "<") !== false) {
-            $result = (float) trim(str_replace("<", "", $result));
-            if (!empty($unit) && strpos($unit, 'Log') !== false) {
-                $logVal = $result;
-                $absVal = $absDecimalVal = round(round(pow(10, $logVal) * 100) / 100);
-                $vlResult = $originalResultValue = "< " . $absDecimalVal;
-            } else {
-                $vlResult = $absVal = $absDecimalVal = $result;
-                $logVal = round(log10($absDecimalVal), 2);
-            }
-            $txtVal = null;
-        } elseif (strpos($result, ">") !== false) {
-            $result = (float) trim(str_replace(">", "", $result));
-            if (!empty($unit) && strpos($unit, 'Log') !== false) {
-                $logVal = $result;
-                $absDecimalVal = round(round(pow(10, $logVal) * 100) / 100);
-                $vlResult = $originalResultValue = ">" . $absDecimalVal;
-            } else {
-                $vlResult = $absVal = $absDecimalVal = $result;
-                $logVal = round(log10($absDecimalVal), 2);
-            }
-            $txtVal = null;
         } else {
             $absVal = ($result);
             $vlResult = $absDecimalVal = (float) trim($result);
@@ -549,12 +552,12 @@ class VlService extends AbstractTestService
             return 'empty';
         }
 
-        // Check if it contains a numeric value
-        if (preg_match('/([\d\.]+(e[\+\-]?\d+)?)/i', $input)) {
+        // Check if it is a numeric value, including scientific notation
+        if (is_numeric($input) || MiscUtility::isScientificNotation($input)) {
             return 'numeric';
         }
 
-        // If not null and not numeric, it's text
+        // If not null, not empty, and not numeric, it's text
         return 'text';
     }
 
