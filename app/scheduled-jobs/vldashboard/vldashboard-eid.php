@@ -10,8 +10,9 @@ ini_set('memory_limit', '1G');
 set_time_limit(30000);
 ini_set('max_execution_time', 20000);
 
-require_once(__DIR__ . "/../../bootstrap.php");
-
+if (php_sapi_name() == 'cli') {
+    require_once(__DIR__ . "/../../../bootstrap.php");
+}
 
 
 
