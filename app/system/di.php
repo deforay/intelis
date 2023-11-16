@@ -113,7 +113,7 @@ $builder->addDefinitions([
     InstrumentsService::class => DI\create(InstrumentsService::class)
         ->constructor(DI\get('db')),
     PatientsService::class => DI\create(PatientsService::class)
-        ->constructor(DI\get('db')),
+        ->constructor(DI\get('db'), DI\get(CommonService::class)),
     ApiService::class => DI\create(ApiService::class)
         ->constructor(DI\get('db')),
 ]);
