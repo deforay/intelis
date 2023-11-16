@@ -6,6 +6,7 @@ use Exception;
 use SAMPLE_STATUS;
 use App\Utilities\DateUtility;
 use App\Abstracts\AbstractTestService;
+use App\Utilities\MiscUtility;
 
 
 class VlService extends AbstractTestService
@@ -91,7 +92,7 @@ class VlService extends AbstractTestService
             'HIV1 NOTDETECTED',
 
         ];
-        $finalResult = str_ireplace($find, '', $finalResult);
+        $finalResult = trim(str_ireplace($find, '', $finalResult));
 
         if (empty($finalResult)) {
             $vlResultCategory = null;
@@ -105,8 +106,8 @@ class VlService extends AbstractTestService
             $vlResultCategory = 'invalid';
         } else {
 
-            if (is_numeric($finalResult)) {
-                $finalResult = (float) $finalResult;
+            if (is_numeric($finalResult) || MiscUtility::isScientificNotation($finalResult)) {
+                $finalResult = floatval($finalResult);
                 if ($finalResult < $this->suppressionLimit) {
                     $vlResultCategory = 'suppressed';
                 } elseif ($finalResult >= $this->suppressionLimit) {
@@ -280,26 +281,27 @@ class VlService extends AbstractTestService
                 break;
             default:
                 if (strpos($result, "<") !== false) {
-                    $result = (float) trim(str_replace("<", "", $result));
+                    $result = $this->extractViralLoadValue(trim(str_replace("<", "", $result)));
                     if (!empty($unit) && strpos($unit, 'Log') !== false) {
                         $logVal = $result;
-                        $absVal = $absDecimalVal = round(round(pow(10, $logVal) * 100) / 100);
-                        $vlResult = $originalResultValue = "< " . $absDecimalVal;
+                        $absVal = $absDecimalVal = round(pow(10, $logVal), 2);
                     } else {
                         $vlResult = $absVal = $absDecimalVal = $result;
                         $logVal = round(log10($absDecimalVal), 2);
                     }
+
+                    $vlResult = $originalResultValue = "< " . $absDecimalVal;
                     $txtVal = null;
                 } elseif (strpos($result, ">") !== false) {
-                    $result = (float) trim(str_replace(">", "", $result));
+                    $result = $this->extractViralLoadValue(trim(str_replace(">", "", $result)));
                     if (!empty($unit) && strpos($unit, 'Log') !== false) {
                         $logVal = $result;
-                        $absDecimalVal = round(round(pow(10, $logVal) * 100) / 100);
-                        $vlResult = $originalResultValue = ">" . $absDecimalVal;
+                        $absDecimalVal = round(pow(10, $logVal), 2);
                     } else {
                         $vlResult = $absVal = $absDecimalVal = $result;
                         $logVal = round(log10($absDecimalVal), 2);
                     }
+                    $vlResult = $originalResultValue = ">" . $absDecimalVal;
                     $txtVal = null;
                 } else {
                     $vlResult = $txtVal = $result;
@@ -322,6 +324,7 @@ class VlService extends AbstractTestService
 
     public function interpretViralLoadNumericResult(string $result, ?string $unit = null): ?array
     {
+        $result = trim($result);
         // If result is blank, then return null
         if (empty($result)) {
             return null;
@@ -344,7 +347,7 @@ class VlService extends AbstractTestService
             $logVal = (float) $result;
             $originalResultValue =
                 $vlResult = $absVal =
-                $absDecimalVal = round(round(pow(10, $logVal) * 100) / 100);
+                $absDecimalVal = round(pow(10, $logVal), 2);
         } elseif (!empty($unit) && strpos($unit, '10') !== false) {
             $unitArray = explode(".", $unit);
             $exponentArray = explode("*", $unitArray[0]);
@@ -366,8 +369,7 @@ class VlService extends AbstractTestService
         } elseif ($result == '< 839') {
             $vlResult = $txtVal = 'Below Detection Limit';
         } else {
-            $absVal = ($result);
-            $vlResult = $absDecimalVal = (float) trim($result);
+            $vlResult = $absVal = $absDecimalVal = floatval($result);
             $logVal = round(log10($absDecimalVal), 2);
             $txtVal = null;
         }
@@ -544,27 +546,32 @@ class VlService extends AbstractTestService
                                                 AND (parent_reason IS NULL OR parent_reason = 0)");
     }
 
-    function checkViralLoadValueType($input)
+    public function checkViralLoadValueType($input)
     {
         // Check if it's null or empty
         if (is_null($input) || trim($input) == '') {
             return 'empty';
         }
 
-        // Check if it contains a numeric value
-        if (preg_match('/([\d\.]+(e[\+\-]?\d+)?)/i', $input)) {
+        // Check if it is a numeric value, including scientific notation
+        if (is_numeric($input) || MiscUtility::isScientificNotation($input)) {
             return 'numeric';
         }
 
-        // If not null and not numeric, it's text
+        // If not null, not empty, and not numeric, it's text
         return 'text';
     }
 
-    public function extractViralLoadValue($input): ?float
+    public function extractViralLoadValue($input): ?string
     {
-        if (preg_match('/([\d\.]+(e[\+\-]?\d+)?)/i', $input, $matches)) {
-            return floatval($matches[1]);
+        // Trim the input to remove leading/trailing whitespace
+        $trimmedInput = trim($input);
+
+        // Proceed with converting the number to float if it is numeric or scientific notation
+        if (is_numeric($trimmedInput) || MiscUtility::isScientificNotation($trimmedInput)) {
+            return floatval($trimmedInput);
         }
+
         return null;
     }
 }

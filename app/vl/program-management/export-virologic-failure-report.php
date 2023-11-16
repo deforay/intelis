@@ -23,7 +23,7 @@ $styleArray = [
           ],
      ],
      'alignment' => [
-          'horizontal' => Alignment::HORIZONTAL_CENTER,
+          'horizontal' => Alignment::HORIZONTAL_LEFT,
           'vertical' => Alignment::VERTICAL_CENTER,
      ],
 ];
@@ -53,17 +53,23 @@ $sQuery = "SELECT
                DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y') as sampleDate,
                f.facility_name,
                f.facility_code,
+               s.sample_name,
+               i.machine_name,
+               l.facility_name as labName,
                vl.patient_age_in_years,
-               vl.patient_gender,
-               vl.is_patient_pregnant,
-               vl.is_patient_breastfeeding,
+               UCASE(vl.patient_gender),
+               UCASE(vl.is_patient_pregnant),
+               UCASE(vl.is_patient_breastfeeding),
                vl.is_encrypted,
                DATE_FORMAT(vl.treatment_initiated_date,'%d-%b-%Y') as artStartDate,
                vl.current_regimen,
                DATE_FORMAT(vl.date_of_initiation_of_current_regimen,'%d-%b-%Y') as regStartDate,
                vl.result
           FROM form_vl as vl
-          LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id";
+          LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+          LEFT JOIN r_vl_sample_type as s ON vl.sample_type=s.sample_id
+          LEFT JOIN instruments as i ON vl.vl_test_platform=i.machine_name
+          INNER JOIN facility_details as l ON vl.lab_id=l.facility_id";
 
 $sWhere[] =  " vl.vl_result_category = 'not suppressed' AND vl.patient_age_in_years IS NOT NULL AND vl.patient_gender IS NOT NULL AND vl.current_regimen IS NOT NULL ";
 
@@ -83,8 +89,8 @@ if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
 
 if (isset($_POST['gender']) && $_POST['gender'] != '') {
      $sWhere[] = ' vl.patient_gender = "' . $_POST['gender'] . '"';
- }
- 
+}
+
 
 if (isset($_POST['pregnancy']) && trim($_POST['pregnancy']) != '') {
      $sWhere[] = " vl.is_patient_pregnant = '" . $_POST['pregnancy'] . "' ";
@@ -94,42 +100,42 @@ if (isset($_POST['breastfeeding']) && trim($_POST['breastfeeding']) != '') {
      $sWhere[] = " vl.is_patient_breastfeeding = '" . $_POST['breastfeeding'] . "' ";
 }
 
-if (isset($_POST['minAge']) && isset($_POST['maxAge'])) {
-     if(is_numeric($_POST['minAge']) && is_numeric($_POST['maxAge']) && ($_POST['maxAge'] >= $_POST['minAge']))
-     {
-          $sWhere[] = " vl.patient_age_in_years BETWEEN " . $_POST['minAge'] . " AND ".$_POST['maxAge']."";
-     }
-     else{
-          echo "age"; exit();
-     }
+if (
+     is_numeric($_POST['minAge']) &&
+     is_numeric($_POST['maxAge']) &&
+     $_POST['maxAge'] >= $_POST['minAge']
+) {
+     $sWhere[] = " vl.patient_age_in_years BETWEEN {$_POST['minAge']} AND {$_POST['maxAge']} ";
 }
 
 /* Sample collection date filter */
-$sampleCollectionDate = $dateTimeUtil->convertDateRange($_POST['sampleCollectionDate']);
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-     if (trim($sampleCollectionDate[0]) == trim($sampleCollectionDate[1])) {
-          $sWhere[] =  '  DATE(vl.sample_collection_date) = "' . $sampleCollectionDate[0] . '"';
+if (!empty(trim($_POST['sampleCollectionDate']))) {
+     [$sampleCollectionDateStart, $sampleCollectionDateEnd] = $dateTimeUtil->convertDateRange($_POST['sampleCollectionDate']);
+
+     if ($sampleCollectionDateStart == $sampleCollectionDateEnd) {
+          $sWhere[] =  "DATE(vl.sample_collection_date) = '$sampleCollectionDateStart'";
      } else {
-          $sWhere[] =  '  DATE(vl.sample_collection_date) >= "' . $sampleCollectionDate[0] . '" AND DATE(vl.sample_collection_date) <= "' . $sampleCollectionDate[1] . '"';
+          $sWhere[] =  "DATE(vl.sample_collection_date) BETWEEN '$sampleCollectionDateStart' AND '$sampleCollectionDateEnd'";
      }
 }
 /* Sample test date filter */
-$sampleTestDate = $dateTimeUtil->convertDateRange($_POST['sampleTestDate']);
-if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-     if (trim($sampleTestDate[0]) == trim($sampleTestDate[1])) {
-          $sWhere[] = '  DATE(vl.sample_tested_datetime) = "' . $sampleTestDate[0] . '"';
+
+if (!empty(trim($_POST['sampleTestDate']))) {
+     [$sampleTestDateStart, $sampleTestDateEnd] = $dateTimeUtil->convertDateRange($_POST['sampleTestDate']);
+
+     if ($sampleTestDateStart == $sampleTestDateEnd) {
+          $sWhere[] =  "DATE(vl.sample_tested_datetime) = '$sampleTestDateStart'";
      } else {
-          $sWhere[] =  '  DATE(vl.sample_tested_datetime) >= "' . $sampleTestDate[0] . '" AND DATE(vl.sample_tested_datetime) <= "' . $sampleTestDate[1] . '"';
+          $sWhere[] =  "DATE(vl.sample_tested_datetime) BETWEEN '$sampleTestDateStart' AND '$sampleTestDateEnd'";
      }
 }
 
 if (!empty($_SESSION['facilityMap'])) {
-     $sWhere[] =  "  vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
+     $sWhere[] = "vl.facility_id IN ({$_SESSION['facilityMap']})";
 }
 
 if (!empty($sWhere)) {
-     $sWhere = implode(" AND ", $sWhere);
-     $sQuery = $sQuery . ' WHERE ' . $sWhere;
+     $sQuery = $sQuery . " WHERE " . implode(" AND ", $sWhere);
 }
 $sQuery = $sQuery . " ORDER BY f.facility_name asc, patient_art_no asc, sample_collection_date asc";
 
@@ -151,6 +157,9 @@ $headings = [
      'Sample Date',
      'Facility Name',
      'Facility Code',
+     'Sample Name',
+     'Testing Platform',
+     'Lab Name',
      'Age',
      'Gender',
      'Pregnant',
@@ -170,20 +179,20 @@ foreach ($rResult as $aRow) {
           $aRow['patient_art_no'] = CommonService::decrypt($aRow['patient_art_no'], base64_decode($keyFromGlobalConfig));
      }
      unset($aRow['is_encrypted']);
-     $patientId = $aRow['patient_art_no'];
+     $patientId = trim($aRow['patient_art_no']);
      $aRow['result'] = $vlService->extractViralLoadValue($aRow['result']);
      $vfData[] = $aRow;
      $vlnsData[] = $aRow;
      // Check if patient id already there in array
-     if (in_array($patientId, $patientIds)) {
+     if (in_array(trim($patientId), $patientIds)) {
           // If there we remove vlsndata for this dublication
           foreach ($vlnsData as $key => $vlnsDataRow) {
-               if ($vlnsDataRow['patient_art_no'] === $patientId) {
+               if (trim($vlnsDataRow['patient_art_no']) === trim($patientId)) {
                     unset($vlnsData[$key]);
                }
           }
      } else {
-          $patientIds[] = $patientId;
+          $patientIds[] = trim($patientId);
      }
 }
 foreach ($vlnsData as $vlnsKey => $vlnsDataRow) {
@@ -210,7 +219,7 @@ foreach ($headings as $field => $value) {
      $vlnsSheet->setCellValue(Coordinate::stringFromColumnIndex($vlnsColNo) . '1', html_entity_decode($value));
      $vlnsColNo++;
 }
-$vfSheet->getStyle('A1:L1')->applyFromArray($headerStyleArray);
+$vfSheet->getStyle('A1:O1')->applyFromArray($headerStyleArray);
 $currentPatientId = null;
 $startRow = 2; // Start from the second row as the first row is the header
 foreach ($vfData as $rowNo => $rowData) {
@@ -241,11 +250,11 @@ $highestCol = $vfSheet->getHighestColumn(); // e.g 'F'
 // Apply the border style to all cells
 $vfSheet->getStyle('A1:' . $highestCol . $highestRow)->applyFromArray($styleArray);
 
-foreach (range('A', 'L') as $columnID) {
+foreach (range('A', 'O') as $columnID) {
      $vfSheet->getColumnDimension($columnID)->setAutoSize(true);
 }
 
-$vlnsSheet->getStyle('A1:L1')->applyFromArray($headerStyleArray);
+$vlnsSheet->getStyle('A1:O1')->applyFromArray($headerStyleArray);
 foreach ($vlnsData as $rowNo => $rowData) {
      $colNo = 1;
      $rRowCount = $rowNo + 1;
@@ -265,7 +274,7 @@ $highestCol = $vlnsSheet->getHighestColumn(); // e.g 'F'
 
 $vlnsSheet->getStyle('A1:' . $highestCol . $highestRow)->applyFromArray($styleArray);
 
-foreach (range('A', 'I') as $columnID) {
+foreach (range('A', 'O') as $columnID) {
      $vlnsSheet->getColumnDimension($columnID)->setAutoSize(true);
 }
 

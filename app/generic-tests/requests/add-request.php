@@ -767,7 +767,10 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
                                                   <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
                                              <?php } ?>
                                              <input type="hidden" name="vlSampleId" id="vlSampleId" value="" />
-                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow();return false;">Save and Next</a>
+                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow('next');return false;">Save and Next</a>
+                                             <?php if ($usersService->isAllowed("/batch/add-batch.php?type=" . $_GET['type'])) { ?>
+                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow('clone');return false;">Save and Clone</a>
+                                             <?php } ?>
                                              <a href="view-requests.php" class="btn btn-default"> Cancel</a>
                                         </div>
                               </div>
@@ -1246,7 +1249,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $('.isRequired').each(function() {
                ($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
           });
-          $("#saveNext").val('save');
           if (flag) {
                $('.btn-disabled').attr('disabled', 'yes');
                $(".btn-disabled").prop("onclick", null).off("click");
@@ -1259,7 +1261,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      }
 
-     function validateSaveNow() {
+     function validateSaveNow(option = 'next') {
           var format = '<?php echo $arr['sample_code']; ?>';
           var sCodeLentgh = $("#sampleCode").val();
           var minLength = '<?php echo $arr['min_length']; ?>';
@@ -1273,7 +1275,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $('.isRequired').each(function() {
                ($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
           });
-          $("#saveNext").val('next');
+          $("#saveNext").val(option);
           if (flag) {
                $('.btn-disabled').attr('disabled', 'yes');
                $(".btn-disabled").prop("onclick", null).off("click");
@@ -1601,6 +1603,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     function(data) {
                          //  console.log(data);
                          data = JSON.parse(data);
+                         $("#facilitySection,#labSection,#resultSection,#otherSection").html('');
+                         $('.patientSectionInput').remove();
                          if (typeof(data.facilitySection) != "undefined" && data.facilitySection !== null && data.facilitySection.length > 0) {
                               $("#facilitySection").html(data.facilitySection);
                          }

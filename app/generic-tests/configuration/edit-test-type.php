@@ -284,7 +284,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 																<option value="multiple" <?php echo ($testAttribute['field_type'] == 'multiple') ? "selected='selected'" : "" ?>><?php echo _translate("Multiselect Dropdown"); ?></option>
 															</select><br>
 															<div class="tag-input dropDown<?php echo $i ?>" style="<?php echo ($testAttribute['field_type'] == 'multiple' || $testAttribute['field_type'] == 'dropdown') ? "" : "display:none;" ?>">
-																<input type="text" name="dropDown[]" id="dropDown<?php echo $i ?>" onkeyup="showTags(event,this,'<?php echo $i ?>')" class="tag-input-field form-control" placeholder="Enter options..." />
+																<input type="text" name="dropDown[]" id="dropDown<?php echo $i ?>" onkeyup="showTags(event,this,'<?php echo $i ?>')" class="tag-input-field form-control" placeholder="<?php echo _translate('Enter options...');?>" title="<?php echo _translate('Please enter the options');?>"/>
 																<input type="hidden" value="<?php echo (!empty($testAttribute['dropdown_options'])) ? $testAttribute['dropdown_options'] . ',' : "" ?>" id="fdropDown<?php echo $i ?>" name="fdropDown[]" class="fdropDown" />
 																<div class="tag-container container<?php echo $i ?>">
 																	<?php
@@ -333,7 +333,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 														<tr>
 															<td align="center" style="vertical-align:middle;">
 																<input type="text" name="fieldName[]" id="fieldName<?php echo $i ?>" class="form-control fieldName isRequired" placeholder='<?php echo _translate("Field Name"); ?>' title='<?php echo _translate("Please enter field name"); ?>' onblur="checkDublicateName(this, 'fieldName');" value="<?php echo $testAttribute['field_name']; ?>" />
-																<input type="hidden" name="fieldId[]" id="fieldId<?php echo $i ?>" class="form-control isRequired" value="<?php echo $otherAttributeId; ?>" />
+																<input type="hidden" name="fieldId[]" id="fieldId<?php echo $i ?>" class="form-control" value="<?php echo $otherAttributeId; ?>" />
 															</td>
 															<td align="center" style="vertical-align:middle;">
 																<input type="text" name="fieldCode[]" id="fieldCode<?php echo $i;?>" class="form-control fieldCode isRequired" placeholder="<?php echo _translate("Field Code"); ?>" title="<?php echo _translate("Please enter field code"); ?>" onblur="checkDublicateName(this, \'fieldCode\');" value="<?php echo $testAttribute['field_code'];?>" onchange="this.value=formatStringToSnakeCase(this.value)"/>
@@ -348,7 +348,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 																	<option value="multiple" <?php echo ($testAttribute['field_type'] == 'multiple') ? "selected='selected'" : "" ?>><?php echo _translate("Multiselect Dropdown"); ?></option>
 																</select><br>
 																<div class="tag-input dropDown<?php echo $i ?>" style="<?php echo ($testAttribute['field_type'] == 'multiple' || $testAttribute['field_type'] == 'dropdown') ? "" : "display:none;" ?>">
-																	<input type="text" name="dropDown[]" id="dropDown<?php echo $i ?>" onkeyup="showTags(event,this,'<?php echo $i ?>')" class="tag-input-field form-control" placeholder="Enter options..." />
+																	<input type="text" name="dropDown[]" id="dropDown<?php echo $i ?>" onkeyup="showTags(event,this,'<?php echo $i ?>')" class="tag-input-field form-control" placeholder="<?php echo _translate('Enter options...');?>" title="<?php echo _translate('Please enter the options');?>"/>
 																	<input type="hidden" value="<?php echo (!empty($testAttribute['dropdown_options'])) ? $testAttribute['dropdown_options'] . ',' : "" ?>" id="fdropDown<?php echo $i ?>" name="fdropDown[]" class="fdropDown" />
 																	<div class="tag-container container<?php echo $i ?>">
 																		<?php
@@ -396,9 +396,9 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 										<tr>
 											<td>
 												<input type="text" name="fieldName[]" id="fieldName1" class="form-control fieldName isRequired" placeholder='<?php echo _translate("Field Name"); ?>' title='<?php echo _translate("Please enter field name"); ?>' onblur="checkDublicateName(this, 'fieldName');" />
-												<input type="hidden" name="fieldId[]" id="fieldId1" class="form-control isRequired" />
+												<input type="hidden" name="fieldId[]" id="fieldId1" class="form-control" />
 											</td>
-											<td align="center" style="vertical-align:middle;">
+											<td align="center">
 												<input type="text" name="fieldCode[]" id="fieldCode1" class="form-control fieldCode isRequired" placeholder="<?php echo _translate("Field Code"); ?>" title="<?php echo _translate("Please enter field code"); ?>" onblur="checkDublicateName(this, \'fieldCode\');" onchange="this.value=formatStringToSnakeCase(this.value)"/>
 											</td>
 											<td>
@@ -412,7 +412,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 												</select><br>
 												<!--<textarea name="dropDown[]" id="dropDown1" class="form-control" placeholder='<?php echo _translate("Drop down values as , separated"); ?>' title='<?php echo _translate("Please drop down values as comma separated"); ?>' style="display:none;"></textarea>-->
 												<div class="tag-input dropDown1" style="display:none;">
-													<input type="text" name="dropDown[]" id="dropDown1" onkeyup="showTags(event,this,'1')" class="tag-input-field form-control" placeholder="Enter options..." />
+													<input type="text" name="dropDown[]" id="dropDown1" onkeyup="showTags(event,this,'1')" class="tag-input-field form-control" placeholder="<?php echo _translate('Enter options...');?>" title="<?php echo _translate('Please enter the options');?>" />
 													<input type="hidden" class="fdropDown" id="fdropDown1" name="fdropDown[]" />
 													<div class="tag-container container1">
 													</div>
@@ -455,7 +455,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 									<div class="form-group">
 										<label for="resultType" class="col-lg-3 control-label"><?php echo _translate("Result Type"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<select class="form-control isRequired" name='resultConfig[result_type]' id='resultType' onchange="checkResultType();">
+											<select class="form-control isRequired" name='resultConfig[result_type]' id='resultType' onchange="checkResultType();" title="<?php echo _translate('Please select result type');?>">
 												<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 												<option value="qualitative" <?php echo ($testResultAttribute['result_type'] == 'qualitative') ? "selected='selected'" : "" ?>><?php echo _translate("Qualitative"); ?></option>
 												<option value="quantitative" <?php echo ($testResultAttribute['result_type'] == 'quantitative') ? "selected='selected'" : "" ?>><?php echo _translate("Quantitative"); ?></option>
@@ -638,14 +638,9 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 
 	$(document).ready(function() {
 		addOtherSection();
-
-		function addOtherSection() {
-			$(".auto-complete-tbx").each(function() {
-				if ($(this).val() != "" && ($.inArray($(this).val(), otherSectionNames) == -1))
-					otherSectionNames.push($(this).val());
-			});
-		}
-
+		<?php if ($eCount > 0) { ?>
+			generateRandomString('1');
+		<?php } ?>
 		$(".auto-complete-tbx").autocomplete({
 			source: otherSectionNames
 		});
@@ -729,6 +724,13 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 		});
 	});
 
+	function addOtherSection() {
+		$(".auto-complete-tbx").each(function() {
+			if ($(this).val() != "" && ($.inArray($(this).val(), otherSectionNames) == -1))
+				otherSectionNames.push($(this).val());
+		});
+	}
+
 	function showTags(e, obj, cls) {
 		let options = new Array();
 		if (e.key === ',' || e.key === 'Enter') {
@@ -793,8 +795,8 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 		h.setAttribute("align", "center");
 		h.setAttribute("style", "vertical-align:middle");
 
-		b.innerHTML = '<input type="text" name="fieldName[]" id="fieldName' + tableRowId + '" class="isRequired fieldName form-control" placeholder="<?php echo _translate('Field Name'); ?>" title="<?php echo _translate('Please enter field name'); ?>" onblur="checkDublicateName(this, \'fieldName\');"/ ><input type="hidden" name="fieldId[]" id="fieldId' + tableRowId + '" class="form-control isRequired" />';
-		c.innerHTML = '<input type="text" name="fieldCode[]" id="fieldCode' + tableRowId + '" class="form-control fieldCode isRequired" placeholder="<?php echo _translate("Field Code"); ?>" title="<?php echo _translate("Please enter field code"); ?>" onblur="checkDublicateName(this, \'fieldCode\');" onchange="this.value=formatStringToSnakeCase(this.value)"/>';
+		b.innerHTML = '<input type="text" name="fieldName[]" id="fieldName' + tableRowId + '" class="isRequired fieldName form-control" placeholder="<?php echo _translate('Field Name'); ?>" title="<?php echo _translate('Please enter field name'); ?>" onblur="checkDublicateName(this, \'fieldName\');"/ ><input type="hidden" name="fieldId[]" id="fieldId' + tableRowId + '" class="form-control" />';
+		c.innerHTML = '<input type="text" name="fieldCode[]" id="fieldCode' + tableRowId + '" class="form-control fieldCode isRequired" placeholder="<?php echo _translate("Field Code"); ?>" title="<?php echo _translate("Please enter field code"); ?>"/>';
 		d.innerHTML = '<select class="form-control isRequired" name="fieldType[]" id="fieldType' + tableRowId + '" title="<?php echo _translate('Please select the field type'); ?>" onchange="changeField(this, ' + tableRowId + ')">\
 							<option value=""> <?php echo _translate("-- Select --"); ?> </option>\
 							<option value="number"><?php echo _translate("Number"); ?></option>\
@@ -803,7 +805,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 							<option value="dropdown"><?php echo _translate("Dropdown"); ?></option>\
 							<option value="multiple"><?php echo _translate("multiple Dropdown"); ?></option>\
 						</select><br>\
-						<div class="tag-input dropDown' + tableRowId + '" style="display:none;"><input type="text" name="dropDown[]" id="dropDown' + tableRowId + '" onkeyup="showTags(event,this,' + tableRowId + ')" class="tag-input-field form-control" placeholder="Enter options..." /><input type="hidden" class="fdropDown" id="fdropDown' + tableRowId + '" name="fdropDown[]" /><div class="tag-container container' + tableRowId + '"></div></div>';
+						<div class="tag-input dropDown' + tableRowId + '" style="display:none;"><input type="text" name="dropDown[]" id="dropDown' + tableRowId + '" onkeyup="showTags(event,this,' + tableRowId + ')" class="tag-input-field form-control" placeholder="<?php echo _translate('Enter options...');?>" title="<?php echo _translate('Please enter the options');?>" /><input type="hidden" class="fdropDown" id="fdropDown' + tableRowId + '" name="fdropDown[]" /><div class="tag-container container' + tableRowId + '"></div></div>';
 		e.innerHTML = '<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField' + tableRowId + '" title="<?php echo _translate('Please select is it mandatory'); ?>">\
                             <option value="yes"><?php echo _translate("Yes"); ?></option>\
                             <option value="no" selected><?php echo _translate("No"); ?></option>\

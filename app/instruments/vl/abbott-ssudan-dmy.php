@@ -108,7 +108,7 @@ try {
                     if (strpos($sheetData[$resultCol], 'Log') !== false) {
                         $sheetData[$resultCol] = str_replace(",", ".", $sheetData[$resultCol]); // in case they are using european decimal format
                         $logVal = ((float) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION));
-                        $absDecimalVal = round(round(pow(10, $logVal) * 100) / 100);
+                        $absDecimalVal = round(pow(10, $logVal), 2);
                         if (strpos($sheetData[$resultCol], "<") !== false) {
                             $txtVal = $absVal = "< " . trim($absDecimalVal);
                         } else {

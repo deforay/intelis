@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Services;
 
 use MysqliDb;
@@ -22,13 +20,12 @@ class ApiService
 
     public function post($url, $payload, $gzip = true)
     {
-        $client = new Client(['http_version' => 2.0]);
+        $client = new Client();
 
         $options = [
             RequestOptions::JSON => $payload,
             RequestOptions::HEADERS => [
-                'Content-Type' => 'application/json',
-                'Accept-Encoding' => 'gzip, deflate',
+                'Content-Type' => 'application/json'
             ]
         ];
 
@@ -36,6 +33,9 @@ class ApiService
             $compressedPayload = gzencode(json_encode($payload));
             $options[RequestOptions::BODY] = $compressedPayload;
             $options[RequestOptions::HEADERS]['Content-Encoding'] = 'gzip';
+            $options[RequestOptions::HEADERS]['Accept-Encoding'] = 'gzip, deflate';
+            // Remove the JSON option as we are manually setting the body
+            unset($options[RequestOptions::JSON]);
         }
 
         $response = $client->post($url, $options);
@@ -43,41 +43,52 @@ class ApiService
         return $response->getBody()->getContents();
     }
 
-    public function postFile($url, $fileName, $jsonFilePath, $params = [], $gzip = true)
-    {
-        $client = new Client(['http_version' => 2.0]);
 
-        $options = [
-            RequestOptions::MULTIPART => [
-                [
-                    'name' => $fileName,
-                    'contents' => fopen($jsonFilePath, 'r'),
-                    'filename' => basename($jsonFilePath)
-                ]
-            ],
-            RequestOptions::HEADERS => [
-                'Content-Type' => 'multipart/form-data',
-                'Accept-Encoding' => 'gzip, deflate',
+    public function postFile($url, $fileName, $jsonFilePath, $params = [], $gzip = false)
+    {
+        $client = new Client();
+
+        // Prepare multipart data with the file
+        $multipartData = [
+            [
+                'name' => $fileName,
+                'contents' => fopen($jsonFilePath, 'r'),
+                'filename' => basename($jsonFilePath)
             ]
         ];
 
-        foreach ($params as $key => $value) {
-            $options[RequestOptions::MULTIPART][] = [
-                'name' => $key,
-                'contents' => $value
+        // Add additional parameters to multipart data
+        foreach ($params as $param) {
+            $multipartData[] = [
+                'name' => $param['name'],
+                'contents' => $param['contents']
             ];
         }
 
+        // Initialize the options array
+        $options = [
+            RequestOptions::MULTIPART => $multipartData,
+            RequestOptions::HEADERS => [
+                'Content-Type' => 'multipart/form-data'
+            ]
+        ];
+
+        // Add GZIP compression if required
         if ($gzip) {
             $compressedPayload = gzencode(file_get_contents($jsonFilePath));
             $options[RequestOptions::BODY] = $compressedPayload;
-            $options[RequestOptions::HEADERS]['Content-Encoding'] = 'gzip';
+            $options[RequestOptions::HEADERS] = [
+                'Content-Encoding' => 'gzip',
+                'Content-Type' => 'application/json' // or 'application/xml' or other appropriate type
+            ];
         }
 
+        // Send the request
         $response = $client->post($url, $options);
 
         return $response->getBody()->getContents();
     }
+
 
     public function generateSelectOptions($options): array
     {

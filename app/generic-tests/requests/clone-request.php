@@ -24,7 +24,7 @@ $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-
+$arr = $general->getGlobalConfig();
 $healthFacilities = $facilitiesService->getHealthFacilities('generic-tests');
 $testingLabs = $facilitiesService->getTestingLabs('generic-tests');
 
@@ -382,7 +382,7 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
 		<h1><em class="fa-solid fa-pen-to-square"></em> LABORATORY REQUEST FORM </h1>
 		<ol class="breadcrumb">
 			<li><a href="/dashboard/index.php"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
-			<li class="active">Edit Request</li>
+			<li class="active">Clone Request</li>
 		</ol>
 	</section>
 	<?php
@@ -396,7 +396,7 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
 			</div>
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-inline" method="post" name="vlRequestFormRwd" id="vlRequestFormRwd" autocomplete="off" action="edit-request-helper.php">
+				<form class="form-inline" method="post" name="vlRequestFormRwd" id="vlRequestFormRwd" autocomplete="off" action="add-request-helper.php">
 					<div class="box-body">
 						<div class="box box-primary">
 							<div class="box-header with-border">
@@ -410,9 +410,7 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
 										<select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getTestTypeForm()">
 											<option value=""> -- Select -- </option>
 											<?php foreach ($testTypeResult as $testType) { ?>
-												<option value="<?php echo $testType['test_type_id'] ?>" <?php echo ($genericResultInfo['test_type'] == $testType['test_type_id']) ? "selected='selected'" : "" ?>>
-													<?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?>
-												</option>
+												<option value="<?php echo $testType['test_type_id'] ?>" data-short="<?php echo $testType['test_short_code']; ?>"><?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -422,7 +420,7 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
 								<div class="col-md-6">
 									<label class="col-lg-5" for="sampleCode">Sample ID <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" readonly="readonly" title="Please enter sample id" value="<?php echo $genericResultInfo[$sampleCode]; ?>" style="width:100%;" onchange="checkSampleNameValidation('form_generic','<?php echo $sampleCode; ?>',this.id,'<?php echo "sample_id##" . $genericResultInfo["sample_id"]; ?>','This sample number already exists.Try another number',null)" />
+										<input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" readonly="readonly" title="Please enter sample id" style="width:100%;" onchange="checkSampleNameValidation('form_generic','<?php echo $sampleCode; ?>',this.id,'<?php echo "sample_id##" . $genericResultInfo["sample_id"]; ?>','This sample number already exists.Try another number',null)" />
 										<input type="hidden" name="sampleCodeCol" value="<?= htmlspecialchars($genericResultInfo['sample_code']); ?>" style="width:100%;">
 									</div>
 								</div>
@@ -666,7 +664,7 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
 										<div class="col-md-6">
 											<label class="col-lg-5" for="">Date of Sample Collection <span class="mandatory">*</span></label>
 											<div class="col-lg-7">
-												<input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" value="<?php echo $genericResultInfo['sample_collection_date']; ?>" onchange="checkSampleReceviedDate();checkSampleTestingDate();">
+												<input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" value="<?php echo $genericResultInfo['sample_collection_date']; ?>" onchange="checkSampleReceviedDate();checkSampleTestingDate();generateSampleCode();setSampleDispatchDate();">
 											</div>
 										</div>
 										<div class="col-md-6">
@@ -1060,12 +1058,14 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
 					</div>
 					<div class="box-footer">
 						<input type="hidden" name="revised" id="revised" value="no" />
+						<input type="hidden" name="saveNext" id="saveNext" />
 						<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= htmlspecialchars($genericResultInfo['sample_id']); ?>" />
 						<input type="hidden" name="isRemoteSample" value="<?= htmlspecialchars($genericResultInfo['remote_sample']); ?>" />
 						<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode($genericResultInfo['reason_for_testing']); ?>" />
 						<input type="hidden" name="oldStatus" value="<?= htmlspecialchars($genericResultInfo['result_status']); ?>" />
 						<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
+						<a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow('clone');return false;">Save and Clone</a>
 						<a href="view-requests.php" class="btn btn-default"> Cancel</a>
 					</div>
 			</div>
@@ -1084,9 +1084,6 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
 	let reason = null;
 	let resultValue = null;
 	$(document).ready(function() {
-
-		var testType = $("#testType").val();
-		getTestTypeConfigList(testType);
 
 		$('.date').datepicker({
 			changeMonth: true,
@@ -1557,6 +1554,7 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
 					}
 				});
 			//}
+			generateSampleCode();
 		} else if (pName == '' && cName == '') {
 			provinceName = true;
 			facilityName = true;
@@ -1567,6 +1565,54 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
 		}
 		$.unblockUI();
 	}
+
+	function generateSampleCode() {
+          var testTypeSelected = $("#testType").val();
+          var pName = $("#province").val();
+          var sDate = $("#sampleCollectionDate").val();
+          $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
+          if (pName != '' && sDate != '' && testTypeSelected != '') {
+               $.post("/generic-tests/requests/generateSampleCode.php", {
+					testType: $('#testType').find(':selected').data('short'),
+					sampleCollectionDate: sDate,
+				},
+				function(data) {
+						var sCodeKey = JSON.parse(data);
+						$("#sampleCode").val(sCodeKey.sampleCode);
+						$("#sampleCodeInText").html(sCodeKey.sampleCode);
+						$("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
+						$("#sampleCodeKey").val(sCodeKey.maxId);
+						checkSampleNameValidation('form_generic', '<?php echo $sampleCode; ?>', 'sample_code', null, 'This sample number already exists.Try another number', null)
+				});
+          }
+     }
+
+	 function insertSampleCode(formId, vlSampleId, sampleCode, sampleCodeKey, sampleCodeFormat, countryId, sampleCollectionDate, provinceCode = null, provinceId = null) {
+          $.blockUI();
+          $.post("/generic-tests/requests/insert-sample.php", {
+                    sampleCode: $("#" + sampleCode).val(),
+                    sampleCodeKey: $("#" + sampleCodeKey).val(),
+                    sampleCodeFormat: $("#" + sampleCodeFormat).val(),
+                    countryId: countryId,
+                    sampleCollectionDate: $("#" + sampleCollectionDate).val(),
+                    provinceCode: $("#province").find(":selected").attr("data-code"),
+                    provinceId: $("#province").find(":selected").attr("data-province-id"),
+                    testType: $('#testType').find(':selected').data('short')
+               },
+               function(data) {
+                    //alert(data);
+                    if (data > 0) {
+                         $.unblockUI();
+                         document.getElementById("vlSampleId").value = data;
+                         document.getElementById(formId).submit();
+                    } else {
+                         $.unblockUI();
+                        //  $("#sampleCollectionDate").val('');
+                         generateSampleCode();
+                         alert("<?= _translate("Could not save this form. Please try again."); ?>");
+                    }
+               });
+     }
 
 	function getFacilities(obj) {
 		//alert(obj);
@@ -1740,19 +1786,58 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
 		}
 	}
 
+	function setSampleDispatchDate() {
+          if ($("#labId").val() != "" && $("#labId").val() == $("#fName").val() && $('#sampleDispatchedDate').val() == "") {
+               $('#sampleDispatchedDate').val($("sampleCollectionDate").val());
+          }
+     }
+
 	function validateNow() {
 		flag = deforayValidator.init({
 			formId: 'vlRequestFormRwd'
 		});
 
-		/* $('.isRequired').each(function() {
+		$('.isRequired').each(function() {
 			($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
-		}); */
+		});
 		if (flag) {
+			$('.btn-disabled').attr('disabled', 'yes');
+			$(".btn-disabled").prop("onclick", null).off("click");
 			$.blockUI();
-			document.getElementById('vlRequestFormRwd').submit();
+			<?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
+				insertSampleCode('vlRequestFormRwd', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', '1', 'sampleCollectionDate');
+			<?php } else { ?>
+				document.getElementById('vlRequestFormRwd').submit();
+			<?php } ?>
 		}
 	}
+
+	function validateSaveNow(option = null) {
+          var format = '<?php echo $arr['sample_code']; ?>';
+          var sCodeLentgh = $("#sampleCode").val();
+          var minLength = '<?php echo $arr['min_length']; ?>';
+          if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
+               alert("Sample ID length must be a minimum length of " + minLength + " characters");
+               return false;
+          }
+          flag = deforayValidator.init({
+               formId: 'vlRequestFormRwd'
+          });
+          $('.isRequired').each(function() {
+               ($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
+          });
+          $("#saveNext").val(option);
+          if (flag) {
+               $('.btn-disabled').attr('disabled', 'yes');
+               $(".btn-disabled").prop("onclick", null).off("click");
+               $.blockUI();
+               <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
+                    insertSampleCode('vlRequestFormRwd', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 1, 'sampleCollectionDate');
+               <?php } else { ?>
+                    document.getElementById('vlRequestFormRwd').submit();
+               <?php } ?>
+          }
+     }
 
 	function checkPatientReceivesms(val) {
 		if (val == 'yes') {
@@ -1773,7 +1858,7 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
 	function getTestTypeForm() {
 		removeDynamicForm();
 		var testType = $("#testType").val();
-		getTestTypeConfigList(testType);
+		// getTestTypeConfigList(testType);
 		if (testType != "") {
 			$(".requestForm").show();
 			$.post("/generic-tests/requests/getTestTypeForm.php", {

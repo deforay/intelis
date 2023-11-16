@@ -26,7 +26,6 @@ $testTypeQuery = "SELECT * FROM r_test_types WHERE test_type_id= ?";
 $testTypeResult = $db->rawQueryOne($testTypeQuery, [$_POST['testType']]);
 $testTypeAttributes = json_decode($testTypeResult['test_form_config'], true);
 
-
 $sections = ['facilitySection', 'patientSection', 'specimenSection', 'labSection', 'otherSection', 'result'];
 $result = array_fill_keys($sections, []);
 
@@ -120,11 +119,17 @@ if (!empty($testTypeAttributes)) {
     $i = 1;
     $arraySection = ['facilitySection', 'patientSection', 'specimenSection', 'labSection'];
     foreach ($testTypeAttributes as $currentSectionName => $testAttributeDetails) {
+        $recentData = null;
         if (in_array($currentSectionName, $arraySection)) {
             foreach ($testAttributeDetails as $testAttributeId => $testAttribute) {
+                // To set prefill with fcode
+                $recentData = $genericTestsService->fetchRelaventDataUsingTestAttributeId($testAttribute['field_code']);
+                if(empty($recentData)) {
+                    $recentData = null;
+                }
                 $isRequired = $testAttribute['mandatory_field'] === 'yes' ? 'isRequired' : '';
                 $mandatory = $testAttribute['mandatory_field'] === 'yes' ? '<span class="mandatory">*</span>' : '';
-                $value = $testTypeForm[$testAttributeId] ?? '';
+                $value = $testTypeForm[$testAttributeId] ?? $recentData ?? null;
                 $fieldType = getClassNameFromFieldType($testAttribute['field_type']);
                 if (
                     !empty($_POST['formType']) &&
@@ -148,10 +153,15 @@ if (!empty($testTypeAttributes)) {
                 $counter = 0;
                 $divContent = '';
                 foreach ($otherSectionFields as $testAttributeId => $testAttribute) {
+                    // To set prefill with fcode
+                    $recentData = $genericTestsService->fetchRelaventDataUsingTestAttributeId($testAttribute['field_code']);
+                    if(empty($recentData)) {
+                        $recentData = null;
+                    }
                     $counter++;
                     $isRequired = $testAttribute['mandatory_field'] === 'yes' ? 'isRequired' : '';
                     $mandatory = $testAttribute['mandatory_field'] === 'yes' ? '<span class="mandatory">*</span>' : '';
-                    $value = $testTypeForm[$testAttributeId] ?? '';
+                    $value = $testTypeForm[$testAttributeId] ?? $recentData ?? null;
                     $fieldType = getClassNameFromFieldType($testAttribute['field_type']);
                     if (
                         !empty($_POST['formType']) &&

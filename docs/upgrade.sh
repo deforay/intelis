@@ -1,9 +1,10 @@
 #!/bin/bash
 
 # To use this script:
-# Save the code into a file, for example, upgrade.sh.
-# Make the script executable: chmod +x upgrade.sh.
-# Run the script: sudo ./upgrade.sh.
+# cd ~;
+# wget -O upgrade.sh https://raw.githubusercontent.com/deforay/vlsm/master/docs/upgrade.sh
+# sudo chmod u+x upgrade.sh;
+# sudo ./upgrade.sh;
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
@@ -162,12 +163,18 @@ fi
 
 # Download New Version of VLSM from GitHub
 echo "Downloading new version of VLSM from GitHub..."
-wget -q -O vlsm-new-version.zip https://github.com/deforay/vlsm/archive/refs/heads/master.zip
+wget -q -O vlsm-new-version.zip https://github.com/deforay/vlsm/archive/refs/heads/master.zip &
+download_pid=$!         # Save the process ID of the wget command
+spinner "$download_pid" # Start the spinner
+wait $download_pid      # Wait for the download to finish
 
 # Unzip New VLSM Version
 echo "Unzipping new VLSM version..."
 temp_dir=$(mktemp -d)
-unzip vlsm-new-version.zip -d "$temp_dir"
+unzip vlsm-new-version.zip -d "$temp_dir" &
+unzip_pid=$!         # Save the process ID of the unzip command
+spinner "$unzip_pid" # Start the spinner
+wait $unzip_pid      # Wait for the unzip process to finish
 
 # Copy the unzipped content to the VLSM directory, overwriting any existing files
 echo "Updating VLSM files..."
@@ -189,7 +196,7 @@ cd "$vlsm_path"
 sudo -u www-data composer update
 
 # Run Migrations
-echo "Running migrations..."
+echo "Running database migrations..."
 php "$vlsm_path/app/system/migrate.php" -yq &
 spinner
 
@@ -238,16 +245,12 @@ fi
 # Run the PHP script for remote data sync
 echo "Running remote data sync script. Please wait..."
 php "$vlsm_path/app/scheduled-jobs/remote/commonDataSync.php" &
-
 # Get the PID of the commonDataSync.php script
 pid=$!
-
-# Show a simple progress indicator
-while kill -0 $pid 2>/dev/null; do
-    echo -n "."
-    sleep 1
-done
-
+# Use the spinner function for visual feedback
+spinner "$pid"
+# Wait for the remote data sync script to complete
+wait $pid
 echo "Remote data sync completed."
 
 service apache2 restart
