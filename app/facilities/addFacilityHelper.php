@@ -33,7 +33,27 @@ $testingLabsTable = "testing_labs";
 $healthFacilityTable = "health_facilities";
 $labSignTable = "lab_report_signatories";
 
-$jsonData = file_get_contents('php://input');
+//$jsonData = $contentEncoding = $request->getHeaderLine('Content-Encoding');
+
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+
+// Get the content encoding header to check for gzip
+$contentEncoding = $request->getHeaderLine('Content-Encoding');
+
+// Read the JSON response from the input
+$jsonData = $request->getBody()->getContents();
+
+// If content is gzip-compressed, decompress it
+if ($contentEncoding === 'gzip') {
+	$jsonData = gzdecode($jsonData);
+}
+
+// Check if the data is valid UTF-8, convert if not
+if (!mb_check_encoding($jsonData, 'UTF-8')) {
+	$jsonData = mb_convert_encoding($jsonData, 'UTF-8', 'auto');
+}
+
 $apiData = json_decode($jsonData, true);
 if (!empty($apiData['result'])) {
 	$_POST = $apiData['result'];

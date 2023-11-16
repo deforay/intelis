@@ -82,9 +82,8 @@ try {
                     $num = count($sheetData);
                     $row++;
                     if ($row < $skip) {
-                        if($row == 5)
-                        {
-                            $cvNumberVar = explode(' ',$sheetData[1]);
+                        if ($row == 5) {
+                            $cvNumberVar = explode(' ', $sheetData[1]);
                             $cvNumber = $cvNumberVar[1];
                         }
                         if ($row == 8) {
@@ -116,7 +115,7 @@ try {
 
                         $sheetData[$resultCol] = str_replace(",", ".", $sheetData[$resultCol]); // in case they are using european decimal format
                         $logVal = ((float) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION));
-                        $absDecimalVal = round(round(pow(10, $logVal) * 100) / 100);
+                        $absDecimalVal = round(pow(10, $logVal), 2);
 
 
                         if (strpos($sheetData[$resultCol], "<") !== false) {

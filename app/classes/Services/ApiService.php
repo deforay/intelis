@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Services;
 
 use MysqliDb;
@@ -27,8 +25,7 @@ class ApiService
         $options = [
             RequestOptions::JSON => $payload,
             RequestOptions::HEADERS => [
-                'Content-Type' => 'application/json',
-                'Accept-Encoding' => 'gzip, deflate',
+                'Content-Type' => 'application/json'
             ]
         ];
 
@@ -36,6 +33,7 @@ class ApiService
             $compressedPayload = gzencode(json_encode($payload));
             $options[RequestOptions::BODY] = $compressedPayload;
             $options[RequestOptions::HEADERS]['Content-Encoding'] = 'gzip';
+            $options[RequestOptions::HEADERS]['Accept-Encoding'] = 'gzip, deflate';
             // Remove the JSON option as we are manually setting the body
             unset($options[RequestOptions::JSON]);
         }
