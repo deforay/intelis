@@ -105,7 +105,7 @@ try {
     if (!empty($rowData)) {
 
         foreach ($rowData as $key => $row) {
-            $rowData[$key]['tbTests'] = $tbService->getTbTestsByFormId($row['tbId']);
+            $rowData[$key]['genericTests'] = $genericService->getTestsByGenericSampleIds($row['sampleId']);
         }
     }
 

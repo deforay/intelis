@@ -18,7 +18,7 @@ class DateUtility
 
         $carbonDate = self::parseDate($date, [$format]);
 
-        return $carbonDate && ($strict ? $carbonDate->format($format) === $date : true);
+        return $carbonDate && (!$strict || $carbonDate->format($format) === $date);
     }
 
     public static function isDateValid($date): bool

@@ -3,6 +3,12 @@
 use App\Services\UsersService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+
+
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];

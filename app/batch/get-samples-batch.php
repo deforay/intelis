@@ -100,7 +100,7 @@ if (!empty($where)) {
 $query .= ")";
 // $query = $query . " ORDER BY vl.sample_code ASC";
 if (isset($_POST['batchId'])) {
-    $squery .= " UNION
+    $squery = " UNION
         (SELECT vl.sample_code,vl.$refPrimaryColumn,vl.facility_id,vl.result_status,vl.sample_batch_id,f.facility_name,f.facility_code
         FROM $refTable as vl
     INNER JOIN facility_details as f ON vl.facility_id=f.facility_id ";

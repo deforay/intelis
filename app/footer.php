@@ -323,20 +323,19 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 			};
 		});
 
-		$('.patientId').on('change', function(){
+		$('.patientId').on('change', function() {
 			var patientId = $(this).val();
-			
-			var minLength = '<?php echo $minPatientIdLength; ?>';
 
-					if (patientId.length < minLength) {
-						$(".lengthErr").remove();
-						var txt = '<?= _translate('Please enter minimum length for Patient Id : '); ?>'+minLength;
-						$(this).parent().append('<span class="lengthErr" style="color:red;">'+txt+'</span>');
-					}
-					else{
-						$(".lengthErr").remove();
-					}
-					
+			var minLength = '<?= $minPatientIdLength ?? 0; ?>';
+
+			if (patientId.length < minLength) {
+				$(".lengthErr").remove();
+				var txt = '<?= _translate('Please enter minimum length for Patient Id : '); ?>' + minLength;
+				$(this).parent().append('<span class="lengthErr" style="color:red;">' + txt + '</span>');
+			} else {
+				$(".lengthErr").remove();
+			}
+
 
 		});
 	});

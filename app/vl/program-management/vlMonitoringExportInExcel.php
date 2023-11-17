@@ -79,7 +79,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
         $sWhere[] = " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
     }
     if (isset($_POST['state']) && trim($_POST['state']) != '') {
-        $sWhere[] = $sWhere . " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
+        $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
     }
     if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
         $sWhere[] =  ' f.facility_id = "' . $_POST['facilityName'] . '"';

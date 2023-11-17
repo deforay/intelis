@@ -297,7 +297,7 @@ try {
 		'mother_id' => $_POST['mothersId'] ?? null,
 		'caretaker_contact_consent' => $_POST['caretakerConsentForContact'] ?? null,
 		'caretaker_phone_number' => $_POST['caretakerPhoneNumber'] ?? null,
-		'caretaker_address' => isset($_POST['caretakerAddress']) ? $_POST['caretakerAddress'] : null,
+		'caretaker_address' => $_POST['caretakerAddress'] ?? null,
 		'previous_sample_code' => $_POST['previousSampleCode'] ?? null,
 		'clinical_assessment' => $_POST['clinicalAssessment'] ?? null,
 		'clinician_name' => $_POST['clinicianName'] ?? null,

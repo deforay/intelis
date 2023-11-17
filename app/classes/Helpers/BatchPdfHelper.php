@@ -3,8 +3,9 @@
 namespace App\Helpers;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use TCPDF;
 
-class BatchPdfHelper extends \TCPDF
+class BatchPdfHelper extends TCPDF
 {
     public $logo;
     public $text;

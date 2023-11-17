@@ -4,7 +4,7 @@ use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
 
-$title = _translate("Covid-19 | Confirmation Manifest");;
+$title = _translate("Covid-19 | Confirmation Manifest");
 
 require_once APPLICATION_PATH . '/header.php';
 

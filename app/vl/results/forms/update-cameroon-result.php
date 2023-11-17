@@ -461,7 +461,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for=""><?= _translate('Treatment Start Date'); ?></label>
-											<input type="text" class="form-control date" name="dateOfArtInitiation" id="dateOfArtInitiation" placeholder="<?= _translate('Date Of Treatment Initiated'); ?>" title="<?= _translate('Date Of treatment initiated'); ?>" value="<?php echo $vlQueryInfo['treatment_initiated_date']; ?>" <?php echo $disable; ?> style="width:100%;">
+											<input type="text" class="form-control date" name="dateOfArtInitiation" id="dateOfArtInitiation" placeholder="<?= _translate('Treatment Start Date'); ?>" title="<?= _translate('Treatment Start Date'); ?>" value="<?php echo $vlQueryInfo['treatment_initiated_date']; ?>" <?php echo $disable; ?> style="width:100%;">
 										</div>
 									</div>
 									<div class="col-xs-3 col-md-3">
@@ -480,22 +480,23 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 										<div class="form-group">
 											<label for=""> <?= _translate('Current ARV Protocol'); ?></label>
 											<select class="form-control <?php echo ($_SESSION['instanceType'] == 'remoteuser') ? "isRequired" : ''; ?>" id="artRegimen" name="artRegimen" title="<?= _translate('Please choose ART Regimen'); ?>" <?php echo $disable; ?> style="width:100%;" onchange="checkARTValue();">
-													<option value=""><?= _translate('-- Select --'); ?></option>
-													<?php foreach ($artRegimenResult as $heading) { ?>
-														<optgroup label="<?= $heading['headings']; ?>">
-															<?php
-															foreach ($aResult as $regimen) {
-																if ($heading['headings'] == $regimen['headings']) {
-															?>
-																	<option value="<?php echo $regimen['art_code']; ?>" <?php echo $disable; ?> <?php echo ($vlQueryInfo['current_regimen'] == $regimen['art_code']) ? "selected='selected'" : "" ?>><?php echo $regimen['art_code']; ?></option>
-															<?php
-																}
+												<option value=""><?= _translate('-- Select --'); ?></option>
+												<?php foreach ($artRegimenResult as $heading) { ?>
+													<optgroup label="<?= $heading['headings']; ?>">
+														<?php
+														foreach ($aResult as $regimen) {
+															if ($heading['headings'] == $regimen['headings']) {
+														?>
+																<option value="<?php echo $regimen['art_code']; ?>" <?php echo $disable; ?> <?php echo ($vlQueryInfo['current_regimen'] == $regimen['art_code']) ? "selected='selected'" : "" ?>><?php echo $regimen['art_code']; ?></option>
+														<?php
 															}
-															?>
-														</optgroup>
-													<?php } ?>
-													<option value="other">Other</option>
-												</select>										</div>
+														}
+														?>
+													</optgroup>
+												<?php } ?>
+												<option value="other">Other</option>
+											</select>
+										</div>
 									</div>
 
 								</div>
@@ -791,15 +792,15 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												</div>
 											</div>
 											<div class="row">
-                                                <div class="col-md-6">
-                                                    <label class="col-lg-5 control-label" for="testedBy"><?= _translate('Tested By'); ?> <span class="mandatory">*</span> </label>
-                                                        <div class="col-lg-7">
-                                                            <select name="testedBy" id="testedBy" class="select2 form-control isRequired" title="Please choose tested by" style="width: 100%;">
-                                                                <?= $general->generateSelectOptions($userInfo, $vlQueryInfo['tested_by'], '-- Select --'); ?>
-                                                            </select>                                                                      
-                                                        </div>
-                                                </div>
-                                            </div>
+												<div class="col-md-6">
+													<label class="col-lg-5 control-label" for="testedBy"><?= _translate('Tested By'); ?> <span class="mandatory">*</span> </label>
+													<div class="col-lg-7">
+														<select name="testedBy" id="testedBy" class="select2 form-control isRequired" title="Please choose tested by" style="width: 100%;">
+															<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['tested_by'], '-- Select --'); ?>
+														</select>
+													</div>
+												</div>
+											</div>
 										</div>
 									</div>
 						</div>

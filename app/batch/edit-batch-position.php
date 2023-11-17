@@ -5,6 +5,9 @@ use App\Services\CommonService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 

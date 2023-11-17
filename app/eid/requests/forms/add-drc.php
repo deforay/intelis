@@ -160,7 +160,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 									</tr>
 
 								<?php } ?>
-								</tr>
 								</table>
 								<br><br>
 

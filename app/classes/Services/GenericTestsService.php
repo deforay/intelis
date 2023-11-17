@@ -328,7 +328,7 @@ class GenericTestsService extends AbstractTestService
             // First get the collection of fcode from the following fcode
             $this->db->where("(JSON_SEARCH(test_form_config, 'one', '$fcode') IS NOT NULL) OR (test_form_config IS NOT NULL)");
             
-            $this->db->orderBy('updated_datetime', "DESC");
+            $this->db->orderBy('updated_datetime');
             $testTypeResult = $this->db->getOne('r_test_types', 'test_form_config');
             $testType = json_decode($testTypeResult['test_form_config'], true);
             $fcodes = [];
@@ -347,7 +347,7 @@ class GenericTestsService extends AbstractTestService
                 foreach($fcodes as $value) {
                     $this->db->where("(JSON_SEARCH(test_type_form, 'all', '$value') IS NOT NULL) OR (test_type_form IS NOT NULL)");
                 }
-                $this->db->orderBy('last_modified_datetime', "DESC");
+                $this->db->orderBy('last_modified_datetime');
                 $result =  $this->db->getOne('form_generic', 'test_type_form');
                 if($result){
                     $response = [];

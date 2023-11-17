@@ -4,7 +4,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
-$title = _translate($title . " | Edit Batch");
+$title = _translate("Edit Batch");
 
 require_once APPLICATION_PATH . '/header.php';
 

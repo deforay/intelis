@@ -168,7 +168,7 @@ try {
 
                 $result = $response->getBody()->getContents();
                 $deResult = json_decode($result, true);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 // Handle the exception
                 echo "Error: " . $e->getMessage();
                 echo ($e->getTraceAsString());

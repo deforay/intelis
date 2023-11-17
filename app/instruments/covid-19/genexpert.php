@@ -93,8 +93,7 @@ try {
                     $infoFromFile[$sampleCode]['testedBy'] = $testedBy;
                 } elseif ($v == "Assay" || $v == "Test") {
                     if (empty($sampleCode)) { {
-                            continue;
-                        }
+                    }
                     } else {
                         $infoFromFile[$sampleCode]['assay'] = $testResultsService->removeCntrlCharsAndEncode($record[1]);
                     }

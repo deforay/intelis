@@ -49,7 +49,7 @@ function getClassNameFromFieldType($fieldType)
 function getDropDownField($testAttribute, $testAttributeId, $value, $inputClass, $isRequired, $fieldType, $disabled, $inputWidth)
 {
     $fieldName = 'dynamicFields[' . $testAttributeId . ']';
-    $isMultiple = $testAttribute['field_type'] == 'multiple' ? true : false;
+    $isMultiple = $testAttribute['field_type'] == 'multiple';
     $title = _translate("Please select an option");
     if ($isMultiple) {
         $fieldName .= '[]';

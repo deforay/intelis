@@ -342,8 +342,6 @@ $sFormat = '';
 											</select>
 										</td>
 									</tr>
-
-									</tr>
 									<tr style="display:none;" class="newreasonForVLTesting">
 										<td style="width: 15% !important;"><label for="newreasonForVLTesting" class="newreasonForVLTesting" style="display:none;">Autre, à préciser <span class="mandatory">*</span></label></td>
 										<td style="width: 35% !important;">

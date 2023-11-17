@@ -380,7 +380,7 @@ $sFormat = '';
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
                                                                  <label for=""><?= _translate('Treatment Start Date'); ?></label>
-                                                                 <input type="text" class="form-control date" name="dateOfArtInitiation" id="dateOfArtInitiation" placeholder="<?= _translate('Date of ART Initiation'); ?>" title="<?= _translate('Date of treatment initiation'); ?>" style="width:100%;" onchange="checkARTInitiationDate();">
+                                                                 <input type="text" class="form-control date" name="dateOfArtInitiation" id="dateOfArtInitiation" placeholder="<?= _translate('Treatment Start Date'); ?>" title="<?= _translate('Treatment Start Date'); ?>" style="width:100%;" onchange="checkARTInitiationDate();">
                                                             </div>
                                                        </div>
                                                        <div class="col-xs-3 col-md-3">
@@ -1153,8 +1153,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                alert("Sample ID length must be a minimum length of " + minLength + " characters");
                return false;
           }
-          if(dob=="" && age=="")
-          {
+          if (dob == "" && age == "") {
                alert("Please Enter DOB or Age in years");
                return false;
           }

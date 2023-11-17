@@ -219,7 +219,7 @@ try {
             $params['facilityId'] = $data['facilityId'] ?? null;
             $params['labId'] = $data['labId'] ?? null;
 
-            $currentSampleData = $covid19Service->insertSampleCode($params, true);
+            $currentSampleData = $genericService->insertSample($params, true);
             $currentSampleData['action'] = 'inserted';
             $data['genericSampleId'] = intval($currentSampleData['id']);
             if ($data['genericSampleId'] == 0) {

@@ -6,6 +6,8 @@ namespace App\Services;
 
 use MysqliDb;
 use Exception;
+use SodiumException;
+use TCPDF2DBarcode;
 use TCPDFBarcode;
 use Ramsey\Uuid\Uuid;
 use App\Utilities\DateUtility;
@@ -238,7 +240,7 @@ class CommonService
             sodium_memzero($message);
             sodium_memzero($key);
             return $cipher;
-        } catch (\SodiumException $e) {
+        } catch (SodiumException $e) {
             return $message;
         }
     }
@@ -267,7 +269,7 @@ class CommonService
             sodium_memzero($ciphertext);
             sodium_memzero($key);
             return $plain;
-        } catch (\SodiumException $e) {
+        } catch (SodiumException $e) {
             return $encrypted;
         }
     }
@@ -768,7 +770,7 @@ class CommonService
 
     public function get2DBarcodeImageContent($code, $type = 'QRCODE', $width = 2, $height = 30, $color = array(0, 0, 0))
     {
-        $barcodeobj = new \TCPDF2DBarcode($code, $type);
+        $barcodeobj = new TCPDF2DBarcode($code, $type);
         return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, $height, $color));
     }
 
@@ -849,8 +851,7 @@ class CommonService
     public function getSourceOfRequest($table)
     {
         $srcQuery = "SELECT DISTINCT source_of_request from $table where source_of_request is not null AND source_of_request not like ''";
-        $srcResults = $this->db->rawQuery($srcQuery);
-        return $srcResults;
+        return $this->db->rawQuery($srcQuery);
     }
 
     public function getSampleStatus()

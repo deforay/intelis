@@ -35,7 +35,7 @@ $sarr = $general->getSystemConfig();
 
 $skin = "skin-blue";
 
-$trainingMode = isset($arr['training_mode']) && trim($arr['training_mode']) == 'yes' ? true : false;
+$trainingMode = isset($arr['training_mode']) && trim($arr['training_mode']) == 'yes';
 
 $logoName = "<img src='/assets/img/flask.png' style='margin-top:-5px;max-width:22px;'> <span style=''>LIS</span>";
 $smallLogoName = "<img src='/assets/img/flask.png'>";

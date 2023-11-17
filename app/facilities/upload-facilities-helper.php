@@ -106,7 +106,7 @@ try {
                     $db->update('facility_details', $data);
                     error_log($db->getLastError());
                 } else {
-                    array_push($facilityNotAdded, $rowData);
+                    $facilityNotAdded[] = $rowData;
                 }
             }
             elseif($uploadOption=="facility_code_match")
@@ -116,7 +116,7 @@ try {
                     $db->update('facility_details', $data);
                     error_log($db->getLastError());
                 } else {
-                    array_push($facilityNotAdded, $rowData);
+                    $facilityNotAdded[] = $rowData;
                 }
             }
             elseif($uploadOption=="facility_name_code_match")
@@ -128,12 +128,12 @@ try {
                 }
                 else
                 {
-                    array_push($facilityNotAdded, $rowData);
+                    $facilityNotAdded[] = $rowData;
                 }
             }
             elseif($uploadOption=="default"){
                 if ((isset($facilityCheck['facility_id']) && $facilityCheck['facility_id'] != "") || (isset($facilityCodeCheck['facility_id']) && $facilityCodeCheck['facility_id'] != "")) {
-                    array_push($facilityNotAdded, $rowData);
+                    $facilityNotAdded[] = $rowData;
                 } else {
                     $db->insert('facility_details', $data);
                     error_log($db->getLastError());

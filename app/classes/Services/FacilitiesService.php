@@ -287,8 +287,7 @@ class FacilitiesService
                 'updated_datetime' => DateUtility::getCurrentDateTime(),
             );
             $this->db->insert('geographical_divisions', $data);
-            $lastInsertId = $this->db->getInsertId();
-            return $lastInsertId;
+            return $this->db->getInsertId();
         }
     }
 
@@ -313,8 +312,7 @@ class FacilitiesService
                 'updated_datetime' => DateUtility::getCurrentDateTime(),
             );
             $this->db->insert('geographical_divisions', $data);
-            $lastInsertId = $this->db->getInsertId();
-            return $lastInsertId;
+            return $this->db->getInsertId();
         }
     }
 }

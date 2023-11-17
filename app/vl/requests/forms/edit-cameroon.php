@@ -183,13 +183,12 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                        <select class="form-control isRequired" id="fName" name="fName" title="<?= _translate('Please select a clinic/health center name'); ?>" style="width:100%;" onchange="fillFacilityDetails();">
                                                             <option value=""> <?= _translate('-- Select --'); ?> </option>
                                                             <?php //echo $facility;
-                                                                 foreach($healthFacilitiesAllColumns as $facility)
-                                                                 {
-                                                                      ?>
-                                                                 <option value="<?php echo $facility['facility_id']; ?>" <?php echo ($vlQueryInfo['facility_id']==$facility['facility_id']) ? "selected='selected'" : ""; ?> data-code="<?php echo $facility['facility_code']; ?>"><?php echo $facility['facility_name']; ?></option>
-                                                                      <?php
-                                                                 }
-                                                                 ?>
+                                                            foreach ($healthFacilitiesAllColumns as $facility) {
+                                                            ?>
+                                                                 <option value="<?php echo $facility['facility_id']; ?>" <?php echo ($vlQueryInfo['facility_id'] == $facility['facility_id']) ? "selected='selected'" : ""; ?> data-code="<?php echo $facility['facility_code']; ?>"><?php echo $facility['facility_name']; ?></option>
+                                                            <?php
+                                                            }
+                                                            ?>
                                                        </select>
                                                   </div>
                                              </div>
@@ -423,7 +422,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
                                                                  <label for=""><?= _translate('Treatment Start Date'); ?></label>
-                                                                 <input type="text" class="form-control date" name="dateOfArtInitiation" id="dateOfArtInitiation" value="<?= $vlQueryInfo['treatment_initiated_date']; ?>" placeholder="<?= _translate('Date of ART Initiation'); ?>" title="<?= _translate('Date of treatment initiation'); ?>" style="width:100%;" onchange="checkARTInitiationDate();">
+                                                                 <input type="text" class="form-control date" name="dateOfArtInitiation" id="dateOfArtInitiation" value="<?= $vlQueryInfo['treatment_initiated_date']; ?>" placeholder="<?= _translate('Treatment Start Date'); ?>" title="<?= _translate('Treatment Start Date'); ?>" style="width:100%;" onchange="checkARTInitiationDate();">
                                                             </div>
                                                        </div>
                                                        <div class="col-xs-3 col-md-3">
@@ -442,17 +441,18 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                             <div class="form-group">
                                                                  <label for=""> <?= _translate('Current ARV Protocol'); ?></label>
                                                                  <select class="form-control" id="artRegimen" name="artRegimen" title="Please choose ART Regimen" style="width:100%;" onchange="checkARTRegimenValue();">
-														<option value="">-- Select --</option>
-														<?php foreach ($artRegimenResult as $heading) { ?>
-															<optgroup label="<?= $heading['headings']; ?>">
-																<?php foreach ($aResult as $regimen) {
-																	if ($heading['headings'] == $regimen['headings']) { ?>
-																		<option value="<?php echo $regimen['art_code']; ?>" <?php echo ($vlQueryInfo['current_regimen'] == $regimen['art_code']) ? "selected='selected'" : "" ?>><?php echo $regimen['art_code']; ?></option>
-																<?php }
-																} ?>
-															</optgroup>
-														<?php } ?>
-													</select>                                                            </div>
+                                                                      <option value="">-- Select --</option>
+                                                                      <?php foreach ($artRegimenResult as $heading) { ?>
+                                                                           <optgroup label="<?= $heading['headings']; ?>">
+                                                                                <?php foreach ($aResult as $regimen) {
+                                                                                     if ($heading['headings'] == $regimen['headings']) { ?>
+                                                                                          <option value="<?php echo $regimen['art_code']; ?>" <?php echo ($vlQueryInfo['current_regimen'] == $regimen['art_code']) ? "selected='selected'" : "" ?>><?php echo $regimen['art_code']; ?></option>
+                                                                                <?php }
+                                                                                } ?>
+                                                                           </optgroup>
+                                                                      <?php } ?>
+                                                                 </select>
+                                                            </div>
                                                        </div>
                                                        <!--  <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
@@ -777,7 +777,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                       <div class="col-lg-7">
                                                                            <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose tested by" style="width: 100%;">
                                                                                 <?= $general->generateSelectOptions($userInfo, $vlQueryInfo['tested_by'], '-- Select --'); ?>
-                                                                           </select>                                                                      
+                                                                           </select>
                                                                       </div>
                                                                  </div>
                                                             </div>
@@ -1244,17 +1244,16 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function validateNow() {
-         
+
           var dob = $("#dob").val();
           var age = $("#ageInYears").val();
 
-        
+
           flag = deforayValidator.init({
                formId: 'vlRequestFormCameroon'
           });
 
-          if(dob=="" && age=="")
-          {
+          if (dob == "" && age == "") {
                alert("Please Enter DOB or Age in years");
                return false;
           }

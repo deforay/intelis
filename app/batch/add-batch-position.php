@@ -1,7 +1,15 @@
 <?php
+
+
+use App\Registries\ContainerRegistry;
+
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
+
 $_GET = $request->getQueryParams();
 $title = "Viral Load";
 $refTable = "form_vl";
@@ -277,4 +285,6 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 	}
 </script>
 <?php
+
+
 require_once APPLICATION_PATH . '/footer.php';

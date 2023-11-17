@@ -27,6 +27,9 @@ $app = ContainerRegistry::get(ApiService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
+
+$transactionId = $general->generateUUID();
+
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];

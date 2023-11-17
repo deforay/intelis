@@ -782,9 +782,6 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
 
      </section>
 </div>
-</div>
-</section>
-</div>
 <!-- BARCODESTUFF START -->
 <?php
 if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {

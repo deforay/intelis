@@ -96,8 +96,6 @@ class PatientsService
             $data['patient_middle_name'] = $encryptedPatientMiddleName;
             $data['patient_last_name'] = $encryptedPatientLastName;
             $data['is_encrypted'] = 'yes';
-        } else {
-            $data['is_encrypted'] = NULL;
         }
 
         $data['patient_province'] = (!empty($params['patientProvince']) ? $params['patientProvince'] : null);
@@ -164,8 +162,6 @@ class PatientsService
             $data['patient_middle_name'] = $encryptedPatientMiddleName;
             $data['patient_last_name'] = $encryptedPatientLastName;
             $data['is_encrypted'] = 'yes';
-        } else {
-            $data['is_encrypted'] = NULL;
         }
 
         $data['patient_province'] = (!empty($params['patientProvince']) ? $params['patientProvince'] : null);
