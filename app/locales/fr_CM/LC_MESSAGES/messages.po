@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-11-17 13:17+0530\n"
-"PO-Revision-Date: 2023-11-17 13:19+0530\n"
+"POT-Creation-Date: 2023-11-17 13:31+0530\n"
+"PO-Revision-Date: 2023-11-17 13:34+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -4363,7 +4363,7 @@ msgstr "Vérification de la qualité des données"
 #: vl/requests/vl-requests.php:166 vl/results/vlPrintResult.php:187
 #: vl/results/vlPrintResult.php:435
 msgid "Sample Test Date"
-msgstr "Date du test de l'échantillon"
+msgstr "Date du test"
 
 #: covid-19/management/covid-19-clinic-report.php:98
 #: covid-19/management/covid-19-clinic-report.php:207
@@ -7929,6 +7929,7 @@ msgstr "DÉTAILS DE L'AFFAIRE/DONNÉES DÉMOGRAPHIQUES"
 #: vl/requests/forms/add-cameroon.php:210
 #: vl/requests/forms/edit-cameroon.php:252
 #: vl/results/forms/update-cameroon-result.php:306
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:318
 msgid "Patient Information"
 msgstr "Information du patient"
 
@@ -10660,7 +10661,7 @@ msgstr "Résultat Précédent"
 #: eid/requests/forms/edit-cameroon.php:425
 #: eid/results/forms/update-cameroon-result.php:408
 msgid "Date of sample collection"
-msgstr "Date de prélèvement de l'échantillon"
+msgstr "Date de collecte de l’échantillon"
 
 #: eid/requests/forms/add-cameroon.php:432
 #: eid/requests/forms/add-cameroon.php:433
@@ -12779,7 +12780,7 @@ msgstr "Nom du clinicien"
 #: generic-tests/mail/mail-generic-tests-results.php:227
 #: vl/result-mail/editTestResultEmailConfig.php:89
 msgid "Collected by (Initials)"
-msgstr "Recueilli par (initiales)"
+msgstr "Collecté(e) par (initiales)"
 
 #: generic-tests/mail/mail-generic-tests-results.php:229
 #: vl/result-mail/editTestResultEmailConfig.php:91
@@ -17946,7 +17947,7 @@ msgstr "Informations sur les échantillons"
 #: vl/requests/forms/edit-cameroon.php:377
 #: vl/results/forms/update-cameroon-result.php:420
 msgid "Date of Sample Collection"
-msgstr "Date de prélèvement de l'échantillon"
+msgstr "Date de collecte de l’échantillon"
 
 #: vl/requests/forms/add-cameroon.php:338
 #: vl/requests/forms/edit-cameroon.php:378
@@ -18546,11 +18547,7 @@ msgstr "Veuillez sélectionner la raison du rejet"
 
 #: vl/results/pdf/result-pdf-cameroon-cresar.php:316
 msgid "HIV VIRAL LOAD RESULT SHEET"
-msgstr "FEUILLE DE RÉSULTAT DE LA CHARGE VIRALE DU VIH"
-
-#: vl/results/pdf/result-pdf-cameroon-cresar.php:318
-msgid "Information Of Patient"
-msgstr "Informations sur le patient"
+msgstr "FICHE DE RESULTAT CHARGE VIRAL VIH"
 
 #: vl/results/pdf/result-pdf-cameroon-cresar.php:324
 msgid "Unique Code"
@@ -18586,7 +18583,7 @@ msgstr "Date du prélèvement de l'échantillon : "
 
 #: vl/results/pdf/result-pdf-cameroon-cresar.php:337
 msgid "Collected By : "
-msgstr "Recueillis par : "
+msgstr "Collecté(e) par : "
 
 #: vl/results/pdf/result-pdf-cameroon-cresar.php:340
 msgid "Name of Requestor : "
@@ -18602,7 +18599,7 @@ msgstr "Centre de traitement : "
 
 #: vl/results/pdf/result-pdf-cameroon-cresar.php:345
 msgid "ARV initiation date : "
-msgstr "Date d'instauration des ARV : "
+msgstr "Date d’initiation des ARV : "
 
 #: vl/results/pdf/result-pdf-cameroon-cresar.php:348
 msgid "Modified : "
@@ -18625,8 +18622,8 @@ msgid "Test Name : "
 msgstr "Nom du test : "
 
 #: vl/results/pdf/result-pdf-cameroon-cresar.php:367
-msgid "Sample Tested Date : "
-msgstr "Échantillon testé Date : "
+msgid "Sample Test Date : "
+msgstr "Date du test : "
 
 #: vl/results/pdf/result-pdf-cameroon-cresar.php:373
 msgid "Result : "
@@ -18847,6 +18844,9 @@ msgid "ART Initiation Date cannot be earlier than Patient Date of Birth"
 msgstr ""
 "La date de début du traitement antirétroviral ne peut être antérieure à la "
 "date de naissance du patient"
+
+#~ msgid "Information Of Patient"
+#~ msgstr "Information du Patient"
 
 #~ msgid "Date of ART Initiation"
 #~ msgstr "Date de début de traitement"

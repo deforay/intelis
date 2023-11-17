@@ -110,7 +110,7 @@ if (!empty($requestResult)) {
                $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $arr['logo'];
           }
           $arr['training_mode_text'] = (isset($arr['training_mode']) && $arr['training_mode'] == 'yes') ? $arr['training_mode_text'] : null;
-         // $pdf->setHeading($logoPrintInPdf, null, null, null, null, $arr['training_mode_text']);
+          // $pdf->setHeading($logoPrintInPdf, null, null, null, null, $arr['training_mode_text']);
 
           // set header and footer fonts
           $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
@@ -160,7 +160,7 @@ if (!empty($requestResult)) {
           if (!isset($result['facility_name']) || trim($result['facility_name']) == '') {
                $result['facility_name'] = '';
           }
-         
+
           //Set Age
           $age = 'Unknown';
           if (isset($result['patient_dob']) && trim($result['patient_dob']) != '' && $result['patient_dob'] != '0000-00-00') {
@@ -207,7 +207,7 @@ if (!empty($requestResult)) {
           }
 
           $modified = _translate("No");
-          if(!empty($result['modified_by'])){
+          if (!empty($result['modified_by'])) {
                $modified = _translate("Yes");
           }
 
@@ -315,7 +315,7 @@ if (!empty($requestResult)) {
 
           $html = '<h5 align="center"><u>' . _translate('HIV VIRAL LOAD RESULT SHEET') . '</u></h5>';
 
-          $html .= '<p style="font: size 11px;"><u>' . _translate("Information Of Patient") . '</u></p>';
+          $html .= '<p style="font: size 11px;"><u>' . _translate("Patient Information") . '</u></p>';
           $html .= '<table style="padding:4px 2px 2px 2px;width:100%;">';
           $html .= '<tr>';
           $html .= '<td colspan="3">';
@@ -364,7 +364,7 @@ if (!empty($requestResult)) {
           $html .= '<tr>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Test Name : ') . '</td>';
           $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $result['vl_test_platform'] . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Sample Tested Date : ') . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Sample Test Date : ') . '</td>';
           $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $result['sample_tested_datetime'] . '</td>';
           $html .= '</tr>';
 
@@ -375,7 +375,7 @@ if (!empty($requestResult)) {
           $html .= '<td width="20%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Results (log) : ') . '</td>';
           $html .= '<td width="10%" style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $logValue . '</td>';
           $html .= '<td width="20%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Test Done By : ') . '</td>';
-          $html .= '<td width="30%" style="line-height:10px;font-size:10px;text-align:left; border: 1px solid black">' .$result['labName'] . '</td>';
+          $html .= '<td width="30%" style="line-height:10px;font-size:10px;text-align:left; border: 1px solid black">' . $result['labName'] . '</td>';
 
           $html .= '</tr>';
           $html .= '<tr><td width="100%" style="line-height:20px;font-size:10px;">';
@@ -392,7 +392,7 @@ if (!empty($requestResult)) {
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Comment, if applicable : ') . '</td>';
           $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $result['lab_tech_comments'] . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Date : ') . '</td>';
-          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">'.$finalDate.'</td>';
+          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $finalDate . '</td>';
 
           $html .= '</tr>';
           $html .= '<tr><td></td></tr>';
@@ -406,11 +406,9 @@ if (!empty($requestResult)) {
                $signImg = '';
           }
           $html .= '<tr><td></td></tr>';
-          if(!empty($signImg)){
+          if (!empty($signImg)) {
                $html .= '<tr><td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Signature : ') . $signImg  . '</td>';
-          }
-          else
-          {
+          } else {
                $html .= '<tr><td style="line-height:10px;font-size:10px;text-align:left;"></td>';
           }
           $html .= '<td style="line-height:10px;font-size:10px;text-align:right;"></td>';
