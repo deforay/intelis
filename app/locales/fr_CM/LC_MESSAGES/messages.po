@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-11-17 13:12+0530\n"
-"PO-Revision-Date: 2023-11-17 13:15+0530\n"
+"POT-Creation-Date: 2023-11-17 13:17+0530\n"
+"PO-Revision-Date: 2023-11-17 13:19+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -165,7 +165,8 @@ msgstr "Bienvenue sur la page d’administration"
 #: hepatitis/results/hepatitis-result-status.php:65
 #: import-result/import-file.php:58 instruments/add-instrument.php:44
 #: instruments/edit-instrument.php:77 instruments/instruments.php:15
-#: mail/vlResultMail.php:60 roles/addRole.php:112 roles/editRole.php:135
+#: mail/vlResultMail.php:60 patients/add-patient.php:13
+#: patients/view-patients.php:13 roles/addRole.php:112 roles/editRole.php:135
 #: roles/roles.php:13 system-admin/api-stats/api-stats.php:16
 #: system-admin/edit-config/index.php:28
 #: system-admin/edit-config/resetPassword.php:19
@@ -517,8 +518,8 @@ msgstr "Enregistré le"
 #: hepatitis/results/hepatitis-print-results.php:222
 #: hepatitis/results/hepatitis-print-results.php:374
 #: hepatitis/results/hepatitis-result-status.php:182
-#: instruments/instruments.php:52 roles/roles.php:45
-#: system-admin/api-stats/api-stats.php:60
+#: instruments/instruments.php:52 patients/view-patients.php:42
+#: roles/roles.php:45 system-admin/api-stats/api-stats.php:60
 #: system-admin/user-login-history/userLoginIndex.php:73
 #: tb/management/tb-clinic-report.php:197
 #: tb/management/tb-clinic-report.php:301
@@ -1415,8 +1416,9 @@ msgstr "ID de l'échantillon"
 #: hepatitis/reference/add-hepatitis-test-reasons.php:69
 #: hepatitis/requests/add-samples-from-manifest.php:46
 #: import-result/import-file.php:162 instruments/add-instrument.php:470
-#: instruments/edit-instrument.php:569 roles/addRole.php:377
-#: roles/editRole.php:371 system-admin/edit-config/index.php:131
+#: instruments/edit-instrument.php:569 patients/add-patient.php:113
+#: roles/addRole.php:377 roles/editRole.php:371
+#: system-admin/edit-config/index.php:131
 #: system-admin/edit-config/resetPassword.php:60
 #: system-admin/setup/index.php:98 tb/reference/add-tb-results.php:89
 #: tb/reference/add-tb-sample-rejection-reason.php:74
@@ -2558,8 +2560,8 @@ msgstr "Créer un lot"
 #: hepatitis/reference/add-hepatitis-sample-type.php:22
 #: hepatitis/reference/add-hepatitis-test-reasons.php:27
 #: instruments/add-instrument.php:58 instruments/edit-instrument.php:90
-#: mail/vlResultMail.php:74 roles/addRole.php:125 roles/editRole.php:148
-#: system-admin/edit-config/resetPassword.php:29
+#: mail/vlResultMail.php:74 patients/add-patient.php:22 roles/addRole.php:125
+#: roles/editRole.php:148 system-admin/edit-config/resetPassword.php:29
 #: tb/reference/add-tb-results.php:30
 #: tb/reference/add-tb-sample-rejection-reason.php:22
 #: tb/reference/add-tb-sample-type.php:22
@@ -3085,7 +3087,7 @@ msgstr "Sauvegarder et Suivant"
 #: hepatitis/reference/add-hepatitis-test-reasons.php:70
 #: import-result/import-file.php:163 instruments/add-instrument.php:473
 #: instruments/edit-instrument.php:572 mail/vlResultMail.php:332
-#: roles/addRole.php:380 roles/editRole.php:374
+#: patients/add-patient.php:114 roles/addRole.php:380 roles/editRole.php:374
 #: system-admin/edit-config/resetPassword.php:61
 #: system-admin/instance-overview/instanceIndex.php:126
 #: tb/reference/add-tb-results.php:92
@@ -3431,6 +3433,7 @@ msgid "Remote Sample ID"
 msgstr "ID de l'échantillon à distance"
 
 #: batch/generate-batch-pdf.php:201 batch/generate-batch-pdf.php:211
+#: patients/add-patient.php:50 patients/add-patient.php:52
 msgid "Patient Code"
 msgstr "Code du patient"
 
@@ -3956,8 +3959,9 @@ msgstr "Veuillez sélectionner la division des parents"
 #: hepatitis/results/hepatitis-print-results.php:368
 #: hepatitis/results/hepatitis-result-status.php:174
 #: import-result/imported-results.php:228 instruments/edit-instrument.php:225
-#: instruments/instruments.php:42 roles/addRole.php:214 roles/editRole.php:202
-#: roles/roles.php:37 system-admin/user-login-history/userLoginIndex.php:67
+#: instruments/instruments.php:42 patients/view-patients.php:34
+#: roles/addRole.php:214 roles/editRole.php:202 roles/roles.php:37
+#: system-admin/user-login-history/userLoginIndex.php:67
 #: tb/management/tb-clinic-report.php:192
 #: tb/management/tb-clinic-report.php:420
 #: tb/management/tb-clinic-report.php:447 tb/management/tb-export-data.php:142
@@ -4161,18 +4165,19 @@ msgstr "Modifier Action corrective recommandée"
 #: generic-tests/program-management/generic-export-data.php:186
 #: hepatitis/management/hepatitis-export-data.php:153
 #: hepatitis/requests/hepatitis-dhis2.php:186
-#: hepatitis/requests/hepatitis-requests.php:134
+#: hepatitis/requests/hepatitis-requests.php:134 patients/view-patients.php:2
+#: patients/view-patients.php:11 patients/view-patients.php:14
 #: system/translate-strings.php:29 tb/management/tb-export-data.php:166
 #: tb/requests/tb-requests.php:153 vl/program-management/vl-export-data.php:285
 #: vl/requests/vl-requests.php:288
 msgid "Funding Sources"
 msgstr "Projet"
 
-#: common/reference/funding-sources.php:25
+#: common/reference/funding-sources.php:25 patients/view-patients.php:25
 msgid "Add Funding Sources"
 msgstr "Ajouter des projets"
 
-#: common/reference/funding-sources.php:33
+#: common/reference/funding-sources.php:33 patients/view-patients.php:33
 msgid "Funding Source Name"
 msgstr "Nom du Projet"
 
@@ -4185,6 +4190,7 @@ msgstr "Nom du Projet"
 #: generic-tests/configuration/test-methods/generic-test-methods.php:117
 #: generic-tests/configuration/test-result-units/generic-test-result-units.php:118
 #: generic-tests/configuration/testing-reasons/generic-testing-reason.php:120
+#: patients/view-patients.php:101
 msgid "Are you sure you want to change the status"
 msgstr "Êtes-vous sûr de vouloir changer de statut"
 
@@ -4204,7 +4210,7 @@ msgstr "Êtes-vous sûr de vouloir changer de statut"
 #: hepatitis/reference/hepatitis-results.php:109
 #: hepatitis/results/hepatitis-result-status.php:463
 #: hepatitis/results/hepatitis-result-status.php:493
-#: tb/reference/tb-results.php:114
+#: patients/view-patients.php:110 tb/reference/tb-results.php:114
 #: tb/reference/tb-sample-rejection-reasons.php:122
 #: tb/reference/tb-sample-type.php:132 tb/reference/tb-test-reasons.php:114
 #: tb/results/tb-result-status.php:409 tb/results/tb-result-status.php:455
@@ -4971,6 +4977,7 @@ msgstr "Résultat"
 #: vl/requests/forms/edit-cameroon.php:679
 #: vl/result-mail/editTestResultEmailConfig.php:113
 #: vl/results/forms/update-cameroon-result.php:710
+#: vl/results/pdf/result-pdf-cameroon.php:409
 msgid "Rejection Reason"
 msgstr "Motif de rejet"
 
@@ -5574,7 +5581,7 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: vl/results/forms/update-cameroon-result.php:378
 #: vl/results/forms/update-cameroon-result.php:395
 #: vl/results/forms/update-cameroon-result.php:700
-#: vl/results/pdf/result-pdf-cameroon.php:211
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:211
 msgid "Yes"
 msgstr "Oui"
 
@@ -5717,7 +5724,7 @@ msgstr "Oui"
 #: vl/results/forms/update-cameroon-result.php:381
 #: vl/results/forms/update-cameroon-result.php:398
 #: vl/results/forms/update-cameroon-result.php:701
-#: vl/results/pdf/result-pdf-cameroon.php:209
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:209
 msgid "No"
 msgstr "Non"
 
@@ -15339,6 +15346,62 @@ msgstr ""
 "Ce courrier électronique sera envoyé à l'installation avec un identifiant de "
 "courrier électronique"
 
+#: patients/add-patient.php:3 patients/add-patient.php:14
+msgid "Patients"
+msgstr "Patients"
+
+#: patients/add-patient.php:11
+msgid "Add Patient"
+msgstr "Ajouter le patient"
+
+#: patients/add-patient.php:32 patients/add-patient.php:34
+msgid "Patient Code Prefix"
+msgstr "Préfixe du code patient"
+
+#: patients/add-patient.php:34
+msgid "Please enter Patient Code Prefix"
+msgstr "Veuillez saisir le préfixe du code patient"
+
+#: patients/add-patient.php:40 patients/add-patient.php:42
+msgid "Patient Code Key"
+msgstr "Clé du code patient"
+
+#: patients/add-patient.php:42
+msgid "Please enter Patient Code Key"
+msgstr "Veuillez saisir la clé du code patient"
+
+#: patients/add-patient.php:52 patients/add-patient.php:70
+msgid "Please enter Patient Code"
+msgstr "Veuillez saisir le code du patient"
+
+#: patients/add-patient.php:58 patients/add-patient.php:60
+#: vl/requests/forms/add-cameroon.php:260
+#: vl/requests/forms/edit-cameroon.php:300
+msgid "Patient First Name"
+msgstr "Prénom du patient"
+
+#: patients/add-patient.php:60
+msgid "Please enter Patient First Name"
+msgstr "Veuillez saisir le prénom du patient"
+
+#: patients/add-patient.php:68 patients/add-patient.php:70
+msgid "Patient Middle Name"
+msgstr "Deuxième prénom du patient"
+
+#: patients/add-patient.php:76 patients/add-patient.php:78
+#: vl/requests/forms/add-cameroon.php:266
+#: vl/requests/forms/edit-cameroon.php:306
+msgid "Patient Last Name"
+msgstr "Nom du patient"
+
+#: patients/add-patient.php:78
+msgid "Please enter Patient Last Name"
+msgstr "Veuillez saisir le nom de famille du patient"
+
+#: patients/add-patient.php:102
+msgid "Patient DOB"
+msgstr "Date de naissance du patient"
+
 #: roles/addRole.php:108 roles/addRole.php:115 roles/roles.php:27
 msgid "Add Role"
 msgstr "Ajouter rôle"
@@ -17499,6 +17562,7 @@ msgstr "Ajouter les résultats VL"
 #: vl/reference/vl-results.php:32 vl/requests/forms/add-cameroon.php:606
 #: vl/requests/forms/edit-cameroon.php:700
 #: vl/results/forms/update-cameroon-result.php:731
+#: vl/results/pdf/result-pdf-cameroon.php:407
 msgid "Viral Load Result"
 msgstr "Résultat de la charge virale"
 
@@ -17792,11 +17856,6 @@ msgstr "Âge en mois"
 msgid "Enter age in months"
 msgstr "Saisir l'âge en mois"
 
-#: vl/requests/forms/add-cameroon.php:260
-#: vl/requests/forms/edit-cameroon.php:300
-msgid "Patient First Name"
-msgstr "Prénom du patient"
-
 #: vl/requests/forms/add-cameroon.php:261
 #: vl/requests/forms/edit-cameroon.php:301
 msgid "Enter Patient First Name"
@@ -17806,11 +17865,6 @@ msgstr "Saisir le prénom du patient"
 #: vl/requests/forms/edit-cameroon.php:301
 msgid "Enter patient First name"
 msgstr "Saisir le prénom du patient"
-
-#: vl/requests/forms/add-cameroon.php:266
-#: vl/requests/forms/edit-cameroon.php:306
-msgid "Patient Last Name"
-msgstr "Nom du patient"
 
 #: vl/requests/forms/add-cameroon.php:267
 #: vl/requests/forms/edit-cameroon.php:307
@@ -18385,6 +18439,8 @@ msgid "Viral Load Result(copiesl/ml)"
 msgstr "Résultat de la charge virale (copiesl/ml)"
 
 #: vl/result-mail/editTestResultEmailConfig.php:111
+#: vl/results/pdf/result-pdf-cameroon.php:398
+#: vl/results/pdf/result-pdf-cameroon.php:402
 msgid "Log Value"
 msgstr "Valeur logarithmique"
 
@@ -18488,103 +18544,103 @@ msgstr "Veuillez sélectionner si l'échantillon est rejeté"
 msgid "Please select reason for rejection"
 msgstr "Veuillez sélectionner la raison du rejet"
 
-#: vl/results/pdf/result-pdf-cameroon.php:316
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:316
 msgid "HIV VIRAL LOAD RESULT SHEET"
 msgstr "FEUILLE DE RÉSULTAT DE LA CHARGE VIRALE DU VIH"
 
-#: vl/results/pdf/result-pdf-cameroon.php:318
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:318
 msgid "Information Of Patient"
 msgstr "Informations sur le patient"
 
-#: vl/results/pdf/result-pdf-cameroon.php:324
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:324
 msgid "Unique Code"
 msgstr "Code unique"
 
-#: vl/results/pdf/result-pdf-cameroon.php:325
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:325
 msgid "Region : "
 msgstr "Région : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:328
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:328
 msgid "Patient Name : "
 msgstr "Nom du patient : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:329
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:329
 msgid "Age : "
 msgstr "Âge : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:329
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:329
 msgid "Sex : "
 msgstr "Sexe : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:332
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:332
 msgid "Type of Sample : "
 msgstr "Type d'échantillon : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:333
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:333
 msgid "Contact : "
 msgstr "Contact : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:336
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:336
 msgid "Date of Sample Collected : "
 msgstr "Date du prélèvement de l'échantillon : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:337
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:337
 msgid "Collected By : "
 msgstr "Recueillis par : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:340
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:340
 msgid "Name of Requestor : "
 msgstr "Nom du demandeur : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:341
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:341
 msgid "Contact of Requestor : "
 msgstr "Contact du demandeur : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:344
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:344
 msgid "Treatment center : "
 msgstr "Centre de traitement : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:345
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:345
 msgid "ARV initiation date : "
 msgstr "Date d'instauration des ARV : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:348
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:348
 msgid "Modified : "
 msgstr "Modifier : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:349
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:349
 msgid "Modification date : "
 msgstr "Date de modification : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:357
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:357
 msgid "Sample Received Date : "
 msgstr "Date de réception de l'échantillon : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:359
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:359
 msgid "Viral Load Serial Number : "
 msgstr "Numéro de série de la charge virale : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:365
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:365
 msgid "Test Name : "
 msgstr "Nom du test : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:367
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:367
 msgid "Sample Tested Date : "
 msgstr "Échantillon testé Date : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:373
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:373
 msgid "Result : "
 msgstr "Résultat : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:375
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:375
 msgid "Results (log) : "
 msgstr "Résultats (log) : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:377
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:377
 msgid "Test Done By : "
 msgstr "Test effectué par : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:383
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:383
 msgid ""
 "N.B.: The Abbott 0.6ml test has a lower limit of quantification of 40 copies/"
 "ml and an upper limit of quantification\n"
@@ -18614,25 +18670,164 @@ msgstr ""
 "          nombre de copies/ml.\n"
 "          "
 
-#: vl/results/pdf/result-pdf-cameroon.php:392
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:392
 msgid "Comment, if applicable : "
 msgstr "Commentaire, le cas échéant : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:394
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:394
 msgid "Date : "
 msgstr "Date : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:401
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:401
 msgid "Validated by : "
 msgstr "Validé par : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:402
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:402
 msgid "Authorized by : "
 msgstr "Autorisé par : "
 
-#: vl/results/pdf/result-pdf-cameroon.php:410
+#: vl/results/pdf/result-pdf-cameroon-cresar.php:410
 msgid "Signature : "
 msgstr "SIGNATURE : "
+
+#: vl/results/pdf/result-pdf-cameroon.php:261
+msgid "REQUESTING HEALTH FACILITY NAME"
+msgstr "NOM DE L'ÉTABLISSEMENT DE SANTÉ DEMANDEUR"
+
+#: vl/results/pdf/result-pdf-cameroon.php:262
+msgid "HEALTH FACILITY CODE"
+msgstr "CODE DES ÉTABLISSEMENTS DE SANTÉ"
+
+#: vl/results/pdf/result-pdf-cameroon.php:263
+msgid "STATE"
+msgstr "Etat"
+
+#: vl/results/pdf/result-pdf-cameroon.php:264
+msgid "COUNTY"
+msgstr "Pays"
+
+#: vl/results/pdf/result-pdf-cameroon.php:279
+msgid "PATIENT NAME"
+msgstr "Nom du patient"
+
+#: vl/results/pdf/result-pdf-cameroon.php:280
+msgid "UNIQUE ART (TRACNET) NO."
+msgstr "ART UNIQUE (TRACNET) NO."
+
+#: vl/results/pdf/result-pdf-cameroon.php:281
+msgid "REASON FOR VL TESTING"
+msgstr "RAISON DU TEST VL"
+
+#: vl/results/pdf/result-pdf-cameroon.php:323
+msgid "AGE"
+msgstr "AGE"
+
+#: vl/results/pdf/result-pdf-cameroon.php:324
+msgid "GENDER"
+msgstr "SEXE"
+
+#: vl/results/pdf/result-pdf-cameroon.php:326
+msgid "BREAST FEEDING"
+msgstr "ALIMENTATION AU SEIN"
+
+#: vl/results/pdf/result-pdf-cameroon.php:327
+msgid "PREGNANCY STATUS"
+msgstr "ÉTAT DE GROSSESSE"
+
+#: vl/results/pdf/result-pdf-cameroon.php:346
+msgid "REQUESTING CLINICIAN NAME"
+msgstr "NOM DU CLINICIEN DEMANDEUR"
+
+#: vl/results/pdf/result-pdf-cameroon.php:347
+msgid "TEL"
+msgstr "TEL"
+
+#: vl/results/pdf/result-pdf-cameroon.php:348
+msgid "EMAIL"
+msgstr "EMAIL"
+
+#: vl/results/pdf/result-pdf-cameroon.php:362
+msgid "SAMPLE ID"
+msgstr "ID de l'échantillon"
+
+#: vl/results/pdf/result-pdf-cameroon.php:363
+msgid "SAMPLE COLLECTION DATE"
+msgstr "Date de prélèvement de l'échantillon"
+
+#: vl/results/pdf/result-pdf-cameroon.php:364
+msgid "SAMPLE RECEIPT DATE"
+msgstr "DATE DE RÉCEPTION DE L'ÉCHANTILLON"
+
+#: vl/results/pdf/result-pdf-cameroon.php:372
+msgid "SAMPLE REJECTION STATUS"
+msgstr "STATUT DU REJET DE L'ÉCHANTILLON"
+
+#: vl/results/pdf/result-pdf-cameroon.php:373
+msgid "SAMPLE TEST DATE"
+msgstr "Date du test de l'échantillon"
+
+#: vl/results/pdf/result-pdf-cameroon.php:374
+msgid "RESULT RELEASE DATE"
+msgstr "DATE DE PUBLICATION DES RÉSULTATS"
+
+#: vl/results/pdf/result-pdf-cameroon.php:384
+msgid "SAMPLE TYPE"
+msgstr "Type d'échantillon"
+
+#: vl/results/pdf/result-pdf-cameroon.php:413
+msgid "Abbott Linear Detection range: 839 copies/ml - 10 million copies/ml"
+msgstr ""
+"Abbott Linear Plage de détection : 839 copies/ml - 10 millions de copies/ml"
+
+#: vl/results/pdf/result-pdf-cameroon.php:451
+msgid "TEST PLATFORM"
+msgstr "PLATE-FORME D'ESSAI"
+
+#: vl/results/pdf/result-pdf-cameroon.php:479
+msgid "TESTED BY"
+msgstr "TESTÉ PAR"
+
+#: vl/results/pdf/result-pdf-cameroon.php:480
+#: vl/results/pdf/result-pdf-cameroon.php:502
+#: vl/results/pdf/result-pdf-cameroon.php:521
+#: vl/results/pdf/result-pdf-cameroon.php:542
+msgid "SIGNATURE"
+msgstr "SIGNATURE"
+
+#: vl/results/pdf/result-pdf-cameroon.php:481
+#: vl/results/pdf/result-pdf-cameroon.php:503
+#: vl/results/pdf/result-pdf-cameroon.php:522
+#: vl/results/pdf/result-pdf-cameroon.php:543
+msgid "DATE"
+msgstr "DATE"
+
+#: vl/results/pdf/result-pdf-cameroon.php:501
+msgid "REVIEWED BY"
+msgstr "REVUE PAR"
+
+#: vl/results/pdf/result-pdf-cameroon.php:520
+msgid "REPORT REVISED BY"
+msgstr "RAPPORT RÉVISÉ PAR"
+
+#: vl/results/pdf/result-pdf-cameroon.php:541
+msgid "APPROVED BY"
+msgstr "APPROUVÉ PAR"
+
+#: vl/results/pdf/result-pdf-cameroon.php:578
+msgid "Lab Comments"
+msgstr "Commentaires du laboratoire"
+
+#: vl/results/pdf/result-pdf-cameroon.php:595
+msgid "Continue on current regimen"
+msgstr "Poursuivre le régime actuel"
+
+#: vl/results/pdf/result-pdf-cameroon.php:596
+msgid "Printed on"
+msgstr "Imprimé le"
+
+#: vl/results/pdf/result-pdf-cameroon.php:599
+msgid "Clinical and counselling action required"
+msgstr "Action clinique et de conseil nécessaire"
 
 #: vl/results/vlPrintResult.php:181 vl/results/vlPrintResult.php:184
 #: vl/results/vlPrintResult.php:429 vl/results/vlPrintResult.php:432
