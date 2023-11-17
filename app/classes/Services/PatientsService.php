@@ -15,7 +15,7 @@ class PatientsService
     protected string $table = 'patients';
     protected CommonService $commonService;
 
-    public function __construct($db = null,  CommonService $commonService)
+    public function __construct($db = null,  CommonService $commonService = null)
     {
         $this->db = $db ?? ContainerRegistry::get('db');
         $this->commonService = $commonService;

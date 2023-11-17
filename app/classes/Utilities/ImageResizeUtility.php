@@ -1,10 +1,9 @@
-<?php /** @noinspection PhpUndefinedClassInspection */
+<?php
 
 namespace App\Utilities;
 
 use App\Exceptions\SystemException;
 use Exception;
-use GdImage;
 
 /**
  *
@@ -744,7 +743,7 @@ class ImageResizeUtility
      * @param integer $mode
      * @return null
      */
-    public function imageFlip(GdImage $image, int $mode)
+    public function imageFlip($image, int $mode)
     {
         switch ($mode) {
             case self::IMG_FLIP_HORIZONTAL: {

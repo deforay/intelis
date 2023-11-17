@@ -909,7 +909,7 @@ $state = $geolocationService->getProvinces("yes");
 		var markAsComplete = false;
 		confm = confirm("<?php echo _translate("Do you want to mark these as complete ?"); ?>");
 		if (confm) {
-			var markAsComplete = true;
+			markAsComplete = true;
 		}
 		$.blockUI();
 		$.post("/covid-19/management/covid19ClinicResultExportInExcel.php", {

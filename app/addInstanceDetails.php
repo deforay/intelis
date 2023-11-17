@@ -142,7 +142,7 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 			width: '100%',
 			placeholder: "Select Testing Lab"
 		});
-		<?php if(!isset($labResults[0]) || empty($labResults[0]) || count( $labResults)  == 0){ ?>
+		<?php if(empty($labResults[0]) || count( $labResults)  == 0){ ?>
 			async function callFun(){
 				$.blockUI({
 					message: "<h3><?= _translate("Trying to sync Lab Details", true); ?><br><?= _translate("Please wait..."); ?></h3>"

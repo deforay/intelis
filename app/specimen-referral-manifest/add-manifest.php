@@ -386,7 +386,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 
 	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
 		var removeDots = obj.value.replace(/\./g, "");
-		var removeDots = removeDots.replace(/\,/g, "");
+		removeDots = removeDots.replace(/\,/g, "");
 		//str=obj.value;
 		removeDots = removeDots.replace(/\s{2,}/g, ' ');
 

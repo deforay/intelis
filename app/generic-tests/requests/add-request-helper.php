@@ -400,7 +400,7 @@ try {
         if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'clone') {
             header("Location:clone-request.php?id=" . base64_encode($_POST['vlSampleId']));
         }
-        if(!isset($_POST['saveNext']) || empty($_POST['saveNext'])){
+        if(empty($_POST['saveNext'])){
             header("Location:view-requests.php");
         }
     } else {
