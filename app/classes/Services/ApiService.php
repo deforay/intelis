@@ -23,10 +23,7 @@ class ApiService
         $client = new Client();
 
         $options = [
-            RequestOptions::JSON => $payload,
-            RequestOptions::HEADERS => [
-                'Content-Type' => 'application/json'
-            ]
+            RequestOptions::HEADERS => ['Content-Type' => 'application/json']
         ];
 
         if ($gzip) {
@@ -34,9 +31,10 @@ class ApiService
             $options[RequestOptions::BODY] = $compressedPayload;
             $options[RequestOptions::HEADERS]['Content-Encoding'] = 'gzip';
             $options[RequestOptions::HEADERS]['Accept-Encoding'] = 'gzip, deflate';
-            // Remove the JSON option as we are manually setting the body
-            unset($options[RequestOptions::JSON]);
+        } else {
+            $options[RequestOptions::JSON] = $payload;
         }
+
 
         $response = $client->post($url, $options);
 
@@ -48,46 +46,43 @@ class ApiService
     {
         $client = new Client();
 
-        // Prepare multipart data with the file
-        $multipartData = [
-            [
+        // Prepare multipart data
+        $multipartData = [];
+
+        // File content handling
+        if ($gzip) {
+            // GZip the file content and add to multipart data
+            $multipartData[] = [
+                'name' => $fileName,
+                'contents' => gzencode(file_get_contents($jsonFilePath)),
+                'filename' => basename($jsonFilePath) . '.gz', // adding .gz to indicate gzip
+                'headers' => ['Content-Encoding' => 'gzip']
+            ];
+        } else {
+            // Add regular file content to multipart data
+            $multipartData[] = [
                 'name' => $fileName,
                 'contents' => fopen($jsonFilePath, 'r'),
                 'filename' => basename($jsonFilePath)
-            ]
-        ];
+            ];
+        }
 
         // Add additional parameters to multipart data
         foreach ($params as $param) {
-            $multipartData[] = [
-                'name' => $param['name'],
-                'contents' => $param['contents']
-            ];
+            $multipartData[] = $param;
         }
 
-        // Initialize the options array
+        // Initialize the options array for multipart form data
         $options = [
-            RequestOptions::MULTIPART => $multipartData,
-            RequestOptions::HEADERS => [
-                'Content-Type' => 'multipart/form-data'
-            ]
+            RequestOptions::MULTIPART => $multipartData
         ];
-
-        // Add GZIP compression if required
-        if ($gzip) {
-            $compressedPayload = gzencode(file_get_contents($jsonFilePath));
-            $options[RequestOptions::BODY] = $compressedPayload;
-            $options[RequestOptions::HEADERS] = [
-                'Content-Encoding' => 'gzip',
-                'Content-Type' => 'application/json' // or 'application/xml' or other appropriate type
-            ];
-        }
 
         // Send the request
         $response = $client->post($url, $options);
 
         return $response->getBody()->getContents();
     }
+
 
 
     public function generateSelectOptions($options): array

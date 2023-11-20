@@ -193,7 +193,7 @@ $resultColumn = getColumns($db, $tableName);
 								</table>
 
 								<p>
-								<h3> Current Record for Sample <?php echo htmlspecialchars($sampleCode); ?></h3>
+								    <h3> Current Record for Sample <?php echo htmlspecialchars($sampleCode); ?></h3>
 								</p>
 								<table aria-describedby="table" class="current table table-striped table-hover table-bordered" aria-hidden="true">
 									<thead>
@@ -269,7 +269,7 @@ $resultColumn = getColumns($db, $tableName);
 
 			// If remainder is 0, then a
 			// 'Z' must be there in output
-			if (rem == 0) {
+			if (rem === 0) {
 				columnName.push("Z");
 				columnNumber = Math.floor(columnNumber / 26) - 1;
 			} else // If remainder is non-zero
@@ -312,7 +312,7 @@ $resultColumn = getColumns($db, $tableName);
 
 					$('row', sheet).each(function() {
 						var row = this;
-						if (skippedHeader == 2) {
+						if (skippedHeader === 2) {
 							//             var colour = $('tbody tr:eq('+parseInt(count)+') td:eq(2)').css('background-color');
 
 							// Output first row
@@ -328,7 +328,7 @@ $resultColumn = getColumns($db, $tableName);
 								}
 								var colour = $(table.cell(':eq(' + count + ')', td).node()).css('background-color');
 
-								if (colour === 'rgb(255, 165, 0)' || colour == 'orange') {
+								if (colour === 'rgb(255, 165, 0)' || colour === 'orange') {
 									$('c[r^="' + excelMap[td] + '"]', row).attr('s', '35');
 								}
 
@@ -352,7 +352,7 @@ $resultColumn = getColumns($db, $tableName);
 
 			var columns = $(this).val()
 
-			if (columns == "" || columns == null) {
+			if (columns === "" || columns == null) {
 				table.columns().visible(true);
 			} else {
 				table.columns().visible(false);

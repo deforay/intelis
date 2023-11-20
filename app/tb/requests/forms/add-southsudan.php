@@ -490,7 +490,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 
 	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
 		var removeDots = obj.value.replace(/\./g, "");
-		var removeDots = removeDots.replace(/\,/g, "");
+		removeDots = removeDots.replace(/\,/g, "");
 		removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
 		$.post("/includes/checkDuplicate.php", {

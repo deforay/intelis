@@ -328,15 +328,14 @@ $tableResult = $db->rawQuery($sQuery);
     $(function() {
         var table = $("#<?php echo $requestCountDataTable; ?>").DataTable({
             "initComplete": function(settings, json) {
-                var api = this.api();
+                let api = this.api();
                 CalculateTableSummary(this, 'all');
             },
             "footerCallback": function(row, data, start, end, display) {
-                var filter = $("#<?php echo $requestCountDataTable; ?>_filter .input-sm").val();
+                let filter = $("#<?php echo $requestCountDataTable; ?>_filter .input-sm").val();
+                let page = 'all';
                 if (filter != '') {
-                    var page = 'current';
-                } else {
-                    var page = 'all';
+                    page = 'current';
                 }
                 var api = this.api(),
                     data;
