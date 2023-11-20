@@ -207,7 +207,7 @@ if ($arr['vl_form'] == 1) {
 } elseif ($arr['vl_form'] == 3) {
 	include('pdf/result-pdf-drc.php');
 } elseif ($arr['vl_form'] == 4) {
-	include('pdf/result-pdf-cameroon.php');
+	include('pdf/result-pdf-cameroon-cresar.php');
 } elseif ($arr['vl_form'] == 5) {
 	include('pdf/result-pdf-png.php');
 } elseif ($arr['vl_form'] == 6) {

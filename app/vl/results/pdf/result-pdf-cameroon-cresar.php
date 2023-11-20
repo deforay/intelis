@@ -322,31 +322,31 @@ if (!empty($requestResult)) {
           $html .= '<table style="padding:2px;" border="1" cellpadding="8" cellspacing="0">';
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . _translate("Unique Code") . " : " . $result['patient_art_no'] . '</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . _translate("Region : ") . $result['facility_state'] . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . _translate("Region") . " : " . $result['facility_state'] . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Patient Name : ") . $patientFname . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Age : ") . $age . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . _translate("Sex : ") . (str_replace("_", " ", $result['patient_gender'])) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Patient Name") ." : ". $patientFname . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Age") ." : ". $age . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . _translate("Sex : ") . (str_replace("_", " ", $result['patient_gender'])) . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' .  _translate("Type of Sample : ") . $result['sample_name'] . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Contact : ") . $result['patient_mobile_number'] . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' .  _translate("Type of Sample")." : " . $result['sample_name'] . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Contact")." : " . $result['patient_mobile_number'] . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Date of Sample Collected : ") . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Collected By : ") . $result['facility_name'] . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Sample Collection Date")." : " . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Collected By")." : " . $result['facility_name'] . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' .  _translate("Name of Requestor : ") . $result['request_clinician_name'] . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Contact of Requestor : ") . $result['request_clinician_phone_number'] . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' .  _translate("Name of Requestor")." : " . $result['request_clinician_name'] . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Contact of Requestor")." : " . $result['request_clinician_phone_number'] . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Treatment center : ') . ($result['facility_name']) . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('ARV initiation date : ') . ($result['treatment_initiated_date']) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Treatment center')." : " . ($result['facility_name']) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('ARV initiation date')." : " . ($result['treatment_initiated_date']) . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Modified : ') . ($modified) . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Modification date : ') . ($result['last_modified_datetime']) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Modifier')." : " . ($modified) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Modification date')." : " . ($result['last_modified_datetime']) . '</td>';
           $html .= '</tr>';
           $html .= '</table>';
 
@@ -354,28 +354,28 @@ if (!empty($requestResult)) {
 
           $html .= '<table border="0" style="margin-top:24px;">';
           $html .= '<tr>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Sample Received Date : ') . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Sample Received Date') . ' : </td>';
           $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $sampleReceivedDate . " " . $sampleReceivedTime . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Viral Load Serial Number : ') . '</td>';
-          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . ($result['sample_code']) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Viral Load Serial Number') . ' : </td>';
+          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . ($result['cv_number']) . '</td>';
 
           $html .= '</tr>';
           $html .= '<tr><td></td></tr>';
           $html .= '<tr>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Test Name : ') . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Test Name') . ' : </td>';
           $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $result['vl_test_platform'] . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Sample Test Date : ') . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Sample Tested Date') . ' : </td>';
           $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $result['sample_tested_datetime'] . '</td>';
           $html .= '</tr>';
 
           $html .= '<tr><td></td></tr>';
           $html .= '<tr>';
-          $html .= '<td width="10%" style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Result : ') . '</td>';
+          $html .= '<td width="15%" style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Result') . ' (copies/ml) : </td>';
           $html .= '<td width="10%" style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . htmlspecialchars($result['result']) . '</td>';
-          $html .= '<td width="20%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Results (log) : ') . '</td>';
+          $html .= '<td width="20%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Results (log)') . ' : </td>';
           $html .= '<td width="10%" style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $logValue . '</td>';
-          $html .= '<td width="20%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Test Done By : ') . '</td>';
-          $html .= '<td width="30%" style="line-height:10px;font-size:10px;text-align:left; border: 1px solid black">' . $result['labName'] . '</td>';
+          $html .= '<td width="20%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Test Done By') . ' : </td>';
+          $html .= '<td width="30%" style="line-height:10px;font-size:10px;text-align:left; border: 1px solid black">' .$result['labName'] . '</td>';
 
           $html .= '</tr>';
           $html .= '<tr><td width="100%" style="line-height:20px;font-size:10px;">';
@@ -389,26 +389,28 @@ if (!empty($requestResult)) {
           ") . '</p>';
           $html .= '<table border="0" style="margin-top:24px;">';
           $html .= '<tr>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Comment, if applicable : ') . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Comment, if applicable') . ' : </td>';
           $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $result['lab_tech_comments'] . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Date : ') . '</td>';
-          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $finalDate . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Date') . ' : </td>';
+          $html .= '<td style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">'.$finalDate.'</td>';
 
           $html .= '</tr>';
           $html .= '<tr><td></td></tr>';
 
           $html .= '<tr>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Validated by : ') . $reviewedBy  . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Authorized by : ') . $resultApprovedBy . '</td></tr>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Validated by') . ' : '.$reviewedBy  . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Authorized by') .' : '. $resultApprovedBy . '</td></tr>';
           if (!empty($reviewedSignaturePath) && $pdf->imageExists(($reviewedSignaturePath))) {
                $signImg = '<img src="' . $reviewedSignaturePath . '" style="width:50px;" />';
           } else {
                $signImg = '';
           }
           $html .= '<tr><td></td></tr>';
-          if (!empty($signImg)) {
-               $html .= '<tr><td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Signature : ') . $signImg  . '</td>';
-          } else {
+          if(!empty($signImg)){
+               $html .= '<tr><td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Signature') .' : '. $signImg  . '</td>';
+          }
+          else
+          {
                $html .= '<tr><td style="line-height:10px;font-size:10px;text-align:left;"></td>';
           }
           $html .= '<td style="line-height:10px;font-size:10px;text-align:right;"></td>';
