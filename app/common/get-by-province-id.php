@@ -17,7 +17,11 @@ if (isset($_POST['provinceId'])) {
         $districtList = $result['districts'];
         $option = "<option value=''>--Select--</option>";
         foreach ($districtList as $district) {
-            $option .= '<option value="' . $district['geo_id'] . '">' . $district['geo_name'] . ' </option>';
+            $selected = "";
+            if($district['geo_id']==$_POST['districts']){
+                $selected = "selected='selected'";
+            }
+            $option .= '<option value="' . $district['geo_id'] . '" '.$selected.' >' . $district['geo_name'] . ' </option>';
         }
         $list['districts'] = $option;
     }

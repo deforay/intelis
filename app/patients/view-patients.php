@@ -27,14 +27,17 @@ require_once APPLICATION_PATH . '/header.php';
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="partnerTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="patientTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th scope="row"><?php echo _translate("Funding Source Name"); ?></th>
+									<th scope="row"><?php echo _translate("Patient Name"); ?></th>
+									<th scope="row"><?php echo _translate("Patient Code"); ?></th>
+									<th scope="row"><?php echo _translate("Gender"); ?></th>
+									<th scope="row"><?php echo _translate("Age"); ?></th>
+									<th scope="row"><?php echo _translate("Phone Number"); ?></th>
+									<th scope="row"><?php echo _translate("Address"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
-									<?php if (isset($_SESSION['privileges']) && in_array("geographical-divisions-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-										<!-- <th scope="row">Action</th> -->
-									<?php } ?>
+									<th scope="row">Action</th> 
 								</tr>
 							</thead>
 							<tbody>
@@ -60,7 +63,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 	$(document).ready(function() {
 		$.blockUI();
-		oTable = $('#partnerTable').dataTable({
+		oTable = $('#patientTable').dataTable({
 			"oLanguage": {
 				"sLengthMenu": "_MENU_ records per page"
 			},
@@ -76,13 +79,31 @@ require_once APPLICATION_PATH . '/header.php';
 				{
 					"sClass": "center"
 				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
 			],
 			"aaSorting": [
 				[0, "asc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "get-funding-sources-helper.php",
+			"sAjaxSource": "get-patients-helper.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				$.ajax({
 					"dataType": 'json',
