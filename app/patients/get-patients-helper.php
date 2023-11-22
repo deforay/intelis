@@ -2,34 +2,28 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Services\UsersService;
-
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
 
-$tableName = "r_recommended_corrective_actions";
-$primaryKey = "recommended_corrective_action_id";
-$testType = $_POST['testType'];
+$tableName = "patients";
+$primaryKey = "patient_id";
+
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-
-/** @var UsersService $usersService */
-$usersService = ContainerRegistry::get(UsersService::class);
-
 $sarr = $general->getSystemConfig();
 
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
  * you want to insert a non-database field (for example a counter or static image)
  */
 
-$aColumns = array('recommended_corrective_action_name', 'status');
+$aColumns = array('patient_first_name','patient_code', 'patient_gender','patient_phone_number' ,'patient_address','status');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -108,9 +102,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
  */
 
 $sQuery = "SELECT * FROM $tableName";
-if (isset($testType) && $testType != "") {
-    $sWhere = "test_type = '$testType'";
-}
+
 if (!empty($sWhere)) {
     $sWhere = ' WHERE ' . $sWhere;
     $sQuery = $sQuery . ' ' . $sWhere;
@@ -127,7 +119,7 @@ if (isset($sLimit) && isset($sOffset)) {
 //die($sQuery);
 // echo $sQuery;
 $rResult = $db->rawQuery($sQuery);
-
+// print_r($rResult);
 /* Data set length after filtering */
 
 $aResultFilterTotal = $db->rawQuery("SELECT * FROM $tableName $sWhere order by $sOrder");
@@ -148,26 +140,27 @@ $output = array(
     "iTotalDisplayRecords" => $iFilteredTotal,
     "aaData" => []
 );
-$editRequest = false;
-if ($usersService->isAllowed("/common/reference/edit-recommended-corrective-action.php?testType=vl")) {
-    $editRequest = true;
-}
-//echo $editRequest; die;
+
 foreach ($rResult as $aRow) {
+    $edit = '<a href="edit-patient.php?id=' . base64_encode($aRow['patient_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
 
     $row = [];
-    $row[] = ($aRow['recommended_corrective_action_name']);
+    if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes' && !empty($general->getGlobalConfig('key'))) {
+        $key = base64_decode($general->getGlobalConfig('key'));
+        $aRow['patient_code'] = $general->crypto('decrypt', $aRow['patient_code'], $key);
+        $aRow['patient_first_name'] = $general->crypto('decrypt', $aRow['patient_first_name'], $key);
+        $aRow['patient_middle_name'] = $general->crypto('decrypt', $aRow['patient_middle_name'], $key);
+        $aRow['patient_last_name'] = $general->crypto('decrypt', $aRow['patient_last_name'], $key);
+   }
+    $row[] = $aRow['patient_first_name'].' '.$aRow['patient_middle_name'].' '.$aRow['patient_last_name'];
+    $row[] = $aRow['patient_code'];
+    $row[] = $aRow['patient_gender'];
+    $row[] = $aRow['patient_age_in_years'];
+    $row[] = $aRow['patient_phone_number'];
+    $row[] = $aRow['patient_address'];
     $row[] = ($aRow['status']);
+    $row[] = $edit;
 
-    if ($editRequest) {
-        $edit = '<a href="/common/reference/edit-recommended-corrective-action.php?testType=vl&id=' . base64_encode($aRow[$primaryKey]) .  '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
-    }
-
-    $actions = "";
-    if ($editRequest) {
-        $actions .= $edit;
-    }
-    $row[] = $actions;
     $output['aaData'][] = $row;
 }
 

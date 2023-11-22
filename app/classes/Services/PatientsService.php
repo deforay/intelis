@@ -72,9 +72,10 @@ class PatientsService
             $params['patientLastName'] = $params['lastName'];
             $patientId = $params['patientId'];
         }
-
-
         $data['patient_code'] = $patientId;
+        $data['patient_code_key'] = NULL;
+        $data['patient_code_prefix'] = NULL;
+
         if (!empty($params['patientCodeKey'])) {
             $data['patient_code_key'] = $params['patientCodeKey'];
         }
@@ -85,6 +86,10 @@ class PatientsService
         $data['patient_middle_name'] = (!empty($params['patientMiddleName']) ? $params['patientMiddleName'] : null);
         $data['patient_last_name'] = (!empty($params['patientLastName']) ? $params['patientLastName'] : null);
 
+        $data['patient_first_name'] = $this->commonService->crypto('doNothing', $_POST['patientFirstName'], $vlData['patient_art_no']);
+        $data['patient_middle_name'] = $this->commonService->crypto('doNothing', $_POST['patientMiddleName'], $vlData['patient_art_no']);
+        $data['patient_last_name'] = $this->commonService->crypto('doNothing', $_POST['patientLastName'], $vlData['patient_art_no']);
+    
         $data['is_encrypted'] = 'no';
         if (isset($params['encryptPII']) && $params['encryptPII'] == 'yes') {
             $key = base64_decode($this->commonService->getGlobalConfig('key'));
@@ -140,6 +145,9 @@ class PatientsService
         }
 
         $data['patient_code'] = $patientId;
+        $data['patient_code_key'] = NULL;
+        $data['patient_code_prefix'] = NULL;
+
 
         if (!empty($params['patientCodeKey'])) {
             $data['patient_code_key'] = $params['patientCodeKey'];

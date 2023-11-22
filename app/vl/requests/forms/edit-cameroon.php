@@ -1248,7 +1248,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           var dob = $("#dob").val();
           var age = $("#ageInYears").val();
 
-
           flag = deforayValidator.init({
                formId: 'vlRequestFormCameroon'
           });
