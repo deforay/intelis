@@ -1,5 +1,5 @@
 <?php
-$title = _translate("Funding Sources");
+$title = _translate("Patients");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -8,10 +8,10 @@ require_once APPLICATION_PATH . '/header.php';
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-gears"></em> <?php echo _translate("Funding Sources"); ?></h1>
+		<h1><em class="fa-solid fa-gears"></em> <?php echo _translate("Patients"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
-			<li class="active"><?php echo _translate("Funding Sources"); ?></li>
+			<li class="active"><?php echo _translate("Patients"); ?></li>
 		</ol>
 	</section>
 
@@ -22,7 +22,7 @@ require_once APPLICATION_PATH . '/header.php';
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if (isset($_SESSION['privileges']) && in_array("geographical-divisions-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-							<a href="add-funding-sources.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Funding Sources"); ?></a>
+							<a href="add-patient.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Patients"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -117,25 +117,7 @@ require_once APPLICATION_PATH . '/header.php';
 		$.unblockUI();
 	});
 
-	function updateStatus(obj, optVal) {
-		if (obj.value != '') {
-			conf = confirm('<?php echo _translate("Are you sure you want to change the status"); ?>?');
-			if (conf) {
-				$.post("update-funding-source-status.php", {
-						status: obj.value,
-						id: obj.id
-					},
-					function(data) {
-						if (data != "") {
-							oTable.fnDraw();
-							alert('<?php echo _translate("Updated successfully", true); ?>.');
-						}
-					});
-			} else {
-				window.top.location.href = window.top.location;
-			}
-		}
-	}
+
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';

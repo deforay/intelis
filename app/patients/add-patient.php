@@ -76,7 +76,7 @@ $state = $geolocationService->getProvinces("yes",true,$_SESSION['facilityMap']);
                                 <div class="form-group">
                                     <label for="patientCodePrefix" class="col-lg-4 control-label"><?php echo _translate("Patient Code Prefix"); ?><span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="patientCodePrefix" name="patientCodePrefix" placeholder="<?php echo _translate('Patient Code Prefix'); ?>" title="<?php echo _translate('Please enter Patient Code Prefix'); ?>" />
+                                        <input type="text" class="form-control isRequired" id="patientCodePrefix" name="patientCodePrefix" placeholder="<?php echo _translate('Patient Code Prefix'); ?>" title="<?php echo _translate('Please enter Patient Code Prefix'); ?>" onblur='checkNameValidation("patients","patient_code_prefix",this,null,"<?php echo _translate("This Patient code prefix already exists.Please try another"); ?>",null)' />
                                     </div>
                                 </div>
                             </div>
@@ -215,7 +215,7 @@ $state = $geolocationService->getProvinces("yes",true,$_SESSION['facilityMap']);
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                <label for="patientStatus" class="col-lg-4 control-label"><?= _translate('Status'); ?> </label>
+                                <label for="patientStatus" class="col-lg-4 control-label"><?= _translate('Status'); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
                                     <select class="form-control isRequired" id="patientStatus" name="patientStatus" title="<?php echo _translate('Please select patient status'); ?>">
                                             <option value=""><?php echo _translate("--Select--"); ?></option>
@@ -352,6 +352,27 @@ $state = $geolocationService->getProvinces("yes",true,$_SESSION['facilityMap']);
                }
           }
      }
+
+     function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
+        let removeDots = obj.value.replace(/\./g, "");
+        removeDots = removeDots.replace(/\,/g, "");
+        removeDots = removeDots.replace(/\s{2,}/g, ' ');
+
+        $.post("/includes/checkDuplicate.php", {
+                tableName: tableName,
+                fieldName: fieldName,
+                value: removeDots.trim(),
+                fnct: fnct,
+                format: "html"
+            },
+            function(data) {
+                if (data === '1') {
+                    alert(alrt);
+                    duplicateName = false;
+                    document.getElementById(obj.id).value = "";
+                }
+            });
+    }
 </script>
 
 <?php

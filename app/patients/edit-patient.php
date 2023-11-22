@@ -230,7 +230,7 @@ if (!empty($patientQueryInfo['is_encrypted']) && $patientQueryInfo['is_encrypted
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                <label for="patientStatus" class="col-lg-4 control-label"><?= _translate('Status'); ?> </label>
+                                <label for="patientStatus" class="col-lg-4 control-label"><?= _translate('Status'); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
                                     <select class="form-control isRequired" id="patientStatus" name="patientStatus" title="<?php echo _translate('Please select patient status'); ?>">
                                             <option value=""><?php echo _translate("--Select--"); ?></option>

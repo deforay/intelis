@@ -70,9 +70,10 @@ class PatientsService
             $params['patientLastName'] = $params['lastName'];
             $patientId = $params['patientId'];
         }
-
-
         $data['patient_code'] = $patientId;
+        $data['patient_code_key'] = NULL;
+        $data['patient_code_prefix'] = NULL;
+
         if (!empty($params['patientCodeKey'])) {
             $data['patient_code_key'] = $params['patientCodeKey'];
         }
@@ -141,6 +142,9 @@ class PatientsService
         }
 
         $data['patient_code'] = $patientId;
+        $data['patient_code_key'] = NULL;
+        $data['patient_code_prefix'] = NULL;
+
 
         if (!empty($params['patientCodeKey'])) {
             $data['patient_code_key'] = $params['patientCodeKey'];
