@@ -40,3 +40,17 @@ ALTER TABLE `patients` ADD `patient_age_in_months` INT NULL DEFAULT NULL AFTER `
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('patients', 'common', 'Manage Patients');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'patients', 'view-patients.php', NULL, 'Manage Patients', NULL, 'always'), (NULL, 'patients', 'add-patient.php', NULL, 'Add Patient', NULL, 'always'), (NULL, 'patients', 'edit-patient.php', NULL, 'Edit Patient', NULL, 'always');
 ALTER TABLE `patients` ADD `status` VARCHAR(11) NULL DEFAULT NULL AFTER `patient_district`;
+
+
+-- Jeyabanu 22-Nov-2023
+UPDATE `privileges` SET `display_name` = 'Add Sample Type' WHERE `privileges`.`privilege_name` = '/generic-tests/requests/addSampleType.php';
+UPDATE `privileges` SET `display_name` = 'Add Symptom' WHERE `privileges`.`privilege_name` = '/generic-tests/requests/addSymptoms.php';
+UPDATE `privileges` SET `display_name` = 'Add Test Reason' WHERE `privileges`.`privilege_name` = '/generic-tests/requests/addTestingReason.php';
+
+UPDATE `privileges` SET `display_name` = 'Edit Sample Type' WHERE `privileges`.`privilege_name` = '/generic-tests/requests/editSampleType.php';
+UPDATE `privileges` SET `display_name` = 'Edit Symptom' WHERE `privileges`.`privilege_name` = '/generic-tests/requests/editSymptoms.php';
+UPDATE `privileges` SET `display_name` = 'Edit Test Reason' WHERE `privileges`.`privilege_name` = '/generic-tests/requests/editTestingReason.php';
+
+UPDATE `privileges` SET `display_name` = 'Access Sample Type' WHERE `privileges`.`privilege_name` = '/generic-tests/requests/sampleType.php';
+UPDATE `privileges` SET `display_name` = 'Access Symptom' WHERE `privileges`.`privilege_name` = '/generic-tests/requests/symptoms.php';
+UPDATE `privileges` SET `display_name` = 'Access Test Reason' WHERE `privileges`.`privilege_name` = '/generic-tests/requests/testingReason.php';
