@@ -55,6 +55,8 @@ class PatientsService
     public function savePatient($params, $testTable)
     {
 
+        return 0;
+
         if ($testTable == "form_vl" || $testTable == "form_generic") {
             $patientId = $params['artNo'];
         } elseif ($testTable == "form_eid") {
@@ -118,6 +120,7 @@ class PatientsService
 
     public function updatePatient($params, $testTable)
     {
+        return 0;
         $oldPatientCode = $this->getPatientCodeBySampleId($params['sampleCode'], $testTable);
 
         if ($testTable == "form_vl" || $testTable == "form_generic") {
