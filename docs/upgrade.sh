@@ -253,7 +253,9 @@ spinner "$pid"
 wait $pid
 echo "Remote data sync completed."
 
-rm "$vlsm_path/cache/CompiledContainer.php"
+if [ -f "$vlsm_path/cache/CompiledContainer.php" ]; then
+    rm "$vlsm_path/cache/CompiledContainer.php"
+fi
 
 service apache2 restart
 
