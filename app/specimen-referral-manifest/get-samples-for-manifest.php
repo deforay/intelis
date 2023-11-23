@@ -34,27 +34,27 @@ $query = "";
 if ($module == 'vl') {
 	$patientId = 'patient_art_no';
 	$sampleId  = 'vl_sample_id';
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.patient_art_no,vl.vl_sample_id,vl.sample_package_id,pd.package_id FROM form_vl as vl ";
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.patient_art_no,vl.vl_sample_id,vl.sample_package_id,vl.is_encrypted,pd.package_id FROM form_vl as vl ";
 } else if ($module == 'eid') {
 	$patientId = 'child_id';
 	$sampleId  = 'eid_id';
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.eid_id,vl.child_id,vl.sample_package_id,pd.package_id FROM form_eid as vl ";
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.eid_id,vl.child_id,vl.sample_package_id,vl.is_encrypted,pd.package_id FROM form_eid as vl ";
 } else if ($module == 'covid19') {
 	$patientId = 'patient_id';
 	$sampleId  = 'covid19_id';
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.covid19_id,vl.patient_id,vl.sample_package_id,pd.package_id FROM form_covid19 as vl ";
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.covid19_id,vl.patient_id,vl.sample_package_id,vl.is_encrypted,pd.package_id FROM form_covid19 as vl ";
 } else if ($module == 'hepatitis') {
 	$patientId = 'patient_id';
 	$sampleId  = 'hepatitis_id';
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.hepatitis_id,vl.patient_id,vl.sample_package_id,pd.package_id FROM form_hepatitis as vl ";
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.hepatitis_id,vl.patient_id,vl.sample_package_id,vl.is_encrypted,pd.package_id FROM form_hepatitis as vl ";
 } else if ($module == 'tb') {
 	$patientId = 'patient_id';
 	$sampleId  = 'tb_id';
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.tb_id,vl.sample_vl.patient_id,package_id,pd.package_id FROM form_tb as vl ";
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.tb_id,vl.sample_vl.patient_id,package_id,vl.is_encrypted,pd.package_id FROM form_tb as vl ";
 } else if ($module == 'generic-tests') {
 	$patientId = 'patient_id';
 	$sampleId  = 'sample_id';
-	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.sample_id,vl.patient_id,vl.sample_package_id,pd.package_id FROM form_generic as vl ";
+	$query .= "SELECT vl.sample_code,vl.remote_sample_code,vl.sample_id,vl.patient_id,vl.sample_package_id,vl.is_encrypted,pd.package_id FROM form_generic as vl ";
 }
 $query .= " LEFT JOIN package_details as pd ON vl.sample_package_id = pd.package_id ";
 
@@ -115,6 +115,11 @@ $result = $db->rawQuery($query);
 <div class="col-md-5">
 	<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
 		<?php foreach ($result as $sample) { 
+			if($sample['is_encrypted']=='yes')
+			{
+				$key = base64_decode($general->getGlobalConfig('key'));
+				$sample[$patientId] = $general->crypto('decrypt', $sample[$patientId], $key);
+			}
 			if (!empty($sample[$sampleCode])) { 
 				if ((!isset($sample['sample_package_id']) || !isset($sample['package_id'])) || ($sample['sample_package_id'] != $sample['package_id'])) { ?>
 					<option value="<?php echo $sample[$sampleId]; ?>"><?php echo ($sample[$sampleCode] . ' - ' . $sample[$patientId]); ?></option>
@@ -135,6 +140,11 @@ $result = $db->rawQuery($query);
 <div class="col-md-5">
 	<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
 		<?php foreach ($result as $sample) { 
+			if($sample['is_encrypted']=='yes')
+			{
+				$key = base64_decode($general->getGlobalConfig('key'));
+				$sample[$patientId] = $general->crypto('decrypt', $sample[$patientId], $key);
+			}
 			if (!empty($sample[$sampleCode])) { 
 				if (isset($sample['package_id']) && isset($sample['sample_package_id']) && $sample['sample_package_id'] == $sample['package_id']) { ?>
 				<option value="<?php echo $sample[$sampleId]; ?>"><?php echo ($sample[$sampleCode] . ' - ' . $sample[$patientId]); ?></option>
