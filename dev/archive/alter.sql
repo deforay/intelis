@@ -5180,27 +5180,3 @@ CREATE TABLE `scheduled_jobs` (
  `status` varchar(20) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'pending',
  PRIMARY KEY (`job_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-
--- Amit 18-Oct-2023 version 5.2.5
-UPDATE `system_config` SET `value` = '5.2.5' WHERE `system_config`.`name` = 'sc_version';
-
--- Amit 26-Oct-2023
-ALTER TABLE `vl_imported_controls` ADD `import_machine_file_name` VARCHAR(256) NULL DEFAULT NULL AFTER `imported_date_time`;
-ALTER TABLE `eid_imported_controls` ADD `import_machine_file_name` VARCHAR(256) NULL DEFAULT NULL AFTER `imported_date_time`;
-ALTER TABLE `covid19_imported_controls` ADD `import_machine_file_name` VARCHAR(256) NULL DEFAULT NULL AFTER `imported_date_time`;
-
-
--- Jeyabanu 26-Oct-2023
-ALTER TABLE `form_vl` CHANGE `cv_number` `cv_number` VARCHAR(20) NULL DEFAULT NULL;
-ALTER TABLE `audit_form_vl` CHANGE `cv_number` `cv_number` VARCHAR(20) NULL DEFAULT NULL;
-ALTER TABLE `temp_sample_import` ADD `cv_number` VARCHAR(20) NULL DEFAULT NULL AFTER `lab_phone_number`;
-
--- Jeyabanu 03-Nov-2023
-INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'vl', NULL, 'no', 'E-mail Test Result', '/mail/vlResultMail.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlResultMailMenu', '70', '101', 'active', CURRENT_TIMESTAMP);
--- Thana 06-Nov-2023
-UPDATE `privileges`
-SET `shared_privileges` = '["/batch/delete-batch.php?type=hepatitis","/batch/edit-batch-position.php?type=hepatitis"]'
-WHERE `privilege_name` = '/batch/edit-batch.php?type=hepatitis';
--- Thana 10-Nov-2023
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'generic-requests', '/generic-tests/requests/clone-request.php', NULL, 'Clone Generic Tests', '7', 'always');

@@ -15,7 +15,7 @@ class PatientsService
     protected string $table = 'patients';
     protected CommonService $commonService;
 
-    public function __construct($db = null,  CommonService $commonService = null)
+    public function __construct($db = null, $commonService = null)
     {
         $this->db = $db ?? ContainerRegistry::get('db');
         $this->commonService = $commonService;
@@ -87,7 +87,7 @@ class PatientsService
         $data['patient_first_name'] = $this->commonService->crypto('doNothing', $_POST['patientFirstName'], $vlData['patient_art_no']);
         $data['patient_middle_name'] = $this->commonService->crypto('doNothing', $_POST['patientMiddleName'], $vlData['patient_art_no']);
         $data['patient_last_name'] = $this->commonService->crypto('doNothing', $_POST['patientLastName'], $vlData['patient_art_no']);
-    
+
         $data['is_encrypted'] = 'no';
         if (isset($params['encryptPII']) && $params['encryptPII'] == 'yes') {
             $key = base64_decode($this->commonService->getGlobalConfig('key'));

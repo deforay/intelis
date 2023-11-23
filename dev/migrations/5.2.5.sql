@@ -16,6 +16,7 @@ ALTER TABLE `temp_sample_import` ADD `cv_number` VARCHAR(256) NULL DEFAULT NULL 
 INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'vl', NULL, 'no', 'E-mail Test Result', '/mail/vlResultMail.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlResultMailMenu', '70', '101', 'active', CURRENT_TIMESTAMP);
 UPDATE `privileges` SET `resource_id` = 'vl-results' WHERE `privileges`.`privilege_name` = '/mail/vlResultMail.php';
 
+
 -- Jeyabanu 03-Nov-2023
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Minimum Patient ID Length', 'vl_min_patient_id_length', NULL, 'vl', 'no', NULL, NULL, 'active');
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Minimum Patient ID Length', 'eid_min_patient_id_length', NULL, 'eid', 'no', NULL, NULL, 'active');
@@ -23,6 +24,11 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remot
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Minimum Patient ID Length', 'hepatitis_min_patient_id_length', NULL, 'hepatitis', 'no', NULL, NULL, 'active');
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Minimum Patient ID Length', 'tb_min_patient_id_length', NULL, 'tb', 'no', NULL, NULL, 'active');
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Minimum Patient ID Length', 'generic_min_patient_id_length', NULL, 'generic', 'no', NULL, NULL, 'active');
+
+UPDATE `privileges`
+SET `shared_privileges` = '["/batch/delete-batch.php?type=hepatitis","/batch/edit-batch-position.php?type=hepatitis"]'
+WHERE `privilege_name` = '/batch/edit-batch.php?type=hepatitis';
+
 
 -- Thana 10-Nov-2023
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'generic-requests', '/generic-tests/requests/clone-request.php', NULL, 'Clone Generic Tests', '7', 'always');
