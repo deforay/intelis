@@ -28,7 +28,7 @@ try {
 
   /** @var Laminas\Diactoros\ServerRequest $request */
   $request = $GLOBALS['request'];
-  $data = $apiService->getDecodedJsonFromRequest($request);
+  $data = $apiService->getJsonFromRequest($request);
 
 
   $payload = [];

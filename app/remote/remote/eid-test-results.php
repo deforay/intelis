@@ -25,7 +25,7 @@ try {
 
     /** @var Laminas\Diactoros\ServerRequest $request */
     $request = $GLOBALS['request'];
-    $jsonResponse = $apiService->getDecodedJsonFromRequest($request);
+    $jsonResponse = $apiService->getJsonFromRequest($request);
 
     /** @var MysqliDb $db */
     $db = ContainerRegistry::get('db');

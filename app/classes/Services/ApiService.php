@@ -6,6 +6,7 @@ use MysqliDb;
 use GuzzleHttp\Client;
 use App\Utilities\DateUtility;
 use GuzzleHttp\RequestOptions;
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 class ApiService
@@ -395,47 +396,35 @@ class ApiService
         return $this->db->rawQueryOne($sQuery);
     }
 
-    public function getDecodedJsonFromRequest($request)
+    public function getJsonFromRequest($request)
     {
-        // Get the content encoding header to check for gzip
-        $contentEncoding = $request->getHeaderLine('Content-Encoding');
+        try {
+            // Get the content encoding header to check for gzip
+            $contentEncoding = $request->getHeaderLine('Content-Encoding');
 
-        // Read the JSON response from the input
-        $jsonData = $request->getBody()->getContents();
-        // error_log('Received data length: ' . strlen($jsonData));
-        // error_log('Raw Data');
-        //error_log($jsonData);
-        //error_log(bin2hex(substr($jsonData, 0, 50)));
+            // Read the JSON response from the input
+            $jsonData = $request->getBody()->getContents();
 
-        // Check if the data might already be decompressed
-        if ($contentEncoding !== 'gzip') {
-            //error_log('Data is not gzipped');
-            $decodedData = json_decode($jsonData, true);
-            //error_log('Decoded data: ' . print_r($decodedData, true));
-            return json_decode($jsonData, true);
-        } else {
-            // Attempt gzip decompression
-            $decompressedData = gzdecode($jsonData);
-            if ($decompressedData === false) {
-                // Handle decompression failure
-                //error_log('Failed to decompress data');
-                return null;
+            // Check if the data might already be decompressed
+            if ($contentEncoding !== 'gzip') {
+                return $jsonData; // Return raw JSON data
             } else {
-                // Check if the data is valid UTF-8, convert if not
-                if (!mb_check_encoding($decompressedData, 'UTF-8')) {
-                    $decompressedData = mb_convert_encoding($decompressedData, 'UTF-8', 'auto');
-                }
-                $decodedData = json_decode($decompressedData, true);
-                if (json_last_error() === JSON_ERROR_NONE) {
-                    //error_log('Decompressed and decoded data successfully');
-                    //error_log('Decoded data: ' . print_r($decodedData, true));
-
-                    return $decodedData;
-                } else {
-                    //error_log('JSON Decoding Error: ' . json_last_error_msg());
+                // Attempt gzip decompression
+                $decompressedData = gzdecode($jsonData);
+                if ($decompressedData === false) {
+                    // Handle decompression failure
                     return null;
+                } else {
+                    // Check if the data is valid UTF-8, convert if not
+                    if (!mb_check_encoding($decompressedData, 'UTF-8')) {
+                        $decompressedData = mb_convert_encoding($decompressedData, 'UTF-8', 'auto');
+                    }
+                    // Return decompressed JSON data
+                    return $decompressedData;
                 }
             }
+        } catch (\Exception $e) {
+            throw new SystemException("Unable to retrieve json : " . $e->getMessage(), 500);
         }
     }
 }
