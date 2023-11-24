@@ -13,9 +13,9 @@ use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 
-ini_set('memory_limit', '1G');
-set_time_limit(30000);
-ini_set('max_execution_time', 30000);
+ini_set('memory_limit', -1);
+set_time_limit(0);
+ini_set('max_execution_time', 300000);
 try {
     $db->startTransaction();
     //$jsonResponse = $contentEncoding = $request->getHeaderLine('Content-Encoding');

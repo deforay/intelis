@@ -9,8 +9,8 @@ require_once(__DIR__ . '/../bootstrap.php');
 $db = ContainerRegistry::get('db');
 
 
-ini_set('memory_limit', '1G');
-set_time_limit(30000);
+ini_set('memory_limit', -1);
+set_time_limit(0);
 ini_set('max_execution_time', 20000);
 
 if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api')) {

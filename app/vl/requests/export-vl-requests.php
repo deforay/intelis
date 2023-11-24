@@ -1,15 +1,16 @@
 <?php
 
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
-ini_set('memory_limit', '1G');
-set_time_limit(30000);
-ini_set('max_execution_time', 30000);
+ini_set('memory_limit', -1);
+set_time_limit(0);
+ini_set('max_execution_time', 300000);
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -147,14 +148,9 @@ foreach ($rResult as $aRow) {
 if (isset($_SESSION['vlRequestQueryCount']) && $_SESSION['vlRequestQueryCount'] > 75000) {
 
 	$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VL-REQUESTS-' . date('d-M-Y-H-i-s') . '.csv';
-	$file = new SplFileObject($fileName, 'w');
-	$file->setCsvControl(",", "\r\n");
-	$file->fputcsv($headings);
-	foreach ($output as $row) {
-		$file->fputcsv($row);
-	}
-	// we dont need the $file variable anymore
-	$file = null;
+	$fileName = MiscUtility::generateCsv($headings, $output, $fileName, ',', '"');
+	// we dont need the $output variable anymore
+	unset($output);
 	echo base64_encode($fileName);
 } else {
 	//$start = (count($output)) + 2;

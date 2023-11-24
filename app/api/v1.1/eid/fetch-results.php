@@ -8,8 +8,8 @@ use App\Services\CommonService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 
-ini_set('memory_limit', '1G');
-set_time_limit(30000);
+ini_set('memory_limit', -1);
+set_time_limit(0);
 ini_set('max_execution_time', 20000);
 
 /** @var Slim\Psr7\Request $request */

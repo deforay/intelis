@@ -33,8 +33,8 @@ $app = ContainerRegistry::get(ApiService::class);
 $transactionId = $general->generateUUID();
 
 try {
-    ini_set('memory_limit', '1G');
-    set_time_limit(30000);
+    ini_set('memory_limit', -1);
+    set_time_limit(0);
     ini_set('max_execution_time', 20000);
     $authToken = $general->getAuthorizationBearerToken();
     $user = $usersService->getUserByToken($authToken);

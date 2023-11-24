@@ -10,9 +10,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-ini_set('memory_limit', '1G');
-set_time_limit(30000);
-ini_set('max_execution_time', 30000);
+ini_set('memory_limit', -1);
+set_time_limit(0);
+ini_set('max_execution_time', 300000);
 $arr = [];
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');

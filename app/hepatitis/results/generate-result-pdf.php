@@ -9,9 +9,9 @@ use App\Services\CommonService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 
-ini_set('memory_limit', '1G');
-set_time_limit(30000);
-ini_set('max_execution_time', 30000);
+ini_set('memory_limit', -1);
+set_time_limit(0);
+ini_set('max_execution_time', 300000);
 
 
 $tableName1 = "activity_log";
@@ -77,17 +77,14 @@ if (isset($_POST['id']) && trim($_POST['id']) != '') {
 // echo($searchQuery);die;
 $requestResult = $db->query($searchQuery);
 
-if (($_SESSION['instanceType'] == 'vluser') && empty($requestResult[0]['result_printed_on_lis_datetime']))
-{ 
-      $pData = array('result_printed_on_lis_datetime' => date('Y-m-d H:i:s'));
-      $db = $db->where('hepatitis_id', $_POST['id']);
-      $id = $db->update('form_hepatitis', $pData);
-}
-elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestResult[0]['result_printed_on_sts_datetime']))
-{ 
-      $pData = array('result_printed_on_sts_datetime' => date('Y-m-d H:i:s'));
-      $db = $db->where('hepatitis_id', $_POST['id']);
-      $id = $db->update('form_hepatitis', $pData);
+if (($_SESSION['instanceType'] == 'vluser') && empty($requestResult[0]['result_printed_on_lis_datetime'])) {
+	$pData = array('result_printed_on_lis_datetime' => date('Y-m-d H:i:s'));
+	$db = $db->where('hepatitis_id', $_POST['id']);
+	$id = $db->update('form_hepatitis', $pData);
+} elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestResult[0]['result_printed_on_sts_datetime'])) {
+	$pData = array('result_printed_on_sts_datetime' => date('Y-m-d H:i:s'));
+	$db = $db->where('hepatitis_id', $_POST['id']);
+	$id = $db->update('form_hepatitis', $pData);
 }
 
 

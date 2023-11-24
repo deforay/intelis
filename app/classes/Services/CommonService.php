@@ -201,8 +201,8 @@ class CommonService
                 return false;
             }
             // Check is array or not
-            $fieldName = is_array($fieldName) ? implode(",", $fieldName) : $fieldName; 
-            
+            $fieldName = is_array($fieldName) ? implode(",", $fieldName) : $fieldName;
+
             $fieldName = ($fieldName != null) ? $fieldName : '*';
 
             $configQuery = "SELECT $fieldName FROM $tableName";
@@ -270,6 +270,8 @@ class CommonService
             sodium_memzero($key);
             return $plain;
         } catch (SodiumException $e) {
+            return $encrypted;
+        } catch (SystemException $e) {
             return $encrypted;
         }
     }

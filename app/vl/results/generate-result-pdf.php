@@ -4,9 +4,9 @@ use PhpOffice\PhpSpreadsheet\Reader\Xml\Style;
 
 
 
-ini_set('memory_limit', '1G');
-set_time_limit(30000);
-ini_set('max_execution_time', 30000);
+ini_set('memory_limit', -1);
+set_time_limit(0);
+ini_set('max_execution_time', 300000);
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;

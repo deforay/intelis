@@ -2,9 +2,9 @@
 
 
 
-ini_set('memory_limit', '1G');
-set_time_limit(30000);
-ini_set('max_execution_time', 30000);
+ini_set('memory_limit', -1);
+set_time_limit(0);
+ini_set('max_execution_time', 300000);
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
@@ -70,17 +70,14 @@ if (empty($requestResult) || !$requestResult) {
 	return null;
 }
 
-if (($_SESSION['instanceType'] == 'vluser') && empty($requestResult[0]['result_printed_on_lis_datetime']))
-{ 
-      $pData = array('result_printed_on_lis_datetime' => date('Y-m-d H:i:s'));
-      $db = $db->where('sample_id', $_POST['id']);
-      $id = $db->update('form_generic', $pData);
-}
-elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestResult[0]['result_printed_on_sts_datetime']))
-{ 
-      $pData = array('result_printed_on_sts_datetime' => date('Y-m-d H:i:s'));
-      $db = $db->where('sample_id', $_POST['id']);
-      $id = $db->update('form_generic', $pData);
+if (($_SESSION['instanceType'] == 'vluser') && empty($requestResult[0]['result_printed_on_lis_datetime'])) {
+	$pData = array('result_printed_on_lis_datetime' => date('Y-m-d H:i:s'));
+	$db = $db->where('sample_id', $_POST['id']);
+	$id = $db->update('form_generic', $pData);
+} elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestResult[0]['result_printed_on_sts_datetime'])) {
+	$pData = array('result_printed_on_sts_datetime' => date('Y-m-d H:i:s'));
+	$db = $db->where('sample_id', $_POST['id']);
+	$id = $db->update('form_generic', $pData);
 }
 
 //set print time

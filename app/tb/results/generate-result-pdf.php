@@ -13,9 +13,9 @@ use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
-ini_set('memory_limit', '1G');
-set_time_limit(30000);
-ini_set('max_execution_time', 30000);
+ini_set('memory_limit', -1);
+set_time_limit(0);
+ini_set('max_execution_time', 300000);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -101,17 +101,14 @@ if (isset($_POST['id']) && trim($_POST['id']) != '') {
 $requestResult = $db->query($searchQuery);
 /* Test Results */
 
-if (($_SESSION['instanceType'] == 'vluser') && empty($requestResult[0]['result_printed_on_lis_datetime']))
-{ 
-      $pData = array('result_printed_on_lis_datetime' => date('Y-m-d H:i:s'));
-      $db = $db->where('tb_id', $_POST['id']);
-      $id = $db->update('form_tb', $pData);
-}
-elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestResult[0]['result_printed_on_sts_datetime']))
-{ 
-      $pData = array('result_printed_on_sts_datetime' => date('Y-m-d H:i:s'));
-      $db = $db->where('tb_id', $_POST['id']);
-      $id = $db->update('form_tb', $pData);
+if (($_SESSION['instanceType'] == 'vluser') && empty($requestResult[0]['result_printed_on_lis_datetime'])) {
+    $pData = array('result_printed_on_lis_datetime' => date('Y-m-d H:i:s'));
+    $db = $db->where('tb_id', $_POST['id']);
+    $id = $db->update('form_tb', $pData);
+} elseif (($_SESSION['instanceType'] == 'remoteuser') && empty($requestResult[0]['result_printed_on_sts_datetime'])) {
+    $pData = array('result_printed_on_sts_datetime' => date('Y-m-d H:i:s'));
+    $db = $db->where('tb_id', $_POST['id']);
+    $id = $db->update('form_tb', $pData);
 }
 
 if (isset($_POST['type']) && $_POST['type'] == "qr") {
@@ -295,7 +292,7 @@ if (!empty($requestResult)) {
             $result['patient_id'] = $general->crypto('decrypt', $result['patient_id'], $key);
             $patientFname = $general->crypto('decrypt', $patientFname, $key);
             $patientLname = $general->crypto('decrypt', $patientLname, $key);
-       }
+        }
 
         $signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%tb%' AND signatory_status like 'active' ORDER BY display_order ASC";
         $signResults = $db->rawQuery($signQuery, array($result['lab_id']));
