@@ -19,6 +19,7 @@ class LegacyRequestHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         try {
+            $fileToInclude = null;
             // Capture output buffer to prevent it from being sent directly
             ob_start();
             /** @var MysqliDb $db */
@@ -86,7 +87,7 @@ class LegacyRequestHandler implements RequestHandlerInterface
             throw new SystemException("An error occurred while processing the request: " . $e->getMessage(), 500, $e);
         } catch (Throwable $e) {
             ob_end_clean(); // Clean the buffer in case of an error
-            throw new SystemException("An error occurred while processing the request: " . $e->getMessage(), 500);
+            throw new SystemException("An error occurred while processing the request in $fileToInclude : " . $e->getMessage(), 500);
         }
     }
 }

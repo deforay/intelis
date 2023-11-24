@@ -4,6 +4,7 @@ use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
@@ -26,7 +27,7 @@ try {
 
     /** @var Laminas\Diactoros\ServerRequest $request */
     $request = $GLOBALS['request'];
-    $jsonResponse = $apiService->getDecodedJsonFromRequest($request);
+    $jsonResponse = $apiService->getJsonFromRequest($request);
 
     /** @var MysqliDb $db */
     $db = ContainerRegistry::get('db');
@@ -45,7 +46,7 @@ try {
 
     $sampleCodes = $facilityIds = [];
     $labId = null;
-    if (!empty($jsonResponse) && $jsonResponse != '[]') {
+    if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
 
         $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
                         WHERE TABLE_SCHEMA = ? AND table_name='form_hepatitis'";

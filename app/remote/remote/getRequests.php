@@ -23,7 +23,7 @@ $apiService = ContainerRegistry::get(ApiService::class);
 
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
-$data = $apiService->getDecodedJsonFromRequest($request);
+$data = $apiService->getJsonFromRequest($request);
 
 $payload = [];
 

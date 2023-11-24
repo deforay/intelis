@@ -41,7 +41,7 @@ $apiService = ContainerRegistry::get(ApiService::class);
 
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
-$apiData = $apiService->getDecodedJsonFromRequest($request);
+$apiData = $apiService->getJsonFromRequest($request);
 
 if (!empty($apiData['result'])) {
 	$_POST = $apiData['result'];
@@ -159,7 +159,7 @@ try {
 				CURLOPT_HTTPHEADER,
 				array(
 					'Content-Type: application/json',
-					'Content-Length: ' . strlen($json_data)
+					'Content-Length: ' . strlen((string)$json_data)
 				)
 			);
 			// execute post

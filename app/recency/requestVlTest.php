@@ -39,7 +39,7 @@ try {
 
     /** @var Laminas\Diactoros\ServerRequest $request */
     $request = $GLOBALS['request'];
-    $jsonData = $apiService->getDecodedJsonFromRequest($request);
+    $jsonData = $apiService->getJsonFromRequest($request);
     $result = explode('&', $jsonData);
 
     /* While it coming from the recency service we change the params */

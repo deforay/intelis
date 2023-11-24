@@ -36,7 +36,7 @@ try {
 
     /** @var Laminas\Diactoros\ServerRequest $request */
     $request = $GLOBALS['request'];
-    $jsonResponse = $apiService->getDecodedJsonFromRequest($request);
+    $jsonResponse = $apiService->getJsonFromRequest($request);
 
 
     $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
