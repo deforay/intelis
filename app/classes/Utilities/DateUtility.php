@@ -3,6 +3,7 @@
 namespace App\Utilities;
 
 use Exception;
+use DateInterval;
 use Carbon\Carbon;
 use InvalidArgumentException;
 
@@ -141,5 +142,16 @@ class DateUtility
         $endDate = !empty($dates[1]) ? self::isoDateFormat($dates[1]) : '';
 
         return [$startDate, $endDate];
+    }
+
+    /**
+     * Returns the date that is a certain number of months before the current date.
+     *
+     * @param int $months The number of months to subtract.
+     * @return string The date in 'Y-m-d' format.
+     */
+    public static function getDateBeforeMonths($months)
+    {
+        return Carbon::now()->subMonths($months)->format('Y-m-d');
     }
 }

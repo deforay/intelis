@@ -40,8 +40,6 @@ $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/update-sam
     ->preventOverlapping()
     ->description('Updating sample status to Expired or Locking samples');
 
-
-
 // MACHINE INTERFACING
 if (!empty(SYSTEM_CONFIG['interfacing']['enabled']) && SYSTEM_CONFIG['interfacing']['enabled'] === true) {
     $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/interface.php")
@@ -49,6 +47,14 @@ if (!empty(SYSTEM_CONFIG['interfacing']['enabled']) && SYSTEM_CONFIG['interfacin
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Importing data from interface db into local db');
+}
+// ARCHIVE AUDIT TABLES
+if (!empty(SYSTEM_CONFIG['archive']['enabled']) && SYSTEM_CONFIG['archive']['enabled'] === true) {
+    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/archive-audit-tables.php")
+        ->cron('0 0 * * *')
+        ->timezone($timeZone)
+        ->preventOverlapping()
+        ->description('Archiving audit tables');
 }
 
 // UPDATE VL RESULT INTERPRETATION
