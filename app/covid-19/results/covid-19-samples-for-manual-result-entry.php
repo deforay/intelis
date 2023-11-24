@@ -134,7 +134,12 @@ for ($i = 0; $i < count($aColumns); $i++) {
  * SQL queries
  * Get data to display
  */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,b.*,ts.*,f.facility_name,
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.covid19_id,vl.sample_code, vl.external_sample_code,
+          vl.remote_sample_code, vl.patient_id, vl.patient_name,
+          vl.patient_surname,vl.patient_phone_number,vl.patient_gender,vl.is_sample_collected,vl.reason_for_covid19_test,
+          vl.specimen_type,vl.covid19_test_platform,vl.result_status,vl.locked,vl.is_sample_rejected,vl.reason_for_sample_rejection,
+          vl.result,vl.result_reviewed_datetime,vl.result_reviewed_by,vl.result_approved_datetime,vl.result_approved_by,vl.is_encrypted,
+          vl.result_dispatched_datetime,vl.last_modified_datetime as lastModifiedDate,vl.last_modified_by,b.*,ts.*,f.facility_name,
           l_f.facility_name as labName,
           l_f.facility_logo as facilityLogo,
           l_f.header_text as headerText,
@@ -258,8 +263,8 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['patient_name'] . " " . $aRow['patient_surname'];
      $row[] = $covid19Results[$aRow['result']] ?? $aRow['result'];
 
-     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-          $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
+     if (isset($aRow['lastModifiedDate']) && trim($aRow['lastModifiedDate']) != '' && $aRow['lastModifiedDate'] != '0000-00-00 00:00:00') {
+          $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['lastModifiedDate'], true);
      } else {
           $aRow['last_modified_datetime'] = '';
      }
