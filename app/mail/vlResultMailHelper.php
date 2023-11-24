@@ -36,6 +36,7 @@ $mailconf = [];
 foreach ($geResult as $row) {
    $mailconf[$row['name']] = $row['value'];
 }
+
 if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != '') {
    if (isset($mailconf['rs_field']) && trim($mailconf['rs_field']) != '') {
       //Create a new PHPMailer instance
@@ -116,6 +117,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != '') {
          $_SESSION['alertMsg'] = 'Email sent successfully';
          header('location:vlResultMail.php');
       } else {
+         echo 'oooops'; die;
          $_SESSION['alertMsg'] = 'Unable to send mail. Please try later.';
          error_log("Mailer Error: " . $mail->ErrorInfo);
          header('location:vlResultMail.php');

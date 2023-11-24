@@ -6,6 +6,7 @@ use MysqliDb;
 use GuzzleHttp\Client;
 use App\Utilities\DateUtility;
 use GuzzleHttp\RequestOptions;
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 class ApiService
@@ -393,5 +394,37 @@ class ApiService
                         WHERE `patient_id`='" . $patientId . "' ORDER by DATE(request_created_datetime) DESC limit 1";
         }
         return $this->db->rawQueryOne($sQuery);
+    }
+
+    public function getJsonFromRequest($request)
+    {
+        try {
+            // Get the content encoding header to check for gzip
+            $contentEncoding = $request->getHeaderLine('Content-Encoding');
+
+            // Read the JSON response from the input
+            $jsonData = $request->getBody()->getContents();
+
+            // Check if the data might already be decompressed
+            if ($contentEncoding !== 'gzip') {
+                return $jsonData; // Return raw JSON data
+            } else {
+                // Attempt gzip decompression
+                $decompressedData = gzdecode($jsonData);
+                if ($decompressedData === false) {
+                    // Handle decompression failure
+                    return null;
+                } else {
+                    // Check if the data is valid UTF-8, convert if not
+                    if (!mb_check_encoding($decompressedData, 'UTF-8')) {
+                        $decompressedData = mb_convert_encoding($decompressedData, 'UTF-8', 'auto');
+                    }
+                    // Return decompressed JSON data
+                    return $decompressedData;
+                }
+            }
+        } catch (\Exception $e) {
+            throw new SystemException("Unable to retrieve json : " . $e->getMessage(), 500);
+        }
     }
 }

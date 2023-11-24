@@ -246,7 +246,7 @@ $batResult = $db->rawQuery($batQuery);
 
 		function forceSyncRequestsByManifestCode(manifestCode, forceSyncModule) {
 			$.blockUI({
-				message: '<h3><?php echo _translate("Trying to sync Relevant Manifest Code Test Requests", true); ?><br><?php echo _translate("Please wait", true); ?>...</h3>'
+				message: '<h3><?php echo _translate("Trying to sync manifest", true); ?><br><?php echo _translate("Please wait", true); ?>...</h3>'
 			});
 
 			if (remoteSync && remoteUrl != null && remoteUrl != '') {

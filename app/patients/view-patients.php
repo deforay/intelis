@@ -1,5 +1,5 @@
 <?php
-$title = _translate("Funding Sources");
+$title = _translate("Patients");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -8,10 +8,10 @@ require_once APPLICATION_PATH . '/header.php';
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-gears"></em> <?php echo _translate("Funding Sources"); ?></h1>
+		<h1><em class="fa-solid fa-gears"></em> <?php echo _translate("Patients"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
-			<li class="active"><?php echo _translate("Funding Sources"); ?></li>
+			<li class="active"><?php echo _translate("Patients"); ?></li>
 		</ol>
 	</section>
 
@@ -22,19 +22,22 @@ require_once APPLICATION_PATH . '/header.php';
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if (isset($_SESSION['privileges']) && in_array("geographical-divisions-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-							<a href="add-funding-sources.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Funding Sources"); ?></a>
+							<a href="add-patient.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Patients"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="partnerTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="patientTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th scope="row"><?php echo _translate("Funding Source Name"); ?></th>
+									<th scope="row"><?php echo _translate("Patient Name"); ?></th>
+									<th scope="row"><?php echo _translate("Patient Code"); ?></th>
+									<th scope="row"><?php echo _translate("Gender"); ?></th>
+									<th scope="row"><?php echo _translate("Age"); ?></th>
+									<th scope="row"><?php echo _translate("Phone Number"); ?></th>
+									<th scope="row"><?php echo _translate("Address"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
-									<?php if (isset($_SESSION['privileges']) && in_array("geographical-divisions-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
-										<!-- <th scope="row">Action</th> -->
-									<?php } ?>
+									<th scope="row">Action</th> 
 								</tr>
 							</thead>
 							<tbody>
@@ -60,7 +63,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 	$(document).ready(function() {
 		$.blockUI();
-		oTable = $('#partnerTable').dataTable({
+		oTable = $('#patientTable').dataTable({
 			"oLanguage": {
 				"sLengthMenu": "_MENU_ records per page"
 			},
@@ -76,13 +79,31 @@ require_once APPLICATION_PATH . '/header.php';
 				{
 					"sClass": "center"
 				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
 			],
 			"aaSorting": [
 				[0, "asc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "get-funding-sources-helper.php",
+			"sAjaxSource": "get-patients-helper.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				$.ajax({
 					"dataType": 'json',
@@ -96,25 +117,7 @@ require_once APPLICATION_PATH . '/header.php';
 		$.unblockUI();
 	});
 
-	function updateStatus(obj, optVal) {
-		if (obj.value != '') {
-			conf = confirm('<?php echo _translate("Are you sure you want to change the status"); ?>?');
-			if (conf) {
-				$.post("update-funding-source-status.php", {
-						status: obj.value,
-						id: obj.id
-					},
-					function(data) {
-						if (data != "") {
-							oTable.fnDraw();
-							alert('<?php echo _translate("Updated successfully", true); ?>.');
-						}
-					});
-			} else {
-				window.top.location.href = window.top.location;
-			}
-		}
-	}
+
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';

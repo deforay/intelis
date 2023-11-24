@@ -1,9 +1,10 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\GeoLocationsService;
+use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+use App\Services\GeoLocationsService;
 use App\Utilities\ImageResizeUtility;
 
 
@@ -35,26 +36,13 @@ $labSignTable = "lab_report_signatories";
 
 //$jsonData = $contentEncoding = $request->getHeaderLine('Content-Encoding');
 
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
+
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
+$apiData = $apiService->getJsonFromRequest($request);
 
-// Get the content encoding header to check for gzip
-$contentEncoding = $request->getHeaderLine('Content-Encoding');
-
-// Read the JSON response from the input
-$jsonData = $request->getBody()->getContents();
-
-// If content is gzip-compressed, decompress it
-if ($contentEncoding === 'gzip') {
-	$jsonData = gzdecode($jsonData);
-}
-
-// Check if the data is valid UTF-8, convert if not
-if (!mb_check_encoding($jsonData, 'UTF-8')) {
-	$jsonData = mb_convert_encoding($jsonData, 'UTF-8', 'auto');
-}
-
-$apiData = json_decode($jsonData, true);
 if (!empty($apiData['result'])) {
 	$_POST = $apiData['result'];
 }
@@ -171,7 +159,7 @@ try {
 				CURLOPT_HTTPHEADER,
 				array(
 					'Content-Type: application/json',
-					'Content-Length: ' . strlen($json_data)
+					'Content-Length: ' . strlen((string)$json_data)
 				)
 			);
 			// execute post

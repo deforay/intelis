@@ -1,7 +1,7 @@
 <?php
 
 // Application version
-const VERSION = '5.2.5';
+const VERSION = '5.2.6';
 
 // Application environment
 defined('APPLICATION_ENV')

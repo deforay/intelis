@@ -115,22 +115,29 @@ for ($i = 0; $i < count($aColumns); $i++) {
  * SQL queries
  * Get data to display
  */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,b.*,ts.*,f.facility_name,
-          l_f.facility_name as labName,
-          l_f.facility_logo as facilityLogo,
-          l_f.header_text as headerText,
-          f.facility_code,
-          f.facility_state,
-          f.facility_district,
-          u_d.user_name as reviewedBy,
-          a_u_d.user_name as approvedBy
-          FROM form_eid as vl
-          LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-          LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
-          INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
-          LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
-          LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
-          LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by";
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.eid_id, vl.sample_code, vl.remote_sample, 
+               vl.remote_sample_code, vl.sample_collection_date, vl.sample_tested_datetime,
+               vl.child_id,vl.mother_id, vl.child_name,vl.mother_name, vl.result, vl.reason_for_eid_test, vl.last_modified_datetime as lastModifiedDate, 
+               vl.eid_test_platform, vl.result_status, vl.clinician_name, 
+               vl.caretaker_phone_number,vl.locked, vl.result_approved_datetime, vl.result,
+               vl.result_reviewed_datetime, vl.sample_received_at_hub_datetime, vl.sample_received_at_lab_datetime,
+               vl.result_dispatched_datetime, vl.result_printed_datetime, vl.result_approved_by,
+               vl.is_encrypted,b.*,ts.*,f.facility_name,
+               l_f.facility_name as labName,
+               l_f.facility_logo as facilityLogo,
+               l_f.header_text as headerText,
+               f.facility_code,
+               f.facility_state,
+               f.facility_district,
+               u_d.user_name as reviewedBy,
+               a_u_d.user_name as approvedBy
+               FROM form_eid as vl
+               LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+               LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
+               INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+               LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+               LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
+               LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by";
 
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
@@ -198,7 +205,7 @@ $_SESSION['eidRequestSearchResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-// echo ($sQuery);die();
+ //echo ($sQuery);die();
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 
@@ -247,8 +254,8 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['mother_name'];
      $row[] = $eidResults[$aRow['result']] ?? $aRow['result'];
 
-     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-          $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
+     if (isset($aRow['lastModifiedDate']) && trim($aRow['lastModifiedDate']) != '' && $aRow['lastModifiedDate'] != '0000-00-00 00:00:00') {
+          $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['lastModifiedDate'], true);
      } else {
           $aRow['last_modified_datetime'] = '';
      }
