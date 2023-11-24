@@ -40,7 +40,7 @@ $counter = 0;
 
 $transactionId = $general->generateUUID();
 
-if ($data['Key'] == 'vlsm-get-remote') {
+if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
 
     $labId = $data['labId'] ?: null;
 

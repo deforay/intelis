@@ -165,7 +165,7 @@ echo "Modifying PHP configurations..."
 TOTAL_RAM=$(awk '/MemTotal/ {print $2}' /proc/meminfo) || exit 1
 RAM_75_PERCENT=$((TOTAL_RAM * 3 / 4 / 1024))M || RAM_75_PERCENT=1G
 
-desired_error_reporting="error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT & ~E_NOTICE"
+desired_error_reporting="error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT & ~E_NOTICE & ~E_WARNING"
 desired_post_max_size="post_max_size = 1G"
 desired_upload_max_filesize="upload_max_filesize = 1G"
 desired_memory_limit="memory_limit = $RAM_75_PERCENT"

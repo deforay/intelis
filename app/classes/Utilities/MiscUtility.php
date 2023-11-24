@@ -198,4 +198,24 @@ class MiscUtility
 
         return preg_match($scientificRegex, $str) === 1;
     }
+
+    public static function generateCsv($headings, $data, $filename, $delimiter = ',', $enclosure = '"')
+    {
+        $handle = fopen($filename, 'w'); // Open file for writing
+
+        // The headings first
+        if (!empty($headings)) {
+            fputcsv($handle, $headings, $delimiter, $enclosure);
+        }
+        // Then the data
+        if (!empty($data)) {
+            foreach ($data as $line) {
+                fputcsv($handle, $line, $delimiter, $enclosure);
+            }
+        }
+
+        unset($data); // Clear memory
+        fclose($handle);
+        return $filename;
+    }
 }
