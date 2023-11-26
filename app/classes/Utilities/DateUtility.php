@@ -35,14 +35,16 @@ class DateUtility
 
     public static function humanReadableDateFormat($date, $includeTime = false, $format = null)
     {
-        if (!self::isDateValid($date)) {
-            return null;
-        }
+        return once(function () use ($date, $includeTime, $format) {
+            if (!self::isDateValid($date)) {
+                return null;
+            }
 
-        $format = $format ??  $_SESSION['phpDateFormat'] ?? 'd-M-Y';
+            $format = $format ??  $_SESSION['phpDateFormat'] ?? 'd-M-Y';
 
-        $format = $includeTime ? $format . " H:i" : $format;
-        return Carbon::parse($date)->format($format);
+            $format = $includeTime ? $format . " H:i" : $format;
+            return Carbon::parse($date)->format($format);
+        });
     }
 
     public static function getCurrentDateTime($format = 'Y-m-d H:i:s')
@@ -52,26 +54,30 @@ class DateUtility
 
     public static function isoDateFormat($date, $includeTime = false)
     {
-        if (!self::isDateValid($date)) {
-            return null;
-        }
+        return once(function () use ($date, $includeTime) {
+            if (!self::isDateValid($date)) {
+                return null;
+            }
 
-        $format = $includeTime ? "Y-m-d H:i:s" : "Y-m-d";
-        return Carbon::parse($date)->format($format);
+            $format = $includeTime ? "Y-m-d H:i:s" : "Y-m-d";
+            return Carbon::parse($date)->format($format);
+        });
     }
 
     public static function ageInYearMonthDays($dateOfBirth)
     {
-        if (!self::isDateValid($dateOfBirth)) {
-            return null;
-        }
+        return once(function () use ($dateOfBirth) {
+            if (!self::isDateValid($dateOfBirth)) {
+                return null;
+            }
 
-        $diff = Carbon::now()->diff(Carbon::parse($dateOfBirth));
-        return [
-            "year" => $diff->y,
-            "months" => $diff->m,
-            "days" => $diff->d
-        ];
+            $diff = Carbon::now()->diff(Carbon::parse($dateOfBirth));
+            return [
+                "year" => $diff->y,
+                "months" => $diff->m,
+                "days" => $diff->d
+            ];
+        });
     }
 
     public static function dateDiff($dateString1, $dateString2, $format = null)

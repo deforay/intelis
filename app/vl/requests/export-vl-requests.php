@@ -19,12 +19,6 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$dateTimeUtil = new DateUtility();
-
-$sQuery = $_SESSION['vlRequestQuery'];
-//$rResult = $db->rawQuery($sQuery);
-
-
 $output = [];
 
 $headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Testing Lab"), _translate("Health Facility Name"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Unique ART No."), _translate("Patient Name"), _translate("Date of Birth"), _translate("Age"), _translate("Gender"), _translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Date of Treatment Initiation"), _translate("Current Regimen"), _translate("Date of Initiation of Current Regimen"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("ARV Adherence"), _translate("Indication for Viral Load Testing"), _translate("Requesting Clinican"), _translate("Request Date"), _translate("Is Sample Rejected?"), _translate("Sample Tested On"), _translate("Result (cp/ml)"), _translate("Result (log)"), _translate("Sample Receipt Date"), _translate("Date Result Dispatched"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
@@ -36,7 +30,7 @@ if ($_SESSION['instanceType'] == 'standalone') {
 	$headings = array_values(array_diff($headings, [_translate("Remote Sample ID")]));
 }
 $no = 1;
-foreach ($db->rawQueryGenerator($sQuery) as $aRow) {
+foreach ($db->rawQueryGenerator($_SESSION['vlRequestQuery']) as $aRow) {
 	$row = [];
 	$age = null;
 	$aRow['patient_age_in_years'] = (int) $aRow['patient_age_in_years'];
@@ -143,7 +137,12 @@ foreach ($db->rawQueryGenerator($sQuery) as $aRow) {
 	$row[] = $aRow['i_partner_name'] ?? null;
 	$row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
 	$output[] = $row;
+	unset($row);
 	$no++;
+}
+
+function generateOutput()
+{
 }
 
 if (isset($_SESSION['vlRequestQueryCount']) && $_SESSION['vlRequestQueryCount'] > 100000) {
@@ -183,9 +182,10 @@ if (isset($_SESSION['vlRequestQueryCount']) && $_SESSION['vlRequestQueryCount'] 
 
 	$sheet->fromArray($processedHeadings, null, 'A3');
 
-	foreach ($output as $rowNo => $rowData) {
+	$rowNo = 3;
+	foreach ($output as $rowData) {
 		$colNo = 1;
-		$rRowCount = $rowNo + 4;
+		$rRowCount = $rowNo++;
 		$sheet->fromArray($rowData, null, Coordinate::stringFromColumnIndex($colNo) . $rRowCount);
 	}
 
