@@ -1,8 +1,8 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\SystemService;
+use App\Registries\ContainerRegistry;
 
 $title = _translate("Audit Trail");
 require_once APPLICATION_PATH . '/header.php';
@@ -12,6 +12,17 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+$archiveDbExists = false;
+if (
+	!empty(SYSTEM_CONFIG['archive']) &&
+	SYSTEM_CONFIG['archive']['enabled'] === true &&
+	!empty(SYSTEM_CONFIG['archive']['database']['host']) &&
+	!empty(SYSTEM_CONFIG['archive']['database']['username'])
+) {
+	$archiveDbExists = true;
+	$db->addConnection('archive', SYSTEM_CONFIG['archive']['database']);
+}
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -39,23 +50,53 @@ function getColumns($db, $tableName)
 	return $db->rawQuery($columnsSql, array(SYSTEM_CONFIG['database']['db'], $tableName));
 }
 
-function getColumnValues($db, $tableName, $sampleCode)
+// function getColumnValues($db, $tableName, $sampleCode)
+// {
+// 	$sql = "SELECT a.*,
+// 				modifier.user_name as last_modified_by,
+// 				creator.user_name as req_created_by,
+// 				tester.user_name as tested_by,
+// 				approver.user_name as result_approved_by,
+// 				riewer.user_name as result_reviewed_by
+// 				FROM $tableName as a
+// 				LEFT JOIN user_details as creator ON a.request_created_by = creator.user_id
+// 				LEFT JOIN user_details as modifier ON a.last_modified_by = modifier.user_id
+// 				LEFT JOIN user_details as tester ON a.tested_by = tester.user_id
+// 				LEFT JOIN user_details as approver ON a.result_approved_by = approver.user_id
+// 				LEFT JOIN user_details as riewer ON a.result_reviewed_by = riewer.user_id
+// 				WHERE sample_code = ? OR remote_sample_code = ? OR unique_id like ?";
+// 	return $db->rawQuery($sql, array($sampleCode, $sampleCode, $sampleCode));
+// }
+
+function getColumnValues($db, $tableName, $sampleCode, $archiveDbExists, $archiveDbName)
 {
-	$sql = "SELECT a.*,
-				modifier.user_name as last_modified_by,
-				creator.user_name as req_created_by,
-				tester.user_name as tested_by,
-				approver.user_name as result_approved_by,
-				riewer.user_name as result_reviewed_by
-				from $tableName as a
-				LEFT JOIN user_details as creator ON a.request_created_by = creator.user_id
-				LEFT JOIN user_details as modifier ON a.last_modified_by = modifier.user_id
-				LEFT JOIN user_details as tester ON a.tested_by = tester.user_id
-				LEFT JOIN user_details as approver ON a.result_approved_by = approver.user_id
-				LEFT JOIN user_details as riewer ON a.result_reviewed_by = riewer.user_id
-				WHERE sample_code = ? OR remote_sample_code = ? OR unique_id like ?";
-	return $db->rawQuery($sql, array($sampleCode, $sampleCode, $sampleCode));
+	$mainDbName = SYSTEM_CONFIG['database']['db'];
+	$baseQuery = "SELECT a.*,
+                    modifier.user_name as last_modified_by,
+                    creator.user_name as req_created_by,
+                    tester.user_name as tested_by,
+                    approver.user_name as result_approved_by,
+                    riewer.user_name as result_reviewed_by
+                FROM %s.$tableName as a
+                LEFT JOIN user_details as creator ON a.request_created_by = creator.user_id
+                LEFT JOIN user_details as modifier ON a.last_modified_by = modifier.user_id
+                LEFT JOIN user_details as tester ON a.tested_by = tester.user_id
+                LEFT JOIN user_details as approver ON a.result_approved_by = approver.user_id
+                LEFT JOIN user_details as riewer ON a.result_reviewed_by = riewer.user_id
+                WHERE sample_code = ? OR remote_sample_code = ? OR unique_id like ?";
+
+	$queries = [];
+	$queries[] = sprintf($baseQuery, $mainDbName);
+
+	if ($archiveDbExists && $archiveDbName) {
+		$queries[] = sprintf($baseQuery, $archiveDbName);
+	}
+
+	$unionQuery = implode(" UNION ", $queries);
+	return $db->rawQuery($unionQuery, array($sampleCode, $sampleCode, "%$sampleCode%"));
 }
+
+
 
 $resultColumn = getColumns($db, $tableName);
 
@@ -129,7 +170,7 @@ $resultColumn = getColumns($db, $tableName);
 
 			<?php
 			if (!empty($sampleCode)) {
-				$posts = getColumnValues($db, $tableName, $sampleCode);
+				$posts = getColumnValues($db, $tableName, $sampleCode, $archiveDbExists, $archiveDbName);
 
 			?>
 				<div class="col-xs-12">
@@ -193,14 +234,14 @@ $resultColumn = getColumns($db, $tableName);
 								</table>
 
 								<p>
-								    <h3> Current Record for Sample <?php echo htmlspecialchars($sampleCode); ?></h3>
+								<h3> Current Record for Sample <?php echo htmlspecialchars($sampleCode); ?></h3>
 								</p>
 								<table aria-describedby="table" class="current table table-striped table-hover table-bordered" aria-hidden="true">
 									<thead>
 										<tr>
 											<?php
 											$resultColumn = getColumns($db, $tableName2);
-											$posts = getColumnValues($db, $tableName2, $sampleCode);
+											$posts = getColumnValues($db, $tableName, $sampleCode, $archiveDbExists, $archiveDbName);
 											foreach ($resultColumn as $col) {
 											?>
 												<th>

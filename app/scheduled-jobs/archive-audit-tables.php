@@ -29,6 +29,8 @@ if (empty(SYSTEM_CONFIG['archive'])) {
 }
 
 if (
+    !empty(SYSTEM_CONFIG['archive']) &&
+    SYSTEM_CONFIG['archive']['enabled'] === true &&
     !empty(SYSTEM_CONFIG['archive']['database']['host']) &&
     !empty(SYSTEM_CONFIG['archive']['database']['username'])
 ) {
@@ -43,8 +45,6 @@ $auditTables = [
     'audit_form_hepatitis',
     'audit_form_generic',
 ];
-
-
 
 // $idField = [
 //     'audit_form_vl' => 'vl_sample_id',
