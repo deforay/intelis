@@ -2,20 +2,21 @@
 
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
 
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 20000);
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -29,61 +30,56 @@ $arr = $general->getGlobalConfig();
 
 if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "") {
 
-	$rResult = $db->rawQuery($_SESSION['vlResultQuery']);
-
 	$output = [];
 
-	$styleArray = array(
-		'font' => array(
-			'bold' => true,
-			'size' => '13',
-		),
-		'alignment' => array(
-			'horizontal' => Alignment::HORIZONTAL_CENTER,
-			'vertical' => Alignment::VERTICAL_CENTER,
-		),
-		'borders' => array(
-			'outline' => array(
-				'style' => Border::BORDER_THIN,
-			),
-		),
-		'fill' => array(
-			'type' => Fill::FILL_SOLID,
-			//'rotation' => 90,
-			'startcolor' => array(
-				'argb' => '#D3D3D3'
-			),
-			'endcolor' => array(
-				'argb' => '#D3D3D3'
-			)
-		)
-	);
+	// $styleArray = array(
+	// 	'font' => array(
+	// 		'bold' => true,
+	// 		'size' => '13',
+	// 	),
+	// 	'alignment' => array(
+	// 		'horizontal' => Alignment::HORIZONTAL_CENTER,
+	// 		'vertical' => Alignment::VERTICAL_CENTER,
+	// 	),
+	// 	'borders' => array(
+	// 		'outline' => array(
+	// 			'style' => Border::BORDER_THIN,
+	// 		),
+	// 	),
+	// 	'fill' => array(
+	// 		'type' => Fill::FILL_SOLID,
+	// 		//'rotation' => 90,
+	// 		'startcolor' => array(
+	// 			'argb' => '#D3D3D3'
+	// 		),
+	// 		'endcolor' => array(
+	// 			'argb' => '#D3D3D3'
+	// 		)
+	// 	)
+	// );
 
 	if ($arr['vl_form'] == 4 && $arr['vl_excel_export_format'] == "cresar") {
 		//$headings = array(_translate('No.'), _translate("Region of sending facility"), _translate("District of sending facility"), _translate("Sending facility"), _translate("Name of reference Lab"), _translate("Category of testing site"), _translate("Project"), _translate("CV Number"),  _translate("TAT"), _translate("Sample ID"), _translate("Existing ART Code"), _translate("ARV Protocol"), _translate("Gender"), _translate("Date of Birth"), _translate("Age"), _translate("Age Range"), _translate("Requested by contact"), _translate("Sample collection date"),  _translate("Sample reception date"), _translate("Sample Type"), _translate("Treatment start date"), _translate("Treatment Protocol"), _translate("Was sample send to another reference lab"), _translate("If sample was send to another lab, give name of lab"), _translate("Sample Rejected"), _translate("Sample Tested"), _translate("Test Platform"), _translate("Test platform detection limit"), _translate("Invalid test (yes or no)"), _translate("Invalid sample repeated (yes or no)"), _translate("Error codes (yes or no)"), _translate("Error codes values"), _translate("Tests repeated due to error codes (yes or no)"), _translate("New CV number"), _translate("Date of test"), _translate("Date of repeat test"), _translate("Result sent back to facility (yes or no)"), _translate("Date of result sent to facility"), _translate("Result Type"), _translate("Result Value"), _translate("Result Value Log"), _translate("Is suppressed"), _translate("Communication of rejected samples or high viral load (yes, no or NA)"), _translate("Observations"));
-		$headings = array(_translate('No.'), _translate("Sample ID"), _translate('Region of sending facility'), _translate('District of sending facility'), _translate('Sending facility'), _translate('Project'), _translate('Existing ART Code'), _translate('Date of Birth'), _translate('Age'), _translate('Patient Name'), _translate('Gender'), _translate('Sample Creation Date'), _translate('Sample Created By'), _translate('Sample collection date'), _translate('Sample Type'), _translate('Requested by contact'), _translate('Treatment start date'), _translate("Treatment Protocol"), _translate('ARV Protocol'), _translate('CV Number'), _translate('Test Platform'), _translate("Test platform detection limit"), _translate("Sample reception date"), _translate("Sample Tested"), _translate("Date of test"), _translate("Date of result sent to facility"), _translate("Sample Rejected"), _translate("Communication of rejected samples or high viral load (yes, no or NA)"), _translate("Result Value"), _translate("Result Value Log"),  _translate("Is suppressed"), _translate("Name of reference Lab"), _translate("Category of testing site"), _translate("TAT"), _translate("Age Range"), _translate("Was sample send to another reference lab"), _translate("If sample was send to another lab, give name of lab"), _translate("Invalid test (yes or no)"), _translate("Invalid sample repeated (yes or no)"), _translate("Error codes (yes or no)"), _translate("Error codes values"), _translate("Tests repeated due to error codes (yes or no)"), _translate("New CV number"), _translate("Date of repeat test"), _translate("Result sent back to facility (yes or no)"), _translate("Result Type"), _translate("Observations"));
+		$headings = array(_translate('S.No.'), _translate("Sample ID"), _translate('Region of sending facility'), _translate('District of sending facility'), _translate('Sending facility'), _translate('Project'), _translate('Existing ART Code'), _translate('Date of Birth'), _translate('Age'), _translate('Patient Name'), _translate('Gender'), _translate('Sample Creation Date'), _translate('Sample Created By'), _translate('Sample collection date'), _translate('Sample Type'), _translate('Requested by contact'), _translate('Treatment start date'), _translate("Treatment Protocol"), _translate('ARV Protocol'), _translate('CV Number'), _translate('Test Platform'), _translate("Test platform detection limit"), _translate("Sample reception date"), _translate("Sample Tested"), _translate("Date of test"), _translate("Date of result sent to facility"), _translate("Sample Rejected"), _translate("Communication of rejected samples or high viral load (yes, no or NA)"), _translate("Result Value"), _translate("Result Value Log"),  _translate("Is suppressed"), _translate("Name of reference Lab"), _translate("Category of testing site"), _translate("TAT"), _translate("Age Range"), _translate("Was sample send to another reference lab"), _translate("If sample was send to another lab, give name of lab"), _translate("Invalid test (yes or no)"), _translate("Invalid sample repeated (yes or no)"), _translate("Error codes (yes or no)"), _translate("Error codes values"), _translate("Tests repeated due to error codes (yes or no)"), _translate("New CV number"), _translate("Date of repeat test"), _translate("Result sent back to facility (yes or no)"), _translate("Result Type"), _translate("Observations"));
 	} else {
-		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-			$headings = array("No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Testing Lab", "Health Facility Code", "District/County", "Province/State", "Unique ART No.",  "Patient Name", "Date of Birth", "Age", "Gender", "Patient Cellphone Number", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Current Regimen", "Date of Initiation of Current Regimen", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "ARV Adherence", "Indication for Viral Load Testing", "Requesting Clinican", "Requesting Clinican Cellphone Number", "Request Date", "Is Sample Rejected?", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result (cp/ml)", "Result (log)", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
-		} else {
-			$headings = array("No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Testing Lab", "Health Facility Code", "District/County", "Province/State", "Date of Birth", "Age", "Gender", "Patient Cellphone Number", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Current Regimen", "Date of Initiation of Current Regimen", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "ARV Adherence", "Indication for Viral Load Testing", "Requesting Clinican", "Requesting Clinican Cellphone Number", "Request Date", "Is Sample Rejected?", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result (cp/ml)", "Result (log)", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+
+		$headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Health Facility Name"), _translate("Testing Lab"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Unique ART No."), _translate("Patient Name"), _translate("Date of Birth"), _translate("Age"), _translate("Gender"), _translate("Patient Cellphone Number"), _translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Date of Treatment Initiation"), _translate("Current Regimen"), _translate("Date of Initiation of Current Regimen"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("ARV Adherence"), _translate("Indication for Viral Load Testing"), _translate("Requesting Clinican"), _translate("Requesting Clinican Cellphone Number"), _translate("Request Date"), _translate("Is Sample Rejected?"), _translate("Rejection Reason"), _translate("Recommended Corrective Action"), _translate("Sample Tested On"), _translate("Result (cp/ml)"), _translate("Result (log)"), _translate("Sample Receipt Date"), _translate("Date Result Dispatched"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
+
+		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
+			$headings = array_values(array_diff($headings, [_translate("Unique ART No."), _translate("Patient Name")]));
 		}
 	}
 
-	if ($_SESSION['instanceType'] == 'standalone' && ($key = array_search("Remote Sample ID", $headings)) !== false) {
-		unset($headings[$key]);
+	if ($_SESSION['instanceType'] == 'standalone') {
+		$headings = array_values(array_diff($headings, [_translate("Remote Sample ID")]));
 	}
 
 
 	//$sheet->getStyle('A3:AI3')->applyFromArray($styleArray);
 
-	if ($arr['vl_form'] == 4 && $arr['vl_excel_export_format'] == "cresar") {
-		usort($rResult, function ($a, $b) {
-			return $a['request_created_datetime'] <=> $b['request_created_datetime'];
-		});
-	}
+
 	$no = 1;
-	foreach ($rResult as $aRow) {
+	foreach ($db->rawQueryGenerator($_SESSION['vlResultQuery']) as $aRow) {
 		$row = [];
 
 		$age = null;
@@ -262,7 +258,13 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		$no++;
 	}
 
-	if (isset($_SESSION['vlResultQueryCount']) && $_SESSION['vlResultQueryCount'] > 75000) {
+	if ($arr['vl_form'] == 4 && $arr['vl_excel_export_format'] == "cresar") {
+		usort($output, function ($a, $b) {
+			return $a['request_created_datetime'] <=> $b['request_created_datetime'];
+		});
+	}
+
+	if (isset($_SESSION['vlResultQueryCount']) && $_SESSION['vlResultQueryCount'] > 100000) {
 
 		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '.csv';
 		$file = new SplFileObject($fileName, 'w');
@@ -283,41 +285,62 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		$sheet = $excel->getActiveSheet();
 		$sheet->setTitle('VL Results');
 
-		$sheet
-			->getStyle('A3:AS3')
-			->getFill()
-			->setFillType(Fill::FILL_SOLID)
-			->getStartColor()
-			->setARGB('808080');
+		// $sheet
+		// 	->getStyle('A3:AS3')
+		// 	->getFill()
+		// 	->setFillType(Fill::FILL_SOLID)
+		// 	->getStartColor()
+		// 	->setARGB('808080');
 
-		foreach ($_POST as $key => $value) {
-			if (trim($value) != '' && trim($value) != '-- Select --') {
-				$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
-			}
-		}
-		$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
-		if ($_POST['withAlphaNum'] == 'yes') {
+		// foreach ($_POST as $key => $value) {
+		// 	if (trim($value) != '' && trim($value) != '-- Select --') {
+		// 		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
+		// 	}
+		// }
+		//$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
+		// if ($_POST['withAlphaNum'] == 'yes') {
+		// 	foreach ($headings as $field => $value) {
+		// 		$string = str_replace(' ', '', $value);
+		// 		$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
+		// 		$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
+		// 		$colNo++;
+		// 	}
+		// } else {
+		// 	foreach ($headings as $field => $value) {
+		// 		$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
+		// 		$colNo++;
+		// 	}
+		// }
+
+		//$start = (count($output)) + 2;
+		// foreach ($output as $rowNo => $rowData) {
+		// 	$colNo = 1;
+		// 	$rRowCount = $rowNo + 4;
+		// 	foreach ($rowData as $field => $value) {
+		// 		$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
+		// 		$colNo++;
+		// 	}
+		// }
+
+
+		if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
 			foreach ($headings as $field => $value) {
 				$string = str_replace(' ', '', $value);
 				$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-				$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
-				$colNo++;
+				$processedHeadings[] = html_entity_decode($value);
 			}
 		} else {
 			foreach ($headings as $field => $value) {
-				$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
-				$colNo++;
+				$processedHeadings[] = html_entity_decode($value);
 			}
 		}
 
-		//$start = (count($output)) + 2;
+		$sheet->fromArray($processedHeadings, null, 'A3');
+
 		foreach ($output as $rowNo => $rowData) {
 			$colNo = 1;
 			$rRowCount = $rowNo + 4;
-			foreach ($rowData as $field => $value) {
-				$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
-				$colNo++;
-			}
+			$sheet->fromArray($rowData, null, Coordinate::stringFromColumnIndex($colNo) . $rRowCount);
 		}
 		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(5) . '.xlsx';

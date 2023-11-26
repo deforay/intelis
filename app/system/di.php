@@ -9,11 +9,12 @@ use App\Services\BatchService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
-use App\Utilities\ValidationUtility;
+use App\Helpers\BatchPdfHelper;
 use App\Services\CommonService;
 use App\Services\SystemService;
 use App\Services\AppMenuService;
 use App\Services\Covid19Service;
+use App\Services\DatabaseService;
 use App\Services\PatientsService;
 use App\Utilities\CaptchaUtility;
 use App\Services\HepatitisService;
@@ -21,8 +22,8 @@ use App\Helpers\PdfWatermarkHelper;
 use App\Services\FacilitiesService;
 use App\Services\InstrumentsService;
 use App\Services\TestResultsService;
+use App\Utilities\ValidationUtility;
 use App\Helpers\PdfConcatenateHelper;
-use App\Helpers\BatchPdfHelper;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 use App\Services\GeoLocationsService;
@@ -75,7 +76,7 @@ $builder->addDefinitions([
     'applicationConfig' => $systemConfig,
     'db' => DI\factory(
         function (ContainerInterface $c) {
-            return new MysqliDb($c->get('applicationConfig')['database']);
+            return new DatabaseService($c->get('applicationConfig')['database']);
         }
     )
 ]);
