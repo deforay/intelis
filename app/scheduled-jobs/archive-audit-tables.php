@@ -92,19 +92,24 @@ foreach ($auditTables as $auditTable) {
 
             // Check if there is data to archive
             if ($rowCount > 0) {
-                // Insert data into the archive database
-                foreach ($dataToArchive as $row) {
-                    $db->connection('archive')->insert($auditTable, $row);
-                }
+                // // Insert data into the archive database
+                // foreach ($dataToArchive as $row) {
+                //     $db->connection('archive')->insert($auditTable, $row);
+                // }
 
-                // Delete archived data from the main database
+                // Bulk insert data into the archive database
+                $db->connection('archive')->insertMulti($auditTable, $dataToArchive);
+
+
+                // Constructing conditions for bulk deletion
+                $deleteConditions = [];
                 foreach ($dataToArchive as $row) {
-                    $db->connection('default')
-                        ->where('dt_datetime', $row['dt_datetime'])
-                        //->where('revision', $row['revision'])
-                        ->where('unique_id', $row['unique_id'])
-                        ->delete($auditTable);
+                    $deleteConditions[] = "(unique_id = '" . $db->escape($row['unique_id']) . "' AND dt_datetime = '" . $db->escape($row['dt_datetime']) . "')";
                 }
+                $deleteQuery = implode(' OR ', $deleteConditions);
+
+                // Bulk delete archived data from the main database
+                $db->connection('default')->rawQuery("DELETE FROM $auditTable WHERE $deleteQuery");
 
                 $offset += $limit;
                 echo "Processed $rowCount rows, moving to next batch...\n";
