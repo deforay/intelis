@@ -1,14 +1,15 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -88,11 +89,11 @@ if (!empty($sWhere)) {
     ORDER BY latest DESC';
 }
 $_SESSION['labSyncStatus'] = $sQuery;
-$rResult = $db->rawQuery($sQuery);
+
 $today = new DateTimeImmutable();
 $twoWeekExpiry = $today->sub(DateInterval::createFromDateString('2 weeks'));
 $threeWeekExpiry = $today->sub(DateInterval::createFromDateString('4 weeks'));
-foreach ($rResult as $key => $aRow) {
+foreach ($db->rawQueryGenerator($sQuery) as $key => $aRow) {
     $color = "red";
     $aRow['latest'] = $aRow['latest'] ?: $aRow['requested_on'];
     $latest = (!empty($aRow['latest'])) ? new DateTimeImmutable($aRow['latest']) : null;
@@ -107,7 +108,7 @@ foreach ($rResult as $key => $aRow) {
         $color = "red";
     }
 
-    /* Assign data table variables */?>
+    /* Assign data table variables */ ?>
     <tr class="<?php echo $color; ?>" data-facilityId="<?= base64_encode($aRow['facility_id']); ?>">
         <td>
             <?= $aRow['facility_name']; ?>
@@ -126,4 +127,3 @@ foreach ($rResult as $key => $aRow) {
         </td>
     </tr>
 <?php } ?>
-

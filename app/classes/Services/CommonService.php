@@ -4,24 +4,24 @@
 
 namespace App\Services;
 
-use MysqliDb;
 use Exception;
-use SodiumException;
-use TCPDF2DBarcode;
 use TCPDFBarcode;
+use TCPDF2DBarcode;
+use SodiumException;
 use Ramsey\Uuid\Uuid;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 class CommonService
 {
 
-    protected ?MysqliDb $db = null;
+    protected ?DatabaseService $db = null;
 
 
-    public function __construct(?MysqliDb $db = null)
+    public function __construct(?DatabaseService $db = null)
     {
         $this->db = $db ?? ContainerRegistry::get('db');
     }
@@ -45,12 +45,11 @@ class CommonService
                 if (stripos($sql, 'GROUP BY') !== false) {
                     // If the query contains GROUP BY
                     $countSql = "SELECT COUNT(*) as totalCount FROM ($sql) as subquery";
-                    $count = (int)$this->db->rawQueryOne($countSql)['totalCount'];
                 } else {
                     // If the query does not contain GROUP BY
-                    $countSql = preg_replace('/SELECT.*? FROM/si', 'SELECT COUNT(*) as qCount FROM', $sql, 1);
-                    $count = (int)$this->db->rawQueryOne($countSql)['qCount'];
+                    $countSql = preg_replace('/SELECT.*? FROM/si', 'SELECT COUNT(*) as totalCount FROM', $sql, 1);
                 }
+                $count = (int)$this->db->rawQueryOne($countSql)['totalCount'];
             } else {
                 $count = count($queryResult);
             }

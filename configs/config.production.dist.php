@@ -50,6 +50,24 @@ $systemConfig['interfacing']['database']['charset'] = 'utf8mb4';
 
 $systemConfig['interfacing']['sqlite3Path'] = '';
 
+
+
+$systemConfig['archive'] = [];
+
+// Enable/Disable Interfacing
+// true => Enabled
+// false => Disabled
+$systemConfig['archive']['enabled'] = false;
+
+// Archive Database Details (not needed if above feature set to false)
+$systemConfig['archive']['database']['host'] = '';
+$systemConfig['archive']['database']['username'] = '';
+$systemConfig['archive']['database']['password'] = '';
+$systemConfig['archive']['database']['db'] = 'archive_vlsm';
+$systemConfig['archive']['database']['port'] = 3306;
+$systemConfig['archive']['database']['charset'] = 'utf8mb4';
+
+
 $systemConfig['recency'] = [];
 
 // Enable/Disable Cross Login with Recency

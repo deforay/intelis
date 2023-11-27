@@ -11,7 +11,7 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 20000);
 
-/** @var MysqliDb $db */
+/** @var \App\Services\DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -31,15 +31,13 @@ foreach ($headings as $field => $value) {
     $colNo++;
 }
 
-
-$rResult = $db->rawQuery($_SESSION['labSyncStatus']);
 $no = 1;
 
 $today = new DateTimeImmutable();
 $twoWeekExpiry = $today->sub(DateInterval::createFromDateString('2 weeks'));
 $threeWeekExpiry = $today->sub(DateInterval::createFromDateString('4 weeks'));
 
-foreach ($rResult as $aRow) {
+foreach ($db->rawQueryGenerator($_SESSION['labSyncStatus']) as $aRow) {
     $row = [];
     $_color = "f08080";
 
@@ -65,6 +63,8 @@ foreach ($rResult as $aRow) {
     $row[] = DateUtility::humanReadableDateFormat($aRow['lastRequestsSync']);
     $row[] = $aRow['version'] ?? " - ";
     $output[] = $row;
+
+    unset($row);
 
     $no++;
 }

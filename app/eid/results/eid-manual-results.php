@@ -72,7 +72,7 @@ $lastUrl2 = '';
 					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;margin-bottom: 0px;">
 						<tr>
 							<td><strong>
-									<?php echo _translate("Sample Collection Date&nbsp"); ?>;:
+									<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
 								</strong></td>
 							<td>
 								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" value="<?php echo $collectionDate; ?>" />

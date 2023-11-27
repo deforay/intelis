@@ -3,6 +3,7 @@
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -12,34 +13,26 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$dateTimeUtil = new DateUtility();
-
-$sQuery = $_SESSION['vlRequestQuery'];
-$rResult = $db->rawQuery($sQuery);
-
-$arr = $general->getGlobalConfig();
-
 $delimiter = $arr['default_csv_delimiter'];
 $enclosure = $arr['default_csv_enclosure'];
-
 $output = [];
 
-if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-	$headings = array("S. No.", "Sample ID", "Remote Sample ID", "Testing Lab", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Unique ART No.", "Patient Name", "Date of Birth", "Age", "Gender", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Current Regimen", "Date of Initiation of Current Regimen", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "ARV Adherence", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Sample Tested On", "Result (cp/ml)", "Result (log)", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
-} else {
-	$headings = array("S. No.", "Sample ID", "Remote Sample ID", "Testing Lab", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Date of Birth", "Age", "Gender", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Current Regimen", "Date of Initiation of Current Regimen", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "ARV Adherence", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Sample Tested On", "Result (cp/ml)", "Result (log)", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+$headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Testing Lab"), _translate("Health Facility Name"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Unique ART No."), _translate("Patient Name"), _translate("Date of Birth"), _translate("Age"), _translate("Gender"), _translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Date of Treatment Initiation"), _translate("Current Regimen"), _translate("Date of Initiation of Current Regimen"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("ARV Adherence"), _translate("Indication for Viral Load Testing"), _translate("Requesting Clinican"), _translate("Request Date"), _translate("Is Sample Rejected?"), _translate("Sample Tested On"), _translate("Result (cp/ml)"), _translate("Result (log)"), _translate("Sample Receipt Date"), _translate("Date Result Dispatched"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
+if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
+	$remove = [_translate("Unique ART No."), _translate("Patient Name")];
+	$headings = array_values(array_diff($headings, [_translate("Unique ART No."), _translate("Patient Name")]));
 }
-if ($_SESSION['instanceType'] == 'standalone' && ($key = array_search("Remote Sample ID", $headings)) !== false) {
-	unset($headings[$key]);
+if ($_SESSION['instanceType'] == 'standalone') {
+	$headings = array_values(array_diff($headings, [_translate("Remote Sample ID")]));
 }
 $no = 1;
-foreach ($rResult as $aRow) {
+foreach ($db->rawQueryGenerator($_SESSION['vlRequestQuery']) as $aRow) {
 	$row = [];
 	$age = null;
 	$aRow['patient_age_in_years'] = (int) $aRow['patient_age_in_years'];
@@ -146,10 +139,15 @@ foreach ($rResult as $aRow) {
 	$row[] = $aRow['i_partner_name'] ?? null;
 	$row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
 	$output[] = $row;
+	unset($row);
 	$no++;
 }
 
-if (isset($_SESSION['vlRequestQueryCount']) && $_SESSION['vlRequestQueryCount'] > 75000) {
+function generateOutput()
+{
+}
+
+if (isset($_SESSION['vlRequestQueryCount']) && $_SESSION['vlRequestQueryCount'] > 100000) {
 
 	$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VL-REQUESTS-' . date('d-M-Y-H-i-s') . '.csv';
 	$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
@@ -160,38 +158,39 @@ if (isset($_SESSION['vlRequestQueryCount']) && $_SESSION['vlRequestQueryCount'] 
 	//$start = (count($output)) + 2;
 	$colNo = 1;
 
-	$nameValue = '';
-	foreach ($_POST as $key => $value) {
-		if (trim($value) != '' && trim($value) != '-- Select --') {
-			$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
-		}
-	}
+	// $nameValue = '';
+	// foreach ($_POST as $key => $value) {
+	// 	if (trim($value) != '' && trim($value) != '-- Select --') {
+	// 		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
+	// 	}
+	// }
 
 	$excel = new Spreadsheet();
 	$sheet = $excel->getActiveSheet();
-	$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
+	//$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
+	$processedHeadings = [];
+
 	if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
 		foreach ($headings as $field => $value) {
 			$string = str_replace(' ', '', $value);
 			$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-			$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
-			$colNo++;
+			$processedHeadings[] = html_entity_decode($value);
 		}
 	} else {
 		foreach ($headings as $field => $value) {
-			$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
-			$colNo++;
+			$processedHeadings[] = html_entity_decode($value);
 		}
 	}
 
-	foreach ($output as $rowNo => $rowData) {
+	$sheet->fromArray($processedHeadings, null, 'A3');
+
+	$rowNo = 3;
+	foreach ($output as $rowData) {
 		$colNo = 1;
-		$rRowCount = $rowNo + 4;
-		foreach ($rowData as $field => $value) {
-			$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
-			$colNo++;
-		}
+		$rRowCount = $rowNo++;
+		$sheet->fromArray($rowData, null, Coordinate::stringFromColumnIndex($colNo) . $rRowCount);
 	}
+
 	$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 	$filename = 'VLSM-VL-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(6) . '.xlsx';
 	$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
