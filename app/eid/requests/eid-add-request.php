@@ -47,7 +47,7 @@ $implementingPartnerList = $general->getImplementationPartners();
 
 $healthFacilities = $facilitiesService->getHealthFacilities('eid');
 
-$healthFacilitiesAllColumns = $facilitiesService->getHealthFacilities('eid',false,true);
+$healthFacilitiesAllColumns = $facilitiesService->getHealthFacilities('eid', false, true);
 
 $testingLabs = $facilitiesService->getTestingLabs('eid');
 $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
@@ -83,7 +83,7 @@ foreach ($iResult as $val) {
 }
 
 $minPatientIdLength = 0;
-if(isset($arr['eid_min_patient_id_length']) && $arr['eid_min_patient_id_length'] != ""){
+if (isset($arr['eid_min_patient_id_length']) && $arr['eid_min_patient_id_length'] != "") {
     $minPatientIdLength = $arr['eid_min_patient_id_length'];
 }
 
@@ -209,7 +209,7 @@ require($fileArray[$arr['vl_form']]);
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
-        let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ;?>';
+        let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
         $('.date').mask(dateFormatMask);
         $('.dateTime').mask(dateFormatMask + ' 99:99');
     });
@@ -283,7 +283,7 @@ require($fileArray[$arr['vl_form']]);
                     $.unblockUI();
                     //$("#sampleCollectionDate").val('');
                     generateSampleCode();
-                    alert("We could not save this form. Please try saving again.");
+                    alert("<?= _translate("We could not save this form. Please try saving again.", true); ?>");
                 }
             });
     }

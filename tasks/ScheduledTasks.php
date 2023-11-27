@@ -28,14 +28,14 @@ $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/db-backups
 
 // Cleanup Old Files
 $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/cleanup.php")
-    ->cron('0 */12 * * *')
+    ->cron('45 0 * * *')
     ->timezone($timeZone)
     ->preventOverlapping()
     ->description('Cleaning Up Old Backups and Temporary files');
 
 // Expiring/Locking Samples
 $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/update-sample-status.php")
-    ->everySixHours()
+    ->cron('5 0 * * *')
     ->timezone($timeZone)
     ->preventOverlapping()
     ->description('Updating sample status to Expired or Locking samples');
@@ -51,7 +51,7 @@ if (!empty(SYSTEM_CONFIG['interfacing']['enabled']) && SYSTEM_CONFIG['interfacin
 // ARCHIVE AUDIT TABLES
 if (!empty(SYSTEM_CONFIG['archive']['enabled']) && SYSTEM_CONFIG['archive']['enabled'] === true) {
     $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/archive-audit-tables.php")
-        ->cron('0 0 * * *')
+        ->cron('15 0 * * *')
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Archiving audit tables');

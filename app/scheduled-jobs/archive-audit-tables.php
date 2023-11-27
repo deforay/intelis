@@ -55,7 +55,7 @@ $auditTables = [
 //     'audit_form_generic' => 'sample_id',
 // ];
 
-$archiveBeforeDate = DateUtility::getDateBeforeMonths(6);
+$archiveBeforeDate = DateUtility::getDateBeforeMonths(1);
 
 $mainDbName = SYSTEM_CONFIG['database']['db'];
 $archiveDbName = SYSTEM_CONFIG['archive']['database']['db'];
@@ -113,7 +113,7 @@ foreach ($auditTables as $auditTable) {
             }
         } while ($rowCount > 0);
 
-        echo "Archived and deleted data older than 6 months from $auditTable.\n";
+        echo "Archived and deleted data older than 1 month from $auditTable.\n";
     } catch (Exception $e) {
         throw new SystemException($e->getMessage());
     }
