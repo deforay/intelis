@@ -218,4 +218,24 @@ class MiscUtility
         fclose($handle);
         return $filename;
     }
+
+    public static function getGenderFromString($gender)
+    {
+        return once(function () use ($gender) {
+            switch (strtolower($gender)) {
+                case 'male':
+                case 'm':
+                    return 'M';
+                case 'female':
+                case 'f':
+                    return 'F';
+                case 'not_recorded':
+                case 'notrecorded':
+                case 'unreported':
+                    return 'Unreported';
+                default:
+                    return '';
+            }
+        });
+    }
 }

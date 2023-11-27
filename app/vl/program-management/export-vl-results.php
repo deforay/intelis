@@ -84,31 +84,12 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 
 		$age = null;
 		$aRow['patient_age_in_years'] = (int) $aRow['patient_age_in_years'];
-		if (!empty($aRow['patient_dob'])) {
-			$age = DateUtility::ageInYearMonthDays($aRow['patient_dob']);
-			if (!empty($age) && $age['year'] > 0) {
-				$aRow['patient_age_in_years'] = $age['year'];
-			}
+		$age = DateUtility::ageInYearMonthDays($aRow['patient_dob'] ?? '');
+		if (!empty($age) && $age['year'] > 0) {
+			$aRow['patient_age_in_years'] = $age['year'];
 		}
-		//set gender
-		switch (strtolower($aRow['patient_gender'])) {
-			case 'male':
-			case 'm':
-				$gender = 'M';
-				break;
-			case 'female':
-			case 'f':
-				$gender = 'F';
-				break;
-			case 'not_recorded':
-			case 'notrecorded':
-			case 'unreported':
-				$gender = 'Unreported';
-				break;
-			default:
-				$gender = '';
-				break;
-		}
+
+		$gender = MiscUtility::getGenderFromString($aRow['patient_gender']);
 
 
 		//set ARV adherecne
@@ -322,25 +303,11 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		// 	}
 		// }
 
-
-		if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
-			foreach ($headings as $field => $value) {
-				$string = str_replace(' ', '', $value);
-				$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-				$processedHeadings[] = html_entity_decode($value);
-			}
-		} else {
-			foreach ($headings as $field => $value) {
-				$processedHeadings[] = html_entity_decode($value);
-			}
-		}
-
-		$sheet->fromArray($processedHeadings, null, 'A3');
+		$sheet->fromArray($headings, null, 'A3');
 
 		foreach ($output as $rowNo => $rowData) {
-			$colNo = 1;
 			$rRowCount = $rowNo + 4;
-			$sheet->fromArray($rowData, null, Coordinate::stringFromColumnIndex($colNo) . $rRowCount);
+			$sheet->fromArray($rowData, null, 'A' . $rRowCount);
 		}
 		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(5) . '.xlsx';
