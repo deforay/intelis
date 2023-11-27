@@ -77,7 +77,7 @@ $batResult = $db->rawQuery($batQuery);
 									<th>Sample Collection<br /> Date</th>
 									<th>Batch Code</th>
 									<th>Facility Name</th>
-									<?php if ($formId == 1) { ?>
+									<?php if ($formId == COUNTRY\SOUTH_SUDAN) { ?>
 										<th>Case ID</th>
 									<?php } else { ?>
 										<th style="width:10%;">

@@ -131,7 +131,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 
 
         $row = [];
-        if ($arr['vl_form'] == 1) {
+        if ($arr['vl_form'] == COUNTRY\SOUTH_SUDAN) {
             // Get testing platform and test method
             $covid19TestQuery = "SELECT * FROM covid19_tests
                                     WHERE covid19_id= ? ORDER BY test_id DESC LIMIT 1";

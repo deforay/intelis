@@ -3,16 +3,6 @@ $title = _translate("Add Samples from Manifest");
 
 require_once APPLICATION_PATH . '/header.php';
 
-$tsQuery = "SELECT * FROM r_sample_status";
-$tsResult = $db->rawQuery($tsQuery);
-$configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
-$configFormResult = $db->rawQuery($configFormQuery);
-$sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
-$sResult = $db->rawQuery($sQuery);
-$fQuery = "SELECT * FROM facility_details where status='active'";
-$fResult = $db->rawQuery($fQuery);
-$batQuery = "SELECT batch_code FROM batch_details where test_type = 'vl' AND batch_status='completed'";
-$batResult = $db->rawQuery($batQuery);
 ?>
 <style>
 	.select2-selection__choice {

@@ -2,6 +2,7 @@
 
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
@@ -17,27 +18,25 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
-$data = $apiService->getJsonFromRequest($request);
+$data = $apiService->getJsonFromRequest($request, true);
 
 $payload = [];
 
 $labId = $data['labName'] ?? $data['labId'] ?? null;
 
 if (empty($labId)) {
+  error_log('Lab Id is required');
   exit(0);
 }
 
 
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 $dataSyncInterval = !empty($dataSyncInterval) ? $dataSyncInterval : 30;
-
-
 
 try {
   $db->startTransaction();
@@ -56,7 +55,7 @@ try {
   }
 
 
-  $removeKeys = array(
+  $removeKeys = [
     'sample_code',
     'sample_code_key',
     'sample_code_format',
@@ -85,7 +84,7 @@ try {
     'last_modified_by',
     'result_printed_datetime',
     'last_modified_datetime'
-  );
+  ];
 
   $vlQuery = "SELECT * FROM form_vl
                     WHERE $condition ";

@@ -288,19 +288,19 @@ $aResult = $db->query($aQuery);
 	}
 </style>
 <?php
-if ($arr['vl_form'] == 1) {
+if ($arr['vl_form'] == COUNTRY\SOUTH_SUDAN) {
 	include('forms/update-southsudan-result.php');
-} else if ($arr['vl_form'] == 2) {
+} else if ($arr['vl_form'] == COUNTRY\SIERRA_LEONE) {
 	include('forms/update-sierraleone-result.php');
-} else if ($arr['vl_form'] == 3) {
+} else if ($arr['vl_form'] == COUNTRY\DRC) {
 	include('forms/update-drc-result.php');
-} else if ($arr['vl_form'] == 4) {
+} else if ($arr['vl_form'] == COUNTRY\CAMEROON) {
 	include('forms/update-cameroon-result.php');
-} else if ($arr['vl_form'] == 5) {
+} else if ($arr['vl_form'] == COUNTRY\PNG) {
 	include('forms/update-png-result.php');
-} else if ($arr['vl_form'] == 6) {
+} else if ($arr['vl_form'] == COUNTRY\WHO) {
 	include('forms/update-who-result.php');
-} else if ($arr['vl_form'] == 7) {
+} else if ($arr['vl_form'] == COUNTRY\RWANDA) {
 	include('forms/update-rwanda-result.php');
 }
 

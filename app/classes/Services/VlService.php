@@ -2,11 +2,12 @@
 
 namespace App\Services;
 
+use COUNTRY;
 use Exception;
 use SAMPLE_STATUS;
 use App\Utilities\DateUtility;
-use App\Abstracts\AbstractTestService;
 use App\Utilities\MiscUtility;
+use App\Abstracts\AbstractTestService;
 
 
 class VlService extends AbstractTestService
@@ -416,7 +417,7 @@ class VlService extends AbstractTestService
 
             // PNG FORM (formId = 5) CANNOT HAVE PROVINCE EMPTY
             // Sample Collection Date Cannot be Empty
-            if (empty($sampleCollectionDate) || ($formId == 5 && empty($provinceId))) {
+            if (empty($sampleCollectionDate) || ($formId == COUNTRY\PNG && empty($provinceId))) {
                 return 0;
             }
 

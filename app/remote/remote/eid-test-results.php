@@ -128,20 +128,15 @@ try {
                     continue;
                 }
 
+                $formAttributes = $general->jsonToSetString(
+                    $lab['form_attributes'],
+                    'form_attributes'
+                );
+                $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                 if (!empty($sResult)) {
-                    $formAttributes = $general->jsonToSetString(
-                        $lab['form_attributes'],
-                        'form_attributes'
-                    );
-                    $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                    $db = $db->where('eid_id', $sResult[0]['eid_id']);
+                    $db->where('eid_id', $sResult[0]['eid_id']);
                     $id = $db->update('form_eid', $lab);
                 } else {
-                    $formAttributes = $general->jsonToSetString(
-                        $lab['form_attributes'],
-                        'form_attributes'
-                    );
-                    $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                     $id = $db->insert('form_eid', $lab);
                 }
             } catch (Exception $e) {

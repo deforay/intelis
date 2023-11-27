@@ -26,7 +26,7 @@ class CommonService
         $this->db = $db ?? ContainerRegistry::get('db');
     }
 
-    public function getQueryResultAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null): array
+    public function getQueryResultAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = false): array
     {
         try {
             $count = 0;
@@ -38,7 +38,12 @@ class CommonService
             }
 
             // Execute the main query.
-            $queryResult = $this->db->rawQuery($sql . $limitSql, $params);
+            if ($returnGenerator == true) {
+                $queryResult = $this->db->rawQueryGenerator($sql . $limitSql, $params);
+            } else {
+                $queryResult = $this->db->rawQuery($sql . $limitSql, $params);
+            }
+
 
             // If limit and offset are set, execute the count query.
             if ($limitOffsetSet) {
@@ -51,7 +56,11 @@ class CommonService
                 }
                 $count = (int)$this->db->rawQueryOne($countSql)['totalCount'];
             } else {
-                $count = count($queryResult);
+                if ($returnGenerator == true) {
+                    $count = null; // not counting when generator is used
+                } else {
+                    $count = count($queryResult);
+                }
             }
 
             return [$queryResult, $count];

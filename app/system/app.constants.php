@@ -14,3 +14,13 @@ namespace SAMPLE_STATUS {
     const NO_RESULT = 11; // Sample has no result
     const CANCELLED = 12; // Sample Cancelled - No Testing required
 }
+
+namespace COUNTRY {
+    const SOUTH_SUDAN = 1;
+    const SIERRA_LEONE = 2;
+    const DRC = 3;
+    const CAMEROON = 4;
+    const PNG = 5;
+    const WHO = 6;
+    const RWANDA = 7;
+}

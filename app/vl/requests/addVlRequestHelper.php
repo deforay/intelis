@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\VlService;
@@ -347,8 +348,8 @@ try {
         $vlData['is_encrypted'] = 'yes';
     }
 
-         //Update patient Information in Patients Table
-         $patientsService->savePatient($_POST,'form_vl');
+    //Update patient Information in Patients Table
+    $patientsService->savePatient($_POST, 'form_vl');
 
 
     $id = 0;
@@ -383,6 +384,5 @@ try {
         header("Location:/vl/requests/vl-requests.php");
     }
 } catch (Exception $exc) {
-    error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
+    throw new SystemException($exc->getMessage(), 500);
 }

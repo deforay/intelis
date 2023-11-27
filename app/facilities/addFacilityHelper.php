@@ -41,7 +41,7 @@ $apiService = ContainerRegistry::get(ApiService::class);
 
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
-$apiData = $apiService->getJsonFromRequest($request);
+$apiData = $apiService->getJsonFromRequest($request, true);
 
 if (!empty($apiData['result'])) {
 	$_POST = $apiData['result'];

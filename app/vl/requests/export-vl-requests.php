@@ -18,9 +18,11 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+$arr = $general->getGlobalConfig();
 
-$delimiter = $arr['default_csv_delimiter'];
-$enclosure = $arr['default_csv_enclosure'];
+$delimiter = $arr['default_csv_delimiter'] ?? ',';
+$enclosure = $arr['default_csv_enclosure'] ?? '"';
+
 $output = [];
 
 $headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Testing Lab"), _translate("Health Facility Name"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Unique ART No."), _translate("Patient Name"), _translate("Date of Birth"), _translate("Age"), _translate("Gender"), _translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Date of Treatment Initiation"), _translate("Current Regimen"), _translate("Date of Initiation of Current Regimen"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("ARV Adherence"), _translate("Indication for Viral Load Testing"), _translate("Requesting Clinican"), _translate("Request Date"), _translate("Is Sample Rejected?"), _translate("Sample Tested On"), _translate("Result (cp/ml)"), _translate("Result (log)"), _translate("Sample Receipt Date"), _translate("Date Result Dispatched"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
@@ -36,31 +38,12 @@ foreach ($db->rawQueryGenerator($_SESSION['vlRequestQuery']) as $aRow) {
 	$row = [];
 	$age = null;
 	$aRow['patient_age_in_years'] = (int) $aRow['patient_age_in_years'];
-	if (!empty($aRow['patient_dob'])) {
-		$age = DateUtility::ageInYearMonthDays($aRow['patient_dob']);
-		if (!empty($age) && $age['year'] > 0) {
-			$aRow['patient_age_in_years'] = $age['year'];
-		}
+	$age = DateUtility::ageInYearMonthDays($aRow['patient_dob'] ?? '');
+	if (!empty($age) && $age['year'] > 0) {
+		$aRow['patient_age_in_years'] = $age['year'];
 	}
-	//set gender
-	switch (strtolower($aRow['patient_gender'])) {
-		case 'male':
-		case 'm':
-			$gender = 'M';
-			break;
-		case 'female':
-		case 'f':
-			$gender = 'F';
-			break;
-		case 'not_recorded':
-		case 'notrecorded':
-		case 'unreported':
-			$gender = 'Unreported';
-			break;
-		default:
-			$gender = '';
-			break;
-	}
+
+	$gender = MiscUtility::getGenderFromString($aRow['patient_gender']);
 
 	$arvAdherence = '';
 	if (trim($aRow['arv_adherance_percentage']) == 'good') {
@@ -143,10 +126,6 @@ foreach ($db->rawQueryGenerator($_SESSION['vlRequestQuery']) as $aRow) {
 	$no++;
 }
 
-function generateOutput()
-{
-}
-
 if (isset($_SESSION['vlRequestQueryCount']) && $_SESSION['vlRequestQueryCount'] > 100000) {
 
 	$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VL-REQUESTS-' . date('d-M-Y-H-i-s') . '.csv';
@@ -168,27 +147,13 @@ if (isset($_SESSION['vlRequestQueryCount']) && $_SESSION['vlRequestQueryCount'] 
 	$excel = new Spreadsheet();
 	$sheet = $excel->getActiveSheet();
 	//$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
-	$processedHeadings = [];
 
-	if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
-		foreach ($headings as $field => $value) {
-			$string = str_replace(' ', '', $value);
-			$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-			$processedHeadings[] = html_entity_decode($value);
-		}
-	} else {
-		foreach ($headings as $field => $value) {
-			$processedHeadings[] = html_entity_decode($value);
-		}
-	}
-
-	$sheet->fromArray($processedHeadings, null, 'A3');
+	$sheet->fromArray($headings, null, 'A3');
 
 	$rowNo = 3;
 	foreach ($output as $rowData) {
-		$colNo = 1;
 		$rRowCount = $rowNo++;
-		$sheet->fromArray($rowData, null, Coordinate::stringFromColumnIndex($colNo) . $rRowCount);
+		$sheet->fromArray($rowData, null, 'A' . $rRowCount);
 	}
 
 	$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);

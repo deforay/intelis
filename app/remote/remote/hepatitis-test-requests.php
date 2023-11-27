@@ -20,7 +20,7 @@ try {
 
     /** @var Laminas\Diactoros\ServerRequest $request */
     $request = $GLOBALS['request'];
-    $data = $apiService->getJsonFromRequest($request);
+    $data = $apiService->getJsonFromRequest($request, true);
 
 
     $payload = [];

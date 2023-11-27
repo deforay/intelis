@@ -379,7 +379,7 @@ $tableResult = $db->rawQuery($sQuery);
         }
     }
     <?php
-    if (isset($tableResult) && $tableResult > 0) { ?>
+    if (!empty($tableResult)) { ?>
         $('#<?php echo $samplesCollectionChart; ?>').highcharts({
             chart: {
                 type: 'column',

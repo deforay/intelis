@@ -120,18 +120,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
           RIGHT JOIN testing_lab_health_facilities_map as fm ON vl.lab_id=fm.vl_lab_id";
 // form_vl
 // health_facilities
-$start_date = '';
-$end_date = '';
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-     $s_c_date = explode(" to ", $_POST['sampleCollectionDate']);
-     //print_r($s_c_date);die;
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-          $start_date = trim($s_c_date[0]) . "-01";
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-          $end_date = date("Y-m-t", strtotime(trim($s_c_date[1])));
-     }
-}
+[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 $sTestDate = '';
 $eTestDate = '';
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {

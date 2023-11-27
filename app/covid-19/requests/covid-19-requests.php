@@ -372,7 +372,7 @@ foreach ($srcResults as $list) {
 											<?php echo _translate("Bulk Import Covid-19 Request"); ?>
 										</a>
 									<?php }
-									if ($formId == 1 && $_SESSION['instanceType'] != 'remoteuser' && !$hidesrcofreq) { ?>
+									if ($formId == COUNTRY\SOUTH_SUDAN && $_SESSION['instanceType'] != 'remoteuser' && !$hidesrcofreq) { ?>
 										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 											<?php echo _translate("Quick Add Covid-19 Request"); ?>
 										</a>
@@ -392,7 +392,7 @@ foreach ($srcResults as $list) {
 
 								<?php
 								if (isset($_SESSION['privileges']) && in_array("/covid-19/requests/covid-19-add-request.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
-									<?php if ($formId == 1 && $_SESSION['instanceType'] != 'remoteuser') { ?>
+									<?php if ($formId == COUNTRY\SOUTH_SUDAN && $_SESSION['instanceType'] != 'remoteuser') { ?>
 										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 											<?= _translate("Quick Add Covid-19 Request"); ?>
 										</a>
@@ -445,7 +445,7 @@ foreach ($srcResults as $list) {
 									<th scope="row">
 										<?php echo _translate("Facility Name"); ?>
 									</th>
-									<?php if ($formId == 1) { ?>
+									<?php if ($formId == COUNTRY\SOUTH_SUDAN) { ?>
 										<th>
 											<?php echo _translate("Case ID"); ?>
 										</th>

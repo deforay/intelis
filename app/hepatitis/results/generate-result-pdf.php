@@ -1,13 +1,9 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
 
-
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -25,18 +21,8 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
-$arr = $general->getGlobalConfig();
+$formId = $general->getGlobalConfig('vl_form');
 
-if (isset($arr['default_time_zone']) && $arr['default_time_zone'] != '') {
-	date_default_timezone_set($arr['default_time_zone']);
-} else {
-	date_default_timezone_set(!empty(date_default_timezone_get()) ?  date_default_timezone_get() : "UTC");
-}
-//set mField Array
-$mFieldArray = [];
-if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '') {
-	$mFieldArray = explode(',', $arr['r_mandatory_fields']);
-}
 //set print time
 $printedTime = date('Y-m-d H:i:s');
 $expStr = explode(" ", $printedTime);
@@ -102,7 +88,6 @@ class MYPDF extends TCPDF
 	public $htitle = '';
 	public $labFacilityId = '';
 	public $formId = '';
-	public $mFieldArray = [];
 	//Page header
 	public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $formId = null)
 	{
@@ -214,4 +199,4 @@ $country = array(
 	7 => 'Rwanda'
 );
 
-require($fileArray[$arr['vl_form']]);
+require($fileArray[$formId]);

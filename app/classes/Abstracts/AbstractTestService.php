@@ -4,6 +4,7 @@ namespace App\Abstracts;
 
 use MysqliDb;
 use DateTimeImmutable;
+use COUNTRY;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
@@ -72,7 +73,7 @@ abstract class AbstractTestService
 
         if (empty($maxCodeKeyVal)) {
             // If it is PNG form
-            if ($formId == 5) {
+            if ($formId == COUNTRY\PNG) {
 
                 if (empty($provinceId) && !empty($provinceCode)) {
                     $params['provinceId'] = $provinceId = $this->geoLocationsService->getProvinceIDFromCode($provinceCode);
@@ -108,7 +109,7 @@ abstract class AbstractTestService
         ];
 
         // PNG format has an additional R in prefix
-        if ($formId == 5) {
+        if ($formId == COUNTRY\PNG) {
             $remotePrefix = $remotePrefix . "R";
         }
 

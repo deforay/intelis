@@ -106,13 +106,31 @@ for ($i = 0; $i < count($aColumns); $i++) {
  * Get data to display
  */
 $aWhere = '';
-$sQuery = "SELECT *, ts.status_name FROM form_vl as vl
+$sQuery = "SELECT vl.sample_collection_date,
+                    vl.vl_sample_id,
+                    vl.last_modified_datetime,
+                    vl.sample_code,
+                    vl.remote_sample_code,
+                    vl.result,
+                    b.batch_code,
+                    vl.patient_first_name,
+                    vl.patient_middle_name,
+                    vl.patient_last_name,
+                    vl.patient_art_no,
+                    vl.facility_id,
+                    vl.sample_type,
+                    vl.result_status,
+                    f.facility_name,
+                    f.facility_state,
+                    f.facility_district,
+                    s.sample_name,
+                    ts.status_name FROM form_vl as vl
                     LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
                     LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
                     INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
-                    LEFT JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id
-                    LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
-                    LEFT JOIN r_vl_test_reasons as tr ON tr.test_reason_id=vl.reason_for_vl_testing
+                    -- LEFT JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id
+                    -- LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
+                    -- LEFT JOIN r_vl_test_reasons as tr ON tr.test_reason_id=vl.reason_for_vl_testing
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 if (!empty($sWhere)) {
@@ -150,16 +168,8 @@ $output = array(
 
 foreach ($rResult as $aRow) {
 
-     if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-          $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-     } else {
-          $aRow['sample_collection_date'] = '';
-     }
-     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-          $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
-     } else {
-          $aRow['last_modified_datetime'] = '';
-     }
+     $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '', true);
+     $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '', true);
 
      $patientFname = $aRow['patient_first_name'];
      $patientMname = $aRow['patient_middle_name'];
