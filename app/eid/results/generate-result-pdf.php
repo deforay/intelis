@@ -187,18 +187,18 @@ class MYPDF extends TCPDF
 
 
 
-if ($formId == 1) {
+if ($formId == COUNTRY\SOUTH_SUDAN) {
 	include('pdf/result-pdf-ssudan.php');
-} else if ($formId == 2) {
+} else if ($formId == COUNTRY\SIERRA_LEONE) {
 	include('pdf/result-pdf-sierraleone.php');
-} else if ($formId == 3) {
+} else if ($formId == COUNTRY\DRC) {
 	include('pdf/result-pdf-drc.php');
-} else if ($formId == 4) {
+} else if ($formId == COUNTRY\CAMEROON) {
 	include('pdf/result-pdf-cameroon.php');
-} else if ($formId == 5) {
+} else if ($formId == COUNTRY\PNG) {
 	include('pdf/result-pdf-png.php');
-} else if ($formId == 6) {
+} else if ($formId == COUNTRY\WHO) {
 	// include('pdf/result-pdf-who.php');
-} else if ($formId == 7) {
+} else if ($formId == COUNTRY\RWANDA) {
 	include('pdf/result-pdf-rwanda.php');
 }

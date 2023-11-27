@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Exception;
 use SAMPLE_STATUS;
+use COUNTRY;
 use App\Utilities\DateUtility;
 use App\Abstracts\AbstractTestService;
 
@@ -67,7 +68,7 @@ class EidService extends AbstractTestService
 
             // PNG FORM (formId = 5) CANNOT HAVE PROVINCE EMPTY
             // Sample Collection Date Cannot be Empty
-            if (empty($sampleCollectionDate) || ($formId == 5 && empty($provinceId))) {
+            if (empty($sampleCollectionDate) || ($formId == COUNTRY\PNG && empty($provinceId))) {
                 return 0;
             }
 

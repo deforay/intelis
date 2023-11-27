@@ -200,18 +200,18 @@ class MYPDF extends TCPDF
 	}
 }
 
-if ($arr['vl_form'] == 1) {
+if ($arr['vl_form'] == COUNTRY\SOUTH_SUDAN) {
 	include('pdf/result-pdf-ssudan.php');
-} elseif ($arr['vl_form'] == 2) {
+} elseif ($arr['vl_form'] == COUNTRY\SIERRA_LEONE) {
 	include('pdf/result-pdf-sierraleone.php');
-} elseif ($arr['vl_form'] == 3) {
+} elseif ($arr['vl_form'] == COUNTRY\DRC) {
 	include('pdf/result-pdf-drc.php');
-} elseif ($arr['vl_form'] == 4) {
+} elseif ($arr['vl_form'] == COUNTRY\CAMEROON) {
 	include('pdf/result-pdf-cameroon-cresar.php');
-} elseif ($arr['vl_form'] == 5) {
+} elseif ($arr['vl_form'] == COUNTRY\PNG) {
 	include('pdf/result-pdf-png.php');
-} elseif ($arr['vl_form'] == 6) {
+} elseif ($arr['vl_form'] == COUNTRY\WHO) {
 	// include('pdf/result-pdf-who.php');
-} elseif ($arr['vl_form'] == 7) {
+} elseif ($arr['vl_form'] == COUNTRY\RWANDA) {
 	include('pdf/result-pdf-rwanda.php');
 }

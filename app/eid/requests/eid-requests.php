@@ -387,7 +387,7 @@ foreach ($srcResults as $list) {
 										<em class="fa-solid fa-plus"></em>
 										<?php echo _translate("Add new EID Request"); ?>
 									</a>
-									<?php if ($formId == 1) { ?>
+									<?php if ($formId == COUNTRY\SOUTH_SUDAN) { ?>
 										<a style=" margin: 0px 5px; " href="/eid/requests/eid-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 											<?php echo _translate("Bulk Import EID Request"); ?>
 										</a>
@@ -413,7 +413,7 @@ foreach ($srcResults as $list) {
 										<em class="fa-solid fa-plus"></em>
 										<?php echo _translate("Add new EID Request"); ?>
 									</a>
-									<?php if ($formId == 1) { ?>
+									<?php if ($formId == COUNTRY\SOUTH_SUDAN) { ?>
 										<a style=" margin: 0px 5px; " href="/eid/requests/eid-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 											<?php echo _translate("Bulk Import EID Request"); ?>
 										</a>

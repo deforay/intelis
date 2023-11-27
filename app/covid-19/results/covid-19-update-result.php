@@ -96,7 +96,6 @@ if (!empty($covid19Info['is_encrypted']) && $covid19Info['is_encrypted'] == 'yes
 	$covid19Info['patient_name'] = $general->crypto('decrypt', $covid19Info['patient_name'], $key);
 
 	$covid19Info['patient_surname'] = $general->crypto('decrypt', $covid19Info['patient_surname'], $key);
-
 }
 
 ?>
@@ -148,19 +147,19 @@ if (!empty($covid19Info['is_encrypted']) && $covid19Info['is_encrypted'] == 'yes
 	}
 </style>
 <?php
-if ($arr['vl_form'] == 1) {
+if ($arr['vl_form'] == COUNTRY\SOUTH_SUDAN) {
 	require('forms/update-southsudan-result.php');
-} else if ($arr['vl_form'] == 2) {
+} else if ($arr['vl_form'] == COUNTRY\SIERRA_LEONE) {
 	require('forms/update-sierraleone-result.php');
-} else if ($arr['vl_form'] == 3) {
+} else if ($arr['vl_form'] == COUNTRY\DRC) {
 	require('forms/update-drc-result.php');
-} else if ($arr['vl_form'] == 4) {
+} else if ($arr['vl_form'] == COUNTRY\CAMEROON) {
 	require('forms/update-cameroon-result.php');
-} else if ($arr['vl_form'] == 5) {
+} else if ($arr['vl_form'] == COUNTRY\PNG) {
 	require('forms/update-png-result.php');
-} else if ($arr['vl_form'] == 6) {
+} else if ($arr['vl_form'] == COUNTRY\WHO) {
 	require('forms/update-who-result.php');
-} else if ($arr['vl_form'] == 7) {
+} else if ($arr['vl_form'] == COUNTRY\RWANDA) {
 	require('forms/update-rwanda-result.php');
 }
 
@@ -179,7 +178,7 @@ if ($arr['vl_form'] == 1) {
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -189,7 +188,7 @@ if ($arr['vl_form'] == 1) {
 		$('.dateTime').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			onChangeMonthYear: function(year, month, widget) {
@@ -205,7 +204,7 @@ if ($arr['vl_form'] == 1) {
 		$('#sampleCollectionDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			onChangeMonthYear: function(year, month, widget) {
@@ -225,7 +224,7 @@ if ($arr['vl_form'] == 1) {
 		$('#sampleReceivedDate').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			onChangeMonthYear: function(year, month, widget) {
@@ -245,7 +244,7 @@ if ($arr['vl_form'] == 1) {
 		$('.dateTime').datetimepicker({
 			changeMonth: true,
 			changeYear: true,
-			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			onChangeMonthYear: function(year, month, widget) {

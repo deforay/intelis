@@ -175,7 +175,7 @@ if (trim($id) != '') {
         $pdf->AddPage();
 
 
-        if ($arr['vl_form'] == 2) {
+        if ($arr['vl_form'] == COUNTRY\SIERRA_LEONE) {
             //$pdf->writeHTMLCell(0, 20, 10, 10, 'FACILITY RELEASER INFORMATION ', 0, 0, 0, true, 'C', true);
             $pdf->WriteHTML('<strong>FACILITY RELEASER INFORMATION</strong>');
 

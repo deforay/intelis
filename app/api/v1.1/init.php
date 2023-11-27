@@ -1,7 +1,6 @@
 <?php
 // Allow from any origin
 use App\Services\TbService;
-use App\Services\GenericTestsService;
 use App\Services\VlService;
 use App\Services\ApiService;
 use App\Services\EidService;
@@ -11,6 +10,7 @@ use App\Services\SystemService;
 use App\Services\Covid19Service;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Services\GenericTestsService;
 use App\Services\GeoLocationsService;
 
 /** @var Slim\Psr7\Request $request */
@@ -129,9 +129,11 @@ $modules = SYSTEM_CONFIG['modules'];
 
 $rejectionReasson = [];
 foreach ($modules as $module => $status) {
-    $rejectionResult = [];$rejectionTypeResult = [];$reasons[$module] = [];
+    $rejectionResult = [];
+    $rejectionTypeResult = [];
+    $reasons[$module] = [];
     if ($status) {
-        if($module == 'common'){
+        if ($module == 'common') {
             continue;
         }
         $module = ($module == 'generic-tests') ? 'generic' : $module;
@@ -196,7 +198,7 @@ if (
 
     /* Type of Test Request */
     $typeOfTestReqList = [];
-    if ($formId == 3) {
+    if ($formId == COUNTRY\DRC) {
         $typeOfTestReqResult = [
             "PCR/RT-PCR",
             "RdRp-SARS Cov-2",

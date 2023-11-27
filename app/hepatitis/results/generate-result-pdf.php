@@ -88,7 +88,6 @@ class MYPDF extends TCPDF
 	public $htitle = '';
 	public $labFacilityId = '';
 	public $formId = '';
-	public $mFieldArray = [];
 	//Page header
 	public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $formId = null)
 	{

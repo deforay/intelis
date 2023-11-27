@@ -52,7 +52,7 @@ $covid19Service = ContainerRegistry::get(Covid19Service::class);
 $covid19Results = $covid19Service->getCovid19Results();
 if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'rwanda' && $arr['vl_form'] != 1)) {
 	$reportType = 'generate-export-rwanda.php';
-} else if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'drc' && $arr['vl_form'] == 3)) {
+} else if ((isset($arr['covid19_report_type']) && $arr['covid19_report_type'] == 'drc' && $arr['vl_form'] == COUNTRY\DRC)) {
 	$reportType = 'generate-export-drc.php';
 } else {
 	$reportType = 'generate-export-data.php';

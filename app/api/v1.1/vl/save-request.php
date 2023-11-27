@@ -102,7 +102,7 @@ try {
             'sampleReceivedDate',
         ];
 
-        if ($formId == 5) {
+        if ($formId == COUNTRY\PNG) {
             $mandatoryFields[] = 'provinceId';
         }
 

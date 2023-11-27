@@ -316,7 +316,7 @@ foreach ($srcResults as $list) {
                                     <th><?php echo _translate("Batch Code"); ?></th>
                                     <th scope="row"><?php echo _translate("Testing Lab"); ?></th>
                                     <th scope="row"><?php echo _translate("Facility Name"); ?></th>
-                                    <?php if ($formId == 1) { ?>
+                                    <?php if ($formId == COUNTRY\SOUTH_SUDAN) { ?>
                                         <th><?php echo _translate("Case ID"); ?></th>
                                     <?php } else { ?>
                                         <th><?php echo _translate("Patient ID"); ?></th>
