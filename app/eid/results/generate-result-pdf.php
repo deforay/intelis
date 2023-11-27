@@ -1,20 +1,13 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
 
-
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
-
-
-
 
 $tableName1 = "activity_log";
 $tableName2 = "form_eid";
@@ -27,18 +20,8 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
-$arr = $general->getGlobalConfig();
+$formId = $general->getGlobalConfig('vl_form');
 
-if (isset($arr['default_time_zone']) && $arr['default_time_zone'] != '') {
-	date_default_timezone_set($arr['default_time_zone']);
-} else {
-	date_default_timezone_set(!empty(date_default_timezone_get()) ?  date_default_timezone_get() : "UTC");
-}
-//set mField Array
-$mFieldArray = [];
-if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '') {
-	$mFieldArray = explode(',', $arr['r_mandatory_fields']);
-}
 //set print time
 $printedTime = date('Y-m-d H:i:s');
 $expStr = explode(" ", $printedTime);
@@ -102,7 +85,6 @@ class MYPDF extends TCPDF
 	public $htitle = '';
 	public $labFacilityId = '';
 	public $formId = '';
-	public $mFieldArray = [];
 
 	//Page header
 	public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $formId = null)
@@ -205,18 +187,18 @@ class MYPDF extends TCPDF
 
 
 
-if ($arr['vl_form'] == 1) {
+if ($formId == 1) {
 	include('pdf/result-pdf-ssudan.php');
-} else if ($arr['vl_form'] == 2) {
+} else if ($formId == 2) {
 	include('pdf/result-pdf-sierraleone.php');
-} else if ($arr['vl_form'] == 3) {
+} else if ($formId == 3) {
 	include('pdf/result-pdf-drc.php');
-} else if ($arr['vl_form'] == 4) {
+} else if ($formId == 4) {
 	include('pdf/result-pdf-cameroon.php');
-} else if ($arr['vl_form'] == 5) {
+} else if ($formId == 5) {
 	include('pdf/result-pdf-png.php');
-} else if ($arr['vl_form'] == 6) {
+} else if ($formId == 6) {
 	// include('pdf/result-pdf-who.php');
-} else if ($arr['vl_form'] == 7) {
+} else if ($formId == 7) {
 	include('pdf/result-pdf-rwanda.php');
 }

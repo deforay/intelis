@@ -1,8 +1,4 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-
 
 use App\Services\TbService;
 use App\Services\UsersService;
@@ -39,20 +35,8 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 /** @var TbService $tbService */
 $tbService = ContainerRegistry::get(TbService::class);
 
-//$tbResults = $tbService->getTbResults();
+$formId = $general->getGlobalConfig('vl_form');
 
-$arr = $general->getGlobalConfig();
-
-if (isset($arr['default_time_zone']) && $arr['default_time_zone'] != '') {
-    date_default_timezone_set($arr['default_time_zone']);
-} else {
-    date_default_timezone_set(!empty(date_default_timezone_get()) ?  date_default_timezone_get() : "UTC");
-}
-//set mField Array
-$mFieldArray = [];
-if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '') {
-    $mFieldArray = explode(',', $arr['r_mandatory_fields']);
-}
 //set print time
 $printedTime = date('Y-m-d H:i:s');
 $expStr = explode(" ", $printedTime);
@@ -133,8 +117,6 @@ class MYPDF extends TCPDF
     public $labFacilityId = '';
     public $formId = '';
     public $facilityInfo = [];
-    public $mFieldArray = [];
-
 
 
     //Page header
@@ -304,12 +286,7 @@ if (!empty($requestResult)) {
         }
         $draftTextShow = false;
         //Set watermark text
-        for ($m = 0; $m < count($mFieldArray); $m++) {
-            if (!isset($result[$mFieldArray[$m]]) || trim($result[$mFieldArray[$m]]) == '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
-                $draftTextShow = true;
-                break;
-            }
-        }
+
 
         $selectedReportFormats = [];
         if (isset($result['reportFormat']) && $result['reportFormat'] != "") {
@@ -319,7 +296,7 @@ if (!empty($requestResult)) {
         if (!empty($selectedReportFormats) && !empty($selectedReportFormats['tb'])) {
             require($selectedReportFormats['tb']);
         } else {
-            require($fileArray[$arr['vl_form']]);
+            require($fileArray[$formId]);
         }
     }
     if (!empty($pages)) {

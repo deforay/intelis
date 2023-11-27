@@ -1,7 +1,4 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
 
 
 use App\Services\UsersService;
@@ -39,11 +36,6 @@ $arr = $general->getGlobalConfig();
 $sc = $general->getSystemConfig();
 $systemConfig = array_merge($sc, SYSTEM_CONFIG);
 
-if (isset($arr['default_time_zone']) && $arr['default_time_zone'] != '') {
-	date_default_timezone_set($arr['default_time_zone']);
-} else {
-	date_default_timezone_set(!empty(date_default_timezone_get()) ?  date_default_timezone_get() : "UTC");
-}
 //set mField Array
 $mFieldArray = [];
 if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '') {
