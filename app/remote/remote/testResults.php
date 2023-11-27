@@ -124,27 +124,23 @@ try {
                 if (isset($lab['remote_sample_code']) && $lab['remote_sample_code'] != '') {
                     $sQuery = "SELECT vl_sample_id,sample_code,remote_sample_code,remote_sample_code_key
                                 FROM form_vl WHERE remote_sample_code= ?";
-                    $sResult = $db->rawQuery($sQuery, [$lab['remote_sample_code']]);
+                    $sResult = $db->rawQueryOne($sQuery, [$lab['remote_sample_code']]);
                 } elseif (isset($lab['sample_code']) && $lab['sample_code'] != '') {
                     $sQuery = "SELECT vl_sample_id,sample_code,remote_sample_code,remote_sample_code_key
                                 FROM form_vl WHERE sample_code=? AND facility_id = ?";
-                    $sResult = $db->rawQuery($sQuery, [$lab['sample_code'], $lab['facility_id']]);
+                    $sResult = $db->rawQueryOne($sQuery, [$lab['sample_code'], $lab['facility_id']]);
                 }
 
+                $formAttributes = $general->jsonToSetString(
+                    $lab['form_attributes'],
+                    'form_attributes'
+                );
+                $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+
                 if (!empty($sResult)) {
-                    $formAttributes = $general->jsonToSetString(
-                        $lab['form_attributes'],
-                        'form_attributes'
-                    );
-                    $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                    $db = $db->where('vl_sample_id', $sResult[0]['vl_sample_id']);
+                    $db->where('vl_sample_id', $sResult['vl_sample_id']);
                     $id = $db->update('form_vl', $lab);
                 } else {
-                    $formAttributes = $general->jsonToSetString(
-                        $lab['form_attributes'],
-                        'form_attributes'
-                    );
-                    $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                     $id = $db->insert('form_vl', $lab);
                 }
             } catch (Exception $e) {

@@ -33,7 +33,7 @@ $apiService = ContainerRegistry::get(ApiService::class);
 
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
-$data = $apiService->getJsonFromRequest($request);
+$data = $apiService->getJsonFromRequest($request, true);
 
 //error_log($jsonData);
 $counter = 0;

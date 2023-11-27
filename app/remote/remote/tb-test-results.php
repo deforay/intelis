@@ -39,7 +39,7 @@ try {
     $transactionId = $general->generateUUID();
 
     $sampleCodes = $facilityIds = [];
-    if (!empty($jsonResponse) && $jsonResponse != '[]') {
+    if (!empty($jsonResponse) && $jsonResponse != '[]' && MiscUtility::isJSON($jsonResponse)) {
         $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
                         WHERE TABLE_SCHEMA = ? AND table_name='form_tb'";
         $allColResult = $db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db']]);
@@ -110,21 +110,16 @@ try {
                     continue;
                 }
 
+                $formAttributes = $general->jsonToSetString(
+                    $lab['form_attributes'],
+                    'form_attributes'
+                );
+                $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                 if (!empty($sResult)) {
-                    $formAttributes = $general->jsonToSetString(
-                        $lab['form_attributes'],
-                        'form_attributes'
-                    );
-                    $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                     $db = $db->where('tb_id', $sResult[0]['tb_id']);
                     $db->update('form_tb', $lab);
                     $id = $sResult[0]['tb_id'];
                 } else {
-                    $formAttributes = $general->jsonToSetString(
-                        $lab['form_attributes'],
-                        'form_attributes'
-                    );
-                    $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                     $db->insert('form_tb', $lab);
                     $id = $db->getInsertId();
                 }

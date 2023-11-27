@@ -124,30 +124,27 @@ try {
                     //error_log("INSIDE REMOTE");
                     $sQuery = "SELECT sample_id,sample_code,remote_sample_code,remote_sample_code_key
                                 FROM form_generic WHERE remote_sample_code= ?";
-                    $sResult = $db->rawQuery($sQuery, [$lab['remote_sample_code']]);
+                    $sResult = $db->rawQueryOne($sQuery, [$lab['remote_sample_code']]);
                 } elseif (isset($lab['sample_code']) && $lab['sample_code'] != '') {
                     //error_log("INSIDE LOCAL");
                     $sQuery = "SELECT sample_id,sample_code,remote_sample_code,remote_sample_code_key
                                 FROM form_generic WHERE sample_code=? AND facility_id = ?";
-                    $sResult = $db->rawQuery($sQuery, [$lab['sample_code'], $lab['facility_id']]);
+                    $sResult = $db->rawQueryOne($sQuery, [$lab['sample_code'], $lab['facility_id']]);
                 }
 
+
+                $formAttributes = $general->jsonToSetString(
+                    $lab['form_attributes'],
+                    'form_attributes'
+                );
+                $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                 if (!empty($sResult)) {
-                    $formAttributes = $general->jsonToSetString(
-                        $lab['form_attributes'],
-                        'form_attributes'
-                    );
-                    $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                    $db = $db->where('sample_id', $sResult[0]['sample_id']);
+                    $db->where('sample_id', $sResult['sample_id']);
                     $id = $db->update('form_generic', $lab);
-                    $sampleId = $sResult[0]['sample_id'];
+                    $sampleId = $sResult['sample_id'];
                 } else {
-                    $formAttributes = $general->jsonToSetString(
-                        $lab['form_attributes'],
-                        'form_attributes'
-                    );
-                    $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                    $sampleId = $id = $db->insert('form_generic', $lab);
+                    $id = $db->insert('form_generic', $lab);
+                    $sampleId = $db->getInsertId();
                 }
             } catch (Exception $e) {
                 error_log($db->getLastError());

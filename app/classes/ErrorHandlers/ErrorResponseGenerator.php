@@ -55,8 +55,8 @@ class ErrorResponseGenerator
                 $this->errorReasons[$httpCode] : _translate('Internal Server Error') . ' - ';
 
             // Log the error with Monolog, including the file, line, and stack trace
-            $logger->error('Error: ' . $exception->getMessage(), [
-                'exception' => $httpCode . " : " . $errorReason . $exception,
+            $logger->error($errorReason . ' Error: ' . $exception->getMessage(), [
+                'exception' => $httpCode . " : " . $exception,
                 'file' => $errorFile, // File where the error occurred
                 'line' => $errorLine, // Line number of the error
                 'stacktrace' => $exception->getTraceAsString()

@@ -121,34 +121,29 @@ try {
                 if (isset($lab['remote_sample_code']) && $lab['remote_sample_code'] != '') {
                     $sQuery = "SELECT hepatitis_id,sample_code,remote_sample_code,remote_sample_code_key
                             FROM form_hepatitis WHERE remote_sample_code=?";
-                    $sResult = $db->rawQuery($sQuery, [$lab['remote_sample_code']]);
+                    $sResult = $db->rawQueryOne($sQuery, [$lab['remote_sample_code']]);
                 } elseif (!empty($lab['sample_code']) && !empty($lab['facility_id']) && !empty($lab['lab_id'])) {
                     $sQuery = "SELECT hepatitis_id,sample_code,remote_sample_code,remote_sample_code_key
                             FROM form_hepatitis WHERE sample_code=? AND facility_id = ?";
-                    $sResult = $db->rawQuery($sQuery, [$lab['sample_code'], $lab['facility_id']]);
+                    $sResult = $db->rawQueryOne($sQuery, [$lab['sample_code'], $lab['facility_id']]);
                 } else {
                     $sampleCodes[] = $lab['sample_code'];
                     $facilityIds[] = $lab['facility_id'];
                     continue;
                 }
 
+                $formAttributes = $general->jsonToSetString(
+                    $lab['form_attributes'],
+                    'form_attributes'
+                );
+                $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                 if (!empty($sResult)) {
-                    $formAttributes = $general->jsonToSetString(
-                        $lab['form_attributes'],
-                        'form_attributes'
-                    );
-                    $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                    $db = $db->where('hepatitis_id', $sResult[0]['hepatitis_id']);
-                    $db->update('form_hepatitis', $lab);
-                    $id = $sResult[0]['hepatitis_id'];
+                    $db->where('hepatitis_id', $sResult['hepatitis_id']);
+                    $id = $db->update('form_hepatitis', $lab);
+                    // $sampleId = $sResult['hepatitis_id'];
                 } else {
-                    $formAttributes = $general->jsonToSetString(
-                        $lab['form_attributes'],
-                        'form_attributes'
-                    );
-                    $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                    $db->insert('form_hepatitis', $lab);
-                    $id = $db->getInsertId();
+                    $id = $db->insert('form_hepatitis', $lab);
+                    //$sampleId = $db->getInsertId();
                 }
             } catch (Exception $e) {
                 error_log($db->getLastError());
