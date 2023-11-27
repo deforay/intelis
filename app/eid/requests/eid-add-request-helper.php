@@ -1,9 +1,10 @@
 <?php
 
-use App\Registries\ContainerRegistry;
+use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\PatientsService;
-use App\Utilities\DateUtility;
+use App\Exceptions\SystemException;
+use App\Registries\ContainerRegistry;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -397,7 +398,7 @@ try {
 		// 'last_modified_by' 									=> $_SESSION['userId'],
 		'last_modified_datetime' => DateUtility::getCurrentDateTime()
 	);
-	
+
 
 
 	if (isset($sarr['sc_user_type']) && ($sarr['sc_user_type'] == "vluser" || $sarr['sc_user_type'] == "standalone")) {
@@ -431,8 +432,8 @@ try {
 		$eidData['is_encrypted'] = 'yes';
 	}
 
-	     //Update patient Information in Patients Table
-		 $patientsService->savePatient($_POST,'form_eid');
+	//Update patient Information in Patients Table
+	$patientsService->savePatient($_POST, 'form_eid');
 
 
 	if (isset($_POST['eidSampleId']) && $_POST['eidSampleId'] != '') {
@@ -458,6 +459,5 @@ try {
 		header("Location:/eid/requests/eid-requests.php");
 	}
 } catch (Exception $exc) {
-	error_log($exc->getMessage());
-	error_log($exc->getTraceAsString());
+	throw new SystemException($exc->getMessage(), 500);
 }

@@ -21,11 +21,12 @@ function processAuditTables($db, $fromDbName, $toDbName, $setupTriggers = true)
     foreach ($auditTables as $formTable => $auditTable) {
         // Check if the audit table exists
         $auditTableEscaped = $db->escape($auditTable);
-        $auditTableExists = $db->rawQuery("SHOW TABLES LIKE `$toDbName`.'$auditTableEscaped'");
+        $auditTableExists = $db->rawQuery("SHOW TABLES IN `$toDbName` LIKE '$auditTableEscaped'");
+
 
         if (!$auditTableExists) {
             echo "Table $toDbName.$auditTable does not exist. Creating...\n";
-            $createTableQuery = "CREATE TABLE `$toDbName`.`$auditTable` SELECT * FROM `$fromDbName`.`$formTable` WHERE 1=0;";
+            $createTableQuery = "CREATE TABLE $toDbName.$auditTable SELECT * FROM $fromDbName.$formTable WHERE 1=0;";
             $modifyTableQuery = "
             ALTER TABLE `$toDbName`.`$auditTable`
             MODIFY COLUMN `sample_id` int(11) NOT NULL,

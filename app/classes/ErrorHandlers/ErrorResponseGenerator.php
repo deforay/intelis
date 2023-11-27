@@ -14,10 +14,17 @@ use Psr\Http\Message\ServerRequestInterface;
 class ErrorResponseGenerator
 {
     private bool $isDebug;
+    private array $errorReasons = [];
 
     public function __construct(bool $isDebug)
     {
         $this->isDebug = $isDebug;
+        $this->errorReasons = [
+            500 => _translate('Internal Server Error'),
+            404 => _translate('Not Found'),
+            403 => _translate('Forbidden'),
+            401 => _translate('Unauthorized')
+        ];
     }
 
     public function __invoke(Throwable $exception, ServerRequestInterface $request): ResponseInterface
@@ -44,17 +51,19 @@ class ErrorResponseGenerator
             $errorFile = $exception->getFile();
             $errorLine = $exception->getLine();
 
+            $errorReason = isset($this->errorReasons[$httpCode]) ?
+                $this->errorReasons[$httpCode] : _translate('Internal Server Error') . ' - ';
+
             // Log the error with Monolog, including the file, line, and stack trace
             $logger->error('Error: ' . $exception->getMessage(), [
-                'exception' => $httpCode . " : " . $exception,
+                'exception' => $httpCode . " : " . $errorReason . $exception,
                 'file' => $errorFile, // File where the error occurred
                 'line' => $errorLine, // Line number of the error
                 'stacktrace' => $exception->getTraceAsString()
             ]);
 
             if (APPLICATION_ENV == 'production') {
-                $errorMessage =
-                    _translate('Sorry, something went wrong. Please try again later.');
+                $errorMessage = _translate('Sorry, something went wrong. Please try again later.');
             }
 
             if (strpos($request->getUri()->getPath(), '/api/') === 0) {
@@ -62,7 +71,7 @@ class ErrorResponseGenerator
                     'error' => [
                         'code' => $httpCode,
                         'timestamp' => time(),
-                        'message' => $errorMessage,
+                        'message' => $errorReason . $errorMessage,
                     ],
                 ]);
             } else {

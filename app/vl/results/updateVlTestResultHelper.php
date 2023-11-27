@@ -1,9 +1,10 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Exceptions\SystemException;
+use App\Registries\ContainerRegistry;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -111,7 +112,7 @@ try {
 
     $vlData = array(
         'vlsm_instance_id' => $instanceId,
-       // 'lab_id' => $_POST['labId'] ?? null,
+        // 'lab_id' => $_POST['labId'] ?? null,
         'vl_test_platform' => $testingPlatform ?? null,
         'sample_received_at_hub_datetime' => $_POST['sampleReceivedAtHubOn'],
         'sample_received_at_lab_datetime' => $_POST['sampleReceivedDate'],
@@ -189,6 +190,5 @@ try {
 
     header("Location:vlTestResult.php");
 } catch (Exception $exc) {
-    error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
+    throw new SystemException($exc->getMessage(), 500);
 }

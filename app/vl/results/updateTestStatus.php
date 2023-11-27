@@ -1,9 +1,10 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Exceptions\SystemException;
+use App\Registries\ContainerRegistry;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -71,9 +72,8 @@ try {
         $action = $_SESSION['userName'] . ' updated VL samples status';
         $resource = 'vl-results';
         $general->activityLog($eventType, $action, $resource);
+        echo $result;
     }
 } catch (Exception $exc) {
-    error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
+    throw new SystemException($exc->getMessage(), 500);
 }
-echo $result;

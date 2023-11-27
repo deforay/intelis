@@ -201,18 +201,9 @@ if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
 if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
      $sWhere[] =  '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
 }
-/* Sample test date filter */
-$sTestDate = '';
-$eTestDate = '';
-if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-     $s_t_date = explode("to", $_POST['sampleTestDate']);
-     if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = DateUtility::isoDateFormat(trim($s_t_date[0]));
-     }
-     if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = DateUtility::isoDateFormat(trim($s_t_date[1]));
-     }
-}
+
+[$sTestDate, $eTestDate] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
+
 /* Viral load filter */
 if (isset($_POST['vLoad']) && trim($_POST['vLoad']) != '') {
      if ($_POST['vLoad'] === 'suppressed') {
@@ -342,7 +333,7 @@ if (!empty($sOrder)) {
 }
 $_SESSION['vlResultQuery'] = $sQuery;
 
-[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
 $_SESSION['vlResultQueryCount'] = $resultCount;
 
