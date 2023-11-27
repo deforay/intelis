@@ -390,6 +390,26 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 								<div class="row">
 									<div class="col-md-7" style="height:38px;">
 										<div class="form-group" style="height:38px;">
+											<label for="default_csv_delimiter" class="col-lg-4 control-label"><?php echo _translate("CSV Delimiter"); ?></label>
+											<div class="col-lg-8">
+												<input type="text" class="form-control" id="default_csv_delimiter" name="default_csv_delimiter" style="max-width:60px;"  title="<?php echo _translate('Please enter CSV delimiter'); ?>" value="<?php echo $arr['default_csv_delimiter']; ?>" />
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-7" style="height:38px;">
+										<div class="form-group" style="height:38px;">
+											<label for="default_csv_enclosure" class="col-lg-4 control-label"><?php echo _translate("CSV Enclosure"); ?></label>
+											<div class="col-lg-8">
+												<input type="text" class="form-control" id="default_csv_enclosure" name="default_csv_enclosure" style="max-width:60px;" title="<?php echo _translate('Please enter CSV enclosure'); ?>" value='<?php echo $arr['default_csv_enclosure']; ?>' />
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-7" style="height:38px;">
+										<div class="form-group" style="height:38px;">
 											<label for="support_email" class="col-lg-4 control-label"><?php echo _translate("Default Phone Prefix"); ?></label>
 											<div class="col-lg-8">
 												<input type="text" class="form-control readPage" id="default_phone_prefix" name="default_phone_prefix" placeholder="<?php echo _translate('e.g. +232, +91'); ?>" title="<?php echo _translate('Please enter manager email'); ?>" value="<?php echo $arr['default_phone_prefix']; ?>" />
