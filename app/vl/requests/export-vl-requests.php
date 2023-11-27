@@ -23,6 +23,10 @@ $dateTimeUtil = new DateUtility();
 $sQuery = $_SESSION['vlRequestQuery'];
 $rResult = $db->rawQuery($sQuery);
 
+$arr = $general->getGlobalConfig();
+
+$delimiter = $arr['default_csv_delimiter'];
+$enclosure = $arr['default_csv_enclosure'];
 
 $output = [];
 
@@ -148,7 +152,7 @@ foreach ($rResult as $aRow) {
 if (isset($_SESSION['vlRequestQueryCount']) && $_SESSION['vlRequestQueryCount'] > 75000) {
 
 	$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VL-REQUESTS-' . date('d-M-Y-H-i-s') . '.csv';
-	$fileName = MiscUtility::generateCsv($headings, $output, $fileName, ',', '"');
+	$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
 	// we dont need the $output variable anymore
 	unset($output);
 	echo base64_encode($fileName);

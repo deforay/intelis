@@ -1,6 +1,7 @@
 <?php
 
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -25,7 +26,8 @@ $general = ContainerRegistry::get(CommonService::class);
 $dateTimeUtil = new DateUtility();
 
 $arr = $general->getGlobalConfig();
-
+$delimiter = $arr['default_csv_delimiter'];
+$enclosure = $arr['default_csv_enclosure'];
 
 if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "") {
 
@@ -265,14 +267,9 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 	if (isset($_SESSION['vlResultQueryCount']) && $_SESSION['vlResultQueryCount'] > 75000) {
 
 		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '.csv';
-		$file = new SplFileObject($fileName, 'w');
-		$file->setCsvControl(",", "\r\n");
-		$file->fputcsv($headings);
-		foreach ($output as $row) {
-			$file->fputcsv($row);
-		}
-		// we dont need the $file variable anymore
-		$file = null;
+		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
+		// we dont need the $output variable anymore
+		unset($output);
 		echo base64_encode($fileName);
 	} else {
 
