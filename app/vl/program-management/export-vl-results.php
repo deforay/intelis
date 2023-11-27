@@ -25,9 +25,9 @@ $dateTimeUtil = new DateUtility();
 
 $arr = $general->getGlobalConfig();
 $formId = $arr['vl_form'];
-$delimiter = $arr['default_csv_delimiter'];
-$enclosure = $arr['default_csv_enclosure'];
 
+$delimiter = $arr['default_csv_delimiter'] ?? ',';
+$enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "") {
 
