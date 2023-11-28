@@ -1,13 +1,21 @@
 <?php
 
-use App\Registries\ContainerRegistry;
+use App\Exceptions\SystemException;
 use App\Services\VlService;
-
-
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+use App\Registries\ContainerRegistry;
 
 /** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);
-echo $vlService->insertSample($_POST);
+
+try {
+    // Start transaction
+    $db->startTransaction();
+    $_POST['insertOperation'] = true;
+    echo $vlService->insertSample($_POST);
+    // Commit transaction
+    $db->commit();
+} catch (Exception $e) {
+    // Rollback transaction in case of error
+    $db->rollback();
+    throw new SystemException($e->getMessage());
+}

@@ -84,9 +84,9 @@ class PatientsService
         $data['patient_middle_name'] = (!empty($params['patientMiddleName']) ? $params['patientMiddleName'] : null);
         $data['patient_last_name'] = (!empty($params['patientLastName']) ? $params['patientLastName'] : null);
 
-        $data['patient_first_name'] = $this->commonService->crypto('doNothing', $_POST['patientFirstName'], $_POST['patient_art_no']);
-        $data['patient_middle_name'] = $this->commonService->crypto('doNothing', $_POST['patientMiddleName'], $_POST['patient_art_no']);
-        $data['patient_last_name'] = $this->commonService->crypto('doNothing', $_POST['patientLastName'], $_POST['patient_art_no']);
+        $data['patient_first_name'] = $params['patientFirstName'] ?? '';
+        $data['patient_middle_name'] = $params['patientMiddleName'] ?? '';
+        $data['patient_last_name'] = $params['patientLastName'] ?? '';
 
         $data['is_encrypted'] = 'no';
         if (isset($params['encryptPII']) && $params['encryptPII'] == 'yes') {

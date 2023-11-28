@@ -22,6 +22,7 @@ class EidService extends AbstractTestService
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['eid_sample_code'] ?? 'MMYY';
             $params['prefix'] = $params['prefix'] ?? $globalConfig['eid_sample_code_prefix'] ?? $this->shortCode;
+            $params['testType'] = 'eid';
             return $this->generateSampleCode($this->table, $params);
         }
     }

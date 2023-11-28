@@ -45,6 +45,7 @@ class VlService extends AbstractTestService
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['sample_code'] ?? 'MMYY';
             $params['prefix'] = $params['prefix'] ?? $globalConfig['sample_code_prefix'] ?? $this->shortCode;
+            $params['testType'] = 'vl';
             return $this->generateSampleCode($this->table, $params);
         }
     }

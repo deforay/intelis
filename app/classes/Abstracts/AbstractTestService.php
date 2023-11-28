@@ -2,10 +2,11 @@
 
 namespace App\Abstracts;
 
+use COUNTRY;
 use MysqliDb;
 use DateTimeImmutable;
-use COUNTRY;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 
@@ -30,15 +31,19 @@ abstract class AbstractTestService
     public function generateSampleCode($testTable, $params)
     {
 
+
         $formId = $this->commonService->getGlobalConfig('vl_form');
         $userType = $this->commonService->getSystemConfig('sc_user_type');
 
+        $insertOperation = $params['insertOperation'] ?? false;
+
         $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
         $provinceCode = $params['provinceCode'] ?? null;
-        $provinceId = $params['provinceId'] ?? null;
-        $maxCodeKeyVal = $params['maxCodeKeyVal'] ?? null;
+        //$provinceId = $params['provinceId'] ?? null;
         $sampleCodeFormat = $params['sampleCodeFormat'] ?? 'MMYY';
         $prefix = $params['prefix'] ?? 'T';
+        $testType = $params['testType'];
+        $existingMaxId = $params['existingMaxId'] ?? null;
 
         if (empty($sampleCollectionDate) || DateUtility::isDateValid($sampleCollectionDate) === false) {
             $sampleCollectionDate = 'now';
@@ -49,97 +54,110 @@ abstract class AbstractTestService
         $month = $dateObj->format('m');
         $day = $dateObj->format('d');
 
+        $autoFormatedString = $year . $month . $day;
+
         $remotePrefix = '';
         $sampleCodeKeyCol = 'sample_code_key';
-        $sampleCodeCol = 'sample_code';
+        $sampleCodeType = 'sample_code';
         if (!empty($userType) && $userType == 'remoteuser') {
             $remotePrefix = 'R';
             $sampleCodeKeyCol = 'remote_sample_code_key';
-            $sampleCodeCol = 'remote_sample_code';
+            $sampleCodeType = 'remote_sample_code';
         }
 
+        try {
+            $yearData = [];
 
+            if (!empty($existingMaxId) && $existingMaxId > 0) {
+                $maxId = $existingMaxId + 1;
+            } else {
+                // Determine the sequence number
+                $currentYear = $dateObj->format('Y');
+                $sql = "SELECT * FROM sequence_counter
+                        WHERE year = ? AND
+                        test_type = ? AND
+                        code_type = ?";
 
-        if ($sampleCodeFormat == 'MMYY') {
-            $mnthYr = $month . $year;
-        } elseif ($sampleCodeFormat == 'YY') {
-            $mnthYr = $year;
-        } else {
-            $mnthYr = $month . $year;
-        }
-
-        $autoFormatedString = $year . $month . $day;
-
-
-        if (empty($maxCodeKeyVal)) {
-            // If it is PNG form
-            if ($formId == COUNTRY\PNG) {
-
-                if (empty($provinceId) && !empty($provinceCode)) {
-                    $params['provinceId'] = $provinceId = $this->geoLocationsService->getProvinceIDFromCode($provinceCode);
+                if ($insertOperation) {
+                    $sql .= " FOR UPDATE";
                 }
-
-                if (!empty($provinceId)) {
-                    $this->db->where('province_id', $provinceId);
+                $yearData = $this->db->rawQueryOne($sql, [
+                    $currentYear,
+                    $testType,
+                    $sampleCodeType
+                ]);
+                if (!empty($yearData)) {
+                    $maxId = $yearData['max_sequence_number'] + 1;
+                } else {
+                    $maxId = 1;
                 }
             }
 
-            $this->db->where('YEAR(sample_collection_date) = ?', [$dateObj->format('Y')]);
-            $maxCodeKeyVal = $this->db->getValue($testTable, "MAX($sampleCodeKeyCol)");
-        }
+            //$maxId = sprintf("%04d", (int) $maxId);
+
+            $sampleCodeGenerator = [
+                'sampleCode' => $remotePrefix . $prefix . $year . $maxId,
+                'sampleCodeInText' => $remotePrefix . $prefix . $year . $maxId,
+                'sampleCodeFormat' => $sampleCodeFormat,
+                'sampleCodeKey' => $maxId,
+                'maxId' => $maxId,
+                'mnthYr' => $month . $year,
+                'auto' => $year . $month . $day
+            ];
+
+            // PNG format has an additional R in prefix
+            if ($formId == COUNTRY\PNG) {
+                $remotePrefix = $remotePrefix . "R";
+            }
 
 
-        if (!empty($maxCodeKeyVal) && $maxCodeKeyVal > 0) {
-            $maxId = $maxCodeKeyVal + 1;
-        } else {
-            $maxId = 1;
-        }
+            if ($sampleCodeFormat == 'auto') {
+                $sampleCodeGenerator['sampleCode'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
+                $sampleCodeGenerator['sampleCodeInText'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
+                $sampleCodeGenerator['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
+                $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
+            } elseif ($sampleCodeFormat == 'auto2') {
+                $sampleCodeGenerator['sampleCode'] = $remotePrefix . $year . $provinceCode . $prefix . $sampleCodeGenerator['maxId'];
+                $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $year . $provinceCode . $prefix . $sampleCodeGenerator['maxId'];
+                $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
+                $sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
+            } elseif ($sampleCodeFormat == 'YY' || $sampleCodeFormat == 'MMYY') {
+                $sampleCodeGenerator['sampleCode'] = $remotePrefix . $prefix . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
+                $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $prefix . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
+                $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefix . $sampleCodeGenerator['mnthYr'];
+                $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
+            }
 
-        $maxId = sprintf("%04d", (int) $maxId);
-
-
-        $sampleCodeGenerator = [
-            'sampleCode' => '',
-            'sampleCodeInText' => '',
-            'sampleCodeFormat' => '',
-            'sampleCodeKey' => '',
-            'maxId' => $maxId,
-            'mnthYr' => $mnthYr,
-            'auto' => $autoFormatedString
-        ];
-
-        // PNG format has an additional R in prefix
-        if ($formId == COUNTRY\PNG) {
-            $remotePrefix = $remotePrefix . "R";
-        }
-
-
-        if ($sampleCodeFormat == 'auto') {
-            $sampleCodeGenerator['sampleCode'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
-            $sampleCodeGenerator['sampleCodeInText'] = ($remotePrefix . $provinceCode . $autoFormatedString . $sampleCodeGenerator['maxId']);
-            $sampleCodeGenerator['sampleCodeFormat'] = ($remotePrefix . $provinceCode . $autoFormatedString);
-            $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
-        } elseif ($sampleCodeFormat == 'auto2') {
-            $sampleCodeGenerator['sampleCode'] = $remotePrefix . $year . $provinceCode . $prefix . $sampleCodeGenerator['maxId'];
-            $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $year . $provinceCode . $prefix . $sampleCodeGenerator['maxId'];
-            $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
-            $sampleCodeGenerator['sampleCodeKey'] = $sampleCodeGenerator['maxId'];
-        } elseif ($sampleCodeFormat == 'YY' || $sampleCodeFormat == 'MMYY') {
-            $sampleCodeGenerator['sampleCode'] = $remotePrefix . $prefix . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
-            $sampleCodeGenerator['sampleCodeInText'] = $remotePrefix . $prefix . $sampleCodeGenerator['mnthYr'] . $sampleCodeGenerator['maxId'];
-            $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefix . $sampleCodeGenerator['mnthYr'];
-            $sampleCodeGenerator['sampleCodeKey'] = ($sampleCodeGenerator['maxId']);
-        }
-
-        $checkQuery = "SELECT $sampleCodeCol, $sampleCodeKeyCol
+            $checkQuery = "SELECT $sampleCodeType, $sampleCodeKeyCol
                         FROM $testTable
-                        WHERE $sampleCodeCol= ?";
-        $checkResult = $this->db->rawQueryOne($checkQuery, [$sampleCodeGenerator['sampleCode']]);
-        if (!empty($checkResult)) {
-            error_log("DUP::: Sample ID ====== " . $sampleCodeGenerator['sampleCode']);
-            error_log("DUP::: Sample Key Code ====== " . $maxId);
-            $params['maxCodeKeyVal'] = $maxId;
-            return $this->generateSampleCode($testTable, $params);
+                        WHERE $sampleCodeType= ?";
+            $checkResult = $this->db->rawQueryOne($checkQuery, [$sampleCodeGenerator['sampleCode']]);
+            if (!empty($checkResult)) {
+                error_log("DUP::: Sample ID ====== " . $sampleCodeGenerator['sampleCode']);
+                error_log("DUP::: Sample Key Code ====== " . $maxId);
+                $params['existingMaxId'] = $maxId;
+                return $this->generateSampleCode($testTable, $params);
+            }
+
+            if ($insertOperation) {
+                if ($maxId == 1) {
+                    $this->db->insert('sequence_counter', [
+                        'test_type' => $testType,
+                        'year' => $currentYear,
+                        'max_sequence_number' => $maxId,
+                        'code_type' => $sampleCodeType
+                    ]);
+                } else {
+
+                    $this->db->where('code_type', $sampleCodeType);
+                    $this->db->where('year', $currentYear);
+                    $this->db->where('test_type', $testType);
+                    $this->db->update('sequence_counter', ['max_sequence_number' => $maxId]);
+                }
+            }
+        } catch (\Exception $e) {
+            // Error handling logic
+            error_log("Error in generateSampleCode: " . $e->getMessage());
         }
 
         return json_encode($sampleCodeGenerator);
