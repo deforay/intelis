@@ -81,14 +81,16 @@ GROUP BY YEAR(sample_collection_date)
 HAVING MAX(remote_sample_code_key) IS NOT NULL;
 
 INSERT IGNORE INTO sequence_counter (test_type, year, code_type, max_sequence_number)
-SELECT test_type, YEAR(sample_collection_date) AS year, 'sample_code' AS code_type, MAX(sample_code_key) AS max_sequence_number
+SELECT test_short_code, YEAR(sample_collection_date) AS year, 'sample_code' AS code_type, MAX(sample_code_key) AS max_sequence_number
 FROM form_generic
+INNER JOIN r_test_types ON r_test_types.test_type_id = form_generic.test_type
 GROUP BY YEAR(sample_collection_date)
 HAVING MAX(sample_code_key) IS NOT NULL;
 
 INSERT IGNORE INTO sequence_counter (test_type, year, code_type, max_sequence_number)
-SELECT test_type, YEAR(sample_collection_date) AS year, 'remote_sample_code' AS code_type, MAX(remote_sample_code_key) AS max_sequence_number
+SELECT test_short_code, YEAR(sample_collection_date) AS year, 'remote_sample_code' AS code_type, MAX(remote_sample_code_key) AS max_sequence_number
 FROM form_generic
+INNER JOIN r_test_types ON r_test_types.test_type_id = form_generic.test_type
 GROUP BY YEAR(sample_collection_date)
 HAVING MAX(remote_sample_code_key) IS NOT NULL;
 

@@ -61,7 +61,7 @@ $request = $GLOBALS['request'];
 
 if (!$usersService->isAllowed($request)) {
 	http_response_code(401);
-	throw new SystemException(_translate('Unauthorized access. You do not have permission to access this page.'), 401);
+	throw new SystemException(_translate("Sorry") . " {$_SESSION['userId']}. " . _translate('You do not have permission to access this page.'), 401);
 }
 $countryCode = $arr['default_phone_prefix'] ?? '';
 $minNumberOfDigits = $arr['min_phone_length'] ?? 0;

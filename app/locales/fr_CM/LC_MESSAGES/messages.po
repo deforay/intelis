@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2023-11-27 15:42+0530\n"
-"PO-Revision-Date: 2023-11-27 15:42+0530\n"
+"PO-Revision-Date: 2023-11-28 17:35+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -6298,7 +6298,7 @@ msgstr "S. No."
 #: covid-19/requests/export-covid19-requests.php:37
 #: covid-19/requests/export-covid19-requests.php:39
 msgid "Testing Lab Name"
-msgstr "Nom du laboratoire d'essai"
+msgstr "Nom du laboratoire"
 
 #: covid-19/management/generate-export-drc.php:38
 #: covid-19/requests/forms/edit-cameroon.php:570
@@ -6308,7 +6308,7 @@ msgstr "Nom du laboratoire d'essai"
 #: vl/requests/forms/edit-cameroon.php:776
 #: vl/results/forms/update-cameroon-result.php:796
 msgid "Tested By"
-msgstr "Nombre d'échantillons testés"
+msgstr "Testé par"
 
 #: covid-19/management/generate-export-drc.php:39
 #: covid-19/requests/forms/add-cameroon.php:347
