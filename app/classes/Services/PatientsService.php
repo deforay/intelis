@@ -70,9 +70,11 @@ class PatientsService
             $params['patientLastName'] = $params['lastName'];
             $patientId = $params['patientId'];
         }
+        $lastCode = $this->getLastCodeKey();
+        // print_r($lastCode);die;
         $data['patient_code'] = $patientId;
-        $data['patient_code_key'] = NULL;
-        $data['patient_code_prefix'] = NULL;
+        $data['patient_code_key'] = sprintf("%02d",($lastCode['patient_code_key']+1));
+        $data['patient_code_prefix'] = 'PAT';
 
         if (!empty($params['patientCodeKey'])) {
             $data['patient_code_key'] = $params['patientCodeKey'];
@@ -140,7 +142,6 @@ class PatientsService
             $params['patientLastName'] = $params['lastName'];
             $patientId = $params['patientId'];
         }
-
         $data['patient_code'] = $patientId;
         $data['patient_code_key'] = NULL;
         $data['patient_code_prefix'] = NULL;
@@ -188,5 +189,10 @@ class PatientsService
 
         $this->db->where("patient_code", $oldPatientCode);
         return $this->db->update($this->table, $data);
+    }
+
+    public function getLastCodeKey(){
+        $this->db->orderBy('patient_id');
+        return $this->db->getOne($this->table, 'patient_code_key');
     }
 }

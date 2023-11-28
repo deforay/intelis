@@ -29,7 +29,7 @@ $patientsService = ContainerRegistry::get(PatientsService::class);
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
-
+// echo "<pre>";print_r($_POST);die;
 $tableName = "form_generic";
 $testTableName = "generic_test_results";
 $tableName1 = "activity_log";
@@ -267,6 +267,7 @@ try {
         'manual_result_entry' => 'yes',
         //'vl_result_category'                    => $vl_result_category
         'test_type' => $_POST['testType'],
+        'sub_tests' => implode("##", $_POST['testType']),
         'test_type_form' => json_encode($_POST['dynamicFields']),
         // 'reason_for_failure'                    => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  null,
     );
@@ -315,25 +316,29 @@ try {
          //Update patient Information in Patients Table
          $patientsService->savePatient($_POST,'form_generic');
 
-
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
         if (!empty($_POST['testName'])) {
-            foreach ($_POST['testName'] as $testKey => $testKitName) {
-                if (!empty($testKitName)) {
-                    $covid19TestData = array(
-                        'generic_id' => $_POST['vlSampleId'],
-                        'test_name' => ($testKitName == 'other') ? $_POST['testNameOther'][$testKey] : $testKitName,
-                        'facility_id' => $_POST['labId'] ?? null,
-                        'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$testKey] ?? '', true),
-                        'testing_platform' => $_POST['testingPlatform'][$testKey] ?? null,
-                        'kit_lot_no' => (strpos($testKitName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
-                        'kit_expiry_date' => (strpos($testKitName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
-                        'result' => $_POST['testResult'][$testKey],
-                        'result_unit' => $_POST['testResultUnit'][$testKey]
-                    );
-                    $db->insert($testTableName, $covid19TestData);
+            foreach ($_POST['testName'] as $subTestName => $subTests) {
+                foreach($subTests as $testKey=>$testKitName){
+                     if (!empty($testKitName)) {
+                          $testData = array(
+                               'generic_id' => $_POST['vlSampleId'],
+                               'sub_test_name' => $subTestName,
+                               'final_result_unit' => $_POST['finalTestResultUnit'][$subTestName],
+                               'result_type' => $_POST['resultType'][$subTestName],
+                               'test_name' => ($testKitName == 'other') ? $_POST['testNameOther'][$subTestName][$testKey] : $testKitName,
+                               'facility_id' => $_POST['labId'] ?? null,
+                               'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$subTestName][$testKey] ?? '', true),
+                               'testing_platform' => $_POST['testingPlatform'][$testKey] ?? null,
+                               'kit_lot_no' => (strpos($testKitName, 'RDT') !== false) ? $_POST['lotNo'][$subTestName][$testKey] : null,
+                               'kit_expiry_date' => (strpos($testKitName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$subTestName][$testKey]) : null,
+                               'result' => $_POST['testResult'][$subTestName][$testKey],
+                               'result_unit' => $_POST['testResultUnit'][$subTestName][$testKey]
+                          );
+                          $db->insert('generic_test_results', $testData);
+                     }
                 }
-            }
+           }
         }
     } else {
         $db = $db->where('generic_id', $_POST['vlSampleId']);

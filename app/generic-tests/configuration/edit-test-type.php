@@ -461,16 +461,16 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 						<div class="box-body">
 							<table style="width: 100%;margin: 0 auto;" border="1" class="table table-bordered table-striped clearfix" id="vlSampleTable">
 								<tbody>
-									<?php if(isset($testResultAttribute['result_name']) && sizeof($testResultAttribute['result_name']) > 0){ 
-										$label = []; $n = count($testResultAttribute['result_name']);
-										foreach($testResultAttribute['result_name'] as $key=>$resultName) { ?>
+									<?php if(isset($testResultAttribute['sub_test_name']) && sizeof($testResultAttribute['sub_test_name']) > 0){ 
+										$label = []; $n = count($testResultAttribute['sub_test_name']);
+										foreach($testResultAttribute['sub_test_name'] as $key=>$resultName) { ?>
 												<tr class="result-type">
 													<td>
 														<table style="width: 100%;margin: 0 auto;" border="1" class="table table-bordered table-striped clearfix">
 															<tr>
 																<td class="<?php echo (isset($resultName) && !empty($resultName))?'':'hide';?> firstSubTest" style="width:20%;"><lable for="resultSubGroup<?php echo $key;?>" class="form-label-control">Enter the test name</lable></td>
 																<td class="<?php echo (isset($resultName) && !empty($resultName))?'':'hide';?> firstSubTest" style="width:30%;">
-																	<input type="text" name="resultConfig[result_name][<?php echo $key;?>]"id="resultSubGroup<?php echo $key;?>" value="<?php echo (isset($resultName) && !empty($resultName))?$resultName:'';?>" class="form-control input-sm" placeholder="Enter the sub test name" title="Please ener the sub test name for <?php echo $key;?> row"/>
+																	<input type="text" name="resultConfig[sub_test_name][<?php echo $key;?>]"id="resultSubGroup<?php echo $key;?>" value="<?php echo (isset($resultName) && !empty($resultName))?$resultName:'';?>" class="form-control input-sm" placeholder="Enter the sub test name" title="Please ener the sub test name for <?php echo $key;?> row"/>
 																</td>
 																<td style="width:20%;"><lable for="testType<?php echo $key;?>" class="form-label-control">Select result type</lable></td>
 																<td style="width:30%;">
@@ -548,7 +548,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 												<tr>
 													<td class="hide firstSubTest" style="width:20%;"><lable for="resultSubGroup1" class="form-label-control">Enter the test name</lable></td>
 													<td class="hide firstSubTest" style="width:30%;">
-														<input type="text" name="resultConfig[result_name][1]"id="resultSubGroup1" class="form-control input-sm" placeholder="Enter the sub test name" title="Please ener the sub test name for 1st row"/>
+														<input type="text" name="resultConfig[sub_test_name][1]"id="resultSubGroup1" class="form-control input-sm" placeholder="Enter the sub test name" title="Please ener the sub test name for 1st row"/>
 													</td>
 													<td style="width:20%;"><lable for="testType1" class="form-label-control">Select result type</lable></td>
 													<td style="width:30%;">
@@ -958,7 +958,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 						<tr>\
 							<td style="width:20%;"><lable for="resultSubGroup'+sampleCounter+'" class="form-label-control">Enter the test name</lable></td>\
 							<td style="width:30%;">\
-								<input type="text" name="resultConfig[result_name]['+sampleCounter+']"id="resultSubGroup'+sampleCounter+'" class="form-control isRequired input-sm" placeholder="Enter the sub test name" title="Please ener the sub test name for '+sampleCounter+' row"/>\
+								<input type="text" name="resultConfig[sub_test_name]['+sampleCounter+']"id="resultSubGroup'+sampleCounter+'" class="form-control isRequired input-sm" placeholder="Enter the sub test name" title="Please ener the sub test name for '+sampleCounter+' row"/>\
 							</td>\
 							<td style="width:20%;"><lable for="testType'+sampleCounter+'" class="form-label-control">Select result type</lable></td>\
 							<td style="width:30%;">\

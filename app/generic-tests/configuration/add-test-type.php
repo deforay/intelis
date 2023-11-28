@@ -295,7 +295,7 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 											<tr>
 												<td class="hide firstSubTest" style="width:20%;"><lable for="resultSubGroup1" class="form-label-control">Enter the test name</lable></td>
 												<td class="hide firstSubTest" style="width:30%;">
-													<input type="text" name="resultConfig[result_name][1]"id="resultSubGroup1" class="form-control input-sm" placeholder="Enter the sub test name" title="Please ener the sub test name for 1st row"/>
+													<input type="text" name="resultConfig[sub_test_name][1]"id="resultSubGroup1" class="form-control input-sm" placeholder="Enter the sub test name" title="Please ener the sub test name for 1st row"/>
 												</td>
 												<td style="width:20%;"><lable for="testType1" class="form-label-control">Select result type</lable></td>
 												<td style="width:30%;">
@@ -742,7 +742,7 @@ $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_unit
 						<tr>\
 							<td style="width:20%;"><lable for="resultSubGroup'+sampleCounter+'" class="form-label-control">Enter the test name</lable></td>\
 							<td style="width:30%;">\
-								<input type="text" name="resultConfig[result_name]['+sampleCounter+']"id="resultSubGroup'+sampleCounter+'" class="form-control isRequired input-sm" placeholder="Enter the sub test name" title="Please ener the sub test name for '+sampleCounter+' row"/>\
+								<input type="text" name="resultConfig[sub_test_name]['+sampleCounter+']"id="resultSubGroup'+sampleCounter+'" class="form-control isRequired input-sm" placeholder="Enter the sub test name" title="Please ener the sub test name for '+sampleCounter+' row"/>\
 							</td>\
 							<td style="width:20%;"><lable for="testType'+sampleCounter+'" class="form-label-control">Select result type</lable></td>\
 							<td style="width:30%;">\

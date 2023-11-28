@@ -76,9 +76,6 @@ $sResult = $db->query($sQuery);
 $vlTestReasonQuery = "SELECT * FROM r_generic_test_reasons WHERE test_reason_status = 'active'";
 $testReason = $db->query($vlTestReasonQuery);
 
-$genericTestQuery = "SELECT * from generic_test_results where generic_id=? ORDER BY test_id ASC";
-$genericTestInfo = $db->rawQuery($genericTestQuery, array($id));
-
 $vlQuery = "SELECT * FROM form_generic WHERE sample_id=?";
 $genericResultInfo = $db->rawQueryOne($vlQuery, array($id));
 
@@ -307,11 +304,15 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 }
 
 $minPatientIdLength = 0;
-if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_length'] != ""){
-    $minPatientIdLength = $arr['generic_min_patient_id_length'];
+if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_length'] != "") {
+	$minPatientIdLength = $arr['generic_min_patient_id_length'];
 }
 ?><!-- Content Wrapper. Contains page content -->
+<link rel="stylesheet" href="/assets/css/jquery.multiselect.css" type="text/css" />
 <style>
+	 .ms-choice {
+		border: 0px solid #aaa;
+	}
 	.ui_tpicker_second_label {
 		display: none !important;
 	}
@@ -841,140 +842,15 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
 													<input type="text" class="form-control labSection dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" value="<?php echo $genericResultInfo['result_dispatched_datetime']; ?>" />
 												</div>
 											</div>
-										</div>
-										<div class="row">
-											<div class="col-md-12">
-												<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" id="testNameTable">
-													<thead>
-														<tr>
-															<th scope="row" class="text-center">Test No.</th>
-															<th scope="row" class="text-center">Test Method</th>
-															<th scope="row" class="text-center">Date of Testing</th>
-															<th scope="row" class="text-center">Test Platform/Test
-																Kit</th>
-															<th scope="row" class="text-center">Test Result</th>
-															<th scope="row" class="text-center testResultUnit">Test Result
-																Unit</th>
-
-															<th scope="row" class="text-center">Action</th>
-														</tr>
-													</thead>
-													<tbody id="testKitNameTable">
-														<?php
-														if (!empty($genericTestInfo)) {
-															$kitShow = false;
-
-															foreach ($genericTestInfo as $indexKey => $rows) { ?>
-																<tr>
-																	<td class="text-center">
-																		<?= ($indexKey + 1); ?><input type="hidden" name="testId[]" value="<?php echo base64_encode($rows['test_id']); ?>">
-																	</td>
-																	<td>
-																		<?php
-
-																		$value = '';
-																		if (!in_array($rows['test_name'], array('Real Time RT-PCR', 'RDT-Antibody', 'RDT-Antigen', 'GeneXpert', 'ELISA', 'other'))) {
-																			$value = 'value="' . $rows['test_name'] . '"';
-																			$show = "block";
-																		} else {
-																			$show = "none";
-																		} ?>
-																		<select class="form-control test-name-table-input" id="testName<?= ($indexKey + 1); ?>" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
-																			<option value="">--Select--</option>
-																			<?php
-																			foreach ($testMethods as $methods) {
-																			?>
-																				<option value="<?php echo $methods['test_method_id']; ?>" <?php echo (isset($rows['test_name']) && $rows['test_name'] == $methods['test_method_id']) ? "selected='selected'" : ""; ?>><?php echo $methods['test_method_name']; ?></option>
-																			<?php
-																			}
-																			?>
-																		</select>
-																		<input <?php echo $value; ?> type="hidden" name="testNameOther[]" id="testNameOther<?= ($indexKey + 1); ?>" class="form-control testNameOther<?= ($indexKey + 1); ?>" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Enter Test Method used" style="display: <?php echo $show; ?>;margin-top: 10px;" />
-																	</td>
-																	<td><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($rows['sample_tested_datetime'], true); ?>" name="testDate[]" id="testDate<?= ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row <?= ($indexKey + 1); ?>" />
-																	</td>
-																	<td>
-																		<select name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control result-optional test-name-table-input" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
-																			<?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'], '-- Select --'); ?>
-																		</select>
-																	</td>
-																	<td>
-																		<input type="text" id="testResult<?= ($indexKey + 1); ?>" value="<?php echo $rows['result']; ?>" name="testResult[]" class="form-control result-focus" value="<?php echo $genericResultInfo['result']; ?>" placeholder="Enter result" title="Please enter final results">
-																	</td>
-																	<td class="testResultUnit">
-																		<select class="form-control resultUnit" id="testResultUnit<?= ($indexKey + 1); ?>" name="testResultUnit[]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>'>
-																			<option value="">--Select--</option>
-																			<?php
-																			foreach ($testResultUnits as $unit) {
-																			?>
-																				<option value="<?php echo $unit['unit_id']; ?>" <?php echo (isset($rows['result_unit']) && $rows['result_unit'] == $unit['unit_id']) ? "selected='selected'" : ""; ?>><?php echo $unit['unit_name']; ?></option>
-																			<?php
-																			}
-																			?>
-																		</select>
-																	</td>
-																	<td style="vertical-align:middle;text-align: center;width:100px;">
-																		<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-																		<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode($rows['test_id']); ?>');"><em class="fa-solid fa-minus"></em></a>
-																	</td>
-																</tr>
-															<?php }
-														} else { ?>
-															<tr>
-																<td class="text-center">1</td>
-																<td>
-																	<select class="form-control test-name-table-input" id="testName1" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
-																		<option value="">--Select--</option>
-																		<?php
-																		foreach ($testMethods as $methods) {
-																		?>
-																			<option value="<?php echo $methods['test_method_id']; ?>">
-																				<?php echo $methods['test_method_name']; ?></option>
-																		<?php
-																		}
-																		?>
-																	</select>
-																	<input type="hidden" name="testNameOther[]" id="testNameOther1" class="form-control testNameOther1" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
-																</td>
-																<td><input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row 1" />
-																</td>
-																<td>
-																	<select name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control  result-optional test-name-table-input" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
-																		<?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
-																	</select>
-																</td>
-																<td>
-																	<input type="text" id="testResult<?= ($indexKey + 1); ?>" name="testResult[]" class="form-control result-focus" placeholder="Enter result" title="Please enter final results">
-																</td>
-																<td class="testResultUnit">
-																	<select class="form-control" id="testResultUnit<?= ($indexKey + 1); ?>" name="testResultUnit[]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>'>
-																		<option value="">--Select--</option>
-																		<?php
-																		foreach ($testResultUnits as $unit) {
-																		?>
-																			<option value="<?php echo $unit['unit_id']; ?>"><?php echo $unit['unit_name']; ?></option>
-																		<?php
-																		}
-																		?>
-																	</select>
-																</td>
-																<td style="vertical-align:middle;text-align: center;width:100px;">
-																	<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-																	<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
-																</td>
-															</tr>
-														<?php } ?>
-													</tbody>
-													<tfoot id="resultSection">
-														<!-- <tr>
-															<th scope="row" colspan="4" class="text-right final-result-row">Final Result<br><br><span class="testResultUnit">Test Result Unit<br><br></span>Result Interpretation</th>
-															<td id="result-sections" class="resultInputContainer">
-
-															</td>
-														</tr> -->
-													</tfoot>
-												</table>
+											<div class="col-md-6 vlResult">
+												<label class="col-lg-5 control-label labels" for="subTestResult">Sub Test Results</label>
+												<div class="col-lg-7">
+													<select class="form-control ms-container multiselect" id="subTestResult" name="subTestResult[]" title="Please select sub tests" multiple onchange="loadSubTests();">
+													</select>
+												</div>
 											</div>
+										</div>
+										<div class="row" id="resultSection">
 										</div>
 										<div class="row">
 											<div class="col-md-6">
@@ -1075,6 +951,8 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
 </div>
 </section>
 </div>
+<script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
+<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
 <script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
 <script>
 	let provinceName = true;
@@ -1084,7 +962,10 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
 	let reason = null;
 	let resultValue = null;
 	$(document).ready(function() {
-
+		$("#subTestResult").multipleSelect({
+			placeholder: '<?php echo _translate("Select Sub Tests"); ?>',
+			width: '100%'
+		});
 		var testType = $("#testType").val();
 		getTestTypeConfigList(testType);
 
@@ -1774,14 +1655,20 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
 		removeDynamicForm();
 		var testType = $("#testType").val();
 		getTestTypeConfigList(testType);
+		getSubTestList(testType);
 		if (testType != "") {
+			var editId = $('#vlSampleId').val();	
+			var resultVal = $('#result').val() ? $('#result').val() : '<?php echo $genericResultInfo['result']; ?>';
+			var testedTypeForm = '<?php echo base64_encode($genericResultInfo['test_type_form']); ?>';
+			var testResultUnit = '<?php echo $genericResultInfo['result_unit']; ?>';
 			$(".requestForm").show();
 			$.post("/generic-tests/requests/getTestTypeForm.php", {
 					testType: testType,
-					result: $('#result').val() ? $('#result').val() : '<?php echo $genericResultInfo['result']; ?>',
-					testTypeForm: '<?php echo base64_encode($genericResultInfo['test_type_form']); ?>',
-					resultInterpretation: '<?php echo $genericResultInfo['final_result_interpretation']; ?>',
-					resultUnit: '<?php echo $genericResultInfo['result_unit']; ?>',
+					vlSampleId: editId,
+					result: resultVal,
+					testTypeForm: testedTypeForm,
+					// resultInterpretation: '<?php echo $genericResultInfo['final_result_interpretation']; ?>',
+					resultUnit: testResultUnit,
 				},
 				function(data) {
 					data = JSON.parse(data);
@@ -1796,6 +1683,7 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
 					}
 					if (typeof(data.result) != "undefined" && data.result !== null && data.result.length > 0) {
 						$("#resultSection").html(data.result);
+						$('#resultSection').show();
 					} else {
 						$('#resultSection').hide();
 					}
@@ -1875,43 +1763,123 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
 			});
 	}
 
-	function addTestRow() {
-		testCounter++;
-		testMethods = $("#testName1").html();
-		let rowString = `<tr>
-					<td class="text-center">${testCounter}</td>
-					<td>
-					<select class="form-control test-name-table-input" id="testName${testCounter}" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
-					${testMethods}
-				</select>
-				<input type="text" name="testNameOther[]" id="testNameOther${testCounter}" class="form-control testNameOther${testCounter}" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
-			</td>
-			<td><input type="text" name="testDate[]" id="testDate${testCounter}" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ${testCounter}" /></td>
-			<td><select name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
-			<td class="kitlabels" style="display: none;"><input type="text" name="lotNo[]" id="lotNo${testCounter}" class="form-control kit-fields${testCounter}" placeholder="Kit lot no" title="Please enter the kit lot no. for row ${testCounter}" style="display:none;"/></td>
-			<td class="kitlabels" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control expDate kit-fields${testCounter}" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" style="display:none;"/></td>
-			<td>
-			   <input type="text" id="testResult${testCounter}" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
-			</td>
-			<td class="testResultUnit">
-			<select class="form-control" id="testResultUnit${testCounter}" name="testResultUnit[]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>'>
-					<option value="">--Select--</option>
-					<?php
-					foreach ($testResultUnits as $unit) {
-					?>
-						<option value="<?php echo $unit['unit_id']; ?>"><?php echo $unit['unit_name']; ?></option>
-						<?php
+	function loadSubTests() {
+		var testType = $("#testType").val();
+		var subTestResult = $("#subTestResult").val();
+		if (testType != "") {
+			var editId = $('#vlSampleId').val();	
+			var resultVal = $('#result').val() ? $('#result').val() : '<?php echo $genericResultInfo['result']; ?>';
+			var testedTypeForm = '<?php echo base64_encode($genericResultInfo['test_type_form']); ?>';
+			var testResultUnit = '<?php echo $genericResultInfo['result_unit']; ?>';
+			$(".requestForm").show();
+			$.post("/generic-tests/requests/getTestTypeForm.php", {
+					testType: testType,
+					vlSampleId: editId,
+					result: resultVal,
+					testTypeForm: testedTypeForm,
+					subTests: subTestResult
+					// resultInterpretation: '<?php echo $genericResultInfo['final_result_interpretation']; ?>',
+				},
+				function(data) {
+					data = JSON.parse(data);
+					$("#resultSection").html('');
+					if (typeof(data.result) != "undefined" && data.result !== null && data.result.length > 0) {
+						$("#resultSection").html(data.result);
+						$('#resultSection').show();
+					} else {
+						$('#resultSection').hide();
 					}
-						?>
-			</select>
-			</td>
-			<td style="vertical-align:middle;text-align: center;width:100px;">
-				<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><em class="fa-solid fa-plus"></em></a>&nbsp;
-				<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
-			</td>
-		</tr>`;
+					$('.dateTime').datetimepicker({
+						changeMonth: true,
+						changeYear: true,
+						dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
+						timeFormat: "HH:mm",
+						maxDate: "Today",
+						onChangeMonthYear: function(year, month, widget) {
+							setTimeout(function() {
+								$('.ui-datepicker-calendar').show();
+							});
+						}
+					}).click(function() {
+						$('.ui-datepicker-calendar').show();
+					});
+					$(".dynamicFacilitySelect2").select2({
+						width: '100%',
+						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
+					});
+					$(".dynamicSelect2").select2({
+						width: '100%',
+						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
+					});
+					if ($('#resultType').val() == 'qualitative') {
+						$('.final-result-row').attr('colspan', 4)
+						$('.testResultUnit').hide();
+					} else {
+						$('.final-result-row').attr('colspan', 5)
+						$('.testResultUnit').show();
+					}
+				});
+		} else {
+			$(".specimenSectionInput").remove();
+		}
 
-		$("#testKitNameTable").append(rowString);
+	}
+
+	function getSubTestList(testType) {
+		$.post("/generic-tests/requests/get-sub-test-list.php", {
+				subTests: '<?php echo base64_encode($genericResultInfo['sub_tests']);?>',
+				testTypeId: testType
+			},
+			function(data) {
+				if (data != "") {
+					$("#subTestResult").append(data);
+					$("#subTestResult").multipleSelect({
+						placeholder: '<?php echo _translate("Select Sub Tests"); ?>',
+						width: '100%'
+					});
+				}
+			});
+	}
+
+	function addTestRow(row, subTest) {
+		subrow = document.getElementById("testKitNameTable" + row).rows.length
+		$('.ins-row-' + row + subrow).attr('disabled', true);
+		$('.ins-row-' + row + subrow).addClass('disabled');
+		testCounter = (subrow + 1);
+		let rowString = `<tr>
+                    <td class="text-center">${(subrow+1)}</td>
+                    <td>
+                         <select class="form-control test-name-table-input" id="testName${testCounter}" name="testName[${subTest}][]" title="Please enter the name of the Testkit (or) Test Method used">
+                              <option value="">-- Select --</option>
+                              <option value="Real Time RT-PCR">Real Time RT-PCR</option>
+                              <option value="RDT-Antibody">RDT-Antibody</option>
+                              <option value="RDT-Antigen">RDT-Antigen</option>
+                              <option value="GeneXpert">GeneXpert</option>
+                              <option value="ELISA">ELISA</option>
+                         </select>
+                         <input type="text" name="testNameOther[${subTest}][]" id="testNameOther${row}${testCounter}" class="form-control testNameOther${testCounter}" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
+                    </td>
+                    <td><input type="text" name="testDate[${subTest}][]" id="testDate${row}${testCounter}" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ${testCounter}" /></td>
+                    <td><select name="testingPlatform[${subTest}][]" id="testingPlatform${row}${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
+                    <td class="kitlabels" style="display: none;"><input type="text" name="lotNo[${subTest}][]" id="lotNo${row}${testCounter}" class="form-control kit-fields${testCounter}" placeholder="Kit lot no" title="Please enter the kit lot no. for row ${testCounter}" style="display:none;"/></td>
+                    <td class="kitlabels" style="display: none;"><input type="text" name="expDate[${subTest}][]" id="expDate${row}${testCounter}" class="form-control expDate kit-fields${testCounter}" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" style="display:none;"/></td>
+                    <td>
+                         <input type="text" id="testResult${row}${testCounter}" name="testResult[${subTest}][]" class="form-control" placeholder="Enter result" title="Please enter final results">
+                    </td>
+                    <td class="testResultUnit">
+                    <select class="form-control resultUnit" id="testResultUnit${row}${testCounter}" name="testResultUnit[${subTest}][]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>'>
+               <option value="">--Select--</option>
+               <?php foreach ($testResultUnits as $key => $unit) { ?>
+                    <option value="<?php echo $unit['unit_id']; ?>"><?php echo $unit['unit_name']; ?></option>
+               <?php } ?>
+                    </select>
+                    </td>
+                    <td style="vertical-align:middle;text-align: center;width:100px;">
+                         <a class="btn btn-xs btn-primary ins-row-${row}${testCounter} test-name-table" href="javascript:void(0);" onclick="addTestRow(${row}, \'${subTest}\');"><em class="fa-solid fa-plus"></em></a>&nbsp;
+                         <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode, ${row},${subrow});"><em class="fa-solid fa-minus"></em></a>
+                    </td>
+               </tr>`;
+		$("#testKitNameTable" + row).append(rowString);
 		$("#testName" + testCounter).val("");
 		$('.date').datepicker({
 			changeMonth: true,
@@ -1968,13 +1936,15 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
 		}
 	}
 
-	function removeTestRow(el) {
+	function removeTestRow(el, row, subrow) {
+		$('.ins-row-' + row + subrow).attr('disabled', false);
+		$('.ins-row-' + row + subrow).removeClass('disabled');
 		$(el).fadeOut("slow", function() {
 			el.parentNode.removeChild(el);
-			rl = document.getElementById("testKitNameTable").rows.length;
+			rl = document.getElementById("testKitNameTable" + row).rows.length;
 			if (rl == 0) {
 				testCounter = 0;
-				addTestRow();
+				addTestRow(row, (subrow + 1));
 			}
 		});
 	}
