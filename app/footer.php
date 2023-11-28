@@ -330,7 +330,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 			if (patientId.length < minLength) {
 				$(".lengthErr").remove();
-				var txt = '<?= _translate('Please enter minimum length for Patient Id : '); ?>' + minLength;
+				var txt = "<?= _translate('Please enter minimum length for Patient Id : ', true); ?>" + minLength;
 				$(this).parent().append('<span class="lengthErr" style="color:red;">' + txt + '</span>');
 			} else {
 				$(".lengthErr").remove();
