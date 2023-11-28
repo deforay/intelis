@@ -1,10 +1,8 @@
 <?php
 // imported in hepatitis-add-request.php based on country in global config
 
-use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
-
-
+use App\Registries\ContainerRegistry;
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);

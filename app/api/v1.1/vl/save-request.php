@@ -8,6 +8,7 @@ use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
@@ -17,7 +18,24 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 20000);
 
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var VlService $vlService */
+$vlService = ContainerRegistry::get(VlService::class);
+
 try {
+
+    $db->startTransaction();
 
     /** @var Slim\Psr7\Request $request */
     $request = $GLOBALS['request'];
@@ -45,23 +63,6 @@ try {
         throw new SystemException("Invalid request");
     }
 
-
-
-    /** @var MysqliDb $db */
-    $db = ContainerRegistry::get('db');
-
-    /** @var CommonService $general */
-    $general = ContainerRegistry::get(CommonService::class);
-
-    /** @var ApiService $apiService */
-    $apiService = ContainerRegistry::get(ApiService::class);
-
-    /** @var UsersService $usersService */
-    $usersService = ContainerRegistry::get(UsersService::class);
-
-    /** @var VlService $vlService */
-    $vlService = ContainerRegistry::get(VlService::class);
-
     $transactionId = $general->generateUUID();
 
     $globalConfig = $general->getGlobalConfig();
@@ -71,9 +72,6 @@ try {
     $absVal = null;
     $txtVal = null;
     $finalResult = null;
-
-
-    $db->startTransaction();
 
     $authToken = $general->getAuthorizationBearerToken();
     $user = $usersService->getUserByToken($authToken);
@@ -208,6 +206,7 @@ try {
             $params['facilityId'] = $data['facilityId'] ?? null;
             $params['labId'] = $data['labId'] ?? null;
 
+            $params['insertOperation'] = true;
             $currentSampleData = $vlService->insertSample($params, true);
             $currentSampleData['action'] = 'inserted';
             $data['vlSampleId'] = intval($currentSampleData['id']);
@@ -442,7 +441,7 @@ try {
     $db->commit();
     http_response_code(200);
 } catch (SystemException $exc) {
-
+    $db->rollback();
     http_response_code(500);
     $payload = [
         'status' => 'failed',
@@ -450,7 +449,6 @@ try {
         'error' => $exc->getMessage(),
         'data' => []
     ];
-    $db->rollback();
     error_log($db->getLastError());
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());

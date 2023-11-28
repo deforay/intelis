@@ -66,10 +66,11 @@ $errorMessage = $errorMessage ?? _translate('Sorry, something went wrong. Please
 
             </h2>
             <h3 style="color:#555;font-weight:bold;font-size:1.4em;">
-              <?= htmlspecialchars($errorReason . $errorMessage, ENT_QUOTES, 'UTF-8'); ?>
+              <?= _translate("Error Code") . " : " . $httpCode . " - " . $errorReason; ?>
             </h3>
+
             <h3 style="color:#555;font-weight:bold;font-size:1.4em;">
-              <?= _translate("Error Code") . " : " . $httpCode; ?>
+              <?= htmlspecialchars($errorMessage, ENT_QUOTES, 'UTF-8'); ?>
             </h3>
             <small>
               <?= _translate("Please contact the System Admin for further support."); ?>

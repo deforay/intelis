@@ -1,14 +1,9 @@
 <?php
 
-use App\Registries\ContainerRegistry;
+use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\PatientsService;
-use App\Utilities\DateUtility;
-
-
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
+use App\Registries\ContainerRegistry;
 
 
 /** @var MysqliDb $db */
@@ -19,8 +14,6 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var PatientsService $patientsService */
 $patientsService = ContainerRegistry::get(PatientsService::class);
-
-// echo "<pre>";print_r($_POST);die;
 
 $tableName = "form_hepatitis";
 $tableName1 = "activity_log";
@@ -209,8 +202,8 @@ try {
 			$hepatitisData['is_encrypted'] = 'yes';
 		}
 
-			     //Update patient Information in Patients Table
-				 $patientsService->savePatient($_POST,'form_hepatitis');
+		//Update patient Information in Patients Table
+		$patientsService->savePatient($_POST, 'form_hepatitis');
 
 
 		$id = false;

@@ -38,7 +38,7 @@ $to = !empty($_REQUEST['t']) ? $db->escape($_REQUEST['t']) : null;
 $orderSortType = !empty($_REQUEST['orderSortType']) ? $db->escape($_REQUEST['orderSortType']) : null;
 
 if (!$sampleCode && !$recencyId && (!$from || !$to)) {
-    http_response_code(500);
+    http_response_code(400);
     throw new SystemException("Mandatory request params missing in request. Expected Recency ID(s) or a Date Range");
 }
 
@@ -105,7 +105,7 @@ try {
         'error' => $exc->getMessage(),
         'data' => []
     ];
-
+    http_response_code(500);
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
 }
