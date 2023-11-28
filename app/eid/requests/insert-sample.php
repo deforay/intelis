@@ -1,13 +1,22 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\EidService;
+use App\Exceptions\SystemException;
+use App\Registries\ContainerRegistry;
 
-
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
 
 /** @var EidService $eidService */
 $eidService = ContainerRegistry::get(EidService::class);
-echo $eidService->insertSample($_POST);
+
+try {
+    // Start transaction
+    $db->startTransaction();
+    $_POST['insertOperation'] = true;
+    echo $eidService->insertSample($_POST);
+    // Commit transaction
+    $db->commit();
+} catch (Exception $e) {
+    // Rollback transaction in case of error
+    $db->rollback();
+    throw new SystemException($e->getMessage());
+}

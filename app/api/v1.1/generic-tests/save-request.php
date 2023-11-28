@@ -1,21 +1,40 @@
 <?php
 
 use JsonMachine\Items;
-use App\Services\GenericTestsService;
 use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Services\GenericTestsService;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 use JsonMachine\Exception\PathNotFoundException;
 
 session_unset(); // no need of session in json response
 
 
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var ApiService $app */
+$app = ContainerRegistry::get(ApiService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var GenericTestsService $genericService */
+$genericService = ContainerRegistry::get(GenericTestsService::class);
+
+
 try {
+
+    $db->startTransaction();
     ini_set('memory_limit', -1);
     set_time_limit(0);
     ini_set('max_execution_time', 20000);
@@ -47,21 +66,6 @@ try {
     } catch (PathNotFoundException $ex) {
         throw new SystemException("Invalid request");
     }
-
-    /** @var MysqliDb $db */
-    $db = ContainerRegistry::get('db');
-
-    /** @var CommonService $general */
-    $general = ContainerRegistry::get(CommonService::class);
-
-    /** @var ApiService $app */
-    $app = ContainerRegistry::get(ApiService::class);
-
-    /** @var UsersService $usersService */
-    $usersService = ContainerRegistry::get(UsersService::class);
-
-    /** @var GenericTestsService $genericService */
-    $genericService = ContainerRegistry::get(GenericTestsService::class);
 
     $user = null;
     $tableName = "form_generic";
@@ -219,6 +223,7 @@ try {
             $params['facilityId'] = $data['facilityId'] ?? null;
             $params['labId'] = $data['labId'] ?? null;
 
+            $params['insertOperation'] = true;
             $currentSampleData = $genericService->insertSample($params, true);
             $currentSampleData['action'] = 'inserted';
             $data['genericSampleId'] = intval($currentSampleData['id']);
@@ -445,8 +450,9 @@ try {
         'data' => $responseData ?? []
     ];
     http_response_code(200);
+    $db->commit();
 } catch (SystemException $exc) {
-
+    $db->rollback();
     http_response_code(500);
     $payload = [
         'status' => 'failed',

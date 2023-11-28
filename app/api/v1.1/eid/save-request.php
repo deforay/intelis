@@ -7,6 +7,7 @@ use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
@@ -17,7 +18,24 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 20000);
 
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var ApiService $app */
+$app = ContainerRegistry::get(ApiService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var EidService $eidService */
+$eidService = ContainerRegistry::get(EidService::class);
+
 try {
+
+    $db->startTransaction();
 
     /** @var Slim\Psr7\Request $request */
     $request = $GLOBALS['request'];
@@ -46,21 +64,6 @@ try {
     } catch (PathNotFoundException $ex) {
         throw new SystemException("Invalid request");
     }
-
-    /** @var MysqliDb $db */
-    $db = ContainerRegistry::get('db');
-
-    /** @var CommonService $general */
-    $general = ContainerRegistry::get(CommonService::class);
-
-    /** @var ApiService $app */
-    $app = ContainerRegistry::get(ApiService::class);
-
-    /** @var UsersService $usersService */
-    $usersService = ContainerRegistry::get(UsersService::class);
-
-    /** @var EidService $eidService */
-    $eidService = ContainerRegistry::get(EidService::class);
 
     $transactionId = $general->generateUUID();
     $globalConfig = $general->getGlobalConfig();
@@ -219,6 +222,7 @@ try {
             $params['facilityId'] = $data['facilityId'] ?? null;
             $params['labId'] = $data['labId'] ?? null;
 
+            $params['insertOperation'] = true;
             $currentSampleData = $eidService->insertSample($params, true);
             $currentSampleData['action'] = 'inserted';
             $data['eidSampleId'] = intval($currentSampleData['id']);
@@ -464,8 +468,9 @@ try {
         'timestamp' => time(),
         'data' => $responseData ?? []
     ];
+    $db->commit();
 } catch (SystemException $exc) {
-
+    $db->rollback();
     http_response_code(500);
     $payload = [
         'status' => 'failed',
