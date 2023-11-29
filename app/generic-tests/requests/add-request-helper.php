@@ -329,10 +329,11 @@ try {
                                'test_name' => ($testKitName == 'other') ? $_POST['testNameOther'][$subTestName][$testKey] : $testKitName,
                                'facility_id' => $_POST['labId'] ?? null,
                                'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$subTestName][$testKey] ?? '', true),
-                               'testing_platform' => $_POST['testingPlatform'][$testKey] ?? null,
+                               'testing_platform' => $_POST['testingPlatform'][$subTestName][$testKey] ?? null,
                                'kit_lot_no' => (strpos($testKitName, 'RDT') !== false) ? $_POST['lotNo'][$subTestName][$testKey] : null,
                                'kit_expiry_date' => (strpos($testKitName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$subTestName][$testKey]) : null,
                                'result' => $_POST['testResult'][$subTestName][$testKey],
+                               'final_result' => $_POST['finalResult'][$subTestName],
                                'result_unit' => $_POST['testResultUnit'][$subTestName][$testKey]
                           );
                           $db->insert('generic_test_results', $testData);
