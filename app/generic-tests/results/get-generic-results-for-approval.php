@@ -190,11 +190,7 @@ if (isset($_SESSION['privileges']) && (in_array("viewVlRequest.php", $_SESSION['
 }
 
 foreach ($rResult as $aRow) {
-     if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-          $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-     } else {
-          $aRow['sample_collection_date'] = '';
-     }
+     $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 
      $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_id']));
      $patientMname = ($general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_id']));
@@ -221,11 +217,7 @@ foreach ($rResult as $aRow) {
      $row[] = ($aRow['facility_name']);
      $row[] = ($aRow['sample_type_name']);
      $row[] = $aRow['result'];
-     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-          $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
-     } else {
-          $aRow['last_modified_datetime'] = '';
-     }
+     $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
      $row[] = $aRow['last_modified_datetime'];
      $row[] = $status;
 

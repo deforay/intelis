@@ -1,12 +1,8 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Utilities\DateUtility;
-
-if (session_status() == PHP_SESSION_NONE) {
-     session_start();
-}
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 $gconfig = $general->getGlobalConfig();
 
@@ -15,6 +11,7 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
 $tableName = "form_covid19";
 $primaryKey = "covid19_id";
 
@@ -257,7 +254,7 @@ if (!empty($sOrder)) {
 }
 $_SESSION['covid19RequestSearchResultQuery'] = $sQuery;
 // die($sQuery);
-[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
 $_SESSION['covid19RequestSearchResultQueryCount'] = $resultCount;
 
@@ -283,16 +280,8 @@ foreach ($rResult as $aRow) {
      $view = '';
      $sync = '';
      $barcode = '';
-     if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-          $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-     } else {
-          $aRow['sample_collection_date'] = '';
-     }
-     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-          $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
-     } else {
-          $aRow['last_modified_datetime'] = '';
-     }
+     $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
+     $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
 
 
      $row = [];

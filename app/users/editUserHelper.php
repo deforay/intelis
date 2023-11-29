@@ -170,8 +170,8 @@ try {
                 $deResult = json_decode($result, true);
             } catch (Exception $e) {
                 // Handle the exception
-                echo "Error: " . $e->getMessage();
-                echo ($e->getTraceAsString());
+                error_log("Error: " . $e->getMessage());
+                error_log($e->getTraceAsString());
             }
         }
     }

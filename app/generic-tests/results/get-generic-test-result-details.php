@@ -344,11 +344,7 @@ foreach ($rResult as $aRow) {
      }
      $row[] = ucwords($aRow['sample_type_name']);
      $row[] = $aRow['result'];
-     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-          $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
-     } else {
-          $aRow['last_modified_datetime'] = '';
-     }
+     $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
 
      $row[] = $aRow['last_modified_datetime'];
      $row[] = ucwords($aRow['status_name']);

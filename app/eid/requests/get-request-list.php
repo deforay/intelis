@@ -1,9 +1,9 @@
 <?php
 
 use App\Services\EidService;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 
 /** @var EidService $eidService */
@@ -15,6 +15,7 @@ $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
 $barCodeEnabled = $general->getGlobalConfig('bar_code_printing');
 
 
@@ -266,7 +267,7 @@ if (!empty($sOrder)) {
 }
 $_SESSION['eidRequestSearchResultQuery'] = $sQuery;
 
-[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
 $_SESSION['eidRequestSearchResultQueryCount'] = $resultCount;
 
@@ -292,16 +293,8 @@ foreach ($rResult as $aRow) {
      $edit = '';
      $sync = '';
      $barcode = '';
-     if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-          $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-     } else {
-          $aRow['sample_collection_date'] = '';
-     }
-     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-          $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
-     } else {
-          $aRow['last_modified_datetime'] = '';
-     }
+     $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
+     $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
 
      //  $patientFname = ($general->crypto('doNothing',$aRow['patient_first_name'],$aRow['patient_art_no']));
      //  $patientMname = ($general->crypto('doNothing',$aRow['patient_middle_name'],$aRow['patient_art_no']));

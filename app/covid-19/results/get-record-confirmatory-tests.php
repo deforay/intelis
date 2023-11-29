@@ -352,11 +352,7 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['patient_name'] . " " . $aRow['patient_surname'];
      $row[] = $covid19Results[$aRow['result']] ?? $aRow['result'];
 
-     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-          $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
-     } else {
-          $aRow['last_modified_datetime'] = '';
-     }
+     $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
 
      $row[] = $aRow['last_modified_datetime'];
      $row[] = ($aRow['status_name']);

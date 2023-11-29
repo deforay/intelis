@@ -410,7 +410,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			},
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "/generic-tests/requests/get-request-details.php",
+			"sAjaxSource": "/generic-tests/requests/get-request-list.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "testType",
