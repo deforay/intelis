@@ -23,21 +23,29 @@ class PatientsService
 
     public function generatePatientId($prefix)
     {
-        $this->db->where("patient_code_prefix", $prefix);
-        $this->db->orderBy("patient_code_key");
-        $res = $this->db->getOne($this->table, "patient_code_key");
+        $prefix = $prefix ?? 'P';
+        $where = "WHERE `patient_code_prefix` = '$prefix'";
 
-        if ($res) {
-            $patientCodeKey = $res['patient_code_key'] + 1;
+        $res = $this->db->rawQueryOne("SELECT MAX(`patient_code_key`) AS `max_key`
+                                        FROM {$this->table} $where");
+
+        if ($res && $res['max_key'] !== null) {
+            // Increment the maximum key by 1
+            $patientCodeKey = $res['max_key'] + 1;
         } else {
+            // If no existing key is found, start with 1
             $patientCodeKey = 1;
         }
+
+        // Generate the full patient code
         $patientCode = $prefix . str_pad($patientCodeKey, 7, "0", STR_PAD_LEFT);
+
         return json_encode(array(
             'patientCode' => $patientCode,
             'patientCodeKey' => $patientCodeKey
         ));
     }
+
 
     public function getPatientCodeBySampleId($sampleId, $testTable)
     {
