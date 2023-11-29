@@ -110,7 +110,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS  * FROM form_vl as vl LEFT JOIN facility_d
 
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
      if (trim($start_date) == trim($end_date)) {
           $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
      } else {
@@ -177,11 +177,7 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
-     if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-          $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-     } else {
-          $aRow['sample_collection_date'] = '';
-     }
+     $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 
 
      $patientFname = $aRow['patient_first_name'];

@@ -103,7 +103,7 @@ $sQuery = "SELECT * FROM form_vl as vl INNER JOIN r_sample_status as ts ON ts.st
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
      $sWhere[] = ' b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
 }
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
      if (trim($start_date) == trim($end_date)) {
           $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
      } else {
@@ -160,11 +160,7 @@ $output = array(
 
 
 foreach ($rResult as $aRow) {
-     if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-          $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-     } else {
-          $aRow['sample_collection_date'] = '';
-     }
+     $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
      $patientFname = $aRow['patient_first_name'];
      $patientMname = $aRow['patient_middle_name'];
      $patientLname = $aRow['patient_last_name'];

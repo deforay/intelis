@@ -23,13 +23,7 @@ $output = [];
 $sheet = $excel->getActiveSheet();
 
 $headings = array("Lab Name", "Last Sync done on", "Latest Results Sync from Lab", "Latest Requests Sync from STS", "Version");
-$colNo = 1;
-
-
-foreach ($headings as $field => $value) {
-    $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($value));
-    $colNo++;
-}
+$sheet->fromArray($headings, null, 'A3');
 
 $no = 1;
 
@@ -68,16 +62,10 @@ foreach ($db->rawQueryGenerator($_SESSION['labSyncStatus']) as $aRow) {
 
     $no++;
 }
-$start = (count($output)) + 2;
-$colorNo = 0;
+
 foreach ($output as $rowNo => $rowData) {
-    $colNo = 1;
-    foreach ($rowData as $field => $value) {
-        $rRowCount = ($rowNo + 2);
-        $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
-        $colNo++;
-    }
-    $colorNo++;
+    $rRowCount = $rowNo + 2;
+    $sheet->fromArray($rowData, null, 'A' . $rRowCount);
 }
 $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 $filename = 'VLSM-LAB-SYNC-STATUS-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(6) . '.xlsx';

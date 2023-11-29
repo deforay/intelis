@@ -123,21 +123,14 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,fd.facility_name as labName,r
         JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
         LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
         where vl.is_sample_rejected='yes'";
-$start_date = '';
-$end_date = '';
+
 if (isset($_POST['rjtBatchCode']) && trim($_POST['rjtBatchCode']) != '') {
     $sWhere[] = ' b.batch_code LIKE "%' . $_POST['rjtBatchCode'] . '%"';
 }
 
 if (isset($_POST['rjtSampleTestDate']) && trim($_POST['rjtSampleTestDate']) != '') {
-    $s_c_date = explode("to", $_POST['rjtSampleTestDate']);
-    //print_r($s_c_date);die;
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-    }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-    }
+    [$start_date, $end_date] = DateUtility::convertDateRange($_POST['rjtSampleTestDate'] ?? '');
+
     if (trim($start_date) == trim($end_date)) {
         $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
     } else {

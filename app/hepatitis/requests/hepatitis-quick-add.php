@@ -93,7 +93,7 @@ require($fileArray[$arr['vl_form']]);
             onSelect: function() {
                 $(this).change();
             },
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -104,7 +104,7 @@ require($fileArray[$arr['vl_form']]);
         $("#patientDob").datepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             maxDate: "Today",
             yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
             onSelect: function(dateText, inst) {
@@ -120,7 +120,7 @@ require($fileArray[$arr['vl_form']]);
             $(this).datetimepicker({
                 changeMonth: true,
                 changeYear: true,
-                dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+                dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                 timeFormat: "HH:mm",
                 maxDate: "Today",
                 onChangeMonthYear: function(year, month, widget) {
@@ -138,7 +138,7 @@ require($fileArray[$arr['vl_form']]);
         $('#sampleCollectionDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {
@@ -158,7 +158,7 @@ require($fileArray[$arr['vl_form']]);
         $('#sampleReceivedDate').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {
@@ -175,7 +175,7 @@ require($fileArray[$arr['vl_form']]);
             $('.ui-datepicker-calendar').show();
         });
 
-        let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ;?>';
+        let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
         $('.date').mask(dateFormatMask);
         $('.dateTime').mask(dateFormatMask + ' 99:99');
 
@@ -251,7 +251,7 @@ require($fileArray[$arr['vl_form']]);
                     $.unblockUI();
                     //$("#sampleCollectionDate").val('');
                     generateSampleCode();
-                    alert("We could not save this form. Please try saving again.");
+                    alert("<?= _translate("We could not save this form. Please try saving again.", true); ?>");
                 }
             });
     }

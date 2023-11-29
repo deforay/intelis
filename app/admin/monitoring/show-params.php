@@ -15,17 +15,19 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
+$_COOKIE = $request->getCookieParams();
+
 $id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
 
 $db = $db->where('api_track_id', $id);
 $result = $db->getOne('track_api_requests');
 $zip = new ZipArchive();
-$request = $response = "{}";
+$userRequest = $userResponse = "{}";
 $folder = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api');
 
-$request = MiscUtility::getJsonFromZip($folder . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip', $result['transaction_id'] . '.json');
-$response = MiscUtility::getJsonFromZip($folder . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip', $result['transaction_id'] . '.json');
+$userRequest = MiscUtility::getJsonFromZip($folder . DIRECTORY_SEPARATOR . 'requests' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip', $result['transaction_id'] . '.json');
+$userResponse = MiscUtility::getJsonFromZip($folder . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $result['transaction_id'] . '.json.zip', $result['transaction_id'] . '.json');
 
 ?>
 
@@ -54,10 +56,10 @@ $response = MiscUtility::getJsonFromZip($folder . DIRECTORY_SEPARATOR . 'respons
             </div>
             <div id="myTabContent" class="tab-content">
                 <div class="tab-pane fade in active" id="request" style="min-height:300px;">
-                    <pre><?= MiscUtility::prettyJson($request); ?></pre>
+                    <pre><?= htmlspecialchars(MiscUtility::prettyJson($userRequest)); ?></pre>
                 </div>
                 <div class="tab-pane fade in" id="response" style="min-height:300px;">
-                    <pre><?= MiscUtility::prettyJson($response); ?></pre>
+                    <pre><?= htmlspecialchars(MiscUtility::prettyJson($userResponse)); ?></pre>
                 </div>
             </div>
     </section>

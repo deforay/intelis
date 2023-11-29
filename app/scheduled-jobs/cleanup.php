@@ -12,14 +12,14 @@ use App\Utilities\MiscUtility;
 use App\Registries\ContainerRegistry;
 
 // Default duration to delete
-$defaultDurationToDelete = 180;
+$defaultDurationToDelete = 30;
 
 // Get the number of days from command line argument, if provided
 $days = $argv[1] ?? $defaultDurationToDelete; // $argv[0] is the script name itself
 $durationToDelete = $days * 86400; // Convert days to seconds
 
 $cleanup = [
-    APPLICATION_PATH . DIRECTORY_SEPARATOR . 'backups',
+    ROOT_PATH . DIRECTORY_SEPARATOR . 'backups',
     WEB_ROOT . DIRECTORY_SEPARATOR . 'temporary',
 ];
 

@@ -161,7 +161,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.covid19_id,vl.sample_code, vl.external_
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
      $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
      if (trim($start_date) == trim($end_date)) {
           $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
      } else {

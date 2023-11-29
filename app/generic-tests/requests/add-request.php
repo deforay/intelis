@@ -137,7 +137,12 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
     $minPatientIdLength = $arr['generic_min_patient_id_length'];
 }
 ?>
+<link rel="stylesheet" href="/assets/css/jquery.multiselect.css" type="text/css" />
+
 <style>
+     .ms-choice {
+		border: 0px solid #aaa;
+	}
      .table>tbody>tr>td {
           border-top: none;
      }
@@ -226,7 +231,7 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
                                         <div class="col-md-6">
                                              <label class="col-lg-5" for="testType">Test Type <span class="mandatory">*</span></label>
                                              <div class="col-lg-7">
-                                                  <select class="form-control isRequired" name="testType" id="testType" title="Please choose test type" onchange="getTestTypeForm()">
+                                                  <select class="form-control isRequired" name="testType" id="testType" title="Please choose test type" onchange="getTestTypeForm();getSubTestList(this.value);">
                                                        <option value=""> -- Select -- </option>
                                                        <?php foreach ($testTypeResult as $testType) { ?>
                                                             <option value="<?php echo $testType['test_type_id'] ?>" data-short="<?php echo $testType['test_short_code']; ?>"><?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?></option>
@@ -610,7 +615,16 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
                                                                  <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
                                                             </div>
                                                        </div>
-                                                       <?php if (count($reasonForFailure) > 0) { ?>
+                                                       <div class="col-md-6 vlResult">
+                                                            <label class="col-lg-5 control-label labels" for="subTestResult">Sub Test Results</label>
+                                                            <div class="col-lg-7">
+                                                                 <select class="form-control ms-container multiselect" id="subTestResult" name="subTestResult" title="Please select sub tests" multiple onchange="getTestTypeForm();">
+                                                                 </select>
+                                                            </div>
+                                                       </div>
+                                                  </div>
+                                                  <?php if (count($reasonForFailure) > 0) { ?>
+                                                       <div class="row">
                                                             <div class="col-md-6" style="display: none;">
                                                                  <label class="col-lg-5 control-label" for="reasonForFailure">Reason for Failure <span class="mandatory">*</span> </label>
                                                                  <div class="col-lg-7">
@@ -619,73 +633,10 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
                                                                       </select>
                                                                  </div>
                                                             </div>
-                                                       <?php } ?>
-                                                  </div>
-                                                  <div class="row">
-                                                       <div class="col-md-12">
-                                                            <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
-                                                                 <thead>
-                                                                      <tr>
-                                                                           <th scope="row" class="text-center">Test No</th>
-                                                                           <th scope="row" class="text-center">Test Method</th>
-                                                                           <th scope="row" class="text-center">Date of Testing</th>
-                                                                           <th scope="row" class="text-center">Test Platform/Test Kit</th>
-                                                                           <th scope="row" class="text-center">Test Result</th>
-                                                                           <th scope="row" class="text-center testResultUnit">Test Result Unit</th>
-                                                                           <th scope="row" class="text-center">Action</th>
-                                                                      </tr>
-                                                                 </thead>
-                                                                 <tbody id="testKitNameTable">
-                                                                      <tr>
-                                                                           <td class="text-center">1</td>
-                                                                           <td>
-                                                                                <select class="form-control test-name-table-input" id="testName1" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
-                                                                                     <option value="">-- Select --</option>
-                                                                                     <option value="Real Time RT-PCR">Real Time RT-PCR</option>
-                                                                                     <option value="RDT-Antibody">RDT-Antibody</option>
-                                                                                     <option value="RDT-Antigen">RDT-Antigen</option>
-                                                                                     <option value="GeneXpert">GeneXpert</option>
-                                                                                     <option value="ELISA">ELISA</option>
-                                                                                     <option value="other">Others</option>
-                                                                                </select>
-                                                                                <input type="text" name="testNameOther[]" id="testNameOther1" class="form-control testNameOther1" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
-                                                                           </td>
-                                                                           <td><input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row 1" /></td>
-                                                                           <td>
-                                                                                <select name="testingPlatform[]" id="testingPlatform1" class="form-control  result-optional test-name-table-input" title="Please select the Testing Platform for 1">
-                                                                                     <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
-                                                                                </select>
-                                                                           </td>
-                                                                           <td>
-                                                                                <input type="text" id="testResult1" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
-                                                                                <!-- <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult1" title="Please select the result for row 1">
-                                                                                               <?= $general->generateSelectOptions($genericResults, null, '-- Select --'); ?>
-                                                                                          </select> -->
-                                                                           </td>
-                                                                           <td class="testResultUnit">
-                                                                                <select class="form-control" id="testResultUnit1" name="testResultUnit[]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>'>
-                                                                                     <option value="">--Select--</option>
-                                                                                     <?php foreach ($testResultUnits as $key => $unit) { ?>
-                                                                                          <option value="<?php echo $key; ?>"><?php echo $unit; ?></option>
-                                                                                     <?php } ?>
-                                                                                </select>
-                                                                           </td>
-                                                                           <td style="vertical-align:middle;text-align: center;width:100px;">
-                                                                                <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-                                                                                <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
-                                                                           </td>
-                                                                      </tr>
-                                                                 </tbody>
-                                                                 <tfoot id="resultSection">
-                                                                      <!-- <tr>
-                                                                           <th scope="row" colspan="4" class="text-right final-result-row">Final Result<br><br><span class="testResultUnit">Test Result Unit<br><br></span>Result Interpretation</th>
-                                                                           <td id="result-sections" class="resultInputContainer">
-
-                                                                           </td>
-                                                                      </tr> -->
-                                                                 </tfoot>
-                                                            </table>
                                                        </div>
+                                                  <?php } ?>
+                                                  <div class="subTestResultSection">
+                                                       
                                                   </div>
                                                   <div class="row">
                                                        <div class="col-md-6">
@@ -801,7 +752,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 }
 ?>
 <!-- BARCODESTUFF END -->
-
+<script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
+<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
 <script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
 <script type="text/javascript" src="/assets/js/moment.min.js"></script>
 <script>
@@ -810,6 +762,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      let testCounter = 1;
 
      $(document).ready(function() {
+          $("#subTestResult").multipleSelect({
+			placeholder: '<?php echo _translate("Select Sub Tests"); ?>',
+			width: '100%'
+		});
+
           $("#labId,#fName,#sampleCollectionDate").on('change', function() {
 
                if ($("#labId").val() != '' && $("#labId").val() == $("#fName").val() && $("#sampleDispatchedDate").val() == "") {
@@ -1590,39 +1547,105 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
      function getTestTypeForm() {
           var testType = $("#testType").val();
-          getTestTypeConfigList(testType);
           if (testType != "") {
+               getTestTypeConfigList(testType);
                $(".requestForm").show();
                $.post("/generic-tests/requests/getTestTypeForm.php", {
                          result: $('#result').val(),
                          testType: testType,
                     },
                     function(data) {
-                         //  console.log(data);
-                         data = JSON.parse(data);
-                         $("#facilitySection,#labSection,#resultSection,#otherSection").html('');
-                         $('.patientSectionInput').remove();
-                         if (typeof(data.facilitySection) != "undefined" && data.facilitySection !== null && data.facilitySection.length > 0) {
-                              $("#facilitySection").html(data.facilitySection);
-                         }
-                         if (typeof(data.patientSection) != "undefined" && data.patientSection !== null && data.patientSection.length > 0) {
-                              $("#patientSection").after(data.patientSection);
-                         }
-                         if (typeof(data.labSection) != "undefined" && data.labSection !== null && data.labSection.length > 0) {
-                              $("#labSection").html(data.labSection);
-                         }
-                         if (typeof(data.result) != "undefined" && data.result !== null && data.result.length > 0) {
-                              $("#resultSection").html(data.result);
-                         } else {
-                              $('#resultSection').hide();
-                         }
-                         if (typeof(data.specimenSection) != "undefined" && data.specimenSection !== null && data.specimenSection.length > 0) {
-                              $("#specimenSection").after(data.specimenSection);
-                         }
-                         if (typeof(data.otherSection) != "undefined" && data.otherSection !== null && data.otherSection.length > 0) {
-                              $("#otherSection").html(data.otherSection);
-                         }
+                         if(data != undefined && data !== null){
 
+                              //  console.log(data);
+                              data = JSON.parse(data);
+                              $("#facilitySection,#labSection,.subTestResultSection,#otherSection").html('');
+                              $('.patientSectionInput').remove();
+                              if (typeof(data.facilitySection) != "undefined" && data.facilitySection !== null && data.facilitySection.length > 0) {
+                                   $("#facilitySection").html(data.facilitySection);
+                              }
+                              if (typeof(data.patientSection) != "undefined" && data.patientSection !== null && data.patientSection.length > 0) {
+                                   $("#patientSection").after(data.patientSection);
+                              }
+                              if (typeof(data.labSection) != "undefined" && data.labSection !== null && data.labSection.length > 0) {
+                                   $("#labSection").html(data.labSection);
+                              }
+                              if (typeof(data.result) != "undefined" && data.result !== null && data.result.length > 0) {
+                                   $(".subTestResultSection").html(data.result);
+                              } else {
+                                   $('.subTestResultSection').hide();
+                              }
+                              if (typeof(data.specimenSection) != "undefined" && data.specimenSection !== null && data.specimenSection.length > 0) {
+                                   $("#specimenSection").after(data.specimenSection);
+                              }
+                              if (typeof(data.otherSection) != "undefined" && data.otherSection !== null && data.otherSection.length > 0) {
+                                   $("#otherSection").html(data.otherSection);
+                              }
+     
+                              $('.dateTime').datetimepicker({
+                                   changeMonth: true,
+                                   changeYear: true,
+                                   dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
+                                   timeFormat: "HH:mm",
+                                   maxDate: "Today",
+                                   onChangeMonthYear: function(year, month, widget) {
+                                        setTimeout(function() {
+                                             $('.ui-datepicker-calendar').show();
+                                        });
+                                   }
+                              }).click(function() {
+                                   $('.ui-datepicker-calendar').show();
+                              });
+                              $(".dynamicFacilitySelect2").select2({
+                                   width: '100%',
+                                   placeholder: "<?php echo _translate("Select any one of the option"); ?>"
+                              });
+                              $(".dynamicSelect2").select2({
+                                   width: '100%',
+                                   placeholder: "<?php echo _translate("Select any one of the option"); ?>"
+                              });
+     
+                              if ($('#resultType').val() == 'qualitative') {
+                                   $('.final-result-row').attr('colspan', 4)
+                                   $('.testResultUnit').hide();
+                              } else {
+                                   $('.final-result-row').attr('colspan', 5)
+                                   $('.testResultUnit').show();
+                              }
+                         }
+                    });
+
+          } else {
+               $(".facilitySection").html('');
+               $(".patientSectionInput").remove();
+               $("#labSection").html('');
+               $(".specimenSectionInput").remove();
+               $("#otherSection").html('');
+               $(".requestForm").hide();
+          }
+          
+
+     }
+     
+     function loadSubTests() {
+          var testType = $("#testType").val();
+          var subTestResult = $("#subTestResult").val();
+          if (testType != "") {
+               $(".requestForm").show();
+               $.post("/generic-tests/requests/getTestTypeForm.php", {
+                         result: $('#result').val(),
+                         testType: testType,
+                         subTests: subTestResult,
+                    },
+                    function(data) {
+                         data = JSON.parse(data);
+                         $(".subTestResultSection").html('');
+                         if (typeof(data.result) != "undefined" && data.result !== null && data.result.length > 0) {
+                              $(".subTestResultSection").html(data.result);
+                              $('.subTestResultSection').show();
+                         } else {
+                              $('.subTestResultSection').hide();
+                         }
                          $('.dateTime').datetimepicker({
                               changeMonth: true,
                               changeYear: true,
@@ -1637,31 +1660,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          }).click(function() {
                               $('.ui-datepicker-calendar').show();
                          });
-                         $(".dynamicFacilitySelect2").select2({
-                              width: '100%',
-                              placeholder: "<?php echo _translate("Select any one of the option"); ?>"
-                         });
-                         $(".dynamicSelect2").select2({
-                              width: '100%',
-                              placeholder: "<?php echo _translate("Select any one of the option"); ?>"
-                         });
-
-                         if ($('#resultType').val() == 'qualitative') {
-                              $('.final-result-row').attr('colspan', 4)
-                              $('.testResultUnit').hide();
-                         } else {
-                              $('.final-result-row').attr('colspan', 5)
-                              $('.testResultUnit').show();
-                         }
                     });
-
           } else {
-               $(".facilitySection").html('');
-               $(".patientSectionInput").remove();
-               $("#labSection").html('');
-               $(".specimenSectionInput").remove();
-               $("#otherSection").html('');
-               $(".requestForm").hide();
+               $(".subTestResultSection").hide();
           }
 
      }
@@ -1676,34 +1677,55 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     if (data != "") {
                          $("#specimenType").html(Obj['sampleTypes']);
                          $("#reasonForTesting").html(Obj['testReasons']);
-                         $("#testName1").html(Obj['testMethods']);
-                         $("#testResultUnit1").html(Obj['testResultUnits']);
-                         $("#finalTestResultUnit").html(Obj['testResultUnits']);
+                    }
+               });
 
+     }
+     
+     function getSubTestList(testType) {
+
+          $.post("/generic-tests/requests/get-sub-test-list.php", {
+                    testTypeId: testType
+               },
+               function(data) {
+                    if (data != "") {
+                         $("#subTestResult").append(data);
+                         $("#subTestResult").multipleSelect({
+                              placeholder: '<?php echo _translate("Select Sub Tests"); ?>',
+                              width: '100%'
+                         });
                     }
                });
      }
 
-     function addTestRow() {
-          testCounter++;
-          testMethods = $("#testName1").html();
+     function addTestRow(row, subTest) {
+          subrow = document.getElementById("testKitNameTable"+row).rows.length
+          $('.ins-row-'+row+subrow).attr('disabled', true);
+          $('.ins-row-'+row+subrow).addClass('disabled');
+          testCounter = (subrow + 1);
           let rowString = `<tr>
-                    <td class="text-center">${testCounter}</td>
+                    <td class="text-center">${(subrow+1)}</td>
                     <td>
-                    <select class="form-control test-name-table-input" id="testName${testCounter}" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
-                         ${testMethods}
+                         <select class="form-control test-name-table-input" id="testName${row}${testCounter}" name="testName[${subTest}][]" title="Please enter the name of the Testkit (or) Test Method used">
+                              <option value="">-- Select --</option>
+                              <option value="Real Time RT-PCR">Real Time RT-PCR</option>
+                              <option value="RDT-Antibody">RDT-Antibody</option>
+                              <option value="RDT-Antigen">RDT-Antigen</option>
+                              <option value="GeneXpert">GeneXpert</option>
+                              <option value="ELISA">ELISA</option>
+                              <option value="other">Others</option>
                          </select>
-                         <input type="text" name="testNameOther[]" id="testNameOther${testCounter}" class="form-control testNameOther${testCounter}" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
+                         <input type="text" name="testNameOther[${subTest}][]" id="testNameOther${row}${testCounter}" class="form-control testNameOther${testCounter}" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Please enter the name of the Testkit (or) Test Method used" style="display: none;margin-top: 10px;" />
                     </td>
-                    <td><input type="text" name="testDate[]" id="testDate${testCounter}" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ${testCounter}" /></td>
-                    <td><select name="testingPlatform[]" id="testingPlatform${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
-                    <td class="kitlabels" style="display: none;"><input type="text" name="lotNo[]" id="lotNo${testCounter}" class="form-control kit-fields${testCounter}" placeholder="Kit lot no" title="Please enter the kit lot no. for row ${testCounter}" style="display:none;"/></td>
-                    <td class="kitlabels" style="display: none;"><input type="text" name="expDate[]" id="expDate${testCounter}" class="form-control expDate kit-fields${testCounter}" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" style="display:none;"/></td>
+                    <td><input type="text" name="testDate[${subTest}][]" id="testDate${row}${testCounter}" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row ${testCounter}" /></td>
+                    <td><select name="testingPlatform[${subTest}][]" id="testingPlatform${row}${testCounter}" class="form-control test-name-table-input" title="Please select the Testing Platform for ${testCounter}"><?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?></select></td>
+                    <td class="kitlabels" style="display: none;"><input type="text" name="lotNo[${subTest}][]" id="lotNo${row}${testCounter}" class="form-control kit-fields${testCounter}" placeholder="Kit lot no" title="Please enter the kit lot no. for row ${testCounter}" style="display:none;"/></td>
+                    <td class="kitlabels" style="display: none;"><input type="text" name="expDate[${subTest}][]" id="expDate${row}${testCounter}" class="form-control expDate kit-fields${testCounter}" placeholder="Expiry date" title="Please enter the expiry date for row ${testCounter}" style="display:none;"/></td>
                     <td>
-                         <input type="text" id="testResult${testCounter}" name="testResult[]" class="form-control" placeholder="Enter result" title="Please enter final results">
+                         <input type="text" id="testResult${row}${testCounter}" name="testResult[${subTest}][]" class="form-control" placeholder="Enter result" title="Please enter final results">
                     </td>
                     <td class="testResultUnit">
-                    <select class="form-control resultUnit" id="testResultUnit${testCounter}" name="testResultUnit[]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>'>
+                    <select class="form-control resultUnit" id="testResultUnit${row}${testCounter}" name="testResultUnit[${subTest}][]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>'>
                <option value="">--Select--</option>
                <?php foreach ($testResultUnits as $key => $unit) { ?>
                     <option value="<?php echo $key; ?>"><?php echo $unit; ?></option>
@@ -1711,11 +1733,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     </select>
                     </td>
                     <td style="vertical-align:middle;text-align: center;width:100px;">
-                         <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow(this);"><em class="fa-solid fa-plus"></em></a>&nbsp;
-                         <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+                         <a class="btn btn-xs btn-primary ins-row-${row}${testCounter} test-name-table" href="javascript:void(0);" onclick="addTestRow(${row}, \'${subTest}\');"><em class="fa-solid fa-plus"></em></a>&nbsp;
+                         <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode, ${row},${subrow});"><em class="fa-solid fa-minus"></em></a>
                     </td>
                </tr>`;
-          $("#testKitNameTable").append(rowString);
+          $("#testKitNameTable"+row).append(rowString);
 
           $('.date').datepicker({
                changeMonth: true,
@@ -1773,13 +1795,15 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      }
 
-     function removeTestRow(el) {
+     function removeTestRow(el, row, subrow) {
+          $('.ins-row-'+row+subrow).attr('disabled', false);
+          $('.ins-row-'+row+subrow).removeClass('disabled');
           $(el).fadeOut("slow", function() {
                el.parentNode.removeChild(el);
-               rl = document.getElementById("testKitNameTable").rows.length;
+               rl = document.getElementById("testKitNameTable"+row).rows.length;
                if (rl == 0) {
                     testCounter = 0;
-                    addTestRow();
+                    addTestRow(row, (subrow+1));
                }
           });
      }

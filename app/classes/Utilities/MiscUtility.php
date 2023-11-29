@@ -102,12 +102,24 @@ class MiscUtility
     public static function prettyJson($json): string
     {
         if (is_array($json)) {
-            $json = json_encode($json, JSON_PRETTY_PRINT);
+            $encodedJson = json_encode($json, JSON_PRETTY_PRINT);
         } else {
-            $json = json_encode(json_decode($json), JSON_PRETTY_PRINT);
+            $decodedJson = json_decode($json);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                // Handle the error, maybe log it and return a safe error message
+                return htmlspecialchars("Error in JSON decoding: " . json_last_error_msg(), ENT_QUOTES, 'UTF-8');
+            }
+            $encodedJson = json_encode($decodedJson, JSON_PRETTY_PRINT);
         }
-        return htmlspecialchars($json, ENT_QUOTES, 'UTF-8');
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            // Handle the error, maybe log it and return a safe error message
+            return htmlspecialchars("Error in JSON encoding: " . json_last_error_msg(), ENT_QUOTES, 'UTF-8');
+        }
+
+        return htmlspecialchars($encodedJson, ENT_QUOTES, 'UTF-8');
     }
+
     /**
      * Unzips a JSON file and displays its contents in a pretty format.
      *

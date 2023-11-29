@@ -118,7 +118,7 @@ $sQuery = "SELECT * FROM form_vl as vl
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
      $sWhere[] =  '  b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
 }
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
      if (trim($start_date) == trim($end_date)) {
           $sWhere[] = '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
      } else {

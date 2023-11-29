@@ -1,11 +1,12 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Utilities\DateUtility;
-use App\Utilities\ImageResizeUtility;
-use App\Utilities\MiscUtility;
 use Whoops\Util\Misc;
+use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Services\CommonService;
+use App\Exceptions\SystemException;
+use App\Registries\ContainerRegistry;
+use App\Utilities\ImageResizeUtility;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -118,6 +119,5 @@ try {
 	}
 	header("Location:addInstanceDetails.php");
 } catch (Exception $exc) {
-	error_log($exc->getMessage());
-	error_log($exc->getTraceAsString());
+	throw new SystemException($exc->getMessage(), 500);
 }

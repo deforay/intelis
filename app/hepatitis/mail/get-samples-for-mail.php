@@ -63,7 +63,7 @@ if (trim($mailSentStatus) != '') {
     $query = $query . " AND hepatitis.is_result_mail_sent='" . $mailSentStatus . "' AND (hepatitis.hcv_vl_result!= '' OR hepatitis.hbv_vl_result!= '')";
   }
 }
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
   if (trim($start_date) == trim($end_date)) {
     $query = $query . ' AND DATE(sample_collection_date) = "' . $start_date . '"';
   } else {

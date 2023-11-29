@@ -187,7 +187,7 @@ $sQuery = "SELECT
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
      $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
      if (trim($startDate) == trim($endDate)) {
           $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $startDate . '"';
      } else {
@@ -351,7 +351,7 @@ if (!empty($sOrder)) {
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
 $_SESSION['vlRequestQuery'] = $sQuery;
-[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 $_SESSION['vlRequestQueryCount'] = $resultCount;
 
 /*

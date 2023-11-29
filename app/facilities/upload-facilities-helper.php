@@ -1,11 +1,11 @@
 <?php
 
-use App\Exceptions\SystemException;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\FacilitiesService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Services\CommonService;
+use App\Exceptions\SystemException;
+use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
@@ -22,6 +22,7 @@ $facilityService = ContainerRegistry::get(FacilitiesService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 try {
 
@@ -99,39 +100,31 @@ try {
             );
 
 
-            if($uploadOption=="facility_name_match")
-            {
-                if ((isset($facilityCheck['facility_id']) && $facilityCheck['facility_id'] != "") && (($facilityCodeCheck['facility_id'])=="")) {
-                    $db->where("facility_id",$facilityCheck['facility_id']);
+            if ($uploadOption == "facility_name_match") {
+                if ((isset($facilityCheck['facility_id']) && $facilityCheck['facility_id'] != "") && (($facilityCodeCheck['facility_id']) == "")) {
+                    $db->where("facility_id", $facilityCheck['facility_id']);
                     $db->update('facility_details', $data);
                     error_log($db->getLastError());
                 } else {
                     $facilityNotAdded[] = $rowData;
                 }
-            }
-            elseif($uploadOption=="facility_code_match")
-            {
-                if ((isset($facilityCodeCheck['facility_id']) && $facilityCodeCheck['facility_id'] != "") && (($facilityCheck['facility_id'])=="")) {
-                    $db->where("facility_id",$facilityCodeCheck['facility_id']);
+            } elseif ($uploadOption == "facility_code_match") {
+                if ((isset($facilityCodeCheck['facility_id']) && $facilityCodeCheck['facility_id'] != "") && (($facilityCheck['facility_id']) == "")) {
+                    $db->where("facility_id", $facilityCodeCheck['facility_id']);
                     $db->update('facility_details', $data);
                     error_log($db->getLastError());
                 } else {
                     $facilityNotAdded[] = $rowData;
                 }
-            }
-            elseif($uploadOption=="facility_name_code_match")
-            {
+            } elseif ($uploadOption == "facility_name_code_match") {
                 if ((isset($facilityCheck['facility_id']) && $facilityCheck['facility_id'] != "") && (isset($facilityCodeCheck['facility_id']) && $facilityCodeCheck['facility_id'] != "")) {
-                    $db->where("facility_id",$facilityCheck['facility_id']);
+                    $db->where("facility_id", $facilityCheck['facility_id']);
                     $db->update('facility_details', $data);
                     error_log($db->getLastError());
-                }
-                else
-                {
+                } else {
                     $facilityNotAdded[] = $rowData;
                 }
-            }
-            elseif($uploadOption=="default"){
+            } elseif ($uploadOption == "default") {
                 if ((isset($facilityCheck['facility_id']) && $facilityCheck['facility_id'] != "") || (isset($facilityCodeCheck['facility_id']) && $facilityCodeCheck['facility_id'] != "")) {
                     $facilityNotAdded[] = $rowData;
                 } else {
@@ -144,25 +137,13 @@ try {
         $notAdded = count($facilityNotAdded);
         if ($notAdded > 0) {
             $column_header = ["Facility Name*", "Facility Code*", "External Facility Code", "Province/State*", "District/County*", "Facility Type* (1-Health Facility,2-Testing Lab,3-Collection Site)", "Address", "Email", "Phone Number", "Latitude", "Longitude"];
-            $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-                ->setValueExplicit(html_entity_decode($nameValue));
-            $colNo = 1;
-            foreach ($column_header as $value) {
-                $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-                    ->setValueExplicit(html_entity_decode($value));
-                $colNo++;
-            }
+
+
+            $sheet->fromArray($column_header, null, 'A1');
 
             foreach ($facilityNotAdded as $rowNo => $dataValue) {
-                $colNo = 1;
                 $rRowCount = $rowNo + 2;
-                foreach ($dataValue as $field => $value) {
-                    $sheet->setCellValue(
-                        Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-                        html_entity_decode($value)
-                    );
-                    $colNo++;
-                }
+                $sheet->fromArray($dataValue, null, 'A' . $rRowCount);
             }
 
             $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
@@ -173,7 +154,7 @@ try {
 
         $_SESSION['alertMsg'] = _translate("Facilities added successfully");
     } else {
-        throw new SystemException(_translate("Bulk Facility Import File not uploaded") . " - " . $uploadedFile->getError());
+        throw new SystemException(_translate("Bulk Facility Import Failed") . " - " . $uploadedFile->getError());
     }
     header("Location:/facilities/upload-facilities.php?total=$total&notAdded=$notAdded&link=$filename&option=$uploadOption");
 } catch (Exception $exc) {

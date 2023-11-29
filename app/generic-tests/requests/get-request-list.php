@@ -1,18 +1,15 @@
 <?php
 
+use App\Utilities\DateUtility;
+use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Utilities\DateUtility;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-
-/** @var FacilitiesService $facilitiesService */
-$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 $barCodePrinting = $general->getGlobalConfig('bar_code_printing');
 
@@ -142,7 +139,7 @@ if (!empty($sOrder)) {
 }
 $_SESSION['genericRequestQuery'] = $sQuery;
 
-[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
 $_SESSION['genericRequestQueryCount'] = $resultCount;
 

@@ -136,7 +136,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, l.facility_name as labName FROM form
 //echo $sQuery;die;
 $start_date = '';
 $end_date = '';
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
@@ -151,7 +151,7 @@ if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
 }
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
     if (trim($start_date) == trim($end_date)) {
         $sWhere[] =  ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
     } else {

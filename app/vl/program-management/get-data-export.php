@@ -201,18 +201,9 @@ if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
 if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
      $sWhere[] =  '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
 }
-/* Sample test date filter */
-$sTestDate = '';
-$eTestDate = '';
-if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-     $s_t_date = explode("to", $_POST['sampleTestDate']);
-     if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-          $sTestDate = DateUtility::isoDateFormat(trim($s_t_date[0]));
-     }
-     if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-          $eTestDate = DateUtility::isoDateFormat(trim($s_t_date[1]));
-     }
-}
+
+[$sTestDate, $eTestDate] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
+
 /* Viral load filter */
 if (isset($_POST['vLoad']) && trim($_POST['vLoad']) != '') {
      if ($_POST['vLoad'] === 'suppressed') {
@@ -279,7 +270,7 @@ if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
      $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
 }
 /* Assign date time filters */
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
      if (trim($start_date) == trim($end_date)) {
           $sWhere[] =  '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
      } else {
@@ -342,7 +333,7 @@ if (!empty($sOrder)) {
 }
 $_SESSION['vlResultQuery'] = $sQuery;
 
-[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
 $_SESSION['vlResultQueryCount'] = $resultCount;
 

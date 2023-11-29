@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-11-26 23:01+0530\n"
-"PO-Revision-Date: 2023-11-26 23:02+0530\n"
+"POT-Creation-Date: 2023-11-27 15:42+0530\n"
+"PO-Revision-Date: 2023-11-28 17:35+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -595,7 +595,7 @@ msgstr "Veuillez sélectionner les types de tests"
 #: admin/monitoring/sources-of-requests.php:95
 #: admin/monitoring/sync-status.php:89 batch/add-batch.php:169
 #: batch/add-batch.php:217 batch/edit-batch.php:195 batch/edit-batch.php:246
-#: classes/Services/CommonService.php:342
+#: classes/Services/CommonService.php:351
 #: common/reference/add-geographical-divisions.php:60
 #: common/reference/edit-geographical-divisions.php:74
 #: covid-19/management/covid-19-clinic-report.php:103
@@ -866,9 +866,9 @@ msgstr "Veuillez sélectionner les types de tests"
 #: generic-tests/results/generic-test-results.php:210
 #: generic-tests/results/get-generic-results-for-approval.php:205
 #: global-config/editGlobalConfig.php:201
-#: global-config/editGlobalConfig.php:834
-#: global-config/editGlobalConfig.php:845
-#: global-config/editGlobalConfig.php:934
+#: global-config/editGlobalConfig.php:854
+#: global-config/editGlobalConfig.php:865
+#: global-config/editGlobalConfig.php:954
 #: hepatitis/management/hepatitis-clinic-report.php:106
 #: hepatitis/management/hepatitis-clinic-report.php:119
 #: hepatitis/management/hepatitis-clinic-report.php:134
@@ -1304,13 +1304,13 @@ msgstr "Action"
 #: generic-tests/results/generic-result-approval.php:217
 #: generic-tests/results/generic-test-results.php:164
 #: generic-tests/results/generic-test-results.php:223
-#: global-config/editGlobalConfig.php:470
-#: global-config/editGlobalConfig.php:680
-#: global-config/editGlobalConfig.php:858
-#: global-config/editGlobalConfig.php:1038
-#: global-config/editGlobalConfig.php:1167
-#: global-config/editGlobalConfig.php:1296
-#: global-config/editGlobalConfig.php:1524
+#: global-config/editGlobalConfig.php:490
+#: global-config/editGlobalConfig.php:700
+#: global-config/editGlobalConfig.php:878
+#: global-config/editGlobalConfig.php:1058
+#: global-config/editGlobalConfig.php:1187
+#: global-config/editGlobalConfig.php:1316
+#: global-config/editGlobalConfig.php:1544
 #: hepatitis/management/hepatitis-clinic-report.php:183
 #: hepatitis/management/hepatitis-clinic-report.php:288
 #: hepatitis/management/hepatitis-clinic-report.php:384
@@ -1340,8 +1340,8 @@ msgstr "Action"
 #: tb/results/tb-manual-results.php:183 tb/results/tb-print-results.php:139
 #: tb/results/tb-print-results.php:185 tb/results/tb-print-results.php:288
 #: tb/results/tb-print-results.php:333 tb/results/tb-result-status.php:162
-#: vl/program-management/export-vl-results.php:63
-#: vl/program-management/export-vl-results.php:66
+#: vl/program-management/export-vl-results.php:37
+#: vl/program-management/export-vl-results.php:40
 #: vl/program-management/highViralLoad.php:266
 #: vl/program-management/highViralLoad.php:608
 #: vl/program-management/highViralLoad.php:810
@@ -1352,7 +1352,7 @@ msgstr "Action"
 #: vl/program-management/vl-sample-status.php:154
 #: vl/program-management/vlMonitoringReport.php:257
 #: vl/requests/addSamplesFromManifest.php:77
-#: vl/requests/export-vl-requests.php:30 vl/requests/forms/add-cameroon.php:95
+#: vl/requests/export-vl-requests.php:28 vl/requests/forms/add-cameroon.php:95
 #: vl/requests/forms/add-cameroon.php:99
 #: vl/requests/forms/edit-cameroon.php:136
 #: vl/requests/forms/edit-cameroon.php:140 vl/requests/vl-requests.php:552
@@ -1412,7 +1412,7 @@ msgstr "ID de l'échantillon"
 #: generic-tests/configuration/testing-reasons/generic-add-testing-reason.php:66
 #: generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php:74
 #: generic-tests/requests/add-samples-from-manifest.php:43
-#: global-config/editGlobalConfig.php:1554
+#: global-config/editGlobalConfig.php:1574
 #: hepatitis/reference/add-hepatitis-comorbidities.php:56
 #: hepatitis/reference/add-hepatitis-results.php:55
 #: hepatitis/reference/add-hepatitis-risk-factors.php:55
@@ -1611,7 +1611,7 @@ msgstr "Détails de la synchronisation des laboratoires"
 #: tb/results/tb-print-results.php:162 tb/results/tb-print-results.php:194
 #: tb/results/tb-print-results.php:231 tb/results/tb-print-results.php:311
 #: tb/results/tb-print-results.php:342
-#: vl/program-management/export-vl-results.php:66
+#: vl/program-management/export-vl-results.php:40
 #: vl/program-management/highViralLoad.php:133
 #: vl/program-management/highViralLoad.php:315
 #: vl/program-management/highViralLoad.php:468
@@ -1621,7 +1621,7 @@ msgstr "Détails de la synchronisation des laboratoires"
 #: vl/program-management/vlWeeklyReport.php:102
 #: vl/program-management/vlWeeklyReport.php:230
 #: vl/requests/addSamplesFromManifest.php:100
-#: vl/requests/export-vl-requests.php:30 vl/requests/vl-requests.php:388
+#: vl/requests/export-vl-requests.php:28 vl/requests/vl-requests.php:388
 #: vl/requests/vl-requests.php:579 vl/requests/vl-requests.php:632
 #: vl/result-mail/editTestResultEmailConfig.php:83
 #: vl/results/vl-failed-results.php:64 vl/results/vl-failed-results.php:170
@@ -1718,7 +1718,7 @@ msgstr "Veuillez choisir Région"
 #: tb/results/tb-print-results.php:165 tb/results/tb-print-results.php:195
 #: tb/results/tb-print-results.php:238 tb/results/tb-print-results.php:314
 #: tb/results/tb-print-results.php:343
-#: vl/program-management/export-vl-results.php:66
+#: vl/program-management/export-vl-results.php:40
 #: vl/program-management/highViralLoad.php:142
 #: vl/program-management/highViralLoad.php:324
 #: vl/program-management/highViralLoad.php:477
@@ -1730,7 +1730,7 @@ msgstr "Veuillez choisir Région"
 #: vl/program-management/vlWeeklyReport.php:105
 #: vl/program-management/vlWeeklyReport.php:233
 #: vl/requests/addSamplesFromManifest.php:103
-#: vl/requests/export-vl-requests.php:30 vl/requests/vl-requests.php:399
+#: vl/requests/export-vl-requests.php:28 vl/requests/vl-requests.php:399
 #: vl/requests/vl-requests.php:582 vl/requests/vl-requests.php:635
 #: vl/result-mail/editTestResultEmailConfig.php:84
 #: vl/results/vl-failed-results.php:70 vl/results/vl-failed-results.php:173
@@ -1901,7 +1901,7 @@ msgstr "Veuillez choisir Région"
 #: generic-tests/results/generic-test-results.php:118
 #: generic-tests/results/generic-test-results.php:184
 #: generic-tests/results/generic-test-results.php:240
-#: global-config/editGlobalConfig.php:1523
+#: global-config/editGlobalConfig.php:1543
 #: hepatitis/management/get-rejected-samples.php:95
 #: hepatitis/management/hepatitis-clinic-report.php:187
 #: hepatitis/management/hepatitis-clinic-report.php:292
@@ -2286,26 +2286,26 @@ msgstr "Nom du Labo"
 #: generic-tests/configuration/test-result-units/generic-edit-test-result-units.php:55
 #: generic-tests/configuration/testing-reasons/generic-add-testing-reason.php:54
 #: generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php:62
-#: global-config/editGlobalConfig.php:549
-#: global-config/editGlobalConfig.php:565
-#: global-config/editGlobalConfig.php:581
-#: global-config/editGlobalConfig.php:618
-#: global-config/editGlobalConfig.php:632
-#: global-config/editGlobalConfig.php:646
-#: global-config/editGlobalConfig.php:660
-#: global-config/editGlobalConfig.php:759
-#: global-config/editGlobalConfig.php:796
-#: global-config/editGlobalConfig.php:810
-#: global-config/editGlobalConfig.php:950
-#: global-config/editGlobalConfig.php:967
-#: global-config/editGlobalConfig.php:1004
-#: global-config/editGlobalConfig.php:1018
-#: global-config/editGlobalConfig.php:1133
-#: global-config/editGlobalConfig.php:1147
-#: global-config/editGlobalConfig.php:1262
-#: global-config/editGlobalConfig.php:1276
-#: global-config/editGlobalConfig.php:1391
-#: global-config/editGlobalConfig.php:1405
+#: global-config/editGlobalConfig.php:569
+#: global-config/editGlobalConfig.php:585
+#: global-config/editGlobalConfig.php:601
+#: global-config/editGlobalConfig.php:638
+#: global-config/editGlobalConfig.php:652
+#: global-config/editGlobalConfig.php:666
+#: global-config/editGlobalConfig.php:680
+#: global-config/editGlobalConfig.php:779
+#: global-config/editGlobalConfig.php:816
+#: global-config/editGlobalConfig.php:830
+#: global-config/editGlobalConfig.php:970
+#: global-config/editGlobalConfig.php:987
+#: global-config/editGlobalConfig.php:1024
+#: global-config/editGlobalConfig.php:1038
+#: global-config/editGlobalConfig.php:1153
+#: global-config/editGlobalConfig.php:1167
+#: global-config/editGlobalConfig.php:1282
+#: global-config/editGlobalConfig.php:1296
+#: global-config/editGlobalConfig.php:1411
+#: global-config/editGlobalConfig.php:1425
 #: hepatitis/requests/forms/add-rwanda.php:83
 #: hepatitis/requests/forms/edit-rwanda.php:109 patients/add-patient.php:45
 #: patients/add-patient.php:221 patients/edit-patient.php:61
@@ -2752,7 +2752,7 @@ msgstr "Veuillez sélectionner le nom de l'établissement"
 #: generic-tests/results/generic-result-approval.php:117
 #: generic-tests/results/generic-result-approval.php:225
 #: generic-tests/results/generic-test-results.php:88
-#: global-config/editGlobalConfig.php:1525
+#: global-config/editGlobalConfig.php:1545
 #: hepatitis/management/hepatitis-clinic-report.php:190
 #: hepatitis/management/hepatitis-clinic-report.php:295
 #: hepatitis/management/hepatitis-clinic-report.php:310
@@ -2885,20 +2885,20 @@ msgid "Please select the postion"
 msgstr "Veuillez sélectionner le poste"
 
 #: batch/add-batch.php:207 batch/edit-batch.php:186
-#: global-config/editGlobalConfig.php:489
-#: global-config/editGlobalConfig.php:699
-#: global-config/editGlobalConfig.php:1057
-#: global-config/editGlobalConfig.php:1186
-#: global-config/editGlobalConfig.php:1315
+#: global-config/editGlobalConfig.php:509
+#: global-config/editGlobalConfig.php:719
+#: global-config/editGlobalConfig.php:1077
+#: global-config/editGlobalConfig.php:1206
+#: global-config/editGlobalConfig.php:1335
 msgid "Numeric"
 msgstr "Numérique"
 
 #: batch/add-batch.php:210 batch/edit-batch.php:187
-#: global-config/editGlobalConfig.php:490
-#: global-config/editGlobalConfig.php:700
-#: global-config/editGlobalConfig.php:1058
-#: global-config/editGlobalConfig.php:1187
-#: global-config/editGlobalConfig.php:1316
+#: global-config/editGlobalConfig.php:510
+#: global-config/editGlobalConfig.php:720
+#: global-config/editGlobalConfig.php:1078
+#: global-config/editGlobalConfig.php:1207
+#: global-config/editGlobalConfig.php:1336
 msgid "Alpha Numeric"
 msgstr "Alphanumérique"
 
@@ -2946,7 +2946,7 @@ msgstr "Alphanumérique"
 #: generic-tests/results/generic-test-results.php:108
 #: generic-tests/results/generic-test-results.php:190
 #: generic-tests/results/generic-test-results.php:246
-#: global-config/editGlobalConfig.php:1529
+#: global-config/editGlobalConfig.php:1549
 #: hepatitis/management/hepatitis-clinic-report.php:116
 #: hepatitis/management/hepatitis-clinic-report.php:225
 #: hepatitis/management/hepatitis-clinic-report.php:327
@@ -2963,8 +2963,8 @@ msgstr "Alphanumérique"
 #: tb/management/tb-clinic-report.php:418
 #: tb/management/tb-clinic-report.php:445 tb/results/tb-failed-results.php:113
 #: tb/results/tb-manual-results.php:152
-#: vl/program-management/export-vl-results.php:63
-#: vl/program-management/export-vl-results.php:66
+#: vl/program-management/export-vl-results.php:37
+#: vl/program-management/export-vl-results.php:40
 #: vl/program-management/highViralLoad.php:118
 #: vl/program-management/highViralLoad.php:449
 #: vl/program-management/highViralLoad.php:674
@@ -2977,7 +2977,7 @@ msgstr "Alphanumérique"
 #: vl/program-management/vl-sample-status.php:94
 #: vl/program-management/vlMonitoringReport.php:278
 #: vl/requests/addSamplesFromManifest.php:106
-#: vl/requests/export-vl-requests.php:30 vl/requests/forms/add-cameroon.php:343
+#: vl/requests/export-vl-requests.php:28 vl/requests/forms/add-cameroon.php:343
 #: vl/requests/forms/edit-cameroon.php:383 vl/requests/vl-requests.php:145
 #: vl/requests/vl-requests.php:585 vl/requests/vl-requests.php:638
 #: vl/results/forms/update-cameroon-result.php:427
@@ -3093,7 +3093,7 @@ msgstr "Sauvegarder et Suivant"
 #: generic-tests/configuration/test-result-units/generic-edit-test-result-units.php:68
 #: generic-tests/configuration/testing-reasons/generic-add-testing-reason.php:67
 #: generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php:75
-#: global-config/editGlobalConfig.php:1555
+#: global-config/editGlobalConfig.php:1575
 #: hepatitis/reference/add-hepatitis-comorbidities.php:57
 #: hepatitis/reference/add-hepatitis-results.php:56
 #: hepatitis/reference/add-hepatitis-risk-factors.php:56
@@ -3432,8 +3432,8 @@ msgstr "BARCODE"
 #: tb/results/tb-manual-results.php:185 tb/results/tb-print-results.php:145
 #: tb/results/tb-print-results.php:187 tb/results/tb-print-results.php:294
 #: tb/results/tb-print-results.php:335 tb/results/tb-result-status.php:164
-#: vl/program-management/export-vl-results.php:66
-#: vl/program-management/export-vl-results.php:74
+#: vl/program-management/export-vl-results.php:40
+#: vl/program-management/export-vl-results.php:48
 #: vl/program-management/highViralLoad.php:270
 #: vl/program-management/highViralLoad.php:612
 #: vl/program-management/highViralLoad.php:814
@@ -3442,7 +3442,7 @@ msgstr "BARCODE"
 #: vl/program-management/vl-export-data.php:481
 #: vl/program-management/vl-sample-status.php:157
 #: vl/requests/addSamplesFromManifest.php:81
-#: vl/requests/export-vl-requests.php:30 vl/requests/export-vl-requests.php:36
+#: vl/requests/export-vl-requests.php:28 vl/requests/export-vl-requests.php:34
 #: vl/requests/vl-requests.php:559 vl/requests/vl-requests.php:610
 #: vl/results/vl-failed-results.php:151 vl/results/vl-failed-results.php:199
 #: vl/results/vlPrintResult.php:234 vl/results/vlPrintResult.php:282
@@ -3526,8 +3526,25 @@ msgstr ""
 msgid "Samples position in batch saved"
 msgstr "Position des échantillons dans le lot sauvegardé"
 
-#: classes/ErrorHandlers/ErrorResponseGenerator.php:41
-#: classes/ErrorHandlers/ErrorResponseGenerator.php:57
+#: classes/ErrorHandlers/ErrorResponseGenerator.php:23
+#: classes/ErrorHandlers/ErrorResponseGenerator.php:55 error/error.php:2
+msgid "Internal Server Error"
+msgstr "Erreur interne du serveur"
+
+#: classes/ErrorHandlers/ErrorResponseGenerator.php:24
+msgid "Not Found"
+msgstr "Non trouvé"
+
+#: classes/ErrorHandlers/ErrorResponseGenerator.php:25
+msgid "Forbidden"
+msgstr "Interdit"
+
+#: classes/ErrorHandlers/ErrorResponseGenerator.php:26
+msgid "Unauthorized"
+msgstr "Non autorisé"
+
+#: classes/ErrorHandlers/ErrorResponseGenerator.php:48
+#: classes/ErrorHandlers/ErrorResponseGenerator.php:66 error/error.php:3
 msgid "Sorry, something went wrong. Please try again later."
 msgstr ""
 "Désolé, quelque chose s’est mal passé. Veuillez réessayer à nouveau plus "
@@ -3588,10 +3605,10 @@ msgstr "Veuillez modifier votre mot de passe pour continuer."
 #: hepatitis/management/hepatitis-export-data.php:248
 #: hepatitis/management/hepatitis-export-data.php:273
 #: tb/management/tb-export-data.php:259 tb/management/tb-export-data.php:284
-#: vl/program-management/export-vl-results.php:66
+#: vl/program-management/export-vl-results.php:40
 #: vl/program-management/vl-export-data.php:456
 #: vl/program-management/vl-export-data.php:515
-#: vl/requests/export-vl-requests.php:30
+#: vl/requests/export-vl-requests.php:28
 msgid "Funding Source"
 msgstr "Nom du Projet"
 
@@ -4121,7 +4138,7 @@ msgstr "Veuillez sélectionner le statut de partenaire"
 #: covid-19/management/get-rejected-samples.php:97
 #: tb/management/get-rejected-samples.php:104
 #: tb/management/tb-clinic-report.php:295
-#: vl/program-management/export-vl-results.php:66
+#: vl/program-management/export-vl-results.php:40
 #: vl/program-management/getRejectionResult.php:106
 #: vl/program-management/highViralLoad.php:634
 msgid "Recommended Corrective Action"
@@ -4257,7 +4274,7 @@ msgstr "Ajouter de nouvelles divisions géographiques"
 #: common/reference/geographical-divisions-details.php:33
 #: facilities/addFacility.php:620 facilities/addFacility.php:931
 #: facilities/editFacility.php:551 facilities/editFacility.php:588
-#: facilities/editFacility.php:934 global-config/editGlobalConfig.php:1426
+#: facilities/editFacility.php:934 global-config/editGlobalConfig.php:1446
 msgid "Name"
 msgstr "Nom"
 
@@ -4278,7 +4295,7 @@ msgstr "Mesures correctives recommandées"
 msgid "Add Recommended Corrective Actions"
 msgstr "Ajouter les actions correctives recommandées"
 
-#: common/reference/save-funding-sources-helper.php:40
+#: common/reference/save-funding-sources-helper.php:41
 msgid "Funding Source saved successfully"
 msgstr "Projet sauvegardée avec succès"
 
@@ -4566,14 +4583,14 @@ msgstr "Tout"
 #: tb/management/tb-clinic-report.php:258
 #: tb/management/tb-clinic-report.php:362 tb/requests/patientModal.php:83
 #: tb/requests/tb-requests.php:186
-#: vl/program-management/export-vl-results.php:63
-#: vl/program-management/export-vl-results.php:66
+#: vl/program-management/export-vl-results.php:37
+#: vl/program-management/export-vl-results.php:40
 #: vl/program-management/highViralLoad.php:183
 #: vl/program-management/highViralLoad.php:350
 #: vl/program-management/highViralLoad.php:504
 #: vl/program-management/highViralLoad.php:729
 #: vl/program-management/vl-export-data.php:317
-#: vl/requests/export-vl-requests.php:30 vl/requests/forms/add-cameroon.php:272
+#: vl/requests/export-vl-requests.php:28 vl/requests/forms/add-cameroon.php:272
 #: vl/requests/forms/edit-cameroon.php:312 vl/requests/patientModal.php:108
 #: vl/requests/vl-requests.php:325
 #: vl/result-mail/editTestResultEmailConfig.php:90
@@ -4824,7 +4841,7 @@ msgstr "Noms du patient"
 #: eid/management/eid-clinic-report.php:191
 #: eid/management/eid-sample-status.php:94 eid/requests/eid-requests.php:145
 #: generic-tests/program-management/generic-sample-status.php:120
-#: global-config/editGlobalConfig.php:1528
+#: global-config/editGlobalConfig.php:1548
 #: hepatitis/management/hepatitis-clinic-report.php:191
 #: hepatitis/management/hepatitis-sample-status.php:87
 #: hepatitis/requests/hepatitis-dhis2.php:234
@@ -4885,10 +4902,10 @@ msgstr "Date de test de l'échantillon"
 #: tb/management/tb-sample-status.php:75 tb/requests/tb-requests.php:239
 #: tb/requests/tb-requests.php:317 tb/results/tb-failed-results.php:105
 #: tb/results/tb-manual-results.php:112
-#: vl/program-management/export-vl-results.php:66
+#: vl/program-management/export-vl-results.php:40
 #: vl/program-management/vl-export-data.php:140
 #: vl/program-management/vl-sample-status.php:108
-#: vl/requests/export-vl-requests.php:30 vl/requests/vl-requests.php:414
+#: vl/requests/export-vl-requests.php:28 vl/requests/vl-requests.php:414
 #: vl/requests/vl-requests.php:626
 #: vl/results/forms/update-cameroon-result.php:292
 #: vl/results/vl-failed-results.php:84 vl/results/vlPrintResult.php:248
@@ -5001,7 +5018,7 @@ msgstr "Résultat"
 #: tb/management/tb-clinic-report.php:267
 #: tb/management/tb-clinic-report.php:294
 #: tb/reference/tb-sample-rejection-reasons.php:37
-#: vl/program-management/export-vl-results.php:66
+#: vl/program-management/export-vl-results.php:40
 #: vl/program-management/getRejectionResult.php:100
 #: vl/program-management/highViralLoad.php:558
 #: vl/program-management/highViralLoad.php:631
@@ -5541,26 +5558,26 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: global-config/editGlobalConfig.php:296
 #: global-config/editGlobalConfig.php:326
 #: global-config/editGlobalConfig.php:368
-#: global-config/editGlobalConfig.php:550
-#: global-config/editGlobalConfig.php:619
-#: global-config/editGlobalConfig.php:633
-#: global-config/editGlobalConfig.php:647
-#: global-config/editGlobalConfig.php:760
-#: global-config/editGlobalConfig.php:797
-#: global-config/editGlobalConfig.php:811
-#: global-config/editGlobalConfig.php:846
-#: global-config/editGlobalConfig.php:935
-#: global-config/editGlobalConfig.php:951
-#: global-config/editGlobalConfig.php:968
-#: global-config/editGlobalConfig.php:1005
-#: global-config/editGlobalConfig.php:1019
-#: global-config/editGlobalConfig.php:1134
-#: global-config/editGlobalConfig.php:1148
-#: global-config/editGlobalConfig.php:1263
-#: global-config/editGlobalConfig.php:1277
-#: global-config/editGlobalConfig.php:1392
-#: global-config/editGlobalConfig.php:1406
-#: global-config/editGlobalConfig.php:1463
+#: global-config/editGlobalConfig.php:570
+#: global-config/editGlobalConfig.php:639
+#: global-config/editGlobalConfig.php:653
+#: global-config/editGlobalConfig.php:667
+#: global-config/editGlobalConfig.php:780
+#: global-config/editGlobalConfig.php:817
+#: global-config/editGlobalConfig.php:831
+#: global-config/editGlobalConfig.php:866
+#: global-config/editGlobalConfig.php:955
+#: global-config/editGlobalConfig.php:971
+#: global-config/editGlobalConfig.php:988
+#: global-config/editGlobalConfig.php:1025
+#: global-config/editGlobalConfig.php:1039
+#: global-config/editGlobalConfig.php:1154
+#: global-config/editGlobalConfig.php:1168
+#: global-config/editGlobalConfig.php:1283
+#: global-config/editGlobalConfig.php:1297
+#: global-config/editGlobalConfig.php:1412
+#: global-config/editGlobalConfig.php:1426
+#: global-config/editGlobalConfig.php:1483
 #: hepatitis/management/hepatitis-export-data.php:185
 #: hepatitis/requests/forms/add-rwanda.php:85
 #: hepatitis/requests/forms/edit-rwanda.php:111
@@ -5687,26 +5704,26 @@ msgstr "Oui"
 #: global-config/editGlobalConfig.php:297
 #: global-config/editGlobalConfig.php:327
 #: global-config/editGlobalConfig.php:369
-#: global-config/editGlobalConfig.php:551
-#: global-config/editGlobalConfig.php:620
-#: global-config/editGlobalConfig.php:634
-#: global-config/editGlobalConfig.php:648
-#: global-config/editGlobalConfig.php:761
-#: global-config/editGlobalConfig.php:798
-#: global-config/editGlobalConfig.php:812
-#: global-config/editGlobalConfig.php:847
-#: global-config/editGlobalConfig.php:936
-#: global-config/editGlobalConfig.php:952
-#: global-config/editGlobalConfig.php:969
-#: global-config/editGlobalConfig.php:1006
-#: global-config/editGlobalConfig.php:1020
-#: global-config/editGlobalConfig.php:1135
-#: global-config/editGlobalConfig.php:1149
-#: global-config/editGlobalConfig.php:1264
-#: global-config/editGlobalConfig.php:1278
-#: global-config/editGlobalConfig.php:1393
-#: global-config/editGlobalConfig.php:1407
-#: global-config/editGlobalConfig.php:1464
+#: global-config/editGlobalConfig.php:571
+#: global-config/editGlobalConfig.php:640
+#: global-config/editGlobalConfig.php:654
+#: global-config/editGlobalConfig.php:668
+#: global-config/editGlobalConfig.php:781
+#: global-config/editGlobalConfig.php:818
+#: global-config/editGlobalConfig.php:832
+#: global-config/editGlobalConfig.php:867
+#: global-config/editGlobalConfig.php:956
+#: global-config/editGlobalConfig.php:972
+#: global-config/editGlobalConfig.php:989
+#: global-config/editGlobalConfig.php:1026
+#: global-config/editGlobalConfig.php:1040
+#: global-config/editGlobalConfig.php:1155
+#: global-config/editGlobalConfig.php:1169
+#: global-config/editGlobalConfig.php:1284
+#: global-config/editGlobalConfig.php:1298
+#: global-config/editGlobalConfig.php:1413
+#: global-config/editGlobalConfig.php:1427
+#: global-config/editGlobalConfig.php:1484
 #: hepatitis/management/hepatitis-export-data.php:186
 #: hepatitis/requests/forms/add-rwanda.php:84
 #: hepatitis/requests/forms/edit-rwanda.php:110
@@ -5817,15 +5834,15 @@ msgstr "Veuillez saisir l'identifiant du patient à rechercher"
 #: tb/results/tb-manual-results.php:190 tb/results/tb-print-results.php:121
 #: tb/results/tb-print-results.php:191 tb/results/tb-print-results.php:270
 #: tb/results/tb-print-results.php:339
-#: vl/program-management/export-vl-results.php:63
-#: vl/program-management/export-vl-results.php:66
-#: vl/program-management/export-vl-results.php:69
+#: vl/program-management/export-vl-results.php:37
+#: vl/program-management/export-vl-results.php:40
+#: vl/program-management/export-vl-results.php:43
 #: vl/program-management/highViralLoad.php:622
 #: vl/program-management/highViralLoad.php:824
 #: vl/program-management/highViralLoad.php:876
 #: vl/program-management/vl-export-data.php:382
-#: vl/requests/export-vl-requests.php:30 vl/requests/export-vl-requests.php:32
-#: vl/requests/export-vl-requests.php:33 vl/requests/patientModal.php:102
+#: vl/requests/export-vl-requests.php:28 vl/requests/export-vl-requests.php:30
+#: vl/requests/export-vl-requests.php:31 vl/requests/patientModal.php:102
 #: vl/requests/vl-requests.php:444
 #: vl/results/pdf/result-pdf-cameroon-cresar.php:328
 #: vl/results/vl-failed-results.php:119 vl/results/vlPrintResult.php:202
@@ -5915,10 +5932,10 @@ msgstr "Gérer les colonnes"
 #: hepatitis/management/hepatitis-export-data.php:251
 #: hepatitis/management/hepatitis-export-data.php:274
 #: tb/management/tb-export-data.php:262 tb/management/tb-export-data.php:285
-#: vl/program-management/export-vl-results.php:66
+#: vl/program-management/export-vl-results.php:40
 #: vl/program-management/vl-export-data.php:459
 #: vl/program-management/vl-export-data.php:518
-#: vl/requests/export-vl-requests.php:30 vl/requests/forms/add-cameroon.php:185
+#: vl/requests/export-vl-requests.php:28 vl/requests/forms/add-cameroon.php:185
 #: vl/requests/forms/edit-cameroon.php:226
 #: vl/results/forms/update-cameroon-result.php:280
 msgid "Implementing Partner"
@@ -6281,7 +6298,7 @@ msgstr "S. No."
 #: covid-19/requests/export-covid19-requests.php:37
 #: covid-19/requests/export-covid19-requests.php:39
 msgid "Testing Lab Name"
-msgstr "Nom du laboratoire d'essai"
+msgstr "Nom du laboratoire"
 
 #: covid-19/management/generate-export-drc.php:38
 #: covid-19/requests/forms/edit-cameroon.php:570
@@ -6291,7 +6308,7 @@ msgstr "Nom du laboratoire d'essai"
 #: vl/requests/forms/edit-cameroon.php:776
 #: vl/results/forms/update-cameroon-result.php:796
 msgid "Tested By"
-msgstr "Nombre d'échantillons testés"
+msgstr "Testé par"
 
 #: covid-19/management/generate-export-drc.php:39
 #: covid-19/requests/forms/add-cameroon.php:347
@@ -7280,7 +7297,7 @@ msgstr "COVID 19 Les détails des motifs de l'essai ont été ajoutés avec succ
 #: facilities/addFacility.php:113 facilities/editFacility.php:162
 #: facilities/editFacility.php:164 facilities/facilities.php:127
 #: facilities/facilities.php:157 global-config/editGlobalConfig.php:97
-#: global-config/editGlobalConfig.php:1520 tb/reference/tb-sample-type.php:30
+#: global-config/editGlobalConfig.php:1540 tb/reference/tb-sample-type.php:30
 msgid "Facility Code"
 msgstr "Nom et code de la structure"
 
@@ -7529,6 +7546,17 @@ msgid "Unable to add this Covid-19 sample. Please try again later"
 msgstr ""
 "Impossible d'ajouter cet échantillon Covid-19. Veuillez réessayer plus tard"
 
+#: covid-19/requests/covid-19-add-request.php:337
+#: covid-19/requests/covid-19-quick-add.php:263
+#: eid/requests/eid-add-request.php:286
+#: hepatitis/requests/hepatitis-add-request.php:287
+#: hepatitis/requests/hepatitis-quick-add.php:254
+#: tb/requests/tb-add-request.php:298
+msgid "We could not save this form. Please try saving again."
+msgstr ""
+"Nous n'avons pas pu enregistrer ce formulaire. Veuillez réessayer de "
+"l'enregistrer."
+
 #: covid-19/requests/covid-19-bulk-import-request.php:22
 #: covid-19/requests/covid-19-bulk-import-request.php:25
 #: eid/requests/eid-bulk-import-request.php:23
@@ -7548,16 +7576,16 @@ msgstr "La demande de Covid-19 a été mise à jour avec succès"
 
 #: covid-19/requests/covid-19-edit-request-helper.php:392
 #: covid-19/results/covid-19-update-result-helper.php:181
-#: eid/requests/eid-add-request-helper.php:453
-#: eid/requests/eid-edit-request-helper.php:461
+#: eid/requests/eid-add-request-helper.php:454
+#: eid/requests/eid-edit-request-helper.php:462
 #: generic-tests/requests/add-request-helper.php:407
 #: generic-tests/requests/edit-request-helper.php:329
 #: generic-tests/results/update-generic-test-result-helper.php:196
 #: hepatitis/requests/hepatitis-edit-request-helper.php:259
 #: hepatitis/results/hepatitis-update-result-helper.php:96
-#: patients/save-patient-helper.php:88 vl/requests/addVlRequestHelper.php:382
-#: vl/requests/editVlRequestHelper.php:358
-#: vl/results/updateVlTestResultHelper.php:187
+#: patients/save-patient-helper.php:88 vl/requests/addVlRequestHelper.php:383
+#: vl/requests/editVlRequestHelper.php:359
+#: vl/results/updateVlTestResultHelper.php:188
 msgid "Please try again later"
 msgstr "Veuillez réessayer plus tard"
 
@@ -8081,7 +8109,7 @@ msgstr "Veuillez saisir l'identifiant du dossier DHIS2"
 #: covid-19/requests/forms/edit-cameroon.php:249
 #: covid-19/results/forms/update-cameroon-result.php:202
 #: covid-19/results/forms/update-cameroon-result.php:204
-#: global-config/editGlobalConfig.php:1495
+#: global-config/editGlobalConfig.php:1515
 msgid "First Name"
 msgstr "Prénom"
 
@@ -8105,9 +8133,9 @@ msgstr "Nom"
 #: eid/requests/forms/edit-cameroon.php:266
 #: eid/results/forms/update-cameroon-result.php:189
 #: eid/results/forms/update-cameroon-result.php:247
-#: vl/program-management/export-vl-results.php:63
-#: vl/program-management/export-vl-results.php:66
-#: vl/requests/export-vl-requests.php:30 vl/requests/forms/add-cameroon.php:240
+#: vl/program-management/export-vl-results.php:37
+#: vl/program-management/export-vl-results.php:40
+#: vl/requests/export-vl-requests.php:28 vl/requests/forms/add-cameroon.php:240
 #: vl/requests/forms/edit-cameroon.php:280
 #: vl/results/forms/update-cameroon-result.php:318
 msgid "Date of Birth"
@@ -8578,8 +8606,8 @@ msgstr "Veuillez sélectionner un point de contrôle"
 #: eid/requests/forms/add-cameroon.php:541
 #: eid/requests/forms/edit-cameroon.php:539
 #: eid/results/forms/update-cameroon-result.php:515
-#: vl/program-management/export-vl-results.php:66
-#: vl/requests/export-vl-requests.php:30
+#: vl/program-management/export-vl-results.php:40
+#: vl/requests/export-vl-requests.php:28
 msgid "Is Sample Rejected?"
 msgstr "L'échantillon est-il rejeté ?"
 
@@ -8906,9 +8934,9 @@ msgstr "Âge (en années)"
 #: eid/requests/forms/edit-cameroon.php:222 eid/requests/patientModal.php:97
 #: generic-tests/requests/patientModal.php:104 patients/view-patients.php:36
 #: tb/requests/patientModal.php:80
-#: vl/program-management/export-vl-results.php:63
-#: vl/program-management/export-vl-results.php:66
-#: vl/requests/export-vl-requests.php:30 vl/requests/patientModal.php:105
+#: vl/program-management/export-vl-results.php:37
+#: vl/program-management/export-vl-results.php:40
+#: vl/requests/export-vl-requests.php:28 vl/requests/patientModal.php:105
 #: vl/results/pdf/result-pdf-cameroon-cresar.php:329
 msgid "Age"
 msgstr "Age"
@@ -9712,7 +9740,7 @@ msgstr "Veuillez saisir la ville/le village de l'affaire"
 msgid "Please enter the Authorized on"
 msgstr "Veuillez saisir le numéro autorisé sur"
 
-#: covid-19/results/generate-result-pdf.php:245
+#: covid-19/results/generate-result-pdf.php:237
 #: covid-19/results/pdf/result-pdf-cameroon.php:512
 #: covid-19/results/pdf/result-pdf-drc-1.php:102
 #: covid-19/results/pdf/result-pdf-drc-2.php:84
@@ -10190,11 +10218,11 @@ msgstr "Nom de la mère"
 msgid "Please enter the manifest code then submit"
 msgstr "Veuillez saisir le code manifeste puis soumettre"
 
-#: eid/requests/eid-add-request-helper.php:445
+#: eid/requests/eid-add-request-helper.php:446
 msgid "EID request added successfully"
 msgstr "Demande d'EID ajoutée avec succès"
 
-#: eid/requests/eid-edit-request-helper.php:453
+#: eid/requests/eid-edit-request-helper.php:454
 msgid "EID request updated successfully"
 msgstr "La demande d'EID a été mise à jour avec succès"
 
@@ -10906,7 +10934,7 @@ msgstr "Veuillez saisir l'adresse approuvée sur"
 #: eid/requests/forms/edit-cameroon.php:600
 #: eid/results/forms/update-cameroon-result.php:575
 #: generic-tests/mail/mail-generic-tests-results.php:246
-#: global-config/editGlobalConfig.php:1532
+#: global-config/editGlobalConfig.php:1552
 #: import-result/imported-results.php:282
 #: vl/requests/forms/add-cameroon.php:662
 #: vl/requests/forms/edit-cameroon.php:757
@@ -11043,7 +11071,7 @@ msgstr "Veuillez sélectionner la plateforme de test"
 msgid "Failed result retest"
 msgstr "Échec du nouveau test de résultat"
 
-#: error/401.php:22 error/404.php:22 error/error.php:70
+#: error/401.php:22 error/404.php:22 error/error.php:75
 msgid "Please contact the System Admin for further support."
 msgstr "Veuillez contacter l'administrateur du système pour obtenir de l'aide."
 
@@ -11053,19 +11081,19 @@ msgstr ""
 "Désolé, nous n'avons pas pu trouver cette page ou cette ressource Nous "
 "n'avons pas trouvé cette page ou cette ressource."
 
-#: error/error.php:60
+#: error/error.php:65
 msgid "An error occurred"
 msgstr "Une erreur est survenue"
 
-#: error/error.php:67
+#: error/error.php:72
 msgid "Error Code"
 msgstr "Code d'Erreur"
 
-#: error/error.php:76
+#: error/error.php:81
 msgid "Go to Dashboard"
 msgstr "Aller au tableau de bord"
 
-#: error/error.php:88 footer.php:19
+#: error/error.php:93 footer.php:19
 msgid ""
 "This project is supported by the U.S. President's Emergency Plan for AIDS "
 "Relief (PEPFAR) through the U.S.\n"
@@ -12155,7 +12183,7 @@ msgstr "Modifier le profil"
 #: generic-tests/configuration/clone-test-type.php:456
 #: tb/reference/add-tb-results.php:52 tb/reference/add-tb-results.php:55
 #: tb/reference/tb-results.php:33
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Result Type"
 msgstr "Résultat des types"
 
@@ -12777,7 +12805,7 @@ msgid "Choose Fields"
 msgstr "Choisissez des champs"
 
 #: generic-tests/mail/mail-generic-tests-results.php:216
-#: global-config/editGlobalConfig.php:1517
+#: global-config/editGlobalConfig.php:1537
 #: mail/getRequestSampleCodeDetails.php:93 mail/vlResultMail.php:308
 #: roles/addRole.php:270 roles/editRole.php:250
 #: vl/result-mail/editTestResultEmailConfig.php:78
@@ -12785,7 +12813,7 @@ msgid "Select All"
 msgstr "Tout sélectionner"
 
 #: generic-tests/mail/mail-generic-tests-results.php:216
-#: global-config/editGlobalConfig.php:1517
+#: global-config/editGlobalConfig.php:1537
 #: mail/getRequestSampleCodeDetails.php:93 mail/vlResultMail.php:310
 #: vl/result-mail/editTestResultEmailConfig.php:78
 msgid "Deselect All"
@@ -12852,7 +12880,7 @@ msgid "Lab ID"
 msgstr "ID lab"
 
 #: generic-tests/mail/mail-generic-tests-results.php:240
-#: global-config/editGlobalConfig.php:1530
+#: global-config/editGlobalConfig.php:1550
 #: vl/requests/forms/add-cameroon.php:538
 #: vl/requests/forms/edit-cameroon.php:631
 #: vl/result-mail/editTestResultEmailConfig.php:107
@@ -12940,19 +12968,19 @@ msgstr "Échantillon communautaire"
 
 #: generic-tests/program-management/generic-export-data.php:290
 #: generic-tests/program-management/generic-export-data.php:330
-#: vl/program-management/export-vl-results.php:66
+#: vl/program-management/export-vl-results.php:40
 #: vl/program-management/vl-export-data.php:447
 #: vl/program-management/vl-export-data.php:506
-#: vl/requests/export-vl-requests.php:30
+#: vl/requests/export-vl-requests.php:28
 msgid "Sample Tested On"
 msgstr "Échantillon testé sur"
 
 #: generic-tests/program-management/generic-export-data.php:305
 #: generic-tests/program-management/generic-export-data.php:335
-#: vl/program-management/export-vl-results.php:66
+#: vl/program-management/export-vl-results.php:40
 #: vl/program-management/vl-export-data.php:462
 #: vl/program-management/vl-export-data.php:521
-#: vl/requests/export-vl-requests.php:30
+#: vl/requests/export-vl-requests.php:28
 msgid "Request Created On"
 msgstr "Créé le"
 
@@ -12989,7 +13017,7 @@ msgstr "Délai d'exécution du laboratoire"
 
 #: generic-tests/requests/add-request-helper.php:48
 #: generic-tests/requests/edit-request-helper.php:51
-#: vl/requests/addVlRequestHelper.php:47 vl/requests/editVlRequestHelper.php:52
+#: vl/requests/addVlRequestHelper.php:48 vl/requests/editVlRequestHelper.php:53
 msgid "Please enter all mandatory fields to save the test request"
 msgstr ""
 "Veuillez remplir tous les champs obligatoires pour enregistrer la demande de "
@@ -13327,7 +13355,7 @@ msgstr "ex. manager1@example.com, manager2@example.com"
 
 #: global-config/editGlobalConfig.php:337
 #: global-config/editGlobalConfig.php:380
-#: global-config/editGlobalConfig.php:395
+#: global-config/editGlobalConfig.php:415
 msgid "Please enter manager email"
 msgstr "Veuillez saisir l'adresse électronique du gestionnaire"
 
@@ -13379,637 +13407,653 @@ msgid "Support Email"
 msgstr "Email du support"
 
 #: global-config/editGlobalConfig.php:393
+msgid "CSV Delimiter"
+msgstr "Séparateur CSV"
+
+#: global-config/editGlobalConfig.php:395
+msgid "Please enter CSV delimiter"
+msgstr "Veuillez entrer le délimiteur CSV"
+
+#: global-config/editGlobalConfig.php:403
+msgid "CSV Enclosure"
+msgstr "CSV Enveloppe"
+
+#: global-config/editGlobalConfig.php:405
+msgid "Please enter CSV enclosure"
+msgstr "Veuillez saisir la valeur CSV Enclosure"
+
+#: global-config/editGlobalConfig.php:413
 msgid "Default Phone Prefix"
 msgstr "Préfixe téléphonique par défaut"
 
-#: global-config/editGlobalConfig.php:395
+#: global-config/editGlobalConfig.php:415
 msgid "e.g. +232, +91"
 msgstr "par exemple +232, +91"
 
-#: global-config/editGlobalConfig.php:403
+#: global-config/editGlobalConfig.php:423
 msgid "Minimum Length of Phone Number"
 msgstr "Longueur minimale du numéro de téléphone"
 
-#: global-config/editGlobalConfig.php:405
-#: global-config/editGlobalConfig.php:517
+#: global-config/editGlobalConfig.php:425
 #: global-config/editGlobalConfig.php:537
-#: global-config/editGlobalConfig.php:727
+#: global-config/editGlobalConfig.php:557
 #: global-config/editGlobalConfig.php:747
-#: global-config/editGlobalConfig.php:906
-#: global-config/editGlobalConfig.php:921
-#: global-config/editGlobalConfig.php:1086
-#: global-config/editGlobalConfig.php:1100
-#: global-config/editGlobalConfig.php:1215
-#: global-config/editGlobalConfig.php:1229
-#: global-config/editGlobalConfig.php:1344
-#: global-config/editGlobalConfig.php:1358
+#: global-config/editGlobalConfig.php:767
+#: global-config/editGlobalConfig.php:926
+#: global-config/editGlobalConfig.php:941
+#: global-config/editGlobalConfig.php:1106
+#: global-config/editGlobalConfig.php:1120
+#: global-config/editGlobalConfig.php:1235
+#: global-config/editGlobalConfig.php:1249
+#: global-config/editGlobalConfig.php:1364
+#: global-config/editGlobalConfig.php:1378
 msgid "Min"
 msgstr "Min"
 
-#: global-config/editGlobalConfig.php:405
+#: global-config/editGlobalConfig.php:425
 msgid "Please enter minimun length of phone number"
 msgstr "Veuillez saisir la longueur minimale du numéro de téléphone"
 
-#: global-config/editGlobalConfig.php:413
+#: global-config/editGlobalConfig.php:433
 msgid "Maximum Length of Phone Number"
 msgstr "Longueur maximale du numéro de téléphone"
 
-#: global-config/editGlobalConfig.php:415
-#: global-config/editGlobalConfig.php:527
-#: global-config/editGlobalConfig.php:737
-#: global-config/editGlobalConfig.php:910
-#: global-config/editGlobalConfig.php:1090
-#: global-config/editGlobalConfig.php:1219
-#: global-config/editGlobalConfig.php:1348
+#: global-config/editGlobalConfig.php:435
+#: global-config/editGlobalConfig.php:547
+#: global-config/editGlobalConfig.php:757
+#: global-config/editGlobalConfig.php:930
+#: global-config/editGlobalConfig.php:1110
+#: global-config/editGlobalConfig.php:1239
+#: global-config/editGlobalConfig.php:1368
 msgid "Max"
 msgstr "Max"
 
-#: global-config/editGlobalConfig.php:415
+#: global-config/editGlobalConfig.php:435
 msgid "Please enter maximun length of phone number"
 msgstr "Veuillez saisir la longueur maximale du numéro de téléphone"
 
-#: global-config/editGlobalConfig.php:426
+#: global-config/editGlobalConfig.php:446
 msgid "Viral Load Settings"
 msgstr "Réglages de la charge virale"
 
-#: global-config/editGlobalConfig.php:432
+#: global-config/editGlobalConfig.php:452
 msgid "Date For Patient ART NO"
 msgstr "Date pour le patient ART NO"
 
-#: global-config/editGlobalConfig.php:435
+#: global-config/editGlobalConfig.php:455
 msgid "Full Date"
 msgstr "Date complète"
 
-#: global-config/editGlobalConfig.php:436
+#: global-config/editGlobalConfig.php:456
 msgid "Month and Year"
 msgstr "Mois et année"
 
-#: global-config/editGlobalConfig.php:455
-#: global-config/editGlobalConfig.php:458
+#: global-config/editGlobalConfig.php:475
+#: global-config/editGlobalConfig.php:478
 msgid "Viral Load Threshold Limit"
 msgstr "Limite du seuil de charge virale"
 
-#: global-config/editGlobalConfig.php:458
+#: global-config/editGlobalConfig.php:478
 msgid "Please enter VL threshold limit"
 msgstr "Veuillez saisir le seuil limite VL"
 
-#: global-config/editGlobalConfig.php:459
+#: global-config/editGlobalConfig.php:479
 #: vl/program-management/vl-export-data.php:162
 #: vl/program-management/vl-export-data.php:166 vl/requests/vl-requests.php:180
 #: vl/requests/vl-requests.php:184
 msgid "cp/ml"
 msgstr "cp/ml"
 
-#: global-config/editGlobalConfig.php:470
-#: global-config/editGlobalConfig.php:680
-#: global-config/editGlobalConfig.php:858
-#: global-config/editGlobalConfig.php:1038
-#: global-config/editGlobalConfig.php:1167
-#: global-config/editGlobalConfig.php:1296
+#: global-config/editGlobalConfig.php:490
+#: global-config/editGlobalConfig.php:700
+#: global-config/editGlobalConfig.php:878
+#: global-config/editGlobalConfig.php:1058
+#: global-config/editGlobalConfig.php:1187
+#: global-config/editGlobalConfig.php:1316
 msgid "Format"
 msgstr "Format"
 
-#: global-config/editGlobalConfig.php:485
-#: global-config/editGlobalConfig.php:486
-#: global-config/editGlobalConfig.php:487
-#: global-config/editGlobalConfig.php:488
-#: global-config/editGlobalConfig.php:489
-#: global-config/editGlobalConfig.php:490
+#: global-config/editGlobalConfig.php:505
+#: global-config/editGlobalConfig.php:506
+#: global-config/editGlobalConfig.php:507
+#: global-config/editGlobalConfig.php:508
+#: global-config/editGlobalConfig.php:509
+#: global-config/editGlobalConfig.php:510
 msgid "Please select the Viral Load Sample ID Format"
 msgstr ""
 "Veuillez sélectionner le format d'identification de l'échantillon de charge "
 "virale"
 
-#: global-config/editGlobalConfig.php:485
-#: global-config/editGlobalConfig.php:486
-#: global-config/editGlobalConfig.php:695
-#: global-config/editGlobalConfig.php:696
-#: global-config/editGlobalConfig.php:1053
-#: global-config/editGlobalConfig.php:1054
-#: global-config/editGlobalConfig.php:1182
-#: global-config/editGlobalConfig.php:1183
-#: global-config/editGlobalConfig.php:1311
-#: global-config/editGlobalConfig.php:1312
+#: global-config/editGlobalConfig.php:505
+#: global-config/editGlobalConfig.php:506
+#: global-config/editGlobalConfig.php:715
+#: global-config/editGlobalConfig.php:716
+#: global-config/editGlobalConfig.php:1073
+#: global-config/editGlobalConfig.php:1074
+#: global-config/editGlobalConfig.php:1202
+#: global-config/editGlobalConfig.php:1203
+#: global-config/editGlobalConfig.php:1331
+#: global-config/editGlobalConfig.php:1332
 msgid "Enter Prefix"
 msgstr "Saisir le préfixe"
 
-#: global-config/editGlobalConfig.php:485
-#: global-config/editGlobalConfig.php:695
-#: global-config/editGlobalConfig.php:1053
-#: global-config/editGlobalConfig.php:1182
-#: global-config/editGlobalConfig.php:1311
+#: global-config/editGlobalConfig.php:505
+#: global-config/editGlobalConfig.php:715
+#: global-config/editGlobalConfig.php:1073
+#: global-config/editGlobalConfig.php:1202
+#: global-config/editGlobalConfig.php:1331
 msgid "YY"
 msgstr "AA"
 
-#: global-config/editGlobalConfig.php:486
-#: global-config/editGlobalConfig.php:696
-#: global-config/editGlobalConfig.php:1054
-#: global-config/editGlobalConfig.php:1183
-#: global-config/editGlobalConfig.php:1312
+#: global-config/editGlobalConfig.php:506
+#: global-config/editGlobalConfig.php:716
+#: global-config/editGlobalConfig.php:1074
+#: global-config/editGlobalConfig.php:1203
+#: global-config/editGlobalConfig.php:1332
 msgid "MMYY"
 msgstr "MMYY"
 
-#: global-config/editGlobalConfig.php:488
-#: global-config/editGlobalConfig.php:698
-#: global-config/editGlobalConfig.php:1056
-#: global-config/editGlobalConfig.php:1185
-#: global-config/editGlobalConfig.php:1314
+#: global-config/editGlobalConfig.php:508
+#: global-config/editGlobalConfig.php:718
+#: global-config/editGlobalConfig.php:1076
+#: global-config/editGlobalConfig.php:1205
+#: global-config/editGlobalConfig.php:1334
 msgid "Auto"
 msgstr "Auto"
 
-#: global-config/editGlobalConfig.php:499
-#: global-config/editGlobalConfig.php:709
-#: global-config/editGlobalConfig.php:887
-#: global-config/editGlobalConfig.php:1067
-#: global-config/editGlobalConfig.php:1196
-#: global-config/editGlobalConfig.php:1325
+#: global-config/editGlobalConfig.php:519
+#: global-config/editGlobalConfig.php:729
+#: global-config/editGlobalConfig.php:907
+#: global-config/editGlobalConfig.php:1087
+#: global-config/editGlobalConfig.php:1216
+#: global-config/editGlobalConfig.php:1345
 msgid "eg. Province Code+Year+Month+Date+Increment Counter"
 msgstr "ex. Code de la province+année+mois+date+compteur d'augmentation"
 
-#: global-config/editGlobalConfig.php:502
+#: global-config/editGlobalConfig.php:522
 msgid "eg. R+Year+Province Code+VL+Increment Counter (R18NCDVL0001)"
 msgstr "ex. R+Année+Code province+VL+Compteur d'incrémentation (R18NCDVL0001)"
 
-#: global-config/editGlobalConfig.php:505
+#: global-config/editGlobalConfig.php:525
 msgid "eg. Prefix+Month+Year+Increment Counter (VL0517999)"
 msgstr "eg. Préfixe+mois+année+compteur d'incrémentation (VL0517999)"
 
-#: global-config/editGlobalConfig.php:508
+#: global-config/editGlobalConfig.php:528
 msgid "eg. Prefix+Year+Increment Counter (VL17999)"
 msgstr "eg. Préfixe+année+compteur d'incrémentation (VL17999)"
 
-#: global-config/editGlobalConfig.php:515
-#: global-config/editGlobalConfig.php:904
-#: global-config/editGlobalConfig.php:1084
-#: global-config/editGlobalConfig.php:1213
-#: global-config/editGlobalConfig.php:1342
+#: global-config/editGlobalConfig.php:535
+#: global-config/editGlobalConfig.php:924
+#: global-config/editGlobalConfig.php:1104
+#: global-config/editGlobalConfig.php:1233
+#: global-config/editGlobalConfig.php:1362
 msgid "Minimum Sample ID Length"
 msgstr "Longueur minimale de l'identifiant de l'échantillon"
 
-#: global-config/editGlobalConfig.php:517
-#: global-config/editGlobalConfig.php:727
-#: global-config/editGlobalConfig.php:906
-#: global-config/editGlobalConfig.php:1086
-#: global-config/editGlobalConfig.php:1215
-#: global-config/editGlobalConfig.php:1344
+#: global-config/editGlobalConfig.php:537
+#: global-config/editGlobalConfig.php:747
+#: global-config/editGlobalConfig.php:926
+#: global-config/editGlobalConfig.php:1106
+#: global-config/editGlobalConfig.php:1235
+#: global-config/editGlobalConfig.php:1364
 msgid "Please enter sample id min length"
 msgstr "Veuillez saisir la longueur minimale de l'identifiant de l'échantillon"
 
-#: global-config/editGlobalConfig.php:525
-#: global-config/editGlobalConfig.php:735
-#: global-config/editGlobalConfig.php:908
-#: global-config/editGlobalConfig.php:1088
-#: global-config/editGlobalConfig.php:1217
-#: global-config/editGlobalConfig.php:1346
+#: global-config/editGlobalConfig.php:545
+#: global-config/editGlobalConfig.php:755
+#: global-config/editGlobalConfig.php:928
+#: global-config/editGlobalConfig.php:1108
+#: global-config/editGlobalConfig.php:1237
+#: global-config/editGlobalConfig.php:1366
 msgid "Maximum Sample ID Length"
 msgstr "Longueur maximale de l'identifiant de l'échantillon"
 
-#: global-config/editGlobalConfig.php:527
-#: global-config/editGlobalConfig.php:737
-#: global-config/editGlobalConfig.php:910
-#: global-config/editGlobalConfig.php:1090
-#: global-config/editGlobalConfig.php:1219
-#: global-config/editGlobalConfig.php:1348
+#: global-config/editGlobalConfig.php:547
+#: global-config/editGlobalConfig.php:757
+#: global-config/editGlobalConfig.php:930
+#: global-config/editGlobalConfig.php:1110
+#: global-config/editGlobalConfig.php:1239
+#: global-config/editGlobalConfig.php:1368
 msgid "Please enter sample id max length"
 msgstr "Veuillez saisir la longueur maximale de l'identifiant de l'échantillon"
 
-#: global-config/editGlobalConfig.php:535
-#: global-config/editGlobalConfig.php:745
-#: global-config/editGlobalConfig.php:919
-#: global-config/editGlobalConfig.php:1098
-#: global-config/editGlobalConfig.php:1227
-#: global-config/editGlobalConfig.php:1356
+#: global-config/editGlobalConfig.php:555
+#: global-config/editGlobalConfig.php:765
+#: global-config/editGlobalConfig.php:939
+#: global-config/editGlobalConfig.php:1118
+#: global-config/editGlobalConfig.php:1247
+#: global-config/editGlobalConfig.php:1376
 msgid "Minimum Patient ID Length"
 msgstr "No Patient"
 
-#: global-config/editGlobalConfig.php:537
-#: global-config/editGlobalConfig.php:747
-#: global-config/editGlobalConfig.php:921
-#: global-config/editGlobalConfig.php:1100
-#: global-config/editGlobalConfig.php:1229
-#: global-config/editGlobalConfig.php:1358
-msgid "Please enter patient id min length"
-msgstr "Veuillez saisir la longueur minimale de l'identifiant du patient"
-
-#: global-config/editGlobalConfig.php:546
-msgid "Lock Approved VL Samples"
-msgstr "Échantillons VL approuvés par le verrou"
-
-#: global-config/editGlobalConfig.php:548
-#: global-config/editGlobalConfig.php:564
-#: global-config/editGlobalConfig.php:580
-#: global-config/editGlobalConfig.php:758
-#: global-config/editGlobalConfig.php:949
-msgid "Please select lock approved sample"
-msgstr "Veuillez sélectionner l'échantillon approuvé pour la serrure"
-
-#: global-config/editGlobalConfig.php:562
-msgid "VL Suppression Target"
-msgstr "Cible de suppression VL"
-
-#: global-config/editGlobalConfig.php:566
-#: global-config/editGlobalConfig.php:582
-msgid "Enable"
-msgstr "Activer"
-
-#: global-config/editGlobalConfig.php:567
-#: global-config/editGlobalConfig.php:583
-msgid "Disable"
-msgstr "Désactiver"
-
-#: global-config/editGlobalConfig.php:578
-msgid "VL Monthly Target"
-msgstr "VL Objectif mensuel"
-
-#: global-config/editGlobalConfig.php:594
-#: global-config/editGlobalConfig.php:772
-#: global-config/editGlobalConfig.php:980
-#: global-config/editGlobalConfig.php:1109
-#: global-config/editGlobalConfig.php:1238
-#: global-config/editGlobalConfig.php:1367
-msgid "Sample Expiry Days"
-msgstr "Jours d'expiration de l'échantillon"
-
-#: global-config/editGlobalConfig.php:596
-#: global-config/editGlobalConfig.php:774
-#: global-config/editGlobalConfig.php:982
-#: global-config/editGlobalConfig.php:1111
-#: global-config/editGlobalConfig.php:1240
-#: global-config/editGlobalConfig.php:1369
-msgid "Enter the sample expiry days"
-msgstr "Saisir les jours d'expiration de l'échantillon"
-
-#: global-config/editGlobalConfig.php:596
-#: global-config/editGlobalConfig.php:774
-#: global-config/editGlobalConfig.php:982
-#: global-config/editGlobalConfig.php:1111
-#: global-config/editGlobalConfig.php:1240
-#: global-config/editGlobalConfig.php:1369
-msgid "Please enter the sample expiry days"
-msgstr "Veuillez indiquer les jours d'expiration de l'échantillon"
-
-#: global-config/editGlobalConfig.php:605
-#: global-config/editGlobalConfig.php:783
-#: global-config/editGlobalConfig.php:991
+#: global-config/editGlobalConfig.php:557
+#: global-config/editGlobalConfig.php:767
+#: global-config/editGlobalConfig.php:941
 #: global-config/editGlobalConfig.php:1120
 #: global-config/editGlobalConfig.php:1249
 #: global-config/editGlobalConfig.php:1378
+msgid "Please enter patient id min length"
+msgstr "Veuillez saisir la longueur minimale de l'identifiant du patient"
+
+#: global-config/editGlobalConfig.php:566
+msgid "Lock Approved VL Samples"
+msgstr "Échantillons VL approuvés par le verrou"
+
+#: global-config/editGlobalConfig.php:568
+#: global-config/editGlobalConfig.php:584
+#: global-config/editGlobalConfig.php:600
+#: global-config/editGlobalConfig.php:778
+#: global-config/editGlobalConfig.php:969
+msgid "Please select lock approved sample"
+msgstr "Veuillez sélectionner l'échantillon approuvé pour la serrure"
+
+#: global-config/editGlobalConfig.php:582
+msgid "VL Suppression Target"
+msgstr "Cible de suppression VL"
+
+#: global-config/editGlobalConfig.php:586
+#: global-config/editGlobalConfig.php:602
+msgid "Enable"
+msgstr "Activer"
+
+#: global-config/editGlobalConfig.php:587
+#: global-config/editGlobalConfig.php:603
+msgid "Disable"
+msgstr "Désactiver"
+
+#: global-config/editGlobalConfig.php:598
+msgid "VL Monthly Target"
+msgstr "VL Objectif mensuel"
+
+#: global-config/editGlobalConfig.php:614
+#: global-config/editGlobalConfig.php:792
+#: global-config/editGlobalConfig.php:1000
+#: global-config/editGlobalConfig.php:1129
+#: global-config/editGlobalConfig.php:1258
+#: global-config/editGlobalConfig.php:1387
+msgid "Sample Expiry Days"
+msgstr "Jours d'expiration de l'échantillon"
+
+#: global-config/editGlobalConfig.php:616
+#: global-config/editGlobalConfig.php:794
+#: global-config/editGlobalConfig.php:1002
+#: global-config/editGlobalConfig.php:1131
+#: global-config/editGlobalConfig.php:1260
+#: global-config/editGlobalConfig.php:1389
+msgid "Enter the sample expiry days"
+msgstr "Saisir les jours d'expiration de l'échantillon"
+
+#: global-config/editGlobalConfig.php:616
+#: global-config/editGlobalConfig.php:794
+#: global-config/editGlobalConfig.php:1002
+#: global-config/editGlobalConfig.php:1131
+#: global-config/editGlobalConfig.php:1260
+#: global-config/editGlobalConfig.php:1389
+msgid "Please enter the sample expiry days"
+msgstr "Veuillez indiquer les jours d'expiration de l'échantillon"
+
+#: global-config/editGlobalConfig.php:625
+#: global-config/editGlobalConfig.php:803
+#: global-config/editGlobalConfig.php:1011
+#: global-config/editGlobalConfig.php:1140
+#: global-config/editGlobalConfig.php:1269
+#: global-config/editGlobalConfig.php:1398
 msgid "Sample Lock Expiry Days"
 msgstr "Jours d'expiration de l'échantillon de serrures"
 
-#: global-config/editGlobalConfig.php:607
-#: global-config/editGlobalConfig.php:785
-#: global-config/editGlobalConfig.php:993
-#: global-config/editGlobalConfig.php:1122
-#: global-config/editGlobalConfig.php:1251
-#: global-config/editGlobalConfig.php:1380
+#: global-config/editGlobalConfig.php:627
+#: global-config/editGlobalConfig.php:805
+#: global-config/editGlobalConfig.php:1013
+#: global-config/editGlobalConfig.php:1142
+#: global-config/editGlobalConfig.php:1271
+#: global-config/editGlobalConfig.php:1400
 msgid "Enter the sample lock expiry days"
 msgstr "Saisir les jours d'expiration du verrouillage de l'échantillon"
 
-#: global-config/editGlobalConfig.php:607
-#: global-config/editGlobalConfig.php:785
-#: global-config/editGlobalConfig.php:993
-#: global-config/editGlobalConfig.php:1122
-#: global-config/editGlobalConfig.php:1251
-#: global-config/editGlobalConfig.php:1380
+#: global-config/editGlobalConfig.php:627
+#: global-config/editGlobalConfig.php:805
+#: global-config/editGlobalConfig.php:1013
+#: global-config/editGlobalConfig.php:1142
+#: global-config/editGlobalConfig.php:1271
+#: global-config/editGlobalConfig.php:1400
 msgid "Please enter the sample lock expiry days"
 msgstr "Veuillez indiquer les jours d'expiration du verrou de l'échantillon"
 
-#: global-config/editGlobalConfig.php:615
+#: global-config/editGlobalConfig.php:635
 msgid "VL Auto Approve API Results"
 msgstr ""
 "VL Auto Approve API Results (Approbation automatique des résultats de l'API)"
 
-#: global-config/editGlobalConfig.php:617
+#: global-config/editGlobalConfig.php:637
 msgid "Please select VL Auto Approve API Results"
 msgstr "Veuillez sélectionner VL Auto Approve API Results"
 
-#: global-config/editGlobalConfig.php:629
+#: global-config/editGlobalConfig.php:649
 msgid "VL Show Participant Name in Manifest"
 msgstr "VL Afficher le nom du participant dans le manifeste"
 
-#: global-config/editGlobalConfig.php:631
+#: global-config/editGlobalConfig.php:651
 msgid "Please select VL Participant Name in Manifest"
 msgstr "Veuillez sélectionner le nom du participant VL dans le manifeste"
 
-#: global-config/editGlobalConfig.php:643
+#: global-config/editGlobalConfig.php:663
 msgid "Interpret and Convert VL Results"
 msgstr "Interpréter et convertir les résultats de la LV"
 
-#: global-config/editGlobalConfig.php:645
-#: global-config/editGlobalConfig.php:659
+#: global-config/editGlobalConfig.php:665
+#: global-config/editGlobalConfig.php:679
 msgid "Please select Interpret and Convert VL Results"
 msgstr "Veuillez sélectionner Interpréter et convertir les résultats VL"
 
-#: global-config/editGlobalConfig.php:657
+#: global-config/editGlobalConfig.php:677
 msgid "Viral Load Export Format"
 msgstr "Format d'exportation de la charge virale"
 
-#: global-config/editGlobalConfig.php:661
+#: global-config/editGlobalConfig.php:681
 msgid "Default Format"
 msgstr "Format par défaut"
 
-#: global-config/editGlobalConfig.php:662
+#: global-config/editGlobalConfig.php:682
 msgid "CRESAR Format"
 msgstr "Format CRESAR"
 
-#: global-config/editGlobalConfig.php:674
+#: global-config/editGlobalConfig.php:694
 msgid "EID Settings"
 msgstr "EID Paramètres"
 
-#: global-config/editGlobalConfig.php:695
-#: global-config/editGlobalConfig.php:696
-#: global-config/editGlobalConfig.php:697
-#: global-config/editGlobalConfig.php:698
-#: global-config/editGlobalConfig.php:699
-#: global-config/editGlobalConfig.php:700
+#: global-config/editGlobalConfig.php:715
+#: global-config/editGlobalConfig.php:716
+#: global-config/editGlobalConfig.php:717
+#: global-config/editGlobalConfig.php:718
+#: global-config/editGlobalConfig.php:719
+#: global-config/editGlobalConfig.php:720
 msgid "Please select the EID Sample ID Format"
 msgstr "Veuillez sélectionner le format d'identification de l'échantillon EID"
 
-#: global-config/editGlobalConfig.php:712
+#: global-config/editGlobalConfig.php:732
 msgid "eg. R+Year+Province Code+EID+Increment Counter (R18NCDEID0001)"
 msgstr ""
 "ex. R+Année+Code province+EID+Compteur d'incrémentation (R18NCDEID0001)"
 
-#: global-config/editGlobalConfig.php:715
+#: global-config/editGlobalConfig.php:735
 msgid "eg. Prefix+Month+Year+Increment Counter (EID0517999)"
 msgstr "eg. Préfixe+mois+année+compteur d'incrémentation (EID0517999)"
 
-#: global-config/editGlobalConfig.php:718
+#: global-config/editGlobalConfig.php:738
 msgid "eg. Prefix+Year+Increment Counter (EID17999)"
 msgstr "eg. Préfixe+année+compteur d'incrémentation (EID17999)"
 
-#: global-config/editGlobalConfig.php:725
+#: global-config/editGlobalConfig.php:745
 msgid "Minimum Sample ID"
 msgstr "ID minimum de l'échantillon"
 
-#: global-config/editGlobalConfig.php:725
+#: global-config/editGlobalConfig.php:745
 msgid "Length"
 msgstr "Longueur"
 
-#: global-config/editGlobalConfig.php:756
+#: global-config/editGlobalConfig.php:776
 msgid "Lock Approved EID Samples"
 msgstr "Échantillons d'EID approuvés pour le verrouillage"
 
-#: global-config/editGlobalConfig.php:793
+#: global-config/editGlobalConfig.php:813
 msgid "EID Auto Approve API Results"
 msgstr "Approbation automatique des résultats de l'API par l'EID"
 
-#: global-config/editGlobalConfig.php:795
+#: global-config/editGlobalConfig.php:815
 msgid "Please select EID Auto Approve API Results"
 msgstr ""
 "Veuillez sélectionner l'EID Approuver automatiquement les résultats de l'API"
 
-#: global-config/editGlobalConfig.php:807
+#: global-config/editGlobalConfig.php:827
 msgid "EID Show Participant Name in Manifest"
 msgstr "EID Afficher le nom du participant dans le manifeste"
 
-#: global-config/editGlobalConfig.php:809
+#: global-config/editGlobalConfig.php:829
 msgid "Please select EID Participant Name in Manifest"
 msgstr "Veuillez sélectionner le nom du participant à l'EID dans le manifeste"
 
-#: global-config/editGlobalConfig.php:824
+#: global-config/editGlobalConfig.php:844
 msgid "Covid-19 Settings"
 msgstr "Covid-19 Paramètres"
 
-#: global-config/editGlobalConfig.php:831
+#: global-config/editGlobalConfig.php:851
 msgid "Covid-19 Excel Export Report Format"
 msgstr "Format du rapport d'exportation Excel Covid-19"
 
-#: global-config/editGlobalConfig.php:833
-#: global-config/editGlobalConfig.php:844
+#: global-config/editGlobalConfig.php:853
+#: global-config/editGlobalConfig.php:864
 msgid "Please select covid19 report type"
 msgstr "Veuillez sélectionner le type de rapport covid19"
 
-#: global-config/editGlobalConfig.php:835
+#: global-config/editGlobalConfig.php:855
 msgid "Standard"
 msgstr "Standard"
 
-#: global-config/editGlobalConfig.php:836
+#: global-config/editGlobalConfig.php:856
 msgid "Rwanda"
 msgstr "Rwanda"
 
-#: global-config/editGlobalConfig.php:837
+#: global-config/editGlobalConfig.php:857
 msgid "DRC"
 msgstr "République Démocratique du Congo"
 
-#: global-config/editGlobalConfig.php:842
+#: global-config/editGlobalConfig.php:862
 msgid "Covid-19 Positive Confirmatory Tests Required"
 msgstr "Covid-19 Tests de confirmation positifs requis"
 
-#: global-config/editGlobalConfig.php:890
+#: global-config/editGlobalConfig.php:910
 msgid "eg. R+Year+Province Code+covid19+Increment Counter (R18NCDC190001)"
 msgstr ""
 "eg. R+Année+Code province+covid19+Compteur d'incrémentation (R18NCDC190001)"
 
-#: global-config/editGlobalConfig.php:893
-#: global-config/editGlobalConfig.php:1073
-#: global-config/editGlobalConfig.php:1202
+#: global-config/editGlobalConfig.php:913
+#: global-config/editGlobalConfig.php:1093
+#: global-config/editGlobalConfig.php:1222
 msgid "eg. Prefix+Month+Year+Increment Counter (C190517999)"
 msgstr "eg. Préfixe+mois+année+compteur d'incréments (C190517999)"
 
-#: global-config/editGlobalConfig.php:896
-#: global-config/editGlobalConfig.php:1076
-#: global-config/editGlobalConfig.php:1205
+#: global-config/editGlobalConfig.php:916
+#: global-config/editGlobalConfig.php:1096
+#: global-config/editGlobalConfig.php:1225
 msgid "eg. Prefix+Year+Increment Counter (C1917999)"
 msgstr "eg. Préfixe+année+compteur d'incréments (C1917999)"
 
-#: global-config/editGlobalConfig.php:931
+#: global-config/editGlobalConfig.php:951
 msgid "Show Covid19 Tests table in Results PDF"
 msgstr "Afficher le tableau des tests Covid19 dans les résultats PDF"
 
-#: global-config/editGlobalConfig.php:933
+#: global-config/editGlobalConfig.php:953
 msgid "Please select covid19 Tests method in Results Pdf"
 msgstr "Veuillez sélectionner la méthode covid19 Tests dans Résultats Pdf"
 
-#: global-config/editGlobalConfig.php:947
+#: global-config/editGlobalConfig.php:967
 msgid "Lock Approved Covid19 Samples"
 msgstr "Échantillons de Covid19 approuvés par le verrou"
 
-#: global-config/editGlobalConfig.php:964
+#: global-config/editGlobalConfig.php:984
 msgid "Covid-19 Report QR Code"
 msgstr "Code QR du rapport Covid-19"
 
-#: global-config/editGlobalConfig.php:966
+#: global-config/editGlobalConfig.php:986
 msgid "Please select report QR code yes/no"
 msgstr "Veuillez sélectionner le code QR du rapport oui/non"
 
-#: global-config/editGlobalConfig.php:1001
+#: global-config/editGlobalConfig.php:1021
 msgid "COVID-19 Auto Approve API Results"
 msgstr "COVID-19 Approbation automatique des résultats de l'API"
 
-#: global-config/editGlobalConfig.php:1003
+#: global-config/editGlobalConfig.php:1023
 msgid "Please select COVID-19 Auto Approve API Results"
 msgstr ""
 "Veuillez sélectionner COVID-19 Approbation automatique des résultats de l'API"
 
-#: global-config/editGlobalConfig.php:1015
+#: global-config/editGlobalConfig.php:1035
 msgid "COVID-19 Show Participant Name in Manifest"
 msgstr "COVID-19 Afficher le nom du participant dans le manifeste"
 
-#: global-config/editGlobalConfig.php:1017
+#: global-config/editGlobalConfig.php:1037
 msgid "Please select COVID-19 Show Participant Name in Manifest"
 msgstr ""
 "Veuillez sélectionner COVID-19 Afficher le nom du participant dans le "
 "manifeste"
 
-#: global-config/editGlobalConfig.php:1032
+#: global-config/editGlobalConfig.php:1052
 msgid "Hepatitis Settings"
 msgstr "Paramètres de l'hépatite"
 
-#: global-config/editGlobalConfig.php:1053
-#: global-config/editGlobalConfig.php:1054
-#: global-config/editGlobalConfig.php:1055
-#: global-config/editGlobalConfig.php:1056
-#: global-config/editGlobalConfig.php:1057
-#: global-config/editGlobalConfig.php:1058
+#: global-config/editGlobalConfig.php:1073
+#: global-config/editGlobalConfig.php:1074
+#: global-config/editGlobalConfig.php:1075
+#: global-config/editGlobalConfig.php:1076
+#: global-config/editGlobalConfig.php:1077
+#: global-config/editGlobalConfig.php:1078
 msgid "Please select the Hepatitis Sample ID Format"
 msgstr ""
 "Veuillez sélectionner le format d'identification de l'échantillon d'hépatite"
 
-#: global-config/editGlobalConfig.php:1070
+#: global-config/editGlobalConfig.php:1090
 msgid "eg. R+Year+Province Code+hepatitis+Increment Counter (R18NCDC190001)"
 msgstr ""
 "eg. R+Année+Code province+hépatite+Compteur d'incrémentation (R18NCDC190001)"
 
-#: global-config/editGlobalConfig.php:1130
+#: global-config/editGlobalConfig.php:1150
 msgid "Hepatitis Auto Approve API Results"
 msgstr "Hepatitis Auto approuve les résultats de l'API"
 
-#: global-config/editGlobalConfig.php:1132
+#: global-config/editGlobalConfig.php:1152
 msgid "Please select Hepatitis Auto Approve API Results"
 msgstr ""
 "Veuillez sélectionner Hépatite Approuver automatiquement les résultats de "
 "l'API"
 
-#: global-config/editGlobalConfig.php:1144
+#: global-config/editGlobalConfig.php:1164
 msgid "Hepatitis Show Participant Name in Manifest"
 msgstr "Hépatite Montrer le nom du participant dans le manifeste"
 
-#: global-config/editGlobalConfig.php:1146
+#: global-config/editGlobalConfig.php:1166
 msgid "Please select Hepatitis Participant Name in Manifest"
 msgstr ""
 "Veuillez sélectionner le nom du participant à l'hépatite dans le manifeste"
 
-#: global-config/editGlobalConfig.php:1161
+#: global-config/editGlobalConfig.php:1181
 msgid "TB Settings"
 msgstr "Réglages TB"
 
-#: global-config/editGlobalConfig.php:1182
-#: global-config/editGlobalConfig.php:1183
-#: global-config/editGlobalConfig.php:1184
-#: global-config/editGlobalConfig.php:1185
-#: global-config/editGlobalConfig.php:1186
-#: global-config/editGlobalConfig.php:1187
+#: global-config/editGlobalConfig.php:1202
+#: global-config/editGlobalConfig.php:1203
+#: global-config/editGlobalConfig.php:1204
+#: global-config/editGlobalConfig.php:1205
+#: global-config/editGlobalConfig.php:1206
+#: global-config/editGlobalConfig.php:1207
 msgid "Please select the TB Sample ID Format"
 msgstr "Veuillez sélectionner le format d'identification de l'échantillon TB"
 
-#: global-config/editGlobalConfig.php:1199
+#: global-config/editGlobalConfig.php:1219
 msgid "eg. R+Year+Province Code+tb+Increment Counter (R18NCDC190001)"
 msgstr "eg. R+Année+Code province+tb+Compteur d'incrémentation (R18NCDC190001)"
 
-#: global-config/editGlobalConfig.php:1259
+#: global-config/editGlobalConfig.php:1279
 msgid "TB Auto Approve API Results"
 msgstr "Approbation automatique des résultats de l'API par le CT"
 
-#: global-config/editGlobalConfig.php:1261
+#: global-config/editGlobalConfig.php:1281
 msgid "Please select TB Auto Approve API Results"
 msgstr ""
 "Veuillez sélectionner TB Approbation automatique des résultats de l'API"
 
-#: global-config/editGlobalConfig.php:1273
+#: global-config/editGlobalConfig.php:1293
 msgid "TB Show Participant Name in Manifest"
 msgstr "TB Indiquer le nom du participant dans le manifeste"
 
-#: global-config/editGlobalConfig.php:1275
+#: global-config/editGlobalConfig.php:1295
 msgid "Please select TB Participant Name in Manifest"
 msgstr "Veuillez sélectionner le nom du participant TB dans le manifeste"
 
-#: global-config/editGlobalConfig.php:1290
+#: global-config/editGlobalConfig.php:1310
 msgid "Other Lab Tests Settings"
 msgstr "Autres tests de laboratoire Paramètres"
 
-#: global-config/editGlobalConfig.php:1311
-#: global-config/editGlobalConfig.php:1312
-#: global-config/editGlobalConfig.php:1313
-#: global-config/editGlobalConfig.php:1314
-#: global-config/editGlobalConfig.php:1315
-#: global-config/editGlobalConfig.php:1316
+#: global-config/editGlobalConfig.php:1331
+#: global-config/editGlobalConfig.php:1332
+#: global-config/editGlobalConfig.php:1333
+#: global-config/editGlobalConfig.php:1334
+#: global-config/editGlobalConfig.php:1335
+#: global-config/editGlobalConfig.php:1336
 msgid "Please select the Generic Test Sample ID Format"
 msgstr ""
 "Veuillez sélectionner le format d'identification de l'échantillon de test "
 "générique"
 
-#: global-config/editGlobalConfig.php:1328
+#: global-config/editGlobalConfig.php:1348
 msgid "eg. R+Year+Province Code+tb+Increment Counter (R18NCDLAB0001)"
 msgstr "ex. R+Année+Code province+tb+Compteur d'incrémentation (R18NCDLAB0001)"
 
-#: global-config/editGlobalConfig.php:1331
+#: global-config/editGlobalConfig.php:1351
 msgid "eg. Prefix+Month+Year+Increment Counter (LAB0517999)"
 msgstr "eg. Préfixe+mois+année+compteur d'incréments (LAB0517999)"
 
-#: global-config/editGlobalConfig.php:1334
+#: global-config/editGlobalConfig.php:1354
 msgid "eg. Prefix+Year+Increment Counter (LAB17999)"
 msgstr "eg. Préfixe+année+compteur d'incréments (LAB17999)"
 
-#: global-config/editGlobalConfig.php:1388
+#: global-config/editGlobalConfig.php:1408
 msgid "Auto Approve API Results"
 msgstr "Approbation automatique des résultats de l'API"
 
-#: global-config/editGlobalConfig.php:1390
+#: global-config/editGlobalConfig.php:1410
 msgid "Please select Other Lab Tests Auto Approve API Results"
 msgstr ""
 "Veuillez sélectionner Autres tests de laboratoire Approbation automatique "
 "des résultats de l'API"
 
-#: global-config/editGlobalConfig.php:1402
+#: global-config/editGlobalConfig.php:1422
 msgid "Other Lab Tests Show Participant Name in Manifest"
 msgstr ""
 "Autres tests de laboratoire Indiquer le nom du participant dans le manifeste"
 
-#: global-config/editGlobalConfig.php:1404
+#: global-config/editGlobalConfig.php:1424
 msgid "Please select Other Lab Tests Participant Name in Manifest"
 msgstr ""
 "Veuillez sélectionner Autres tests de laboratoire Nom du participant dans le "
 "manifeste"
 
-#: global-config/editGlobalConfig.php:1418
+#: global-config/editGlobalConfig.php:1438
 msgid "Mobile App Settings"
 msgstr "Paramètres de l'application mobile"
 
-#: global-config/editGlobalConfig.php:1424
+#: global-config/editGlobalConfig.php:1444
 msgid "Mobile APP Menu Name"
 msgstr "Nom du menu de l'APP mobile"
 
-#: global-config/editGlobalConfig.php:1426
+#: global-config/editGlobalConfig.php:1446
 msgid "Please enter name"
 msgstr "S'il vous plaît entrer le nom"
 
-#: global-config/editGlobalConfig.php:1435
+#: global-config/editGlobalConfig.php:1455
 msgid "Connect"
 msgstr "Connecter"
 
-#: global-config/editGlobalConfig.php:1441
+#: global-config/editGlobalConfig.php:1461
 msgid "National Dashboard URL"
 msgstr "URL du tableau de bord national"
 
-#: global-config/editGlobalConfig.php:1443
+#: global-config/editGlobalConfig.php:1463
 msgid "Please enter the National Dashboard URL"
 msgstr "Veuillez saisir l'URL du tableau de bord national"
 
-#: global-config/editGlobalConfig.php:1455
+#: global-config/editGlobalConfig.php:1475
 msgid "Viral Load Result PDF Settings"
 msgstr "Résultat de la charge virale PDF Settings"
 
-#: global-config/editGlobalConfig.php:1461
+#: global-config/editGlobalConfig.php:1481
 msgid "Show Emoticon/Smiley"
 msgstr "Afficher l'émoticône/l'émoticône"
 
-#: global-config/editGlobalConfig.php:1472
+#: global-config/editGlobalConfig.php:1492
 msgid "High Viral Load Message"
 msgstr "Message sur la charge virale élevée"
 
-#: global-config/editGlobalConfig.php:1474
+#: global-config/editGlobalConfig.php:1494
 msgid ""
 "High Viral Load message that will appear for results >= the VL threshold "
 "limit"
@@ -14017,15 +14061,15 @@ msgstr ""
 "Message de charge virale élevée apparaissant pour les résultats >= au seuil "
 "limite de la charge virale"
 
-#: global-config/editGlobalConfig.php:1474
+#: global-config/editGlobalConfig.php:1494
 msgid "Please enter high viral load message"
 msgstr "Veuillez saisir le message de charge virale élevée"
 
-#: global-config/editGlobalConfig.php:1482
+#: global-config/editGlobalConfig.php:1502
 msgid "Low Viral Load Message"
 msgstr "Message de faible charge virale"
 
-#: global-config/editGlobalConfig.php:1484
+#: global-config/editGlobalConfig.php:1504
 msgid ""
 "Low Viral Load message that will appear for results lesser than the VL "
 "threshold limit"
@@ -14033,77 +14077,77 @@ msgstr ""
 "Message de faible charge virale apparaissant pour les résultats inférieurs "
 "au seuil limite de la charge virale"
 
-#: global-config/editGlobalConfig.php:1484
+#: global-config/editGlobalConfig.php:1504
 msgid "Please enter low viral load message"
 msgstr "Veuillez saisir le message de faible charge virale"
 
-#: global-config/editGlobalConfig.php:1492
+#: global-config/editGlobalConfig.php:1512
 msgid "Patient Name Format"
 msgstr "Format du nom du patient"
 
-#: global-config/editGlobalConfig.php:1494
+#: global-config/editGlobalConfig.php:1514
 msgid "Choose one option"
 msgstr "Choisissez une option"
 
-#: global-config/editGlobalConfig.php:1495
+#: global-config/editGlobalConfig.php:1515
 msgid "Last Name"
 msgstr "Nom"
 
-#: global-config/editGlobalConfig.php:1496 users/addUser.php:74
+#: global-config/editGlobalConfig.php:1516 users/addUser.php:74
 #: users/addUser.php:76
 msgid "Full Name"
 msgstr "Nom complet"
 
-#: global-config/editGlobalConfig.php:1497
+#: global-config/editGlobalConfig.php:1517
 msgid "Hide Patient Name"
 msgstr "Cacher le nom du patient"
 
-#: global-config/editGlobalConfig.php:1507
+#: global-config/editGlobalConfig.php:1527
 msgid "Mandatory Fields for COMPLETED Result PDF"
 msgstr "Champs obligatoires pour le résultat COMPLET PDF"
 
-#: global-config/editGlobalConfig.php:1513
+#: global-config/editGlobalConfig.php:1533
 msgid ""
 "If any of the selected fields are incomplete, the Result PDF appears with a"
 msgstr ""
 "Si l'un des champs sélectionnés est incomplet, le PDF Résultat s'affiche "
 "avec une icône"
 
-#: global-config/editGlobalConfig.php:1513
+#: global-config/editGlobalConfig.php:1533
 msgid "DRAFT"
 msgstr "Brouillon"
 
-#: global-config/editGlobalConfig.php:1513
+#: global-config/editGlobalConfig.php:1533
 msgid "watermark. Leave right block blank (Deselect All) to disable this"
 msgstr ""
 "filigrane. Laissez le bloc de droite vide (Désélectionner tout) pour "
 "désactiver ce filigrane"
 
-#: global-config/editGlobalConfig.php:1521
+#: global-config/editGlobalConfig.php:1541
 msgid "Facility Province"
 msgstr "Facilité Province"
 
-#: global-config/editGlobalConfig.php:1522
+#: global-config/editGlobalConfig.php:1542
 msgid "Facility District"
 msgstr "District des installations"
 
-#: global-config/editGlobalConfig.php:1526
+#: global-config/editGlobalConfig.php:1546
 msgid "Patient ART No"
 msgstr "Patient ART No"
 
-#: global-config/editGlobalConfig.php:1527
+#: global-config/editGlobalConfig.php:1547
 #: vl/requests/forms/add-cameroon.php:551
 #: vl/requests/forms/edit-cameroon.php:645
 #: vl/results/forms/update-cameroon-result.php:675
 msgid "Date Sample Received at Testing Lab"
 msgstr "Date de réception de l'échantillon au laboratoire d'essai"
 
-#: global-config/editGlobalConfig.php:1531
+#: global-config/editGlobalConfig.php:1551
 msgid "VL Result"
 msgstr "Résultat VL"
 
-#: global-config/editGlobalConfig.php:1586
-#: global-config/editGlobalConfig.php:1587
+#: global-config/editGlobalConfig.php:1606
+#: global-config/editGlobalConfig.php:1607
 #: vl/result-mail/editTestResultEmailConfig.php:145
 #: vl/result-mail/editTestResultEmailConfig.php:146
 msgid "Enter Field Name"
@@ -14609,8 +14653,8 @@ msgid "Clinic/Site Name"
 msgstr "Nom de la clinique/du site"
 
 #: import-result/imported-results.php:245
-#: vl/program-management/export-vl-results.php:66
-#: vl/requests/export-vl-requests.php:30
+#: vl/program-management/export-vl-results.php:40
+#: vl/requests/export-vl-requests.php:28
 msgid "Comments"
 msgstr "Commentaires"
 
@@ -15508,8 +15552,8 @@ msgid "Enter age in months"
 msgstr "Saisir l'âge en mois"
 
 #: patients/add-patient.php:176 patients/edit-patient.php:192
-#: vl/program-management/export-vl-results.php:66
-#: vl/requests/export-vl-requests.php:30 vl/requests/forms/add-cameroon.php:295
+#: vl/program-management/export-vl-results.php:40
+#: vl/requests/export-vl-requests.php:28 vl/requests/forms/add-cameroon.php:295
 #: vl/requests/forms/edit-cameroon.php:335
 #: vl/results/forms/update-cameroon-result.php:376
 msgid "Is Patient Pregnant?"
@@ -15523,8 +15567,8 @@ msgid "Please check if patient is pregnant"
 msgstr "Veuillez cocher si la patiente est enceinte"
 
 #: patients/add-patient.php:187 patients/edit-patient.php:203
-#: vl/program-management/export-vl-results.php:66
-#: vl/requests/export-vl-requests.php:30 vl/requests/forms/add-cameroon.php:312
+#: vl/program-management/export-vl-results.php:40
+#: vl/requests/export-vl-requests.php:28 vl/requests/forms/add-cameroon.php:312
 #: vl/requests/forms/edit-cameroon.php:352
 #: vl/results/forms/update-cameroon-result.php:393
 msgid "Is Patient Breastfeeding?"
@@ -17166,7 +17210,7 @@ msgstr "Veuillez sélectionner votre localité"
 msgid "Official Email"
 msgstr "Email officiel"
 
-#: users/editProfileHelper.php:65
+#: users/editProfileHelper.php:66
 msgid ""
 "Your new password cannot be same as the current password. Please try another "
 "password."
@@ -17174,7 +17218,7 @@ msgstr ""
 "Votre nouveau mot de passe ne peut pas être identique au mot de passe "
 "actuel. Veuillez essayer un autre mot de passe."
 
-#: users/editProfileHelper.php:106
+#: users/editProfileHelper.php:107
 msgid ""
 "Your profile changes have been saved. You can continue using the application."
 msgstr ""
@@ -17193,260 +17237,260 @@ msgstr "Statut de l'utilisateur"
 msgid "User updated successfully"
 msgstr "Mise à jour de l'utilisateur réussie"
 
-#: vl/program-management/export-vl-results.php:63
-#: vl/program-management/export-vl-results.php:66
-#: vl/requests/export-vl-requests.php:30
+#: vl/program-management/export-vl-results.php:37
+#: vl/program-management/export-vl-results.php:40
+#: vl/requests/export-vl-requests.php:28
 msgid "S.No."
 msgstr "S.No."
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Region of sending facility"
 msgstr "Région de l'établissement d'origine"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "District of sending facility"
 msgstr "District de l'établissement d'origine"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Sending facility"
 msgstr "Facilité d'envoi"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Project"
 msgstr "Projet"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Existing ART Code"
 msgstr "Code ART existant"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Sample Creation Date"
 msgstr "Échantillon testé Date"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Sample Created By"
 msgstr "Créé le"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Sample collection date"
 msgstr "Date de prélèvement de l'échantillon"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Requested by contact"
 msgstr "Demande de contact"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Treatment start date"
 msgstr "Date de début du traitement"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Treatment Protocol"
 msgstr "Protocole de traitement"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "ARV Protocol"
 msgstr "Protocole ARV"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 #: vl/requests/forms/add-cameroon.php:532
 #: vl/requests/forms/edit-cameroon.php:625
 #: vl/results/forms/update-cameroon-result.php:655
 msgid "CV Number"
 msgstr "Numéro de CV"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Test Platform"
 msgstr "Plate-forme d'essai"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Test platform detection limit"
 msgstr "Limite de détection de la plate-forme d'essai"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Sample reception date"
 msgstr "Exemple de date de réception"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Sample Tested"
 msgstr "Échantillon testé"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Date of test"
 msgstr "Date du test"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Date of result sent to facility"
 msgstr "Date d'envoi du résultat à l'établissement"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Sample Rejected"
 msgstr "Échantillon rejeté"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Communication of rejected samples or high viral load (yes, no or NA)"
 msgstr ""
 "Communication d'échantillons rejetés ou d'une charge virale élevée (oui, non "
 "ou NA)"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Result Value"
 msgstr "Résultat Valeur"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Result Value Log"
 msgstr "Résultat Valeur Journal"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Is suppressed"
 msgstr "Est supprimée"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Name of reference Lab"
 msgstr "Nom du laboratoire de référence"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Category of testing site"
 msgstr "Catégorie de site d'essai"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "TAT"
 msgstr "TAT"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 #: vl/program-management/highViralLoad.php:403
 msgid "Age Range"
 msgstr "Tranche d’âge"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Was sample send to another reference lab"
 msgstr "L'échantillon a-t-il été envoyé à un autre laboratoire de référence"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "If sample was send to another lab, give name of lab"
 msgstr ""
 "Si l'échantillon a été envoyé à un autre laboratoire, indiquer le nom du "
 "laboratoire"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Invalid test (yes or no)"
 msgstr "Test non valide (oui ou non)"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Invalid sample repeated (yes or no)"
 msgstr "Échantillon non valide répété (oui ou non)"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Error codes (yes or no)"
 msgstr "Codes d'erreur (oui ou non)"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Error codes values"
 msgstr "Valeurs des codes d'erreur"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Tests repeated due to error codes (yes or no)"
 msgstr "Tests répétés en raison de codes d'erreur (oui ou non)"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "New CV number"
 msgstr "Nouveau numéro de CV"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Date of repeat test"
 msgstr "Date du nouveau test"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Result sent back to facility (yes or no)"
 msgstr "Résultat renvoyé à l'établissement (oui ou non)"
 
-#: vl/program-management/export-vl-results.php:63
+#: vl/program-management/export-vl-results.php:37
 msgid "Observations"
 msgstr "Observations"
 
-#: vl/program-management/export-vl-results.php:66
-#: vl/requests/export-vl-requests.php:30
+#: vl/program-management/export-vl-results.php:40
+#: vl/requests/export-vl-requests.php:28
 msgid "Health Facility Name"
 msgstr "Nom de l'établissement de santé"
 
-#: vl/program-management/export-vl-results.php:66
-#: vl/requests/export-vl-requests.php:30
+#: vl/program-management/export-vl-results.php:40
+#: vl/requests/export-vl-requests.php:28
 msgid "Health Facility Code"
 msgstr "Code de l'établissement de santé"
 
-#: vl/program-management/export-vl-results.php:66
-#: vl/program-management/export-vl-results.php:69
-#: vl/requests/export-vl-requests.php:30 vl/requests/export-vl-requests.php:32
-#: vl/requests/export-vl-requests.php:33 vl/results/vlPrintResult.php:287
+#: vl/program-management/export-vl-results.php:40
+#: vl/program-management/export-vl-results.php:43
+#: vl/requests/export-vl-requests.php:28 vl/requests/export-vl-requests.php:30
+#: vl/requests/export-vl-requests.php:31 vl/results/vlPrintResult.php:287
 msgid "Unique ART No."
 msgstr "Unique ART No."
 
-#: vl/program-management/export-vl-results.php:66
+#: vl/program-management/export-vl-results.php:40
 msgid "Patient Cellphone Number"
 msgstr "Numéro de téléphone portable du patient"
 
-#: vl/program-management/export-vl-results.php:66
-#: vl/requests/export-vl-requests.php:30 vl/requests/forms/add-cameroon.php:337
+#: vl/program-management/export-vl-results.php:40
+#: vl/requests/export-vl-requests.php:28 vl/requests/forms/add-cameroon.php:337
 #: vl/requests/forms/edit-cameroon.php:377
 #: vl/results/forms/update-cameroon-result.php:420
 msgid "Date of Sample Collection"
 msgstr "Date de collecte de l’échantillon"
 
-#: vl/program-management/export-vl-results.php:66
-#: vl/requests/export-vl-requests.php:30
+#: vl/program-management/export-vl-results.php:40
+#: vl/requests/export-vl-requests.php:28
 msgid "Date of Treatment Initiation"
 msgstr "Date de début du traitement"
 
-#: vl/program-management/export-vl-results.php:66
-#: vl/requests/export-vl-requests.php:30
+#: vl/program-management/export-vl-results.php:40
+#: vl/requests/export-vl-requests.php:28
 msgid "Current Regimen"
 msgstr "Régime actuel"
 
-#: vl/program-management/export-vl-results.php:66
-#: vl/requests/export-vl-requests.php:30
+#: vl/program-management/export-vl-results.php:40
+#: vl/requests/export-vl-requests.php:28
 msgid "Date of Initiation of Current Regimen"
 msgstr "Date d'instauration du régime actuel"
 
-#: vl/program-management/export-vl-results.php:66
-#: vl/requests/export-vl-requests.php:30
+#: vl/program-management/export-vl-results.php:40
+#: vl/requests/export-vl-requests.php:28
 msgid "ARV Adherence"
 msgstr "Adhésion aux ARV"
 
-#: vl/program-management/export-vl-results.php:66
-#: vl/requests/export-vl-requests.php:30
+#: vl/program-management/export-vl-results.php:40
+#: vl/requests/export-vl-requests.php:28
 msgid "Indication for Viral Load Testing"
 msgstr "Indications pour l'analyse de la charge virale"
 
-#: vl/program-management/export-vl-results.php:66
-#: vl/requests/export-vl-requests.php:30
+#: vl/program-management/export-vl-results.php:40
+#: vl/requests/export-vl-requests.php:28
 msgid "Requesting Clinican"
 msgstr "Clinicien demandeur"
 
-#: vl/program-management/export-vl-results.php:66
+#: vl/program-management/export-vl-results.php:40
 msgid "Requesting Clinican Cellphone Number"
 msgstr "Demande de numéro de téléphone portable du clinicien"
 
-#: vl/program-management/export-vl-results.php:66
-#: vl/requests/export-vl-requests.php:30
+#: vl/program-management/export-vl-results.php:40
+#: vl/requests/export-vl-requests.php:28
 msgid "Request Date"
 msgstr "Date de la demande"
 
-#: vl/program-management/export-vl-results.php:66
-#: vl/requests/export-vl-requests.php:30
+#: vl/program-management/export-vl-results.php:40
+#: vl/requests/export-vl-requests.php:28
 msgid "Result (cp/ml)"
 msgstr "Résultats (cp/ml)"
 
-#: vl/program-management/export-vl-results.php:66
-#: vl/requests/export-vl-requests.php:30
+#: vl/program-management/export-vl-results.php:40
+#: vl/requests/export-vl-requests.php:28
 msgid "Result (log)"
 msgstr "Résultats (log)"
 
-#: vl/program-management/export-vl-results.php:66
-#: vl/requests/export-vl-requests.php:30
+#: vl/program-management/export-vl-results.php:40
+#: vl/requests/export-vl-requests.php:28
 msgid "Sample Receipt Date"
 msgstr "Date de réception de l'échantillon"
 
-#: vl/program-management/export-vl-results.php:66
-#: vl/requests/export-vl-requests.php:30
+#: vl/program-management/export-vl-results.php:40
+#: vl/requests/export-vl-requests.php:28
 msgid "Date Result Dispatched"
 msgstr "Date d'envoi du résultat"
 
@@ -17963,12 +18007,12 @@ msgstr "Ajouter le motif du test VL"
 msgid "Failure Reason"
 msgstr "Raison de l'échec"
 
-#: vl/requests/addVlRequestHelper.php:360
+#: vl/requests/addVlRequestHelper.php:361
 msgid "VL request added successfully"
 msgstr "Mis à jour avec succés"
 
-#: vl/requests/editVlRequestHelper.php:350
-#: vl/results/updateVlTestResultHelper.php:177
+#: vl/requests/editVlRequestHelper.php:351
+#: vl/results/updateVlTestResultHelper.php:178
 msgid "VL request updated successfully"
 msgstr "Mise à jour réussie de la demande de VL"
 

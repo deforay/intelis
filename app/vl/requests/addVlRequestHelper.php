@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\VlService;
@@ -202,11 +203,11 @@ try {
         'is_patient_new' => $_POST['isPatientNew'] ?? null,
         'treatment_duration' => $_POST['treatmentDuration'] ?? null,
         'treatment_indication' => $_POST['treatmentIndication'] ?? null,
-        'treatment_initiated_date' => DateUtility::isoDateFormat($_POST['dateOfArtInitiation']),
+        'treatment_initiated_date' => DateUtility::isoDateFormat($_POST['dateOfArtInitiation'] ?? ''),
         'current_regimen' => $_POST['artRegimen'] ?? null,
         'has_patient_changed_regimen' => $_POST['hasChangedRegimen'] ?? null,
         'reason_for_regimen_change' => $_POST['reasonForArvRegimenChange'] ?? null,
-        'regimen_change_date' => DateUtility::isoDateFormat($_POST['dateOfArvRegimenChange']),
+        'regimen_change_date' => DateUtility::isoDateFormat($_POST['dateOfArvRegimenChange'] ?? ''),
         'line_of_treatment' => $_POST['lineOfTreatment'] ?? null,
         'line_of_treatment_failure_assessed' => $_POST['lineOfTreatmentFailureAssessed'] ?? null,
         'date_of_initiation_of_current_regimen' => DateUtility::isoDateFormat($_POST['regimenInitiatedOn']),
@@ -260,7 +261,7 @@ try {
         'tested_by' => $_POST['testedBy'] ?? null,
         'result_approved_by' => $_POST['approvedBy'] ?? null,
         'result_approved_datetime' => DateUtility::isoDateFormat($_POST['approvedOnDateTime'], true),
-        'date_test_ordered_by_physician' => DateUtility::isoDateFormat($_POST['dateOfDemand']),
+        'date_test_ordered_by_physician' => DateUtility::isoDateFormat($_POST['dateOfDemand'] ?? ''),
         'lab_tech_comments' => $_POST['labComments'] ?? null,
         'result_status' => $resultStatus,
         'funding_source' => (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') ? base64_decode($_POST['fundingSource']) : null,
@@ -327,18 +328,17 @@ try {
     }
     $vlData = array_merge($vlData, $pngSpecificFields);
 
-    $vlData['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $vlData['patient_art_no']);
-    $vlData['patient_middle_name'] = $general->crypto('doNothing', $_POST['patientMiddleName'], $vlData['patient_art_no']);
-    $vlData['patient_last_name'] = $general->crypto('doNothing', $_POST['patientLastName'], $vlData['patient_art_no']);
-
+    $vlData['patient_first_name'] = $_POST['patientFirstName'] ?? '';
+    $vlData['patient_middle_name'] = $_POST['patientMiddleName'] ?? '';
+    $vlData['patient_last_name'] = $_POST['patientLastName'] ?? '';
 
     $vlData['is_encrypted'] = 'no';
     if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
         $key = base64_decode($general->getGlobalConfig('key'));
-        $encryptedPatientId = $general->crypto('encrypt', $vlData['patient_art_no'], $key);
-        $encryptedPatientFirstName = $general->crypto('encrypt', $vlData['patient_first_name'], $key);
-        $encryptedPatientMiddleName = $general->crypto('encrypt', $vlData['patient_middle_name'], $key);
-        $encryptedPatientLastName = $general->crypto('encrypt', $vlData['patient_last_name'], $key);
+        $encryptedPatientId = $general->crypto('encrypt', $vlData['patient_art_no'] ?? '', $key);
+        $encryptedPatientFirstName = $general->crypto('encrypt', $vlData['patient_first_name'] ?? '', $key);
+        $encryptedPatientMiddleName = $general->crypto('encrypt', $vlData['patient_middle_name'] ?? '', $key);
+        $encryptedPatientLastName = $general->crypto('encrypt', $vlData['patient_last_name'] ?? '', $key);
 
         $vlData['patient_art_no'] = $encryptedPatientId;
         $vlData['patient_first_name'] = $encryptedPatientFirstName;
@@ -347,8 +347,8 @@ try {
         $vlData['is_encrypted'] = 'yes';
     }
 
-         //Update patient Information in Patients Table
-         $patientsService->savePatient($_POST,'form_vl');
+    //Update patient Information in Patients Table
+    $patientsService->savePatient($_POST, 'form_vl');
 
 
     $id = 0;
@@ -383,6 +383,5 @@ try {
         header("Location:/vl/requests/vl-requests.php");
     }
 } catch (Exception $exc) {
-    error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
+    throw new SystemException($exc->getMessage(), 500);
 }

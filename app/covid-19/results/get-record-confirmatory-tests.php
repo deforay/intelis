@@ -154,7 +154,7 @@ $start_date = '';
 $end_date = '';
 $t_start_date = '';
 $t_end_date = '';
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
           $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
@@ -169,7 +169,7 @@ if (!empty($sWhere)) {
      if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
           $sWhere = $sWhere . ' AND b.batch_code = "' . $_POST['batchCode'] . '"';
      }
-     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+     if (!empty($_POST['sampleCollectionDate'])) {
           if (trim($start_date) == trim($end_date)) {
                $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
           } else {
@@ -204,7 +204,7 @@ if (!empty($sWhere)) {
           $sWhere = $sWhere . ' b.batch_code = "' . $_POST['batchCode'] . '"';
      }
 
-     if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+     if (!empty($_POST['sampleCollectionDate'])) {
           if (isset($setWhr)) {
                if (trim($start_date) == trim($end_date)) {
                     $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
@@ -352,11 +352,7 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['patient_name'] . " " . $aRow['patient_surname'];
      $row[] = $covid19Results[$aRow['result']] ?? $aRow['result'];
 
-     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-          $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
-     } else {
-          $aRow['last_modified_datetime'] = '';
-     }
+     $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
 
      $row[] = $aRow['last_modified_datetime'];
      $row[] = ($aRow['status_name']);

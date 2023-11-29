@@ -154,7 +154,7 @@ if (isset($_POST['labName']) && trim($_POST['labName']) != '') {
 	$sWhere[] = ' vl.lab_id = "' . $_POST['labName'] . '"';
 }
 
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
 	if (trim($start_date) == trim($end_date)) {
 		$sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
 	} else {

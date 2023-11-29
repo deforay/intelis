@@ -70,9 +70,11 @@ class PatientsService
             $params['patientLastName'] = $params['lastName'];
             $patientId = $params['patientId'];
         }
+        $lastCode = $this->getLastCodeKey();
+        // print_r($lastCode);die;
         $data['patient_code'] = $patientId;
-        $data['patient_code_key'] = NULL;
-        $data['patient_code_prefix'] = NULL;
+        $data['patient_code_key'] = sprintf("%02d",($lastCode['patient_code_key']+1));
+        $data['patient_code_prefix'] = 'PAT';
 
         if (!empty($params['patientCodeKey'])) {
             $data['patient_code_key'] = $params['patientCodeKey'];
@@ -84,9 +86,9 @@ class PatientsService
         $data['patient_middle_name'] = (!empty($params['patientMiddleName']) ? $params['patientMiddleName'] : null);
         $data['patient_last_name'] = (!empty($params['patientLastName']) ? $params['patientLastName'] : null);
 
-        $data['patient_first_name'] = $this->commonService->crypto('doNothing', $_POST['patientFirstName'], $_POST['patient_art_no']);
-        $data['patient_middle_name'] = $this->commonService->crypto('doNothing', $_POST['patientMiddleName'], $_POST['patient_art_no']);
-        $data['patient_last_name'] = $this->commonService->crypto('doNothing', $_POST['patientLastName'], $_POST['patient_art_no']);
+        $data['patient_first_name'] = $params['patientFirstName'] ?? '';
+        $data['patient_middle_name'] = $params['patientMiddleName'] ?? '';
+        $data['patient_last_name'] = $params['patientLastName'] ?? '';
 
         $data['is_encrypted'] = 'no';
         if (isset($params['encryptPII']) && $params['encryptPII'] == 'yes') {
@@ -140,7 +142,6 @@ class PatientsService
             $params['patientLastName'] = $params['lastName'];
             $patientId = $params['patientId'];
         }
-
         $data['patient_code'] = $patientId;
         $data['patient_code_key'] = NULL;
         $data['patient_code_prefix'] = NULL;
@@ -188,5 +189,10 @@ class PatientsService
 
         $this->db->where("patient_code", $oldPatientCode);
         return $this->db->update($this->table, $data);
+    }
+
+    public function getLastCodeKey(){
+        $this->db->orderBy('patient_id');
+        return $this->db->getOne($this->table, 'patient_code_key');
     }
 }

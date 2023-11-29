@@ -1,8 +1,9 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Exceptions\SystemException;
+use App\Registries\ContainerRegistry;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -43,6 +44,5 @@ try {
 	}
 	header("Location:funding-sources.php");
 } catch (Exception $exc) {
-	error_log($exc->getMessage());
-	error_log($exc->getTraceAsString());
+	throw new SystemException($exc->getMessage(), 500);
 }

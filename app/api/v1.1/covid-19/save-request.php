@@ -17,8 +17,25 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 20000);
 
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var ApiService $app */
+$app = ContainerRegistry::get(ApiService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var Covid19Service $covid19Service */
+$covid19Service = ContainerRegistry::get(Covid19Service::class);
+
+
 try {
 
+    $db->startTransaction();
     /** @var Slim\Psr7\Request $request */
     $request = $GLOBALS['request'];
     $noOfFailedRecords = 0;
@@ -45,22 +62,6 @@ try {
     } catch (PathNotFoundException $ex) {
         throw new SystemException("Invalid request");
     }
-
-
-    /** @var MysqliDb $db */
-    $db = ContainerRegistry::get('db');
-
-    /** @var CommonService $general */
-    $general = ContainerRegistry::get(CommonService::class);
-
-    /** @var ApiService $app */
-    $app = ContainerRegistry::get(ApiService::class);
-
-    /** @var UsersService $usersService */
-    $usersService = ContainerRegistry::get(UsersService::class);
-
-    /** @var Covid19Service $covid19Service */
-    $covid19Service = ContainerRegistry::get(Covid19Service::class);
 
     $tableName = "form_covid19";
     $tableName1 = "activity_log";
@@ -231,6 +232,7 @@ try {
             $params['facilityId'] = $data['facilityId'] ?? null;
             $params['labId'] = $data['labId'] ?? null;
 
+            $params['insertOperation'] = true;
             $currentSampleData = $covid19Service->insertSample($params, true);
             $currentSampleData['action'] = 'inserted';
             $data['covid19SampleId'] = intval($currentSampleData['id']);
@@ -528,8 +530,9 @@ try {
         'timestamp' => time(),
         'data' => $responseData ?? []
     ];
+    $db->commit();
 } catch (SystemException $exc) {
-
+    $db->rollback();
     http_response_code(500);
     $payload = [
         'status' => 'failed',

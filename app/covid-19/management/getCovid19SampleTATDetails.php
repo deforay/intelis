@@ -132,7 +132,7 @@ $seWhere = [];
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
 	$seWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
 	if (trim($start_date) == trim($end_date)) {
 		$seWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
 	} else {

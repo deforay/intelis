@@ -1,17 +1,19 @@
 <?php
 
-use PhpOffice\PhpSpreadsheet\Reader\Xml\Style;
-
-
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 $tableName1 = "activity_log";
 $tableName2 = "form_vl";

@@ -1,9 +1,10 @@
 <?php
 
 use App\Services\VlService;
-use App\Services\PatientsService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Services\PatientsService;
+use App\Exceptions\SystemException;
 use App\Utilities\ValidationUtility;
 use App\Registries\ContainerRegistry;
 
@@ -130,7 +131,7 @@ try {
      $processedResults = $vlService->processViralLoadResultFromForm($_POST);
 
      //Update patient Information in Patients Table
-     $patientsService->updatePatient($_POST,'form_vl');
+     $patientsService->updatePatient($_POST, 'form_vl');
 
      $isRejected = $processedResults['isRejected'];
      $finalResult = $processedResults['finalResult'];
@@ -359,6 +360,5 @@ try {
      }
      header("Location:/vl/requests/vl-requests.php");
 } catch (Exception $exc) {
-     error_log($exc->getMessage());
-     error_log($exc->getTraceAsString());
+     throw new SystemException($exc->getMessage(), 500);
 }

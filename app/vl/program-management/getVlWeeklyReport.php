@@ -166,17 +166,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
         INNER JOIN facility_details as f ON f.facility_id=vl.facility_id
         INNER JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id ";
 
-$start_date = '';
-$end_date = '';
-if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-  $s_t_date = explode("to", $_POST['sampleTestDate']);
-  if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-    $start_date = DateUtility::isoDateFormat(trim($s_t_date[0]));
-  }
-  if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-    $end_date = DateUtility::isoDateFormat(trim($s_t_date[1]));
-  }
-}
+[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
 
 if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
   if (trim($start_date) == trim($end_date)) {

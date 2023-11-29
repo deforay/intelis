@@ -18,6 +18,7 @@ use App\Services\DatabaseService;
 use App\Services\PatientsService;
 use App\Utilities\CaptchaUtility;
 use App\Services\HepatitisService;
+use App\Exceptions\SystemException;
 use App\Helpers\PdfWatermarkHelper;
 use App\Services\FacilitiesService;
 use App\Services\InstrumentsService;
@@ -54,8 +55,7 @@ try {
     // Detect if script is running in CLI mode
     $isCli = php_sapi_name() === 'cli';
 } catch (Exception $e) {
-    echo "Error loading configuration file: Please ensure the config file is present";
-    exit;
+    throw new SystemException("Error loading configuration file: Please ensure the config file is present");
 }
 
 $builder = new ContainerBuilder();

@@ -125,7 +125,7 @@ $sQuery = "SELECT DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as month
 // health_facilities
 $start_date = '';
 $end_date = '';
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
      $s_c_date = explode(" to ", $_POST['sampleCollectionDate']);
      //print_r($s_c_date);die;
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {

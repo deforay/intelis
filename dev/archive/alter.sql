@@ -2885,17 +2885,17 @@ VALUES
 -- Amit 01-Feb-2022
 CREATE TABLE `patients` (
   `patient_id` int(11) NOT NULL AUTO_INCREMENT,
-  `patient_code_prefix` varchar(256) NOT NULL,
-  `patient_code_key` int(11) NOT NULL,
-  `patient_code` varchar(256) NOT NULL,
-  `patient_first_name` text,
-  `patient_middle_name` text,
-  `patient_last_name` text,
+  `patient_code_prefix` varchar(256) DEFAULT NULL,
+  `patient_code_key` int(11) DEFAULT NULL,
+  `patient_code` varchar(256) DEFAULT NULL,
+  `patient_first_name` text DEFAULT NULL,
+  `patient_middle_name` text DEFAULT NULL,
+  `patient_last_name` text DEFAULT NULL,
   `patient_gender` varchar(256) DEFAULT NULL,
   `patient_province` int(11) DEFAULT NULL,
   `patient_district` int(11) DEFAULT NULL,
   `patient_registered_on` datetime DEFAULT NULL,
-  `patient_registered_by` text,
+  `patient_registered_by` text DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`patient_id`),
   UNIQUE KEY `patient_code` (`patient_code`)
@@ -5180,3 +5180,7 @@ CREATE TABLE `scheduled_jobs` (
  `status` varchar(20) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'pending',
  PRIMARY KEY (`job_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+-- Amit 18-Oct-2023 version 5.2.5
+UPDATE `system_config` SET `value` = '5.2.5' WHERE `system_config`.`name` = 'sc_version';

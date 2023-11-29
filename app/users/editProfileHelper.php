@@ -4,6 +4,7 @@ use GuzzleHttp\Client;
 use App\Services\UsersService;
 use App\Services\CommonService;
 use App\Services\SystemService;
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 /** @var MysqliDb $db */
@@ -108,6 +109,5 @@ try {
         }
     }
 } catch (Exception $exc) {
-    error_log($exc->getMessage());
-    error_log($exc->getTraceAsString());
+    throw new SystemException($exc->getMessage(), 500);
 }
