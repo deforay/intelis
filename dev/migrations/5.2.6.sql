@@ -134,3 +134,5 @@ max_sequence_number = GREATEST(VALUES(max_sequence_number), max_sequence_number)
 
 -- Amit 29-Nov-2023
 ALTER TABLE `s_vlsm_instance` ADD `last_interface_sync` DATETIME NULL DEFAULT NULL AFTER `last_remote_reference_data_sync`;
+ALTER TABLE `form_tb` CHANGE `sample_received_at_vl_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `audit_form_tb` CHANGE `sample_received_at_vl_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;

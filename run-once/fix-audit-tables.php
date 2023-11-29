@@ -114,6 +114,36 @@ function processAuditTables($db, $fromDbName, $toDbName, $setupTriggers = true)
                     echo "Column " . $column['COLUMN_NAME'] . " added to $toDbName.$auditTable successfully.\n";
                 }
             }
+
+            // After adding missing columns, now check for extra columns in audit table
+            $query = "
+                SELECT COLUMN_NAME
+                FROM information_schema.COLUMNS
+                WHERE TABLE_SCHEMA = '{$toDbName}'
+                AND TABLE_NAME = '{$db->escape($auditTable)}'
+                AND COLUMN_NAME NOT IN (
+                    SELECT COLUMN_NAME
+                    FROM information_schema.COLUMNS
+                    WHERE TABLE_SCHEMA = '{$fromDbName}'
+                    AND TABLE_NAME = '{$db->escape($formTable)}'
+                )
+                ORDER BY COLUMN_NAME;
+                ";
+
+            $extraColumns = $db->rawQuery($query);
+
+            if ($db->getLastErrno()) {
+                echo "Error checking extra columns for $toDbName.$auditTable and $fromDbName.$formTable: " . $db->getLastError() . "\n";
+            } else {
+                foreach ($extraColumns as $column) {
+                    $dropColumnQuery = "ALTER TABLE `$toDbName`.`$auditTable` DROP COLUMN `" . $column['COLUMN_NAME'] . "`;";
+                    if (!$db->rawQuery($dropColumnQuery)) {
+                        echo "Error dropping column " . $column['COLUMN_NAME'] . " from $toDbName.$auditTable: " . $db->getLastError() . "\n";
+                    } else {
+                        echo "Column " . $column['COLUMN_NAME'] . " dropped from $toDbName.$auditTable successfully.\n";
+                    }
+                }
+            }
         }
     }
 }
