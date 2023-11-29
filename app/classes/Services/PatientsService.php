@@ -135,7 +135,7 @@ class PatientsService
             $data['patient_registered_by'] = $params['registeredBy'];
 
             $updateColumns = array_keys($data);
-            $this->db->onDuplicate($updateColumns, 'patient_id');
+            $this->db->onDuplicate($updateColumns, 'system_patient_code');
 
             // Insert the data
             $id = $this->db->insert($this->table, $data);

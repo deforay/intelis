@@ -136,10 +136,38 @@ max_sequence_number = GREATEST(VALUES(max_sequence_number), max_sequence_number)
 ALTER TABLE `s_vlsm_instance` ADD `last_interface_sync` DATETIME NULL DEFAULT NULL AFTER `last_remote_reference_data_sync`;
 ALTER TABLE `form_tb` CHANGE `sample_received_at_vl_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
 ALTER TABLE `audit_form_tb` CHANGE `sample_received_at_vl_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
-UPDATE `patients` SET `patient_code_key` = NULL WHERE  `patient_code_key` = 0;
-ALTER TABLE `patients` CHANGE `patient_code` `system_patient_code` VARCHAR(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
-UPDATE `patients` set `patient_code` = `system_patient_code`;
-UPDATE `patients` SET `patient_code_prefix` = 'P' WHERE  `patient_code_prefix` IS NULL OR  `patient_code_prefix` like '';
-ALTER TABLE `patients` ADD `patient_code` VARCHAR(256) NULL DEFAULT NULL AFTER `system_patient_code`;
-ALTER TABLE `patients` ADD UNIQUE(`patient_code`, `patient_gender`, `patient_dob`);
+-- UPDATE `patients` SET `patient_code_key` = NULL WHERE  `patient_code_key` = 0;
+-- ALTER TABLE `patients` CHANGE `patient_code` `system_patient_code` VARCHAR(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+-- UPDATE `patients` set `patient_code` = `system_patient_code`;
+-- UPDATE `patients` SET `patient_code_prefix` = 'P' WHERE  `patient_code_prefix` IS NULL OR  `patient_code_prefix` like '';
+-- ALTER TABLE `patients` ADD `patient_code` VARCHAR(256) NULL DEFAULT NULL AFTER `system_patient_code`;
+-- ALTER TABLE `patients` ADD UNIQUE(`patient_code`, `patient_gender`, `patient_dob`);
 
+RENAME TABLE `patients` TO `patients_old`;
+CREATE TABLE `patients` (
+ `system_patient_code` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+ `is_encrypted` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+ `patient_code_prefix` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+ `patient_code_key` int DEFAULT NULL,
+ `patient_code` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+ `patient_first_name` text COLLATE utf8mb4_general_ci,
+ `patient_middle_name` text COLLATE utf8mb4_general_ci,
+ `patient_last_name` text COLLATE utf8mb4_general_ci,
+ `patient_gender` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
+ `patient_phone_number` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+ `patient_age_in_years` int DEFAULT NULL,
+ `patient_age_in_months` int DEFAULT NULL,
+ `patient_dob` date DEFAULT NULL,
+ `patient_address` text COLLATE utf8mb4_general_ci,
+ `is_patient_pregnant` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
+ `is_patient_breastfeeding` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
+ `patient_province` int DEFAULT NULL,
+ `patient_district` int DEFAULT NULL,
+ `status` varchar(11) COLLATE utf8mb4_general_ci DEFAULT NULL,
+ `patient_registered_on` datetime DEFAULT NULL,
+ `patient_registered_by` text COLLATE utf8mb4_general_ci,
+ `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ PRIMARY KEY (`system_patient_code`),
+ UNIQUE KEY `patient_code_prefix` (`patient_code_prefix`,`patient_code_key`),
+ UNIQUE KEY `single_patient` (`patient_code`,`patient_gender`,`patient_dob`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
