@@ -249,7 +249,7 @@ try {
         'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] : null,
         'rejection_on' => (!empty($_POST['rejectionDate'])) ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
         'result' => $_POST['result'] ?: null,
-        'result_unit' => (isset($_POST['finalTestResultUnit']) && $_POST['finalTestResultUnit'] != "") ? $_POST['finalTestResultUnit'] : null,
+        // 'result_unit' => (isset($_POST['finalTestResultUnit']) && $_POST['finalTestResultUnit'] != "") ? implode("##",$_POST['finalTestResultUnit']) : null,
         'final_result_interpretation' => $interpretationResult,
         'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
         'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
@@ -267,7 +267,7 @@ try {
         'manual_result_entry' => 'yes',
         //'vl_result_category'                    => $vl_result_category
         'test_type' => $_POST['testType'],
-        'sub_tests' => implode("##", $_POST['testType']),
+        'sub_tests' => implode("##", $_POST['subTestResult']),
         'test_type_form' => json_encode($_POST['dynamicFields']),
         // 'reason_for_failure'                    => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  null,
     );
@@ -314,8 +314,7 @@ try {
     $id = 0;
 
          //Update patient Information in Patients Table
-         $patientsService->savePatient($_POST,'form_generic');
-
+    // $patientsService->savePatient($_POST,'form_generic');
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
         if (!empty($_POST['testName'])) {
             foreach ($_POST['testName'] as $subTestName => $subTests) {
@@ -346,7 +345,7 @@ try {
         $db->delete($testTableName);
         $covid19Data['sample_tested_datetime'] = null;
     }
-
+    
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '') {
         $db = $db->where('sample_id', $_POST['vlSampleId']);
         $id = $db->update($tableName, $vldata);
@@ -380,7 +379,6 @@ try {
         $vldata['sample_code_format'] = (isset($_POST['sampleCodeFormat']) && $_POST['sampleCodeFormat'] != '') ? $_POST['sampleCodeFormat'] : null;
         $id = $db->insert($tableName, $vldata);
     }
-
     if ($id === true) {
         $_SESSION['alertMsg'] = _translate("Lab test request added successfully");
         //Add event log
