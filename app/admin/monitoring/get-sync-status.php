@@ -55,13 +55,13 @@ $sQuery = "SELECT f.facility_id, f.facility_name, tar.request_type, tar.requeste
                 GREATEST(
                     COALESCE(facility_attributes->>'$.lastHeartBeat', 0),
                     COALESCE(facility_attributes->>'$.lastResultsSync', 0),
-                    COALESCE(facility_attributes->>'$.lastRequestSync', 0),
+                    COALESCE(facility_attributes->>'$.lastRequestsSync', 0),
                     COALESCE(tar.requested_on, 0)
                     ) as latest,
                 (facility_attributes->>'$.version') as version,
                 (facility_attributes->>'$.lastHeartBeat') as lastHeartBeat,
                 (facility_attributes->>'$.lastResultsSync') as lastResultsSync,
-                (facility_attributes->>'$.lastRequestSync') as lastRequestsSync
+                (facility_attributes->>'$.lastRequestsSync') as lastRequestsSync
             FROM `facility_details`as f
             LEFT JOIN track_api_requests as tar ON tar.facility_id = f.facility_id
             LEFT JOIN testing_labs as lab ON lab.facility_id = f.facility_id";
