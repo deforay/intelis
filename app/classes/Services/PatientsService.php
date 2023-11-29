@@ -94,12 +94,7 @@ class PatientsService
             if (!empty($systemPatientCode)) {
                 $data['system_patient_code'] = $systemPatientCode;
             } else {
-                $data['patient_code_prefix'] = $params['patientCodePrefix'] ?? 'P';
-                $newCode = $this->generatePatientId($data['patient_code_prefix'], true);
-                $newCode = json_decode($newCode, true);
-
-                $data['system_patient_code'] = $newCode['patientCode'];
-                $data['patient_code_key'] = $newCode['patientCodeKey'];
+                $data['system_patient_code'] = $this->commonService->generateUUID();
             }
 
             $data['patient_first_name'] = (!empty($params['patientFirstName']) ? $params['patientFirstName'] : null);
