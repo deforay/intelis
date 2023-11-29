@@ -50,7 +50,7 @@ try {
         header("Location:/covid-19/results/covid-19-add-confirmation-manifest.php");
     }
 } catch (Exception $exc) {
-    echo ($exc->getMessage());
+    error_log($exc->getMessage());
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
 }

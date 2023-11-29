@@ -167,7 +167,7 @@ $start_date = '';
 $end_date = '';
 $t_start_date = '';
 $t_end_date = '';
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
      $s_c_date = explode("to", $_POST['sampleCollectionDate']);
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
           $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
@@ -206,7 +206,7 @@ if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
 }
 
 
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
 
      if (trim($start_date) == trim($end_date)) {
           $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
@@ -344,11 +344,7 @@ foreach ($rResult as $aRow) {
      }
      $row[] = ucwords($aRow['sample_type_name']);
      $row[] = $aRow['result'];
-     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-          $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
-     } else {
-          $aRow['last_modified_datetime'] = '';
-     }
+     $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
 
      $row[] = $aRow['last_modified_datetime'];
      $row[] = ucwords($aRow['status_name']);

@@ -2,6 +2,8 @@
 
 use App\Services\EidService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\MiscUtility;
+use App\Services\DatabaseService;
 use App\Services\CommonService;
 use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
@@ -13,7 +15,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -26,8 +28,11 @@ $dateTimeUtil = new DateUtility();
 $eidService = ContainerRegistry::get(EidService::class);
 $eidResults = $eidService->getEidResults();
 
-$rResult = $db->rawQuery($_SESSION['eidRequestSearchResultQuery']);
 
+$arr = $general->getGlobalConfig();
+
+$delimiter = $arr['default_csv_delimiter'] ?? ',';
+$enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 $output = [];
 
@@ -44,7 +49,7 @@ if ($_SESSION['instanceType'] == 'standalone' && ($key = array_search("Remote Sa
 
 
 $no = 1;
-foreach ($rResult as $aRow) {
+foreach ($db->rawQueryGenerator($_SESSION['eidRequestSearchResultQuery']) as $aRow) {
     $row = [];
     //set gender
     $gender = '';
@@ -124,55 +129,24 @@ foreach ($rResult as $aRow) {
 
 if (isset($_SESSION['eidRequestSearchResultQueryCount']) && $_SESSION['eidRequestSearchResultQueryCount'] > 75000) {
 
-    $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-EID-Requests-' . date('d-M-Y-H-i-s') . '.csv';
-    $file = new SplFileObject($fileName, 'w');
-    $file->setCsvControl(",", "\r\n");
-    $file->fputcsv($headings);
-    foreach ($output as $row) {
-        $file->fputcsv($row);
-    }
-    // we dont need the $file variable anymore
-    $file = null;
-    echo base64_encode($fileName);
-} else {
-
-
-
-    $excel = new Spreadsheet();
-    $sheet = $excel->getActiveSheet();
-
-    $colNo = 1;
-
-    $nameValue = '';
-    foreach ($_POST as $key => $value) {
-        if (trim($value) != '' && trim($value) != '-- Select --') {
-            $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
-        }
-    }
-    $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
-    if ($_POST['withAlphaNum'] == 'yes') {
-        foreach ($headings as $field => $value) {
-            $string = str_replace(' ', '', $value);
-            $value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-            $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
-            $colNo++;
-        }
+        $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-EID-Requests-' . date('d-M-Y-H-i-s') . '.csv';
+        $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
+        // we dont need the $output variable anymore
+        unset($output);
+        echo base64_encode($fileName);
     } else {
-        foreach ($headings as $field => $value) {
-            $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
-            $colNo++;
-        }
-    }
 
-    //$start = (count($output)) + 2;
-    foreach ($output as $rowNo => $rowData) {
-        $colNo = 1;
-        $rRowCount = $rowNo + 4;
-        foreach ($rowData as $field => $value) {
-            $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
-            $colNo++;
+
+        $excel = new Spreadsheet();
+        $sheet = $excel->getActiveSheet();
+
+        $sheet->fromArray($headings, null, 'A3');
+
+        foreach ($output as $rowNo => $rowData) {
+            $rRowCount = $rowNo + 4;
+            $sheet->fromArray($rowData, null, 'A' . $rRowCount);
         }
-    }
+
     $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
     $filename = 'VLSM-EID-Requests-' . date('d-M-Y-H-i-s') . '.xlsx';
     $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);

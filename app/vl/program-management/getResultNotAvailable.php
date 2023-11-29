@@ -127,21 +127,13 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,
             WHERE vl.result_status != " . SAMPLE_STATUS\REJECTED . "
             AND vl.sample_code is NOT NULL
             AND (vl.result IS NULL OR vl.result='')";
-$start_date = '';
-$end_date = '';
+
 if (isset($_POST['noResultBatchCode']) && trim($_POST['noResultBatchCode']) != '') {
     $sWhere[] = ' b.batch_code LIKE "%' . $_POST['noResultBatchCode'] . '%"';
 }
 
 if (isset($_POST['noResultSampleTestDate']) && trim($_POST['noResultSampleTestDate']) != '') {
-    $s_c_date = explode("to", $_POST['noResultSampleTestDate']);
-    //print_r($s_c_date);die;
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-    }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-    }
+    [$start_date, $end_date] = DateUtility::convertDateRange($_POST['noResultSampleTestDate'] ?? '');
     if (trim($start_date) == trim($end_date)) {
         $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
     } else {

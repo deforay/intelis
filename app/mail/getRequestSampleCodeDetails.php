@@ -74,7 +74,7 @@ if (trim($mailSentStatus) != '') {
     $query = $query . " AND vl.is_result_mail_sent='" . $mailSentStatus . "' AND ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = '')))";
   }
 }
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
   if (trim($start_date) == trim($end_date)) {
     $query = $query . ' AND DATE(sample_collection_date) = "' . $start_date . '"';
   } else {

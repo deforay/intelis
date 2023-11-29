@@ -5,7 +5,9 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 use App\Registries\ContainerRegistry;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -14,7 +16,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -29,21 +31,23 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 
+$arr = $general->getGlobalConfig();
+
+$delimiter = $arr['default_csv_delimiter'] ?? ',';
+$enclosure = $arr['default_csv_enclosure'] ?? '"';
+
+
 if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) != "") {
      error_log($_SESSION['highViralResult']);
-     $rResult = $db->rawQuery($_SESSION['highViralResult']);
+    // $rResult = $db->rawQuery($_SESSION['highViralResult']);
 
-     $excel = new Spreadsheet();
      $output = [];
-     $sheet = $excel->getActiveSheet();
      $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART no.", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
      if ($_SESSION['instanceType'] == 'standalone') {
           if (($key = array_search("Remote Sample ID", $headings)) !== false) {
                unset($headings[$key]);
           }
      }
-
-     $colNo = 1;
 
      $styleArray = array(
           'font' => array(
@@ -62,8 +66,6 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
      );
 
 
-     $sheet->mergeCells('A1:AE1');
-     $nameValue = '';
 
      $filters = array(
           'hvlSampleTestDate' => 'Sample Test Date',
@@ -79,27 +81,8 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
                $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
           }
      }
-     $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
-
-     foreach ($headings as $field => $value) {
-          $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
-          $colNo++;
-     }
-     $sheet->getStyle('A3:A3')->applyFromArray($styleArray);
-     $sheet->getStyle('B3:B3')->applyFromArray($styleArray);
-     $sheet->getStyle('C3:C3')->applyFromArray($styleArray);
-     $sheet->getStyle('D3:D3')->applyFromArray($styleArray);
-     $sheet->getStyle('E3:E3')->applyFromArray($styleArray);
-     $sheet->getStyle('F3:F3')->applyFromArray($styleArray);
-     $sheet->getStyle('G3:G3')->applyFromArray($styleArray);
-     $sheet->getStyle('H3:H3')->applyFromArray($styleArray);
-     $sheet->getStyle('I3:I3')->applyFromArray($styleArray);
-     if ($_SESSION['instanceType'] != 'standalone') {
-          $sheet->getStyle('J3:J3')->applyFromArray($styleArray);
-     }
-
      $vlSampleId = [];
-     foreach ($rResult as $aRow) {
+	foreach ($db->rawQueryGenerator($_SESSION['highViralResult']) as $aRow) {
           $row = [];
           //sample collecion date
           $sampleCollectionDate = '';
@@ -140,25 +123,51 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
 
      if (isset($_SESSION['highViralResultCount']) && $_SESSION['highViralResultCount'] > 75000) {
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Covid-19-Report' . date('d-M-Y-H-i-s') . '.csv';
-          $file = new SplFileObject($fileName, 'w');
-          $file->setCsvControl(",", "\r\n");
-          $file->fputcsv($headings);
-          foreach ($output as $row) {
-               $file->fputcsv($row);
-          }
-          // we dont need the $file variable anymore
-          $file = null;
-          echo base64_encode($fileName);
+		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
+		// we dont need the $output variable anymore
+		unset($output);
+		echo base64_encode($fileName);
      } else {
-          $start = (count($output)) + 2;
+          $colNo = 1;
+          $nameValue = '';
+
+          $excel = new Spreadsheet();
+		$sheet = $excel->getActiveSheet();
+          $sheet->mergeCells('A1:AE1');
+          $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
+
+          /*  foreach ($headings as $field => $value) {
+                 $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
+                 $colNo++;
+            }*/
+            $sheet->getStyle('A3:A3')->applyFromArray($styleArray);
+            $sheet->getStyle('B3:B3')->applyFromArray($styleArray);
+            $sheet->getStyle('C3:C3')->applyFromArray($styleArray);
+            $sheet->getStyle('D3:D3')->applyFromArray($styleArray);
+            $sheet->getStyle('E3:E3')->applyFromArray($styleArray);
+            $sheet->getStyle('F3:F3')->applyFromArray($styleArray);
+            $sheet->getStyle('G3:G3')->applyFromArray($styleArray);
+            $sheet->getStyle('H3:H3')->applyFromArray($styleArray);
+            $sheet->getStyle('I3:I3')->applyFromArray($styleArray);
+            if ($_SESSION['instanceType'] != 'standalone') {
+                 $sheet->getStyle('J3:J3')->applyFromArray($styleArray);
+            }       
+
+          $sheet->fromArray($headings, null, 'A3');
+
           foreach ($output as $rowNo => $rowData) {
+			$rRowCount = $rowNo + 4;
+			$sheet->fromArray($rowData, null, 'A' . $rRowCount);
+		}
+
+          /*foreach ($output as $rowNo => $rowData) {
                $colNo = 1;
                $rRowCount = $rowNo + 4;
                foreach ($rowData as $field => $value) {
                     $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
                     $colNo++;
                }
-          }
+          }*/
           $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
           $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Covid-19-Report' . date('d-M-Y-H-i-s') . '.xlsx';
           $writer->save($filename);

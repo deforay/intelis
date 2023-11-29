@@ -6,6 +6,8 @@ if (session_status() == PHP_SESSION_NONE) {
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Utilities\MiscUtility;
+use App\Services\DatabaseService;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -13,7 +15,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -23,68 +25,30 @@ $general = ContainerRegistry::get(CommonService::class);
 $systemConfigQuery = "SELECT * from system_config";
 $systemConfigResult = $db->query($systemConfigQuery);
 $sarr = [];
+
 // now we create an associative array so that we can easily create view variables
 for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 
-if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable']) != "") {
-    $rResult = $db->rawQuery($_SESSION['resultNotAvailable']);
+$arr = $general->getGlobalConfig();
 
-    $excel = new Spreadsheet();
+$delimiter = $arr['default_csv_delimiter'] ?? ',';
+$enclosure = $arr['default_csv_enclosure'] ?? '"';
+
+
+if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable']) != "") {
+
     $output = [];
-    $sheet = $excel->getActiveSheet();
     $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient Id.", "Patient Name", "Sample Collection Date", "Lab Name", "Sample Status");
     if ($sarr['sc_user_type'] == 'standalone') {
         if (($key = array_search("Remote Sample ID", $headings)) !== false) {
             unset($headings[$key]);
         }
     }
+    
 
-    $colNo = 1;
-
-    $styleArray = array(
-        'font' => array(
-            'bold' => true,
-            'size' => '13',
-        ),
-        'alignment' => array(
-            'horizontal' => Alignment::HORIZONTAL_CENTER,
-            'vertical' => Alignment::VERTICAL_CENTER,
-        ),
-        'borders' => array(
-            'outline' => array(
-                'style' => Border::BORDER_THIN,
-            ),
-        ),
-    );
-
-    $sheet->mergeCells('A1:AE1');
-    $nameValue = '';
-    foreach ($_POST as $key => $value) {
-        if (trim($value) != '' && trim($value) != '-- Select --') {
-            $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
-        }
-    }
-    $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-        ->setValueExplicit(html_entity_decode($nameValue));
-    foreach ($headings as $field => $value) {
-        $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-            ->setValueExplicit(html_entity_decode($value));
-        $colNo++;
-    }
-    $sheet->getStyle('A3:A3')->applyFromArray($styleArray);
-    $sheet->getStyle('B3:B3')->applyFromArray($styleArray);
-    $sheet->getStyle('C3:C3')->applyFromArray($styleArray);
-    $sheet->getStyle('D3:D3')->applyFromArray($styleArray);
-    $sheet->getStyle('E3:E3')->applyFromArray($styleArray);
-    $sheet->getStyle('F3:F3')->applyFromArray($styleArray);
-    $sheet->getStyle('G3:G3')->applyFromArray($styleArray);
-    if ($_SESSION['instanceType'] != 'standalone') {
-        $sheet->getStyle('H3:H3')->applyFromArray($styleArray);
-    }
-
-    foreach ($rResult as $aRow) {
+    foreach ($db->rawQueryGenerator($_SESSION['resultNotAvailable']) as $aRow) {
         $row = [];
         //sample collecion date
         $sampleCollectionDate = '';
@@ -118,29 +82,49 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
     }
     if (isset($_SESSION['resultNotAvailableCount']) && $_SESSION['resultNotAvailableCount'] > 75000) {
 
-        $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.csv';
-        $file = new SplFileObject($fileName, 'w');
-        $file->setCsvControl(",", "\r\n");
-        $file->fputcsv($headings);
-        foreach ($output as $row) {
-            $file->fputcsv($row);
-        }
-        // we dont need the $file variable anymore
-        $file = null;
-        echo base64_encode($fileName);
-    } else {
-        $start = (count($output)) + 2;
-        foreach ($output as $rowNo => $rowData) {
-            $colNo = 1;
-            $rRowCount = $rowNo + 4;
-            foreach ($rowData as $field => $value) {
-                $sheet->setCellValue(
-                    Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-                    html_entity_decode($value)
+                $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.csv';
+                $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
+                // we dont need the $output variable anymore
+                unset($output);
+                echo base64_encode($fileName);
+            } else {
+                $excel = new Spreadsheet();
+                $sheet = $excel->getActiveSheet();
+
+                $styleArray = array(
+                    'font' => array(
+                        'bold' => true,
+                        'size' => '13',
+                    ),
+                    'alignment' => array(
+                        'horizontal' => Alignment::HORIZONTAL_CENTER,
+                        'vertical' => Alignment::VERTICAL_CENTER,
+                    ),
+                    'borders' => array(
+                        'outline' => array(
+                            'style' => Border::BORDER_THIN,
+                        ),
+                    ),
                 );
-                $colNo++;
-            }
-        }
+            
+                $sheet->mergeCells('A1:AE1');
+                $sheet->getStyle('A3:A3')->applyFromArray($styleArray);
+                $sheet->getStyle('B3:B3')->applyFromArray($styleArray);
+                $sheet->getStyle('C3:C3')->applyFromArray($styleArray);
+                $sheet->getStyle('D3:D3')->applyFromArray($styleArray);
+                $sheet->getStyle('E3:E3')->applyFromArray($styleArray);
+                $sheet->getStyle('F3:F3')->applyFromArray($styleArray);
+                $sheet->getStyle('G3:G3')->applyFromArray($styleArray);
+                if ($_SESSION['instanceType'] != 'standalone') {
+                    $sheet->getStyle('H3:H3')->applyFromArray($styleArray);
+                }
+            
+                $sheet->fromArray($headings, null, 'A3');
+
+                foreach ($output as $rowNo => $rowData) {
+                    $rRowCount = $rowNo + 4;
+                    $sheet->fromArray($rowData, null, 'A' . $rRowCount);
+                }
         $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
         $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
         $writer->save($fileName);

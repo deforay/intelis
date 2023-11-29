@@ -44,9 +44,9 @@ class CommonService
                 $queryResult = $this->db->rawQuery($sql . $limitSql, $params);
             }
 
-
             // If limit and offset are set, execute the count query.
-            if ($limitOffsetSet) {
+            // or if we are returning a generator, we need to count the results
+            if ($limitOffsetSet || $returnGenerator) {
                 if (stripos($sql, 'GROUP BY') !== false) {
                     // If the query contains GROUP BY
                     $countSql = "SELECT COUNT(*) as totalCount FROM ($sql) as subquery";
@@ -56,11 +56,8 @@ class CommonService
                 }
                 $count = (int)$this->db->rawQueryOne($countSql)['totalCount'];
             } else {
-                if ($returnGenerator == true) {
-                    $count = null; // not counting when generator is used
-                } else {
-                    $count = count($queryResult);
-                }
+                // if limit not set then count full resultset
+                $count = count($queryResult);
             }
 
             return [$queryResult, $count];

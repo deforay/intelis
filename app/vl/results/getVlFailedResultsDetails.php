@@ -131,19 +131,10 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
     LEFT JOIN r_vl_test_reasons as tr ON tr.test_reason_id=vl.reason_for_vl_testing
     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
-$start_date = '';
-$end_date = '';
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-    $s_c_date = explode("to", $_POST['sampleCollectionDate']);
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-    }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-    }
-}
 
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
+    [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+
     if (trim($start_date) == trim($end_date)) {
         $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
     } else {

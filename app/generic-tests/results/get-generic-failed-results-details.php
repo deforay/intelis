@@ -131,7 +131,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
     if (trim($start_date) == trim($end_date)) {
         $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
     } else {

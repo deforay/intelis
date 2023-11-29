@@ -48,19 +48,9 @@ $sampleStatusColors[8] = "#7f22e8"; // Sent to Lab
 $sampleStatusColors[9] = "#4BC0D9"; // Sample Registered at Health Center
 
 //date
-$start_date = '';
-$end_date = '';
 
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-	$s_c_date = explode("to", $_POST['sampleCollectionDate']);
-	//print_r($s_c_date);die;
-	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-		$start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-	}
-	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-		$end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-	}
-}
+
+[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
 [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
 
@@ -80,7 +70,7 @@ $tQuery = "SELECT COUNT(eid_id) as total,status_id,status_name
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
 	$sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
 	$sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
@@ -124,7 +114,7 @@ $sWhere[] = " (vl.result!='' and vl.result is not null) ";
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
 	$sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
 	$sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {

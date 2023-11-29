@@ -986,7 +986,6 @@ foreach ($rejectionTypeResult as $type) {
 				Field_Name: $("#formField  option:selected").text()
 			},
 			function(data) {
-				alert(data);
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
 					alert("<?php echo _translate("Unable to generate the excel file"); ?>");

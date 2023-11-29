@@ -6,6 +6,14 @@ use MysqliDb;
 
 class DatabaseService extends MysqliDb
 {
+
+    /**
+     * Execute a query and return a generator to fetch results row by row.
+     *
+     * @param string $query SQL query string
+     * @param array|null $bindParams Parameters to bind to the query
+     * @return \Generator
+     */
     public function rawQueryGenerator($query, $bindParams = null)
     {
         $params = ['']; // Create the empty 0 index

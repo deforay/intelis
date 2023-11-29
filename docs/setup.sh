@@ -385,12 +385,23 @@ echo "Migration script completed."
 # Prompt for Remote STS URL
 read -p "Please enter the Remote STS URL (can be blank if you choose so): " remote_sts_url
 
-# Define desired_sts_url
-desired_sts_url="\$systemConfig['remoteURL'] = '$remote_sts_url';"
-
 # Update VLSM config.production.php with Remote STS URL if provided
 if [ ! -z "$remote_sts_url" ]; then
-    update_config "\$systemConfig\['remoteURL'\]\s*=\s*'';" "$desired_sts_url" "$config_file"
+
+    # Define desired_sts_url
+    desired_sts_url="\$systemConfig['remoteURL'] = '$remote_sts_url';"
+
+    config_file="$vlsm_path/configs/config.production.php"
+
+    # Check if the desired configuration already exists in the file
+    if ! grep -qF "$desired_sts_url" "$config_file"; then
+        # The desired configuration does not exist, so update the file
+        sed -i "s|\$systemConfig\['remoteURL'\]\s*=\s*'.*';|$desired_sts_url|" "$config_file"
+        echo "Remote STS URL updated in the configuration file."
+    else
+        # The configuration already exists as desired
+        echo "Remote STS URL is already set as desired in the configuration file."
+    fi
 
     # Run the PHP script for remote data sync
     echo "Running remote data sync script. Please wait..."

@@ -5,9 +5,11 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
+$_COOKIE = $request->getCookieParams();
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');

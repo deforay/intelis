@@ -135,19 +135,21 @@ class DateUtility
         return $parsedInputDate->gt($parsedComparisonDate);
     }
 
-    public static function convertDateRange(?string $dateRange): array
+    public static function convertDateRange(?string $dateRange, $seperator = "to"): array
     {
-        if (empty($dateRange)) {
-            return ['', ''];
-        }
+        return once(function () use ($dateRange, $seperator) {
+            if (empty($dateRange)) {
+                return ['', ''];
+            }
 
-        $dates = explode("to", $dateRange ?? '');
-        $dates = array_map('trim', $dates);
+            $dates = explode($seperator, $dateRange ?? '');
+            $dates = array_map('trim', $dates);
 
-        $startDate = !empty($dates[0]) ? self::isoDateFormat($dates[0]) : '';
-        $endDate = !empty($dates[1]) ? self::isoDateFormat($dates[1]) : '';
+            $startDate = !empty($dates[0]) ? self::isoDateFormat($dates[0]) : '';
+            $endDate = !empty($dates[1]) ? self::isoDateFormat($dates[1]) : '';
 
-        return [$startDate, $endDate];
+            return [$startDate, $endDate];
+        });
     }
 
     /**

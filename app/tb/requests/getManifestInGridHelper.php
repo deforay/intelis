@@ -162,16 +162,8 @@ $output = array(
 
 foreach ($rResult as $aRow) {
 
-     if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-          $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-     } else {
-          $aRow['sample_collection_date'] = '';
-     }
-     if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-          $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
-     } else {
-          $aRow['last_modified_datetime'] = '';
-     }
+     $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
+     $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
 
      $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));
      $patientLname = ($general->crypto('doNothing', $aRow['patient_surname'], $aRow['patient_id']));

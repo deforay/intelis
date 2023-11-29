@@ -62,7 +62,6 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 
 		$gender = MiscUtility::getGenderFromString($aRow['patient_gender']);
 
-
 		//set ARV adherecne
 		$arvAdherence = '';
 		if (trim($aRow['arv_adherance_percentage']) == 'good') {
@@ -224,9 +223,6 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		unset($output);
 		echo base64_encode($fileName);
 	} else {
-
-		$colNo = 1;
-		$nameValue = '';
 
 		$excel = new Spreadsheet();
 		$sheet = $excel->getActiveSheet();

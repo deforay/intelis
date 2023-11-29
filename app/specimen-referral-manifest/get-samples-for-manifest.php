@@ -1,15 +1,15 @@
 <?php
 
+use App\Utilities\DateUtility;
+use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Utilities\DateUtility;
 
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
-
-
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
+$_COOKIE = $request->getCookieParams();
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -93,8 +93,8 @@ if (!empty($_POST['testType'])) {
 	$where[] = " test_type = " . $_POST['testType'];
 }
 if (!empty($_POST['pkgId'])) {
-    $where[] = " (pd.package_id = '" . $_POST['pkgId'] . "' OR pd.package_id IS NULL OR pd.package_id = '')";
-} else{
+	$where[] = " (pd.package_id = '" . $_POST['pkgId'] . "' OR pd.package_id IS NULL OR pd.package_id = '')";
+} else {
 	$where[] = "(vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') ";
 }
 if (!empty($_POST['sampleType']) && ($module == 'vl' || $module == 'generic-tests')) {
@@ -114,18 +114,17 @@ $result = $db->rawQuery($query);
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 <div class="col-md-5">
 	<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
-		<?php foreach ($result as $sample) { 
-			if($sample['is_encrypted']=='yes')
-			{
+		<?php foreach ($result as $sample) {
+			if ($sample['is_encrypted'] == 'yes') {
 				$key = base64_decode($general->getGlobalConfig('key'));
 				$sample[$patientId] = $general->crypto('decrypt', $sample[$patientId], $key);
 			}
-			if (!empty($sample[$sampleCode])) { 
+			if (!empty($sample[$sampleCode])) {
 				if ((!isset($sample['sample_package_id']) || !isset($sample['package_id'])) || ($sample['sample_package_id'] != $sample['package_id'])) { ?>
 					<option value="<?php echo $sample[$sampleId]; ?>"><?php echo ($sample[$sampleCode] . ' - ' . $sample[$patientId]); ?></option>
-				<?php } 
-			} 
-		}?>
+		<?php }
+			}
+		} ?>
 	</select>
 	<div class="sampleCounterDiv"><?= _translate("Number of unselected samples"); ?> : <span id="unselectedCount"></span></div>
 </div>
@@ -139,42 +138,41 @@ $result = $db->rawQuery($query);
 
 <div class="col-md-5">
 	<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
-		<?php foreach ($result as $sample) { 
-			if($sample['is_encrypted']=='yes')
-			{
+		<?php foreach ($result as $sample) {
+			if ($sample['is_encrypted'] == 'yes') {
 				$key = base64_decode($general->getGlobalConfig('key'));
 				$sample[$patientId] = $general->crypto('decrypt', $sample[$patientId], $key);
 			}
-			if (!empty($sample[$sampleCode])) { 
+			if (!empty($sample[$sampleCode])) {
 				if (isset($sample['package_id']) && isset($sample['sample_package_id']) && $sample['sample_package_id'] == $sample['package_id']) { ?>
-				<option value="<?php echo $sample[$sampleId]; ?>"><?php echo ($sample[$sampleCode] . ' - ' . $sample[$patientId]); ?></option>
-				<?php } 
-			} 
-		}?>
+					<option value="<?php echo $sample[$sampleId]; ?>"><?php echo ($sample[$sampleCode] . ' - ' . $sample[$patientId]); ?></option>
+		<?php }
+			}
+		} ?>
 	</select>
 	<div class="sampleCounterDiv"><?= _translate("Number of selected samples"); ?> : <span id="selectedCount"></span></div>
 </div>
 <script>
 	$(document).ready(function() {
-		
+
 		$('#search').multiselect({
-            search: {
-                left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
-                right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
-            },
-            fireSearch: function(value) {
-                return value.length > 2;
-            },
-            startUp: function($left, $right) {
-                updateCounts($left, $right);
-            },
-            afterMoveToRight: function($left, $right, $options) {
-                updateCounts($left, $right);
-            },
-            afterMoveToLeft: function($left, $right, $options) {
-                updateCounts($left, $right);
-            }
-        });
+			search: {
+				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
+				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
+			},
+			fireSearch: function(value) {
+				return value.length > 2;
+			},
+			startUp: function($left, $right) {
+				updateCounts($left, $right);
+			},
+			afterMoveToRight: function($left, $right, $options) {
+				updateCounts($left, $right);
+			},
+			afterMoveToLeft: function($left, $right, $options) {
+				updateCounts($left, $right);
+			}
+		});
 
 		$('#select-all-samplecode').click(function() {
 			$('#sampleCode').multiSelect('select_all');
@@ -189,15 +187,15 @@ $result = $db->rawQuery($query);
 	});
 
 	function updateCounts($left, $right) {
-        let selectedCount = $right.find('option').length;
-		if(selectedCount > 0){
+		let selectedCount = $right.find('option').length;
+		if (selectedCount > 0) {
 			$("#packageSubmit").attr("disabled", false);
 			$("#packageSubmit").css("pointer-events", "auto");
-		}else{
+		} else {
 			$("#packageSubmit").attr("disabled", true);
 			$("#packageSubmit").css("pointer-events", "none");
 		}
-        $("#unselectedCount").html($left.find('option').length);
-        $("#selectedCount").html(selectedCount);
-    }
+		$("#unselectedCount").html($left.find('option').length);
+		$("#selectedCount").html(selectedCount);
+	}
 </script>

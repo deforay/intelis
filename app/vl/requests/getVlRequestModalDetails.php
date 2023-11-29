@@ -100,19 +100,8 @@ $aWhere = '';
 $sQuery = "SELECT * FROM form_vl as vl INNER JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 //echo $sQuery;die;
-$start_date = '';
-$end_date = '';
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-    $s_c_date = explode(" ", $_POST['sampleCollectionDate']);
-    //print_r($s_c_date);die;
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = DateUtility::isoDateFormat($s_c_date[0]);
-    }
-    if (isset($s_c_date[2]) && trim($s_c_date[2]) != "") {
-        $end_date = DateUtility::isoDateFormat($s_c_date[2]);
-    }
-}
 
+[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
 if (!empty($sWhere)) {
     $sWhere = ' WHERE ' . $sWhere;
@@ -120,7 +109,7 @@ if (!empty($sWhere)) {
     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
         $sWhere = $sWhere . ' AND b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
     }
-    if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+    if (!empty($_POST['sampleCollectionDate'])) {
         if (trim($start_date) == trim($end_date)) {
             $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
         } else {
@@ -139,7 +128,7 @@ if (!empty($sWhere)) {
         $sWhere = ' WHERE ' . $sWhere;
         $sWhere = $sWhere . ' b.batch_code = "' . $_POST['batchCode'] . '"';
     }
-    if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+    if (!empty($_POST['sampleCollectionDate'])) {
         if (isset($setWhr)) {
             if (trim($start_date) == trim($end_date)) {
                 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {

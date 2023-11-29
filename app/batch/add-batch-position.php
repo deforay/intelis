@@ -1,6 +1,5 @@
 <?php
 
-
 use App\Registries\ContainerRegistry;
 
 /** @var MysqliDb $db */
@@ -9,8 +8,8 @@ $db = ContainerRegistry::get('db');
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
-
 $_GET = $request->getQueryParams();
+
 $title = "Viral Load";
 $refTable = "form_vl";
 $refPrimaryColumn = "vl_sample_id";
@@ -87,8 +86,8 @@ if (isset($configControl[$testType]['noCalibrators']) && trim($configControl[$te
 }
 //Get machine's prev. label order
 $machine = intval($batchInfo[0]['machine']);
-$prevLabelQuery = "SELECT label_order from batch_details as b_d WHERE b_d.machine = $machine AND b_d.batch_id!= $id ORDER BY b_d.request_created_datetime DESC LIMIT 0,1";
-$prevlabelInfo = $db->query($prevLabelQuery);
+$prevLabelQuery = "SELECT label_order from batch_details as b_d WHERE b_d.machine = ? AND b_d.batch_id!= ? ORDER BY b_d.request_created_datetime DESC LIMIT 0,1";
+$prevlabelInfo = $db->rawQuery($prevLabelQuery, [$machine, $id]);
 if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_order']) != '') {
 	$jsonToArray = json_decode($prevlabelInfo[0]['label_order'], true);
 	$prevDisplaySampleArray = [];
@@ -100,8 +99,8 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 	}
 	//Get display sample only
 	$displaySampleOrderArray = [];
-	$samplesQuery = "SELECT " . $refPrimaryColumn . ",sample_code from " . $refTable . " where sample_batch_id=$id ORDER BY sample_code ASC";
-	$samplesInfo = $db->query($samplesQuery);
+	$samplesQuery = "SELECT $refPrimaryColumn, sample_code FROM $refTable WHERE sample_batch_id= ? ORDER BY sample_code ASC";
+	$samplesInfo = $db->rawQuery($samplesQuery, [$id]);
 	foreach ($samplesInfo as $sample) {
 		$displaySampleOrderArray[] = $sample[$refPrimaryColumn];
 	}
@@ -116,8 +115,8 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 				if ($sCount <= $prevDisplaySampleArray) {
 					$displayOrder[] = 's_' . $displaySampleOrderArray[$sCount];
 					$displaySampleArray[] = $displaySampleOrderArray[$sCount];
-					$sampleQuery = "SELECT sample_code from " . $refTable . " where " . $refPrimaryColumn . "=$displaySampleOrderArray[$sCount]";
-					$sampleResult = $db->query($sampleQuery);
+					$sampleQuery = "SELECT sample_code from $refTable WHERE $refPrimaryColumn = ?";
+					$sampleResult = $db->rawQuery($sampleQuery, [$displaySampleOrderArray[$sCount]]);
 					$label = $sampleResult[0]['sample_code'];
 					$content .= '<li class="ui-state-default" id="s_' . $displaySampleOrderArray[$sCount] . '">' . $label . '</li>';
 					$sCount++;
