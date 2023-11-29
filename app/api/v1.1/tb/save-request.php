@@ -219,7 +219,8 @@ try {
             $params['facilityId'] = $data['facilityId'] ?? null;
             $params['labId'] = $data['labId'] ?? null;
 
-            $currentSampleData = $covid19Service->insertSampleCode($params, true);
+            $params['insertOperation'] = true;
+            $currentSampleData = $tbService->insertSample($params, true);
             $currentSampleData['action'] = 'inserted';
             $data['tbSampleId'] = intval($currentSampleData['id']);
             if ($data['tbSampleId'] == 0) {
