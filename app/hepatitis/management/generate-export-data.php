@@ -2,6 +2,8 @@
 
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Utilities\MiscUtility;
+use App\Services\DatabaseService;
 use App\Services\HepatitisService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -9,7 +11,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -20,15 +22,18 @@ $hepatitisService = ContainerRegistry::get(HepatitisService::class);
 
 $hepatitisResults = $hepatitisService->getHepatitisResults();
 
+$arr = $general->getGlobalConfig();
+
+$delimiter = $arr['default_csv_delimiter'] ?? ',';
+$enclosure = $arr['default_csv_enclosure'] ?? '"';
+
 if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQuery']) != "") {
 
-	$rResult = $db->rawQuery($_SESSION['hepatitisResultQuery']);
 	$headings = array("S.No.", "Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner");
 	$output = [];
 
-	$colNo = 1;
 	$no = 1;
-	foreach ($rResult as $aRow) {
+	foreach ($db->rawQueryGenerator($_SESSION['hepatitisResultQuery']) as $aRow) {
 		$row = [];
 		//date of birth
 		$dob = '';
@@ -111,53 +116,21 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQ
 
 	if (isset($_SESSION['hepatitisResultQueryCount']) && $_SESSION['hepatitisResultQueryCount'] > 75000) {
 
-		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Hepatitis-Export-Data-' . date('d-M-Y-H-i-s') . '.csv';
-		$file = new SplFileObject($fileName, 'w');
-		$file->setCsvControl(",", "\r\n");
-		$file->fputcsv($headings);
-		foreach ($output as $row) {
-			$file->fputcsv($row);
-		}
-		// we dont need the $file variable anymore
-		$file = null;
-		echo base64_encode($fileName);
-	} else {
-		$excel = new Spreadsheet();
-		$sheet = $excel->getActiveSheet();
-		$nameValue = '';
+				$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Hepatitis-Export-Data-' . date('d-M-Y-H-i-s') . '.csv';
+				$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
+				// we dont need the $output variable anymore
+				unset($output);
+				echo base64_encode($fileName);
+			} else {
+				$excel = new Spreadsheet();
+				$sheet = $excel->getActiveSheet();
+				$sheet->fromArray($headings, null, 'A3');
 
-		$colNo = 1;
+				foreach ($output as $rowNo => $rowData) {
+					$rRowCount = $rowNo + 4;
+					$sheet->fromArray($rowData, null, 'A' . $rRowCount);
+				}
 
-
-		foreach ($_POST as $key => $value) {
-			if (trim($value) != '' && trim($value) != '-- Select --') {
-				$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
-			}
-		}
-		$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
-		if ($_POST['withAlphaNum'] == 'yes') {
-			foreach ($headings as $field => $value) {
-				$string = str_replace(' ', '', $value);
-				$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-				$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-					->setValueExplicit(html_entity_decode($value));
-				$colNo++;
-			}
-		} else {
-			foreach ($headings as $field => $value) {
-				$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
-				$colNo++;
-			}
-		}
-		//$start = (count($output)) + 2;
-		foreach ($output as $rowNo => $rowData) {
-			$colNo = 1;
-			$rRowCount = $rowNo + 4;
-			foreach ($rowData as $field => $value) {
-				$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
-				$colNo++;
-			}
-		}
 		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Hepatitis-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
 		$writer->save($fileName);

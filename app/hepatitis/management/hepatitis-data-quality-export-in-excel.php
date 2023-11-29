@@ -5,6 +5,8 @@ if (session_status() == PHP_SESSION_NONE) {
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Utilities\MiscUtility;
+use App\Services\DatabaseService;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -12,20 +14,23 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $sarr = $general->getSystemConfig();
 
+$arr = $general->getGlobalConfig();
+
+$delimiter = $arr['default_csv_delimiter'] ?? ',';
+$enclosure = $arr['default_csv_enclosure'] ?? '"';
+
+
 if (isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm']) != "") {
      // error_log($_SESSION['vlIncompleteForm']);
-     $rResult = $db->rawQuery($_SESSION['vlIncompleteForm']);
 
-     $excel = new Spreadsheet();
      $output = [];
-     $sheet = $excel->getActiveSheet();
 
      $headings = array('Sample ID', 'Remote Sample ID', "Sample Collection Date", "Batch Code", "Patient Id.", "Patient's Name", "Facility Name", "Province/State", "District/County", "Sample Type", 'vl.hcv_vl_result', 'vl.hbv_vl_result', "Status");
      if ($_SESSION['instanceType'] == 'standalone') {
@@ -34,42 +39,7 @@ if (isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm']) 
           }
      }
 
-     $colNo = 1;
-
-     $styleArray = array(
-          'font' => array(
-               'bold' => true,
-               'size' => '13',
-          ),
-          'alignment' => array(
-               'horizontal' => Alignment::HORIZONTAL_CENTER,
-               'vertical' => Alignment::VERTICAL_CENTER,
-          ),
-          'borders' => array(
-               'outline' => array(
-                    'style' => Border::BORDER_THIN,
-               ),
-          )
-     );
-
-
-     $sheet->mergeCells('A1:AE1');
-     $nameValue = '';
-     foreach ($_POST as $key => $value) {
-          if (trim($value) != '' && trim($value) != '-- Select --') {
-               $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
-          }
-     }
-     $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-          ->setValueExplicit(html_entity_decode($nameValue));
-     foreach ($headings as $field => $value) {
-          $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-               ->setValueExplicit(html_entity_decode($value));
-          $colNo++;
-     }
-     $sheet->getStyle('A3:M3')->applyFromArray($styleArray);
-
-     foreach ($rResult as $aRow) {
+     foreach ($db->rawQueryGenerator($_SESSION['vlIncompleteForm']) as $aRow) {
           $row = [];
           //sample collecion date
           $sampleCollectionDate = '';
@@ -110,29 +80,21 @@ if (isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm']) 
      }
 
      if (isset($_SESSION['vlIncompleteFormCount']) && $_SESSION['vlIncompleteFormCount'] > 75000) {
-          $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Data-Quality-report' . date('d-M-Y-H-i-s') . '.csv';
-          $file = new SplFileObject($fileName, 'w');
-          $file->setCsvControl(",", "\r\n");
-          $file->fputcsv($headings);
-          foreach ($output as $row) {
-               $file->fputcsv($row);
-          }
-          // we dont need the $file variable anymore
-          $file = null;
-          echo base64_encode($fileName);
-     } else {
-          $start = (count($output)) + 2;
-          foreach ($output as $rowNo => $rowData) {
-               $colNo = 1;
-               $rRowCount = $rowNo + 4;
-               foreach ($rowData as $field => $value) {
-                    $sheet->setCellValue(
-                         Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-                         html_entity_decode($value)
-                    );
-                    $colNo++;
-               }
-          }
+                    $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Data-Quality-report' . date('d-M-Y-H-i-s') . '.csv';
+                    $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
+                    // we dont need the $output variable anymore
+                    unset($output);
+                    echo base64_encode($fileName);
+               } else {
+                    $excel = new Spreadsheet();
+                    $sheet = $excel->getActiveSheet();               
+
+                    $sheet->fromArray($headings, null, 'A3');
+
+                    foreach ($output as $rowNo => $rowData) {
+                         $rRowCount = $rowNo + 4;
+                         $sheet->fromArray($rowData, null, 'A' . $rRowCount);
+                    }
           $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Data-Quality-report' . date('d-M-Y-H-i-s') . '.xlsx';
           $writer->save($fileName);

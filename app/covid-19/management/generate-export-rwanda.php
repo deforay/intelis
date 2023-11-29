@@ -4,6 +4,8 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Services\DatabaseService;
 use App\Services\CommonService;
 use App\Services\Covid19Service;
 use App\Registries\ContainerRegistry;
@@ -11,7 +13,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -24,12 +26,12 @@ $covid19Comorbidities = $covid19Service->getCovid19Comorbidities();
 
 
 $covid19Results = $covid19Service->getCovid19Results();
+$arr = $general->getGlobalConfig();
 
+$delimiter = $arr['default_csv_delimiter'] ?? ',';
+$enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery']) != "") {
-
-	$rResult = $db->rawQuery($_SESSION['covid19ResultQuery']);
-
 
 	$output = [];
 
@@ -38,11 +40,11 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		unset($headings[$key]);
 	}
 
-
 	$no = 1;
 	$sysmtomsArr = [];
 	$comorbiditiesArr = [];
-	foreach ($rResult as $aRow) {
+
+	foreach ($db->rawQueryGenerator($_SESSION['covid19ResultQuery']) as $aRow) {
 		$row = [];
 		//set gender
 		switch (strtolower($aRow['patient_gender'])) {
@@ -139,49 +141,22 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 	if (isset($_SESSION['covid19ResultQueryCount']) && $_SESSION['covid19ResultQueryCount'] > 75000) {
 
 		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Covid-19-Export-Data-' . date('d-M-Y-H-i-s') . '.csv';
-		$file = new SplFileObject($fileName, 'w');
-		$file->setCsvControl(",", "\r\n");
-		$file->fputcsv($headings);
-		foreach ($output as $row) {
-			$file->fputcsv($row);
-		}
-		// we dont need the $file variable anymore
-		$file = null;
+		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
+		// we dont need the $output variable anymore
+		unset($output);
 		echo base64_encode($fileName);
-	} else {
+
+		} else {
 
 		$excel = new Spreadsheet();
 		$sheet = $excel->getActiveSheet();
 
-		$colNo = 1;
-		$nameValue = '';
-		foreach ($_POST as $key => $value) {
-			if (trim($value) != '' && trim($value) != '-- Select --') {
-				$nameValue .= str_replace("_", " ", ucwords($key)) . " : " . $value . "&nbsp;&nbsp;";
-			}
-		}
-		$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
-		if ($_POST['withAlphaNum'] == 'yes') {
-			foreach ($headings as $field => $value) {
-				$string = str_replace(' ', '', $value);
-				$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-				$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
-				$colNo++;
-			}
-		} else {
-			foreach ($headings as $field => $value) {
-				$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
-				$colNo++;
-			}
-		}
+		$sheet->fromArray($headings, null, 'A3');
 		foreach ($output as $rowNo => $rowData) {
-			$colNo = 1;
 			$rRowCount = $rowNo + 4;
-			foreach ($rowData as $field => $value) {
-				$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
-				$colNo++;
-			}
+			$sheet->fromArray($rowData, null, 'A' . $rRowCount);
 		}
+
 		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'Covid-19-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
 		$writer->save($filename);

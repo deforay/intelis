@@ -8,13 +8,15 @@ if (session_status() == PHP_SESSION_NONE) {
 use App\Services\TbService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Utilities\MiscUtility;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -27,10 +29,10 @@ $tbResults = $tbService->getTbResults();
 /* Global config data */
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
+$delimiter = $arr['default_csv_delimiter'] ?? ',';
+$enclosure = $arr['default_csv_enclosure'] ?? '"';
+
 if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "") {
-
-	$rResult = $db->rawQuery($_SESSION['tbResultQuery']);
-
 
 	$output = [];
 
@@ -46,7 +48,7 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 
 
 	$no = 1;
-	foreach ($rResult as $aRow) {
+	foreach ($db->rawQueryGenerator($_SESSION['tbResultQuery']) as $aRow) {
 		$row = [];
 
 		// Get testing platform and test method
@@ -143,56 +145,26 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 
 	if (isset($_SESSION['tbResultQueryCount']) && $_SESSION['tbResultQueryCount'] > 75000) {
 
-		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-TB-Export-Data-' . date('d-M-Y-H-i-s') . '.csv';
-		$file = new SplFileObject($fileName, 'w');
-		$file->setCsvControl(",", "\r\n");
-		$file->fputcsv($headings);
-		foreach ($output as $row) {
-			$file->fputcsv($row);
-		}
-		// we dont need the $file variable anymore
-		$file = null;
-		echo base64_encode($fileName);
-	} else {
-		$colNo = 1;
-		$nameValue = '';
+				$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-TB-Export-Data-' . date('d-M-Y-H-i-s') . '.csv';
+				$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
+				// we dont need the $output variable anymore
+				unset($output);
+				echo base64_encode($fileName);
+			} else {
+				$excel = new Spreadsheet();
+				$sheet = $excel->getActiveSheet();
+				$sheet->setTitle('TB Results');
 
-		$excel = new Spreadsheet();
-		$sheet = $excel->getActiveSheet();
-		$sheet->setTitle('VL Results');
+				$sheet->fromArray($headings, null, 'A3');
 
-		foreach ($_POST as $key => $value) {
-			if (trim($value) != '' && trim($value) != '-- Select --') {
-				$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
-			}
-		}
-		$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
-		if ($_POST['withAlphaNum'] == 'yes') {
-			foreach ($headings as $field => $value) {
-				$string = str_replace(' ', '', $value);
-				$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-				$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
-				$colNo++;
-			}
-		} else {
-			foreach ($headings as $field => $value) {
-				$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
-				$colNo++;
-			}
-		}
+				foreach ($output as $rowNo => $rowData) {
+					$rRowCount = $rowNo + 4;
+					$sheet->fromArray($rowData, null, 'A' . $rRowCount);
+				}
 
-		//$start = (count($output)) + 2;
-		foreach ($output as $rowNo => $rowData) {
-			$colNo = 1;
-			$rRowCount = $rowNo + 4;
-			foreach ($rowData as $field => $value) {
-				$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
-				$colNo++;
-			}
-		}
-		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(5) . '.xlsx';
-		$writer->save($filename);
-		echo base64_encode($filename);
+				$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
+				$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(5) . '.xlsx';
+				$writer->save($filename);
+				echo base64_encode($filename);
 	}
 }
