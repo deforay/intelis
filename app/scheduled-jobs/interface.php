@@ -39,6 +39,8 @@ if (empty($labId)) {
     exit(0);
 }
 
+$lastInterfaceSync = $db->connection('default')->getValue('s_vlsm_instance', 'last_interface_sync');
+
 $mysqlConnected = false;
 $sqliteConnected = false;
 
@@ -57,14 +59,30 @@ if (!empty(SYSTEM_CONFIG['interfacing']['sqlite3Path'])) {
     $sqliteDb = new PDO("sqlite:" . SYSTEM_CONFIG['interfacing']['sqlite3Path']);
 }
 
+
 //get the value from interfacing DB
-$interfaceQuery = "SELECT * FROM `orders`
-                    WHERE `result_status` = 1 AND
-                    `lims_sync_status`= 0
-                    ORDER BY analysed_date_time ASC";
+
+
+
 if ($mysqlConnected) {
-    $interfaceData = $db->connection('interface')->rawQuery($interfaceQuery);
+
+    if (!empty($lastInterfaceSync)) {
+        $db->connection('interface')->where('added_on', $lastInterfaceSync, ">");
+    }
+    $db->connection('interface')->where('result_status', 1);
+    //$db->connection('interface')->where('lims_sync_status', 0);
+    $db->connection('interface')->orderBy('analysed_date_time', 'asc');
+    $interfaceData = $db->connection('interface')->get('orders');
 } elseif ($sqliteConnected) {
+    $where = [];
+    $where[] = " result_status = 1 ";
+    if (!empty($lastInterfaceSync)) {
+        $where[] = " added_on > '$lastInterfaceSync' ";
+    }
+    $where = implode(' AND ', $where);
+    $interfaceQuery = "SELECT * FROM `orders`
+                    WHERE $where
+                    ORDER BY analysed_date_time ASC";
     $interfaceData = $sqliteDb->query($interfaceQuery)->fetchAll(PDO::FETCH_ASSOC);
 } else {
     exit(0);
@@ -403,6 +421,16 @@ if (!empty($interfaceData)) {
                 // Execute the prepared statement
                 $stmt->execute();
             }
+        }
+
+
+        if (!empty($result['added_on'])) {
+
+            $data = [
+                'last_interface_sync' => DateUtility::isoDateFormat($result['added_on']),
+            ];
+
+            $db->connection('default')->update('s_vlsm_instance', $data);
         }
     }
 

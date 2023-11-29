@@ -211,18 +211,18 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		$row[] = ($aRow['patient_city']);
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 		$row[] = ($aRow['test_reason_name']);
-		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
+		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
 		$row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime']);
 		$row[] = ($aRow['sample_condition']);
 		$row[] = ($aRow['status_name']);
 		$row[] = ($aRow['sample_name']);
 		$row[] = $sampleRejection;
 		$row[] = $aRow['rejection_reason'];
-		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
+		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 		$row[] = ($testPlatform);
 		$row[] = ($testMethod);
 		$row[] = $covid19Results[$aRow['result']] ?? $aRow['result'];
-		$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
+		$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 
 		$output[] = $row;
 		$no++;

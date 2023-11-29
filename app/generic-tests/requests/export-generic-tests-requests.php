@@ -78,11 +78,7 @@ if (isset($_SESSION['genericRequestQuery']) && trim($_SESSION['genericRequestQue
 	$no = 1;
 	foreach ($db->rawQueryGenerator($_SESSION['genericRequestQuery']) as $key => $aRow) {
 		$row = [];
-		//date of birth
-		$dob = '';
-		if (!empty($aRow['patient_dob'])) {
-			$dob =  DateUtility::humanReadableDateFormat($aRow['patient_dob']);
-		}
+
 
 		$age = null;
 		$aRow['patient_age_in_years'] = (int) $aRow['patient_age_in_years'];
@@ -110,11 +106,6 @@ if (isset($_SESSION['genericRequestQuery']) && trim($_SESSION['genericRequestQue
 			default:
 				$gender = '';
 				break;
-		}
-		//sample collecion date
-		$sampleCollectionDate = '';
-		if (!empty($aRow['sample_collection_date'])) {
-			$sampleCollectionDate =  DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 		}
 		//requested date
 		$requestedDate = '';
@@ -156,28 +147,14 @@ if (isset($_SESSION['genericRequestQuery']) && trim($_SESSION['genericRequestQue
 			$resultDispatchedDate =  DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
 		}
 
-		if ($aRow['patient_first_name'] != '') {
-			$patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_id']));
-		} else {
-			$patientFname = '';
-		}
-		if ($aRow['patient_middle_name'] != '') {
-			$patientMname = ($general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_id']));
-		} else {
-			$patientMname = '';
-		}
-		if ($aRow['patient_last_name'] != '') {
-			$patientLname = ($general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_id']));
-		} else {
-			$patientLname = '';
-		}
+		$patientFname = $aRow['patient_first_name'] ?? '';
+		$patientMname = $aRow['patient_middle_name'] ?? '';
+		$patientLname = $aRow['patient_last_name'] ?? '';
 
 		$row[] = $no;
-		if ($_SESSION['instanceType'] == 'standalone') {
-			$row[] = $aRow["sample_code"];
-		} else {
-			$row[] = $aRow["sample_code"];
-			$row[] = $aRow["remote_sample_code"] ?: null;
+		$row[] = $aRow["sample_code"];
+		if ($_SESSION['instanceType'] != 'standalone') {
+			$row[] = $aRow["remote_sample_code"] ?? null;
 		}
 		$row[] = $aRow['facility_name'];
 		$row[] = $aRow['lab_name'];
@@ -189,10 +166,10 @@ if (isset($_SESSION['genericRequestQuery']) && trim($_SESSION['genericRequestQue
 			$row[] = $aRow['patient_id'];
 			$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
 		}
-		$row[] = $dob;
+		$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob'] ?? '');
 		$row[] = $aRow['patient_age_in_years'];
 		$row[] = $gender;
-		$row[] = $sampleCollectionDate;
+		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 		$row[] = $aRow['sample_name'] ?: null;
 		$row[] = $treatmentInitiationDate;
 		$row[] = ($aRow['is_patient_pregnant']);
@@ -226,66 +203,66 @@ if (isset($_SESSION['genericRequestQuery']) && trim($_SESSION['genericRequestQue
 	}
 
 	if (isset($_SESSION['genericResultQueryCount']) && $_SESSION['genericResultQueryCount'] > 75000) {
-				$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-LAB-TESTS-REQUESTS-' . date('d-M-Y-H-i-s') . '.csv';
-				$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
-				// we dont need the $output variable anymore
-				unset($output);
-				echo base64_encode($fileName);
-			} else {
-				$excel = new Spreadsheet();
-				$sheet = $excel->getActiveSheet();
-				$sheet->setTitle('Generic Results');
-			
-				$styleArray = array(
-					'font' => array(
-						'bold' => true,
-						'size' => 12,
-					),
-					'alignment' => array(
-						'horizontal' => Alignment::HORIZONTAL_CENTER,
-						'vertical' => Alignment::VERTICAL_CENTER,
-					),
-					'borders' => array(
-						'outline' => array(
-							'style' => Border::BORDER_THIN,
-						),
-					)
-				);
-			
-				$borderStyle = array(
-					'alignment' => array(
-						'horizontal' => Alignment::HORIZONTAL_CENTER,
-					),
-					'borders' => array(
-						'outline' => array(
-							'style' => Border::BORDER_THIN,
-						),
-					)
-				);
-				$sheet->mergeCells('A1:O1');
-				$sheet->getStyle('A1:O1')->applyFromArray(array(
-					'font' => array(
-						'bold' => true,
-						'size' => 12,
-					),
-					'alignment' => array(
-						// 'horizontal' => Alignment::HORIZONTAL_CENTER,
-						'vertical' => Alignment::VERTICAL_CENTER,
-					),
-					'borders' => array(
-						'outline' => array(
-							'style' => Border::BORDER_THIN,
-						),
-					)
-				));
+		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-LAB-TESTS-REQUESTS-' . date('d-M-Y-H-i-s') . '.csv';
+		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
+		// we dont need the $output variable anymore
+		unset($output);
+		echo base64_encode($fileName);
+	} else {
+		$excel = new Spreadsheet();
+		$sheet = $excel->getActiveSheet();
+		$sheet->setTitle('Generic Results');
 
-				$sheet->fromArray($headings, null, 'A3');
+		$styleArray = array(
+			'font' => array(
+				'bold' => true,
+				'size' => 12,
+			),
+			'alignment' => array(
+				'horizontal' => Alignment::HORIZONTAL_CENTER,
+				'vertical' => Alignment::VERTICAL_CENTER,
+			),
+			'borders' => array(
+				'outline' => array(
+					'style' => Border::BORDER_THIN,
+				),
+			)
+		);
 
-				foreach ($output as $rowNo => $rowData) {
-				  $rRowCount = $rowNo + 4;
-				  $sheet->fromArray($rowData, null, 'A' . $rRowCount);
-			  	}
-	  
+		$borderStyle = array(
+			'alignment' => array(
+				'horizontal' => Alignment::HORIZONTAL_CENTER,
+			),
+			'borders' => array(
+				'outline' => array(
+					'style' => Border::BORDER_THIN,
+				),
+			)
+		);
+		$sheet->mergeCells('A1:O1');
+		$sheet->getStyle('A1:O1')->applyFromArray(array(
+			'font' => array(
+				'bold' => true,
+				'size' => 12,
+			),
+			'alignment' => array(
+				// 'horizontal' => Alignment::HORIZONTAL_CENTER,
+				'vertical' => Alignment::VERTICAL_CENTER,
+			),
+			'borders' => array(
+				'outline' => array(
+					'style' => Border::BORDER_THIN,
+				),
+			)
+		));
+
+		$sheet->fromArray($headings, null, 'A3');
+
+		foreach ($output as $rowNo => $rowData) {
+			$rRowCount = $rowNo + 4;
+			$sheet->fromArray($rowData, null, 'A' . $rRowCount);
+		}
+
 		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-LAB-TESTS-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(5) . '.xlsx';
 		$writer->save($filename);

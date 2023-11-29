@@ -121,7 +121,7 @@ foreach ($rResult as $aRow) {
     $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime']);
     $row[] = $aRow['remote_sample_code'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime']);
-    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
     $row[] = DateUtility::humanReadableDateFormat($aRow['batch_request_created']);
     $row[] = $aRow['result'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['result_reviewed_datetime']);

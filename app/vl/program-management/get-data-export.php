@@ -369,7 +369,7 @@ foreach ($rResult as $aRow) {
      $row[] = ($aRow['lab_name']);
      $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
      $row[] = ($aRow['sample_name']);
-     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
+     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
      $row[] = $aRow['result'];
      $row[] = $aRow['status_name'];
      $row[] = $aRow['funding_source_name'] ?? null;

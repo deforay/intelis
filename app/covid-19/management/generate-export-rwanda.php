@@ -127,10 +127,10 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		$row[] = $sampleRejection;
 		$row[] = $aRow['rejection_reason'];
 		$row[] = $aRow['recommended_corrective_action_name'];
-		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
+		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 		$row[] = $covid19Results[$aRow['result']] ?? $aRow['result'];
-		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
-		$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
+		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
+		$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 		$row[] = $aRow['lab_tech_comments'];
 		$row[] = $aRow['funding_source_name'] ?? null;
 		$row[] = $aRow['i_partner_name'] ?? null;
@@ -145,8 +145,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		// we dont need the $output variable anymore
 		unset($output);
 		echo base64_encode($fileName);
-
-		} else {
+	} else {
 
 		$excel = new Spreadsheet();
 		$sheet = $excel->getActiveSheet();

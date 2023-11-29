@@ -1,12 +1,15 @@
 <?php
 
-
-use App\Registries\ContainerRegistry;
+use App\Services\UsersService;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
-use App\Services\UsersService;
+use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
 
 $title = " Add New Test";
 
@@ -133,16 +136,17 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 }
 
 $minPatientIdLength = 0;
-if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_length'] != ""){
-    $minPatientIdLength = $arr['generic_min_patient_id_length'];
+if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_length'] != "") {
+     $minPatientIdLength = $arr['generic_min_patient_id_length'];
 }
 ?>
 <link rel="stylesheet" href="/assets/css/jquery.multiselect.css" type="text/css" />
 
 <style>
      .ms-choice {
-		border: 0px solid #aaa;
-	}
+          border: 0px solid #aaa;
+     }
+
      .table>tbody>tr>td {
           border-top: none;
      }
@@ -636,7 +640,7 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
                                                        </div>
                                                   <?php } ?>
                                                   <div class="subTestResultSection">
-                                                       
+
                                                   </div>
                                                   <div class="row">
                                                        <div class="col-md-6">
@@ -720,7 +724,7 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
                                              <input type="hidden" name="vlSampleId" id="vlSampleId" value="" />
                                              <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow('next');return false;">Save and Next</a>
                                              <?php if ($usersService->isAllowed("/batch/add-batch.php?type=" . $_GET['type'])) { ?>
-                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow('clone');return false;">Save and Clone</a>
+                                                  <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow('clone');return false;">Save and Clone</a>
                                              <?php } ?>
                                              <a href="view-requests.php" class="btn btn-default"> Cancel</a>
                                         </div>
@@ -763,9 +767,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
      $(document).ready(function() {
           $("#subTestResult").multipleSelect({
-			placeholder: '<?php echo _translate("Select Sub Tests"); ?>',
-			width: '100%'
-		});
+               placeholder: '<?php echo _translate("Select Sub Tests"); ?>',
+               width: '100%'
+          });
 
           $("#labId,#fName,#sampleCollectionDate").on('change', function() {
 
@@ -1555,7 +1559,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          testType: testType,
                     },
                     function(data) {
-                         if(data != undefined && data !== null){
+                         if (data != undefined && data !== null) {
 
                               //  console.log(data);
                               data = JSON.parse(data);
@@ -1581,7 +1585,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                               if (typeof(data.otherSection) != "undefined" && data.otherSection !== null && data.otherSection.length > 0) {
                                    $("#otherSection").html(data.otherSection);
                               }
-     
+
                               $('.dateTime').datetimepicker({
                                    changeMonth: true,
                                    changeYear: true,
@@ -1604,7 +1608,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                                    width: '100%',
                                    placeholder: "<?php echo _translate("Select any one of the option"); ?>"
                               });
-     
+
                               if ($('#resultType').val() == 'qualitative') {
                                    $('.final-result-row').attr('colspan', 4)
                                    $('.testResultUnit').hide();
@@ -1623,10 +1627,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $("#otherSection").html('');
                $(".requestForm").hide();
           }
-          
+
 
      }
-     
+
      function loadSubTests() {
           var testType = $("#testType").val();
           var subTestResult = $("#subTestResult").val();
@@ -1682,7 +1686,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                });
 
      }
-     
+
      function getSubTestList(testType) {
 
           $.post("/generic-tests/requests/get-sub-test-list.php", {
@@ -1700,9 +1704,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function addTestRow(row, subTest) {
-          subrow = document.getElementById("testKitNameTable"+row).rows.length
-          $('.ins-row-'+row+subrow).attr('disabled', true);
-          $('.ins-row-'+row+subrow).addClass('disabled');
+          subrow = document.getElementById("testKitNameTable" + row).rows.length
+          $('.ins-row-' + row + subrow).attr('disabled', true);
+          $('.ins-row-' + row + subrow).addClass('disabled');
           testCounter = (subrow + 1);
           let rowString = `<tr>
                     <td class="text-center">${(subrow+1)}</td>
@@ -1738,7 +1742,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode, ${row},${subrow});"><em class="fa-solid fa-minus"></em></a>
                     </td>
                </tr>`;
-          $("#testKitNameTable"+row).append(rowString);
+          $("#testKitNameTable" + row).append(rowString);
 
           $('.date').datepicker({
                changeMonth: true,
@@ -1797,14 +1801,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function removeTestRow(el, row, subrow) {
-          $('.ins-row-'+row+subrow).attr('disabled', false);
-          $('.ins-row-'+row+subrow).removeClass('disabled');
+          $('.ins-row-' + row + subrow).attr('disabled', false);
+          $('.ins-row-' + row + subrow).removeClass('disabled');
           $(el).fadeOut("slow", function() {
                el.parentNode.removeChild(el);
-               rl = document.getElementById("testKitNameTable"+row).rows.length;
+               rl = document.getElementById("testKitNameTable" + row).rows.length;
                if (rl == 0) {
                     testCounter = 0;
-                    addTestRow(row, (subrow+1));
+                    addTestRow(row, (subrow + 1));
                }
           });
      }

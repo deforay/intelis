@@ -8,7 +8,6 @@ use App\Services\HepatitisService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 
 /** @var DatabaseService $db */
@@ -35,11 +34,6 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQ
 	$no = 1;
 	foreach ($db->rawQueryGenerator($_SESSION['hepatitisResultQuery']) as $aRow) {
 		$row = [];
-		//date of birth
-		$dob = '';
-		if ($aRow['patient_dob'] != null && trim($aRow['patient_dob']) != '' && $aRow['patient_dob'] != '0000-00-00') {
-			$dob =  date("d-m-Y", strtotime($aRow['patient_dob']));
-		}
 		//set gender
 		switch (strtolower($aRow['patient_gender'])) {
 			case 'male':
@@ -94,17 +88,17 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQ
 		$row[] = ($aRow['facility_state']);
 		$row[] = $aRow['patient_id'];
 		$row[] = $patientFname . " " . $patientLname;
-		$row[] = $dob;
+		$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob'] ?? '');
 		$aRow['patient_age'] ??= 0;
 		$row[] = ($aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
 		$row[] = $gender;
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 		$row[] = $sampleRejection;
 		$row[] = $aRow['rejection_reason'];
-		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
+		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 		$row[] = $hepatitisResults[$aRow['result']] ?? $aRow['result'];
-		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
-		$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
+		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
+		$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 		$row[] = $aRow['status_name'];
 		$row[] = ($aRow['lab_tech_comments']);
 		$row[] = $aRow['funding_source_name'] ?? null;
@@ -116,20 +110,20 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQ
 
 	if (isset($_SESSION['hepatitisResultQueryCount']) && $_SESSION['hepatitisResultQueryCount'] > 75000) {
 
-				$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Hepatitis-Export-Data-' . date('d-M-Y-H-i-s') . '.csv';
-				$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
-				// we dont need the $output variable anymore
-				unset($output);
-				echo base64_encode($fileName);
-			} else {
-				$excel = new Spreadsheet();
-				$sheet = $excel->getActiveSheet();
-				$sheet->fromArray($headings, null, 'A3');
+		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Hepatitis-Export-Data-' . date('d-M-Y-H-i-s') . '.csv';
+		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
+		// we dont need the $output variable anymore
+		unset($output);
+		echo base64_encode($fileName);
+	} else {
+		$excel = new Spreadsheet();
+		$sheet = $excel->getActiveSheet();
+		$sheet->fromArray($headings, null, 'A1');
 
-				foreach ($output as $rowNo => $rowData) {
-					$rRowCount = $rowNo + 4;
-					$sheet->fromArray($rowData, null, 'A' . $rRowCount);
-				}
+		foreach ($output as $rowNo => $rowData) {
+			$rRowCount = $rowNo + 2;
+			$sheet->fromArray($rowData, null, 'A' . $rRowCount);
+		}
 
 		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Hepatitis-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';

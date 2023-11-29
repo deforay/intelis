@@ -112,11 +112,11 @@ foreach ($db->rawQueryGenerator($_SESSION['vlRequestQuery']) as $aRow) {
 	$row[] = $aRow['request_clinician_name'];
 	$row[] = DateUtility::humanReadableDateFormat($aRow['test_requested_on']);
 	$row[] = $sampleRejection;
-	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
+	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 	$row[] = $aRow['result'];
 	$row[] = $aRow['result_value_log'];
-	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
-	$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
+	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
+	$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 	$row[] = $aRow['lab_tech_comments'];
 	$row[] = $aRow['funding_source_name'] ?? null;
 	$row[] = $aRow['i_partner_name'] ?? null;
