@@ -1,35 +1,34 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Utilities\DateUtility;
+use App\Registries\ContainerRegistry;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
+
+
 if (!empty($_POST['sampleCollectionDate'])) {
-    $s_c_date = explode("to", $_POST['sampleCollectionDate']);
-    //print_r($s_c_date);die;
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $lastSevenDay = DateUtility::isoDateFormat(trim($s_c_date[0]));
-    }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $cDate = DateUtility::isoDateFormat(trim($s_c_date[1]));
-    }
+    [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+} else {
+    $startDate = date('Y-m-d', strtotime('-7 days'));
+    $endDate = date('Y-m-d');
 }
 
-$configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
-$configFormResult = $db->rawQuery($configFormQuery);
 $facilityId = [];
 //get collection data
 $table = $_POST['table'];
-$primaryKey = $_POST['primaryKey'];
 foreach ($_POST['facilityId'] as $facility) {
     $facilities[] = '"' . $facility . '"';
 }
-$collectionQuery = "SELECT COUNT($primaryKey) as total, facility_name FROM " . $table . " as vl JOIN facility_details as f ON f.facility_id=vl.facility_id WHERE vlsm_country_id = '" . $configFormResult[0]['value'] . "' AND DATE(vl.sample_collection_date) <= '" . $cDate . "' AND DATE(vl.sample_collection_date)>= '" . $lastSevenDay . "'";
+$collectionQuery = "SELECT COUNT(vl.unique_id) as total, facility_name
+                    FROM $table as vl
+                    JOIN facility_details as f ON f.facility_id=vl.facility_id
+                    WHERE DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'";
 if (sizeof($facilities) > 0) {
     $collectionQuery .= " AND f.facility_name IN (" . implode(",", $facilities) . ")";
 }

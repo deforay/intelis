@@ -1,31 +1,21 @@
 <?php
 
+use App\Utilities\DateUtility;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Utilities\DateUtility;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
-
-/** @var FacilitiesService $facilitiesService */
-$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $facilityInfo = $facilitiesService->getAllFacilities();
 
-$cDate = date('Y-m-d');
-$endDate = date('Y-m-d');
-$startDate = date('Y-m-d', strtotime('-7 days'));
-
-$systemType = $general->getSystemConfig('sc_user_type');
 if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $table = "form_eid";
     $primaryKey = "eid_id";
@@ -71,7 +61,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
 }
 
 
-if ($systemType != 'remoteuser') {
+if ($_SESSION['instanceType'] != 'remoteuser') {
     if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
         $whereCondition = " AND eid.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
     } else {
@@ -89,12 +79,12 @@ if ($systemType != 'remoteuser') {
     }
 }
 
-$sampleCollectionDate = explode("to", $_POST['sampleCollectionDate'] ?? '');
-$sampleCollectionDate = array_map('trim', $sampleCollectionDate);
-
-$startDate = !empty($sampleCollectionDate[0]) ? DateUtility::isoDateFormat($sampleCollectionDate[0]) : null;
-$endDate = !empty($sampleCollectionDate[1]) ? DateUtility::isoDateFormat($sampleCollectionDate[1]) : null;
-
+if (!empty($_POST['sampleCollectionDate'])) {
+    [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+} else {
+    $endDate = date('Y-m-d');
+    $startDate = date('Y-m-d', strtotime('-7 days'));
+}
 if ($table == "form_eid") {
     $sQuery = "SELECT
 		eid.facility_id,f.facility_code,f.facility_state,f.facility_district,f.facility_name,
@@ -309,9 +299,7 @@ $tableResult = $db->rawQuery($sQuery);
         $.blockUI();
         $.post("/dashboard/get-collection-samples.php", {
                 table: '<?php echo $table; ?>',
-                primaryKey: '<?php echo $primaryKey; ?>',
                 facilityId: $('#facilityId<?php echo $unique; ?>').val(),
-                cDate: <?php echo $cDate; ?>,
                 sampleCollectionDate: '<?php echo htmlspecialchars($_POST['sampleCollectionDate']); ?>',
             },
             function(data) {
@@ -329,7 +317,7 @@ $tableResult = $db->rawQuery($sQuery);
         var table = $("#<?php echo $requestCountDataTable; ?>").DataTable({
             "initComplete": function(settings, json) {
                 let api = this.api();
-                CalculateTableSummary(this, 'all');
+                calculateTableSummary(this, 'all');
             },
             "footerCallback": function(row, data, start, end, display) {
                 let filter = $("#<?php echo $requestCountDataTable; ?>_filter .input-sm").val();
@@ -339,14 +327,14 @@ $tableResult = $db->rawQuery($sQuery);
                 }
                 var api = this.api(),
                     data;
-                CalculateTableSummary(this, page);
+                calculateTableSummary(this, page);
 
             }
         });
 
     });
 
-    function CalculateTableSummary(table, page) {
+    function calculateTableSummary(table, page) {
         try {
 
             var intVal = function(i) {
@@ -374,7 +362,7 @@ $tableResult = $db->rawQuery($sQuery);
 
             });
         } catch (e) {
-            console.log('Error in CalculateTableSummary');
+            console.log('Error in calculateTableSummary');
             console.log(e)
         }
     }

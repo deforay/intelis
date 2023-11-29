@@ -117,8 +117,6 @@ $sQuery = "SELECT vl.*, f.*, l.facility_name as lab_name, rtbr.result as lamResu
 [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
 [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 
-[$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
-
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
      $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
