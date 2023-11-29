@@ -56,7 +56,7 @@ if (!empty($requestResult)) {
                $testUserSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $testedByRes['user_signature'];
           }
           if (!empty($reviewedByRes['user_signature'])) {
-               $reviewedSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $reviewedByRes['user_signature'];
+               $reviewedSignaturePath = $reviewedByRes['user_signature'];
           }
           if (!empty($revisedByRes['user_signature'])) {
                $revisedSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $revisedByRes['user_signature'];
@@ -70,7 +70,7 @@ if (!empty($requestResult)) {
                     $resultApprovedBy = $resultApprovedByRes['result_approved_by'] ?? null;
                }
                if (!empty($resultApprovedByRes['user_signature'])) {
-                    $userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $resultApprovedByRes['user_signature'];
+                    $userSignaturePath =  $resultApprovedByRes['user_signature'];
                }
           }
 
@@ -83,7 +83,8 @@ if (!empty($requestResult)) {
 
           $userSignaturePath = null;
           if (!empty($userRes['user_signature'])) {
-               $userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
+               //$userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
+               $userSignaturePath = $userRes['user_signature'];
           }
           $_SESSION['aliasPage'] = $page;
           if (empty($result['labName'])) {
@@ -140,8 +141,8 @@ if (!empty($requestResult)) {
           //$htmlTitle = "<div style='width: 50px; height:50px;border:1px solid;'>CRESAR<br>RESEARCH CENTER FOR ARMY HEALTH<br>MILITARY HEALTH RESEARCH CENTER<br><span>B.P. 7039; stewardship crossroads</span></div>";
           $header = '<table style="padding:4px 2px 2px 2px;width:100%; border:1px solid black">';
           $header .= '<tr>';
-          $header .= '<td style="line-height:30px;text-align:center;padding-top:20px;" width="15%">' . $logo . '</td>';
-          $header .= '<td width="85%">' . $result['labName'] . "<br><span style='font-weight:bold;font-size:10px;'>CENTRE DE RECHERCHE POUR LA SANTÉ DES ARMÉES<br>MILITARY HEALTH RESEARCH CENTER</span><br><span style='font-size:10px;'>B.P.7039;carrefour de l'intendance : Tel : 222229161</span></td>";
+          $header .= '<td style="line-height:25px;text-align:center;padding-top:20px;" width="15%">' . $logo . '</td>';
+          $header .= '<td width="85%">' . $result['labName'] . "<br><span style='font-weight:bold;font-size:5px;'>CENTRE DE RECHERCHE POUR LA SANTÉ DES ARMÉES<br>MILITARY HEALTH RESEARCH CENTER</span><br><span style='font-size:10px;'>B.P.7039;carrefour de l'intendance : Tel : 222229161</span></td>";
           $header .= '</tr>';
           $header .= '</table>';
           $pdf->writeHTML($header, true, false, true, false, 'C');
@@ -311,12 +312,9 @@ if (!empty($requestResult)) {
                }
           }
 
-
-
           $html = '<h5 align="center"><u>' . _translate('HIV VIRAL LOAD RESULT SHEET') . '</u></h5>';
-
-          $html .= '<p style="font: size 11px;"><u>' . _translate("Patient Information") . '</u></p>';
-          $html .= '<table style="padding:4px 2px 2px 2px;width:100%;">';
+          $html .= '<p style="font: size 8px;"><u>' . _translate("Patient Information") . '</u></p>';
+          $html .= '<table style="padding:2px 2px 2px 2px;width:100%;">';
           $html .= '<tr>';
           $html .= '<td colspan="3">';
           $html .= '<table style="padding:2px;" border="1" cellpadding="8" cellspacing="0">';
@@ -378,7 +376,7 @@ if (!empty($requestResult)) {
           $html .= '<td width="30%" style="line-height:10px;font-size:10px;text-align:left; border: 1px solid black">' . $result['labName'] . '</td>';
 
           $html .= '</tr>';
-          $html .= '<tr><td width="100%" style="line-height:20px;font-size:10px;">';
+          $html .= '<tr><td width="100%" style="line-height:18px;font-size:10px;">';
           $html .= '<br>';
           $html .= '<p>' . _translate("N.B.: The Abbott 0.6ml test has a lower limit of quantification of 40 copies/ml and an upper limit of quantification
           of 10,000,000 copies/ml. For any results between these limits, the number of copies per ml is reported. When the virus is
@@ -400,24 +398,31 @@ if (!empty($requestResult)) {
           $html .= '<tr>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Validated by') . ' : ' . $reviewedBy  . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Authorized by') . ' : ' . $resultApprovedBy . '</td></tr>';
-          if (!empty($reviewedSignaturePath) && $pdf->imageExists(($reviewedSignaturePath))) {
+          
+          if (!empty($reviewedSignaturePath) && $pdf->imageExists($reviewedSignaturePath)) {
                $signImg = '<img src="' . $reviewedSignaturePath . '" style="width:50px;" />';
           } else {
                $signImg = '';
           }
+
+          if (!empty($userSignaturePath) && $pdf->imageExists($userSignaturePath)) {
+               $signImgApproved = '<img src="' . $reviewedSignaturePath . '" style="width:50px;" />';
+          } else {
+               $signImgApproved = '';
+          }
+          
           $html .= '<tr><td></td></tr>';
           if (!empty($signImg)) {
                $html .= '<tr><td style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Signature') . ' : ' . $signImg  . '</td>';
           } else {
                $html .= '<tr><td style="line-height:10px;font-size:10px;text-align:left;"></td>';
           }
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:right;"></td>';
+
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Signature') . ' : ' . $signImgApproved  . '</td>';
 
           $html .= '</tr>';
 
           $html .= '</table>';
-
-
 
           $html .= '</td></tr>';
           $html .= '</table>';
@@ -428,9 +433,7 @@ if (!empty($requestResult)) {
           $html .= '<td colspan="3">';
           $html .= '<table style="padding:4px 2px 2px 2px;">';
 
-
           $html .= '</table>';
-
 
 
           // if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == '4')) {

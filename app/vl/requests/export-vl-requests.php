@@ -134,19 +134,9 @@ if (isset($_SESSION['vlRequestQueryCount']) && $_SESSION['vlRequestQueryCount'] 
 	unset($output);
 	echo base64_encode($fileName);
 } else {
-	//$start = (count($output)) + 2;
-	$colNo = 1;
-
-	// $nameValue = '';
-	// foreach ($_POST as $key => $value) {
-	// 	if (trim($value) != '' && trim($value) != '-- Select --') {
-	// 		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
-	// 	}
-	// }
 
 	$excel = new Spreadsheet();
 	$sheet = $excel->getActiveSheet();
-	//$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
 
 	$sheet->fromArray($headings, null, 'A3');
 

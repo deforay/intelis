@@ -2,6 +2,8 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Utilities\MiscUtility;
+use App\Services\DatabaseService;
 use App\Services\GenericTestsService;
 use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
@@ -17,7 +19,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -28,10 +30,13 @@ $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
 $dateTimeUtil = new DateUtility();
 //system config
+$arr = $general->getGlobalConfig();
+
+$delimiter = $arr['default_csv_delimiter'] ?? ',';
+$enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery']) != "") {
 
-	$rResult = $db->rawQuery($_SESSION['genericResultQuery']);
 	/* To get dynamic fields */
 	$labels = [];
 	foreach ($rResult as $key => $row) {
@@ -41,10 +46,8 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 		}
 	}
 
-	$excel = new Spreadsheet();
 	$output = [];
-	$sheet = $excel->getActiveSheet();
-	$sheet->setTitle('VL Results');
+
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
 		$headings = array("No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Testing Lab", "Health Facility Code", "District/County", "Province/State", "Patient ID.",  "Patient Name", "Date of Birth", "Age", "Gender", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Sample Receipt Date", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 	} else {
@@ -60,64 +63,8 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 		$headings = array_merge($headings, $labels);
 	}
 
-	$styleArray = array(
-		'font' => array(
-			'bold' => true,
-			'size' => 12,
-		),
-		'alignment' => array(
-			'horizontal' => Alignment::HORIZONTAL_CENTER,
-			'vertical' => Alignment::VERTICAL_CENTER,
-		),
-		'borders' => array(
-			'outline' => array(
-				'style' => Border::BORDER_THIN,
-			),
-		)
-	);
-
-	$borderStyle = array(
-		'alignment' => array(
-			'horizontal' => Alignment::HORIZONTAL_CENTER,
-		),
-		'borders' => array(
-			'outline' => array(
-				'style' => Border::BORDER_THIN,
-			),
-		)
-	);
-
-	$sheet->mergeCells('A1:AH1');
-	$nameValue = '';
-
-	foreach ($_POST as $key => $value) {
-		if (trim($value) != '' && trim($value) != '-- Select --') {
-			$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
-		}
-	}
-	$colNo = 1;
-	$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-		->setValueExplicit(html_entity_decode($nameValue));
-	if ($_POST['withAlphaNum'] == 'yes') {
-		foreach ($headings as $field => $value) {
-			$string = str_replace(' ', '', $value);
-			$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-			$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value));
-			$colNo++;
-		}
-	} else {
-		foreach ($headings as $field => $value) {
-			$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value));
-			$colNo++;
-		}
-	}
-	$lastColumn = Coordinate::stringFromColumnIndex(($colNo - 1));
-	$sheet->getStyle('A3:' . $lastColumn . '3')->applyFromArray($styleArray);
-
 	$no = 1;
-	foreach ($rResult as $key => $aRow) {
+	foreach ($db->rawQueryGenerator($_SESSION['genericResultQuery']) as $key => $aRow) {
 		$row = [];
 		//date of birth
 		$dob = '';
@@ -267,29 +214,51 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 	}
 
 	if (isset($_SESSION['genericResultQueryCount']) && $_SESSION['genericResultQueryCount'] > 75000) {
-		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-LAB-TESTS-Data-' . date('d-M-Y-H-i-s') . '.csv';
-		$file = new SplFileObject($fileName, 'w');
-		$file->setCsvControl(",", "\r\n");
-		$file->fputcsv($headings);
-		foreach ($output as $row) {
-			$file->fputcsv($row);
-		}
-		// we dont need the $file variable anymore
-		$file = null;
-		echo base64_encode($fileName);
-	} else {
-		$start = (count($output)) + 2;
-		foreach ($output as $rowNo => $rowData) {
-			$colNo = 1;
-			$rRowCount = $rowNo + 4;
-			foreach ($rowData as $field => $value) {
-				$sheet->setCellValue(
-					Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-					html_entity_decode($value)
+				$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-LAB-TESTS-Data-' . date('d-M-Y-H-i-s') . '.csv';
+				$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
+				// we dont need the $output variable anymore
+				unset($output);
+				echo base64_encode($fileName);
+			} else {
+				$excel = new Spreadsheet();
+				$sheet = $excel->getActiveSheet();
+
+				$styleArray = array(
+					'font' => array(
+						'bold' => true,
+						'size' => 12,
+					),
+					'alignment' => array(
+						'horizontal' => Alignment::HORIZONTAL_CENTER,
+						'vertical' => Alignment::VERTICAL_CENTER,
+					),
+					'borders' => array(
+						'outline' => array(
+							'style' => Border::BORDER_THIN,
+						),
+					)
 				);
-				$colNo++;
-			}
-		}
+			
+				$borderStyle = array(
+					'alignment' => array(
+						'horizontal' => Alignment::HORIZONTAL_CENTER,
+					),
+					'borders' => array(
+						'outline' => array(
+							'style' => Border::BORDER_THIN,
+						),
+					)
+				);
+				$sheet->setTitle('Generic Results');	
+				$sheet->mergeCells('A1:AH1');
+				$sheet->getStyle('A3:' . $lastColumn . '3')->applyFromArray($styleArray);
+				$sheet->fromArray($headings, null, 'A3');
+				foreach ($output as $rowNo => $rowData) {
+				  $rRowCount = $rowNo + 4;
+				  $sheet->fromArray($rowData, null, 'A' . $rRowCount);
+			  }
+	  
+	  
 		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-LAB-TESTS-Data-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(5) . '.xlsx';
 		$writer->save($filename);

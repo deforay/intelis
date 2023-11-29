@@ -2,6 +2,8 @@
 
 use App\Services\EidService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Services\DatabaseService;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -15,7 +17,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -29,9 +31,13 @@ $dateTimeUtil = new DateUtility();
 $eidService = ContainerRegistry::get(EidService::class);
 $eidResults = $eidService->getEidResults();
 
-if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQuery']) != "") {
+$arr = $general->getGlobalConfig();
 
-	$rResult = $db->rawQuery($_SESSION['eidExportResultQuery']);
+$delimiter = $arr['default_csv_delimiter'] ?? ',';
+$enclosure = $arr['default_csv_enclosure'] ?? '"';
+
+
+if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQuery']) != "") {
 
 
 	$output = [];
@@ -44,10 +50,8 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 		unset($headings[$key]);
 	}
 
-
-
 	$no = 1;
-	foreach ($rResult as $aRow) {
+	foreach ($db->rawQueryGenerator($_SESSION['eidExportResultQuery']) as $aRow) {
 		$row = [];
 
 		//set gender
@@ -130,54 +134,25 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 
 	if (isset($_SESSION['eidExportResultQueryCount']) && $_SESSION['eidExportResultQueryCount'] > 75000) {
 
-		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '.csv';
-		$file = new SplFileObject($fileName, 'w');
-		$file->setCsvControl(",", "\r\n");
-		$file->fputcsv($headings);
-		foreach ($output as $row) {
-			$file->fputcsv($row);
-		}
-		// we dont need the $file variable anymore
-		$file = null;
-		echo base64_encode($fileName);
-	} else {
-		$colNo = 1;
-		$excel = new Spreadsheet();
-		$sheet = $excel->getActiveSheet();
+				$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '.csv';
+				$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
+				// we dont need the $output variable anymore
+				unset($output);
+				echo base64_encode($fileName);
+			} else {
+				$excel = new Spreadsheet();
+				$sheet = $excel->getActiveSheet();
 
-		$nameValue = '';
-		foreach ($_POST as $key => $value) {
-			if (trim($value) != '' && trim($value) != '-- Select --') {
-				$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
-			}
-		}
+				$sheet->fromArray($headings, null, 'A3');
 
-		$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
-		if ($_POST['withAlphaNum'] == 'yes') {
-			foreach ($headings as $field => $value) {
-				$string = str_replace(' ', '', $value);
-				$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-				$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
-				$colNo++;
-			}
-		} else {
-			foreach ($headings as $field => $value) {
-				$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
-				$colNo++;
-			}
-		}
-		//$start = (count($output)) + 2;
-		foreach ($output as $rowNo => $rowData) {
-			$colNo = 1;
-			$rRowCount = $rowNo + 4;
-			foreach ($rowData as $field => $value) {
-				$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
-				$colNo++;
-			}
-		}
-		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-EID-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
-		$writer->save($filename);
-		echo base64_encode($filename);
+				foreach ($output as $rowNo => $rowData) {
+				  $rRowCount = $rowNo + 4;
+				  $sheet->fromArray($rowData, null, 'A' . $rRowCount);
+			  	}
+
+			$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
+			$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-EID-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
+			$writer->save($filename);
+			echo base64_encode($filename);
 	}
 }
