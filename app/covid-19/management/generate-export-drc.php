@@ -100,8 +100,8 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
     }
 
     $no = 1;
-	foreach ($db->rawQueryGenerator($_SESSION['covid19ResultQuery']) as $aRow) {
-        
+    foreach ($db->rawQueryGenerator($_SESSION['covid19ResultQuery']) as $aRow) {
+
         $symptomList = [];
         $squery = "SELECT s.*, ps.* FROM form_covid19 as c19
         INNER JOIN covid19_patient_symptoms AS ps ON c19.covid19_id = ps.covid19_id
@@ -238,16 +238,16 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
         $row[] = ($aRow['test_reason_name']);
         $row[] = $subReasonsList;
-        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
         $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime']);
         $row[] = ($aRow['sample_condition']);
         $row[] = ($aRow['status_name']);
         $row[] = ($aRow['sample_name']);
-        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
         $row[] = $aRow['covid19_test_platform'];
         $row[] = ($testMethod);
         $row[] = $covid19Results[$aRow['result']] ?? $aRow['result'];
-        $row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 
         $output[] = $row;
         $no++;
@@ -261,17 +261,17 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         // we dont need the $output variable anymore
         unset($output);
         echo base64_encode($fileName);
-        } else {
+    } else {
         $excel = new Spreadsheet();
         $sheet = $excel->getActiveSheet();
 
         $sheet->fromArray($headings, null, 'A3');
 
         foreach ($output as $rowNo => $rowData) {
-			$rRowCount = $rowNo + 4;
-			$sheet->fromArray($rowData, null, 'A' . $rRowCount);
-		}
-        
+            $rRowCount = $rowNo + 4;
+            $sheet->fromArray($rowData, null, 'A' . $rRowCount);
+        }
+
         $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
         $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'Covid-19-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
         $writer->save($filename);

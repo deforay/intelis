@@ -125,18 +125,18 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 		$row[] = ($aRow['patient_gender']);
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 		$row[] = ($aRow['test_reason_name']);
-		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
+		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
 		$row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime']);
 		$row[] = ($aRow['status_name']);
 		$row[] = ($aRow['sample_name']);
 		$row[] = $sampleRejection;
 		$row[] = $aRow['rejection_reason'];
 		$row[] = $aRow['recommended_corrective_action_name'];
-		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
+		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 		$row[] = ($testPlatform);
 		$row[] = ($testMethod);
 		$row[] = $tbResults[$aRow['result']];
-		$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
+		$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 
 		$output[] = $row;
 		$no++;
@@ -145,26 +145,26 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 
 	if (isset($_SESSION['tbResultQueryCount']) && $_SESSION['tbResultQueryCount'] > 75000) {
 
-				$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-TB-Export-Data-' . date('d-M-Y-H-i-s') . '.csv';
-				$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
-				// we dont need the $output variable anymore
-				unset($output);
-				echo base64_encode($fileName);
-			} else {
-				$excel = new Spreadsheet();
-				$sheet = $excel->getActiveSheet();
-				$sheet->setTitle('TB Results');
+		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-TB-Export-Data-' . date('d-M-Y-H-i-s') . '.csv';
+		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
+		// we dont need the $output variable anymore
+		unset($output);
+		echo base64_encode($fileName);
+	} else {
+		$excel = new Spreadsheet();
+		$sheet = $excel->getActiveSheet();
+		$sheet->setTitle('TB Results');
 
-				$sheet->fromArray($headings, null, 'A3');
+		$sheet->fromArray($headings, null, 'A3');
 
-				foreach ($output as $rowNo => $rowData) {
-					$rRowCount = $rowNo + 4;
-					$sheet->fromArray($rowData, null, 'A' . $rRowCount);
-				}
+		foreach ($output as $rowNo => $rowData) {
+			$rRowCount = $rowNo + 4;
+			$sheet->fromArray($rowData, null, 'A' . $rRowCount);
+		}
 
-				$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-				$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(5) . '.xlsx';
-				$writer->save($filename);
-				echo base64_encode($filename);
+		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
+		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(5) . '.xlsx';
+		$writer->save($filename);
+		echo base64_encode($filename);
 	}
 }

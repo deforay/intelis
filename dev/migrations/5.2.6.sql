@@ -102,3 +102,7 @@ FROM form_generic
 INNER JOIN r_test_types ON r_test_types.test_type_id = form_generic.test_type
 GROUP BY YEAR(sample_collection_date)
 HAVING MAX(remote_sample_code_key) IS NOT NULL;
+
+
+-- Amit 29-Nov-2023
+ALTER TABLE `s_vlsm_instance` ADD `last_interface_sync` DATETIME NULL DEFAULT NULL AFTER `last_remote_reference_data_sync`;

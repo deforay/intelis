@@ -66,12 +66,6 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 	$no = 1;
 	foreach ($db->rawQueryGenerator($_SESSION['genericResultQuery']) as $key => $aRow) {
 		$row = [];
-		//date of birth
-		$dob = '';
-		if (!empty($aRow['patient_dob'])) {
-			$dob =  DateUtility::humanReadableDateFormat($aRow['patient_dob']);
-		}
-
 		$age = null;
 		$aRow['patient_age_in_years'] = (int) $aRow['patient_age_in_years'];
 		if (!empty($aRow['patient_dob'])) {
@@ -165,7 +159,7 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 			$row[] = $aRow["sample_code"];
 		} else {
 			$row[] = $aRow["sample_code"];
-			$row[] = $aRow["remote_sample_code"] ?: null;
+			$row[] = $aRow["remote_sample_code"] ?? null;
 		}
 		$row[] = $aRow['facility_name'];
 		$row[] = $aRow['lab_name'];
@@ -177,7 +171,7 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 			$row[] = $aRow['patient_id'];
 			$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
 		}
-		$row[] = $dob;
+		$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob'] ?? '');
 		$row[] = $aRow['patient_age_in_years'];
 		$row[] = $gender;
 		$row[] = $sampleCollectionDate;
@@ -214,51 +208,51 @@ if (isset($_SESSION['genericResultQuery']) && trim($_SESSION['genericResultQuery
 	}
 
 	if (isset($_SESSION['genericResultQueryCount']) && $_SESSION['genericResultQueryCount'] > 75000) {
-				$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-LAB-TESTS-Data-' . date('d-M-Y-H-i-s') . '.csv';
-				$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
-				// we dont need the $output variable anymore
-				unset($output);
-				echo base64_encode($fileName);
-			} else {
-				$excel = new Spreadsheet();
-				$sheet = $excel->getActiveSheet();
+		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-LAB-TESTS-Data-' . date('d-M-Y-H-i-s') . '.csv';
+		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
+		// we dont need the $output variable anymore
+		unset($output);
+		echo base64_encode($fileName);
+	} else {
+		$excel = new Spreadsheet();
+		$sheet = $excel->getActiveSheet();
 
-				$styleArray = array(
-					'font' => array(
-						'bold' => true,
-						'size' => 12,
-					),
-					'alignment' => array(
-						'horizontal' => Alignment::HORIZONTAL_CENTER,
-						'vertical' => Alignment::VERTICAL_CENTER,
-					),
-					'borders' => array(
-						'outline' => array(
-							'style' => Border::BORDER_THIN,
-						),
-					)
-				);
-			
-				$borderStyle = array(
-					'alignment' => array(
-						'horizontal' => Alignment::HORIZONTAL_CENTER,
-					),
-					'borders' => array(
-						'outline' => array(
-							'style' => Border::BORDER_THIN,
-						),
-					)
-				);
-				$sheet->setTitle('Generic Results');	
-				$sheet->mergeCells('A1:AH1');
-				$sheet->getStyle('A3:' . $lastColumn . '3')->applyFromArray($styleArray);
-				$sheet->fromArray($headings, null, 'A3');
-				foreach ($output as $rowNo => $rowData) {
-				  $rRowCount = $rowNo + 4;
-				  $sheet->fromArray($rowData, null, 'A' . $rRowCount);
-			  }
-	  
-	  
+		$styleArray = array(
+			'font' => array(
+				'bold' => true,
+				'size' => 12,
+			),
+			'alignment' => array(
+				'horizontal' => Alignment::HORIZONTAL_CENTER,
+				'vertical' => Alignment::VERTICAL_CENTER,
+			),
+			'borders' => array(
+				'outline' => array(
+					'style' => Border::BORDER_THIN,
+				),
+			)
+		);
+
+		$borderStyle = array(
+			'alignment' => array(
+				'horizontal' => Alignment::HORIZONTAL_CENTER,
+			),
+			'borders' => array(
+				'outline' => array(
+					'style' => Border::BORDER_THIN,
+				),
+			)
+		);
+		$sheet->setTitle('Generic Results');
+		$sheet->mergeCells('A1:AH1');
+		$sheet->getStyle('A3:' . $lastColumn . '3')->applyFromArray($styleArray);
+		$sheet->fromArray($headings, null, 'A3');
+		foreach ($output as $rowNo => $rowData) {
+			$rRowCount = $rowNo + 4;
+			$sheet->fromArray($rowData, null, 'A' . $rRowCount);
+		}
+
+
 		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-LAB-TESTS-Data-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(5) . '.xlsx';
 		$writer->save($filename);

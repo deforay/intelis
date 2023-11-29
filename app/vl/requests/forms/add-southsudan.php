@@ -1,5 +1,14 @@
 <?php
 
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
 $lResult = $facilitiesService->getTestingLabs('vl', true, true);
 
 if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric' || $arr['sample_code'] == 'MMYY' || $arr['sample_code'] == 'YY') {
@@ -771,6 +780,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           <script src="/uploads/barcode-formats/zebra-format.js"></script>
           <script src="/assets/js/zebra-print.js"></script>
 <?php
+
      }
 }
 ?>
@@ -785,7 +795,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $("#artNo").on('input', function() {
 
                let artNo = $.trim($(this).val());
-              
+
                if (artNo.length > 3) {
 
                     $.post("/common/patient-last-request-details.php", {

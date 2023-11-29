@@ -116,11 +116,11 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
         $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
         $row[] = $sampleRejection;
         $row[] = $aRow['rejection_reason'];
-        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
         $row[] = ($aRow['hcv_vl_result']);
         $row[] = ($aRow['hbv_vl_result']);
-        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
-        $row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
+        $row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
         $row[] = $aRow['status_name'];
         $row[] = ($aRow['lab_tech_comments']);
         $row[] = $aRow['funding_source_name'] ?? null;
@@ -132,20 +132,20 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 
     if (isset($_SESSION['hepatitisRequestSearchResultQueryCount']) && $_SESSION['hepatitisRequestSearchResultQueryCount'] > 75000) {
 
-                $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Hepatitis-Requests-' . date('d-M-Y-H-i-s') . '.csv';
-                $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
-                // we dont need the $output variable anymore
-                unset($output);
-                echo base64_encode($fileName);
-            } else {
-                $excel = new Spreadsheet();
-                $sheet = $excel->getActiveSheet();
-                $sheet->fromArray($headings, null, 'A3');
+        $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Hepatitis-Requests-' . date('d-M-Y-H-i-s') . '.csv';
+        $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
+        // we dont need the $output variable anymore
+        unset($output);
+        echo base64_encode($fileName);
+    } else {
+        $excel = new Spreadsheet();
+        $sheet = $excel->getActiveSheet();
+        $sheet->fromArray($headings, null, 'A3');
 
-                foreach ($output as $rowNo => $rowData) {
-                $rRowCount = $rowNo + 4;
-                $sheet->fromArray($rowData, null, 'A' . $rRowCount);
-                }
+        foreach ($output as $rowNo => $rowData) {
+            $rRowCount = $rowNo + 4;
+            $sheet->fromArray($rowData, null, 'A' . $rRowCount);
+        }
 
         $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
         $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Hepatitis-Requests-' . date('d-M-Y-H-i-s') . '.xlsx';

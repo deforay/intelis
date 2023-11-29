@@ -133,12 +133,12 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 			} else {
 				$row[] = "";
 			}
-			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
+			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
 			if ($aRow['sample_tested_datetime'] != "")
 				$row[] = "Yes";
 			else
 				$row[] = "No";
-			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
+			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_dispatched_datetime']);
 			$row[] = $sampleRejection;
 			$row[] = $aRow['rejection_reason'];
@@ -195,11 +195,11 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 			$row[] = $sampleRejection;
 			$row[] = $aRow['rejection_reason'];
 			$row[] = $aRow['recommended_corrective_action_name'];
-			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
+			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 			$row[] = $aRow['result'];
 			$row[] = $logVal;
-			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
-			$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
+			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
+			$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 			$row[] = $aRow['lab_tech_comments'];
 			$row[] = $aRow['funding_source_name'] ?? null;
 			$row[] = $aRow['i_partner_name'] ?? null;

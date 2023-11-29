@@ -170,16 +170,16 @@ foreach ($db->rawQueryGenerator($_SESSION['covid19RequestSearchResultQuery']) as
     $row[] = DateUtility::humanReadableDateFormat($aRow['date_of_initial_consultation']);
     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
     $row[] = ($aRow['test_reason_name']);
-    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
     $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime']);
     $row[] = ($aRow['sample_condition']);
     $row[] = ($aRow['status_name']);
     $row[] = ($aRow['sample_name']);
-    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
     $row[] = ($aRow['covid19_test_platform']);
     $row[] = ($aRow['covid19_test_name']);
     $row[] = $covid19Results[$aRow['result']] ?? $aRow['result'];
-    $row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 
     $output[] = $row;
     $no++;
@@ -192,15 +192,15 @@ if (isset($_SESSION['covid19RequestSearchResultQueryCount']) && $_SESSION['covid
     // we dont need the $output variable anymore
     unset($output);
     echo base64_encode($fileName);
-    } else {
+} else {
     $excel = new Spreadsheet();
     $sheet = $excel->getActiveSheet();
 
     $sheet->fromArray($headings, null, 'A3');
 
     foreach ($output as $rowNo => $rowData) {
-      $rRowCount = $rowNo + 4;
-      $sheet->fromArray($rowData, null, 'A' . $rRowCount);
+        $rRowCount = $rowNo + 4;
+        $sheet->fromArray($rowData, null, 'A' . $rRowCount);
     }
 
     $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);

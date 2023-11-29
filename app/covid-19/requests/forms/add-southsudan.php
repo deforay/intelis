@@ -1,10 +1,16 @@
 <?php
 // imported in covid-19-add-request.php based on country in global config
 
-use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
 use App\Services\Covid19Service;
+use App\Registries\ContainerRegistry;
 
 
+/** @var MysqliDb $db */
+$db = ContainerRegistry::get('db');
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 
 // Nationality
