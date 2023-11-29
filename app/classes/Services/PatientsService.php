@@ -89,17 +89,18 @@ class PatientsService
                 $data['patient_code'] = $params['patientId'];
             }
 
-            if (!empty($params['patientCodeKey'])) {
-                $data['patient_code_key'] = $params['patientCodeKey'];
+            $systemPatientCode = $this->getSystemPatientId($data['patient_code'], $params['patientGender'], DateUtility::isoDateFormat($params['dob'] ?? ''));
+
+            if (!empty($systemPatientCode)) {
+                $data['system_patient_code'] = $systemPatientCode;
+            } else {
+                $data['patient_code_prefix'] = $params['patientCodePrefix'] ?? 'P';
+                $newCode = $this->generatePatientId($data['patient_code_prefix'], true);
+                $newCode = json_decode($newCode, true);
+
+                $data['system_patient_code'] = $newCode['patientCode'];
+                $data['patient_code_key'] = $newCode['patientCodeKey'];
             }
-
-            $data['patient_code_prefix'] = $params['patientCodePrefix'] ?? 'P';
-
-            $newCode = $this->generatePatientId($data['patient_code_prefix'], true);
-            $newCode = json_decode($newCode, true);
-
-            $data['system_patient_code'] = $newCode['patientCode'];
-            $data['patient_code_key'] = $newCode['patientCodeKey'];
 
             $data['patient_first_name'] = (!empty($params['patientFirstName']) ? $params['patientFirstName'] : null);
             $data['patient_middle_name'] = (!empty($params['patientMiddleName']) ? $params['patientMiddleName'] : null);
@@ -176,16 +177,7 @@ class PatientsService
             $patientId = $params['patientId'];
         }
         $data['patient_code'] = $patientId;
-        $data['patient_code_key'] = NULL;
-        $data['patient_code_prefix'] = NULL;
 
-
-        if (!empty($params['patientCodeKey'])) {
-            $data['patient_code_key'] = $params['patientCodeKey'];
-        }
-        if (!empty($params['patientCodePrefix'])) {
-            $data['patient_code_prefix'] = $params['patientCodePrefix'];
-        }
 
         $data['patient_first_name'] = (!empty($params['patientFirstName']) ? $params['patientFirstName'] : null);
         $data['patient_middle_name'] = (!empty($params['patientMiddleName']) ? $params['patientMiddleName'] : null);
@@ -224,12 +216,13 @@ class PatientsService
         return $this->db->update($this->table, $data);
     }
 
-    public function getLastCodeKey()
+    public function getSystemPatientId($patientCode, $patientGender, $patientDob)
     {
-        $res = $this->db->rawQueryOne("SELECT MAX(`patient_code_key`) AS `max_key`
-                                        FROM {$this->table}");
-        if ($res && $res['max_key'] !== null) {
-            return $res['max_key'];
-        }
+        // get system_patient_code for the patient using the above parameters
+        $this->db->where("patient_code", $patientCode);
+        $this->db->where("patient_gender", $patientGender);
+        $this->db->where("patient_dob", $patientDob);
+        $result = $this->db->getOne($this->table, "system_patient_code");
+        return $result['system_patient_code'];
     }
 }
