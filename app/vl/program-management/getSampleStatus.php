@@ -67,7 +67,7 @@ $sampleStatusColors[9] = "#4BC0D9"; // Sample Registered at Health Center
 //date
 $start_date = '';
 $end_date = '';
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
@@ -96,7 +96,7 @@ if ($_SESSION['instanceType'] != 'remoteuser') {
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
     $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
@@ -140,7 +140,7 @@ $sWhere[] = " (vl.result_status = 7) ";
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
     $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
@@ -159,32 +159,32 @@ $vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
 
 
 /** Get results that are not blank */
-$sampleResultQuery = "SELECT 
+$sampleResultQuery = "SELECT
             SUM(CASE WHEN vl.result REGEXP '^-?[0-9]+$' THEN 1 ELSE 0 END) AS numberValue,
             SUM(CASE WHEN vl.result like 'TND' OR vl.result like 'Target Not Detected' OR vl.result like 'Below Detection Level' OR vl.result like 'HIV-1 Not Detected' THEN 1 ELSE 0 END) AS charValue
             FROM " . $table . " as vl
             JOIN facility_details as f ON vl.lab_id=f.facility_id
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
 
-            if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
-                $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
-            }
-            if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
-                $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
-            }
-            if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
-                $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $labEndDate . '"';
-            }
-            if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
-                $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
-            }
-            if (!empty($_POST['labName'])) {
-                $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
-            }
-            if (!empty($sWhere)) {
-                $sampleResultQuery .= " where " . implode(" AND ", $sWhere);
-            }
-            $sampleResultQueryResult = $db->rawQueryOne($sampleResultQuery);
+if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+    $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
+}
+if (!empty($_POST['sampleCollectionDate'])) {
+    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
+}
+if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
+    $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $labEndDate . '"';
+}
+if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
+    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
+}
+if (!empty($_POST['labName'])) {
+    $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
+}
+if (!empty($sWhere)) {
+    $sampleResultQuery .= " where " . implode(" AND ", $sWhere);
+}
+$sampleResultQueryResult = $db->rawQueryOne($sampleResultQuery);
 
 
 //get LAB TAT
@@ -420,10 +420,9 @@ foreach ($tatResult as $sRow) {
     }
 
     /* For new pie chart for not blank results */
-if(!empty($sampleResultQueryResult) && ($sampleResultQueryResult['numberValue'] + $sampleResultQueryResult['charValue']) > 0)
-{
+    if (!empty($sampleResultQueryResult) && ($sampleResultQueryResult['numberValue'] + $sampleResultQueryResult['charValue']) > 0) {
     ?>
- Highcharts.setOptions({
+        Highcharts.setOptions({
             colors: ['#7CB5ED', '#808080']
         });
         $('#<?php echo $samplesResultview; ?>').highcharts({
@@ -473,9 +472,9 @@ if(!empty($sampleResultQueryResult) && ($sampleResultQueryResult['numberValue'] 
             }]
         });
     <?php
-}else { ?>
-    $('#<?php echo $samplesResultview; ?>').hide();
-<?php }
+    } else { ?>
+        $('#<?php echo $samplesResultview; ?>').hide();
+    <?php }
     if (!empty($result)) {
     ?>
         $('#<?php echo $labAverageTat; ?>').highcharts({
@@ -604,16 +603,16 @@ if(!empty($sampleResultQueryResult) && ($sampleResultQueryResult['numberValue'] 
                 <?php
                 }
                 if (isset($result['avgResultPrintedFirstTime'])) {
-                    ?> {
-                            connectNulls: false,
-                            showInLegend: true,
-                            name: "<?php echo _translate("Collected - Printed First Time"); ?>",
-                            data: [<?php echo implode(",", $result['avgResultPrintedFirstTime']); ?>],
-                            color: '#000',
-                        },
-                    <?php
-                    }
-                    ?>
+                ?> {
+                        connectNulls: false,
+                        showInLegend: true,
+                        name: "<?php echo _translate("Collected - Printed First Time"); ?>",
+                        data: [<?php echo implode(",", $result['avgResultPrintedFirstTime']); ?>],
+                        color: '#000',
+                    },
+                <?php
+                }
+                ?>
             ],
         });
     <?php } ?>

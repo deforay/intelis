@@ -23,17 +23,11 @@ $formId = $general->getGlobalConfig('form_generic');
 
 $tResult = [];
 //$rjResult = [];
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
     $start_date = '';
     $end_date = '';
     $sWhere = [];
-    $s_c_date = explode("to", $_POST['sampleCollectionDate']);
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-    }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-    }
+    [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
     //get value by rejection reason id
     $vlQuery = "SELECT count(*) as `total`,
                 vl.reason_for_sample_rejection,

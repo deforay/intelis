@@ -34,7 +34,7 @@ $vlQuery = "select count(*) as `total`, vl.reason_for_sample_rejection,sr.reject
                 INNER JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                 INNER JOIN facility_details as lab ON lab.facility_id=vl.lab_id";
 $sWhere[] = ' vl.is_sample_rejected = "yes" AND reason_for_sample_rejection!="" AND reason_for_sample_rejection IS NOT NULL';
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
     $start_date = '';
     $end_date = '';
     $sWhere = [];

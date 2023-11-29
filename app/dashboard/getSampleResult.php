@@ -116,7 +116,7 @@ if ($_SESSION['instanceType'] != 'remoteuser') {
 
 
 
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
         $lastSevenDay = DateUtility::isoDateFormat(trim($s_c_date[0]));

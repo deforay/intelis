@@ -24,7 +24,7 @@ $formId = $general->getGlobalConfig('vl_form');
 
 $tResult = [];
 $sWhere = [];
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
     $start_date = '';
     $end_date = '';
     $s_c_date = explode("to", $_POST['sampleCollectionDate']);

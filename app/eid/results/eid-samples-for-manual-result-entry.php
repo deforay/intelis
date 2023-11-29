@@ -115,10 +115,10 @@ for ($i = 0; $i < count($aColumns); $i++) {
  * SQL queries
  * Get data to display
  */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.eid_id, vl.sample_code, vl.remote_sample, 
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.eid_id, vl.sample_code, vl.remote_sample,
                vl.remote_sample_code, vl.sample_collection_date, vl.sample_tested_datetime,
-               vl.child_id,vl.mother_id, vl.child_name,vl.mother_name, vl.result, vl.reason_for_eid_test, vl.last_modified_datetime as lastModifiedDate, 
-               vl.eid_test_platform, vl.result_status, vl.clinician_name, 
+               vl.child_id,vl.mother_id, vl.child_name,vl.mother_name, vl.result, vl.reason_for_eid_test, vl.last_modified_datetime as lastModifiedDate,
+               vl.eid_test_platform, vl.result_status, vl.clinician_name,
                vl.caretaker_phone_number,vl.locked, vl.result_approved_datetime, vl.result,
                vl.result_reviewed_datetime, vl.sample_received_at_hub_datetime, vl.sample_received_at_lab_datetime,
                vl.result_dispatched_datetime, vl.result_printed_datetime, vl.result_approved_by,
@@ -143,7 +143,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.eid_id, vl.sample_code, vl.remote_sampl
 if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
      $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
      if (trim($start_date) == trim($end_date)) {
           $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
      } else {
@@ -205,7 +205,7 @@ $_SESSION['eidRequestSearchResultQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
- //echo ($sQuery);die();
+//echo ($sQuery);die();
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 

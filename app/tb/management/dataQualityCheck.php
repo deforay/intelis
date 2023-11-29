@@ -106,7 +106,7 @@ $sQuery = "SELECT vl.* FROM form_tb as vl LEFT JOIN facility_details as f ON vl.
 
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
-if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+if (!empty($_POST['sampleCollectionDate'])) {
      if (trim($start_date) == trim($end_date)) {
           $sWhere[] =  ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
      } else {

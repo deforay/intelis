@@ -68,7 +68,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
     [$sTestDate, $sTestDate] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
 
     $sWhere = [];
-    if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+    if (!empty($_POST['sampleCollectionDate'])) {
         if (trim($start_date) == trim($end_date)) {
             $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
         } else {
@@ -84,7 +84,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
     if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
         $sWhere[] =  ' f.facility_id = "' . $_POST['facilityName'] . '"';
     }
-    $sQuery = $sQuery . ' ' . implode(" AND ",$sWhere) . ' AND vl.result!=""';
+    $sQuery = $sQuery . ' ' . implode(" AND ", $sWhere) . ' AND vl.result!=""';
 
     $sResult = $db->rawQuery($sQuery);
 
@@ -99,7 +99,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
                                 f.facility_district
                                 FROM form_vl as vl
                                 JOIN facility_details as f ON vl.facility_id=f.facility_id";
-    if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+    if (!empty($_POST['sampleCollectionDate'])) {
         if (trim($start_date) == trim($end_date)) {
             $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
         } else {
@@ -116,7 +116,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
         $sWhere[] = ' f.facility_id = "' . $_POST['facilityName'] . '"';
     }
 
-    $checkEmptyResultQuery = $checkEmptyResultQuery . ' ' . implode(" AND ",$sWhere) . ' AND vl.sample_tested_datetime IS NULL AND vl.sample_type!="" AND vl.sample_collection_date < "' . DateUtility::getCurrentDateTime() . '" - INTERVAL 1 MONTH AND IFNULL(reason_for_vl_testing, 0)  != 9999';
+    $checkEmptyResultQuery = $checkEmptyResultQuery . ' ' . implode(" AND ", $sWhere) . ' AND vl.sample_tested_datetime IS NULL AND vl.sample_type!="" AND vl.sample_collection_date < "' . DateUtility::getCurrentDateTime() . '" - INTERVAL 1 MONTH AND IFNULL(reason_for_vl_testing, 0)  != 9999';
     $checkEmptyResult = $db->rawQuery($checkEmptyResultQuery);
     //get all sample type
     $sampleType = "Select * from r_vl_sample_type where status='active'";
@@ -138,7 +138,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
                                                 AND vl.sample_collection_date < "' . DateUtility::getCurrentDateTime() . '" - INTERVAL 1 MONTH
                                                 AND IFNULL(reason_for_vl_testing, 0)  != 9999';
 
-            if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+            if (!empty($_POST['sampleCollectionDate'])) {
                 if (trim($start_date) == trim($end_date)) {
                     $sWhere[] = '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
                 } else {
@@ -155,7 +155,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
             if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
                 $sWhere[] = ' f.facility_id = "' . $_POST['facilityName'] . '"';
             }
-            $checkEmptyResultSampleQuery = $checkEmptyResultSampleQuery . implode(" AND ",$sWhere);
+            $checkEmptyResultSampleQuery = $checkEmptyResultSampleQuery . implode(" AND ", $sWhere);
             $checkEmptySampleResult[$sample['sample_name']] = $db->rawQuery($checkEmptyResultSampleQuery);
         }
     }
@@ -189,7 +189,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
                                 WHERE vl.sample_tested_datetime IS NOT NULL
                                 AND MONTH(sample_collection_date)='$mnth'
                                 AND YEAR(sample_collection_date)='$year'";
-        if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+        if (!empty($_POST['sampleCollectionDate'])) {
             if (trim($start_date) == trim($end_date)) {
                 $sWhere[] = '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
             } else {
@@ -213,7 +213,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
         if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
             $sWhere[] =  '  f.facility_id = "' . $_POST['facilityName'] . '"';
         }
-        $checkResultAvgQuery = $checkResultAvgQuery . ' ' . implode(" AND ",$sWhere) . ' AND vl.result=""';
+        $checkResultAvgQuery = $checkResultAvgQuery . ' ' . implode(" AND ", $sWhere) . ' AND vl.result=""';
         $checkResultAvgResult = $db->rawQuery($checkResultAvgQuery);
         if (count($checkResultAvgResult) > 0) {
             $total = 0;
@@ -648,7 +648,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim($_SESSION['vlMonitoringR
     $sheet->mergeCells('B' . $q7 . ':F' . $q77);
     $sheet->setCellValue('B' . $q7, html_entity_decode('Number of invalid VL and EID tests reported by the lab per month:', ENT_QUOTES, 'UTF-8'));
     //check invalid result
-    if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != '') {
+    if (!empty($_POST['sampleCollectionDate'])) {
         $s_c_date = explode(" to ", $_POST['sampleCollectionDate']);
         $start_date = trim($s_c_date[0]);
         $end_date = trim($s_c_date[1]);
