@@ -136,3 +136,9 @@ max_sequence_number = GREATEST(VALUES(max_sequence_number), max_sequence_number)
 ALTER TABLE `s_vlsm_instance` ADD `last_interface_sync` DATETIME NULL DEFAULT NULL AFTER `last_remote_reference_data_sync`;
 ALTER TABLE `form_tb` CHANGE `sample_received_at_vl_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
 ALTER TABLE `audit_form_tb` CHANGE `sample_received_at_vl_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
+UPDATE `patients` SET `patient_code_key` = NULL WHERE  `patient_code_key` = 0;
+ALTER TABLE `patients` CHANGE `patient_code` `system_patient_code` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+ALTER TABLE `patients` DROP INDEX `patient_code_prefix`, ADD UNIQUE `patient_code_prefix` (`system_patient_code`, `patient_code_key`) USING BTREE;
+UPDATE `patients` SET `patient_code_prefix` = 'P' WHERE  `patient_code_prefix` IS NULL OR  `patient_code_prefix` like '';
+ALTER TABLE `patients` ADD `patient_code` VARCHAR(256) NULL DEFAULT NULL AFTER `system_patient_code`;
+

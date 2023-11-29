@@ -21,13 +21,18 @@ class PatientsService
         $this->commonService = $commonService;
     }
 
-    public function generatePatientId($prefix)
+    public function generatePatientId($prefix = null, $insertMode = false)
     {
         $prefix = $prefix ?? 'P';
-        $where = "WHERE `patient_code_prefix` = '$prefix'";
+
+        $forUpdate = '';
+        if ($insertMode) {
+            $forUpdate = ' FOR UPDATE ';
+        }
 
         $res = $this->db->rawQueryOne("SELECT MAX(`patient_code_key`) AS `max_key`
-                                        FROM {$this->table} $where");
+                                        FROM {$this->table} WHERE `patient_code_prefix` = '$prefix' $forUpdate");
+
 
         if ($res && $res['max_key'] !== null) {
             // Increment the maximum key by 1
@@ -40,23 +45,24 @@ class PatientsService
         // Generate the full patient code
         $patientCode = $prefix . str_pad($patientCodeKey, 7, "0", STR_PAD_LEFT);
 
-        return json_encode(array(
+        return json_encode([
             'patientCode' => $patientCode,
             'patientCodeKey' => $patientCodeKey
-        ));
+        ]);
     }
 
 
     public function getPatientCodeBySampleId($sampleId, $testTable)
     {
-        if ($testTable == "form_vl")
+        if ($testTable == "form_vl") {
             $col = "patient_art_no";
-        elseif ($testTable == "form_eid")
+        } elseif ($testTable == "form_eid") {
             $col = "child_id";
-        else
+        } else {
             $col = "patient_id";
+        }
         $this->db->where("sample_code", $sampleId);
-        $result = $this->db->getOne($testTable);
+        $result = $this->db->getOne($testTable, $col);
         return $result[$col];
     }
 
@@ -65,10 +71,12 @@ class PatientsService
         try {
             $this->db->startTransaction();
 
+            $data = [];
+
             if ($testTable == "form_vl" || $testTable == "form_generic") {
-                $patientId = $params['artNo'];
+                $data['patient_code'] =  $params['artNo'];
             } elseif ($testTable == "form_eid") {
-                $patientId = $params['childId'];
+                $data['patient_code'] =  $params['childId'];
                 $params['patientFirstName'] = $params['childName'];
                 $params['dob'] = $params['childDob'];
                 $params['patientGender'] = $params['childGender'];
@@ -78,20 +86,21 @@ class PatientsService
             } else {
                 $params['patientFirstName'] = $params['firstName'];
                 $params['patientLastName'] = $params['lastName'];
-                $patientId = $params['patientId'];
+                $data['patient_code'] = $params['patientId'];
             }
-            $lastCode = $this->getLastCodeKey();
-            // print_r($lastCode);die;
-            $data['patient_code'] = $patientId;
-            $data['patient_code_key'] = sprintf("%02d", ($lastCode['patient_code_key'] + 1));
-            $data['patient_code_prefix'] = 'PAT';
 
             if (!empty($params['patientCodeKey'])) {
                 $data['patient_code_key'] = $params['patientCodeKey'];
             }
-            if (!empty($params['patientCodePrefix'])) {
-                $data['patient_code_prefix'] = $params['patientCodePrefix'];
-            }
+
+            $data['patient_code_prefix'] = $params['patientCodePrefix'] ?? 'P';
+
+            $newCode = $this->generatePatientId($data['patient_code_prefix'], true);
+            $newCode = json_decode($newCode, true);
+
+            $data['system_patient_code'] = $newCode['patientCode'];
+            $data['patient_code_key'] = $newCode['patientCodeKey'];
+
             $data['patient_first_name'] = (!empty($params['patientFirstName']) ? $params['patientFirstName'] : null);
             $data['patient_middle_name'] = (!empty($params['patientMiddleName']) ? $params['patientMiddleName'] : null);
             $data['patient_last_name'] = (!empty($params['patientLastName']) ? $params['patientLastName'] : null);
@@ -217,7 +226,10 @@ class PatientsService
 
     public function getLastCodeKey()
     {
-        $this->db->orderBy('patient_id');
-        return $this->db->getOne($this->table, 'patient_code_key');
+        $res = $this->db->rawQueryOne("SELECT MAX(`patient_code_key`) AS `max_key`
+                                        FROM {$this->table}");
+        if ($res && $res['max_key'] !== null) {
+            return $res['max_key'];
+        }
     }
 }

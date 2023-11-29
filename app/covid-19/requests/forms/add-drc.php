@@ -76,6 +76,7 @@ foreach ($zResult as $row) {
 $patienZones["other"] = "Other";
 
 $generateAutomatedPatientCode = $general->getGlobalConfig('covid19_generate_patient_code');
+$generateAutomatedPatientCode = 'yes';
 if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'yes') {
     $patientCodePrefix = $general->getGlobalConfig('covid19_patient_code_prefix');
     $generateAutomatedPatientCode = true;

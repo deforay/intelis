@@ -272,8 +272,8 @@ try {
 		}
 	}
 
-     //Update patient Information in Patients Table
-     $patientsService->updatePatient($_POST,'form_covid19');
+	//Update patient Information in Patients Table
+	$patientsService->updatePatient($_POST, 'form_covid19');
 
 	$covid19Data['last_modified_by'] = $_SESSION['userId'];
 	$covid19Data['lab_technician'] = (!empty($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId'];
