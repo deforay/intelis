@@ -121,6 +121,11 @@ try {
 		$_POST['reviewedOn'] = null;
 	}
 
+	//Update patient Information in Patients Table
+	$patientsService->updatePatient($_POST,'form_hepatitis');
+
+	$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['patientDob'] ?? ''));
+
 	$hepatitisData = array(
 		'external_sample_code' => $_POST['externalSampleCode'] ?? null,
 		'hepatitis_test_type' => $_POST['hepatitisTestType'] ?? 'hcv',
@@ -128,6 +133,7 @@ try {
 		'test_number' => $_POST['testNumber'] ?? null,
 		'province_id' => $_POST['provinceId'] ?? null,
 		'lab_id' => $_POST['labId'] ?? null,
+		'system_patient_code' => $systemGeneratedCode,
 		'implementing_partner' => $_POST['implementingPartner'] ?? null,
 		'funding_source' => $_POST['fundingSource'] ?? null,
 		'patient_id' => $_POST['patientId'] ?? null,
@@ -224,9 +230,6 @@ try {
 			$hepatitisData['patient_surname'] = $encryptedPatientSurName;
 			$hepatitisData['is_encrypted'] = 'yes';
 		}
-
-		     //Update patient Information in Patients Table
-			 $patientsService->updatePatient($_POST,'form_hepatitis');
 
 
 		$id = 0;

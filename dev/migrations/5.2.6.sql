@@ -173,3 +173,21 @@ CREATE TABLE `patients` (
  UNIQUE KEY `single_patient` (`patient_code`,`patient_gender`,`patient_dob`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+
+-- Jeyabanu 30-Nov-2023
+ALTER TABLE `form_vl` ADD `system_patient_code` VARCHAR(43) NULL DEFAULT NULL AFTER `implementing_partner`;
+ALTER TABLE `audit_form_vl` ADD `system_patient_code` VARCHAR(43) NULL DEFAULT NULL AFTER `implementing_partner`;
+
+ALTER TABLE `form_eid` ADD `system_patient_code` VARCHAR(43) NULL DEFAULT NULL AFTER `mother_marital_status`;
+ALTER TABLE `audit_form_eid` ADD `system_patient_code` VARCHAR(43) NULL DEFAULT NULL AFTER `mother_marital_status`;
+
+ALTER TABLE `form_covid19` ADD `system_patient_code` VARCHAR(43) NULL DEFAULT NULL AFTER `sync_patient_identifiers`;
+ALTER TABLE `audit_form_covid19` ADD `system_patient_code` VARCHAR(43) NULL DEFAULT NULL AFTER `sync_patient_identifiers`;
+
+ALTER TABLE `form_hepatitis` ADD `system_patient_code` VARCHAR(43) NULL DEFAULT NULL AFTER `sync_patient_identifiers`;
+ALTER TABLE `audit_form_hepatitis` ADD `system_patient_code` VARCHAR(43) NULL DEFAULT NULL AFTER `sync_patient_identifiers`;
+
+ALTER TABLE `form_tb` ADD `system_patient_code` VARCHAR(43) NULL DEFAULT NULL AFTER `requesting_clinician`;
+ALTER TABLE `audit_form_tb` ADD `system_patient_code` VARCHAR(43) NULL DEFAULT NULL AFTER `requesting_clinician`;
+
+ALTER TABLE `form_generic` ADD `system_patient_code` VARCHAR(43) NULL DEFAULT NULL AFTER `implementing_partner`;
