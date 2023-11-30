@@ -238,8 +238,7 @@ try {
 			$actualImagePath = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo") . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $actualImageName;
 			if (move_uploaded_file($_FILES["labLogo"]["tmp_name"], $actualImagePath)) {
 
-				$resizeObj = new ImageResizeUtility();
-				$resizeObj = $resizeObj->setFileName($actualImagePath);
+				$resizeObj = new ImageResizeUtility($actualImagePath);
 				$resizeObj->resizeToWidth(100);
 				$resizeObj->save(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . $imageName);
 
@@ -280,8 +279,7 @@ try {
 					$imageName = $string . $extension;
 
 					if (move_uploaded_file($_FILES["signature"]["tmp_name"][$key], $pathname . $imageName)) {
-						$resizeObj = new ImageResizeUtility();
-						$resizeObj = $resizeObj->setFileName($pathname . $imageName);
+						$resizeObj = new ImageResizeUtility($pathname . $imageName);
 						$resizeObj->resizeToWidth(100);
 						$resizeObj->save($pathname . $imageName);
 						$image = array('signature' => $imageName);

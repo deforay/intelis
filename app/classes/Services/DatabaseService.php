@@ -23,11 +23,9 @@ class DatabaseService extends MysqliDb
         if (is_array($bindParams)) {
             foreach ($bindParams as $prop => $val) {
                 $params[0] .= $this->_determineType($val);
-                array_push($params, $bindParams[$prop]);
+                $params[] = $bindParams[$prop];
             }
-
-            //call_user_func_array([$stmt, 'bind_param'], $this->refValues($params));
-            call_user_func_array($stmt->bind_param(...), $this->refValues($params));
+            $stmt->bind_param(...$this->refValues($params));
         }
 
         $stmt->execute();

@@ -152,7 +152,15 @@ echo "Configuring PHP 7.4..."
 a2dismod $(ls /etc/apache2/mods-enabled | grep -oP '^php\d\.\d') -f
 a2enmod php7.4
 update-alternatives --set php /usr/bin/php7.4
-echo "apc.enable_cli=1" | tee -a /etc/php/7.4/cli/php.ini
+CLI_PHP_INI="/etc/php/7.4/cli/php.ini"
+if ! grep -q "apc.enable_cli=1" "$CLI_PHP_INI"; then
+    echo "apc.enable_cli=1" | sudo tee -a "$CLI_PHP_INI"
+fi
+
+sudo update-alternatives --set php "/usr/bin/php7.4"
+sudo update-alternatives --set phar "/usr/bin/phar7.4"
+sudo update-alternatives --set phar.phar "/usr/bin/phar.phar7.4"
+
 service apache2 restart || {
     echo "Failed to restart Apache2. Exiting..."
     exit 1

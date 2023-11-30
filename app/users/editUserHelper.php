@@ -75,8 +75,7 @@ try {
             $signatureImage = $signatureImagePath . DIRECTORY_SEPARATOR . $signatureImage;
             $file->moveTo($signatureImage);
 
-            $resizeObj = new ImageResizeUtility();
-            $resizeObj = $resizeObj->setFileName($signatureImage);
+            $resizeObj = new ImageResizeUtility($signatureImage);
             $resizeObj->resizeToWidth(250);
             $resizeObj->save($signatureImage);
             $data['user_signature'] = $signatureImage;

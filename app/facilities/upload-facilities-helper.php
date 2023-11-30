@@ -139,7 +139,7 @@ try {
             $column_header = ["Facility Name*", "Facility Code*", "External Facility Code", "Province/State*", "District/County*", "Facility Type* (1-Health Facility,2-Testing Lab,3-Collection Site)", "Address", "Email", "Phone Number", "Latitude", "Longitude"];
 
 
-            $sheet->fromArray($column_header, null, 'A1');
+            $sheet->fromArray($column_header);
 
             foreach ($facilityNotAdded as $rowNo => $dataValue) {
                 $rRowCount = $rowNo + 2;

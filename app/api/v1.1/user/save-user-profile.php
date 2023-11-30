@@ -122,8 +122,7 @@ try {
         $signatureImagePath = realpath($signatureImagePath) . DIRECTORY_SEPARATOR . $imageName;
 
         if (move_uploaded_file($_FILES["sign"]["tmp_name"], $signatureImagePath)) {
-            $resizeObj = new ImageResizeUtility();
-            $resizeObj = $resizeObj->setFileName($signatureImagePath);
+            $resizeObj = new ImageResizeUtility($signatureImagePath);
             $resizeObj->resizeToWidth(250);
             $resizeObj->save($signatureImagePath);
             $data['user_signature'] = $imageName;

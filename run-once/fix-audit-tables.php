@@ -153,7 +153,7 @@ $db = ContainerRegistry::get('db');
 $mainDbName = SYSTEM_CONFIG['database']['db'];
 $archiveDbName = null;
 
-processAuditTables($db->connection('default'), $mainDbName, $mainDbName, true);
+processAuditTables($db->connection('default'), $mainDbName, $mainDbName);
 
 if (
     !empty(SYSTEM_CONFIG['archive']) &&
