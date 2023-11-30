@@ -28,6 +28,10 @@ $options = getopt("yq");  // Parse command line options for -y and -q
 $autoContinueOnError = isset($options['y']);  // Set a flag if -y option is provided
 $quietMode = isset($options['q']);  // Set a flag if -q option is provided
 
+if ($quietMode) {
+    error_reporting(0);  // Suppress warnings and notices
+}
+
 foreach ($migrationFiles as $file) {
     $version = basename($file, '.sql');
     if (version_compare($version, $currentVersion, '>=')) {
@@ -69,9 +73,9 @@ foreach ($migrationFiles as $file) {
             }
         }
 
-        if (!$quietMode) { // Only output messages if -q option is not provided
-            echo "Migration to version $version completed.\n";
-        }
+        //if (!$quietMode) { // Only output messages if -q option is not provided
+        echo "Migration to version $version completed.\n";
+        //}
 
         $db->where('name', 'sc_version')->update('system_config', ['value' => $version]);
         $db->commit();  // Commit the transaction if no error occurred
