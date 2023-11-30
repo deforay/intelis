@@ -175,10 +175,10 @@ $batResult = $db->rawQuery($batQuery);
 										<?php echo _translate("Sample Print Date"); ?>
 									</th>
 									<th>
-										<?php echo _translate("First Printed Date From Remote User"); ?>
+										<?php echo _translate("STS Result Print Date"); ?>
 									</th>
 									<th>
-										<?php echo _translate("First Printed Date From Vl User"); ?>
+										<?php echo _translate("LIS Result Print Date"); ?>
 									</th>
 								</tr>
 							</thead>
@@ -315,6 +315,7 @@ $batResult = $db->rawQuery($batQuery);
 				},
 			],
 			"aaSorting": [
+				[3, "desc"],
 				[0, "asc"]
 			],
 			"bProcessing": true,

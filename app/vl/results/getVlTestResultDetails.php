@@ -1,13 +1,15 @@
 <?php
 
+use App\Utilities\DateUtility;
+use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Utilities\DateUtility;
 
-if (session_status() == PHP_SESSION_NONE) {
-     session_start();
-}
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -117,60 +119,60 @@ for ($i = 0; $i < count($aColumns); $i++) {
  * SQL queries
  * Get data to display
  */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.vl_sample_id,
-vl.sample_code,
-vl.remote_sample,
-vl.remote_sample_code,
-b.batch_code,
-vl.sample_collection_date,
-vl.sample_tested_datetime,
-vl.patient_art_no,
-vl.patient_first_name,
-vl.patient_middle_name,
-vl.patient_last_name,
-f.facility_name,
-f.facility_district,
-f.facility_state,
-testingLab.facility_name as lab_name,
-s.sample_name as sample_name,
-vl.result,
-vl.reason_for_vl_testing,
-vl.last_modified_datetime,
-vl.vl_test_platform,
-vl.result_status,
-vl.requesting_vl_service_sector,
-vl.request_clinician_name,
-vl.requesting_phone,
-vl.patient_responsible_person,
-vl.patient_mobile_number,
-vl.consent_to_receive_sms,
-vl.result_value_log,
-vl.last_vl_date_routine,
-vl.last_vl_date_ecd,
-vl.last_vl_date_failure,
-vl.last_vl_date_failure_ac,
-vl.last_vl_date_cf,
-vl.last_vl_date_if,
-vl.lab_technician,
-vl.patient_gender,
-vl.locked,
-vl.is_encrypted,
-ts.status_name,
-vl.result_approved_datetime,
-vl.result_reviewed_datetime,
-vl.sample_received_at_hub_datetime,
-vl.sample_received_at_lab_datetime,
-vl.result_dispatched_datetime,
-vl.result_printed_datetime,
-vl.result_approved_by,
-b.batch_code
+$sQuery = "SELECT vl.vl_sample_id,
+     vl.sample_code,
+     vl.remote_sample,
+     vl.remote_sample_code,
+     b.batch_code,
+     vl.sample_collection_date,
+     vl.sample_tested_datetime,
+     vl.patient_art_no,
+     vl.patient_first_name,
+     vl.patient_middle_name,
+     vl.patient_last_name,
+     f.facility_name,
+     f.facility_district,
+     f.facility_state,
+     testingLab.facility_name as lab_name,
+     s.sample_name as sample_name,
+     vl.result,
+     vl.reason_for_vl_testing,
+     vl.last_modified_datetime,
+     vl.vl_test_platform,
+     vl.result_status,
+     vl.requesting_vl_service_sector,
+     vl.request_clinician_name,
+     vl.requesting_phone,
+     vl.patient_responsible_person,
+     vl.patient_mobile_number,
+     vl.consent_to_receive_sms,
+     vl.result_value_log,
+     vl.last_vl_date_routine,
+     vl.last_vl_date_ecd,
+     vl.last_vl_date_failure,
+     vl.last_vl_date_failure_ac,
+     vl.last_vl_date_cf,
+     vl.last_vl_date_if,
+     vl.lab_technician,
+     vl.patient_gender,
+     vl.locked,
+     vl.is_encrypted,
+     ts.status_name,
+     vl.result_approved_datetime,
+     vl.result_reviewed_datetime,
+     vl.sample_received_at_hub_datetime,
+     vl.sample_received_at_lab_datetime,
+     vl.result_dispatched_datetime,
+     vl.result_printed_datetime,
+     vl.result_approved_by,
+     b.batch_code
 
-FROM form_vl as vl
-LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
-LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id
-LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
-INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
+     FROM form_vl as vl
+     LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+     LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id
+     LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type
+     INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
 
 $t_start_date = '';
@@ -272,26 +274,18 @@ if (!empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . ' order by ' . $sOrder;
 }
-if (isset($sLimit) && isset($sOffset)) {
-     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-}
-$rResult = $db->rawQuery($sQuery);
 
+[$rResult, $resultCount]  = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
-/* Data set length after filtering */
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-//$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
-$iTotal = $aResultFilterTotal['totalCount'];
-
-$_SESSION['vlResultQueryCount'] = $iTotal;
+$_SESSION['vlResultQueryCount'] = $resultCount;
 
 /*
  * Output
  */
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
-     "iTotalRecords" => $iTotal,
-     "iTotalDisplayRecords" => $iTotal,
+     "iTotalRecords" => $resultCount,
+     "iTotalDisplayRecords" => $resultCount,
      "aaData" => []
 );
 

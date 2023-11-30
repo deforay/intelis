@@ -1,30 +1,14 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
-
-
-$formConfigQuery = "SELECT * FROM global_config";
-$configResult = $db->query($formConfigQuery);
-$gconfig = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($configResult); $i++) {
-	$gconfig[$configResult[$i]['name']] = $configResult[$i]['value'];
-}
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-	$sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
 
@@ -42,8 +26,8 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 } else {
 	$sampleCode = 'sample_code';
 }
-$aColumns = array('vl.' . $sampleCode, "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_received_at_lab_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_mail_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_on_sts_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_on_lis_datetime,'%d-%b-%Y')");
-$orderColumns = array('vl.' . $sampleCode, 'vl.sample_collection_date', 'vl.sample_received_at_lab_datetime', 'vl.sample_tested_datetime', 'vl.result_printed_datetime', 'vl.result_mail_datetime', 'vl.result_printed_on_sts_datetime', 'vl.result_printed_on_lis_datetime');
+$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_received_at_lab_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_mail_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_on_sts_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_on_lis_datetime,'%d-%b-%Y')");
+$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'vl.sample_received_at_lab_datetime', 'vl.sample_tested_datetime', 'vl.result_printed_datetime', 'vl.result_mail_datetime', 'vl.result_printed_on_sts_datetime', 'vl.result_printed_on_lis_datetime');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -117,7 +101,17 @@ for ($i = 0; $i < count($aColumns); $i++) {
  * Get data to display
  */
 $aWhere = '';
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.sample_collection_date,vl.sample_tested_datetime,vl.sample_received_at_lab_datetime,vl.result_printed_datetime,vl.remote_sample_code,vl.external_sample_code,vl.sample_dispatched_datetime,vl.request_created_by,vl.result_printed_on_lis_datetime,vl.result_printed_on_sts_datetime,vl." . $sampleCode . " from form_vl as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date > '1970-01-01')
+$sQuery = "SELECT vl.sample_code,
+				vl.sample_collection_date,
+				vl.sample_tested_datetime,
+				vl.sample_received_at_lab_datetime,
+				vl.result_printed_datetime,
+				vl.remote_sample_code,
+				vl.external_sample_code,
+				vl.sample_dispatched_datetime,
+				vl.request_created_by,
+				vl.result_printed_on_lis_datetime,
+				vl.result_printed_on_sts_datetime from form_vl as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.sample_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where (vl.sample_collection_date > '1970-01-01')
                         AND (vl.sample_tested_datetime > '1970-01-01' )
                         AND vl.result is not null
                         AND vl.result != '' ";
@@ -173,20 +167,16 @@ if (!empty($sOrder)) {
 	$sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
 
-if (isset($sLimit) && isset($sOffset)) {
-	$sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-}
-$rResult = $db->rawQuery($sQuery);
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+
+[$rResult, $resultCount]  = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
 /*
  * Output
  */
 $output = array(
 	"sEcho" => intval($_POST['sEcho']),
-	"iTotalRecords" => $iTotal,
-	"iTotalDisplayRecords" => $iFilteredTotal,
+	"iTotalRecords" => $resultCount,
+	"iTotalDisplayRecords" => $resultCount,
 	"aaData" => []
 );
 
@@ -227,7 +217,7 @@ foreach ($rResult as $aRow) {
 		$aRow['result_printed_on_lis_datetime'] = '';
 	}
 	$row = [];
-	$row[] = $aRow[$sampleCode];
+	$row[] = $aRow['sample_code'];
 	$row[] = $aRow['remote_sample_code'];
 	$row[] = $aRow['external_sample_code'];
 	$row[] = $aRow['sample_collection_date'];

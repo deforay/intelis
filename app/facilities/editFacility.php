@@ -47,9 +47,13 @@ $chkHcResult = $db->rawQuery('SELECT * from testing_lab_health_facilities_map as
 
 $fType = $facilityInfo['facility_type'];
 
-$testTypeInfo = $db->rawQuery('SELECT * FROM testing_labs WHERE facility_id = ?', [$id]);
-$attrValue = json_decode((string) $testTypeInfo[0]['attributes']);
-$availPlatforms = $attrValue->platforms;
+$testTypeInfo = $db->rawQueryOne('SELECT * FROM testing_labs WHERE facility_id = ?', [$id]);
+$availPlatforms = [];
+if (!empty($testTypeInfo)) {
+	$attrValue = json_decode((string) $testTypeInfo['attributes']);
+	$availPlatforms = $attrValue->platforms;
+}
+
 
 
 $signResults = $db->rawQuery('SELECT * FROM lab_report_signatories WHERE lab_id=? ORDER BY display_order, name_of_signatory', array($id));
@@ -210,8 +214,8 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 									<div class="col-lg-7">
 										<select class="form-control" id="allowResultUpload" name="allowResultUpload" title="<?php echo _translate('Please select if this lab can upload test results file'); ?>">
 											<option value=""> <?php echo _translate("-- Select --"); ?> </option>
-											<option <?php if ($facilityAttributes->allow_results_file_upload == 'yes') echo 'selected="selected"'; ?> value="yes">Yes</option>
-											<option <?php if ($facilityAttributes->allow_results_file_upload == 'no') echo 'selected="selected"'; ?> value="no">No</option>
+											<option <?php if (isset($facilityAttributes->allow_results_file_upload) && $facilityAttributes->allow_results_file_upload === 'yes') echo 'selected="selected"'; ?> value="yes">Yes</option>
+											<option <?php if (isset($facilityAttributes->allow_results_file_upload) && $facilityAttributes->allow_results_file_upload === 'no') echo 'selected="selected"'; ?> value="no">No</option>
 										</select>
 									</div>
 								</div>
@@ -403,7 +407,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 											<?php } ?>
 											<?php foreach ($reportFormats['vl'] as $key => $value) {
 												foreach ($value as $k => $v) { ?>
-													<option value="<?php echo $k; ?>" <?php echo ($formats['vl'] == $k) ? "selected='selected'" : ""; ?>><?php echo ($v); ?></option>
+													<option value="<?php echo $k; ?>" <?php echo (!empty($formats) && $formats['vl'] == $k) ? "selected='selected'" : ""; ?>><?php echo ($v); ?></option>
 											<?php
 												}
 											} ?>
@@ -423,7 +427,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 												<option value=""><?php echo _translate("-- Select --"); ?></option>
 											<?php } ?>
 											<?php foreach ($reportFormats['eid'] as $key => $value) { ?>
-												<option value="<?php echo $key; ?>" <?php echo ($formats['eid'] == $key) ? "selected='selected'" : ""; ?>><?php echo ($value); ?></option>
+												<option value="<?php echo $key; ?>" <?php echo (!empty($formats) && $formats['eid'] == $key) ? "selected='selected'" : ""; ?>><?php echo ($value); ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -441,7 +445,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 												<option value=""><?php echo _translate("-- Select --"); ?></option>
 											<?php } ?>
 											<?php foreach ($reportFormats['covid19'] as $key => $value) { ?>
-												<option value="<?php echo $key; ?>" <?php echo ($formats['covid19'] == $key) ? "selected='selected'" : ""; ?>><?php echo ($value); ?></option>
+												<option value="<?php echo $key; ?>" <?php echo (!empty($formats) && $formats['covid19'] == $key) ? "selected='selected'" : ""; ?>><?php echo ($value); ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -459,7 +463,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 												<option value=""><?php echo _translate("-- Select --"); ?></option>
 											<?php } ?>
 											<?php foreach ($reportFormats['hepatitis'] as $key => $value) { ?>
-												<option value="<?php echo $key; ?>" <?php echo ($formats['hepatitis'] == $key) ? "selected='selected'" : ""; ?>><?php echo ($value); ?></option>
+												<option value="<?php echo $key; ?>" <?php echo (!empty($formats) && $formats['hepatitis'] == $key) ? "selected='selected'" : ""; ?>><?php echo ($value); ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -477,7 +481,7 @@ $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo[
 												<option value=""><?php echo _translate("-- Select --"); ?></option>
 											<?php } ?>
 											<?php foreach ($reportFormats['tb'] as $key => $value) { ?>
-												<option value="<?php echo $key; ?>" <?php echo ($formats['tb'] == $key) ? "selected='selected'" : ""; ?>><?php echo ($value); ?></option>
+												<option value="<?php echo $key; ?>" <?php echo (!empty($formats) && $formats['tb'] == $key) ? "selected='selected'" : ""; ?>><?php echo ($value); ?></option>
 											<?php } ?>
 										</select>
 									</div>

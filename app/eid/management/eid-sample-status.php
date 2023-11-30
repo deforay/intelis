@@ -119,14 +119,15 @@ $batResult = $db->rawQuery($batQuery);
 						<table aria-describedby="table" id="eidRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th><?php echo _translate("EID Sample ID"); ?></th>
+									<th><?php echo _translate("Sample ID"); ?></th>
+									<th><?php echo _translate("Remote Sample ID"); ?></th>
 									<th scope="row"><?php echo _translate("Sample Collection Date"); ?></th>
 									<th><?php echo _translate("Sample Received Date in Lab"); ?></th>
 									<th scope="row"><?php echo _translate("Sample Test Date"); ?></th>
 									<th><?php echo _translate("Sample Print Date"); ?></th>
 									<th><?php echo _translate("Sample Email Date"); ?></th>
-									<th><?php echo _translate("First Printed Date From Remote User"); ?></th>
-									<th><?php echo _translate("First Printed Date From Vl User"); ?></th>
+									<th><?php echo _translate("STS Result Print Date"); ?></th>
+									<th><?php echo _translate("LIS Result Print Date"); ?></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -251,8 +252,12 @@ $batResult = $db->rawQuery($batQuery);
 				{
 					"sClass": "center"
 				},
+				{
+					"sClass": "center"
+				}
 			],
 			"aaSorting": [
+				[3, "desc"],
 				[0, "asc"]
 			],
 			"bProcessing": true,

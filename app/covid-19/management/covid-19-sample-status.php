@@ -115,8 +115,8 @@ $batResult = $db->rawQuery($batQuery);
 									<th scope="row"><?php echo _translate("Sample Test Date"); ?></th>
 									<th><?php echo _translate("Sample Print Date"); ?></th>
 									<th><?php echo _translate("Sample Email Date"); ?></th>
-									<th><?php echo _translate("First Printed Date From Remote User"); ?></th>
-									<th><?php echo _translate("First Printed Date From Vl User"); ?></th>
+									<th><?php echo _translate("STS Result Print Date"); ?></th>
+									<th><?php echo _translate("LIS Result Print Date"); ?></th>
 
 								</tr>
 							</thead>

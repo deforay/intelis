@@ -145,7 +145,7 @@ ALTER TABLE `audit_form_tb` CHANGE `sample_received_at_vl_lab_datetime` `sample_
 
 RENAME TABLE `patients` TO `patients_old`;
 -- DROP TABLE IF EXISTS `patients`;
-CREATE TABLE `patients` (
+CREATE TABLE IF NOT EXISTS `patients` (
  `system_patient_code` varchar(43) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
  `is_encrypted` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
  `patient_code_prefix` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,

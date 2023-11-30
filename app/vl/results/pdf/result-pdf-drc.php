@@ -9,10 +9,10 @@ use App\Helpers\PdfConcatenateHelper;
 
 class DRC_PDF extends MYPDF
 {
-	public string $text = '';
+	public $text = '';
 	public $lab = '';
 	public $formId = '';
-	public string $logo = '';
+	public $logo = '';
 	public $labFacilityId = '';
 
 	//Page header
@@ -84,12 +84,12 @@ if (!empty($requestResult)) {
 		}
 		$draftTextShow = false;
 		//Set watermark text
-		for ($m = 0; $m < count($mFieldArray); $m++) {
-			if (!isset($result[$mFieldArray[$m]]) || trim((string) $result[$mFieldArray[$m]]) == '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
-				$draftTextShow = true;
-				break;
-			}
-		}
+		// for ($m = 0; $m < count($mFieldArray); $m++) {
+		// 	if (!isset($result[$mFieldArray[$m]]) || trim((string) $result[$mFieldArray[$m]]) == '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
+		// 		$draftTextShow = true;
+		// 		break;
+		// 	}
+		// }
 		// create new PDF document
 		$pdf = new DRC_PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 		if ($pdf->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {

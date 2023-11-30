@@ -39,7 +39,7 @@ if (!empty($_SESSION['vlTatData']['sOrder'])) {
 }
 $rResult = $db->rawQuery($sQuery);
 
-$headings = array("Sample ID", "Remote Sample ID", "External Sample ID", "Sample Collection Date", "Sample Dispatch Date", "Sample Received Date in Lab", "Sample Test Date", "Sample Print Date", "First Printed Date From Remote User", "First Printed Date From Vl User");
+$headings = array("Sample ID", "Remote Sample ID", "External Sample ID", "Sample Collection Date", "Sample Dispatch Date", "Sample Received Date in Lab", "Sample Test Date", "Sample Print Date", "STS Result Print Date", "LIS Result Print Date");
 
 $colNo = 1;
 
