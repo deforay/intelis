@@ -103,31 +103,31 @@
 
 ## PHP Setup
 
-1. **Install PHP 7.4**:
+1. **Install PHP 8.2**:
 
     ```bash
     sudo -s;
     add-apt-repository ppa:ondrej/php -y;
     apt update;
-    apt -y install php7.4 openssl php7.4-common php7.4-cli \
-    php7.4-json php7.4-common php7.4-mysql php7.4-zip php7.4-gd \
-    php7.4-mbstring php7.4-curl php7.4-xml php7.4-xmlrpc php7.4-bcmath \
-    php7.4-gmp php7.4-zip php7.4-intl php7.4-imagick php-mime-type php7.4-apcu;
+    apt -y install php8.2 openssl php8.2-common php8.2-cli \
+    php8.2-common php8.2-mysql php8.2-zip php8.2-gd \
+    php8.2-mbstring php8.2-curl php8.2-xml php8.2-xmlrpc php8.2-bcmath \
+    php8.2-gmp php8.2-zip php8.2-intl php8.2-imagick php-mime-type php8.2-apcu;
     service apache2 restart;
 
     ```
-2. **Configure PHP 7.4**:
+2. **Configure PHP 8.2**:
 
     ```bash
     # Disable all PHP versions
     sudo -s;
     a2dismod $(ls /etc/apache2/mods-enabled | grep -oP '^php\d\.\d') -f
-    a2enmod php7.4;
+    a2enmod php8.2;
 
-    update-alternatives --set php /usr/bin/php7.4;
-    update-alternatives --set phar /usr/bin/phar7.4;
-    update-alternatives --set phar.phar /usr/bin/phar.phar7.4;
-    echo "apc.enable_cli=1" | tee -a /etc/php/7.4/cli/php.ini;
+    update-alternatives --set php /usr/bin/php8.2;
+    update-alternatives --set phar /usr/bin/phar8.2;
+    update-alternatives --set phar.phar /usr/bin/phar.phar8.2;
+    echo "apc.enable_cli=1" | tee -a /etc/php/8.2/cli/php.ini;
     service apache2 restart;
 
     ```
@@ -143,7 +143,7 @@
     desired_upload_max_filesize="upload_max_filesize = 1G"
     desired_memory_limit="memory_limit = $RAM_75_PERCENT"
 
-    for phpini in /etc/php/7.4/apache2/php.ini /etc/php/7.4/cli/php.ini; do
+    for phpini in /etc/php/8.2/apache2/php.ini /etc/php/8.2/cli/php.ini; do
         awk -v er="$desired_error_reporting" -v pms="$desired_post_max_size" \
             -v umf="$desired_upload_max_filesize" -v ml="$desired_memory_limit" \
             '{

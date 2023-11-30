@@ -70,5 +70,5 @@ try {
 }
 //catch exception
 catch (Exception $e) {
-    echo 'Covid-19 failed-results-retest.php: ' . $e->getMessage();
+    error_log('Covid-19 failed-results-retest.php: ' . $e->getMessage());
 }
