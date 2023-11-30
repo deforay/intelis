@@ -163,10 +163,20 @@ try {
 
             if (!empty($_SESSION['facilityMap'])) {
                 $provinceResult = $db->rawQuery("SELECT DISTINCT f.facility_state_id
-                                                    FROM facility_details as f
-                                                    WHERE f.facility_id IN (" . $_SESSION['facilityMap'] . ")");
-                $_SESSION['mappedProvinces'] = implode(',', array_column($provinceResult, 'facility_state_id'));
+                                                FROM facility_details as f
+                                                WHERE f.facility_id IN (" . $_SESSION['facilityMap'] . ")");
+
+                if (!empty($provinceResult)) {
+                    $provinceResult = array_map(function ($item) {
+                        return $item['facility_state_id'];
+                    }, $provinceResult);
+                    $_SESSION['mappedProvinces'] = implode(',', $provinceResult);
+                } else {
+                    // Handle the case where $provinceResult is not as expected
+                    $_SESSION['mappedProvinces'] = null;
+                }
             }
+
             $_SESSION['crossLoginPass'] = null;
             if (SYSTEM_CONFIG['recency']['crosslogin'] === true && !empty(SYSTEM_CONFIG['recency']['url'])) {
                 $_SESSION['crossLoginPass'] = CommonService::encrypt($_POST['password'], base64_decode((string) SYSTEM_CONFIG['recency']['crossloginSalt']));
