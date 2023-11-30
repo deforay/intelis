@@ -45,7 +45,7 @@
         "slim/slim": "^4.11",
         "slim/psr7": "^1.6",
         "php-di/php-di": "^6.4",
-        "spatie/once": "^2.2",
+        "spatie/once": "^3.1",
         "monolog/monolog": "^2.9",
         "league/csv": "^9.8",
         "ifsnop/mysqldump-php": "^2.12",

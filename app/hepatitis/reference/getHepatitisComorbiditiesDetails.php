@@ -132,7 +132,7 @@ foreach ($rResult as $aRow) {
                </select><br><br>';
     $row = [];
     $row[] = ($aRow['comorbidity_name']);
-    if (isset($_SESSION['privileges']) && in_array("hepatitis-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') {
+    if (!empty($_SESSION['privileges']) && array_key_exists("hepatitis-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') {
         $row[] = $status;
     } else {
         $row[] = ($aRow['comorbidity_status']);

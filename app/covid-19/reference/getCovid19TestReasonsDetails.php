@@ -133,7 +133,7 @@ foreach ($rResult as $aRow) {
                </select><br><br>';
     $row = [];
     $row[] = ($aRow['test_reason_name']);
-    if (isset($_SESSION['privileges']) && in_array("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') {
+    if (!empty($_SESSION['privileges']) && array_key_exists("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') {
         $row[] = $status;
     } else {
         $row[] = ($aRow['test_reason_status']);

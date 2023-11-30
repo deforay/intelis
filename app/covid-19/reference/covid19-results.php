@@ -20,7 +20,7 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (isset($_SESSION['privileges']) && in_array("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
+						<?php if (!empty($_SESSION['privileges']) && array_key_exists("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
 							<a href="add-covid19-results.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Covid-19 Results"); ?></a>
 						<?php } ?>
 					</div>
@@ -31,7 +31,7 @@ require_once APPLICATION_PATH . '/header.php';
 								<tr>
 									<th scope="row"><?php echo _translate("Result Name"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
-									<?php if (isset($_SESSION['privileges']) && in_array("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
+									<?php if (!empty($_SESSION['privileges']) && array_key_exists("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
 										<!-- <th scope="row">Action</th> -->
 									<?php } ?>
 								</tr>

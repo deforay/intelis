@@ -51,7 +51,7 @@ $batResult = $db->rawQuery($batQuery);
 							<td>
 
 								<?php
-								if (isset($_SESSION['privileges']) && in_array("/covid-19/requests/covid-19-add-request.php", $_SESSION['privileges'])) { ?>
+								if (!empty($_SESSION['privileges']) && array_key_exists("/covid-19/requests/covid-19-add-request.php", $_SESSION['privileges'])) { ?>
 									<?php if ($_SESSION['instanceType'] != 'remoteuser') { ?>
 										<a style=" margin: 0px 5px; " href="javascript:receiveDhis2Data();" class="btn btn-success btn-sm pull-right"> <em class="fa-solid fa-download"></em>
 											Receive Test Requests from DHIS2</a>

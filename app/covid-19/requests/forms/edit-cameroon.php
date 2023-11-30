@@ -538,7 +538,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                         <?php }
                                                         } ?>
                                                     </tbody>
-                                                    <!-- < ?php if (isset($_SESSION['privileges']) && in_array("record-final-result.php", $_SESSION['privileges'])) { ?>
+                                                    <!-- < ?php if (!empty($_SESSION['privileges']) && array_key_exists("record-final-result.php", $_SESSION['privileges'])) { ?>
                                                     < ?php }?> -->
                                                     <tfoot>
                                                         <tr>
@@ -604,7 +604,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                     </table>
                                 </div>
                             </div>
-<?php } ?>
+                        <?php } ?>
 
                     </div>
                     <!-- /.box-body -->

@@ -556,7 +556,7 @@ $patientProvince = $patientProvinceInfo[0];
                                                         <?php }
                                                         } ?>
                                                     </tbody>
-                                                    <!-- < ?php if (isset($_SESSION['privileges']) && in_array("record-final-result.php", $_SESSION['privileges'])) { ?>
+                                                    <!-- < ?php if (!empty($_SESSION['privileges']) && array_key_exists("record-final-result.php", $_SESSION['privileges'])) { ?>
                                                     < ?php }?> -->
                                                     <tfoot>
                                                         <tr>
@@ -622,7 +622,7 @@ $patientProvince = $patientProvinceInfo[0];
                                     </table>
                                 </div>
                             </div>
-<?php } ?>
+                        <?php } ?>
 
                     </div>
                     <!-- /.box-body -->

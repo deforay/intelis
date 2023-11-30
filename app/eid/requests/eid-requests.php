@@ -419,7 +419,7 @@ foreach ($srcResults as $list) {
 										</a>
 									<?php }
 								}
-								if (isset($_SESSION['privileges']) && in_array("/eid/requests/export-eid-requests.php", $_SESSION['privileges'])) { ?>
+								if (!empty($_SESSION['privileges']) && array_key_exists("/eid/requests/export-eid-requests.php", $_SESSION['privileges'])) { ?>
 									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllEidRequests();"><em class="fa-solid fa-cloud-arrow-down"></em>
 										<?php echo _translate("Export Excel"); ?>
 									</a>

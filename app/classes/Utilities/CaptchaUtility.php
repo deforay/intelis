@@ -1,15 +1,8 @@
 <?php
 
-/**
- * General functions
- *
- * @author Thana
- */
-
 namespace App\Utilities;
 
 use App\Exceptions\SystemException;
-use Exception;
 
 class CaptchaUtility
 {
@@ -121,7 +114,7 @@ class CaptchaUtility
             }
         }
 
-        srand((float) microtime() * 1000);
+        srand(intval(microtime(true) * 1000));
 
         // Pick random background, get info, and start captcha
         $background = $captchaConfig['png_backgrounds'][random_int(0, count($captchaConfig['png_backgrounds']) - 1)];

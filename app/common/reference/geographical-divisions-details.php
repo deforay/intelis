@@ -21,7 +21,7 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (isset($_SESSION['privileges']) && in_array("add-geographical-divisions.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
+						<?php if (!empty($_SESSION['privileges']) && array_key_exists("add-geographical-divisions.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
 							<a href="add-geographical-divisions.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add New Geographical Divisions"); ?></a>
 						<?php } ?>
 					</div>
@@ -33,7 +33,7 @@ require_once APPLICATION_PATH . '/header.php';
 									<th scope="row"><?php echo _translate("Name"); ?></th>
 									<th scope="row"><?php echo _translate("Code"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
-									<?php if (isset($_SESSION['privileges']) && in_array("geographical-divisions-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
+									<?php if (!empty($_SESSION['privileges']) && array_key_exists("geographical-divisions-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
 										<th scope="row"><?php echo _translate("Action"); ?></th>
 									<?php } ?>
 								</tr>
@@ -80,7 +80,7 @@ require_once APPLICATION_PATH . '/header.php';
 				{
 					"sClass": "center"
 				},
-				<?php if (isset($_SESSION['privileges']) && in_array("geographical-divisions-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?> {
+				<?php if (!empty($_SESSION['privileges']) && array_key_exists("geographical-divisions-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?> {
 						"sClass": "center",
 						"bSortable": false
 					},

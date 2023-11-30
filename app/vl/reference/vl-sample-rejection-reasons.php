@@ -21,7 +21,7 @@ require_once APPLICATION_PATH . '/header.php';
       <div class="col-xs-12">
         <div class="box">
           <div class="box-header with-border">
-            <?php if (isset($_SESSION['privileges']) && in_array("vl-art-code-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
+            <?php if (!empty($_SESSION['privileges']) && array_key_exists("vl-art-code-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
               <a href="add-vl-sample-rejection-reasons.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add VL Sample Rejection Reasons"); ?></a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
@@ -35,7 +35,7 @@ require_once APPLICATION_PATH . '/header.php';
                   <th scope="row"><?php echo _translate("Rejection Reason Type"); ?></th>
                   <th scope="row"><?php echo _translate("Rejection Reason Code"); ?></th>
                   <th scope="row"><?php echo _translate("Rejection Reason Status"); ?></th>
-                  <?php if (isset($_SESSION['privileges']) && in_array("vl-art-code-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
+                  <?php if (!empty($_SESSION['privileges']) && array_key_exists("vl-art-code-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
                     <!-- <th scope="row">Action</th> -->
                   <?php } ?>
                 </tr>

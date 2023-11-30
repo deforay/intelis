@@ -20,7 +20,7 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (isset($_SESSION['privileges']) && in_array("vl-art-code-details.php", $_SESSION['privileges'])) { ?>
+						<?php if (!empty($_SESSION['privileges']) && array_key_exists("vl-art-code-details.php", $_SESSION['privileges'])) { ?>
 							<a href="add-vl-results.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add VL Results"); ?></a>
 						<?php } ?>
 					</div>
@@ -32,7 +32,7 @@ require_once APPLICATION_PATH . '/header.php';
 									<th scope="row"><?php echo _translate("Viral Load Result"); ?></th>
 									<th scope="row"><?php echo _translate("Instruments"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
-									<?php if (isset($_SESSION['privileges']) && in_array("vl-results.php", $_SESSION['privileges'])) { ?>
+									<?php if (!empty($_SESSION['privileges']) && array_key_exists("vl-results.php", $_SESSION['privileges'])) { ?>
 										<th scope="row">Action</th>
 									<?php } ?>
 								</tr>

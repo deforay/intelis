@@ -363,7 +363,7 @@ foreach ($srcResults as $list) {
 									</span></button>
 							</td>
 							<td colspan="4">
-								<?php if (isset($_SESSION['privileges']) && in_array("/covid-19/requests/covid-19-add-request.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
+								<?php if (!empty($_SESSION['privileges']) && array_key_exists("/covid-19/requests/covid-19-add-request.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
 									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 										<?php echo _translate("Add new Covid-19 Request"); ?>
 									</a>
@@ -378,7 +378,7 @@ foreach ($srcResults as $list) {
 										</a>
 									<?php }
 								}
-								if (isset($_SESSION['privileges']) && in_array("/covid-19/requests/export-covid19-requests.php", $_SESSION['privileges'])) { ?>
+								if (!empty($_SESSION['privileges']) && array_key_exists("/covid-19/requests/export-covid19-requests.php", $_SESSION['privileges'])) { ?>
 									<a class="btn btn-success btn-sm" href="javascript:void(0);" style=" float: right; " onclick="exportAllCovid19Requests();"><span>
 											<?php echo _translate("Export Requests"); ?>
 										</span></a>
@@ -391,7 +391,7 @@ foreach ($srcResults as $list) {
 							<td>
 
 								<?php
-								if (isset($_SESSION['privileges']) && in_array("/covid-19/requests/covid-19-add-request.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
+								if (!empty($_SESSION['privileges']) && array_key_exists("/covid-19/requests/covid-19-add-request.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
 									<?php if ($formId == COUNTRY\SOUTH_SUDAN && $_SESSION['instanceType'] != 'remoteuser') { ?>
 										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 											<?= _translate("Quick Add Covid-19 Request"); ?>
@@ -407,7 +407,7 @@ foreach ($srcResults as $list) {
 										</a>
 									<?php }
 								}
-								if (isset($_SESSION['privileges']) && in_array("/covid-19/requests/export-covid19-requests.php", $_SESSION['privileges'])) { ?>
+								if (!empty($_SESSION['privileges']) && array_key_exists("/covid-19/requests/export-covid19-requests.php", $_SESSION['privileges'])) { ?>
 									<button style=" margin: 0px 5px; " class="btn btn-success btn-sm pull-right" style="margin-right:5px;" onclick="exportAllCovid19Requests();"><span>
 											<?= _translate("Export Requests"); ?>
 										</span></button>

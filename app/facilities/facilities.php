@@ -139,7 +139,7 @@ $state = $geolocationService->getProvinces("yes");
             </div>
           </span>
           <div class="box-header with-border">
-            <?php if (isset($_SESSION['privileges']) && in_array("addFacility.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?>
+            <?php if (!empty($_SESSION['privileges']) && array_key_exists("addFacility.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?>
               <a href="upload-facilities.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Bulk Upload"); ?></a>
               <a href="addFacility.php" class="btn btn-primary pull-right" style="margin-right: 10px;"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Facility"); ?></a>
               <a href="mapTestType.php?type=testing-labs" class="btn btn-primary pull-right" style="margin-right: 10px;"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Manage Testing Lab"); ?></a>
@@ -160,7 +160,7 @@ $state = $geolocationService->getProvinces("yes");
                   <th scope="row"><?php echo _translate("Status"); ?></th>
                   <th><?php echo _translate("Province"); ?></th>
                   <th><?php echo _translate("District"); ?></th>
-                  <?php if (isset($_SESSION['privileges']) && in_array("editFacility.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?>
+                  <?php if (!empty($_SESSION['privileges']) && array_key_exists("editFacility.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?>
                     <th><?php echo _translate("Action"); ?></th>
                   <?php } ?>
                 </tr>
@@ -225,7 +225,7 @@ $state = $geolocationService->getProvinces("yes");
         {
           "sClass": "center"
         },
-        <?php if (isset($_SESSION['privileges']) && in_array("editFacility.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?> {
+        <?php if (!empty($_SESSION['privileges']) && array_key_exists("editFacility.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) { ?> {
             "sClass": "center",
             "bSortable": false
           },

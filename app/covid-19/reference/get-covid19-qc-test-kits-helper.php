@@ -145,7 +145,7 @@ foreach ($rResult as $aRow) {
     $row = [];
     $row[] = ($aRow['testkit_name']);
     $row[] = date("d-m-Y H:i:s", strtotime((string) $aRow['updated_datetime']));
-    if (isset($_SESSION['privileges']) && in_array("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') {
+    if (!empty($_SESSION['privileges']) && array_key_exists("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') {
         $row[] = $status;
         $row[] = $edit;
     } else {

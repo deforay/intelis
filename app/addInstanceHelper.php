@@ -1,6 +1,5 @@
 <?php
 
-use Whoops\Util\Misc;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;

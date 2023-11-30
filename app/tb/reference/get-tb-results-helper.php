@@ -131,7 +131,7 @@ foreach ($rResult as $aRow) {
     $row = [];
     $row[] = ($aRow['result']);
     $row[] = ($aRow['result_type']);
-    if (isset($_SESSION['privileges']) && in_array("tb-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') {
+    if (!empty($_SESSION['privileges']) && array_key_exists("tb-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') {
         $row[] = $status;
     } else {
         $row[] = ($aRow['status']);

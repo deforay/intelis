@@ -28,7 +28,6 @@ use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 use App\Services\GeoLocationsService;
-use App\Utilities\ImageResizeUtility;
 use Psr\Container\ContainerInterface;
 use App\HttpHandlers\LegacyRequestHandler;
 use App\Middlewares\Api\ApiAuthMiddleware;
@@ -136,7 +135,6 @@ $builder->addDefinitions([
 // Utilities, Helpers and Other Classes
 $builder->addDefinitions([
     DateUtility::class => DI\create(DateUtility::class),
-    ImageResizeUtility::class => DI\create(ImageResizeUtility::class),
     CaptchaUtility::class => DI\create(CaptchaUtility::class),
     MiscUtility::class => DI\create(MiscUtility::class),
     ValidationUtility::class => DI\create(ValidationUtility::class),

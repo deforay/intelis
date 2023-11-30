@@ -20,7 +20,7 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (isset($_SESSION['privileges']) && in_array("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
+						<?php if (!empty($_SESSION['privileges']) && array_key_exists("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
 							<a href="add-covid19-test-reasons.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Covid-19 Test Reasons"); ?></a>
 						<?php } ?>
 						<!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
@@ -32,7 +32,7 @@ require_once APPLICATION_PATH . '/header.php';
 								<tr>
 									<th scope="row"><?php echo _translate("Test Reason"); ?></th>
 									<th scope="row"><?php echo _translate("Test Reason Status"); ?></th>
-									<?php if (isset($_SESSION['privileges']) && in_array("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
+									<?php if (!empty($_SESSION['privileges']) && array_key_exists("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
 										<!-- <th scope="row">Action</th> -->
 									<?php } ?>
 								</tr>

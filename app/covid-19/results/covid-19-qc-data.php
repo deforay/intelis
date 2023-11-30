@@ -69,7 +69,7 @@ require_once APPLICATION_PATH . '/header.php';
             <div class="col-xs-12">
                 <div class="box">
                     <div class="box-header with-border">
-                        <?php if (isset($_SESSION['privileges']) && in_array("add-covid-19-qc-data.php", $_SESSION['privileges'])) { ?>
+                        <?php if (!empty($_SESSION['privileges']) && array_key_exists("add-covid-19-qc-data.php", $_SESSION['privileges'])) { ?>
                             <a href="add-covid-19-qc-data.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add New Covid-19 QC Data"); ?></a>
                         <?php } ?>
                     </div>
@@ -86,7 +86,7 @@ require_once APPLICATION_PATH . '/header.php';
                                     <th><?php echo _translate("Tester Name"); ?></th>
                                     <th><?php echo _translate("Tested On"); ?></th>
                                     <th><?php echo _translate("Last Modified On"); ?></th>
-                                    <?php if (isset($_SESSION['privileges']) && in_array("edit-covid-19-qc-data.php", $_SESSION['privileges'])) { ?>
+                                    <?php if (!empty($_SESSION['privileges']) && array_key_exists("edit-covid-19-qc-data.php", $_SESSION['privileges'])) { ?>
                                         <th><?php echo _translate("Action"); ?></th>
                                     <?php } ?>
                                 </tr>
@@ -166,7 +166,7 @@ require_once APPLICATION_PATH . '/header.php';
         $('.date').datepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
@@ -176,7 +176,7 @@ require_once APPLICATION_PATH . '/header.php';
         $('.dateTime').datetimepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy' ;?>',
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             maxDate: "Today",
             onChangeMonthYear: function(year, month, widget) {

@@ -21,7 +21,7 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (isset($_SESSION['privileges']) && in_array("geographical-divisions-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
+						<?php if (!empty($_SESSION['privileges']) && array_key_exists("geographical-divisions-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
 							<a href="add-patient.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Patients"); ?></a>
 						<?php } ?>
 					</div>
@@ -37,7 +37,7 @@ require_once APPLICATION_PATH . '/header.php';
 									<th scope="row"><?php echo _translate("Phone Number"); ?></th>
 									<th scope="row"><?php echo _translate("Address"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
-									<th scope="row">Action</th> 
+									<th scope="row">Action</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -116,8 +116,6 @@ require_once APPLICATION_PATH . '/header.php';
 		});
 		$.unblockUI();
 	});
-
-
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';

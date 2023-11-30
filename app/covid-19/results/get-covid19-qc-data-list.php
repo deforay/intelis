@@ -136,7 +136,7 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['user_name']);
     $row[] = date("d-m-Y H:i:s", strtotime((string) $aRow['qc_tested_datetime']));
     $row[] = date("d-m-Y H:i:s", strtotime((string) $aRow['updated_datetime']));
-    if (isset($_SESSION['privileges']) && in_array("edit-covid-19-qc-data.php", $_SESSION['privileges'])) {
+    if (!empty($_SESSION['privileges']) && array_key_exists("edit-covid-19-qc-data.php", $_SESSION['privileges'])) {
         $edit = '<a href="edit-covid-19-qc-data.php?id=' . base64_encode((string) $aRow['qc_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
         $row[] = $edit;
     }

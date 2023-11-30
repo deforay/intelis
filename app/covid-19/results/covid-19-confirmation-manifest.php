@@ -39,7 +39,7 @@ require_once APPLICATION_PATH . '/header.php';
 					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
 						<tr>
 							<td>
-								<?php if (isset($_SESSION['privileges']) && in_array("covid-19-add-confirmation-manifest.php", $_SESSION['privileges'])) { ?>
+								<?php if (!empty($_SESSION['privileges']) && array_key_exists("covid-19-add-confirmation-manifest.php", $_SESSION['privileges'])) { ?>
 									<a href="/covid-19/results/covid-19-add-confirmation-manifest.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> Add new Covid-19 Confirmation Manifest</a>
 								<?php } ?>
 							</td>
@@ -54,7 +54,7 @@ require_once APPLICATION_PATH . '/header.php';
 									<th>Type of Test</th>
 									<th>Number of samples</th>
 									<th>Added On</th>
-									<?php if (isset($_SESSION['privileges']) && in_array("generate-confirmation-manifest.php", $_SESSION['privileges'])) { ?>
+									<?php if (!empty($_SESSION['privileges']) && array_key_exists("generate-confirmation-manifest.php", $_SESSION['privileges'])) { ?>
 										<th>Action</th>
 									<?php } ?>
 								</tr>

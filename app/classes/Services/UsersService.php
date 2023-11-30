@@ -249,10 +249,10 @@ class UsersService
     public function getAuthToken(?string $token, $uId = null): ?array
     {
         $result = $this->getUserByToken($token) ?? null;
-        
+
         if (!empty($result)) {
             $tokenExpiration = $result['api_token_exipiration_days'] ?? 0;
-            
+
             $id = false;
             $data = [];
             // Tokens with expiration = 0 are tokens that never expire

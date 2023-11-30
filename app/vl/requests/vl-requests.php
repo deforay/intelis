@@ -515,7 +515,7 @@ foreach ($srcResults as $list) {
 							<td>
 
 								<?php
-								if (isset($_SESSION['privileges']) && in_array("/vl/requests/addVlRequest.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
+								if (!empty($_SESSION['privileges']) && array_key_exists("/vl/requests/addVlRequest.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
 									<a href="/vl/requests/addVlRequest.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 										<?php echo _translate("Add VL Request Form"); ?>
 									</a>
@@ -524,7 +524,7 @@ foreach ($srcResults as $list) {
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="$('#showhide').fadeToggle();return false;"><span>
 										<?php echo _translate("Manage Columns"); ?>
 									</span></button>
-								<?php if (isset($_SESSION['privileges']) && in_array("/vl/requests/export-vl-requests.php", $_SESSION['privileges'])) { ?>
+								<?php if (!empty($_SESSION['privileges']) && array_key_exists("/vl/requests/export-vl-requests.php", $_SESSION['privileges'])) { ?>
 									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportTestRequests();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
 										<?php echo _translate("Export Excel"); ?>
 									</a>

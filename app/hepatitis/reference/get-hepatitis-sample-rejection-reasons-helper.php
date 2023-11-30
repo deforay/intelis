@@ -145,7 +145,7 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['rejection_reason_name']);
     $row[] = ($aRow['rejection_type']);
     $row[] = ($aRow['rejection_reason_code']);
-    if (isset($_SESSION['privileges']) && in_array("hepatitis-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') {
+    if (!empty($_SESSION['privileges']) && array_key_exists("hepatitis-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') {
         $row[] = $status;
     } else {
         $row[] = ($aRow['rejection_reason_status']);

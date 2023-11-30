@@ -1,11 +1,5 @@
 <?php
 
-/**
- * GeoLocations functions
- *
- * @author Thana
- */
-
 namespace App\Services;
 
 use App\Registries\ContainerRegistry;

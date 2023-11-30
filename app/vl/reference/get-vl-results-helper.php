@@ -140,7 +140,7 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['result']);
     $row[] = $instrumentRes[0]['machine_name'];
 
-    if (isset($_SESSION['privileges']) && in_array("vl-results.php", $_SESSION['privileges'])) {
+    if (!empty($_SESSION['privileges']) && array_key_exists("vl-results.php", $_SESSION['privileges'])) {
         $row[] = $status;
         $row[] = '<a href="edit-vl-results.php?id=' . base64_encode((string) $aRow['result_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
     } else {

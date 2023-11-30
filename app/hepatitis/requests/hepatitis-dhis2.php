@@ -247,12 +247,12 @@ foreach ($srcResults as $list) {
 									</span></button>
 							</td>
 							<td colspan="4">
-								<?php if (isset($_SESSION['privileges']) && in_array("/hepatitis/requests/hepatitis-add-request.php", $_SESSION['privileges'])) { ?>
+								<?php if (!empty($_SESSION['privileges']) && array_key_exists("/hepatitis/requests/hepatitis-add-request.php", $_SESSION['privileges'])) { ?>
 									<a style=" margin: 0px 5px; " href="/hepatitis/requests/hepatitis-add-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 										<?php echo _translate("Add new Hepatitis Request"); ?>
 									</a>
 								<?php } ?>
-								<?php if (isset($_SESSION['privileges']) && in_array("/hepatitis/requests/export-hepatitis-requests.php", $_SESSION['privileges'])) { ?>
+								<?php if (!empty($_SESSION['privileges']) && array_key_exists("/hepatitis/requests/export-hepatitis-requests.php", $_SESSION['privileges'])) { ?>
 									<a class="btn btn-success btn-sm pull-right" href="javascript:void(0);" onclick="exportAllPendingHepatitisRequest();"><span>
 											<?php echo _translate("Export Requests"); ?>
 										</span></a>
@@ -263,12 +263,12 @@ foreach ($srcResults as $list) {
 					<table aria-describedby="table" id="filter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
 						<tr id="">
 							<td>
-								<?php if (isset($_SESSION['privileges']) && in_array("/hepatitis/requests/hepatitis-add-request.php", $_SESSION['privileges'])) { ?>
+								<?php if (!empty($_SESSION['privileges']) && array_key_exists("/hepatitis/requests/hepatitis-add-request.php", $_SESSION['privileges'])) { ?>
 									<a style=" margin: 0px 5px; " href="/hepatitis/requests/hepatitis-add-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 										<?php echo _translate("Add new Hepatitis Request"); ?>
 									</a>
 								<?php }
-								if (isset($_SESSION['privileges']) && in_array("/hepatitis/requests/export-hepatitis-requests.php", $_SESSION['privileges'])) { ?>
+								if (!empty($_SESSION['privileges']) && array_key_exists("/hepatitis/requests/export-hepatitis-requests.php", $_SESSION['privileges'])) { ?>
 									<button style=" margin: 0px 5px; " class="btn btn-success btn-sm pull-right" style="margin-right:5px;" onclick="exportAllPendingHepatitisRequest();"><span>
 											<?php echo _translate("Export Requests"); ?>
 										</span></button>
@@ -285,7 +285,7 @@ foreach ($srcResults as $list) {
 							<td>
 
 								<?php
-								if (isset($_SESSION['privileges']) && in_array("/hepatitis/requests/hepatitis-add-request.php", $_SESSION['privileges'])) { ?>
+								if (!empty($_SESSION['privileges']) && array_key_exists("/hepatitis/requests/hepatitis-add-request.php", $_SESSION['privileges'])) { ?>
 
 									<a style=" margin: 0px 5px; " href="javascript:receiveDhis2Data();" class="btn btn-success btn-sm pull-right"> <em class="fa-solid fa-download"></em>
 										Receive Test Requests from DHIS2</a>
