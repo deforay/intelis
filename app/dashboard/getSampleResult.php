@@ -77,40 +77,43 @@ if (isset($_POST['type']) && trim((string) $_POST['type']) == 'eid') {
     $samplesOverviewChart = "genericTestsSamplesOverviewChart";
 }
 
-if ($_SESSION['instanceType'] != 'remoteuser') {
-    $whereCondition = " result_status!= " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "  AND ";
-} else {
-    $whereCondition = "";
-    if (!empty($_SESSION['facilityMap'])) {
-        if (isset($_POST['type']) && trim((string) $_POST['type']) == 'eid') {
-            $whereCondition = " eid.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
-        } elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'covid19') {
-            $whereCondition = " covid19.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
-        } elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'tb') {
-            $whereCondition = " tb.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
-        } elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'hepatitis') {
-            $whereCondition = " hepatitis.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
-        } elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'generic-tests') {
-            $whereCondition = " generic.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
-        } else {
-            $whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  AND ";
+try {
+
+
+    if ($_SESSION['instanceType'] != 'remoteuser') {
+        $whereCondition = " result_status!= " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "  AND ";
+    } else {
+        $whereCondition = "";
+        if (!empty($_SESSION['facilityMap'])) {
+            if (isset($_POST['type']) && trim((string) $_POST['type']) == 'eid') {
+                $whereCondition = " eid.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
+            } elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'covid19') {
+                $whereCondition = " covid19.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
+            } elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'tb') {
+                $whereCondition = " tb.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
+            } elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'hepatitis') {
+                $whereCondition = " hepatitis.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
+            } elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'generic-tests') {
+                $whereCondition = " generic.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
+            } else {
+                $whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  AND ";
+            }
         }
     }
-}
 
-if (!empty($_POST['sampleCollectionDate'])) {
-    [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-} else {
-    $startDate = date('Y-m-d', strtotime('-7 days'));
-    $endDate = date('Y-m-d');
-}
+    if (!empty($_POST['sampleCollectionDate'])) {
+        [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+    } else {
+        $startDate = date('Y-m-d', strtotime('-7 days'));
+        $endDate = date('Y-m-d');
+    }
 
-$sWhere = '';
+    $sWhere = '';
 
-$currentDateTime = DateUtility::getCurrentDateTime();
-//get waiting data
-if ($table == "form_eid") {
-    $waitingQuery = "SELECT COUNT(unique_id) as total
+    $currentDateTime = DateUtility::getCurrentDateTime();
+    //get waiting data
+    if ($table == "form_eid") {
+        $waitingQuery = "SELECT COUNT(unique_id) as total
                         FROM $table as eid
                         LEFT JOIN facility_details as f ON f.facility_id=eid.facility_id
                         WHERE $whereCondition (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
@@ -118,15 +121,15 @@ if ($table == "form_eid") {
                         AND (eid.is_sample_rejected like 'no'
                                     OR eid.is_sample_rejected is null
                                     OR eid.is_sample_rejected like '' )";
-} elseif ($table == "form_covid19") {
-    $waitingQuery = "SELECT COUNT(unique_id) as total
+    } elseif ($table == "form_covid19") {
+        $waitingQuery = "SELECT COUNT(unique_id) as total
                         FROM $table as covid19
                         LEFT JOIN facility_details as f ON f.facility_id=covid19.facility_id
                         WHERE $whereCondition (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
                         AND (covid19.result is null or covid19.result = '')
                         AND (covid19.is_sample_rejected like 'no' or covid19.is_sample_rejected is null or covid19.is_sample_rejected like '')";
-} elseif ($table == "form_hepatitis") {
-    $waitingQuery = "SELECT COUNT(unique_id) as total
+    } elseif ($table == "form_hepatitis") {
+        $waitingQuery = "SELECT COUNT(unique_id) as total
                         FROM $table as hepatitis
                         LEFT JOIN facility_details as f ON f.facility_id=hepatitis.facility_id
                         WHERE $whereCondition (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
@@ -135,8 +138,8 @@ if ($table == "form_eid") {
                         AND (hepatitis.is_sample_rejected like 'no'
                                 OR hepatitis.is_sample_rejected is null
                                 OR hepatitis.is_sample_rejected like '' )";
-} elseif ($table == "form_tb") {
-    $waitingQuery = "SELECT COUNT(unique_id) as total
+    } elseif ($table == "form_tb") {
+        $waitingQuery = "SELECT COUNT(unique_id) as total
                         FROM $table as tb
                         LEFT JOIN facility_details as f ON f.facility_id=tb.facility_id
                         WHERE $whereCondition (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
@@ -144,21 +147,21 @@ if ($table == "form_eid") {
                         AND (tb.is_sample_rejected like 'no'
                                     OR tb.is_sample_rejected is null
                                     OR tb.is_sample_rejected like '' )";
-} elseif ($table == "form_vl") {
-    if ($whereCondition == "") {
-        $vlWhereCondition = $recencyWhere . " AND ";
-    } else {
-        $vlWhereCondition = $recencyWhere . " AND " . $whereCondition;
-    }
-    $waitingQuery = "SELECT COUNT(unique_id) as total
+    } elseif ($table == "form_vl") {
+        if ($whereCondition == "") {
+            $vlWhereCondition = $recencyWhere . " AND ";
+        } else {
+            $vlWhereCondition = $recencyWhere . " AND " . $whereCondition;
+        }
+        $waitingQuery = "SELECT COUNT(unique_id) as total
                         FROM $table as vl LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id
                         WHERE $vlWhereCondition (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
                         AND (vl.result is null or vl.result = '')
                         AND (vl.is_sample_rejected like 'no'
                                 OR vl.is_sample_rejected is null
                                 OR vl.is_sample_rejected = '' )";
-} elseif ($table == "form_generic") {
-    $waitingQuery = "SELECT COUNT(unique_id) as total
+    } elseif ($table == "form_generic") {
+        $waitingQuery = "SELECT COUNT(unique_id) as total
                         FROM $table as generic
                         LEFT JOIN facility_details as f ON f.facility_id=generic.facility_id
                         WHERE $whereCondition (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
@@ -166,19 +169,19 @@ if ($table == "form_eid") {
                         AND (generic.is_sample_rejected like 'no'
                                     OR generic.is_sample_rejected is null
                                     OR generic.is_sample_rejected like '' )";
-}
+    }
 
-$waitingResult[$i] = $db->rawQuery($waitingQuery); //waiting result
-if ($waitingResult[$i][0]['total'] != 0) {
-    $waitingTotal = $waitingTotal + $waitingResult[$i][0]['total'];
-    $waitingResult[$i]['date'] = $dFormat;
-    $waitingDate = $dFormat;
-} else {
-    unset($waitingResult[$i]);
-}
+    $waitingResult[$i] = $db->rawQuery($waitingQuery); //waiting result
+    if ($waitingResult[$i][0]['total'] != 0) {
+        $waitingTotal = $waitingTotal + $waitingResult[$i][0]['total'];
+        $waitingResult[$i]['date'] = $dFormat;
+        $waitingDate = $dFormat;
+    } else {
+        unset($waitingResult[$i]);
+    }
 
 
-$aggregateQuery = "SELECT COUNT(unique_id) as totalCollected,
+    $aggregateQuery = "SELECT COUNT(unique_id) as totalCollected,
     SUM(CASE WHEN (vl.lab_id is NOT NULL AND vl.sample_tested_datetime is NOT NULL
                         AND vl.result is NOT NULL AND vl.result not like ''
                         AND vl.result_status = 7) THEN 1 ELSE 0 END)
@@ -190,63 +193,93 @@ $aggregateQuery = "SELECT COUNT(unique_id) as totalCollected,
     SUM(CASE WHEN (vl.result_status = 8) THEN 1 ELSE 0 END) as 'awaitingApproval',
     SUM(CASE WHEN (vl.result_status = 9) THEN 1 ELSE 0 END) as 'registeredAtCollectionPoint',
     SUM(CASE WHEN (vl.result_status = 10) THEN 1 ELSE 0 END) as 'expired'
-FROM $table as vl
-INNER JOIN facility_details as f ON f.facility_id=vl.facility_id
-WHERE DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'";
+    FROM $table as vl
+    INNER JOIN facility_details as f ON f.facility_id=vl.facility_id
+    WHERE DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'";
 
-$aggregateResult = $db->rawQueryOne($aggregateQuery);
+    $aggregateResult = $db->rawQueryOne($aggregateQuery);
 
 
 
-// Samples Accession
-if ($table == "form_vl") {
-    $whereCondition = $recencyWhere . " AND " . ($whereCondition ?: "");
-}
-$accessionQuery = 'SELECT DATE(vl.sample_collection_date) as `collection_date`, COUNT(unique_id) as `count` FROM ' . $table . ' as vl LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id WHERE ' . $whereCondition . ' DATE(vl.sample_collection_date) BETWEEN "' . $startDate . '" AND "' . $endDate . '" GROUP BY `collection_date` ORDER BY `collection_date`';
-$tRes = $db->rawQuery($accessionQuery); //overall result
-$tResult = [];
-foreach ($tRes as $tRow) {
-    $receivedTotal += $tRow['count'];
-    $tResult[] = array('total' => $tRow['count'], 'date' => $tRow['collection_date']);
-}
-
-//Samples Tested
-if ($table == "form_vl") {
-    $whereCondition = $recencyWhere . " AND " . ($whereCondition ?: "");
-}
-$sampleTestedQuery = "SELECT DATE(vl.sample_tested_datetime) as `test_date`, COUNT(unique_id) as `count` FROM $table as vl LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id WHERE (result_status = 7) AND $whereCondition DATE(vl.sample_tested_datetime) BETWEEN '$startDate' AND '$endDate' GROUP BY `test_date` ORDER BY `test_date`";
-//echo $sampleTestedQuery; die;
-$tRes = $db->rawQuery($sampleTestedQuery); //overall result
-$acceptedResult = [];
-$acceptedTotal = 0;
-foreach ($tRes as $tRow) {
-    $acceptedTotal += $tRow['count'];
-    $acceptedResult[] = array('total' => $tRow['count'], 'date' => $tRow['test_date']);
-}
-
-//Rejected Samples
-if ($table == "form_vl") {
-    $whereCondition = $recencyWhere . " AND " . ($whereCondition ?: "");
-}
-$sampleRejectedQuery = 'SELECT DATE(vl.sample_collection_date) as `collection_date`, COUNT(unique_id) as `count` FROM ' . $table . ' as vl INNER JOIN facility_details as f ON f.facility_id=vl.facility_id  INNER JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id WHERE (result_status = 4) AND ' . $whereCondition . ' DATE(vl.sample_collection_date) BETWEEN "' . $startDate . '" AND "' . $endDate . '" GROUP BY `collection_date` ORDER BY `collection_date`';
-$tRes = $db->rawQuery($sampleRejectedQuery); //overall result
-$rejectedResult = [];
-foreach ($tRes as $tRow) {
-    $rejectedTotal += $tRow['count'];
-    $rejectedResult[] = array('total' => $tRow['count'], 'date' => $tRow['collection_date']);
-}
-
-//Status counts
-if ($table == "form_covid19") {
-    $statusQuery = 'SELECT s.status_name, DATE(covid19.sample_collection_date) as `collection_date`, COUNT(covid19_id) as `count` FROM r_sample_status AS s INNER JOIN ' . $table . ' as covid19 ON covid19.result_status=s.status_id WHERE DATE(covid19.sample_collection_date) <= "' . $endDate . '" AND DATE(covid19.sample_collection_date) >= "' . $startDate . '" GROUP BY `collection_date` order by `collection_date`';
-    $statusQueryResult = $db->rawQuery($statusQuery); //overall result
-    $statusTotal = 0;
-    foreach ($statusQueryResult as $statusRow) {
-        $statusTotal += $statusRow['count'];
-        $statusResult['date'][$statusRow['collection_date']] = "'" . $statusRow['collection_date'] . "'";
-        $statusResult['status'][$statusRow['status_name']][$statusRow['collection_date']] = $statusRow['count'];
+    // Samples Accession
+    if ($table == "form_vl") {
+        $whereCondition = $recencyWhere . " AND " . ($whereCondition ?: "");
     }
+    $accessionQuery = "SELECT DATE(vl.sample_collection_date) as `collection_date`, COUNT(unique_id) as `count` FROM $table as vl LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id
+                        WHERE $whereCondition DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'
+                        GROUP BY `collection_date`
+                        ORDER BY `collection_date`";
+    $tRes = $db->rawQuery($accessionQuery); //overall result
+    $tResult = [];
+    foreach ($tRes as $tRow) {
+        $receivedTotal += $tRow['count'];
+        $tResult[] = array('total' => $tRow['count'], 'date' => $tRow['collection_date']);
+    }
+
+    //Samples Tested
+    if ($table == "form_vl") {
+        $whereCondition = $recencyWhere . " AND " . ($whereCondition ?: "");
+    }
+    $sampleTestedQuery = "SELECT DATE(vl.sample_tested_datetime) as `test_date`, COUNT(unique_id) as `count`
+                            FROM $table as vl
+                            LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id
+                            LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
+                            WHERE (result_status = 7) AND
+                            $whereCondition
+                            DATE(vl.sample_tested_datetime) BETWEEN '$startDate' AND '$endDate'
+                            GROUP BY `test_date`
+                            ORDER BY `test_date`";
+    //echo $sampleTestedQuery; die;
+    $tRes = $db->rawQuery($sampleTestedQuery); //overall result
+    $acceptedResult = [];
+    $acceptedTotal = 0;
+    foreach ($tRes as $tRow) {
+        $acceptedTotal += $tRow['count'];
+        $acceptedResult[] = array('total' => $tRow['count'], 'date' => $tRow['test_date']);
+    }
+
+    //Rejected Samples
+    if ($table == "form_vl") {
+        $whereCondition = $recencyWhere . " AND " . ($whereCondition ?: "");
+    }
+    $sampleRejectedQuery = "SELECT DATE(vl.sample_collection_date) as `collection_date`, COUNT(unique_id) as `count`
+                            FROM $table as vl INNER JOIN facility_details as f ON f.facility_id=vl.facility_id
+                            INNER JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
+                            WHERE (result_status = 4) AND $whereCondition DATE(vl.sample_collection_date)
+                            BETWEEN '$startDate' AND '$endDate'
+                            GROUP BY `collection_date`
+                            ORDER BY `collection_date`";
+    $tRes = $db->rawQuery($sampleRejectedQuery); //overall result
+    $rejectedResult = [];
+    foreach ($tRes as $tRow) {
+        $rejectedTotal += $tRow['count'];
+        $rejectedResult[] = array('total' => $tRow['count'], 'date' => $tRow['collection_date']);
+    }
+
+    //Status counts
+    if ($table == "form_covid19") {
+        $statusQuery = "SELECT s.status_name, DATE(covid19.sample_collection_date) as `collection_date`, COUNT(covid19_id) as `count`
+                        FROM r_sample_status AS s
+                        INNER JOIN $table as covid19 ON covid19.result_status=s.status_id
+                        WHERE DATE(covid19.sample_collection_date) BETWEEN '$startDate'  AND '$endDate'
+                        GROUP BY `collection_date`
+                        ORDER BY `collection_date`";
+        $statusQueryResult = $db->rawQuery($statusQuery); //overall result
+        $statusTotal = 0;
+        foreach ($statusQueryResult as $statusRow) {
+            $statusTotal += $statusRow['count'];
+            $statusResult['date'][$statusRow['collection_date']] = "'" . $statusRow['collection_date'] . "'";
+            $statusResult['status'][$statusRow['status_name']][$statusRow['collection_date']] = $statusRow['count'];
+        }
+    }
+} catch (Exception $e) {
+    error_log($e->getMessage());
+    error_log($e->getTraceAsString());
 }
+
+
+
+
 ?>
 
 

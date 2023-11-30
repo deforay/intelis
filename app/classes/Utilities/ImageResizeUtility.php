@@ -104,7 +104,7 @@ class ImageResizeUtility
      * @return ImageResizeUtility
      * @throws SystemException
      */
-    public function __construct($filename)
+    public function __construct($filename = null)
     {
         if (!defined('IMAGETYPE_WEBP')) {
             define('IMAGETYPE_WEBP', 18);
@@ -115,7 +115,7 @@ class ImageResizeUtility
         }
 
         if ($filename === null || empty($filename) || (substr($filename, 0, 5) !== 'data:' && !is_file($filename))) {
-            throw new SystemException('File does not exist');
+            error_log('File does not exist');
         }
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
