@@ -30,9 +30,9 @@ try {
     $instanceQuery = "SELECT * FROM s_vlsm_instance";
     $instanceResult = $db->query($instanceQuery);
     $result = '';
-    $id = explode(",", $_POST['value']);
-    $status = explode(",", $_POST['status']);
-    $rejectedReasonId = explode(",", $_POST['rejectReasonId']);
+    $id = explode(",", (string) $_POST['value']);
+    $status = explode(",", (string) $_POST['status']);
+    $rejectedReasonId = explode(",", (string) $_POST['rejectReasonId']);
     if ($_POST['value'] != '') {
         for ($i = 0; $i < count($id); $i++) {
             $sQuery = "SELECT * FROM temp_sample_import
@@ -137,7 +137,7 @@ try {
                     $hepResult = $db->rawQueryOne($query, [$rResult[0]['sample_code']]);
 
 
-                    $testType = strtolower($hepResult['hepatitis_test_type']);
+                    $testType = strtolower((string) $hepResult['hepatitis_test_type']);
                     $resultField = $otherField = null;
                     if ($testType == 'hbv') {
                         $resultField = "hbv_vl_count";
@@ -241,7 +241,7 @@ try {
             $hepResult = $db->rawQueryOne($query, [$accResult[$i]['sample_code']]);
 
 
-            $testType = strtolower($hepResult['hepatitis_test_type']);
+            $testType = strtolower((string) $hepResult['hepatitis_test_type']);
             $resultField = $otherField = null;
             if ($testType == 'hbv') {
                 $resultField = "hbv_vl_count";
@@ -282,7 +282,7 @@ try {
                 $data['result_status'] = $status[$i] ?? 7;
                 $data['is_sample_rejected'] = 'no';
                 $data['reason_for_sample_rejection'] = null;
-                $data[$resultField] = trim($accResult[$i]['result']);
+                $data[$resultField] = trim((string) $accResult[$i]['result']);
             }
 
             //get bacth code\

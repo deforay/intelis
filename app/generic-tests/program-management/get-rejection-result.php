@@ -43,10 +43,10 @@ if (!empty($_POST['sampleCollectionDate'])) {
 
     $sWhere[] = ' vl.is_sample_rejected = "yes" AND DATE(vl.sample_collection_date) <= "' . $end_date . '" AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND reason_for_sample_rejection!="" AND reason_for_sample_rejection IS NOT NULL';
 
-    if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
+    if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
         $sWhere[] = ' vl.sample_type = "' . $_POST['sampleType'] . '"';
     }
-    if (isset($_POST['labName']) && trim($_POST['labName']) != '') {
+    if (isset($_POST['labName']) && trim((string) $_POST['labName']) != '') {
         $sWhere[] = ' vl.lab_id = "' . $_POST['labName'] . '"';
     }
     if (isset($_POST['clinicName']) && is_array($_POST['clinicName']) && count($_POST['clinicName']) > 0) {
@@ -103,7 +103,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
     <tbody>
         <?php if (isset($tableResult) && count($tableResult) > 0) {
             foreach ($tableResult as $tableRow) { ?>
-                <tr data-lab="<?php echo base64_encode($_POST['labName']); ?>" data-facility="<?php echo base64_encode(implode(',', $_POST['clinicName'])); ?>" data-daterange="<?= htmlspecialchars($_POST['sampleCollectionDate']); ?>" data-type="rejection">
+                <tr data-lab="<?php echo base64_encode((string) $_POST['labName']); ?>" data-facility="<?php echo base64_encode(implode(',', $_POST['clinicName'])); ?>" data-daterange="<?= htmlspecialchars((string) $_POST['sampleCollectionDate']); ?>" data-type="rejection">
                     <td>
                         <?php echo ($tableRow['labname']); ?>
                     </td>
@@ -114,7 +114,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                         <?php echo ($tableRow['rejection_reason_name']); ?>
                     </td>
                     <td>
-                        <?php echo strtoupper($tableRow['rejection_type']); ?>
+                        <?php echo strtoupper((string) $tableRow['rejection_type']); ?>
                     </td>
                     <td>
                         <?php echo $tableRow['total']; ?>

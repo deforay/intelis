@@ -9,7 +9,7 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$supportEmail = trim($general->getGlobalConfig('support_email'));
+$supportEmail = trim((string) $general->getGlobalConfig('support_email'));
 
 ?>
 
@@ -97,7 +97,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 	function setCrossLogin() {
 		StorageHelper.storeInSessionStorage('crosslogin', 'true');
 	}
-	<?php if (!empty(trim(SYSTEM_CONFIG['remoteURL'])) && isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?>
+	<?php if (!empty(trim((string) SYSTEM_CONFIG['remoteURL'])) && isset($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') { ?>
 		remoteSync = true;
 
 		function syncRemoteData() {
@@ -250,7 +250,7 @@ $supportEmail = trim($general->getGlobalConfig('support_email'));
 
 			// Every 5 mins check if STS is reachable
 			(function checkSTSConnection() {
-				if (<?= empty(trim(SYSTEM_CONFIG['remoteURL'])) ? 1 : 0 ?>) {
+				if (<?= empty(trim((string) SYSTEM_CONFIG['remoteURL'])) ? 1 : 0 ?>) {
 					$('.is-remote-server-reachable').hide();
 				} else {
 					$.ajax({

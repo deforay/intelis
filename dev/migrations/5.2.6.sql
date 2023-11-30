@@ -144,30 +144,32 @@ ALTER TABLE `audit_form_tb` CHANGE `sample_received_at_vl_lab_datetime` `sample_
 -- ALTER TABLE `patients` ADD UNIQUE(`patient_code`, `patient_gender`, `patient_dob`);
 
 RENAME TABLE `patients` TO `patients_old`;
+-- DROP TABLE IF EXISTS `patients`;
 CREATE TABLE `patients` (
- `system_patient_code` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+ `system_patient_code` varchar(43) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
  `is_encrypted` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
  `patient_code_prefix` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
  `patient_code_key` int DEFAULT NULL,
  `patient_code` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
- `patient_first_name` text COLLATE utf8mb4_general_ci,
- `patient_middle_name` text COLLATE utf8mb4_general_ci,
- `patient_last_name` text COLLATE utf8mb4_general_ci,
+ `patient_first_name` text COLLATE utf8mb4_general_ci DEFAULT NULL,
+ `patient_middle_name` text COLLATE utf8mb4_general_ci DEFAULT NULL,
+ `patient_last_name` text COLLATE utf8mb4_general_ci DEFAULT NULL,
  `patient_gender` varchar(256) COLLATE utf8mb4_general_ci DEFAULT NULL,
  `patient_phone_number` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
  `patient_age_in_years` int DEFAULT NULL,
  `patient_age_in_months` int DEFAULT NULL,
  `patient_dob` date DEFAULT NULL,
- `patient_address` text COLLATE utf8mb4_general_ci,
+ `patient_address` text COLLATE utf8mb4_general_ci DEFAULT NULL,
  `is_patient_pregnant` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
  `is_patient_breastfeeding` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
  `patient_province` int DEFAULT NULL,
  `patient_district` int DEFAULT NULL,
  `status` varchar(11) COLLATE utf8mb4_general_ci DEFAULT NULL,
  `patient_registered_on` datetime DEFAULT NULL,
- `patient_registered_by` text COLLATE utf8mb4_general_ci,
+ `patient_registered_by` text COLLATE utf8mb4_general_ci DEFAULT NULL,
  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
  PRIMARY KEY (`system_patient_code`),
  UNIQUE KEY `patient_code_prefix` (`patient_code_prefix`,`patient_code_key`),
  UNIQUE KEY `single_patient` (`patient_code`,`patient_gender`,`patient_dob`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+

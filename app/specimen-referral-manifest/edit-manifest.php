@@ -39,7 +39,7 @@ foreach ($users as $u) {
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = isset($_GET['id']) ? base64_decode($_GET['id']) : null;
+$id = isset($_GET['id']) ? base64_decode((string) $_GET['id']) : null;
 $m = $module = $_GET['t'] ?? 'vl';
 
 $pQuery = "SELECT * FROM package_details WHERE package_id = ?";
@@ -205,7 +205,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 								<div class="form-group">
 									<label for="packageCode" class="col-lg-4 control-label">Manifest Code <span class="mandatory">*</span></label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<input type="text" class="form-control isRequired" id="packageCode" name="packageCode" placeholder="Manifest Code" title="Please enter manifest code" readonly value="<?php echo strtoupper($pResult['package_code']); ?>" />
+										<input type="text" class="form-control isRequired" id="packageCode" name="packageCode" placeholder="Manifest Code" title="Please enter manifest code" readonly value="<?php echo strtoupper((string) $pResult['package_code']); ?>" />
 									</div>
 								</div>
 							</div>
@@ -334,7 +334,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 			<div class="box-footer">
 				<input type="hidden" name="selectedSample" id="selectedSample" />
 				<input type="hidden" name="packageId" id="packageId" value="<?php echo $pResult['package_id']; ?>" />
-				<input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title="" readonly value="<?= htmlspecialchars($module); ?>" />
+				<input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title="" readonly value="<?= htmlspecialchars((string) $module); ?>" />
 				<a id="packageSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
 				<a href="javascript:history.go(-1);" class="btn btn-default"> Cancel</a>
 			</div>
@@ -379,7 +379,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 		getSampleCodeDetails();
 		$('#daterange').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _translate("Clear"); ?>",
+					cancelLabel: "<?= _translate("Clear", true); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},

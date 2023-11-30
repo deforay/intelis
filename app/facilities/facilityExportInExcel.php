@@ -23,17 +23,17 @@ $excel = new Spreadsheet();
 $output = [];
 $sheet = $excel->getActiveSheet();
 $facilityType = $_POST['facilityType'];
-if (isset($facilityType) && trim($facilityType) != '') {
+if (isset($facilityType) && trim((string) $facilityType) != '') {
 	$sWhere[] = ' f_t.facility_type_id = "' . $_POST['facilityType'] . '"';
 }
-if (isset($_POST['district']) && trim($_POST['district']) != '') {
+if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
 	$sWhere[] = " d.geo_name LIKE '%" . $_POST['district'] . "%' ";
 }
-if (isset($_POST['state']) && trim($_POST['state']) != '') {
+if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
 	$sWhere[] = " p.geo_name LIKE '%" . $_POST['state'] . "%' ";
 }
 $qry = "";
-if (isset($_POST['testType']) && trim($_POST['testType']) != '') {
+if (isset($_POST['testType']) && trim((string) $_POST['testType']) != '') {
 	if (!empty($facilityType)) {
 		if ($facilityType == '2') {
 			$qry = " LEFT JOIN testing_labs tl ON tl.facility_id=f_d.facility_id";
@@ -56,7 +56,7 @@ if (!empty($sWhere)) {
 }
 
 if (!empty($sOrder)) {
-	$sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+	$sOrder = preg_replace('/(\v|\s)+/', ' ', (string) $sOrder);
 	$sQuery = $sQuery . ' order by ' . $sOrder;
 }
 
@@ -73,7 +73,7 @@ $colNo = 1;
 
 $nameValue = '';
 foreach ($_POST as $key => $value) {
-	if (trim($value) != '' && trim($value) != '-- Select --') {
+	if (trim((string) $value) != '' && trim((string) $value) != '-- Select --') {
 		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
 	}
 }
@@ -102,7 +102,7 @@ foreach ($output as $rowNo => $rowData) {
 	$colNo = 1;
 	foreach ($rowData as $field => $value) {
 		$rRowCount = $rowNo + 4;
-		$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
+		$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode((string) $value));
 		$colNo++;
 	}
 }

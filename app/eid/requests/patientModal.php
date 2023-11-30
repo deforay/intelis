@@ -12,7 +12,7 @@ $db = ContainerRegistry::get('db');
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 
-$artNo = urldecode($_GET['artNo']);
+$artNo = urldecode((string) $_GET['artNo']);
 
 $db->join("facility_details fd", "fd.facility_id=vl.facility_id", "LEFT");
 $db->where("child_id LIKE ?", ["%$artNo%"]);
@@ -111,7 +111,7 @@ $pResult = $db->get("form_eid vl", 25, "fd.facility_id,
 								<?php
 								$artNoList = [];
 								foreach ($pResult as $patient) {
-									$value = $patient['child_id'] . strtolower($patient['child_name']) . strtolower($patient['child_surname']) . $patient['mother_age_in_years'] . strtolower($patient['child_gender']) . strtolower($patient['facility_name']);
+									$value = $patient['child_id'] . strtolower((string) $patient['child_name']) . strtolower((string) $patient['child_surname']) . $patient['mother_age_in_years'] . strtolower((string) $patient['child_gender']) . strtolower((string) $patient['facility_name']);
 									//if (!in_array($value, $artNoList)) {
 									$artNoList[] = $value;
 									//$patientDetails = $patient['child_name'] . "##" . $patient['child_surname'] . "##" . $patient['child_gender'] . "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['child_dob']) . "##" . $patient['child_age'] . "##" . $patient['caretaker_phone_number'] .  "##" . $patient['child_id'] .  "##" . $patient['mother_id'] .  "##" . $patient['caretaker_address'] .  "##" . $patient['mother_name'] .  "##" . \App\Utilities\DateUtility::humanReadableDateFormat($patient['mother_dob']) .  "##" . $patient['mother_marital_status'];
@@ -144,7 +144,7 @@ $pResult = $db->get("form_eid vl", 25, "fd.facility_id,
 											<?php echo $patient['child_age']; ?>
 										</td>
 										<td>
-											<?php echo (str_replace("_", " ", $patient['child_gender'])); ?>
+											<?php echo (str_replace("_", " ", (string) $patient['child_gender'])); ?>
 										</td>
 										<td>
 											<?= $patient['facility_name']; ?>

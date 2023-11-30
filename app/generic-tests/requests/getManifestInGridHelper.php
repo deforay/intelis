@@ -68,7 +68,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-     $searchArray = explode(" ", $_POST['sSearch']);
+     $searchArray = explode(" ", (string) $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
           if ($sWhereSub == "") {
@@ -120,7 +120,7 @@ if (!empty($sWhere)) {
           $sWhere = $sWhere . ' AND vl.sample_package_code LIKE "%' . $_POST['samplePackageCode'] . '%" OR remote_sample_code LIKE "' . $_POST['samplePackageCode'] . '"';
      }
 } else {
-     if (isset($_POST['samplePackageCode']) && trim($_POST['samplePackageCode']) != '') {
+     if (isset($_POST['samplePackageCode']) && trim((string) $_POST['samplePackageCode']) != '') {
           $sWhere = ' WHERE ' . $sWhere;
           $sWhere = $sWhere . ' vl.sample_package_code LIKE "%' . $_POST['samplePackageCode'] . '%" OR remote_sample_code LIKE "' . $_POST['samplePackageCode'] . '"';
      }

@@ -31,15 +31,15 @@ foreach ($geResult as $row) {
 $filename = '';
 $downloadFile1 = '';
 $downloadFile2 = '';
-$selectedSamplesArray = !empty($_POST['selectedSamples']) ? json_decode($_POST['selectedSamples'], true) : [];
-if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($selectedSamplesArray)) {
-   if (isset($mailconf['rs_field']) && trim($mailconf['rs_field']) != '') {
+$selectedSamplesArray = !empty($_POST['selectedSamples']) ? json_decode((string) $_POST['selectedSamples'], true) : [];
+if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty($selectedSamplesArray)) {
+   if (isset($mailconf['rs_field']) && trim((string) $mailconf['rs_field']) != '') {
       //Pdf code start
       // create new PDF document
       class MYPDF extends TCPDF
       {
-         public $logo = '';
-         public $text = '';
+         public string $logo = '';
+         public string $text = '';
 
          //Page header
          public function setHeading($logo, $text)
@@ -117,7 +117,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($selecte
       $pdf->AddPage();
       $pdfContent = '';
       $filedGroup = [];
-      $filedGroup = explode(",", $mailconf['rs_field']);
+      $filedGroup = explode(",", (string) $mailconf['rs_field']);
       $pdfContent .= '<table style="width;100%;border:1px solid #333;padding:0px 2px 2px 2px;" cellspacing="0" cellpadding="2">';
       $pdfContent .= '<tr>';
       for ($f = 0; $f < count($filedGroup); $f++) {
@@ -228,15 +228,15 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($selecte
                $fieldValue = '';
                if (!empty($fValueResult)) {
                   if ($field == 'sample_collection_date' || $field == 'sample_received_at_lab_datetime' || $field == 'sample_tested_datetime') {
-                     if (isset($fValueResult[0][$field]) && trim($fValueResult[0][$field]) != '' && trim($fValueResult[0][$field]) != '0000-00-00 00:00:00') {
+                     if (isset($fValueResult[0][$field]) && trim((string) $fValueResult[0][$field]) != '' && trim((string) $fValueResult[0][$field]) != '0000-00-00 00:00:00') {
                         $fieldValue = DateUtility::humanReadableDateFormat($fValueResult[0][$field], true);
                      }
                   } elseif ($field == 'patient_dob' || $field == 'date_of_initiation_of_current_regimen' || $field == 'last_viral_load_date') {
-                     if (isset($fValueResult[0][$field]) && trim($fValueResult[0][$field]) != '' && trim($fValueResult[0][$field]) != '0000-00-00') {
+                     if (isset($fValueResult[0][$field]) && trim((string) $fValueResult[0][$field]) != '' && trim((string) $fValueResult[0][$field]) != '0000-00-00') {
                         $fieldValue = DateUtility::humanReadableDateFormat($fValueResult[0][$field]);
                      }
                   } elseif ($field ==  'vl_test_platform' || $field ==  'patient_gender' || $field == 'is_sample_rejected') {
-                     $fieldValue = (str_replace("_", " ", $fValueResult[0][$field]));
+                     $fieldValue = (str_replace("_", " ", (string) $fValueResult[0][$field]));
                   } elseif ($field ==  'result_reviewed_by') {
                      $fieldValue = (isset($fValueResult[0]['reviewedBy'])) ? $fValueResult[0]['reviewedBy'] : '';
                   } elseif ($field ==  'result_approved_by') {
@@ -259,7 +259,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($selecte
       $pathFront = realpath(TEMP_PATH);
       $filename = 'vlsm-result-' . date('d-M-Y-H-i-s') . '.pdf';
       $pdf->Output($pathFront . DIRECTORY_SEPARATOR . $filename, "F");
-      $downloadFile1 = TEMP_PATH . DIRECTORY_SEPARATOR . (htmlspecialchars($_POST['pdfFile']));
+      $downloadFile1 = TEMP_PATH . DIRECTORY_SEPARATOR . (htmlspecialchars((string) $_POST['pdfFile']));
       $downloadFile2 = TEMP_PATH . DIRECTORY_SEPARATOR . $filename;
    } else {
       $_SESSION['alertMsg'] = 'Unable to generate test result pdf. Please check the result fields.';
@@ -279,7 +279,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($selecte
    <div class="box box-default">
       <div class="box-header with-border">
          <div style="text-align:center;">
-            <h4>Facility Name : <?= htmlspecialchars($_POST['toName']); ?></h4>
+            <h4>Facility Name : <?= htmlspecialchars((string) $_POST['toName']); ?></h4>
          </div>
       </div>
       <div class="box-body">
@@ -311,12 +311,12 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($selecte
                </div>
             </div>
             <div class="row">
-               <input type="hidden" id="subject" name="subject" value="<?php echo htmlspecialchars($_POST['subject']); ?>" />
-               <input type="hidden" id="toEmail" name="toEmail" value="<?php echo htmlspecialchars($_POST['toEmail']); ?>" />
-               <input type="hidden" id="reportEmail" name="reportEmail" value="<?php echo htmlspecialchars($_POST['reportEmail']); ?>" />
-               <input type="hidden" id="message" name="message" value="<?php echo htmlspecialchars($_POST['message']); ?>" />
+               <input type="hidden" id="subject" name="subject" value="<?php echo htmlspecialchars((string) $_POST['subject']); ?>" />
+               <input type="hidden" id="toEmail" name="toEmail" value="<?php echo htmlspecialchars((string) $_POST['toEmail']); ?>" />
+               <input type="hidden" id="reportEmail" name="reportEmail" value="<?php echo htmlspecialchars((string) $_POST['reportEmail']); ?>" />
+               <input type="hidden" id="message" name="message" value="<?php echo htmlspecialchars((string) $_POST['message']); ?>" />
                <input type="hidden" id="sample" name="sample" value="<?php echo implode(',', $resultOlySamples); ?>" />
-               <input type="hidden" id="pdfFile1" name="pdfFile1" value="<?php echo htmlspecialchars($_POST['pdfFile']); ?>" />
+               <input type="hidden" id="pdfFile1" name="pdfFile1" value="<?php echo htmlspecialchars((string) $_POST['pdfFile']); ?>" />
                <input type="hidden" id="pdfFile2" name="pdfFile2" value="<?php echo $filename; ?>" />
                <input type="hidden" id="storeFile" name="storeFile" value="no" />
                <div class="col-lg-12" style="text-align:center;padding-left:0;">

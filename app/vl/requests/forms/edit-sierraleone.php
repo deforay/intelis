@@ -68,7 +68,7 @@ if (!isset($facilityResult[0]['facility_district'])) {
 $rch = '';
 $allChange = [];
 if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_for_vl_result_changes'] != '' && $vlQueryInfo['reason_for_vl_result_changes'] != null) {
-	$allChange = json_decode($vlQueryInfo['reason_for_vl_result_changes'], true);
+	$allChange = json_decode((string) $vlQueryInfo['reason_for_vl_result_changes'], true);
 	if (!empty($allChange)) {
 		$rch .= '<h4>Result Changes History</h4>';
 		$rch .= '<table style="width:100%;">';
@@ -82,7 +82,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 			if (isset($usrResult[0]['user_name'])) {
 				$name = ($usrResult[0]['user_name']);
 			}
-			$expStr = explode(" ", $change['dtime']);
+			$expStr = explode(" ", (string) $change['dtime']);
 			$changedDate = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 			$rch .= '<tr><td>' . $name . '</td><td>' . ($change['msg']) . '</td><td style="text-align:center;">' . $changedDate . '</td></tr>';
 		}
@@ -92,10 +92,10 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 }
 
 //var_dump($vlQueryInfo['sample_received_at_hub_datetime']);die;
-$isGeneXpert = !empty($vlQueryInfo['vl_test_platform']) && (strcasecmp($vlQueryInfo['vl_test_platform'], "genexpert") === 0);
+$isGeneXpert = !empty($vlQueryInfo['vl_test_platform']) && (strcasecmp((string) $vlQueryInfo['vl_test_platform'], "genexpert") === 0);
 
 if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty($vlQueryInfo['result'])) {
-	$vlQueryInfo['result'] = trim(str_ireplace($vlQueryInfo['result_value_hiv_detection'], "", $vlQueryInfo['result']));
+	$vlQueryInfo['result'] = trim(str_ireplace((string) $vlQueryInfo['result_value_hiv_detection'], "", (string) $vlQueryInfo['result']));
 } elseif ($isGeneXpert === true && !empty($vlQueryInfo['result'])) {
 
 	$vlQueryInfo['result_value_hiv_detection'] = null;
@@ -127,18 +127,18 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 
 	$detectedMatching = $general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToSearch);
 	if ($detectedMatching !== false) {
-		$vlQueryInfo['result'] = trim(str_ireplace($detectedMatching, "", $vlQueryInfo['result']));
+		$vlQueryInfo['result'] = trim(str_ireplace((string) $detectedMatching, "", (string) $vlQueryInfo['result']));
 		$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Detected";
 	} else {
 		$notDetectedMatching = $general->checkIfStringExists($vlQueryInfo['result'], $hivNotDetectedStringsToSearch);
 		if ($notDetectedMatching !== false) {
-			$vlQueryInfo['result'] = trim(str_ireplace($notDetectedMatching, "", $vlQueryInfo['result']));
+			$vlQueryInfo['result'] = trim(str_ireplace((string) $notDetectedMatching, "", (string) $vlQueryInfo['result']));
 			$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Not Detected";
 		}
 	}
 }
 $newValue = "";
-$treatmentInd = explode("_", $vlQueryInfo['treatment_indication']);
+$treatmentInd = explode("_", (string) $vlQueryInfo['treatment_indication']);
 if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 	$newValue = $treatmentInd[0];
 	$vlQueryInfo['treatment_indication'] = "Other";
@@ -202,7 +202,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 									<div class="col-xs-4 col-md-4">
 										<div class="form-group">
 											<label for="sampleReordered">
-												<input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim($vlQueryInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> title="Please indicate if this is a reordered sample"> Sample Reordered
+												<input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $vlQueryInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> title="Please indicate if this is a reordered sample"> Sample Reordered
 											</label>
 										</div>
 									</div>
@@ -251,13 +251,13 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 										</div>
 									</div>
 								</div>
-								<div class="row facilityDetails" style="display:<?php echo (trim($facilityResult[0]['facility_emails']) != '' || trim($facilityResult[0]['facility_mobile_numbers']) != '' || trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
-									<div class="col-xs-2 col-md-2 femails" style="display:<?php echo (trim($facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;"><strong>Clinic Email(s)</strong></div>
-									<div class="col-xs-2 col-md-2 femails facilityEmails" style="display:<?php echo (trim($facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;"><?php echo $facilityResult[0]['facility_emails']; ?></div>
-									<div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim($facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;"><strong>Clinic Mobile No.(s)</strong></div>
-									<div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim($facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;"><?php echo $facilityResult[0]['facility_mobile_numbers']; ?></div>
-									<div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;"><strong>Clinic Contact Person -</strong></div>
-									<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;"><?php echo ($facilityResult[0]['contact_person']); ?></div>
+								<div class="row facilityDetails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '' || trim((string) $facilityResult[0]['facility_mobile_numbers']) != '' || trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
+									<div class="col-xs-2 col-md-2 femails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;"><strong>Clinic Email(s)</strong></div>
+									<div class="col-xs-2 col-md-2 femails facilityEmails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;"><?php echo $facilityResult[0]['facility_emails']; ?></div>
+									<div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;"><strong>Clinic Mobile No.(s)</strong></div>
+									<div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;"><?php echo $facilityResult[0]['facility_mobile_numbers']; ?></div>
+									<div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;"><strong>Clinic Contact Person -</strong></div>
+									<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;"><?php echo ($facilityResult[0]['contact_person']); ?></div>
 								</div>
 
 
@@ -270,7 +270,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 												<?php
 												foreach ($implementingPartnerList as $implementingPartner) {
 												?>
-													<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
+													<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
 												<?php } ?>
 											</select>
 										</div>
@@ -283,7 +283,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 												<?php
 												foreach ($fundingSourceList as $fundingSource) {
 												?>
-													<option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
+													<option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
 												<?php } ?>
 											</select>
 										</div>
@@ -378,7 +378,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for="patientPhoneNumber">Phone Number<span class="mandatory">*</span></label>
-											<input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control phone-number isRequired" maxlength="<?php echo strlen($countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="Enter Phone Number" title="Enter phone number" value="<?= ($vlQueryInfo['patient_mobile_number']); ?>" />
+											<input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control phone-number isRequired" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="Enter Phone Number" title="Enter phone number" value="<?= ($vlQueryInfo['patient_mobile_number']); ?>" />
 										</div>
 									</div>
 								</div>
@@ -576,10 +576,10 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 															<label class="radio-inline">
 																<?php
 																$vlTestReasonQueryRow = "SELECT * from r_vl_test_reasons where test_reason_id=? OR test_reason_name = ?";
-																$vlTestReasonResultRow = $db->rawQuery($vlTestReasonQueryRow, [trim($vlQueryInfo['reason_for_vl_testing']), trim($vlQueryInfo['reason_for_vl_testing'])]);
+																$vlTestReasonResultRow = $db->rawQuery($vlTestReasonQueryRow, [trim((string) $vlQueryInfo['reason_for_vl_testing']), trim((string) $vlQueryInfo['reason_for_vl_testing'])]);
 																$checked = '';
 																$display = '';
-																if (trim($vlQueryInfo['reason_for_vl_testing']) == $vlTestReasonResultRow[0]['test_reason_id']) {
+																if (trim((string) $vlQueryInfo['reason_for_vl_testing']) == $vlTestReasonResultRow[0]['test_reason_id']) {
 																	$checked = 'checked="checked"';
 																	$display = 'block';
 																} else {
@@ -598,7 +598,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label">Date of Last VL Test</label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control date viralTestData" id="rmTestingLastVLDate" name="rmTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_routine']) != '' && $vlQueryInfo['last_vl_date_routine'] != null && $vlQueryInfo['last_vl_date_routine'] != '0000-00-00') ? DateUtility::humanReadableDateFormat($vlQueryInfo['last_vl_date_routine']) : ''; ?>" />
+														<input type="text" class="form-control date viralTestData" id="rmTestingLastVLDate" name="rmTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim((string) $vlQueryInfo['last_vl_date_routine']) != '' && $vlQueryInfo['last_vl_date_routine'] != null && $vlQueryInfo['last_vl_date_routine'] != '0000-00-00') ? DateUtility::humanReadableDateFormat($vlQueryInfo['last_vl_date_routine']) : ''; ?>" />
 													</div>
 												</div>
 												<div class="col-md-4">
@@ -630,7 +630,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 																<?php
 																$checked = '';
 																$display = '';
-																if (trim($vlQueryInfo['reason_for_vl_testing']) == 'failure' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'failure') {
+																if (trim((string) $vlQueryInfo['reason_for_vl_testing']) == 'failure' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'failure') {
 																	$checked = 'checked="checked"';
 																	$display = 'block';
 																} else {
@@ -649,7 +649,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label">Date of Last VL Test</label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control date viralTestData" id="repeatTestingLastVLDate" name="repeatTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_failure_ac']) != '' && $vlQueryInfo['last_vl_date_failure_ac'] != null && $vlQueryInfo['last_vl_date_failure_ac'] != '0000-00-00') ? DateUtility::humanReadableDateFormat($vlQueryInfo['last_vl_date_failure_ac']) : ''; ?>" />
+														<input type="text" class="form-control date viralTestData" id="repeatTestingLastVLDate" name="repeatTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim((string) $vlQueryInfo['last_vl_date_failure_ac']) != '' && $vlQueryInfo['last_vl_date_failure_ac'] != null && $vlQueryInfo['last_vl_date_failure_ac'] != '0000-00-00') ? DateUtility::humanReadableDateFormat($vlQueryInfo['last_vl_date_failure_ac']) : ''; ?>" />
 													</div>
 												</div>
 												<div class="col-md-4">
@@ -681,7 +681,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 																<?php
 																$checked = '';
 																$display = '';
-																if (trim($vlQueryInfo['reason_for_vl_testing']) == 'suspect' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'suspect') {
+																if (trim((string) $vlQueryInfo['reason_for_vl_testing']) == 'suspect' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'suspect') {
 																	$checked = 'checked="checked"';
 																	$display = 'block';
 																} else {
@@ -700,7 +700,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label">Date of Last VL Test</label>
 													<div class="col-lg-7">
-														<input type="text" class="form-control date viralTestData" id="suspendTreatmentLastVLDate" name="suspendTreatmentLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_failure']) != '' && $vlQueryInfo['last_vl_date_failure'] != null && $vlQueryInfo['last_vl_date_failure'] != '0000-00-00') ? DateUtility::humanReadableDateFormat($vlQueryInfo['last_vl_date_failure']) : ''; ?>" />
+														<input type="text" class="form-control date viralTestData" id="suspendTreatmentLastVLDate" name="suspendTreatmentLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim((string) $vlQueryInfo['last_vl_date_failure']) != '' && $vlQueryInfo['last_vl_date_failure'] != null && $vlQueryInfo['last_vl_date_failure'] != '0000-00-00') ? DateUtility::humanReadableDateFormat($vlQueryInfo['last_vl_date_failure']) : ''; ?>" />
 													</div>
 												</div>
 												<div class="col-md-4">
@@ -841,7 +841,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 														<select name="rejectionReason" id="rejectionReason" class="form-control labSection" title="Please choose reason" onchange="checkRejectionReason();">
 															<option value="">-- Select --</option>
 															<?php foreach ($rejectionTypeResult as $type) { ?>
-																<optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
+																<optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
 																	<?php
 																	foreach ($rejectionResult as $reject) {
 																		if ($type['rejection_type'] == $reject['rejection_type']) { ?>
@@ -977,7 +977,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 											<div class="col-md-6">
 												<label class="col-lg-5 control-label" for="labComments">Lab Tech. Comments </label>
 												<div class="col-lg-7">
-													<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments" style="width:100%"><?php echo trim($vlQueryInfo['lab_tech_comments']); ?></textarea>
+													<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments" style="width:100%"><?php echo trim((string) $vlQueryInfo['lab_tech_comments']); ?></textarea>
 												</div>
 											</div>
 											<div class="col-md-6 reasonForResultChanges" style="display:none;">
@@ -1000,7 +1000,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 							<input type="hidden" name="revised" id="revised" value="no" />
 							<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= ($vlQueryInfo['vl_sample_id']); ?>" />
 							<input type="hidden" name="isRemoteSample" value="<?= ($vlQueryInfo['remote_sample']); ?>" />
-							<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode($vlQueryInfo['reason_for_vl_result_changes']); ?>" />
+							<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode((string) $vlQueryInfo['reason_for_vl_result_changes']); ?>" />
 							<input type="hidden" name="oldStatus" value="<?= ($vlQueryInfo['result_status']); ?>" />
 							<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 							<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;

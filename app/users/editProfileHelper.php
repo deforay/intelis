@@ -38,16 +38,16 @@ if ($fromRecencyAPI === true) {
     $_POST['password'] = $_POST['t'];
     $userId = null;
 } else {
-    $userId = base64_decode($_POST['userId']);
+    $userId = base64_decode((string) $_POST['userId']);
 }
 
 try {
 
-    if (!empty(trim($_POST['userName']))) {
+    if (!empty(trim((string) $_POST['userName']))) {
 
         if ($fromRecencyAPI === true) {
             $data['user_name'] = $_POST['userName'];
-            $decryptedPassword = CommonService::decrypt($_POST['password'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
+            $decryptedPassword = CommonService::decrypt($_POST['password'], base64_decode((string) SYSTEM_CONFIG['recency']['crossloginSalt']));
             $data['password'] = $decryptedPassword;
             $db->where('user_name', $data['user_name']);
         } else {
@@ -60,17 +60,17 @@ try {
                 'phone_number' => $_POST['phoneNo'],
             ];
 
-            if (isset($_POST['password']) && trim($_POST['password']) != "") {
+            if (isset($_POST['password']) && trim((string) $_POST['password']) != "") {
                 $userRow = $db->rawQueryOne("SELECT `password` FROM user_details as ud WHERE ud.user_id = ?", [$userId]);
-                if (password_verify($_POST['password'], $userRow['password'])) {
+                if (password_verify((string) $_POST['password'], (string) $userRow['password'])) {
                     $_SESSION['alertMsg'] = _translate("Your new password cannot be same as the current password. Please try another password.");
                     header("Location:editProfile.php");
                 }
 
                 if (SYSTEM_CONFIG['recency']['crosslogin']) {
-                    $_SESSION['crossLoginPass']  = $newCrossLoginPassword = CommonService::encrypt($_POST['password'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
+                    $_SESSION['crossLoginPass']  = $newCrossLoginPassword = CommonService::encrypt($_POST['password'], base64_decode((string) SYSTEM_CONFIG['recency']['crossloginSalt']));
                     $client = new Client();
-                    $url = rtrim(SYSTEM_CONFIG['recency']['url'], "/");
+                    $url = rtrim((string) SYSTEM_CONFIG['recency']['url'], "/");
                     $result = $client->post($url . '/api/update-password', [
                         'form_params' => [
                             'u' => $_SESSION['loginId'],

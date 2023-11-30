@@ -48,7 +48,7 @@ try {
         throw new SystemException('Please select a file to upload', 400);
     }
 
-    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename($_FILES['resultFile']['name'])));
+    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $_FILES['resultFile']['name'])));
     $fileName = str_replace(" ", "-", $fileName);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     if (!in_array($extension, $allowedExtensions)) {
@@ -144,7 +144,7 @@ try {
 
             $data = [
                 'module' => 'vl',
-                'lab_id' => base64_decode($_POST['labId']),
+                'lab_id' => base64_decode((string) $_POST['labId']),
                 'vl_test_platform' => $_POST['vltestPlatform'],
                 'import_machine_name' => $_POST['configMachineName'],
                 'result_reviewed_by' => $_SESSION['userId'],

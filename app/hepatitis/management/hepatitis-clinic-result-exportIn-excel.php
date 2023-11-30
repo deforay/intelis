@@ -27,7 +27,7 @@ $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 
-if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) != "") {
+if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralResult']) != "") {
      error_log($_SESSION['highViralResult']);
 
      $output = [];
@@ -45,12 +45,12 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
           //sample collecion date
           $sampleCollectionDate = '';
           $sampleTestDate = '';
-          if ($aRow['sample_collection_date'] != null && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-               $expStr = explode(" ", $aRow['sample_collection_date']);
+          if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+               $expStr = explode(" ", (string) $aRow['sample_collection_date']);
                $sampleCollectionDate = date("d-m-Y", strtotime($expStr[0]));
           }
-          if ($aRow['sample_tested_datetime'] != null && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-               $expStr = explode(" ", $aRow['sample_tested_datetime']);
+          if ($aRow['sample_tested_datetime'] != null && trim((string) $aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+               $expStr = explode(" ", (string) $aRow['sample_tested_datetime']);
                $sampleTestDate = date("d-m-Y", strtotime($expStr[0]));
           }
 
@@ -65,7 +65,7 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
                $row[] = $aRow['remote_sample_code'];
           }
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-               $key = base64_decode($general->getGlobalConfig('key'));
+               $key = base64_decode((string) $general->getGlobalConfig('key'));
                $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
                $patientFname = $general->crypto('decrypt', $patientFname, $key);
           }
@@ -89,7 +89,7 @@ if (isset($_SESSION['highViralResult']) && trim($_SESSION['highViralResult']) !=
                     $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
                     // we dont need the $output variable anymore
                     unset($output);
-                    echo base64_encode($fileName);
+                    echo base64_encode((string) $fileName);
                } else {
                     $excel = new Spreadsheet();
                     $sheet = $excel->getActiveSheet();

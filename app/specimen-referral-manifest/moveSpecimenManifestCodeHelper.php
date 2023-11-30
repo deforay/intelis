@@ -36,7 +36,7 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 try {
-    if (isset($_POST['assignLab']) && trim($_POST['assignLab']) != "" && !empty($_POST['packageCode'])) {
+    if (isset($_POST['assignLab']) && trim((string) $_POST['assignLab']) != "" && !empty($_POST['packageCode'])) {
         $value = array(
             'lab_id'                    => $_POST['assignLab'],
             'referring_lab_id'          => $_POST['testingLab'],

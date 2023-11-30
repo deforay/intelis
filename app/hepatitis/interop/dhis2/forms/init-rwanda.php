@@ -33,7 +33,7 @@ foreach ($initOptionSets as $t => $id) {
 
     $response = $dhis2->get($url, $data);
 
-    $response = json_decode($response, true);
+    $response = json_decode((string) $response, true);
     if (!empty($response) && $t == 'province') {
 
 
@@ -93,7 +93,7 @@ $data[] = "fields=id,level,name,path,coordinates[id,name,parent]";
 $url = "/api/organisationUnits.json";
 
 $response = $dhis2->get($url, $data);
-$response = json_decode($response, true);
+$response = json_decode((string) $response, true);
 
 foreach ($response['organisationUnits'] as $facility) {
 

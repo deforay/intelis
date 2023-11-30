@@ -20,7 +20,7 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $tableName = "rejection_type";
-$value = trim($_POST['value']);
+$value = trim((string) $_POST['value']);
 $data = 0;
 if ($value != '') {
     $rej = "SELECT * FROM rejection_type WHERE rejection_type = ? ";

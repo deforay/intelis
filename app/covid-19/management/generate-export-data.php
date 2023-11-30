@@ -33,7 +33,7 @@ $covid19Results = $covid19Service->getCovid19Results();
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 // echo "<pre>";print_r($arr);die;
-if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery']) != "") {
+if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19ResultQuery']) != "") {
 
 	$rResult = $db->rawQuery($_SESSION['covid19ResultQuery']);
 
@@ -73,7 +73,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 	$sheet->mergeCells('A1:AG1');
 	$nameValue = '';
 	foreach ($_POST as $key => $value) {
-		if (trim($value) != '' && trim($value) != '-- Select --') {
+		if (trim((string) $value) != '' && trim((string) $value) != '-- Select --') {
 			$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
 		}
 	}
@@ -112,11 +112,11 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 
 		//date of birth
 		$dob = '';
-		if ($aRow['patient_dob'] != null && trim($aRow['patient_dob']) != '' && $aRow['patient_dob'] != '0000-00-00') {
-			$dob =  date("d-m-Y", strtotime($aRow['patient_dob']));
+		if ($aRow['patient_dob'] != null && trim((string) $aRow['patient_dob']) != '' && $aRow['patient_dob'] != '0000-00-00') {
+			$dob =  date("d-m-Y", strtotime((string) $aRow['patient_dob']));
 		}
 		//set gender
-		switch (strtolower($aRow['patient_gender'])) {
+		switch (strtolower((string) $aRow['patient_gender'])) {
 			case 'male':
 			case 'm':
 				$gender = 'M';
@@ -136,26 +136,26 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		}
 		//sample collecion date
 		$sampleCollectionDate = '';
-		if ($aRow['sample_collection_date'] != null && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-			$expStr = explode(" ", $aRow['sample_collection_date']);
+		if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+			$expStr = explode(" ", (string) $aRow['sample_collection_date']);
 			$sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
 		}
 
 		$sampleTestedOn = '';
-		if ($aRow['sample_tested_datetime'] != null && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00') {
-			$sampleTestedOn =  date("d-m-Y", strtotime($aRow['sample_tested_datetime']));
+		if ($aRow['sample_tested_datetime'] != null && trim((string) $aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00') {
+			$sampleTestedOn =  date("d-m-Y", strtotime((string) $aRow['sample_tested_datetime']));
 		}
 
 
 		//set sample rejection
 		$sampleRejection = 'No';
-		if (trim($aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim($aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
+		if (trim((string) $aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
 			$sampleRejection = 'Yes';
 		}
 		//result dispatched date
 		$resultDispatchedDate = '';
-		if ($aRow['result_printed_datetime'] != null && trim($aRow['result_printed_datetime']) != '' && $aRow['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
-			$expStr = explode(" ", $aRow['result_printed_datetime']);
+		if ($aRow['result_printed_datetime'] != null && trim((string) $aRow['result_printed_datetime']) != '' && $aRow['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
+			$expStr = explode(" ", (string) $aRow['result_printed_datetime']);
 			$resultDispatchedDate =  date("d-m-Y", strtotime($expStr[0]));
 		}
 
@@ -171,7 +171,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		}
 
 		if (isset($aRow['source_of_alert']) && $aRow['source_of_alert'] != "others") {
-			$sourceOfArtPOE = str_replace("-", " ", $aRow['source_of_alert']);
+			$sourceOfArtPOE = str_replace("-", " ", (string) $aRow['source_of_alert']);
 		} else {
 			$sourceOfArtPOE = $aRow['source_of_alert_other'];
 		}
@@ -194,7 +194,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		$row[] = ($aRow['facility_name']);
 		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
 			if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-				$key = base64_decode($general->getGlobalConfig('key'));
+				$key = base64_decode((string) $general->getGlobalConfig('key'));
 				$aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
 				$patientFname = $general->crypto('decrypt', $patientFname, $key);
 				$patientLname = $general->crypto('decrypt', $patientLname, $key);
@@ -203,7 +203,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 			$row[] = $patientFname . " " . $patientLname;
 		}
 		$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
-		$row[] = ($aRow['patient_age'] != null && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
+		$row[] = ($aRow['patient_age'] != null && trim((string) $aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
 		$row[] = ($aRow['patient_gender']);
 		$row[] = ($aRow['nationality']);
 		$row[] = ($aRow['patient_province']);
@@ -235,7 +235,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		foreach ($rowData as $field => $value) {
 			$sheet->setCellValue(
 				Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-				html_entity_decode($value)
+				html_entity_decode((string) $value)
 			);
 			$colNo++;
 		}

@@ -9,7 +9,7 @@ if (session_status() == PHP_SESSION_NONE) {
 $tableName1 = "roles";
 $tableName2 = "roles_privileges_map";
 try {
-        if (isset($_POST['roleName']) && trim($_POST['roleName']) != "") {
+        if (isset($_POST['roleName']) && trim((string) $_POST['roleName']) != "") {
                 $data = array(
                         'role_name' => $_POST['roleName'],
                         'role_code' => $_POST['roleCode'],

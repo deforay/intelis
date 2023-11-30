@@ -75,7 +75,7 @@ if (isset($_POST['iSortCol_0'])) {
 $sWhere = [];
 
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-     $searchArray = explode(" ", $_POST['sSearch']);
+     $searchArray = explode(" ", (string) $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
           if ($sWhereSub == "") {
@@ -115,11 +115,11 @@ $sQuery = "SELECT * FROM form_vl as vl
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
 
-if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
      $sWhere[] =  '  b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-     if (trim($start_date) == trim($end_date)) {
+     if (trim((string) $start_date) == trim((string) $end_date)) {
           $sWhere[] = '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
      } else {
           $sWhere[] =  '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
@@ -182,7 +182,7 @@ foreach ($rResult as $aRow) {
           $row[] = $aRow['remote_sample_code'];
      }
      if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-          $key = base64_decode($general->getGlobalConfig('key'));
+          $key = base64_decode((string) $general->getGlobalConfig('key'));
           $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
           $patientFname = $general->crypto('decrypt', $patientFname, $key);
           $patientMname = $general->crypto('decrypt', $patientMname, $key);

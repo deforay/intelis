@@ -157,7 +157,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <?php
                                                 foreach ($fundingSourceList as $fundingSource) {
                                                 ?>
-                                                    <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
+                                                    <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -169,7 +169,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <?php
                                                 foreach ($implementingPartnerList as $implementingPartner) {
                                                 ?>
-                                                    <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
+                                                    <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -233,7 +233,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </tr>
                                     <tr>
                                         <th scope="row"><?= _translate('Caretaker phone number'); ?></th>
-                                        <td><input type="text" class="form-control phone-number" id="caretakerPhoneNumber" name="caretakerPhoneNumber" maxlength="<?php echo strlen($countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Caretaker Phone Number'); ?>" title="<?= _translate('Caretaker Phone Number'); ?>" style="width:100%;" /></td>
+                                        <td><input type="text" class="form-control phone-number" id="caretakerPhoneNumber" name="caretakerPhoneNumber" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Caretaker Phone Number'); ?>" title="<?= _translate('Caretaker Phone Number'); ?>" style="width:100%;" /></td>
 
                                         <th scope="row"><?= _translate('Infant caretaker address'); ?></th>
                                         <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="<?= _translate('Caretaker Address'); ?>" title="<?= _translate('Caretaker Address'); ?>" style="width:100%;"></textarea></td>
@@ -510,7 +510,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr>
                                         <th scope="row"><?= _translate('Contact Number'); ?></th>
                                         <td>
-                                            <input class="form-control phone-number" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" maxlength="<?php echo strlen($countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Requesting Officer Phone'); ?>" />
+                                            <input class="form-control phone-number" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Requesting Officer Phone'); ?>" />
                                         </td>
                                     </tr>
                                 </table>
@@ -609,7 +609,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                             <input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="<?php echo $sFormat; ?>" />
                             <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
                             <input type="hidden" name="saveNext" id="saveNext" />
-                            <!-- <input type="hidden" name="pageURL" id="pageURL" value="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" /> -->
+                            <!-- <input type="hidden" name="pageURL" id="pageURL" value="<?php echo htmlspecialchars((string) $_SERVER['PHP_SELF']); ?>" /> -->
                         <?php } ?>
                         <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
                         <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();$('#saveNext').val('next');return false;">Save and Next</a>

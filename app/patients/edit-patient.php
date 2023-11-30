@@ -16,14 +16,14 @@ $state = $geolocationService->getProvinces("yes",true,$_SESSION['facilityMap']);
 
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $patientQuery = "SELECT * FROM patients WHERE patient_id=?";
 $patientQueryInfo = $db->rawQueryOne($patientQuery, [$id]);
 $patientQueryInfo['patient_dob'] = DateUtility::humanReadableDateFormat($patientQueryInfo['patient_dob'] ?? '');
 
 if (!empty($patientQueryInfo['is_encrypted']) && $patientQueryInfo['is_encrypted'] == 'yes') {
-    $key = base64_decode($general->getGlobalConfig('key'));
+    $key = base64_decode((string) $general->getGlobalConfig('key'));
     $patientQueryInfo['patient_code'] = $general->crypto('decrypt', $patientQueryInfo['patient_code'], $key);
     $patientQueryInfo['patient_first_name'] = $general->crypto('decrypt', $patientQueryInfo['patient_first_name'], $key);
     $patientQueryInfo['patient_middle_name'] = $general->crypto('decrypt', $patientQueryInfo['patient_middle_name'], $key);
@@ -216,7 +216,7 @@ if (!empty($patientQueryInfo['is_encrypted']) && $patientQueryInfo['is_encrypted
                                 <div class="form-group">
                                 <label for="patientPhoneNumber" class="col-lg-4 control-label"><?= _translate('Phone Number'); ?> </label>
                                     <div class="col-lg-7">
-                                    <input type="text" value="<?= $patientQueryInfo['patient_phone_number']; ?>" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control phone-number" placeholder="<?= _translate('Enter Phone Number'); ?>" maxlength="<?php echo strlen($countryCode) + (int) $maxNumberOfDigits; ?>" title="<?= _translate('Enter phone number'); ?>" />
+                                    <input type="text" value="<?= $patientQueryInfo['patient_phone_number']; ?>" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control phone-number" placeholder="<?= _translate('Enter Phone Number'); ?>" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" title="<?= _translate('Enter phone number'); ?>" />
                                     </div>
                                 </div>
                             </div>

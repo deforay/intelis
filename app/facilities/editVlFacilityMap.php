@@ -7,7 +7,7 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $vlfmQuery = "SELECT vlfm.*,fd.facility_name FROM testing_lab_health_facilities_map as vlfm JOIN facility_details as fd ON fd.facility_id=vlfm.facility_id where vl_lab_id=" . $id;
 $vlfmResult = $db->rawQuery($vlfmQuery);

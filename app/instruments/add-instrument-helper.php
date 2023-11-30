@@ -23,7 +23,7 @@ $importControlTable = "instrument_controls";
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
-$_POST['configurationName'] = trim($_POST['configurationName']);
+$_POST['configurationName'] = trim((string) $_POST['configurationName']);
 try {
     if (!empty($_POST['configurationName'])) {
 
@@ -68,10 +68,10 @@ try {
         if ($id > 0 && !empty($_POST['configMachineName'])) {
             for ($c = 0; $c < count($_POST['configMachineName']); $c++) {
                 $pocDev = 'no';
-                if (trim($_POST['latitude'][$c]) != '' && trim($_POST['longitude'][$c]) != '') {
+                if (trim((string) $_POST['latitude'][$c]) != '' && trim((string) $_POST['longitude'][$c]) != '') {
                     $pocDev = 'yes';
                 }
-                if (trim($_POST['configMachineName'][$c]) != '') {
+                if (trim((string) $_POST['configMachineName'][$c]) != '') {
                     $configMachineData = array('config_id' => $id, 'config_machine_name' => $_POST['configMachineName'][$c], 'date_format' => !empty($_POST['dateFormat'][$c]) ? $_POST['dateFormat'][$c] : null, 'file_name' => !empty($_POST['fileName'][$c]) ? $_POST['fileName'][$c] : null, 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => DateUtility::getCurrentDateTime());
                     $db->insert($importMachineTable, $configMachineData);
                 }
@@ -80,7 +80,7 @@ try {
 
         if ($id > 0 && !empty($_POST['testType'])) {
             foreach ($_POST['testType'] as $key => $val) {
-                if (trim($val) != '') {
+                if (trim((string) $val) != '') {
                     $configControlData = array('test_type' => $val, 'config_id' => $id, 'number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]);
                     $db->insert($importControlTable, $configControlData);
                 }

@@ -13,7 +13,7 @@ $userName = ($_POST['username']);
 $emailId = ($_POST['email']);
 $loginId = ($_POST['loginid']);
 $password = ($_POST['password']);
-$secretKey = trim($_POST['secretKey']);
+$secretKey = trim((string) $_POST['secretKey']);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);

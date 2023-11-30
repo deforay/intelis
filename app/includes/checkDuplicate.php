@@ -12,7 +12,7 @@ $_POST = $request->getParsedBody();
 
 $tableName = $_POST['tableName'];
 $fieldName = $_POST['fieldName'];
-$value = trim($_POST['value']);
+$value = trim((string) $_POST['value']);
 $fnct = $_POST['fnct'];
 $data = 0;
 $multiple = [];
@@ -28,7 +28,7 @@ if (!empty($value) && !empty($fieldName) && !empty($tableName)) {
         $tableCondition = '';
 
         if (!empty($fnct) && $fnct != 'null') {
-            $table = explode("##", $fnct);
+            $table = explode("##", (string) $fnct);
             $tableCondition = "AND $table[0] != ?";
         }
 

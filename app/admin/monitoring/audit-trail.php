@@ -34,7 +34,7 @@ $activeModules = SystemService::getActiveModules();
 if (isset($_POST['testType'])) {
 	$tableName = $_POST['testType'];
 	$sampleCode = $_POST['sampleCode'];
-	$tableName2 = str_replace('audit_', '', $tableName);
+	$tableName2 = str_replace('audit_', '', (string) $tableName);
 } else {
 	$tableName = "";
 	$sampleCode = "";
@@ -156,7 +156,7 @@ $resultColumn = getColumns($db, $tableName);
 								</td>
 								<td>&nbsp;<strong><?php echo _translate("Sample ID"); ?>&nbsp;:</strong></td>
 								<td>
-									<input type="text" value="<?= htmlspecialchars($_POST['sampleCode']); ?>" name="sampleCode" id="sampleCode" class="form-control" />
+									<input type="text" value="<?= htmlspecialchars((string) $_POST['sampleCode']); ?>" name="sampleCode" id="sampleCode" class="form-control" />
 								</td>
 							<tr>
 								<td colspan="4">&nbsp;<input type="submit" value="<?php echo _translate("Submit"); ?>" class="btn btn-success btn-sm">
@@ -178,7 +178,7 @@ $resultColumn = getColumns($db, $tableName);
 						<!-- /.box-header -->
 						<div class="box-body">
 							<?php if (!empty($posts)) { ?>
-								<h3> Audit Trail for Sample <?php echo htmlspecialchars($sampleCode); ?></h3>
+								<h3> Audit Trail for Sample <?php echo htmlspecialchars((string) $sampleCode); ?></h3>
 								<select name="auditColumn[]" id="auditColumn" class="form-control" multiple="multiple">
 									<?php
 									//echo '<pre>'; print_r($resultColumn); die;
@@ -234,7 +234,7 @@ $resultColumn = getColumns($db, $tableName);
 								</table>
 
 								<p>
-								<h3> Current Record for Sample <?php echo htmlspecialchars($sampleCode); ?></h3>
+								<h3> Current Record for Sample <?php echo htmlspecialchars((string) $sampleCode); ?></h3>
 								</p>
 								<table aria-describedby="table" class="current table table-striped table-hover table-bordered" aria-hidden="true">
 									<thead>

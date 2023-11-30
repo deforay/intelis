@@ -21,7 +21,7 @@ $tableName = "vl_contact_notes";
 
 try {
     $result = '';
-    if (isset($_POST['notes']) && trim($_POST['notes']) != "") {
+    if (isset($_POST['notes']) && trim((string) $_POST['notes']) != "") {
         $data = array(
             'contact_notes' => $_POST['notes'],
             'treament_contact_id' => $_POST['treamentId'],

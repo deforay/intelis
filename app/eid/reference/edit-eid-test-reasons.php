@@ -6,7 +6,7 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
 $testQuery = "SELECT * from r_eid_test_reasons WHERE parent_reason ='0' AND test_reason_id != $id";
@@ -47,7 +47,7 @@ $tstInfo = $db->query($tstQuery);
 									<label for="testReasonName" class="col-lg-4 control-label">Test Reason Name <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control isRequired" id="testReasonName" name="testReasonName" placeholder="Test Reason Name" title="Please enter Test Reason name" value="<?php echo $tstInfo[0]['test_reason_name']; ?>" onblur="checkNameValidation('r_eid_test_reasons','test_reason_name',this,'<?php echo "test_reason_id##" . $id; ?>','The Test Reason name that you entered already exists.Enter another name',null)" />
-										<input type="hidden" class="form-control" id="testReasonId" name="testReasonId" value="<?php echo htmlspecialchars($_GET['id']); ?>" />
+										<input type="hidden" class="form-control" id="testReasonId" name="testReasonId" value="<?php echo $_GET['id']; ?>" />
 									</div>
 								</div>
 							</div>

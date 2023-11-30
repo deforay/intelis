@@ -44,7 +44,7 @@ $title = _translate($title . " | Add Batch Position");
 require_once APPLICATION_PATH . '/header.php';
 
 
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 if (!isset($id) || trim($id) == '') {
 	header("Location:batches.php?type=" . $_GET['type']);
@@ -69,17 +69,17 @@ if (empty($batchInfo)) {
 }
 //Get batch controls order
 $newJsonToArray = [];
-if (isset($configControl[$testType]['noHouseCtrl']) && trim($configControl[$testType]['noHouseCtrl']) != '' && $configControl[$testType]['noHouseCtrl'] > 0) {
+if (isset($configControl[$testType]['noHouseCtrl']) && trim((string) $configControl[$testType]['noHouseCtrl']) != '' && $configControl[$testType]['noHouseCtrl'] > 0) {
 	foreach (range(1, $configControl[$testType]['noHouseCtrl']) as $h) {
 		$newJsonToArray[] = "no_of_in_house_controls_" . $h;
 	}
 }
-if (isset($configControl[$testType]['noManufacturerCtrl']) && trim($configControl[$testType]['noManufacturerCtrl']) != '' && $configControl[$testType]['noManufacturerCtrl'] > 0) {
+if (isset($configControl[$testType]['noManufacturerCtrl']) && trim((string) $configControl[$testType]['noManufacturerCtrl']) != '' && $configControl[$testType]['noManufacturerCtrl'] > 0) {
 	foreach (range(1, $configControl[$testType]['noManufacturerCtrl']) as $m) {
 		$newJsonToArray[] = "no_of_manufacturer_controls_" . $m;
 	}
 }
-if (isset($configControl[$testType]['noCalibrators']) && trim($configControl[$testType]['noCalibrators']) != '' && $configControl[$testType]['noCalibrators'] > 0) {
+if (isset($configControl[$testType]['noCalibrators']) && trim((string) $configControl[$testType]['noCalibrators']) != '' && $configControl[$testType]['noCalibrators'] > 0) {
 	foreach (range(1, $configControl[$testType]['noCalibrators']) as $c) {
 		$newJsonToArray[] = "no_of_calibrators_" . $c;
 	}
@@ -88,11 +88,11 @@ if (isset($configControl[$testType]['noCalibrators']) && trim($configControl[$te
 $machine = intval($batchInfo[0]['machine']);
 $prevLabelQuery = "SELECT label_order from batch_details as b_d WHERE b_d.machine = ? AND b_d.batch_id!= ? ORDER BY b_d.request_created_datetime DESC LIMIT 0,1";
 $prevlabelInfo = $db->rawQuery($prevLabelQuery, [$machine, $id]);
-if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_order']) != '') {
-	$jsonToArray = json_decode($prevlabelInfo[0]['label_order'], true);
+if (isset($prevlabelInfo[0]['label_order']) && trim((string) $prevlabelInfo[0]['label_order']) != '') {
+	$jsonToArray = json_decode((string) $prevlabelInfo[0]['label_order'], true);
 	$prevDisplaySampleArray = [];
 	for ($j = 0; $j < count($jsonToArray); $j++) {
-		$xplodJsonToArray = explode("_", $jsonToArray[$j]);
+		$xplodJsonToArray = explode("_", (string) $jsonToArray[$j]);
 		if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
 			$prevDisplaySampleArray[] = $xplodJsonToArray[1];
 		}
@@ -109,7 +109,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 	$displayNonSampleArray = [];
 	$displaySampleArray = [];
 	for ($j = 0; $j < count($jsonToArray); $j++) {
-		$xplodJsonToArray = explode("_", $jsonToArray[$j]);
+		$xplodJsonToArray = explode("_", (string) $jsonToArray[$j]);
 		if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
 			if (isset($displaySampleOrderArray[$sCount]) && $displaySampleOrderArray[$sCount] > 0) {
 				if ($sCount <= $prevDisplaySampleArray) {
@@ -126,7 +126,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 			if (in_array($jsonToArray[$j], $newJsonToArray)) {
 				$displayOrder[] = $jsonToArray[$j];
 				$displayNonSampleArray[] = $jsonToArray[$j];
-				$label = str_replace("_", " ", $jsonToArray[$j]);
+				$label = str_replace("_", " ", (string) $jsonToArray[$j]);
 				$label = str_replace("in house", "In-House", $label);
 				$label = (str_replace("no of ", " ", $label));
 				$content .= '<li class="ui-state-default" id="' . $jsonToArray[$j] . '">' . $label . '</li>';
@@ -153,19 +153,19 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 		$newContent .= '<li class="ui-state-default" id="s_' . $remainSampleNewArray[$ns] . '">' . $label . '</li>';
 	}
 } else {
-	if (isset($configControl[$testType]['noHouseCtrl']) && trim($configControl[$testType]['noHouseCtrl']) != '' && $configControl[$testType]['noHouseCtrl'] > 0) {
+	if (isset($configControl[$testType]['noHouseCtrl']) && trim((string) $configControl[$testType]['noHouseCtrl']) != '' && $configControl[$testType]['noHouseCtrl'] > 0) {
 		foreach (range(1, $configControl[$testType]['noHouseCtrl']) as $h) {
 			$displayOrder[] = "no_of_in_house_controls_" . $h;
 			$content .= '<li class="ui-state-default" id="no_of_in_house_controls_' . $h . '">In-House Controls ' . $h . '</li>';
 		}
 	}
-	if (isset($configControl[$testType]['noManufacturerCtrl']) && trim($configControl[$testType]['noManufacturerCtrl']) != '' && $configControl[$testType]['noManufacturerCtrl'] > 0) {
+	if (isset($configControl[$testType]['noManufacturerCtrl']) && trim((string) $configControl[$testType]['noManufacturerCtrl']) != '' && $configControl[$testType]['noManufacturerCtrl'] > 0) {
 		foreach (range(1, $configControl[$testType]['noManufacturerCtrl']) as $m) {
 			$displayOrder[] = "no_of_manufacturer_controls_" . $m;
 			$content .= '<li class="ui-state-default" id="no_of_manufacturer_controls_' . $m . '">Manufacturer Controls ' . $m . '</li>';
 		}
 	}
-	if (isset($configControl[$testType]['noCalibrators']) && trim($configControl[$testType]['noCalibrators']) != '' && $configControl[$testType]['noCalibrators'] > 0) {
+	if (isset($configControl[$testType]['noCalibrators']) && trim((string) $configControl[$testType]['noCalibrators']) != '' && $configControl[$testType]['noCalibrators'] > 0) {
 		foreach (range(1, $configControl[$testType]['noCalibrators']) as $c) {
 			$displayOrder[] = "no_of_calibrators_" . $c;
 			$content .= '<li class="ui-state-default" id="no_of_calibrators_' . $c . '">Calibrators ' . $c . '</li>';
@@ -233,7 +233,7 @@ if (isset($prevlabelInfo[0]['label_order']) && trim($prevlabelInfo[0]['label_ord
 						<input type="hidden" name="type" id="type" value="<?php echo $_GET['type']; ?>" />
 						<input type="hidden" name="sortOrders" id="sortOrders" value="<?php echo implode(",", $displayOrder); ?>" />
 						<input type="hidden" name="batchId" id="batchId" value="<?php echo htmlspecialchars($id); ?>" />
-						<input type="hidden" name="positions" id="positions" value="<?php echo htmlspecialchars($_GET['position']); ?>" />
+						<input type="hidden" name="positions" id="positions" value="<?php echo htmlspecialchars((string) $_GET['position']); ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<a href="batches.php?type=<?php echo $_GET['type']; ?>" class="btn btn-default"> Cancel</a>
 					</div>

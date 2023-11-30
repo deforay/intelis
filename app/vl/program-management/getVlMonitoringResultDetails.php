@@ -82,7 +82,7 @@ if (isset($_POST['iSortCol_0'])) {
 $sWhere = [];
 $sWhere[] = " WHERE IFNULL(reason_for_vl_testing, 0)  != 9999 ";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-     $searchArray = explode(" ", $_POST['sSearch']);
+     $searchArray = explode(" ", (string) $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
           if ($sWhereSub == "") {
@@ -146,7 +146,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
 if (!empty($_POST['sampleCollectionDate'])) {
-     if (trim($start_date) == trim($end_date)) {
+     if (trim((string) $start_date) == trim((string) $end_date)) {
           $sWhere[] = '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
      } else {
           $sWhere[] = '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
@@ -156,10 +156,10 @@ if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
      $sWhere[] = ' vl.lab_id = "' . $_POST['facilityName'] . '"';
 }
 
-if (isset($_POST['district']) && trim($_POST['district']) != '') {
+if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
      $sWhere[] = " f.facility_district_id LIKE " . $_POST['district'];
 }
-if (isset($_POST['state']) && trim($_POST['state']) != '') {
+if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
      $sWhere[] = " f.facility_state_id LIKE " . $_POST['state'];
 }
 
@@ -214,7 +214,7 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['sample_code'];
      $row[] = $aRow['batch_code'];
      if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-          $key = base64_decode($general->getGlobalConfig('key'));
+          $key = base64_decode((string) $general->getGlobalConfig('key'));
           $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
           $patientFname = $general->crypto('decrypt', $patientFname, $key);
           $patientMname = $general->crypto('decrypt', $patientMname, $key);

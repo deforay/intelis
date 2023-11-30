@@ -37,7 +37,7 @@ $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 
-if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQuery']) != "") {
+if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExportResultQuery']) != "") {
 
 
 	$output = [];
@@ -65,7 +65,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 		}
 		//set sample rejection
 		$sampleRejection = 'No';
-		if (trim($aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim($aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
+		if (trim((string) $aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
 			$sampleRejection = 'Yes';
 		}
 
@@ -99,7 +99,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 		$row[] = ($aRow['lab_name']);
 		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
 			if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-				$key = base64_decode($general->getGlobalConfig('key'));
+				$key = base64_decode((string) $general->getGlobalConfig('key'));
 				$aRow['child_id'] = $general->crypto('decrypt', $aRow['child_id'], $key);
 				$aRow['child_name'] = $general->crypto('decrypt', $aRow['child_name'], $key);
 				$aRow['mother_id'] = $general->crypto('decrypt', $aRow['mother_id'], $key);
@@ -110,7 +110,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 			$row[] = $aRow['mother_id'];
 		}
 		$row[] = DateUtility::humanReadableDateFormat($aRow['child_dob']);
-		$row[] = ($aRow['child_age'] != null && trim($aRow['child_age']) != '' && $aRow['child_age'] > 0) ? $aRow['child_age'] : 0;
+		$row[] = ($aRow['child_age'] != null && trim((string) $aRow['child_age']) != '' && $aRow['child_age'] > 0) ? $aRow['child_age'] : 0;
 		$row[] = $gender;
 		$row[] = $aRow['has_infant_stopped_breastfeeding'];
 		$row[] = $aRow['pcr_test_performed_before'];
@@ -138,7 +138,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim($_SESSION['eidExportResultQ
 		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
 		// we dont need the $output variable anymore
 		unset($output);
-		echo base64_encode($fileName);
+		echo base64_encode((string) $fileName);
 	} else {
 		$excel = new Spreadsheet();
 		$sheet = $excel->getActiveSheet();

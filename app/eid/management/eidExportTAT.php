@@ -60,7 +60,7 @@ $styleArray = array(
 $sheet->mergeCells('A1:AE1');
 $nameValue = '';
 foreach ($_POST as $key => $value) {
-	if (trim($value) != '' && trim($value) != '-- Select --') {
+	if (trim((string) $value) != '' && trim((string) $value) != '-- Select --') {
 		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
 	}
 }
@@ -105,7 +105,7 @@ foreach ($output as $rowNo => $rowData) {
 	foreach ($rowData as $field => $value) {
 		$sheet->setCellValue(
 			Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-			html_entity_decode($value)
+			html_entity_decode((string) $value)
 		);
 		$colNo++;
 	}

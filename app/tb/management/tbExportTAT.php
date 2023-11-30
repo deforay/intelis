@@ -49,7 +49,7 @@ $styleArray = array(
 $sheet->mergeCells('A1:AE1');
 $nameValue = '';
 foreach ($_POST as $key => $value) {
-	if (trim($value) != '' && trim($value) != '-- Select --') {
+	if (trim((string) $value) != '' && trim((string) $value) != '-- Select --') {
 		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
 	}
 }
@@ -67,11 +67,11 @@ foreach ($rResult as $aRow) {
 	$row = [];
 	//sample collecion date
 	$sampleCollectionDate = '';
-	if ($aRow['sample_collection_date'] != null && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-		$expStr = explode(" ", $aRow['sample_collection_date']);
+	if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+		$expStr = explode(" ", (string) $aRow['sample_collection_date']);
 		$sampleCollectionDate =  DateUtility::humanReadableDateFormat($expStr[0]);
 	}
-	if (isset($aRow['sample_received_at_lab_datetime']) && trim($aRow['sample_received_at_lab_datetime']) != '' && $aRow['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
+	if (isset($aRow['sample_received_at_lab_datetime']) && trim((string) $aRow['sample_received_at_lab_datetime']) != '' && $aRow['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
 		$sampleRecievedDate = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
 	} else {
 		$sampleRecievedDate = '';
@@ -97,7 +97,7 @@ foreach ($output as $rowNo => $rowData) {
 	foreach ($rowData as $field => $value) {
 		$sheet->setCellValue(
 			Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-			html_entity_decode($value)
+			html_entity_decode((string) $value)
 		);
 		$colNo++;
 	}

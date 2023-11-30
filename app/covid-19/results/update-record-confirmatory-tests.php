@@ -57,7 +57,7 @@ $specimenTypeResult = $db->query($sQuery);
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $covid19Query = "SELECT * from form_covid19 where covid19_id=?";
 $covid19Info = $db->rawQueryOne($covid19Query, array($id));

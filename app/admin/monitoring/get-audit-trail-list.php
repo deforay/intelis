@@ -60,7 +60,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-     $searchArray = explode(" ", $_POST['sSearch']);
+     $searchArray = explode(" ", (string) $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
           $sWhereSub .= " (";
@@ -100,14 +100,14 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS a.*, r.display_name,
 
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '');
 
-if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
+if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) != '') {
      $sWhere[] = ' DATE(date_time) BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
 }
-if (isset($_POST['userName']) && trim($_POST['userName']) != '') {
+if (isset($_POST['userName']) && trim((string) $_POST['userName']) != '') {
      $sWhere[] = ' user_id like "' . $_POST['userName'] . '"';
 }
 
-if (isset($_POST['typeOfAction']) && trim($_POST['typeOfAction']) != '') {
+if (isset($_POST['typeOfAction']) && trim((string) $_POST['typeOfAction']) != '') {
      $sWhere[] = ' event_type like "' . $_POST['typeOfAction'] . '"';
 }
 /* Implode all the where fields for filtering the data */

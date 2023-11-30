@@ -97,17 +97,13 @@ class PatientsService
                 $data['system_patient_code'] = $this->commonService->generateUUID();
             }
 
-            $data['patient_first_name'] = (!empty($params['patientFirstName']) ? $params['patientFirstName'] : null);
-            $data['patient_middle_name'] = (!empty($params['patientMiddleName']) ? $params['patientMiddleName'] : null);
-            $data['patient_last_name'] = (!empty($params['patientLastName']) ? $params['patientLastName'] : null);
-
             $data['patient_first_name'] = $params['patientFirstName'] ?? '';
             $data['patient_middle_name'] = $params['patientMiddleName'] ?? '';
             $data['patient_last_name'] = $params['patientLastName'] ?? '';
 
             $data['is_encrypted'] = 'no';
             if (isset($params['encryptPII']) && $params['encryptPII'] == 'yes') {
-                $key = base64_decode($this->commonService->getGlobalConfig('key'));
+                $key = base64_decode((string) $this->commonService->getGlobalConfig('key'));
                 $encryptedPatientId = $this->commonService->crypto('encrypt', $data['patient_code'], $key);
                 $encryptedPatientFirstName = $this->commonService->crypto('encrypt', $data['patient_first_name'], $key);
                 $encryptedPatientMiddleName = $this->commonService->crypto('encrypt', $data['patient_middle_name'], $key);
@@ -180,7 +176,7 @@ class PatientsService
 
         $data['is_encrypted'] = 'no';
         if (isset($params['encryptPII']) && $params['encryptPII'] == 'yes') {
-            $key = base64_decode($this->commonService->getGlobalConfig('key'));
+            $key = base64_decode((string) $this->commonService->getGlobalConfig('key'));
             $encryptedPatientId = $this->commonService->crypto('encrypt', $data['patient_code'], $key);
             $encryptedPatientFirstName = $this->commonService->crypto('encrypt', $data['patient_first_name'], $key);
             $encryptedPatientMiddleName = $this->commonService->crypto('encrypt', $data['patient_middle_name'], $key);

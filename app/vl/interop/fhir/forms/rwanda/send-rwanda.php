@@ -3,12 +3,13 @@
 // this file is included in /vl/interop/fhir/vl-receive.php
 header('Content-Type: application/json');
 
+use App\Interop\Fhir;
+use App\Services\VlService;
+use App\Utilities\MiscUtility;
+use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\VlService;
 use DCarbone\PHPFHIRGenerated\R4\PHPFHIRResponseParser;
-use App\Interop\Fhir;
 
 $interopConfig = require(APPLICATION_PATH . '/../configs/config.interop.php');
 
@@ -74,17 +75,17 @@ foreach ($formResults as $row) {
 
     $testerPhoneNumber = $row['tester_phone_number'] ?: "Unknown";
 
-    $formAttributes = json_decode($row['form_attributes'], true);
+    $formAttributes = json_decode((string) $row['form_attributes'], true);
 
 
     $db->where("facility_id", $row['facility_id']);
     $facilityRow = $db->getOne("facility_details");
-    $facilityAttributes = json_decode($facilityRow['facility_attributes'], true);
+    $facilityAttributes = json_decode((string) $facilityRow['facility_attributes'], true);
     $fhirFacilityId = $facilityAttributes['facility_fhir_id'];
 
     $db->where("facility_id", $row['lab_id']);
     $labRow = $db->getOne("facility_details");
-    $labAttributes = json_decode($labRow['facility_attributes'], true);
+    $labAttributes = json_decode((string) $labRow['facility_attributes'], true);
     $fhirLabId = $labAttributes['facility_fhir_id'];
 
     if (($row['is_sample_rejected'] === 'no') && $row['result'] !== null) {
@@ -115,4 +116,4 @@ $response = json_encode(array('timestamp' => time(), 'processed' => $counter, 'r
 
 $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'FHIR-VL-Send', 'vl', $fhir->getRequestUrl(), $json, null, 'json');
 
-echo $general->prettyJson($response);
+echo MiscUtility::prettyJson($response);

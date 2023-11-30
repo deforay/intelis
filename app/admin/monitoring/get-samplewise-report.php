@@ -101,7 +101,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", $_POST['sSearch']);
+    $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
         $sWhereSub .= " (";
@@ -155,26 +155,26 @@ $sQuery = "SELECT
 
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '');
 
-if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
+if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) != '') {
     $sWhere[] = ' DATE(vl.request_created_datetime) BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
 }
-if (isset($_POST['labName']) && trim($_POST['labName']) != '') {
+if (isset($_POST['labName']) && trim((string) $_POST['labName']) != '') {
     $sWhere[] = ' vl.lab_id IN (' . $_POST['labName'] . ')';
 }
-if (isset($_POST['state']) && trim($_POST['state']) != '') {
+if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
     $provinceId = implode(',', $_POST['state']);
     $sWhere[] = ' f.facility_state_id  IN (' . $provinceId . ')';
 }
-if (isset($_POST['district']) && trim($_POST['district']) != '') {
+if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
     $districtId = implode(',', $_POST['district']);
     $sWhere[] = ' f.facility_district_id  IN (' . $districtId . ')';
 }
-if (isset($_POST['facilityId']) && trim($_POST['facilityId']) != '') {
+if (isset($_POST['facilityId']) && trim((string) $_POST['facilityId']) != '') {
     $facilityId = implode(',', $_POST['facilityId']);
     $sWhere[] = ' vl.facility_id  IN (' . $facilityId . ')';
 }
 
-if (isset($_POST['srcRequest']) && trim($_POST['srcRequest']) != '') {
+if (isset($_POST['srcRequest']) && trim((string) $_POST['srcRequest']) != '') {
     $sWhere[] = ' vl.source_of_request = "' . $_POST['srcRequest'] . '"';
 }
 

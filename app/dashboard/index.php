@@ -470,7 +470,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate,#tbSampleCollectionDate,#genericTestsSampleCollectionDate').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _translate("Clear"); ?>",
+					cancelLabel: "<?= _translate("Clear", true); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},
@@ -778,7 +778,7 @@ require_once APPLICATION_PATH . '/header.php';
 	function resetSearchVlRequestData(requestType) {
 		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#recencySampleCollectionDate,#tbSampleCollectionDate,#genericTestsSampleCollectionDate').daterangepicker({
 			locale: {
-				cancelLabel: "<?= _translate("Clear"); ?>",
+				cancelLabel: "<?= _translate("Clear", true); ?>",
 				format: 'DD-MMM-YYYY',
 				separator: ' to ',
 			},
@@ -820,7 +820,7 @@ require_once APPLICATION_PATH . '/header.php';
 				if (data['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span>' + data['aaData'].length + ' <?= addslashes(_translate("EID testing lab(s) did not meet the monthly test target")); ?>. </span><a href="/eid/management/eidTestingTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
+							<span>' + data['aaData'].length + ' <?= addslashes((string) _translate("EID testing lab(s) did not meet the monthly test target")); ?>. </span><a href="/eid/management/eidTestingTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
 							</div>';
 					$("#contEid").html(div);
 				}
@@ -844,7 +844,7 @@ require_once APPLICATION_PATH . '/header.php';
 				if (data['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span>' + data['aaData'].length + ' <?= addslashes(_translate("VL testing lab(s) did not meet the monthly test target")); ?>. </span><a href="/vl/program-management/vlTestingTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
+							<span>' + data['aaData'].length + ' <?= addslashes((string) _translate("VL testing lab(s) did not meet the monthly test target")); ?>. </span><a href="/vl/program-management/vlTestingTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
 							</div>';
 					$("#cont").html(div);
 				}
@@ -867,7 +867,7 @@ require_once APPLICATION_PATH . '/header.php';
 				if (data == 1) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span> <?= addslashes(_translate("VL testing lab(s) did not meet suppression targets")); ?> </span><a href="/vl/program-management/vlSuppressedTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
+							<span> <?= addslashes((string) _translate("VL testing lab(s) did not meet suppression targets")); ?> </span><a href="/vl/program-management/vlSuppressedTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
 							</div>';
 					$("#contVl").html(div);
 				}
@@ -891,7 +891,7 @@ require_once APPLICATION_PATH . '/header.php';
 				if (data['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span >' + data['aaData'].length + ' <?= addslashes(_translate("Covid-19 testing lab(s) did not meet the monthly test target")); ?>.  </span><a href="/covid-19/management/covid19TestingTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
+							<span >' + data['aaData'].length + ' <?= addslashes((string) _translate("Covid-19 testing lab(s) did not meet the monthly test target")); ?>.  </span><a href="/covid-19/management/covid19TestingTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
 							</div>';
 					$("#contCovid").html(div);
 				}
@@ -915,7 +915,7 @@ require_once APPLICATION_PATH . '/header.php';
 				if (data['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-				<span >' + data['aaData'].length + ' <?= addslashes(_translate("Hepatitis testing lab(s) did not meet the monthly test target")); ?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
+				<span >' + data['aaData'].length + ' <?= addslashes((string) _translate("Hepatitis testing lab(s) did not meet the monthly test target")); ?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
 				</div>';
 					$("#contCovid").html(div);
 				}
@@ -936,7 +936,7 @@ require_once APPLICATION_PATH . '/header.php';
 				if (data['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-				<span >' + data['aaData'].length + ' <?= addslashes(_translate("TB testing lab(s) did not meet the monthly test target")); ?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
+				<span >' + data['aaData'].length + ' <?= addslashes((string) _translate("TB testing lab(s) did not meet the monthly test target")); ?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
 				</div>';
 					$("#contCovid").html(div);
 				}

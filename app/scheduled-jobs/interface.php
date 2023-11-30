@@ -151,8 +151,8 @@ if (!empty($interfaceData)) {
             $instrumentDetails = $db->rawQueryOne($sql, [$result['machine_used']]);
         }
 
-        $approved = !empty($instrumentDetails['approved_by']) ? json_decode($instrumentDetails['approved_by'], true) : [];
-        $reviewed = !empty($instrumentDetails['reviewed_by']) ? json_decode($instrumentDetails['reviewed_by'], true) : [];
+        $approved = !empty($instrumentDetails['approved_by']) ? json_decode((string) $instrumentDetails['approved_by'], true) : [];
+        $reviewed = !empty($instrumentDetails['reviewed_by']) ? json_decode((string) $instrumentDetails['reviewed_by'], true) : [];
 
         if (isset($tableInfo['vl_sample_id'])) {
 
@@ -162,12 +162,13 @@ if (!empty($interfaceData)) {
             $absVal = null;
             $logVal = null;
             $txtVal = null;
+            $vlResult = null;
             //set result in result fields
-            if (trim($result['results']) != "") {
+            if (trim((string) $result['results']) != "") {
 
-                $vlResult = trim(str_ireplace(['cp/ml', 'copies/ml'], '', $result['results']));
+                $vlResult = trim(str_ireplace(['cp/ml', 'copies/ml'], '', (string) $result['results']));
 
-                $unit = trim($result['test_unit']);
+                $unit = trim((string) $result['test_unit']);
 
                 if ($vlResult == "-1.00") {
                     $vlResult = "Target Not Detected";
@@ -194,8 +195,8 @@ if (!empty($interfaceData)) {
 
             $testedByUserId = $approvedByUserId = $reviewedByUserId = null;
             // if ^ exists it means the Operator Name has both tester and releaser name
-            if (strpos(strtolower($result['tested_by']), '^') !== false) {
-                $operatorArray = explode("^", $result['tested_by']);
+            if (strpos(strtolower((string) $result['tested_by']), '^') !== false) {
+                $operatorArray = explode("^", (string) $result['tested_by']);
                 $tester = $operatorArray[0];
                 $testedByUserId = $usersService->getOrCreateUser($tester);
             } else {
@@ -224,7 +225,7 @@ if (!empty($interfaceData)) {
                 'data_sync' => 0
             ];
 
-            if (strtolower($vlResult) == 'failed' || strtolower($vlResult) == 'fail' || strtolower($vlResult) == 'invalid' || strtolower($vlResult) == 'inconclusive') {
+            if (strtolower((string) $vlResult) == 'failed' || strtolower((string) $vlResult) == 'fail' || strtolower((string) $vlResult) == 'invalid' || strtolower((string) $vlResult) == 'inconclusive') {
                 $data['result_status'] = SAMPLE_STATUS\TEST_FAILED; // Invalid
             }
 
@@ -268,11 +269,11 @@ if (!empty($interfaceData)) {
             $logVal = null;
             $txtVal = null;
             //set result in result fields
-            if (trim($result['results']) != "") {
+            if (trim((string) $result['results']) != "") {
 
-                if (strpos(strtolower($result['results']), 'not detected') !== false) {
+                if (strpos(strtolower((string) $result['results']), 'not detected') !== false) {
                     $eidResult = 'negative';
-                } elseif ((strpos(strtolower($result['results']), 'detected') !== false) || (strpos(strtolower($result['results']), 'passed') !== false)) {
+                } elseif ((strpos(strtolower((string) $result['results']), 'detected') !== false) || (strpos(strtolower((string) $result['results']), 'passed') !== false)) {
                     $eidResult = 'positive';
                 } else {
                     $eidResult = 'indeterminate';
@@ -335,7 +336,7 @@ if (!empty($interfaceData)) {
             $logVal = null;
             $txtVal = null;
             $otherFieldResult = null;
-            $testType = strtolower($tableInfo['hepatitis_test_type']);
+            $testType = strtolower((string) $tableInfo['hepatitis_test_type']);
             if ($testType == 'hbv') {
                 $resultField = "hbv_vl_count";
                 $otherField = "hcv_vl_count";
@@ -346,10 +347,10 @@ if (!empty($interfaceData)) {
                 continue;
             }
             //set result in result fields
-            if (trim($result['results']) != "") {
+            if (trim((string) $result['results']) != "") {
 
-                $hepatitisResult = trim($result['results']);
-                $unit = trim($result['test_unit']);
+                $hepatitisResult = trim((string) $result['results']);
+                $unit = trim((string) $result['test_unit']);
                 $interpretedResults = $vlService->interpretViralLoadResult($hepatitisResult, $unit, $instrumentDetails['low_vl_result_text']);
                 $hepatitisResult = $interpretedResults['result'];
             }

@@ -59,7 +59,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", $_POST['sSearch']);
+    $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
         if ($sWhereSub == "") {
@@ -140,10 +140,10 @@ foreach ($rResult as $aRow) {
     $row = [];
     $row[] = ($aRow['sample_type_name']);
     $row[] = ($aRow['sample_type_code']);
-    $row[] = ucwords($aRow['sample_type_status']);
+    $row[] = ucwords((string) $aRow['sample_type_status']);
     $row[] = $aRow['updated_datetime'] = DateUtility::humanReadableDateFormat($aRow['updated_datetime'], true);
     if ($usersService->isAllowed("/generic-tests/configuration/sample-types/generic-edit-sample-type.php")) {
-        $row[] = '<a href="generic-edit-sample-type.php?id=' . base64_encode($aRow['sample_type_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
+        $row[] = '<a href="generic-edit-sample-type.php?id=' . base64_encode((string) $aRow['sample_type_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
     }
     $output['aaData'][] = $row;
 }

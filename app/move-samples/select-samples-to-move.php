@@ -33,7 +33,7 @@ foreach ($pResult as $provinceName) {
 //$facility = "";
 $facility = "<option value=''> -- select -- </option>";
 foreach ($fResult as $fDetails) {
-	$facility .= "<option value='" . $fDetails['facility_id'] . "'>" . (addslashes($fDetails['facility_name'])) . "</option>";
+	$facility .= "<option value='" . $fDetails['facility_id'] . "'>" . (addslashes((string) $fDetails['facility_name'])) . "</option>";
 }
 
 ?>
@@ -218,18 +218,18 @@ foreach ($fResult as $fDetails) {
 	facilityName = true;
 	$(document).ready(function() {
 		$("#labName").select2({
-			placeholder: "Select From Lab Name"
+			placeholder: "<?= _translate("Select Lab Name", true); ?>"
 		});
 		$("#facilityName").select2({
-			placeholder: "Select Facilities"
+			placeholder: "<?= _translate("Select Facilities", true); ?>"
 		});
 		$("#provinceName").select2({
-			placeholder: "Select Province"
+			placeholder: <?= _translate("Select Province", true); ?>
 		});
 
 		$('#sampleCollectionDate').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _translate("Clear"); ?>",
+					cancelLabel: "<?= _translate("Clear", true); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},

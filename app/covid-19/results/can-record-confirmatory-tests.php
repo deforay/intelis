@@ -34,14 +34,14 @@ $status = 'no_result';
 $lastUrl1 = '';
 $lastUrl2 = '';
 if (isset($_SERVER['HTTP_REFERER'])) {
-	$lastUrl1 = strpos($_SERVER['HTTP_REFERER'], "updateVlTestResult.php");
-	$lastUrl2 = strpos($_SERVER['HTTP_REFERER'], "vlTestResult.php");
+	$lastUrl1 = strpos((string) $_SERVER['HTTP_REFERER'], "updateVlTestResult.php");
+	$lastUrl2 = strpos((string) $_SERVER['HTTP_REFERER'], "vlTestResult.php");
 }
 if ($lastUrl1 != '' || $lastUrl2 != '') {
 	$collectionDate = (isset($_COOKIE['collectionDate']) && $_COOKIE['collectionDate'] != '') ? $_COOKIE['collectionDate'] : '';
 	$batchCode = (isset($_COOKIE['batchCode']) && $_COOKIE['batchCode'] != '') ? $_COOKIE['batchCode'] : '';
 
-	$facilityName = (isset($_COOKIE['facilityName']) && $_COOKIE['facilityName'] != '') ? explode(',', $_COOKIE['facilityName']) : [];
+	$facilityName = (isset($_COOKIE['facilityName']) && $_COOKIE['facilityName'] != '') ? explode(',', (string) $_COOKIE['facilityName']) : [];
 
 	$status = (isset($_COOKIE['status']) && $_COOKIE['status'] != '') ? $_COOKIE['status'] : '';
 }
@@ -218,7 +218,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 		});
 		$('#sampleCollectionDate').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _translate("Clear"); ?>",
+					cancelLabel: "<?= _translate("Clear", true); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},

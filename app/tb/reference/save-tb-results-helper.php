@@ -17,7 +17,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_tb_results";
 $primaryKey = "result_id";
 try {
-	if (isset($_POST['resultName']) && trim($_POST['resultName']) != "") {
+	if (isset($_POST['resultName']) && trim((string) $_POST['resultName']) != "") {
 		$data = array(
 			'result_type' 		=> ($_POST['resultType']),
 			'result' 		=> ($_POST['resultName']),
@@ -25,7 +25,7 @@ try {
 			'updated_datetime' 	=> DateUtility::getCurrentDateTime(),
 		);
 		if (isset($_POST['resultId']) && $_POST['resultId'] != "") {
-			$db = $db->where($primaryKey, base64_decode($_POST['resultId']));
+			$db = $db->where($primaryKey, base64_decode((string) $_POST['resultId']));
 			$lastId = $db->update($tableName, $data);
 		} else {
 			$db->insert($tableName, $data);

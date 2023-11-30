@@ -61,9 +61,9 @@ $_SESSION['instanceLabId'] = !empty($systemInfo['sc_testing_lab_id']) ? $systemI
 
 try {
     if (isset($_GET['u']) && isset($_GET['t']) && SYSTEM_CONFIG['recency']['crosslogin']) {
-        $_POST['username'] = base64_decode($_GET['u']);
+        $_POST['username'] = base64_decode((string) $_GET['u']);
 
-        $decryptedPassword = CommonService::decrypt($_GET['t'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
+        $decryptedPassword = CommonService::decrypt($_GET['t'], base64_decode((string) SYSTEM_CONFIG['recency']['crossloginSalt']));
         $_POST['password'] = $decryptedPassword;
     }
 
@@ -126,7 +126,7 @@ try {
             } else {
                 throw new SystemException(_translate("Please check your login credentials"));
             }
-        } elseif ($userRow['hash_algorithm'] == 'phb' && !password_verify($_POST['password'], $userRow['password'])) {
+        } elseif ($userRow['hash_algorithm'] == 'phb' && !password_verify((string) $_POST['password'], (string) $userRow['password'])) {
             $usersService->userHistoryLog($userName, 'failed', $userRow['user_id']);
             throw new SystemException(_translate("Please check your login credentials"));
         }
@@ -169,7 +169,7 @@ try {
             }
             $_SESSION['crossLoginPass'] = null;
             if (SYSTEM_CONFIG['recency']['crosslogin'] === true && !empty(SYSTEM_CONFIG['recency']['url'])) {
-                $_SESSION['crossLoginPass'] = CommonService::encrypt($_POST['password'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
+                $_SESSION['crossLoginPass'] = CommonService::encrypt($_POST['password'], base64_decode((string) SYSTEM_CONFIG['recency']['crossloginSalt']));
             }
             //Add event log
             $eventType = 'login';

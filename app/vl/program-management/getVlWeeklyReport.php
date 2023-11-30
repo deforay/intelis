@@ -72,7 +72,7 @@ if (isset($_POST['iSortCol_0'])) {
 $sWhere = [];
 $sWhere[] = " vl.lab_id is NOT NULL AND IFNULL(reason_for_vl_testing, 0)  != 9999 ";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-  $searchArray = explode(" ", $_POST['sSearch']);
+  $searchArray = explode(" ", (string) $_POST['sSearch']);
   $sWhereSub = "";
   foreach ($searchArray as $search) {
     if ($sWhereSub == "") {
@@ -168,8 +168,8 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
 
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
 
-if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-  if (trim($start_date) == trim($end_date)) {
+if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
+  if (trim((string) $start_date) == trim((string) $end_date)) {
     $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
   } else {
     $sWhere[] =  ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
@@ -177,7 +177,7 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
 }
 
 
-if (isset($_POST['lab']) && trim($_POST['lab']) != '') {
+if (isset($_POST['lab']) && trim((string) $_POST['lab']) != '') {
   $sWhere[] =  " vl.lab_id IN (" . $_POST['lab'] . ")";
 }
 

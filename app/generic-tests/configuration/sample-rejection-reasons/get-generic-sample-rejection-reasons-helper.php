@@ -67,7 +67,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", $_POST['sSearch']);
+    $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
         if ($sWhereSub == "") {
@@ -152,13 +152,13 @@ foreach ($rResult as $aRow) {
                </select><br><br>';
     $row = [];
     $row[] = ($aRow['rejection_reason_name']);
-    $row[] = ucwords($aRow['rejection_type']);
+    $row[] = ucwords((string) $aRow['rejection_type']);
     $row[] = ($aRow['rejection_reason_code']);
     if ($usersService->isAllowed("/generic-tests/configuration/sample-rejection-reasons/generic-edit-sample-rejection-reasons.php") && $sarr['sc_user_type'] != 'vluser') {
         $row[] = $status;
         // $row[] = '<a href="generic-edit-rejection-reasons.php?id=' . base64_encode($aRow['rejection_reason_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
     } else {
-        $row[] = ucwords($aRow['rejection_reason_status']);
+        $row[] = ucwords((string) $aRow['rejection_reason_status']);
     }
     $output['aaData'][] = $row;
 }

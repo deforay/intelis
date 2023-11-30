@@ -46,61 +46,61 @@ try {
     if (empty($instanceId) && $_POST['instanceId']) {
         $instanceId = $_POST['instanceId'];
     }
-    if (!empty($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != "") {
-        $sampleCollectionDate = explode(" ", $_POST['sampleCollectionDate']);
+    if (!empty($_POST['sampleCollectionDate']) && trim((string) $_POST['sampleCollectionDate']) != "") {
+        $sampleCollectionDate = explode(" ", (string) $_POST['sampleCollectionDate']);
         $_POST['sampleCollectionDate'] = DateUtility::isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
     } else {
         $_POST['sampleCollectionDate'] = null;
     }
 
     //Set sample received date
-    if (!empty($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
-        $sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
+    if (!empty($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != "") {
+        $sampleReceivedDate = explode(" ", (string) $_POST['sampleReceivedDate']);
         $_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
     } else {
         $_POST['sampleReceivedDate'] = null;
     }
-    if (!empty($_POST['resultDispatchedDatetime']) && trim($_POST['resultDispatchedDatetime']) != "") {
-        $resultDispatchedDatetime = explode(" ", $_POST['resultDispatchedDatetime']);
+    if (!empty($_POST['resultDispatchedDatetime']) && trim((string) $_POST['resultDispatchedDatetime']) != "") {
+        $resultDispatchedDatetime = explode(" ", (string) $_POST['resultDispatchedDatetime']);
         $_POST['resultDispatchedDatetime'] = DateUtility::isoDateFormat($resultDispatchedDatetime[0]) . " " . $resultDispatchedDatetime[1];
     } else {
         $_POST['resultDispatchedDatetime'] = null;
     }
-    if (!empty($_POST['sampleTestedDateTime']) && trim($_POST['sampleTestedDateTime']) != "") {
-        $sampleTestedDate = explode(" ", $_POST['sampleTestedDateTime']);
+    if (!empty($_POST['sampleTestedDateTime']) && trim((string) $_POST['sampleTestedDateTime']) != "") {
+        $sampleTestedDate = explode(" ", (string) $_POST['sampleTestedDateTime']);
         $_POST['sampleTestedDateTime'] = DateUtility::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
     } else {
         $_POST['sampleTestedDateTime'] = null;
     }
-    if (isset($_POST['sampleDispatchedDate']) && trim($_POST['sampleDispatchedDate']) != "") {
-        $sampleDispatchedDate = explode(" ", $_POST['sampleDispatchedDate']);
+    if (isset($_POST['sampleDispatchedDate']) && trim((string) $_POST['sampleDispatchedDate']) != "") {
+        $sampleDispatchedDate = explode(" ", (string) $_POST['sampleDispatchedDate']);
         $_POST['sampleDispatchedDate'] = DateUtility::isoDateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
     } else {
         $_POST['sampleDispatchedDate'] = null;
     }
 
-    if (isset($_POST['resultDate']) && trim($_POST['resultDate']) != "") {
-        $resultDate = explode(" ", $_POST['resultDate']);
+    if (isset($_POST['resultDate']) && trim((string) $_POST['resultDate']) != "") {
+        $resultDate = explode(" ", (string) $_POST['resultDate']);
         $_POST['resultDate'] = DateUtility::isoDateFormat($resultDate[0]) . " " . $resultDate[1];
     } else {
         $_POST['resultDate'] = null;
     }
     //echo '<pre>'; print_r($_POST); die;
-    if (!empty($_POST['arrivalDateTime']) && trim($_POST['arrivalDateTime']) != "") {
-        $arrivalDate = explode(" ", $_POST['arrivalDateTime']);
+    if (!empty($_POST['arrivalDateTime']) && trim((string) $_POST['arrivalDateTime']) != "") {
+        $arrivalDate = explode(" ", (string) $_POST['arrivalDateTime']);
         $_POST['arrivalDateTime'] = DateUtility::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
     } else {
         $_POST['arrivalDateTime'] = null;
     }
 
-    if (!empty($_POST['requestedDate']) && trim($_POST['requestedDate']) != "") {
-        $arrivalDate = explode(" ", $_POST['requestedDate']);
+    if (!empty($_POST['requestedDate']) && trim((string) $_POST['requestedDate']) != "") {
+        $arrivalDate = explode(" ", (string) $_POST['requestedDate']);
         $_POST['requestedDate'] = DateUtility::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
     } else {
         $_POST['requestedDate'] = null;
     }
 
-    if (empty(trim($_POST['sampleCode']))) {
+    if (empty(trim((string) $_POST['sampleCode']))) {
         $_POST['sampleCode'] = null;
     }
 
@@ -136,22 +136,22 @@ try {
         $resultSentToSource = 'pending';
     }
 
-    if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
-        $reviewedOn = explode(" ", $_POST['reviewedOn']);
+    if (isset($_POST['reviewedOn']) && trim((string) $_POST['reviewedOn']) != "") {
+        $reviewedOn = explode(" ", (string) $_POST['reviewedOn']);
         $_POST['reviewedOn'] = DateUtility::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
     } else {
         $_POST['reviewedOn'] = null;
     }
 
-    if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
-        $approvedOn = explode(" ", $_POST['approvedOn']);
+    if (isset($_POST['approvedOn']) && trim((string) $_POST['approvedOn']) != "") {
+        $approvedOn = explode(" ", (string) $_POST['approvedOn']);
         $_POST['approvedOn'] = DateUtility::isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
     } else {
         $_POST['approvedOn'] = null;
     }
 
     if (isset($_POST['province']) && $_POST['province'] != "") {
-        $province = explode("##", $_POST['province']);
+        $province = explode("##", (string) $_POST['province']);
         $provinceId = $geolocationService->getProvinceIdByName($province[0]);
         if (empty($provinceId)) {
             $_POST['provinceId'] = $geolocation->addGeoLocation($province[0]);
@@ -271,7 +271,7 @@ try {
 
     $tbData['is_encrypted'] = 'no';
     if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
-        $key = base64_decode($general->getGlobalConfig('key'));
+        $key = base64_decode((string) $general->getGlobalConfig('key'));
         $encryptedPatientId = $general->crypto('encrypt', $tbData['patient_id'], $key);
         $encryptedPatientName = $general->crypto('encrypt', $tbData['patient_name'], $key);
         $encryptedPatientSurName = $general->crypto('encrypt', $tbData['patient_surname'], $key);

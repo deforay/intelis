@@ -45,8 +45,8 @@ if ($module == 'vl') {
 }
 $where = [];
 $where[] = " (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is not null OR vl.sample_package_id !='') AND (remote_sample = 'yes') ";
-if (isset($_POST['daterange']) && trim($_POST['daterange']) != '') {
-	$dateRange = explode("to", $_POST['daterange']);
+if (isset($_POST['daterange']) && trim((string) $_POST['daterange']) != '') {
+	$dateRange = explode("to", (string) $_POST['daterange']);
 	if (isset($dateRange[0]) && trim($dateRange[0]) != "") {
 		$startDate = DateUtility::isoDateFormat(trim($dateRange[0]));
 	}

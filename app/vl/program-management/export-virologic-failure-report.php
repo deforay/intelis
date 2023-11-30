@@ -74,16 +74,16 @@ $sQuery = "SELECT
 $sWhere[] =  " vl.vl_result_category = 'not suppressed' AND vl.patient_age_in_years IS NOT NULL AND vl.patient_gender IS NOT NULL AND vl.current_regimen IS NOT NULL ";
 
 /* State filter */
-if (isset($_POST['state']) && trim($_POST['state']) != '') {
+if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
      $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
 }
 
 /* District filters */
-if (isset($_POST['district']) && trim($_POST['district']) != '') {
+if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
      $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
 }
 /* Facility filter */
-if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
+if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
      $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
 
@@ -92,11 +92,11 @@ if (isset($_POST['gender']) && $_POST['gender'] != '') {
 }
 
 
-if (isset($_POST['pregnancy']) && trim($_POST['pregnancy']) != '') {
+if (isset($_POST['pregnancy']) && trim((string) $_POST['pregnancy']) != '') {
      $sWhere[] = " vl.is_patient_pregnant = '" . $_POST['pregnancy'] . "' ";
 }
 
-if (isset($_POST['breastfeeding']) && trim($_POST['breastfeeding']) != '') {
+if (isset($_POST['breastfeeding']) && trim((string) $_POST['breastfeeding']) != '') {
      $sWhere[] = " vl.is_patient_breastfeeding = '" . $_POST['breastfeeding'] . "' ";
 }
 
@@ -109,7 +109,7 @@ if (
 }
 
 /* Sample collection date filter */
-if (!empty(trim($_POST['sampleCollectionDate']))) {
+if (!empty(trim((string) $_POST['sampleCollectionDate']))) {
      [$sampleCollectionDateStart, $sampleCollectionDateEnd] = $dateTimeUtil->convertDateRange($_POST['sampleCollectionDate']);
 
      if ($sampleCollectionDateStart == $sampleCollectionDateEnd) {
@@ -120,7 +120,7 @@ if (!empty(trim($_POST['sampleCollectionDate']))) {
 }
 /* Sample test date filter */
 
-if (!empty(trim($_POST['sampleTestDate']))) {
+if (!empty(trim((string) $_POST['sampleTestDate']))) {
      [$sampleTestDateStart, $sampleTestDateEnd] = $dateTimeUtil->convertDateRange($_POST['sampleTestDate']);
 
      if ($sampleTestDateStart == $sampleTestDateEnd) {
@@ -176,10 +176,10 @@ $patientIds = [];
 foreach ($rResult as $aRow) {
 
      if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] === 'yes') {
-          $aRow['patient_art_no'] = CommonService::decrypt($aRow['patient_art_no'], base64_decode($keyFromGlobalConfig));
+          $aRow['patient_art_no'] = CommonService::decrypt($aRow['patient_art_no'], base64_decode((string) $keyFromGlobalConfig));
      }
      unset($aRow['is_encrypted']);
-     $patientId = trim($aRow['patient_art_no']);
+     $patientId = trim((string) $aRow['patient_art_no']);
      $aRow['result'] = $vlService->extractViralLoadValue($aRow['result']);
      $vfData[] = $aRow;
      $vlnsData[] = $aRow;
@@ -187,7 +187,7 @@ foreach ($rResult as $aRow) {
      if (in_array(trim($patientId), $patientIds)) {
           // If there we remove vlsndata for this dublication
           foreach ($vlnsData as $key => $vlnsDataRow) {
-               if (trim($vlnsDataRow['patient_art_no']) === trim($patientId)) {
+               if (trim((string) $vlnsDataRow['patient_art_no']) === trim($patientId)) {
                     unset($vlnsData[$key]);
                }
           }
@@ -228,7 +228,7 @@ foreach ($vfData as $rowNo => $rowData) {
      foreach ($rowData as $field => $value) {
           $vfSheet->setCellValue(
                Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-               html_entity_decode($value)
+               html_entity_decode((string) $value)
           );
           $colNo++;
      }
@@ -261,7 +261,7 @@ foreach ($vlnsData as $rowNo => $rowData) {
      foreach ($rowData as $field => $value) {
           $vlnsSheet->setCellValue(
                Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-               html_entity_decode($value)
+               html_entity_decode((string) $value)
           );
           $colNo++;
      }

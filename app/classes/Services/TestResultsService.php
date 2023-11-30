@@ -38,7 +38,7 @@ class TestResultsService
     public function removeCntrlCharsAndEncode($inputString, $encodeToUTF8 = true): string
     {
         return once(function () use ($inputString, $encodeToUTF8) {
-            $inputString = preg_replace('/[[:cntrl:]]/', '', $inputString);
+            $inputString = preg_replace('/[[:cntrl:]]/', '', (string) $inputString);
             if ($encodeToUTF8 === true && mb_detect_encoding($inputString, 'UTF-8', true) === false) {
                 $inputString = mb_convert_encoding($inputString, 'UTF-8');
             }
@@ -53,7 +53,7 @@ class TestResultsService
             return null;
         }
 
-        $testDateFormat = trim($testDateFormat);
+        $testDateFormat = trim((string) $testDateFormat);
 
         if ($interpretFormat === true) {
             $find = ['am', 'pm', 'dd', 'mm', 'yyyy', 'yy'];
@@ -61,9 +61,9 @@ class TestResultsService
             $testDateFormat = trim(str_ireplace($find, $replace, strtolower($testDateFormat)));
         }
 
-        $testingDateFormat = substr_count($testDate, ':') === 1 ? "$testDateFormat h:i" : "$testDateFormat H:i:s";
+        $testingDateFormat = substr_count((string) $testDate, ':') === 1 ? "$testDateFormat h:i" : "$testDateFormat H:i:s";
 
-        if (stripos($testDate, 'am') !== false || stripos($testDate, 'pm') !== false) {
+        if (stripos((string) $testDate, 'am') !== false || stripos((string) $testDate, 'pm') !== false) {
             $testingDateFormat .= ' A';
         }
 

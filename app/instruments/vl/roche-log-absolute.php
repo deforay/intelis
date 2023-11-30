@@ -34,7 +34,7 @@ try {
         throw new SystemException('Please select a file to upload', 400);
     }
 
-    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename($_FILES['resultFile']['name'])));
+    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $_FILES['resultFile']['name'])));
     $fileName          = str_replace(" ", "-", $fileName);
     $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName          = $_POST['fileName'] . "." . $extension;
@@ -108,26 +108,26 @@ try {
             // Date time in the provided Roche Sample file is in this format : 9/9/16 12:22
             //$testingDate = DateTime::createFromFormat($dateFormat, $row[$testingDateCol])->format('Y-m-d H:i');
 
-            $testingDate = date('Y-m-d H:i', strtotime($row[$testingDateCol]));
+            $testingDate = date('Y-m-d H:i', strtotime((string) $row[$testingDateCol]));
 
 
 
-            if (trim($row[$absValCol]) != "") {
+            if (trim((string) $row[$absValCol]) != "") {
                 $resVal = (int)$row[$absValCol];
                 if ($resVal > 0) {
-                    $absDecimalVal = $absVal = trim($row[$absValCol]);
+                    $absDecimalVal = $absVal = trim((string) $row[$absValCol]);
 
                     $logVal = round(log10($absVal), 4);
                     $txtVal = "";
                 } else {
                     $absDecimalVal = $absVal = "";
                     $logVal = "";
-                    $txtVal = trim($row[$absValCol]);
+                    $txtVal = trim((string) $row[$absValCol]);
                 }
             }
 
-            if (trim($row[$absValCol]) != "") {
-                $resVal = explode("(", $row[$absValCol]);
+            if (trim((string) $row[$absValCol]) != "") {
+                $resVal = explode("(", (string) $row[$absValCol]);
                 if (count($resVal) == 2) {
                     $absVal = trim($resVal[0]);
 
@@ -138,7 +138,7 @@ try {
                     }
                     $logVal = substr(trim($resVal[1]), 0, -1);
                 } else {
-                    $txtVal = trim($row[$absValCol]);
+                    $txtVal = trim((string) $row[$absValCol]);
                     if ($txtVal == 'Invalid') {
                         $resultFlag = trim($txtVal);
                     }
@@ -171,7 +171,7 @@ try {
 
             $data = array(
                 'module' => 'vl',
-                'lab_id' => base64_decode($_POST['labId']),
+                'lab_id' => base64_decode((string) $_POST['labId']),
                 'vl_test_platform' => $_POST['vltestPlatform'],
                 'result_reviewed_by' => $_SESSION['userId'],
                 'sample_code' => $d['sampleCode'],

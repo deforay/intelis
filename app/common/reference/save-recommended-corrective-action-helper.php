@@ -20,7 +20,7 @@ $primaryKey = "recommended_corrective_action_id";
 
 try {
 
-	if (isset($_POST['correctiveAction']) && trim($_POST['correctiveAction']) != "") {
+	if (isset($_POST['correctiveAction']) && trim((string) $_POST['correctiveAction']) != "") {
 
 		$data = array(
 			'recommended_corrective_action_name' 	=> $_POST['correctiveAction'],
@@ -30,7 +30,7 @@ try {
 		);
 		//	echo '<pre>'; print_r($_POST	); die;
 		if (isset($_POST['correctiveActionId']) && $_POST['correctiveActionId'] != "") {
-			$db->where($primaryKey, base64_decode($_POST['correctiveActionId']));
+			$db->where($primaryKey, base64_decode((string) $_POST['correctiveActionId']));
 			$lastId = $db->update($tableName, $data);
 		} else {
 			$data['data_sync'] = 0;

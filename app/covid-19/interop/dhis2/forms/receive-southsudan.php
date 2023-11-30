@@ -115,7 +115,7 @@ foreach ($trackedEntityInstances as $tracker) {
             // if no screening stage, skip this tracker entirely
         }
 
-        $enrollmentDate = strstr($enrollments['enrollmentDate'], 'T', true);
+        $enrollmentDate = strstr((string) $enrollments['enrollmentDate'], 'T', true);
 
         $eventsData = [];
         foreach ($enrollments['events'] as $event) {
@@ -241,9 +241,9 @@ foreach ($trackedEntityInstances as $tracker) {
         $formData['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
 
-        $formData['patient_gender'] = (!empty($formData['patient_gender']) ? strtolower($formData['patient_gender']) : null);
+        $formData['patient_gender'] = (!empty($formData['patient_gender']) ? strtolower((string) $formData['patient_gender']) : null);
         if (!empty($formData['specimen_quality'])) {
-            $formData['specimen_quality'] = strtolower($formData['specimen_quality']);
+            $formData['specimen_quality'] = strtolower((string) $formData['specimen_quality']);
         }
 
 
@@ -258,7 +258,7 @@ foreach ($trackedEntityInstances as $tracker) {
 
         $sampleJson = $covid19Service->getSampleCode($sampleCodeParams);
 
-        $sampleData = json_decode($sampleJson, true);
+        $sampleData = json_decode((string) $sampleJson, true);
 
         $formData['unique_id'] = $uniqueID;
 

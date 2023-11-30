@@ -72,7 +72,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-     $searchArray = explode(" ", $_POST['sSearch']);
+     $searchArray = explode(" ", (string) $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
           if ($sWhereSub == "") {
@@ -111,8 +111,8 @@ $sQuery = "SELECT DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as month
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 $sTestDate = '';
 $eTestDate = '';
-if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-     $s_t_date = explode("to", $_POST['sampleTestDate']);
+if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
+     $s_t_date = explode("to", (string) $_POST['sampleTestDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
           $sTestDate = DateUtility::isoDateFormat(trim($s_t_date[0]));
      }
@@ -124,16 +124,16 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
 if (!empty($sWhere)) {
      $sWhere = ' WHERE ' . $sWhere;
 
-     if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-          if (trim($sTestDate) == trim($eTestDate)) {
+     if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
+          if (trim((string) $sTestDate) == trim((string) $eTestDate)) {
                $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
           } else {
                $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
           }
      }
 
-     if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-          $fac = explode(',', $_POST['facilityName']);
+     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+          $fac = explode(',', (string) $_POST['facilityName']);
           $out = '';
           //          print_r($fac);
           //          die;
@@ -153,8 +153,8 @@ if (!empty($sWhere)) {
           }
      }
 } else {
-     if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-          $fac = explode(',', $_POST['facilityName']);
+     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+          $fac = explode(',', (string) $_POST['facilityName']);
           $out = '';
           for ($s = 0; $s < count($fac); $s++) {
                if ($out)
@@ -172,7 +172,7 @@ if (!empty($sWhere)) {
           }
      }
 
-     if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
+     if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
           if (isset($setWhr)) {
                $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
           } else {

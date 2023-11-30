@@ -26,7 +26,7 @@ $arr = $general->getGlobalConfig();
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
-if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQuery']) != "") {
+if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatitisResultQuery']) != "") {
 
 	$headings = array("S.No.", "Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Sample Received On", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner");
 	$output = [];
@@ -35,7 +35,7 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQ
 	foreach ($db->rawQueryGenerator($_SESSION['hepatitisResultQuery']) as $aRow) {
 		$row = [];
 		//set gender
-		switch (strtolower($aRow['patient_gender'])) {
+		switch (strtolower((string) $aRow['patient_gender'])) {
 			case 'male':
 			case 'm':
 				$gender = 'M';
@@ -74,7 +74,7 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQ
 		}
 
 		if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-			$key = base64_decode($general->getGlobalConfig('key'));
+			$key = base64_decode((string) $general->getGlobalConfig('key'));
 			$aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
 			$patientFname = $general->crypto('decrypt', $patientFname, $key);
 			$patientLname = $general->crypto('decrypt', $patientLname, $key);
@@ -114,7 +114,7 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim($_SESSION['hepatitisResultQ
 		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
 		// we dont need the $output variable anymore
 		unset($output);
-		echo base64_encode($fileName);
+		echo base64_encode((string) $fileName);
 	} else {
 		$excel = new Spreadsheet();
 		$sheet = $excel->getActiveSheet();

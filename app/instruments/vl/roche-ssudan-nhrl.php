@@ -33,7 +33,7 @@ try {
         throw new SystemException('Please select a file to upload', 400);
     }
 
-    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename($_FILES['resultFile']['name'])));
+    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $_FILES['resultFile']['name'])));
     $fileName = str_replace(" ", "-", $fileName);
     $ranNumber = $general->generateRandomString(12);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
@@ -85,7 +85,7 @@ try {
             if ($rowIndex < $skipTillRow)
                 continue;
 
-            if (strpos(strtolower($row[$testingPlatformCol]), 'viral') === false)
+            if (strpos(strtolower((string) $row[$testingPlatformCol]), 'viral') === false)
                 continue;
 
 
@@ -108,14 +108,14 @@ try {
             $resultFlag = "";
             $reviewBy = $row[$reviewByCol];
 
-            $testingDate = date('Y-m-d H:i', strtotime($row[$testingDateCol]));
+            $testingDate = date('Y-m-d H:i', strtotime((string) $row[$testingDateCol]));
 
-            if (trim($row[$absValCol]) != "") {
+            if (trim((string) $row[$absValCol]) != "") {
                 $resVal = (float) $row[$absValCol];
                 if ($resVal > 0) {
                     $absVal = $resVal;
                     $absDecimalVal = $resVal;
-                    if ($row[$logValCol] != null && trim($row[$logValCol]) != "") {
+                    if ($row[$logValCol] != null && trim((string) $row[$logValCol]) != "") {
                         $logVal = (float) $row[$logValCol];
                     } else {
                         $logVal = round(log10($absDecimalVal), 4);
@@ -124,7 +124,7 @@ try {
                 } else {
                     $absDecimalVal = $absVal = "";
                     $logVal = "";
-                    $txtVal = trim($row[$absValCol]);
+                    $txtVal = trim((string) $row[$absValCol]);
                 }
             }
 
@@ -166,7 +166,7 @@ try {
             }
             $data = array(
                 'module' => 'vl',
-                'lab_id' => base64_decode($_POST['labId']),
+                'lab_id' => base64_decode((string) $_POST['labId']),
                 'vl_test_platform' => $_POST['vltestPlatform'],
                 'import_machine_name' => $_POST['configMachineName'],
                 'result_reviewed_by' => $_SESSION['userId'],
@@ -212,10 +212,10 @@ try {
             $query = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal from form_vl where result_printed_datetime is null AND sample_code='" . $sampleCode . "'";
             $vlResult = $db->rawQuery($query);
             //insert sample controls
-            $scQuery = "select r_sample_control_name from r_sample_controls where r_sample_control_name='" . trim($d['sampleType']) . "'";
+            $scQuery = "select r_sample_control_name from r_sample_controls where r_sample_control_name='" . trim((string) $d['sampleType']) . "'";
             $scResult = $db->rawQuery($scQuery);
             if (!$scResult) {
-                $scData = array('r_sample_control_name' => trim($d['sampleType']));
+                $scData = array('r_sample_control_name' => trim((string) $d['sampleType']));
                 $scId = $db->insert("r_sample_controls", $scData);
             }
             if (!empty($vlResult) && !empty($sampleCode)) {

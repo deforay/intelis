@@ -19,7 +19,7 @@ class ApiService
         $this->db = $db ?? ContainerRegistry::get('db');
     }
 
-    public function post($url, $payload, $gzip = true)
+    public function post($url, $payload, $gzip = true): string
     {
         $client = new Client();
 
@@ -43,7 +43,7 @@ class ApiService
     }
 
 
-    public function postFile($url, $fileName, $jsonFilePath, $params = [], $gzip = false)
+    public function postFile($url, $fileName, $jsonFilePath, $params = [], $gzip = false): string
     {
         $client = new Client();
 
@@ -56,7 +56,7 @@ class ApiService
             $multipartData[] = [
                 'name' => $fileName,
                 'contents' => gzencode(file_get_contents($jsonFilePath)),
-                'filename' => basename($jsonFilePath) . '.gz', // adding .gz to indicate gzip
+                'filename' => basename((string) $jsonFilePath) . '.gz', // adding .gz to indicate gzip
                 'headers' => ['Content-Encoding' => 'gzip']
             ];
         } else {
@@ -64,7 +64,7 @@ class ApiService
             $multipartData[] = [
                 'name' => $fileName,
                 'contents' => fopen($jsonFilePath, 'r'),
-                'filename' => basename($jsonFilePath)
+                'filename' => basename((string) $jsonFilePath)
             ];
         }
 
@@ -99,7 +99,7 @@ class ApiService
         return $response;
     }
 
-    public function getAppHealthFacilities($testType = null, $user = null, $onlyActive = false, $facilityType = 0, $module = false, $activeModule = null, $updatedDateTime = null)
+    public function getAppHealthFacilities($testType = null, $user = null, $onlyActive = false, $facilityType = 0, $module = false, $activeModule = null, $updatedDateTime = null): array
     {
         /** @var FacilitiesService $facilitiesService */
         $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -181,7 +181,7 @@ class ApiService
         return $response;
     }
 
-    public function getTestingLabs($testType = null, $user = null, $onlyActive = false, $module = false, $activeModule = null, $updatedDateTime = null)
+    public function getTestingLabs($testType = null, $user = null, $onlyActive = false, $module = false, $activeModule = null, $updatedDateTime = null): array
     {
         /** @var FacilitiesService $facilitiesService */
         $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -199,7 +199,7 @@ class ApiService
         }
 
         if (!$module) {
-            $activeModule = str_replace(",", "','", $activeModule);
+            $activeModule = str_replace(",", "','", (string) $activeModule);
             if (!empty($activeModule)) {
                 $where[] = " tl.test_type IN ('" . $activeModule . "')";
             }
@@ -425,7 +425,7 @@ class ApiService
                 }
             }
             if ($decode) {
-                $response = json_decode($response, true);
+                $response = json_decode((string) $response, true);
             }
             return $response;
         } catch (\Exception $e) {

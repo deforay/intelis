@@ -14,7 +14,7 @@ $_POST = $request->getParsedBody();
 
 try {
 	$db->startTransaction();
-	if (isset($_POST['feedback']) && trim($_POST['feedback']) != "" && trim($_POST['feedbackUrl']) != "") {
+	if (isset($_POST['feedback']) && trim((string) $_POST['feedback']) != "" && trim((string) $_POST['feedbackUrl']) != "") {
 		$data = array(
 			'feedback' => $_POST['feedback'],
 			'feedback_url' => $_POST['feedbackUrl']
@@ -40,7 +40,7 @@ try {
 			// Allowed file types
 			$allowedExtensions = array('jpg', 'jpeg', 'png');
 
-			$imageName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename($_FILES['supportFile']['name'])));
+			$imageName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $_FILES['supportFile']['name'])));
 			$imageName = str_replace(" ", "-", $imageName);
 			$extension = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
 			$imageName = $imageName . "." . $extension;
@@ -57,7 +57,7 @@ try {
 					$db->update($tableName, $fData);
 					$db->commit();
 					$response['status'] = 1;
-					$response['supportId'] = base64_encode($supportId);
+					$response['supportId'] = base64_encode((string) $supportId);
 					$response['message'] = 'Form data submitted successfully!';
 				} else {
 					$db->rollback();
@@ -69,7 +69,7 @@ try {
 			}
 		} else {
 			$response['status'] = 1;
-			$response['supportId'] = base64_encode($supportId);
+			$response['supportId'] = base64_encode((string) $supportId);
 			$response['message'] = 'Form data submitted successfully!';
 			$db->commit();
 		}

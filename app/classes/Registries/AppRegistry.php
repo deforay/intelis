@@ -9,7 +9,7 @@ class AppRegistry
      *
      * @var AppRegistry
      */
-    private static $instance;
+    private static AppRegistry $instance;
 
     /**
      * The array of stored values.
@@ -38,7 +38,7 @@ class AppRegistry
      * @param string $key
      * @param mixed $value
      */
-    public function set(string $key, $value): void
+    public function set(string $key, mixed $value): void
     {
         $this->values[$key] = $value;
     }
@@ -49,7 +49,7 @@ class AppRegistry
      * @param string $key
      * @return mixed
      */
-    public function get(string $key)
+    public function get(string $key): mixed
     {
         return $this->values[$key] ?? null;
     }

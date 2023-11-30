@@ -38,33 +38,33 @@ $query = "SELECT hepatitis.sample_code,hepatitis.hepatitis_id,hepatitis.facility
 if (isset($facility) && !empty(array_filter($facility))) {
   $query = $query . " AND hepatitis.facility_id IN (" . implode(',', $facility) . ")";
 }
-if (trim($sampleType) != '') {
+if (trim((string) $sampleType) != '') {
   $query = $query . " AND hepatitis.specimen_type='" . $sampleType . "'";
 }
-if (trim($gender) != '') {
+if (trim((string) $gender) != '') {
   $query = $query . " AND hepatitis.patient_gender='" . $gender . "'";
 }
-if (trim($state) != '') {
+if (trim((string) $state) != '') {
   $query = $query . " AND f.facility_state LIKE '%" . $state . "%' ";
 }
-if (trim($district) != '') {
+if (trim((string) $district) != '') {
   $query = $query . " AND f.facility_district LIKE '%" . $district . "%' ";
 }
 if (isset($batch) && !empty(array_filter($batch))) {
   $query = $query . " AND hepatitis.sample_batch_id IN (" . implode(',', $batch) . ")";
 }
-if (isset($_POST['status']) && trim($_POST['status']) != '') {
+if (isset($_POST['status']) && trim((string) $_POST['status']) != '') {
   $query = $query . " AND hepatitis.result_status='" . $_POST['status'] . "'";
 }
-if (trim($mailSentStatus) != '') {
-  if (trim($type) == 'request') {
+if (trim((string) $mailSentStatus) != '') {
+  if (trim((string) $type) == 'request') {
     $query = $query . " AND hepatitis.is_request_mail_sent='" . $mailSentStatus . "'";
-  } elseif (trim($type) == 'result') {
+  } elseif (trim((string) $type) == 'result') {
     $query = $query . " AND hepatitis.is_result_mail_sent='" . $mailSentStatus . "' AND (hepatitis.hcv_vl_result!= '' OR hepatitis.hbv_vl_result!= '')";
   }
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-  if (trim($start_date) == trim($end_date)) {
+  if (trim((string) $start_date) == trim((string) $end_date)) {
     $query = $query . ' AND DATE(sample_collection_date) = "' . $start_date . '"';
   } else {
     $query = $query . ' AND DATE(sample_collection_date) >= "' . $start_date . '" AND DATE(sample_collection_date) <= "' . $end_date . '"';
@@ -84,7 +84,7 @@ $result = $db->rawQuery($query);
       <select id="sample" name="sample[]" multiple="multiple" class="search isRequired" title="Please select sample(s)">
         <?php
         foreach ($result as $sample) {
-          if (trim($sample['sample_code']) != '') {
+          if (trim((string) $sample['sample_code']) != '') {
         ?>
             <option value="<?php echo $sample['hepatitis_id']; ?>"><?= $sample['sample_code']; ?></option>
         <?php

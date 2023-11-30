@@ -23,7 +23,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_covid19_sample_type";
 
 try {
-	if (isset($_POST['sampleName']) && trim($_POST['sampleName']) != "") {
+	if (isset($_POST['sampleName']) && trim((string) $_POST['sampleName']) != "") {
 
 
 		$data = array(

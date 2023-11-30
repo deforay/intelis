@@ -134,7 +134,7 @@ foreach ($trackedEntityInstances as $tracker) {
             continue 2;
         }
 
-        $enrollmentDate = strstr($enrollments['enrollmentDate'], 'T', true);
+        $enrollmentDate = strstr((string) $enrollments['enrollmentDate'], 'T', true);
 
         $eventsData = [];
         $screeningEventData = [];
@@ -199,7 +199,7 @@ foreach ($trackedEntityInstances as $tracker) {
         $formData = array_merge($singleEventData, $attributesAndScreeningData);
 
         // if DHIS2 Case ID is not set then skip
-        if (!isset($formData['external_sample_code']) || empty(trim($formData['external_sample_code']))) {
+        if (!isset($formData['external_sample_code']) || empty(trim((string) $formData['external_sample_code']))) {
             continue;
         }
 
@@ -210,7 +210,7 @@ foreach ($trackedEntityInstances as $tracker) {
         $formData['sample_collection_date'] = $formData['sample_collection_date'] ?? $enrollmentDate;
 
         // if this is an old request, then skip
-        if (strtotime($formData['sample_collection_date']) < strtotime('-6 months')) {
+        if (strtotime((string) $formData['sample_collection_date']) < strtotime('-6 months')) {
             $processingErrors[] = 'Old Hepatitis Request: ' . $uniqueID;
             continue;
         }
@@ -285,7 +285,7 @@ foreach ($trackedEntityInstances as $tracker) {
 
         $sampleJson = $hepatitisService->getSampleCode($sampleCodeParams);
 
-        $sampleData = json_decode($sampleJson, true);
+        $sampleData = json_decode((string) $sampleJson, true);
         if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
             $sampleCode = 'remote_sample_code';
             $sampleCodeKey = 'remote_sample_code_key';

@@ -10,12 +10,12 @@ ob_start();
 
 $general = new CommonService();
 $tableName = "r_generic_test_result_units";
-$unitId = (int) base64_decode($_POST['unitId']);
+$unitId = (int) base64_decode((string) $_POST['unitId']);
 try {
     if (!empty($_POST['unitName'])) {
 
         $data = array(
-            'unit_name' => trim($_POST['unitName']),
+            'unit_name' => trim((string) $_POST['unitName']),
             'unit_status' => $_POST['status'],
             'updated_datetime' => DateUtility::getCurrentDateTime()
         );

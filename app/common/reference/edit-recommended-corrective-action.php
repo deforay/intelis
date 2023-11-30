@@ -16,7 +16,7 @@ if (!empty($_GET['testType'])) {
     $testType = $_GET['testType'];
 }
 
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 if (!isset($id) || $id == "") {
     $_SESSION['alertMsg'] = "Something went wrong in Implementation Partners edit page";

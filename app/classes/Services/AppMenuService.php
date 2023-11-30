@@ -21,7 +21,7 @@ class AppMenuService
         $this->usersService = $usersService;
     }
 
-    public function getMenuDisplayTexts()
+    public function getMenuDisplayTexts(): array
     {
         $this->db->where('status', 'active');
         $this->db->orderBy("display_order", "asc");
@@ -33,7 +33,7 @@ class AppMenuService
         return $response;
     }
 
-    public function getMenu($parentId = 0, $menuId = 0)
+    public function getMenu($parentId = 0, $menuId = 0): array
     {
         $activeModules = SystemService::getActiveModules();
         $activeModulesInfo = implode("','", $activeModules);

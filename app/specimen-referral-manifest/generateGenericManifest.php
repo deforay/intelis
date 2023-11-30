@@ -20,8 +20,8 @@ $general = ContainerRegistry::get(CommonService::class);
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
-$id = base64_decode($_POST['id']);
-if (isset($_POST['frmSrc']) && trim($_POST['frmSrc']) == 'pk2') {
+$id = base64_decode((string) $_POST['id']);
+if (isset($_POST['frmSrc']) && trim((string) $_POST['frmSrc']) == 'pk2') {
     $id = $_POST['ids'];
 }
 
@@ -49,7 +49,7 @@ class MYPDF extends TCPDF
         //$imageFilePath = K_PATH_IMAGES.'logo_example.jpg';
         //$this->Image($imageFilePath, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
         // Set font
-        if (trim($this->logo) != "") {
+        if (trim((string) $this->logo) != "") {
             if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                 $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                 $this->Image($imageFilePath, 15, 10, 15, '', '', '', 'T');
@@ -62,7 +62,7 @@ class MYPDF extends TCPDF
         $this->SetFont('helvetica', '', 10);
         $this->writeHTMLCell(0, 0, 0, 20, $this->labname, 0, 0, 0, true, 'C');
 
-        if (trim($this->logo) != "") {
+        if (trim((string) $this->logo) != "") {
             if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                 $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                 $this->Image($imageFilePath, 262, 10, 15, '', '', '', 'T');
@@ -89,7 +89,7 @@ class MYPDF extends TCPDF
 
 
 
-if (trim($id) != '') {
+if (trim((string) $id) != '') {
 
     $sQuery = "SELECT remote_sample_code,fd.facility_name as clinic_name,fd.facility_district,CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_last_name,'')) as `patient_fullname`,patient_dob,patient_age_in_years,sample_collection_date,patient_gender,patient_id,pd.package_code, l.facility_name as lab_name from package_details as pd Join form_generic as vl ON vl.sample_package_id=pd.package_id Join facility_details as fd ON fd.facility_id=vl.facility_id Join facility_details as l ON l.facility_id=vl.lab_id where pd.package_id IN($id)";
     $result = $db->query($sQuery);
@@ -192,7 +192,7 @@ if (trim($id) != '') {
                 //var_dump($sample);die;
                 $collectionDate = '';
                 if (isset($sample['sample_collection_date']) && $sample['sample_collection_date'] != '' && $sample['sample_collection_date'] != null && $sample['sample_collection_date'] != '0000-00-00 00:00:00') {
-                    $cDate = explode(" ", $sample['sample_collection_date']);
+                    $cDate = explode(" ", (string) $sample['sample_collection_date']);
                     $collectionDate = DateUtility::humanReadableDateFormat($cDate[0]) . " " . $cDate[1];
                 }
                 $patientDOB = '';
@@ -205,13 +205,13 @@ if (trim($id) != '') {
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $sampleCounter . '.</td>';
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $sample['remote_sample_code'] . '</td>';
                 // $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ucwords($sample['facility_district']) . '</td>';
-                $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ucwords($sample['clinic_name']) . ', ' . $sample['facility_district'] . '</td>';
+                $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ucwords((string) $sample['clinic_name']) . ', ' . $sample['facility_district'] . '</td>';
                 if ($showPatientName == "yes") {
                     $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ($sample['patient_fullname']) . '</td>';
                 }
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $sample['patient_id'] . '</td>';
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $patientDOB . '</td>';
-                $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ucwords(str_replace("_", " ", $sample['patient_gender'])) . '</td>';
+                $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ucwords(str_replace("_", " ", (string) $sample['patient_gender'])) . '</td>';
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $collectionDate . '</td>';
                 // $tbl.='<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">VIRAL</td>';
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;"><img style="width:180px;height:25px;" src="' . $general->getBarcodeImageContent($sample['remote_sample_code']) . '"/></td>';
@@ -230,7 +230,7 @@ if (trim($id) != '') {
         $tbl .= '</table>';
         //$tbl.='<br/><br/><strong style="text-align:left;">Printed On:  </strong>'.date('d/m/Y H:i:s');
         $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl, 0, 1, 0, true, 'C');
-        $filename = trim($bResult[0]['package_code']) . '-' . date('Ymd') . '-' . $general->generateRandomString(6) . '-Manifest.pdf';
+        $filename = trim((string) $bResult[0]['package_code']) . '-' . date('Ymd') . '-' . $general->generateRandomString(6) . '-Manifest.pdf';
         $pdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . 'sample-manifests' . DIRECTORY_SEPARATOR . $filename, "F");
         echo $filename;
     }

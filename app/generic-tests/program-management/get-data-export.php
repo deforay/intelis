@@ -74,7 +74,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere[] = " (reason_for_testing != 9999 or reason_for_testing is null) ";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-     $searchArray = explode(" ", $_POST['sSearch']);
+     $searchArray = explode(" ", (string) $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
           if ($sWhereSub == "") {
@@ -171,28 +171,28 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
 /* Sample recevied date filter */
 [$sSampleReceivedDate, $eSampleReceivedDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 /* Sample type filter */
-if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
+if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
      $sWhere[] =  ' vl.sample_type IN (' . $_POST['sampleType'] . ')';
 }
-if (isset($_POST['state']) && trim($_POST['state']) != '') {
+if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
      $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
 }
-if (isset($_POST['district']) && trim($_POST['district']) != '') {
+if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
      $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
 }
 /* Facility id filter */
-if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
+if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
      $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
 /* VL lab id filter */
-if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
+if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) != '') {
      $sWhere[] =  '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
 }
 /* Sample test date filter */
 $sTestDate = '';
 $eTestDate = '';
-if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-     $s_t_date = explode("to", $_POST['sampleTestDate']);
+if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
+     $s_t_date = explode("to", (string) $_POST['sampleTestDate']);
      if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
           $sTestDate = DateUtility::isoDateFormat(trim($s_t_date[0]));
      }
@@ -203,8 +203,8 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
 
 $sPrintDate = '';
 $ePrintDate = '';
-if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
-     $s_p_date = explode("to", $_POST['printDate']);
+if (isset($_POST['printDate']) && trim((string) $_POST['printDate']) != '') {
+     $s_p_date = explode("to", (string) $_POST['printDate']);
      if (isset($s_p_date[0]) && trim($s_p_date[0]) != "") {
           $sPrintDate = DateUtility::isoDateFormat(trim($s_p_date[0]));
      }
@@ -213,8 +213,8 @@ if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
      }
 }
 /* Gender filter */
-if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
-     if (trim($_POST['gender']) == "not_recorded") {
+if (isset($_POST['gender']) && trim((string) $_POST['gender']) != '') {
+     if (trim((string) $_POST['gender']) == "not_recorded") {
           $sWhere[] =  ' (vl.patient_gender = "not_recorded" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
      } else {
           $sWhere[] =  ' (vl.patient_gender IS NOT NULL AND vl.patient_gender ="' . $_POST['gender'] . '") ';
@@ -222,32 +222,32 @@ if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
 }
 
 /* Sample status filter */
-if (isset($_POST['status']) && trim($_POST['status']) != '') {
+if (isset($_POST['status']) && trim((string) $_POST['status']) != '') {
      $sWhere[] = '  (vl.result_status IS NOT NULL AND vl.result_status =' . $_POST['status'] . ')';
 }
 /* Show only recorded sample filter */
-if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) == 'yes') {
+if (isset($_POST['showReordSample']) && trim((string) $_POST['showReordSample']) == 'yes') {
      $sWhere[] =  '  (vl.sample_reordered is NOT NULL AND vl.sample_reordered ="yes") ';
 }
 /* Is patient pregnant filter */
-if (isset($_POST['patientPregnant']) && trim($_POST['patientPregnant']) != '') {
+if (isset($_POST['patientPregnant']) && trim((string) $_POST['patientPregnant']) != '') {
      $sWhere[] = '  vl.is_patient_pregnant ="' . $_POST['patientPregnant'] . '"';
 }
 /* Is patient breast feeding filter */
-if (isset($_POST['breastFeeding']) && trim($_POST['breastFeeding']) != '') {
+if (isset($_POST['breastFeeding']) && trim((string) $_POST['breastFeeding']) != '') {
      $sWhere[] = '  vl.is_patient_breastfeeding ="' . $_POST['breastFeeding'] . '"';
 }
 /* Batch code filter */
-if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
      $sWhere[] =  '  b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 /* Funding src filter */
-if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
-     $sWhere[] = '  vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
+if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') {
+     $sWhere[] = '  vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
 }
 /* Implemening partner filter */
-if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
-     $sWhere[] =  '  vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
+if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') {
+     $sWhere[] =  '  vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
 }
 if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
      $sWhere[] = ' vl.patient_id like "%' . $_POST['patientId'] . '%"';
@@ -257,38 +257,38 @@ if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
 }
 /* Assign date time filters */
 if (!empty($_POST['sampleCollectionDate'])) {
-     if (trim($start_date) == trim($end_date)) {
+     if (trim((string) $start_date) == trim((string) $end_date)) {
           $sWhere[] =  '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
      } else {
           $sWhere[] =  '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
      }
 }
-if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '' && $_POST['status'] == 7) {
-     if (trim($sTestDate) == trim($eTestDate)) {
+if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '' && $_POST['status'] == 7) {
+     if (trim((string) $sTestDate) == trim((string) $eTestDate)) {
           $sWhere[] = '  DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
      } else {
           $sWhere[] =  '  DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
      }
 }
-if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
-     if (trim($sPrintDate) == trim($eTestDate)) {
+if (isset($_POST['printDate']) && trim((string) $_POST['printDate']) != '') {
+     if (trim((string) $sPrintDate) == trim((string) $eTestDate)) {
           $sWhere[] =  '  DATE(vl.result_printed_datetime) = "' . $sPrintDate . '"';
      } else {
           $sWhere[] =  '  DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
      }
 }
-if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
-     if (trim($sSampleReceivedDate) == trim($eSampleReceivedDate)) {
+if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != '') {
+     if (trim((string) $sSampleReceivedDate) == trim((string) $eSampleReceivedDate)) {
           $sWhere[] =  '  DATE(vl.sample_received_at_testing_lab_datetime) like "' . $sSampleReceivedDate . '"';
      } else {
           $sWhere[] =  '  DATE(vl.sample_received_at_testing_lab_datetime) >= "' . $sSampleReceivedDate . '" AND DATE(vl.sample_received_at_testing_lab_datetime) <= "' . $eSampleReceivedDate . '"';
      }
 }
-if (isset($_POST['requestCreatedDatetime']) && trim($_POST['requestCreatedDatetime']) != '') {
+if (isset($_POST['requestCreatedDatetime']) && trim((string) $_POST['requestCreatedDatetime']) != '') {
      $sRequestCreatedDatetime = '';
      $eRequestCreatedDatetime = '';
 
-     $date = explode("to", $_POST['requestCreatedDatetime']);
+     $date = explode("to", (string) $_POST['requestCreatedDatetime']);
      if (isset($date[0]) && trim($date[0]) != "") {
           $sRequestCreatedDatetime = DateUtility::isoDateFormat(trim($date[0]));
      }
@@ -296,7 +296,7 @@ if (isset($_POST['requestCreatedDatetime']) && trim($_POST['requestCreatedDateti
           $eRequestCreatedDatetime = DateUtility::isoDateFormat(trim($date[1]));
      }
 
-     if (trim($sRequestCreatedDatetime) == trim($eRequestCreatedDatetime)) {
+     if (trim((string) $sRequestCreatedDatetime) == trim((string) $eRequestCreatedDatetime)) {
           $sWhere[] =  '  DATE(vl.request_created_datetime) like "' . $sRequestCreatedDatetime . '"';
      } else {
           $sWhere[] =  '  DATE(vl.request_created_datetime) >= "' . $sRequestCreatedDatetime . '" AND DATE(vl.request_created_datetime) <= "' . $eRequestCreatedDatetime . '"';

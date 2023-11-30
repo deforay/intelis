@@ -43,14 +43,14 @@ if ($testType == "vl") {
 
 $query = "SELECT vl.remote_sample_code,vl.$primaryKey,vl.facility_id FROM $tableName as vl WHERE (vl.result is NULL or vl.result = '') AND (vl.remote_sample_code IS NOT NULL OR vl.remote_sample_code NOT LIKE '')";
 
-if (trim($lName) != '') {
+if (trim((string) $lName) != '') {
 	$query = $query . " AND vl.lab_id='" . $lName . "'";
 }
 if ($_POST['fName'] != '') {
 	$query = $query . " AND vl.facility_id='" . $fName . "'";
 }
-if (isset($scDate) && trim($scDate) != '') {
-	$s_c_date = explode("to", $scDate);
+if (isset($scDate) && trim((string) $scDate) != '') {
+	$s_c_date = explode("to", (string) $scDate);
 	//print_r($s_c_date);die;
 	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
 		$start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
@@ -59,7 +59,7 @@ if (isset($scDate) && trim($scDate) != '') {
 		$end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
 	}
 
-	if (trim($start_date) == trim($end_date)) {
+	if (trim((string) $start_date) == trim((string) $end_date)) {
 		$query = $query . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
 	} else {
 		$query = $query . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';

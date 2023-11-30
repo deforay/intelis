@@ -58,7 +58,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", $_POST['sSearch']);
+    $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
         if ($sWhereSub == "") {
@@ -87,17 +87,17 @@ for ($i = 0; $i < count($aColumns); $i++) {
     }
 }
 $facilityType = $_POST['facilityType'];
-if (isset($facilityType) && trim($facilityType) != '') {
+if (isset($facilityType) && trim((string) $facilityType) != '') {
     $sWhere[] = ' f_t.facility_type_id = "' . $_POST['facilityType'] . '"';
 }
-if (isset($_POST['district']) && trim($_POST['district']) != '') {
+if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
     $sWhere[] = " d.geo_id = '" . $_POST['district'] . "' ";
 }
-if (isset($_POST['state']) && trim($_POST['state']) != '') {
+if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
     $sWhere[] = " p.geo_id = '" . $_POST['state'] . "' ";
 }
 $qry = "";
-if (isset($_POST['testType']) && trim($_POST['testType']) != '') {
+if (isset($_POST['testType']) && trim((string) $_POST['testType']) != '') {
     if (!empty($facilityType)) {
         if ($facilityType == '2') {
             $qry = " LEFT JOIN testing_labs tl ON tl.facility_id=f_d.facility_id";
@@ -157,7 +157,7 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['province']);
     $row[] = ($aRow['district']);
     if (isset($_SESSION['privileges']) && in_array("editFacility.php", $_SESSION['privileges']) && ($_SESSION['instanceType'] == 'remoteuser' || $sarr['sc_user_type'] == 'standalone')) {
-        $row[] = '<a href="editFacility.php?id=' . base64_encode($aRow['facility_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
+        $row[] = '<a href="editFacility.php?id=' . base64_encode((string) $aRow['facility_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
     }
     $output['aaData'][] = $row;
 }

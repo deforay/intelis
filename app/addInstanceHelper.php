@@ -16,7 +16,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $tableName = "s_vlsm_instance";
 $globalTable = "global_config";
-function getMacLinux()
+function getMacLinux(): bool|string
 {
 	try {
 		$mac = exec('getmac');
@@ -27,7 +27,7 @@ function getMacLinux()
 		return "not found";
 	}
 }
-function getMacWindows()
+function getMacWindows(): string
 {
 	// Turn on output buffering
 	ob_start();
@@ -47,10 +47,10 @@ function getMacWindows()
 	return substr($mycom, ($pmac + 36), 17);
 }
 try {
-	if ((isset($_POST['fName']) && trim($_POST['fName']) != "") || isset($_POST['labId']) && trim($_POST['labId']) != "") {
-		if (isset($_POST['labId']) && trim($_POST['labId']) != "") {
+	if ((isset($_POST['fName']) && trim((string) $_POST['fName']) != "") || isset($_POST['labId']) && trim((string) $_POST['labId']) != "") {
+		if (isset($_POST['labId']) && trim((string) $_POST['labId']) != "") {
 			$labResults = $general->fetchDataFromTable('facility_details', 'facility_id = ' . $_POST['labId'], array('facility_type', 'facility_name', 'facility_code'));
-			if (isset($labResults[0]['facility_name']) && trim($labResults[0]['facility_name']) != "") {
+			if (isset($labResults[0]['facility_name']) && trim((string) $labResults[0]['facility_name']) != "") {
 				$_POST['fName'] = $labResults[0]['facility_name'];
 				$_POST['fCode'] = $labResults[0]['facility_code'];
 				$_POST['fType'] = $labResults[0]['facility_type'];

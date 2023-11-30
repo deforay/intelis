@@ -14,7 +14,7 @@ class DatabaseService extends MysqliDb
      * @param array|null $bindParams Parameters to bind to the query
      * @return \Generator
      */
-    public function rawQueryGenerator($query, $bindParams = null)
+    public function rawQueryGenerator(string $query, $bindParams = null)
     {
         $params = ['']; // Create the empty 0 index
         $this->_query = $query;
@@ -26,7 +26,8 @@ class DatabaseService extends MysqliDb
                 array_push($params, $bindParams[$prop]);
             }
 
-            call_user_func_array([$stmt, 'bind_param'], $this->refValues($params));
+            //call_user_func_array([$stmt, 'bind_param'], $this->refValues($params));
+            call_user_func_array($stmt->bind_param(...), $this->refValues($params));
         }
 
         $stmt->execute();

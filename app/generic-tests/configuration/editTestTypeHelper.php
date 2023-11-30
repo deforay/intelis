@@ -24,13 +24,13 @@ $tableName5 = "generic_test_failure_reason_map";
 $tableName6 = "generic_sample_rejection_reason_map";
 $tableName8 = "generic_test_methods_map";
 $testAttribute = [];
-$testTypeId = (int) base64_decode($_POST['testTypeId']);
+$testTypeId = (int) base64_decode((string) $_POST['testTypeId']);
 
 // echo "<pre>";print_r($_POST);die;
-$_POST['testStandardName'] = trim($_POST['testStandardName']);
+$_POST['testStandardName'] = trim((string) $_POST['testStandardName']);
 $i = 0;
 foreach ($_POST['fdropDown'] as $val) {
-    $_POST['fdropDown'][$i] = substr($val, 0, -1);
+    $_POST['fdropDown'][$i] = substr((string) $val, 0, -1);
     $i++;
 }
 try {
@@ -43,7 +43,7 @@ try {
             $index = array_search($sortFieldOrder[$i], $_POST['fieldOrder']);
 
             if ($_POST['section'][$index] == 'otherSection') {
-                $_POST['sectionOther'][$index] = trim($_POST['sectionOther'][$index]);
+                $_POST['sectionOther'][$index] = trim((string) $_POST['sectionOther'][$index]);
                 $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['field_name'] = $_POST['fieldName'][$index];
                 $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['field_code'] = $_POST['fieldCode'][$index];
                 $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['field_type'] = $_POST['fieldType'][$index];
@@ -78,13 +78,13 @@ try {
             $testResultAttribute['threshold_value_name'] = $_POST['thresholdValueName'];
             $testResultAttribute['threshold_value'] = $_POST['thresholdValue'];
         } else {
-            $testResultAttribute['qualitative_result'] = explode(",", $_POST['qualitativeResult']);
+            $testResultAttribute['qualitative_result'] = explode(",", (string) $_POST['qualitativeResult']);
         }
         if (!is_numeric($_POST['testCategory'])) {
             $_POST['testCategory'] = $generic->quickInsert('r_generic_test_categories', array('test_category_name', 'test_category_status'), array($_POST['testCategory'], 'active'));
         }
         // Convert to uppercase
-        $shortCode = strtoupper($_POST['testShortCode']);
+        $shortCode = strtoupper((string) $_POST['testShortCode']);
         // Remove all special characters and spaces, except hyphens
         $shortCode = preg_replace('/[^A-Z0-9-]/', '', $shortCode);
         $data = array(

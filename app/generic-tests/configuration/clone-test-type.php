@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 use Laminas\Diactoros\ServerRequest;
@@ -15,19 +16,19 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var GenericTestsService $generic */
 $generic = ContainerRegistry::get(GenericTestsService::class);
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 // Sanitized values from $request object
 /** @var ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $tQuery = "SELECT * from r_test_types WHERE test_type_id=?";
 $testTypeInfo = $db->rawQueryOne($tQuery, [$id]);
-$testAttr = json_decode($testTypeInfo['test_form_config'], true);
-$testResultAttribute = json_decode($testTypeInfo['test_results_config'], true);
+$testAttr = json_decode((string) $testTypeInfo['test_form_config'], true);
+$testResultAttribute = json_decode((string) $testTypeInfo['test_results_config'], true);
 
 // $stQuery = "SELECT * from r_generic_sample_types where sample_type_status='active'";
 $testMethodInfo = $general->getDataByTableAndFields("r_generic_test_methods", array("test_method_id", "test_method_name"), true, "test_method_status='active'");
@@ -113,7 +114,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 									<label for="testStandardName" class="col-lg-4 control-label"><?php echo _translate("Test Standard Name"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control isRequired" id="testStandardName" name="testStandardName" placeholder='<?php echo _translate("Test Standard Name"); ?>' title='<?php echo _translate("Please enter standard name"); ?>' onblur="checkNameValidation('r_test_types','test_standard_name',this,'<?php echo "test_type_id##" . $testTypeInfo['test_type_id']; ?>','<?php echo _translate("This test standard name that you entered already exists.Try another name"); ?>',null)" />
-										<input type="hidden" name="testTypeId" id="testTypeId" value="<?php echo base64_encode($testTypeInfo['test_type_id']); ?>" />
+										<input type="hidden" name="testTypeId" id="testTypeId" value="<?php echo base64_encode((string) $testTypeInfo['test_type_id']); ?>" />
 									</div>
 								</div>
 							</div>
@@ -289,7 +290,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 																<div class="tag-container container<?php echo $i ?>">
 																	<?php
 																	if (!empty($testAttribute['dropdown_options'])) {
-																		$val = explode(",", $testAttribute['dropdown_options']);
+																		$val = explode(",", (string) $testAttribute['dropdown_options']);
 																		foreach ($val as $v) {
 																	?>
 																			<div class="tag"><?php echo $v; ?><span class="remove-tag">x</span></div>
@@ -353,7 +354,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 																	<div class="tag-container container<?php echo $i ?>">
 																		<?php
 																		if (!empty($testAttribute['dropdown_options'])) {
-																			$val = explode(",", $testAttribute['dropdown_options']);
+																			$val = explode(",", (string) $testAttribute['dropdown_options']);
 																			foreach ($val as $v) {
 																		?>
 																				<div class="tag"><?php echo $v; ?><span class="remove-tag">x</span></div>

@@ -60,7 +60,7 @@ if (isset($_POST['iSortCol_0'])) {
  */
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", $_POST['sSearch']);
+    $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
         if ($sWhereSub == "") {
@@ -149,10 +149,10 @@ if (isset($_SESSION['privileges']) && (in_array("covid-19-edit-confirmation-mani
 
 foreach ($rResult as $aRow) {
     $humanDate = "";
-    $printBarcode = '<a href="generate-confirmation-manifest.php?id=' . base64_encode($aRow['manifest_code']) . '" class="btn btn-info btn-xs" style="margin-right: 2px;" title="Print Barcode" target="_blank"><em class="fa-solid fa-barcode"></em> Print Barcode</a>';
-    if (trim($aRow['request_created_datetime']) != "" && $aRow['request_created_datetime'] != '0000-00-00 00:00:00') {
+    $printBarcode = '<a href="generate-confirmation-manifest.php?id=' . base64_encode((string) $aRow['manifest_code']) . '" class="btn btn-info btn-xs" style="margin-right: 2px;" title="Print Barcode" target="_blank"><em class="fa-solid fa-barcode"></em> Print Barcode</a>';
+    if (trim((string) $aRow['request_created_datetime']) != "" && $aRow['request_created_datetime'] != '0000-00-00 00:00:00') {
         $date = $aRow['request_created_datetime'];
-        $humanDate = date("d-M-Y H:i:s", strtotime($date));
+        $humanDate = date("d-M-Y H:i:s", strtotime((string) $date));
     }
     $disable = '';
     $pointerEvent = '';
@@ -163,12 +163,12 @@ foreach ($rResult as $aRow) {
     $row = [];
     //$row[] = '<input type="checkbox" name="chkPackage[]" class="chkPackage" id="chkPackage' . $aRow['manifest_id'] . '"  value="' . $aRow['manifest_id'] . '" onclick="checkPackage(this);"  />';
     $row[] = $aRow['manifest_code'];
-    $row[] = strtoupper($aRow['module']);
+    $row[] = strtoupper((string) $aRow['module']);
     $row[] = $aRow['sample_code'];
     $row[] = $humanDate;
     if ($package || $edit) {
         if ($edit) {
-            $editBtn = '<a href="covid-19-edit-confirmation-manifest.php?id=' . base64_encode($aRow['manifest_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="Edit"><em class="fa-solid fa-pen-to-square"></em> Edit</em></a>';
+            $editBtn = '<a href="covid-19-edit-confirmation-manifest.php?id=' . base64_encode((string) $aRow['manifest_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="Edit"><em class="fa-solid fa-pen-to-square"></em> Edit</em></a>';
         } else {
             $editBtn = '';
         }

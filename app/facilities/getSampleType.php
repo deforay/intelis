@@ -1,12 +1,15 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\Covid19Service;
-use App\Services\EidService;
-use App\Services\HepatitisService;
 use App\Services\TbService;
 use App\Services\VlService;
+use App\Services\EidService;
+use App\Services\Covid19Service;
+use App\Services\DatabaseService;
+use App\Services\HepatitisService;
+use App\Registries\ContainerRegistry;
 
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get('db');
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -18,9 +21,9 @@ $_POST = $request->getParsedBody();
 
 $selectedSamplesTypes = [];
 if (!empty($_POST['facilityId'])) {
-    $db = $db->where('facility_id', base64_decode($_POST['facilityId']));
+    $db = $db->where('facility_id', base64_decode((string) $_POST['facilityId']));
     $facility = $db->getOne('facility_details', array('facility_attributes'));
-    $selectedSamplesTypes = json_decode($facility['facility_attributes'], true);
+    $selectedSamplesTypes = json_decode((string) $facility['facility_attributes'], true);
 }
 $sampleType = [];
 if ($_POST['testType'] != "") {
@@ -50,7 +53,7 @@ if ($_POST['testType'] != "") {
             $tbService = ContainerRegistry::get(TbService::class);
             $sampleType['tb'] = $tbService->getTbSampleTypes();
         }
-        $selectedType[$test] = explode(",", $selectedSamplesTypes['sampleType'][$test]);
+        $selectedType[$test] = explode(",", (string) $selectedSamplesTypes['sampleType'][$test]);
     }
 }
 if (!empty($sampleType)) { ?>
@@ -65,9 +68,9 @@ if (!empty($sampleType)) { ?>
         <tbody id="sampleTypeTable">
             <?php foreach ($_POST['testType'] as $test) { ?>
                 <tr>
-                    <td style="text-align:center;"><?= strtoupper(htmlspecialchars($test)); ?></td>
+                    <td style="text-align:center;"><?= strtoupper(htmlspecialchars((string) $test)); ?></td>
                     <td>
-                        <select name="sampleType[<?php echo $test; ?>][]" id="sampleType<?php echo $test; ?>" title="Please select the sample type for <?= htmlspecialchars($test); ?>" multiple>
+                        <select name="sampleType[<?php echo $test; ?>][]" id="sampleType<?php echo $test; ?>" title="Please select the sample type for <?= htmlspecialchars((string) $test); ?>" multiple>
                             <?php foreach ($sampleType[$test] as $id => $type) { ?>
                                 <option value="<?php echo $id; ?>" <?php echo (in_array($id, $selectedType[$test])) ? "selected='selected'" : ""; ?>><?php echo $type; ?></option>
                             <?php } ?>
@@ -81,8 +84,8 @@ if (!empty($sampleType)) { ?>
 <script type="text/javascript">
     $(document).ready(function() {
         <?php foreach ($_POST['testType'] as $test) { ?>
-            $("#sampleType<?= htmlspecialchars($test); ?>").multipleSelect({
-                placeholder: 'Select <?= strtoupper(htmlspecialchars($test)); ?> Sample Type',
+            $("#sampleType<?= htmlspecialchars((string) $test); ?>").multipleSelect({
+                placeholder: 'Select <?= strtoupper(htmlspecialchars((string) $test)); ?> Sample Type',
                 width: '100%'
             });
         <?php } ?>

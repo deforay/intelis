@@ -132,7 +132,7 @@ try {
 
 
         if (!empty($data['provinceId']) && !is_numeric($data['provinceId'])) {
-            $province = explode("##", $data['provinceId']);
+            $province = explode("##", (string) $data['provinceId']);
             if (!empty($province)) {
                 $data['provinceId'] = $province[0];
             }
@@ -258,50 +258,50 @@ try {
             $status = SAMPLE_STATUS\PENDING_APPROVAL;
         }
 
-        if (isset($data['approvedOn']) && trim($data['approvedOn']) != "") {
+        if (isset($data['approvedOn']) && trim((string) $data['approvedOn']) != "") {
             $data['approvedOn'] = DateUtility::isoDateFormat($data['approvedOn'], true);
         } else {
             $data['approvedOn'] = null;
         }
 
         //Set sample received date
-        if (!empty($data['sampleReceivedDate']) && trim($data['sampleReceivedDate']) != "") {
+        if (!empty($data['sampleReceivedDate']) && trim((string) $data['sampleReceivedDate']) != "") {
             $data['sampleReceivedDate'] = DateUtility::isoDateFormat($data['sampleReceivedDate'], true);
         } else {
             $data['sampleReceivedDate'] = null;
         }
-        if (!empty($data['sampleTestedDateTime']) && trim($data['sampleTestedDateTime']) != "") {
+        if (!empty($data['sampleTestedDateTime']) && trim((string) $data['sampleTestedDateTime']) != "") {
             $data['sampleTestedDateTime'] = DateUtility::isoDateFormat($data['sampleTestedDateTime'], true);
         } else {
             $data['sampleTestedDateTime'] = null;
         }
 
-        if (isset($data['rapidtestDate']) && trim($data['rapidtestDate']) != "") {
+        if (isset($data['rapidtestDate']) && trim((string) $data['rapidtestDate']) != "") {
             $data['rapidtestDate'] = DateUtility::isoDateFormat($data['rapidtestDate']);
         } else {
             $data['rapidtestDate'] = null;
         }
 
-        if (isset($data['childDob']) && trim($data['childDob']) != "") {
+        if (isset($data['childDob']) && trim((string) $data['childDob']) != "") {
             $data['childDob'] = DateUtility::isoDateFormat($data['childDob']);
         } else {
             $data['childDob'] = null;
         }
 
-        if (isset($data['mothersDob']) && trim($data['mothersDob']) != "") {
+        if (isset($data['mothersDob']) && trim((string) $data['mothersDob']) != "") {
             $data['mothersDob'] = DateUtility::isoDateFormat($data['mothersDob']);
         } else {
             $data['mothersDob'] = null;
         }
 
 
-        if (isset($data['motherTreatmentInitiationDate']) && trim($data['motherTreatmentInitiationDate']) != "") {
+        if (isset($data['motherTreatmentInitiationDate']) && trim((string) $data['motherTreatmentInitiationDate']) != "") {
             $data['motherTreatmentInitiationDate'] = DateUtility::isoDateFormat($data['motherTreatmentInitiationDate']);
         } else {
             $data['motherTreatmentInitiationDate'] = null;
         }
 
-        if (isset($data['previousPCRTestDate']) && trim($data['previousPCRTestDate']) != "") {
+        if (isset($data['previousPCRTestDate']) && trim((string) $data['previousPCRTestDate']) != "") {
             $data['previousPCRTestDate'] = DateUtility::isoDateFormat($data['previousPCRTestDate']);
         } else {
             $data['previousPCRTestDate'] = null;
@@ -314,25 +314,25 @@ try {
         } else {
             $motherVlResult = null;
         }
-        if (isset($data['reviewedOn']) && trim($data['reviewedOn']) != "") {
+        if (isset($data['reviewedOn']) && trim((string) $data['reviewedOn']) != "") {
             $data['reviewedOn'] = DateUtility::isoDateFormat($data['reviewedOn']);
         } else {
             $data['reviewedOn'] = null;
         }
 
-        if (isset($data['resultDispatchedOn']) && trim($data['resultDispatchedOn']) != "") {
+        if (isset($data['resultDispatchedOn']) && trim((string) $data['resultDispatchedOn']) != "") {
             $data['resultDispatchedOn'] = DateUtility::isoDateFormat($data['resultDispatchedOn'], true);
         } else {
             $data['resultDispatchedOn'] = null;
         }
 
-        if (isset($data['sampleDispatchedOn']) && trim($data['sampleDispatchedOn']) != "") {
+        if (isset($data['sampleDispatchedOn']) && trim((string) $data['sampleDispatchedOn']) != "") {
             $data['sampleDispatchedOn'] = DateUtility::isoDateFormat($data['sampleDispatchedOn'], true);
         } else {
             $data['sampleDispatchedOn'] = null;
         }
 
-        if (!empty($data['revisedOn']) && trim($data['revisedOn']) != "") {
+        if (!empty($data['revisedOn']) && trim((string) $data['revisedOn']) != "") {
             $data['revisedOn'] = DateUtility::isoDateFormat($data['revisedOn'], true);
         } else {
             $data['revisedOn'] = null;

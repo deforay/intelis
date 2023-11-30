@@ -14,13 +14,13 @@ $db = ContainerRegistry::get('db');
 $tableName1 = "roles";
 $db->startTransaction();
 try {
-        $lastId = base64_decode($_POST['roleId']);
+        $lastId = base64_decode((string) $_POST['roleId']);
 
 
         $db = $db->where('role_id', $lastId);
         $db->delete("roles_privileges_map");
 
-        if (isset($_POST['roleName']) && trim($_POST['roleName']) != "") {
+        if (isset($_POST['roleName']) && trim((string) $_POST['roleName']) != "") {
                 $data = array(
                         'role_name' => $_POST['roleName'],
                         'role_code' => $_POST['roleCode'],

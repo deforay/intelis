@@ -89,7 +89,7 @@ class GenericTestsService extends AbstractTestService
             $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey'] ?? null;
 
             $sampleJson = $this->getSampleCode($sampleCodeParams);
-            $sampleData = json_decode($sampleJson, true);
+            $sampleData = json_decode((string) $sampleJson, true);
 
             $sQuery = "SELECT sample_id FROM form_generic ";
             if (!empty($sampleData['sampleCode'])) {
@@ -183,10 +183,10 @@ class GenericTestsService extends AbstractTestService
             $this->db->where("sample_id", $genericTestId);
             $generic = $this->db->getOne('form_generic');
             if ($generic['test_type_form']) {
-                $dynamicJson = (array) json_decode($generic['test_type_form']);
+                $dynamicJson = (array) json_decode((string) $generic['test_type_form']);
                 $this->db->where('test_type_id', $generic['test_type']);
                 $testTypes = $this->db->getOne('r_test_types');
-                $labels = json_decode($testTypes['test_form_config'], true);
+                $labels = json_decode((string) $testTypes['test_form_config'], true);
 
                 foreach ($labels['field_id'] as $key => $le) {
                     $labelsResponse[$le] = $labels['field_name'][$key];
@@ -228,7 +228,7 @@ class GenericTestsService extends AbstractTestService
             return null;
         }
 
-        $resultConfig = json_decode($testTypeResult['test_results_config'], true);
+        $resultConfig = json_decode((string) $testTypeResult['test_results_config'], true);
         $return = null;
         if (isset($resultConfig['result_type']) && $resultConfig['result_type'] == 'quantitative') {
             if (is_numeric($result)) {
@@ -242,11 +242,11 @@ class GenericTestsService extends AbstractTestService
                     $return = $resultConfig['below_threshold'];
                 }
             } else {
-                $resultIndex = (isset($result) && isset($resultConfig['quantitative_result']) && in_array($result, $resultConfig['quantitative_result'])) ? array_search(strtolower($result), array_map('strtolower', $resultConfig['quantitative_result'])) : '';
+                $resultIndex = (isset($result) && isset($resultConfig['quantitative_result']) && in_array($result, $resultConfig['quantitative_result'])) ? array_search(strtolower((string) $result), array_map('strtolower', $resultConfig['quantitative_result'])) : '';
                 $return = $resultConfig['quantitative_result_interpretation'][$resultIndex];
             }
         } elseif (isset($resultConfig['result_type']) && $resultConfig['result_type'] == 'qualitative') {
-            $resultIndex = (isset($result) && isset($resultConfig['result']) && in_array($result, $resultConfig['result'])) ? array_search(strtolower($result), array_map('strtolower', $resultConfig['result'])) : '';
+            $resultIndex = (isset($result) && isset($resultConfig['result']) && in_array($result, $resultConfig['result'])) ? array_search(strtolower((string) $result), array_map('strtolower', $resultConfig['result'])) : '';
             $return = $resultConfig['result_interpretation'][$resultIndex];
         }
 
@@ -332,7 +332,7 @@ class GenericTestsService extends AbstractTestService
 
             $this->db->orderBy('updated_datetime');
             $testTypeResult = $this->db->getOne('r_test_types', 'test_form_config');
-            $testType = json_decode($testTypeResult['test_form_config'], true);
+            $testType = json_decode((string) $testTypeResult['test_form_config'], true);
             $fcodes = [];
             if (isset($testType) && !empty($testType)) {
                 foreach ($testType as $section => $sectionArray) {
@@ -353,7 +353,7 @@ class GenericTestsService extends AbstractTestService
                 $result =  $this->db->getOne('form_generic', 'test_type_form');
                 if ($result) {
                     $response = [];
-                    foreach ((array) json_decode($result['test_type_form']) as $key => $value) {
+                    foreach ((array) json_decode((string) $result['test_type_form']) as $key => $value) {
                         if (in_array($key, $fcodes)) {
                             $response[] = $value;
                         }

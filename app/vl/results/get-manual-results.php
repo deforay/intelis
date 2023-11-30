@@ -80,7 +80,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-     $searchArray = explode(" ", $_POST['sSearch']);
+     $searchArray = explode(" ", (string) $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
           if ($sWhereSub == "") {
@@ -166,14 +166,14 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.vl_sample_id,
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 [$t_start_date, $t_end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
 
-if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
      $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 
-if (isset($_POST['district']) && trim($_POST['district']) != '') {
+if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
      $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"';
 }
-if (isset($_POST['state']) && trim($_POST['state']) != '') {
+if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
      $sWhere[] = ' f.facility_state_id = "' . $_POST['state'] . '"';
 }
 
@@ -187,33 +187,33 @@ if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
 
 if (!empty($_POST['sampleCollectionDate'])) {
 
-     if (trim($start_date) == trim($end_date)) {
+     if (trim((string) $start_date) == trim((string) $end_date)) {
           $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
      }
 }
 
-if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-     if (trim($t_start_date) == trim($t_end_date)) {
+if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
+     if (trim((string) $t_start_date) == trim((string) $t_end_date)) {
           $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $t_start_date . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $t_start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $t_end_date . '"';
      }
 }
-if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
+if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
      $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
 }
-if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
+if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
      $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
-if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
+if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) != '') {
      $sWhere[] = ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
 }
-if (isset($_POST['artNo']) && trim($_POST['artNo']) != '') {
+if (isset($_POST['artNo']) && trim((string) $_POST['artNo']) != '') {
      $sWhere[] = " vl.patient_art_no LIKE '%" . $_POST['artNo'] . "%' ";
 }
-if (isset($_POST['status']) && trim($_POST['status']) != '') {
+if (isset($_POST['status']) && trim((string) $_POST['status']) != '') {
      if ($_POST['status'] == 'no_result') {
           $statusCondition = '  (vl.result is NULL OR vl.result ="")  AND vl.result_status != ' . SAMPLE_STATUS\REJECTED;
      } else if ($_POST['status'] == 'result') {
@@ -223,22 +223,22 @@ if (isset($_POST['status']) && trim($_POST['status']) != '') {
      }
      $sWhere[] = $statusCondition;
 }
-if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
-     if (trim($_POST['gender']) == "not_recorded") {
+if (isset($_POST['gender']) && trim((string) $_POST['gender']) != '') {
+     if (trim((string) $_POST['gender']) == "not_recorded") {
           $sWhere[] = ' (vl.patient_gender = "not_recorded" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
      } else {
           $sWhere[] = ' vl.patient_gender ="' . $_POST['gender'] . '"';
      }
 }
-if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
-     $sWhere[] = ' vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
+if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') {
+     $sWhere[] = ' vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
 }
-if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
-     $sWhere[] = ' vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
+if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') {
+     $sWhere[] = ' vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
 }
 
 // Only approved results can be printed
-if (!isset($_POST['status']) || trim($_POST['status']) == '') {
+if (!isset($_POST['status']) || trim((string) $_POST['status']) == '') {
      $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
 } else {
      $sWhere[] = " vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
@@ -291,7 +291,7 @@ foreach ($rResult as $aRow) {
           }
           $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Print") . '" onclick="convertResultToPdf(' . $aRow['vl_sample_id'] . ')"><em class="fa-solid fa-print"></em> ' . _translate("Print") . '</a>';
      } else {
-          $print = '<a href="updateVlTestResult.php?id=' . base64_encode($aRow['vl_sample_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
+          $print = '<a href="updateVlTestResult.php?id=' . base64_encode((string) $aRow['vl_sample_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
           if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
                if (isset($_SESSION['privileges']) && !in_array("/vl/requests/edit-locked-vl-samples", $_SESSION['privileges'])) {
                     $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _translate("Locked") . '</a>';
@@ -303,7 +303,7 @@ foreach ($rResult as $aRow) {
      $patientMname = $general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_art_no']);
      $patientLname = $general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_art_no']);
      if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-          $key = base64_decode($general->getGlobalConfig('key'));
+          $key = base64_decode((string) $general->getGlobalConfig('key'));
           $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
           $patientFname = $general->crypto('decrypt', $patientFname, $key);
           $patientMname = $general->crypto('decrypt', $patientMname, $key);

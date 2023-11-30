@@ -34,10 +34,10 @@ try {
     $instanceQuery = "SELECT * FROM s_vlsm_instance";
     $instanceResult = $db->query($instanceQuery);
     $result = '';
-    $id = explode(",", $_POST['value']);
+    $id = explode(",", (string) $_POST['value']);
     $totalIds = count($id);
-    $status = explode(",", $_POST['status']);
-    $rejectedReasonId = explode(",", $_POST['rejectReasonId']);
+    $status = explode(",", (string) $_POST['status']);
+    $rejectedReasonId = explode(",", (string) $_POST['rejectReasonId']);
     if ($_POST['value'] != '') {
         for ($i = 0; $i < $totalIds; $i++) {
             $sQuery = "SELECT * FROM temp_sample_import WHERE imported_by =? AND temp_sample_id= ?";

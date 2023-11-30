@@ -20,7 +20,7 @@ use App\Utilities\DateUtility;
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -33,7 +33,7 @@ $contact = $db->query($contactInfo);
 $vlInfo = "SELECT sample_code,patient_first_name,patient_last_name,patient_art_no,sample_collection_date from form_vl where vl_sample_id=$id";
 $vlResult = $db->query($vlInfo);
 
-if (isset($vlResult[0]['sample_collection_date']) && trim($vlResult[0]['sample_collection_date']) != '' && $vlResult[0]['sample_collection_date'] != '0000-00-00 00:00:00') {
+if (isset($vlResult[0]['sample_collection_date']) && trim((string) $vlResult[0]['sample_collection_date']) != '' && $vlResult[0]['sample_collection_date'] != '0000-00-00 00:00:00') {
   $vlResult[0]['sample_collection_date'] = DateUtility::humanReadableDateFormat($vlResult[0]['sample_collection_date']);
 } else {
   $vlResult[0]['sample_collection_date'] = '';
@@ -115,7 +115,7 @@ if (isset($vlResult[0]['sample_collection_date']) && trim($vlResult[0]['sample_c
                     <?php
                     if (count($contact) > 0) {
                       foreach ($contact as $notes) {
-                        $date = explode(" ", $notes['added_on']);
+                        $date = explode(" ", (string) $notes['added_on']);
                         $collectDate = DateUtility::humanReadableDateFormat($notes['collected_on']);
                         $humanDate = DateUtility::humanReadableDateFormat($date[0]);
                     ?>

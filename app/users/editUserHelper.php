@@ -25,7 +25,7 @@ $_POST = $request->getParsedBody();
 $uploadedFiles = $request->getUploadedFiles();
 
 
-$userId = base64_decode($_POST['userId']);
+$userId = base64_decode((string) $_POST['userId']);
 
 $userInfo = $usersService->getUserInfo($userId);
 
@@ -36,11 +36,11 @@ $signatureImagePath = realpath($signatureImagePath);
 $signatureImage = null;
 
 try {
-    if (trim($_POST['userName']) != '' && trim($_POST['loginId']) != '' && ($_POST['role']) != '') {
+    if (trim((string) $_POST['userName']) != '' && trim((string) $_POST['loginId']) != '' && ($_POST['role']) != '') {
 
         $data = array(
             'user_name'             => $_POST['userName'],
-            'interface_user_name'   => (!empty($_POST['interfaceUserName']) && $_POST['interfaceUserName'] != "") ? json_encode(array_map('trim', explode(",", $_POST['interfaceUserName']))) : null,
+            'interface_user_name'   => (!empty($_POST['interfaceUserName']) && $_POST['interfaceUserName'] != "") ? json_encode(array_map('trim', explode(",", (string) $_POST['interfaceUserName']))) : null,
             'email'                 => $_POST['email'],
             'phone_number'          => $_POST['phoneNo'],
             'login_id'              => $_POST['loginId'],
@@ -55,7 +55,7 @@ try {
             $data['api_token'] = $usersService->generateAuthToken();
             $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
         }
-        if (isset($_POST['removedSignatureImage']) && trim($_POST['removedSignatureImage']) != "") {
+        if (isset($_POST['removedSignatureImage']) && trim((string) $_POST['removedSignatureImage']) != "") {
             $fImagePath = $signatureImagePath . DIRECTORY_SEPARATOR . $_POST['removedSignatureImage'];
             if (!empty($fImagePath) && file_exists($fImagePath)) {
                 unlink($fImagePath);
@@ -67,7 +67,7 @@ try {
         if (isset($uploadedFiles['userSignature']) && $uploadedFiles['userSignature']->getError() === UPLOAD_ERR_OK) {
             $file = $uploadedFiles['userSignature'];
             $fileName = $file->getClientFilename();
-            $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
+            $fileExtension = pathinfo((string) $fileName, PATHINFO_EXTENSION);
             $tmpFilePath = $file->getStream()->getMetadata('uri');
             $fileSize = $file->getSize();
             $fileMimeType = $file->getClientMediaType();
@@ -84,13 +84,13 @@ try {
             $signatureImage = $userInfo['user_signature'] ?? null;
         }
 
-        if (isset($_POST['password']) && trim($_POST['password']) != "") {
+        if (isset($_POST['password']) && trim((string) $_POST['password']) != "") {
 
             /* Recency cross login block */
             if (SYSTEM_CONFIG['recency']['crosslogin'] && !empty(SYSTEM_CONFIG['recency']['url'])) {
                 $client = new Client();
-                $url = rtrim(SYSTEM_CONFIG['recency']['url'], "/");
-                $newCrossLoginPassword = CommonService::encrypt($_POST['password'], base64_decode(SYSTEM_CONFIG['recency']['crossloginSalt']));
+                $url = rtrim((string) SYSTEM_CONFIG['recency']['url'], "/");
+                $newCrossLoginPassword = CommonService::encrypt($_POST['password'], base64_decode((string) SYSTEM_CONFIG['recency']['crossloginSalt']));
                 $result = $client->post($url . '/api/update-password', [
                     'form_params' => [
                         'u' => $_POST['loginId'],
@@ -116,8 +116,8 @@ try {
         $db = $db->where('user_id', $userId);
         $delId = $db->delete("user_facility_map");
 
-        if ($userId != '' && trim($_POST['selectedFacility']) != '') {
-            $selectedFacility = explode(",", $_POST['selectedFacility']);
+        if ($userId != '' && trim((string) $_POST['selectedFacility']) != '') {
+            $selectedFacility = explode(",", (string) $_POST['selectedFacility']);
             $uniqueFacilityId = array_unique($selectedFacility);
             for ($j = 0; $j <= count($uniqueFacilityId); $j++) {
                 if (isset($uniqueFacilityId[$j])) {

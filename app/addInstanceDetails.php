@@ -158,7 +158,7 @@ $labResults = $general->fetchDataFromTable('facility_details', 'facility_type = 
 			);
 		<?php } ?>
 	});
-	<?php if (isset($_SESSION['success']) && trim($_SESSION['success']) != "") { ?>
+	<?php if (isset($_SESSION['success']) && trim((string) $_SESSION['success']) != "") { ?>
 		window.parent.closeModal();
 		window.parent.alert("<?php echo $_SESSION['alertMsg']; ?>");
 		<?php $_SESSION['alertMsg'] = '';

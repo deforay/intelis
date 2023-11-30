@@ -6,7 +6,6 @@ use COUNTRY;
 use MysqliDb;
 use DateTimeImmutable;
 use App\Utilities\DateUtility;
-use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 
@@ -28,10 +27,10 @@ abstract class AbstractTestService
     abstract public function getSampleCode($params);
     abstract public function insertSample($params, $returnSampleData = false);
 
-    public function generateSampleCode($testTable, $params)
+    public function generateSampleCode($testTable, $params): bool|string
     {
 
-
+        $sampleCodeGenerator = [];
         $formId = $this->commonService->getGlobalConfig('vl_form');
         $userType = $this->commonService->getSystemConfig('sc_user_type');
 
@@ -50,7 +49,7 @@ abstract class AbstractTestService
         }
         $dateObj = new DateTimeImmutable($sampleCollectionDate);
 
-        $year = $dateObj->format('y');
+        $currentYear = $year = $dateObj->format('y');
         $month = $dateObj->format('m');
         $day = $dateObj->format('d');
 

@@ -199,7 +199,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 <?php
                                                 foreach ($fundingSourceList as $fundingSource) {
                                                 ?>
-                                                    <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $covid19Info['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
+                                                    <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $covid19Info['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -209,7 +209,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 <?php
                                                 foreach ($implementingPartnerList as $implementingPartner) {
                                                 ?>
-                                                    <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $covid19Info['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
+                                                    <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $covid19Info['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -273,7 +273,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                             </select>
                                         </td>
                                         <th scope="row"><?= _translate("Phone number"); ?></th>
-                                        <td><input type="text" class="form-control phone-number" id="patientPhoneNumber" name="patientPhoneNumber" maxlength="<?php echo strlen($countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate("Phone Number"); ?>" title="<?= _translate("Phone Number"); ?>" style="width:100%;" value="<?php echo $covid19Info['patient_phone_number']; ?>" /></td>
+                                        <td><input type="text" class="form-control phone-number" id="patientPhoneNumber" name="patientPhoneNumber" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate("Phone Number"); ?>" title="<?= _translate("Phone Number"); ?>" style="width:100%;" value="<?php echo $covid19Info['patient_phone_number']; ?>" /></td>
                                     </tr>
                                     <tr>
                                         <th scope="row"><?= _translate("Case address"); ?></th>
@@ -354,7 +354,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </td>
                                         <th scope="row" style="width:15% !important"><?= _translate("Sample Dispatched On"); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control dateTime isRequired" type="text" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="<?= _translate("Sample Dispatched On"); ?>" value="<?php echo date('d-M-Y H:i:s', strtotime($covid19Info['sample_dispatched_datetime'])); ?>" />
+                                            <input class="form-control dateTime isRequired" type="text" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="<?= _translate("Sample Dispatched On"); ?>" value="<?php echo date('d-M-Y H:i:s', strtotime((string) $covid19Info['sample_dispatched_datetime'])); ?>" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -441,7 +441,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="<?= _translate("Please select the Reason for Rejection"); ?>">
                                                     <option value=""><?= _translate("-- Select --"); ?></option>
                                                     <?php foreach ($rejectionTypeResult as $type) { ?>
-                                                        <optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
+                                                        <optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
                                                             <?php
                                                             foreach ($rejectionResult as $reject) {
                                                                 if ($type['rejection_type'] == $reject['rejection_type']) { ?>
@@ -482,7 +482,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                             $kitShow = false;
                                                             foreach ($covid19TestInfo as $indexKey => $rows) { ?>
                                                                 <tr>
-                                                                    <td class="text-center"><?= ($indexKey + 1); ?><input type="hidden" name="testId[]" value="<?php echo base64_encode($rows['test_id']); ?>"></td>
+                                                                    <td class="text-center"><?= ($indexKey + 1); ?><input type="hidden" name="testId[]" value="<?php echo base64_encode((string) $rows['test_id']); ?>"></td>
                                                                     <td>
                                                                         <?php
                                                                         $value = '';
@@ -506,7 +506,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                     <td>
                                                                         <select name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control result-optional test-name-table-input" title="<?= _translate("Please select the Testing Platform for <?= ($indexKey + 1); ?>"); ?>">
                                                                             <?php $display = "display:none;";
-                                                                            if ((strpos($rows['test_name'], 'RDT') !== false)) {
+                                                                            if ((strpos((string) $rows['test_name'], 'RDT') !== false)) {
                                                                                 $display = "";
                                                                                 $span = 6;
                                                                                 $kitShow = true; ?>
@@ -532,7 +532,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                     </td>
                                                                     <td style="vertical-align:middle;text-align: center;width:100px;">
                                                                         <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-                                                                        <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode($rows['test_id']); ?>');"><em class="fa-solid fa-minus"></em></a>
+                                                                        <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode((string) $rows['test_id']); ?>');"><em class="fa-solid fa-minus"></em></a>
                                                                     </td>
                                                                 </tr>
                                                         <?php }
@@ -604,7 +604,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                     </table>
                                 </div>
                             </div>
-                        <?php } ?>
+<?php } ?>
 
                     </div>
                     <!-- /.box-body -->

@@ -186,7 +186,7 @@ $type = $_GET['type'];
         });
         aoData.push({
           "name": "type",
-          "value": '<?php echo htmlspecialchars($type); ?>'
+          "value": '<?php echo htmlspecialchars((string) $type); ?>'
         });
         $.ajax({
           "dataType": 'json',

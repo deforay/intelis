@@ -16,7 +16,7 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
 
@@ -65,7 +65,7 @@ $vlTestReasonResult = $db->query($vlTestReasonQuery);
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $eidQuery = "SELECT * from form_eid where eid_id=?";
 $eidInfo = $db->rawQueryOne($eidQuery, array($id));
@@ -97,8 +97,8 @@ $machine = [];
 foreach ($iResult as $val) {
 	$machine[$val['config_machine_id']] = $val['config_machine_name'];
 }
-if (isset($eidInfo['result_dispatched_datetime']) && trim($eidInfo['result_dispatched_datetime']) != '' && $eidInfo['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
-	$expStr = explode(" ", $eidInfo['result_dispatched_datetime']);
+if (isset($eidInfo['result_dispatched_datetime']) && trim((string) $eidInfo['result_dispatched_datetime']) != '' && $eidInfo['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", (string) $eidInfo['result_dispatched_datetime']);
 	$eidInfo['result_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$eidInfo['result_dispatched_datetime'] = '';
@@ -109,7 +109,7 @@ $condition = "status ='active' AND test_type='eid'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
 if (!empty($eidInfo['is_encrypted']) && $eidInfo['is_encrypted'] == 'yes'){
-	$key = base64_decode($general->getGlobalConfig('key'));
+	$key = base64_decode((string) $general->getGlobalConfig('key'));
 	$eidInfo['child_id'] = $general->crypto('decrypt' ,$eidInfo['child_id'], $key);
     $eidInfo['mother_id'] = $general->crypto('decrypt' ,$eidInfo['mother_id'], $key);
 

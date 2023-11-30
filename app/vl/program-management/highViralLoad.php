@@ -561,7 +561,7 @@ $state = $geolocationService->getProvinces("yes");
 														<select name="rejectionReason" id="rejectionReason" class="form-control select2 sampleRjtReportFilter" title="Please choose reason" onchange="checkRejectionReason();">
 															<option value="">-- Select --</option>
 															<?php foreach ($rejectionTypeResult as $type) { ?>
-																<optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
+																<optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
 																	<?php foreach ($rejectionResult as $reject) {
 																		if ($type['rejection_type'] == $reject['rejection_type']) {
 																	?>
@@ -1021,7 +1021,7 @@ $state = $geolocationService->getProvinces("yes");
 		});
 		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate,#vfVlnsSampleCollectionDate,#vfVlnsSampleTestDate').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _translate("Clear"); ?>",
+					cancelLabel: "<?= _translate("Clear", true); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},
@@ -1049,7 +1049,7 @@ $state = $geolocationService->getProvinces("yes");
 			});
 		$('#vfVlnsSampleCollectionDate').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _translate("Clear"); ?>",
+					cancelLabel: "<?= _translate("Clear", true); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},

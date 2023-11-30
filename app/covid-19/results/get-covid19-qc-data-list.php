@@ -58,7 +58,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", $_POST['sSearch']);
+    $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
         if ($sWhereSub == "") {
@@ -131,13 +131,13 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['qc_code'];
     $row[] = ($aRow['testkit_name']);
     $row[] = $aRow['lot_no'];
-    $row[] = date("d-M-Y", strtotime($aRow['expiry_date']));
+    $row[] = date("d-M-Y", strtotime((string) $aRow['expiry_date']));
     $row[] = ($aRow['facility_name']);
     $row[] = ($aRow['user_name']);
-    $row[] = date("d-m-Y H:i:s", strtotime($aRow['qc_tested_datetime']));
-    $row[] = date("d-m-Y H:i:s", strtotime($aRow['updated_datetime']));
+    $row[] = date("d-m-Y H:i:s", strtotime((string) $aRow['qc_tested_datetime']));
+    $row[] = date("d-m-Y H:i:s", strtotime((string) $aRow['updated_datetime']));
     if (isset($_SESSION['privileges']) && in_array("edit-covid-19-qc-data.php", $_SESSION['privileges'])) {
-        $edit = '<a href="edit-covid-19-qc-data.php?id=' . base64_encode($aRow['qc_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
+        $edit = '<a href="edit-covid-19-qc-data.php?id=' . base64_encode((string) $aRow['qc_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
         $row[] = $edit;
     }
     $output['aaData'][] = $row;

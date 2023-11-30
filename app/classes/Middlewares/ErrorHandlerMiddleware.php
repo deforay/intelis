@@ -11,7 +11,7 @@ use App\ErrorHandlers\ErrorResponseGenerator;
 
 class ErrorHandlerMiddleware implements MiddlewareInterface
 {
-    private ErrorResponseGenerator $errorResponseGenerator;
+    private readonly ErrorResponseGenerator $errorResponseGenerator;
 
     public function __construct(ErrorResponseGenerator $errorResponseGenerator)
     {

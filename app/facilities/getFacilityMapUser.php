@@ -14,7 +14,7 @@ $vlfmQuery = "SELECT GROUP_CONCAT(DISTINCT vlfm.user_id SEPARATOR ',') as userId
                 WHERE fd.facility_id = ?";
 $vlfmResult = $db->rawQueryOne($vlfmQuery, array($facilityId));
 
-$selectedUserIds = !empty($vlfmResult['userId']) ? explode(",", $vlfmResult['userId']) : [];
+$selectedUserIds = !empty($vlfmResult['userId']) ? explode(",", (string) $vlfmResult['userId']) : [];
 
 
 $uQuery = "SELECT * FROM user_details WHERE `status` like 'active' ORDER by user_name";

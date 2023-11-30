@@ -5,10 +5,10 @@ namespace App\Interop;
 
 class Dhis2
 {
-	private string $dhis2url;
+	private readonly string $dhis2url;
 	private string $currentRequestUrl;
-	private string $username;
-	private string $password;
+	private readonly string $username;
+	private readonly string $password;
 	private string $contentType;
 	private bool $authenticated;
 
@@ -16,7 +16,7 @@ class Dhis2
 	public function __construct($dhis2url, $username = "admin", $password = "district", $contentType = 'application/json')
 	{
 		// ensuring there is no trailing slash
-		$this->dhis2url = rtrim($dhis2url, '/');
+		$this->dhis2url = rtrim((string) $dhis2url, '/');
 		// Dhis2 Credentials
 		$this->username = $username;
 		$this->password = $password;

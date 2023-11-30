@@ -6,7 +6,7 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $db = $db->where('failure_id', $id);
 $failureReasonInfo = $db->getOne('r_vl_test_failure_reasons');
@@ -61,7 +61,7 @@ $failureReasonInfo = $db->getOne('r_vl_test_failure_reasons');
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer">
-                    <input type="hidden" name="failureId" value="<?php echo htmlspecialchars($_GET['id']); ?>" />
+                    <input type="hidden" name="failureId" value="<?php echo $_GET['id']; ?>" />
                     <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
                     <a href="vl-art-code-details.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
                 </div>

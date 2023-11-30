@@ -22,8 +22,8 @@ $configFormResult = $db->rawQuery($configFormQuery);
 //date
 $start_date = '';
 $end_date = '';
-if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-    $s_c_date = explode("to", $_POST['sampleTestDate']);
+if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
+    $s_c_date = explode("to", (string) $_POST['sampleTestDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
         $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
@@ -46,10 +46,10 @@ $tsQuery = "SELECT DATE_FORMAT(sample_tested_datetime,'%d-%M-%Y') AS sample_test
         FROM vl_imported_controls as vl";
 
 $sWhere = [];
-if (isset($_POST['cType']) && trim($_POST['cType']) != '') {
+if (isset($_POST['cType']) && trim((string) $_POST['cType']) != '') {
     $sWhere[] = ' vl.control_type = "' . $_POST['cType'] . '"';
 }
-if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
+if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
     $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
 }
 

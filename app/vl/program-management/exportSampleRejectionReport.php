@@ -9,7 +9,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-if (isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples']) != "") {
+if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamples']) != "") {
      $rResult = $db->rawQuery($_SESSION['rejectedSamples']);
 
      $excel = new Spreadsheet();
@@ -23,7 +23,7 @@ if (isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples']) !=
 
      $nameValue = '';
      foreach ($_POST as $key => $value) {
-          if (trim($value) != '' && trim($value) != '-- Select --') {
+          if (trim((string) $value) != '' && trim((string) $value) != '-- Select --') {
                $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
           }
      }
@@ -40,7 +40,7 @@ if (isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples']) !=
           $row[] = ($aRow['labname']);
           $row[] = ($aRow['facility_name']);
           $row[] = ($aRow['rejection_reason_name']);
-          $row[] = strtoupper($aRow['rejection_type']);
+          $row[] = strtoupper((string) $aRow['rejection_type']);
           $row[] = ($aRow['recommended_corrective_action_name']);
           $row[] = $aRow['total'];
           $output[] = $row;
@@ -51,7 +51,7 @@ if (isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples']) !=
           $colNo = 1;
           foreach ($rowData as $field => $value) {
                $rRowCount = $rowNo + 4;
-               $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
+               $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode((string) $value));
                $colNo++;
           }
      }

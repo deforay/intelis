@@ -21,10 +21,10 @@ $general = ContainerRegistry::get(CommonService::class);
 
 
 $tableName = "r_tb_test_reasons";
-$testReasonId = base64_decode($_POST['testReasonId']);
+$testReasonId = base64_decode((string) $_POST['testReasonId']);
 
 try {
-	if (isset($_POST['testReasonName']) && trim($_POST['testReasonName']) != "") {
+	if (isset($_POST['testReasonName']) && trim((string) $_POST['testReasonName']) != "") {
 
 
 		$data = array(

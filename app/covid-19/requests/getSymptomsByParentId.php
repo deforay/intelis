@@ -23,7 +23,7 @@ $symptomsArray = [];
 if (isset($_POST['covid19Id']) && $_POST['covid19Id'] != '') {
     $results = $db->rawQuery("SELECT * FROM covid19_patient_symptoms WHERE `covid19_id` = ? ORDER BY symptom_id ASC", [$_POST['covid19Id']]);
     foreach ($results as $key => $val) {
-        $symptomsArray[$val['symptom_id']] = json_decode($val['symptom_details'], true);
+        $symptomsArray[$val['symptom_id']] = json_decode((string) $val['symptom_details'], true);
         $symptomsParentArray[] = $val['symptom_id'];
     }
 }
@@ -34,7 +34,7 @@ if (!empty($covid19Symptoms)) {
 
         $subSymptoms = '<tr class="symptomRow' . $_POST['symptomParent'] . ' hide-symptoms" id="' . $_POST['symptomParent'] . '">
                 <td colspan="2" style="padding-left: 70px;display: flex;">';
-        if ($symptoms['symptom_id'] == 16 || trim($symptoms['symptom_name']) == 'Nombre de selles par /24h') {
+        if ($symptoms['symptom_id'] == 16 || trim((string) $symptoms['symptom_name']) == 'Nombre de selles par /24h') {
             $subSymptoms .= '<label class="radio-inline" for="symptomDetails' . $symptoms['symptom_id'] . '" style="padding-left:17px !important;margin-left:0;">' . ($symptoms['symptom_name']) . '</label>
                                     <input type="text" value="' . end($symptomsArray[$_POST['symptomParent']]) . '" class="form-control reason-checkbox symptoms-checkbox" id="symptomDetails' . $symptoms['symptom_id'] . '" name="symptomDetails[' . $_POST['symptomParent'] . '][]" placeholder="' . $symptoms['symptom_name'] . '" title="' . $symptoms['symptom_name'] . '" ' . $disabled . ' style=" width: 25%; margin-left: 10px; ">';
         } else {

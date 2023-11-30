@@ -16,7 +16,7 @@ $importMachineTable = "instrument_machines";
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
-$configId = base64_decode($_POST['configId']);
+$configId = base64_decode((string) $_POST['configId']);
 $iQuery = "SELECT config_id,machine_name,import_machine_file_name FROM instruments where import_machine_file_name='$configId'";
 $iResult = $db->rawQuery($iQuery);
 

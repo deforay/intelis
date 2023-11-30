@@ -561,7 +561,7 @@ $sFormat = '';
                                                                            <select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();">
                                                                                 <option value="">-- Select --</option>
                                                                                 <?php foreach ($rejectionTypeResult as $type) { ?>
-                                                                                     <optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
+                                                                                     <optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
                                                                                           <?php foreach ($rejectionResult as $reject) {
                                                                                                if ($type['rejection_type'] == $reject['rejection_type']) {
                                                                                           ?>
@@ -772,7 +772,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-               echo "printBarcodeLabel('" . htmlspecialchars($_GET['s']) . "','" . htmlspecialchars($_GET['f']) . "');";
+               echo "printBarcodeLabel('" . htmlspecialchars((string) $_GET['s']) . "','" . htmlspecialchars((string) $_GET['f']) . "');";
           }
           ?>
           // BARCODESTUFF END

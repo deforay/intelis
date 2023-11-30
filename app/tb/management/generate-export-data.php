@@ -32,7 +32,7 @@ $sarr = $general->getSystemConfig();
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
-if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "") {
+if (isset($_SESSION['tbResultQuery']) && trim((string) $_SESSION['tbResultQuery']) != "") {
 
 	$output = [];
 
@@ -62,7 +62,7 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 
 
 		//set gender
-		switch (strtolower($aRow['patient_gender'])) {
+		switch (strtolower((string) $aRow['patient_gender'])) {
 			case 'male':
 			case 'm':
 				$gender = 'M';
@@ -83,7 +83,7 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 
 		//set sample rejection
 		$sampleRejection = 'No';
-		if (trim($aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim($aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
+		if (trim((string) $aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
 			$sampleRejection = 'Yes';
 		}
 
@@ -121,7 +121,7 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 			$row[] = $patientFname . " " . $patientLname;
 		}
 		$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
-		$row[] = ($aRow['patient_age'] != null && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
+		$row[] = ($aRow['patient_age'] != null && trim((string) $aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
 		$row[] = ($aRow['patient_gender']);
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 		$row[] = ($aRow['test_reason_name']);
@@ -149,7 +149,7 @@ if (isset($_SESSION['tbResultQuery']) && trim($_SESSION['tbResultQuery']) != "")
 		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
 		// we dont need the $output variable anymore
 		unset($output);
-		echo base64_encode($fileName);
+		echo base64_encode((string) $fileName);
 	} else {
 		$excel = new Spreadsheet();
 		$sheet = $excel->getActiveSheet();

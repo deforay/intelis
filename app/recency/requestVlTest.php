@@ -40,7 +40,7 @@ try {
     /** @var Laminas\Diactoros\ServerRequest $request */
     $request = $GLOBALS['request'];
     $jsonData = $apiService->getJsonFromRequest($request, true);
-    $result = explode('&', $jsonData);
+    $result = explode('&', (string) $jsonData);
 
     /* While it coming from the recency service we change the params */
     if ($result[9] == "service=") {

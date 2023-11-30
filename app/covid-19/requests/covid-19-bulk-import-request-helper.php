@@ -28,7 +28,7 @@ try {
     $arr = $general->getGlobalConfig();
 
 
-    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['requestFile']['name']);
+    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', (string) $_FILES['requestFile']['name']);
     $fileName = str_replace(" ", "-", $fileName);
     $ranNumber = $general->generateRandomString(12);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
@@ -64,13 +64,13 @@ try {
 
                 $instanceId = $general->getInstanceId();
 
-                if (trim($rowData['AU']) != '') {
+                if (trim((string) $rowData['AU']) != '') {
                     $sampleCollectionDate = DateUtility::isoDateFormat($rowData['AU'] ?? '', true);
                 } else {
                     $sampleCollectionDate = null;
                 }
 
-                if (trim($rowData['AX']) != '') {
+                if (trim((string) $rowData['AX']) != '') {
                     $sampleReceivedDate = DateUtility::isoDateFormat($rowData['AX'] ?? '', true);
                 } else {
                     $sampleReceivedDate = null;
@@ -82,7 +82,7 @@ try {
                     'sample_code'                           => $rowData['A'],
                     'unique_id'                             => $general->generateUUID(),
                     'vlsm_country_id'                       => $arr['vl_form'],
-                    'source_of_alert'                       => (isset($rowData['B']) && $rowData['B'] != "") ? strtolower(str_replace(" ", "-", $rowData['B'])) : null,
+                    'source_of_alert'                       => (isset($rowData['B']) && $rowData['B'] != "") ? strtolower(str_replace(" ", "-", (string) $rowData['B'])) : null,
                     'source_of_alert_other'                 => $rowData['C'],
                     'province_id'                           => $provinceId['geo_id'],
                     'facility_id'                           => $facility['facility_id'] ?? null,
@@ -91,7 +91,7 @@ try {
                     'external_sample_code'                  => $rowData['I'],
                     'patient_dob'                           => DateUtility::isoDateFormat($rowData['J'] ?? ''),
                     'patient_age'                           => $rowData['K'],
-                    'patient_gender'                        => strtolower($rowData['L']),
+                    'patient_gender'                        => strtolower((string) $rowData['L']),
                     'patient_phone_number'                  => $rowData['M'],
                     'patient_email'                         => $rowData['N'],
                     'patient_address'                       => $rowData['O'],
@@ -105,7 +105,7 @@ try {
                     'fever_temp'                            => $rowData['W'],
                     'temperature_measurement_method'        => $rowData['X'],
                     // 'testing_point'                   => $rowData['Y'],
-                    'medical_history'                       => strtolower($rowData['Z']),
+                    'medical_history'                       => strtolower((string) $rowData['Z']),
                     'recent_hospitalization'                => $rowData['AB'],
                     'patient_lives_with_children'           => $rowData['AC'],
                     'patient_cares_for_children'            => $rowData['AD'],
@@ -120,9 +120,9 @@ try {
                     'flight_transit'                        => $rowData['AM'],
                     'reason_of_visit'                       => $rowData['AN'],
                     'number_of_days_sick'                   => $rowData['AO'],
-                    'date_of_symptom_onset'                 => date('Y-m-d', strtotime($rowData['AP'])),
-                    'date_of_initial_consultation'          => date('Y-m-d', strtotime($rowData['AQ'])),
-                    'sample_registered_at_lab'              => date('Y-m-d', strtotime($rowData['AR'])),
+                    'date_of_symptom_onset'                 => date('Y-m-d', strtotime((string) $rowData['AP'])),
+                    'date_of_initial_consultation'          => date('Y-m-d', strtotime((string) $rowData['AQ'])),
+                    'sample_registered_at_lab'              => date('Y-m-d', strtotime((string) $rowData['AR'])),
                     'type_of_test_requested'                => $rowData['AS'],
                     'reason_for_covid19_test'               => $testReason['test_reason_id'] ?? null,
                     'sample_collection_date'                => $sampleCollectionDate,
@@ -130,17 +130,17 @@ try {
                     'test_number'                           => $rowData['AW'],
                     'sample_received_at_lab_datetime'    => $sampleReceivedDate,
                     'lab_id'                                => $labName['facility_id'] ?? null,
-                    'is_sample_rejected'                    => strtolower($rowData['AZ']),
+                    'is_sample_rejected'                    => strtolower((string) $rowData['AZ']),
                     'reason_for_sample_rejection'           => (isset($rejectionReason['rejection_reason_id']) && $rejectionReason['rejection_reason_id'] != "") ? $rejectionReason['rejection_reason_id'] : 9999,
-                    'rejection_on'                          => date('Y-m-d', strtotime($rowData['BB'])),
+                    'rejection_on'                          => date('Y-m-d', strtotime((string) $rowData['BB'])),
                     'result'                                => $result['result_id'],
-                    'is_result_authorised'                  => strtolower($rowData['BL']),
+                    'is_result_authorised'                  => strtolower((string) $rowData['BL']),
                     'authorized_by'                         => ($rowData['BM']),
-                    'authorized_on'                         => date('Y-m-d', strtotime($rowData['BN'])),
+                    'authorized_on'                         => date('Y-m-d', strtotime((string) $rowData['BN'])),
                     'last_modified_datetime'                => DateUtility::getCurrentDateTime(),
                     'last_modified_by'                      => $_SESSION['userId'],
                     'result_status'                         => $resultStatus['status_id'] ?? null,
-                    'sample_condition'                      => strtolower($rowData['BP']),
+                    'sample_condition'                      => strtolower((string) $rowData['BP']),
                     'patient_passport_number'               => $rowData['BQ'],
                     'lab_technician'                        => $labTechnician ?? null,
                 );
@@ -173,7 +173,7 @@ try {
                             'facility_id'           => $labName['facility_id'] ?? null,
                             'testing_platform'      => $testKitName['testingPlatform'],
                             'sample_tested_datetime' => DateUtility::isoDateFormat($testKitName['testDate'] ?? '', true),
-                            'result'                => strtolower($testKitName['testResult']),
+                            'result'                => strtolower((string) $testKitName['testResult']),
                         );
                         $db->insert($testTableName, $covid19TestData);
                         $covid19Data['sample_tested_datetime'] = DateUtility::isoDateFormat($testKitName['testDate'] ?? '', true);

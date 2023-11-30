@@ -43,7 +43,7 @@ $covid19ReasonsForTesting = $covid19Service->getCovid19ReasonsForTestingDRC();
 $covid19SelectedReasonsForTesting = $covid19Service->getCovid19ReasonsForTestingByFormId($covid19Info['covid19_id']);
 $covid19SelectedReasonsDetailsForTesting = $covid19Service->getCovid19ReasonsDetailsForTestingByFormId($covid19Info['covid19_id']);
 // To get the reason details value
-$reasonDetails = json_decode($covid19SelectedReasonsDetailsForTesting['reason_details'], true);
+$reasonDetails = json_decode((string) $covid19SelectedReasonsDetailsForTesting['reason_details'], true);
 // Getting the list of Provinces, Districts and Facilities
 
 $rKey = '';
@@ -521,7 +521,7 @@ $fundingSourceOptions = $general->generateSelectOptions($fundingSourceArray, $co
                                         <tr>
                                             <th scope="row"><label for="sampleReceivedDate">Date of Sample Received </label></th>
                                             <td>
-                                                <input type="text" class="form-control" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['sample_received_at_lab_datetime']); ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter the date of sample was received" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> style="width:100%;" />
+                                                <input type="text" class="form-control" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['sample_received_at_lab_datetime']); ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter the date of sample was received" <?php echo (isset($labFieldDisabled) && trim((string) $labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> style="width:100%;" />
                                             </td>
 
                                             <td class="lab-show"><label for="labId">Lab ID number (Filled by lab staff)</label> </td>
@@ -568,7 +568,7 @@ $fundingSourceOptions = $general->generateSelectOptions($fundingSourceArray, $co
                                                         <?php if (!empty($covid19TestInfo)) {
                                                             foreach ($covid19TestInfo as $indexKey => $rows) { ?>
                                                                 <tr>
-                                                                    <td class="text-center"><?= ($indexKey + 1); ?> <input type="hidden" name="testId[]" value="<?php echo base64_encode($rows['test_id']); ?>"></td>
+                                                                    <td class="text-center"><?= ($indexKey + 1); ?> <input type="hidden" name="testId[]" value="<?php echo base64_encode((string) $rows['test_id']); ?>"></td>
                                                                     <td>
                                                                         <select onchange="otherCovidTestName(this.value,<?= ($indexKey + 1); ?>)" class="form-control test-name-table-input" id="testName<?= ($indexKey + 1); ?>" name="testName[]" title="Please enter the name of the Testkit (or) Test Method used">
                                                                             <option value="">-- Select --</option>
@@ -601,7 +601,7 @@ $fundingSourceOptions = $general->generateSelectOptions($fundingSourceArray, $co
                                                                     </td>
                                                                     <td style="vertical-align:middle;text-align: center;width:100px;">
                                                                         <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-                                                                        <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode($rows['test_id']); ?>');"><em class="fa-solid fa-minus"></em></a>
+                                                                        <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode((string) $rows['test_id']); ?>');"><em class="fa-solid fa-minus"></em></a>
                                                                     </td>
                                                                 </tr>
                                                             <?php }
@@ -666,7 +666,7 @@ $fundingSourceOptions = $general->generateSelectOptions($fundingSourceArray, $co
                                         </tr>
                                         <tr>
                                             <th scope="row">Approved On</th>
-                                            <td><input type="text" value="<?php echo date('d-M-Y H:i:s', strtotime($covid19Info['result_approved_datetime'])); ?>" name="approvedOn" id="approvedOn" class="dateTime disabled-field form-control" placeholder="Approved on" title="Please enter the Approved on" /></td>
+                                            <td><input type="text" value="<?php echo date('d-M-Y H:i:s', strtotime((string) $covid19Info['result_approved_datetime'])); ?>" name="approvedOn" id="approvedOn" class="dateTime disabled-field form-control" placeholder="Approved on" title="Please enter the Approved on" /></td>
                                             <th scope="row">Approved By</th>
                                             <td>
                                                 <select name="approvedBy" id="approvedBy" class=" form-control" title="Please choose approved by" style="width: 100%;">

@@ -13,7 +13,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class ErrorResponseGenerator
 {
-    private bool $isDebug;
+    private readonly bool $isDebug;
     private array $errorReasons = [];
 
     public function __construct(bool $isDebug)

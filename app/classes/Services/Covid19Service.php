@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use COUNTRY;
 use Exception;
 use SAMPLE_STATUS;
-use COUNTRY;
 use App\Utilities\DateUtility;
 use App\Abstracts\AbstractTestService;
 
@@ -364,7 +364,7 @@ class Covid19Service extends AbstractTestService
             $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey'] ?? null;
 
             $sampleJson = $this->getSampleCode($sampleCodeParams);
-            $sampleData = json_decode($sampleJson, true);
+            $sampleData = json_decode((string) $sampleJson, true);
 
             $sQuery = "SELECT covid19_id FROM $this->table ";
             if (!empty($sampleData['sampleCode'])) {

@@ -9,7 +9,7 @@ $_GET = $request->getQueryParams();
 
 
 $type = $_GET['type'];
-if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != "" && trim($_POST['facilityCode']) != '') {
+if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != "" && trim((string) $_POST['facilityCode']) != '') {
   $tableName = "facility_details";
   $data = array(
     'facility_name' => $_POST['facilityName'],

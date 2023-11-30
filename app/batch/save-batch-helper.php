@@ -59,7 +59,7 @@ $tableName1 = "batch_details";
 try {
 
 
-    if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != "") {
+    if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != "") {
         if (!empty($_POST['batchId'])) {
             $id = intval($_POST['batchId']);
             $data = [
@@ -76,8 +76,8 @@ try {
                 $db = $db->where('sample_batch_id', $id);
                 $db->update($refTable, $value);
                 $xplodResultSample = [];
-                if (isset($_POST['selectedSample']) && trim($_POST['selectedSample']) != "") {
-                    $xplodResultSample = explode(",", $_POST['selectedSample']);
+                if (isset($_POST['selectedSample']) && trim((string) $_POST['selectedSample']) != "") {
+                    $xplodResultSample = explode(",", (string) $_POST['selectedSample']);
                 }
                 $sample = [];
                 //Mergeing disabled samples into existing samples
@@ -97,9 +97,10 @@ try {
                     $db->update($refTable, $value);
                 }
                 header("Location:add-batch-position.php?type=" . $_POST['type'] . "&id=" . base64_encode($id) . "&position=" . $_POST['positions']);
-            } else {
-                // header("Location:batches.php?type=" . $_POST['type']);
             }
+            //else {
+                // header("Location:batches.php?type=" . $_POST['type']);
+            //}
         } else {
             $exist = $batchService->doesBatchCodeExist($_POST['batchCode']);
             if ($exist) {
@@ -120,8 +121,8 @@ try {
 
                 $db->insert($tableName1, $data);
                 $lastId = $db->getInsertId();
-                if ($lastId > 0 && trim($_POST['selectedSample']) != '') {
-                    $selectedSample = explode(",", $_POST['selectedSample']);
+                if ($lastId > 0 && trim((string) $_POST['selectedSample']) != '') {
+                    $selectedSample = explode(",", (string) $_POST['selectedSample']);
                     $uniqueSampleId = array_unique($selectedSample);
                     for ($j = 0; $j <= count($selectedSample); $j++) {
                         if (isset($uniqueSampleId[$j])) {

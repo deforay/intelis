@@ -64,7 +64,7 @@ foreach ($pdResult as $provinceName) {
 
 $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facility_id'], '-- Select --');
 
-$eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", $eidInfo['mother_treatment']) : [];
+$eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", (string) $eidInfo['mother_treatment']) : [];
 //$eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", $eidInfo['child_treatment']) : [];
 ?>
 
@@ -187,7 +187,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         </td>
                                         <th scope="row" style="width:15% !important"><label for="childName">Infant name </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control " id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" value="<?= htmlspecialchars($eidInfo['child_name']); ?>" />
+                                            <input type="text" class="form-control " id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" value="<?= htmlspecialchars((string) $eidInfo['child_name']); ?>" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -207,16 +207,16 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     </tr>
                                     <tr>
                                         <th scope="row">Infant Age (months)</th>
-                                        <td><input type="number" max=9 maxlength="1" value="<?= htmlspecialchars($eidInfo['child_age']); ?>" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="$('#childDob').val('')" /></td>
+                                        <td><input type="number" max=9 maxlength="1" value="<?= htmlspecialchars((string) $eidInfo['child_age']); ?>" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="$('#childDob').val('')" /></td>
                                         <th scope="row">Mother ART Number</th>
-                                        <td><input type="text" class="form-control " value="<?= htmlspecialchars($eidInfo['mother_id']); ?>" id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" onchange="" /></td>
+                                        <td><input type="text" class="form-control " value="<?= htmlspecialchars((string) $eidInfo['mother_id']); ?>" id="mothersId" name="mothersId" placeholder="Mother ART Number" title="Mother ART Number" style="width:100%;" onchange="" /></td>
                                     </tr>
                                     <tr>
                                         <th scope="row">Caretaker phone number</th>
-                                        <td><input type="text" class="form-control phone-number" value="<?= htmlspecialchars($eidInfo['caretaker_phone_number']); ?>" id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="Caretaker Phone Number" title="Caretaker Phone Number" style="width:100%;" onchange="" /></td>
+                                        <td><input type="text" class="form-control phone-number" value="<?= htmlspecialchars((string) $eidInfo['caretaker_phone_number']); ?>" id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="Caretaker Phone Number" title="Caretaker Phone Number" style="width:100%;" onchange="" /></td>
 
                                         <th scope="row">Infant caretaker address</th>
-                                        <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="Caretaker Address" title="Caretaker Address" style="width:100%;" onchange=""><?= htmlspecialchars($eidInfo['caretaker_address']); ?></textarea></td>
+                                        <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="Caretaker Address" title="Caretaker Address" style="width:100%;" onchange=""><?= htmlspecialchars((string) $eidInfo['caretaker_address']); ?></textarea></td>
 
                                     </tr>
 
@@ -401,7 +401,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the reason for Sample Rejection">
                                             <option value=''> -- Select -- </option>
                                             <?php foreach ($rejectionTypeResult as $type) { ?>
-                                                <optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
+                                                <optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
                                                     <?php
                                                     foreach ($rejectionResult as $reject) {
                                                         if ($type['rejection_type'] == $reject['rejection_type']) { ?>
@@ -453,16 +453,16 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                         </div>
                     </div>
                     <input type="hidden" name="formId" id="formId" value="5" />
-                    <input type="hidden" name="eidSampleId" id="eidSampleId" value="<?= htmlspecialchars($eidInfo['eid_id']); ?>" />
-                    <input type="hidden" name="sampleCodeCol" id="sampleCodeCol" value="<?= htmlspecialchars($eidInfo['sample_code']); ?>" />
+                    <input type="hidden" name="eidSampleId" id="eidSampleId" value="<?= htmlspecialchars((string) $eidInfo['eid_id']); ?>" />
+                    <input type="hidden" name="sampleCodeCol" id="sampleCodeCol" value="<?= htmlspecialchars((string) $eidInfo['sample_code']); ?>" />
                     <input type="hidden" name="sampleCodeTitle" id="sampleCodeTitle" value="<?php echo $arr['sample_code']; ?>" />
-                    <input type="hidden" name="oldStatus" id="oldStatus" value="<?= htmlspecialchars($eidInfo['result_status']); ?>" />
+                    <input type="hidden" name="oldStatus" id="oldStatus" value="<?= htmlspecialchars((string) $eidInfo['result_status']); ?>" />
                     <input type="hidden" name="provinceId" id="provinceId" />
                     <input type="hidden" name="provinceCode" id="provinceCode" />
                     <input type="hidden" name="revised" id="revised" value="no" />
                     <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 
-                    <input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars($eidInfo['sample_code']); ?>" />
+                    <input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars((string) $eidInfo['sample_code']); ?>" />
                     <a href="/eid/results/eid-manual-results.php" class="btn btn-default"> Cancel</a>
                 </form>
 

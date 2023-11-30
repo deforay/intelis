@@ -27,7 +27,7 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 
-if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable']) != "") {
+if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNotAvailable']) != "") {
     $rResult = $db->rawQuery($_SESSION['resultNotAvailable']);
 
     $excel = new Spreadsheet();
@@ -61,7 +61,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
     $sheet->mergeCells('A1:AE1');
     $nameValue = '';
     foreach ($_POST as $key => $value) {
-        if (trim($value) != '' && trim($value) != '-- Select --') {
+        if (trim((string) $value) != '' && trim((string) $value) != '-- Select --') {
             $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
         }
     }
@@ -89,8 +89,8 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
         $row = [];
         //sample collecion date
         $sampleCollectionDate = '';
-        if ($aRow['sample_collection_date'] != null && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-            $expStr = explode(" ", $aRow['sample_collection_date']);
+        if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+            $expStr = explode(" ", (string) $aRow['sample_collection_date']);
             $sampleCollectionDate = date("d-m-Y", strtotime($expStr[0]));
         }
         if ($aRow['remote_sample'] == 'yes') {
@@ -119,7 +119,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
         foreach ($rowData as $field => $value) {
             $sheet->setCellValue(
                 Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-                html_entity_decode($value)
+                html_entity_decode((string) $value)
             );
             $colNo++;
         }

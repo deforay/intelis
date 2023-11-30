@@ -27,7 +27,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $arr = $general->getGlobalConfig();
 
 $requestResult = null;
-if ((isset($_POST['id']) && !empty(trim($_POST['id']))) || (isset($_POST['sampleCodes']) && !empty(trim($_POST['sampleCodes'])))) {
+if ((isset($_POST['id']) && !empty(trim((string) $_POST['id']))) || (isset($_POST['sampleCodes']) && !empty(trim((string) $_POST['sampleCodes'])))) {
 
 	$searchQuery = "SELECT vl.*,
                   f.*,
@@ -59,11 +59,11 @@ if ((isset($_POST['id']) && !empty(trim($_POST['id']))) || (isset($_POST['sample
                   LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action";
 
 	$searchQueryWhere = [];
-	if (!empty(trim($_POST['id']))) {
+	if (!empty(trim((string) $_POST['id']))) {
 		$searchQueryWhere[] = " vl.vl_sample_id IN(" . $_POST['id'] . ") ";
 	}
 
-	if (isset($_POST['sampleCodes']) && !empty(trim($_POST['sampleCodes']))) {
+	if (isset($_POST['sampleCodes']) && !empty(trim((string) $_POST['sampleCodes']))) {
 		$searchQueryWhere[] = " vl.sample_code IN(" . $_POST['sampleCodes'] . ") ";
 	}
 	if (!empty($searchQueryWhere)) {
@@ -127,7 +127,7 @@ class MYPDF extends TCPDF
 		//$this->Image($imageFilePath, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
 		// Set font
 		if ($this->htitle != '') {
-			if (trim($this->logo) != '') {
+			if (trim((string) $this->logo) != '') {
 				error_log($this->logo);
 				if ($this->imageExists($this->logo)) {
 					$this->Image($this->logo, 10, 5, 15, '', '', '', 'T');
@@ -141,16 +141,16 @@ class MYPDF extends TCPDF
 			}
 			$this->SetFont('helvetica', 'B', 8);
 			$this->writeHTMLCell(0, 0, 10, 22, $this->text, 0, 0, 0, true, 'C');
-			if (trim($this->lab) != '') {
+			if (trim((string) $this->lab) != '') {
 				$this->SetFont('helvetica', '', 9);
-				$this->writeHTMLCell(0, 0, 10, 26, strtoupper($this->lab), 0, 0, 0, true, 'C');
+				$this->writeHTMLCell(0, 0, 10, 26, strtoupper((string) $this->lab), 0, 0, 0, true, 'C');
 			}
 			$this->SetFont('helvetica', '', 14);
 			$this->writeHTMLCell(0, 0, 10, 30, 'HIV VIRAL LOAD PATIENT REPORT', 0, 0, 0, true, 'C');
 
 			$this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C');
 		} else {
-			if (trim($this->logo) != '') {
+			if (trim((string) $this->logo) != '') {
 				if ($this->imageExists($this->logo)) {
 					$this->Image($this->logo, 20, 13, 15, '', '', '', 'T');
 				} else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
@@ -168,7 +168,7 @@ class MYPDF extends TCPDF
 
 			if ($this->text != '') {
 				$this->SetFont('helvetica', '', 16);
-				$this->writeHTMLCell(0, 0, 10, 12, strtoupper($this->text), 0, 0, 0, true, 'C');
+				$this->writeHTMLCell(0, 0, 10, 12, strtoupper((string) $this->text), 0, 0, 0, true, 'C');
 				$thirdHeading = '21';
 				$fourthHeading = '28';
 				$hrLine = '36';
@@ -179,9 +179,9 @@ class MYPDF extends TCPDF
 				$hrLine = '30';
 				$marginTop = '9';
 			}
-			if (trim($this->lab) != '') {
+			if (trim((string) $this->lab) != '') {
 				$this->SetFont('helvetica', '', 10);
-				$this->writeHTMLCell(0, 0, 8, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C');
+				$this->writeHTMLCell(0, 0, 8, $thirdHeading, strtoupper((string) $this->lab), 0, 0, 0, true, 'C');
 			}
 			$this->SetFont('helvetica', '', 12);
 			//  $this->writeHTMLCell(0, 0, 10, $fourthHeading, 'VIRAL LOAD TEST - PATIENT REPORT', 0, 0, 0, true, 'C');
@@ -198,7 +198,7 @@ class MYPDF extends TCPDF
 		$this->SetFont('helvetica', '', 8);
 		// Page number
 		$this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . ' of ' . $this->getAliasNbPages(), 0, false, 'C', 0);
-		$this->writeHTML('<span Style="color:red">' . strtoupper($this->trainingTxt) . '</span>', true, false, true, false, 'M');
+		$this->writeHTML('<span Style="color:red">' . strtoupper((string) $this->trainingTxt) . '</span>', true, false, true, false, 'M');
 	}
 }
 
@@ -212,8 +212,6 @@ if ($arr['vl_form'] == COUNTRY\SOUTH_SUDAN) {
 	include('pdf/result-pdf-cameroon-cresar.php');
 } elseif ($arr['vl_form'] == COUNTRY\PNG) {
 	include('pdf/result-pdf-png.php');
-} elseif ($arr['vl_form'] == COUNTRY\WHO) {
-	// include('pdf/result-pdf-who.php');
 } elseif ($arr['vl_form'] == COUNTRY\RWANDA) {
 	include('pdf/result-pdf-rwanda.php');
 }

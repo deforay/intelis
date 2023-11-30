@@ -9,10 +9,10 @@ use App\Helpers\PdfConcatenateHelper;
 
 class DRC_PDF extends MYPDF
 {
-	public $text = '';
+	public string $text = '';
 	public $lab = '';
 	public $formId = '';
-	public $logo = '';
+	public string $logo = '';
 	public $labFacilityId = '';
 
 	//Page header
@@ -23,7 +23,7 @@ class DRC_PDF extends MYPDF
 		//$this->Image($imageFilePath, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
 		// Set font
 		$imageFilePath = null;
-		if (trim($this->logo) != '') {
+		if (trim((string) $this->logo) != '') {
 			if ($this->imageExists($this->logo)) {
 				$imageFilePath = $this->logo;
 			} elseif ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
@@ -44,7 +44,7 @@ class DRC_PDF extends MYPDF
 		$this->writeHTMLCell(0, 0, 10, 9, 'MINISTERE DE LA SANTE PUBLIQUE', 0, 0, 0, true, 'C');
 		if ($this->text != '') {
 			$this->SetFont('helvetica', '', 12);
-			$this->writeHTMLCell(0, 0, 10, 16, strtoupper($this->text), 0, 0, 0, true, 'C');
+			$this->writeHTMLCell(0, 0, 10, 16, strtoupper((string) $this->text), 0, 0, 0, true, 'C');
 			$thirdHeading = '23';
 			$fourthHeading = '28';
 			$hrLine = '36';
@@ -53,9 +53,9 @@ class DRC_PDF extends MYPDF
 			$fourthHeading = '23';
 			$hrLine = '30';
 		}
-		if (trim($this->lab) != '') {
+		if (trim((string) $this->lab) != '') {
 			$this->SetFont('helvetica', '', 9);
-			$this->writeHTMLCell(0, 0, 10, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C');
+			$this->writeHTMLCell(0, 0, 10, $thirdHeading, strtoupper((string) $this->lab), 0, 0, 0, true, 'C');
 		}
 		$this->SetFont('helvetica', '', 12);
 		$this->writeHTMLCell(0, 0, 10, $fourthHeading, 'RESULTATS CHARGE VIRALE', 0, 0, 0, true, 'C');
@@ -85,7 +85,7 @@ if (!empty($requestResult)) {
 		$draftTextShow = false;
 		//Set watermark text
 		for ($m = 0; $m < count($mFieldArray); $m++) {
-			if (!isset($result[$mFieldArray[$m]]) || trim($result[$mFieldArray[$m]]) == '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
+			if (!isset($result[$mFieldArray[$m]]) || trim((string) $result[$mFieldArray[$m]]) == '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
 				$draftTextShow = true;
 				break;
 			}
@@ -139,32 +139,32 @@ if (!empty($requestResult)) {
 		$pdf->SetFont('helvetica', '', 18);
 
 		$pdf->AddPage();
-		if (!isset($result['facility_code']) || trim($result['facility_code']) == '') {
+		if (!isset($result['facility_code']) || trim((string) $result['facility_code']) == '') {
 			$result['facility_code'] = '';
 		}
-		if (!isset($result['facility_state']) || trim($result['facility_state']) == '') {
+		if (!isset($result['facility_state']) || trim((string) $result['facility_state']) == '') {
 			$result['facility_state'] = '';
 		}
-		if (!isset($result['facility_district']) || trim($result['facility_district']) == '') {
+		if (!isset($result['facility_district']) || trim((string) $result['facility_district']) == '') {
 			$result['facility_district'] = '';
 		}
-		if (!isset($result['facility_name']) || trim($result['facility_name']) == '') {
+		if (!isset($result['facility_name']) || trim((string) $result['facility_name']) == '') {
 			$result['facility_name'] = '';
 		}
-		if (!isset($result['labName']) || trim($result['labName']) == '') {
+		if (!isset($result['labName']) || trim((string) $result['labName']) == '') {
 			$result['labName'] = '';
 		}
 		//Set Age
 		$age = 'Unknown';
-		if (isset($result['patient_dob']) && trim($result['patient_dob']) != '' && $result['patient_dob'] != '0000-00-00') {
+		if (isset($result['patient_dob']) && trim((string) $result['patient_dob']) != '' && $result['patient_dob'] != '0000-00-00') {
 			$todayDate = strtotime(date('Y-m-d'));
-			$dob = strtotime($result['patient_dob']);
+			$dob = strtotime((string) $result['patient_dob']);
 			$difference = $todayDate - $dob;
 			$seconds_per_year = 60 * 60 * 24 * 365;
 			$age = round($difference / $seconds_per_year);
-		} elseif (isset($result['patient_age_in_years']) && trim($result['patient_age_in_years']) != '' && trim($result['patient_age_in_years']) > 0) {
+		} elseif (isset($result['patient_age_in_years']) && trim((string) $result['patient_age_in_years']) != '' && trim((string) $result['patient_age_in_years']) > 0) {
 			$age = $result['patient_age_in_years'];
-		} elseif (isset($result['patient_age_in_months']) && trim($result['patient_age_in_months']) != '' && trim($result['patient_age_in_months']) > 0) {
+		} elseif (isset($result['patient_age_in_months']) && trim((string) $result['patient_age_in_months']) != '' && trim((string) $result['patient_age_in_months']) > 0) {
 			if ($result['patient_age_in_months'] > 1) {
 				$age = $result['patient_age_in_months'] . ' months';
 			} else {
@@ -172,8 +172,8 @@ if (!empty($requestResult)) {
 			}
 		}
 
-		if (isset($result['sample_collection_date']) && trim($result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
-			$expStr = explode(" ", $result['sample_collection_date']);
+		if (isset($result['sample_collection_date']) && trim((string) $result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
+			$expStr = explode(" ", (string) $result['sample_collection_date']);
 			$result['sample_collection_date'] = DateUtility::humanReadableDateFormat($expStr[0]);
 			$sampleCollectionTime = $expStr[1];
 		} else {
@@ -182,37 +182,37 @@ if (!empty($requestResult)) {
 		}
 		$sampleReceivedDate = '';
 		$sampleReceivedTime = '';
-		if (isset($result['sample_received_at_lab_datetime']) && trim($result['sample_received_at_lab_datetime']) != '' && $result['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
-			$expStr = explode(" ", $result['sample_received_at_lab_datetime']);
+		if (isset($result['sample_received_at_lab_datetime']) && trim((string) $result['sample_received_at_lab_datetime']) != '' && $result['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
+			$expStr = explode(" ", (string) $result['sample_received_at_lab_datetime']);
 			$sampleReceivedDate = DateUtility::humanReadableDateFormat($expStr[0]);
 			$sampleReceivedTime = $expStr[1];
 		}
 
-		if (isset($result['result_printed_datetime']) && trim($result['result_printed_datetime']) != '' && $result['result_printed_datetime'] != '0000-00-00 00:00:00') {
-			$expStr = explode(" ", $result['result_printed_datetime']);
+		if (isset($result['result_printed_datetime']) && trim((string) $result['result_printed_datetime']) != '' && $result['result_printed_datetime'] != '0000-00-00 00:00:00') {
+			$expStr = explode(" ", (string) $result['result_printed_datetime']);
 			$result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 		} else {
 			$result['result_printed_datetime'] = DateUtility::getCurrentDateTime();
 		}
 
-		if (isset($result['sample_tested_datetime']) && trim($result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-			$expStr = explode(" ", $result['sample_tested_datetime']);
+		if (isset($result['sample_tested_datetime']) && trim((string) $result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+			$expStr = explode(" ", (string) $result['sample_tested_datetime']);
 			$result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 		} else {
 			$result['sample_tested_datetime'] = '';
 		}
 
-		if (isset($result['last_viral_load_date']) && trim($result['last_viral_load_date']) != '' && $result['last_viral_load_date'] != '0000-00-00') {
+		if (isset($result['last_viral_load_date']) && trim((string) $result['last_viral_load_date']) != '' && $result['last_viral_load_date'] != '0000-00-00') {
 			$result['last_viral_load_date'] = DateUtility::humanReadableDateFormat($result['last_viral_load_date']);
 		} else {
 			$result['last_viral_load_date'] = '';
 		}
-		if (!isset($result['patient_gender']) || trim($result['patient_gender']) == '') {
+		if (!isset($result['patient_gender']) || trim((string) $result['patient_gender']) == '') {
 			$result['patient_gender'] = 'not reported';
 		}
 		$resultApprovedBy  = '';
 		$userRes = [];
-		if (isset($result['approvedBy']) && trim($result['approvedBy']) != '') {
+		if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) != '') {
 			$resultApprovedBy = ($result['approvedBy']);
 			$userRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
 		}
@@ -238,7 +238,7 @@ if (!empty($requestResult)) {
 			$smileyContent = '<img src="/assets/img/cross.png" style="width:50px;" alt="rejected"/>';
 		}
 
-		if (isset($arr['show_smiley']) && trim($arr['show_smiley']) == "no") {
+		if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) == "no") {
 			$smileyContent = '';
 		} else {
 			$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $smileyContent;
@@ -267,7 +267,7 @@ if (!empty($requestResult)) {
 		$html .= '</tr>';
 		$html .= '<tr>';
 		$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $age . '</td>';
-		$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (str_replace("_", " ", $result['patient_gender'])) . '</td>';
+		$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (str_replace("_", " ", (string) $result['patient_gender'])) . '</td>';
 		$html .= '<td colspan="2" style="line-height:11px;font-size:11px;text-align:left;">' . $result['i_partner_name'] . '</td>';
 		$html .= '</tr>';
 		$html .= '<tr>';
@@ -353,12 +353,12 @@ if (!empty($requestResult)) {
 			$logValue = '<br/>&nbsp;&nbsp;Log Value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $logResult;
 		}
 
-		$html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;background-color:#dbdbdb;">&nbsp;&nbsp;Résultat(copies/ml)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp; ' . htmlspecialchars($result['result']) . $logValue . '</td></tr>';
+		$html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;background-color:#dbdbdb;">&nbsp;&nbsp;Résultat(copies/ml)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp; ' . htmlspecialchars((string) $result['result']) . $logValue . '</td></tr>';
 		$html .= '<tr><td colspan="3"></td></tr>';
 		$html .= '</table>';
 		$html .= '</td>';
 		$html .= '</tr>';
-		if (trim($showMessage) != '') {
+		if (trim((string) $showMessage) != '') {
 			$html .= '<tr>';
 			$html .= '<td colspan="3" style="line-height:13px;font-size:' . $messageTextSize . ';text-align:left;">' . $showMessage . '</td>';
 			$html .= '</tr>';
@@ -479,7 +479,7 @@ if (!empty($requestResult)) {
 		$pages[] = $filename;
 		$page++;
 
-		if (isset($_POST['source']) && trim($_POST['source']) == 'print') {
+		if (isset($_POST['source']) && trim((string) $_POST['source']) == 'print') {
 			//Add event log
 			$eventType = 'print-result';
 			$action = $_SESSION['userName'] . ' printed the test result with Patient ID/Code ' . $result['patient_art_no'];
@@ -495,7 +495,7 @@ if (!empty($requestResult)) {
 			$vlQuery = "SELECT result_printed_datetime
 						FROM form_vl as vl WHERE vl.vl_sample_id = ?";
 			$vlResult = $db->rawQuery($vlQuery, [$result['vl_sample_id']]);
-			if ($vlResult[0]['result_printed_datetime'] == null || trim($vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
+			if ($vlResult[0]['result_printed_datetime'] == null || trim((string) $vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
 				$db = $db->where('vl_sample_id', $result['vl_sample_id']);
 				$db->update($tableName2, array('result_printed_datetime' => DateUtility::getCurrentDateTime()));
 			}

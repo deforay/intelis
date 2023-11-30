@@ -69,8 +69,8 @@ function processAuditTables($db, $fromDbName, $toDbName, $setupTriggers = true)
                     } else {
                         echo "Trigger $triggerName created successfully.\n";
                         // Make sure to clear results to be ready for the next statement
-                        while ($mysqli->next_result()) {
-                        }
+//                        while ($mysqli->next_result()) {
+//                        }
                     }
                 }
             }

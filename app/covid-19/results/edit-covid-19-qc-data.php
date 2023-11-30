@@ -30,14 +30,14 @@ $users = $usersService->getAllUsers(null, null, "drop-down");
 $testKitInfo = $db->rawQuery("SELECT * from r_covid19_qc_testkits");
 $testKitsList = [];
 foreach ($testKitInfo as $kits) {
-    $testKitsList[base64_encode($kits['testkit_id'])] = $kits['testkit_name'];
+    $testKitsList[base64_encode((string) $kits['testkit_id'])] = $kits['testkit_name'];
 }
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $qcDataInfo = $db->rawQueryOne("SELECT * FROM qc_covid19 WHERE qc_id =" . $id . " limit 1");
 $qcResultDataInfo = $db->rawQuery("SELECT * FROM qc_covid19_tests WHERE qc_id =" . $id);
@@ -95,7 +95,7 @@ foreach ($pdResult as $provinceName) {
                                     <label for="testKit" class="col-lg-4 control-label"><?php echo _translate("Test Kit"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
                                         <select class="form-control select2 isRequired" id="testKit" name="testKit" title="<?php echo _translate('Please select test kit'); ?>" onchange="getKitLabels(this.value);">
-                                            <?= $general->generateSelectOptions($testKitsList, base64_encode($qcDataInfo['testkit']), "--Select--"); ?>
+                                            <?= $general->generateSelectOptions($testKitsList, base64_encode((string) $qcDataInfo['testkit']), "--Select--"); ?>
                                         </select>
                                     </div>
                                 </div>
@@ -114,7 +114,7 @@ foreach ($pdResult as $provinceName) {
                                 <div class="form-group">
                                     <label for="expiryDate" class="col-lg-4 control-label"><?php echo _translate("Expiry Date"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" value="<?php echo date("d-M-Y", strtotime($qcDataInfo['expiry_date'])); ?>" class="form-control date isRequired" id="expiryDate" name="expiryDate" placeholder="<?php echo _translate('Expiry date'); ?>" title="<?php echo _translate('Please enter expiry date'); ?>" />
+                                        <input type="text" value="<?php echo date("d-M-Y", strtotime((string) $qcDataInfo['expiry_date'])); ?>" class="form-control date isRequired" id="expiryDate" name="expiryDate" placeholder="<?php echo _translate('Expiry date'); ?>" title="<?php echo _translate('Please enter expiry date'); ?>" />
                                     </div>
                                 </div>
                             </div>
@@ -176,7 +176,7 @@ foreach ($pdResult as $provinceName) {
                                 <div class="form-group">
                                     <label for="receivedOn" class="col-lg-4 control-label"><?php echo _translate("Received On"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" value="<?php echo date("d-M-Y H:s:i", strtotime($qcDataInfo['qc_received_datetime'])); ?>" class="form-control date-time isRequired" id="receivedOn" name="receivedOn" placeholder="<?php echo _translate('Received on'); ?>" title="<?php echo _translate('Please enter received on'); ?>" />
+                                        <input type="text" value="<?php echo date("d-M-Y H:s:i", strtotime((string) $qcDataInfo['qc_received_datetime'])); ?>" class="form-control date-time isRequired" id="receivedOn" name="receivedOn" placeholder="<?php echo _translate('Received on'); ?>" title="<?php echo _translate('Please enter received on'); ?>" />
                                     </div>
                                 </div>
                             </div>
@@ -184,7 +184,7 @@ foreach ($pdResult as $provinceName) {
                                 <div class="form-group">
                                     <label for="testedOn" class="col-lg-4 control-label"><?php echo _translate("Tested On"); ?> <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" value="<?php echo date("d-M-Y H:s:i", strtotime($qcDataInfo['qc_tested_datetime'])); ?>" class="form-control date-time isRequired" id="testedOn" name="testedOn" placeholder="<?php echo _translate('Tested on'); ?>" title="<?php echo _translate('Please enter tested on'); ?>" />
+                                        <input type="text" value="<?php echo date("d-M-Y H:s:i", strtotime((string) $qcDataInfo['qc_tested_datetime'])); ?>" class="form-control date-time isRequired" id="testedOn" name="testedOn" placeholder="<?php echo _translate('Tested on'); ?>" title="<?php echo _translate('Please enter tested on'); ?>" />
                                     </div>
                                 </div>
                             </div>
@@ -216,7 +216,7 @@ foreach ($pdResult as $provinceName) {
                     </table>
                     <!-- /.box-body -->
                     <div class="box-footer">
-                        <input type="hidden" name="qcDataId" id="qcDataId" value="<?php echo base64_encode($qcDataInfo['qc_id']); ?>" />
+                        <input type="hidden" name="qcDataId" id="qcDataId" value="<?php echo base64_encode((string) $qcDataInfo['qc_id']); ?>" />
                         <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
                         <a href="covid-19-qc-data.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
                     </div>

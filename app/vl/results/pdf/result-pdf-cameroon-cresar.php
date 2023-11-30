@@ -74,7 +74,7 @@ if (!empty($requestResult)) {
                }
           }
 
-          if (isset($result['approvedBy']) && trim($result['approvedBy']) != '') {
+          if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) != '') {
                $resultApprovedBy = ($result['approvedBy']);
                $userRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
           } else {
@@ -94,7 +94,7 @@ if (!empty($requestResult)) {
           //Set watermark text
           if (!empty($mFieldArray)) {
                for ($m = 0; $m < count($mFieldArray); $m++) {
-                    if (!isset($result[$mFieldArray[$m]]) || trim($result[$mFieldArray[$m]]) == '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
+                    if (!isset($result[$mFieldArray[$m]]) || trim((string) $result[$mFieldArray[$m]]) == '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
                          $draftTextShow = true;
                          break;
                     }
@@ -149,30 +149,30 @@ if (!empty($requestResult)) {
           // $pdf->writeHTMLCell(0, 0, 15, 28, $htmlTitle, 0, 0, 0, true, 'C');
           //$pdf->writeHTMLCell(0, 0, 15, 30, '<hr>', 0, 0, 0, true, 'C');
 
-          if (!isset($result['facility_code']) || trim($result['facility_code']) == '') {
+          if (!isset($result['facility_code']) || trim((string) $result['facility_code']) == '') {
                $result['facility_code'] = '';
           }
-          if (!isset($result['facility_state']) || trim($result['facility_state']) == '') {
+          if (!isset($result['facility_state']) || trim((string) $result['facility_state']) == '') {
                $result['facility_state'] = '';
           }
-          if (!isset($result['facility_district']) || trim($result['facility_district']) == '') {
+          if (!isset($result['facility_district']) || trim((string) $result['facility_district']) == '') {
                $result['facility_district'] = '';
           }
-          if (!isset($result['facility_name']) || trim($result['facility_name']) == '') {
+          if (!isset($result['facility_name']) || trim((string) $result['facility_name']) == '') {
                $result['facility_name'] = '';
           }
 
           //Set Age
           $age = 'Unknown';
-          if (isset($result['patient_dob']) && trim($result['patient_dob']) != '' && $result['patient_dob'] != '0000-00-00') {
+          if (isset($result['patient_dob']) && trim((string) $result['patient_dob']) != '' && $result['patient_dob'] != '0000-00-00') {
                $todayDate = strtotime(date('Y-m-d'));
-               $dob = strtotime($result['patient_dob']);
+               $dob = strtotime((string) $result['patient_dob']);
                $difference = $todayDate - $dob;
                $seconds_per_year = 60 * 60 * 24 * 365;
                $age = round($difference / $seconds_per_year);
-          } elseif (isset($result['patient_age_in_years']) && trim($result['patient_age_in_years']) != '' && trim($result['patient_age_in_years']) > 0) {
+          } elseif (isset($result['patient_age_in_years']) && trim((string) $result['patient_age_in_years']) != '' && trim((string) $result['patient_age_in_years']) > 0) {
                $age = $result['patient_age_in_years'];
-          } elseif (isset($result['patient_age_in_months']) && trim($result['patient_age_in_months']) != '' && trim($result['patient_age_in_months']) > 0) {
+          } elseif (isset($result['patient_age_in_months']) && trim((string) $result['patient_age_in_months']) != '' && trim((string) $result['patient_age_in_months']) > 0) {
                if ($result['patient_age_in_months'] > 1) {
                     $age = $result['patient_age_in_months'] . ' months';
                } else {
@@ -180,8 +180,8 @@ if (!empty($requestResult)) {
                }
           }
 
-          if (isset($result['sample_collection_date']) && trim($result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
-               $expStr = explode(" ", $result['sample_collection_date']);
+          if (isset($result['sample_collection_date']) && trim((string) $result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
+               $expStr = explode(" ", (string) $result['sample_collection_date']);
                $result['sample_collection_date'] = date('d/M/Y', strtotime($expStr[0]));
                $sampleCollectionTime = $expStr[1];
           } else {
@@ -190,19 +190,19 @@ if (!empty($requestResult)) {
           }
           $sampleReceivedDate = '';
           $sampleReceivedTime = '';
-          if (isset($result['sample_received_at_lab_datetime']) && trim($result['sample_received_at_lab_datetime']) != '' && $result['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
-               $expStr = explode(" ", $result['sample_received_at_lab_datetime']);
+          if (isset($result['sample_received_at_lab_datetime']) && trim((string) $result['sample_received_at_lab_datetime']) != '' && $result['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
+               $expStr = explode(" ", (string) $result['sample_received_at_lab_datetime']);
                $sampleReceivedDate = date('d/M/Y', strtotime($expStr[0]));
                $sampleReceivedTime = $expStr[1];
           }
           $sampleDispatchDate = '';
           $sampleDispatchTime = '';
-          if (isset($result['result_printed_datetime']) && trim($result['result_printed_datetime']) != '' && $result['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
-               $expStr = explode(" ", $result['result_printed_datetime']);
+          if (isset($result['result_printed_datetime']) && trim((string) $result['result_printed_datetime']) != '' && $result['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
+               $expStr = explode(" ", (string) $result['result_printed_datetime']);
                $sampleDispatchDate = date('d/M/Y', strtotime($expStr[0]));
                $sampleDispatchTime = $expStr[1];
           } else {
-               $expStr = explode(" ", $currentTime);
+               $expStr = explode(" ", (string) $currentTime);
                $sampleDispatchDate = date('d/M/Y', strtotime($expStr[0]));
                $sampleDispatchTime = $expStr[1];
           }
@@ -212,51 +212,51 @@ if (!empty($requestResult)) {
                $modified = _translate("Yes");
           }
 
-          $finalDate = date('d/M/Y', strtotime('+1 day', strtotime($result['sample_tested_datetime'])));
+          $finalDate = date('d/M/Y', strtotime('+1 day', strtotime((string) $result['sample_tested_datetime'])));
 
-          if (isset($result['sample_tested_datetime']) && trim($result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-               $expStr = explode(" ", $result['sample_tested_datetime']);
+          if (isset($result['sample_tested_datetime']) && trim((string) $result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+               $expStr = explode(" ", (string) $result['sample_tested_datetime']);
                $result['sample_tested_datetime'] = date('d/M/Y', strtotime($expStr[0])) . " " . $expStr[1];
           } else {
                $result['sample_tested_datetime'] = '';
           }
 
-          if (isset($result['treatment_initiated_date']) && trim($result['treatment_initiated_date']) != '' && $result['treatment_initiated_date'] != '0000-00-00 00:00:00') {
-               $expStr = explode(" ", $result['treatment_initiated_date']);
+          if (isset($result['treatment_initiated_date']) && trim((string) $result['treatment_initiated_date']) != '' && $result['treatment_initiated_date'] != '0000-00-00 00:00:00') {
+               $expStr = explode(" ", (string) $result['treatment_initiated_date']);
                $result['treatment_initiated_date'] = date('d/M/Y', strtotime($expStr[0])) . " " . $expStr[1];
           } else {
                $result['treatment_initiated_date'] = '';
           }
 
-          if (isset($result['last_modified_datetime']) && trim($result['last_modified_datetime']) != '' && $result['last_modified_datetime'] != '0000-00-00 00:00:00') {
-               $expStr = explode(" ", $result['last_modified_datetime']);
+          if (isset($result['last_modified_datetime']) && trim((string) $result['last_modified_datetime']) != '' && $result['last_modified_datetime'] != '0000-00-00 00:00:00') {
+               $expStr = explode(" ", (string) $result['last_modified_datetime']);
                $result['last_modified_datetime'] = date('d/M/Y', strtotime($expStr[0])) . " " . $expStr[1];
           } else {
                $result['last_modified_datetime'] = '';
           }
 
 
-          if (isset($result['result_reviewed_datetime']) && trim($result['result_reviewed_datetime']) != '' && $result['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
-               $expStr = explode(" ", $result['result_reviewed_datetime']);
+          if (isset($result['result_reviewed_datetime']) && trim((string) $result['result_reviewed_datetime']) != '' && $result['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
+               $expStr = explode(" ", (string) $result['result_reviewed_datetime']);
                $result['result_reviewed_datetime'] = date('d/M/Y', strtotime($expStr[0])) . " " . $expStr[1];
           } else {
                $result['result_reviewed_datetime'] = '';
           }
 
-          if (isset($result['result_approved_datetime']) && trim($result['result_approved_datetime']) != '' && $result['result_approved_datetime'] != '0000-00-00 00:00:00') {
-               $expStr = explode(" ", $result['result_approved_datetime']);
+          if (isset($result['result_approved_datetime']) && trim((string) $result['result_approved_datetime']) != '' && $result['result_approved_datetime'] != '0000-00-00 00:00:00') {
+               $expStr = explode(" ", (string) $result['result_approved_datetime']);
                $result['result_approved_datetime'] = date('d/M/Y', strtotime($expStr[0])) . " " . $expStr[1];
           } else {
                $result['result_approved_datetime'] = '';
           }
 
-          if (isset($result['last_viral_load_date']) && trim($result['last_viral_load_date']) != '' && $result['last_viral_load_date'] != '0000-00-00') {
-               $result['last_viral_load_date'] = date('d/M/Y', strtotime($result['last_viral_load_date']));
+          if (isset($result['last_viral_load_date']) && trim((string) $result['last_viral_load_date']) != '' && $result['last_viral_load_date'] != '0000-00-00') {
+               $result['last_viral_load_date'] = date('d/M/Y', strtotime((string) $result['last_viral_load_date']));
                $result['last_viral_load_date'] = date('d/M/Y', strtotime($result['last_viral_load_date']));
           } else {
                $result['last_viral_load_date'] = '';
           }
-          if (!isset($result['patient_gender']) || trim($result['patient_gender']) == '') {
+          if (!isset($result['patient_gender']) || trim((string) $result['patient_gender']) == '') {
                $result['patient_gender'] = 'not reported';
           }
 
@@ -276,7 +276,7 @@ if (!empty($requestResult)) {
                $smileyContent = '<img src="/assets/img/cross.png" style="width:50px;" alt="rejected"/>';
           }
 
-          if (isset($arr['show_smiley']) && trim($arr['show_smiley']) == "no") {
+          if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) == "no") {
                $smileyContent = '';
           } else {
                $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $smileyContent;
@@ -294,7 +294,7 @@ if (!empty($requestResult)) {
           $html .= '<td colspan="3">';
           $patientFname = ($general->crypto('doNothing', $result['patient_first_name'], $result['patient_art_no']));
           if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
-               $key = base64_decode($general->getGlobalConfig('key'));
+               $key = base64_decode((string) $general->getGlobalConfig('key'));
                $result['patient_art_no'] = $general->crypto('decrypt', $result['patient_art_no'], $key);
                $patientFname = $general->crypto('decrypt', $patientFname, $key);
           }
@@ -324,7 +324,7 @@ if (!empty($requestResult)) {
           $html .= '</tr>';
           $html .= '<tr>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Patient Name") . " : " . $patientFname . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Age") . " : " . $age . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . _translate("Sex : ") . (str_replace("_", " ", $result['patient_gender'])) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate("Age") . " : " . $age . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . _translate("Sex : ") . (str_replace("_", " ", (string) $result['patient_gender'])) . '</td>';
           $html .= '</tr>';
           $html .= '<tr>';
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' .  _translate("Type of Sample") . " : " . $result['sample_name'] . '</td>';
@@ -369,7 +369,7 @@ if (!empty($requestResult)) {
           $html .= '<tr><td></td></tr>';
           $html .= '<tr>';
           $html .= '<td width="15%" style="line-height:10px;font-size:10px;text-align:left;">' . _translate('Result') . ' (copies/ml) : </td>';
-          $html .= '<td width="10%" style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . htmlspecialchars($result['result']) . '</td>';
+          $html .= '<td width="10%" style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . htmlspecialchars((string) $result['result']) . '</td>';
           $html .= '<td width="20%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Results (log)') . ' : </td>';
           $html .= '<td width="10%" style="line-height:20px;font-size:10px;text-align:left; border: 1px solid black">' . $logValue . '</td>';
           $html .= '<td width="20%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Test Done By') . ' : </td>';
@@ -451,7 +451,7 @@ if (!empty($requestResult)) {
           $pages[] = $filename;
           $page++;
           // }
-          if (isset($_POST['source']) && trim($_POST['source']) == 'print') {
+          if (isset($_POST['source']) && trim((string) $_POST['source']) == 'print') {
                //Add event log
                $eventType = 'print-result';
                $action = $_SESSION['userName'] . ' generated the test result PDF with Patient ID/Code ' . $result['patient_art_no'];
@@ -466,7 +466,7 @@ if (!empty($requestResult)) {
                //Update print datetime in VL tbl.
                $vlQuery = "SELECT result_printed_datetime FROM form_vl as vl WHERE vl.vl_sample_id ='" . $result['vl_sample_id'] . "'";
                $vlResult = $db->query($vlQuery);
-               if ($vlResult[0]['result_printed_datetime'] == null || trim($vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
+               if ($vlResult[0]['result_printed_datetime'] == null || trim((string) $vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
                     $db = $db->where('vl_sample_id', $result['vl_sample_id']);
                     $db->update($tableName2, array('result_printed_datetime' => $currentTime, 'result_dispatched_datetime' => $currentTime));
                }

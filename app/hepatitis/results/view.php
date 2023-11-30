@@ -10,7 +10,7 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
-$decryptedString = CommonService::decrypt($_GET['q'], base64_decode($keyFromGlobalConfig));
+$decryptedString = CommonService::decrypt($_GET['q'], base64_decode((string) $keyFromGlobalConfig));
 //$data = explode('&&&', urldecode($decryption));
 
 $invalidRequest = _translate("INVALID REQUEST");

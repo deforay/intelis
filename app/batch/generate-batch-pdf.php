@@ -21,7 +21,7 @@ $batchService = ContainerRegistry::get(BatchService::class);
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
 $showPatientName = false;
@@ -214,8 +214,8 @@ if (!empty($id)) {
                     </tr>
                 </table><hr>';
         }
-        if (isset($bResult[0]['label_order']) && trim($bResult[0]['label_order']) != '') {
-            $jsonToArray = json_decode($bResult[0]['label_order'], true);
+        if (isset($bResult[0]['label_order']) && trim((string) $bResult[0]['label_order']) != '') {
+            $jsonToArray = json_decode((string) $bResult[0]['label_order'], true);
             $sampleCounter = 1;
             if (isset($bResult[0]['position_type']) && $bResult[0]['position_type'] == 'alpha-numeric') {
                 foreach ($batchService->excelColumnRange('A', 'H') as $value) {
@@ -227,7 +227,7 @@ if (!empty($id)) {
             }
             for ($j = 0; $j < count($jsonToArray); $j++) {
                 if (isset($bResult[0]['position_type']) && $bResult[0]['position_type'] == 'alpha-numeric') {
-                    $xplodJsonToArray = explode("_", $jsonToArray[$alphaNumeric[$j]]);
+                    $xplodJsonToArray = explode("_", (string) $jsonToArray[$alphaNumeric[$j]]);
                     if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
                         if (isset($_GET['type']) && $_GET['type'] == 'tb') {
                             $sampleQuery = "SELECT sample_code,
@@ -260,14 +260,14 @@ if (!empty($id)) {
                         $lotDetails = '';
                         $lotExpirationDate = '';
                         if (!empty($sampleResult[0]['lot_expiration_date'])) {
-                            if (trim($sampleResult[0]['lot_number']) != '') {
+                            if (trim((string) $sampleResult[0]['lot_number']) != '') {
                                 $lotExpirationDate .= '<br>';
                             }
                             $lotExpirationDate .= DateUtility::humanReadableDateFormat($sampleResult[0]['lot_expiration_date']);
                         }
 
                         if (!empty($sampleResult[0]['is_encrypted']) && $sampleResult[0]['is_encrypted'] == 'yes') {
-                            $key = base64_decode($general->getGlobalConfig('key'));
+                            $key = base64_decode((string) $general->getGlobalConfig('key'));
                             $sampleResult[0][$patientIdColumn] = $general->crypto('decrypt', $sampleResult[0][$patientIdColumn], $key);
                         }
 
@@ -287,16 +287,16 @@ if (!empty($id)) {
                         if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
                             $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;">' . $sampleResult[0]['remote_sample_code'] . '</td>';
                             $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
-                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . ucwords($sampleResult[0]['result']) . '</td>';
+                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . ucwords((string) $sampleResult[0]['result']) . '</td>';
                         } else {
                             $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
                             $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . $lotDetails . '</td>';
-                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . ucwords($sampleResult[0]['result']) . '</td>';
+                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . ucwords((string) $sampleResult[0]['result']) . '</td>';
                         }
                         $tbl .= '</tr>';
                         $tbl .= '</table>';
                     } else {
-                        $label = str_replace("_", " ", $jsonToArray[$alphaNumeric[$j]]);
+                        $label = str_replace("_", " ", (string) $jsonToArray[$alphaNumeric[$j]]);
                         $label = str_replace("in house", "In-House", $label);
                         $label = (str_replace("no of ", " ", $label));
                         $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
@@ -312,7 +312,7 @@ if (!empty($id)) {
                     }
                     $sampleCounter = $alphaNumeric[($j + 1)];
                 } else {
-                    $xplodJsonToArray = explode("_", $jsonToArray[$j]);
+                    $xplodJsonToArray = explode("_", (string) $jsonToArray[$j]);
                     if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
                         if (isset($_GET['type']) && $_GET['type'] == 'tb') {
                             $sampleQuery = "SELECT sample_code,
@@ -344,13 +344,13 @@ if (!empty($id)) {
                         $lotDetails = '';
                         $lotExpirationDate = '';
                         if (!empty($sampleResult[0]['lot_expiration_date'])) {
-                            if (trim($sampleResult[0]['lot_number']) != '') {
+                            if (trim((string) $sampleResult[0]['lot_number']) != '') {
                                 $lotExpirationDate .= '<br>';
                             }
                             $lotExpirationDate .= DateUtility::humanReadableDateFormat($sampleResult[0]['lot_expiration_date'] ?? '');
                         }
                         if (!empty($sampleResult[0]['is_encrypted']) && $sampleResult[0]['is_encrypted'] == 'yes') {
-                            $key = base64_decode($general->getGlobalConfig('key'));
+                            $key = base64_decode((string) $general->getGlobalConfig('key'));
                             $sampleResult[0][$patientIdColumn] = $general->crypto('decrypt', $sampleResult[0][$patientIdColumn], $key);
                         }
 
@@ -368,16 +368,16 @@ if (!empty($id)) {
                         if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
                             $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;">' . $sampleResult[0]['remote_sample_code'] . '</td>';
                             $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
-                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . ucwords($sampleResult[0]['result']) . '</td>';
+                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . ucwords((string) $sampleResult[0]['result']) . '</td>';
                         } else {
                             $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;font-size:0.9em;">' . $sampleResult[0][$patientIdColumn] . '</td>';
                             $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . $lotDetails . '</td>';
-                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . ucwords($sampleResult[0]['result']) . '</td>';
+                            $tbl .= '<td  align="center" width="12.5%" style="vertical-align:middle;">' . ucwords((string) $sampleResult[0]['result']) . '</td>';
                         }
                         $tbl .= '</tr>';
                         $tbl .= '</table>';
                     } else {
-                        $label = str_replace("_", " ", $jsonToArray[$j]);
+                        $label = str_replace("_", " ", (string) $jsonToArray[$j]);
                         $label = str_replace("in house", "In-House", $label);
                         $label = (str_replace("no of ", " ", $label));
                         $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
@@ -473,7 +473,7 @@ if (!empty($id)) {
                 $lotDetails = '';
                 $lotExpirationDate = '';
                 if (!empty($sample['lot_expiration_date'])) {
-                    if (trim($sample['lot_number']) != '') {
+                    if (trim((string) $sample['lot_number']) != '') {
                         $lotExpirationDate .= '<br>';
                     }
                     $lotExpirationDate .= DateUtility::humanReadableDateFormat($sample['lot_expiration_date']);
@@ -516,7 +516,7 @@ if (!empty($id)) {
         }
 
         $pdf->writeHTML($tbl);
-        $filename = "VLSM-" . trim($bResult[0]['batch_code']) . '-' . date('d-m-Y-h-i-s') . '-' . $general->generateRandomString(12) . '.pdf';
+        $filename = "VLSM-" . trim((string) $bResult[0]['batch_code']) . '-' . date('d-m-Y-h-i-s') . '-' . $general->generateRandomString(12) . '.pdf';
         $pdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . 'batches' . DIRECTORY_SEPARATOR . $filename);
         exit;
     }

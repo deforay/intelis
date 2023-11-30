@@ -43,7 +43,7 @@ if (isset($_POST['type']) && $_POST['type'] == 'vl') {
 }
 
 
-$batchId = base64_decode($_POST['id']);
+$batchId = base64_decode((string) $_POST['id']);
 
 $vlQuery = "SELECT $table2PrimaryColumn from $tableName2 as vl where sample_batch_id=$batchId";
 $vlInfo = $db->query($vlQuery);

@@ -9,7 +9,7 @@ require_once APPLICATION_PATH . '/header.php';
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 
-$id = base64_decode($_GET['id']);
+$id = base64_decode((string) $_GET['id']);
 $pQuery = "SELECT * FROM covid19_positive_confirmation_manifest WHERE manifest_id=?";
 // echo $pQuery;die;
 $pResult = $db->rawQueryOne($pQuery, array($id));
@@ -95,7 +95,7 @@ $result = $db->rawQuery($query, [$id]);
                 <div class="form-group">
                   <label for="manifestCode" class="col-lg-4 control-label">Manifest Code <span class="mandatory">*</span></label>
                   <div class="col-lg-7" style="margin-left:3%;">
-                    <input type="text" class="form-control isRequired" id="manifestCode" name="manifestCode" placeholder="Manifest Code" title="Please enter manifest code" readonly value="<?php echo strtoupper($pResult['manifest_code']); ?>" />
+                    <input type="text" class="form-control isRequired" id="manifestCode" name="manifestCode" placeholder="Manifest Code" title="Please enter manifest code" readonly value="<?php echo strtoupper((string) $pResult['manifest_code']); ?>" />
                   </div>
                 </div>
               </div>

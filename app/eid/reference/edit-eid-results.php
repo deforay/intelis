@@ -6,7 +6,7 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $resultQuery = "SELECT * from r_eid_results where result_id = '" . $id . "' ";
 $resultInfo = $db->query($resultQuery);

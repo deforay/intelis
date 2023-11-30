@@ -38,11 +38,11 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
 $version = VERSION;
 
 //update common data from remote to lab db
-$remoteUrl = rtrim($systemConfig['remoteURL'], "/");
+$remoteUrl = rtrim((string) $systemConfig['remoteURL'], "/");
 
 $headers = @get_headers($remoteUrl . '/api/version.php?labId=' . $labId . '&version=' . $version);
 
-if (strpos($headers[0], '200') === false) {
+if (strpos((string) $headers[0], '200') === false) {
     error_log("No internet connectivity while trying remote sync.");
     exit();
 }

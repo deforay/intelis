@@ -22,26 +22,26 @@ $primaryKey1 = "qc_test_id";
 //var_dump($_POST);
 
 try {
-    if (isset($_POST['qcCode']) && trim($_POST['qcCode']) != "") {
+    if (isset($_POST['qcCode']) && trim((string) $_POST['qcCode']) != "") {
 
         $data = array(
             'unique_id'             => $general->generateUUID(),
             'qc_code'               => $_POST['qcCode'],
-            'testkit'               => base64_decode($_POST['testKit']),
+            'testkit'               => base64_decode((string) $_POST['testKit']),
             'lot_no'                => $_POST['lotNo'],
             'expiry_date'           => DateUtility::isoDateFormat($_POST['expiryDate']),
             'lab_id'                => $_POST['labName'],
             'testing_point'                => $_POST['testingPoint'],
             'tested_by'             => $_POST['testerName'],
-            'qc_received_datetime'    => date("Y-m-d H:s:i", strtotime($_POST['receivedOn'])),
-            'qc_tested_datetime'    => date("Y-m-d H:s:i", strtotime($_POST['testedOn'])),
+            'qc_received_datetime'    => date("Y-m-d H:s:i", strtotime((string) $_POST['receivedOn'])),
+            'qc_tested_datetime'    => date("Y-m-d H:s:i", strtotime((string) $_POST['testedOn'])),
             'created_on'            => DateUtility::getCurrentDateTime(),
             'updated_datetime'            => DateUtility::getCurrentDateTime()
         );
         $exist = false;
         if (isset($_POST['qcDataId']) && $_POST['qcDataId'] != "") {
             /* Suppose while edit they can change the testkit means prev data not needed so we can rease it from DB */
-            $exist = $db->rawQueryOne("SELECT qc_id FROM $tableName1 WHERE qc_id = " . base64_decode($_POST['qcDataId']));
+            $exist = $db->rawQueryOne("SELECT qc_id FROM $tableName1 WHERE qc_id = " . base64_decode((string) $_POST['qcDataId']));
             if (isset($exist) && !empty($exist['qc_id'])) {
                 $db = $db->where("qc_id", $exist['qc_id']);
                 $db->delete($tableName1);
@@ -50,9 +50,9 @@ try {
             unset($data['unique_id']);
             unset($data['created_on']);
 
-            $db = $db->where($primaryKey, base64_decode($_POST['qcDataId']));
+            $db = $db->where($primaryKey, base64_decode((string) $_POST['qcDataId']));
             $db->update($tableName, $data);
-            $lastId = base64_decode($_POST['qcDataId']);
+            $lastId = base64_decode((string) $_POST['qcDataId']);
         } else {
             if (!empty($_POST['qcKey'])) {
                 $data['qc_code_key'] = $_POST['qcKey'];

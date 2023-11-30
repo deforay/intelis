@@ -30,7 +30,7 @@ $urlData = [];
 
 foreach ($formResults as $row) {
 
-  $uniqueIdArray = explode("::", $row['unique_id']);
+  $uniqueIdArray = explode("::", (string) $row['unique_id']);
   $trackedEntityInstance = $uniqueIdArray[1];
 
   $programID = 'LEhPhsbgfFB';
@@ -58,7 +58,7 @@ foreach ($formResults as $row) {
 
   $dhis2Response = $dhis2->get($url, $urlData);
 
-  $dhis2Response = json_decode($dhis2Response, true);
+  $dhis2Response = json_decode((string) $dhis2Response, true);
 
 
   $strategy = null;
@@ -105,7 +105,7 @@ foreach ($formResults as $row) {
   if ($row['reason_for_vl_test'] == 'Initial HBV VL') {
     if (
       !empty($row['hbv_vl_count']) &&
-      in_array(strtolower($row['hbv_vl_count']), $hepatitisService->suppressedArray)
+      in_array(strtolower((string) $row['hbv_vl_count']), $hepatitisService->suppressedArray)
     ) {
       $row['hbv_vl_count'] = 10;
     }
@@ -122,7 +122,7 @@ foreach ($formResults as $row) {
   } elseif ($row['reason_for_vl_test'] == 'Initial HCV VL') {
     if (
       !empty($row['hcv_vl_count']) &&
-      in_array(strtolower($row['hcv_vl_count']), $hepatitisService->suppressedArray)
+      in_array(strtolower((string) $row['hcv_vl_count']), $hepatitisService->suppressedArray)
     ) {
       $row['hcv_vl_count'] = 10;
     }
@@ -139,7 +139,7 @@ foreach ($formResults as $row) {
   } elseif ($row['reason_for_vl_test'] == 'Follow up HBV VL') {
     if (
       !empty($row['hbv_vl_count']) &&
-      in_array(strtolower($row['hbv_vl_count']), $hepatitisService->suppressedArray)
+      in_array(strtolower((string) $row['hbv_vl_count']), $hepatitisService->suppressedArray)
     ) {
       $row['hbv_vl_count'] = 10;
     }
@@ -158,7 +158,7 @@ foreach ($formResults as $row) {
     $interpretaion = "";
     if (
       !empty($row['hcv_vl_count']) &&
-      in_array(strtolower($row['hcv_vl_count']), $hepatitisService->suppressedArray)
+      in_array(strtolower((string) $row['hcv_vl_count']), $hepatitisService->suppressedArray)
     ) {
       $row['hcv_vl_count'] = 10;
     }
@@ -179,7 +179,7 @@ foreach ($formResults as $row) {
     $programID = 'LQUdgfzYQCt';
     if (
       !empty($row['hcv_vl_count']) &&
-      in_array(strtolower($row['hcv_vl_count']), $hepatitisService->suppressedArray)
+      in_array(strtolower((string) $row['hcv_vl_count']), $hepatitisService->suppressedArray)
     ) {
       $row['hcv_vl_count'] = 10;
     }
@@ -196,7 +196,7 @@ foreach ($formResults as $row) {
 
   if (count($dhis2Response['events']) == 0) {
     $idGeneratorApi = $dhis2->get("/api/system/id?limit=1");
-    $idResponse = (json_decode($idGeneratorApi, true));
+    $idResponse = (json_decode((string) $idGeneratorApi, true));
     $eventId = $idResponse['codes'][0];
 
     $eventPayload = [

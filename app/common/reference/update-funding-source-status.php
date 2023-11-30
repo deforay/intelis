@@ -18,7 +18,7 @@ try {
     $request = $GLOBALS['request'];
     $_POST = $request->getParsedBody();
 
-    $id = explode(",", $_POST['id']);
+    $id = explode(",", (string) $_POST['id']);
     for ($i = 0; $i < count($id); $i++) {
         $status = array(
             'funding_source_status' => $_POST['status'],
@@ -32,4 +32,4 @@ try {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
 }
-echo htmlspecialchars($result);
+echo htmlspecialchars((string) $result);

@@ -25,15 +25,15 @@ $tableName2 = "log_result_updates";
 $testTableName = 'covid19_tests';
 try {
 	//Set sample received date
-	if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
-		$sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
+	if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != "") {
+		$sampleReceivedDate = explode(" ", (string) $_POST['sampleReceivedDate']);
 		$_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
 	} else {
 		$_POST['sampleReceivedDate'] = null;
 	}
 
-	if (isset($_POST['sampleTestedDateTime']) && trim($_POST['sampleTestedDateTime']) != "") {
-		$sampleTestedDate = explode(" ", $_POST['sampleTestedDateTime']);
+	if (isset($_POST['sampleTestedDateTime']) && trim((string) $_POST['sampleTestedDateTime']) != "") {
+		$sampleTestedDate = explode(" ", (string) $_POST['sampleTestedDateTime']);
 		$_POST['sampleTestedDateTime'] = DateUtility::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
 	} else {
 		$_POST['sampleTestedDateTime'] = null;
@@ -69,22 +69,22 @@ try {
 		$resultSentToSource = 'pending';
 	}
 
-	if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
-		$reviewedOn = explode(" ", $_POST['reviewedOn']);
+	if (isset($_POST['reviewedOn']) && trim((string) $_POST['reviewedOn']) != "") {
+		$reviewedOn = explode(" ", (string) $_POST['reviewedOn']);
 		$_POST['reviewedOn'] = DateUtility::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
 	} else {
 		$_POST['reviewedOn'] = null;
 	}
 
-	if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
-		$approvedOn = explode(" ", $_POST['approvedOn']);
+	if (isset($_POST['approvedOn']) && trim((string) $_POST['approvedOn']) != "") {
+		$approvedOn = explode(" ", (string) $_POST['approvedOn']);
 		$_POST['approvedOn'] = DateUtility::isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
 	} else {
 		$_POST['approvedOn'] = null;
 	}
 
-	if (isset($_POST['authorizedOn']) && trim($_POST['authorizedOn']) != "") {
-		$authorizedOn = explode(" ", $_POST['authorizedOn']);
+	if (isset($_POST['authorizedOn']) && trim((string) $_POST['authorizedOn']) != "") {
+		$authorizedOn = explode(" ", (string) $_POST['authorizedOn']);
 		$_POST['authorizedOn'] = DateUtility::isoDateFormat($authorizedOn[0]) . " " . $authorizedOn[1];
 	} else {
 		$_POST['authorizedOn'] = null;
@@ -115,7 +115,7 @@ try {
 		'result_status' => 8,
 		'data_sync' => 0,
 		'reason_for_sample_rejection' => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
-		'recommended_corrective_action' => (isset($_POST['correctiveAction']) && trim($_POST['correctiveAction']) != '') ? $_POST['correctiveAction'] : null,
+		'recommended_corrective_action' => (isset($_POST['correctiveAction']) && trim((string) $_POST['correctiveAction']) != '') ? $_POST['correctiveAction'] : null,
 		'last_modified_by' => $_SESSION['userId'],
 		'result_printed_datetime' => null,
 		'result_dispatched_datetime' => null,
@@ -132,8 +132,8 @@ try {
 		$covid19Data['result'] = null;
 		$covid19Data['result_status'] = SAMPLE_STATUS\REJECTED;
 	}
-	if (isset($_POST['deletedRow']) && trim($_POST['deletedRow']) != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
-		$deleteRows = explode(',', $_POST['deletedRow']);
+	if (isset($_POST['deletedRow']) && trim((string) $_POST['deletedRow']) != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
+		$deleteRows = explode(',', (string) $_POST['deletedRow']);
 		foreach ($deleteRows as $delete) {
 			$db = $db->where('test_id', base64_decode($delete));
 			$id = $db->delete($testTableName);
@@ -143,19 +143,19 @@ try {
 	if (isset($_POST['covid19SampleId']) && $_POST['covid19SampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
 		if (!empty($_POST['testName'])) {
 			foreach ($_POST['testName'] as $testKey => $testName) {
-				if (trim($_POST['testName'][$testKey]) != "") {
+				if (trim((string) $_POST['testName'][$testKey]) != "") {
 					$covid19TestData = array(
 						'covid19_id' => $_POST['covid19SampleId'],
 						'test_name' => ($_POST['testName'][$testKey] == 'other') ? $_POST['testNameOther'][$testKey] : $_POST['testName'][$testKey],
 						'facility_id' => $_POST['labId'] ?? null,
 						'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$testKey] ?? '', true),
 						'testing_platform' => $_POST['testingPlatform'][$testKey] ?? null,
-						'kit_lot_no' => (strpos($testName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
-						'kit_expiry_date' => (strpos($testName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
+						'kit_lot_no' => (strpos((string) $testName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
+						'kit_expiry_date' => (strpos((string) $testName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
 						'result' => $_POST['testResult'][$testKey],
 					);
 					if (isset($_POST['testId'][$testKey]) && $_POST['testId'][$testKey] != '') {
-						$db = $db->where('test_id', base64_decode($_POST['testId'][$testKey]));
+						$db = $db->where('test_id', base64_decode((string) $_POST['testId'][$testKey]));
 						$db->update($testTableName, $covid19TestData);
 					} else {
 						$db->insert($testTableName, $covid19TestData);

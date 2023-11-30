@@ -78,7 +78,7 @@ $batchResult = $db->rawQuery($batchQuery);
                       <?php
                       foreach ($facilityResult as $facility) { ?>
                         ?>
-                        <option data-name="<?php echo $facility['facility_name']; ?>" data-email="<?php echo $facility['facility_emails']; ?>" data-report-email="<?php echo $facility['report_email']; ?>" value="<?php echo base64_encode($facility['facility_id']); ?>"><?php echo ($facility['facility_name']); ?></option>
+                        <option data-name="<?php echo $facility['facility_name']; ?>" data-email="<?php echo $facility['facility_emails']; ?>" data-report-email="<?php echo $facility['report_email']; ?>" value="<?php echo base64_encode((string) $facility['facility_id']); ?>"><?php echo ($facility['facility_name']); ?></option>
                       <?php } ?>
                     </select>
                   </div>
@@ -218,7 +218,7 @@ $batchResult = $db->rawQuery($batchQuery);
                     <select id="sample" name="sample[]" multiple="multiple" class="search isRequired" title="Please select sample(s)">
                       <?php
                       foreach ($result as $sample) {
-                        if (trim($sample['sample_code']) != '') {
+                        if (trim((string) $sample['sample_code']) != '') {
                       ?>
                           <option value="<?php echo $sample['covid19_id']; ?>"><?= $sample['sample_code']; ?></option>
                       <?php
@@ -277,7 +277,7 @@ $batchResult = $db->rawQuery($batchQuery);
     });
     $('#sampleCollectionDate').daterangepicker({
         locale: {
-          cancelLabel: "<?= _translate("Clear"); ?>",
+          cancelLabel: "<?= _translate("Clear", true); ?>",
           format: 'DD-MMM-YYYY',
           separator: ' to ',
         },

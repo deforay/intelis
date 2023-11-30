@@ -1,6 +1,13 @@
 <?php
 $title = _translate("Log File Viewer") . " - " . _translate("System Admin");
 
+
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get('db');
+
 require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
 $sQuery = "SELECT * FROM user_login_history";
 $sResult = $db->rawQuery($sQuery);
@@ -72,14 +79,13 @@ $sResult = $db->rawQuery($sQuery);
 		$('#userDate').val("");
 	});
 
-	function viewLogFiles(){
-		if($('#userDate').val() != ""){
+	function viewLogFiles() {
+		if ($('#userDate').val() != "") {
 			$.ajax({
-				async:false,
-				url: 'get-log-files.php?date='+$('#userDate').val(),
+				async: false,
+				url: 'get-log-files.php?date=' + $('#userDate').val(),
 				dataType: 'text',
-				success: function(data) 
-				{
+				success: function(data) {
 					$('#logViewer').html(data);
 					$('.logViewer').removeClass('hide');
 				}

@@ -21,7 +21,7 @@ $tableName = "r_vl_sample_type";
 $primaryKey = "sample_id";
 
 try {
-	if (isset($_POST['sampleName']) && trim($_POST['sampleName']) != "") {
+	if (isset($_POST['sampleName']) && trim((string) $_POST['sampleName']) != "") {
 
 		$data = array(
 			'sample_name' => $_POST['sampleName'],
@@ -29,7 +29,7 @@ try {
 			'updated_datetime' => DateUtility::getCurrentDateTime(),
 		);
 		if (isset($_POST['sampleId']) && $_POST['sampleId'] != "") {
-			$db = $db->where($primaryKey, base64_decode($_POST['sampleId']));
+			$db = $db->where($primaryKey, base64_decode((string) $_POST['sampleId']));
 			$lastId = $db->update($tableName, $data);
 		} else {
 			$data['data_sync'] = 0;

@@ -22,7 +22,7 @@ if (!empty($requestResult)) {
           $draftTextShow = false;
           //Set watermark text
           for ($m = 0; $m < count($mFieldArray); $m++) {
-               if (!isset($result[$mFieldArray[$m]]) || trim($result[$mFieldArray[$m]]) == '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
+               if (!isset($result[$mFieldArray[$m]]) || trim((string) $result[$mFieldArray[$m]]) == '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
                     $draftTextShow = true;
                     break;
                }
@@ -69,32 +69,32 @@ if (!empty($requestResult)) {
           $pdf->SetFont('helvetica', '', 18);
 
           $pdf->AddPage();
-          if (!isset($result['facility_code']) || trim($result['facility_code']) == '') {
+          if (!isset($result['facility_code']) || trim((string) $result['facility_code']) == '') {
                $result['facility_code'] = '';
           }
-          if (!isset($result['facility_state']) || trim($result['facility_state']) == '') {
+          if (!isset($result['facility_state']) || trim((string) $result['facility_state']) == '') {
                $result['facility_state'] = '';
           }
-          if (!isset($result['facility_district']) || trim($result['facility_district']) == '') {
+          if (!isset($result['facility_district']) || trim((string) $result['facility_district']) == '') {
                $result['facility_district'] = '';
           }
-          if (!isset($result['facility_name']) || trim($result['facility_name']) == '') {
+          if (!isset($result['facility_name']) || trim((string) $result['facility_name']) == '') {
                $result['facility_name'] = '';
           }
-          if (!isset($result['labName']) || trim($result['labName']) == '') {
+          if (!isset($result['labName']) || trim((string) $result['labName']) == '') {
                $result['labName'] = '';
           }
           //Set Age
           $age = 'Unknown';
-          if (isset($result['patient_dob']) && trim($result['patient_dob']) != '' && $result['patient_dob'] != '0000-00-00') {
+          if (isset($result['patient_dob']) && trim((string) $result['patient_dob']) != '' && $result['patient_dob'] != '0000-00-00') {
                $todayDate = strtotime(date('Y-m-d'));
-               $dob = strtotime($result['patient_dob']);
+               $dob = strtotime((string) $result['patient_dob']);
                $difference = $todayDate - $dob;
                $seconds_per_year = 60 * 60 * 24 * 365;
                $age = round($difference / $seconds_per_year);
-          } elseif (isset($result['patient_age_in_years']) && trim($result['patient_age_in_years']) != '' && trim($result['patient_age_in_years']) > 0) {
+          } elseif (isset($result['patient_age_in_years']) && trim((string) $result['patient_age_in_years']) != '' && trim((string) $result['patient_age_in_years']) > 0) {
                $age = $result['patient_age_in_years'];
-          } elseif (isset($result['patient_age_in_months']) && trim($result['patient_age_in_months']) != '' && trim($result['patient_age_in_months']) > 0) {
+          } elseif (isset($result['patient_age_in_months']) && trim((string) $result['patient_age_in_months']) != '' && trim((string) $result['patient_age_in_months']) > 0) {
                if ($result['patient_age_in_months'] > 1) {
                     $age = $result['patient_age_in_months'] . ' months';
                } else {
@@ -102,8 +102,8 @@ if (!empty($requestResult)) {
                }
           }
 
-          if (isset($result['sample_collection_date']) && trim($result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
-               $expStr = explode(" ", $result['sample_collection_date']);
+          if (isset($result['sample_collection_date']) && trim((string) $result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
+               $expStr = explode(" ", (string) $result['sample_collection_date']);
                $result['sample_collection_date'] = DateUtility::humanReadableDateFormat($expStr[0]);
                $sampleCollectionTime = $expStr[1];
           } else {
@@ -112,29 +112,29 @@ if (!empty($requestResult)) {
           }
           $sampleReceivedDate = '';
           $sampleReceivedTime = '';
-          if (isset($result['sample_received_at_lab_datetime']) && trim($result['sample_received_at_lab_datetime']) != '' && $result['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
-               $expStr = explode(" ", $result['sample_received_at_lab_datetime']);
+          if (isset($result['sample_received_at_lab_datetime']) && trim((string) $result['sample_received_at_lab_datetime']) != '' && $result['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
+               $expStr = explode(" ", (string) $result['sample_received_at_lab_datetime']);
                $sampleReceivedDate = DateUtility::humanReadableDateFormat($expStr[0]);
                $sampleReceivedTime = $expStr[1];
           }
 
-          if (isset($result['sample_tested_datetime']) && trim($result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-               $expStr = explode(" ", $result['sample_tested_datetime']);
+          if (isset($result['sample_tested_datetime']) && trim((string) $result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+               $expStr = explode(" ", (string) $result['sample_tested_datetime']);
                $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
           } else {
                $result['sample_tested_datetime'] = '';
           }
 
-          if (isset($result['last_viral_load_date']) && trim($result['last_viral_load_date']) != '' && $result['last_viral_load_date'] != '0000-00-00') {
+          if (isset($result['last_viral_load_date']) && trim((string) $result['last_viral_load_date']) != '' && $result['last_viral_load_date'] != '0000-00-00') {
                $result['last_viral_load_date'] = DateUtility::humanReadableDateFormat($result['last_viral_load_date']);
           } else {
                $result['last_viral_load_date'] = '';
           }
-          if (!isset($result['patient_gender']) || trim($result['patient_gender']) == '') {
+          if (!isset($result['patient_gender']) || trim((string) $result['patient_gender']) == '') {
                $result['patient_gender'] = 'not reported';
           }
           $resultApprovedBy  = '';
-          if (isset($result['approvedBy']) && trim($result['approvedBy']) != '') {
+          if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) != '') {
                $resultApprovedBy = ($result['approvedBy']);
           }
           $smileyContent = '';
@@ -153,7 +153,7 @@ if (!empty($requestResult)) {
                $smileyContent = '<img src="/assets/img/cross.png" style="width:50px;" alt="rejected"/>';
           }
 
-          if (isset($arr['show_smiley']) && trim($arr['show_smiley']) == "no") {
+          if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) == "no") {
                $smileyContent = '';
           } else {
                $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $smileyContent;
@@ -190,7 +190,7 @@ if (!empty($requestResult)) {
                $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">GENDER</td>';
                $html .= '</tr>';
                $html .= '<tr>';
-               $html .= '<td colspan="3" style="line-height:11px;font-size:11px;text-align:left;">' . (str_replace("_", " ", $result['patient_gender'])) . '</td>';
+               $html .= '<td colspan="3" style="line-height:11px;font-size:11px;text-align:left;">' . (str_replace("_", " ", (string) $result['patient_gender'])) . '</td>';
                $html .= '</tr>';
           } else if ($arr['patient_name_pdf'] == 'hidename') {
                $html .= '<tr>';
@@ -201,7 +201,7 @@ if (!empty($requestResult)) {
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['patient_mobile_number'] . '</td>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $age . '</td>';
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (str_replace("_", " ", $result['patient_gender'])) . '</td>';
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (str_replace("_", " ", (string) $result['patient_gender'])) . '</td>';
                $html .= '</tr>';
                $html .= '<tr>';
                $html .= '<td colspan="3" style="line-height:10px;"></td>';
@@ -219,7 +219,7 @@ if (!empty($requestResult)) {
                $patientLname = ($general->crypto('doNothing', $result['patient_last_name'], $result['patient_art_no']));
 
                if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
-                    $key = base64_decode($general->getGlobalConfig('key'));
+                    $key = base64_decode((string) $general->getGlobalConfig('key'));
                     $result['patient_art_no'] = $general->crypto('decrypt', $result['patient_art_no'], $key);
                     $patientFname = $general->crypto('decrypt', $patientFname, $key);
                     $patientLname = $general->crypto('decrypt', $patientLname, $key);
@@ -239,7 +239,7 @@ if (!empty($requestResult)) {
                $html .= '</tr>';
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $age . '</td>';
-               $html .= '<td colspan="2" style="line-height:11px;font-size:11px;text-align:left;">' . (str_replace("_", " ", $result['patient_gender'])) . '</td>';
+               $html .= '<td colspan="2" style="line-height:11px;font-size:11px;text-align:left;">' . (str_replace("_", " ", (string) $result['patient_gender'])) . '</td>';
                $html .= '</tr>';
           }
           $html .= '<tr>';
@@ -303,12 +303,12 @@ if (!empty($requestResult)) {
           $html .= '<td colspan="3"></td>';
           $html .= '<td rowspan="3" style="text-align:left;">' . $smileyContent . '</td>';
           $html .= '</tr>';
-          $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;background-color:#dbdbdb;">&nbsp;&nbsp;VIRAL LOAD RESULT (copies/ml)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars($result['result']) . '</td></tr>';
+          $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;background-color:#dbdbdb;">&nbsp;&nbsp;VIRAL LOAD RESULT (copies/ml)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['result']) . '</td></tr>';
           $html .= '<tr><td colspan="3"></td></tr>';
           $html .= '</table>';
           $html .= '</td>';
           $html .= '</tr>';
-          if (trim($showMessage) != '') {
+          if (trim((string) $showMessage) != '') {
                $html .= '<tr>';
                $html .= '<td colspan="3" style="line-height:13px;font-size:' . $messageTextSize . ';text-align:left;">' . $showMessage . '</td>';
                $html .= '</tr>';
@@ -330,7 +330,7 @@ if (!empty($requestResult)) {
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:10px;"></td>';
           $html .= '</tr>';
-          if (trim($result['lab_tech_comments']) != '') {
+          if (trim((string) $result['lab_tech_comments']) != '') {
                $html .= '<tr>';
                $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">LAB COMMENTS&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . ($result['lab_tech_comments']) . '</span></td>';
                $html .= '</tr>';
@@ -391,7 +391,7 @@ if (!empty($requestResult)) {
                $pages[] = $filename;
                $page++;
           }
-          if (isset($_POST['source']) && trim($_POST['source']) == 'print') {
+          if (isset($_POST['source']) && trim((string) $_POST['source']) == 'print') {
                //Add event log
                $eventType = 'print-result';
                $action = $_SESSION['userName'] . ' printed the test result with Patient ID/Code ' . $result['patient_art_no'];
@@ -406,7 +406,7 @@ if (!empty($requestResult)) {
                //Update print datetime in VL tbl.
                $vlQuery = "SELECT result_printed_datetime FROM form_vl as vl WHERE vl.vl_sample_id ='" . $result['vl_sample_id'] . "'";
                $vlResult = $db->query($vlQuery);
-               if ($vlResult[0]['result_printed_datetime'] == null || trim($vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
+               if ($vlResult[0]['result_printed_datetime'] == null || trim((string) $vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
                     $db = $db->where('vl_sample_id', $result['vl_sample_id']);
                     $db->update($tableName2, array('result_printed_datetime' => DateUtility::getCurrentDateTime()));
                }

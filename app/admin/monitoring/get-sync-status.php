@@ -70,17 +70,17 @@ $sQuery = "SELECT f.facility_id, f.facility_name, tar.request_type, tar.requeste
 //$sQuery .= " JOIN $table as vl ON f.facility_id = vl.lab_id";
 //}
 $sWhere[] = ' f.facility_type = 2 AND f.status = "active" ';
-if (isset($_POST['testType']) && trim($_POST['testType']) != '') {
+if (isset($_POST['testType']) && trim((string) $_POST['testType']) != '') {
     $sWhere[] = ' (tar.test_type like "' . $_POST['testType'] . '"  OR tar.test_type is null) ';
 }
 
-if (isset($_POST['labName']) && trim($_POST['labName']) != '') {
+if (isset($_POST['labName']) && trim((string) $_POST['labName']) != '') {
     $sWhere[] = ' f.facility_id IN (' . $_POST['labName'] . ')';
 }
-if (isset($_POST['province']) && trim($_POST['province']) != '') {
+if (isset($_POST['province']) && trim((string) $_POST['province']) != '') {
     $sWhere[] = ' f.facility_state_id = "' . $_POST['province'] . '"';
 }
-if (isset($_POST['district']) && trim($_POST['district']) != '') {
+if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
     $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"';
 }
 
@@ -111,7 +111,7 @@ foreach ($db->rawQueryGenerator($sQuery) as $key => $aRow) {
     }
 
     /* Assign data table variables */ ?>
-    <tr class="<?php echo $color; ?>" data-facilityId="<?= base64_encode($aRow['facility_id']); ?>">
+    <tr class="<?php echo $color; ?>" data-facilityId="<?= base64_encode((string) $aRow['facility_id']); ?>">
         <td>
             <?= $aRow['facility_name']; ?>
         </td>

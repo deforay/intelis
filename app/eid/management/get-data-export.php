@@ -72,7 +72,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-     $searchArray = explode(" ", $_POST['sSearch']);
+     $searchArray = explode(" ", (string) $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
           if ($sWhereSub == "") {
@@ -149,41 +149,41 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
 /* Print date filter */
 [$sPrintDate, $ePrintDate] = DateUtility::convertDateRange($_POST['printDate'] ?? '');
 /* Sample type filter */
-if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
+if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
      $sWhere[] =  ' vl.specimen_type IN (' . $_POST['sampleType'] . ')';
 }
-if (isset($_POST['state']) && trim($_POST['state']) != '') {
+if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
      $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
 }
-if (isset($_POST['district']) && trim($_POST['district']) != '') {
+if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
      $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
 }
 /* Facility id filter */
-if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
+if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
      $sWhere[] = ' vl.facility_id = "' . $_POST['facilityName'] . '"';
 }
 /* Testing lab filter */
-if (isset($_POST['testingLab']) && trim($_POST['testingLab']) != '') {
+if (isset($_POST['testingLab']) && trim((string) $_POST['testingLab']) != '') {
      $sWhere[] = ' vl.lab_id = "' . $_POST['testingLab'] . '"';
 }
 /* Result filter */
-if (isset($_POST['result']) && trim($_POST['result']) != '') {
+if (isset($_POST['result']) && trim((string) $_POST['result']) != '') {
      $sWhere[] = ' vl.result like "' . $_POST['result'] . '"';
 }
 /* Status filter */
-if (isset($_POST['status']) && trim($_POST['status']) != '') {
+if (isset($_POST['status']) && trim((string) $_POST['status']) != '') {
      $sWhere[] = ' vl.result_status =' . $_POST['status'];
 }
 /* Funding src filter */
-if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
-     $sWhere[] = ' vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
+if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') {
+     $sWhere[] = ' vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
 }
 /* Implementing partner filter */
-if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
-     $sWhere[] = ' vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
+if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') {
+     $sWhere[] = ' vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
 }
 
-if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
      $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 
@@ -202,35 +202,35 @@ if (isset($_POST['motherName']) && $_POST['motherName'] != "") {
 
 /* Date time filters */
 if (!empty($_POST['sampleCollectionDate'])) {
-     if (trim($start_date) == trim($end_date)) {
+     if (trim((string) $start_date) == trim((string) $end_date)) {
           $sWhere[] = ' DATE(vl.sample_collection_date) like "' . $start_date . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
      }
 }
-if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != '') {
-     if (trim($sReceivedDate) == trim($eReceivedDate)) {
+if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != '') {
+     if (trim((string) $sReceivedDate) == trim((string) $eReceivedDate)) {
           $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) like "' . $sReceivedDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $sReceivedDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $eReceivedDate . '"';
      }
 }
-if (isset($_POST['resultDispatchedOn']) && trim($_POST['resultDispatchedOn']) != '') {
-     if (trim($sResultDispatchedDate) == trim($eResultDispatchedDate)) {
+if (isset($_POST['resultDispatchedOn']) && trim((string) $_POST['resultDispatchedOn']) != '') {
+     if (trim((string) $sResultDispatchedDate) == trim((string) $eResultDispatchedDate)) {
           $sWhere[] = ' DATE(vl.result_dispatched_datetime) like "' . $sResultDispatchedDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.result_dispatched_datetime) >= "' . $sResultDispatchedDate . '" AND DATE(vl.result_dispatched_datetime) <= "' . $eResultDispatchedDate . '"';
      }
 }
-if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-     if (!empty($sTestDate) && trim($sTestDate) == trim($eTestDate)) {
+if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
+     if (!empty($sTestDate) && trim((string) $sTestDate) == trim((string) $eTestDate)) {
           $sWhere[] = ' DATE(vl.sample_tested_datetime) like "' . $sTestDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
      }
 }
-if (isset($_POST['printDate']) && trim($_POST['printDate']) != '') {
-     if (trim($sPrintDate) == trim($eTestDate)) {
+if (isset($_POST['printDate']) && trim((string) $_POST['printDate']) != '') {
+     if (trim((string) $sPrintDate) == trim((string) $eTestDate)) {
           $sWhere[] = ' DATE(vl.result_printed_datetime) like "' . $sPrintDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
@@ -285,7 +285,7 @@ foreach ($rResult as $aRow) {
           $row[] = $aRow['remote_sample_code'];
      }
      if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-          $key = base64_decode($general->getGlobalConfig('key'));
+          $key = base64_decode((string) $general->getGlobalConfig('key'));
           $aRow['child_id'] = $general->crypto('decrypt', $aRow['child_id'], $key);
           $aRow['child_name'] = $general->crypto('decrypt', $aRow['child_name'], $key);
           $aRow['mother_id'] = $general->crypto('decrypt', $aRow['mother_id'], $key);

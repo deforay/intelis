@@ -34,7 +34,7 @@ try {
         throw new SystemException('Please select a file to upload', 400);
     }
 
-    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename($_FILES['resultFile']['name'])));
+    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $_FILES['resultFile']['name'])));
     $fileName = str_replace(" ", "-", $fileName);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName = $_POST['fileName'] . "." . $extension;
@@ -106,9 +106,9 @@ try {
 
                     $result = '';
 
-                    if (strpos(strtolower($sheetData[$resultCol]), 'not detected') !== false) {
+                    if (strpos(strtolower((string) $sheetData[$resultCol]), 'not detected') !== false) {
                         $result = 'negative';
-                    } else if ((strpos(strtolower($sheetData[$resultCol]), 'detected') !== false) || (strpos(strtolower($sheetData[$resultCol]), 'passed') !== false)) {
+                    } else if ((strpos(strtolower((string) $sheetData[$resultCol]), 'detected') !== false) || (strpos(strtolower((string) $sheetData[$resultCol]), 'passed') !== false)) {
                         $result = 'positive';
                     } else {
                         $result = 'indeterminate';
@@ -116,7 +116,7 @@ try {
 
 
                     $lotNumberVal = $sheetData[$lotNumberCol];
-                    if (trim($sheetData[$lotExpirationDateCol]) != '') {
+                    if (trim((string) $sheetData[$lotExpirationDateCol]) != '') {
                         $timestamp = DateTime::createFromFormat('!' . $dateFormat, $sheetData[$lotExpirationDateCol]);
                         if (!empty($timestamp)) {
                             $timestamp = $timestamp->getTimestamp();
@@ -175,7 +175,7 @@ try {
             }
             $data = array(
                 'module' => 'eid',
-                'lab_id' => base64_decode($_POST['labId']),
+                'lab_id' => base64_decode((string) $_POST['labId']),
                 'vl_test_platform' => $_POST['vltestPlatform'],
                 'import_machine_name' => $_POST['configMachineName'],
                 'result_reviewed_by' => $_SESSION['userId'],
@@ -207,10 +207,10 @@ try {
             $query = "select facility_id,eid_id,result from form_eid where sample_code='" . $sampleCode . "'";
             $vlResult = $db->rawQuery($query);
             //insert sample controls
-            $scQuery = "select r_sample_control_name from r_sample_controls where r_sample_control_name='" . trim($d['sampleType']) . "'";
+            $scQuery = "select r_sample_control_name from r_sample_controls where r_sample_control_name='" . trim((string) $d['sampleType']) . "'";
             $scResult = $db->rawQuery($scQuery);
             if (!$scResult) {
-                $scData = array('r_sample_control_name' => trim($d['sampleType']));
+                $scData = array('r_sample_control_name' => trim((string) $d['sampleType']));
                 $scId = $db->insert("r_sample_controls", $scData);
             }
             if (!empty($vlResult) && !empty($sampleCode)) {

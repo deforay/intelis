@@ -12,8 +12,8 @@ for ($i = 0; $i < sizeof($otherConfigResult); $i++) {
 
 $resultArr = [];
 //Set selected field
-if (isset($arr['rs_field']) && trim($arr['rs_field']) != '') {
-	$explodField = explode(",", $arr['rs_field']);
+if (isset($arr['rs_field']) && trim((string) $arr['rs_field']) != '') {
+	$explodField = explode(",", (string) $arr['rs_field']);
 	for ($f = 0; $f < count($explodField); $f++) {
 		$resultArr[] = $explodField[$f];
 	}

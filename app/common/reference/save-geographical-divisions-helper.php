@@ -11,18 +11,18 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 try {
-	if (isset($_POST['geoName']) && trim($_POST['geoName']) != "") {
+	if (isset($_POST['geoName']) && trim((string) $_POST['geoName']) != "") {
 		$lastId = 0;
 		$data = array(
 			'geo_name' 			=> $_POST['geoName'],
 			'geo_code' 			=> $_POST['geoCode'],
-			'geo_parent' 		=> (isset($_POST['geoParent']) && trim($_POST['geoParent']) != "") ? $_POST['geoParent'] : 0,
+			'geo_parent' 		=> (isset($_POST['geoParent']) && trim((string) $_POST['geoParent']) != "") ? $_POST['geoParent'] : 0,
 			'geo_status' 		=> $_POST['geoStatus'],
 			'updated_datetime'	=> DateUtility::getCurrentDateTime()
 		);
 		if (isset($_POST['geoId']) && $_POST['geoId'] != "") {
-			$db = $db->where("geo_id", base64_decode($_POST['geoId']));
-			$geoId = base64_decode($_POST['geoId']);
+			$db = $db->where("geo_id", base64_decode((string) $_POST['geoId']));
+			$geoId = base64_decode((string) $_POST['geoId']);
 			$lastId = $db->update("geographical_divisions", $data);
 		} else {
 			$data['created_by'] = $_SESSION['userId'];

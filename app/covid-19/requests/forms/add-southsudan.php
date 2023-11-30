@@ -349,7 +349,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <tr>
                                             <th scope="row"><label for="">Sample Received Date </label></th>
                                             <td>
-                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" <?php echo (isset($labFieldDisabled) && trim((string) $labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> onchange="" style="width:100%;" />
                                             </td>
                                             <td class="lab-show"><label for="labId">Testing Laboratory </label> </td>
                                             <td class="lab-show">
@@ -524,7 +524,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                             <input type="hidden" name="saveNext" id="saveNext" />
                             <input type="hidden" name="testData[]" id="testData" />
 
-                            <!-- <input type="hidden" name="pageURL" id="pageURL" value="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" /> -->
+                            <!-- <input type="hidden" name="pageURL" id="pageURL" value="<?php echo htmlspecialchars((string) $_SERVER['PHP_SELF']); ?>" /> -->
                         <?php } ?>
                         <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
                         <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();$('#saveNext').val('next');return false;">Save and Next</a>
@@ -827,7 +827,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             provinceName = true;
             facilityName = true;
             $("#province").html("<?php echo $province; ?>");
-            $("#facilityId").html("<?php echo addslashes($facility); ?>");
+            $("#facilityId").html("<?php echo addslashes((string) $facility); ?>");
 
             $("#district").html("<option value=''> -- Select -- </option>");
         }
@@ -947,7 +947,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             provinceName = true;
             facilityName = true;
             $("#province").html("<?php echo $province; ?>");
-            $("#facilityId").html("<?php echo addslashes($facility); ?>");
+            $("#facilityId").html("<?php echo addslashes((string) $facility); ?>");
         }
         $.unblockUI();
     }

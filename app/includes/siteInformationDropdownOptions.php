@@ -92,7 +92,7 @@ function getFacilitiesDropdown($provinceName = null, $districtRequested = null, 
 				$fDetails['contact_person'] = $labContactUser['user_name'];
 			}
 
-			$facility .= "<option data-code='" . $fDetails['facility_code'] . "' data-emails='" . $fDetails['facility_emails'] . "' data-mobile-nos='" . $fDetails['facility_mobile_numbers'] . "' data-contact-person='" . ($fDetails['contact_person']) . "' value='" . $fDetails['facility_id'] . "'>" . (addslashes($fDetails['facility_name'])) . $fcode . "</option>";
+			$facility .= "<option data-code='" . $fDetails['facility_code'] . "' data-emails='" . $fDetails['facility_emails'] . "' data-mobile-nos='" . $fDetails['facility_mobile_numbers'] . "' data-contact-person='" . ($fDetails['contact_person']) . "' value='" . $fDetails['facility_id'] . "'>" . (addslashes((string) $fDetails['facility_name'])) . $fcode . "</option>";
 		}
 	} else {
 		// if(isset($_POST['comingFromUser'])){
@@ -164,14 +164,14 @@ if (!empty($facilityIdRequested)) {
 	$districtOptions = getDistrictDropdown($facilityInfo['facility_state_id'], $facilityInfo['facility_district_id']);
 	echo $provinceOptions . "###" . $districtOptions . "###" . $facilityInfo['contact_person'];
 } elseif (!empty($provinceRequested) && !empty($districtRequested) && $_POST['requestType'] == 'patient') {
-	$provinceName = explode("##", $provinceRequested);
+	$provinceName = explode("##", (string) $provinceRequested);
 	$districtOptions = getDistrictDropdown($provinceName[0], $districtRequested);
 	echo "###" . $districtOptions . "###";
 } elseif (!empty($provinceRequested) && !empty($districtRequested) && is_numeric($provinceRequested) && is_numeric($districtRequested)) {
 	$districtOptions = getDistrictDropdown($provinceRequested, $districtRequested);
 	echo "###" . $districtOptions . "###";
 } elseif (!empty($provinceRequested)) {
-	$provinceName = explode("##", $provinceRequested);
+	$provinceName = explode("##", (string) $provinceRequested);
 
 	$facilityOptions = getFacilitiesDropdown($provinceName[0], null, $usersService);
 	$districtOptions = getDistrictDropdown($provinceName[0]);

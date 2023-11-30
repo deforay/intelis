@@ -10,9 +10,9 @@ $webRootPath = realpath(WEB_ROOT);
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 
-if (!isset($_GET['f']) || !is_file(base64_decode($_GET['f']))) {
+if (!isset($_GET['f']) || !is_file(base64_decode((string) $_GET['f']))) {
     $redirect = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/';
-    header("Location:" . urlencode($redirect));
+    header("Location:" . urlencode((string) $redirect));
     exit;
 }
 
@@ -24,7 +24,7 @@ $allowedMimeTypes = [
     'text/plain'
 ];
 
-$file = realpath(urldecode(base64_decode($_GET['f'])));
+$file = realpath(urldecode(base64_decode((string) $_GET['f'])));
 
 if (
     $file === false ||

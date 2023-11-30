@@ -25,7 +25,7 @@ $_POST = $request->getParsedBody();
 
 try {
 
-    if (isset($_POST['gender']) && trim($_POST['gender']) == 'male') {
+    if (isset($_POST['gender']) && trim((string) $_POST['gender']) == 'male') {
         $_POST['patientPregnant'] = "N/A";
         $_POST['breastfeeding'] = "N/A";
     }
@@ -53,7 +53,7 @@ try {
 
     $patientData['is_encrypted'] = 'no';
     if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
-         $key = base64_decode($general->getGlobalConfig('key'));
+         $key = base64_decode((string) $general->getGlobalConfig('key'));
          $encryptedPatientId = $general->crypto('encrypt', $patientData['patient_code'], $key);
          $encryptedPatientFirstName = $general->crypto('encrypt', $patientData['patient_first_name'], $key);
          $encryptedPatientMiddleName = $general->crypto('encrypt', $patientData['patient_middle_name'], $key);

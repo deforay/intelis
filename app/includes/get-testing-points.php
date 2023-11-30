@@ -9,7 +9,7 @@ $_POST = $request->getParsedBody();
 
 $db = $db->where('facility_id', $_POST['facilityId']);
 $facilityDetails = $db->getOne('facility_details', array('testing_points'));
-$testingPoints = json_decode($facilityDetails['testing_points'], true);
+$testingPoints = json_decode((string) $facilityDetails['testing_points'], true);
 ?>
 <?php
 

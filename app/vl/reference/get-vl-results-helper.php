@@ -58,7 +58,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", $_POST['sSearch']);
+    $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
         if ($sWhereSub == "") {
@@ -128,7 +128,7 @@ $output = array(
     "aaData" => []
 );
 foreach ($rResult as $aRow) {
-    $instruments = json_decode($aRow['available_for_instruments']);
+    $instruments = json_decode((string) $aRow['available_for_instruments']);
     $idValues = implode(',', $instruments);
     $sqlInstrument = "SELECT group_concat(machine_name) as machine_name from instruments where config_id in ($idValues)";
     $instrumentRes = $db->rawQuery($sqlInstrument);
@@ -142,7 +142,7 @@ foreach ($rResult as $aRow) {
 
     if (isset($_SESSION['privileges']) && in_array("vl-results.php", $_SESSION['privileges'])) {
         $row[] = $status;
-        $row[] = '<a href="edit-vl-results.php?id=' . base64_encode($aRow['result_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
+        $row[] = '<a href="edit-vl-results.php?id=' . base64_encode((string) $aRow['result_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
     } else {
         $row[] = ($aRow['status']);
     }

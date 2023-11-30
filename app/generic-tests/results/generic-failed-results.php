@@ -283,14 +283,14 @@ $state = $geolocationService->getProvinces("yes");
         });
         <?php
         if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-            echo "printBarcodeLabel('" . htmlspecialchars($_GET['s']) . "','" . htmlspecialchars($_GET['f']) . "');";
+            echo "printBarcodeLabel('" . htmlspecialchars((string) $_GET['s']) . "','" . htmlspecialchars((string) $_GET['f']) . "');";
         }
         ?>
 
         loadVlRequestData();
         $('#sampleCollectionDate').daterangepicker({
                 locale: {
-                    cancelLabel: "<?= _translate("Clear"); ?>",
+                    cancelLabel: "<?= _translate("Clear", true); ?>",
                     format: 'DD-MMM-YYYY',
                     separator: ' to ',
                 },

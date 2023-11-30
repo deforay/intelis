@@ -41,7 +41,7 @@ $reasonForFailure = $vlService->getReasonForFailure();
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
 //get import config
@@ -108,7 +108,7 @@ $vlQueryInfo['last_viral_load_date'] = DateUtility::humanReadableDateFormat($vlQ
 $vlQueryInfo['date_test_ordered_by_physician'] = DateUtility::humanReadableDateFormat($vlQueryInfo['date_test_ordered_by_physician'] ?? '');
 
 //Has patient changed regimen section
-if (trim($vlQueryInfo['has_patient_changed_regimen']) == "yes") {
+if (trim((string) $vlQueryInfo['has_patient_changed_regimen']) == "yes") {
      $vlQueryInfo['regimen_change_date'] = DateUtility::humanReadableDateFormat($vlQueryInfo['regimen_change_date'] ?? '');
 } else {
      $vlQueryInfo['reason_for_regimen_change'] = $vlQueryInfo['regimen_change_date'] = '';
@@ -151,7 +151,7 @@ $aQuery = "SELECT * FROM r_vl_art_regimen where art_status ='active'";
 $aResult = $db->query($aQuery);
 
 if (!empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes') {
-     $key = base64_decode($general->getGlobalConfig('key'));
+     $key = base64_decode((string) $general->getGlobalConfig('key'));
      $vlQueryInfo['patient_art_no'] = $general->crypto('decrypt', $vlQueryInfo['patient_art_no'], $key);
      if ($patientFirstName != '') {
           $vlQueryInfo['patient_first_name'] = $patientFirstName = $general->crypto('decrypt', $patientFirstName, $key);

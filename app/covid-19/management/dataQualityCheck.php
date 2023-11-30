@@ -63,7 +63,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-     $searchArray = explode(" ", $_POST['sSearch']);
+     $searchArray = explode(" ", (string) $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
           if ($sWhereSub == "") {
@@ -106,16 +106,16 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM form_covid19 as vl
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
 if (!empty($_POST['sampleCollectionDate'])) {
-     if (trim($start_date) == trim($end_date)) {
+     if (trim((string) $start_date) == trim((string) $end_date)) {
           $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
      } else {
           $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
      }
 }
-if (isset($_POST['formField']) && trim($_POST['formField']) != '') {
+if (isset($_POST['formField']) && trim((string) $_POST['formField']) != '') {
      $sWhereSubC = "  (";
      $sWhereSub = '';
-     $searchArray = explode(",", $_POST['formField']);
+     $searchArray = explode(",", (string) $_POST['formField']);
      foreach ($searchArray as $search) {
           if ($sWhereSub == "") {
                $sWhereSub .= $sWhereSubC;
@@ -188,7 +188,7 @@ foreach ($rResult as $aRow) {
 
      $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow[$decrypt]));
      if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-          $key = base64_decode($general->getGlobalConfig('key'));
+          $key = base64_decode((string) $general->getGlobalConfig('key'));
           $patientFname = $general->crypto('decrypt', $patientFname, $key);
      }
      $row = [];

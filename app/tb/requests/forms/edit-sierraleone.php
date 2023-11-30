@@ -90,9 +90,9 @@ $facility = $general->generateSelectOptions($healthFacilities, $tbInfo['facility
 
 $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+");
 
-$typeOfPatient = json_decode($tbInfo['patient_type']);
-$reasonForTbTest = json_decode($tbInfo['reason_for_tb_test']);
-$testTypeRequested = json_decode($tbInfo['tests_requested']);
+$typeOfPatient = json_decode((string) $tbInfo['patient_type']);
+$reasonForTbTest = json_decode((string) $tbInfo['reason_for_tb_test']);
+$testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
 $diagnosis = (array)$reasonForTbTest->elaboration->diagnosis;
 $followupArr = (array)$reasonForTbTest->elaboration;
 $followup = (array)$followupArr['follow-up'];
@@ -103,7 +103,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 	$db->join("testing_labs as l", "l.facility_id=f.facility_id", "INNER");
 	$results = $db->getOne("facility_details as f");
 	if (isset($results['attributes']) && $results['attributes'] != "") {
-		$attributes = json_decode($results['attributes'], true);
+		$attributes = json_decode((string) $results['attributes'], true);
 	}
 }
 //Recommended corrective actions
@@ -342,15 +342,15 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 												<ul class="followUp">
 													<li>
 														<label>Month Of Treatment</label>
-														<input type="text" value="<?php echo (isset($followup['month-of-treatment']) && $followup['month-of-treatment'] != "" && trim($followup['month-of-treatment']) != "") ? $followup['month-of-treatment'] : ""; ?>" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][month-of-treatment]" placeholder="Enter Month Of Treatment" title="Please enter Month Of Treatment">
+														<input type="text" value="<?php echo (isset($followup['month-of-treatment']) && $followup['month-of-treatment'] != "" && trim((string) $followup['month-of-treatment']) != "") ? $followup['month-of-treatment'] : ""; ?>" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][month-of-treatment]" placeholder="Enter Month Of Treatment" title="Please enter Month Of Treatment">
 													</li>
 													<li>
 														<label>Patient's District TB No.</label>
-														<input type="text" value="<?php echo (isset($followup['patient-district-tb-no']) && $followup['patient-district-tb-no'] != "" && trim($followup['patient-district-tb-no']) != "") ? $followup['patient-district-tb-no'] : ""; ?>" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][patient-district-tb-no]" placeholder="Enter Patient's District TB No." title="Please enter Patient's District TB No.">
+														<input type="text" value="<?php echo (isset($followup['patient-district-tb-no']) && $followup['patient-district-tb-no'] != "" && trim((string) $followup['patient-district-tb-no']) != "") ? $followup['patient-district-tb-no'] : ""; ?>" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][patient-district-tb-no]" placeholder="Enter Patient's District TB No." title="Please enter Patient's District TB No.">
 													</li>
 													<li>
 														<label>Patient's MDR No.</label>
-														<input type="text" value="<?php echo (isset($followup['patient-mdr-no']) && $followup['patient-mdr-no'] != "" && trim($followup['patient-mdr-no']) != "") ? $followup['patient-mdr-no'] : ""; ?>" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][patient-mdr-no]" placeholder="Enter Patient's MDR No." title="Please enter Patient's MDR No.">
+														<input type="text" value="<?php echo (isset($followup['patient-mdr-no']) && $followup['patient-mdr-no'] != "" && trim((string) $followup['patient-mdr-no']) != "") ? $followup['patient-mdr-no'] : ""; ?>" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][follow-up][patient-mdr-no]" placeholder="Enter Patient's MDR No." title="Please enter Patient's MDR No.">
 													</li>
 												</ul>
 											</div>
@@ -504,7 +504,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 												<select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Please select the reason for rejection" onchange="checkRejectionReason();">
 													<option value="">-- Select --</option>
 													<?php foreach ($rejectionTypeResult as $type) { ?>
-														<optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
+														<optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
 															<?php
 															foreach ($rejectionResult as $reject) {
 																if ($type['rejection_type'] == $reject['rejection_type']) { ?>
@@ -623,14 +623,14 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 											<th scope="row"><label class="label-control" for="labComments">Lab Comments</label></th>
 
 											<td>
-												<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments"><?php echo trim($tbInfo['lab_tech_comments']); ?></textarea>
+												<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments"><?php echo trim((string) $tbInfo['lab_tech_comments']); ?></textarea>
 											</td>
 										</tr>
 
 									</table>
 								</div>
 							</div>
-						<?php } ?>
+<?php } ?>
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">

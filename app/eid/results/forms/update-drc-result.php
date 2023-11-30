@@ -36,11 +36,11 @@ foreach ($pdResult as $provinceName) {
 
 $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facility_id'], '-- Sélectionner --');
 
-$eidInfo['mother_treatment'] = explode(",", $eidInfo['mother_treatment']);
-$eidInfo['child_treatment'] = explode(",", $eidInfo['child_treatment']);
+$eidInfo['mother_treatment'] = explode(",", (string) $eidInfo['mother_treatment']);
+$eidInfo['child_treatment'] = explode(",", (string) $eidInfo['child_treatment']);
 $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'active'");
-if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approved_datetime']) != '' && $eidInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
-	$expStr = explode(" ", $eidInfo['result_approved_datetime']);
+if (isset($eidInfo['result_approved_datetime']) && trim((string) $eidInfo['result_approved_datetime']) != '' && $eidInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", (string) $eidInfo['result_approved_datetime']);
 	$eidInfo['result_approved_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$eidInfo['result_approved_datetime'] = '';
@@ -81,13 +81,13 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
 									<?php if ($_SESSION['instanceType'] == 'remoteuser') { ?>
 										<td><label for="sampleCode">Échantillon ID </label></td>
 										<td>
-											<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?= htmlspecialchars($eidInfo['sample_code']); ?></span>
+											<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?= htmlspecialchars((string) $eidInfo['sample_code']); ?></span>
 
 										</td>
 									<?php } else { ?>
 										<td><label for="sampleCode">Échantillon ID </label><span class="mandatory">*</span></td>
 										<td>
-											<input type="text" readonly value="<?= htmlspecialchars($eidInfo['sample_code']); ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="checkSampleNameValidation('form_eid','<?php echo $sampleCode; ?>',this.id,null,'The échantillon id that you entered already exists. Please try another échantillon id',null)" />
+											<input type="text" readonly value="<?= htmlspecialchars((string) $eidInfo['sample_code']); ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="checkSampleNameValidation('form_eid','<?php echo $sampleCode; ?>',this.id,null,'The échantillon id that you entered already exists. Please try another échantillon id',null)" />
 										</td>
 									<?php } ?>
 									<td></td>
@@ -172,7 +172,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
 								<tr>
 									<th scope="row" style="width:15%;"><label for="mothersId">Code (si applicable) </label></th>
 									<td style="width:35%;">
-										<input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Code du mère" title="Please enter code du mère" style="width:100%;" value="<?= htmlspecialchars($eidInfo['mother_id']); ?>" onchange="" />
+										<input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Code du mère" title="Please enter code du mère" style="width:100%;" value="<?= htmlspecialchars((string) $eidInfo['mother_id']); ?>" onchange="" />
 									</td>
 									<th scope="row" style="width:15%;"><label for="mothersName">Nom </label></th>
 									<td style="width:35%;">
@@ -209,7 +209,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
 									</td>
 									<th scope="row"><label for="childName">Nom </label></th>
 									<td>
-										<input type="text" class="form-control " id="childName" name="childName" placeholder="Nom" title="Please enter nom du enfant" style="width:100%;" value="<?= htmlspecialchars($eidInfo['child_name']); ?>" onchange="" />
+										<input type="text" class="form-control " id="childName" name="childName" placeholder="Nom" title="Please enter nom du enfant" style="width:100%;" value="<?= htmlspecialchars((string) $eidInfo['child_name']); ?>" onchange="" />
 									</td>
 								</tr>
 								<tr>
@@ -229,7 +229,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
 								</tr>
 								<tr>
 									<th scope="row">Age</th>
-									<td><input type="number" value="<?= htmlspecialchars($eidInfo['child_age']); ?>" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age en mois" title="Age en mois" style="width:100%;" onchange="$('#childDob').val('')" /></td>
+									<td><input type="number" value="<?= htmlspecialchars((string) $eidInfo['child_age']); ?>" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age en mois" title="Age en mois" style="width:100%;" onchange="$('#childDob').val('')" /></td>
 									<th scope="row"></th>
 									<td></td>
 								</tr>
@@ -373,7 +373,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
 									</td>
 									<th scope="row">Tel. du préleveur</th>
 									<td>
-										<input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Tel. du préleveur" value="<?= htmlspecialchars($eidInfo['sample_requestor_phone']); ?>" />
+										<input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Tel. du préleveur" value="<?= htmlspecialchars((string) $eidInfo['sample_requestor_phone']); ?>" />
 									</td>
 								</tr>
 								<tr>
@@ -388,7 +388,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
 									</td>
 									<th scope="row" style="width:15%;">Nom du demandeur</th>
 									<td style="width:35%;">
-										<input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Nom du demandeur" value="<?= htmlspecialchars($eidInfo['sample_requestor_name']); ?>" />
+										<input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Nom du demandeur" value="<?= htmlspecialchars((string) $eidInfo['sample_requestor_name']); ?>" />
 									</td>
 								</tr>
 								<tr>
@@ -485,7 +485,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
 											<select name="sampleRejectionReason" id="sampleRejectionReason" class="form-control labSection" title="Veuillez choisir la raison du rejet" <?php echo $labFieldDisabled; ?> <option value=""><?= _translate("-- Select --"); ?> </option>
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php foreach ($rejectionTypeResult as $type) { ?>
-													<optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
+													<optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
 														<?php
 														foreach ($rejectionResult as $reject) {
 															if ($type['rejection_type'] == $reject['rejection_type']) { ?>
@@ -555,7 +555,7 @@ if (isset($eidInfo['result_approved_datetime']) && trim($eidInfo['result_approve
 				<div class="box-footer">
 					<input type="hidden" name="formId" id="formId" value="3" />
 					<input type="hidden" name="eidSampleId" id="eidSampleId" value="<?php echo ($eidInfo['eid_id']); ?>" />
-					<input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars($eidInfo['sample_code']); ?>" />
+					<input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars((string) $eidInfo['sample_code']); ?>" />
 					<input type="hidden" name="revised" id="revised" value="no" />
 
 					<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>

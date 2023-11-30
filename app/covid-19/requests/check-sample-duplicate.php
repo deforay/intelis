@@ -23,14 +23,14 @@ $_POST = $request->getParsedBody();
 
 $tableName = $_POST['tableName'];
 $fieldName = $_POST['fieldName'];
-$value = trim($_POST['value']);
+$value = trim((string) $_POST['value']);
 $fnct = $_POST['fnct'];
 $data = 0;
 if ($value != '') {
 
     $tableInfo = [];
     if (!empty($fnct)) {
-        $tableInfo = explode("##", $fnct);
+        $tableInfo = explode("##", (string) $fnct);
     }
 
     if ($systemType == 'remoteuser') {
@@ -48,7 +48,7 @@ if ($value != '') {
     $result = $db->rawQuery($sQuery, $parameters);
 
     if ($result) {
-        $data = base64_encode($result[0]['covid19_id']) . "##" . $result[0][$fieldName];
+        $data = base64_encode((string) $result[0]['covid19_id']) . "##" . $result[0][$fieldName];
     } else {
         $data = 0;
     }

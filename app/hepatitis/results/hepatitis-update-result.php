@@ -43,7 +43,7 @@ foreach ($userResult as $user) {
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
 //get import config
@@ -60,7 +60,7 @@ $pdResult = $db->query($pdQuery);
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
 // Comorbidity
@@ -105,7 +105,7 @@ foreach ($testPlatformResult as $row) {
 	$testPlatformList[$row['machine_name']] = $row['machine_name'];
 }
 if (!empty($hepatitisInfo['is_encrypted']) && $hepatitisInfo['is_encrypted'] == 'yes'){
-	$key = base64_decode($general->getGlobalConfig('key'));
+	$key = base64_decode((string) $general->getGlobalConfig('key'));
 	$hepatitisInfo['patient_id'] = $general->crypto('decrypt' ,$hepatitisInfo['patient_id'], $key);
 	if($hepatitisInfo['patient_name']!=''){
         $hepatitisInfo['patient_name'] = $general->crypto('decrypt' ,$hepatitisInfo['patient_name'], $key);

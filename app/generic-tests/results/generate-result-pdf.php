@@ -23,7 +23,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $arr = $general->getGlobalConfig();
 
 $requestResult = null;
-if ((isset($_POST['id']) && !empty(trim($_POST['id']))) || (isset($_POST['sampleCodes']) && !empty(trim($_POST['sampleCodes'])))) {
+if ((isset($_POST['id']) && !empty(trim((string) $_POST['id']))) || (isset($_POST['sampleCodes']) && !empty(trim((string) $_POST['sampleCodes'])))) {
 
 	$searchQuery = "SELECT vl.*,
                   f.*,
@@ -51,11 +51,11 @@ if ((isset($_POST['id']) && !empty(trim($_POST['id']))) || (isset($_POST['sample
                   LEFT JOIN r_generic_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id = vl.reason_for_sample_rejection";
 
 	$searchQueryWhere = [];
-	if (!empty(trim($_POST['id']))) {
+	if (!empty(trim((string) $_POST['id']))) {
 		$searchQueryWhere[] = " vl.sample_id IN(" . $_POST['id'] . ") ";
 	}
 
-	if (isset($_POST['sampleCodes']) && !empty(trim($_POST['sampleCodes']))) {
+	if (isset($_POST['sampleCodes']) && !empty(trim((string) $_POST['sampleCodes']))) {
 		$searchQueryWhere[] = " vl.sample_code IN(" . $_POST['sampleCodes'] . ") ";
 	}
 	if (!empty($searchQueryWhere)) {
@@ -123,7 +123,7 @@ class MYPDF extends TCPDF
 		//$this->Image($imageFilePath, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
 		// Set font
 		if ($this->htitle != '') {
-			if (trim($this->logo) != '') {
+			if (trim((string) $this->logo) != '') {
 				error_log($this->logo);
 				if ($this->imageExists($this->logo)) {
 					$this->Image($this->logo, 95, 5, 15, '', '', '', 'T');
@@ -137,16 +137,16 @@ class MYPDF extends TCPDF
 			}
 			$this->SetFont('helvetica', 'B', 8);
 			$this->writeHTMLCell(0, 0, 10, 22, $this->text, 0, 0, 0, true, 'C');
-			if (trim($this->lab) != '') {
+			if (trim((string) $this->lab) != '') {
 				$this->SetFont('helvetica', '', 9);
-				$this->writeHTMLCell(0, 0, 10, 26, strtoupper($this->lab), 0, 0, 0, true, 'C');
+				$this->writeHTMLCell(0, 0, 10, 26, strtoupper((string) $this->lab), 0, 0, 0, true, 'C');
 			}
 			$this->SetFont('helvetica', '', 14);
-			$this->writeHTMLCell(0, 0, 10, 30, strtoupper($this->testType) . ' PATIENT REPORT', 0, 0, 0, true, 'C');
+			$this->writeHTMLCell(0, 0, 10, 30, strtoupper((string) $this->testType) . ' PATIENT REPORT', 0, 0, 0, true, 'C');
 
 			$this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C');
 		} else {
-			if (trim($this->logo) != '') {
+			if (trim((string) $this->logo) != '') {
 				if ($this->imageExists($this->logo)) {
 					$this->Image($this->logo, 20, 13, 15, '', '', '', 'T');
 				} else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
@@ -160,7 +160,7 @@ class MYPDF extends TCPDF
 
 			if ($this->text != '') {
 				$this->SetFont('helvetica', '', 16);
-				$this->writeHTMLCell(0, 0, 10, 12, strtoupper($this->text), 0, 0, 0, true, 'C');
+				$this->writeHTMLCell(0, 0, 10, 12, strtoupper((string) $this->text), 0, 0, 0, true, 'C');
 				$thirdHeading = '21';
 				$fourthHeading = '28';
 				$hrLine = '36';
@@ -171,12 +171,12 @@ class MYPDF extends TCPDF
 				$hrLine = '30';
 				$marginTop = '9';
 			}
-			if (trim($this->lab) != '') {
+			if (trim((string) $this->lab) != '') {
 				$this->SetFont('helvetica', '', 10);
-				$this->writeHTMLCell(0, 0, 8, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C');
+				$this->writeHTMLCell(0, 0, 8, $thirdHeading, strtoupper((string) $this->lab), 0, 0, 0, true, 'C');
 			}
 			$this->SetFont('helvetica', '', 12);
-			$this->writeHTMLCell(0, 0, 10, $fourthHeading, strtoupper($this->testType) . ' - PATIENT REPORT', 0, 0, 0, true, 'C');
+			$this->writeHTMLCell(0, 0, 10, $fourthHeading, strtoupper((string) $this->testType) . ' - PATIENT REPORT', 0, 0, 0, true, 'C');
 			$this->writeHTMLCell(0, 0, 15, $hrLine, '<hr>', 0, 0, 0, true, 'C');
 		}
 	}

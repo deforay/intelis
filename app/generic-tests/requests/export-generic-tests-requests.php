@@ -37,7 +37,7 @@ $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 //system config
 
-if (isset($_SESSION['genericRequestQuery']) && trim($_SESSION['genericRequestQuery']) != "") {
+if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericRequestQuery']) != "") {
 
 	/* To get dynamic fields */
 	$labels = [];
@@ -89,7 +89,7 @@ if (isset($_SESSION['genericRequestQuery']) && trim($_SESSION['genericRequestQue
 			}
 		}
 		//set gender
-		switch (strtolower($aRow['patient_gender'])) {
+		switch (strtolower((string) $aRow['patient_gender'])) {
 			case 'male':
 			case 'm':
 				$gender = 'M';
@@ -130,9 +130,9 @@ if (isset($_SESSION['genericRequestQuery']) && trim($_SESSION['genericRequestQue
 
 		//set sample rejection
 		$sampleRejection = null;
-		if (isset($aRow['is_sample_rejected']) && trim($aRow['is_sample_rejected']) == 'yes' || $aRow['result_status'] == 4) {
+		if (isset($aRow['is_sample_rejected']) && trim((string) $aRow['is_sample_rejected']) == 'yes' || $aRow['result_status'] == 4) {
 			$sampleRejection = 'Yes';
-		} else if (trim($aRow['is_sample_rejected']) == 'no') {
+		} else if (trim((string) $aRow['is_sample_rejected']) == 'no') {
 			$sampleRejection = 'No';
 		}
 		//result dispatched date
@@ -174,7 +174,7 @@ if (isset($_SESSION['genericRequestQuery']) && trim($_SESSION['genericRequestQue
 		$row[] = $treatmentInitiationDate;
 		$row[] = ($aRow['is_patient_pregnant']);
 		$row[] = ($aRow['is_patient_breastfeeding']);
-		$row[] = (str_replace("_", " ", $aRow['test_reason']));
+		$row[] = (str_replace("_", " ", (string) $aRow['test_reason']));
 		$row[] = ($aRow['request_clinician_name']);
 		$row[] = $requestedDate;
 		$row[] = $sampleRejection;
@@ -184,8 +184,8 @@ if (isset($_SESSION['genericRequestQuery']) && trim($_SESSION['genericRequestQue
 		$row[] = $sampleReceivedOn;
 		$row[] = $resultDispatchedDate;
 		$row[] = ($aRow['lab_tech_comments']);
-		$row[] = (isset($aRow['funding_source_name']) && trim($aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';
-		$row[] = (isset($aRow['i_partner_name']) && trim($aRow['i_partner_name']) != '') ? ($aRow['i_partner_name']) : '';
+		$row[] = (isset($aRow['funding_source_name']) && trim((string) $aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';
+		$row[] = (isset($aRow['i_partner_name']) && trim((string) $aRow['i_partner_name']) != '') ? ($aRow['i_partner_name']) : '';
 		$row[] = $requestCreatedDatetime;
 
 		/* To assign the dynamic fields values */
@@ -207,7 +207,7 @@ if (isset($_SESSION['genericRequestQuery']) && trim($_SESSION['genericRequestQue
 		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
 		// we dont need the $output variable anymore
 		unset($output);
-		echo base64_encode($fileName);
+		echo base64_encode((string) $fileName);
 	} else {
 		$excel = new Spreadsheet();
 		$sheet = $excel->getActiveSheet();

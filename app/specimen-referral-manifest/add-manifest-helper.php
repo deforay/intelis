@@ -17,9 +17,9 @@ $general = ContainerRegistry::get(CommonService::class);
 // echo "<pre>";print_r($_POST);die;
 $packageTable = "package_details";
 try {
-    $selectedSample = explode(",", $_POST['selectedSample']);
+    $selectedSample = explode(",", (string) $_POST['selectedSample']);
     $uniqueSampleId = array_unique($selectedSample);
-    if (isset($_POST['packageCode']) && trim($_POST['packageCode']) != "") {
+    if (isset($_POST['packageCode']) && trim((string) $_POST['packageCode']) != "") {
         $data = array(
             'package_code'              => $_POST['packageCode'],
             'module'                    => $_POST['module'],

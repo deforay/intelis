@@ -1,7 +1,11 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get('db');
 
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
@@ -12,8 +16,6 @@ if (isset($_SESSION['userId'])) {
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
-
-
 
 // If there are NO users, then we need to register the admin user
 // This happens during first setup typically
@@ -118,7 +120,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 		$filePath = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'login-logos';
 
 
-		if (isset($globalConfigResult[0]['value']) && trim($globalConfigResult[0]['value']) != "" && file_exists('uploads' . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $globalConfigResult[0]['value'])) {
+		if (isset($globalConfigResult[0]['value']) && trim((string) $globalConfigResult[0]['value']) != "" && file_exists('uploads' . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $globalConfigResult[0]['value'])) {
 		?>
 			<div style="margin-top:15px;float:left;">
 				<img src="/uploads/logo/<?php echo $globalConfigResult[0]['value']; ?>" alt="Logo image" style="max-width:120px;">
@@ -252,10 +254,10 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 				if (sessionStorage.getItem("crosslogin") == "true") {
 					<?php $_SESSION['logged'] = false; ?>
 					sessionStorage.setItem("crosslogin", "false");
-					$('<iframe src="<?php echo rtrim(SYSTEM_CONFIG['recency']['url'], "/") . '/logout'; ?>" frameborder="0" scrolling="no" id="myFrame" style="display:none;"></iframe>').appendTo('body');
+					$('<iframe src="<?php echo rtrim((string) SYSTEM_CONFIG['recency']['url'], "/") . '/logout'; ?>" frameborder="0" scrolling="no" id="myFrame" style="display:none;"></iframe>').appendTo('body');
 				}
 			<?php }
-			if (isset($_SESSION['alertMsg']) && trim($_SESSION['alertMsg']) != "") { ?>
+			if (isset($_SESSION['alertMsg']) && trim((string) $_SESSION['alertMsg']) != "") { ?>
 				alert("<?php echo $_SESSION['alertMsg']; ?>");
 			<?php $_SESSION['alertMsg'] = '';
 				unset($_SESSION['alertMsg']);

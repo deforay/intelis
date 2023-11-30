@@ -36,7 +36,7 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $labFieldDisabled = '';
 
@@ -90,9 +90,9 @@ if ($arr['hepatitis_sample_code'] == 'auto' || $arr['hepatitis_sample_code'] == 
 }
 
 
-if (isset($hepatitisInfo['sample_collection_date']) && trim($hepatitisInfo['sample_collection_date']) != '' && $hepatitisInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
+if (isset($hepatitisInfo['sample_collection_date']) && trim((string) $hepatitisInfo['sample_collection_date']) != '' && $hepatitisInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
     $sampleCollectionDate = $hepatitisInfo['sample_collection_date'];
-    $expStr = explode(" ", $hepatitisInfo['sample_collection_date']);
+    $expStr = explode(" ", (string) $hepatitisInfo['sample_collection_date']);
     $hepatitisInfo['sample_collection_date'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $sampleCollectionDate = '';
@@ -128,7 +128,7 @@ foreach ($testPlatformResult as $row) {
 }
 
 if (!empty($hepatitisInfo['is_encrypted']) && $hepatitisInfo['is_encrypted'] == 'yes'){
-	$key = base64_decode($general->getGlobalConfig('key'));
+	$key = base64_decode((string) $general->getGlobalConfig('key'));
 	$hepatitisInfo['patient_id'] = $general->crypto('decrypt' ,$hepatitisInfo['patient_id'], $key);
 	if($hepatitisInfo['patient_name']!=''){
         $hepatitisInfo['patient_name'] = $general->crypto('decrypt' ,$hepatitisInfo['patient_name'], $key);

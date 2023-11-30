@@ -58,7 +58,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", $_POST['sSearch']);
+    $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
         if ($sWhereSub == "") {
@@ -141,10 +141,10 @@ foreach ($rResult as $aRow) {
                <option value="active" ' . ($aRow['status'] == "active" ? "selected=selected" : "") . '>' . _translate("Active") . '</option>
                <option value="inactive" ' . ($aRow['status'] == "inactive" ? "selected=selected" : "") . '>' . _translate("Inactive") . '</option>
                </select><br><br>';
-    $edit = '<a href="edit-covid19-qc-test-kit.php?id=' . base64_encode($aRow['testkit_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
+    $edit = '<a href="edit-covid19-qc-test-kit.php?id=' . base64_encode((string) $aRow['testkit_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
     $row = [];
     $row[] = ($aRow['testkit_name']);
-    $row[] = date("d-m-Y H:i:s", strtotime($aRow['updated_datetime']));
+    $row[] = date("d-m-Y H:i:s", strtotime((string) $aRow['updated_datetime']));
     if (isset($_SESSION['privileges']) && in_array("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') {
         $row[] = $status;
         $row[] = $edit;

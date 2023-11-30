@@ -59,7 +59,7 @@ foreach ($output as $rowNo => $rowData) {
     $colNo = 1;
     foreach ($rowData as $field => $value) {
         $rRowCount = ($rowNo + 2);
-        $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
+        $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode((string) $value));
         $colNo++;
     }
     $colorNo++;

@@ -512,7 +512,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 												<select name="sampleRejectionReason" id="sampleRejectionReason" class="form-control labSection" title="Please choose a Rejection Reason" <?php echo $labFieldDisabled; ?>>
 													<option value=""><?= _translate("-- Select --"); ?> </option>
 													<?php foreach ($rejectionTypeResult as $type) { ?>
-														<optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
+														<optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
 															<?php
 															foreach ($rejectionResult as $reject) {
 																if ($type['rejection_type'] == $reject['rejection_type']) { ?>

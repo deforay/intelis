@@ -82,7 +82,7 @@ $implementingPartnerQry .= " ORDER BY i_partner_name ASC";
 
 $implementingPartnerResult = $db->query($implementingPartnerQry);
 foreach ($implementingPartnerResult as $key => $ip) {
-    $implementingPartnerList[$key]['value'] = strtolower(str_replace(" ", "-", $ip['i_partner_id']));
+    $implementingPartnerList[$key]['value'] = strtolower(str_replace(" ", "-", (string) $ip['i_partner_id']));
     $implementingPartnerList[$key]['show'] = $ip['i_partner_name'];
 }
 // Countries List
@@ -127,7 +127,7 @@ $data['sampleStatusList'] = $app->generateSelectOptions($statusList);
 
 $modules = SYSTEM_CONFIG['modules'];
 
-$rejectionReasson = [];
+$rejectionReason = [];
 foreach ($modules as $module => $status) {
     $rejectionResult = [];
     $rejectionTypeResult = [];
@@ -144,7 +144,7 @@ foreach ($modules as $module => $status) {
         }
         $rejectionTypeResult = $general->getDataByTableAndFields('r_' . $module . '_sample_rejection_reasons', array('rejection_type'), false, $condition, 'rejection_type');
         foreach ($rejectionTypeResult as $key => $type) {
-            $reasons[$module][$key]['show'] = ucwords($type['rejection_type']);
+            $reasons[$module][$key]['show'] = ucwords((string) $type['rejection_type']);
             $condition = " rejection_reason_status ='active' AND rejection_type LIKE '" . $type['rejection_type'] . "'";
             if ($updatedDateTime) {
                 $condition .= " AND updated_datetime >= '$updatedDateTime'";

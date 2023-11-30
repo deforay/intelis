@@ -11,7 +11,7 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -26,7 +26,7 @@ $resultQuery = "SELECT * from r_vl_results where result_id = '" . $id . "' ";
 $resultInfo = $db->query($resultQuery);
 
 $activeInstruments = $instrumentsService->getInstruments(null, true);
-$selectedInstruments = json_decode($resultInfo[0]['available_for_instruments'], true);
+$selectedInstruments = json_decode((string) $resultInfo[0]['available_for_instruments'], true);
 $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, $selectedInstruments, "-- Select --");
 ?>
 <!-- Content Wrapper. Contains page content -->

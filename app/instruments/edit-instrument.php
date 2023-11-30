@@ -25,22 +25,22 @@ $labNameList = $facilitiesService->getTestingLabs();
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $sQuery = "SELECT * from instruments where config_id=?";
 $sInfo = $db->rawQueryOne($sQuery, [$id]);
 
 
 if (!empty($sInfo['supported_tests'])) {
-	$sInfo['supported_tests'] = json_decode($sInfo['supported_tests'], true);
+	$sInfo['supported_tests'] = json_decode((string) $sInfo['supported_tests'], true);
 }
 
 if (!empty($sInfo['reviewed_by'])) {
-	$sInfo['reviewed_by'] = json_decode($sInfo['reviewed_by'], true);
+	$sInfo['reviewed_by'] = json_decode((string) $sInfo['reviewed_by'], true);
 }
 
 if (!empty($sInfo['approved_by'])) {
-	$sInfo['approved_by'] = json_decode($sInfo['approved_by'], true);
+	$sInfo['approved_by'] = json_decode((string) $sInfo['approved_by'], true);
 }
 
 $configMachineQuery = "SELECT * from instrument_machines where config_id=?";
@@ -564,7 +564,7 @@ $userList = $usersService->getAllUsers(null, null, 'drop-down');
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">
-						<input type="hidden" id="configId" name="configId" value="<?php echo base64_encode($sInfo['config_id']); ?>" />
+						<input type="hidden" id="configId" name="configId" value="<?php echo base64_encode((string) $sInfo['config_id']); ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">
 							<?php echo _translate("Submit"); ?>
 						</a>

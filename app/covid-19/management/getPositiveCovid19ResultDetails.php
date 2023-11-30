@@ -86,7 +86,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", $_POST['sSearch']);
+    $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
         if ($sWhereSub == "") {
@@ -121,13 +121,13 @@ for ($i = 0; $i < count($aColumns); $i++) {
         */
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.result > " . $thresholdLimit;
 
-if (isset($_POST['hvlBatchCode']) && trim($_POST['hvlBatchCode']) != '') {
+if (isset($_POST['hvlBatchCode']) && trim((string) $_POST['hvlBatchCode']) != '') {
     $sWhere[] =  ' b.batch_code LIKE "%' . $_POST['hvlBatchCode'] . '%"';
 }
 
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['hvlSampleTestDate'] ?? '');
-if (isset($_POST['hvlSampleTestDate']) && trim($_POST['hvlSampleTestDate']) != '') {
-    if (trim($start_date) == trim($end_date)) {
+if (isset($_POST['hvlSampleTestDate']) && trim((string) $_POST['hvlSampleTestDate']) != '') {
+    if (trim((string) $start_date) == trim((string) $end_date)) {
         $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
     } else {
         $sWhere[] =  ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
@@ -136,10 +136,10 @@ if (isset($_POST['hvlSampleTestDate']) && trim($_POST['hvlSampleTestDate']) != '
 if (isset($_POST['hvlSampleType']) && $_POST['hvlSampleType'] != '') {
     $sWhere[] = ' s.sample_id = "' . $_POST['hvlSampleType'] . '"';
 }
-if (isset($_POST['state']) && trim($_POST['state']) != '') {
+if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
     $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
 }
-if (isset($_POST['district']) && trim($_POST['district']) != '') {
+if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
     $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
 }
 if (isset($_POST['hvlFacilityName']) && $_POST['hvlFacilityName'] != '') {
@@ -205,12 +205,12 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
-    if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+    if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
         $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
     } else {
         $aRow['sample_collection_date'] = '';
     }
-    if (isset($aRow['sample_tested_datetime']) && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+    if (isset($aRow['sample_tested_datetime']) && trim((string) $aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
         $aRow['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
     } else {
         $aRow['sample_tested_datetime'] = '';
@@ -224,7 +224,7 @@ foreach ($rResult as $aRow) {
     $patientMname = $general->crypto('doNothing', $aRow['patient_middle_name'], $aRow[$decrypt]);
     $patientLname = $general->crypto('doNothing', $aRow['patient_surname'], $aRow[$decrypt]);*/
     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-        $key = base64_decode($general->getGlobalConfig('key'));
+        $key = base64_decode((string) $general->getGlobalConfig('key'));
         $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
         $aRow['patient_name'] = $general->crypto('decrypt', $aRow['patient_name'], $key);
     }

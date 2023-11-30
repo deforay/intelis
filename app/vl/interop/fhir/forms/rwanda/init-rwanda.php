@@ -31,7 +31,7 @@ $processedCounter = 0;
 $json = $fhir->get('/Organization');
 //var_dump($json);die;
 
-$organizations = json_decode($json, true);
+$organizations = json_decode((string) $json, true);
 $parser = new PHPFHIRResponseParser();
 
 $metaResource = $parser->parse($json);
@@ -84,7 +84,7 @@ foreach ($entries as $entry) {
 
 
     $facilityId = $facilityRow['facility_id'];
-    $facilityAttributes = json_decode($facilityRow['facility_attributes'], true);
+    $facilityAttributes = json_decode((string) $facilityRow['facility_attributes'], true);
     $facilityAttributes['facility_fhir_id'] = $facilityFHIRId;
 
     $data['facility_attributes'] = json_encode($facilityAttributes);

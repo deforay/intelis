@@ -25,7 +25,7 @@ foreach ($initOptionSets as $t => $id) {
 
     $response = $dhis2->get($url, $data);
 
-    $response = json_decode($response, true);
+    $response = json_decode((string) $response, true);
     if (!empty($response) && $t == 'testingLabs') {
         foreach ($response['options'] as $lab) {
 

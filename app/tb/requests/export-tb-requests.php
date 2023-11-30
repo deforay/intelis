@@ -1,10 +1,10 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Services\TbService;
 use App\Utilities\DateUtility;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use App\Utilities\MiscUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
@@ -67,7 +67,7 @@ foreach ($rResult as $aRow) {
 
     //set sample rejection
     $sampleRejection = 'No';
-    if (trim($aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim($aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
+    if (trim((string) $aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
         $sampleRejection = 'Yes';
     }
     if (!empty($aRow['patient_name'])) {
@@ -98,7 +98,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['facility_name'];
     if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
         if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-            $key = base64_decode($general->getGlobalConfig('key'));
+            $key = base64_decode((string) $general->getGlobalConfig('key'));
             $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
             $patientFname = $general->crypto('decrypt', $patientFname, $key);
             $patientLname = $general->crypto('decrypt', $patientLname, $key);
@@ -107,7 +107,7 @@ foreach ($rResult as $aRow) {
         $row[] = $patientFname . " " . $patientLname;
     }
     $row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
-    $row[] = ($aRow['patient_age'] != null && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
+    $row[] = ($aRow['patient_age'] != null && trim((string) $aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
     $row[] = $aRow['patient_gender'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
     $row[] = $aRow['test_reason_name'];
@@ -131,7 +131,7 @@ if (isset($_SESSION['tbRequestSearchResultQueryCount']) && $_SESSION['tbRequestS
     $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
     // we dont need the $output variable anymore
     unset($output);
-    echo base64_encode($fileName);
+    echo base64_encode((string) $fileName);
 } else {
 
     $excel = new Spreadsheet();

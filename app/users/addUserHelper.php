@@ -42,12 +42,12 @@ $signatureImagePath = realpath($signatureImagePath);
 $signatureImage = null;
 
 try {
-    if (trim($_POST['userName']) != '' && trim($_POST['loginId']) != '' && ($_POST['role']) != '' && ($_POST['password']) != '') {
+    if (trim((string) $_POST['userName']) != '' && trim((string) $_POST['loginId']) != '' && ($_POST['role']) != '' && ($_POST['password']) != '') {
         $userId = $general->generateUUID();
         $data = array(
             'user_id'               => $userId,
             'user_name'             => $_POST['userName'],
-            'interface_user_name'   => (!empty($_POST['interfaceUserName']) && $_POST['interfaceUserName'] != "") ? json_encode(array_map('trim', explode(",", $_POST['interfaceUserName']))) : null,
+            'interface_user_name'   => (!empty($_POST['interfaceUserName']) && $_POST['interfaceUserName'] != "") ? json_encode(array_map('trim', explode(",", (string) $_POST['interfaceUserName']))) : null,
             'email'                 => $_POST['email'],
             'login_id'              => $_POST['loginId'],
             'phone_number'          => $_POST['phoneNo'],
@@ -65,7 +65,7 @@ try {
         if (isset($uploadedFiles['userSignature']) && $uploadedFiles['userSignature']->getError() === UPLOAD_ERR_OK) {
             $file = $uploadedFiles['userSignature'];
             $fileName = $file->getClientFilename();
-            $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
+            $fileExtension = pathinfo((string) $fileName, PATHINFO_EXTENSION);
             $tmpFilePath = $file->getStream()->getMetadata('uri');
             $fileSize = $file->getSize();
             $fileMimeType = $file->getClientMediaType();
@@ -90,8 +90,8 @@ try {
 
         $id = $db->insert($tableName, $data);
 
-        if ($id === true && trim($_POST['selectedFacility']) != '') {
-            $selectedFacility = explode(",", $_POST['selectedFacility']);
+        if ($id === true && trim((string) $_POST['selectedFacility']) != '') {
+            $selectedFacility = explode(",", (string) $_POST['selectedFacility']);
             $uniqueFacilityId = array_unique($selectedFacility);
             for ($j = 0; $j <= count($selectedFacility); $j++) {
                 if (isset($uniqueFacilityId[$j])) {
@@ -114,7 +114,7 @@ try {
         $_POST['hashAlgorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on STS
         $_POST['role'] = 0; // We don't want to unintentionally end up creating admin users on STS
         $_POST['status'] = 'inactive';
-        $_POST['userId'] = base64_encode($data['user_id']);
+        $_POST['userId'] = base64_encode((string) $data['user_id']);
         $apiUrl = SYSTEM_CONFIG['remoteURL'] . "/api/v1.1/user/save-user-profile.php";
         $post = array(
             'post' => json_encode($_POST),

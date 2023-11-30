@@ -83,7 +83,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-	$searchArray = explode(" ", $_POST['sSearch']);
+	$searchArray = explode(" ", (string) $_POST['sSearch']);
 	$sWhereSub = "";
 	foreach ($searchArray as $search) {
 		if ($sWhereSub == "") {
@@ -133,35 +133,35 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
 
 [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
-if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
 	$sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-	if (trim($start_date) == trim($end_date)) {
+	if (trim((string) $start_date) == trim((string) $end_date)) {
 		$sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
 	} else {
 		$sWhere[] = ' (DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '")';
 	}
 }
-if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
-	if (trim($labStartDate) == trim($labEndDate)) {
+if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
+	if (trim((string) $labStartDate) == trim((string) $labEndDate)) {
 		$sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $labStartDate . '"';
 	} else {
 		$sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $labEndDate . '"';
 	}
 }
 
-if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
-	if (trim($testedStartDate) == trim($testedEndDate)) {
+if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
+	if (trim((string) $testedStartDate) == trim((string) $testedEndDate)) {
 		$sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $testedStartDate . '"';
 	} else {
 		$sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
 	}
 }
-if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
+if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
 	$sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
 }
-if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
+if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
 	$sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
 if (!empty($sWhere)) {
@@ -191,37 +191,37 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
-	if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+	if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
 		$aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 	} else {
 		$aRow['sample_collection_date'] = '';
 	}
-	if (isset($aRow['sample_received_at_lab_datetime']) && trim($aRow['sample_received_at_lab_datetime']) != '' && $aRow['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
+	if (isset($aRow['sample_received_at_lab_datetime']) && trim((string) $aRow['sample_received_at_lab_datetime']) != '' && $aRow['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
 		$aRow['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
 	} else {
 		$aRow['sample_received_at_lab_datetime'] = '';
 	}
-	if (isset($aRow['sample_tested_datetime']) && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+	if (isset($aRow['sample_tested_datetime']) && trim((string) $aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
 		$aRow['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
 	} else {
 		$aRow['sample_tested_datetime'] = '';
 	}
-	if (isset($aRow['result_printed_datetime']) && trim($aRow['result_printed_datetime']) != '' && $aRow['result_printed_datetime'] != '0000-00-00 00:00:00') {
+	if (isset($aRow['result_printed_datetime']) && trim((string) $aRow['result_printed_datetime']) != '' && $aRow['result_printed_datetime'] != '0000-00-00 00:00:00') {
 		$aRow['result_printed_datetime'] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
 	} else {
 		$aRow['result_printed_datetime'] = '';
 	}
-	if (isset($aRow['sample_dispatched_datetime']) && trim($aRow['sample_dispatched_datetime']) != '' && $aRow['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
+	if (isset($aRow['sample_dispatched_datetime']) && trim((string) $aRow['sample_dispatched_datetime']) != '' && $aRow['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
 		$aRow['sample_dispatched_datetime'] = DateUtility::humanReadableDateFormat($aRow['sample_dispatched_datetime']);
 	} else {
 		$aRow['sample_dispatched_datetime'] = '';
 	}
-	if (isset($aRow['result_printed_on_sts_datetime']) && trim($aRow['result_printed_on_sts_datetime']) != '' && $aRow['result_printed_on_sts_datetime'] != '0000-00-00 00:00:00') {
+	if (isset($aRow['result_printed_on_sts_datetime']) && trim((string) $aRow['result_printed_on_sts_datetime']) != '' && $aRow['result_printed_on_sts_datetime'] != '0000-00-00 00:00:00') {
 		$aRow['result_printed_on_sts_datetime'] = DateUtility::humanReadableDateFormat($aRow['result_printed_on_sts_datetime']);
 	} else {
 		$aRow['result_printed_on_sts_datetime'] = '';
 	}
-	if (isset($aRow['result_printed_on_lis_datetime']) && trim($aRow['result_printed_on_lis_datetime']) != '' && $aRow['result_printed_on_lis_datetime'] != '0000-00-00 00:00:00') {
+	if (isset($aRow['result_printed_on_lis_datetime']) && trim((string) $aRow['result_printed_on_lis_datetime']) != '' && $aRow['result_printed_on_lis_datetime'] != '0000-00-00 00:00:00') {
 		$aRow['result_printed_on_lis_datetime'] = DateUtility::humanReadableDateFormat($aRow['result_printed_on_lis_datetime']);
 	} else {
 		$aRow['result_printed_on_lis_datetime'] = '';

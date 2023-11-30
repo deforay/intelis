@@ -30,8 +30,8 @@ for ($i = 0; $i < sizeof($configResult); $i++) {
 	$arr[$configResult[$i]['name']] = $configResult[$i]['value'];
 }
 $mFieldArray = [];
-if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '') {
-	$mFieldArray = explode(',', $arr['r_mandatory_fields']);
+if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields']) != '') {
+	$mFieldArray = explode(',', (string) $arr['r_mandatory_fields']);
 }
 ?>
 <link href="/assets/css/jasny-bootstrap.min.css" rel="stylesheet" />
@@ -118,7 +118,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 													<div class="fileinput fileinput-new instanceLogo" data-provides="fileinput">
 														<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
 															<?php
-															if (isset($instanceResult[0]['instance_facility_logo']) && trim($instanceResult[0]['instance_facility_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $instanceResult[0]['instance_facility_logo'])) {
+															if (isset($instanceResult[0]['instance_facility_logo']) && trim((string) $instanceResult[0]['instance_facility_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $instanceResult[0]['instance_facility_logo'])) {
 															?>
 																<img src="/uploads/instance-logo/<?php echo $instanceResult[0]['instance_facility_logo']; ?>" alt="Logo image">
 															<?php } else { ?>
@@ -130,7 +130,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 																<input class="readPage" type="file" id="instanceLogo" name="instanceLogo" title="<?php echo _translate('Please select logo image'); ?>" onchange="getNewInstanceImage('<?php echo $instanceResult[0]['instance_facility_logo']; ?>');">
 															</span>
 															<?php
-															if (isset($instanceResult[0]['instance_facility_logo']) && trim($instanceResult[0]['instance_facility_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $instanceResult[0]['instance_facility_logo'])) {
+															if (isset($instanceResult[0]['instance_facility_logo']) && trim((string) $instanceResult[0]['instance_facility_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "instance-logo" . DIRECTORY_SEPARATOR . $instanceResult[0]['instance_facility_logo'])) {
 															?>
 																<a id="clearInstanceImage" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearInstanceImage('<?php echo $instanceResult[0]['instance_facility_logo']; ?>')"><?php echo _translate("Clear"); ?></a>
 															<?php } ?>
@@ -248,7 +248,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 												<div class="fileinput fileinput-new logo" data-provides="fileinput">
 													<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
 														<?php
-														if (isset($arr['logo']) && trim($arr['logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $arr['logo'])) {
+														if (isset($arr['logo']) && trim((string) $arr['logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $arr['logo'])) {
 														?>
 															<img src="/uploads/logo/<?php echo $arr['logo']; ?>" alt="Logo image">
 														<?php } else { ?>
@@ -260,7 +260,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 															<input type="file" class="readPage" id="logo" name="logo" title="<?php echo _translate('Please select logo image'); ?>" onchange="getNewImage('<?php echo $arr['logo']; ?>');">
 														</span>
 														<?php
-														if (isset($arr['logo']) && trim($arr['logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $arr['logo'])) {
+														if (isset($arr['logo']) && trim((string) $arr['logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $arr['logo'])) {
 														?>
 															<a id="clearImage" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearImage('<?php echo $arr['logo']; ?>')"><?php echo _translate("Clear"); ?></a>
 														<?php } ?>
@@ -1595,7 +1595,7 @@ if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '')
 		$(".select2").select2();
 
 		var editSet = '<?php if (isset($_GET['e'])) {
-							echo htmlspecialchars($_GET['e']);
+							echo htmlspecialchars((string) $_GET['e']);
 						} ?>'
 		// alert(editSet)
 		if (editSet == 1) {} else {

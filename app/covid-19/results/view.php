@@ -14,7 +14,7 @@ $keyFromGlobalConfig = $general->getGlobalConfig('key');
 $uniqueId = null;
 if (!empty($keyFromGlobalConfig)) {
 
-    $decryptedString = CommonService::decrypt($_GET['q'], base64_decode($keyFromGlobalConfig));
+    $decryptedString = CommonService::decrypt($_GET['q'], base64_decode((string) $keyFromGlobalConfig));
     $uniqueId = $decryptedString ?? null;
 } else {
     $ciphering = "AES-128-CTR";

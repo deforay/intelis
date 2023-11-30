@@ -18,7 +18,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 
-/** @var MysqliDb $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */
@@ -29,7 +29,7 @@ $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 $sessionQuery = $_SESSION['hepatitisRequestSearchResultQuery'];
-if (isset($sessionQuery) && trim($sessionQuery) != "") {
+if (isset($sessionQuery) && trim((string) $sessionQuery) != "") {
 
 
     $output = [];
@@ -47,7 +47,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
         $row = [];
 
         //Gender
-        switch (strtolower($aRow['patient_gender'])) {
+        switch (strtolower((string) $aRow['patient_gender'])) {
             case 'male':
             case 'm':
                 $gender = 'M';
@@ -68,7 +68,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
 
         //set sample rejection
         $sampleRejection = 'No';
-        if (trim($aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim($aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
+        if (trim((string) $aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
             $sampleRejection = 'Yes';
         }
 
@@ -84,7 +84,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
         }
 
         if (isset($aRow['source_of_alert']) && $aRow['source_of_alert'] != "others") {
-            $sourceOfArtPOE = str_replace("-", " ", $aRow['source_of_alert']);
+            $sourceOfArtPOE = str_replace("-", " ", (string) $aRow['source_of_alert']);
         } else {
             $sourceOfArtPOE = $aRow['source_of_alert_other'];
         }
@@ -102,7 +102,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
         $row[] = ($aRow['facility_state']);
         if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
             if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-                $key = base64_decode($general->getGlobalConfig('key'));
+                $key = base64_decode((string) $general->getGlobalConfig('key'));
                 $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
                 $patientFname = $general->crypto('decrypt', $patientFname, $key);
                 $patientLname = $general->crypto('decrypt', $patientLname, $key);
@@ -111,7 +111,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
             $row[] = $patientFname . " " . $patientLname;
         }
         $row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
-        $row[] = ($aRow['patient_age'] != null && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
+        $row[] = ($aRow['patient_age'] != null && trim((string) $aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
         $row[] = $gender;
         $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
         $row[] = $sampleRejection;
@@ -136,7 +136,7 @@ if (isset($sessionQuery) && trim($sessionQuery) != "") {
         $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
         // we dont need the $output variable anymore
         unset($output);
-        echo base64_encode($fileName);
+        echo base64_encode((string) $fileName);
     } else {
         $excel = new Spreadsheet();
         $sheet = $excel->getActiveSheet();

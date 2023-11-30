@@ -16,14 +16,14 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_generic_test_reasons";
 
-$testReasonId = (int) base64_decode($_POST['testReasonId']);
-$_POST['testReason'] = trim($_POST['testReason']);
+$testReasonId = (int) base64_decode((string) $_POST['testReasonId']);
+$_POST['testReason'] = trim((string) $_POST['testReason']);
 try {
     if (!empty($_POST['testReason'])) {
 
         $data = array(
             'test_reason' => $_POST['testReason'],
-            'test_reason_code' => trim($_POST['testReasonCode']),
+            'test_reason_code' => trim((string) $_POST['testReasonCode']),
             'test_reason_status' => $_POST['testReasonStatus'],
             'updated_datetime' => DateUtility::getCurrentDateTime()
         );

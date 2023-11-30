@@ -8,7 +8,7 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 if (!isset($id) || $id == "") {
     $_SESSION['alertMsg'] = _translate("Something went wrong in Geographical Divisions edit page");
@@ -91,7 +91,7 @@ $geoInfo = $db->rawQueryOne($query);
                         </div>
                     </div>
                     <div class="box-footer">
-                        <input type="hidden" name="geoId" name="geoId" value="<?php echo htmlspecialchars($_GET['id']); ?>">
+                        <input type="hidden" name="geoId" name="geoId" value="<?php echo $_GET['id']; ?>">
                         <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
                         <a href="geographical-divisions-details.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
                     </div>

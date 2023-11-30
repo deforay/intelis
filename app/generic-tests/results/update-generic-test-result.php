@@ -34,7 +34,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
 //get import config
@@ -79,103 +79,103 @@ $genericTestInfo = $db->rawQuery($genericTestQuery, array($id));
 $vlQuery = "SELECT * FROM form_generic WHERE sample_id=?";
 $genericResultInfo = $db->rawQueryOne($vlQuery, array($id));
 
-if (isset($genericResultInfo['patient_dob']) && trim($genericResultInfo['patient_dob']) != '' && $genericResultInfo['patient_dob'] != '0000-00-00') {
+if (isset($genericResultInfo['patient_dob']) && trim((string) $genericResultInfo['patient_dob']) != '' && $genericResultInfo['patient_dob'] != '0000-00-00') {
 	$genericResultInfo['patient_dob'] = DateUtility::humanReadableDateFormat($genericResultInfo['patient_dob']);
 } else {
 	$genericResultInfo['patient_dob'] = '';
 }
-if (isset($genericResultInfo['sample_collection_date']) && trim($genericResultInfo['sample_collection_date']) != '' && $genericResultInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
+if (isset($genericResultInfo['sample_collection_date']) && trim((string) $genericResultInfo['sample_collection_date']) != '' && $genericResultInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
 	$sampleCollectionDate = $genericResultInfo['sample_collection_date'];
-	$expStr = explode(" ", $genericResultInfo['sample_collection_date']);
+	$expStr = explode(" ", (string) $genericResultInfo['sample_collection_date']);
 	$genericResultInfo['sample_collection_date'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$sampleCollectionDate = '';
 	$genericResultInfo['sample_collection_date'] = DateUtility::getCurrentDateTime();
 }
 
-if (isset($genericResultInfo['sample_dispatched_datetime']) && trim($genericResultInfo['sample_dispatched_datetime']) != '' && $genericResultInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
-	$expStr = explode(" ", $genericResultInfo['sample_dispatched_datetime']);
+if (isset($genericResultInfo['sample_dispatched_datetime']) && trim((string) $genericResultInfo['sample_dispatched_datetime']) != '' && $genericResultInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", (string) $genericResultInfo['sample_dispatched_datetime']);
 	$genericResultInfo['sample_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$genericResultInfo['sample_dispatched_datetime'] = '';
 }
 
-if (isset($genericResultInfo['result_approved_datetime']) && trim($genericResultInfo['result_approved_datetime']) != '' && $genericResultInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
+if (isset($genericResultInfo['result_approved_datetime']) && trim((string) $genericResultInfo['result_approved_datetime']) != '' && $genericResultInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
 	$sampleCollectionDate = $genericResultInfo['result_approved_datetime'];
-	$expStr = explode(" ", $genericResultInfo['result_approved_datetime']);
+	$expStr = explode(" ", (string) $genericResultInfo['result_approved_datetime']);
 	$genericResultInfo['result_approved_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$sampleCollectionDate = '';
 	$genericResultInfo['result_approved_datetime'] = '';
 }
 
-if (isset($genericResultInfo['treatment_initiated_date']) && trim($genericResultInfo['treatment_initiated_date']) != '' && $genericResultInfo['treatment_initiated_date'] != '0000-00-00') {
+if (isset($genericResultInfo['treatment_initiated_date']) && trim((string) $genericResultInfo['treatment_initiated_date']) != '' && $genericResultInfo['treatment_initiated_date'] != '0000-00-00') {
 	$genericResultInfo['treatment_initiated_date'] = DateUtility::humanReadableDateFormat($genericResultInfo['treatment_initiated_date']);
 } else {
 	$genericResultInfo['treatment_initiated_date'] = '';
 }
 
-if (isset($genericResultInfo['test_requested_on']) && trim($genericResultInfo['test_requested_on']) != '' && $genericResultInfo['test_requested_on'] != '0000-00-00') {
+if (isset($genericResultInfo['test_requested_on']) && trim((string) $genericResultInfo['test_requested_on']) != '' && $genericResultInfo['test_requested_on'] != '0000-00-00') {
 	$genericResultInfo['test_requested_on'] = DateUtility::humanReadableDateFormat($genericResultInfo['test_requested_on']);
 } else {
 	$genericResultInfo['test_requested_on'] = '';
 }
 
 
-if (isset($genericResultInfo['sample_received_at_hub_datetime']) && trim($genericResultInfo['sample_received_at_hub_datetime']) != '' && $genericResultInfo['sample_received_at_hub_datetime'] != '0000-00-00 00:00:00') {
-	$expStr = explode(" ", $genericResultInfo['sample_received_at_hub_datetime']);
+if (isset($genericResultInfo['sample_received_at_hub_datetime']) && trim((string) $genericResultInfo['sample_received_at_hub_datetime']) != '' && $genericResultInfo['sample_received_at_hub_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", (string) $genericResultInfo['sample_received_at_hub_datetime']);
 	$genericResultInfo['sample_received_at_hub_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$genericResultInfo['sample_received_at_hub_datetime'] = '';
 }
 
 
-if (isset($genericResultInfo['sample_received_at_testing_lab_datetime']) && trim($genericResultInfo['sample_received_at_testing_lab_datetime']) != '' && $genericResultInfo['sample_received_at_testing_lab_datetime'] != '0000-00-00 00:00:00') {
-	$expStr = explode(" ", $genericResultInfo['sample_received_at_testing_lab_datetime']);
+if (isset($genericResultInfo['sample_received_at_testing_lab_datetime']) && trim((string) $genericResultInfo['sample_received_at_testing_lab_datetime']) != '' && $genericResultInfo['sample_received_at_testing_lab_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", (string) $genericResultInfo['sample_received_at_testing_lab_datetime']);
 	$genericResultInfo['sample_received_at_testing_lab_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$genericResultInfo['sample_received_at_testing_lab_datetime'] = '';
 }
 
 
-if (isset($genericResultInfo['sample_tested_datetime']) && trim($genericResultInfo['sample_tested_datetime']) != '' && $genericResultInfo['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-	$expStr = explode(" ", $genericResultInfo['sample_tested_datetime']);
+if (isset($genericResultInfo['sample_tested_datetime']) && trim((string) $genericResultInfo['sample_tested_datetime']) != '' && $genericResultInfo['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", (string) $genericResultInfo['sample_tested_datetime']);
 	$genericResultInfo['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$genericResultInfo['sample_tested_datetime'] = '';
 }
 
-if (isset($genericResultInfo['result_dispatched_datetime']) && trim($genericResultInfo['result_dispatched_datetime']) != '' && $genericResultInfo['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
-	$expStr = explode(" ", $genericResultInfo['result_dispatched_datetime']);
+if (isset($genericResultInfo['result_dispatched_datetime']) && trim((string) $genericResultInfo['result_dispatched_datetime']) != '' && $genericResultInfo['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", (string) $genericResultInfo['result_dispatched_datetime']);
 	$genericResultInfo['result_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$genericResultInfo['result_dispatched_datetime'] = '';
 }
 
 //Set Date of demand
-if (isset($genericResultInfo['date_test_ordered_by_physician']) && trim($genericResultInfo['date_test_ordered_by_physician']) != '' && $genericResultInfo['date_test_ordered_by_physician'] != '0000-00-00') {
+if (isset($genericResultInfo['date_test_ordered_by_physician']) && trim((string) $genericResultInfo['date_test_ordered_by_physician']) != '' && $genericResultInfo['date_test_ordered_by_physician'] != '0000-00-00') {
 	$genericResultInfo['date_test_ordered_by_physician'] = DateUtility::humanReadableDateFormat($genericResultInfo['date_test_ordered_by_physician']);
 } else {
 	$genericResultInfo['date_test_ordered_by_physician'] = '';
 }
 
 //Set Dispatched From Clinic To Lab Date
-if (isset($genericResultInfo['sample_dispatched_datetime']) && trim($genericResultInfo['sample_dispatched_datetime']) != '' && $genericResultInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
-	$expStr = explode(" ", $genericResultInfo['sample_dispatched_datetime']);
+if (isset($genericResultInfo['sample_dispatched_datetime']) && trim((string) $genericResultInfo['sample_dispatched_datetime']) != '' && $genericResultInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", (string) $genericResultInfo['sample_dispatched_datetime']);
 	$genericResultInfo['sample_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$genericResultInfo['sample_dispatched_datetime'] = '';
 }
 //Set Date of result printed datetime
-if (isset($genericResultInfo['result_printed_datetime']) && trim($genericResultInfo['result_printed_datetime']) != "" && $genericResultInfo['result_printed_datetime'] != '0000-00-00 00:00:00') {
-	$expStr = explode(" ", $genericResultInfo['result_printed_datetime']);
+if (isset($genericResultInfo['result_printed_datetime']) && trim((string) $genericResultInfo['result_printed_datetime']) != "" && $genericResultInfo['result_printed_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", (string) $genericResultInfo['result_printed_datetime']);
 	$genericResultInfo['result_printed_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$genericResultInfo['result_printed_datetime'] = '';
 }
 //reviewed datetime
-if (isset($genericResultInfo['result_reviewed_datetime']) && trim($genericResultInfo['result_reviewed_datetime']) != '' && $genericResultInfo['result_reviewed_datetime'] != null && $genericResultInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
-	$expStr = explode(" ", $genericResultInfo['result_reviewed_datetime']);
+if (isset($genericResultInfo['result_reviewed_datetime']) && trim((string) $genericResultInfo['result_reviewed_datetime']) != '' && $genericResultInfo['result_reviewed_datetime'] != null && $genericResultInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", (string) $genericResultInfo['result_reviewed_datetime']);
 	$genericResultInfo['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$genericResultInfo['result_reviewed_datetime'] = '';
@@ -198,14 +198,14 @@ if ($genericResultInfo['patient_last_name'] != '') {
 	$patientLastName = '';
 }
 $patientFullName = [];
-if (trim($patientFirstName) != '') {
-	$patientFullName[] = trim($patientFirstName);
+if (trim((string) $patientFirstName) != '') {
+	$patientFullName[] = trim((string) $patientFirstName);
 }
-if (trim($patientMiddleName) != '') {
-	$patientFullName[] = trim($patientMiddleName);
+if (trim((string) $patientMiddleName) != '') {
+	$patientFullName[] = trim((string) $patientMiddleName);
 }
-if (trim($patientLastName) != '') {
-	$patientFullName[] = trim($patientLastName);
+if (trim((string) $patientLastName) != '') {
+	$patientFullName[] = trim((string) $patientLastName);
 }
 
 if (!empty($patientFullName)) {
@@ -294,9 +294,9 @@ if (!isset($facilityResult[0]['facility_district'])) {
 $testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
 $testTypeResult = $db->rawQuery($testTypeQuery);
 
-$testTypeForm = json_decode($genericResultInfo['test_type_form'], true);
+$testTypeForm = json_decode((string) $genericResultInfo['test_type_form'], true);
 
-$reasonForChangeArr = explode('##', $genericResultInfo['reason_for_test_result_changes']);
+$reasonForChangeArr = explode('##', (string) $genericResultInfo['reason_for_test_result_changes']);
 $reasonForChange = $reasonForChangeArr[1];
 ?><!-- Content Wrapper. Contains page content -->
 <style>
@@ -412,13 +412,13 @@ $reasonForChange = $reasonForChangeArr[1];
 									<label class="col-lg-5" for="sampleCode">Sample ID <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" readonly="readonly" title="Please enter sample id" value="<?php echo $genericResultInfo[$sampleCode]; ?>" style="width:100%;" onchange="checkSampleNameValidation('form_generic','<?php echo $sampleCode; ?>',this.id,'<?php echo "sample_id##" . $genericResultInfo["sample_id"]; ?>','This sample number already exists.Try another number',null)" />
-										<input type="hidden" name="sampleCodeCol" value="<?= htmlspecialchars($genericResultInfo['sample_code']); ?>" style="width:100%;">
+										<input type="hidden" name="sampleCodeCol" value="<?= htmlspecialchars((string) $genericResultInfo['sample_code']); ?>" style="width:100%;">
 									</div>
 								</div>
 								<div class="col-md-6">
 									<label class="col-lg-5" for="sampleReordered"> Sample Reordered</label>
 									<div class="col-lg-7">
-										<input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim($genericResultInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> title="Please indicate if this is a reordered sample">
+										<input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $genericResultInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> title="Please indicate if this is a reordered sample">
 
 									</div>
 								</div>
@@ -464,28 +464,28 @@ $reasonForChange = $reasonForChangeArr[1];
 											<select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
 												<option value=""> -- Select -- </option>
 												<?php foreach ($implementingPartnerList as $implementingPartner) { ?>
-													<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $genericResultInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>>
+													<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $genericResultInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>>
 														<?php echo ($implementingPartner['i_partner_name']); ?></option>
 												<?php } ?>
 											</select>
 										</div>
 									</div>
 								</div>
-								<div class="row facilityDetails" style="display:<?php echo (trim($facilityResult[0]['facility_emails']) != '' || trim($facilityResult[0]['facility_mobile_numbers']) != '' || trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
-									<div class="col-xs-2 col-md-2 femails" style="display:<?php echo (trim($facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
+								<div class="row facilityDetails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '' || trim((string) $facilityResult[0]['facility_mobile_numbers']) != '' || trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
+									<div class="col-xs-2 col-md-2 femails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
 										<strong>Clinic Email(s)</strong>
 									</div>
-									<div class="col-xs-2 col-md-2 femails facilityEmails" style="display:<?php echo (trim($facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
+									<div class="col-xs-2 col-md-2 femails facilityEmails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
 										<?php echo $facilityResult[0]['facility_emails']; ?></div>
-									<div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim($facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;">
+									<div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;">
 										<strong>Clinic Mobile No.(s)</strong>
 									</div>
-									<div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim($facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;">
+									<div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;">
 										<?php echo $facilityResult[0]['facility_mobile_numbers']; ?></div>
-									<div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
+									<div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
 										<strong>Clinic Contact Person -</strong>
 									</div>
-									<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
+									<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
 										<?php echo ($facilityResult[0]['contact_person']); ?></div>
 								</div>
 
@@ -497,7 +497,7 @@ $reasonForChange = $reasonForChangeArr[1];
 											<select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
 												<option value=""> -- Select -- </option>
 												<?php foreach ($fundingSourceList as $fundingSource) { ?>
-													<option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $genericResultInfo['funding_source']) ? 'selected="selected"' : ''; ?>>
+													<option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $genericResultInfo['funding_source']) ? 'selected="selected"' : ''; ?>>
 														<?php echo ($fundingSource['funding_source_name']); ?></option>
 												<?php } ?>
 											</select>
@@ -528,13 +528,13 @@ $reasonForChange = $reasonForChangeArr[1];
 									<div class="col-md-6">
 										<label class="col-lg-5" for="artNo">Patient ID <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter Patient ID" title="Enter patient id" value="<?= htmlspecialchars($genericResultInfo['patient_id']); ?>" />
+											<input type="text" name="artNo" id="artNo" class="form-control isRequired" placeholder="Enter Patient ID" title="Enter patient id" value="<?= htmlspecialchars((string) $genericResultInfo['patient_id']); ?>" />
 										</div>
 									</div>
 									<div class="col-md-6">
 										<label class="col-lg-5" for="dob">Date of Birth </label>
 										<div class="col-lg-7">
-											<input type="text" name="dob" id="dob" class="form-control date" placeholder="Enter DOB" title="Enter dob" value="<?= htmlspecialchars($genericResultInfo['patient_dob']); ?>" onchange="getAge();" />
+											<input type="text" name="dob" id="dob" class="form-control date" placeholder="Enter DOB" title="Enter dob" value="<?= htmlspecialchars((string) $genericResultInfo['patient_dob']); ?>" onchange="getAge();" />
 										</div>
 									</div>
 								</div>
@@ -542,13 +542,13 @@ $reasonForChange = $reasonForChangeArr[1];
 									<div class="col-md-6">
 										<label class="col-lg-5" for="ageInYears">If DOB unknown, Age in Years </label>
 										<div class="col-lg-7">
-											<input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="3" placeholder="Age in Years" title="Enter age in years" value="<?= htmlspecialchars($genericResultInfo['patient_age_in_years']); ?>" />
+											<input type="text" name="ageInYears" id="ageInYears" class="form-control forceNumeric" maxlength="3" placeholder="Age in Years" title="Enter age in years" value="<?= htmlspecialchars((string) $genericResultInfo['patient_age_in_years']); ?>" />
 										</div>
 									</div>
 									<div class="col-md-6">
 										<label class="col-lg-5" for="ageInMonths">If Age < 1, Age in Months </label>
 												<div class="col-lg-7">
-													<input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" value="<?= htmlspecialchars($genericResultInfo['patient_age_in_months']); ?>" />
+													<input type="text" name="ageInMonths" id="ageInMonths" class="form-control forceNumeric" maxlength="2" placeholder="Age in Month" title="Enter age in months" value="<?= htmlspecialchars((string) $genericResultInfo['patient_age_in_months']); ?>" />
 												</div>
 									</div>
 								</div>
@@ -594,7 +594,7 @@ $reasonForChange = $reasonForChangeArr[1];
 									<div class="col-md-6">
 										<label class="col-lg-5" for="patientPhoneNumber">Phone Number</label>
 										<div class="col-lg-7">
-											<input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control phone-number" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" value="<?= htmlspecialchars($genericResultInfo['patient_mobile_number']); ?>" />
+											<input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control phone-number" maxlength="15" placeholder="Enter Phone Number" title="Enter phone number" value="<?= htmlspecialchars((string) $genericResultInfo['patient_mobile_number']); ?>" />
 										</div>
 									</div>
 								</div>
@@ -630,7 +630,7 @@ $reasonForChange = $reasonForChangeArr[1];
 									<div class="col-md-6" style="display:none;" id="patientSection">
 										<label class="col-lg-5" for="">How long has this patient been on treatment ? </label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control" id="treatPeriod" name="treatPeriod" placeholder="Enter Treatment Period" title="Please enter how long has this patient been on treatment" value="<?= htmlspecialchars($genericResultInfo['treatment_initiation']); ?>" />
+											<input type="text" class="form-control" id="treatPeriod" name="treatPeriod" placeholder="Enter Treatment Period" title="Please enter how long has this patient been on treatment" value="<?= htmlspecialchars((string) $genericResultInfo['treatment_initiation']); ?>" />
 										</div>
 									</div>
 								</div>
@@ -684,8 +684,8 @@ $reasonForChange = $reasonForChangeArr[1];
 												</label>
 												<div class="col-lg-7">
 													<select class="form-control ajax-select2" id="vlFocalPerson" name="vlFocalPerson" title="Please enter Focal Person">
-														<option value="<?= htmlspecialchars($genericResultInfo['testing_lab_focal_person']); ?>" selected='selected'>
-															<?= htmlspecialchars($genericResultInfo['testing_lab_focal_person']); ?>
+														<option value="<?= htmlspecialchars((string) $genericResultInfo['testing_lab_focal_person']); ?>" selected='selected'>
+															<?= htmlspecialchars((string) $genericResultInfo['testing_lab_focal_person']); ?>
 														</option>
 													</select>
 												</div>
@@ -694,7 +694,7 @@ $reasonForChange = $reasonForChangeArr[1];
 												<label class="col-lg-5" for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">
 													Focal Person Phone Number</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control phone-number labSection" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter focal person phone number" value="<?= htmlspecialchars($genericResultInfo['testing_lab_focal_person_phone_number']); ?>" />
+													<input type="text" class="form-control phone-number labSection" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="15" placeholder="Phone Number" title="Please enter focal person phone number" value="<?= htmlspecialchars((string) $genericResultInfo['testing_lab_focal_person_phone_number']); ?>" />
 												</div>
 											</div>
 										</div>
@@ -751,7 +751,7 @@ $reasonForChange = $reasonForChangeArr[1];
 													<select name="rejectionReason" id="rejectionReason" class="form-control labSection" title="Please choose reason" onchange="checkRejectionReason();">
 														<option value="">-- Select --</option>
 														<?php foreach ($rejectionTypeResult as $type) { ?>
-															<optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
+															<optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
 																<?php
 																foreach ($rejectionResult as $reject) {
 																	if ($type['rejection_type'] == $reject['rejection_type']) { ?>
@@ -793,7 +793,7 @@ $reasonForChange = $reasonForChangeArr[1];
 														<option value="">-- Select --</option>
 														<?php foreach ($testReason as $treason) { ?>
 															<option value="<?php echo $treason['test_reason_id']; ?>" <?php echo ($genericResultInfo['reason_for_testing'] == $treason['test_reason_id']) ? 'selected="selected"' : ''; ?>>
-																<?php echo ucwords($treason['test_reason']); ?></option>
+																<?php echo ucwords((string) $treason['test_reason']); ?></option>
 														<?php } ?>
 													</select>
 												</div>
@@ -845,7 +845,7 @@ $reasonForChange = $reasonForChangeArr[1];
 															foreach ($genericTestInfo as $indexKey => $rows) { ?>
 																<tr>
 																	<td class="text-center">
-																		<?= ($indexKey + 1); ?><input type="hidden" name="testId[]" value="<?php echo base64_encode($rows['test_id']); ?>">
+																		<?= ($indexKey + 1); ?><input type="hidden" name="testId[]" value="<?php echo base64_encode((string) $rows['test_id']); ?>">
 																	</td>
 																	<td>
 																		<?php
@@ -893,7 +893,7 @@ $reasonForChange = $reasonForChangeArr[1];
 																	</td>
 																	<td style="vertical-align:middle;text-align: center;width:100px;">
 																		<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-																		<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode($rows['test_id']); ?>');"><em class="fa-solid fa-minus"></em></a>
+																		<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode((string) $rows['test_id']); ?>');"><em class="fa-solid fa-minus"></em></a>
 																	</td>
 																</tr>
 															<?php }
@@ -986,7 +986,7 @@ $reasonForChange = $reasonForChangeArr[1];
 											$styleStatus = '';
 											if ((($_SESSION['accessType'] == 'collection-site') && $genericResultInfo['result_status'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC)) {
 												$styleStatus = "display:none"; ?>
-												<input type="hidden" name="status" value="<?= htmlspecialchars($genericResultInfo['result_status']); ?>" />
+												<input type="hidden" name="status" value="<?= htmlspecialchars((string) $genericResultInfo['result_status']); ?>" />
 											<?php } ?>
 											<div class="col-md-6" style="margin-top: 10px;">
 												<label class="col-lg-5 control-label" for="approvedBy">Approved By
@@ -1010,7 +1010,7 @@ $reasonForChange = $reasonForChangeArr[1];
 												<label class="col-lg-5 control-label" for="labComments">Lab Tech. Comments
 												</label>
 												<div class="col-lg-7">
-													<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments" style="width:100%"><?php echo trim($genericResultInfo['lab_tech_comments']); ?></textarea>
+													<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments" style="width:100%"><?php echo trim((string) $genericResultInfo['lab_tech_comments']); ?></textarea>
 												</div>
 											</div>
 										</div>
@@ -1038,10 +1038,10 @@ $reasonForChange = $reasonForChangeArr[1];
 					</div>
 					<div class="box-footer">
 						<input type="hidden" name="revised" id="revised" value="no" />
-						<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= htmlspecialchars($genericResultInfo['sample_id']); ?>" />
-						<input type="hidden" name="isRemoteSample" value="<?= htmlspecialchars($genericResultInfo['remote_sample']); ?>" />
-						<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode($genericResultInfo['reason_for_testing']); ?>" />
-						<input type="hidden" name="oldStatus" value="<?= htmlspecialchars($genericResultInfo['result_status']); ?>" />
+						<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= htmlspecialchars((string) $genericResultInfo['sample_id']); ?>" />
+						<input type="hidden" name="isRemoteSample" value="<?= htmlspecialchars((string) $genericResultInfo['remote_sample']); ?>" />
+						<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode((string) $genericResultInfo['reason_for_testing']); ?>" />
+						<input type="hidden" name="oldStatus" value="<?= htmlspecialchars((string) $genericResultInfo['result_status']); ?>" />
 						<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
 						<a href="view-requests.php" class="btn btn-default"> Cancel</a>
@@ -1757,7 +1757,7 @@ $reasonForChange = $reasonForChangeArr[1];
 			$.post("/generic-tests/requests/getTestTypeForm.php", {
 					testType: testType,
 					result: $('#result').val() ? $('#result').val() : '<?php echo $genericResultInfo['result']; ?>',
-					testTypeForm: '<?php echo base64_encode($genericResultInfo['test_type_form']); ?>',
+					testTypeForm: '<?php echo base64_encode((string) $genericResultInfo['test_type_form']); ?>',
 					resultInterpretation: '<?php echo $genericResultInfo['final_result_interpretation']; ?>',
 					resultUnit: '<?php echo $genericResultInfo['result_unit']; ?>',
 				},

@@ -94,7 +94,7 @@ class VlService extends AbstractTestService
             'HIV1 NOTDETECTED',
 
         ];
-        $finalResult = trim(str_ireplace($find, '', $finalResult));
+        $finalResult = trim(str_ireplace($find, '', (string) $finalResult));
 
         if (empty($finalResult)) {
             $vlResultCategory = null;
@@ -116,7 +116,7 @@ class VlService extends AbstractTestService
                     $vlResultCategory = 'not suppressed';
                 }
             } else {
-                if (in_array(strtolower($orignalResultValue), $this->suppressedArray)) {
+                if (in_array(strtolower((string) $orignalResultValue), $this->suppressedArray)) {
                     $textResult = 10;
                 } else {
                     $textResult = (float) filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT);
@@ -151,11 +151,11 @@ class VlService extends AbstractTestService
             //Result is saved as entered
             $finalResult = $params['vlResult'];
 
-            if (in_array(strtolower($params['vlResult']), ['fail', 'failed', 'failure', 'error', 'err', 'invalid'])) {
+            if (in_array(strtolower((string) $params['vlResult']), ['fail', 'failed', 'failure', 'error', 'err', 'invalid'])) {
                 $hivDetection = null;
                 $resultStatus = SAMPLE_STATUS\TEST_FAILED; // Invalid/Failed
                 //$finalResult = $params['vlResult'];
-            } elseif (in_array(strtolower($params['vlResult']), ['noresult', 'no result', 'no'])) {
+            } elseif (in_array(strtolower((string) $params['vlResult']), ['noresult', 'no result', 'no'])) {
                 $hivDetection = null;
                 $resultStatus = SAMPLE_STATUS\NO_RESULT; // No Result
             } else {
@@ -208,7 +208,7 @@ class VlService extends AbstractTestService
                 return null;
             }
 
-            $finalResult = $vlResult = trim(htmlspecialchars_decode($result));
+            $finalResult = $vlResult = trim(htmlspecialchars_decode((string) $result));
             $vlResult = str_ireplace(['c/ml', 'cp/ml', 'copies/ml', 'cop/ml', 'copies'], '', $vlResult);
             $vlResult = str_ireplace('-', '', $vlResult);
             $vlResult = trim(str_ireplace(['hiv1 detected', 'hiv1 notdetected'], '', $vlResult));
@@ -230,7 +230,7 @@ class VlService extends AbstractTestService
     {
 
         // If result is blank, then return null
-        if (empty(trim($result))) {
+        if (empty(trim((string) $result))) {
             return null;
         }
 
@@ -245,7 +245,7 @@ class VlService extends AbstractTestService
         $resultStatus = null;
 
         // Some machines and some countries prefer a default text result
-        $vlDefaultTextResult = !empty(trim($defaultLowVlResultText)) && trim($defaultLowVlResultText) != "" ? $defaultLowVlResultText : "Target Not Detected";
+        $vlDefaultTextResult = !empty(trim((string) $defaultLowVlResultText)) && trim((string) $defaultLowVlResultText) != "" ? $defaultLowVlResultText : "Target Not Detected";
 
         $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
 
@@ -255,7 +255,7 @@ class VlService extends AbstractTestService
             $result = "Target Not Detected";
         }
 
-        $strToLowerresult = strtolower($result);
+        $strToLowerresult = strtolower((string) $result);
         switch ($strToLowerresult) {
             case 'bdl':
             case '< 839':
@@ -282,9 +282,9 @@ class VlService extends AbstractTestService
                 $txtVal = null;
                 break;
             default:
-                if (strpos($result, "<") !== false) {
-                    $result = $this->extractViralLoadValue(trim(str_replace("<", "", $result)));
-                    if (!empty($unit) && strpos($unit, 'Log') !== false) {
+                if (strpos((string) $result, "<") !== false) {
+                    $result = $this->extractViralLoadValue(trim(str_replace("<", "", (string) $result)));
+                    if (!empty($unit) && strpos((string) $unit, 'Log') !== false) {
                         $logVal = $result;
                         $absVal = $absDecimalVal = round(pow(10, $logVal), 2);
                     } else {
@@ -294,9 +294,9 @@ class VlService extends AbstractTestService
 
                     $vlResult = $originalResultValue = "< " . $absDecimalVal;
                     $txtVal = null;
-                } elseif (strpos($result, ">") !== false) {
-                    $result = $this->extractViralLoadValue(trim(str_replace(">", "", $result)));
-                    if (!empty($unit) && strpos($unit, 'Log') !== false) {
+                } elseif (strpos((string) $result, ">") !== false) {
+                    $result = $this->extractViralLoadValue(trim(str_replace(">", "", (string) $result)));
+                    if (!empty($unit) && strpos((string) $unit, 'Log') !== false) {
                         $logVal = $result;
                         $absDecimalVal = round(pow(10, $logVal), 2);
                     } else {
@@ -430,7 +430,7 @@ class VlService extends AbstractTestService
 
 
             $sampleJson = $this->getSampleCode($sampleCodeParams);
-            $sampleData = json_decode($sampleJson, true);
+            $sampleData = json_decode((string) $sampleJson, true);
 
             $sQuery = "SELECT vl_sample_id FROM form_vl ";
             if (!empty($sampleData['sampleCode'])) {
@@ -551,7 +551,7 @@ class VlService extends AbstractTestService
     public function checkViralLoadValueType($input)
     {
         // Check if it's null or empty
-        if (is_null($input) || trim($input) == '') {
+        if (is_null($input) || trim((string) $input) == '') {
             return 'empty';
         }
 
@@ -567,7 +567,7 @@ class VlService extends AbstractTestService
     public function extractViralLoadValue($input): ?string
     {
         // Trim the input to remove leading/trailing whitespace
-        $trimmedInput = trim($input);
+        $trimmedInput = trim((string) $input);
 
         // Proceed with converting the number to float if it is numeric or scientific notation
         if (is_numeric($trimmedInput) || MiscUtility::isScientificNotation($trimmedInput)) {

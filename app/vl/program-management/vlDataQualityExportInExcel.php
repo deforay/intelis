@@ -28,7 +28,7 @@ $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 
-if (isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm']) != "") {
+if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncompleteForm']) != "") {
 
      $output = [];
 
@@ -48,8 +48,8 @@ if (isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm']) 
           $row = [];
           //sample collecion date
           $sampleCollectionDate = '';
-          if ($aRow['sample_collection_date'] != null && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-               $expStr = explode(" ", $aRow['sample_collection_date']);
+          if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+               $expStr = explode(" ", (string) $aRow['sample_collection_date']);
                $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
           }
           // if($aRow['remote_sample']=='yes'){
@@ -81,7 +81,7 @@ if (isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm']) 
           $row[] = $sampleCollectionDate;
           $row[] = $aRow['batch_code'];
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-               $key = base64_decode($general->getGlobalConfig('key'));
+               $key = base64_decode((string) $general->getGlobalConfig('key'));
                $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
                $patientFname = $general->crypto('decrypt', $patientFname, $key);
                $patientMname = $general->crypto('decrypt', $patientMname, $key);
@@ -105,7 +105,7 @@ if (isset($_SESSION['vlIncompleteForm']) && trim($_SESSION['vlIncompleteForm']) 
                     $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
                     // we dont need the $output variable anymore
                     unset($output);
-                    echo base64_encode($fileName);
+                    echo base64_encode((string) $fileName);
                } else {
 
                     $excel = new Spreadsheet();

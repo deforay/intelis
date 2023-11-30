@@ -7,16 +7,16 @@ use TCPDF;
 
 class BatchPdfHelper extends TCPDF
 {
-    public $logo;
-    public $text;
-    public $batch;
-    public $resulted;
-    public $reviewed;
-    public $createdBy;
-    public $worksheetName;
+    public string $logo;
+    public string $text;
+    public string $batch;
+    public string $resulted;
+    public string $reviewed;
+    public string $createdBy;
+    public string $worksheetName;
 
 
-    public function setHeading($logo, $text, $batch, $resulted, $reviewed, $createdBy, $worksheetName)
+    public function setHeading($logo, $text, $batch, $resulted, $reviewed, $createdBy, $worksheetName): void
     {
         $this->logo = $logo;
         $this->text = $text;
@@ -27,7 +27,7 @@ class BatchPdfHelper extends TCPDF
         $this->worksheetName = $worksheetName;
     }
     //Page header
-    public function Header()
+    public function Header(): void
     {
         // Logo
         //$imageFilePath = K_PATH_IMAGES.'logo_example.jpg';
@@ -53,7 +53,7 @@ class BatchPdfHelper extends TCPDF
     }
 
     // Page footer
-    public function Footer()
+    public function Footer(): void
     {
         // Position at 15 mm from bottom
         $this->SetY(-15);

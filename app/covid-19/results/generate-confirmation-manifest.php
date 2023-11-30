@@ -15,15 +15,15 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 // die($id);
 // Extend the TCPDF class to create custom Header and Footer
 class MYPDF extends TCPDF
 {
-    public $logo;
-    public $text;
-    public $labname;
+    public string $logo;
+    public string $text;
+    public string $labname;
 
     public function setHeading($logo, $text, $labname)
     {
@@ -177,7 +177,7 @@ if (trim($id) != '') {
             //var_dump($sample);die;
             $collectionDate = '';
             if (isset($sample['sample_collection_date']) && $sample['sample_collection_date'] != '' && $sample['sample_collection_date'] != null && $sample['sample_collection_date'] != '0000-00-00 00:00:00') {
-                $cDate = explode(" ", $sample['sample_collection_date']);
+                $cDate = explode(" ", (string) $sample['sample_collection_date']);
                 $collectionDate = DateUtility::humanReadableDateFormat($cDate[0]) . " " . $cDate[1];
             }
             $patientDOB = '';
@@ -195,7 +195,7 @@ if (trim($id) != '') {
             $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . ($sample['patient_fullname']) . '</td>';
             $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $sample['patient_id'] . '</td>';
             $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $patientDOB . '</td>';
-            $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . (str_replace("_", " ", $sample['patient_gender'])) . '</td>';
+            $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . (str_replace("_", " ", (string) $sample['patient_gender'])) . '</td>';
             $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $collectionDate . '</td>';
             // $tbl.='<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">VIRAL</td>';
             $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;"><br><img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
@@ -211,7 +211,7 @@ if (trim($id) != '') {
         $tbl .= '<td align="left" style="vertical-align:middle;font-size:11px;width:33.33%;"><strong>Received By : </strong><br>(at ' . $labname . ')</td>';
         $tbl .= '</tr>';
         $tbl .= '</table>';
-        $filename = trim($bResult[0]['manifest_code']) . '-' . date('Y-m-d') . '-Manifest.pdf';
+        $filename = trim((string) $bResult[0]['manifest_code']) . '-' . date('Y-m-d') . '-Manifest.pdf';
         $pdf->writeHTML($tbl);
         $pdf->Output($filename);
         exit;

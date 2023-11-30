@@ -7,11 +7,11 @@ use GuzzleHttp\Psr7\Request;
 
 class Fhir
 {
-	private string $fhirURL;
+	private readonly string $fhirURL;
 	public string $requestUrl;
-	private string $bearerToken;
+	private readonly string $bearerToken;
 	private string $contentType;
-	private bool $authenticated;
+	public bool $authenticated;
 
 
 	public function __construct($fhirURL, $bearerToken, $contentType = 'application/fhir+json')

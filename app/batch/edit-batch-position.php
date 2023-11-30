@@ -60,14 +60,14 @@ if (isset($_GET['type'])) {
 }
 $_GET['type'] = ($_GET['type'] == 'covid19') ? 'covid-19' : $_GET['type'];
 $title = _translate($title . " | Edit Batch Position");
-$testType = (isset($_GET['testType'])) ? base64_decode($_GET['testType']) : null;
+$testType = (isset($_GET['testType'])) ? base64_decode((string) $_GET['testType']) : null;
 
 
 
 require_once APPLICATION_PATH . '/header.php';
 
 
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 if (!isset($id) || trim($id) == '') {
 	header("Location:batches.php?type=" . $_GET['type']);
@@ -89,7 +89,7 @@ foreach ($configControlInfo as $info) {
 if (empty($batchInfo)) {
 	header("Location:batches.php?type=" . $_GET['type']);
 }
-if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) != '') {
+if (isset($batchInfo[0]['label_order']) && trim((string) $batchInfo[0]['label_order']) != '') {
 	if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
 		foreach ($batchService->excelColumnRange('A', 'H') as $value) {
 			foreach (range(1, 12) as $no) {
@@ -97,7 +97,7 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 			}
 		}
 	}
-	$jsonToArray = json_decode($batchInfo[0]['label_order'], true);
+	$jsonToArray = json_decode((string) $batchInfo[0]['label_order'], true);
 	for ($j = 0; $j < count($jsonToArray); $j++) {
 		if (isset($batchInfo[0]['position_type']) && $batchInfo[0]['position_type'] == 'alpha-numeric') {
 			$index = $alphaNumeric[$j];
@@ -105,7 +105,7 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 			$index = $j;
 		}
 		$displayOrder[] = $jsonToArray[$index];
-		$xplodJsonToArray = explode("_", $jsonToArray[$index]);
+		$xplodJsonToArray = explode("_", (string) $jsonToArray[$index]);
 		if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
 			$sampleQuery = "SELECT sample_code from " . $refTable . " where " . $refPrimaryColumn . "= $xplodJsonToArray[1]";
 			if (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
@@ -114,26 +114,26 @@ if (isset($batchInfo[0]['label_order']) && trim($batchInfo[0]['label_order']) !=
 			$sampleResult = $db->query($sampleQuery);
 			$label = $sampleResult[0]['sample_code'];
 		} else {
-			$label = str_replace("_", " ", $jsonToArray[$index]);
+			$label = str_replace("_", " ", (string) $jsonToArray[$index]);
 			$label = str_replace("in house", "In-House", $label);
 			$label = (str_replace("no of ", " ", $label));
 		}
 		$content .= '<li class="ui-state-default" id="' . $jsonToArray[$index] . '">' . $label . '</li>';
 	}
 } else {
-	if (isset($configControl[$_GET['type']]['noHouseCtrl']) && trim($configControl[$_GET['type']]['noHouseCtrl']) != '' && $configControl[$_GET['type']]['noHouseCtrl'] > 0) {
+	if (isset($configControl[$_GET['type']]['noHouseCtrl']) && trim((string) $configControl[$_GET['type']]['noHouseCtrl']) != '' && $configControl[$_GET['type']]['noHouseCtrl'] > 0) {
 		foreach (range(1, $configControl[$_GET['type']]['noHouseCtrl']) as $h) {
 			$displayOrder[] = "no_of_in_house_controls_" . $h;
 			$content .= '<li class="ui-state-default" id="no_of_in_house_controls_' . $h . '">In-House Controls ' . $h . '</li>';
 		}
 	}
-	if (isset($configControl[$_GET['type']]['noManufacturerCtrl']) && trim($configControl[$_GET['type']]['noManufacturerCtrl']) != '' && $configControl[$_GET['type']]['noManufacturerCtrl'] > 0) {
+	if (isset($configControl[$_GET['type']]['noManufacturerCtrl']) && trim((string) $configControl[$_GET['type']]['noManufacturerCtrl']) != '' && $configControl[$_GET['type']]['noManufacturerCtrl'] > 0) {
 		foreach (range(1, $configControl[$_GET['type']]['noManufacturerCtrl']) as $m) {
 			$displayOrder[] = "no_of_manufacturer_controls_" . $m;
 			$content .= '<li class="ui-state-default" id="no_of_manufacturer_controls_' . $m . '">Manufacturer Controls ' . $m . '</li>';
 		}
 	}
-	if (isset($configControl[$_GET['type']]['noCalibrators']) && trim($configControl[$_GET['type']]['noCalibrators']) != '' && $configControl[$_GET['type']]['noCalibrators'] > 0) {
+	if (isset($configControl[$_GET['type']]['noCalibrators']) && trim((string) $configControl[$_GET['type']]['noCalibrators']) != '' && $configControl[$_GET['type']]['noCalibrators'] > 0) {
 		foreach (range(1, $configControl[$_GET['type']]['noCalibrators']) as $c) {
 			$displayOrder[] = "no_of_calibrators_" . $c;
 			$content .= '<li class="ui-state-default" id="no_of_calibrators_' . $c . '">Calibrators ' . $c . '</li>';

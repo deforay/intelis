@@ -12,7 +12,7 @@ class ValidationUtility
     public static function validateMandatoryFields($fields)
     {
         foreach ($fields as $field) {
-            if (empty(trim($field))) {
+            if (empty(trim((string) $field))) {
                 return false;
             }
         }
@@ -39,7 +39,7 @@ class ValidationUtility
 
     public static function isValidLength($input, $minLength = null, $maxLength = null)
     {
-        $length = strlen($input);
+        $length = strlen((string) $input);
         if (!is_null($minLength) && $length < $minLength) {
             return false;
         }
@@ -71,7 +71,7 @@ class ValidationUtility
     }
     public static function isAlpha($input)
     {
-        return ctype_alpha($input);
+        return ctype_alpha((string) $input);
     }
     public static function isWithinRange($input, $min, $max)
     {
@@ -79,6 +79,6 @@ class ValidationUtility
     }
     public static function matchesPattern($input, $pattern)
     {
-        return preg_match($pattern, $input) === 1;
+        return preg_match($pattern, (string) $input) === 1;
     }
 }

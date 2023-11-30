@@ -42,7 +42,7 @@ foreach ($userResult as $user) {
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
 //get import config
@@ -71,7 +71,7 @@ $specimenTypeResult = $db->query($sQuery);
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $covid19Query = "SELECT * FROM form_covid19 where covid19_id=?";
 $covid19Info = $db->rawQueryOne($covid19Query, array($id));
@@ -80,8 +80,8 @@ $covid19TestQuery = "SELECT * FROM covid19_tests WHERE covid19_id=$id ORDER BY t
 $covid19TestInfo = $db->rawQuery($covid19TestQuery);
 
 $disable = "disabled = 'disabled'";
-if (isset($covid19Info['result_reviewed_datetime']) && trim($covid19Info['result_reviewed_datetime']) != '' && $covid19Info['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
-	$expStr = explode(" ", $covid19Info['result_reviewed_datetime']);
+if (isset($covid19Info['result_reviewed_datetime']) && trim((string) $covid19Info['result_reviewed_datetime']) != '' && $covid19Info['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", (string) $covid19Info['result_reviewed_datetime']);
 	$covid19Info['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$covid19Info['result_reviewed_datetime'] = '';
@@ -91,7 +91,7 @@ $condition = "status ='active' AND test_type='covid19'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
 if (!empty($covid19Info['is_encrypted']) && $covid19Info['is_encrypted'] == 'yes') {
-	$key = base64_decode($general->getGlobalConfig('key'));
+	$key = base64_decode((string) $general->getGlobalConfig('key'));
 	$covid19Info['patient_id'] = $general->crypto('decrypt', $covid19Info['patient_id'], $key);
 	$covid19Info['patient_name'] = $general->crypto('decrypt', $covid19Info['patient_name'], $key);
 

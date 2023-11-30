@@ -88,7 +88,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", $_POST['sSearch']);
+    $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
         if ($sWhereSub == "") {
@@ -134,7 +134,7 @@ if (!empty($_POST['sampleCollectionDate'])) {
 }
 
 if (!empty($_POST['sampleCollectionDate'])) {
-    if (trim($start_date) == trim($end_date)) {
+    if (trim((string) $start_date) == trim((string) $end_date)) {
         $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
     } else {
         $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
@@ -147,13 +147,13 @@ if (isset($_POST['sampleType']) && $_POST['sampleType'] != '') {
 if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
     $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
-if (isset($_POST['district']) && trim($_POST['district']) != '') {
+if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
     $sWhere[] =  " f.facility_district_id = '" . $_POST['district'] . "' ";
 }
-if (isset($_POST['state']) && trim($_POST['state']) != '') {
+if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
     $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
 }
-if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
+if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) != '') {
     $sWhere[] =  '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
 }
 if (isset($_POST['status']) && $_POST['status'] != '') {
@@ -201,12 +201,12 @@ $output = array(
 
 foreach ($rResult as $aRow) {
 
-    if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+    if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
         $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
     } else {
         $aRow['sample_collection_date'] = '';
     }
-    if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
+    if (isset($aRow['last_modified_datetime']) && trim((string) $aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
         $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
     } else {
         $aRow['last_modified_datetime'] = '';
@@ -220,7 +220,7 @@ foreach ($rResult as $aRow) {
         $row[] = $aRow['remote_sample_code'];
     }
     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-        $key = base64_decode($general->getGlobalConfig('key'));
+        $key = base64_decode((string) $general->getGlobalConfig('key'));
         $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
         $aRow['patient_name'] = $general->crypto('decrypt', $aRow['patient_name'], $key);
     }
@@ -237,7 +237,7 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['status_name']);
 
 
-    $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Failed result retest") . '" onclick="retestSample(\'' . trim(base64_encode($aRow['hepatitis_id'])) . '\')"><em class="fa-solid fa-arrows-rotate"></em>' . _translate("Retest") . '</a>';
+    $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Failed result retest") . '" onclick="retestSample(\'' . trim(base64_encode((string) $aRow['hepatitis_id'])) . '\')"><em class="fa-solid fa-arrows-rotate"></em>' . _translate("Retest") . '</a>';
 
     $output['aaData'][] = $row;
 }

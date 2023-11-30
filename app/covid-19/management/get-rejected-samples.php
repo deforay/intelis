@@ -36,10 +36,10 @@ if (!empty($_POST['sampleCollectionDate'])) {
                 INNER JOIN facility_details as lab ON lab.facility_id=vl.lab_id";
     $sWhere[] = ' where vl.is_sample_rejected = "yes" AND DATE(vl.sample_collection_date) <= "' . $end_date . '" AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND reason_for_sample_rejection!="" AND reason_for_sample_rejection IS NOT NULL';
 
-    if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
+    if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
         $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
     }
-    if (isset($_POST['labName']) && trim($_POST['labName']) != '') {
+    if (isset($_POST['labName']) && trim((string) $_POST['labName']) != '') {
         $sWhere[] = ' vl.lab_id = "' . $_POST['labName'] . '"';
     }
     if (is_array($_POST['clinicName']) && !empty($_POST['clinicName'])) {
@@ -96,7 +96,7 @@ if (!empty($tableResult)) { ?>
                     <td><?php echo ($tableRow['labname']); ?></td>
                     <td><?php echo ($tableRow['facility_name']); ?></td>
                     <td><?php echo ($tableRow['rejection_reason_name']); ?></td>
-                    <td><?php echo strtoupper($tableRow['rejection_type']); ?></td>
+                    <td><?php echo strtoupper((string) $tableRow['rejection_type']); ?></td>
                     <td><?php echo ($tableRow['recommended_corrective_action_name']); ?></td>
                     <td><?php echo $tableRow['total']; ?></td>
                 </tr>

@@ -63,7 +63,7 @@ if (is_array($_POST['fName']) && !empty($_POST['fName'])) {
     $swhere[] = " vl.facility_id IN (" . implode(',', $_POST['fName']) . ")";
 }
 
-if (trim($sample) != '') {
+if (trim((string) $sample) != '') {
     $swhere[] = $where[] = " vl.$sampleTypeColumn='" . $sample . "'";
 }
 
@@ -72,22 +72,22 @@ if (isset($_POST['genericTestType']) && $_POST['genericTestType'] != "") {
 }
 
 if (!empty($_POST['sampleCollectionDate'])) {
-    if (trim($start_date) == trim($end_date)) {
+    if (trim((string) $start_date) == trim((string) $end_date)) {
         $swhere[] = $where[] = ' DATE(sample_collection_date) = "' . $start_date . '"';
     } else {
         $swhere[] = $where[] = ' DATE(sample_collection_date) >= "' . $start_date . '" AND DATE(sample_collection_date) <= "' . $end_date . '"';
     }
 }
 
-if (isset($_POST['sampleReceivedAtLab']) && trim($_POST['sampleReceivedAtLab']) != '') {
-    if (trim($sampleReceivedStartDate) == trim($sampleReceivedEndDate)) {
+if (isset($_POST['sampleReceivedAtLab']) && trim((string) $_POST['sampleReceivedAtLab']) != '') {
+    if (trim((string) $sampleReceivedStartDate) == trim((string) $sampleReceivedEndDate)) {
         $swhere[] = $where[] = ' DATE(sample_received_at_lab_datetime) = "' . $sampleReceivedStartDate . '"';
     } else {
         $swhere[] = $where[] = ' DATE(sample_received_at_lab_datetime) >= "' . $sampleReceivedStartDate . '" AND DATE(sample_received_at_lab_datetime) <= "' . $sampleReceivedEndDate . '"';
     }
 }
 
-if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
+if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') {
     $swhere[] = $where[] = ' funding_source = "' . $_POST['fundingSource'] . '"';
 }
 

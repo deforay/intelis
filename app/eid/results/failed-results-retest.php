@@ -36,7 +36,7 @@ try {
     if ($_POST['bulkIds'] && is_array($_POST['eidId'])) {
         $query .= " WHERE eid_id IN (" . implode(",", $_POST['eidId']) . ")";
     } else {
-        $query .= " WHERE eid_id = " . base64_decode($_POST['eidId']);
+        $query .= " WHERE eid_id = " . base64_decode((string) $_POST['eidId']);
     }
     $response = $db->rawQuery($query);
 
@@ -44,7 +44,7 @@ try {
     if ($_POST['bulkIds'] && is_array($_POST['eidId'])) {
         $db = $db->where("`eid_id` IN (" . implode(",", $_POST['eidId']) . ")");
     } else {
-        $db = $db->where('eid_id', base64_decode($_POST['eidId']));
+        $db = $db->where('eid_id', base64_decode((string) $_POST['eidId']));
     }
     $id = $db->update(
         "form_eid",

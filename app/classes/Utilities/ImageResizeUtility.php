@@ -13,16 +13,16 @@ use Exception;
  */
 class ImageResizeUtility
 {
-    const CROPTOP = 1;
-    const CROPCENTRE = 2;
-    const CROPCENTER = 2;
-    const CROPBOTTOM = 3;
-    const CROPLEFT = 4;
-    const CROPRIGHT = 5;
-    const CROPTOPCENTER = 6;
-    const IMG_FLIP_HORIZONTAL = 0;
-    const IMG_FLIP_VERTICAL = 1;
-    const IMG_FLIP_BOTH = 2;
+    final const CROPTOP = 1;
+    final const CROPCENTRE = 2;
+    final const CROPCENTER = 2;
+    final const CROPBOTTOM = 3;
+    final const CROPLEFT = 4;
+    final const CROPRIGHT = 5;
+    final const CROPTOPCENTER = 6;
+    final const IMG_FLIP_HORIZONTAL = 0;
+    final const IMG_FLIP_VERTICAL = 1;
+    final const IMG_FLIP_BOTH = 2;
 
     public int $quality_jpg = 85;
     public int $quality_webp = 85;
@@ -186,7 +186,7 @@ class ImageResizeUtility
     {
         $img = imagecreatefromjpeg($filename);
 
-        if (!function_exists('exif_read_data') || !isset($this->source_info['APP1'])  || strpos($this->source_info['APP1'], 'Exif') !== 0) {
+        if (!function_exists('exif_read_data') || !isset($this->source_info['APP1'])  || strpos((string) $this->source_info['APP1'], 'Exif') !== 0) {
             return $img;
         }
 

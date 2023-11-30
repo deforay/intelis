@@ -11,7 +11,7 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');
@@ -161,7 +161,7 @@ if ($priInfo) {
 									</label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control isRequired" id="roleName" name="roleName" placeholder="<?php echo _translate('Role Name'); ?>" title="<?php echo _translate('Please enter a name for this role'); ?>" value="<?php echo $roleInfo[0]['role_name']; ?>" onblur="checkNameValidation('roles','role_name',this,'<?php echo "role_id##" . $roleInfo[0]['role_id']; ?>','<?php echo _translate("This role name that you entered already exists.Try another role name"); ?>',null)" />
-										<input type="hidden" name="roleId" id="roleId" value="<?php echo base64_encode($roleInfo[0]['role_id']); ?>" />
+										<input type="hidden" name="roleId" id="roleId" value="<?php echo base64_encode((string) $roleInfo[0]['role_id']); ?>" />
 									</div>
 								</div>
 							</div>
@@ -268,7 +268,7 @@ if ($priInfo) {
 											$liClass = "";
 										}
 									?>
-										<li class="<?= $liClass; ?>"><a href="#<?= $moduleRow['module']; ?>" data-toggle="tab" class="bg-primary"><?php echo strtoupper($moduleName); ?> </a></li>
+										<li class="<?= $liClass; ?>"><a href="#<?= $moduleRow['module']; ?>" data-toggle="tab" class="bg-primary"><?php echo strtoupper((string) $moduleName); ?> </a></li>
 									<?php
 										$a++;
 									} ?>
@@ -287,7 +287,7 @@ if ($priInfo) {
 										echo '<div class="tab-pane fade in ' . $tabCls . '" id="' . $moduleRow['module'] . '">';
 										echo "<table aria-describedby='table' class='table table-striped responsive-utilities jambo_table'>";
 
-										$moduleResources = explode("##", $moduleRow['module_resources']);
+										$moduleResources = explode("##", (string) $moduleRow['module_resources']);
 										$i = 1;
 										foreach ($moduleResources as $mRes) {
 

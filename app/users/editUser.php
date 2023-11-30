@@ -11,7 +11,7 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
 $userInfo = $db->rawQueryOne(
@@ -28,7 +28,7 @@ $_POST = $request->getParsedBody();
 
 $interfaceUsers = "";
 if (!empty($userInfo['interface_user_name'])) {
-     $interfaceUsers = implode(", ", json_decode($userInfo['interface_user_name'], true));
+     $interfaceUsers = implode(", ", json_decode((string) $userInfo['interface_user_name'], true));
 }
 
 $query = "SELECT * FROM roles WHERE status='active'";
@@ -42,7 +42,7 @@ $display = 'display:none';
 if ($_SESSION['instanceType'] == 'remoteuser') {
 
      $facilityMap = $facilitiesService->getUserFacilityMap($id);
-     $preselectedFacilities = explode(",", $facilityMap);
+     $preselectedFacilities = explode(",", (string) $facilityMap);
 
 
      $fResult = [];
@@ -117,7 +117,7 @@ $ftResult = $db->rawQuery($fQuery);
                                              <label for="userName" class="col-lg-4 control-label"><?php echo _translate("User Name"); ?> <span class="mandatory">*</span></label>
                                              <div class="col-lg-7">
                                                   <input type="text" class="form-control isRequired" id="userName" name="userName" placeholder="<?php echo _translate('User Name'); ?>" title="<?php echo _translate('Please enter user name'); ?>" value="<?php echo $userInfo['user_name']; ?>" />
-                                                  <input type="hidden" name="userId" id="userId" value="<?php echo base64_encode($userInfo['user_id']); ?>" />
+                                                  <input type="hidden" name="userId" id="userId" value="<?php echo base64_encode((string) $userInfo['user_id']); ?>" />
                                              </div>
                                         </div>
                                    </div>
@@ -199,7 +199,7 @@ $ftResult = $db->rawQuery($fQuery);
                                                   <div class="fileinput fileinput-new userSignature" data-provides="fileinput">
                                                        <div class="fileinput-preview thumbnail image-placeholder" data-trigger="fileinput" style="width:200px; height:150px;">
                                                             <?php
-                                                            if (isset($userInfo['user_signature']) && trim($userInfo['user_signature']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userInfo['user_signature'])) {
+                                                            if (isset($userInfo['user_signature']) && trim((string) $userInfo['user_signature']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userInfo['user_signature'])) {
                                                             ?>
                                                                  <img src="/uploads/users-signature/<?php echo $userInfo['user_signature']; ?>" alt="Signature image">
                                                             <?php } else { ?>
@@ -211,7 +211,7 @@ $ftResult = $db->rawQuery($fQuery);
                                                                  <input type="file" id="userSignature" name="userSignature" accept="image/png,image/gpg,image/jpeg" title="<?php echo _translate('Please select user signature'); ?>" onchange="getNewSignatureImage('<?php echo $userInfo['user_signature']; ?>');">
                                                             </span>
                                                             <?php
-                                                            if (isset($userInfo['user_signature']) && trim($userInfo['user_signature']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userInfo['user_signature'])) {
+                                                            if (isset($userInfo['user_signature']) && trim((string) $userInfo['user_signature']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userInfo['user_signature'])) {
                                                             ?>
                                                                  <a id="clearUserSignature" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearUserSignature('<?php echo $userInfo['user_signature']; ?>')"><?php echo _translate("Clear"); ?></a>
                                                             <?php } ?>
@@ -423,7 +423,7 @@ $ftResult = $db->rawQuery($fQuery);
                const validImageTypes = ['image/jpg', 'image/jpeg', 'image/png'];
                if (!validImageTypes.includes(fileType)) {
                     $('#userSignature').val('');
-                    alert('<?php echo addslashes(_translate("Invalid file type. Please upload correct image format like JPG or JPEG or PNG")); ?>');
+                    alert('<?php echo addslashes((string) _translate("Invalid file type. Please upload correct image format like JPG or JPEG or PNG")); ?>');
                     return false;
                }
           });

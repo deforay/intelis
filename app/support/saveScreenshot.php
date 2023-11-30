@@ -23,8 +23,8 @@ $_POST = $request->getParsedBody();
 try {
 	// File upload folder
 	$uploadDir = UPLOAD_PATH . DIRECTORY_SEPARATOR . "support";
-	if (isset($_POST['image']) && trim($_POST['image']) != "" && trim($_POST['supportId']) != "") {
-		$supportId = base64_decode($_POST['supportId']);
+	if (isset($_POST['image']) && trim((string) $_POST['image']) != "" && trim((string) $_POST['supportId']) != "") {
+		$supportId = base64_decode((string) $_POST['supportId']);
 
 		// if (!file_exists($uploadDir) && !is_dir($uploadDir)) {
 		// 	mkdir($uploadDir, 0777, true);
@@ -42,7 +42,7 @@ try {
 		$uploadPath = realpath($uploadDir . DIRECTORY_SEPARATOR . $supportId . DIRECTORY_SEPARATOR . $fileName);
 
 		// remove "data:image/png;base64,"
-		$uri =  substr($data, strpos($data, ",", 1));
+		$uri =  substr((string) $data, strpos((string) $data, ",", 1));
 		// save to file
 		file_put_contents($uploadPath, base64_decode($uri));
 
@@ -52,8 +52,8 @@ try {
 		$db->where('support_id', $supportId);
 		$db->update($tableName, $fData);
 		$response['message'] = _translate("Thank you. Your message has been submitted.");
-	} elseif (trim($_POST['supportId']) != "") {
-		$supportId = base64_decode($_POST['supportId']);
+	} elseif (trim((string) $_POST['supportId']) != "") {
+		$supportId = base64_decode((string) $_POST['supportId']);
 		$response['message'] = _translate("Thank you. Your message has been submitted.");
 	}
 
@@ -62,7 +62,7 @@ try {
 	if (!empty($supportEmail)) {
 		$sQuery = "SELECT * FROM support WHERE support_id = $supportId";
 		$sResult = $db->rawQuery($sQuery);
-		if (isset($sResult[0]['support_id']) && trim($sResult[0]['support_id']) != "") {
+		if (isset($sResult[0]['support_id']) && trim((string) $sResult[0]['support_id']) != "") {
 			$feedback = $sResult[0]['feedback'];
 			$feedbackUrl = $sResult[0]['feedback_url'];
 
@@ -70,7 +70,7 @@ try {
 			$smtpEmail = $general->getSystemConfig('sup_email');
 			$smtpPassword = $general->getSystemConfig('sup_password');
 
-			if (isset($smtpEmail) && trim($smtpEmail) != "" && trim($smtpPassword) != "") {
+			if (isset($smtpEmail) && trim((string) $smtpEmail) != "" && trim((string) $smtpPassword) != "") {
 				//Create a new PHPMailer instance
 				$mail = new PHPMailer\PHPMailer\PHPMailer();
 				//Tell PHPMailer to use SMTP
@@ -101,18 +101,18 @@ try {
 				$mail->Subject = "Support";
 
 				//Set To EmailId(s)
-				$xplodAddress = explode(",", $supportEmail);
+				$xplodAddress = explode(",", (string) $supportEmail);
 				for ($to = 0; $to < count($xplodAddress); $to++) {
 					$mail->addAddress($xplodAddress[$to]);
 				}
 
-				if (trim($sResult[0]['upload_file_name']) != "") {
+				if (trim((string) $sResult[0]['upload_file_name']) != "") {
 					$file_to_attach = $uploadDir . DIRECTORY_SEPARATOR . $supportId . DIRECTORY_SEPARATOR . $sResult[0]['upload_file_name'];
 					if (file_exists($file_to_attach)) {
 						$mail->AddAttachment($file_to_attach);
 					}
 				}
-				if (trim($sResult[0]['screenshot_file_name']) != "") {
+				if (trim((string) $sResult[0]['screenshot_file_name']) != "") {
 					$uploadPath = $uploadDir . DIRECTORY_SEPARATOR . $supportId . DIRECTORY_SEPARATOR . $sResult[0]['screenshot_file_name'];
 					if (file_exists($uploadPath)) {
 						$mail->AddAttachment($uploadPath);
@@ -120,8 +120,8 @@ try {
 				}
 
 				$message = '';
-				if (isset($feedback) && trim($feedback) != "") {
-					$feedback = (nl2br($feedback));
+				if (isset($feedback) && trim((string) $feedback) != "") {
+					$feedback = (nl2br((string) $feedback));
 					$message = "<table cellpadding='0' cellspacing='0' style='width:95%;' border='1'>";
 					$message .= "<tr>";
 					$message .= "<th style='width:15%;'>Feedback</th>";

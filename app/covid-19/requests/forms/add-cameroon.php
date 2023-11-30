@@ -156,7 +156,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <?php
                                                 foreach ($fundingSourceList as $fundingSource) {
                                                 ?>
-                                                    <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
+                                                    <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -166,7 +166,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <?php
                                                 foreach ($implementingPartnerList as $implementingPartner) {
                                                 ?>
-                                                    <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
+                                                    <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -252,7 +252,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </select>
                                         </td>
                                         <th scope="row"><?= _translate("Phone number"); ?></th>
-                                        <td><input type="text" class="form-control phone-number" id="patientPhoneNumber" name="patientPhoneNumber" maxlength="<?php echo strlen($countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Phone Number'); ?>" title="<?= _translate('Case Phone Number'); ?>" style="width:100%;" onchange="" /></td>
+                                        <td><input type="text" class="form-control phone-number" id="patientPhoneNumber" name="patientPhoneNumber" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Phone Number'); ?>" title="<?= _translate('Case Phone Number'); ?>" style="width:100%;" onchange="" /></td>
                                     </tr>
                                     <tr>
                                         <th scope="row"><?= _translate("Address"); ?></th>
@@ -370,7 +370,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <tr>
                                             <th scope="row"><label for=""><?= _translate("Sample Received Date"); ?> </label></th>
                                             <td>
-                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="<?= _translate('Please enter sample receipt date'); ?>" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="<?= _translate('Please enter sample receipt date'); ?>" <?php echo (isset($labFieldDisabled) && trim((string) $labFieldDisabled) != '') ? $labFieldDisabled : ''; ?> onchange="" style="width:100%;" />
                                             </td>
                                             <td class="lab-show"><label for="labId"><?= _translate("Testing Laboratory"); ?> </label> </td>
                                             <td class="lab-show">
@@ -545,7 +545,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                             <input type="hidden" name="saveNext" id="saveNext" />
                             <input type="hidden" name="testData[]" id="testData" />
 
-                            <!-- <input type="hidden" name="pageURL" id="pageURL" value="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" /> -->
+                            <!-- <input type="hidden" name="pageURL" id="pageURL" value="<?php echo htmlspecialchars((string) $_SERVER['PHP_SELF']); ?>" /> -->
                         <?php } ?>
                         <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
                         <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();$('#saveNext').val('next');return false;">Save and Next</a>
@@ -848,7 +848,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             provinceName = true;
             facilityName = true;
             $("#province").html("<?php echo $province; ?>");
-            $("#facilityId").html("<?php echo addslashes($facility); ?>");
+            $("#facilityId").html("<?php echo addslashes((string) $facility); ?>");
             $("#facilityId").select2("val", "");
             $("#district").html("<option value=''> <?= _translate("-- Select --"); ?> </option>");
         }
@@ -968,7 +968,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             provinceName = true;
             facilityName = true;
             $("#province").html("<?php echo $province; ?>");
-            $("#facilityId").html("<?php echo addslashes($facility); ?>");
+            $("#facilityId").html("<?php echo addslashes((string) $facility); ?>");
         }
         $.unblockUI();
     }

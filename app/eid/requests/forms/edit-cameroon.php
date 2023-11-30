@@ -52,7 +52,7 @@ foreach ($pdResult as $provinceName) {
 
 $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facility_id'], '-- Select --');
 
-$eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", $eidInfo['mother_treatment']) : [];
+$eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", (string) $eidInfo['mother_treatment']) : [];
 if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
     $facilityQuery = "SELECT * FROM facility_details WHERE facility_id= ? AND status='active'";
     $facilityResult = $db->rawQuery($facilityQuery, array($eidInfo['facility_id']));
@@ -150,7 +150,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                                 <?php
                                                 foreach ($fundingSourceList as $fundingSource) {
                                                 ?>
-                                                    <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $eidInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
+                                                    <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $eidInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -162,7 +162,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                                 <?php
                                                 foreach ($implementingPartnerList as $implementingPartner) {
                                                 ?>
-                                                    <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $eidInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
+                                                    <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $eidInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -199,7 +199,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                         </td>
                                         <th scope="row" style="width:15% !important"><label for="childName"><?= _translate('Infant name'); ?> </label></th>
                                         <td style="width:35% !important">
-                                            <input type="text" class="form-control " id="childName" name="childName" placeholder="<?= _translate('Infant name'); ?>" title="<?= _translate('Please enter Infant Name'); ?>" style="width:100%;" value="<?= htmlspecialchars($eidInfo['child_name']); ?>" onchange="" />
+                                            <input type="text" class="form-control " id="childName" name="childName" placeholder="<?= _translate('Infant name'); ?>" title="<?= _translate('Please enter Infant Name'); ?>" style="width:100%;" value="<?= htmlspecialchars((string) $eidInfo['child_name']); ?>" onchange="" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -219,16 +219,16 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                     </tr>
                                     <tr>
                                         <th scope="row"><?= _translate('Infant Age (months)'); ?></th>
-                                        <td><input type="number" max=24 maxlength="2" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="<?= _translate('Age'); ?>" title="<?= _translate('Age'); ?>" style="width:100%;" onchange="" value="<?= htmlspecialchars($eidInfo['child_age']); ?>" /></td>
+                                        <td><input type="number" max=24 maxlength="2" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="<?= _translate('Age'); ?>" title="<?= _translate('Age'); ?>" style="width:100%;" onchange="" value="<?= htmlspecialchars((string) $eidInfo['child_age']); ?>" /></td>
                                         <th scope="row"><?= _translate('Weight of the day'); ?></th>
                                         <td><input type="text" class="form-control forceNumeric" id="childWeight" name="childWeight" placeholder="<?= _translate('Infant weight of the day in Kg'); ?>" title="<?= _translate('Infant weight of the day'); ?>" style="width:100%;" value="<?= $eidInfo['child_weight']; ?>" /></td>
                                     </tr>
                                     <tr>
                                         <th scope="row"><?= _translate('Caretaker phone number'); ?></th>
-                                        <td><input type="text" class="form-control phone-number" id="caretakerPhoneNumber" name="caretakerPhoneNumber" maxlength="<?php echo strlen($countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Caretaker Phone Number'); ?>" title="Caretaker Phone Number" style="width:100%;" value="<?= htmlspecialchars($eidInfo['caretaker_phone_number']); ?>" onchange="" /></td>
+                                        <td><input type="text" class="form-control phone-number" id="caretakerPhoneNumber" name="caretakerPhoneNumber" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Caretaker Phone Number'); ?>" title="Caretaker Phone Number" style="width:100%;" value="<?= htmlspecialchars((string) $eidInfo['caretaker_phone_number']); ?>" onchange="" /></td>
 
                                         <th scope="row"><?= _translate('Infant caretaker address'); ?></th>
-                                        <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="<?= _translate('Caretaker Address'); ?>" title="<?= _translate('Caretaker Address'); ?>" style="width:100%;" onchange=""><?= htmlspecialchars($eidInfo['caretaker_address']); ?></textarea></td>
+                                        <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="<?= _translate('Caretaker Address'); ?>" title="<?= _translate('Caretaker Address'); ?>" style="width:100%;" onchange=""><?= htmlspecialchars((string) $eidInfo['caretaker_address']); ?></textarea></td>
 
                                     </tr>
                                     <tr>
@@ -507,7 +507,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                         <tr>
                                         <th scope="row"><?= _translate('Contact Number'); ?></th>
                                         <td>
-                                            <input class="form-control phone-number" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" maxlength="<?php echo strlen($countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Requesting Officer Phone'); ?>" value="<?= $eidInfo['sample_requestor_phone'] ?>" />
+                                            <input class="form-control phone-number" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Requesting Officer Phone'); ?>" value="<?= $eidInfo['sample_requestor_phone'] ?>" />
                                         </td>
                                     </tr>
                                 </table>
@@ -552,7 +552,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="<?= _translate('Please choose reason for rejection'); ?>">
                                                     <option value=""><?= _translate('-- Select --'); ?></option>
                                                     <?php foreach ($rejectionTypeResult as $type) { ?>
-                                                        <optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
+                                                        <optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
                                                             <?php
                                                             foreach ($rejectionResult as $reject) {
                                                                 if ($type['rejection_type'] == $reject['rejection_type']) { ?>
@@ -625,9 +625,9 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                         <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
                         <input type="hidden" name="revised" id="revised" value="no" />
                         <input type="hidden" name="formId" id="formId" value="7" />
-                        <input type="hidden" name="eidSampleId" id="eidSampleId" value="<?= htmlspecialchars($eidInfo['eid_id']); ?>" />
-                        <input type="hidden" name="sampleCodeCol" id="sampleCodeCol" value="<?= htmlspecialchars($eidInfo['sample_code']); ?>" />
-                        <input type="hidden" name="oldStatus" id="oldStatus" value="<?= htmlspecialchars($eidInfo['result_status']); ?>" />
+                        <input type="hidden" name="eidSampleId" id="eidSampleId" value="<?= htmlspecialchars((string) $eidInfo['eid_id']); ?>" />
+                        <input type="hidden" name="sampleCodeCol" id="sampleCodeCol" value="<?= htmlspecialchars((string) $eidInfo['sample_code']); ?>" />
+                        <input type="hidden" name="oldStatus" id="oldStatus" value="<?= htmlspecialchars((string) $eidInfo['result_status']); ?>" />
                         <input type="hidden" name="provinceCode" id="provinceCode" />
                         <input type="hidden" name="provinceId" id="provinceId" />
                         <a href="/eid/requests/eid-requests.php" class="btn btn-default"> Cancel</a>

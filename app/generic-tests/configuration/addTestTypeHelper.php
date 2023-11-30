@@ -25,10 +25,10 @@ $tableName6 = "generic_sample_rejection_reason_map";
 $tableName7 = "generic_test_result_units_map";
 $tableName8 = "generic_test_methods_map";
 $testAttribute = [];
-$_POST['testStandardName'] = trim($_POST['testStandardName']);
+$_POST['testStandardName'] = trim((string) $_POST['testStandardName']);
 $i = 0;
 foreach ($_POST['fdropDown'] as $val) {
-    $_POST['fdropDown'][$i] = substr($val, 0, -1);
+    $_POST['fdropDown'][$i] = substr((string) $val, 0, -1);
     $i++;
 }
 
@@ -43,7 +43,7 @@ try {
             $index = array_search($sortFieldOrder[$i], $_POST['fieldOrder']);
 
             if ($_POST['section'][$index] == 'otherSection') {
-                $_POST['sectionOther'][$index] = trim($_POST['sectionOther'][$index]);
+                $_POST['sectionOther'][$index] = trim((string) $_POST['sectionOther'][$index]);
                 $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['field_name'] = $_POST['fieldName'][$index];
                 $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['field_code'] = $_POST['fieldCode'][$index];
                 $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['field_type'] = $_POST['fieldType'][$index];
@@ -73,7 +73,7 @@ try {
             $_POST['testCategory'] = $generic->quickInsert('r_generic_test_categories', array('test_category_name', 'test_category_status'), array($_POST['testCategory'], 'active'));
         }
         // Convert to uppercase
-        $shortCode = strtoupper($_POST['testShortCode']);
+        $shortCode = strtoupper((string) $_POST['testShortCode']);
         // Remove all special characters and spaces, except hyphens
         $shortCode = preg_replace('/[^A-Z0-9-]/', '', $shortCode);
         $data = array(

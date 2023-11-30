@@ -27,7 +27,7 @@ $users = $usersService->getAllUsers(null, null, "drop-down");
 $testKitInfo = $db->rawQuery("SELECT * from r_covid19_qc_testkits");
 $testKitsList = [];
 foreach ($testKitInfo as $kits) {
-    $testKitsList[base64_encode($kits['testkit_id'])] = $kits['testkit_name'];
+    $testKitsList[base64_encode((string) $kits['testkit_id'])] = $kits['testkit_name'];
 }
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $chkUserFcMapQry = "SELECT user_id FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";

@@ -25,7 +25,7 @@ try {
     if (!empty($_POST)) {
         $db->where('test_type', $testType);
         $db->delete($tableName);
-        $mappedFacilities = json_decode($_POST['selectedFacilities'], true);
+        $mappedFacilities = json_decode((string) $_POST['selectedFacilities'], true);
         if (!empty($mappedFacilities)) {
             $data = [];
             foreach ($mappedFacilities as $facility) {

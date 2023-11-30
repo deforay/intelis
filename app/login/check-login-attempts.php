@@ -4,7 +4,7 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
-$loginId = trim($_POST['loginId']);
+$loginId = trim((string) $_POST['loginId']);
 
 /** @var MysqliDb $db */
 $db = ContainerRegistry::get('db');

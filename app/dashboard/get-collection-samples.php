@@ -64,7 +64,7 @@ if (sizeof($collectionResult) > 0) {
             xAxis: {
                 categories: [<?php
                                 foreach ($collectionResult as $tRow) {
-                                    echo "'" . htmlspecialchars($tRow['facility_name']) . "',";
+                                    echo "'" . htmlspecialchars((string) $tRow['facility_name']) . "',";
                                 }
                                 ?>],
                 crosshair: true,
@@ -98,7 +98,7 @@ if (sizeof($collectionResult) > 0) {
                 name: 'Samples',
                 data: [<?php
                         foreach ($collectionResult as $tRow) {
-                            echo htmlspecialchars($tRow['total']) . ",";
+                            echo htmlspecialchars((string) $tRow['total']) . ",";
                         }
                         ?>]
 

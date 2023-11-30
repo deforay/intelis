@@ -202,7 +202,7 @@ class HepatitisService extends AbstractTestService
             $sampleCodeParams['maxCodeKeyVal'] = $params['oldSampleCodeKey'] ?? null;
 
             $sampleJson = $this->getSampleCode($sampleCodeParams);
-            $sampleData = json_decode($sampleJson, true);
+            $sampleData = json_decode((string) $sampleJson, true);
 
             $sampleCollectionDate = DateUtility::isoDateFormat($sampleCollectionDate, true);
 

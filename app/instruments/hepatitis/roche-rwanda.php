@@ -33,7 +33,7 @@ try {
         throw new SystemException('Please select a file to upload', 400);
     }
 
-    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename($_FILES['resultFile']['name'])));
+    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $_FILES['resultFile']['name'])));
     $fileName = str_replace(" ", "-", $fileName);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName = $_POST['fileName'] . "." . $extension;
@@ -101,7 +101,7 @@ try {
             $reviewBy = $row[$reviewByCol];
 
             if ($row[$testingDateCol] != '') {
-                $alterDateTime = explode(" ", $row[$testingDateCol]);
+                $alterDateTime = explode(" ", (string) $row[$testingDateCol]);
                 $alterDate = str_replace("/", "-", $alterDateTime[0]);
                 $strToArray = explode("-", $alterDate);
                 if (strlen($strToArray[0]) == 2 && strlen($strToArray[2]) == 2) {
@@ -114,13 +114,13 @@ try {
                 $testingDate = date('Y-m-d H:i', strtotime($alterDate . " " . $alterDateTime[1]));
             }
 
-            if (trim($row[$absValCol]) != "") {
-                $resVal = explode("(", trim($row[$absValCol]));
+            if (trim((string) $row[$absValCol]) != "") {
+                $resVal = explode("(", trim((string) $row[$absValCol]));
                 if (count($resVal) == 2) {
                     $resultValue = trim($resVal[0]);
                     $resultLogValue = trim($resVal[1]);
                 } else {
-                    $resultValue = trim($row[$absValCol]);
+                    $resultValue = trim((string) $row[$absValCol]);
                     $resultLogValue = null;
                 }
 
@@ -155,8 +155,8 @@ try {
             }
 
             $lotNumberVal = $row[$lotNumberCol];
-            if (trim($row[$lotExpirationDateCol]) != '') {
-                $alterDate = str_replace("/", "-", $row[$lotExpirationDateCol]);
+            if (trim((string) $row[$lotExpirationDateCol]) != '') {
+                $alterDate = str_replace("/", "-", (string) $row[$lotExpirationDateCol]);
                 $strToArray = explode("-", $alterDate);
                 if (strlen($strToArray[0]) == 2 && strlen($strToArray[2]) == 2) {
                     if ($strToArray[0] == date('y')) {
@@ -203,7 +203,7 @@ try {
             }
             $data = array(
                 'module' => 'hepatitis',
-                'lab_id' => base64_decode($_POST['labId']),
+                'lab_id' => base64_decode((string) $_POST['labId']),
                 'vl_test_platform' => $_POST['vltestPlatform'],
                 'import_machine_name' => $_POST['configMachineName'],
                 'result_reviewed_by' => $_SESSION['userId'],
@@ -260,10 +260,10 @@ try {
 
 
             //insert sample controls
-            $scQuery = "SELECT r_sample_control_name FROM r_sample_controls WHERE r_sample_control_name='" . trim($d['sampleType']) . "'";
+            $scQuery = "SELECT r_sample_control_name FROM r_sample_controls WHERE r_sample_control_name='" . trim((string) $d['sampleType']) . "'";
             $scResult = $db->rawQuery($scQuery);
             if (!$scResult) {
-                $scData = array('r_sample_control_name' => trim($d['sampleType']));
+                $scData = array('r_sample_control_name' => trim((string) $d['sampleType']));
                 $scId = $db->insert("r_sample_controls", $scData);
             }
             if (!empty($hepResult) && !empty($sampleCode)) {

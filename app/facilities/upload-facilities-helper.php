@@ -33,7 +33,7 @@ try {
     $uploadOption = $_POST['uploadOption'];
 
     $ranNumber = "BULK-FACILITIES-" . strtoupper($general->generateRandomString(16));
-    $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    $extension = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
     $fileName = $ranNumber . "." . $extension;
 
 

@@ -288,7 +288,7 @@ $rInfo = $db->query($resourcesQuery);
 											$liClass = "";
 										}
 									?>
-										<li class="<?= $liClass; ?>"><a href="#<?= $moduleRow['module']; ?>" data-toggle="tab" class="bg-primary"><?php echo strtoupper($moduleName); ?> </a></li>
+										<li class="<?= $liClass; ?>"><a href="#<?= $moduleRow['module']; ?>" data-toggle="tab" class="bg-primary"><?php echo strtoupper((string) $moduleName); ?> </a></li>
 									<?php
 										$a++;
 									}
@@ -308,7 +308,7 @@ $rInfo = $db->query($resourcesQuery);
 										echo '<div class="tab-pane fade in ' . $tabCls . '" id="' . $moduleRow['module'] . '">';
 										echo "<table aria-describedby='table' class='table table-striped responsive-utilities jambo_table'>";
 
-										$moduleResources = explode("##", $moduleRow['module_resources']);
+										$moduleResources = explode("##", (string) $moduleRow['module_resources']);
 										$i = 1;
 										foreach ($moduleResources as $mRes) {
 

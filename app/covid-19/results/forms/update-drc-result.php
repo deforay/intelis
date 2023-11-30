@@ -25,14 +25,14 @@ $covid19SelectedSymptomsData = $covid19Service->getCovid19SymptomsByFormId($covi
 $covid19SelectedSymptoms = [];
 foreach ($covid19SelectedSymptomsData as $row) {
     $covid19SelectedSymptoms[$row['symptom_id']]['value'] = $row['symptom_detected'];
-    $covid19SelectedSymptoms[$row['symptom_id']]['sDetails'] = json_decode($row['symptom_details'], true);
+    $covid19SelectedSymptoms[$row['symptom_id']]['sDetails'] = json_decode((string) $row['symptom_details'], true);
 }
 
 $covid19ReasonsForTesting = $covid19Service->getCovid19ReasonsForTestingDRC();
 $covid19SelectedReasonsForTesting = $covid19Service->getCovid19ReasonsForTestingByFormId($covid19Info['covid19_id']);
 $covid19SelectedReasonsDetailsForTesting = $covid19Service->getCovid19ReasonsDetailsForTestingByFormId($covid19Info['covid19_id']);
 // To get the reason details value
-$reasonDetails = json_decode($covid19SelectedReasonsDetailsForTesting['reason_details'], true);
+$reasonDetails = json_decode((string) $covid19SelectedReasonsDetailsForTesting['reason_details'], true);
 
 $covid19Comorbidities = $covid19Service->getCovid19Comorbidities();
 $covid19SelectedComorbidities = $covid19Service->getCovid19ComorbiditiesByFormId($covid19Info['covid19_id']);
@@ -503,11 +503,11 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                                 <tr>
                                     <th scope="row" style="width:15% !important"><label for="sampleCollectionDate">Date de prélèvement de l'échantillon <span class="mandatory">*</span></label></th>
                                     <td style="width:35% !important;">
-                                        <input class="form-control isRequired" value="<?php echo date('d-M-Y H:i:s', strtotime($covid19Info['sample_collection_date'])); ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Date de prélèvement de l'échantillon" title="Date de prélèvement de l'échantillon" onchange="generateSampleCode();" />
+                                        <input class="form-control isRequired" value="<?php echo date('d-M-Y H:i:s', strtotime((string) $covid19Info['sample_collection_date'])); ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Date de prélèvement de l'échantillon" title="Date de prélèvement de l'échantillon" onchange="generateSampleCode();" />
                                     </td>
                                     <th scope="row" style="width:15% !important">Échantillon expédié le <span class="mandatory">*</span> </th>
                                     <td style="width:35% !important;">
-                                        <input class="form-control dateTime isRequired" type="text" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="Échantillon expédié le" value="<?php echo date('d-M-Y H:i:s', strtotime($covid19Info['sample_dispatched_datetime'])); ?>" />
+                                        <input class="form-control dateTime isRequired" type="text" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="Échantillon expédié le" value="<?php echo date('d-M-Y H:i:s', strtotime((string) $covid19Info['sample_dispatched_datetime'])); ?>" />
                                     </td>
                                 </tr>
                                 <tr>
@@ -772,7 +772,7 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                                             <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Raison du rejet">
                                                 <option value=""><?= _translate("-- Select --"); ?> </option>
                                                 <?php foreach ($rejectionTypeResult as $type) { ?>
-                                                    <optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
+                                                    <optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
                                                         <?php
                                                         foreach ($rejectionResult as $reject) {
                                                             if ($type['rejection_type'] == $reject['rejection_type']) { ?>
@@ -802,7 +802,7 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                                                         $testMethod = array("PCR/RT-PCR", "RdRp-SARS Cov-2", "GeneXpert", "Rapid Antigen Test", "other");
                                                         foreach ($covid19TestInfo as $indexKey => $rows) { ?>
                                                             <tr>
-                                                                <td class="text-center"><?= ($indexKey + 1); ?><input type="hidden" name="testId[]" value="<?php echo base64_encode($rows['test_id']); ?>"></td>
+                                                                <td class="text-center"><?= ($indexKey + 1); ?><input type="hidden" name="testId[]" value="<?php echo base64_encode((string) $rows['test_id']); ?>"></td>
                                                                 <td>
                                                                     <select onchange="otherCovidTestName(this.value,<?= ($indexKey + 1); ?>)" class="form-control test-name-table-input isRequired" id="testName<?= ($indexKey + 1); ?>" name="testName[]" title="Veuillez saisir le nom du test pour les lignes <?= ($indexKey + 1); ?>">
                                                                         <option value="">--Select--</option>
@@ -832,7 +832,7 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                                                                 </td>
                                                                 <td style="vertical-align:middle;text-align: center;">
                                                                     <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addTestRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-                                                                    <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode($rows['test_id']); ?>');"><em class="fa-solid fa-minus"></em></a>
+                                                                    <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeTestRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode((string) $rows['test_id']); ?>');"><em class="fa-solid fa-minus"></em></a>
                                                                 </td>
                                                             </tr>
                                                         <?php }
@@ -934,7 +934,7 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
                                     <tr>
                                         <th scope="row">Approuvé le</th>
                                         <td>
-                                            <input type="text" name="approvedOn" id="approvedOn" value="<?php echo date('d-M-Y H:i:s', strtotime($covid19Info['result_approved_datetime'])); ?>" class="dateTime disabled-field form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+                                            <input type="text" name="approvedOn" id="approvedOn" value="<?php echo date('d-M-Y H:i:s', strtotime((string) $covid19Info['result_approved_datetime'])); ?>" class="dateTime disabled-field form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
                                         </td>
                                         <th scope="row"></th>
                                         <td></td>

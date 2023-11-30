@@ -60,8 +60,8 @@ $query .= " LEFT JOIN package_details as pd ON vl.sample_package_id = pd.package
 
 $where = [];
 $where[] = " (vl.remote_sample_code IS NOT NULL) ";
-if (isset($_POST['daterange']) && trim($_POST['daterange']) != '') {
-	$dateRange = explode("to", $_POST['daterange']);
+if (isset($_POST['daterange']) && trim((string) $_POST['daterange']) != '') {
+	$dateRange = explode("to", (string) $_POST['daterange']);
 	//print_r($dateRange);die;
 	if (isset($dateRange[0]) && trim($dateRange[0]) != "") {
 		$startDate = DateUtility::isoDateFormat(trim($dateRange[0]));
@@ -85,9 +85,9 @@ if (!empty($_POST['facility'])) {
 	$where[] = " (facility_id IN(" . $_POST['facility'] . ")  OR (facility_id like '' OR facility_id is null OR facility_id = 0))";
 }
 
-if (!empty($_POST['operator'])) {
+//if (!empty($_POST['operator'])) {
 	// $where[] = " (request_created_by like '" . $_POST['operator'] . "'  OR (request_created_by like '' OR request_created_by is null OR request_created_by = 0))";
-}
+//}
 
 if (!empty($_POST['testType'])) {
 	$where[] = " test_type = " . $_POST['testType'];
@@ -116,7 +116,7 @@ $result = $db->rawQuery($query);
 	<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
 		<?php foreach ($result as $sample) {
 			if ($sample['is_encrypted'] == 'yes') {
-				$key = base64_decode($general->getGlobalConfig('key'));
+				$key = base64_decode((string) $general->getGlobalConfig('key'));
 				$sample[$patientId] = $general->crypto('decrypt', $sample[$patientId], $key);
 			}
 			if (!empty($sample[$sampleCode])) {
@@ -140,7 +140,7 @@ $result = $db->rawQuery($query);
 	<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
 		<?php foreach ($result as $sample) {
 			if ($sample['is_encrypted'] == 'yes') {
-				$key = base64_decode($general->getGlobalConfig('key'));
+				$key = base64_decode((string) $general->getGlobalConfig('key'));
 				$sample[$patientId] = $general->crypto('decrypt', $sample[$patientId], $key);
 			}
 			if (!empty($sample[$sampleCode])) {

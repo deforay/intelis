@@ -24,7 +24,7 @@ try {
     if ($_POST['bulkIds'] && is_array($_POST['hepatitisId'])) {
         $query .= " WHERE hepatitis_id IN (" . implode(",", $_POST['hepatitisId']) . ")";
     } else {
-        $query .= " WHERE hepatitis_id = " . base64_decode($_POST['hepatitisId']);
+        $query .= " WHERE hepatitis_id = " . base64_decode((string) $_POST['hepatitisId']);
     }
     $response = $db->rawQuery($query);
 
@@ -32,10 +32,10 @@ try {
     if ($_POST['bulkIds'] && is_array($_POST['hepatitisId'])) {
         $db = $db->where("`hepatitis_id` IN (" . implode(",", $_POST['hepatitisId']) . ")");
     } else {
-        $db = $db->where('hepatitis_id', base64_decode($_POST['hepatitisId']));
+        $db = $db->where('hepatitis_id', base64_decode((string) $_POST['hepatitisId']));
     }
 
-    $db = $db->where('hepatitis_id', base64_decode($_POST['hepatitisId']));
+    $db = $db->where('hepatitis_id', base64_decode((string) $_POST['hepatitisId']));
     $db->delete('covid19_tests');
 
     $id = $db->update(

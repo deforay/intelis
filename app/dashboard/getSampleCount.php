@@ -16,30 +16,30 @@ $_POST = $request->getParsedBody();
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $facilityInfo = $facilitiesService->getAllFacilities();
 
-if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
+if (isset($_POST['type']) && trim((string) $_POST['type']) == 'eid') {
     $table = "form_eid";
     $primaryKey = "eid_id";
     $unique = "Test2";
     $requestCountDataTable = "eidRequestCountDataTable";
     $samplesCollectionChart = "eidSamplesCollectionChart";
-} elseif (isset($_POST['type']) && trim($_POST['type']) == 'vl') {
+} elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'vl') {
     $recencyWhere = " AND IFNULL(reason_for_vl_testing, 0)  != 9999";
     $table = "form_vl";
     $primaryKey = "vl_sample_id";
     $unique = "Test1";
     $requestCountDataTable = "vlRequestCountDataTable";
     $samplesCollectionChart = "vlSamplesCollectionChart";
-} elseif (isset($_POST['type']) && trim($_POST['type']) == 'covid19') {
+} elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'covid19') {
     $samplesCollectionChart = "covid19SamplesCollectionChart";
     $table = "form_covid19";
     $primaryKey = "covid19_id";
     $unique = "Test3";
-} elseif (isset($_POST['type']) && trim($_POST['type']) == 'hepatitis') {
+} elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'hepatitis') {
     $samplesCollectionChart = "hepatitisSamplesCollectionChart";
     $table = "form_hepatitis";
     $primaryKey = "hepatitis_id";
     $unique = "Test4";
-} elseif (isset($_POST['type']) && trim($_POST['type']) == 'recency') {
+} elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'recency') {
     $samplesCollectionChart = "recencySamplesCollectionChart";
     $table = "form_vl";
     $primaryKey = "vl_sample_id";
@@ -48,12 +48,12 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     // For VL Tab we do not want to show Recency Counts
     $recencyWhere = " AND reason_for_vl_testing = 9999";
     $requestCountDataTable = "recencyRequestCountDataTable";
-} elseif (isset($_POST['type']) && trim($_POST['type']) == 'tb') {
+} elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'tb') {
     $table = "form_tb";
     $primaryKey = "tb_id";
     $unique = "Test6";
     $samplesCollectionChart = "tbSamplesCollectionChart";
-} elseif (isset($_POST['type']) && trim($_POST['type']) == 'generic-tests') {
+} elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'generic-tests') {
     $table = "form_generic";
     $primaryKey = "sample_id";
     $unique = "Test7";
@@ -62,7 +62,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
 
 
 if ($_SESSION['instanceType'] != 'remoteuser') {
-    if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
+    if (isset($_POST['type']) && trim((string) $_POST['type']) == 'eid') {
         $whereCondition = " AND eid.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
     } else {
         $whereCondition = " AND vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
@@ -71,7 +71,7 @@ if ($_SESSION['instanceType'] != 'remoteuser') {
     $whereCondition = "";
     //get user facility map ids
     if (!empty($_SESSION['facilityMap'])) {
-        if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
+        if (isset($_POST['type']) && trim((string) $_POST['type']) == 'eid') {
             $whereCondition = " AND eid.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
         } else {
             $whereCondition = " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
@@ -300,7 +300,7 @@ $tableResult = $db->rawQuery($sQuery);
         $.post("/dashboard/get-collection-samples.php", {
                 table: '<?php echo $table; ?>',
                 facilityId: $('#facilityId<?php echo $unique; ?>').val(),
-                sampleCollectionDate: '<?php echo htmlspecialchars($_POST['sampleCollectionDate']); ?>',
+                sampleCollectionDate: '<?php echo htmlspecialchars((string) $_POST['sampleCollectionDate']); ?>',
             },
             function(data) {
                 $("#collectionSite<?php echo $unique; ?>").html(data);
@@ -385,7 +385,7 @@ $tableResult = $db->rawQuery($sQuery);
             xAxis: {
                 categories: [<?php
                                 foreach ($tableResult as $tRow) {
-                                    echo "'" . addslashes($tRow['facility_name']) . "',";
+                                    echo "'" . addslashes((string) $tRow['facility_name']) . "',";
                                 }
                                 ?>],
                 crosshair: true,

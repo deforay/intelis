@@ -6,7 +6,7 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $sampleQuery = "SELECT * from r_vl_sample_type where sample_id = $id";
 $sampleInfo = $db->query($sampleQuery);
@@ -40,7 +40,7 @@ $sampleInfo = $db->query($sampleQuery);
                                     <label for="sampleName" class="col-lg-4 control-label">Sample Name<span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
                                         <input type="text" class="form-control isRequired" id="sampleName" name="sampleName" placeholder="sample Name" title="Please enter Sample name" value="<?php echo $sampleInfo[0]['sample_name']; ?>" onblur="checkNameValidation('r_vl_sample_type','sample_name',this,'<?php echo "sample_id##" . $id; ?>','The sample name that you entered already exists.Enter another name',null)" />
-                                        <input type="hidden" class="form-control" id="sampleId" name="sampleId" value="<?php echo htmlspecialchars($_GET['id']); ?>" />
+                                        <input type="hidden" class="form-control" id="sampleId" name="sampleId" value="<?php echo $_GET['id']; ?>" />
                                     </div>
                                 </div>
                             </div>

@@ -8,7 +8,7 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $tQuery = "SELECT * from r_generic_sample_types where sample_type_id=$id";
 $sampleTypeInfo = $db->query($tQuery);
@@ -42,7 +42,7 @@ $sampleTypeInfo = $db->query($tQuery);
                                     <label for="sampleTypeName" class="col-lg-4 control-label"><?php echo _translate("Sample Type Name"); ?><span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
                                         <input type="text" class="form-control isRequired" id="sampleTypeName" name="sampleTypeName" placeholder="<?php echo _translate('Sample Type Name'); ?>" title="<?php echo _translate('Please enter sample type name'); ?>" onblur="checkNameValidation('r_generic_sample_types','sample_type_name',this,'<?php echo "sample_type_id##" . $sampleTypeInfo[0]['sample_type_id']; ?>','<?php echo _translate("This sample type name that you entered already exists.Try another name"); ?>',null)" value="<?php echo $sampleTypeInfo[0]['sample_type_name']; ?>" />
-                                        <input type="hidden" name="sampleTypeId" id="sampleTypeId" value="<?php echo base64_encode($sampleTypeInfo[0]['sample_type_id']); ?>" />
+                                        <input type="hidden" name="sampleTypeId" id="sampleTypeId" value="<?php echo base64_encode((string) $sampleTypeInfo[0]['sample_type_id']); ?>" />
                                     </div>
                                 </div>
                             </div>

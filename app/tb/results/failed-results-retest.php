@@ -24,7 +24,7 @@ try {
     if ($_POST['bulkIds'] && is_array($_POST['tbId'])) {
         $query .= " WHERE tb_id IN (" . implode(",", $_POST['tbId']) . ")";
     } else {
-        $query .= " WHERE tb_id = " . base64_decode($_POST['tbId']);
+        $query .= " WHERE tb_id = " . base64_decode((string) $_POST['tbId']);
     }
     $response = $db->rawQuery($query);
 
@@ -32,7 +32,7 @@ try {
     if ($_POST['bulkIds'] && is_array($_POST['tbId'])) {
         $db = $db->where("`tb_id` IN (" . implode(",", $_POST['tbId']) . ")");
     } else {
-        $db = $db->where('tb_id', base64_decode($_POST['tbId']));
+        $db = $db->where('tb_id', base64_decode((string) $_POST['tbId']));
     }
     $db->delete('tb_tests');
 

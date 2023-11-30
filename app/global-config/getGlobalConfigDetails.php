@@ -52,7 +52,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", $_POST['sSearch']);
+    $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
         if ($sWhereSub == "") {
@@ -134,7 +134,7 @@ foreach ($rResult as $aRow) {
     } elseif ($aRow['display_name'] == 'Patient ART No. Date' && $aRow['value'] == 'yes') {
         $aRow['value'] = 'Full Date';
     }
-    if ($aRow['name'] == 'vl_form' && trim($aRow['value']) != '') {
+    if ($aRow['name'] == 'vl_form' && trim((string) $aRow['value']) != '') {
         $query = "SELECT * FROM s_available_country_forms WHERE vlsm_country_id= ?";
         $formResult = $db->rawQuery($query, [$aRow['value']]);
         $aRow['value'] = $formResult[0]['form_name'];

@@ -1,11 +1,15 @@
 <?php
 
 use App\Services\Covid19Service;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 /** @var Covid19Service $covid19Service */
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get('db');
 
 try {
     // Start transaction

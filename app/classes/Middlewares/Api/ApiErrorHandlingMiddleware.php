@@ -11,7 +11,7 @@ use Throwable;
 
 class ApiErrorHandlingMiddleware implements MiddlewareInterface
 {
-    private ErrorResponseGenerator $errorResponseGenerator;
+    private readonly ErrorResponseGenerator $errorResponseGenerator;
 
     public function __construct(ErrorResponseGenerator $errorResponseGenerator)
     {

@@ -16,8 +16,8 @@ $general = ContainerRegistry::get(CommonService::class);
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 
-$artNo = urldecode($_GET['artNo']);
-$testType = urldecode($_GET['testType']);
+$artNo = urldecode((string) $_GET['artNo']);
+$testType = urldecode((string) $_GET['testType']);
 
 
 $db->join("facility_details fd", "fd.facility_id=vl.facility_id", "LEFT");
@@ -121,7 +121,7 @@ $pResult = $db->get("form_generic vl", 25, "fd.facility_id,
 								<?php
 								$artNoList = [];
 								foreach ($pResult as $patient) {
-									$value = $patient['patient_id'] . strtolower($patient['patient_first_name']) . strtolower($patient['patient_last_name']) . $patient['patient_age_in_years'] . strtolower($patient['patient_gender']) . strtolower($patient['facility_name']);
+									$value = $patient['patient_id'] . strtolower((string) $patient['patient_first_name']) . strtolower((string) $patient['patient_last_name']) . $patient['patient_age_in_years'] . strtolower((string) $patient['patient_gender']) . strtolower((string) $patient['facility_name']);
 									//if (!in_array($value, $artNoList)) {
 									$artNoList[] = $value;
 									$patientDetails = json_encode(
@@ -152,7 +152,7 @@ $pResult = $db->get("form_generic vl", 25, "fd.facility_id,
 											<?php echo $patient['patient_age_in_years']; ?>
 										</td>
 										<td>
-											<?= str_replace("_", " ", $patient['patient_gender']); ?>
+											<?= str_replace("_", " ", (string) $patient['patient_gender']); ?>
 										</td>
 										<td>
 											<?= $patient['facility_name']; ?>

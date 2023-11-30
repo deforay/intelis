@@ -41,7 +41,7 @@ try {
         throw new SystemException('Please select a file to upload', 400);
     }
 
-    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename($_FILES['resultFile']['name'])));
+    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $_FILES['resultFile']['name'])));
     $fileName          = str_replace(" ", "-", $fileName);
     $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName          = $_POST['fileName'] . "." . $extension;
@@ -127,7 +127,7 @@ try {
                 $testingDate = $testingDateObject->format('Y-m-d H:i');
             }
 
-            $vlResult = trim($row[$absValCol]);
+            $vlResult = trim((string) $row[$absValCol]);
 
             if (!empty($vlResult)) {
                 if (strpos($vlResult, 'E') !== false) {
@@ -150,13 +150,13 @@ try {
                 } else {
                     $vlResult = (float)$row[$absValCol];
                     if ($vlResult > 0) {
-                        $absVal = trim($row[$absValCol]);
+                        $absVal = trim((string) $row[$absValCol]);
                         $absDecimalVal = $vlResult;
                         $logVal = round(log10($absDecimalVal), 4);
                         $txtVal = "";
                     } else {
                         $logVal = $absDecimalVal = $absVal = "";
-                        $txtVal = trim($row[$absValCol]);
+                        $txtVal = trim((string) $row[$absValCol]);
                     }
                 }
             }
@@ -183,7 +183,7 @@ try {
 
             $data = array(
                 'module' => 'vl',
-                'lab_id' => base64_decode($_POST['labId']),
+                'lab_id' => base64_decode((string) $_POST['labId']),
                 'vl_test_platform' => $_POST['vltestPlatform'],
                 'result_reviewed_by' => $_SESSION['userId'],
                 'sample_code' => $d['sampleCode'],

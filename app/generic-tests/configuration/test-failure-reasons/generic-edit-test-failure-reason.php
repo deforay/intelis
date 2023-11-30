@@ -8,7 +8,7 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $tQuery = "SELECT * from r_generic_test_failure_reasons where test_failure_reason_id=$id";
 $testFailureReasonInfo = $db->query($tQuery);
@@ -42,7 +42,7 @@ $testFailureReasonInfo = $db->query($tQuery);
                                     <label for="testFailureReason" class="col-lg-4 control-label"><?php echo _translate("Test Failure Reason"); ?><span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
                                         <input type="text" class="form-control isRequired" id="testFailureReason" name="testFailureReason" placeholder="<?php echo _translate('Test Failure Reason'); ?>" title="<?php echo _translate('Please enter test reason'); ?>" onblur="checkNameValidation('r_generic_test_failure_reasons','test_failure_reason',this,'<?php echo "test_failure_reason_id##" . $testFailureReasonInfo[0]['test_failure_reason']; ?>','<?php echo _translate("This test reason that you entered already exists.Try another name"); ?>',null)" value="<?php echo $testFailureReasonInfo[0]['test_failure_reason']; ?>" />
-                                        <input type="hidden" name="testFailureReasonId" id="testFailureReasonId" value="<?php echo base64_encode($testFailureReasonInfo[0]['test_failure_reason_id']); ?>" />
+                                        <input type="hidden" name="testFailureReasonId" id="testFailureReasonId" value="<?php echo base64_encode((string) $testFailureReasonInfo[0]['test_failure_reason_id']); ?>" />
                                     </div>
                                 </div>
                             </div>

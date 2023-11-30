@@ -49,7 +49,7 @@ try {
 
     $lastUpdate = $rResult[count($rResult) - 1]['last_modified_datetime'];
 
-    $output['timestamp'] = !empty($instanceUpdateOn) ? strtotime($instanceUpdateOn) : time();
+    $output['timestamp'] = !empty($instanceUpdateOn) ? strtotime((string) $instanceUpdateOn) : time();
     foreach ($rResult as $aRow) {
 
         if (!empty($aRow['remote_sample_code'])) {
@@ -76,7 +76,7 @@ try {
         exit(0);
     }
 
-    $url = rtrim($vldashboardUrl, "/") . "/api/vlsm";
+    $url = rtrim((string) $vldashboardUrl, "/") . "/api/vlsm";
 
     $params = [
         [
@@ -95,9 +95,9 @@ try {
 
     $response  = $apiService->postFile($url, 'vlFile', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params);
 
-    $deResult = json_decode($response, true);
+    $deResult = json_decode((string) $response, true);
 
-    if (isset($deResult['status']) && trim($deResult['status']) == 'success') {
+    if (isset($deResult['status']) && trim((string) $deResult['status']) == 'success') {
         $data = array(
             'vl_last_dash_sync' => (!empty($lastUpdate) ? $lastUpdate : DateUtility::getCurrentDateTime())
         );

@@ -29,7 +29,7 @@ $printDate = DateUtility::humanReadableDateFormat($expStr[0]);
 $printDateTime = $expStr[1];
 //set query
 $allQuery = $_SESSION['eidPrintQuery'];
-if (isset($_POST['id']) && trim($_POST['id']) != '') {
+if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
 
 	$searchQuery = "SELECT vl.*,f.*,l.facility_name as labName,
                   l.facility_logo as facilityLogo,
@@ -106,7 +106,7 @@ class MYPDF extends TCPDF
 	public function Header()
 	{
 		if ($this->htitle != '') {
-			if (trim($this->logo) != '') {
+			if (trim((string) $this->logo) != '') {
 				if ($this->imageExists($this->logo)) {
 					$imageFilePath = $this->logo;
 				} else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
@@ -120,15 +120,15 @@ class MYPDF extends TCPDF
 			}
 			$this->SetFont('helvetica', 'B', 8);
 			$this->writeHTMLCell(0, 0, 10, 22, $this->text, 0, 0, 0, true, 'C');
-			if (trim($this->lab) != '') {
+			if (trim((string) $this->lab) != '') {
 				$this->SetFont('helvetica', '', 9);
-				$this->writeHTMLCell(0, 0, 10, 26, strtoupper($this->lab), 0, 0, 0, true, 'C');
+				$this->writeHTMLCell(0, 0, 10, 26, strtoupper((string) $this->lab), 0, 0, 0, true, 'C');
 			}
 			$this->SetFont('helvetica', '', 14);
 			$this->writeHTMLCell(0, 0, 10, 30, 'EARLY INFANT DIAGNOSIS TEST - PATIENT REPORT', 0, 0, 0, true, 'C');
 			$this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C');
 		} else {
-			if (trim($this->logo) != '') {
+			if (trim((string) $this->logo) != '') {
 				if ($this->imageExists($this->logo)) {
 					$imageFilePath = $this->logo;
 				} else if ($this->imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
@@ -148,7 +148,7 @@ class MYPDF extends TCPDF
 			if ($this->text != '') {
 				$this->SetFont('helvetica', '', 12);
 				//        $this->writeHTMLCell(0,0,10,16,'PROGRAMME NATIONAL DE LUTTE CONTRE LE SIDA ET IST', 0, 0, 0, true, 'C', true);
-				$this->writeHTMLCell(0, 0, 10, 16, strtoupper($this->text), 0, 0, 0, true, 'C');
+				$this->writeHTMLCell(0, 0, 10, 16, strtoupper((string) $this->text), 0, 0, 0, true, 'C');
 				$thirdHeading = '23';
 				$fourthHeading = '28';
 				$hrLine = '36';
@@ -159,9 +159,9 @@ class MYPDF extends TCPDF
 				$hrLine = '30';
 				$marginTop = '9';
 			}
-			if (trim($this->lab) != '') {
+			if (trim((string) $this->lab) != '') {
 				$this->SetFont('helvetica', '', 9);
-				$this->writeHTMLCell(0, 0, 10, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C');
+				$this->writeHTMLCell(0, 0, 10, $thirdHeading, strtoupper((string) $this->lab), 0, 0, 0, true, 'C');
 			}
 			$this->SetFont('helvetica', '', 12);
 			if ($this->formId == 3) {
@@ -197,8 +197,6 @@ if ($formId == COUNTRY\SOUTH_SUDAN) {
 	include('pdf/result-pdf-cameroon.php');
 } else if ($formId == COUNTRY\PNG) {
 	include('pdf/result-pdf-png.php');
-} else if ($formId == COUNTRY\WHO) {
-	// include('pdf/result-pdf-who.php');
 } else if ($formId == COUNTRY\RWANDA) {
 	include('pdf/result-pdf-rwanda.php');
 }

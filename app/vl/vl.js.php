@@ -217,7 +217,7 @@
             provinceName = true;
             facilityName = true;
             $("#province").html("<?php echo $province ?? ""; ?>");
-            $("#fName").html("<?php echo addslashes($facility) ?? ""; ?>");
+            $("#fName").html("<?php echo addslashes((string) $facility) ?? ""; ?>");
         }
         $.unblockUI();
     }

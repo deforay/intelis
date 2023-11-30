@@ -15,7 +15,7 @@ $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 
 if (!empty($_GET['id'])) {
-	$params = explode("##", base64_decode($_GET['id']));
+	$params = explode("##", base64_decode((string) $_GET['id']));
 	$dateRange = $params[0];
 	$labName = $params[1];
 	$srcOfReq = $params[2];
@@ -25,8 +25,8 @@ if (!empty($_GET['id'])) {
 $facilityId = null;
 $labId = null;
 if (isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labId']) && $_GET['labId'] != "") {
-	$facilityId = base64_decode($_GET['facilityId']);
-	$labId = base64_decode($_GET['labId']);
+	$facilityId = base64_decode((string) $_GET['facilityId']);
+	$labId = base64_decode((string) $_GET['labId']);
 }
 
 require_once APPLICATION_PATH . '/header.php';
@@ -70,7 +70,7 @@ $srcQuery = "SELECT DISTINCT source_of_request from form_generic where source_of
 $srcResults = $db->rawQuery($srcQuery);
 $srcOfReqList = [];
 foreach ($srcResults as $list) {
-	$srcOfReqList[$list['source_of_request']] = strtoupper($list['source_of_request']);
+	$srcOfReqList[$list['source_of_request']] = strtoupper((string) $list['source_of_request']);
 }
 
 $testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
@@ -282,7 +282,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	$(document).ready(function() {
 		<?php
 		if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-			echo "printBarcodeLabel('" . htmlspecialchars($_GET['s']) . "','" . htmlspecialchars($_GET['f']) . "');";
+			echo "printBarcodeLabel('" . htmlspecialchars((string) $_GET['s']) . "','" . htmlspecialchars((string) $_GET['f']) . "');";
 		}
 		?>
 		$("#testType").select2({
@@ -301,7 +301,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		loadRequestData();
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _translate("Clear"); ?>",
+					cancelLabel: "<?= _translate("Clear", true); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},

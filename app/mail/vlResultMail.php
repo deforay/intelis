@@ -103,7 +103,7 @@ $batchResult = $db->rawQuery($batchQuery);
 											<?php
 											foreach ($facilityResult as $facility) { ?>
 												?>
-												<option data-name="<?php echo $facility['facility_name']; ?>" data-email="<?php echo $facility['facility_emails']; ?>" data-report-email="<?php echo $facility['report_email']; ?>" data-id="<?= $facility['facility_id'] ?>" value="<?php echo base64_encode($facility['facility_id']); ?>"><?php echo ($facility['facility_name']); ?></option>
+												<option data-name="<?php echo $facility['facility_name']; ?>" data-email="<?php echo $facility['facility_emails']; ?>" data-report-email="<?php echo $facility['report_email']; ?>" data-id="<?= $facility['facility_id'] ?>" value="<?php echo base64_encode((string) $facility['facility_id']); ?>"><?php echo ($facility['facility_name']); ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -368,7 +368,7 @@ $batchResult = $db->rawQuery($batchQuery);
 		});
 		$('#sampleCollectionDate').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _translate("Clear"); ?>",
+					cancelLabel: "<?= _translate("Clear", true); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},

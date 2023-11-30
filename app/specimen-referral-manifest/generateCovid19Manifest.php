@@ -20,9 +20,9 @@ $general = ContainerRegistry::get(CommonService::class);
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
-$id = base64_decode($_POST['id']);
+$id = base64_decode((string) $_POST['id']);
 
-if (isset($_POST['frmSrc']) && trim($_POST['frmSrc']) == 'pk2') {
+if (isset($_POST['frmSrc']) && trim((string) $_POST['frmSrc']) == 'pk2') {
     $id = $_POST['ids'];
 }
 
@@ -50,7 +50,7 @@ class MYPDF extends TCPDF
         //$imageFilePath = K_PATH_IMAGES.'logo_example.jpg';
         //$this->Image($imageFilePath, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
         // Set font
-        if (trim($this->logo) != "") {
+        if (trim((string) $this->logo) != "") {
             if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                 $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                 $this->Image($imageFilePath, 15, 10, 15, '', '', '', 'T');
@@ -63,7 +63,7 @@ class MYPDF extends TCPDF
         $this->SetFont('helvetica', '', 10);
         $this->writeHTMLCell(0, 0, 0, 20, $this->labname, 0, 0, 0, true, 'C');
 
-        if (trim($this->logo) != "") {
+        if (trim((string) $this->logo) != "") {
             if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                 $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                 $this->Image($imageFilePath, 262, 10, 15, '', '', '', 'T');
@@ -90,7 +90,7 @@ class MYPDF extends TCPDF
 
 
 
-if (trim($id) != '') {
+if (trim((string) $id) != '') {
 
     $sQuery = "SELECT remote_sample_code,
                     pd.number_of_samples,
@@ -285,7 +285,7 @@ if (trim($id) != '') {
                 //var_dump($sample);die;
                 $collectionDate = '';
                 if (isset($sample['sample_collection_date']) && $sample['sample_collection_date'] != '' && $sample['sample_collection_date'] != null && $sample['sample_collection_date'] != '0000-00-00 00:00:00') {
-                    $cDate = explode(" ", $sample['sample_collection_date']);
+                    $cDate = explode(" ", (string) $sample['sample_collection_date']);
                     $collectionDate = DateUtility::humanReadableDateFormat($cDate[0]) . " " . $cDate[1];
                 }
                 $patientDOB = '';
@@ -304,7 +304,7 @@ if (trim($id) != '') {
                 }
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $sample['patient_id'] . '</td>';
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $patientDOB . '</td>';
-                $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . (str_replace("_", " ", $sample['patient_gender'])) . '</td>';
+                $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . (str_replace("_", " ", (string) $sample['patient_gender'])) . '</td>';
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">' . $collectionDate . '</td>';
                 // $tbl.='<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;">VIRAL</td>';
                 $tbl .= '<td align="center"  style="vertical-align:middle;font-size:11px;border:1px solid #333;"><img style="width:180px;height:25px;" src="' . $general->getBarcodeImageContent($sample['remote_sample_code']) . '"/></td>';
@@ -325,7 +325,7 @@ if (trim($id) != '') {
         //$tbl.='<br/><br/><strong style="text-align:left;">Printed On:  </strong>'.date('d/m/Y H:i:s');
         $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl, 0, 1, 0, true, 'C');
 
-        $filename = trim($bResult[0]['package_code']) . '-' . date('Ymd') . '-' . $general->generateRandomString(6) . '-Manifest.pdf';
+        $filename = trim((string) $bResult[0]['package_code']) . '-' . date('Ymd') . '-' . $general->generateRandomString(6) . '-Manifest.pdf';
         $pdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . 'sample-manifests' . DIRECTORY_SEPARATOR . $filename, "F");
         echo $filename;
     }

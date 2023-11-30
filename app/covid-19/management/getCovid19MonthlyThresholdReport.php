@@ -73,7 +73,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-     $searchArray = explode(" ", $_POST['sSearch']);
+     $searchArray = explode(" ", (string) $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
           if ($sWhereSub == "") {
@@ -119,15 +119,15 @@ RIGHT JOIN testing_lab_health_facilities_map as fm ON vl.lab_id=fm.vl_lab_id";
 [$sTestDate, $eTestDate] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
 
 if (!empty($sWhere)) {
-     if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-          if (trim($sTestDate) == trim($eTestDate)) {
+     if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
+          if (trim((string) $sTestDate) == trim((string) $eTestDate)) {
                $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
           } else {
                $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
           }
      }
-     if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-          $fac = explode(',', $_POST['facilityName']);
+     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+          $fac = explode(',', (string) $_POST['facilityName']);
           $out = '';
           for ($s = 0; $s < count($fac); $s++) {
                if ($out)
@@ -140,8 +140,8 @@ if (!empty($sWhere)) {
           $sWhere[] = ' vl.lab_id IN ' . $out;
      }
 } else {
-     if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
-          $fac = explode(',', $_POST['facilityName']);
+     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+          $fac = explode(',', (string) $_POST['facilityName']);
           $out = '';
           for ($s = 0; $s < count($fac); $s++) {
                if ($out)
@@ -153,7 +153,7 @@ if (!empty($sWhere)) {
           $sWhere[] = '  vl.lab_id IN ' . $out;
      }
 
-     if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
+     if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
           $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
      }
 }

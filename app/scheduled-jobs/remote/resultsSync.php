@@ -34,9 +34,9 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
 }
 try {
     // Checking if the network connection is available
-    $remoteUrl = rtrim($systemConfig['remoteURL'], "/");
+    $remoteUrl = rtrim((string) $systemConfig['remoteURL'], "/");
     $headers = @get_headers($remoteUrl . '/api/version.php?labId=' . $labId . '&version=' . $version);
-    if (strpos($headers[0], '200') === false) {
+    if (strpos((string) $headers[0], '200') === false) {
         error_log("No network connectivity while trying remote sync.");
         return false;
     }
@@ -63,7 +63,7 @@ try {
                     AND sample_code is not null
                     AND generic.data_sync=0";
 
-        if (!empty($forceSyncModule) && trim($forceSyncModule) == "generic-tests" && !empty($sampleCode) && trim($sampleCode) != "") {
+        if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "generic-tests" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
             $genericQuery .= " AND sample_code like '$sampleCode'";
         }
         $genericLabResult = $db->rawQuery($genericQuery);
@@ -83,7 +83,7 @@ try {
         ];
 
         $jsonResponse = $apiService->post($url, $payload);
-        $result = json_decode($jsonResponse, true);
+        $result = json_decode((string) $jsonResponse, true);
 
         if (!empty($result)) {
             $db = $db->where('sample_code', $result, 'IN');
@@ -104,7 +104,7 @@ try {
             AND (sample_code !='' AND sample_code is not null)
             AND vl.data_sync = 0";
 
-        if (!empty($forceSyncModule) && trim($forceSyncModule) == "vl" && !empty($sampleCode) && trim($sampleCode) != "") {
+        if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "vl" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
             $vlQuery .= " AND sample_code like '$sampleCode'";
         }
 
@@ -119,7 +119,7 @@ try {
         ];
 
         $jsonResponse = $apiService->post($url, $payload);
-        $result = json_decode($jsonResponse, true);
+        $result = json_decode((string) $jsonResponse, true);
 
         if (!empty($result)) {
             $db = $db->where('sample_code', $result, 'IN');
@@ -139,7 +139,7 @@ try {
                     AND sample_code is not null
                     AND vl.data_sync=0";
 
-        if (!empty($forceSyncModule) && trim($forceSyncModule) == "eid" && !empty($sampleCode) && trim($sampleCode) != "") {
+        if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "eid" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
             $eidQuery .= " AND sample_code like '$sampleCode'";
         }
         $eidLabResult = $db->rawQuery($eidQuery);
@@ -152,7 +152,7 @@ try {
         ];
 
         $jsonResponse = $apiService->post($url, $payload);
-        $result = json_decode($jsonResponse, true);
+        $result = json_decode((string) $jsonResponse, true);
 
         if (!empty($result)) {
             $db = $db->where('sample_code', $result, 'IN');
@@ -173,7 +173,7 @@ try {
                     AND sample_code is not null
                     AND c19.data_sync=0";
 
-        if (!empty($forceSyncModule) && trim($forceSyncModule) == "covid19" && !empty($sampleCode) && trim($sampleCode) != "") {
+        if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "covid19" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
             $covid19Query .= " AND sample_code like '$sampleCode'";
         }
         $c19LabResult = $db->rawQuery($covid19Query);
@@ -197,7 +197,7 @@ try {
             "Key" => "vlsm-lab-data--",
         ];
         $jsonResponse = $apiService->post($url, $payload);
-        $result = json_decode($jsonResponse, true);
+        $result = json_decode((string) $jsonResponse, true);
 
         if (!empty($result)) {
             $db = $db->where('sample_code', $result, 'IN');
@@ -218,7 +218,7 @@ try {
                     AND sample_code != ''
                     AND sample_code is not null
                     AND hep.data_sync=0";
-        if (!empty($forceSyncModule) && trim($forceSyncModule) == "hepatitis" && !empty($sampleCode) && trim($sampleCode) != "") {
+        if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "hepatitis" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
             $hepQuery .= " AND sample_code like '$sampleCode'";
         }
         $hepLabResult = $db->rawQuery($hepQuery);
@@ -231,7 +231,7 @@ try {
         ];
 
         $jsonResponse = $apiService->post($url, $payload);
-        $result = json_decode($jsonResponse, true);
+        $result = json_decode((string) $jsonResponse, true);
 
         if (!empty($result)) {
             $db = $db->where('sample_code', $result, 'IN');

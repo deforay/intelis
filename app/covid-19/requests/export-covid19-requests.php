@@ -95,7 +95,7 @@ foreach ($db->rawQueryGenerator($_SESSION['covid19RequestSearchResultQuery']) as
 
     //set sample rejection
     $sampleRejection = 'No';
-    if (trim($aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim($aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
+    if (trim((string) $aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
         $sampleRejection = 'Yes';
     }
 
@@ -111,7 +111,7 @@ foreach ($db->rawQueryGenerator($_SESSION['covid19RequestSearchResultQuery']) as
     }
 
     if (isset($aRow['source_of_alert']) && $aRow['source_of_alert'] != "others") {
-        $sourceOfArtPOE = str_replace("-", " ", $aRow['source_of_alert']);
+        $sourceOfArtPOE = str_replace("-", " ", (string) $aRow['source_of_alert']);
     } else {
         $sourceOfArtPOE = $aRow['source_of_alert_other'];
     }
@@ -128,7 +128,7 @@ foreach ($db->rawQueryGenerator($_SESSION['covid19RequestSearchResultQuery']) as
     $row[] = ($aRow['facility_name']);
     if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
         if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-            $key = base64_decode($general->getGlobalConfig('key'));
+            $key = base64_decode((string) $general->getGlobalConfig('key'));
             $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
             $patientFname = $general->crypto('decrypt', $patientFname, $key);
             $patientLname = $general->crypto('decrypt', $patientLname, $key);
@@ -137,7 +137,7 @@ foreach ($db->rawQueryGenerator($_SESSION['covid19RequestSearchResultQuery']) as
         $row[] = $patientFname . " " . $patientLname;
     }
     $row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
-    $row[] = ($aRow['patient_age'] != null && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
+    $row[] = ($aRow['patient_age'] != null && trim((string) $aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
     $row[] = ($aRow['patient_gender']);
     $row[] = ($aRow['is_patient_pregnant']);
     $row[] = ($aRow['patient_phone_number']);
@@ -191,7 +191,7 @@ if (isset($_SESSION['covid19RequestSearchResultQueryCount']) && $_SESSION['covid
     $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
     // we dont need the $output variable anymore
     unset($output);
-    echo base64_encode($fileName);
+    echo base64_encode((string) $fileName);
 } else {
     $excel = new Spreadsheet();
     $sheet = $excel->getActiveSheet();

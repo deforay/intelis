@@ -46,11 +46,11 @@ foreach ($db->rawQueryGenerator($_SESSION['vlRequestQuery']) as $aRow) {
 	$gender = MiscUtility::getGenderFromString($aRow['patient_gender']);
 
 	$arvAdherence = '';
-	if (trim($aRow['arv_adherance_percentage']) == 'good') {
+	if (trim((string) $aRow['arv_adherance_percentage']) == 'good') {
 		$arvAdherence = 'Good >= 95%';
-	} elseif (trim($aRow['arv_adherance_percentage']) == 'fair') {
+	} elseif (trim((string) $aRow['arv_adherance_percentage']) == 'fair') {
 		$arvAdherence = 'Fair 85-94%';
-	} elseif (trim($aRow['arv_adherance_percentage']) == 'poor') {
+	} elseif (trim((string) $aRow['arv_adherance_percentage']) == 'poor') {
 		$arvAdherence = 'Poor <85%';
 	}
 
@@ -87,7 +87,7 @@ foreach ($db->rawQueryGenerator($_SESSION['vlRequestQuery']) as $aRow) {
 	$row[] = $aRow['facility_state'];
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
 		if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-			$key = base64_decode($general->getGlobalConfig('key'));
+			$key = base64_decode((string) $general->getGlobalConfig('key'));
 			$aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
 			$patientFname = $general->crypto('decrypt', $patientFname, $key);
 			$patientMname = $general->crypto('decrypt', $patientMname, $key);
@@ -108,7 +108,7 @@ foreach ($db->rawQueryGenerator($_SESSION['vlRequestQuery']) as $aRow) {
 	$row[] = $aRow['is_patient_pregnant'];
 	$row[] = $aRow['is_patient_breastfeeding'];
 	$row[] = $arvAdherence;
-	$row[] = isset($aRow['test_reason_name']) ? (str_replace("_", " ", $aRow['test_reason_name'])) : null;
+	$row[] = isset($aRow['test_reason_name']) ? (str_replace("_", " ", (string) $aRow['test_reason_name'])) : null;
 	$row[] = $aRow['request_clinician_name'];
 	$row[] = DateUtility::humanReadableDateFormat($aRow['test_requested_on']);
 	$row[] = $sampleRejection;
@@ -132,7 +132,7 @@ if (isset($_SESSION['vlRequestQueryCount']) && $_SESSION['vlRequestQueryCount'] 
 	$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
 	// we dont need the $output variable anymore
 	unset($output);
-	echo base64_encode($fileName);
+	echo base64_encode((string) $fileName);
 } else {
 
 	$excel = new Spreadsheet();

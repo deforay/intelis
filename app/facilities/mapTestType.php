@@ -90,7 +90,7 @@ require_once APPLICATION_PATH . '/header.php';
 								<div class="row">
 									<div class="col-md-12">
 										<div class="form-group">
-											<label for="facilities" style="margin-left: 30px;" class="control-label"><?php echo _translate("Select the"); ?> <?php echo str_replace("Manage", "", $title); ?> <?php echo _translate("for test type"); ?> </label>
+											<label for="facilities" style="margin-left: 30px;" class="control-label"><?php echo _translate("Select the"); ?> <?php echo str_replace("Manage", "", (string) $title); ?> <?php echo _translate("for test type"); ?> </label>
 											<div class="col-lg-12">
 												<div class="col-md-5">
 													<select name="facilities[]" id="search" class="form-control" size="8" multiple="multiple">

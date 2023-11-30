@@ -58,7 +58,7 @@ $styleArray = array(
 );
 $nameValue = '';
 foreach ($_POST as $key => $value) {
-    if (trim($value) != '' && trim($value) != '-- Select --') {
+    if (trim((string) $value) != '' && trim((string) $value) != '-- Select --') {
         $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
     }
 }
@@ -137,7 +137,7 @@ foreach ($outputCalc as $rNo => $rData) {
     $colNum = 1;
     $rCount = $rNo + 3;
     foreach ($rData as $field => $value) {
-        $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNum) . $rCount, html_entity_decode($value));
+        $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNum) . $rCount, html_entity_decode((string) $value));
         $colNum++;
     }
 }
@@ -146,7 +146,7 @@ foreach ($output as $rowNo => $rowData) {
     $colNo = 1;
     $rRowCount = $rowNo + 6;
     foreach ($rowData as $field => $value) {
-        $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
+        $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode((string) $value));
         $colNo++;
     }
 }

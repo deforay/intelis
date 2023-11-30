@@ -72,8 +72,8 @@ if (!empty($_POST['facilityName'])) {
 }
 $sTestDate = '';
 $eTestDate = '';
-if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
-    $s_t_date = explode("to", $_POST['sampleTestDate']);
+if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
+    $s_t_date = explode("to", (string) $_POST['sampleTestDate']);
     if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
         $sTestDate = DateUtility::isoDateFormat(trim($s_t_date[0]));
     }
@@ -81,7 +81,7 @@ if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
         $eTestDate = DateUtility::isoDateFormat(trim($s_t_date[1]));
     }
 }
-if (isset($_POST['sampleTestDate']) && trim($_POST['sampleTestDate']) != '') {
+if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
     if (isset($sWhere)) {
         $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
     } else {
@@ -164,7 +164,7 @@ if (isset($_POST['targetType']) && $_POST['targetType'] != '') {
         xAxis: {
             //  categories: ["21 Mar", "22 Mar", "23 Mar", "24 Mar", "25 Mar", "26 Mar", "27 Mar"]
             categories: [<?php
-                            echo "'" . htmlspecialchars($monthYear) . "',";
+                            echo "'" . htmlspecialchars((string) $monthYear) . "',";
                             ?>]
         },
         yAxis: {

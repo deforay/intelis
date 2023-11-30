@@ -5,9 +5,9 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
-$date = base64_decode($_GET['d']);
+$date = base64_decode((string) $_GET['d']);
 $tsQuery = "SELECT status_name FROM r_sample_status WHERE status_id = '" . $id . "'";
 $tsResult = $db->rawQuery($tsQuery);
 if (empty($tsResult)) {
@@ -184,7 +184,7 @@ $batResult = $db->rawQuery($batQuery);
 		loadResultStatusData();
 		$('#sampleCollectionDate').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _translate("Clear"); ?>",
+					cancelLabel: "<?= _translate("Clear", true); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},

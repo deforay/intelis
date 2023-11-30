@@ -51,7 +51,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", $_POST['sSearch']);
+    $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
         if ($sWhereSub == "") {
@@ -131,9 +131,9 @@ $output = array(
 foreach ($rResult as $aRow) {
     $row = [];
     $row[] = $aRow['labName'];
-    $row[] = date('d-M-Y h:i:s a', strtotime($aRow['requested_on']));
+    $row[] = date('d-M-Y h:i:s a', strtotime((string) $aRow['requested_on']));
     $row[] = $aRow['number_of_records'];
-    $row[] = (str_replace('-', ' ', $aRow['request_type']));
+    $row[] = (str_replace('-', ' ', (string) $aRow['request_type']));
     $output['aaData'][] = $row;
 }
 

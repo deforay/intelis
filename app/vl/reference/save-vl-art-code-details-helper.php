@@ -21,7 +21,7 @@ $tableName = "r_vl_art_regimen";
 $primaryKey = "art_id";
 // echo "<pre>";print_r($_POST);die;
 try {
-	if (isset($_POST['artCode']) && trim($_POST['artCode']) != "") {
+	if (isset($_POST['artCode']) && trim((string) $_POST['artCode']) != "") {
 
 
 		$data = array(
@@ -32,7 +32,7 @@ try {
 			'updated_datetime'  => DateUtility::getCurrentDateTime()
 		);
 		if (isset($_POST['artCodeId']) && $_POST['artCodeId'] != "") {
-			$db = $db->where($primaryKey, base64_decode($_POST['artCodeId']));
+			$db = $db->where($primaryKey, base64_decode((string) $_POST['artCodeId']));
 			$lastId = $db->update($tableName, $data);
 		} else {
 			$data['data_sync'] = 0;

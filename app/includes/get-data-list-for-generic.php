@@ -60,10 +60,10 @@ if (isset($returnField) && $returnField != "") {
     $echoResult = [];
     if (count($cResult) > 0) {
         foreach ($cResult as $row) {
-            $echoResult[] = array("id" => $row[$fieldId], "text" => ucwords($row[$field]));
+            $echoResult[] = array("id" => $row[$fieldId], "text" => ucwords((string) $row[$field]));
         }
     } else {
-        $echoResult[] = array("id" => $text, 'text' => ucwords($text));
+        $echoResult[] = array("id" => $text, 'text' => ucwords((string) $text));
     }
 
     $result = array("result" => $echoResult);

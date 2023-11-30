@@ -130,7 +130,7 @@ try {
         }
 
         if (!empty($data['provinceId']) && !is_numeric($data['provinceId'])) {
-            $province = explode("##", $data['provinceId']);
+            $province = explode("##", (string) $data['provinceId']);
             if (!empty($province)) {
                 $data['provinceId'] = $province[0];
             }
@@ -143,13 +143,13 @@ try {
             $data['fundingSource'] = $general->getValueByName($data['fundingSource'], 'funding_source_name', 'r_funding_sources', 'funding_source_id');
         }
         if (isset($data['patientNationality']) && !is_numeric($data['patientNationality'])) {
-            $iso = explode("(", $data['patientNationality']);
+            $iso = explode("(", (string) $data['patientNationality']);
             if (!empty($iso)) {
                 $data['patientNationality'] = trim($iso[0]);
             }
             $data['patientNationality'] = $general->getValueByName($data['patientNationality'], 'iso_name', 'r_countries', 'id');
         }
-        $pprovince = explode("##", $data['patientProvince']);
+        $pprovince = explode("##", (string) $data['patientProvince']);
         if (!empty($pprovince)) {
             $data['patientProvince'] = $pprovince[0];
         }
@@ -269,36 +269,36 @@ try {
         }
 
         //Set sample received date
-        if (!empty($data['sampleReceivedDate']) && trim($data['sampleReceivedDate']) != "") {
+        if (!empty($data['sampleReceivedDate']) && trim((string) $data['sampleReceivedDate']) != "") {
             $data['sampleReceivedDate'] = DateUtility::isoDateFormat($data['sampleReceivedDate'], true);
         } else {
             $data['sampleReceivedDate'] = null;
         }
-        if (!empty($data['sampleTestedDateTime']) && trim($data['sampleTestedDateTime']) != "") {
+        if (!empty($data['sampleTestedDateTime']) && trim((string) $data['sampleTestedDateTime']) != "") {
             $data['sampleTestedDateTime'] = DateUtility::isoDateFormat($data['sampleTestedDateTime'], true);
         } else {
             $data['sampleTestedDateTime'] = null;
         }
 
-        if (!empty($data['arrivalDateTime']) && trim($data['arrivalDateTime']) != "") {
+        if (!empty($data['arrivalDateTime']) && trim((string) $data['arrivalDateTime']) != "") {
             $data['arrivalDateTime'] = DateUtility::isoDateFormat($data['arrivalDateTime'], true);
         } else {
             $data['arrivalDateTime'] = null;
         }
 
-        if (!empty($data['revisedOn']) && trim($data['revisedOn']) != "") {
+        if (!empty($data['revisedOn']) && trim((string) $data['revisedOn']) != "") {
             $data['revisedOn'] = DateUtility::isoDateFormat($data['revisedOn'], true);
         } else {
             $data['revisedOn'] = null;
         }
 
-        if (isset($data['approvedOn']) && trim($data['approvedOn']) != "") {
+        if (isset($data['approvedOn']) && trim((string) $data['approvedOn']) != "") {
             $data['approvedOn'] = DateUtility::isoDateFormat($data['approvedOn'], true);
         } else {
             $data['approvedOn'] = null;
         }
 
-        if (isset($data['reviewedOn']) && trim($data['reviewedOn']) != "") {
+        if (isset($data['reviewedOn']) && trim((string) $data['reviewedOn']) != "") {
             $data['reviewedOn'] = DateUtility::isoDateFormat($data['reviewedOn'], true);
         } else {
             $data['reviewedOn'] = null;
@@ -329,11 +329,11 @@ try {
             'lab_id' => !empty($data['labId']) ? $data['labId'] : null,
             'testing_point' => !empty($data['testingPoint']) ? $data['testingPoint'] : null,
             'implementing_partner' => !empty($data['implementingPartner']) ? $data['implementingPartner'] : null,
-            'source_of_alert' => !empty($data['sourceOfAlertPOE']) ? strtolower(str_replace(" ", "-", $data['sourceOfAlertPOE'])) : null,
+            'source_of_alert' => !empty($data['sourceOfAlertPOE']) ? strtolower(str_replace(" ", "-", (string) $data['sourceOfAlertPOE'])) : null,
             'source_of_alert_other' => (!empty($data['sourceOfAlertPOE']) && $data['sourceOfAlertPOE'] == 'others') ? $data['alertPoeOthers'] : null,
             'funding_source' => !empty($data['fundingSource']) ? $data['fundingSource'] : null,
             'patient_id' => !empty($data['patientId']) ? $data['patientId'] : null,
-            'patient_name' => !empty($data['firstName']) ? trim($data['firstName']) : null,
+            'patient_name' => !empty($data['firstName']) ? trim((string) $data['firstName']) : null,
             'patient_surname' => !empty($data['lastName']) ? $data['lastName'] : null,
             'patient_dob' => !empty($data['patientDob']) ? DateUtility::isoDateFormat($data['patientDob']) : null,
             'patient_gender' => !empty($data['patientGender']) ? $data['patientGender'] : null,
@@ -466,7 +466,7 @@ try {
                 $db->delete($testTableName);
                 foreach ($data['c19Tests'] as $testKey => $test) {
                     if (!empty($test['testName'])) {
-                        if (isset($test['testDate']) && trim($test['testDate']) != "") {
+                        if (isset($test['testDate']) && trim((string) $test['testDate']) != "") {
                             $data['testDate'] = DateUtility::isoDateFormat($data['testDate'], true);
                         } else {
                             $test['testDate'] = null;
@@ -477,8 +477,8 @@ try {
                             'facility_id' => $data['labId'] ?? null,
                             'sample_tested_datetime' => DateUtility::isoDateFormat($test['testDate'], true),
                             'testing_platform' => $test['testingPlatform'] ?? null,
-                            'kit_lot_no' => (strpos($test['testName'], 'RDT') !== false) ? $test['kitLotNo'] : null,
-                            'kit_expiry_date' => (strpos($test['testName'], 'RDT') !== false) ? DateUtility::isoDateFormat($test['kitExpiryDate']) : null,
+                            'kit_lot_no' => (strpos((string) $test['testName'], 'RDT') !== false) ? $test['kitLotNo'] : null,
+                            'kit_expiry_date' => (strpos((string) $test['testName'], 'RDT') !== false) ? DateUtility::isoDateFormat($test['kitExpiryDate']) : null,
                             'result' => $test['testResult'],
                         ];
                         $db->insert($testTableName, $covid19TestData);

@@ -254,7 +254,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                         <div class="col-md-6">
                                              <label class="col-lg-5" for="sampleReordered"> Sample Reordered</label>
                                              <div class="col-lg-7">
-                                                  <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim($genericResultInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> title="Please indicate if this is a reordered sample">
+                                                  <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $genericResultInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> title="Please indicate if this is a reordered sample">
 
                                              </div>
                                         </div>
@@ -313,7 +313,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                                             <?php
                                                             foreach ($implementingPartnerList as $implementingPartner) {
                                                             ?>
-                                                                 <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
+                                                                 <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
                                                             <?php } ?>
                                                        </select>
                                                   </div>
@@ -336,7 +336,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                                             <?php
                                                             foreach ($fundingSourceList as $fundingSource) {
                                                             ?>
-                                                                 <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
+                                                                 <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
                                                             <?php } ?>
                                                        </select>
                                                   </div>
@@ -571,7 +571,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                                                  <select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" onchange="checkRejectionReason();">
                                                                       <option value="">-- Select --</option>
                                                                       <?php foreach ($rejectionTypeResult as $type) { ?>
-                                                                           <optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
+                                                                           <optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
                                                                                 <?php foreach ($rejectionResult as $reject) {
                                                                                      if ($type['rejection_type'] == $reject['rejection_type']) { ?>
                                                                                           <option value="<?php echo $reject['rejection_reason_id']; ?>"><?= $reject['rejection_reason_name']; ?></option>
@@ -606,7 +606,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                                                  <select name="reasonForTesting" id="reasonForTesting" class="form-control result-optional" title="Please choose reason for testing">
                                                                       <option value="">-- Select --</option>
                                                                       <?php foreach ($testReason as $treason) { ?>
-                                                                           <option value="<?php echo $treason['test_reason_id']; ?>"><?php echo ucwords($treason['test_reason']); ?></option>
+                                                                           <option value="<?php echo $treason['test_reason_id']; ?>"><?php echo ucwords((string) $treason['test_reason']); ?></option>
                                                                       <?php } ?>
                                                                  </select>
                                                             </div>
@@ -858,7 +858,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-               echo "printBarcodeLabel('" . htmlspecialchars($_GET['s']) . "','" . htmlspecialchars($_GET['f']) . "');";
+               echo "printBarcodeLabel('" . htmlspecialchars((string) $_GET['s']) . "','" . htmlspecialchars((string) $_GET['f']) . "');";
           }
           ?>
           // BARCODESTUFF END

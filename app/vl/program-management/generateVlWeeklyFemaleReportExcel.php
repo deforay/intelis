@@ -19,7 +19,7 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim($_SESSION['vlStatisticsFemaleQuery']) != "") {
+if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim((string) $_SESSION['vlStatisticsFemaleQuery']) != "") {
     $filename = '';
     $rResult = $db->rawQuery($_SESSION['vlStatisticsFemaleQuery']);
 
@@ -61,7 +61,7 @@ if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim($_SESSION['vlStatisticsF
     $sheet->mergeCells('A1:N1');
     $nameValue = '';
     foreach ($_POST as $key => $value) {
-        if (trim($value) != '' && trim($value) != '-- Select --') {
+        if (trim((string) $value) != '' && trim((string) $value) != '-- Select --') {
             $nameValue .= str_replace("_", " ", $key) . " : " . $value . ",&nbsp;&nbsp;";
         }
     }
@@ -98,7 +98,7 @@ if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim($_SESSION['vlStatisticsF
         $colNo = 1;
         foreach ($rowData as $field => $value) {
             $rRowCount = $rowNo + 4;
-            $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
+            $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode((string) $value));
 
             $colNo++;
         }

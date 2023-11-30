@@ -20,8 +20,8 @@ $batchService = ContainerRegistry::get(BatchService::class);
 $tableName = "batch_details";
 try {
     $labelOrder = '';
-    if (isset($_POST['sortOrders']) && trim($_POST['sortOrders']) != '') {
-        $xplodSortOrders = explode(",", $_POST['sortOrders']);
+    if (isset($_POST['sortOrders']) && trim((string) $_POST['sortOrders']) != '') {
+        $xplodSortOrders = explode(",", (string) $_POST['sortOrders']);
         $orderArray = [];
         if (isset($_POST['positions']) && $_POST['positions'] == 'alpha-numeric') {
             foreach ($batchService->excelColumnRange('A', 'H') as $value) {

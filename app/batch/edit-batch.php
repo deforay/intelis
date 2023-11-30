@@ -14,7 +14,7 @@ $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 
 $testType = $_GET['type'] ?? 'vl';
-$genericTestType = base64_decode($_GET['testType']);
+$genericTestType = base64_decode((string) $_GET['testType']);
 $title = "Viral Load";
 $refTable = "form_vl";
 $refPrimaryColumn = "vl_sample_id";
@@ -67,7 +67,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $batchQuery = "SELECT * from batch_details as b_d
                     LEFT JOIN instruments as i_c ON i_c.config_id=b_d.machine
@@ -271,7 +271,7 @@ $fundingSourceList = $general->getFundingSources();
 							<div class="col-md-5">
 								<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
 									<?php foreach ($result as $key => $sample) {
-										if (trim($sample['sample_batch_id']) == $id) { ?>
+										if (trim((string) $sample['sample_batch_id']) == $id) { ?>
 											<option value="<?php echo $sample[$refPrimaryColumn]; ?>"><?php echo $sample['sample_code'] . " - " . ($sample['facility_name']); ?></option>
 									<?php }
 									} ?>
@@ -346,7 +346,7 @@ $fundingSourceList = $general->getFundingSources();
 		}, 10);
 		$('#sampleCollectionDate').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _translate("Clear"); ?>",
+					cancelLabel: "<?= _translate("Clear", true); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},
@@ -374,8 +374,8 @@ $fundingSourceList = $general->getFundingSources();
 		<?php
 		$r = 1;
 		foreach ($result as $sample) {
-			if (isset($sample['batch_id']) && trim($sample['batch_id']) == $id) {
-				if (isset($sample['result']) && trim($sample['result']) != '') {
+			if (isset($sample['batch_id']) && trim((string) $sample['batch_id']) == $id) {
+				if (isset($sample['result']) && trim((string) $sample['result']) != '') {
 					if ($r == 1) {
 		?>
 						$("#deselect-all-samplecode").remove();

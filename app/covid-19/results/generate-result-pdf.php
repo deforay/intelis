@@ -38,13 +38,13 @@ $systemConfig = array_merge($sc, SYSTEM_CONFIG);
 
 //set mField Array
 $mFieldArray = [];
-if (isset($arr['r_mandatory_fields']) && trim($arr['r_mandatory_fields']) != '') {
-	$mFieldArray = explode(',', $arr['r_mandatory_fields']);
+if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields']) != '') {
+	$mFieldArray = explode(',', (string) $arr['r_mandatory_fields']);
 }
 
 //set query
 $allQuery = $_SESSION['covid19PrintQuery'];
-if (isset($_POST['id']) && trim($_POST['id']) != '') {
+if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
 
 	$searchQuery = "SELECT vl.*,f.*,
 				l.facility_name as labName,
@@ -146,7 +146,7 @@ class MYPDF extends TCPDF
 		// Logo
 
 		if ($this->htitle != '') {
-			if (trim($this->logo) != '') {
+			if (trim((string) $this->logo) != '') {
 				if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
 					$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
 					if ($this->formId == 3) {
@@ -159,9 +159,9 @@ class MYPDF extends TCPDF
 			if ($this->formId == 3) {
 				$this->SetFont('helvetica', 'B', 16);
 				$this->writeHTMLCell(0, 0, 10, 03, $this->text, 0, 0, 0, true, 'C');
-				if (trim($this->lab) != '') {
+				if (trim((string) $this->lab) != '') {
 					$this->SetFont('helvetica', '', 10);
-					$this->writeHTMLCell(0, 0, 10, 10, strtoupper($this->lab), 0, 0, 0, true, 'C');
+					$this->writeHTMLCell(0, 0, 10, 10, strtoupper((string) $this->lab), 0, 0, 0, true, 'C');
 				}
 				$this->SetFont('helvetica', 'b', 10);
 				$this->writeHTMLCell(0, 0, 10, 18, 'Département de Virologie', 0, 0, 0, true, 'C');
@@ -175,16 +175,16 @@ class MYPDF extends TCPDF
 			} else {
 				$this->SetFont('helvetica', 'B', 16);
 				$this->writeHTMLCell(0, 0, 10, 18, $this->text, 0, 0, 0, true, 'C');
-				if (trim($this->lab) != '') {
+				if (trim((string) $this->lab) != '') {
 					$this->SetFont('helvetica', '', 10);
-					$this->writeHTMLCell(0, 0, 10, 25, strtoupper($this->lab), 0, 0, 0, true, 'C');
+					$this->writeHTMLCell(0, 0, 10, 25, strtoupper((string) $this->lab), 0, 0, 0, true, 'C');
 				}
 				$this->SetFont('helvetica', '', 12);
 				$this->writeHTMLCell(0, 0, 10, 30, 'COVID-19 TEST - PATIENT REPORT', 0, 0, 0, true, 'C');
 				$this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C');
 			}
 		} else {
-			if (trim($this->logo) != '') {
+			if (trim((string) $this->logo) != '') {
 				if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
 					$imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
 					$this->Image($imageFilePath, 16, 13, 15, '', '', '', 'T');
@@ -205,7 +205,7 @@ class MYPDF extends TCPDF
 			if ($this->text != '') {
 				$this->SetFont('helvetica', '', 12);
 				//        $this->writeHTMLCell(0,0,10,16,'PROGRAMME NATIONAL DE LUTTE CONTRE LE SIDA ET IST', 0, 0, 0, true, 'C', true);
-				$this->writeHTMLCell(0, 0, 10, 16, strtoupper($this->text), 0, 0, 0, true, 'C');
+				$this->writeHTMLCell(0, 0, 10, 16, strtoupper((string) $this->text), 0, 0, 0, true, 'C');
 				$thirdHeading = '23';
 				$fourthHeading = '28';
 				$hrLine = '36';
@@ -216,9 +216,9 @@ class MYPDF extends TCPDF
 				$hrLine = '30';
 				$marginTop = '9';
 			}
-			if (trim($this->lab) != '') {
+			if (trim((string) $this->lab) != '') {
 				$this->SetFont('helvetica', '', 9);
-				$this->writeHTMLCell(0, 0, 10, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C');
+				$this->writeHTMLCell(0, 0, 10, $thirdHeading, strtoupper((string) $this->lab), 0, 0, 0, true, 'C');
 			}
 			$this->SetFont('helvetica', '', 12);
 			$this->writeHTMLCell(0, 0, 10, $fourthHeading, 'RESULTATS CHARGE VIRALE', 0, 0, 0, true, 'C');
@@ -265,11 +265,11 @@ if (!empty($requestResult)) {
 	foreach ($requestResult as $result) {
 		//set print time
 		if (isset($result['result_printed_datetime']) && $result['result_printed_datetime'] != "") {
-			$printedTime = date('Y-m-d H:i:s', strtotime($result['result_printed_datetime']));
+			$printedTime = date('Y-m-d H:i:s', strtotime((string) $result['result_printed_datetime']));
 		} else {
 			$printedTime = DateUtility::getCurrentDateTime();
 		}
-		$expStr = explode(" ", $printedTime);
+		$expStr = explode(" ", (string) $printedTime);
 		$printDate = DateUtility::humanReadableDateFormat($expStr[0]);
 		$printDateTime = $expStr[1];
 
@@ -301,7 +301,7 @@ if (!empty($requestResult)) {
 		$draftTextShow = false;
 		//Set watermark text
 		for ($m = 0; $m < count($mFieldArray); $m++) {
-			if (!isset($result[$mFieldArray[$m]]) || trim($result[$mFieldArray[$m]]) == '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
+			if (!isset($result[$mFieldArray[$m]]) || trim((string) $result[$mFieldArray[$m]]) == '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
 				$draftTextShow = true;
 				break;
 			}
@@ -309,7 +309,7 @@ if (!empty($requestResult)) {
 
 		$selectedReportFormats = [];
 		if (isset($result['reportFormat']) && $result['reportFormat'] != "") {
-			$selectedReportFormats = json_decode($result['reportFormat'], true);
+			$selectedReportFormats = json_decode((string) $result['reportFormat'], true);
 		}
 		if (!empty($selectedReportFormats) && !empty($selectedReportFormats['covid19'])) {
 			require($selectedReportFormats['covid19']);

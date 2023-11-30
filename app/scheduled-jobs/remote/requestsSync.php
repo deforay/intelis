@@ -39,11 +39,11 @@ if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
     exit(0);
 }
 
-$remoteUrl = rtrim($systemConfig['remoteURL'], "/");
+$remoteUrl = rtrim((string) $systemConfig['remoteURL'], "/");
 
 $headers = @get_headers($remoteUrl . '/api/version.php?labId=' . $labId . '&version=' . $version);
 
-if (strpos($headers[0], '200') === false) {
+if (strpos((string) $headers[0], '200') === false) {
     error_log("No internet connectivity while trying remote sync.");
     return false;
 }
@@ -78,7 +78,7 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
         'module' => 'generic-tests',
         "Key" => "vlsm-lab-data--",
     );
-    if (!empty($forceSyncModule) && trim($forceSyncModule) == "generic-tests" && !empty($manifestCode) && trim($manifestCode) != "") {
+    if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "generic-tests" && !empty($manifestCode) && trim((string) $manifestCode) != "") {
         $payload['manifestCode'] = $manifestCode;
     }
 
@@ -243,7 +243,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
         'module' => 'vl',
         "Key" => "vlsm-lab-data--",
     );
-    if (!empty($forceSyncModule) && trim($forceSyncModule) == "vl" && !empty($manifestCode) && trim($manifestCode) != "") {
+    if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "vl" && !empty($manifestCode) && trim((string) $manifestCode) != "") {
         $payload['manifestCode'] = $manifestCode;
     }
     $columnList = [];
@@ -393,7 +393,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
         'module' => 'eid',
         "Key" => "vlsm-lab-data--",
     );
-    if (!empty($forceSyncModule) && trim($forceSyncModule) == "eid" && !empty($manifestCode) && trim($manifestCode) != "") {
+    if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "eid" && !empty($manifestCode) && trim((string) $manifestCode) != "") {
         $payload['manifestCode'] = $manifestCode;
     }
 
@@ -526,7 +526,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         'module' => 'covid19',
         "Key" => "vlsm-lab-data--",
     );
-    if (isset($forceSyncModule) && trim($forceSyncModule) == "covid19" && isset($manifestCode) && trim($manifestCode) != "") {
+    if (isset($forceSyncModule) && trim((string) $forceSyncModule) == "covid19" && isset($manifestCode) && trim((string) $manifestCode) != "") {
         $payload['manifestCode'] = $manifestCode;
     }
 
@@ -721,7 +721,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
         'module' => 'hepatitis',
         "Key" => "vlsm-lab-data--",
     );
-    if (isset($forceSyncModule) && trim($forceSyncModule) == "hepatitis" && isset($manifestCode) && trim($manifestCode) != "") {
+    if (isset($forceSyncModule) && trim((string) $forceSyncModule) == "hepatitis" && isset($manifestCode) && trim((string) $manifestCode) != "") {
         $payload['manifestCode'] = $manifestCode;
     }
 
@@ -917,7 +917,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
         'module' => 'tb',
         "Key" => "vlsm-lab-data--",
     );
-    if (isset($forceSyncModule) && trim($forceSyncModule) == "tb" && isset($manifestCode) && trim($manifestCode) != "") {
+    if (isset($forceSyncModule) && trim((string) $forceSyncModule) == "tb" && isset($manifestCode) && trim((string) $manifestCode) != "") {
         $payload['manifestCode'] = $manifestCode;
     }
 
@@ -1048,6 +1048,6 @@ $instanceId = $general->getInstanceId();
 $db = $db->where('vlsm_instance_id', $instanceId);
 $id = $db->update('s_vlsm_instance', array('last_remote_requests_sync' => DateUtility::getCurrentDateTime()));
 
-if (isset($forceSyncModule) && trim($forceSyncModule) != "" && isset($manifestCode) && trim($manifestCode) != "") {
+if (isset($forceSyncModule) && trim((string) $forceSyncModule) != "" && isset($manifestCode) && trim((string) $manifestCode) != "") {
     return 1;
 }

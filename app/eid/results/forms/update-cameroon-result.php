@@ -50,7 +50,7 @@ foreach ($pdResult as $provinceName) {
 
 $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facility_id'], '-- Select --');
 
-$eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", $eidInfo['mother_treatment']) : [];
+$eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", (string) $eidInfo['mother_treatment']) : [];
 
 if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
     $facilityQuery = "SELECT * FROM facility_details WHERE facility_id= ? AND status='active'";
@@ -93,13 +93,13 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                     <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
                                         <td class="labels"><label for="sampleCode"><?= _translate('Sample ID'); ?> </label></td>
                                         <td>
-                                            <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?= htmlspecialchars($eidInfo['sample_code']); ?></span>
-                                            <input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars($eidInfo['sample_code']); ?>" />
+                                            <span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"><?= htmlspecialchars((string) $eidInfo['sample_code']); ?></span>
+                                            <input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars((string) $eidInfo['sample_code']); ?>" />
                                         </td>
                                     <?php } else { ?>
                                         <td class="labels"><label for="sampleCode"><?= _translate('Sample ID'); ?> </label><span class="mandatory">*</span></td>
                                         <td>
-                                            <input type="text" readonly value="<?= htmlspecialchars($eidInfo['sample_code']); ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="<?= _translate('Sample ID'); ?> title=" <?= _translate('Please enter sample id'); ?>" style="width:100%;" onchange="" />
+                                            <input type="text" readonly value="<?= htmlspecialchars((string) $eidInfo['sample_code']); ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="<?= _translate('Sample ID'); ?> title=" <?= _translate('Please enter sample id'); ?>" style="width:100%;" onchange="" />
                                         </td>
                                     <?php } ?>
                                     <td></td>
@@ -145,7 +145,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                             <?php
                                             foreach ($fundingSourceList as $fundingSource) {
                                             ?>
-                                                <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $eidInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
+                                                <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $eidInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
                                             <?php } ?>
                                         </select>
                                     </td>
@@ -157,7 +157,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                             <?php
                                             foreach ($implementingPartnerList as $implementingPartner) {
                                             ?>
-                                                <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $eidInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
+                                                <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $eidInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
                                             <?php } ?>
                                         </select>
                                     </td>
@@ -182,7 +182,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                     </td>
                                     <th scope="row" class="labels" style="width:15% !important"><label for="childName">Infant name </label></th>
                                     <td style="width:35% !important">
-                                        <input type="text" class="form-control " id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" value="<?= htmlspecialchars($eidInfo['child_name']); ?>" onchange="" />
+                                        <input type="text" class="form-control " id="childName" name="childName" placeholder="Infant name" title="Please enter Infant Name" style="width:100%;" value="<?= htmlspecialchars((string) $eidInfo['child_name']); ?>" onchange="" />
                                     </td>
                                 </tr>
                                 <tr>
@@ -202,16 +202,16 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                 </tr>
                                 <tr>
                                     <th class="labels" scope="row"><?= _translate('Infant Age (months)'); ?></th>
-                                    <td><input type="number" max=9 maxlength="1" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="" value="<?= htmlspecialchars($eidInfo['child_age']); ?>" /></td>
+                                    <td><input type="number" max=9 maxlength="1" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="Age" title="Age" style="width:100%;" onchange="" value="<?= htmlspecialchars((string) $eidInfo['child_age']); ?>" /></td>
                                     <th scope="row"><?= ('Weight of the day'); ?></th>
                                     <td><input type="text" class="form-control forceNumeric" id="infantWeight" name="infantWeight" placeholder="<?= _translate('Infant weight of the day in Kg'); ?>" title="<?= _translate('Infant weight of the day'); ?>" style="width:100%;" value="<?= $eidInfo['child_weight']; ?>" /></td>
                                 </tr>
                                 <tr>
                                     <th class="labels" scope="row"><?= _translate('Caretaker phone number'); ?></th>
-                                    <td><input type="text" class="form-control phone-number" id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="<?= _translate('Caretaker Phone Number'); ?>" title="<?= _translate('Caretaker Phone Number'); ?>" style="width:100%;" value="<?= htmlspecialchars($eidInfo['caretaker_phone_number']); ?>" onchange="" /></td>
+                                    <td><input type="text" class="form-control phone-number" id="caretakerPhoneNumber" name="caretakerPhoneNumber" placeholder="<?= _translate('Caretaker Phone Number'); ?>" title="<?= _translate('Caretaker Phone Number'); ?>" style="width:100%;" value="<?= htmlspecialchars((string) $eidInfo['caretaker_phone_number']); ?>" onchange="" /></td>
 
                                     <th class="labels" scope="row"><?= _translate('Infant caretaker address'); ?></th>
-                                    <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="<?= _translate('Caretaker Address'); ?>" title="<?= _translate('Caretaker Address'); ?>" style="width:100%;" onchange=""><?= htmlspecialchars($eidInfo['caretaker_address']); ?></textarea></td>
+                                    <td><textarea class="form-control " id="caretakerAddress" name="caretakerAddress" placeholder="<?= _translate('Caretaker Address'); ?>" title="<?= _translate('Caretaker Address'); ?>" style="width:100%;" onchange=""><?= htmlspecialchars((string) $eidInfo['caretaker_address']); ?></textarea></td>
                                 </tr>
                                 <tr>
                                     <th scope="row"><?= _translate('Prophylactic ARV given to child'); ?><span class="mandatory">*</span></th>
@@ -526,7 +526,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                         <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="<?= _translate('Please choose reason for rejection'); ?>">
                                             <option value=""><?= _translate('-- Select --'); ?></option>
                                             <?php foreach ($rejectionTypeResult as $type) { ?>
-                                                <optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
+                                                <optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
                                                     <?php
                                                     foreach ($rejectionResult as $reject) {
                                                         if ($type['rejection_type'] == $reject['rejection_type']) { ?>
@@ -601,7 +601,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                     <input type="hidden" name="formId" id="formId" value="1" />
                     <input type="hidden" name="eidSampleId" id="eidSampleId" value="<?php echo ($eidInfo['eid_id']); ?>" />
                     <input type="hidden" name="sampleCodeTitle" id="sampleCodeTitle" value="<?php echo $arr['sample_code']; ?>" />
-                    <input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars($eidInfo['sample_code']); ?>" />
+                    <input type="hidden" id="sampleCode" name="sampleCode" value="<?= htmlspecialchars((string) $eidInfo['sample_code']); ?>" />
                     <a href="/eid/results/eid-manual-results.php" class="btn btn-default"> Cancel</a>
                 </div>
                 <!-- /.box-footer -->

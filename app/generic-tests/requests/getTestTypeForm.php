@@ -27,7 +27,7 @@ foreach ($testPlatformResult as $row) {
 }
 $testTypeForm = [];
 if (!empty($_POST['testTypeForm'])) {
-    $testTypeForm = json_decode(base64_decode($_POST['testTypeForm']), true);
+    $testTypeForm = json_decode(base64_decode((string) $_POST['testTypeForm']), true);
 }
 $disabled = "";
 if (!empty($_POST['formType']) && $_POST['formType'] == 'update-form') {
@@ -37,12 +37,12 @@ $resultInterpretation = $_POST['resultInterpretation'] ?? "";
 $testResultUnits = $genericTestsService->getTestResultUnit($_POST['testType']);
 $testTypeQuery = "SELECT * FROM r_test_types WHERE test_type_id= ?";
 $testTypeResult = $db->rawQueryOne($testTypeQuery, [$_POST['testType']]);
-$testTypeAttributes = json_decode($testTypeResult['test_form_config'], true);
+$testTypeAttributes = json_decode((string) $testTypeResult['test_form_config'], true);
 
 $sections = ['facilitySection', 'patientSection', 'specimenSection', 'labSection', 'otherSection', 'result'];
 $result = array_fill_keys($sections, []);
 
-$testResultsAttribute = json_decode($testTypeResult['test_results_config'], true);
+$testResultsAttribute = json_decode((string) $testTypeResult['test_results_config'], true);
 
 $othersSectionFields = [];
 $otherSection = [];
@@ -84,7 +84,7 @@ function getDropDownField($testAttribute, $testAttributeId, $value, $inputClass,
         $inputWidth
     );
     $field .= '<option value="">' . _translate("-- Select --") . '</option>';
-    foreach (explode(',', $testAttribute['dropdown_options']) as $option) {
+    foreach (explode(',', (string) $testAttribute['dropdown_options']) as $option) {
         if ($isMultiple) {
             $selected = (!empty($value) && in_array(trim($option), $value)) ? "selected" : "";
         } else {
@@ -187,7 +187,7 @@ if (!empty($testTypeAttributes)) {
                     $inputClass = " dynamicSelect2 ";
                     $inputWidth = "100%;";
 
-                    $sectionName = trim(strtolower($testAttribute['section_name']));
+                    $sectionName = trim(strtolower((string) $testAttribute['section_name']));
 
                     if (!isset($s[$sectionName])) {
                         $s[$sectionName] = $i;
@@ -237,7 +237,7 @@ print_r($genericTestInfo);die; */
 if (!empty($testResultsAttribute)) {
     foreach ($testResultsAttribute['result_type'] as $key => $resultType) {
         if (isset($_POST['subTests']) && !empty($_POST['subTests']) && count($_POST['subTests']) > 0 && in_array($testResultsAttribute['sub_test_name'][$key], $_POST['subTests'])) {
-            $subTest = strtolower($testResultsAttribute['sub_test_name'][$key]);
+            $subTest = strtolower((string) $testResultsAttribute['sub_test_name'][$key]);
             $n = 1;
             $resultSection = "";
             $subTestResultSection = "";
@@ -258,10 +258,10 @@ if (!empty($testResultsAttribute)) {
                     </tr>
                 </thead>
                 <tbody id="testKitNameTable' . $key . '">';
-                if(isset($genericTestInfo) && !empty($genericTestInfo) && count($genericTestInfo) > 0  && in_array(strtolower($testResultsAttribute['sub_test_name'][$key]), $subTestLabels)){
+                if(isset($genericTestInfo) && !empty($genericTestInfo) && count($genericTestInfo) > 0  && in_array(strtolower((string) $testResultsAttribute['sub_test_name'][$key]), $subTestLabels)){
                     $i = 1;
                     foreach($genericTestInfo as $ikey => $row){
-                        if($row['sub_test_name'] == strtolower($testResultsAttribute['sub_test_name'][$key])){
+                        if($row['sub_test_name'] == strtolower((string) $testResultsAttribute['sub_test_name'][$key])){
                             $finalTestResultUnit[$row['sub_test_name']] = $row['final_result_unit'];
                             $finalResult[$row['sub_test_name']] = $row['final_result'];
                             $resultSection .= '<tr>
@@ -344,8 +344,8 @@ if (!empty($testResultsAttribute)) {
                 $subTestResultSection .= '<option value="">-- Select --</option>';
                 if (!empty($testResultsAttribute[$resultType])) {
                     foreach ($testResultsAttribute[$resultType]['expectedResult'][$key] as $r) {
-                        $selected = isset($finalResult[strtolower($subTest)]) && $finalResult[strtolower($subTest)] == trim($r) ? "selected='selected'" : "";
-                        $subTestResultSection .= '<option value="' . trim($r) . '" ' . $selected . '>' . ($r) . '</option>';
+                        $selected = isset($finalResult[strtolower($subTest)]) && $finalResult[strtolower($subTest)] == trim((string) $r) ? "selected='selected'" : "";
+                        $subTestResultSection .= '<option value="' . trim((string) $r) . '" ' . $selected . '>' . ($r) . '</option>';
                     }
                 }
                 $subTestResultSection .= '</select></td></tr>';
@@ -356,8 +356,8 @@ if (!empty($testResultsAttribute)) {
                     $subTestResultSection .= '<datalist id="resultList">';
                     if (!empty($testResultsAttribute['quantitative_result'])) {
                         foreach ($testResultsAttribute['quantitative_result'] as $key => $row) {
-                            $selected = isset($finalResult[strtolower($subTest)]) && $finalResult[strtolower($subTest)] == trim($row) ? "selected='selected'" : "";
-                            $subTestResultSection .= '<option value="' . trim($row) . '" ' . $selected . ' data-interpretation="' . $testResultsAttribute['quantitative_result_interpretation'][$key] . '"> ' . ($row) . ' </option>';
+                            $selected = isset($finalResult[strtolower($subTest)]) && $finalResult[strtolower($subTest)] == trim((string) $row) ? "selected='selected'" : "";
+                            $subTestResultSection .= '<option value="' . trim((string) $row) . '" ' . $selected . ' data-interpretation="' . $testResultsAttribute['quantitative_result_interpretation'][$key] . '"> ' . ($row) . ' </option>';
                         }
                         $subTestResultSection .= '</datalist></td></tr>';
                     }

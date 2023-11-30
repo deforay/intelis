@@ -16,8 +16,8 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_generic_test_methods";
 
-$testMethodId = (int) base64_decode($_POST['testMethodId']);
-$_POST['testMethod'] = trim($_POST['testMethod']);
+$testMethodId = (int) base64_decode((string) $_POST['testMethodId']);
+$_POST['testMethod'] = trim((string) $_POST['testMethod']);
 try {
     if (!empty($_POST['testMethod'])) {
 

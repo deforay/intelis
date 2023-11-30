@@ -30,7 +30,7 @@ $sarr = $general->getSystemConfig();
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
-if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery']) != "") {
+if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19ResultQuery']) != "") {
 
     $output = [];
 
@@ -131,7 +131,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
                     AND c19.covid19_id = ?";
         $result = $db->rawQueryOne($squery[$aRow['covid19_id']]);
 
-        $subReasonsList = json_decode($result['reason_details']);
+        $subReasonsList = json_decode((string) $result['reason_details']);
         $subReasonsList = implode(", ", $subReasonsList);
 
 
@@ -159,7 +159,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 
         //set sample rejection
         $sampleRejection = 'No';
-        if (trim($aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim($aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
+        if (trim((string) $aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
             $sampleRejection = 'Yes';
         }
 
@@ -175,12 +175,12 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         }
 
         if (isset($aRow['source_of_alert']) && $aRow['source_of_alert'] != "others") {
-            $sourceOfArtPOE = str_replace("-", " ", $aRow['source_of_alert']);
+            $sourceOfArtPOE = str_replace("-", " ", (string) $aRow['source_of_alert']);
         } else {
             $sourceOfArtPOE = $aRow['source_of_alert_other'];
         }
         if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-            $key = base64_decode($general->getGlobalConfig('key'));
+            $key = base64_decode((string) $general->getGlobalConfig('key'));
             $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
             $patientFname = $general->crypto('decrypt', $patientFname, $key);
             $patientLname = $general->crypto('decrypt', $patientLname, $key);
@@ -202,7 +202,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         $row[] = $aRow['patient_id'];
         $row[] = $patientFname . " " . $patientLname;
         $row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
-        $row[] = ($aRow['patient_age'] != null && trim($aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
+        $row[] = ($aRow['patient_age'] != null && trim((string) $aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
         $row[] = $aRow['patient_gender'];
         $row[] = $aRow['is_patient_pregnant'];
         $row[] = $aRow['patient_phone_number'];
@@ -260,7 +260,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
         $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
         // we dont need the $output variable anymore
         unset($output);
-        echo base64_encode($fileName);
+        echo base64_encode((string) $fileName);
     } else {
         $excel = new Spreadsheet();
         $sheet = $excel->getActiveSheet();

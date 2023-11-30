@@ -15,7 +15,7 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$artId = base64_decode($_GET['id']);
+$artId = base64_decode((string) $_GET['id']);
 
 $artQ = "SELECT * FROM `r_vl_art_regimen` WHERE art_id = ?";
 $result = $db->rawQuery($artQ, [$artId]);
@@ -105,7 +105,7 @@ foreach ($categoryInfo as $category) {
 			</div>
 			<!-- /.box-body -->
 			<div class="box-footer">
-				<input type="hidden" name="artCodeId" id="artCodeId" value="<?php echo htmlspecialchars($_GET['id']); ?>">
+				<input type="hidden" name="artCodeId" id="artCodeId" value="<?php echo $_GET['id']; ?>">
 				<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
 				<a href="vl-art-code-details.php" class="btn btn-default"> Cancel</a>
 			</div>

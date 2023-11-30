@@ -133,7 +133,7 @@ try {
 
 
         if (!empty($data['provinceId']) && !is_numeric($data['provinceId'])) {
-            $province = explode("##", $data['provinceId']);
+            $province = explode("##", (string) $data['provinceId']);
             if (!empty($province)) {
                 $data['provinceId'] = $province[0];
             }
@@ -245,8 +245,8 @@ try {
             $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
         }
 
-        if (!empty($data['arrivalDateTime']) && trim($data['arrivalDateTime']) != "") {
-            $arrivalDate = explode(" ", $data['arrivalDateTime']);
+        if (!empty($data['arrivalDateTime']) && trim((string) $data['arrivalDateTime']) != "") {
+            $arrivalDate = explode(" ", (string) $data['arrivalDateTime']);
             $data['arrivalDateTime'] = DateUtility::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
         } else {
             $data['arrivalDateTime'] = null;
@@ -258,7 +258,7 @@ try {
             $status = SAMPLE_STATUS\PENDING_APPROVAL;
         }
 
-        if (!empty($data['sampleCollectionDate']) && trim($data['sampleCollectionDate']) != "") {
+        if (!empty($data['sampleCollectionDate']) && trim((string) $data['sampleCollectionDate']) != "") {
             $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
         } else {
             $sampleCollectionDate = $data['sampleCollectionDate'] = null;
@@ -266,56 +266,56 @@ try {
 
 
         //Set sample received date
-        if (!empty($data['sampleReceivedDate']) && trim($data['sampleReceivedDate']) != "") {
-            $sampleReceivedDate = explode(" ", $data['sampleReceivedDate']);
+        if (!empty($data['sampleReceivedDate']) && trim((string) $data['sampleReceivedDate']) != "") {
+            $sampleReceivedDate = explode(" ", (string) $data['sampleReceivedDate']);
             $data['sampleReceivedDate'] = DateUtility::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
         } else {
             $data['sampleReceivedDate'] = null;
         }
 
-        if (!empty($data['sampleReceivedHubDate']) && trim($data['sampleReceivedHubDate']) != "") {
-            $sampleReceivedHubDate = explode(" ", $data['sampleReceivedHubDate']);
+        if (!empty($data['sampleReceivedHubDate']) && trim((string) $data['sampleReceivedHubDate']) != "") {
+            $sampleReceivedHubDate = explode(" ", (string) $data['sampleReceivedHubDate']);
             $data['sampleReceivedHubDate'] = DateUtility::isoDateFormat($sampleReceivedHubDate[0]) . " " . $sampleReceivedHubDate[1];
         } else {
             $data['sampleReceivedHubDate'] = null;
         }
-        if (!empty($data['sampleTestedDateTime']) && trim($data['sampleTestedDateTime']) != "") {
-            $sampleTestedDate = explode(" ", $data['sampleTestedDateTime']);
+        if (!empty($data['sampleTestedDateTime']) && trim((string) $data['sampleTestedDateTime']) != "") {
+            $sampleTestedDate = explode(" ", (string) $data['sampleTestedDateTime']);
             $data['sampleTestedDateTime'] = DateUtility::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
         } else {
             $data['sampleTestedDateTime'] = null;
         }
 
-        if (!empty($data['arrivalDateTime']) && trim($data['arrivalDateTime']) != "") {
-            $arrivalDate = explode(" ", $data['arrivalDateTime']);
+        if (!empty($data['arrivalDateTime']) && trim((string) $data['arrivalDateTime']) != "") {
+            $arrivalDate = explode(" ", (string) $data['arrivalDateTime']);
             $data['arrivalDateTime'] = DateUtility::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
         } else {
             $data['arrivalDateTime'] = null;
         }
 
-        if (!empty($data['revisedOn']) && trim($data['revisedOn']) != "") {
-            $revisedOn = explode(" ", $data['revisedOn']);
+        if (!empty($data['revisedOn']) && trim((string) $data['revisedOn']) != "") {
+            $revisedOn = explode(" ", (string) $data['revisedOn']);
             $data['revisedOn'] = DateUtility::isoDateFormat($revisedOn[0]) . " " . $revisedOn[1];
         } else {
             $data['revisedOn'] = null;
         }
 
-        if (isset($data['resultDispatchedOn']) && trim($data['resultDispatchedOn']) != "") {
-            $resultDispatchedOn = explode(" ", $data['resultDispatchedOn']);
+        if (isset($data['resultDispatchedOn']) && trim((string) $data['resultDispatchedOn']) != "") {
+            $resultDispatchedOn = explode(" ", (string) $data['resultDispatchedOn']);
             $data['resultDispatchedOn'] = DateUtility::isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
         } else {
             $data['resultDispatchedOn'] = null;
         }
 
-        if (isset($data['sampleDispatchedOn']) && trim($data['sampleDispatchedOn']) != "") {
-            $sampleDispatchedOn = explode(" ", $data['sampleDispatchedOn']);
+        if (isset($data['sampleDispatchedOn']) && trim((string) $data['sampleDispatchedOn']) != "") {
+            $sampleDispatchedOn = explode(" ", (string) $data['sampleDispatchedOn']);
             $data['sampleDispatchedOn'] = DateUtility::isoDateFormat($sampleDispatchedOn[0]) . " " . $sampleDispatchedOn[1];
         } else {
             $data['sampleDispatchedOn'] = null;
         }
 
-        if (isset($data['sampleDispatchedDate']) && trim($data['sampleDispatchedDate']) != "") {
-            $sampleDispatchedDate = explode(" ", $data['sampleDispatchedDate']);
+        if (isset($data['sampleDispatchedDate']) && trim((string) $data['sampleDispatchedDate']) != "") {
+            $sampleDispatchedDate = explode(" ", (string) $data['sampleDispatchedDate']);
             $data['sampleDispatchedDate'] = DateUtility::isoDateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
         } else {
             $data['sampleDispatchedDate'] = null;
@@ -395,7 +395,7 @@ try {
                 $db->delete($testTableName);
 
                 foreach ($data['testResult'] as $testKey => $testResult) {
-                    if (!empty($testResult) && trim($testResult) != "") {
+                    if (!empty($testResult) && trim((string) $testResult) != "") {
                         $db->insert($testTableName, [
                             'sample_id' => $data['genericSampleId'],
                             'actual_no' => $data['actualNo'][$testKey] ?? null,

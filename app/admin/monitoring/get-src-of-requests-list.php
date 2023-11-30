@@ -46,7 +46,7 @@ $result = $db->rawQuery($sQuery);
 $option = "<option value=''>--All--</option>";
 foreach ($result as $row) {
     if (!empty($row['source_of_request'])) {
-        $displayText = (!empty($sources[$row['source_of_request']])) ? $sources[$row['source_of_request']] : strtoupper($row['source_of_request']);
+        $displayText = (!empty($sources[$row['source_of_request']])) ? $sources[$row['source_of_request']] : strtoupper((string) $row['source_of_request']);
         $option .= "<option value='" . $row['source_of_request'] . "'>" . $displayText . "</option>";
     }
 }

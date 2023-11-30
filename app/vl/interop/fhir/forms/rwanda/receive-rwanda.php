@@ -138,10 +138,10 @@ foreach ($entries as $entry) {
             $orderIdentifiers = $resource->getIdentifier();
             foreach ($orderIdentifiers as $oid) {
                 $system = $oid->getSystem()->getValue();
-                if (strpos($system, 'OHRI_ENCOUNTER_UUID') !== false) {
+                if (strpos((string) $system, 'OHRI_ENCOUNTER_UUID') !== false) {
                     $taskAttributes[$basedOnServiceRequest]['OHRI_ENCOUNTER_UUID'] = (string) $oid->getValue();
                 }
-                if (strpos($system, '/test-order-number') !== false) {
+                if (strpos((string) $system, '/test-order-number') !== false) {
                     $formData[$basedOnServiceRequest]['external_sample_code'] = (string) $oid->getValue();
                 }
             }
@@ -301,7 +301,7 @@ foreach ($formData as $serviceRequest => $data) {
 
     $sampleJson = $vlService->getSampleCode($sampleCodeParams);
 
-    $sampleData = json_decode($sampleJson, true);
+    $sampleData = json_decode((string) $sampleJson, true);
     if ($vlsmSystemConfig['sc_user_type'] == 'remoteuser') {
         $sampleCode = 'remote_sample_code';
         $sampleCodeKey = 'remote_sample_code_key';

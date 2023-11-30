@@ -24,4 +24,4 @@ try {
     error_log($exc->getMessage());
     error_log($exc->getTraceAsString());
 }
-echo htmlspecialchars($result);
+echo htmlspecialchars((string) $result);

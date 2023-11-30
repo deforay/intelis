@@ -40,9 +40,9 @@ try {
     $instanceQuery = "SELECT * FROM s_vlsm_instance";
     $instanceResult = $db->query($instanceQuery);
     $result = '';
-    $id = explode(",", $_POST['value']);
-    $status = explode(",", $_POST['status']);
-    $rejectedReasonId = explode(",", $_POST['rejectReasonId']);
+    $id = explode(",", (string) $_POST['value']);
+    $status = explode(",", (string) $_POST['status']);
+    $rejectedReasonId = explode(",", (string) $_POST['rejectReasonId']);
     if ($_POST['value'] != '') {
         for ($i = 0; $i < count($id); $i++) {
             $sQuery = "SELECT * FROM temp_sample_import

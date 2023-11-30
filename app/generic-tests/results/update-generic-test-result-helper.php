@@ -32,48 +32,48 @@ try {
         $instanceId = $_SESSION['instanceId'];
     }
     $testingPlatform = '';
-    if (isset($_POST['testPlatform']) && trim($_POST['testPlatform']) != '') {
-        $platForm = explode("##", $_POST['testPlatform']);
+    if (isset($_POST['testPlatform']) && trim((string) $_POST['testPlatform']) != '') {
+        $platForm = explode("##", (string) $_POST['testPlatform']);
         $testingPlatform = $platForm[0];
     }
-    if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
-        $sampleReceivedDateLab = explode(" ", $_POST['sampleReceivedDate']);
+    if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != "") {
+        $sampleReceivedDateLab = explode(" ", (string) $_POST['sampleReceivedDate']);
         $_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($sampleReceivedDateLab[0]) . " " . $sampleReceivedDateLab[1];
     } else {
         $_POST['sampleReceivedDate'] = null;
     }
 
 
-    if (isset($_POST['sampleReceivedAtHubOn']) && trim($_POST['sampleReceivedAtHubOn']) != "") {
-        $sampleReceivedAtHubOn = explode(" ", $_POST['sampleReceivedAtHubOn']);
+    if (isset($_POST['sampleReceivedAtHubOn']) && trim((string) $_POST['sampleReceivedAtHubOn']) != "") {
+        $sampleReceivedAtHubOn = explode(" ", (string) $_POST['sampleReceivedAtHubOn']);
         $_POST['sampleReceivedAtHubOn'] = DateUtility::isoDateFormat($sampleReceivedAtHubOn[0]) . " " . $sampleReceivedAtHubOn[1];
     } else {
         $_POST['sampleReceivedAtHubOn'] = null;
     }
 
-    if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
-        $approvedOn = explode(" ", $_POST['approvedOn']);
+    if (isset($_POST['approvedOn']) && trim((string) $_POST['approvedOn']) != "") {
+        $approvedOn = explode(" ", (string) $_POST['approvedOn']);
         $_POST['approvedOn'] = DateUtility::isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
     } else {
         $_POST['approvedOn'] = null;
     }
 
 
-    if (isset($_POST['sampleTestingDateAtLab']) && trim($_POST['sampleTestingDateAtLab']) != "") {
-        $sampleTestingDateAtLab = explode(" ", $_POST['sampleTestingDateAtLab']);
+    if (isset($_POST['sampleTestingDateAtLab']) && trim((string) $_POST['sampleTestingDateAtLab']) != "") {
+        $sampleTestingDateAtLab = explode(" ", (string) $_POST['sampleTestingDateAtLab']);
         $_POST['sampleTestingDateAtLab'] = DateUtility::isoDateFormat($sampleTestingDateAtLab[0]) . " " . $sampleTestingDateAtLab[1];
     } else {
         $_POST['sampleTestingDateAtLab'] = null;
     }
-    if (isset($_POST['resultDispatchedOn']) && trim($_POST['resultDispatchedOn']) != "") {
-        $resultDispatchedOn = explode(" ", $_POST['resultDispatchedOn']);
+    if (isset($_POST['resultDispatchedOn']) && trim((string) $_POST['resultDispatchedOn']) != "") {
+        $resultDispatchedOn = explode(" ", (string) $_POST['resultDispatchedOn']);
         $_POST['resultDispatchedOn'] = DateUtility::isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
     } else {
         $_POST['resultDispatchedOn'] = null;
     }
 
-    if (isset($_POST['newRejectionReason']) && trim($_POST['newRejectionReason']) != "") {
-        $rejectionReasonQuery = "SELECT rejection_reason_id FROM r_generic_sample_rejection_reasons where rejection_reason_name='" . $_POST['newRejectionReason'] . "' OR rejection_reason_name='" . strtolower($_POST['newRejectionReason']) . "' OR rejection_reason_name='" . (strtolower($_POST['newRejectionReason'])) . "'";
+    if (isset($_POST['newRejectionReason']) && trim((string) $_POST['newRejectionReason']) != "") {
+        $rejectionReasonQuery = "SELECT rejection_reason_id FROM r_generic_sample_rejection_reasons where rejection_reason_name='" . $_POST['newRejectionReason'] . "' OR rejection_reason_name='" . strtolower((string) $_POST['newRejectionReason']) . "' OR rejection_reason_name='" . (strtolower((string) $_POST['newRejectionReason'])) . "'";
         $rejectionResult = $db->rawQuery($rejectionReasonQuery);
         if (!isset($rejectionResult[0]['rejection_reason_id'])) {
             $data = array(
@@ -100,7 +100,7 @@ try {
     if (isset($_POST['reasonForResultChangesHistory']) && $_POST['reasonForResultChangesHistory'] != '') {
         $allChange = $_POST['reasonForResultChangesHistory'];
     }
-    if (isset($_POST['reasonForResultChanges']) && trim($_POST['reasonForResultChanges']) != '') {
+    if (isset($_POST['reasonForResultChanges']) && trim((string) $_POST['reasonForResultChanges']) != '') {
         $reasonForChanges = $_SESSION['userName'] . '##' . $_POST['reasonForResultChanges'] . '##' . DateUtility::getCurrentDateTime();
     }
     if (!empty($allChange) && !empty($reasonForChanges)) {
@@ -108,8 +108,8 @@ try {
     } elseif (trim($reasonForChanges) != '') {
         $allChange = $reasonForChanges;
     }
-    if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
-        $reviewedOn = explode(" ", $_POST['reviewedOn']);
+    if (isset($_POST['reviewedOn']) && trim((string) $_POST['reviewedOn']) != "") {
+        $reviewedOn = explode(" ", (string) $_POST['reviewedOn']);
         $_POST['reviewedOn'] = DateUtility::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
     } else {
         $_POST['reviewedOn'] = null;
@@ -144,7 +144,7 @@ try {
         'tested_by' => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] : null,
         'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] : null,
         'result_approved_datetime' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedOn'] : null,
-        'lab_tech_comments' => (isset($_POST['labComments']) && trim($_POST['labComments']) != '') ? trim($_POST['labComments']) : null,
+        'lab_tech_comments' => (isset($_POST['labComments']) && trim((string) $_POST['labComments']) != '') ? trim((string) $_POST['labComments']) : null,
         'reason_for_test_result_changes' => $allChange,
         'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : null,
         'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
@@ -173,8 +173,8 @@ try {
                         'facility_id' => $_POST['labId'] ?? null,
                         'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$testKey] ?? '', true),
                         'testing_platform' => $_POST['testingPlatform'][$testKey] ?? null,
-                        'kit_lot_no' => (strpos($testKitName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
-                        'kit_expiry_date' => (strpos($testKitName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
+                        'kit_lot_no' => (strpos((string) $testKitName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
+                        'kit_expiry_date' => (strpos((string) $testKitName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
                         'result' => $_POST['testResult'][$testKey]
                     );
                     $db->insert($testTableName, $covid19TestData);

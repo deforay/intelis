@@ -41,8 +41,8 @@ try {
 		$covid19Data['result'] = null;
 		$covid19Data['result_status'] = SAMPLE_STATUS\REJECTED;
 	}
-	if (isset($_POST['deletedRow']) && trim($_POST['deletedRow']) != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
-		$deleteRows = explode(',', $_POST['deletedRow']);
+	if (isset($_POST['deletedRow']) && trim((string) $_POST['deletedRow']) != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
+		$deleteRows = explode(',', (string) $_POST['deletedRow']);
 		foreach ($deleteRows as $delete) {
 			$db = $db->where('test_id', base64_decode($delete));
 			$id = $db->delete($testTableName);
@@ -59,7 +59,7 @@ try {
 					'result' => $_POST['testResult'][$testKey],
 				);
 				if (isset($_POST['testId'][$testKey]) && $_POST['testId'][$testKey] != '') {
-					$db = $db->where('test_id', base64_decode($_POST['testId'][$testKey]));
+					$db = $db->where('test_id', base64_decode((string) $_POST['testId'][$testKey]));
 					$db->update($testTableName, $covid19TestData);
 				} else {
 					$db->insert($testTableName, $covid19TestData);

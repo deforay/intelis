@@ -20,7 +20,7 @@ $eidObj = ContainerRegistry::get(EidService::class);
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
-$queryParams = explode(',', $_POST['sampleId']);
+$queryParams = explode(',', (string) $_POST['sampleId']);
 $placeholders = implode(', ', array_fill(0, count($queryParams), '?'));
 
 $sampleQuery = "SELECT eid_id,
@@ -48,7 +48,7 @@ foreach ($sampleResult as $sampleRow) {
         $sampleCodeParams['provinceCode'] = $provinceCode ?? null;
 
         $sampleJson = $eidObj->getSampleCode($sampleCodeParams);
-        $sampleData = json_decode($sampleJson, true);
+        $sampleData = json_decode((string) $sampleJson, true);
 
         $eidData['sample_code'] = $sampleData['sampleCode'];
         $eidData['sample_code_format'] = $sampleData['sampleCodeFormat'];

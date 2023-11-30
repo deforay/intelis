@@ -39,7 +39,7 @@ $state = $geolocationService->getProvinces("yes");
 $sources = $general->getSourceOfRequest('form_vl');
 $srcOfReqList = [];
 foreach ($sources as $list) {
-    $srcOfReqList[$list['source_of_request']] = strtoupper($list['source_of_request']);
+    $srcOfReqList[$list['source_of_request']] = strtoupper((string) $list['source_of_request']);
 }
 ?>
 <style>
@@ -289,7 +289,7 @@ foreach ($sources as $list) {
 
         $('#dateRange').daterangepicker({
                 locale: {
-                    cancelLabel: "<?= _translate("Clear"); ?>",
+                    cancelLabel: "<?= _translate("Clear", true); ?>",
                     format: 'DD-MMM-YYYY',
                     separator: ' to ',
                 },

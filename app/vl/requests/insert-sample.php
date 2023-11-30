@@ -1,8 +1,13 @@
 <?php
 
-use App\Exceptions\SystemException;
 use App\Services\VlService;
+use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get('db');
 
 /** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);

@@ -127,7 +127,7 @@ try {
         }
 
         if (!empty($data['provinceId']) && !is_numeric($data['provinceId'])) {
-            $province = explode("##", $data['provinceId']);
+            $province = explode("##", (string) $data['provinceId']);
             if (!empty($province)) {
                 $data['provinceId'] = $province[0];
             }
@@ -229,7 +229,7 @@ try {
         }
 
 
-        if (isset($data['patientGender']) && trim($data['patientGender']) == 'male') {
+        if (isset($data['patientGender']) && trim((string) $data['patientGender']) == 'male') {
             $data['patientPregnant'] = null;
             $data['breastfeeding'] = null;
         }
@@ -359,14 +359,14 @@ try {
 
 
         $patientFullName = [];
-        if (!empty(trim($vlFulldata['patient_first_name']))) {
-            $patientFullName[] = trim($vlFulldata['patient_first_name']);
+        if (!empty(trim((string) $vlFulldata['patient_first_name']))) {
+            $patientFullName[] = trim((string) $vlFulldata['patient_first_name']);
         }
-        if (!empty(trim($vlFulldata['patient_middle_name']))) {
-            $patientFullName[] = trim($vlFulldata['patient_middle_name']);
+        if (!empty(trim((string) $vlFulldata['patient_middle_name']))) {
+            $patientFullName[] = trim((string) $vlFulldata['patient_middle_name']);
         }
-        if (!empty(trim($vlFulldata['patient_last_name']))) {
-            $patientFullName[] = trim($vlFulldata['patient_last_name']);
+        if (!empty(trim((string) $vlFulldata['patient_last_name']))) {
+            $patientFullName[] = trim((string) $vlFulldata['patient_last_name']);
         }
 
         if (!empty($patientFullName)) {

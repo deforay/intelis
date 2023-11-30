@@ -62,7 +62,7 @@ class MiscUtility
     public static function hasEmpty(array $array): bool
     {
         foreach ($array as $value) {
-            if ($value === null || trim($value) === "") {
+            if ($value === null || trim((string) $value) === "") {
                 return true;
             }
         }
@@ -104,7 +104,7 @@ class MiscUtility
         if (is_array($json)) {
             $encodedJson = json_encode($json, JSON_PRETTY_PRINT);
         } else {
-            $decodedJson = json_decode($json);
+            $decodedJson = json_decode((string) $json);
             if (json_last_error() !== JSON_ERROR_NONE) {
                 // Handle the error, maybe log it and return a safe error message
                 return htmlspecialchars("Error in JSON decoding: " . json_last_error_msg(), ENT_QUOTES, 'UTF-8');
@@ -126,7 +126,7 @@ class MiscUtility
      * @param string $zipFile The path to the zip file.
      * @param string $jsonFile The name of the JSON file inside the zip archive.
      */
-    public static function getJsonFromZip($zipFile, $jsonFile): string
+    public static function getJsonFromZip(string $zipFile, $jsonFile): string
     {
         if (!file_exists($zipFile)) {
             return "{}";
@@ -149,7 +149,7 @@ class MiscUtility
      * @param string $fileName The FULL PATH of the file inside the zip archive.
      * @return bool Returns true on success, false on failure.
      */
-    public static function zipJson($json, $fileName)
+    public static function zipJson(string $json, $fileName)
     {
         $result = false;
         if (!empty($json) && !empty($fileName)) {
@@ -208,7 +208,7 @@ class MiscUtility
     {
         $scientificRegex = '/^-?\d+(\.\d+)?[eE][+-]?\d+$/';
 
-        return preg_match($scientificRegex, $str) === 1;
+        return preg_match($scientificRegex, (string) $str) === 1;
     }
 
     public static function generateCsv($headings, $data, $filename, $delimiter = ',', $enclosure = '"')
@@ -234,7 +234,7 @@ class MiscUtility
     public static function getGenderFromString($gender)
     {
         return once(function () use ($gender) {
-            switch (strtolower($gender)) {
+            switch (strtolower((string) $gender)) {
                 case 'male':
                 case 'm':
                     return 'M';

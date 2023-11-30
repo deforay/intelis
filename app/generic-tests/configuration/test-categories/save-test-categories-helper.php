@@ -16,8 +16,8 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_generic_test_categories";
 
-$testCategoryId = (int) base64_decode($_POST['testCategoryId']);
-$_POST['testCategory'] = trim($_POST['testCategory']);
+$testCategoryId = (int) base64_decode((string) $_POST['testCategoryId']);
+$_POST['testCategory'] = trim((string) $_POST['testCategory']);
 try {
     if (!empty($_POST['testCategory'])) {
 

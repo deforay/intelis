@@ -43,7 +43,7 @@ $rejectionResult = $db->rawQuery($rejectionQuery);
 
 $rejectionReason = "";
 foreach ($rejectionTypeResult as $type) {
-	$rejectionReason .= '<optgroup label="' . strtoupper($type['rejection_type']) . '">';
+	$rejectionReason .= '<optgroup label="' . strtoupper((string) $type['rejection_type']) . '">';
 	foreach ($rejectionResult as $reject) {
 		if ($type['rejection_type'] == $reject['rejection_type']) {
 			$rejectionReason .= '<option value="' . $reject['rejection_reason_id'] . '">' . ($reject['rejection_reason_name']) . '</option>';
@@ -493,7 +493,7 @@ $state = $geolocationService->getProvinces("yes");
 		});
 		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _translate("Clear"); ?>",
+					cancelLabel: "<?= _translate("Clear", true); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},

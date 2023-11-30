@@ -5,7 +5,7 @@
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
-$_POST['challenge_field'] = htmlspecialchars($_POST['challenge_field'], ENT_QUOTES);
+$_POST['challenge_field'] = htmlspecialchars((string) $_POST['challenge_field'], ENT_QUOTES);
 if (!empty($_POST['challenge_field']) && $_SESSION['captchaCode'] == $_POST['challenge_field']) {
     $_SESSION['captchaStatus'] = 'success';
 } else {

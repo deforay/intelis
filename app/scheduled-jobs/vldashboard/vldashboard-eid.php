@@ -45,7 +45,7 @@ try {
     }
 
     $lastUpdate = $rResult[count($rResult) - 1]['last_modified_datetime'];
-    $output['timestamp'] = !empty($instanceUpdateOn) ? strtotime($instanceUpdateOn) : time();
+    $output['timestamp'] = !empty($instanceUpdateOn) ? strtotime((string) $instanceUpdateOn) : time();
     foreach ($rResult as $aRow) {
 
 
@@ -70,7 +70,7 @@ try {
 
     $vldashboardUrl = $general->getGlobalConfig('vldashboard_url');
 
-    $url = rtrim($vldashboardUrl, "/") . "/api/vlsm-eid";
+    $url = rtrim((string) $vldashboardUrl, "/") . "/api/vlsm-eid";
 
     $params = [
         [
@@ -90,7 +90,7 @@ try {
     $response  = $apiService->postFile($url, 'eidFile', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params);
     $deResult = json_decode($response, true);
 
-    if (isset($deResult['status']) && trim($deResult['status']) == 'success') {
+    if (isset($deResult['status']) && trim((string) $deResult['status']) == 'success') {
         $data = array(
             'eid_last_dash_sync' => (!empty($lastUpdate) ? $lastUpdate : DateUtility::getCurrentDateTime())
         );

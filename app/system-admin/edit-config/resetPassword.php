@@ -32,7 +32,7 @@ $userInfo = $db->query($userQuery);
       <div class="box-body">
         <!-- form start -->
         <form class="form-horizontal" method='post' name='resetEditForm' id='resetEditForm' autocomplete="off" action="resetPasswordProcess.php">
-          <input type="hidden" name="userId" id="userId" value="<?php echo base64_encode($userInfo[0]['system_admin_id']); ?>" />
+          <input type="hidden" name="userId" id="userId" value="<?php echo base64_encode((string) $userInfo[0]['system_admin_id']); ?>" />
           <div class="box-body">
             <div class="row">
               <div class="col-md-6">

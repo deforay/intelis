@@ -32,8 +32,8 @@ try {
 		$instanceId = $_SESSION['instanceId'];
 	}
 
-	if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != "") {
-		$sampleCollectionDate = explode(" ", $_POST['sampleCollectionDate']);
+	if (isset($_POST['sampleCollectionDate']) && trim((string) $_POST['sampleCollectionDate']) != "") {
+		$sampleCollectionDate = explode(" ", (string) $_POST['sampleCollectionDate']);
 		$_POST['sampleCollectionDate'] = DateUtility::isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
 	} else {
 		$_POST['sampleCollectionDate'] = null;
@@ -41,21 +41,21 @@ try {
 
 
 	//Set sample received date
-	if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
-		$sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
+	if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != "") {
+		$sampleReceivedDate = explode(" ", (string) $_POST['sampleReceivedDate']);
 		$_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
 	} else {
 		$_POST['sampleReceivedDate'] = null;
 	}
 
-	if (isset($_POST['sampleTestedDateTime']) && trim($_POST['sampleTestedDateTime']) != "") {
-		$sampleTestedDate = explode(" ", $_POST['sampleTestedDateTime']);
+	if (isset($_POST['sampleTestedDateTime']) && trim((string) $_POST['sampleTestedDateTime']) != "") {
+		$sampleTestedDate = explode(" ", (string) $_POST['sampleTestedDateTime']);
 		$_POST['sampleTestedDateTime'] = DateUtility::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
 	} else {
 		$_POST['sampleTestedDateTime'] = null;
 	}
 
-	if (!isset($_POST['sampleCode']) || trim($_POST['sampleCode']) == '') {
+	if (!isset($_POST['sampleCode']) || trim((string) $_POST['sampleCode']) == '') {
 		$_POST['sampleCode'] = null;
 	}
 
@@ -82,8 +82,8 @@ try {
 		$resultSentToSource = null;
 	}
 
-	if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
-		$reviewedOn = explode(" ", $_POST['reviewedOn']);
+	if (isset($_POST['reviewedOn']) && trim((string) $_POST['reviewedOn']) != "") {
+		$reviewedOn = explode(" ", (string) $_POST['reviewedOn']);
 		$_POST['reviewedOn'] = DateUtility::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
 	} else {
 		$_POST['reviewedOn'] = null;
@@ -191,7 +191,7 @@ try {
 
 		$hepatitisData['is_encrypted'] = 'no';
 		if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
-			$key = base64_decode($general->getGlobalConfig('key'));
+			$key = base64_decode((string) $general->getGlobalConfig('key'));
 			$encryptedPatientId = $general->crypto('encrypt', $hepatitisData['patient_id'], $key);
 			$encryptedPatientName = $general->crypto('encrypt', $hepatitisData['patient_name'], $key);
 			$encryptedPatientSurName = $general->crypto('encrypt', $hepatitisData['patient_surname'], $key);

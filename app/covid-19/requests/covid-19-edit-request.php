@@ -65,7 +65,7 @@ $rejectionResult = $db->rawQuery($rejectionQuery);
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 //$id = ($_GET['id']);
 $covid19Query = "SELECT * from form_covid19 WHERE covid19_id=?";
@@ -121,7 +121,7 @@ $condition = "status ='active' AND test_type='covid19'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
 if (!empty($covid19Info['is_encrypted']) && $covid19Info['is_encrypted'] == 'yes') {
-    $key = base64_decode($general->getGlobalConfig('key'));
+    $key = base64_decode((string) $general->getGlobalConfig('key'));
     $covid19Info['patient_id'] = $general->crypto('decrypt', $covid19Info['patient_id'], $key);
     if ($covid19Info['patient_name'] != '') {
         $covid19Info['patient_name'] = $general->crypto('decrypt', $covid19Info['patient_name'], $key);

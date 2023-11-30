@@ -40,7 +40,7 @@ if (!isset($facilityResult[0]['facility_district']) || $facilityResult[0]['facil
 	$facilityResult[0]['facility_district'] = '';
 }
 $stateName = $facilityResult[0]['facility_state'];
-if (trim($stateName) != '') {
+if (trim((string) $stateName) != '') {
 	$stateQuery = "SELECT * from geographical_divisions where geo_name='" . $stateName . "'";
 	$stateResult = $db->query($stateQuery);
 }
@@ -49,7 +49,7 @@ if (!isset($stateResult[0]['geo_code']) || $stateResult[0]['geo_code'] == '') {
 }
 //district details
 $districtResult = [];
-if (trim($stateName) != '') {
+if (trim((string) $stateName) != '') {
 	$districtQuery = "SELECT DISTINCT facility_district from facility_details where facility_state='" . $stateName . "' AND status='active'";
 	$districtResult = $db->query($districtQuery);
 	$facilityQuery = "SELECT * from facility_details where `status`='active' AND facility_type='2'";
@@ -63,7 +63,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 	$rch .= '<table style="width:100%;">';
 	$rch .= '<thead><tr style="border-bottom:2px solid #d3d3d3;"><th style="width:20%;">USER</th><th style="width:60%;">MESSAGE</th><th style="width:20%;text-align:center;">DATE</th></tr></thead>';
 	$rch .= '<tbody>';
-	$splitChanges = explode('vlsm', $vlQueryInfo['reason_for_vl_result_changes']);
+	$splitChanges = explode('vlsm', (string) $vlQueryInfo['reason_for_vl_result_changes']);
 	for ($c = 0; $c < count($splitChanges); $c++) {
 		$getData = explode("##", $splitChanges[$c]);
 		$expStr = explode(" ", $getData[2]);
@@ -126,7 +126,7 @@ $disable = "disabled = 'disabled'";
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
 										<label for="sampleReordered">
-											<input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim($vlQueryInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> <?php echo $disable; ?> title="Please indicate if this is a reordered sample"> Sample Reordered
+											<input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $vlQueryInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> <?php echo $disable; ?> title="Please indicate if this is a reordered sample"> Sample Reordered
 										</label>
 									</div>
 								</div>
@@ -167,21 +167,21 @@ $disable = "disabled = 'disabled'";
 									</div>
 								</div>
 							</div>
-							<div class="row facilityDetails" style="display:<?php echo (trim($facilityResult[0]['facility_emails']) != '' || trim($facilityResult[0]['facility_mobile_numbers']) != '' || trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
-								<div class="col-xs-2 col-md-2 femails" style="display:<?php echo (trim($facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
+							<div class="row facilityDetails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '' || trim((string) $facilityResult[0]['facility_mobile_numbers']) != '' || trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 femails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
 									<strong>Clinic/Health Center Email(s)</strong>
 								</div>
-								<div class="col-xs-2 col-md-2 femails facilityEmails" style="display:<?php echo (trim($facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 femails facilityEmails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
 									<?php echo $facilityResult[0]['facility_emails']; ?></div>
-								<div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim($facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;">
 									<strong>Clinic/Health Center Mobile No.(s)</strong>
 								</div>
-								<div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim($facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;">
 									<?php echo $facilityResult[0]['facility_mobile_numbers']; ?></div>
-								<div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
 									<strong>Clinic Contact Person -</strong>
 								</div>
-								<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
 									<?php echo ($facilityResult[0]['contact_person']); ?></div>
 							</div>
 						</div>
@@ -370,15 +370,15 @@ $disable = "disabled = 'disabled'";
 													<div class="col-lg-12">
 														<label class="radio-inline">
 															<?php
-															$vlTestReasonQueryRow = "SELECT * from r_vl_test_reasons where test_reason_id='" . trim($vlQueryInfo['reason_for_vl_testing']) . "' OR test_reason_name = '" . trim($vlQueryInfo['reason_for_vl_testing']) . "'";
+															$vlTestReasonQueryRow = "SELECT * from r_vl_test_reasons where test_reason_id='" . trim((string) $vlQueryInfo['reason_for_vl_testing']) . "' OR test_reason_name = '" . trim((string) $vlQueryInfo['reason_for_vl_testing']) . "'";
 															$vlTestReasonResultRow = $db->query($vlTestReasonQueryRow);
 															$checked = '';
 															$display = '';
 															$vlValue = '';
-															if (trim($vlQueryInfo['reason_for_vl_testing']) == 'routine' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'routine') {
+															if (trim((string) $vlQueryInfo['reason_for_vl_testing']) == 'routine' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'routine') {
 																$checked = 'checked="checked"';
 																$display = 'block';
-																if ($vlQueryInfo['last_vl_result_routine'] != null && trim($vlQueryInfo['last_vl_result_routine']) != '' && trim($vlQueryInfo['last_vl_result_routine']) != '<20' && trim($vlQueryInfo['last_vl_result_routine']) != 'tnd') {
+																if ($vlQueryInfo['last_vl_result_routine'] != null && trim((string) $vlQueryInfo['last_vl_result_routine']) != '' && trim((string) $vlQueryInfo['last_vl_result_routine']) != '<20' && trim((string) $vlQueryInfo['last_vl_result_routine']) != 'tnd') {
 																	$vlValue = $vlQueryInfo['last_vl_result_routine'];
 																}
 															} else {
@@ -397,7 +397,7 @@ $disable = "disabled = 'disabled'";
 											<div class="col-md-6">
 												<label class="col-lg-5 control-label">Date of Last VL Test</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control date viralTestData" id="rmTestingLastVLDate" name="rmTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_routine']) != '' && $vlQueryInfo['last_vl_date_routine'] != null && $vlQueryInfo['last_vl_date_routine'] != '0000-00-00') ? DateUtility::humanReadableDateFormat($vlQueryInfo['last_vl_date_routine']) : ''; ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control date viralTestData" id="rmTestingLastVLDate" name="rmTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim((string) $vlQueryInfo['last_vl_date_routine']) != '' && $vlQueryInfo['last_vl_date_routine'] != null && $vlQueryInfo['last_vl_date_routine'] != '0000-00-00') ? DateUtility::humanReadableDateFormat($vlQueryInfo['last_vl_date_routine']) : ''; ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
 											<div class="col-md-6">
@@ -421,10 +421,10 @@ $disable = "disabled = 'disabled'";
 															$checked = '';
 															$display = '';
 															$vlValue = '';
-															if (trim($vlQueryInfo['reason_for_vl_testing']) == 'suspect' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'suspect') {
+															if (trim((string) $vlQueryInfo['reason_for_vl_testing']) == 'suspect' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'suspect') {
 																$checked = 'checked="checked"';
 																$display = 'block';
-																if ($vlQueryInfo['last_vl_result_failure'] != null && trim($vlQueryInfo['last_vl_result_failure']) != '' && trim($vlQueryInfo['last_vl_result_failure']) != '<20' && trim($vlQueryInfo['last_vl_result_failure']) != 'tnd') {
+																if ($vlQueryInfo['last_vl_result_failure'] != null && trim((string) $vlQueryInfo['last_vl_result_failure']) != '' && trim((string) $vlQueryInfo['last_vl_result_failure']) != '<20' && trim((string) $vlQueryInfo['last_vl_result_failure']) != 'tnd') {
 																	$vlValue = $vlQueryInfo['last_vl_result_failure'];
 																}
 															} else {
@@ -443,7 +443,7 @@ $disable = "disabled = 'disabled'";
 											<div class="col-md-6">
 												<label class="col-lg-5 control-label">Date of Last VL Test</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control date viralTestData" id="suspendTreatmentLastVLDate" name="suspendTreatmentLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_failure']) != '' && $vlQueryInfo['last_vl_date_failure'] != null && $vlQueryInfo['last_vl_date_failure'] != '0000-00-00') ? DateUtility::humanReadableDateFormat($vlQueryInfo['last_vl_date_failure']) : ''; ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control date viralTestData" id="suspendTreatmentLastVLDate" name="suspendTreatmentLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim((string) $vlQueryInfo['last_vl_date_failure']) != '' && $vlQueryInfo['last_vl_date_failure'] != null && $vlQueryInfo['last_vl_date_failure'] != '0000-00-00') ? DateUtility::humanReadableDateFormat($vlQueryInfo['last_vl_date_failure']) : ''; ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
 											<div class="col-md-6">
@@ -468,10 +468,10 @@ $disable = "disabled = 'disabled'";
 															$checked = '';
 															$display = '';
 															$vlValue = '';
-															if (trim($vlQueryInfo['reason_for_vl_testing']) == 'failure' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'failure') {
+															if (trim((string) $vlQueryInfo['reason_for_vl_testing']) == 'failure' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'failure') {
 																$checked = 'checked="checked"';
 																$display = 'block';
-																if ($vlQueryInfo['last_vl_result_failure_ac'] != null && trim($vlQueryInfo['last_vl_result_failure_ac']) != '' && trim($vlQueryInfo['last_vl_result_failure_ac']) != '<20' && trim($vlQueryInfo['last_vl_result_failure_ac']) != 'tnd') {
+																if ($vlQueryInfo['last_vl_result_failure_ac'] != null && trim((string) $vlQueryInfo['last_vl_result_failure_ac']) != '' && trim((string) $vlQueryInfo['last_vl_result_failure_ac']) != '<20' && trim((string) $vlQueryInfo['last_vl_result_failure_ac']) != 'tnd') {
 																	$vlValue = $vlQueryInfo['last_vl_result_failure_ac'];
 																}
 															} else {
@@ -491,7 +491,7 @@ $disable = "disabled = 'disabled'";
 											<div class="col-md-6">
 												<label class="col-lg-5 control-label">Date of Last VL Test</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control date viralTestData" id="repeatTestingLastVLDate" name="repeatTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim($vlQueryInfo['last_vl_date_failure_ac']) != '' && $vlQueryInfo['last_vl_date_failure_ac'] != null && $vlQueryInfo['last_vl_date_failure_ac'] != '0000-00-00') ? DateUtility::humanReadableDateFormat($vlQueryInfo['last_vl_date_failure_ac']) : ''; ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control date viralTestData" id="repeatTestingLastVLDate" name="repeatTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim((string) $vlQueryInfo['last_vl_date_failure_ac']) != '' && $vlQueryInfo['last_vl_date_failure_ac'] != null && $vlQueryInfo['last_vl_date_failure_ac'] != '0000-00-00') ? DateUtility::humanReadableDateFormat($vlQueryInfo['last_vl_date_failure_ac']) : ''; ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
 											<div class="col-md-6">
@@ -514,7 +514,7 @@ $disable = "disabled = 'disabled'";
 													<div class="form-group">
 														<div class="col-lg-12">
 															<label class="radio-inline">
-																<input type="radio" class="" id="recencyTest" name="reasonForVLTesting" value="recency" title="Please check viral load indication testing type" <?php echo $disable; ?> <?php echo trim($vlQueryInfo['reason_for_vl_testing']) == '9999' ? "checked='checked'" : ""; ?> onclick="showTesting('recency')">
+																<input type="radio" class="" id="recencyTest" name="reasonForVLTesting" value="recency" title="Please check viral load indication testing type" <?php echo $disable; ?> <?php echo trim((string) $vlQueryInfo['reason_for_vl_testing']) == '9999' ? "checked='checked'" : ""; ?> onclick="showTesting('recency')">
 																<strong>Confirmation Test for Recency</strong>
 															</label>
 														</div>
@@ -646,7 +646,7 @@ $disable = "disabled = 'disabled'";
 														<select name="rejectionReason" id="rejectionReason" class="form-control labSection" title="Please choose reason" onchange="checkRejectionReason();">
 															<option value="">-- Select --</option>
 															<?php foreach ($rejectionTypeResult as $type) { ?>
-																<optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
+																<optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
 																	<?php
 																	foreach ($rejectionResult as $reject) {
 																		if ($type['rejection_type'] == $reject['rejection_type']) {
@@ -733,7 +733,7 @@ $disable = "disabled = 'disabled'";
 													<label class="col-lg-3 control-label" for="labComments">Lab Tech.
 														Comments </label>
 													<div class="col-lg-9">
-														<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments"><?php echo trim($vlQueryInfo['lab_tech_comments']); ?></textarea>
+														<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments"><?php echo trim((string) $vlQueryInfo['lab_tech_comments']); ?></textarea>
 													</div>
 												</div>
 												<div class="col-md-6 reasonForResultChanges" style="display: none;">

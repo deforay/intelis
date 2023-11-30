@@ -165,7 +165,7 @@ $sFormat = '';
                                                             <?php
                                                             foreach ($implementingPartnerList as $implementingPartner) {
                                                             ?>
-                                                                 <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
+                                                                 <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
                                                             <?php } ?>
                                                        </select>
                                                   </div>
@@ -178,7 +178,7 @@ $sFormat = '';
                                                             <?php
                                                             foreach ($fundingSourceList as $fundingSource) {
                                                             ?>
-                                                                 <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
+                                                                 <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
                                                             <?php } ?>
                                                        </select>
                                                   </div>
@@ -277,7 +277,7 @@ $sFormat = '';
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="patientPhoneNumber">Phone Number<span class="mandatory">*</span></label>
-                                                       <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control isRequired phone-number" maxlength="<?php echo strlen($countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="Enter Phone Number" title="Enter phone number" />
+                                                       <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control isRequired phone-number" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="Enter Phone Number" title="Enter phone number" />
                                                   </div>
                                              </div>
                                         </div>
@@ -705,7 +705,7 @@ $sFormat = '';
                                                                            <select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" onchange="checkRejectionReason();">
                                                                                 <option value="">-- Select --</option>
                                                                                 <?php foreach ($rejectionTypeResult as $type) { ?>
-                                                                                     <optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
+                                                                                     <optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
                                                                                           <?php foreach ($rejectionResult as $reject) {
                                                                                                if ($type['rejection_type'] == $reject['rejection_type']) {
                                                                                           ?>
@@ -1048,7 +1048,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-               echo "printBarcodeLabel('" . htmlspecialchars($_GET['s']) . "','" . htmlspecialchars($_GET['f']) . "');";
+               echo "printBarcodeLabel('" . htmlspecialchars((string) $_GET['s']) . "','" . htmlspecialchars((string) $_GET['f']) . "');";
           }
           ?>
           // BARCODESTUFF END

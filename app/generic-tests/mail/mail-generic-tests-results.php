@@ -34,8 +34,8 @@ for ($i = 0; $i < sizeof($otherConfigResult); $i++) {
 }
 $resultArr = [];
 //Set selected field
-if (isset($arr['rs_field']) && trim($arr['rs_field']) != '') {
-	$explodField = explode(",", $arr['rs_field']);
+if (isset($arr['rs_field']) && trim((string) $arr['rs_field']) != '') {
+	$explodField = explode(",", (string) $arr['rs_field']);
 	for ($f = 0; $f < count($explodField); $f++) {
 		$resultArr[] = $explodField[$f];
 	}
@@ -94,7 +94,7 @@ if (isset($arr['rs_field']) && trim($arr['rs_field']) != '') {
 											<?php
 											foreach ($facilityResult as $facility) { ?>
 												?>
-												<option data-name="<?php echo $facility['facility_name']; ?>" data-email="<?php echo $facility['facility_emails']; ?>" data-report-email="<?php echo $facility['report_email']; ?>" value="<?php echo base64_encode($facility['facility_id']); ?>"><?php echo ($facility['facility_name']); ?></option>
+												<option data-name="<?php echo $facility['facility_name']; ?>" data-email="<?php echo $facility['facility_emails']; ?>" data-report-email="<?php echo $facility['report_email']; ?>" value="<?php echo base64_encode((string) $facility['facility_id']); ?>"><?php echo ($facility['facility_name']); ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -266,7 +266,7 @@ if (isset($arr['rs_field']) && trim($arr['rs_field']) != '') {
 										</div><br /><br />
 										<select id="sample" name="sample[]" multiple="multiple" class="search isRequired" title="Please select sample(s)">
 											<?php foreach ($result as $sample) {
-												if (trim($sample['sample_code']) != '') { ?>
+												if (trim((string) $sample['sample_code']) != '') { ?>
 													<option value="<?php echo $sample['sample_id']; ?>"><?= $sample['sample_code']; ?></option>
 											<?php }
 											} ?>
@@ -322,7 +322,7 @@ if (isset($arr['rs_field']) && trim($arr['rs_field']) != '') {
 		});
 		$('#sampleCollectionDate').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _translate("Clear"); ?>",
+					cancelLabel: "<?= _translate("Clear", true); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},

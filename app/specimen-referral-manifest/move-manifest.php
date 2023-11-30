@@ -43,7 +43,7 @@ foreach ($users as $u) {
     $usersList[$u["user_id"]] = $u['user_name'];
 }
 $facilities = $facilitiesService->getHealthFacilities($module);
-$shortCode = strtoupper($module);
+$shortCode = strtoupper((string) $module);
 if ($module == 'vl') {
     /** @var VlService $vlService */
     $vlService = ContainerRegistry::get(VlService::class);
@@ -213,14 +213,14 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                         <select class="form-control select2" id="testType" name="testType" title="Choose Test Type">
                                             <?= $general->generateSelectOptions($testTypesNames, $module, '-- Select --'); ?>
                                         </select>
-                                        <input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title="" readonly value="<?= htmlspecialchars($module); ?>" />
+                                        <input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title="" readonly value="<?= htmlspecialchars((string) $module); ?>" />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-12 text-center">
                                 <div class="form-group">
                                     <a class="btn btn-primary" href="javascript:void(0);" title="Please select testing lab" onclick="getManifestCodeDetails();return false;">Search </a>
-                                    <a href="move-manifest.php?t=<?= htmlspecialchars($_GET['t']); ?>" class="btn btn-default" onclick=""> Clear</a>
+                                    <a href="move-manifest.php?t=<?= htmlspecialchars((string) $_GET['t']); ?>" class="btn btn-default" onclick=""> Clear</a>
                                 </div>
                             </div>
                         </div>
@@ -303,7 +303,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
         });
         $('#daterange').daterangepicker({
                 locale: {
-                    cancelLabel: "<?= _translate("Clear"); ?>",
+                    cancelLabel: "<?= _translate("Clear", true); ?>",
                     format: 'DD-MMM-YYYY',
                     separator: ' to ',
                 },

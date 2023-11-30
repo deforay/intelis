@@ -23,35 +23,35 @@ $tableName2 = "log_result_updates";
 
 try {
   //Set sample received date
-  if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
-    $sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
+  if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != "") {
+    $sampleReceivedDate = explode(" ", (string) $_POST['sampleReceivedDate']);
     $_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
   } else {
     $_POST['sampleReceivedDate'] = null;
   }
 
-  if (isset($_POST['sampleTestedDateTime']) && trim($_POST['sampleTestedDateTime']) != "") {
-    $sampleTestedDate = explode(" ", $_POST['sampleTestedDateTime']);
+  if (isset($_POST['sampleTestedDateTime']) && trim((string) $_POST['sampleTestedDateTime']) != "") {
+    $sampleTestedDate = explode(" ", (string) $_POST['sampleTestedDateTime']);
     $_POST['sampleTestedDateTime'] = DateUtility::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
   } else {
     $_POST['sampleTestedDateTime'] = null;
   }
 
-  if (isset($_POST['approvedOnDateTime']) && trim($_POST['approvedOnDateTime']) != "") {
-    $approvedOnDateTime = explode(" ", $_POST['approvedOnDateTime']);
+  if (isset($_POST['approvedOnDateTime']) && trim((string) $_POST['approvedOnDateTime']) != "") {
+    $approvedOnDateTime = explode(" ", (string) $_POST['approvedOnDateTime']);
     $_POST['approvedOnDateTime'] = DateUtility::isoDateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
   } else {
     $_POST['approvedOnDateTime'] = null;
   }
 
-  if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
-    $reviewedOn = explode(" ", $_POST['reviewedOn']);
+  if (isset($_POST['reviewedOn']) && trim((string) $_POST['reviewedOn']) != "") {
+    $reviewedOn = explode(" ", (string) $_POST['reviewedOn']);
     $_POST['reviewedOn'] = DateUtility::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
   } else {
     $_POST['reviewedOn'] = null;
   }
-  if (isset($_POST['resultDispatchedOn']) && trim($_POST['resultDispatchedOn']) != "") {
-    $resultDispatchedOn = explode(" ", $_POST['resultDispatchedOn']);
+  if (isset($_POST['resultDispatchedOn']) && trim((string) $_POST['resultDispatchedOn']) != "") {
+    $resultDispatchedOn = explode(" ", (string) $_POST['resultDispatchedOn']);
     $_POST['resultDispatchedOn'] = DateUtility::isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
   } else {
     $_POST['resultDispatchedOn'] = null;

@@ -14,7 +14,7 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 $packageTable = "covid19_positive_confirmation_manifest";
 try {
-    if (isset($_POST['manifestCode']) && trim($_POST['manifestCode']) != "" && !empty($_POST['sampleCode'])) {
+    if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) != "" && !empty($_POST['sampleCode'])) {
         $lastId = $_POST['manifestId'];
         $db->where('manifest_id', $lastId);
         $db->update($packageTable, array('manifest_status' => $_POST['manifestStatus']));
@@ -44,7 +44,7 @@ try {
         }
     } else {
         $_SESSION['alertMsg'] = "Please select the sample id to processed";
-        header("Location:/covid-19/results/covid-19-edit-confirmation-manifest.php?id='" . base64_encode($_POST['manifestId']) . "'");
+        header("Location:/covid-19/results/covid-19-edit-confirmation-manifest.php?id='" . base64_encode((string) $_POST['manifestId']) . "'");
     }
 } catch (Exception $exc) {
     error_log($exc->getMessage());

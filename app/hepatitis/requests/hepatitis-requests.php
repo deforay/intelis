@@ -16,7 +16,7 @@ $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 
 if (!empty($_GET['id'])) {
-	$params = explode("##", base64_decode($_GET['id']));
+	$params = explode("##", base64_decode((string) $_GET['id']));
 	$dateRange = $params[0];
 	$labName = $params[1];
 	$srcOfReq = $params[2];
@@ -27,8 +27,8 @@ if (!empty($_GET['id'])) {
 $facilityId = null;
 $labId = null;
 if (isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labId']) && $_GET['labId'] != "") {
-	$facilityId = base64_decode($_GET['facilityId']);
-	$labId = base64_decode($_GET['labId']);
+	$facilityId = base64_decode((string) $_GET['facilityId']);
+	$labId = base64_decode((string) $_GET['labId']);
 }
 
 require_once APPLICATION_PATH . '/header.php';
@@ -71,7 +71,7 @@ $srcQuery = "SELECT DISTINCT source_of_request from form_hepatitis where source_
 $srcResults = $db->rawQuery($srcQuery);
 $srcOfReqList = [];
 foreach ($srcResults as $list) {
-	$srcOfReqList[$list['source_of_request']] = strtoupper($list['source_of_request']);
+	$srcOfReqList[$list['source_of_request']] = strtoupper((string) $list['source_of_request']);
 }
 ?>
 <style>
@@ -141,7 +141,7 @@ foreach ($srcResults as $list) {
 									<?php
 									foreach ($fundingSourceList as $fundingSource) {
 									?>
-										<option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>">
+										<option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>">
 											<?= $fundingSource['funding_source_name']; ?></option>
 									<?php } ?>
 								</select>
@@ -161,7 +161,7 @@ foreach ($srcResults as $list) {
 									<?php
 									foreach ($implementingPartnerList as $implementingPartner) {
 									?>
-										<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>">
+										<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
 											<?= $implementingPartner['i_partner_name']; ?></option>
 									<?php } ?>
 								</select>
@@ -539,7 +539,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	$(document).ready(function() {
 		<?php
 		if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-			echo "printBarcodeLabel('" . htmlspecialchars($_GET['s']) . "','" . htmlspecialchars($_GET['f']) . "');";
+			echo "printBarcodeLabel('" . htmlspecialchars((string) $_GET['s']) . "','" . htmlspecialchars((string) $_GET['f']) . "');";
 		}
 		?>
 		$("#facilityName").select2({
@@ -554,7 +554,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		loadVlRequestData();
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _translate("Clear"); ?>",
+					cancelLabel: "<?= _translate("Clear", true); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},

@@ -63,7 +63,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", $_POST['sSearch']);
+    $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
         if ($sWhereSub == "") {
@@ -142,11 +142,11 @@ $output = array(
 );
 
 foreach ($rResult as $aRow) {
-    $edit = '<a href="edit-patient.php?id=' . base64_encode($aRow['patient_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
+    $edit = '<a href="edit-patient.php?id=' . base64_encode((string) $aRow['patient_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
 
     $row = [];
     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes' && !empty($general->getGlobalConfig('key'))) {
-        $key = base64_decode($general->getGlobalConfig('key'));
+        $key = base64_decode((string) $general->getGlobalConfig('key'));
         $aRow['patient_code'] = $general->crypto('decrypt', $aRow['patient_code'], $key);
         $aRow['patient_first_name'] = $general->crypto('decrypt', $aRow['patient_first_name'], $key);
         $aRow['patient_middle_name'] = $general->crypto('decrypt', $aRow['patient_middle_name'], $key);

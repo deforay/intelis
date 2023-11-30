@@ -18,10 +18,10 @@ $covid19Results = $covid19Service->getCovid19Results();
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
-$testKitInfo = $db->rawQueryOne("SELECT * from r_covid19_qc_testkits where testkit_id = ?", [base64_decode($_POST['kitId'])]);
+$testKitInfo = $db->rawQueryOne("SELECT * from r_covid19_qc_testkits where testkit_id = ?", [base64_decode((string) $_POST['kitId'])]);
 $result = "";
 if (isset($testKitInfo) && !empty($testKitInfo['labels_and_expected_results'])) {
-    $json = json_decode($testKitInfo['labels_and_expected_results'], true);
+    $json = json_decode((string) $testKitInfo['labels_and_expected_results'], true);
     foreach ($json['label'] as $key => $row) {
         $result .= '<tr>';
         $result .= '<td>' . ($json['label'][$key]) . '<input type="hidden" value="' . $json['label'][$key] . '" id="testLabel" name="testLabel[]"/></td>';

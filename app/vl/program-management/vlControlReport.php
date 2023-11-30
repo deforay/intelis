@@ -93,7 +93,7 @@ $sResult = $db->rawQuery($sQuery);
   $(document).ready(function() {
     $('#sampleTestDate').daterangepicker({
         locale: {
-          cancelLabel: "<?= _translate("Clear"); ?>",
+          cancelLabel: "<?= _translate("Clear", true); ?>",
           format: 'DD-MMM-YYYY',
           separator: ' to ',
         },

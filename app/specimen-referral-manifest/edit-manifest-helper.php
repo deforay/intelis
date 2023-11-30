@@ -19,9 +19,9 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 $packageTable = "package_details";
 try {
-    $selectedSample = explode(",", $_POST['selectedSample']);
+    $selectedSample = explode(",", (string) $_POST['selectedSample']);
     $uniqueSampleId = array_unique($selectedSample);
-    if (isset($_POST['packageCode']) && trim($_POST['packageCode']) != "" && !empty($selectedSample)) {
+    if (isset($_POST['packageCode']) && trim((string) $_POST['packageCode']) != "" && !empty($selectedSample)) {
         $lastId = $_POST['packageId'];
         $db->where('package_id', $lastId);
         $db->update($packageTable, array(

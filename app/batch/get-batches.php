@@ -90,7 +90,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere[] = " b.test_type like '" . $_POST['type'] . "'";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", $_POST['sSearch']);
+    $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
         if ($sWhereSub == "") {
@@ -185,24 +185,24 @@ foreach ($rResult as $aRow) {
     $editPositionLink = '';
     if ($editBatch) {
         if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
-            $edit = '<a href="edit-batch.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '&testType=' . base64_encode($aRow['test_type']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>&nbsp;';
+            $edit = '<a href="edit-batch.php?type=' . $_POST['type'] . '&id=' . base64_encode((string) $aRow['batch_id']) . '&testType=' . base64_encode((string) $aRow['test_type']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>&nbsp;';
         } else {
-            $edit = '<a href="edit-batch.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>&nbsp;';
+            $edit = '<a href="edit-batch.php?type=' . $_POST['type'] . '&id=' . base64_encode((string) $aRow['batch_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>&nbsp;';
         }
     }
     if ($editPosition) {
         if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
-            $editPositionLink = '<a href="edit-batch-position.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '&testType=' . base64_encode($aRow['test_type']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _translate("Edit Position") . '"><em class="fa-solid fa-arrow-down-1-9"></em> ' . _translate("Edit Position") . '</a>';
+            $editPositionLink = '<a href="edit-batch-position.php?type=' . $_POST['type'] . '&id=' . base64_encode((string) $aRow['batch_id']) . '&testType=' . base64_encode((string) $aRow['test_type']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _translate("Edit Position") . '"><em class="fa-solid fa-arrow-down-1-9"></em> ' . _translate("Edit Position") . '</a>';
         } else {
-            $editPositionLink = '<a href="edit-batch-position.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _translate("Edit Position") . '"><em class="fa-solid fa-arrow-down-1-9"></em> ' . _translate("Edit Position") . '</a>';
+            $editPositionLink = '<a href="edit-batch-position.php?type=' . $_POST['type'] . '&id=' . base64_encode((string) $aRow['batch_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _translate("Edit Position") . '"><em class="fa-solid fa-arrow-down-1-9"></em> ' . _translate("Edit Position") . '</a>';
         }
     }
     if ($pdf) {
-        $printBarcode = '<a href="/batch/generate-batch-pdf.php?type=' . $_POST['type'] . '&id=' . base64_encode($aRow['batch_id']) . '" target="_blank"  rel="noopener" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _translate("Print Batch PDF") . '"><em class="fa-solid fa-barcode"></em> ' . _translate("Print Batch PDF") . '</a>';
+        $printBarcode = '<a href="/batch/generate-batch-pdf.php?type=' . $_POST['type'] . '&id=' . base64_encode((string) $aRow['batch_id']) . '" target="_blank"  rel="noopener" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _translate("Print Batch PDF") . '"><em class="fa-solid fa-barcode"></em> ' . _translate("Print Batch PDF") . '</a>';
     }
 
     if (($aRow['total_samples'] == 0 || $aRow['testcount'] == 0) && $delete) {
-        $deleteBatch = '<a href="javascript:void(0);" class="btn btn-danger btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _translate("Delete") . '" onclick="deleteBatchCode(\'' . base64_encode($aRow['batch_id']) . '\',\'' . $aRow['batch_code'] . '\');"><em class="fa-solid fa-xmark"></em> ' . _translate("Delete") . '</a>';
+        $deleteBatch = '<a href="javascript:void(0);" class="btn btn-danger btn-xs" style="margin-right: 2px;margin-top:6px;" title="' . _translate("Delete") . '" onclick="deleteBatchCode(\'' . base64_encode((string) $aRow['batch_id']) . '\',\'' . $aRow['batch_code'] . '\');"><em class="fa-solid fa-xmark"></em> ' . _translate("Delete") . '</a>';
     }
 
     $date = '';

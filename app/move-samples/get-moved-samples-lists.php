@@ -64,7 +64,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", $_POST['sSearch']);
+    $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
         if ($sWhereSub == "") {
@@ -137,9 +137,9 @@ $output = array(
 
 foreach ($rResult as $aRow) {
     $humanDate = "";
-    if (trim($aRow['list_request_created_datetime']) != "" && $aRow['list_request_created_datetime'] != '0000-00-00 00:00:00') {
+    if (trim((string) $aRow['list_request_created_datetime']) != "" && $aRow['list_request_created_datetime'] != '0000-00-00 00:00:00') {
         $date = $aRow['list_request_created_datetime'];
-        $humanDate = date("d-M-Y H:i:s", strtotime($date));
+        $humanDate = date("d-M-Y H:i:s", strtotime((string) $date));
     }
 
     $row = [];

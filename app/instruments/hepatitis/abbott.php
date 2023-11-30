@@ -37,7 +37,7 @@ try {
         throw new SystemException('Please select a file to upload', 400);
     }
 
-    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename($_FILES['resultFile']['name'])));
+    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $_FILES['resultFile']['name'])));
     $fileName = str_replace(" ", "-", $fileName);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName = $_POST['fileName'] . "." . $extension;
@@ -102,9 +102,9 @@ try {
 
                     $resultFlag = $sheetData[$flagCol];
 
-                    if (strpos($sheetData[$resultCol], 'Log') !== false) {
+                    if (strpos((string) $sheetData[$resultCol], 'Log') !== false) {
 
-                        $sheetData[$resultCol] = str_replace(",", ".", $sheetData[$resultCol]); // in case they are using european decimal format
+                        $sheetData[$resultCol] = str_replace(",", ".", (string) $sheetData[$resultCol]); // in case they are using european decimal format
                         $logVal = ((float) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION));
                         $absDecimalVal = round(pow(10, $logVal), 2);
 
@@ -123,9 +123,9 @@ try {
                             $txtVal = null;
                             $absVal = $absDecimalVal;
                         }
-                    } elseif (strpos($sheetData[$resultCol], 'Copies') !== false) {
+                    } elseif (strpos((string) $sheetData[$resultCol], 'Copies') !== false) {
                         $absVal = $absDecimalVal = abs((int) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_INT));
-                        if (strpos($sheetData[$resultCol], '<') !== false) {
+                        if (strpos((string) $sheetData[$resultCol], '<') !== false) {
                             if ($sheetData[$resultCol] == "< INF") {
                                 $txtVal = $absVal = $absDecimalVal = 839;
                                 $logVal = round(log10($absDecimalVal), 2);
@@ -133,17 +133,17 @@ try {
                                 $txtVal = $absVal = "< " . trim($absDecimalVal);
                                 $logVal = $absDecimalVal = $resultFlag = "";
                             }
-                        } elseif (strpos($sheetData[$resultCol], '>') !== false) {
+                        } elseif (strpos((string) $sheetData[$resultCol], '>') !== false) {
                             $txtVal = $absVal = "> " . trim($absDecimalVal);
                             $logVal = $absDecimalVal = $resultFlag = "";
                         } else {
                             $logVal = round(log10($absDecimalVal), 2);
                             $absVal = $absDecimalVal;
                         }
-                    } elseif (strpos($sheetData[$resultCol], 'IU/mL') !== false) {
+                    } elseif (strpos((string) $sheetData[$resultCol], 'IU/mL') !== false) {
                         $absVal = $absDecimalVal = abs((int) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_INT));
                     } else {
-                        if (strpos(strtolower($sheetData[$resultCol]), 'not detected') !== false || strtolower($sheetData[$resultCol]) == 'target not detected') {
+                        if (strpos(strtolower((string) $sheetData[$resultCol]), 'not detected') !== false || strtolower((string) $sheetData[$resultCol]) == 'target not detected') {
                             $txtVal = "Target Not Detected";
                             $resultFlag = "";
                             $absVal = "";
@@ -162,7 +162,7 @@ try {
 
 
                     $lotNumberVal = $sheetData[$lotNumberCol];
-                    if (trim($sheetData[$lotExpirationDateCol]) != '') {
+                    if (trim((string) $sheetData[$lotExpirationDateCol]) != '') {
                         $timestamp = DateTime::createFromFormat("!$dateFormat", $sheetData[$lotExpirationDateCol]);
                         if (!empty($timestamp)) {
                             $timestamp = $timestamp->getTimestamp();
@@ -210,10 +210,6 @@ try {
                             "lotNumber" => $lotNumberVal,
                             "lotExpirationDate" => $lotExpirationDateVal,
                         );
-                    } else {
-                        // if (isset($logVal) && trim($logVal) != "") {
-                        //     $infoFromFile[$sampleCode]['logVal'] = trim($logVal);
-                        // }
                     }
 
                     $m++;
@@ -228,7 +224,7 @@ try {
             }
             $data = array(
                 'module' => 'hepatitis',
-                'lab_id' => base64_decode($_POST['labId']),
+                'lab_id' => base64_decode((string) $_POST['labId']),
                 'vl_test_platform' => $_POST['vltestPlatform'],
                 'import_machine_name' => $_POST['configMachineName'],
                 'result_reviewed_by' => $_SESSION['userId'],
@@ -284,9 +280,9 @@ try {
             $scQuery = "SELECT r_sample_control_name
                         FROM r_sample_controls
                         WHERE r_sample_control_name= ?";
-            $scResult = $db->rawQueryOne($scQuery, [trim($d['sampleType'])]);
+            $scResult = $db->rawQueryOne($scQuery, [trim((string) $d['sampleType'])]);
             if (!$scResult) {
-                $scData = array('r_sample_control_name' => trim($d['sampleType']));
+                $scData = array('r_sample_control_name' => trim((string) $d['sampleType']));
                 $scId = $db->insert("r_sample_controls", $scData);
             }
             if (!empty($hepResult) && !empty($sampleCode)) {

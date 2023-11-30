@@ -19,7 +19,7 @@ try {
     $request = $GLOBALS['request'];
     $_POST = $request->getParsedBody();
 
-    $id = explode(",", $_POST['id']);
+    $id = explode(",", (string) $_POST['id']);
     for ($i = 0; $i < count($id); $i++) {
 
         $status = array(

@@ -35,7 +35,7 @@ $sarr = $general->getSystemConfig();
 
 $skin = "skin-blue";
 
-$trainingMode = isset($arr['training_mode']) && trim($arr['training_mode']) == 'yes';
+$trainingMode = isset($arr['training_mode']) && trim((string) $arr['training_mode']) == 'yes';
 
 $logoName = "<img src='/assets/img/flask.png' style='margin-top:-5px;max-width:22px;'> <span style=''>LIS</span>";
 $smallLogoName = "<img src='/assets/img/flask.png'>";
@@ -169,7 +169,7 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 						<?php if (!empty(SYSTEM_CONFIG['recency']['crosslogin']) && SYSTEM_CONFIG['recency']['crosslogin'] === true && !empty(SYSTEM_CONFIG['recency']['url'])) {
 						?>
 							<li class="user-menu">
-								<a onclick="setCrossLogin();" href="<?= rtrim(SYSTEM_CONFIG['recency']['url'], "/") . '/login?u=' . base64_encode($_SESSION['loginId']) . '&t=' . ($_SESSION['crossLoginPass']) . '&name=' . base64_encode($_SESSION['userName']); ?>" class="btn btn-link"><span class="fa-solid fa-arrow-up-right-from-square"></span>
+								<a onclick="setCrossLogin();" href="<?= rtrim((string) SYSTEM_CONFIG['recency']['url'], "/") . '/login?u=' . base64_encode((string) $_SESSION['loginId']) . '&t=' . ($_SESSION['crossLoginPass']) . '&name=' . base64_encode((string) $_SESSION['userName']); ?>" class="btn btn-link"><span class="fa-solid fa-arrow-up-right-from-square"></span>
 									Recency</a>
 							</li>
 						<?php } ?>
@@ -206,7 +206,7 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 		<!-- Left side column. contains the logo and sidebar -->
 		<aside class="main-sidebar">
 			<section class="sidebar">
-				<?php if (isset($arr['logo']) && trim($arr['logo']) != "" && file_exists('uploads' . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $arr['logo'])) { ?>
+				<?php if (isset($arr['logo']) && trim((string) $arr['logo']) != "" && file_exists('uploads' . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $arr['logo'])) { ?>
 					<div class="user-panel">
 						<div>
 							<img src="/uploads/logo/<?= $arr['logo']; ?>" alt="Logo Image" style="max-width:120px;">
@@ -272,7 +272,7 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 													foreach ($subMenu['children'] as $childMenu) {
 														$innerPages = '';
 														if (!empty($childMenu['inner_pages'])) {
-															$dataInnerPages = explode(',', $childMenu['inner_pages']);
+															$dataInnerPages = explode(',', (string) $childMenu['inner_pages']);
 															$dataInnerPages = implode(';', array_map('base64_encode', $dataInnerPages));
 															$innerPages = 'data-inner-pages="' . $dataInnerPages . '"';
 														}

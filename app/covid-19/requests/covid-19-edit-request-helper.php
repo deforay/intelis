@@ -50,33 +50,33 @@ try {
 		$instanceId = $_SESSION['instanceId'];
 	}
 
-	if (isset($_POST['sampleCollectionDate']) && trim($_POST['sampleCollectionDate']) != "") {
+	if (isset($_POST['sampleCollectionDate']) && trim((string) $_POST['sampleCollectionDate']) != "") {
 		$_POST['sampleCollectionDate'] = DateUtility::isoDateFormat($_POST['sampleCollectionDate'], true);
 	} else {
 		$_POST['sampleCollectionDate'] = null;
 	}
 
-	if (isset($_POST['sampleDispatchedDate']) && trim($_POST['sampleDispatchedDate']) != "") {
+	if (isset($_POST['sampleDispatchedDate']) && trim((string) $_POST['sampleDispatchedDate']) != "") {
 		$_POST['sampleDispatchedDate'] = DateUtility::isoDateFormat($_POST['sampleDispatchedDate'], true);
 	} else {
 		$_POST['sampleDispatchedDate'] = null;
 	}
 
 	//Set sample received date
-	if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
+	if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != "") {
 		$_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($_POST['sampleReceivedDate'], true);
 	} else {
 		$_POST['sampleReceivedDate'] = null;
 	}
 
-	if (isset($_POST['sampleTestedDateTime']) && trim($_POST['sampleTestedDateTime']) != "") {
+	if (isset($_POST['sampleTestedDateTime']) && trim((string) $_POST['sampleTestedDateTime']) != "") {
 		$_POST['sampleTestedDateTime'] = DateUtility::isoDateFormat($_POST['sampleTestedDateTime'], true);
 	} else {
 		$_POST['sampleTestedDateTime'] = null;
 	}
 
 
-	if (isset($_POST['arrivalDateTime']) && trim($_POST['arrivalDateTime']) != "") {
+	if (isset($_POST['arrivalDateTime']) && trim((string) $_POST['arrivalDateTime']) != "") {
 		$_POST['arrivalDateTime'] = DateUtility::isoDateFormat($_POST['arrivalDateTime'], true);
 	} else {
 		$_POST['arrivalDateTime'] = null;
@@ -146,15 +146,15 @@ try {
 		$_POST['status'] = $_POST['oldStatus'];
 	}
 
-	if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
-		$reviewedOn = explode(" ", $_POST['reviewedOn']);
+	if (isset($_POST['reviewedOn']) && trim((string) $_POST['reviewedOn']) != "") {
+		$reviewedOn = explode(" ", (string) $_POST['reviewedOn']);
 		$_POST['reviewedOn'] = DateUtility::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
 	} else {
 		$_POST['reviewedOn'] = null;
 	}
 
-	if (isset($_POST['approvedOn']) && trim($_POST['approvedOn']) != "") {
-		$approvedOn = explode(" ", $_POST['approvedOn']);
+	if (isset($_POST['approvedOn']) && trim((string) $_POST['approvedOn']) != "") {
+		$approvedOn = explode(" ", (string) $_POST['approvedOn']);
 		$_POST['approvedOn'] = DateUtility::isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
 	} else {
 		$_POST['approvedOn'] = null;
@@ -174,8 +174,8 @@ try {
 		'province_id' => !empty($_POST['provinceId']) ? $_POST['provinceId'] : null,
 		'lab_id' => !empty($_POST['labId']) ? $_POST['labId'] : null,
 		'testing_point' => !empty($_POST['testingPoint']) ? $_POST['testingPoint'] : null,
-		'funding_source' => (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') ? base64_decode($_POST['fundingSource']) : null,
-		'implementing_partner' => (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') ? base64_decode($_POST['implementingPartner']) : null,
+		'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') ? base64_decode((string) $_POST['fundingSource']) : null,
+		'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') ? base64_decode((string) $_POST['implementingPartner']) : null,
 		'source_of_alert' => !empty($_POST['sourceOfAlertPOE']) ? $_POST['sourceOfAlertPOE'] : null,
 		'source_of_alert_other' => (!empty($_POST['sourceOfAlertPOE']) && $_POST['sourceOfAlertPOE'] == 'others') ? $_POST['alertPoeOthers'] : null,
 		'sync_patient_identifiers' => $_POST['encryptPII'] ?? null,
@@ -259,7 +259,7 @@ try {
 		'result_status' => $status,
 		'data_sync' => 0,
 		'reason_for_sample_rejection' => (!empty($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
-		'recommended_corrective_action' => (isset($_POST['correctiveAction']) && trim($_POST['correctiveAction']) != '') ? $_POST['correctiveAction'] : null,
+		'recommended_corrective_action' => (isset($_POST['correctiveAction']) && trim((string) $_POST['correctiveAction']) != '') ? $_POST['correctiveAction'] : null,
 		'sample_registered_at_lab' => DateUtility::getCurrentDateTime(),
 		'last_modified_by' => $_SESSION['userId'],
 		'last_modified_datetime' => DateUtility::getCurrentDateTime()
@@ -278,8 +278,8 @@ try {
 	$covid19Data['last_modified_by'] = $_SESSION['userId'];
 	$covid19Data['lab_technician'] = (!empty($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId'];
 
-	if (isset($_POST['deletedRow']) && trim($_POST['deletedRow']) != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
-		$deleteRows = explode(',', $_POST['deletedRow']);
+	if (isset($_POST['deletedRow']) && trim((string) $_POST['deletedRow']) != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
+		$deleteRows = explode(',', (string) $_POST['deletedRow']);
 		foreach ($deleteRows as $delete) {
 			$db = $db->where('test_id', base64_decode($delete));
 			$db->delete($testTableName);
@@ -330,19 +330,19 @@ try {
 
 		if (!empty($_POST['testName'])) {
 			foreach ($_POST['testName'] as $testKey => $testName) {
-				if (trim($_POST['testName'][$testKey]) != "") {
+				if (trim((string) $_POST['testName'][$testKey]) != "") {
 					$covid19TestData = array(
 						'covid19_id' => $_POST['covid19SampleId'],
 						'test_name' => ($testName == 'other') ? $_POST['testNameOther'][$testKey] : $testName,
 						'facility_id' => $_POST['labId'] ?? null,
 						'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$testKey] ?? '', true),
 						'testing_platform' => $_POST['testingPlatform'][$testKey] ?? null,
-						'kit_lot_no' => (strpos($testName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
-						'kit_expiry_date' => (strpos($testName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
+						'kit_lot_no' => (strpos((string) $testName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
+						'kit_expiry_date' => (strpos((string) $testName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
 						'result' => $_POST['testResult'][$testKey],
 					);
 					if (isset($_POST['testId'][$testKey]) && $_POST['testId'][$testKey] != '') {
-						$db = $db->where('test_id', base64_decode($_POST['testId'][$testKey]));
+						$db = $db->where('test_id', base64_decode((string) $_POST['testId'][$testKey]));
 						$db->update($testTableName, $covid19TestData);
 					} else {
 						$db->insert($testTableName, $covid19TestData);
@@ -362,7 +362,7 @@ try {
 
 	$covid19Data['is_encrypted'] = 'no';
 	if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
-		$key = base64_decode($general->getGlobalConfig('key'));
+		$key = base64_decode((string) $general->getGlobalConfig('key'));
 		$encryptedPatientId = $general->crypto('encrypt', $covid19Data['patient_id'], $key);
 		$encryptedPatientName = $general->crypto('encrypt', $covid19Data['patient_name'], $key);
 		$encryptedPatientSurName = $general->crypto('encrypt', $covid19Data['patient_surname'], $key);

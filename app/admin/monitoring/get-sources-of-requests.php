@@ -99,7 +99,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", $_POST['sSearch']);
+    $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
         $sWhereSub .= " (";
@@ -149,13 +149,13 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS l.facility_name as 'labname',
 $sWhere[] = " (lab_id is not null AND lab_id not like '' AND lab_id > 0) ";
 
 
-if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
+if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) != '') {
     $sWhere[] = ' DATE(vl.sample_collection_date) BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
 }
-if (isset($_POST['labName']) && trim($_POST['labName']) != '') {
+if (isset($_POST['labName']) && trim((string) $_POST['labName']) != '') {
     $sWhere[] = ' vl.lab_id IN (' . $_POST['labName'] . ')';
 }
-if (isset($_POST['srcRequest']) && trim($_POST['srcRequest']) != '') {
+if (isset($_POST['srcRequest']) && trim((string) $_POST['srcRequest']) != '') {
     $sWhere[] = ' vl.source_of_request = "' . $_POST['srcRequest'] . '"';
 }
 
@@ -226,31 +226,31 @@ foreach ($rResult as $key => $aRow) {
     $row[] = $aRow['labname'];
     $row[] = $testName;
     if (isset($aRow['samples']) && $aRow['samples'] > 0) {
-        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($registerParams) . '\',1200,700);"> ' . $aRow['samples'] . '</a>';
+        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode((string) $registerParams) . '\',1200,700);"> ' . $aRow['samples'] . '</a>';
     } else {
         $row[] = $aRow['samples'];
     }
     if (isset($aRow['noOfSampleReceivedAtLab']) && $aRow['noOfSampleReceivedAtLab'] > 0) {
-        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($registerParams) . '\',1200,700);"> ' . $aRow['noOfSampleReceivedAtLab'] . '</a>';
+        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode((string) $registerParams) . '\',1200,700);"> ' . $aRow['noOfSampleReceivedAtLab'] . '</a>';
     } else {
         $row[] = $aRow['noOfSampleReceivedAtLab'];
     }
     if (isset($aRow['samplesWithResults']) && $aRow['samplesWithResults'] > 0) {
-        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($testedParams) . '\',1200,700);"> ' . $aRow['samplesWithResults'] . '</a>';
+        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode((string) $testedParams) . '\',1200,700);"> ' . $aRow['samplesWithResults'] . '</a>';
     } else {
         $row[] = $aRow['samplesWithResults'];
     }
     if (isset($aRow['rejected']) && $aRow['rejected'] > 0) {
-        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($rejectedParams) . '\',1200,700);"> ' . $aRow['rejected'] . '</a>';
+        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode((string) $rejectedParams) . '\',1200,700);"> ' . $aRow['rejected'] . '</a>';
     } else {
         $row[] = $aRow['rejected'];
     }
     if (isset($aRow['noOfResultsReturned']) && $aRow['noOfResultsReturned'] > 0) {
-        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($returnedParams) . '\',1200,700);"> ' . $aRow['noOfResultsReturned'] . '</a>';
+        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode((string) $returnedParams) . '\',1200,700);"> ' . $aRow['noOfResultsReturned'] . '</a>';
     } else {
         $row[] = $aRow['noOfResultsReturned'];
     }
-    $row[] = !empty($sources[$aRow['source_of_request']]) ? $sources[$aRow['source_of_request']] : strtoupper($aRow['source_of_request']);
+    $row[] = !empty($sources[$aRow['source_of_request']]) ? $sources[$aRow['source_of_request']] : strtoupper((string) $aRow['source_of_request']);
     $row[] = DateUtility::humanReadableDateFormat($aRow['lastRequest']);
 
     $output['aaData'][] = $row;

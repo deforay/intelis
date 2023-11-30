@@ -25,7 +25,7 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-if (isset($_SESSION['covid19TATQuery']) && trim($_SESSION['covid19TATQuery']) != "") {
+if (isset($_SESSION['covid19TATQuery']) && trim((string) $_SESSION['covid19TATQuery']) != "") {
 
   $rResult = $db->rawQuery($_SESSION['covid19TATQuery']);
 
@@ -56,7 +56,7 @@ if (isset($_SESSION['covid19TATQuery']) && trim($_SESSION['covid19TATQuery']) !=
   $sheet->mergeCells('A1:AG1');
   $nameValue = '';
   foreach ($_POST as $key => $value) {
-    if (trim($value) != '' && trim($value) != '-- Select --') {
+    if (trim((string) $value) != '' && trim((string) $value) != '-- Select --') {
       $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
     }
   }
@@ -75,38 +75,38 @@ if (isset($_SESSION['covid19TATQuery']) && trim($_SESSION['covid19TATQuery']) !=
     $row = [];
     //sample collecion date
     $sampleCollectionDate = '';
-    if ($aRow['sample_collection_date'] != null && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-      $expStr = explode(" ", $aRow['sample_collection_date']);
+    if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+      $expStr = explode(" ", (string) $aRow['sample_collection_date']);
       $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
     }
-    if (isset($aRow['sample_received_at_lab_datetime']) && trim($aRow['sample_received_at_lab_datetime']) != '' && $aRow['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
+    if (isset($aRow['sample_received_at_lab_datetime']) && trim((string) $aRow['sample_received_at_lab_datetime']) != '' && $aRow['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
       $sampleRecievedDate = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
     } else {
       $sampleRecievedDate = '';
     }
-    if (isset($aRow['sample_tested_datetime']) && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+    if (isset($aRow['sample_tested_datetime']) && trim((string) $aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
       $testDate = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
     } else {
       $testDate = '';
     }
-    if (isset($aRow['result_printed_datetime']) && trim($aRow['result_printed_datetime']) != '' && $aRow['result_printed_datetime'] != '0000-00-00 00:00:00') {
+    if (isset($aRow['result_printed_datetime']) && trim((string) $aRow['result_printed_datetime']) != '' && $aRow['result_printed_datetime'] != '0000-00-00 00:00:00') {
       $printDate = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
     } else {
       $printDate = '';
     }
-    if (isset($aRow['result_mail_datetime']) && trim($aRow['result_mail_datetime']) != '' && $aRow['result_mail_datetime'] != '0000-00-00 00:00:00') {
+    if (isset($aRow['result_mail_datetime']) && trim((string) $aRow['result_mail_datetime']) != '' && $aRow['result_mail_datetime'] != '0000-00-00 00:00:00') {
       $mailDate = DateUtility::humanReadableDateFormat($aRow['result_mail_datetime']);
     } else {
       $mailDate = '';
     }
 
-    if (isset($aRow['result_printed_on_sts_datetime']) && trim($aRow['result_printed_on_sts_datetime']) != '' && $aRow['result_printed_on_sts_datetime'] != '0000-00-00 00:00:00') {
+    if (isset($aRow['result_printed_on_sts_datetime']) && trim((string) $aRow['result_printed_on_sts_datetime']) != '' && $aRow['result_printed_on_sts_datetime'] != '0000-00-00 00:00:00') {
       $printDateSts = DateUtility::humanReadableDateFormat($aRow['result_printed_on_sts_datetime']);
     } else {
       $printDateSts = '';
     }
 
-    if (isset($aRow['result_printed_on_lis_datetime']) && trim($aRow['result_printed_on_lis_datetime']) != '' && $aRow['result_printed_on_lis_datetime'] != '0000-00-00 00:00:00') {
+    if (isset($aRow['result_printed_on_lis_datetime']) && trim((string) $aRow['result_printed_on_lis_datetime']) != '' && $aRow['result_printed_on_lis_datetime'] != '0000-00-00 00:00:00') {
       $printDateLis = DateUtility::humanReadableDateFormat($aRow['result_printed_on_lis_datetime']);
     } else {
       $printDateLis = '';
@@ -132,7 +132,7 @@ if (isset($_SESSION['covid19TATQuery']) && trim($_SESSION['covid19TATQuery']) !=
     foreach ($rowData as $field => $value) {
       $sheet->setCellValue(
         Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-        html_entity_decode($value)
+        html_entity_decode((string) $value)
       );
       $colNo++;
     }

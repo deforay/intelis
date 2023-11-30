@@ -38,7 +38,7 @@ try {
         throw new SystemException('Please select a file to upload', 400);
     }
 
-    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename($_FILES['resultFile']['name'])));
+    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $_FILES['resultFile']['name'])));
     $fileName = str_replace(" ", "-", $fileName);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName = $_POST['fileName'] . "." . $extension;
@@ -83,7 +83,7 @@ try {
                     $row++;
                     if ($row < $skip) {
                         if ($row == 5) {
-                            $cvNumberVar = explode(' ', $sheetData[1]);
+                            $cvNumberVar = explode(' ', (string) $sheetData[1]);
                             $cvNumber = $cvNumberVar[1];
                         }
                         if ($row == 8) {
@@ -111,9 +111,9 @@ try {
 
                     // //Changing date to European format for strtotime - https://stackoverflow.com/a/5736255
 
-                    if (strpos($sheetData[$resultCol], 'Log') !== false) {
+                    if (strpos((string) $sheetData[$resultCol], 'Log') !== false) {
 
-                        $sheetData[$resultCol] = str_replace(",", ".", $sheetData[$resultCol]); // in case they are using european decimal format
+                        $sheetData[$resultCol] = str_replace(",", ".", (string) $sheetData[$resultCol]); // in case they are using european decimal format
                         $logVal = ((float) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION));
                         $absDecimalVal = round(pow(10, $logVal), 2);
 
@@ -132,9 +132,9 @@ try {
                             $txtVal = null;
                             $absVal = $absDecimalVal;
                         }
-                    } else if (strpos($sheetData[$resultCol], 'Copies') !== false) {
+                    } else if (strpos((string) $sheetData[$resultCol], 'Copies') !== false) {
                         $absVal = $absDecimalVal = abs((int) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_INT));
-                        if (strpos($sheetData[$resultCol], '<') !== false) {
+                        if (strpos((string) $sheetData[$resultCol], '<') !== false) {
                             if ($sheetData[$resultCol] == "< INF") {
                                 $txtVal = $absVal = $absDecimalVal = 839;
                                 $logVal = round(log10($absDecimalVal), 2);
@@ -142,17 +142,17 @@ try {
                                 $txtVal = $absVal = "< " . trim($absDecimalVal);
                                 $logVal = $absDecimalVal = $resultFlag = "";
                             }
-                        } else if (strpos($sheetData[$resultCol], '>') !== false) {
+                        } else if (strpos((string) $sheetData[$resultCol], '>') !== false) {
                             $txtVal = $absVal = "> " . trim($absDecimalVal);
                             $logVal = $absDecimalVal = $resultFlag = "";
                         } else {
                             $logVal = round(log10($absDecimalVal), 2);
                             $absVal = $absDecimalVal;
                         }
-                    } else if (strpos($sheetData[$resultCol], 'IU/mL') !== false) {
+                    } else if (strpos((string) $sheetData[$resultCol], 'IU/mL') !== false) {
                         $absVal = $absDecimalVal = abs((int) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_INT));
                     } else {
-                        if (strpos(strtolower($sheetData[$resultCol]), 'not detected') !== false || strtolower($sheetData[$resultCol]) == 'target not detected') {
+                        if (strpos(strtolower((string) $sheetData[$resultCol]), 'not detected') !== false || strtolower((string) $sheetData[$resultCol]) == 'target not detected') {
                             $txtVal = "Target Not Detected";
                             $resultFlag = "";
                             $absVal = "";
@@ -171,7 +171,7 @@ try {
 
 
                     $lotNumberVal = $sheetData[$lotNumberCol];
-                    if (trim($sheetData[$lotExpirationDateCol]) != '') {
+                    if (trim((string) $sheetData[$lotExpirationDateCol]) != '') {
                         $timestamp = DateTime::createFromFormat("!$dateFormat", $sheetData[$lotExpirationDateCol]);
                         if (!empty($timestamp)) {
                             $timestamp = $timestamp->getTimestamp();
@@ -219,10 +219,6 @@ try {
                             "lotNumber" => $lotNumberVal,
                             "lotExpirationDate" => $lotExpirationDateVal,
                         );
-                    } else {
-                        // if (isset($logVal) && trim($logVal) != "") {
-                        //     $infoFromFile[$sampleCode]['logVal'] = trim($logVal);
-                        // }
                     }
 
                     $m++;
@@ -237,7 +233,7 @@ try {
             }
             $data = array(
                 'module' => 'vl',
-                'lab_id' => base64_decode($_POST['labId']),
+                'lab_id' => base64_decode((string) $_POST['labId']),
                 'cv_number' => $cvNumber,
                 'vl_test_platform' => $_POST['vltestPlatform'],
                 'import_machine_name' => $_POST['configMachineName'],
@@ -284,10 +280,10 @@ try {
             $query = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal FROM form_vl WHERE result_printed_datetime is null AND sample_code like ?";
             $vlResult = $db->rawQueryOne($query, array($sampleCode));
             //insert sample controls
-            $scQuery = "SELECT r_sample_control_name FROM r_sample_controls where r_sample_control_name='" . trim($d['sampleType']) . "'";
+            $scQuery = "SELECT r_sample_control_name FROM r_sample_controls where r_sample_control_name='" . trim((string) $d['sampleType']) . "'";
             $scResult = $db->rawQuery($scQuery);
             if (!$scResult) {
-                $scData = array('r_sample_control_name' => trim($d['sampleType']));
+                $scData = array('r_sample_control_name' => trim((string) $d['sampleType']));
                 $scId = $db->insert("r_sample_controls", $scData);
             }
             if (!empty($vlResult) && !empty($sampleCode)) {

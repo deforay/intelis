@@ -8,7 +8,7 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $tQuery = "SELECT * from r_generic_symptoms where symptom_id=$id";
 $symptomInfo = $db->query($tQuery);
@@ -42,7 +42,7 @@ $symptomInfo = $db->query($tQuery);
                                     <label for="symptomName" class="col-lg-4 control-label"><?php echo _translate("Symptom Name"); ?><span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
                                         <input type="text" class="form-control isRequired" id="symptomName" name="symptomName" placeholder="<?php echo _translate('Symptom Name'); ?>" title="<?php echo _translate('Please enter symptom name'); ?>" onblur="checkNameValidation('r_generic_symptoms','symptom_name',this,'<?php echo "symptom_id##" . $symptomInfo[0]['symptom_id']; ?>','<?php echo _translate("This symptom name that you entered already exists.Try another name"); ?>',null)" value="<?php echo $symptomInfo[0]['symptom_name']; ?>" />
-                                        <input type="hidden" name="symptomId" id="symptomId" value="<?php echo base64_encode($symptomInfo[0]['symptom_id']); ?>" />
+                                        <input type="hidden" name="symptomId" id="symptomId" value="<?php echo base64_encode((string) $symptomInfo[0]['symptom_id']); ?>" />
                                     </div>
                                 </div>
                             </div>

@@ -18,7 +18,7 @@ $_POST = $request->getParsedBody();
 
 $tableName = $_POST['tableName'];
 $fieldName = $_POST['fieldName'];
-$value = trim($_POST['value']);
+$value = trim((string) $_POST['value']);
 $fnct = $_POST['fnct'];
 $data = 0;
 if ($value != '') {
@@ -27,14 +27,14 @@ if ($value != '') {
         $parameters = array($value);
         $result = $db->rawQuery($sQuery, $parameters);
         if ($result) {
-            $data = base64_encode($result[0]['vl_sample_id']) . "##" . $result[0][$fieldName];
+            $data = base64_encode((string) $result[0]['vl_sample_id']) . "##" . $result[0][$fieldName];
         } else {
             if ($systemType == 'vluser') {
                 $sQuery = "SELECT * FROM $tableName WHERE remote_sample_code= ?";
                 $parameters = array($value);
                 $result = $db->rawQuery($sQuery, $parameters);
                 if ($result) {
-                    $data = base64_encode($result[0]['vl_sample_id']) . "##" . $result[0]['remote_sample_code'];
+                    $data = base64_encode((string) $result[0]['vl_sample_id']) . "##" . $result[0]['remote_sample_code'];
                 } else {
                     $data = 0;
                 }
@@ -43,20 +43,20 @@ if ($value != '') {
             }
         }
     } else {
-        $table = explode("##", $fnct);
+        $table = explode("##", (string) $fnct);
         try {
             $sQuery = "SELECT * FROM $tableName WHERE $fieldName= ? AND $table[0]!= ?";
             $parameters = array($value, $table[1]);
             $result = $db->rawQuery($sQuery, $parameters);
             if ($result) {
-                $data = base64_encode($result[0]['vl_sample_id']) . "##" . $result[0][$fieldName];
+                $data = base64_encode((string) $result[0]['vl_sample_id']) . "##" . $result[0][$fieldName];
             } else {
                 if ($systemType == 'vluser') {
                     $sQuery = "SELECT * from $tableName where remote_sample_code= ? and $table[0]!= ?";
                     $parameters = array($value, $table[1]);
                     $result = $db->rawQuery($sQuery, $parameters);
                     if ($result) {
-                        $data = base64_encode($result[0]['vl_sample_id']) . "##" . $result[0]['remote_sample_code'];
+                        $data = base64_encode((string) $result[0]['vl_sample_id']) . "##" . $result[0]['remote_sample_code'];
                     } else {
                         $data = 0;
                     }

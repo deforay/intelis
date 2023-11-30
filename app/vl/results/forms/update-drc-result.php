@@ -43,7 +43,7 @@ if (isset($vlQueryInfo['sample_type']) && $vlQueryInfo['sample_type'] != 2) {
 $disable = "disabled = 'disabled'";
 $reasonChange = "";
 if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_for_vl_result_changes'] != "") {
-	$result = explode("##", $vlQueryInfo['reason_for_vl_result_changes']);
+	$result = explode("##", (string) $vlQueryInfo['reason_for_vl_result_changes']);
 	$reasonChange = $result[1];
 }
 ?>
@@ -55,13 +55,13 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 
 	.du {
 		<?php
-		if (trim($vlQueryInfo['is_patient_new']) == "" || trim($vlQueryInfo['is_patient_new']) == "no") { ?>visibility: hidden;
+		if (trim((string) $vlQueryInfo['is_patient_new']) == "" || trim((string) $vlQueryInfo['is_patient_new']) == "no") { ?>visibility: hidden;
 		<?php } ?>
 	}
 
 	#femaleElements {
 		<?php
-		if (trim($vlQueryInfo['patient_gender']) == "" || trim($vlQueryInfo['patient_gender']) == "male") { ?>display: none;
+		if (trim((string) $vlQueryInfo['patient_gender']) == "" || trim((string) $vlQueryInfo['patient_gender']) == "male") { ?>display: none;
 		<?php } ?>
 	}
 </style>
@@ -101,7 +101,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 									<tr>
 										<td><label for="sampleCode">Échantillon id </label></td>
 										<td>
-											<input type="text" class="form-control" id="sampleCode" name="sampleCode" placeholder="Échantillon id" title="Please enter échantillon id" <?php echo $disable; ?> value="<?= htmlspecialchars($vlQueryInfo['sample_code']); ?>" style="width:100%;" />
+											<input type="text" class="form-control" id="sampleCode" name="sampleCode" placeholder="Échantillon id" title="Please enter échantillon id" <?php echo $disable; ?> value="<?= htmlspecialchars((string) $vlQueryInfo['sample_code']); ?>" style="width:100%;" />
 										</td>
 										<td></td>
 										<td></td>
@@ -115,7 +115,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($pdResult as $provinceName) { ?>
-													<option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo (strtolower($stateResult[0]['facility_state']) . "##" . strtolower($provinceResult[0]['geo_code']) == strtolower($provinceName['geo_name']) . "##" . strtolower($provinceName['geo_code'])) ? "selected='selected'" : "" ?>><?php echo ($provinceName['geo_name']); ?></option>
+													<option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo (strtolower((string) $stateResult[0]['facility_state']) . "##" . strtolower((string) $provinceResult[0]['geo_code']) == strtolower((string) $provinceName['geo_name']) . "##" . strtolower((string) $provinceName['geo_code'])) ? "selected='selected'" : "" ?>><?php echo ($provinceName['geo_name']); ?></option>
 												<?php } ?>
 											</select>
 										</td>
@@ -156,7 +156,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 												<?php
 												foreach ($implementingPartnerList as $implementingPartner) {
 												?>
-													<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
+													<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
 												<?php } ?>
 											</select>
 										</td>
@@ -173,7 +173,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 												<?php
 												foreach ($fundingSourceList as $fundingSource) {
 												?>
-													<option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
+													<option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
 												<?php } ?>
 											</select>
 										</td>
@@ -186,21 +186,21 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 									<tr>
 										<td style="width: 15% !important;"><label for="patientArtNo">Code du patient </label></td>
 										<td style="width: 35% !important;">
-											<input type="text" class="form-control" id="patientArtNo" name="patientArtNo" placeholder="Code du patient" title="<?= _translate("Please enter the Patient ID"); ?>" <?php echo $disable; ?> value="<?= htmlspecialchars($vlQueryInfo['patient_art_no']); ?>" style="width:100%;" />
+											<input type="text" class="form-control" id="patientArtNo" name="patientArtNo" placeholder="Code du patient" title="<?= _translate("Please enter the Patient ID"); ?>" <?php echo $disable; ?> value="<?= htmlspecialchars((string) $vlQueryInfo['patient_art_no']); ?>" style="width:100%;" />
 										</td>
 										<td style="width:15%;"><label for="">Date de naissance </label></td>
 										<td style="width:35%;">
-											<input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _translate("Please enter date"); ?>" title="Please select date de naissance" <?php echo $disable; ?> value="<?= htmlspecialchars($vlQueryInfo['patient_dob']); ?>" style="width:100%;" />
+											<input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _translate("Please enter date"); ?>" title="Please select date de naissance" <?php echo $disable; ?> value="<?= htmlspecialchars((string) $vlQueryInfo['patient_dob']); ?>" style="width:100%;" />
 										</td>
 									</tr>
 									<tr>
 										<td style="width:15%;"><label for="ageInYears">Âge en années </label></td>
 										<td style="width:35%;">
-											<input type="text" class="form-control forceNumeric" id="ageInYears" name="ageInYears" placeholder="Aannées" title="Please enter àge en années" <?php echo $disable; ?> value="<?= htmlspecialchars($vlQueryInfo['patient_age_in_years']); ?>" style="width:100%;" />
+											<input type="text" class="form-control forceNumeric" id="ageInYears" name="ageInYears" placeholder="Aannées" title="Please enter àge en années" <?php echo $disable; ?> value="<?= htmlspecialchars((string) $vlQueryInfo['patient_age_in_years']); ?>" style="width:100%;" />
 										</td>
 										<td style="width:15%;"><label for="ageInMonths">Âge en mois </label></td>
 										<td style="width:35%;">
-											<input type="text" class="form-control forceNumeric" id="ageInMonths" name="ageInMonths" placeholder="Mois" title="Please enter àge en mois" <?php echo $disable; ?> value="<?= htmlspecialchars($vlQueryInfo['patient_age_in_months']); ?>" style="width:100%;" />
+											<input type="text" class="form-control forceNumeric" id="ageInMonths" name="ageInMonths" placeholder="Mois" title="Please enter àge en mois" <?php echo $disable; ?> value="<?= htmlspecialchars((string) $vlQueryInfo['patient_age_in_months']); ?>" style="width:100%;" />
 										</td>
 									</tr>
 									<tr>
@@ -208,11 +208,11 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 										<td style="width:35%;">
 											<label class="radio-inline" style="padding-left:12px !important;margin-left:0;">&nbsp;M</label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="genderMale" name="gender" <?php echo $disable; ?> value="male" title="<?= _translate("Please select a gender"); ?>" <?php echo (trim($vlQueryInfo['patient_gender']) == "male") ? 'checked="checked"' : ''; ?>>
+												<input type="radio" class="" id="genderMale" name="gender" <?php echo $disable; ?> value="male" title="<?= _translate("Please select a gender"); ?>" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'checked="checked"' : ''; ?>>
 											</label>
 											<label class="radio-inline" style="padding-left:12px !important;margin-left:0;">F</label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="genderFemale" name="gender" <?php echo $disable; ?> value="female" title="<?= _translate("Please select a gender"); ?>" <?php echo (trim($vlQueryInfo['patient_gender']) == "female") ? 'checked="checked"' : ''; ?>>
+												<input type="radio" class="" id="genderFemale" name="gender" <?php echo $disable; ?> value="female" title="<?= _translate("Please select a gender"); ?>" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "female") ? 'checked="checked"' : ''; ?>>
 											</label>
 										</td>
 										<td style="width:15%;"><label>Régime ARV en cours </label></td>
@@ -259,15 +259,15 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 										<td style="width: 35% !important;">
 											<label class="radio-inline">Oui </label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="changedRegimenYes" name="hasChangedRegimen" value="yes" title="Please check any of one option" <?php echo $disable; ?> <?php echo (trim($vlQueryInfo['has_patient_changed_regimen']) == "yes") ? 'checked="checked"' : ''; ?>>
+												<input type="radio" class="" id="changedRegimenYes" name="hasChangedRegimen" value="yes" title="Please check any of one option" <?php echo $disable; ?> <?php echo (trim((string) $vlQueryInfo['has_patient_changed_regimen']) == "yes") ? 'checked="checked"' : ''; ?>>
 											</label>
 											<label class="radio-inline">Non </label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="changedRegimenNo" name="hasChangedRegimen" value="no" title="Please check any of one option" <?php echo $disable; ?> <?php echo (trim($vlQueryInfo['has_patient_changed_regimen']) == "no") ? 'checked="checked"' : ''; ?>>
+												<input type="radio" class="" id="changedRegimenNo" name="hasChangedRegimen" value="no" title="Please check any of one option" <?php echo $disable; ?> <?php echo (trim((string) $vlQueryInfo['has_patient_changed_regimen']) == "no") ? 'checked="checked"' : ''; ?>>
 											</label>
 										</td>
 									</tr>
-									<tr class="arvChangedElement" style="display:<?php echo (trim($vlQueryInfo['has_patient_changed_regimen']) == "yes") ? '' : 'none'; ?>;">
+									<tr class="arvChangedElement" style="display:<?php echo (trim((string) $vlQueryInfo['has_patient_changed_regimen']) == "yes") ? '' : 'none'; ?>;">
 										<td style="width: 15% !important;"><label for="reasonForArvRegimenChange" class="arvChangedElement">Motif
 												de changement de régime ARV </label></td>
 										<td style="width: 35% !important;">
@@ -314,25 +314,25 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 											<label for="breastfeeding">allaitante ?</label>
 											<select class="form-control" id="breastfeeding" name="breastfeeding" title="Please check Si allaitante" <?php echo $disable; ?>>
 												<option value=""> -- Select -- </option>
-												<option id="breastfeedingYes" <?php echo (trim($vlQueryInfo['is_patient_breastfeeding']) == "yes") ? 'selected="selected"' : ''; ?> value="yes">Oui</option>
-												<option id="breastfeedingNo" <?php echo (trim($vlQueryInfo['is_patient_breastfeeding']) == "no") ? 'selected="selected"' : ''; ?> value="no">Non</option>
+												<option id="breastfeedingYes" <?php echo (trim((string) $vlQueryInfo['is_patient_breastfeeding']) == "yes") ? 'selected="selected"' : ''; ?> value="yes">Oui</option>
+												<option id="breastfeedingNo" <?php echo (trim((string) $vlQueryInfo['is_patient_breastfeeding']) == "no") ? 'selected="selected"' : ''; ?> value="no">Non</option>
 											</select>
 										</td>
 										<td colspan="1">
 											<label for="patientPregnant">Ou enceinte ?</label>
 											<select class="form-control" id="pregnant" name="patientPregnant" title="Please check Si Ou enceinte" <?php echo $disable; ?>>
 												<option value=""> -- Select -- </option>
-												<option id="pregYes" <?php echo (trim($vlQueryInfo['is_patient_pregnant']) == "yes") ? 'selected="selected"' : ''; ?> value="yes">Oui</option>
-												<option id="pregNo" <?php echo (trim($vlQueryInfo['is_patient_pregnant']) == "no") ? 'selected="selected"' : ''; ?> value="no">Non</option>
+												<option id="pregYes" <?php echo (trim((string) $vlQueryInfo['is_patient_pregnant']) == "yes") ? 'selected="selected"' : ''; ?> value="yes">Oui</option>
+												<option id="pregNo" <?php echo (trim((string) $vlQueryInfo['is_patient_pregnant']) == "no") ? 'selected="selected"' : ''; ?> value="no">Non</option>
 											</select>
 										</td>
 										<td colspan="1">
 											<label for="trimester">Si Femme enceinte :</label>
 											<select class="form-control" id="trimester" name="trimester" title="Please check trimestre" <?php echo $disable; ?>>
 												<option value=""> -- Select -- </option>
-												<option id="trimester1" <?php echo (trim($vlQueryInfo['pregnancy_trimester']) == "1") ? 'selected="selected"' : ''; ?> value="1">Trimestre 1</option>
-												<option id="trimester2" <?php echo (trim($vlQueryInfo['pregnancy_trimester']) == "2") ? 'selected="selected"' : ''; ?> value="2">Trimestre 2</option>
-												<option id="trimester3" <?php echo (trim($vlQueryInfo['pregnancy_trimester']) == "3") ? 'selected="selected"' : ''; ?> value="3">Trimestre 3</option>
+												<option id="trimester1" <?php echo (trim((string) $vlQueryInfo['pregnancy_trimester']) == "1") ? 'selected="selected"' : ''; ?> value="1">Trimestre 1</option>
+												<option id="trimester2" <?php echo (trim((string) $vlQueryInfo['pregnancy_trimester']) == "2") ? 'selected="selected"' : ''; ?> value="2">Trimestre 2</option>
+												<option id="trimester3" <?php echo (trim((string) $vlQueryInfo['pregnancy_trimester']) == "3") ? 'selected="selected"' : ''; ?> value="3">Trimestre 3</option>
 											</select>
 										</td>
 
@@ -361,7 +361,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 										<td></td>
 									</tr>
 									<?php
-									if (isset($arr['sample_type']) && trim($arr['sample_type']) == "enabled") {
+									if (isset($arr['sample_type']) && trim((string) $arr['sample_type']) == "enabled") {
 									?>
 										<tr>
 											<td><label for="specimenType">Type déchantillon </label></td>
@@ -473,7 +473,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 									<tr class="vlResult" style="<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'display: none;' : ''; ?>">
 										<td class="vlResult"><label for="vlResult">Résultat</label></td>
 										<td class="vlResult resultInputContainer">
-											<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" value="<?= htmlspecialchars($vlQueryInfo['result']); ?>" oninput="calculateLogValue(this)">
+											<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" value="<?= htmlspecialchars((string) $vlQueryInfo['result']); ?>" oninput="calculateLogValue(this)">
 											<datalist id="possibleVlResults">
 
 											</datalist>
@@ -481,7 +481,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 										<td class="vlLog" style="text-align:center;"><label for="vlLog">Log </label>
 										</td>
 										<td class="vlLog">
-											<input type="text" class="form-control forceNumeric other-failed-results" id="vlLog" name="vlLog" placeholder="Log" title="Please enter log" value="<?= htmlspecialchars($vlQueryInfo['result_value_log']); ?>" <?php echo $labFieldDisabled; ?> oninput="calculateLogValue(this)" style="width:100%;" />&nbsp;(copies/ml)
+											<input type="text" class="form-control forceNumeric other-failed-results" id="vlLog" name="vlLog" placeholder="Log" title="Please enter log" value="<?= htmlspecialchars((string) $vlQueryInfo['result_value_log']); ?>" <?php echo $labFieldDisabled; ?> oninput="calculateLogValue(this)" style="width:100%;" />&nbsp;(copies/ml)
 										</td>
 									</tr>
 									<?php if (count($reasonForFailure) > 0) { ?>
@@ -549,9 +549,9 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 					<div class="box-footer">
 						<input type="hidden" name="revised" id="revised" value="no" />
 						<input type="hidden" id="rSrc" name="rSrc" value="er" />
-						<input type="hidden" id="dubPatientArtNo" name="dubPatientArtNo" value="<?= htmlspecialchars($vlQueryInfo['patient_art_no']); ?>" />
-						<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode($vlQueryInfo['reason_for_vl_result_changes']); ?>" />
-						<input type="hidden" id="vlSampleId" name="vlSampleId" value="<?= htmlspecialchars($vlQueryInfo['vl_sample_id']); ?>" />
+						<input type="hidden" id="dubPatientArtNo" name="dubPatientArtNo" value="<?= htmlspecialchars((string) $vlQueryInfo['patient_art_no']); ?>" />
+						<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode((string) $vlQueryInfo['reason_for_vl_result_changes']); ?>" />
+						<input type="hidden" id="vlSampleId" name="vlSampleId" value="<?= htmlspecialchars((string) $vlQueryInfo['vl_sample_id']); ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
 						<a href="vlTestResult.php" class="btn btn-default"> Cancel</a>
 					</div>

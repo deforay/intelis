@@ -56,7 +56,7 @@ if (isset($_POST['iSortCol_0'])) {
 $sWhere = [];
 $sWhere[] = ' number_of_records > 0 ';
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-     $searchArray = explode(" ", $_POST['sSearch']);
+     $searchArray = explode(" ", (string) $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
           $sWhereSub .= " (";
@@ -92,14 +92,14 @@ $sQuery = "SELECT a.* FROM track_api_requests as a";
 
 [$startDate, $endDate] = DateUtility::convertDateRange($_POST['dateRange'] ?? '');
 
-if (isset($_POST['dateRange']) && trim($_POST['dateRange']) != '') {
+if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) != '') {
      $sWhere[] = ' DATE(a.requested_on) >= "' . $startDate . '" AND DATE(a.requested_on) <= "' . $endDate . '"';
 }
 
-if (isset($_POST['syncedType']) && trim($_POST['syncedType']) != '') {
+if (isset($_POST['syncedType']) && trim((string) $_POST['syncedType']) != '') {
      $sWhere[] = ' a.request_type like "' . $_POST['syncedType'] . '"';
 }
-if (isset($_POST['testType']) && trim($_POST['testType']) != '') {
+if (isset($_POST['testType']) && trim((string) $_POST['testType']) != '') {
      $sWhere[] = ' a.test_type like "' . $_POST['testType'] . '"';
 }
 
@@ -132,11 +132,11 @@ foreach ($rResult as $key => $aRow) {
      $row = [];
      $row[] = $aRow['transaction_id'];
      $row[] = $aRow['number_of_records'];
-     $row[] = str_replace("-", " ", ($aRow['request_type']));
-     $row[] = strtoupper($aRow['test_type']);
+     $row[] = str_replace("-", " ", ((string) $aRow['request_type']));
+     $row[] = strtoupper((string) $aRow['test_type']);
      $row[] = $aRow['api_url'];
      $row[] = DateUtility::humanReadableDateFormat($aRow['requested_on'], true);
-     $row[] = '<a href="javascript:void(0);" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result" onclick="showModal(\'show-params.php?id=' . base64_encode($aRow[$primaryKey]) . '\',1200,720);"> Show Params</a>';
+     $row[] = '<a href="javascript:void(0);" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result" onclick="showModal(\'show-params.php?id=' . base64_encode((string) $aRow[$primaryKey]) . '\',1200,720);"> Show Params</a>';
      $output['aaData'][] = $row;
 }
 echo json_encode($output);

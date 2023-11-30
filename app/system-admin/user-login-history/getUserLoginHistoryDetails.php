@@ -60,7 +60,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", $_POST['sSearch']);
+    $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
         if ($sWhereSub == "") {
@@ -103,8 +103,8 @@ $start_date = '';
 $end_date = '';
 $cWhere = [];
 
-if (isset($_POST['userDate']) && trim($_POST['userDate']) != '') {
-    $s_c_date = explode("to", $_POST['userDate']);
+if (isset($_POST['userDate']) && trim((string) $_POST['userDate']) != '') {
+    $s_c_date = explode("to", (string) $_POST['userDate']);
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
         $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
     }
@@ -113,8 +113,8 @@ if (isset($_POST['userDate']) && trim($_POST['userDate']) != '') {
     }
 }
 
-if (isset($_POST['userDate']) && trim($_POST['userDate']) != '') {
-    if (trim($start_date) == trim($end_date)) {
+if (isset($_POST['userDate']) && trim((string) $_POST['userDate']) != '') {
+    if (trim((string) $start_date) == trim((string) $end_date)) {
         $cWhere[] = ' DATE(ul.login_attempted_datetime) = "' . $start_date . '"';
     } else {
         $cWhere[] = ' DATE(ul.login_attempted_datetime) >= "' . $start_date . '" AND DATE(ul.login_attempted_datetime) <= "' . $end_date . '"';
@@ -122,7 +122,7 @@ if (isset($_POST['userDate']) && trim($_POST['userDate']) != '') {
 }
 // print_r($cWhere);die;
 
-if (isset($_POST['loginId']) && trim($_POST['loginId']) != '') {
+if (isset($_POST['loginId']) && trim((string) $_POST['loginId']) != '') {
     $cWhere[] = ' ul.login_id = "' . $_POST['loginId'] . '"';
 }
 

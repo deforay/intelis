@@ -58,7 +58,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", $_POST['sSearch']);
+    $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
         if ($sWhereSub == "") {
@@ -106,11 +106,11 @@ $sQuery = "SELECT * FROM form_vl as vl INNER JOIN facility_details as f ON vl.fa
 if (!empty($sWhere)) {
     $sWhere = ' WHERE ' . $sWhere;
     //$sQuery = $sQuery.' '.$sWhere;
-    if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+    if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
         $sWhere = $sWhere . ' AND b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
     }
     if (!empty($_POST['sampleCollectionDate'])) {
-        if (trim($start_date) == trim($end_date)) {
+        if (trim((string) $start_date) == trim((string) $end_date)) {
             $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
         } else {
             $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
@@ -123,15 +123,15 @@ if (!empty($sWhere)) {
         $sWhere = $sWhere . ' AND f.facility_id = "' . $_POST['facilityName'] . '"';
     }
 } else {
-    if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+    if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
         $setWhr = 'where';
         $sWhere = ' WHERE ' . $sWhere;
         $sWhere = $sWhere . ' b.batch_code = "' . $_POST['batchCode'] . '"';
     }
     if (!empty($_POST['sampleCollectionDate'])) {
         if (isset($setWhr)) {
-            if (trim($start_date) == trim($end_date)) {
-                if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+            if (trim((string) $start_date) == trim((string) $end_date)) {
+                if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
                     $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
                 } else {
                     $sWhere = ' WHERE ' . $sWhere;
@@ -144,7 +144,7 @@ if (!empty($sWhere)) {
             $sWhere = $sWhere . ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
         }
     }
-    if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
+    if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
         if (isset($setWhr)) {
             $sWhere = $sWhere . ' AND s.sample_id = "' . $_POST['sampleType'] . '"';
         } else {
@@ -153,7 +153,7 @@ if (!empty($sWhere)) {
             $sWhere = $sWhere . ' s.sample_id = "' . $_POST['sampleType'] . '"';
         }
     }
-    if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
+    if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
         if (isset($setWhr)) {
             $sWhere = $sWhere . ' AND f.facility_id = "' . $_POST['facilityName'] . '"';
         } else {
@@ -200,13 +200,13 @@ $output = array(
 
 
 foreach ($rResult as $aRow) {
-    if (isset($aRow['patient_dob']) && trim($aRow['patient_dob']) != '' && $aRow['patient_dob'] != '0000-00-00') {
+    if (isset($aRow['patient_dob']) && trim((string) $aRow['patient_dob']) != '' && $aRow['patient_dob'] != '0000-00-00') {
         $aRow['patient_dob'] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
     } else {
         $aRow['patient_dob'] = '';
     }
     $patientDetails = $aRow['patient_art_no'] . "##" . $aRow['sample_code'] . "##" . $aRow['patient_other_id'] . "##" . $aRow['patient_first_name'] . "##" . $aRow['patient_dob'] . "##" . $aRow['patient_gender'] . "##" . $aRow['patient_age_in_years'] . "##" . $aRow['patient_mobile_number'] . "##" . $aRow['patient_location'];
-    if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+    if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
         $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
     } else {
         $aRow['sample_collection_date'] = '';

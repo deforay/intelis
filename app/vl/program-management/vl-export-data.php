@@ -292,7 +292,7 @@ $state = $geolocationService->getProvinces("yes");
 									<?php
 									foreach ($fundingSourceList as $fundingSource) {
 									?>
-										<option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>">
+										<option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>">
 											<?= $fundingSource['funding_source_name']; ?></option>
 									<?php } ?>
 								</select>
@@ -308,7 +308,7 @@ $state = $geolocationService->getProvinces("yes");
 									<?php
 									foreach ($implementingPartnerList as $implementingPartner) {
 									?>
-										<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>">
+										<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
 											<?= $implementingPartner['i_partner_name']; ?></option>
 									<?php } ?>
 								</select>
@@ -571,7 +571,7 @@ $state = $geolocationService->getProvinces("yes");
 		});
 		$('.daterangefield').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _translate("Clear"); ?>",
+					cancelLabel: "<?= _translate("Clear", true); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},

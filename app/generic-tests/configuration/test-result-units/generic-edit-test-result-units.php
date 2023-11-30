@@ -8,7 +8,7 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $tQuery = "SELECT * from r_generic_test_result_units where unit_id=$id";
 $unitInfo = $db->query($tQuery);
@@ -42,7 +42,7 @@ $unitInfo = $db->query($tQuery);
                                     <label for="unitName" class="col-lg-4 control-label"><?php echo _translate("Test Result Unit Name"); ?><span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
                                         <input type="text" class="form-control isRequired" id="unitName" name="unitName" placeholder="<?php echo _translate('Unit Name'); ?>" title="<?php echo _translate('Please enter unit name'); ?>" onblur="checkNameValidation('r_generic_test_result_units','unit_name',this,'<?php echo "unit_id##" . $unitInfo[0]['unit_id']; ?>','<?php echo _translate("This test result unit name that you entered already exists.Try another name"); ?>',null)" value="<?php echo $unitInfo[0]['unit_name']; ?>" />
-                                        <input type="hidden" name="unitId" id="unitId" value="<?php echo base64_encode($unitInfo[0]['unit_id']); ?>" />
+                                        <input type="hidden" name="unitId" id="unitId" value="<?php echo base64_encode((string) $unitInfo[0]['unit_id']); ?>" />
                                     </div>
                                 </div>
                             </div>

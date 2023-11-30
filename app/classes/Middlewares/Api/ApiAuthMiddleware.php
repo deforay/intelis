@@ -11,7 +11,7 @@ use Slim\Psr7\Response;
 
 class ApiAuthMiddleware implements MiddlewareInterface
 {
-    private UsersService $userModel;
+    private readonly UsersService $userModel;
 
     public function __construct($userModel)
     {

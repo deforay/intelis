@@ -94,7 +94,7 @@ foreach ($formResults as $row) {
   $db->where('covid19_id', $row['covid19_id']);
   $testResults = $db->get('covid19_tests');
 
-  $uniqueIdArray = explode("::", $row['unique_id']);
+  $uniqueIdArray = explode("::", (string) $row['unique_id']);
   $trackedEntityInstance = $uniqueIdArray[1];
 
   if (!empty($row['facility_id'])) {

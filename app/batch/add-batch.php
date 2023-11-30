@@ -62,8 +62,8 @@ foreach ($testPlatformResult as $machine) {
     $lastOrderQuery = "SELECT label_order   FROM batch_details
                         WHERE machine = ? ORDER BY request_created_datetime DESC";
     $lastOrderInfo = $db->rawQuery($lastOrderQuery, [$machine['config_id']]);
-    if (isset($lastOrderInfo[0]['label_order']) && trim($lastOrderInfo[0]['label_order']) != '') {
-        $machinesLabelOrder[$machine['config_id']] = implode(",", json_decode($lastOrderInfo[0]['label_order'], true));
+    if (isset($lastOrderInfo[0]['label_order']) && trim((string) $lastOrderInfo[0]['label_order']) != '') {
+        $machinesLabelOrder[$machine['config_id']] = implode(",", json_decode((string) $lastOrderInfo[0]['label_order'], true));
     } else {
         $machinesLabelOrder[$machine['config_id']] = '';
     }
@@ -309,7 +309,7 @@ $fundingSourceList = $general->getFundingSources();
 
         $('.daterange').daterangepicker({
                 locale: {
-                    cancelLabel: "<?= _translate("Clear"); ?>",
+                    cancelLabel: "<?= _translate("Clear", true); ?>",
                     format: 'DD-MMM-YYYY',
                     separator: ' to ',
                 },

@@ -25,13 +25,13 @@ $importControlTable = "instrument_controls";
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
-$configId = (int) base64_decode($_POST['configId']);
+$configId = (int) base64_decode((string) $_POST['configId']);
 
 $configControlQuery = "SELECT * FROM instrument_controls WHERE config_id=?";
 $configControlInfo = $db->rawQuery($configControlQuery, [$configId]);
 // echo "<pre>";print_r($_POST);die;
 try {
-    if (trim($_POST['configurationName']) != "") {
+    if (trim((string) $_POST['configurationName']) != "") {
 
         if (!empty($_POST['supportedTests'])) {
             foreach ($_POST['supportedTests'] as $test) {
@@ -76,9 +76,9 @@ try {
         $db->update($tableName, $importConfigData);
         if (count($_POST['configMachineName']) > 0) {
             for ($c = 0; $c < count($_POST['configMachineName']); $c++) {
-                if (trim($_POST['configMachineName'][$c]) != '') {
+                if (trim((string) $_POST['configMachineName'][$c]) != '') {
                     $pocDev = 'no';
-                    if (trim($_POST['latitude'][$c]) != '' && trim($_POST['longitude'][$c]) != '') {
+                    if (trim((string) $_POST['latitude'][$c]) != '' && trim((string) $_POST['longitude'][$c]) != '') {
                         $pocDev = 'yes';
                     }
                     if (isset($_POST['configMachineId'][$c]) && $_POST['configMachineId'][$c] != '') {
@@ -98,7 +98,7 @@ try {
                 foreach ($_POST['testType'] as $key => $val) {
                     $cQuery = "SELECT * FROM instrument_controls WHERE config_id= " . $configId . " AND test_type like '" . $val . "'";
                     $cResult = $db->rawQueryOne($cQuery);
-                    if (trim($val) != '' && $cResult) {
+                    if (trim((string) $val) != '' && $cResult) {
                         $configControlData = array('number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]);
                         $db = $db->where('config_id', $configId);
                         $db = $db->where('test_type', $val);
@@ -110,7 +110,7 @@ try {
                 }
             } else {
                 foreach ($_POST['testType'] as $key => $val) {
-                    if (trim($val) != '') {
+                    if (trim((string) $val) != '') {
                         $configControlData = array('test_type' => $val, 'config_id' => $configId, 'number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]);
                         $db->insert($importControlTable, $configControlData);
                     }

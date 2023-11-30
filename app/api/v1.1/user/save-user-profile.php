@@ -42,7 +42,7 @@ try {
         $input = $request->getParsedBody();
     } elseif (!empty($_REQUEST)) {
         $input = $_REQUEST;
-        $input['post'] = json_decode($input['post'], true);
+        $input['post'] = json_decode((string) $input['post'], true);
     } else {
         throw new SystemException("2 Invalid request. Please check your request parameters.");
     }
@@ -113,7 +113,7 @@ try {
 
         MiscUtility::makeDirectory($signatureImagePath);
 
-        $imageName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename($_FILES['sign']['name'])));
+        $imageName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $_FILES['sign']['name'])));
         $imageName = str_replace(" ", "-", $imageName);
         $extension = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
         $imageName = "usign-" . htmlspecialchars($data['user_id']) . "." . $extension;

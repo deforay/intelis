@@ -19,7 +19,7 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim($_SESSION['covid19MonitoringThresholdReportQuery']) != "") {
+if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim((string) $_SESSION['covid19MonitoringThresholdReportQuery']) != "") {
     $rResult = $db->rawQuery($_SESSION['covid19MonitoringThresholdReportQuery']);
 
     $res = [];
@@ -27,12 +27,12 @@ if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim($_SESSION[
         $row = [];
         if (isset($res[$aRow['facility_id']])) {
             if (isset($res[$aRow['facility_id']][$aRow['monthrange']])) {
-                if (trim($aRow['is_sample_rejected'])  == 'yes') {
+                if (trim((string) $aRow['is_sample_rejected'])  == 'yes') {
                     $row['totalRejected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalRejected']  + 1;
                 } else {
                     $row['totalRejected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalRejected'];
                 }
-                if (trim($aRow['sample_tested_datetime'])  == null  && trim($aRow['sample_collection_date']) != '') {
+                if (trim((string) $aRow['sample_tested_datetime'])  == null  && trim((string) $aRow['sample_collection_date']) != '') {
                     $row['totalReceived'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalReceived']  + 1;
                 } else {
                     $row['totalReceived'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalReceived'];
@@ -43,12 +43,12 @@ if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim($_SESSION[
                 $row['totalCollected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalCollected']  + 1;
                 $res[$aRow['facility_id']][$aRow['monthrange']] = $row;
             } else {
-                if (trim($aRow['is_sample_rejected'])  == 'yes') {
+                if (trim((string) $aRow['is_sample_rejected'])  == 'yes') {
                     $row['totalRejected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalRejected']  + 1;
                 } else {
                     $row['totalRejected'] = 0;
                 }
-                if (trim($aRow['sample_tested_datetime'])  == null  && trim($aRow['sample_collection_date']) != '') {
+                if (trim((string) $aRow['sample_tested_datetime'])  == null  && trim((string) $aRow['sample_collection_date']) != '') {
                     $row['totalReceived'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalReceived']  + 1;
                 } else {
                     $row['totalReceived'] = 0;
@@ -60,12 +60,12 @@ if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim($_SESSION[
                 $res[$aRow['facility_id']][$aRow['monthrange']] = $row;
             }
         } else {
-            if (trim($aRow['is_sample_rejected'])  == 'yes') {
+            if (trim((string) $aRow['is_sample_rejected'])  == 'yes') {
                 $row['totalRejected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalRejected']  + 1;
             } else {
                 $row['totalRejected'] = 0;
             }
-            if (trim($aRow['sample_tested_datetime'])  == null  && trim($aRow['sample_collection_date']) != '') {
+            if (trim((string) $aRow['sample_tested_datetime'])  == null  && trim((string) $aRow['sample_collection_date']) != '') {
                 $row['totalReceived'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalReceived']  + 1;
             } else {
                 $row['totalReceived'] = 0;
@@ -165,31 +165,31 @@ if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim($_SESSION[
             if ($_POST['targetType'] == 1) {
                 if ($rowData['monthly_target'] > $rowData['totalCollected']) {
                     $cnt++;
-                    $sheet->setCellValue('A' . $cnt, html_entity_decode(($rowData['facility_name']), ENT_QUOTES, 'UTF-8'));
-                    $sheet->setCellValue('B' . $cnt, html_entity_decode($rowData['monthrange'], ENT_QUOTES, 'UTF-8'));
+                    $sheet->setCellValue('A' . $cnt, html_entity_decode(((string) $rowData['facility_name']), ENT_QUOTES, 'UTF-8'));
+                    $sheet->setCellValue('B' . $cnt, html_entity_decode((string) $rowData['monthrange'], ENT_QUOTES, 'UTF-8'));
                     $sheet->setCellValue('C' . $cnt, html_entity_decode($rowData['totalReceived'], ENT_QUOTES, 'UTF-8'));
                     $sheet->setCellValue('D' . $cnt, html_entity_decode($rowData['totalRejected'], ENT_QUOTES, 'UTF-8'));
                     $sheet->setCellValue('E' . $cnt, html_entity_decode($rowData['totalCollected'], ENT_QUOTES, 'UTF-8'));
-                    $sheet->setCellValue('F' . $cnt, html_entity_decode($rowData['monthly_target'], ENT_QUOTES, 'UTF-8'));
+                    $sheet->setCellValue('F' . $cnt, html_entity_decode((string) $rowData['monthly_target'], ENT_QUOTES, 'UTF-8'));
                 }
             } elseif ($_POST['targetType'] == 2) {
                 if ($rowData['monthly_target'] < $rowData['totalCollected']) {
                     $cnt++;
-                    $sheet->setCellValue('A' . $cnt, html_entity_decode(($rowData['facility_name']), ENT_QUOTES, 'UTF-8'));
-                    $sheet->setCellValue('B' . $cnt, html_entity_decode($rowData['monthrange'], ENT_QUOTES, 'UTF-8'));
+                    $sheet->setCellValue('A' . $cnt, html_entity_decode(((string) $rowData['facility_name']), ENT_QUOTES, 'UTF-8'));
+                    $sheet->setCellValue('B' . $cnt, html_entity_decode((string) $rowData['monthrange'], ENT_QUOTES, 'UTF-8'));
                     $sheet->setCellValue('C' . $cnt, html_entity_decode($rowData['totalReceived'], ENT_QUOTES, 'UTF-8'));
                     $sheet->setCellValue('D' . $cnt, html_entity_decode($rowData['totalRejected'], ENT_QUOTES, 'UTF-8'));
                     $sheet->setCellValue('E' . $cnt, html_entity_decode($rowData['totalCollected'], ENT_QUOTES, 'UTF-8'));
-                    $sheet->setCellValue('F' . $cnt, html_entity_decode($rowData['monthly_target'], ENT_QUOTES, 'UTF-8'));
+                    $sheet->setCellValue('F' . $cnt, html_entity_decode((string) $rowData['monthly_target'], ENT_QUOTES, 'UTF-8'));
                 }
             } else {
                 $cnt++;
-                $sheet->setCellValue('A' . $cnt, html_entity_decode(($rowData['facility_name']), ENT_QUOTES, 'UTF-8'));
-                $sheet->setCellValue('B' . $cnt, html_entity_decode($rowData['monthrange'], ENT_QUOTES, 'UTF-8'));
+                $sheet->setCellValue('A' . $cnt, html_entity_decode(((string) $rowData['facility_name']), ENT_QUOTES, 'UTF-8'));
+                $sheet->setCellValue('B' . $cnt, html_entity_decode((string) $rowData['monthrange'], ENT_QUOTES, 'UTF-8'));
                 $sheet->setCellValue('C' . $cnt, html_entity_decode($rowData['totalReceived'], ENT_QUOTES, 'UTF-8'));
                 $sheet->setCellValue('D' . $cnt, html_entity_decode($rowData['totalRejected'], ENT_QUOTES, 'UTF-8'));
                 $sheet->setCellValue('E' . $cnt, html_entity_decode($rowData['totalCollected'], ENT_QUOTES, 'UTF-8'));
-                $sheet->setCellValue('F' . $cnt, html_entity_decode($rowData['monthly_target'], ENT_QUOTES, 'UTF-8'));
+                $sheet->setCellValue('F' . $cnt, html_entity_decode((string) $rowData['monthly_target'], ENT_QUOTES, 'UTF-8'));
             }
         }
     }

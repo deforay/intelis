@@ -50,7 +50,7 @@ $sampleStatusColors[9] = "#4BC0D9"; // Sample Registered at Health Center
 $start_date = '';
 $end_date = '';
 if (!empty($_POST['sampleCollectionDate'])) {
-    $s_c_date = explode("to", $_POST['sampleCollectionDate']);
+    $s_c_date = explode("to", (string) $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
         $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
@@ -75,16 +75,16 @@ $sWhere[] = $genericWhere;
 if ($_SESSION['instanceType'] != 'remoteuser') {
     $sWhere[] = ' result_status !=  ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 }
-if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
     $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
 }
-if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
+if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
     $sWhere[] = ' DATE(vl.sample_received_at_testing_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_testing_lab_datetime) <= "' . $labEndDate . '"';
 }
-if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
+if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
     $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
 }
 if (!empty($_POST['labName'])) {
@@ -130,16 +130,16 @@ if (!empty($whereCondition)) {
 }
 
 $sWhere[] = $genericWhere;
-if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
+if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
     $sWhere[] = ' DATE(vl.sample_received_at_testing_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_testing_lab_datetime) <= "' . $labEndDate . '"';
 }
-if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
+if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
     $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
 }
-if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
-if (isset($_POST['sampleType']) && trim($_POST['sampleType']) != '') {
+if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
     $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
 }
 
@@ -204,7 +204,7 @@ foreach ($tatResult as $sRow) {
                     name: '<?php echo ($tRow['status_name']); ?>',
                     y: <?php echo ($tRow['total']); ?>,
                     color: '<?php echo $sampleStatusColors[$tRow['status_id']]; ?>',
-                    url: '/dashboard/vlTestResultStatus.php?id=<?php echo base64_encode($tRow['status_id']); ?>&d=<?php echo base64_encode($_POST['sampleCollectionDate']); ?>'
+                    url: '/dashboard/vlTestResultStatus.php?id=<?php echo base64_encode((string) $tRow['status_id']); ?>&d=<?php echo base64_encode((string) $_POST['sampleCollectionDate']); ?>'
                 },
             <?php } ?>
         ];

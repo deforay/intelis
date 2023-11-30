@@ -8,7 +8,7 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 if (!isset($id) || $id == "") {
     $_SESSION['alertMsg'] = "Something went wrong in Implementation Partners edit page";
@@ -66,7 +66,7 @@ $partnerInfo = $db->rawQuery($query, [$id]);
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
-                        <input type="hidden" name="fundingId" name="fundingId" value="<?php echo htmlspecialchars($_GET['id']); ?>">
+                        <input type="hidden" name="fundingId" name="fundingId" value="<?php echo $_GET['id']; ?>">
                         <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
                         <a href="funding-sources.php" class="btn btn-default"> Cancel</a>
                     </div>

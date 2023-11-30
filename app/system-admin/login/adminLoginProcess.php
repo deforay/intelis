@@ -10,8 +10,8 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 $tableName = "system_admin";
-$adminUsername = trim($_POST['username']);
-$adminPassword = trim($_POST['password']);
+$adminUsername = trim((string) $_POST['username']);
+$adminPassword = trim((string) $_POST['password']);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
@@ -24,7 +24,7 @@ try {
             $params = array($adminUsername);
             $adminRow = $db->rawQueryOne("SELECT * FROM system_admin as ud WHERE ud.system_admin_login = ?", $params);
 
-            if (!empty($adminRow) && password_verify($adminPassword, $adminRow['system_admin_password'])) {
+            if (!empty($adminRow) && password_verify($adminPassword, (string) $adminRow['system_admin_password'])) {
                 $_SESSION['adminUserId'] = $adminRow['system_admin_id'];
                 $_SESSION['adminUserName'] = ($adminRow['system_admin_name']);
                 header("Location:/system-admin/edit-config/index.php");

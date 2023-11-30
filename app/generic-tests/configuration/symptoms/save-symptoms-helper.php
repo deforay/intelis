@@ -10,13 +10,13 @@ ob_start();
 
 $general = new CommonService();
 $tableName = "r_generic_symptoms";
-$symptomId = (int) base64_decode($_POST['symptomId']);
+$symptomId = (int) base64_decode((string) $_POST['symptomId']);
 try {
     if (!empty($_POST['symptomName'])) {
 
         $data = array(
-            'symptom_name' => trim($_POST['symptomName']),
-            'symptom_code' => trim($_POST['symptomCode']),
+            'symptom_name' => trim((string) $_POST['symptomName']),
+            'symptom_code' => trim((string) $_POST['symptomCode']),
             'symptom_status' => $_POST['status'],
             'updated_datetime' => DateUtility::getCurrentDateTime()
         );

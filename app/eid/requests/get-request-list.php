@@ -76,7 +76,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-     $searchArray = explode(" ", $_POST['sSearch']);
+     $searchArray = explode(" ", (string) $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
           if ($sWhereSub == "") {
@@ -142,82 +142,82 @@ $sQuery = "SELECT vl.*, f.*,
 [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
 [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 
-if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
      $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-     if (trim($start_date) == trim($end_date)) {
+     if (trim((string) $start_date) == trim((string) $end_date)) {
           $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
      }
 }
 
-if (isset($_POST['sampleReceivedDateAtLab']) && trim($_POST['sampleReceivedDateAtLab']) != '') {
-     if (trim($labStartDate) == trim($labEndDate)) {
+if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
+     if (trim((string) $labStartDate) == trim((string) $labEndDate)) {
           $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $labStartDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $labEnddate . '"';
      }
 }
 
-if (isset($_POST['sampleTestedDate']) && trim($_POST['sampleTestedDate']) != '') {
-     if (trim($testedStartDate) == trim($testedEndDate)) {
+if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
+     if (trim((string) $testedStartDate) == trim((string) $testedEndDate)) {
           $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $testedStartDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
      }
 }
-if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
+if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
      $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
-if (isset($_POST['district']) && trim($_POST['district']) != '') {
+if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
      $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
 }
-if (isset($_POST['state']) && trim($_POST['state']) != '') {
+if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
      $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
 }
-if (isset($_POST['vlLab']) && trim($_POST['vlLab']) != '') {
+if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) != '') {
      $sWhere[] = ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
 }
-if (isset($_POST['gender']) && trim($_POST['gender']) != '') {
-     if (trim($_POST['gender']) == "not_recorded") {
+if (isset($_POST['gender']) && trim((string) $_POST['gender']) != '') {
+     if (trim((string) $_POST['gender']) == "not_recorded") {
           $sWhere[] = ' vl.child_gender="not_recorded" OR vl.child_gender="" OR vl.child_gender IS NULL';
      } else {
           $sWhere[] = ' vl.child_gender IN ("' . $_POST['gender'] . '")';
      }
 }
 /* Sample status filter */
-if (isset($_POST['status']) && trim($_POST['status']) != '') {
+if (isset($_POST['status']) && trim((string) $_POST['status']) != '') {
      $sWhere[] = '  (vl.result_status IS NOT NULL AND vl.result_status =' . $_POST['status'] . ')';
 }
-if (isset($_POST['showReordSample']) && trim($_POST['showReordSample']) != '') {
+if (isset($_POST['showReordSample']) && trim((string) $_POST['showReordSample']) != '') {
      $sWhere[] = ' vl.sample_reordered IN ("' . $_POST['showReordSample'] . '")';
 }
-if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
-     $sWhere[] = ' vl.funding_source IN ("' . base64_decode($_POST['fundingSource']) . '")';
+if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') {
+     $sWhere[] = ' vl.funding_source IN ("' . base64_decode((string) $_POST['fundingSource']) . '")';
 }
-if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
-     $sWhere[] = ' vl.implementing_partner IN ("' . base64_decode($_POST['implementingPartner']) . '")';
+if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') {
+     $sWhere[] = ' vl.implementing_partner IN ("' . base64_decode((string) $_POST['implementingPartner']) . '")';
 }
 
-if (isset($_POST['srcOfReq']) && trim($_POST['srcOfReq']) != '') {
+if (isset($_POST['srcOfReq']) && trim((string) $_POST['srcOfReq']) != '') {
      $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReq'] . '"';
 }
 
-if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result') {
+if (isset($_POST['reqSampleType']) && trim((string) $_POST['reqSampleType']) == 'result') {
      $sWhere[] = ' vl.result != "" ';
-} else if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'noresult') {
+} else if (isset($_POST['reqSampleType']) && trim((string) $_POST['reqSampleType']) == 'noresult') {
      $sWhere[] = ' (vl.result IS NULL OR vl.result = "") ';
 }
 /* Source of request show model conditions */
-if (isset($_POST['dateRangeModel']) && trim($_POST['dateRangeModel']) != '') {
+if (isset($_POST['dateRangeModel']) && trim((string) $_POST['dateRangeModel']) != '') {
      $sWhere[] = ' DATE(vl.sample_collection_date) like "' . DateUtility::isoDateFormat($_POST['dateRangeModel']) . '"';
 }
-if (isset($_POST['srcOfReqModel']) && trim($_POST['srcOfReqModel']) != '') {
+if (isset($_POST['srcOfReqModel']) && trim((string) $_POST['srcOfReqModel']) != '') {
      $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReqModel'] . '" ';
 }
-if (isset($_POST['labIdModel']) && trim($_POST['labIdModel']) != '') {
+if (isset($_POST['labIdModel']) && trim((string) $_POST['labIdModel']) != '') {
      $sWhere[] = ' vl.lab_id like "' . $_POST['labIdModel'] . '" ';
 }
 if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 4) {
@@ -309,7 +309,7 @@ foreach ($rResult as $aRow) {
           $row[] = $aRow['remote_sample_code'];
      }
      if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-          $key = base64_decode($general->getGlobalConfig('key'));
+          $key = base64_decode((string) $general->getGlobalConfig('key'));
           $aRow['child_id'] = $general->crypto('decrypt', $aRow['child_id'], $key);
           $aRow['child_name'] = $general->crypto('decrypt', $aRow['child_name'], $key);
           $aRow['mother_id'] = $general->crypto('decrypt', $aRow['mother_id'], $key);
@@ -331,7 +331,7 @@ foreach ($rResult as $aRow) {
      $row[] = ($aRow['status_name']);
 
      if ($editRequest) {
-          $edit = '<a href="eid-edit-request.php?id=' . base64_encode($aRow['eid_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
+          $edit = '<a href="eid-edit-request.php?id=' . base64_encode((string) $aRow['eid_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
           if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
                if (isset($_SESSION['privileges']) && !in_array("/eid/requests/edit-locked-eid-samples", $_SESSION['privileges'])) {
                     $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _translate("Locked") . '</a>';

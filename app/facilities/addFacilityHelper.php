@@ -49,12 +49,12 @@ if (!empty($apiData['result'])) {
 try {
 
 	//Province Table
-	if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != "") {
+	if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != "") {
 		if (isset($_POST['provinceNew']) && $_POST['provinceNew'] != "" && $_POST['stateId'] == 'other') {
 			$_POST['stateId'] = $geolocation->addGeoLocation($_POST['provinceNew']);
 			$_POST['state'] = $_POST['provinceNew'];
 			// if (trim($_POST['state']) != "") {
-			$strSearch = (isset($_POST['provinceNew']) && trim($_POST['provinceNew']) != '' && $_POST['state'] == 'other') ? $_POST['provinceNew'] : $_POST['state'];
+			$strSearch = (isset($_POST['provinceNew']) && trim((string) $_POST['provinceNew']) != '' && $_POST['state'] == 'other') ? $_POST['provinceNew'] : $_POST['state'];
 			$facilityQuery = "SELECT geo_name from geographical_divisions where geo_name= ?";
 			$facilityInfo = $db->rawQuery($facilityQuery, [$strSearch]);
 			if (isset($facilityInfo[0]['geo_name'])) {
@@ -74,8 +74,8 @@ try {
 			$_POST['instanceId'] = $instanceId;
 		}
 		$email = '';
-		if (isset($_POST['reportEmail']) && trim($_POST['reportEmail']) != '') {
-			$expEmail = explode(",", $_POST['reportEmail']);
+		if (isset($_POST['reportEmail']) && trim((string) $_POST['reportEmail']) != '') {
+			$expEmail = explode(",", (string) $_POST['reportEmail']);
 			for ($i = 0; $i < count($expEmail); $i++) {
 				$reportEmail = filter_var($expEmail[$i], FILTER_VALIDATE_EMAIL);
 				if ($reportEmail != '') {
@@ -89,7 +89,7 @@ try {
 		}
 
 		if (!empty($_POST['testingPoints'])) {
-			$_POST['testingPoints'] = explode(",", $_POST['testingPoints']);
+			$_POST['testingPoints'] = explode(",", (string) $_POST['testingPoints']);
 			$_POST['testingPoints'] = array_map('trim', $_POST['testingPoints']);
 			$_POST['testingPoints'] = json_encode($_POST['testingPoints']);
 		} else {
@@ -202,8 +202,8 @@ try {
 			}
 		}
 		// Mapping facility with users
-		if ($lastId > 0 && trim($_POST['selectedUser']) != '') {
-			$selectedUser = explode(",", $_POST['selectedUser']);
+		if ($lastId > 0 && trim((string) $_POST['selectedUser']) != '') {
+			$selectedUser = explode(",", (string) $_POST['selectedUser']);
 			for ($j = 0; $j < count($selectedUser); $j++) {
 				$data = array(
 					'user_id' => $selectedUser[$j],

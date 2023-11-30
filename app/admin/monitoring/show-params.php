@@ -17,7 +17,7 @@ $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 $_COOKIE = $request->getCookieParams();
 
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
 $db = $db->where('api_track_id', $id);

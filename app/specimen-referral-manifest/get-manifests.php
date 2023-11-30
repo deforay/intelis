@@ -106,7 +106,7 @@ if (isset($_POST['iSortCol_0'])) {
 $sWhere = [];
 $sWhere[] = "p.module = '$module'";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", $_POST['sSearch']);
+    $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
         if ($sWhereSub == "") {
@@ -193,10 +193,10 @@ if ($usersService->isAllowed("/specimen-referral-manifest/edit-manifest.php?t=" 
 
 foreach ($rResult as $aRow) {
     $humanDate = "";
-    $printBarcode = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="Print Manifest PDF" onclick="generateManifestPDF(\'' . base64_encode($aRow['package_id']) . '\',\'pk1\');"><em class="fa-solid fa-barcode"></em> ' . _translate("Print Manifest PDF") . '</a>';
-    if (trim($aRow['request_created_datetime']) != "" && $aRow['request_created_datetime'] != '0000-00-00 00:00:00') {
+    $printBarcode = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="Print Manifest PDF" onclick="generateManifestPDF(\'' . base64_encode((string) $aRow['package_id']) . '\',\'pk1\');"><em class="fa-solid fa-barcode"></em> ' . _translate("Print Manifest PDF") . '</a>';
+    if (trim((string) $aRow['request_created_datetime']) != "" && $aRow['request_created_datetime'] != '0000-00-00 00:00:00') {
         $date = $aRow['request_created_datetime'];
-        $humanDate = date("d-M-Y H:i:s", strtotime($date));
+        $humanDate = date("d-M-Y H:i:s", strtotime((string) $date));
     }
     $disable = '';
     $pointerEvent = '';
@@ -210,13 +210,13 @@ foreach ($rResult as $aRow) {
     $row = [];
 
     $row[] = $aRow['package_code'];
-    $row[] = strtoupper($aRow['module']);
+    $row[] = strtoupper((string) $aRow['module']);
     $row[] = $aRow['labName'];
     $row[] = $aRow['number_of_samples'];
     $row[] = $humanDate;
     if ($package) {
         if ($_SESSION['roleCode'] == 'AD' || $_SESSION['roleCode'] == 'ad') {
-            $editBtn = '<a href="/specimen-referral-manifest/edit-manifest.php?t=' . ($_POST['module']) . '&id=' . base64_encode($aRow['package_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="Edit"><em class="fa-solid fa-pen-to-square"></em> Edit</em></a>';
+            $editBtn = '<a href="/specimen-referral-manifest/edit-manifest.php?t=' . ($_POST['module']) . '&id=' . base64_encode((string) $aRow['package_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="Edit"><em class="fa-solid fa-pen-to-square"></em> Edit</em></a>';
         } else {
             $editBtn = '';
         }

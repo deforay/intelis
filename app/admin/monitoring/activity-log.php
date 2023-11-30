@@ -21,7 +21,7 @@ $actions = $db->rawQuery("SELECT DISTINCT event_type FROM activity_log");
 
 $actionList = [];
 foreach ($actions as $list) {
-	$actionList[$list['event_type']] = (str_replace("-", " ", $list['event_type']));
+	$actionList[$list['event_type']] = (str_replace("-", " ", (string) $list['event_type']));
 }
 
 ?>
@@ -145,7 +145,7 @@ foreach ($actions as $list) {
 		loadVlRequestData();
 		$('#dateRange').daterangepicker({
 				locale: {
-					cancelLabel: "<?= _translate("Clear"); ?>",
+					cancelLabel: "<?= _translate("Clear", true); ?>",
 					format: 'DD-MMM-YYYY',
 					separator: ' to ',
 				},

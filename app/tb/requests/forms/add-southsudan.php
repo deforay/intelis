@@ -460,7 +460,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 									</table>
 								</div>
 							</div>
-						<?php } ?>
+<?php } ?>
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">

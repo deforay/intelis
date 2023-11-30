@@ -81,7 +81,7 @@ $sFormat = '';
 										<?php } else { ?>
 											<td><label for="sampleCode">Échantillon ID </label><span class="mandatory">*</span></td>
 											<td>
-												<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'<?= addslashes(_translate("The Sample ID that you entered already exists. Please try another Sample ID")); ?>',null)" />
+												<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" onchange="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'<?= addslashes((string) _translate("The Sample ID that you entered already exists. Please try another Sample ID")); ?>',null)" />
 											</td>
 										<?php } ?>
 										<td><label for="serialNo">
@@ -130,7 +130,7 @@ $sFormat = '';
 												<?php
 												foreach ($implementingPartnerList as $implementingPartner) {
 												?>
-													<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>">
+													<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
 														<?= $implementingPartner['i_partner_name']; ?></option>
 												<?php } ?>
 											</select>
@@ -148,7 +148,7 @@ $sFormat = '';
 												<?php
 												foreach ($fundingSourceList as $fundingSource) {
 												?>
-													<option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>">
+													<option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>">
 														<?= $fundingSource['funding_source_name']; ?></option>
 												<?php } ?>
 											</select>
@@ -367,7 +367,7 @@ $sFormat = '';
 										<td></td>
 										<td></td>
 									</tr>
-									<?php if (isset($arr['sample_type']) && trim($arr['sample_type']) == "enabled") { ?>
+									<?php if (isset($arr['sample_type']) && trim((string) $arr['sample_type']) == "enabled") { ?>
 										<tr>
 											<td><label for="specimenType">Type d'échantillon <span class="mandatory">*</span> </label></td>
 											<td>

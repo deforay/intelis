@@ -14,7 +14,7 @@ use Exception;
 class CaptchaUtility
 {
 
-    public function getCaptcha($config = [])
+    public function getCaptcha($config = []): void
     {
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
@@ -79,13 +79,13 @@ class CaptchaUtility
         //     $captchaConfig['code'] = "zaq";
         // }
 
-        $seedLength = strlen($captchaConfig['characters']);
+        $seedLength = strlen((string) $captchaConfig['characters']);
 
         $captchaConfig['code'] = '';
         $length = random_int($captchaConfig['min_length'], $captchaConfig['max_length']);
         while (strlen($captchaConfig['code']) < $length) {
             $captchaConfig['code'] .= substr(
-                $captchaConfig['characters'],
+                (string) $captchaConfig['characters'],
                 random_int(0, PHP_INT_MAX) % ($seedLength),
                 1
             );
@@ -101,9 +101,9 @@ class CaptchaUtility
 
         if (!function_exists('hex2rgb')) {
 
-            function hex2rgb($hexStr, $returnString = false, $separator = ',')
+            function hex2rgb($hexStr, $returnString = false, $separator = ','): bool|array|string
             {
-                $hexStr = preg_replace("/[^0-9A-Fa-f]/", '', $hexStr); // Gets a proper hex string
+                $hexStr = preg_replace("/[^0-9A-Fa-f]/", '', (string) $hexStr); // Gets a proper hex string
                 $rgbArray = [];
                 if (strlen($hexStr) == 6) {
                     $colorVal = hexdec($hexStr);

@@ -14,7 +14,7 @@ class UsersService
 {
 
     protected ?MysqliDb $db = null;
-    protected $applicationConfig = null;
+    protected mixed $applicationConfig = null;
     protected string $table = 'user_details';
     protected CommonService $commonService;
 
@@ -60,12 +60,12 @@ class UsersService
             $baseFileName = basename($path);
             $currentRequest = $path . ($query ? '?' . $query : '');
         } else {
-            $parsedInput = parse_url($currentRequest);
+            $parsedInput = parse_url((string) $currentRequest);
             $path = $parsedInput['path'];
             $baseFileName = basename($path);
         }
 
-        $urlParts = parse_url($currentRequest);
+        $urlParts = parse_url((string) $currentRequest);
         $requestArray = [$currentRequest, $baseFileName, $path];
 
         if (isset($urlParts['query'])) {
@@ -99,7 +99,7 @@ class UsersService
 
         // Fetch each row from the result set
         foreach ($results as $row) {
-            $privileges = json_decode($row['shared_privileges'], true);
+            $privileges = json_decode((string) $row['shared_privileges'], true);
             if (empty($privileges)) {
                 continue;
             } else {
@@ -137,7 +137,7 @@ class UsersService
         return once(function () use ($facilityMap, $status, $type, $updatedDateTime) {
 
             if (!empty($facilityMap)) {
-                $facilityMap = explode(",", $facilityMap);
+                $facilityMap = explode(",", (string) $facilityMap);
                 $this->db->join("user_facility_map map", "map.user_id=u.user_id", "INNER");
                 $this->db->where('map.facility_id', $facilityMap, 'IN');
             }
@@ -317,7 +317,7 @@ class UsersService
             $response['role']['code'] = $row['role_code'];
             $response['role']['type'] = $row['access_type'];
 
-            $row['display_name'] = strtolower(trim(preg_replace("![^a-z0-9]+!i", " ", $row['display_name'])));
+            $row['display_name'] = strtolower(trim(preg_replace("![^a-z0-9]+!i", " ", (string) $row['display_name'])));
             $row['display_name'] = preg_replace("![^a-z0-9]+!i", "-", $row['display_name']);
             $response['privileges'][$row['module']][$row['resource_id']][] = $row['display_name'];
         }
@@ -352,6 +352,6 @@ class UsersService
             'cost' => 14
         ];
 
-        return password_hash($password, PASSWORD_BCRYPT, $options);
+        return password_hash((string) $password, PASSWORD_BCRYPT, $options);
     }
 }

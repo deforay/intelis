@@ -37,7 +37,7 @@ try {
         $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
     }
 
-    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['requestFile']['name']);
+    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', (string) $_FILES['requestFile']['name']);
     $fileName = str_replace(" ", "-", $fileName);
     $ranNumber = $general->generateRandomString(12);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
@@ -72,20 +72,20 @@ try {
                 $result = $general->getDataFromOneFieldAndValue('r_eid_results', 'result', $rowData['AE']);
                 $resultStatus = $general->getDataFromOneFieldAndValue('r_sample_status', 'status_name', $rowData['AK']);
 
-                if (trim($rowData['W']) != '') {
-                    $sampleCollectionDate = date('Y-m-d H:i:s', strtotime($rowData['W']));
+                if (trim((string) $rowData['W']) != '') {
+                    $sampleCollectionDate = date('Y-m-d H:i:s', strtotime((string) $rowData['W']));
                 } else {
                     $sampleCollectionDate = null;
                 }
 
-                if (trim($rowData['Z']) != '') {
-                    $sampleReceivedDate = date('Y-m-d H:i:s', strtotime($rowData['Z']));
+                if (trim((string) $rowData['Z']) != '') {
+                    $sampleReceivedDate = date('Y-m-d H:i:s', strtotime((string) $rowData['Z']));
                 } else {
                     $sampleReceivedDate = null;
                 }
 
-                if (trim($rowData['AD']) != '') {
-                    $sampleTestDate = date('Y-m-d H:i:s', strtotime($rowData['AD']));
+                if (trim((string) $rowData['AD']) != '') {
+                    $sampleTestDate = date('Y-m-d H:i:s', strtotime((string) $rowData['AD']));
                 } else {
                     $sampleTestDate = null;
                 }
@@ -101,13 +101,13 @@ try {
                 }
 
 
-                if (isset($rowData['AB']) && strtolower($rowData['AB']) == 'yes') {
+                if (isset($rowData['AB']) && strtolower((string) $rowData['AB']) == 'yes') {
                     $result['result_id'] = null;
                     $status = SAMPLE_STATUS\REJECTED;
                 }
 
                 if (!empty($rowData['I'])) {
-                    $rowData['I'] = strtolower($rowData['I']);
+                    $rowData['I'] = strtolower((string) $rowData['I']);
                     if ($rowData['I'] == 'm' || $rowData['I'] == 'male') {
                         $rowData['I'] = 'male';
                     } else if ($rowData['I'] == 'f' || $rowData['I'] == 'female') {
@@ -133,13 +133,13 @@ try {
                     'caretaker_address' => $rowData['L'] ?? null,
                     'mother_hiv_status' => $rowData['M'] ?? null,
                     'mother_treatment' => $rowData['N'] ?? null,
-                    'rapid_test_performed' => isset($rowData['O']) ? strtolower($rowData['O']) : null,
-                    'rapid_test_date' => isset($rowData['P']) ? date('Y-M-d', strtotime($rowData['P'])) : null,
-                    'rapid_test_result' => isset($rowData['Q']) ? strtolower($rowData['Q']) : null,
-                    'has_infant_stopped_breastfeeding' => isset($rowData['R']) ? strtolower($rowData['R']) : null,
+                    'rapid_test_performed' => isset($rowData['O']) ? strtolower((string) $rowData['O']) : null,
+                    'rapid_test_date' => isset($rowData['P']) ? date('Y-M-d', strtotime((string) $rowData['P'])) : null,
+                    'rapid_test_result' => isset($rowData['Q']) ? strtolower((string) $rowData['Q']) : null,
+                    'has_infant_stopped_breastfeeding' => isset($rowData['R']) ? strtolower((string) $rowData['R']) : null,
                     'age_breastfeeding_stopped_in_months' => $rowData['S'] ?? null,
-                    'pcr_test_performed_before' => isset($rowData['T']) ? strtolower($rowData['T']) : null,
-                    'last_pcr_date' => isset($rowData['U']) ? date('Y-M-d', strtotime($rowData['U'])) : null,
+                    'pcr_test_performed_before' => isset($rowData['T']) ? strtolower((string) $rowData['T']) : null,
+                    'last_pcr_date' => isset($rowData['U']) ? date('Y-M-d', strtotime((string) $rowData['U'])) : null,
                     'reason_for_pcr' => $rowData['V'] ?? null,
                     'sample_collection_date' => $sampleCollectionDate,
                     'sample_requestor_name' => $rowData['X'] ?? null,
@@ -147,7 +147,7 @@ try {
                     'sample_received_at_lab_datetime' => $sampleReceivedDate,
                     'lab_id' => $labName['facility_id'] ?? null,
                     'sample_tested_datetime' => $sampleTestDate,
-                    'is_sample_rejected' => isset($rowData['AB']) ? strtolower($rowData['AB']) : null,
+                    'is_sample_rejected' => isset($rowData['AB']) ? strtolower((string) $rowData['AB']) : null,
                     'reason_for_sample_rejection' => $rejectionReason['rejection_reason_id'] ?? null,
                     'result' => $result['result_id'] ?? null,
                     'result_status' => $status,

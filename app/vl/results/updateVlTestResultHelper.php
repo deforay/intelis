@@ -33,8 +33,8 @@ $finalResult = null;
 try {
     $instanceId = $general->getInstanceId();
     $testingPlatform = null;
-    if (isset($_POST['testingPlatform']) && trim($_POST['testingPlatform']) != '') {
-        $platForm = explode("##", $_POST['testingPlatform']);
+    if (isset($_POST['testingPlatform']) && trim((string) $_POST['testingPlatform']) != '') {
+        $platForm = explode("##", (string) $_POST['testingPlatform']);
         $testingPlatform = $platForm[0];
     }
 
@@ -95,7 +95,7 @@ try {
     if (isset($_POST['reasonForResultChangesHistory']) && $_POST['reasonForResultChangesHistory'] != '') {
         $allChange = $_POST['reasonForResultChangesHistory'];
     }
-    if (isset($_POST['reasonForResultChanges']) && trim($_POST['reasonForResultChanges']) != '') {
+    if (isset($_POST['reasonForResultChanges']) && trim((string) $_POST['reasonForResultChanges']) != '') {
         $reasonForChanges = $_SESSION['userName'] . '##' . $_POST['reasonForResultChanges'] . '##' . DateUtility::getCurrentDateTime();
     }
     if (!empty($allChange) && !empty($reasonForChanges)) {
@@ -105,7 +105,7 @@ try {
     }
 
     if ($_POST['failedTestingTech'] != '') {
-        $platForm = explode("##", $_POST['failedTestingTech']);
+        $platForm = explode("##", (string) $_POST['failedTestingTech']);
         $_POST['failedTestingTech'] = $platForm[0];
     }
 

@@ -23,14 +23,14 @@ $dFormat = '';
 $waitingDate = '';
 $rejectedDate = '';
 $i = 0;
-if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
+if (isset($_POST['type']) && trim((string) $_POST['type']) == 'eid') {
     $table = "form_eid";
     $samplesReceivedChart = "eidSamplesReceivedChart";
     $samplesTestedChart = "eidSamplesTestedChart";
     $samplesRejectedChart = "eidSamplesRejectedChart";
     $samplesWaitingChart = "eidSamplesWaitingChart";
     $samplesOverviewChart = "eidSamplesOverviewChart";
-} elseif (isset($_POST['type']) && trim($_POST['type']) == 'covid19') {
+} elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'covid19') {
     $table = "form_covid19";
     $samplesReceivedChart = "covid19SamplesReceivedChart";
     $samplesTestedChart = "covid19SamplesTestedChart";
@@ -38,14 +38,14 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $samplesRejectedChart = "covid19SamplesRejectedChart";
     $samplesWaitingChart = "covid19SamplesWaitingChart";
     $samplesOverviewChart = "covid19SamplesOverviewChart";
-} elseif (isset($_POST['type']) && trim($_POST['type']) == 'hepatitis') {
+} elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'hepatitis') {
     $table = "form_hepatitis";
     $samplesReceivedChart = "hepatitisSamplesReceivedChart";
     $samplesTestedChart = "hepatitisSamplesTestedChart";
     $samplesRejectedChart = "hepatitisSamplesRejectedChart";
     $samplesWaitingChart = "hepatitisSamplesWaitingChart";
     $samplesOverviewChart = "hepatitisSamplesOverviewChart";
-} elseif (isset($_POST['type']) && trim($_POST['type']) == 'vl') {
+} elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'vl') {
     $recencyWhere = " IFNULL(reason_for_vl_testing, 0)  != 9999 ";
     $table = "form_vl";
     $samplesReceivedChart = "vlSamplesReceivedChart";
@@ -53,7 +53,7 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $samplesRejectedChart = "vlSamplesRejectedChart";
     $samplesWaitingChart = "vlSamplesWaitingChart";
     $samplesOverviewChart = "vlSamplesOverviewChart";
-} elseif (isset($_POST['type']) && trim($_POST['type']) == 'recency') {
+} elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'recency') {
     $recencyWhere = " reason_for_vl_testing = 9999 ";
     $table = "form_vl";
     $samplesReceivedChart = "recencySamplesReceivedChart";
@@ -61,14 +61,14 @@ if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
     $samplesRejectedChart = "recencySamplesRejectedChart";
     $samplesWaitingChart = "recencySamplesWaitingChart";
     $samplesOverviewChart = "recencySamplesOverviewChart";
-} elseif (isset($_POST['type']) && trim($_POST['type']) == 'tb') {
+} elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'tb') {
     $table = "form_tb";
     $samplesReceivedChart = "tbSamplesReceivedChart";
     $samplesTestedChart = "tbSamplesTestedChart";
     $samplesRejectedChart = "tbSamplesRejectedChart";
     $samplesWaitingChart = "tbSamplesWaitingChart";
     $samplesOverviewChart = "tbSamplesOverviewChart";
-} elseif (isset($_POST['type']) && trim($_POST['type']) == 'generic-tests') {
+} elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'generic-tests') {
     $table = "form_generic";
     $samplesReceivedChart = "genericTestsSamplesReceivedChart";
     $samplesTestedChart = "genericTestsSamplesTestedChart";
@@ -82,15 +82,15 @@ if ($_SESSION['instanceType'] != 'remoteuser') {
 } else {
     $whereCondition = "";
     if (!empty($_SESSION['facilityMap'])) {
-        if (isset($_POST['type']) && trim($_POST['type']) == 'eid') {
+        if (isset($_POST['type']) && trim((string) $_POST['type']) == 'eid') {
             $whereCondition = " eid.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
-        } elseif (isset($_POST['type']) && trim($_POST['type']) == 'covid19') {
+        } elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'covid19') {
             $whereCondition = " covid19.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
-        } elseif (isset($_POST['type']) && trim($_POST['type']) == 'tb') {
+        } elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'tb') {
             $whereCondition = " tb.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
-        } elseif (isset($_POST['type']) && trim($_POST['type']) == 'hepatitis') {
+        } elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'hepatitis') {
             $whereCondition = " hepatitis.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
-        } elseif (isset($_POST['type']) && trim($_POST['type']) == 'generic-tests') {
+        } elseif (isset($_POST['type']) && trim((string) $_POST['type']) == 'generic-tests') {
             $whereCondition = " generic.facility_id IN (" . $_SESSION['facilityMap'] . ") AND ";
         } else {
             $whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  AND ";

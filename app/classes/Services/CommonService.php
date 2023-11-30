@@ -38,7 +38,7 @@ class CommonService
             }
 
             // Execute the main query.
-            if ($returnGenerator == true) {
+            if ($returnGenerator === true) {
                 $queryResult = $this->db->rawQueryGenerator($sql . $limitSql, $params);
             } else {
                 $queryResult = $this->db->rawQuery($sql . $limitSql, $params);
@@ -236,9 +236,9 @@ class CommonService
             $cipher = sodium_bin2base64(
                 $nonce .
                     sodium_crypto_secretbox(
-                        $message,
+                        (string) $message,
                         $nonce,
-                        $key
+                        (string) $key
                     ),
                 SODIUM_BASE64_VARIANT_URLSAFE
             );
@@ -253,7 +253,7 @@ class CommonService
     public static function decrypt($encrypted, $key): string
     {
         try {
-            $decoded = sodium_base642bin($encrypted, SODIUM_BASE64_VARIANT_URLSAFE);
+            $decoded = sodium_base642bin((string) $encrypted, SODIUM_BASE64_VARIANT_URLSAFE);
             if (empty($decoded)) {
                 throw new SystemException('The message encoding failed');
             }
@@ -274,9 +274,7 @@ class CommonService
             sodium_memzero($ciphertext);
             sodium_memzero($key);
             return $plain;
-        } catch (SodiumException $e) {
-            return $encrypted;
-        } catch (SystemException $e) {
+        } catch (SodiumException|SystemException $e) {
             return $encrypted;
         }
     }
@@ -403,7 +401,7 @@ class CommonService
             $headers = getallheaders();
         }
         foreach ($headers as $header => $value) {
-            if (strtolower($key) === strtolower($header)) {
+            if (strtolower((string) $key) === strtolower($header)) {
                 return $value;
             }
         }
@@ -429,7 +427,7 @@ class CommonService
             return null;
         }
 
-        if (preg_match('/Bearer\s(\S+)/', $authorizationHeader, $matches)) {
+        if (preg_match('/Bearer\s(\S+)/', (string) $authorizationHeader, $matches)) {
             return $matches[1];
         } else {
             return null;
@@ -596,7 +594,7 @@ class CommonService
             );
 
             foreach ($osArray as $regex => $value) {
-                if (preg_match($regex, $userAgent)) {
+                if (preg_match($regex, (string) $userAgent)) {
                     return $value;
                 }
             }
@@ -630,7 +628,7 @@ class CommonService
             );
 
             foreach ($browserArray as $regex => $value) {
-                if (preg_match($regex, $userAgent)) {
+                if (preg_match($regex, (string) $userAgent)) {
                     return $value;
                 }
             }
@@ -677,7 +675,7 @@ class CommonService
     {
         $response = false;
         foreach ($itemsToSearch as $needle) {
-            if (stripos($sourceString, $needle, $offset) !== false) {
+            if (stripos($sourceString, (string) $needle, $offset) !== false) {
                 return $needle; // stop on first true result
             }
         }
@@ -812,7 +810,7 @@ class CommonService
             } elseif (is_array($value)) {
                 $setString .= "'" . addslashes(json_encode($value)) . "'";
             } else {
-                $setString .= "'" . addslashes($value) . "'";
+                $setString .= "'" . addslashes((string) $value) . "'";
             }
         }
 
@@ -828,7 +826,7 @@ class CommonService
 
     public function stringToCamelCase($string, $character = "_", $capitalizeFirstCharacter = false)
     {
-        $str = str_replace($character, '', ucwords($string, $character));
+        $str = str_replace($character, '', ucwords((string) $string, $character));
         return (!$capitalizeFirstCharacter) ? lcfirst($str) : null;
     }
 

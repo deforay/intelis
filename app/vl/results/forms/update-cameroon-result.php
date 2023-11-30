@@ -45,7 +45,7 @@ if (!isset($facilityResult[0]['facility_district']) || $facilityResult[0]['facil
 	$facilityResult[0]['facility_district'] = '';
 }
 $stateName = $facilityResult[0]['facility_state'];
-if (trim($stateName) != '') {
+if (trim((string) $stateName) != '') {
 	$stateQuery = "SELECT * from geographical_divisions where geo_name='" . $stateName . "'";
 	$stateResult = $db->query($stateQuery);
 }
@@ -54,7 +54,7 @@ if (!isset($stateResult[0]['geo_code']) || $stateResult[0]['geo_code'] == '') {
 }
 //district details
 $districtResult = [];
-if (trim($stateName) != '') {
+if (trim((string) $stateName) != '') {
 	$districtQuery = "SELECT DISTINCT facility_district from facility_details where facility_state='" . $stateName . "' AND status='active'";
 	$districtResult = $db->query($districtQuery);
 	/* $facilityQuery = "SELECT * from facility_details where `status`='active' AND facility_type='2'";
@@ -69,7 +69,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 	$rch .= '<table style="width:100%;">';
 	$rch .= '<thead><tr style="border-bottom:2px solid #d3d3d3;"><th style="width:20%;">USER</th><th style="width:60%;">MESSAGE</th><th style="width:20%;text-align:center;">DATE</th></tr></thead>';
 	$rch .= '<tbody>';
-	$allChange = json_decode($vlQueryInfo['reason_for_vl_result_changes'], true);
+	$allChange = json_decode((string) $vlQueryInfo['reason_for_vl_result_changes'], true);
 	if (!empty($allChange)) {
 		$allChange = array_reverse($allChange);
 		foreach ($allChange as $change) {
@@ -79,7 +79,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 			if (isset($usrResult[0]['user_name'])) {
 				$name = ($usrResult[0]['user_name']);
 			}
-			$expStr = explode(" ", $change['dtime']);
+			$expStr = explode(" ", (string) $change['dtime']);
 			$changedDate = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 			$rch .= '<tr><td>' . $name . '</td><td>' . ($change['msg']) . '</td><td style="text-align:center;">' . $changedDate . '</td></tr>';
 		}
@@ -89,10 +89,10 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
 }
 $disable = "disabled = 'disabled'";
 
-$isGeneXpert = !empty($vlQueryInfo['vl_test_platform']) && (strcasecmp($vlQueryInfo['vl_test_platform'], "genexpert") === 0);
+$isGeneXpert = !empty($vlQueryInfo['vl_test_platform']) && (strcasecmp((string) $vlQueryInfo['vl_test_platform'], "genexpert") === 0);
 
 if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty($vlQueryInfo['result'])) {
-	$vlQueryInfo['result'] = trim(str_ireplace($vlQueryInfo['result_value_hiv_detection'], "", $vlQueryInfo['result']));
+	$vlQueryInfo['result'] = trim(str_ireplace((string) $vlQueryInfo['result_value_hiv_detection'], "", (string) $vlQueryInfo['result']));
 } else if ($isGeneXpert === true && !empty($vlQueryInfo['result'])) {
 
 	$vlQueryInfo['result_value_hiv_detection'] = null;
@@ -124,12 +124,12 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 
 	$detectedMatching = $general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToSearch);
 	if ($detectedMatching !== false) {
-		$vlQueryInfo['result'] = trim(str_ireplace($detectedMatching, "", $vlQueryInfo['result']));
+		$vlQueryInfo['result'] = trim(str_ireplace((string) $detectedMatching, "", (string) $vlQueryInfo['result']));
 		$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Detected";
 	} else {
 		$notDetectedMatching = $general->checkIfStringExists($vlQueryInfo['result'], $hivNotDetectedStringsToSearch);
 		if ($notDetectedMatching !== false) {
-			$vlQueryInfo['result'] = trim(str_ireplace($notDetectedMatching, "", $vlQueryInfo['result']));
+			$vlQueryInfo['result'] = trim(str_ireplace((string) $notDetectedMatching, "", (string) $vlQueryInfo['result']));
 			$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Not Detected";
 		}
 	}
@@ -186,7 +186,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 								<div class="col-xs-4 col-md-4">
 									<div class="form-group">
 										<label for="sampleReordered">
-											<input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim($vlQueryInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> <?php echo $disable; ?> title="<?= _translate('Please indicate if this is a reordered sample'); ?>"> <?= _translate('Sample Reordered'); ?>
+											<input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $vlQueryInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> <?php echo $disable; ?> title="<?= _translate('Please indicate if this is a reordered sample'); ?>"> <?= _translate('Sample Reordered'); ?>
 										</label>
 									</div>
 								</div>
@@ -244,21 +244,21 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 									</div>
 								</div>
 							</div>
-							<div class="row facilityDetails" style="display:<?php echo (trim($facilityResult[0]['facility_emails']) != '' || trim($facilityResult[0]['facility_mobile_numbers']) != '' || trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
-								<div class="col-xs-2 col-md-2 femails" style="display:<?php echo (trim($facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
+							<div class="row facilityDetails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '' || trim((string) $facilityResult[0]['facility_mobile_numbers']) != '' || trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 femails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
 									<strong><?= _translate('Clinic/Health Center Email(s)'); ?></strong>
 								</div>
-								<div class="col-xs-2 col-md-2 femails facilityEmails" style="display:<?php echo (trim($facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 femails facilityEmails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
 									<?php echo $facilityResult[0]['facility_emails']; ?></div>
-								<div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim($facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;">
 									<strong><?= _translate('Clinic/Health Center Mobile No.(s)'); ?></strong>
 								</div>
-								<div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim($facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;">
 									<?php echo $facilityResult[0]['facility_mobile_numbers']; ?></div>
-								<div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
 									<strong><?= _translate('Clinic Contact Person'); ?></strong>
 								</div>
-								<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim($facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
 									<?php echo ($facilityResult[0]['contact_person']); ?></div>
 							</div>
 							<div class="row">
@@ -270,7 +270,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											<?php
 											foreach ($fundingSourceList as $fundingSource) {
 											?>
-												<option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
+												<option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -283,7 +283,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											<?php
 											foreach ($implementingPartnerList as $implementingPartner) {
 											?>
-												<option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
+												<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -513,12 +513,12 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												<div class="col-lg-12">
 													<label class="radio-inline">
 														<?php
-														$vlTestReasonQueryRow = "SELECT * from r_vl_test_reasons where test_reason_id='" . trim($vlQueryInfo['reason_for_vl_testing']) . "' OR test_reason_name = '" . trim($vlQueryInfo['reason_for_vl_testing']) . "'";
+														$vlTestReasonQueryRow = "SELECT * from r_vl_test_reasons where test_reason_id='" . trim((string) $vlQueryInfo['reason_for_vl_testing']) . "' OR test_reason_name = '" . trim((string) $vlQueryInfo['reason_for_vl_testing']) . "'";
 														$vlTestReasonResultRow = $db->query($vlTestReasonQueryRow);
 														$checked = '';
 														$display = '';
 														$vlValue = '';
-														if (trim($vlQueryInfo['reason_for_vl_testing']) == 'controlVlTesting' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'controlVlTesting') {
+														if (trim((string) $vlQueryInfo['reason_for_vl_testing']) == 'controlVlTesting' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'controlVlTesting') {
 															$checked = 'checked="checked"';
 															$display = 'block';
 														} else {
@@ -563,7 +563,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														$checked = '';
 														$display = '';
 														$vlValue = '';
-														if (trim($vlQueryInfo['reason_for_vl_testing']) == 'coinfection' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'coinfection') {
+														if (trim((string) $vlQueryInfo['reason_for_vl_testing']) == 'coinfection' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'coinfection') {
 															$checked = 'checked="checked"';
 															$display = 'block';
 														} else {
@@ -600,7 +600,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														$checked = '';
 														$display = '';
 														$vlValue = '';
-														if (trim($vlQueryInfo['reason_for_vl_testing']) == 'other' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'other') {
+														if (trim((string) $vlQueryInfo['reason_for_vl_testing']) == 'other' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'other') {
 															$checked = 'checked="checked"';
 															$display = 'block';
 														} else {
@@ -712,7 +712,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 														<select name="rejectionReason" id="rejectionReason" class="form-control" title="<?= _translate('Please choose reason'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();">
 															<option value=""><?= _translate('-- Select --'); ?></option>
 															<?php foreach ($rejectionTypeResult as $type) { ?>
-																<optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
+																<optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
 																	<?php foreach ($rejectionResult as $reject) {
 																		if ($type['rejection_type'] == $reject['rejection_type']) {
 																	?>
@@ -787,7 +787,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="labComments"><?= _translate('Lab Tech. Comments'); ?> </label>
 													<div class="col-lg-7">
-														<textarea class="form-control" name="labComments" id="labComments" placeholder="<?= _translate('Lab comments'); ?>" <?php echo $labFieldDisabled; ?>><?php echo trim($vlQueryInfo['lab_tech_comments']); ?></textarea>
+														<textarea class="form-control" name="labComments" id="labComments" placeholder="<?= _translate('Lab comments'); ?>" <?php echo $labFieldDisabled; ?>><?php echo trim((string) $vlQueryInfo['lab_tech_comments']); ?></textarea>
 													</div>
 												</div>
 											</div>
@@ -807,7 +807,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 						<div class="box-footer">
 							<input type="hidden" name="revised" id="revised" value="no" />
 							<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= ($vlQueryInfo['vl_sample_id']); ?>" />
-							<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode($vlQueryInfo['reason_for_vl_result_changes']); ?>" />
+							<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode((string) $vlQueryInfo['reason_for_vl_result_changes']); ?>" />
 							<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
 							<a href="vlTestResult.php" class="btn btn-default"> Cancel</a>
 						</div>

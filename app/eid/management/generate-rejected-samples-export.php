@@ -20,7 +20,7 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 $sarr = $general->getSystemConfig();
 
-if (isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples']) != "") {
+if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamples']) != "") {
      $rResult = $db->rawQuery($_SESSION['rejectedSamples']);
 
      $excel = new Spreadsheet();
@@ -51,7 +51,7 @@ if (isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples']) !=
      $sheet->mergeCells('A1:E1');
      $nameValue = '';
      foreach ($_POST as $key => $value) {
-          if (trim($value) != '' && trim($value) != '-- Select --') {
+          if (trim((string) $value) != '' && trim((string) $value) != '-- Select --') {
                $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
           }
      }
@@ -69,7 +69,7 @@ if (isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples']) !=
           $row[] = ($aRow['labname']);
           $row[] = ($aRow['facility_name']);
           $row[] = ($aRow['rejection_reason_name']);
-          $row[] = strtoupper($aRow['rejection_type']);
+          $row[] = strtoupper((string) $aRow['rejection_type']);
           $row[] = ($aRow['recommended_corrective_action_name']);
           $row[] = $aRow['total'];
           $output[] = $row;
@@ -82,7 +82,7 @@ if (isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples']) !=
           foreach ($rowData as $field => $value) {
                $sheet->setCellValue(
                     Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-                    html_entity_decode($value)
+                    html_entity_decode((string) $value)
                );
                $colNo++;
           }

@@ -55,7 +55,7 @@ try {
             $queryParams
         );
 
-        if (empty($userResult) || !password_verify($input['password'], $userResult['password'])) {
+        if (empty($userResult) || !password_verify((string) $input['password'], (string) $userResult['password'])) {
             throw new SystemException('Login failed. Please contact system administrator.');
         } else {
             if ($userResult['testing_user'] == 'yes') {

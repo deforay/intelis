@@ -31,7 +31,7 @@ $arr = $general->getGlobalConfig();
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
-if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery']) != "") {
+if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19ResultQuery']) != "") {
 
 	$output = [];
 
@@ -47,7 +47,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 	foreach ($db->rawQueryGenerator($_SESSION['covid19ResultQuery']) as $aRow) {
 		$row = [];
 		//set gender
-		switch (strtolower($aRow['patient_gender'])) {
+		switch (strtolower((string) $aRow['patient_gender'])) {
 			case 'male':
 			case 'm':
 				$gender = 'M';
@@ -68,7 +68,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 
 		//set sample rejection
 		$sampleRejection = 'No';
-		if (trim($aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim($aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
+		if (trim((string) $aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
 			$sampleRejection = 'Yes';
 		}
 
@@ -97,7 +97,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		}
 
 		if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-			$key = base64_decode($general->getGlobalConfig('key'));
+			$key = base64_decode((string) $general->getGlobalConfig('key'));
 			$aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
 			$patientFname = $general->crypto('decrypt', $patientFname, $key);
 			$patientLname = $general->crypto('decrypt', $patientLname, $key);
@@ -144,7 +144,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim($_SESSION['covid19ResultQuery
 		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
 		// we dont need the $output variable anymore
 		unset($output);
-		echo base64_encode($fileName);
+		echo base64_encode((string) $fileName);
 	} else {
 
 		$excel = new Spreadsheet();

@@ -56,7 +56,7 @@ try {
      }
 
      //add province
-     $splitProvince = explode("##", $_POST['province']);
+     $splitProvince = explode("##", (string) $_POST['province']);
      if (isset($splitProvince[0]) && trim($splitProvince[0]) != '') {
           $provinceQuery = "SELECT * from geographical_divisions where geo_name=?";
           $provinceInfo = $db->rawQueryOne($provinceQuery, [$splitProvince[0]]);
@@ -68,7 +68,7 @@ try {
           }
      }
 
-     if (isset($_POST['newArtRegimen']) && trim($_POST['newArtRegimen']) != "") {
+     if (isset($_POST['newArtRegimen']) && trim((string) $_POST['newArtRegimen']) != "") {
           $artQuery = "SELECT art_id,art_code FROM r_vl_art_regimen
                          WHERE art_code like ?";
           $artResult = $db->rawQueryOne($artQuery);
@@ -87,20 +87,20 @@ try {
 
 
      //update facility code
-     if (trim($_POST['fCode']) != '') {
+     if (trim((string) $_POST['fCode']) != '') {
           $fData = array('facility_code' => $_POST['fCode']);
           $db = $db->where('facility_id', $_POST['fName']);
           $id = $db->update($fDetails, $fData);
      }
 
-     if (isset($_POST['gender']) && trim($_POST['gender']) == 'male') {
+     if (isset($_POST['gender']) && trim((string) $_POST['gender']) == 'male') {
           $_POST['patientPregnant'] = "N/A";
           $_POST['breastfeeding'] = "N/A";
      }
 
      $testingPlatform = null;
-     if (isset($_POST['testingPlatform']) && trim($_POST['testingPlatform']) != '') {
-          $platForm = explode("##", $_POST['testingPlatform']);
+     if (isset($_POST['testingPlatform']) && trim((string) $_POST['testingPlatform']) != '') {
+          $platForm = explode("##", (string) $_POST['testingPlatform']);
           $testingPlatform = $platForm[0];
      }
 
@@ -145,9 +145,9 @@ try {
      $reasonForChanges = null;
      $allChange = [];
      if (isset($_POST['reasonForResultChangesHistory']) && $_POST['reasonForResultChangesHistory'] != '') {
-          $allChange = json_decode(base64_decode($_POST['reasonForResultChangesHistory']), true);
+          $allChange = json_decode(base64_decode((string) $_POST['reasonForResultChangesHistory']), true);
      }
-     if (isset($_POST['reasonForResultChanges']) && trim($_POST['reasonForResultChanges']) != '') {
+     if (isset($_POST['reasonForResultChanges']) && trim((string) $_POST['reasonForResultChanges']) != '') {
           $allChange[] = array(
                'usr' => $_SESSION['userId'] ?? $_POST['userId'],
                'msg' => $_POST['reasonForResultChanges'],
@@ -158,7 +158,7 @@ try {
           $reasonForChanges = json_encode($allChange);
      }
      //set vl test reason
-     if (isset($_POST['reasonForVLTesting']) && trim($_POST['reasonForVLTesting']) != "") {
+     if (isset($_POST['reasonForVLTesting']) && trim((string) $_POST['reasonForVLTesting']) != "") {
           if (!is_numeric($_POST['reasonForVLTesting'])) {
                $reasonQuery = "SELECT test_reason_id FROM r_vl_test_reasons WHERE test_reason_name= ?";
                $reasonResult = $db->rawQueryOne($reasonQuery, [$_POST['reasonForVLTesting']]);
@@ -249,8 +249,8 @@ try {
           'result_value_hiv_detection' => $hivDetection,
           'reason_for_failure' => $_POST['reasonForFailure'] ?? null,
           'is_sample_rejected' => $_POST['isSampleRejected'] ?? null,
-          'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && trim($_POST['rejectionReason']) != '') ? $_POST['rejectionReason'] : null,
-          'recommended_corrective_action' => (isset($_POST['correctiveAction']) && trim($_POST['correctiveAction']) != '') ? $_POST['correctiveAction'] : null,
+          'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && trim((string) $_POST['rejectionReason']) != '') ? $_POST['rejectionReason'] : null,
+          'recommended_corrective_action' => (isset($_POST['correctiveAction']) && trim((string) $_POST['correctiveAction']) != '') ? $_POST['correctiveAction'] : null,
           'rejection_on' => DateUtility::isoDateFormat($_POST['rejectionDate'] ?? ''),
           'result_value_absolute' => $absVal ?? null,
           'result_value_absolute_decimal' => $absDecimalVal ?? null,
@@ -264,8 +264,8 @@ try {
           'result_approved_datetime' => DateUtility::isoDateFormat($_POST['approvedOnDateTime'] ?? '', true),
           'date_test_ordered_by_physician' => DateUtility::isoDateFormat($_POST['dateOfDemand'] ?? ''),
           'lab_tech_comments' => $_POST['labComments'] ?? null,
-          'funding_source' => (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') ? base64_decode($_POST['fundingSource']) : null,
-          'implementing_partner' => (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') ? base64_decode($_POST['implementingPartner']) : null,
+          'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') ? base64_decode((string) $_POST['fundingSource']) : null,
+          'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') ? base64_decode((string) $_POST['implementingPartner']) : null,
           'vl_test_number' => $_POST['viralLoadNo'] ?? null,
           'request_created_datetime' => DateUtility::getCurrentDateTime(),
           'last_modified_datetime' => DateUtility::getCurrentDateTime(),
@@ -292,7 +292,7 @@ try {
      if (isset($formId) && $formId == '5') {
 
           if (isset($_POST['failedTestingTech']) && $_POST['failedTestingTech'] != '') {
-               $platForm = explode("##", $_POST['failedTestingTech']);
+               $platForm = explode("##", (string) $_POST['failedTestingTech']);
                $_POST['failedTestingTech'] = $platForm[0];
           }
 
@@ -328,7 +328,7 @@ try {
 
      $vlData['is_encrypted'] = 'no';
      if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {
-          $key = base64_decode($general->getGlobalConfig('key'));
+          $key = base64_decode((string) $general->getGlobalConfig('key'));
           $encryptedPatientId = $general->crypto('encrypt', $vlData['patient_art_no'], $key);
           $encryptedPatientFirstName = $general->crypto('encrypt', $vlData['patient_first_name'], $key);
           $encryptedPatientMiddleName = $general->crypto('encrypt', $vlData['patient_middle_name'], $key);

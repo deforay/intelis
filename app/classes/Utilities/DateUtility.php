@@ -9,7 +9,7 @@ class DateUtility
 {
     public static function isDateFormatValid($date, $format = 'Y-m-d', $strict = true): bool
     {
-        $date = trim($date);
+        $date = trim((string) $date);
 
         if (empty($date) || 'undefined' === $date || 'null' === $date) {
             return false;
@@ -22,7 +22,7 @@ class DateUtility
 
     public static function isDateValid($date): bool
     {
-        $date = trim($date);
+        $date = trim((string) $date);
 
         if (empty($date) || 'undefined' === $date || 'null' === $date) {
             return false;
@@ -156,7 +156,7 @@ class DateUtility
      * @param int $months The number of months to subtract.
      * @return string The date in 'Y-m-d' format.
      */
-    public static function getDateBeforeMonths($months)
+    public static function getDateBeforeMonths(int $months)
     {
         return Carbon::now()->subMonths($months)->format('Y-m-d');
     }

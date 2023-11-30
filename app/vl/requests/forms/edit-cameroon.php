@@ -54,7 +54,7 @@ $facilityEmails = $facilityResult[0]['facility_emails'] ?? '';
 $facilityState = $facilityResult[0]['facility_state'] ?? '';
 $facilityDistrict = $facilityResult[0]['facility_district'] ?? '';
 
-if (trim($facilityResult[0]['facility_state']) != '') {
+if (trim((string) $facilityResult[0]['facility_state']) != '') {
      $stateQuery = "SELECT * FROM geographical_divisions where geo_name='" . $facilityResult[0]['facility_state'] . "'";
      $stateResult = $db->query($stateQuery);
 }
@@ -63,7 +63,7 @@ if (!isset($stateResult[0]['geo_code'])) {
 }
 //district details
 $districtResult = [];
-if (trim($facilityResult[0]['facility_state']) != '') {
+if (trim((string) $facilityResult[0]['facility_state']) != '') {
      $districtQuery = "SELECT DISTINCT facility_district from facility_details
                          WHERE facility_state=? AND status='active'";
      $districtResult = $db->rawQuery($districtQuery, [$facilityResult[0]['facility_state']]);
@@ -77,7 +77,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
      $rch .= '<table style="width:100%;">';
      $rch .= '<thead><tr style="border-bottom:2px solid #d3d3d3;"><th style="width:20%;">USER</th><th style="width:60%;">MESSAGE</th><th style="width:20%;text-align:center;">DATE</th></tr></thead>';
      $rch .= '<tbody>';
-     $splitChanges = explode('vlsm', $vlQueryInfo['reason_for_vl_result_changes']);
+     $splitChanges = explode('vlsm', (string) $vlQueryInfo['reason_for_vl_result_changes']);
      for ($c = 0; $c < count($splitChanges); $c++) {
           $getData = explode("##", $splitChanges[$c]);
           $changedDate = explode(" ", $getData[2]);
@@ -216,7 +216,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                             <?php
                                                             foreach ($fundingSourceList as $fundingSource) {
                                                             ?>
-                                                                 <option value="<?php echo base64_encode($fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
+                                                                 <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
                                                             <?php } ?>
                                                        </select>
                                                   </div>
@@ -229,7 +229,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                             <?php
                                                             foreach ($implementingPartnerList as $implementingPartner) {
                                                             ?>
-                                                                 <option value="<?php echo base64_encode($implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
+                                                                 <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
                                                             <?php } ?>
                                                        </select>
                                                   </div>
@@ -324,7 +324,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="patientPhoneNumber"><?= _translate('Phone Number'); ?></label>
-                                                       <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" value="<?= ($vlQueryInfo['patient_mobile_number']); ?>" class="form-control phone-number" maxlength="<?php echo strlen($countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Enter Phone Number'); ?>" title="<?= _translate('Enter phone number'); ?>" />
+                                                       <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" value="<?= ($vlQueryInfo['patient_mobile_number']); ?>" class="form-control phone-number" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Enter Phone Number'); ?>" title="<?= _translate('Enter phone number'); ?>" />
                                                   </div>
                                              </div>
 
@@ -408,7 +408,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                   <div class="col-md-3">
                                                        <div class="form-group">
                                                             <label for="reqClinicianPhoneNumber" class=""><?= _translate('Contact Number'); ?> </label>
-                                                            <input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" value="<?= $vlQueryInfo['request_clinician_phone_number']; ?>" name="reqClinicianPhoneNumber" maxlength="<?php echo strlen($countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Phone Number'); ?>" title="<?= _translate('Please enter request clinician phone number'); ?>" />
+                                                            <input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" value="<?= $vlQueryInfo['request_clinician_phone_number']; ?>" name="reqClinicianPhoneNumber" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Phone Number'); ?>" title="<?= _translate('Please enter request clinician phone number'); ?>" />
                                                        </div>
                                                   </div>
                                              </div>
@@ -482,13 +482,13 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                       <div class="col-lg-12">
                                                                            <label class="radio-inline">
                                                                                 <?php
-                                                                                $vlTestReasonQueryRow = "SELECT * from r_vl_test_reasons where test_reason_id='" . trim($vlQueryInfo['reason_for_vl_testing']) . "' OR test_reason_name = '" . trim($vlQueryInfo['reason_for_vl_testing']) . "'";
+                                                                                $vlTestReasonQueryRow = "SELECT * from r_vl_test_reasons where test_reason_id='" . trim((string) $vlQueryInfo['reason_for_vl_testing']) . "' OR test_reason_name = '" . trim((string) $vlQueryInfo['reason_for_vl_testing']) . "'";
                                                                                 $vlTestReasonResultRow = $db->query($vlTestReasonQueryRow);
                                                                                 $checked = '';
                                                                                 $display = '';
                                                                                 $vlValue = '';
                                                                                 //  if (trim($vlQueryInfo['reason_for_vl_testing']) == $vlTestReasonResultRow[0]['test_reason_id']) {
-                                                                                if (trim($vlQueryInfo['reason_for_vl_testing']) == 'controlVlTesting' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'controlVlTesting') {
+                                                                                if (trim((string) $vlQueryInfo['reason_for_vl_testing']) == 'controlVlTesting' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'controlVlTesting') {
                                                                                      $checked = 'checked="checked"';
                                                                                      $display = 'block';
                                                                                 } else {
@@ -533,7 +533,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                                 $checked = '';
                                                                                 $display = '';
                                                                                 $vlValue = '';
-                                                                                if (trim($vlQueryInfo['reason_for_vl_testing']) == 'coinfection' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'coinfection') {
+                                                                                if (trim((string) $vlQueryInfo['reason_for_vl_testing']) == 'coinfection' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'coinfection') {
                                                                                      $checked = 'checked="checked"';
                                                                                      $display = 'block';
                                                                                 } else {
@@ -570,7 +570,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                                 $checked = '';
                                                                                 $display = '';
                                                                                 $vlValue = '';
-                                                                                if (trim($vlQueryInfo['reason_for_vl_testing']) == 'other' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'other') {
+                                                                                if (trim((string) $vlQueryInfo['reason_for_vl_testing']) == 'other' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'other') {
                                                                                      $checked = 'checked="checked"';
                                                                                      $display = 'block';
                                                                                 } else {
@@ -681,7 +681,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                            <select name="rejectionReason" id="rejectionReason" class="form-control" title="<?= _translate('Please choose reason'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkRejectionReason();">
                                                                                 <option value=""><?= _translate('-- Select --'); ?></option>
                                                                                 <?php foreach ($rejectionTypeResult as $type) { ?>
-                                                                                     <optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
+                                                                                     <optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
                                                                                           <?php foreach ($rejectionResult as $reject) {
                                                                                                if ($type['rejection_type'] == $reject['rejection_type']) {
                                                                                           ?>
@@ -767,7 +767,7 @@ if (isset($vlQueryInfo['reason_for_vl_result_changes']) && $vlQueryInfo['reason_
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="labComments"><?= _translate('Lab Tech. Comments'); ?> </label>
                                                                       <div class="col-lg-7">
-                                                                           <textarea class="form-control" name="labComments" id="labComments" placeholder="<?= _translate('Lab comments'); ?>" <?php echo $labFieldDisabled; ?>><?php echo trim($vlQueryInfo['lab_tech_comments']); ?></textarea>
+                                                                           <textarea class="form-control" name="labComments" id="labComments" placeholder="<?= _translate('Lab comments'); ?>" <?php echo $labFieldDisabled; ?>><?php echo trim((string) $vlQueryInfo['lab_tech_comments']); ?></textarea>
                                                                       </div>
                                                                  </div>
                                                             </div>
@@ -967,7 +967,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                facilityName = true;
                $("#province").html("<?php echo $province; ?>");
                $("#district").html("<option value=''> <?= _translate('-- Select --'); ?> </option>");
-               $("#fName").html("<?php echo addslashes($facility); ?>");
+               $("#fName").html("<?php echo addslashes((string) $facility); ?>");
                $("#fName").select2("val", "");
           }
           $.unblockUI();
@@ -1023,7 +1023,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                provinceName = true;
                facilityName = true;
                $("#province").html("<?php echo $province; ?>");
-               $("#facilityId").html("<?php echo addslashes($facility); ?>");
+               $("#facilityId").html("<?php echo addslashes((string) $facility); ?>");
           }
           $.unblockUI();
      }

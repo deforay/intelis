@@ -19,7 +19,7 @@ $vlObj = ContainerRegistry::get(VlService::class);
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
-$queryParams = explode(',', $_POST['sampleId']);
+$queryParams = explode(',', (string) $_POST['sampleId']);
 $placeholders = implode(', ', array_fill(0, count($queryParams), '?'));
 
 
@@ -42,7 +42,7 @@ foreach ($sampleResult as $sampleRow) {
         $provinceCode = $provinceResult['geo_code'];
     }
     if (!empty($_POST['testDate'])) {
-        $testDate = explode(" ", $_POST['testDate']);
+        $testDate = explode(" ", (string) $_POST['testDate']);
         $_POST['testDate'] = DateUtility::isoDateFormat($testDate[0]);
         $_POST['testDate'] .= " " . $testDate[1];
     } else {
@@ -56,7 +56,7 @@ foreach ($sampleResult as $sampleRow) {
         $sampleCodeParams['provinceCode'] = $provinceCode ?? null;
 
         $sampleJson = $vlObj->getSampleCode($sampleCodeParams);
-        $sampleData = json_decode($sampleJson, true);
+        $sampleData = json_decode((string) $sampleJson, true);
         $vldata['sample_code'] = $sampleData['sampleCode'];
         $vldata['sample_code_format'] = $sampleData['sampleCodeFormat'];
         $vldata['sample_code_key'] = $sampleData['sampleCodeKey'];

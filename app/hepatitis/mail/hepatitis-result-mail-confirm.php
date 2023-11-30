@@ -34,8 +34,8 @@ $configResult = $db->query($configQuery);
 $filename = '';
 $downloadFile1 = '';
 $downloadFile2 = '';
-if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($_POST['sample'])) {
-   if (isset($mailconf['rs_field']) && trim($mailconf['rs_field']) != '') {
+if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty($_POST['sample'])) {
+   if (isset($mailconf['rs_field']) && trim((string) $mailconf['rs_field']) != '') {
       //Pdf code start
       // create new PDF document
       class MYPDF extends TCPDF
@@ -59,7 +59,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($_POST['
             //$imageFilePath = K_PATH_IMAGES.'logo_example.jpg';
             //$this->Image($imageFilePath, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
             // Set font
-            if (trim($this->logo) != '') {
+            if (trim((string) $this->logo) != '') {
                if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                   $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                   $this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T');
@@ -118,7 +118,7 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($_POST['
       $pdf->AddPage();
       $pdfContent = '';
       $filedGroup = [];
-      $filedGroup = explode(",", $mailconf['rs_field']);
+      $filedGroup = explode(",", (string) $mailconf['rs_field']);
       $pdfContent .= '<table style="width;100%;border:1px solid #333;padding:0px 2px 2px 2px;" cellspacing="0" cellpadding="2">';
       $pdfContent .= '<tr>';
       for ($f = 0; $f < count($filedGroup); $f++) {
@@ -229,15 +229,15 @@ if (isset($_POST['toEmail']) && trim($_POST['toEmail']) != "" && !empty($_POST['
                $fieldValue = '';
                if (!empty($fValueResult)) {
                   if ($field == 'sample_collection_date' || $field == 'sample_received_at_lab_datetime' || $field == 'sample_tested_datetime') {
-                     if (isset($fValueResult[0][$field]) && trim($fValueResult[0][$field]) != '' && trim($fValueResult[0][$field]) != '0000-00-00 00:00:00') {
+                     if (isset($fValueResult[0][$field]) && trim((string) $fValueResult[0][$field]) != '' && trim((string) $fValueResult[0][$field]) != '0000-00-00 00:00:00') {
                         $fieldValue = DateUtility::humanReadableDateFormat($fValueResult[0][$field], true);
                      }
                   } elseif ($field == 'patient_dob' || $field == 'date_of_initiation_of_current_regimen' || $field == 'last_viral_load_date') {
-                     if (isset($fValueResult[0][$field]) && trim($fValueResult[0][$field]) != '' && trim($fValueResult[0][$field]) != '0000-00-00') {
+                     if (isset($fValueResult[0][$field]) && trim((string) $fValueResult[0][$field]) != '' && trim((string) $fValueResult[0][$field]) != '0000-00-00') {
                         $fieldValue = DateUtility::humanReadableDateFormat($fValueResult[0][$field]);
                      }
                   } elseif ($field ==  'vl_test_platform' || $field ==  'patient_gender' || $field == 'is_sample_rejected') {
-                     $fieldValue = (str_replace("_", " ", $fValueResult[0][$field]));
+                     $fieldValue = (str_replace("_", " ", (string) $fValueResult[0][$field]));
                   } elseif ($field ==  'result_reviewed_by') {
                      $fieldValue = (isset($fValueResult[0]['reviewedBy'])) ? $fValueResult[0]['reviewedBy'] : '';
                   } elseif ($field ==  'result_approved_by') {

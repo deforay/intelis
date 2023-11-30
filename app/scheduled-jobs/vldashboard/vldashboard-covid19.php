@@ -43,7 +43,7 @@ try {
     }
 
     $lastUpdate = $rResult[count($rResult) - 1]['last_modified_datetime'];
-    $output['timestamp'] = strtotime($instanceUpdateOn);
+    $output['timestamp'] = strtotime((string) $instanceUpdateOn);
     foreach ($rResult as $aRow) {
 
         if (!empty($aRow['remote_sample_code'])) {
@@ -66,7 +66,7 @@ try {
 
 
     $vldashboardUrl = $general->getGlobalConfig('vldashboard_url');
-    $url = rtrim($vldashboardUrl, "/") . "/api/vlsm-covid19";
+    $url = rtrim((string) $vldashboardUrl, "/") . "/api/vlsm-covid19";
 
     $params = [
         [
@@ -84,9 +84,9 @@ try {
     ];
 
     $response  = $apiService->postFile($url, 'covid19File', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params);
-    $deResult = json_decode($response, true);
+    $deResult = json_decode((string) $response, true);
 
-    if (isset($deResult['status']) && trim($deResult['status']) == 'success') {
+    if (isset($deResult['status']) && trim((string) $deResult['status']) == 'success') {
         $data = array(
             'covid19_last_dash_sync' => (!empty($lastUpdate) ? $lastUpdate : DateUtility::getCurrentDateTime())
         );

@@ -96,7 +96,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-     $searchArray = explode(" ", $_POST['sSearch']);
+     $searchArray = explode(" ", (string) $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
           if ($sWhereSub == "") {
@@ -155,7 +155,7 @@ $end_date = '';
 $t_start_date = '';
 $t_end_date = '';
 if (!empty($_POST['sampleCollectionDate'])) {
-     $s_c_date = explode("to", $_POST['sampleCollectionDate']);
+     $s_c_date = explode("to", (string) $_POST['sampleCollectionDate']);
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
           $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
      }
@@ -166,21 +166,21 @@ if (!empty($_POST['sampleCollectionDate'])) {
 
 if (!empty($sWhere)) {
      $sWhere = ' WHERE ' . $sWhere;
-     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
           $sWhere = $sWhere . ' AND b.batch_code = "' . $_POST['batchCode'] . '"';
      }
      if (!empty($_POST['sampleCollectionDate'])) {
-          if (trim($start_date) == trim($end_date)) {
+          if (trim((string) $start_date) == trim((string) $end_date)) {
                $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
           } else {
                $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
           }
      }
 
-     if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
+     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
           $sWhere = $sWhere . ' AND f.facility_id IN (' . $_POST['facilityName'] . ')';
      }
-     if (isset($_POST['status']) && trim($_POST['status']) != '') {
+     if (isset($_POST['status']) && trim((string) $_POST['status']) != '') {
           if ($_POST['status'] == 'no_result') {
                $statusCondition = ' AND (vl.result is NULL OR vl.result ="") AND vl.result_status != ' . SAMPLE_STATUS\REJECTED;
           } else if ($_POST['status'] == 'result') {
@@ -191,14 +191,14 @@ if (!empty($sWhere)) {
           $sWhere = $sWhere . $statusCondition;
      }
 
-     if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
-          $sWhere = $sWhere . ' AND vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
+     if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') {
+          $sWhere = $sWhere . ' AND vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
      }
-     if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
-          $sWhere = $sWhere . ' AND vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
+     if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') {
+          $sWhere = $sWhere . ' AND vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
      }
 } else {
-     if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
           $setWhr = 'where';
           $sWhere = ' WHERE ' . $sWhere;
           $sWhere = $sWhere . ' b.batch_code = "' . $_POST['batchCode'] . '"';
@@ -206,7 +206,7 @@ if (!empty($sWhere)) {
 
      if (!empty($_POST['sampleCollectionDate'])) {
           if (isset($setWhr)) {
-               if (trim($start_date) == trim($end_date)) {
+               if (trim((string) $start_date) == trim((string) $end_date)) {
                     $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
                } else {
                     $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
@@ -219,7 +219,7 @@ if (!empty($sWhere)) {
      }
 
 
-     if (isset($_POST['facilityName']) && trim($_POST['facilityName']) != '') {
+     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
           if (isset($setWhr)) {
                $sWhere = $sWhere . ' AND f.facility_id IN (' . $_POST['facilityName'] . ')';
           } else {
@@ -229,7 +229,7 @@ if (!empty($sWhere)) {
           }
      }
 
-     if (isset($_POST['status']) && trim($_POST['status']) != '') {
+     if (isset($_POST['status']) && trim((string) $_POST['status']) != '') {
           if (isset($setWhr)) {
                if ($_POST['status'] == 'no_result') {
                     $statusCondition = ' AND  (vl.result is NULL OR vl.result ="")  AND vl.result_status = ' . SAMPLE_STATUS\REJECTED;
@@ -253,29 +253,29 @@ if (!empty($sWhere)) {
           }
      }
 
-     if (isset($_POST['fundingSource']) && trim($_POST['fundingSource']) != '') {
+     if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') {
           if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
+               $sWhere = $sWhere . ' AND vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
           } else {
                $setWhr = 'where';
                $sWhere = ' WHERE ' . $sWhere;
-               $sWhere = $sWhere . ' vl.funding_source ="' . base64_decode($_POST['fundingSource']) . '"';
+               $sWhere = $sWhere . ' vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
           }
      }
-     if (isset($_POST['implementingPartner']) && trim($_POST['implementingPartner']) != '') {
+     if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') {
           if (isset($setWhr)) {
-               $sWhere = $sWhere . ' AND vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
+               $sWhere = $sWhere . ' AND vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
           } else {
                $setWhr = 'where';
                $sWhere = ' WHERE ' . $sWhere;
-               $sWhere = $sWhere . ' vl.implementing_partner ="' . base64_decode($_POST['implementingPartner']) . '"';
+               $sWhere = $sWhere . ' vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
           }
      }
 }
 $dWhere = '';
 // Only approved results can be printed
 if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
-     if (!isset($_POST['status']) || trim($_POST['status']) == '') {
+     if (!isset($_POST['status']) || trim((string) $_POST['status']) == '') {
           if (trim($sWhere) != '') {
                $sWhere = $sWhere . " AND ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR result_printed_datetime like '')";
           } else {
@@ -335,9 +335,9 @@ foreach ($rResult as $aRow) {
      $print = '';
      if ($aRow['result'] == '') {
 
-          $print = '<a href="update-record-confirmatory-tests.php?id=' . base64_encode($aRow['covid19_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result"><em class="fa-solid fa-pen-to-square"></em> Enter Result</a>';
+          $print = '<a href="update-record-confirmatory-tests.php?id=' . base64_encode((string) $aRow['covid19_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result"><em class="fa-solid fa-pen-to-square"></em> Enter Result</a>';
      } else {
-          $print = '<a href="update-record-confirmatory-tests.php?id=' . base64_encode($aRow['covid19_id']) . '" class="btn btn-warning btn-xs" style="margin-right: 2px;" title="Result"><em class="fa-solid fa-eye"></em> View</a>';
+          $print = '<a href="update-record-confirmatory-tests.php?id=' . base64_encode((string) $aRow['covid19_id']) . '" class="btn btn-warning btn-xs" style="margin-right: 2px;" title="Result"><em class="fa-solid fa-eye"></em> View</a>';
      }
 
 

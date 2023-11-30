@@ -19,7 +19,7 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 
-$facilityId = base64_decode($_GET['labId']);
+$facilityId = base64_decode((string) $_GET['labId']);
 
 $facilityDetails = $facilitiesService->getAllFacilities();
 foreach ($facilityDetails as $row) {

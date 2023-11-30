@@ -171,7 +171,7 @@ if (isset($_POST['iSortCol_0'])) {
 $sWhere = "";
 $sWhereSub = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", $_POST['sSearch']);
+    $searchArray = explode(" ", (string) $_POST['sSearch']);
     foreach ($searchArray as $search) {
         if ($sWhereSub == "") {
             $sWhereSub .= "(";
@@ -252,7 +252,7 @@ foreach ($rResult as $aRow) {
     $controlCode = "'" . $aRow['sample_type'] . "'";
     $color = '';
     $status = '';
-    if (isset($aRow['sample_code']) && trim($aRow['sample_code']) != '') {
+    if (isset($aRow['sample_code']) && trim((string) $aRow['sample_code']) != '') {
         $batchCodeQuery = "SELECT batch_code from batch_details as b_d INNER JOIN $mainTableName as vl ON vl.sample_batch_id = b_d.batch_id WHERE vl.sample_code = ?";
         $batchCodeResult = $db->rawQuery($batchCodeQuery, array($aRow['sample_code']));
         if (!empty($batchCodeResult)) {
@@ -260,12 +260,12 @@ foreach ($rResult as $aRow) {
             $aRow['batch_code'] = $batchCodeResult[0]['batch_code'];
         }
     }
-    if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+    if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
         $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
     } else {
         $aRow['sample_collection_date'] = '';
     }
-    if (isset($aRow['sample_tested_datetime']) && trim($aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+    if (isset($aRow['sample_tested_datetime']) && trim((string) $aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
         $aRow['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'], true);
     } else {
         $aRow['sample_tested_datetime'] = '';
@@ -305,7 +305,7 @@ foreach ($rResult as $aRow) {
     }
 
     foreach ($scResult as $control) {
-        if (trim($control['r_sample_control_name']) != '') {
+        if (trim((string) $control['r_sample_control_name']) != '') {
             $controlName .= '<option value="' . $control['r_sample_control_name'] . '" ' . ($aRow['sample_type'] == ($control['r_sample_control_name']) ? "selected=selected" : "") . '>' . ($control['r_sample_control_name']) . '</option>';
         }
     }

@@ -43,39 +43,39 @@ $query = "SELECT vl.sample_code,vl.vl_sample_id,vl.facility_id,f.facility_name,f
 if (!empty($facility)) {
   $query = $query . " AND vl.facility_id = $facility";
 }
-if (trim($sampleType) != '') {
+if (trim((string) $sampleType) != '') {
   $query = $query . " AND vl.sample_type='" . $sampleType . "'";
 }
-if (trim($gender) != '') {
+if (trim((string) $gender) != '') {
   $query = $query . " AND vl.patient_gender='" . $gender . "'";
 }
-if (trim($pregnant) != '') {
+if (trim((string) $pregnant) != '') {
   $query = $query . " AND vl.is_patient_pregnant='" . $pregnant . "'";
 }
-if (trim($urgent) != '') {
+if (trim((string) $urgent) != '') {
   $query = $query . " AND vl.test_urgency='" . $urgent . "'";
 }
-if (trim($state) != '') {
+if (trim((string) $state) != '') {
   $query = $query . " AND f.facility_state LIKE '%" . $state . "%' ";
 }
-if (trim($district) != '') {
+if (trim((string) $district) != '') {
   $query = $query . " AND f.facility_district LIKE '%" . $district . "%' ";
 }
 if (isset($batch) && !empty(array_filter($batch))) {
   $query = $query . " AND vl.sample_batch_id IN (" . implode(',', $batch) . ")";
 }
-if (isset($_POST['status']) && trim($_POST['status']) != '') {
+if (isset($_POST['status']) && trim((string) $_POST['status']) != '') {
   $query = $query . " AND vl.result_status='" . $_POST['status'] . "'";
 }
-if (trim($mailSentStatus) != '') {
-  if (trim($type) == 'request') {
+if (trim((string) $mailSentStatus) != '') {
+  if (trim((string) $type) == 'request') {
     $query = $query . " AND vl.is_request_mail_sent='" . $mailSentStatus . "'";
-  } elseif (trim($type) == 'result') {
+  } elseif (trim((string) $type) == 'result') {
     $query = $query . " AND vl.is_result_mail_sent='" . $mailSentStatus . "' AND ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = '')))";
   }
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-  if (trim($start_date) == trim($end_date)) {
+  if (trim((string) $start_date) == trim((string) $end_date)) {
     $query = $query . ' AND DATE(sample_collection_date) = "' . $start_date . '"';
   } else {
     $query = $query . ' AND DATE(sample_collection_date) >= "' . $start_date . '" AND DATE(sample_collection_date) <= "' . $end_date . '"';
@@ -95,7 +95,7 @@ $result = $db->rawQuery($query);
       <select id="sample" name="sample[]" multiple="multiple" class="search isRequired" title="<?php echo _translate('Please select sample(s)'); ?>">
         <?php
         foreach ($result as $sample) {
-          if (trim($sample['sample_code']) != '') {
+          if (trim((string) $sample['sample_code']) != '') {
         ?>
             <option value="<?php echo $sample['vl_sample_id']; ?>"><?= ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
         <?php

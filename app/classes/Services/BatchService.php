@@ -24,7 +24,7 @@ class BatchService
         return $this->db->getOne("batch_details");
     }
 
-    public function createBatchCode()
+    public function createBatchCode(): array
     {
         $batchQuery = 'SELECT IFNULL(MAX(batch_code_key), 0) + 1 AS maxId
                         FROM batch_details as bd

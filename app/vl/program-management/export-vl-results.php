@@ -8,8 +8,6 @@ use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
-use COUNTRY;
-
 ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 20000);
@@ -29,7 +27,7 @@ $formId = $arr['vl_form'];
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
-if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "") {
+if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery']) != "") {
 
 	$output = [];
 	if ($formId == COUNTRY\CAMEROON && $arr['vl_excel_export_format'] == "cresar") {
@@ -64,11 +62,11 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 
 		//set ARV adherecne
 		$arvAdherence = '';
-		if (trim($aRow['arv_adherance_percentage']) == 'good') {
+		if (trim((string) $aRow['arv_adherance_percentage']) == 'good') {
 			$arvAdherence = 'Good >= 95%';
-		} elseif (trim($aRow['arv_adherance_percentage']) == 'fair') {
+		} elseif (trim((string) $aRow['arv_adherance_percentage']) == 'fair') {
 			$arvAdherence = 'Fair 85-94%';
-		} elseif (trim($aRow['arv_adherance_percentage']) == 'poor') {
+		} elseif (trim((string) $aRow['arv_adherance_percentage']) == 'poor') {
 			$arvAdherence = 'Poor <85%';
 		}
 
@@ -100,7 +98,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		$row[] = $no;
 		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
 			if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-				$key = base64_decode($general->getGlobalConfig('key'));
+				$key = base64_decode((string) $general->getGlobalConfig('key'));
 				$aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
 				$patientFname = $general->crypto('decrypt', $patientFname, $key);
 				$patientMname = $general->crypto('decrypt', $patientMname, $key);
@@ -188,7 +186,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 			$row[] = $aRow['is_patient_pregnant'];
 			$row[] = $aRow['is_patient_breastfeeding'];
 			$row[] = $arvAdherence;
-			$row[] = str_replace("_", " ", $aRow['test_reason_name']);
+			$row[] = str_replace("_", " ", (string) $aRow['test_reason_name']);
 			$row[] = $aRow['request_clinician_name'];
 			$row[] = $aRow['request_clinician_phone_number'];
 			$row[] = DateUtility::humanReadableDateFormat($aRow['test_requested_on']);
@@ -221,7 +219,7 @@ if (isset($_SESSION['vlResultQuery']) && trim($_SESSION['vlResultQuery']) != "")
 		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
 		// we dont need the $output variable anymore
 		unset($output);
-		echo base64_encode($fileName);
+		echo base64_encode((string) $fileName);
 	} else {
 
 		$excel = new Spreadsheet();

@@ -1,9 +1,13 @@
 <?php
 
 use App\Services\EidService;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get('db');
 
 /** @var EidService $eidService */
 $eidService = ContainerRegistry::get(EidService::class);

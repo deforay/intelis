@@ -9,7 +9,7 @@ $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
 
 $type = $_GET['t'];
-$title = _translate("Import") . " " . strtoupper($type) . " " . _translate("test results from file");
+$title = _translate("Import") . " " . strtoupper((string) $type) . " " . _translate("test results from file");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -53,7 +53,7 @@ $lastResult = $db->rawQueryOne($lastQuery);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-list-check"></em> <?php echo _translate("Import"); ?> <?= strtoupper(htmlspecialchars($type)); ?> <?php echo _translate("Test Results From File"); ?></h1>
+		<h1><em class="fa-solid fa-list-check"></em> <?php echo _translate("Import"); ?> <?= strtoupper(htmlspecialchars((string) $type)); ?> <?php echo _translate("Test Results From File"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
 			<li class="active"><?php echo _translate("Import Result"); ?></li>
@@ -99,7 +99,7 @@ $lastResult = $db->rawQueryOne($lastQuery);
 															<select name="machineName" id="machineName" class="form-control isRequired" title="<?php echo _translate('Please select the import machine type'); ?>" onchange="getConfigMachineName();">
 																<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 																<?php foreach ($iResult as $val) { ?>
-																	<option value="<?php echo base64_encode($val['import_machine_file_name']); ?>"><?php echo ($val['machine_name']); ?></option>
+																	<option value="<?php echo base64_encode((string) $val['import_machine_file_name']); ?>"><?php echo ($val['machine_name']); ?></option>
 																<?php } ?>
 															</select>
 														</div>
@@ -121,7 +121,7 @@ $lastResult = $db->rawQueryOne($lastQuery);
 											<div class="row">
 												<div class="col-md-6">
 													<div class="form-group">
-														<label class="col-lg-4 control-label"><?php echo _translate("Upload"); ?> <?= strtoupper(htmlspecialchars($type)); ?> <?php echo _translate("File"); ?> <span class="mandatory">*</span></label>
+														<label class="col-lg-4 control-label"><?php echo _translate("Upload"); ?> <?= strtoupper(htmlspecialchars((string) $type)); ?> <?php echo _translate("File"); ?> <span class="mandatory">*</span></label>
 														<div class="col-lg-7">
 															<input type="file" class="isRequired" accept=".xls,.xlsx,.csv,.txt" name="resultFile" id="resultFile" title="<?php echo _translate('Please choose result file'); ?>">
 															<?php echo _translate("(Upload xls, xlsx, csv, txt format)"); ?>
@@ -146,7 +146,7 @@ $lastResult = $db->rawQueryOne($lastQuery);
 																<?php
 																foreach ($fResult as $val) {
 																?>
-																	<option value="<?php echo base64_encode($val['facility_id']); ?>" <?php echo (isset($lastResult['lab_id']) && $lastResult['lab_id'] == $val['facility_id']) ? "selected='selected'" : ""; ?>><?php echo ($val['facility_name']); ?></option>
+																	<option value="<?php echo base64_encode((string) $val['facility_id']); ?>" <?php echo (isset($lastResult['lab_id']) && $lastResult['lab_id'] == $val['facility_id']) ? "selected='selected'" : ""; ?>><?php echo ($val['facility_name']); ?></option>
 																<?php } ?>
 															</select>
 														</div>

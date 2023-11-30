@@ -9,7 +9,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-if (isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples']) != "") {
+if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamples']) != "") {
      $rResult = $db->rawQuery($_SESSION['rejectedSamples']);
 
      $excel = new Spreadsheet();
@@ -24,7 +24,7 @@ if (isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples']) !=
      $sheet->mergeCells('A1:E1');
      $nameValue = '';
      foreach ($_POST as $key => $value) {
-          if (trim($value) != '' && trim($value) != '-- Select --') {
+          if (trim((string) $value) != '' && trim((string) $value) != '-- Select --') {
                $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
           }
      }
@@ -38,10 +38,10 @@ if (isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples']) !=
 
      foreach ($rResult as $aRow) {
           $row = [];
-          $row[] = ucwords($aRow['labname']);
-          $row[] = ucwords($aRow['facility_name']);
-          $row[] = ucwords($aRow['rejection_reason_name']);
-          $row[] = strtoupper($aRow['rejection_type']);
+          $row[] = ucwords((string) $aRow['labname']);
+          $row[] = ucwords((string) $aRow['facility_name']);
+          $row[] = ucwords((string) $aRow['rejection_reason_name']);
+          $row[] = strtoupper((string) $aRow['rejection_type']);
           $row[] = $aRow['total'];
           $output[] = $row;
      }
@@ -51,7 +51,7 @@ if (isset($_SESSION['rejectedSamples']) && trim($_SESSION['rejectedSamples']) !=
           $colNo = 1;
           foreach ($rowData as $field => $value) {
                $rRowCount = $rowNo + 4;
-               $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
+               $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode((string) $value));
 
                $colNo++;
           }

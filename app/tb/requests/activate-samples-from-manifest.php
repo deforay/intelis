@@ -20,7 +20,7 @@ $tbService = ContainerRegistry::get(TbService::class);
 $request = $GLOBALS['request'];
 $_POST = $request->getParsedBody();
 
-$queryParams = explode(',', $_POST['sampleId']);
+$queryParams = explode(',', (string) $_POST['sampleId']);
 $placeholders = implode(', ', array_fill(0, count($queryParams), '?'));
 
 $sampleQuery = "SELECT tb_id,
@@ -43,7 +43,7 @@ foreach ($sampleResult as $sampleRow) {
     }
 
     if (!empty($_POST['testDate'])) {
-        $testDate = explode(" ", $_POST['testDate']);
+        $testDate = explode(" ", (string) $_POST['testDate']);
         $_POST['testDate'] = DateUtility::isoDateFormat($testDate[0]);
         $_POST['testDate'] .= " " . $testDate[1];
     } else {
@@ -57,7 +57,7 @@ foreach ($sampleResult as $sampleRow) {
         $sampleCodeParams['provinceCode'] = $provinceCode;
 
         $sampleJson = $tbService->getSampleCode($sampleCodeParams);
-        $sampleData = json_decode($sampleJson, true);
+        $sampleData = json_decode((string) $sampleJson, true);
         $tbData = [];
         $tbData['sample_code'] = $sampleData['sampleCode'];
         $tbData['sample_code_format'] = $sampleData['sampleCodeFormat'];

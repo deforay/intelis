@@ -23,15 +23,15 @@ $resultSentToSource = null;
 
 try {
 	//Set sample received date
-	if (isset($_POST['sampleReceivedDate']) && trim($_POST['sampleReceivedDate']) != "") {
-		$sampleReceivedDate = explode(" ", $_POST['sampleReceivedDate']);
+	if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != "") {
+		$sampleReceivedDate = explode(" ", (string) $_POST['sampleReceivedDate']);
 		$_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
 	} else {
 		$_POST['sampleReceivedDate'] = null;
 	}
 
-	if (isset($_POST['sampleTestedDateTime']) && trim($_POST['sampleTestedDateTime']) != "") {
-		$sampleTestedDate = explode(" ", $_POST['sampleTestedDateTime']);
+	if (isset($_POST['sampleTestedDateTime']) && trim((string) $_POST['sampleTestedDateTime']) != "") {
+		$sampleTestedDate = explode(" ", (string) $_POST['sampleTestedDateTime']);
 		$_POST['sampleTestedDateTime'] = DateUtility::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
 	} else {
 		$_POST['sampleTestedDateTime'] = null;
@@ -49,8 +49,8 @@ try {
 		$resultSentToSource = null;
 	}
 
-	if (isset($_POST['reviewedOn']) && trim($_POST['reviewedOn']) != "") {
-		$reviewedOn = explode(" ", $_POST['reviewedOn']);
+	if (isset($_POST['reviewedOn']) && trim((string) $_POST['reviewedOn']) != "") {
+		$reviewedOn = explode(" ", (string) $_POST['reviewedOn']);
 		$_POST['reviewedOn'] = DateUtility::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
 	} else {
 		$_POST['reviewedOn'] = null;

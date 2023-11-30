@@ -44,7 +44,7 @@ $printDate = DateUtility::humanReadableDateFormat($expStr[0]);
 $printDateTime = $expStr[1];
 //set query
 $allQuery = $_SESSION['tbPrintQuery'];
-if (isset($_POST['id']) && trim($_POST['id']) != '') {
+if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
 
     $searchQuery = "SELECT tb.*,f.*,
 				l.facility_name as labName,
@@ -138,7 +138,7 @@ class MYPDF extends TCPDF
     public function Header()
     {
         if ($this->htitle != '') {
-            if (trim($this->logo) != '') {
+            if (trim((string) $this->logo) != '') {
                 if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                     if ($this->formId == 3) {
@@ -151,9 +151,9 @@ class MYPDF extends TCPDF
             if ($this->formId == 3) {
                 $this->SetFont('helvetica', 'B', 16);
                 $this->writeHTMLCell(0, 0, 10, 03, $this->text, 0, 0, 0, true, 'C');
-                if (trim($this->lab) != '') {
+                if (trim((string) $this->lab) != '') {
                     $this->SetFont('helvetica', '', 10);
-                    $this->writeHTMLCell(0, 0, 10, 10, strtoupper($this->lab), 0, 0, 0, true, 'C');
+                    $this->writeHTMLCell(0, 0, 10, 10, strtoupper((string) $this->lab), 0, 0, 0, true, 'C');
                 }
                 $this->SetFont('helvetica', 'b', 10);
                 $this->writeHTMLCell(0, 0, 10, 18, 'Département de Virologie', 0, 0, 0, true, 'C');
@@ -167,16 +167,16 @@ class MYPDF extends TCPDF
             } else {
                 $this->SetFont('helvetica', 'B', 16);
                 $this->writeHTMLCell(0, 0, 10, 18, $this->text, 0, 0, 0, true, 'C');
-                if (trim($this->lab) != '') {
+                if (trim((string) $this->lab) != '') {
                     $this->SetFont('helvetica', '', 10);
-                    $this->writeHTMLCell(0, 0, 10, 25, strtoupper($this->lab), 0, 0, 0, true, 'C');
+                    $this->writeHTMLCell(0, 0, 10, 25, strtoupper((string) $this->lab), 0, 0, 0, true, 'C');
                 }
                 $this->SetFont('helvetica', '', 12);
                 $this->writeHTMLCell(0, 0, 10, 30, 'COVID-19 TEST - PATIENT REPORT', 0, 0, 0, true, 'C');
                 $this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C');
             }
         } else {
-            if (trim($this->logo) != '') {
+            if (trim((string) $this->logo) != '') {
                 if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'facility-logo' . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
                     $this->Image($imageFilePath, 16, 13, 15, '', '', '', 'T');
@@ -197,7 +197,7 @@ class MYPDF extends TCPDF
             if ($this->text != '') {
                 $this->SetFont('helvetica', '', 12);
                 //        $this->writeHTMLCell(0,0,10,16,'PROGRAMME NATIONAL DE LUTTE CONTRE LE SIDA ET IST', 0, 0, 0, true, 'C', true);
-                $this->writeHTMLCell(0, 0, 10, 16, strtoupper($this->text), 0, 0, 0, true, 'C');
+                $this->writeHTMLCell(0, 0, 10, 16, strtoupper((string) $this->text), 0, 0, 0, true, 'C');
                 $thirdHeading = '23';
                 $fourthHeading = '28';
                 $hrLine = '36';
@@ -208,9 +208,9 @@ class MYPDF extends TCPDF
                 $hrLine = '30';
                 $marginTop = '9';
             }
-            if (trim($this->lab) != '') {
+            if (trim((string) $this->lab) != '') {
                 $this->SetFont('helvetica', '', 9);
-                $this->writeHTMLCell(0, 0, 10, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C');
+                $this->writeHTMLCell(0, 0, 10, $thirdHeading, strtoupper((string) $this->lab), 0, 0, 0, true, 'C');
             }
             $this->SetFont('helvetica', '', 12);
             $this->writeHTMLCell(0, 0, 10, $fourthHeading, 'RESULTATS CHARGE VIRALE', 0, 0, 0, true, 'C');
@@ -252,11 +252,11 @@ if (!empty($requestResult)) {
     foreach ($requestResult as $result) {
         //set print time
         if (isset($result['result_printed_datetime']) && $result['result_printed_datetime'] != "") {
-            $printedTime = date('Y-m-d H:i:s', strtotime($result['result_printed_datetime']));
+            $printedTime = date('Y-m-d H:i:s', strtotime((string) $result['result_printed_datetime']));
         } else {
             $printedTime = DateUtility::getCurrentDateTime();
         }
-        $expStr = explode(" ", $printedTime);
+        $expStr = explode(" ", (string) $printedTime);
         $printDate = DateUtility::humanReadableDateFormat($expStr[0]);
         $printDateTime = $expStr[1];
 
@@ -270,7 +270,7 @@ if (!empty($requestResult)) {
         $patientLname = ($general->crypto('doNothing', $result['patient_surname'], $result['patient_id']));
 
         if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
-            $key = base64_decode($general->getGlobalConfig('key'));
+            $key = base64_decode((string) $general->getGlobalConfig('key'));
             $result['patient_id'] = $general->crypto('decrypt', $result['patient_id'], $key);
             $patientFname = $general->crypto('decrypt', $patientFname, $key);
             $patientLname = $general->crypto('decrypt', $patientLname, $key);
@@ -290,7 +290,7 @@ if (!empty($requestResult)) {
 
         $selectedReportFormats = [];
         if (isset($result['reportFormat']) && $result['reportFormat'] != "") {
-            $selectedReportFormats = json_decode($result['reportFormat'], true);
+            $selectedReportFormats = json_decode((string) $result['reportFormat'], true);
         }
 
         if (!empty($selectedReportFormats) && !empty($selectedReportFormats['tb'])) {

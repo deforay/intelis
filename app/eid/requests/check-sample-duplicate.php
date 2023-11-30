@@ -12,7 +12,7 @@ $_POST = $request->getParsedBody();
 
 $tableName = $_POST['tableName'];
 $fieldName = $_POST['fieldName'];
-$value = trim($_POST['value']);
+$value = trim((string) $_POST['value']);
 $fnct = $_POST['fnct'];
 $data = 0;
 if (!empty($value) && !empty($fieldName) && !empty($tableName)) {
@@ -21,7 +21,7 @@ if (!empty($value) && !empty($fieldName) && !empty($tableName)) {
         $remoteSampleCodeCondition = '';
 
         if (!empty($fnct) && $fnct != 'null') {
-            $table = explode("##", $fnct);
+            $table = explode("##", (string) $fnct);
             $tableCondition = "AND " . $table[0] . "!= ?";
         }
 
@@ -43,7 +43,7 @@ if (!empty($value) && !empty($fieldName) && !empty($tableName)) {
         $result = $db->rawQueryOne($sQuery, $parameters);
 
         if ($result) {
-            $data = base64_encode($result['eid_id']) . "##" . $result[$fieldName];
+            $data = base64_encode((string) $result['eid_id']) . "##" . $result[$fieldName];
         } else {
             $data = 0;
         }

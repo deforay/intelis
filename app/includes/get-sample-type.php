@@ -17,7 +17,7 @@ $_POST = $request->getParsedBody();
 
 $db = $db->where('facility_id', $_POST['facilityId']);
 $facilityDetails = $db->getOne('facility_details', array('facility_attributes'));
-$facilityAttributes = json_decode($facilityDetails['facility_attributes'], true);
+$facilityAttributes = json_decode((string) $facilityDetails['facility_attributes'], true);
 if (!empty($_POST['testType'])) {
     $table = 'r_' . $_POST['testType'] . '_sample_type';
 }

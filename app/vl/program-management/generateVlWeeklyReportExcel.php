@@ -25,8 +25,8 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $sarr = $general->getSystemConfig();
 
-if (isset($_POST['reportedDate']) && trim($_POST['reportedDate']) != '') {
-    $s_t_date = explode("to", $_POST['reportedDate']);
+if (isset($_POST['reportedDate']) && trim((string) $_POST['reportedDate']) != '') {
+    $s_t_date = explode("to", (string) $_POST['reportedDate']);
     if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
         $start_date = DateUtility::isoDateFormat(trim($s_t_date[0]));
     }
@@ -99,7 +99,7 @@ $borderStyle = array(
     ),
 );
 
-if (isset($_POST['lab']) && trim($_POST['lab']) != '') {
+if (isset($_POST['lab']) && trim((string) $_POST['lab']) != '') {
     $labId = ($_POST['lab']);
 }
 
@@ -195,8 +195,8 @@ if (!empty($labId)) {
     $sQuery = $sQuery . " AND vl.lab_id IN ($labId)";
 }
 
-if (isset($_POST['reportedDate']) && trim($_POST['reportedDate']) != '') {
-    if (trim($start_date) == trim($end_date)) {
+if (isset($_POST['reportedDate']) && trim((string) $_POST['reportedDate']) != '') {
+    if (trim((string) $start_date) == trim((string) $end_date)) {
         $sQuery = $sQuery . ' AND DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
     } else {
         $sQuery = $sQuery . ' AND DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
@@ -228,7 +228,7 @@ foreach ($excelResultSet as $vlLab => $labResult) {
     }
 
     $sheet->setCellValue('B1', html_entity_decode('Reported Date ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('C1', html_entity_decode($_POST['reportedDate'], ENT_QUOTES, 'UTF-8'));
+    $sheet->setCellValue('C1', html_entity_decode((string) $_POST['reportedDate'], ENT_QUOTES, 'UTF-8'));
     $sheet->setCellValue('D1', html_entity_decode('Lab Name ', ENT_QUOTES, 'UTF-8'));
     $sheet->setCellValue('E1', html_entity_decode(($vlLab), ENT_QUOTES, 'UTF-8'));
     //$sheet->setCellValue('F1', html_entity_decode('Collection Date ' , ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
@@ -347,7 +347,7 @@ foreach ($excelResultSet as $vlLab => $labResult) {
         $colNo = 1;
         foreach ($rowData as $field => $value) {
             $rRowCount = $rowNo + 4;
-            $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
+            $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode((string) $value));
             $colNo++;
         }
     }

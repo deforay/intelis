@@ -19,7 +19,7 @@ $tableName = "r_generic_sample_rejection_reasons";
 $primaryKey = "rejection_reason_id";
 
 try {
-	if (isset($_POST['rejectionReasonName']) && trim($_POST['rejectionReasonName']) != "") {
+	if (isset($_POST['rejectionReasonName']) && trim((string) $_POST['rejectionReasonName']) != "") {
 
 		$data = array(
 			'rejection_reason_name' 	=> $_POST['rejectionReasonName'],
@@ -31,7 +31,7 @@ try {
 			$data["rejection_type"] = $_POST["rejectionType"];
 		}
 		if (isset($_POST['rejectionReasonId']) && $_POST['rejectionReasonId'] != "") {
-			$db = $db->where($primaryKey, base64_decode($_POST['rejectionReasonId']));
+			$db = $db->where($primaryKey, base64_decode((string) $_POST['rejectionReasonId']));
 			$lastId = $db->update($tableName, $data);
 		} else {
 			$data['data_sync'] = 0;

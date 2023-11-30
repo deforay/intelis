@@ -21,11 +21,11 @@ $covid19Results = $covid19Service->getCovid19Results();
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = $GLOBALS['request'];
 $_GET = $request->getQueryParams();
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $resultQuery = "SELECT * from r_covid19_qc_testkits where testkit_id = '" . $id . "' ";
 $resultInfo = $db->rawQueryOne($resultQuery);
-$subResult = json_decode($resultInfo['labels_and_expected_results'], true);
+$subResult = json_decode((string) $resultInfo['labels_and_expected_results'], true);
 
 ?>
 <!-- Content Wrapper. Contains page content -->
@@ -119,7 +119,7 @@ $subResult = json_decode($resultInfo['labels_and_expected_results'], true);
                     </table>
                     <!-- /.box-body -->
                     <div class="box-footer">
-                        <input type="hidden" name="qcTestId" id="qcTestId" value="<?php echo base64_encode($resultInfo['testkit_id']); ?>">
+                        <input type="hidden" name="qcTestId" id="qcTestId" value="<?php echo base64_encode((string) $resultInfo['testkit_id']); ?>">
                         <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
                         <a href="covid19-qc-test-kits.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
                     </div>

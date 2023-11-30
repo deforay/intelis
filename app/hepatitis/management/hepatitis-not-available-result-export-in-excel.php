@@ -27,7 +27,7 @@ $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 
-if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable']) != "") {
+if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNotAvailable']) != "") {
 
     $output = [];
 
@@ -42,8 +42,8 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
         $row = [];
         //sample collecion date
         $sampleCollectionDate = '';
-        if ($aRow['sample_collection_date'] != null && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-            $expStr = explode(" ", $aRow['sample_collection_date']);
+        if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+            $expStr = explode(" ", (string) $aRow['sample_collection_date']);
             $sampleCollectionDate = date("d-m-Y", strtotime($expStr[0]));
         }
         if ($aRow['remote_sample'] == 'yes') {
@@ -57,7 +57,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
             $row[] = $aRow['remote_sample_code'];
         }
         if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-            $key = base64_decode($general->getGlobalConfig('key'));
+            $key = base64_decode((string) $general->getGlobalConfig('key'));
             $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
             $aRow['patient_name'] = $general->crypto('decrypt', $aRow['patient_name'], $key);
         }
@@ -74,7 +74,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim($_SESSION['resultNotAvailable
                 $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
                 // we dont need the $output variable anymore
                 unset($output);
-                echo base64_encode($fileName);
+                echo base64_encode((string) $fileName);
             } else {
                 $excel = new Spreadsheet();
                 $sheet = $excel->getActiveSheet();

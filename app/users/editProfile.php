@@ -61,7 +61,7 @@ $data = $db->get("user_login_history", 25);
                   <label for="userName" class="col-lg-2 control-label"><?php echo _translate("Your Full Name"); ?> <span class="mandatory">*</span></label>
                   <div class="col-lg-10">
                     <input type="text" class="form-control isRequired" id="userName" name="userName" placeholder="<?php echo _translate('Your Full Name'); ?>" title="<?php echo _translate('Please enter user name'); ?>" value="<?php echo $userInfo['user_name']; ?>" />
-                    <input type="hidden" name="userId" id="userId" value="<?php echo base64_encode($userInfo['user_id']); ?>" />
+                    <input type="hidden" name="userId" id="userId" value="<?php echo base64_encode((string) $userInfo['user_id']); ?>" />
                   </div>
                 </div>
               </div>

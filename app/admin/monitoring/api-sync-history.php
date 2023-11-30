@@ -14,7 +14,7 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 $syncedTypeResults = $db->rawQuery("SELECT DISTINCT request_type FROM track_api_requests ORDER BY request_type ASC");
 foreach ($syncedTypeResults as $synced) {
-	$syncedType[$synced['request_type']] = (str_replace("-", " ", $synced['request_type']));
+	$syncedType[$synced['request_type']] = (str_replace("-", " ", (string) $synced['request_type']));
 }
 ?>
 <style>
@@ -160,7 +160,7 @@ foreach ($syncedTypeResults as $synced) {
 		loadVlRequestData();
 		$('#dateRange').daterangepicker({
 			locale: {
-				cancelLabel: "<?= _translate("Clear"); ?>",
+				cancelLabel: "<?= _translate("Clear", true); ?>",
 				format: 'DD-MMM-YYYY',
 				separator: ' to ',
 			},

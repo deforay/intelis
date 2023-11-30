@@ -15,8 +15,8 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_generic_sample_types";
-$sampleTypeId = (int) base64_decode($_POST['sampleTypeId']);
-$_POST['sampleTypeName'] = trim($_POST['sampleTypeName']);
+$sampleTypeId = (int) base64_decode((string) $_POST['sampleTypeId']);
+$_POST['sampleTypeName'] = trim((string) $_POST['sampleTypeName']);
 try {
     if (!empty($_POST['sampleTypeName'])) {
 

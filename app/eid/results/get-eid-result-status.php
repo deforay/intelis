@@ -80,7 +80,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = [];
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", $_POST['sSearch']);
+    $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = '';
     foreach ($searchArray as $search) {
         if ($sWhereSub == "") {
@@ -125,7 +125,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS *
 $start_date = '';
 $end_date = '';
 if (!empty($_POST['sampleCollectionDate'])) {
-    $s_c_date = explode("to", $_POST['sampleCollectionDate']);
+    $s_c_date = explode("to", (string) $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
         $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
@@ -135,11 +135,11 @@ if (!empty($_POST['sampleCollectionDate'])) {
     }
 }
 
-if (isset($_POST['batchCode']) && trim($_POST['batchCode']) != '') {
+if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
     $sWhere[] =  '  b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-    if (trim($start_date) == trim($end_date)) {
+    if (trim((string) $start_date) == trim((string) $end_date)) {
         $sWhere[] =  '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
     } else {
         $sWhere[] =  '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
@@ -163,7 +163,7 @@ if (!empty($_SESSION['facilityMap'])) {
 
 $sWhere[] =  ' vl.result not like "" AND vl.result is not null ';
 if (!empty($_POST['sampleCollectionDate'])) {
-    if (trim($start_date) == trim($end_date)) {
+    if (trim((string) $start_date) == trim((string) $end_date)) {
         $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
     } else {
         $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
@@ -213,7 +213,7 @@ if (isset($_SESSION['privileges']) && (in_array("viewVlRequest.php", $_SESSION['
 }
 
 foreach ($rResult as $aRow) {
-    if (isset($aRow['sample_collection_date']) && trim($aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+    if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
         $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
     } else {
         $aRow['sample_collection_date'] = '';
@@ -236,7 +236,7 @@ foreach ($rResult as $aRow) {
         $row[] = $aRow['remote_sample_code'];
     }
     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-        $key = base64_decode($general->getGlobalConfig('key'));
+        $key = base64_decode((string) $general->getGlobalConfig('key'));
         $aRow['child_id'] = $general->crypto('decrypt', $aRow['child_id'], $key);
         $aRow['child_name'] = $general->crypto('decrypt', $aRow['child_name'], $key);
         $aRow['mother_id'] = $general->crypto('decrypt', $aRow['mother_id'], $key);
@@ -250,7 +250,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['mother_name'];
     $row[] = ($aRow['facility_name']);
     $row[] = $eidResults[$aRow['result']] ?? $aRow['result'];
-    if (isset($aRow['last_modified_datetime']) && trim($aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
+    if (isset($aRow['last_modified_datetime']) && trim((string) $aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
         $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
     } else {
         $aRow['last_modified_datetime'] = '';

@@ -17,7 +17,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_covid19_qc_testkits";
 $primaryKey = "testkit_id";
 try {
-    if (isset($_POST['testKitName']) && trim($_POST['testKitName']) != "") {
+    if (isset($_POST['testKitName']) && trim((string) $_POST['testKitName']) != "") {
         $data = array(
             'testkit_name'                  => $_POST['testKitName'],
             'status'                        => $_POST['testKitStatus'],
@@ -26,7 +26,7 @@ try {
         );
 
         if (isset($_POST['qcTestId']) && $_POST['qcTestId'] != "") {
-            $db = $db->where($primaryKey, base64_decode($_POST['qcTestId']));
+            $db = $db->where($primaryKey, base64_decode((string) $_POST['qcTestId']));
             $lastId = $db->update($tableName, $data);
         } else {
             $lastId = $db->insert($tableName, $data);

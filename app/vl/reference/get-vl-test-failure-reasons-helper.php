@@ -59,7 +59,7 @@ if (isset($_POST['iSortCol_0'])) {
 
 $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", $_POST['sSearch']);
+    $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
         if ($sWhereSub == "") {
@@ -149,7 +149,7 @@ foreach ($rResult as $aRow) {
     } else {
         $row[] = ($aRow['status']);
     }
-    $row[] = '<a href="edit-vl-test-failure-reason.php?id=' . base64_encode($aRow['failure_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
+    $row[] = '<a href="edit-vl-test-failure-reason.php?id=' . base64_encode((string) $aRow['failure_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
     $output['aaData'][] = $row;
 }
 

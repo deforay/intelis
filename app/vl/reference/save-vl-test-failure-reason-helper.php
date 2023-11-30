@@ -17,7 +17,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_vl_test_failure_reasons";
 $primaryKey = "failure_id";
 try {
-	if (isset($_POST['failureReason']) && trim($_POST['failureReason']) != "") {
+	if (isset($_POST['failureReason']) && trim((string) $_POST['failureReason']) != "") {
 
 		$data = array(
 			'failure_reason'    => $_POST['failureReason'],
@@ -25,7 +25,7 @@ try {
 			'updated_datetime'  => DateUtility::getCurrentDateTime()
 		);
 		if (isset($_POST['failureId']) && $_POST['failureId'] != "") {
-			$db = $db->where($primaryKey, base64_decode($_POST['failureId']));
+			$db = $db->where($primaryKey, base64_decode((string) $_POST['failureId']));
 			$lastId = $db->update($tableName, $data);
 		} else {
 			$data['data_sync'] = 0;

@@ -23,7 +23,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_tb_sample_rejection_reasons";
 
 try {
-	if (isset($_POST['rejectionReasonName']) && trim($_POST['rejectionReasonName']) != "") {
+	if (isset($_POST['rejectionReasonName']) && trim((string) $_POST['rejectionReasonName']) != "") {
 
 		$data = array(
 			'rejection_reason_name' => $_POST['rejectionReasonName'],

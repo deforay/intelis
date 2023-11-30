@@ -439,7 +439,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason">
                                                     <option value="">-- Select --</option>
                                                     <?php foreach ($rejectionTypeResult as $type) { ?>
-                                                        <optgroup label="<?php echo strtoupper($type['rejection_type']); ?>">
+                                                        <optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
                                                             <?php
                                                             foreach ($rejectionResult as $reject) {
                                                                 if ($type['rejection_type'] == $reject['rejection_type']) { ?>
@@ -472,7 +472,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                         <?php if (!empty($covid19TestInfo)) {
                                                             foreach ($covid19TestInfo as $indexKey => $rows) { ?>
                                                                 <tr>
-                                                                    <td class="text-center"><?= ($indexKey + 1); ?><input type="hidden" name="testId[]" value="<?php echo base64_encode($rows['test_id']); ?>"></td>
+                                                                    <td class="text-center"><?= ($indexKey + 1); ?><input type="hidden" name="testId[]" value="<?php echo base64_encode((string) $rows['test_id']); ?>"></td>
                                                                     <td><input type="text" value="<?php echo $rows['test_name']; ?>" name="testName[]" id="testName<?= ($indexKey + 1); ?>" class="form-control test-name-table-input isRequired" placeholder="Test name" title="Please enter the test name for row <?= ($indexKey + 1); ?>" /></td>
                                                                     <td><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($rows['sample_tested_datetime']); ?>" name="testDate[]" id="testDate<?= ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime isRequired" placeholder="Tested on" title="Please enter the tested on for row <?= ($indexKey + 1); ?>" /></td>
                                                                     <td><select class="form-control test-result test-name-table-input isRequired" name="testResult[]" id="testResult<?= ($indexKey + 1); ?>" title="Please select the result for row <?= ($indexKey + 1); ?>">
@@ -484,7 +484,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                     </td>
                                                                     <td style="vertical-align:middle;text-align: center;">
                                                                         <a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-                                                                        <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode($rows['test_id']); ?>');"><em class="fa-solid fa-minus"></em></a>
+                                                                        <a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);deleteRow('<?php echo base64_encode((string) $rows['test_id']); ?>');"><em class="fa-solid fa-minus"></em></a>
                                                                     </td>
                                                                 </tr>
                                                             <?php }
