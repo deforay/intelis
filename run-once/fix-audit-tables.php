@@ -69,8 +69,8 @@ function processAuditTables($db, $fromDbName, $toDbName, $setupTriggers = true)
                     } else {
                         echo "Trigger $triggerName created successfully.\n";
                         // Make sure to clear results to be ready for the next statement
-//                        while ($mysqli->next_result()) {
-//                        }
+                        //                        while ($mysqli->next_result()) {
+                        //                        }
                     }
                 }
             }
@@ -94,7 +94,7 @@ function processAuditTables($db, $fromDbName, $toDbName, $setupTriggers = true)
 
             $columns = $db->rawQuery($query);
 
-            if ($db->getLastErrno()) {
+            if ($db->getLastErrno() > 0) {
                 echo "Error checking columns for $fromDbName.$formTable and $toDbName.$auditTable: " . $db->getLastError() . "\n";
                 continue;
             }
@@ -132,7 +132,7 @@ function processAuditTables($db, $fromDbName, $toDbName, $setupTriggers = true)
 
             $extraColumns = $db->rawQuery($query);
 
-            if ($db->getLastErrno()) {
+            if ($db->getLastErrno() > 0) {
                 echo "Error checking extra columns for $toDbName.$auditTable and $fromDbName.$formTable: " . $db->getLastError() . "\n";
             } else {
                 foreach ($extraColumns as $column) {

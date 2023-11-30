@@ -33,19 +33,19 @@ WHERE `privilege_name` = '/batch/edit-batch.php?type=hepatitis';
 -- Thana 10-Nov-2023
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'generic-requests', '/generic-tests/requests/clone-request.php', NULL, 'Clone Generic Tests', '7', 'always');
 -- Jeyabanu 14-Nov-2023
-ALTER TABLE `patients` ADD `is_encrypted` VARCHAR(10) NULL DEFAULT 'no' AFTER `patient_id`;
-ALTER TABLE `patients` ADD `patient_phone_number` VARCHAR(50) NULL DEFAULT NULL AFTER `patient_gender`;
-ALTER TABLE `patients` ADD `patient_age_in_years` INT NULL DEFAULT NULL AFTER `patient_phone_number`;
-ALTER TABLE `patients` ADD `patient_dob` DATE NULL DEFAULT NULL AFTER `patient_age_in_years`;
-ALTER TABLE `patients` ADD `patient_address` TEXT NULL DEFAULT NULL AFTER `patient_dob`;
-ALTER TABLE `patients` ADD `is_patient_pregnant` VARCHAR(10) NULL DEFAULT NULL AFTER `patient_address`;
-ALTER TABLE `patients` ADD `is_patient_breastfeeding` VARCHAR(10) NULL DEFAULT NULL AFTER `is_patient_pregnant`;
-ALTER TABLE `patients` ADD `patient_age_in_months` INT NULL DEFAULT NULL AFTER `patient_age_in_years`;
+-- ALTER TABLE `patients` ADD `is_encrypted` VARCHAR(10) NULL DEFAULT 'no' AFTER `patient_id`;
+-- ALTER TABLE `patients` ADD `patient_phone_number` VARCHAR(50) NULL DEFAULT NULL AFTER `patient_gender`;
+-- ALTER TABLE `patients` ADD `patient_age_in_years` INT NULL DEFAULT NULL AFTER `patient_phone_number`;
+-- ALTER TABLE `patients` ADD `patient_dob` DATE NULL DEFAULT NULL AFTER `patient_age_in_years`;
+-- ALTER TABLE `patients` ADD `patient_address` TEXT NULL DEFAULT NULL AFTER `patient_dob`;
+-- ALTER TABLE `patients` ADD `is_patient_pregnant` VARCHAR(10) NULL DEFAULT NULL AFTER `patient_address`;
+-- ALTER TABLE `patients` ADD `is_patient_breastfeeding` VARCHAR(10) NULL DEFAULT NULL AFTER `is_patient_pregnant`;
+-- ALTER TABLE `patients` ADD `patient_age_in_months` INT NULL DEFAULT NULL AFTER `patient_age_in_years`;
 
 -- Jeyabanu 16-Nov-2023
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('patients', 'common', 'Manage Patients');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'patients', 'view-patients.php', NULL, 'Manage Patients', NULL, 'always'), (NULL, 'patients', 'add-patient.php', NULL, 'Add Patient', NULL, 'always'), (NULL, 'patients', 'edit-patient.php', NULL, 'Edit Patient', NULL, 'always');
-ALTER TABLE `patients` ADD `status` VARCHAR(11) NULL DEFAULT NULL AFTER `patient_district`;
+-- ALTER TABLE `patients` ADD `status` VARCHAR(11) NULL DEFAULT NULL AFTER `patient_district`;
 
 
 -- Jeyabanu 22-Nov-2023

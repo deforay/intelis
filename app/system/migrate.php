@@ -39,11 +39,20 @@ foreach ($migrationFiles as $file) {
         $parser = new Parser($sql_contents);
 
         $db->startTransaction();  // Start a new transaction
-
+        $errorOccurred = false;
         foreach ($parser->statements as $statement) {
-            $query = $statement->build();
-            $db->rawQuery($query);
-            if ($db->getLastErrno()) {
+            try {
+                $query = $statement->build();
+                $db->rawQuery($query);
+                $errorOccurred = false;
+            } catch (Exception $e) {
+
+                $errorOccurred = true;
+                if (!$quietMode) {  // Only show error messages if -q option is not provided
+                    echo "Exception : " . $e->getMessage() . "\n";
+                }
+            }
+            if ($db->getLastErrno() > 0 || $errorOccurred) {
                 if (!$quietMode) {  // Only show error messages if -q option is not provided
                     echo "Error executing query: " . $db->getLastError() . "\n";
                 }
@@ -68,4 +77,3 @@ foreach ($migrationFiles as $file) {
         $db->commit();  // Commit the transaction if no error occurred
     }
 }
-
