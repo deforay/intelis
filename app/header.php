@@ -110,25 +110,6 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 	<script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="/assets/js/deforayModal.js"></script>
 	<script type="text/javascript" src="/assets/js/jquery.fastconfirm.js"></script>
-	<style>
-		.select2-selection--multiple {
-			max-height: 100px;
-			width: auto;
-			overflow-y: scroll !important;
-		}
-
-		.trainingMarquee {
-			max-height: 50px;
-			padding-top: 10px;
-			font-weight: bold;
-			color: #fff;
-			width: 700px;
-			overflow: hidden;
-			white-space: nowrap;
-			font-size: 1.5em;
-			text-transform: capitalize;
-		}
-	</style>
 </head>
 
 <body class="hold-transition <?= $skin; ?> sidebar-mini" id="lis-body" style="margin-top:50px !important;">

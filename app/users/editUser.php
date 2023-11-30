@@ -2,7 +2,10 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
+use App\Services\DatabaseService;
 
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get('db');
 
 $title = _translate("Edit User");
 

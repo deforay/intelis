@@ -90,7 +90,7 @@ try {
 
     $isRejected = false;
     $resultStatus = SAMPLE_STATUS\PENDING_APPROVAL; // Awaiting Approval
-    if ($_POST['isSampleRejected'] ?? null === 'yes') {
+    if (($_POST['isSampleRejected'] ?? null) === 'yes') {
         $isRejected = true;
         $resultStatus = SAMPLE_STATUS\REJECTED; // Rejected
     }
@@ -153,6 +153,7 @@ try {
         'manual_result_entry' => 'yes',
         'result_status' => $resultStatus,
         'data_sync' => 0,
+        'sub_tests' => implode("##", $_POST['subTestResult']),
         'result_printed_datetime' => null
     );
 
@@ -165,21 +166,28 @@ try {
         if (!empty($_POST['testName'])) {
             $db = $db->where('generic_id', $_POST['vlSampleId']);
             $db->delete($testTableName);
-            foreach ($_POST['testName'] as $testKey => $testKitName) {
-                if (!empty($testKitName)) {
-                    $covid19TestData = array(
-                        'generic_id' => $_POST['vlSampleId'],
-                        'test_name' => ($testKitName == 'other') ? $_POST['testNameOther'][$testKey] : $testKitName,
-                        'facility_id' => $_POST['labId'] ?? null,
-                        'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$testKey] ?? '', true),
-                        'testing_platform' => $_POST['testingPlatform'][$testKey] ?? null,
-                        'kit_lot_no' => (strpos((string) $testKitName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
-                        'kit_expiry_date' => (strpos((string) $testKitName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
-                        'result' => $_POST['testResult'][$testKey]
-                    );
-                    $db->insert($testTableName, $covid19TestData);
+            foreach ($_POST['testName'] as $subTestName => $subTests) {
+                foreach($subTests as $testKey=>$testKitName){
+                     if (!empty($testKitName)) {
+                          $testData = array(
+                               'generic_id' => $_POST['vlSampleId'],
+                               'sub_test_name' => $subTestName,
+                               'final_result_unit' => $_POST['finalTestResultUnit'][$subTestName],
+                               'result_type' => $_POST['resultType'][$subTestName],
+                               'test_name' => ($testKitName == 'other') ? $_POST['testNameOther'][$subTestName][$testKey] : $testKitName,
+                               'facility_id' => $_POST['labId'] ?? null,
+                               'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$subTestName][$testKey] ?? '', true),
+                               'testing_platform' => $_POST['testingPlatform'][$subTestName][$testKey] ?? null,
+                               'kit_lot_no' => (strpos((string) $testKitName, 'RDT') !== false) ? $_POST['lotNo'][$subTestName][$testKey] : null,
+                               'kit_expiry_date' => (strpos((string) $testKitName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$subTestName][$testKey]) : null,
+                               'result' => $_POST['testResult'][$subTestName][$testKey],
+                               'final_result' => $_POST['finalResult'][$subTestName],
+                               'result_unit' => $_POST['testResultUnit'][$subTestName][$testKey]
+                          );
+                          $db->insert('generic_test_results', $testData);
+                     }
                 }
-            }
+           }
         }
     } else {
         $db = $db->where('generic_id', $_POST['vlSampleId']);

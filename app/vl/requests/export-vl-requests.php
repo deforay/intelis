@@ -7,7 +7,6 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -138,9 +137,9 @@ if (isset($_SESSION['vlRequestQueryCount']) && $_SESSION['vlRequestQueryCount'] 
 	$excel = new Spreadsheet();
 	$sheet = $excel->getActiveSheet();
 
-	$sheet->fromArray($headings, null, 'A3');
+	$sheet->fromArray($headings, null, 'A1');
 
-	$rowNo = 3;
+	$rowNo = 2;
 	foreach ($output as $rowData) {
 		$rRowCount = $rowNo++;
 		$sheet->fromArray($rowData, null, 'A' . $rRowCount);

@@ -153,3 +153,21 @@ form table tr td>label,
 .encryptPIIContainer {
     display: none;
 }
+
+.select2-selection--multiple {
+    max-height: 100px;
+    width: auto;
+    overflow-y: scroll !important;
+}
+
+.trainingMarquee {
+    max-height: 50px;
+    padding-top: 10px;
+    font-weight: bold;
+    color: #fff;
+    width: 700px;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 1.5em;
+    text-transform: capitalize;
+}

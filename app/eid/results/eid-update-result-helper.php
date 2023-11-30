@@ -81,7 +81,7 @@ try {
     'eid_test_platform' => $_POST['eidPlatform'] ?? null,
     'import_machine_name' => $_POST['machineName'] ?? null,
     'sample_tested_datetime' => $_POST['sampleTestedDateTime'],
-    'is_sample_rejected' => $_POST['isSampleRejected'] ?? null,
+    'is_sample_rejected' => ($_POST['isSampleRejected'] ?? null),
     'lab_id' => $_POST['labId'] ?? null,
     'result' => $_POST['result'] ?? null,
     'tested_by' => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] : null,

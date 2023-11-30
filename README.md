@@ -7,7 +7,7 @@ VLSM is a simple, open source Sample Management System for tracking samples for 
 #### Pre-requisites
 * Apache 2.x  (Make sure apache rewrite and headers modules are enabled)
 * MySQL 5.7.x
-* PHP 7.4.x
+* PHP 8.2.x
 * [Composer](https://getcomposer.org/download/)
 
 ### Ubuntu Setup

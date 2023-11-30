@@ -23,6 +23,8 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var CommonService $commonService */
 $general = ContainerRegistry::get(CommonService::class);
 
+$formId = $general->getGlobalConfig('vl_form');
+
 //Funding source list
 $fundingSourceList = $general->getFundingSources();
 
@@ -147,19 +149,19 @@ if (!empty($covid19Info['is_encrypted']) && $covid19Info['is_encrypted'] == 'yes
 	}
 </style>
 <?php
-if ($arr['vl_form'] == COUNTRY\SOUTH_SUDAN) {
+if ($formId == COUNTRY\SOUTH_SUDAN) {
 	require('forms/update-southsudan-result.php');
-} else if ($arr['vl_form'] == COUNTRY\SIERRA_LEONE) {
+} else if ($formId == COUNTRY\SIERRA_LEONE) {
 	require('forms/update-sierraleone-result.php');
-} else if ($arr['vl_form'] == COUNTRY\DRC) {
+} else if ($formId == COUNTRY\DRC) {
 	require('forms/update-drc-result.php');
-} else if ($arr['vl_form'] == COUNTRY\CAMEROON) {
+} else if ($formId == COUNTRY\CAMEROON) {
 	require('forms/update-cameroon-result.php');
-} else if ($arr['vl_form'] == COUNTRY\PNG) {
+} else if ($formId == COUNTRY\PNG) {
 	require('forms/update-png-result.php');
-} else if ($arr['vl_form'] == COUNTRY\WHO) {
+} else if ($formId == COUNTRY\WHO) {
 	require('forms/update-who-result.php');
-} else if ($arr['vl_form'] == COUNTRY\RWANDA) {
+} else if ($formId == COUNTRY\RWANDA) {
 	require('forms/update-rwanda-result.php');
 }
 
