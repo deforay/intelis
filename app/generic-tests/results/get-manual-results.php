@@ -113,7 +113,7 @@ for ($i = 0; $i < count($aColumns); $i++) {
  * SQL queries
  * Get data to display
  */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.sample_id,
+$sQuery = "SELECT vl.sample_id,
 vl.sample_code,
 vl.remote_sample,
 vl.remote_sample_code,
@@ -148,12 +148,12 @@ vl.sample_received_at_hub_datetime,
 vl.sample_received_at_testing_lab_datetime,
 vl.result_dispatched_datetime,
 vl.result_printed_datetime,
-vl.result_approved_by
-FROM form_generic as vl
-LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
-LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id
-LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.sample_type
+vl.result_approved_by 
+FROM form_generic as vl 
+LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
+LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id 
+LEFT JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id 
+LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.sample_type 
 INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
 
@@ -271,25 +271,17 @@ if (!empty($sOrder)) {
      $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
      $sQuery = $sQuery . ' order by ' . $sOrder;
 }
-if (isset($sLimit) && isset($sOffset)) {
-     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-}
-
+// die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 
-
-/* Data set length after filtering */
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-//$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
-$iTotal = $aResultFilterTotal['totalCount'];
-
+[$rResult, $resultCount] = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset);
 /*
  * Output
  */
 $output = array(
      "sEcho" => intval($_POST['sEcho']),
-     "iTotalRecords" => $iTotal,
-     "iTotalDisplayRecords" => $iTotal,
+     "iTotalRecords" => $resultCount,
+     "iTotalDisplayRecords" => $resultCount,
      "aaData" => []
 );
 
