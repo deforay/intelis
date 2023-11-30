@@ -160,6 +160,10 @@ try {
 		$_POST['approvedOn'] = null;
 	}
 
+		//Update patient Information in Patients Table
+		$patientsService->updatePatient($_POST, 'form_covid19');
+
+		$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['patientDob'] ?? ''));
 
 	$covid19Data = array(
 		'external_sample_code' => !empty($_POST['externalSampleCode']) ? $_POST['externalSampleCode'] : null,
@@ -173,6 +177,7 @@ try {
 		'test_number' => !empty($_POST['testNumber']) ? $_POST['testNumber'] : null,
 		'province_id' => !empty($_POST['provinceId']) ? $_POST['provinceId'] : null,
 		'lab_id' => !empty($_POST['labId']) ? $_POST['labId'] : null,
+		'system_patient_code' => $systemGeneratedCode,
 		'testing_point' => !empty($_POST['testingPoint']) ? $_POST['testingPoint'] : null,
 		'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') ? base64_decode((string) $_POST['fundingSource']) : null,
 		'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') ? base64_decode((string) $_POST['implementingPartner']) : null,
@@ -271,9 +276,6 @@ try {
 			$covid19Data['lab_manager'] = $facility['contact_person'];
 		}
 	}
-
-	//Update patient Information in Patients Table
-	$patientsService->updatePatient($_POST, 'form_covid19');
 
 	$covid19Data['last_modified_by'] = $_SESSION['userId'];
 	$covid19Data['lab_technician'] = (!empty($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId'];

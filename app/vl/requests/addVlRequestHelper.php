@@ -178,6 +178,11 @@ try {
         $_POST['treatmentIndication'] = $_POST['newTreatmentIndication'] . '_Other';
     }
 
+        //Update patient Information in Patients Table
+        $patientsService->savePatient($_POST, 'form_vl');
+
+    $systemGeneratedCode = $patientsService->getSystemPatientId($_POST['artNo'], $_POST['gender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
+
     $vlData = array(
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => $formId,
@@ -187,6 +192,7 @@ try {
         'sample_collection_date' => DateUtility::isoDateFormat($_POST['sampleCollectionDate'] ?? '', true),
         'sample_dispatched_datetime' => DateUtility::isoDateFormat($_POST['sampleDispatchedDate'] ?? '', true),
         'patient_gender' => $_POST['gender'] ?? null,
+        'system_patient_code' => $systemGeneratedCode,
         'patient_dob' => DateUtility::isoDateFormat($_POST['dob'] ?? ''),
         'patient_last_name' => $_POST['patientLastName'] ?? null,
         'patient_age_in_years' => $_POST['ageInYears'] ?? null,
@@ -346,9 +352,6 @@ try {
         $vlData['patient_last_name'] = $encryptedPatientLastName;
         $vlData['is_encrypted'] = 'yes';
     }
-
-    //Update patient Information in Patients Table
-    $patientsService->savePatient($_POST, 'form_vl');
 
 
     $id = 0;

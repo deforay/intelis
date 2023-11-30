@@ -273,12 +273,19 @@ try {
 		$_POST['approvedOnDateTime'] = null;
 	}
 
+		//Update patient Information in Patients Table
+		$patientsService->savePatient($_POST, 'form_eid');
+
+		$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['childId'], $_POST['childGender'], DateUtility::isoDateFormat($_POST['childDob'] ?? ''));
+
+
 	$eidData = array(
 		'vlsm_instance_id' => $instanceId,
 		'vlsm_country_id' => $_POST['formId'],
 		'facility_id' => $_POST['facilityId'] ?? null,
 		'province_id' => $_POST['provinceId'] ?? null,
 		'lab_id' => $_POST['labId'] ?? null,
+		'system_patient_code' => $systemGeneratedCode,
 		'lab_testing_point' => $_POST['labTestingPoint'] ?? null,
 		'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') ? base64_decode((string) $_POST['fundingSource']) : null,
 		'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') ? base64_decode((string) $_POST['implementingPartner']) : null,
@@ -431,9 +438,6 @@ try {
 
 		$eidData['is_encrypted'] = 'yes';
 	}
-
-	//Update patient Information in Patients Table
-	$patientsService->savePatient($_POST, 'form_eid');
 
 
 	if (isset($_POST['eidSampleId']) && $_POST['eidSampleId'] != '') {

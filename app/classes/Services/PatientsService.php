@@ -75,6 +75,7 @@ class PatientsService
 
             if ($testTable == "form_vl" || $testTable == "form_generic") {
                 $data['patient_code'] =  $params['artNo'];
+                $params['patientGender'] = $params['gender'];
             } elseif ($testTable == "form_eid") {
                 $data['patient_code'] =  $params['childId'];
                 $params['patientFirstName'] = $params['childName'];
@@ -86,6 +87,7 @@ class PatientsService
             } else {
                 $params['patientFirstName'] = $params['firstName'];
                 $params['patientLastName'] = $params['lastName'];
+                $params['dob'] = $params['patientDob'];
                 $data['patient_code'] = $params['patientId'];
             }
 
@@ -154,6 +156,7 @@ class PatientsService
 
         if ($testTable == "form_vl" || $testTable == "form_generic") {
             $patientId = $params['artNo'];
+            $params['patientGender'] = $params['gender'];
         } elseif ($testTable == "form_eid") {
             $patientId = $params['childId'];
             $params['patientFirstName'] = $params['childName'];
@@ -165,6 +168,7 @@ class PatientsService
         } else {
             $params['patientFirstName'] = $params['firstName'];
             $params['patientLastName'] = $params['lastName'];
+            $params['dob'] = $params['patientDob'];
             $patientId = $params['patientId'];
         }
         $data['patient_code'] = $patientId;

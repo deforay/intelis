@@ -181,6 +181,13 @@ try {
     $reason = $_POST['reasonForTbTest'];
     $reason['reason'] = array($reason['reason'] => 'yes');
 
+          //Update patient Information in Patients Table
+          $patientsService->savePatient($_POST,'form_tb');
+
+
+
+    $systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['patientDob'] ?? ''));
+
     $tbData = array(
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => $_POST['formId'],
@@ -189,6 +196,7 @@ try {
         'specimen_quality' => !empty($_POST['testNumber']) ? $_POST['testNumber'] : null,
         'province_id' => !empty($_POST['provinceId']) ? $_POST['provinceId'] : null,
         'lab_id' => !empty($_POST['labId']) ? $_POST['labId'] : null,
+        'system_patient_code' => $systemGeneratedCode,
         'implementing_partner' => !empty($_POST['implementingPartner']) ? $_POST['implementingPartner'] : null,
         'funding_source' => !empty($_POST['fundingSource']) ? $_POST['fundingSource'] : null,
         'referring_unit' => !empty($_POST['referringUnit']) ? $_POST['referringUnit'] : null,
@@ -281,9 +289,6 @@ try {
         $tbData['patient_surname'] = $encryptedPatientSurName;
         $tbData['is_encrypted'] = 'yes';
     }
-
-      //Update patient Information in Patients Table
-      $patientsService->savePatient($_POST,'form_tb');
 
 
     if (!empty($_POST['tbSampleId'])) {

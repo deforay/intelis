@@ -288,11 +288,18 @@ try {
 		$_POST['approvedOnDateTime'] = null;
 	}
 
+		//Update patient Information in Patients Table
+		$patientsService->updatePatient($_POST, 'form_eid');
+
+	$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['childId'], $_POST['childGender'], DateUtility::isoDateFormat($_POST['childDob'] ?? ''));
+
+
 	$eidData = array(
 		'facility_id' => $_POST['facilityId'] ?? null,
 		'province_id' => $_POST['provinceId'] ?? null,
 		'lab_id' => $_POST['labId'] ?? null,
 		'lab_testing_point' => $_POST['labTestingPoint'] ?? null,
+		'system_patient_code' => $systemGeneratedCode,
 		'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') ? base64_decode((string) $_POST['fundingSource']) : null,
 		'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') ? base64_decode((string) $_POST['implementingPartner']) : null,
 		'mother_id' => $_POST['mothersId'] ?? null,
