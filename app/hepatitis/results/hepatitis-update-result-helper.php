@@ -62,7 +62,7 @@ try {
 		'sample_condition'  				  => $_POST['sampleCondition'] ?? ($_POST['specimenQuality'] ?? null),
 		'sample_tested_datetime'  			  => $_POST['sampleTestedDateTime'] ?? null,
 		'vl_testing_site'  			  		  => $_POST['vlTestingSite'] ?? null,
-		'is_sample_rejected'                  => $_POST['isSampleRejected'] ?? null,
+		'is_sample_rejected'                  => ($_POST['isSampleRejected'] ?? null),
 		'result'                              => $_POST['result'] ?? null,
 		'hcv_vl_result'                       => $_POST['hcv'] ?? null,
 		'hbv_vl_result'                       => $_POST['hbv'] ?? null,

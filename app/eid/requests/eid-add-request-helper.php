@@ -364,7 +364,7 @@ try {
 		'eid_test_platform' => $_POST['eidPlatform'] ?? null,
 		'import_machine_name' => $_POST['machineName'] ?? null,
 		'sample_tested_datetime' => $_POST['sampleTestedDateTime'] ?? null,
-		'is_sample_rejected' => $_POST['isSampleRejected'] ?? null,
+		'is_sample_rejected' => ($_POST['isSampleRejected'] ?? null),
 		'recommended_corrective_action' => $_POST['correctiveAction'] ?? null,
 		'result' => $_POST['result'] ?? null,
 		'test_1_date' => $_POST['test1Date'] ?? null,

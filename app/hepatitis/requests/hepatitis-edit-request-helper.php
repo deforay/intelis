@@ -156,7 +156,7 @@ try {
 		'sample_tested_datetime' => $_POST['sampleTestedDateTime'] ?? null,
 		'vl_testing_site' => $_POST['vlTestingSite'] ?? null,
 		'sample_condition' => $_POST['sampleCondition'] ?? ($_POST['specimenQuality'] ?? null),
-		'is_sample_rejected' => $_POST['isSampleRejected'] ?? null,
+		'is_sample_rejected' => ($_POST['isSampleRejected'] ?? null),
 		'hbsag_result' => $_POST['HBsAg'] ?? null,
 		'anti_hcv_result' => $_POST['antiHcv'] ?? null,
 		'result' => $_POST['result'] ?? null,
@@ -225,8 +225,8 @@ try {
 			$hepatitisData['is_encrypted'] = 'yes';
 		}
 
-		     //Update patient Information in Patients Table
-			 $patientsService->updatePatient($_POST,'form_hepatitis');
+		//Update patient Information in Patients Table
+		$patientsService->updatePatient($_POST, 'form_hepatitis');
 
 
 		$id = 0;

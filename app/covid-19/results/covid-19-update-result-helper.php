@@ -96,7 +96,7 @@ try {
 		'sample_condition' => $_POST['specimenQuality'] ?? ($_POST['specimenQuality'] ?? null),
 		'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : null,
 		'testing_point' => $_POST['testingPoint'] ?? null,
-		'is_sample_rejected' => $_POST['isSampleRejected'] ?? null,
+		'is_sample_rejected' => ($_POST['isSampleRejected'] ?? null),
 		'result' => $_POST['result'] ?? null,
 		'result_sent_to_source' => $resultSentToSource,
 		'other_diseases' => (isset($_POST['otherDiseases']) && $_POST['result'] != 'positive') ? $_POST['otherDiseases'] : null,

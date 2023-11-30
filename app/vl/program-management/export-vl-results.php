@@ -224,51 +224,16 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 
 		$excel = new Spreadsheet();
 		$sheet = $excel->getActiveSheet();
-		$sheet->setTitle('VL Results');
+		//$sheet->setTitle('VL Results');
 
-		// $sheet
-		// 	->getStyle('A3:AS3')
-		// 	->getFill()
-		// 	->setFillType(Fill::FILL_SOLID)
-		// 	->getStartColor()
-		// 	->setARGB('808080');
+		$sheet->fromArray($headings, null, 'A1');
 
-		// foreach ($_POST as $key => $value) {
-		// 	if (trim($value) != '' && trim($value) != '-- Select --') {
-		// 		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
-		// 	}
-		// }
-		//$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($nameValue));
-		// if ($_POST['withAlphaNum'] == 'yes') {
-		// 	foreach ($headings as $field => $value) {
-		// 		$string = str_replace(' ', '', $value);
-		// 		$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-		// 		$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
-		// 		$colNo++;
-		// 	}
-		// } else {
-		// 	foreach ($headings as $field => $value) {
-		// 		$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '3', html_entity_decode($value));
-		// 		$colNo++;
-		// 	}
-		// }
-
-		//$start = (count($output)) + 2;
-		// foreach ($output as $rowNo => $rowData) {
-		// 	$colNo = 1;
-		// 	$rRowCount = $rowNo + 4;
-		// 	foreach ($rowData as $field => $value) {
-		// 		$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
-		// 		$colNo++;
-		// 	}
-		// }
-
-		$sheet->fromArray($headings, null, 'A3');
-
-		foreach ($output as $rowNo => $rowData) {
-			$rRowCount = $rowNo + 4;
+		$rowNo = 2;
+		foreach ($output as $rowData) {
+			$rRowCount = $rowNo++;
 			$sheet->fromArray($rowData, null, 'A' . $rRowCount);
 		}
+
 		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '-' . $general->generateRandomString(5) . '.xlsx';
 		$writer->save($filename);

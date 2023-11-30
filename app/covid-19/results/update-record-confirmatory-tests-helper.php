@@ -22,7 +22,7 @@ try {
 	$covid19Data = array(
 		'sample_received_at_lab_datetime' => DateUtility::isoDateFormat($_POST['sampleReceivedDate'] ?? '', true),
 		'lab_id' => $_POST['labId'] ?? null,
-		'is_sample_rejected' => $_POST['isSampleRejected'] ?? null,
+		'is_sample_rejected' => ($_POST['isSampleRejected'] ?? null),
 		'result' => $_POST['result'] ?? null,
 		'is_result_authorised' => $_POST['isResultAuthorized'] ?? null,
 		'authorized_by' => $_POST['authorizedBy'] ?? null,
