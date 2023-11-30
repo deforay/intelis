@@ -4,7 +4,20 @@ $title = _translate("Geographical Divisions");
 
 require_once APPLICATION_PATH . '/header.php';
 
+
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get('db');
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_GET = $request->getQueryParams();
+
 $geoQuery = "SELECT * from geographical_divisions WHERE geo_status ='active'";
+
 $geoParentInfo = $db->query($geoQuery);
 $geoArray = [];
 foreach ($geoParentInfo as $type) {

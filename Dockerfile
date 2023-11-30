@@ -6,14 +6,15 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     libzip-dev libjpeg62-turbo-dev libfreetype6-dev \
     libonig-dev libpng-dev libicu-dev libcurl4-openssl-dev \
-    git zip unzip rsync vim openssl curl acl gettext cron && \
+    git zip unzip rsync vim openssl curl acl gettext cron \
+    default-mysql-client netcat && \
     apt-get upgrade -y openssl apache2 curl libxml2 && \
     rm -rf /var/lib/apt/lists/*
 
 # Install required PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install pdo_mysql zip mysqli mbstring \
-    curl json intl exif bcmath gd gettext
+    curl intl exif bcmath gd gettext
 
 RUN a2enmod rewrite headers deflate env;
 
