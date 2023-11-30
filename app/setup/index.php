@@ -15,7 +15,7 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 // Get locale directory list
-$localeLists = $general->getLocaleList();
+$localeLists = $general->getLocaleList('all');
 
 $formQuery = "SELECT * FROM s_available_country_forms ORDER by form_name ASC";
 $formResult = $db->query($formQuery);
@@ -53,29 +53,33 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
   <title><?= _translate("Register Admin User"); ?> | VLSM</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <meta name="viewport" content="width=1024">
 
-  <?php if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser') { ?>
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/vlsts-icons/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/assets/vlsts-icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/assets/vlsts-icons/favicon-16x16.png">
-    <link rel="manifest" href="/assets/vlsts-icons/site.webmanifest">
-  <?php } else { ?>
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/vlsm-icons/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/assets/vlsm-icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/assets/vlsm-icons/favicon-16x16.png">
-    <link rel="manifest" href="/assets/vlsm-icons/site.webmanifest">
-  <?php } ?>
+  <?php
+  $iconType = !empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'remoteuser' ? 'vlsts' : 'vlsm';
+  ?>
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/<?= $iconType; ?>-icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/<?= $iconType; ?>-icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/<?= $iconType; ?>-icons/favicon-16x16.png">
+  <link rel="manifest" href="/assets/<?= $iconType; ?>-icons/site.webmanifest">
 
 
-  <!-- Bootstrap 3.3.6 -->
-  <link rel="stylesheet" href="/assets/css/fonts.css">
-  <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-
-  <!-- Theme style -->
-  <link rel="stylesheet" href="/assets/css/AdminLTE.min.css">
-  <link href="/assets/css/deforayModal.css" rel="stylesheet" />
-
-  <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+  <link rel="stylesheet" media="all" type="text/css" href="/assets/css/fonts.css" />
+  <link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery-ui.min.css" />
+  <link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery-ui-timepicker-addon.css" />
+  <link rel="stylesheet" media="all" type="text/css" href="/assets/css/bootstrap.min.css">
+  <link rel="stylesheet" media="all" type="text/css" href="/assets/css/font-awesome.min.css">
+  <link rel="stylesheet" media="all" type="text/css" href="/assets/plugins/datatables/dataTables.bootstrap.css">
+  <link rel="stylesheet" media="all" type="text/css" href="/assets/css/AdminLTE.min.css">
+  <link rel="stylesheet" media="all" type="text/css" href="/assets/css/skins/_all-skins.min.css">
+  <link rel="stylesheet" media="all" type="text/css" href="/assets/plugins/daterangepicker/daterangepicker.css" />
+  <link rel="stylesheet" media="all" type="text/css" href="/assets/css/select2.min.css" />
+  <link rel="stylesheet" media="all" type="text/css" href="/assets/css/deforayModal.css" />
+  <link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery.fastconfirm.css" />
+  <link rel="stylesheet" media="all" type="text/css" href="/assets/css/components-rounded.min.css">
+  <link rel="stylesheet" media="all" type="text/css" href="/assets/css/select2.live.min.css" />
+  <link rel="stylesheet" media="all" type="text/css" href="/assets/css/style.css?v=<?= filemtime(WEB_ROOT . "/assets/css/style.css") ?>" />
 
   <!-- iCheck -->
   <style>
@@ -107,18 +111,11 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
         <div style="padding-top:10px;" class="panel-body">
           <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
           <form id="registerForm" name="registerForm" class="form-horizontal" role="form" method="post" action="/setup/registerProcess.php" onsubmit="validateNow();return false;">
-            <div style="margin-bottom: 5px" class="input-group">
-              <span class="input-group-addon"><em class="fa-solid fa-user"></em></span>
-              <input id="login-username" type="text" class="form-control isRequired" name="userName" value="" placeholder="<?= _translate("User Name"); ?>" title="Please enter your name">
-            </div>
-            <div style="margin-bottom: 5px" class="input-group">
-              <span class="input-group-addon"><em class="fa-solid fa-envelope"></em></span>
-              <input id="login-email" type="text" class="form-control isRequired" name="email" value="" placeholder="<?= _translate("Email ID"); ?>" title="Please enter your email id">
-            </div>
+
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-flag"></em></span>
               <select class="form-control isRequired readPage select2" name="vl_form" id="vl_form" title="<?php echo _translate('Please select the viral load form'); ?>">
-                <option value=""><?= _translate("-- Choose Country of Installation --"); ?></option>
+                <option value=""></option>
                 <?php
                 foreach ($formResult as $val) {
                 ?>
@@ -131,7 +128,7 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-clock"></em></span>
               <select class="form-control readPage select2 isRequired" id="default_time_zone" name="default_time_zone" placeholder="<?php echo _translate('Timezone'); ?>" title="<?php echo _translate('Please choose Timezone'); ?>">
-                <option value=""><?= _translate("-- Choose Default Time Zone --"); ?></option>
+                <option value=""></option>
                 <?php
                 $timezone_identifiers = DateTimeZone::listIdentifiers();
 
@@ -144,14 +141,23 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
                 ?>
               </select>
             </div>
+
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-language"></em></span>
               <select class="form-control isRequired readPage" name="app_locale" id="app_locale" title="<?php echo _translate('Please select the System Locale'); ?>">
-                <option value=""><?= _translate("-- Choose User Locale --"); ?></option>
+                <option value=""><?= _translate("-- Choose System Language --"); ?></option>
                 <?php foreach ($localeLists as $locale => $localeName) { ?>
                   <option value="<?php echo $locale; ?>" <?php echo (isset($arr['app_locale']) && $arr['app_locale'] == $locale) ? 'selected="selected"' : ''; ?>><?= $localeName; ?></option>
                 <?php } ?>
               </select>
+            </div>
+            <div style="margin-bottom: 5px" class="input-group">
+              <span class="input-group-addon"><em class="fa-solid fa-envelope"></em></span>
+              <input id="login-email" type="text" class="form-control isRequired" name="email" value="" placeholder="<?= _translate("Email ID"); ?>" title="Please enter your email id">
+            </div>
+            <div style="margin-bottom: 5px" class="input-group">
+              <span class="input-group-addon"><em class="fa-solid fa-user"></em></span>
+              <input id="login-username" type="text" class="form-control isRequired" name="userName" value="" placeholder="<?= _translate("Full Name"); ?>" title="Please enter your name">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-right-to-bracket"></em></span>
@@ -176,10 +182,11 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
       </div>
     </div>
   </div>
+  <script type="text/javascript" src="/assets/js/select2.min.js"></script>
   <script src="/assets/js/deforayValidation.js"></script>
   <script src="/assets/js/jquery.blockUI.js"></script>
   <script type="text/javascript">
-    pwdflag = true;
+    let pwdflag = true;
 
     function validateNow() {
       flag = deforayValidator.init({
@@ -198,8 +205,8 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
     }
 
     function checkPasswordLength() {
-      var pwd = $('#confirmPassword').val();
-      var regex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9!@#\$%\^\&*\)\(+=. _-]+){8,}$/;
+      let pwd = $('#confirmPassword').val();
+      let regex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9!@#\$%\^\&*\)\(+=. _-]+){8,}$/;
       if (regex.test(pwd) == false) {
         alert("<?= _translate("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?>");
         $('.ppwd').focus();
@@ -216,6 +223,13 @@ if ($_SESSION['instanceType'] == 'remoteuser') {
         unset($_SESSION['alertMsg']);
       }
       ?>
+
+      $('#vl_form').select2({
+        placeholder: "<?= _translate("-- Choose Country of Installation --", true); ?>",
+      });
+      $('#default_time_zone').select2({
+        placeholder: "<?= _translate("-- Select Timezone --", true); ?>",
+      });
     });
   </script>
 </body>

@@ -274,7 +274,7 @@ class CommonService
             sodium_memzero($ciphertext);
             sodium_memzero($key);
             return $plain;
-        } catch (SodiumException|SystemException $e) {
+        } catch (SodiumException | SystemException $e) {
             return $encrypted;
         }
     }
@@ -295,14 +295,14 @@ class CommonService
 
         $ipaddress = $this->getClientIpAddress();
 
-        $data = array(
+        $data = [
             'event_type' => $eventType,
             'action' => $action,
             'resource' => $resource,
             'user_id' => (!empty($_SESSION['userId'])) ? $_SESSION['userId'] : null,
             'date_time' => DateUtility::getCurrentDateTime(),
             'ip_address' => $ipaddress,
-        );
+        ];
 
         $this->db->insert('activity_log', $data);
     }
@@ -310,12 +310,12 @@ class CommonService
     public function resultImportStats($numberOfResults, $importMode, $importedBy)
     {
 
-        $data = array(
+        $data = [
             'no_of_results_imported' => $numberOfResults,
             'imported_on' => DateUtility::getCurrentDateTime(),
             'import_mode' => $importMode,
-            'imported_by' => $importedBy,
-        );
+            'imported_by' => $importedBy
+        ];
 
         $this->db->insert('result_import_stats', $data);
     }
@@ -480,28 +480,46 @@ class CommonService
         });
     }
 
-    public function getLocaleList()
+    public function getLocaleList($formId = null)
     {
+        if (empty($formId)) {
+            $formId = $this->getGlobalConfig('vl_form') ?? 'all';
+        }
+
+        // Locale mapping
         $localeMap = [
-            'en_US' => 'English_United States',
-            'en_CM' => 'English_Cameroon',
-            'fr_CM' => 'French_Cameroon',
+            'en_US' => 'English',
             'fr_FR' => 'French',
-            'lo_LA' => 'Lao'
+            'en_CM' => 'English_Cameroon',
+            'fr_CM' => 'French_Cameroon'
         ];
+
+        // Define Cameroon locales
+        $cameroonLocales = ['en_CM', 'fr_CM'];
 
         $path = APPLICATION_PATH . DIRECTORY_SEPARATOR . 'locales';
 
-        // Filter out unwanted entries directly
+        // Filter out unwanted directory entries
         $localeList = array_diff(scandir($path), ['.', '..', '.DS_Store']);
 
+        // Initialize empty array for locales
         $locales = [];
+
         foreach ($localeList as $locale) {
-            $locales[$locale] = $localeMap[$locale] ?? $locale;
+            // Include all locales if formId is 'all' or apply specific filtering based on formId
+            if (
+                $formId === 'all' ||
+                ($formId === 'COUNTRY\CAMEROON' && in_array($locale, $cameroonLocales)) ||
+                ($formId !== 'COUNTRY\CAMEROON' && !in_array($locale, $cameroonLocales))
+            ) {
+                $locales[$locale] = $localeMap[$locale] ?? $locale;
+            }
         }
 
         return $locales;
     }
+
+
 
 
     public function activeReportFormats($module): array
@@ -538,7 +556,7 @@ class CommonService
     {
         $userAgent = $_SERVER['HTTP_USER_AGENT'];
 
-        $data = array(
+        $data = [
             'test_type' => $type,
             'test_type_id' => $typeId,
             'sample_code' => $sampleCode,
@@ -546,7 +564,7 @@ class CommonService
             'operating_system' => $this->getOperatingSystem($userAgent),
             'date_time' => DateUtility::getCurrentDateTime(),
             'ip_address' => $this->getClientIpAddress(),
-        );
+        ];
 
         $this->db->insert('track_qr_code_page', $data);
     }
@@ -559,7 +577,7 @@ class CommonService
                 return "Unknown OS";
             }
 
-            $osArray = array(
+            $osArray = [
                 '/windows nt 10/i' => 'Windows 10',
                 '/windows nt 6.3/i' => 'Windows 8.1',
                 '/windows nt 6.2/i' => 'Windows 8',
@@ -591,7 +609,7 @@ class CommonService
                 '/sunos/i' => 'SunOS',
                 '/solaris/i' => 'Solaris',
                 '/aix/i' => 'AIX'
-            );
+            ];
 
             foreach ($osArray as $regex => $value) {
                 if (preg_match($regex, (string) $userAgent)) {
@@ -611,7 +629,7 @@ class CommonService
                 return "Unknown Browser";
             }
 
-            $browserArray = array(
+            $browserArray = [
                 '/msie/i' => 'Internet Explorer',
                 '/trident/i' => 'Internet Explorer',
                 '/firefox/i' => 'Firefox',
@@ -625,7 +643,7 @@ class CommonService
                 '/mobile/i' => 'Mobile Browser',
                 '/applewebkit/i' => 'Webkit Browser',
                 '/brave/i' => 'Brave'
-            );
+            ];
 
             foreach ($browserArray as $regex => $value) {
                 if (preg_match($regex, (string) $userAgent)) {
@@ -767,13 +785,13 @@ class CommonService
         $this->updateSyncDateTime($testType, $testTable, 'sample_code', $sampleCodes, $transactionId, $facilityIds, $labId, 'Results');
     }
 
-    public function getBarcodeImageContent($code, $type = 'C39', $width = 2, $height = 30, $color = array(0, 0, 0)): string
+    public function getBarcodeImageContent($code, $type = 'C39', $width = 2, $height = 30, $color = [0, 0, 0]): string
     {
         $barcodeobj = new TCPDFBarcode($code, $type);
         return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, $height, $color));
     }
 
-    public function get2DBarcodeImageContent($code, $type = 'QRCODE', $width = 2, $height = 30, $color = array(0, 0, 0))
+    public function get2DBarcodeImageContent($code, $type = 'QRCODE', $width = 2, $height = 30, $color = [0, 0, 0])
     {
         $barcodeobj = new TCPDF2DBarcode($code, $type);
         return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, $height, $color));

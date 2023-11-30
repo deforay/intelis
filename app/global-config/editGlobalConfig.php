@@ -15,14 +15,14 @@ $db = ContainerRegistry::get('db');
 $general = ContainerRegistry::get(CommonService::class);
 // Get locale directory list
 $localeLists = $general->getLocaleList();
-$instanceQuery = "SELECT * from s_vlsm_instance where vlsm_instance_id='" . $_SESSION['instanceId'] . "'";
-$instanceResult = $db->query($instanceQuery);
-// $fType = "SELECT * FROM facility_type";
-// $fTypeResult = $db->rawQuery($fType);
+$instanceQuery = "SELECT * FROM s_vlsm_instance
+					WHERE vlsm_instance_id= ?";
+$instanceResult = $db->rawQuery($instanceQuery, [$_SESSION['instanceId']]);
+
 
 $formQuery = "SELECT * FROM s_available_country_forms ORDER by form_name ASC";
 $formResult = $db->query($formQuery);
-$globalConfigQuery = "SELECT * from global_config";
+$globalConfigQuery = "SELECT * FROM global_config";
 $configResult = $db->query($globalConfigQuery);
 $arr = [];
 // now we create an associative array so that we can easily create view variables
@@ -392,7 +392,7 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 										<div class="form-group" style="height:38px;">
 											<label for="default_csv_delimiter" class="col-lg-4 control-label"><?php echo _translate("CSV Delimiter"); ?></label>
 											<div class="col-lg-8">
-												<input type="text" class="form-control" id="default_csv_delimiter" name="default_csv_delimiter" style="max-width:60px;"  title="<?php echo _translate('Please enter CSV delimiter'); ?>" value="<?php echo $arr['default_csv_delimiter']; ?>" />
+												<input type="text" class="form-control" id="default_csv_delimiter" name="default_csv_delimiter" style="max-width:60px;" title="<?php echo _translate('Please enter CSV delimiter'); ?>" value="<?php echo $arr['default_csv_delimiter']; ?>" />
 											</div>
 										</div>
 									</div>
