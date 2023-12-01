@@ -23,7 +23,7 @@ require_once APPLICATION_PATH . '/header.php';
 
         <div class="box">
           <div class="box-header with-border">
-            <?php if (!empty($_SESSION['privileges']) && array_key_exists("addRole.php", $_SESSION['privileges'])) { ?>
+            <?php if (_isAllowed("addRole.php")) { ?>
               <a href="addRole.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Role"); ?></a>
             <?php } ?>
           </div>
@@ -35,7 +35,7 @@ require_once APPLICATION_PATH . '/header.php';
                   <th><?php echo _translate("Role Name"); ?></th>
                   <th><?php echo _translate("Role Code"); ?></th>
                   <th scope="row"><?php echo _translate("Status"); ?></th>
-                  <?php if (!empty($_SESSION['privileges']) && array_key_exists("editRole.php", $_SESSION['privileges'])) { ?>
+                  <?php if (_isAllowed("editRole.php")) { ?>
                     <th><?php echo _translate("Action"); ?></th>
                   <?php } ?>
                 </tr>
@@ -82,7 +82,7 @@ require_once APPLICATION_PATH . '/header.php';
         {
           "sClass": "center"
         },
-        <?php if (!empty($_SESSION['privileges']) && array_key_exists("editRole.php", $_SESSION['privileges'])) { ?> {
+        <?php if (_isAllowed("editRole.php")) { ?> {
             "sClass": "center",
             "bSortable": false
           },

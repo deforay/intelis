@@ -64,9 +64,9 @@ $sOrder = "";
 
 if (isset($_POST['iSortCol_0'])) {
     $sOrder = "";
-    for ($i = 0; $i < intval($_POST['iSortingCols']); $i++) {
-        if ($_POST['bSortable_' . intval($_POST['iSortCol_' . $i])] == "true") {
-            $sOrder .= $orderColumns[intval($_POST['iSortCol_' . $i])] . "
+    for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
+        if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
+            $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
                " . ($_POST['sSortDir_' . $i]) . ", ";
         }
     }
@@ -105,7 +105,8 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 }
 
 /* Individual column filtering */
-for ($i = 0; $i < count($aColumns); $i++) {
+$columnCounter = count($aColumns);
+for ($i = 0; $i < $columnCounter; $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
         $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
     }
@@ -222,7 +223,7 @@ $_SESSION['tbResultQueryCount'] = $resultCount;
  * Output
  */
 $output = array(
-    "sEcho" => intval($_POST['sEcho']),
+    "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $resultCount,
     "iTotalDisplayRecords" => $resultCount,
     "aaData" => []
@@ -232,7 +233,7 @@ foreach ($rResult as $aRow) {
     $row = [];
     $print = '<a href="tb-update-result.php?id=' . base64_encode((string) $aRow['tb_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
     if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
-        if (isset($_SESSION['privileges']) && !in_array("/tb/requests/edit-locked-tb-samples", $_SESSION['privileges'])) {
+        if (!_isAllowed("/tb/requests/edit-locked-tb-samples")) {
             $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Locked") . '" disabled><em class="fa-solid fa-lock"></em> ' . _translate("Locked") . '</a>';
         }
     }

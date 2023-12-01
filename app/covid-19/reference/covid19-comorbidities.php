@@ -42,7 +42,7 @@ require_once APPLICATION_PATH . '/header.php';
 						</div>
 					</span>
 					<div class="box-header with-border">
-						<?php if (!empty($_SESSION['privileges']) && array_key_exists("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
+						<?php if (_isAllowed("covid19-sample-type.php") && $sarr['sc_user_type'] != 'vluser') { ?>
 							<a href="add-covid19-comorbidities.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Covid-19 Co-morbidities"); ?></a>
 						<?php } ?>
 						<!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
@@ -54,7 +54,7 @@ require_once APPLICATION_PATH . '/header.php';
 								<tr>
 									<th scope="row"><?php echo _translate("Comorbidity Name"); ?></th>
 									<th scope="row"><?php echo _translate("Comorbidity Status"); ?></th>
-									<?php if (!empty($_SESSION['privileges']) && array_key_exists("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
+									<?php if (_isAllowed("covid19-sample-type.php") && $sarr['sc_user_type'] != 'vluser') { ?>
 										<!-- <th scope="row">Action</th> -->
 									<?php } ?>
 								</tr>

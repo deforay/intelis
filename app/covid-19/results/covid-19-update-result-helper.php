@@ -150,8 +150,8 @@ try {
 						'facility_id' => $_POST['labId'] ?? null,
 						'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$testKey] ?? '', true),
 						'testing_platform' => $_POST['testingPlatform'][$testKey] ?? null,
-						'kit_lot_no' => (strpos((string) $testName, 'RDT') !== false) ? $_POST['lotNo'][$testKey] : null,
-						'kit_expiry_date' => (strpos((string) $testName, 'RDT') !== false) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
+						'kit_lot_no' => (str_contains((string)$testName, 'RDT')) ? $_POST['lotNo'][$testKey] : null,
+						'kit_expiry_date' => (str_contains((string)$testName, 'RDT')) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
 						'result' => $_POST['testResult'][$testKey],
 					);
 					if (isset($_POST['testId'][$testKey]) && $_POST['testId'][$testKey] != '') {

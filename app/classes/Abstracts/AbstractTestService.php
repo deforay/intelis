@@ -3,6 +3,7 @@
 namespace App\Abstracts;
 
 use COUNTRY;
+use Exception;
 use MysqliDb;
 use DateTimeImmutable;
 use App\Utilities\DateUtility;
@@ -154,7 +155,7 @@ abstract class AbstractTestService
                     $this->db->update('sequence_counter', ['max_sequence_number' => $maxId]);
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Error handling logic
             error_log("Error in generateSampleCode: " . $e->getMessage());
         }

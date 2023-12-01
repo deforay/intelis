@@ -209,7 +209,7 @@ if (!empty($requestResult)) {
             $resultDispatchedDate = DateUtility::humanReadableDateFormat($expStr[0]);
             $resultDispatchedTime = $expStr[1];
         } else {
-            $expStr = explode(" ", (string) $currentTime);
+            $expStr = explode(" ", $currentTime);
             $resultDispatchedDate = DateUtility::humanReadableDateFormat($expStr[0]);
             $resultDispatchedTime = $expStr[1];
         }
@@ -221,7 +221,7 @@ if (!empty($requestResult)) {
             $approvedOnDate = DateUtility::humanReadableDateFormat($expStr[0]);
             $approvedOnTime = $expStr[1];
         } else {
-            $expStr = explode(" ", (string) $currentTime);
+            $expStr = explode(" ", $currentTime);
             $approvedOnDate = DateUtility::humanReadableDateFormat($expStr[0]);
             $approvedOnTime = $expStr[1];
         }

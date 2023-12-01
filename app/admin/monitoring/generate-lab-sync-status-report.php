@@ -2,6 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -11,7 +12,7 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 20000);
 
-/** @var \App\Services\DatabaseService $db */
+/** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
 
 /** @var CommonService $general */

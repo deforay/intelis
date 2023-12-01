@@ -207,7 +207,7 @@ $state = $geolocationService->getProvinces("yes");
                                     <th><?php echo _translate("Result"); ?></th>
                                     <th><?php echo _translate("Last Modified Date"); ?></th>
                                     <th scope="row"><?php echo _translate("Status"); ?></th>
-                                    <?php if (isset($_SESSION['privileges']) && (in_array("/generic-tests/requests/edit-request.php", $_SESSION['privileges']))) { ?>
+                                    <?php if ((_isAllowed("/generic-tests/requests/edit-request.php"))) { ?>
                                         <th><?php echo _translate("Action"); ?></th>
                                     <?php } ?>
                                 </tr>
@@ -416,7 +416,7 @@ $state = $geolocationService->getProvinces("yes");
                 {
                     "sClass": "center"
                 },
-                <?php if (isset($_SESSION['privileges']) && (in_array("/generic-tests/requests/edit-request.php", $_SESSION['privileges']))) { ?> {
+                <?php if ((_isAllowed("/generic-tests/requests/edit-request.php"))) { ?> {
                         "sClass": "center",
                         "bSortable": false
                     },

@@ -118,7 +118,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 								</div>
 								<div class="col-xs-6 col-md-6">
 									<div class="box-header with-border">
-										<?php if ($usersService->isAllowed("/batch/add-batch.php?type=" . $_GET['type'])) { ?>
+										<?php if (_isAllowed("/batch/add-batch.php?type=" . $_GET['type'])) { ?>
 											<a href="add-batch.php?type=<?php echo $_GET['type']; ?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Create New Batch"); ?></a>
 										<?php } ?>
 									</div>
@@ -127,7 +127,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 						</div>
 					<?php } else { ?>
 						<div class="box-header with-border">
-							<?php if ($usersService->isAllowed("/batch/add-batch.php?type=" . $_GET['type'])) { ?>
+							<?php if (_isAllowed("/batch/add-batch.php?type=" . $_GET['type'])) { ?>
 								<a href="add-batch.php?type=<?php echo $_GET['type']; ?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Create New Batch"); ?></a>
 							<?php } ?>
 						</div>
@@ -145,7 +145,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 									<th scope="col"><?= _translate("No. of Samples Tested"); ?></th>
 									<th scope="col"><?= _translate("Tested Date"); ?></th>
 									<th scope="col"><?= _translate("Last Modified On"); ?></th>
-									<?php if ($usersService->isAllowed("/batch/edit-batch.php?type=" . $_GET['type'])) { ?>
+									<?php if (_isAllowed("/batch/edit-batch.php?type=" . $_GET['type'])) { ?>
 										<th scope="col"><?= _translate("Action"); ?></th>
 									<?php } ?>
 								</tr>
@@ -208,7 +208,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 					"sClass": "center"
 				}
 				<?php
-				if ($usersService->isAllowed("/batch/edit-batch.php?type=" . $_GET['type'])) {
+				if (_isAllowed("/batch/edit-batch.php?type=" . $_GET['type'])) {
 					echo ',{"sClass": "center", "bSortable": false}';
 				} ?>
 			],

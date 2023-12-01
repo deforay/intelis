@@ -246,7 +246,7 @@ foreach ($rejectionTypeResult as $type) {
 										<?php echo _translate("Last Modified on"); ?>
 									</th>
 									<th>Status</th>
-									<?php if (isset($_SESSION['privileges']) && (in_array("/vl/requests/editVlRequest.php", $_SESSION['privileges']))) { ?>
+									<?php if ((_isAllowed("/vl/requests/editVlRequest.php"))) { ?>
 										<!--<th>Action</th>-->
 									<?php } ?>
 								</tr>

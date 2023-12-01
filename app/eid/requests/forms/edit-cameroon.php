@@ -127,13 +127,12 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                             <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose service provider" style="width:100%;" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
                                                 <option value=""> <?= _translate('-- Select --'); ?> </option>
                                                 <?php //echo $facility;
-                                                    foreach($healthFacilitiesAllColumns as $facility)
-                                                    {
-                                                        ?>
-                                                    <option value="<?php echo $facility['facility_id']; ?>" <?php echo ($eidInfo['facility_id']==$facility['facility_id']) ? "selected='selected'" : ""; ?> data-code="<?php echo $facility['facility_code']; ?>"><?php echo $facility['facility_name']; ?></option>
-                                                        <?php
-                                                    }
-                                                    ?>
+                                                foreach ($healthFacilitiesAllColumns as $facility) {
+                                                ?>
+                                                    <option value="<?php echo $facility['facility_id']; ?>" <?php echo ($eidInfo['facility_id'] == $facility['facility_id']) ? "selected='selected'" : ""; ?> data-code="<?php echo $facility['facility_code']; ?>"><?php echo $facility['facility_name']; ?></option>
+                                                <?php
+                                                }
+                                                ?>
                                             </select>
                                         </td>
                                         <td style="width:25%">
@@ -141,7 +140,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                             <input type="text" class="form-control" style="width:100%;" name="fCode" id="fCode" placeholder="<?= _translate('Clinic/Health Center Code'); ?>" title="<?= _translate('Please enter clinic/health center code'); ?>" value="<?php echo $facilityResult[0]['facility_code']; ?>">
                                         </td>
                                     </tr>
-                                    
+
                                     <tr>
                                         <td style="width:25%">
                                             <label for="fundingSource"><?= _translate('Project Name'); ?> </label><br>
@@ -169,7 +168,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                         <td style="width:25%">
                                             <label for="labId"><?= _translate('Lab Name'); ?> <span class="mandatory">*</span></label>
                                             <select name="labId" id="labId" class="form-control isRequired" title="<?= _translate('Please select Testing Lab name'); ?>" style="width:100%;">
-                                            <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
+                                                <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
                                             </select>
                                         </td>
                                     </tr>
@@ -410,34 +409,36 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                         <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="<?= _translate('Request Clinician Name'); ?>" title="<?= _translate('Please enter request clinician'); ?>" value="<?php echo $eidInfo['clinician_name']; ?>" /></td>
                                     </tr>
 
-                                    <tr><th><?= _translate('Previous Results'); ?></th></tr>
                                     <tr>
-                                        <td  style="text-align:center;" scope="row"><?= _translate('Serological Test'); ?> </td>
+                                        <th><?= _translate('Previous Results'); ?></th>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center;" scope="row"><?= _translate('Serological Test'); ?> </td>
                                         <td colspan="2" style="text-align:center;">
                                             <input <?php echo ($eidInfo['serological_test'] == 'positive') ? "checked='checked'" : ""; ?> type="radio" class="form-check" name="serologicalTest" id="serologicalTest" value="positive" />&nbsp;&nbsp;<label for="positive"><?= _translate('Positive'); ?></label>&nbsp;&nbsp;&nbsp;
                                             <input <?php echo ($eidInfo['serological_test'] == 'negative') ? "checked='checked'" : ""; ?> type="radio" class="form-check" name="serologicalTest" id="serologicalTest" value="negative" />&nbsp;&nbsp;<label for="negative"><?= _translate('Negative'); ?>&nbsp;&nbsp;&nbsp;
-                                            <input <?php echo ($eidInfo['serological_test'] == 'notdone') ? "checked='checked'" : ""; ?> type="radio" class="form-check" name="serologicalTest" id="serologicalTest" value="notdone" />&nbsp;&nbsp;<label for="notdone"><?= _translate('Not Done'); ?>&nbsp;&nbsp;&nbsp;
+                                                <input <?php echo ($eidInfo['serological_test'] == 'notdone') ? "checked='checked'" : ""; ?> type="radio" class="form-check" name="serologicalTest" id="serologicalTest" value="notdone" />&nbsp;&nbsp;<label for="notdone"><?= _translate('Not Done'); ?>&nbsp;&nbsp;&nbsp;
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="text-align:center;" scope="row"><?= _translate('Previous PCR Tests'); ?> <br><br>PCR 1<br><br><br>PCR2<br><br><br>PCR 3</td>
                                         <td>
-                                        <?= _translate('Date of sample collection'); ?><br> <br>
-                                            <input value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['pcr_1_test_date']); ?>" class="form-control date" type="text" name="pcr1TestDate" id="pcr1TestDate" placeholder="<?= _translate('Test date'); ?>"/><br>
+                                            <?= _translate('Date of sample collection'); ?><br> <br>
+                                            <input value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['pcr_1_test_date']); ?>" class="form-control date" type="text" name="pcr1TestDate" id="pcr1TestDate" placeholder="<?= _translate('Test date'); ?>" /><br>
                                             <input value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['pcr_2_test_date']); ?>" class="form-control date" type="text" name="pcr2TestDate" id="pcr2TestDate" placeholder="<?= _translate('Test date'); ?>" /><br>
                                             <input value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['pcr_3_test_date']); ?>" class="form-control date" type="text" name="pcr3TestDate" id="pcr3TestDate" placeholder="<?= _translate('Test date'); ?>" />
                                         </td>
-                                       <td>
-                                       <?= _translate('Results'); ?><br><br>
-                                       <input value="<?php echo ($eidInfo['pcr_1_test_result']); ?>" type="text" class="form-control input-sm" name="pcr1TestResult" id="pcr1TestResult" /><br>
-                                       <input value="<?php echo ($eidInfo['pcr_2_test_result']); ?>" type="text" class="form-control input-sm" name="pcr2TestResult" id="pcr1TestResult" /><br>
-                                       <input value="<?php echo ($eidInfo['pcr_3_test_result']); ?>" type="text" class="form-control input-sm" name="pcr3TestResult" id="pcr1TestResult" /><br>
+                                        <td>
+                                            <?= _translate('Results'); ?><br><br>
+                                            <input value="<?php echo ($eidInfo['pcr_1_test_result']); ?>" type="text" class="form-control input-sm" name="pcr1TestResult" id="pcr1TestResult" /><br>
+                                            <input value="<?php echo ($eidInfo['pcr_2_test_result']); ?>" type="text" class="form-control input-sm" name="pcr2TestResult" id="pcr1TestResult" /><br>
+                                            <input value="<?php echo ($eidInfo['pcr_3_test_result']); ?>" type="text" class="form-control input-sm" name="pcr3TestResult" id="pcr1TestResult" /><br>
 
-                                       </td>
-                                       <td><br><br><br>
-                                        D  = <?= _translate('Detected'); ?><br>
-                                        ND = <?= _translate('Not Detected'); ?>
-                                    </td>
+                                        </td>
+                                        <td><br><br><br>
+                                            D = <?= _translate('Detected'); ?><br>
+                                            ND = <?= _translate('Not Detected'); ?>
+                                        </td>
                                     </tr>
 
                                     <tr>
@@ -487,7 +488,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                                 <?php echo $general->generateSelectOptions($specimenTypeResult, $eidInfo['specimen_type'], '-- Select --'); ?>
                                             </select>
                                         </td>
-                                       
+
                                     </tr>
                                     <tr>
                                         <th style="width:15% !important;"><?= _translate('Recollected'); ?></th>
@@ -502,9 +503,9 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="<?= _translate('Requesting Officer'); ?>" value="<?= $eidInfo['sample_requestor_name'] ?>" />
                                         </td>
-                                       
+
                                     </tr>
-                                        <tr>
+                                    <tr>
                                         <th scope="row"><?= _translate('Contact Number'); ?></th>
                                         <td>
                                             <input class="form-control phone-number" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Requesting Officer Phone'); ?>" value="<?= $eidInfo['sample_requestor_phone'] ?>" />
@@ -515,7 +516,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
 
                             </div>
                         </div>
-                        <?php if ($usersService->isAllowed('/eid/results/eid-manual-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if (_isAllowed('/eid/results/eid-manual-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
@@ -535,7 +536,7 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
                                             </td>
 
                                         <tr>
-                                           
+
                                             <th scope="row"><?= _translate('Is Sample Rejected?'); ?></th>
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">
@@ -813,8 +814,8 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
 
 
     $(document).ready(function() {
-      
-       
+
+
 
         setRelatedField($('#pcrTestPerformedBefore').val());
         $('#facilityId').select2({
@@ -855,24 +856,20 @@ $specimenTypeResult = $eidService->getEidSampleTypes();
         showArvProtocolOtherOption();
         showTestingPointOther();
 
-        $('#isChildOnCotrim').change(function(){
-            if($(this).val()=="no")
-            {
+        $('#isChildOnCotrim').change(function() {
+            if ($(this).val() == "no") {
                 $('#childStartedCotrimDate').val('');
                 $('#childStartedCotrimDate').prop('disabled', true);
-            }
-            else{
+            } else {
                 $('#childStartedCotrimDate').prop('disabled', false);
             }
         });
 
-        $('#infantArtStatus').change(function(){
-            if($(this).val()=="no")
-            {
+        $('#infantArtStatus').change(function() {
+            if ($(this).val() == "no") {
                 $('#childStartedArtDate').val('');
                 $('#childStartedArtDate').prop('disabled', true);
-            }
-            else{
+            } else {
                 $('#childStartedArtDate').prop('disabled', false);
             }
         });

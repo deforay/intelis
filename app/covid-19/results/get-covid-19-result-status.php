@@ -75,9 +75,9 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
     $sOrder = "";
-    for ($i = 0; $i < intval($_POST['iSortingCols']); $i++) {
-        if ($_POST['bSortable_' . intval($_POST['iSortCol_' . $i])] == "true") {
-            $sOrder .= $orderColumns[intval($_POST['iSortCol_' . $i])] . "
+    for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
+        if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
+            $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
                " . ($_POST['sSortDir_' . $i]) . ", ";
         }
     }
@@ -116,7 +116,8 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 }
 
 /* Individual column filtering */
-for ($i = 0; $i < count($aColumns); $i++) {
+$columnCounter = count($aColumns);
+for ($i = 0; $i < $columnCounter; $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
         $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
     }
@@ -200,17 +201,17 @@ $_SESSION['covid19RequestSearchResultQueryCount'] = $iTotal;
           * Output
           */
 $output = array(
-    "sEcho" => intval($_POST['sEcho']),
+    "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $iTotal,
     "iTotalDisplayRecords" => $iFilteredTotal,
     "aaData" => []
 );
 $vlRequest = false;
 $vlView = false;
-if (isset($_SESSION['privileges']) && (in_array("/vl/requests/editVlRequest.php", $_SESSION['privileges']))) {
+if ((_isAllowed("/vl/requests/editVlRequest.php"))) {
     $vlRequest = true;
 }
-if (isset($_SESSION['privileges']) && (in_array("viewVlRequest.php", $_SESSION['privileges']))) {
+if ((_isAllowed("viewVlRequest.php"))) {
     $vlView = true;
 }
 

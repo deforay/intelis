@@ -35,24 +35,12 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatit
 	foreach ($db->rawQueryGenerator($_SESSION['hepatitisResultQuery']) as $aRow) {
 		$row = [];
 		//set gender
-		switch (strtolower((string) $aRow['patient_gender'])) {
-			case 'male':
-			case 'm':
-				$gender = 'M';
-				break;
-			case 'female':
-			case 'f':
-				$gender = 'F';
-				break;
-			case 'not_recorded':
-			case 'notrecorded':
-			case 'unreported':
-				$gender = 'Unreported';
-				break;
-			default:
-				$gender = '';
-				break;
-		}
+        $gender = match (strtolower((string)$aRow['patient_gender'])) {
+            'male', 'm' => 'M',
+            'female', 'f' => 'F',
+            'not_recorded', 'notrecorded', 'unreported' => 'Unreported',
+            default => '',
+        };
 
 		$sampleRejection = ($aRow['is_sample_rejected'] == 'yes' || ($aRow['reason_for_sample_rejection'] != null && $aRow['reason_for_sample_rejection'] > 0)) ? 'Yes' : 'No';
 

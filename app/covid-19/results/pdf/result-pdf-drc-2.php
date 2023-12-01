@@ -7,9 +7,9 @@ use App\Utilities\DateUtility;
 
 class DRC_PDF extends MYPDF
 {
-    public $htitle = '';
+    public string $htitle = '';
     public string $logo = '';
-    public $facilityInfo = [];
+    public array $facilityInfo = [];
     public $resultPrintedDate = null;
     public $systemConfig = null;
 
@@ -20,7 +20,7 @@ class DRC_PDF extends MYPDF
     {
         // Logo
         if ($this->htitle != '') {
-            if (trim((string) $this->logo) != '') {
+            if (trim($this->logo) != '') {
                 if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                     $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');

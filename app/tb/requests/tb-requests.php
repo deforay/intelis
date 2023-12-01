@@ -277,10 +277,10 @@ foreach ($srcResults as $list) {
                                 &nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span><?php echo _translate("Hide Advanced Search Options"); ?></span></button>
                             </td>
                             <td colspan="4">
-                                <?php if (!empty($_SESSION['privileges']) && array_key_exists("/tb/requests/tb-add-request.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
+                                <?php if (_isAllowed("/tb/requests/tb-add-request.php") && !$hidesrcofreq) { ?>
                                     <a style=" margin: 0px 5px; " href="/tb/requests/tb-add-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add new TB Request"); ?></a>
                                 <?php } ?>
-                                <?php if (!empty($_SESSION['privileges']) && array_key_exists("/tb/requests/export-tb-requests.php", $_SESSION['privileges'])) { ?>
+                                <?php if (_isAllowed("/tb/requests/export-tb-requests.php")) { ?>
                                     <a class="btn btn-success btn-sm pull-right" href="javascript:void(0);" onclick="exportAllPendingTbRequest();"><span><?php echo _translate("Export Requests"); ?></span></a>
                                 <?php } ?>
                             </td>
@@ -291,10 +291,10 @@ foreach ($srcResults as $list) {
                             <td>
 
                                 <?php
-                                if (!empty($_SESSION['privileges']) && array_key_exists("/tb/requests/tb-add-request.php", $_SESSION['privileges']) && !$hidesrcofreq) { ?>
+                                if (_isAllowed("/tb/requests/tb-add-request.php") && !$hidesrcofreq) { ?>
                                     <a style=" margin: 0px 5px; " href="/tb/requests/tb-add-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add new TB Request"); ?></a>
                                 <?php } ?>
-                                <?php if (!empty($_SESSION['privileges']) && array_key_exists("/tb/requests/export-tb-requests.php", $_SESSION['privileges'])) { ?>
+                                <?php if (_isAllowed("/tb/requests/export-tb-requests.php")) { ?>
                                     <a class="btn btn-success btn-sm pull-right" href="javascript:void(0);" onclick="exportAllPendingTbRequest();"><span><?php echo _translate("Export Requests"); ?></span></a>
                                 <?php } ?>
                                 <button style=" margin: 0px 5px; " class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?php echo _translate("Show Advanced Search Options"); ?></span></button>
@@ -327,7 +327,7 @@ foreach ($srcResults as $list) {
                                     <th><?php echo _translate("Result"); ?></th>
                                     <th><?php echo _translate("Last Modified On"); ?></th>
                                     <th scope="row"><?php echo _translate("Status"); ?></th>
-                                    <?php if (isset($_SESSION['privileges']) && (in_array("/tb/requests/tb-edit-request.php", $_SESSION['privileges'])) || (in_array("tb-view-request.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?>
+                                    <?php if ((_isAllowed("/tb/requests/tb-edit-request.php")) || (_isAllowed("tb-view-request.php")) && !$hidesrcofreq) { ?>
                                         <th><?php echo _translate("Action"); ?></th>
                                     <?php } ?>
                                 </tr>
@@ -511,7 +511,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 }, {
                     "sClass": "center"
                 },
-                <?php if (isset($_SESSION['privileges']) && (in_array("/tb/requests/tb-edit-request.php", $_SESSION['privileges'])) || (in_array("tb-view-request.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?> {
+                <?php if ((_isAllowed("/tb/requests/tb-edit-request.php")) || (_isAllowed("tb-view-request.php")) && !$hidesrcofreq) { ?> {
                         "sClass": "center action",
                         "bSortable": false
                     },

@@ -85,7 +85,7 @@ try {
             if ($rowIndex < $skipTillRow)
                 continue;
 
-            if (strpos(strtolower((string) $row[$testingPlatformCol]), 'viral') === false)
+            if (!str_contains(strtolower((string)$row[$testingPlatformCol]), 'viral'))
                 continue;
 
 

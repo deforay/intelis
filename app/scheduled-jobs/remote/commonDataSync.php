@@ -42,7 +42,7 @@ $remoteUrl = rtrim((string) $systemConfig['remoteURL'], "/");
 
 $headers = @get_headers($remoteUrl . '/api/version.php?labId=' . $labId . '&version=' . $version);
 
-if (strpos((string) $headers[0], '200') === false) {
+if (!str_contains((string)$headers[0], '200')) {
     error_log("No internet connectivity while trying remote sync.");
     exit();
 }

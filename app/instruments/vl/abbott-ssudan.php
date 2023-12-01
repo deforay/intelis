@@ -69,7 +69,7 @@ try {
 
         $dateFormat = 'd/m/Y';
 
-        if (strpos($mime_type, 'text/plain') !== false) {
+        if (str_contains($mime_type, 'text/plain')) {
             $infoFromFile = [];
             $testDateRow = "";
             $skip = 23;
@@ -105,27 +105,27 @@ try {
                     //$reviewBy = $sheetData[$reviewByCol];
 
                     // //Changing date to European format for strtotime - https://stackoverflow.com/a/5736255
-                    if (strpos((string) $sheetData[$resultCol], 'Log') !== false) {
+                    if (str_contains((string)$sheetData[$resultCol], 'Log')) {
                         $sheetData[$resultCol] = str_replace(",", ".", (string) $sheetData[$resultCol]); // in case they are using european decimal format
                         $logVal = ((float) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION));
                         $absDecimalVal = round(pow(10, $logVal), 2);
-                        if (strpos($sheetData[$resultCol], "<") !== false) {
+                        if (str_contains($sheetData[$resultCol], "<")) {
                             $txtVal = $absVal = "< " . trim($absDecimalVal);
                         } else {
                             $txtVal = null;
                             $absVal = $absDecimalVal;
                         }
-                    } elseif (strpos((string) $sheetData[$resultCol], 'Copies') !== false) {
-                        if (strpos((string) $sheetData[$resultCol], '<') !== false || $sheetData[$resultCol] == '839 Copies / mL') {
+                    } elseif (str_contains((string)$sheetData[$resultCol], 'Copies')) {
+                        if (str_contains((string)$sheetData[$resultCol], '<') || $sheetData[$resultCol] == '839 Copies / mL') {
                             $txtVal = "Below Detection Level";
                             $logVal = $absDecimalVal = $absVal = $resultFlag = "";
                         } else {
                             $absVal = $absDecimalVal = abs((int) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_INT));
                         }
-                    } elseif (strpos((string) $sheetData[$resultCol], 'IU/mL') !== false) {
+                    } elseif (str_contains((string)$sheetData[$resultCol], 'IU/mL')) {
                         $absVal = $absDecimalVal = abs((int) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_INT));
                     } else {
-                        if (strpos(strtolower((string) $sheetData[$resultCol]), 'not detected') !== false || strtolower((string) $sheetData[$resultCol]) == 'target not detected') {
+                        if (str_contains(strtolower((string)$sheetData[$resultCol]), 'not detected') || strtolower((string) $sheetData[$resultCol]) == 'target not detected') {
                             $txtVal = "Below Detection Level";
                             $resultFlag = "";
                             $absVal = "";

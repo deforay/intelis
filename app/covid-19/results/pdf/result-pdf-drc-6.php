@@ -10,9 +10,9 @@ if (!class_exists('DRC_PDF')) {
 
     class DRC_PDF extends MYPDF
     {
-        public $htitle = '';
+        public string $htitle = '';
         public string $logo = '';
-        public $facilityInfo = [];
+        public array $facilityInfo = [];
         public $resultPrintedDate = null;
         public $systemConfig = null;
 
@@ -122,7 +122,7 @@ if (isset($result['result_printed_datetime']) && trim((string) $result['result_p
     $resultPrintedDate = DateUtility::humanReadableDateFormat($expStr[0]);
     $resultPrintedTime = $expStr[1];
 } else {
-    $expStr = explode(" ", (string) $currentDateTime);
+    $expStr = explode(" ", $currentDateTime);
     $resultPrintedDate = $currentDate = DateUtility::humanReadableDateFormat($expStr[0]);
     $resultPrintedTime = $currentTime = $expStr[1];
 }

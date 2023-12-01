@@ -39,7 +39,7 @@ $supportEmail = trim((string) $general->getGlobalConfig('support_email'));
 	}
 	$lastSync = '';
 
-	if (!empty($_SESSION['privileges']) && array_key_exists("sync-history.php", $_SESSION['privileges'])) {
+	if (_isAllowed("sync-history.php")) {
 		$syncHistory = "/common/reference/sync-history.php";
 	} else {
 		$syncHistory = "javascript:void(0);";

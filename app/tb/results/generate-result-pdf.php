@@ -110,13 +110,13 @@ $_SESSION['aliasPage'] = 1;
 //header and footer
 class MYPDF extends TCPDF
 {
-    public $logo = '';
-    public $text = '';
-    public $lab = '';
-    public $htitle = '';
-    public $labFacilityId = '';
-    public $formId = '';
-    public $facilityInfo = [];
+    public string $logo = '';
+    public string $text = '';
+    public string $lab = '';
+    public string $htitle = '';
+    public string $labFacilityId = '';
+    public string $formId = '';
+    public array $facilityInfo = [];
 
 
     //Page header
@@ -256,7 +256,7 @@ if (!empty($requestResult)) {
         } else {
             $printedTime = DateUtility::getCurrentDateTime();
         }
-        $expStr = explode(" ", (string) $printedTime);
+        $expStr = explode(" ", $printedTime);
         $printDate = DateUtility::humanReadableDateFormat($expStr[0]);
         $printDateTime = $expStr[1];
 

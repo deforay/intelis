@@ -477,8 +477,8 @@ try {
                             'facility_id' => $data['labId'] ?? null,
                             'sample_tested_datetime' => DateUtility::isoDateFormat($test['testDate'], true),
                             'testing_platform' => $test['testingPlatform'] ?? null,
-                            'kit_lot_no' => (strpos((string) $test['testName'], 'RDT') !== false) ? $test['kitLotNo'] : null,
-                            'kit_expiry_date' => (strpos((string) $test['testName'], 'RDT') !== false) ? DateUtility::isoDateFormat($test['kitExpiryDate']) : null,
+                            'kit_lot_no' => (str_contains((string)$test['testName'], 'RDT')) ? $test['kitLotNo'] : null,
+                            'kit_expiry_date' => (str_contains((string)$test['testName'], 'RDT')) ? DateUtility::isoDateFormat($test['kitExpiryDate']) : null,
                             'result' => $test['testResult'],
                         ];
                         $db->insert($testTableName, $covid19TestData);

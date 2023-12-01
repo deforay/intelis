@@ -59,7 +59,7 @@ if (!empty($applicationConfig['instanceName'])) {
 $request = $GLOBALS['request'];
 
 
-if (!$usersService->isAllowed($request)) {
+if (!_isAllowed($request)) {
 	http_response_code(401);
 	throw new SystemException(_translate("Sorry") . " {$_SESSION['userName']}. " . _translate('You do not have permission to access this page.'), 401);
 }
@@ -139,7 +139,7 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 					</li>
 					<li>
 						<?php if ($trainingMode) { ?>
-							<marquee class="trainingMarquee" behavior="scroll" scrollamount="5" style="">
+							<marquee class="trainingMarquee" behavior="scroll" scrollamount="5">
 								<?= ($arr['training_mode_text']); ?>
 							</marquee>
 						<?php } ?>

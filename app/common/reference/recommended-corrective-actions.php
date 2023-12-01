@@ -31,7 +31,7 @@ if (!empty($_GET['testType'])) {
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (!empty($_SESSION['privileges']) && array_key_exists("recommended-corrective-actions.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
+						<?php if (_isAllowed("recommended-corrective-actions.php") && $sarr['sc_user_type'] != 'vluser') { ?>
 							<a href="add-recommended-corrective-action.php?testType=vl" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Recommended Corrective Actions"); ?></a>
 						<?php } ?>
 					</div>
@@ -42,7 +42,7 @@ if (!empty($_GET['testType'])) {
 								<tr>
 									<th scope="row"><?php echo _translate("Recommended Corrective Action Name"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
-									<?php if (!empty($_SESSION['privileges']) && array_key_exists("recommended-corrective-actions.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
+									<?php if (_isAllowed("recommended-corrective-actions.php") && $sarr['sc_user_type'] != 'vluser') { ?>
 										<th scope="row">Action</th>
 									<?php } ?>
 								</tr>

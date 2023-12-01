@@ -209,7 +209,7 @@ $state = $geolocationService->getProvinces("yes");
                                     <th><?php echo _translate("Result"); ?></th>
                                     <th><?php echo _translate("Last Modified Date"); ?></th>
                                     <th scope="row"><?php echo _translate("Status"); ?></th>
-                                    <?php if (isset($_SESSION['privileges']) && (in_array("/vl/requests/editVlRequest.php", $_SESSION['privileges']))) { ?>
+                                    <?php if (_isAllowed("/vl/requests/editVlRequest.php")) { ?>
                                         <th><?php echo _translate("Action"); ?></th>
                                     <?php } ?>
                                 </tr>
@@ -432,7 +432,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 {
                     "sClass": "center"
                 },
-                <?php if (isset($_SESSION['privileges']) && (in_array("/vl/requests/editVlRequest.php", $_SESSION['privileges']))) { ?> {
+                <?php if ((_isAllowed("/vl/requests/editVlRequest.php"))) { ?> {
                         "sClass": "center",
                         "bSortable": false
                     },

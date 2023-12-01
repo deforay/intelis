@@ -118,9 +118,9 @@ try {
             // $testingDate = date('Y-m-d H:i', strtotime($rowData[$testDateCol]));
             $result = $absVal = $logVal = $absDecimalVal = $txtVal = '';
 
-            if (strpos(strtolower((string) $rowData[$resultCol]), 'not detected') !== false) {
+            if (str_contains(strtolower((string)$rowData[$resultCol]), 'not detected')) {
                 $result = 'negative';
-            } else if ((strpos(strtolower((string) $rowData[$resultCol]), 'detected') !== false) || (strpos(strtolower((string) $rowData[$resultCol]), 'passed') !== false)) {
+            } else if ((str_contains(strtolower((string)$rowData[$resultCol]), 'detected')) || (str_contains(strtolower((string)$rowData[$resultCol]), 'passed'))) {
                 $result = 'positive';
             } else {
                 $result = 'indeterminate';

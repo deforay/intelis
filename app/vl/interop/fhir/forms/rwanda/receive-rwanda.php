@@ -138,10 +138,10 @@ foreach ($entries as $entry) {
             $orderIdentifiers = $resource->getIdentifier();
             foreach ($orderIdentifiers as $oid) {
                 $system = $oid->getSystem()->getValue();
-                if (strpos((string) $system, 'OHRI_ENCOUNTER_UUID') !== false) {
+                if (str_contains((string)$system, 'OHRI_ENCOUNTER_UUID')) {
                     $taskAttributes[$basedOnServiceRequest]['OHRI_ENCOUNTER_UUID'] = (string) $oid->getValue();
                 }
-                if (strpos((string) $system, '/test-order-number') !== false) {
+                if (str_contains((string)$system, '/test-order-number')) {
                     $formData[$basedOnServiceRequest]['external_sample_code'] = (string) $oid->getValue();
                 }
             }

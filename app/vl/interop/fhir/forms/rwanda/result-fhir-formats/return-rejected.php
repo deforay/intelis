@@ -16,7 +16,7 @@ return '{
                     {
                         "code": "' . $rejectionReasonCode . '",
                         "system": "http://openhie.org/fhir/lab-integration/status-reason",
-                        "display": "' . trim((string) $rejectionReason) . '"
+                        "display": "' . trim($rejectionReason) . '"
                     }
                 ]
             },

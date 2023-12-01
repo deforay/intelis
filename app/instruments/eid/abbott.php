@@ -71,7 +71,7 @@ try {
 
         $dateFormat = 'd/m/Y';
 
-        if (strpos($mime_type, 'text/plain') !== false) {
+        if (str_contains($mime_type, 'text/plain')) {
             $infoFromFile = [];
             $testDateRow = "";
             $skip = 23;
@@ -108,9 +108,9 @@ try {
 
                     $result = '';
 
-                    if (strpos(strtolower((string) $sheetData[$resultCol]), 'not detected') !== false) {
+                    if (str_contains(strtolower((string)$sheetData[$resultCol]), 'not detected')) {
                         $result = 'negative';
-                    } else if ((strpos(strtolower((string) $sheetData[$resultCol]), 'detected') !== false) || (strpos(strtolower((string) $sheetData[$resultCol]), 'passed') !== false)) {
+                    } else if ((str_contains(strtolower((string)$sheetData[$resultCol]), 'detected')) || (str_contains(strtolower((string)$sheetData[$resultCol]), 'passed'))) {
                         $result = 'positive';
                     } else {
                         $result = 'indeterminate';

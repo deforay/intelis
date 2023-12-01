@@ -81,12 +81,12 @@ function processAuditTables($db, $fromDbName, $toDbName, $setupTriggers = true)
             $query = "
             SELECT COLUMN_NAME, COLUMN_TYPE
             FROM information_schema.COLUMNS
-            WHERE TABLE_SCHEMA = '{$fromDbName}'
+            WHERE TABLE_SCHEMA = '$fromDbName'
             AND TABLE_NAME = '{$db->escape($formTable)}'
             AND COLUMN_NAME NOT IN (
                 SELECT COLUMN_NAME
                 FROM information_schema.COLUMNS
-                WHERE TABLE_SCHEMA = '{$toDbName}'
+                WHERE TABLE_SCHEMA = '$toDbName'
                 AND TABLE_NAME = '{$db->escape($auditTable)}'
             )
             ORDER BY COLUMN_NAME;
@@ -119,12 +119,12 @@ function processAuditTables($db, $fromDbName, $toDbName, $setupTriggers = true)
             $query = "
                 SELECT COLUMN_NAME
                 FROM information_schema.COLUMNS
-                WHERE TABLE_SCHEMA = '{$toDbName}'
+                WHERE TABLE_SCHEMA = '$toDbName'
                 AND TABLE_NAME = '{$db->escape($auditTable)}'
                 AND COLUMN_NAME NOT IN (
                     SELECT COLUMN_NAME
                     FROM information_schema.COLUMNS
-                    WHERE TABLE_SCHEMA = '{$fromDbName}'
+                    WHERE TABLE_SCHEMA = '$fromDbName'
                     AND TABLE_NAME = '{$db->escape($formTable)}'
                 )
                 ORDER BY COLUMN_NAME;

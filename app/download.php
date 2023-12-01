@@ -28,7 +28,7 @@ $file = realpath(urldecode(base64_decode((string) $_GET['f'])));
 
 if (
     $file === false ||
-    strpos($file, $webRootPath) !== 0 ||
+    !str_starts_with($file, $webRootPath) ||
     !MiscUtility::fileExists($file)
 ) {
     http_response_code(404);

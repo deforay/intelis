@@ -95,7 +95,7 @@ try {
 
     $response  = $apiService->postFile($url, 'vlFile', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params);
 
-    $deResult = json_decode((string) $response, true);
+    $deResult = json_decode($response, true);
 
     if (isset($deResult['status']) && trim((string) $deResult['status']) == 'success') {
         $data = array(

@@ -23,7 +23,7 @@ $sarr = $general->getSystemConfig();
  * you want to insert a non-database field (for example a counter or static image)
  */
 
-$aColumns = array('patient_first_name','patient_code', 'patient_gender','patient_phone_number' ,'patient_address','status');
+$aColumns = array('patient_first_name', 'patient_code', 'patient_gender', 'patient_phone_number', 'patient_address', 'status');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -45,9 +45,9 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
     $sOrder = "";
-    for ($i = 0; $i < intval($_POST['iSortingCols']); $i++) {
-        if ($_POST['bSortable_' . intval($_POST['iSortCol_' . $i])] == "true") {
-            $sOrder .= $aColumns[intval($_POST['iSortCol_' . $i])] . "
+    for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
+        if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
+            $sOrder .= $aColumns[(int) $_POST['iSortCol_' . $i]] . "
 				 	" . ($_POST['sSortDir_' . $i]) . ", ";
         }
     }
@@ -86,7 +86,8 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 }
 
 /* Individual column filtering */
-for ($i = 0; $i < count($aColumns); $i++) {
+$columnCounter = count($aColumns);
+for ($i = 0; $i < $columnCounter; $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
         if ($sWhere == "") {
             $sWhere .= $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
@@ -135,7 +136,7 @@ $iTotal = $aResultTotal[0]['total'];
  * Output
  */
 $output = array(
-    "sEcho" => intval($_POST['sEcho']),
+    "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $iTotal,
     "iTotalDisplayRecords" => $iFilteredTotal,
     "aaData" => []
@@ -151,8 +152,8 @@ foreach ($rResult as $aRow) {
         $aRow['patient_first_name'] = $general->crypto('decrypt', $aRow['patient_first_name'], $key);
         $aRow['patient_middle_name'] = $general->crypto('decrypt', $aRow['patient_middle_name'], $key);
         $aRow['patient_last_name'] = $general->crypto('decrypt', $aRow['patient_last_name'], $key);
-   }
-    $row[] = $aRow['patient_first_name'].' '.$aRow['patient_middle_name'].' '.$aRow['patient_last_name'];
+    }
+    $row[] = $aRow['patient_first_name'] . ' ' . $aRow['patient_middle_name'] . ' ' . $aRow['patient_last_name'];
     $row[] = $aRow['patient_code'];
     $row[] = $aRow['patient_gender'];
     $row[] = $aRow['patient_age_in_years'];

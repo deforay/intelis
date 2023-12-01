@@ -351,7 +351,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                 </table>
                             </div>
                         </div>
-                        <?php if ($usersService->isAllowed('/covid-19/results/covid-19-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if (_isAllowed('/covid-19/results/covid-19-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <?php //if (false) {
                             ?>
                             <div class="box box-primary">
@@ -476,7 +476,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                     <td>
                                                                         <select name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control result-optional test-name-table-input" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
                                                                             <?php $display = "display:none;";
-                                                                            if ((strpos((string) $rows['test_name'], 'RDT') !== false)) {
+                                                                            if ((str_contains((string)$rows['test_name'], 'RDT'))) {
                                                                                 $display = "";
                                                                                 $span = 6;
                                                                                 $kitShow = true; ?>
@@ -508,7 +508,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                         <?php }
                                                         } ?>
                                                     </tbody>
-                                                    <!-- < ?php if (!empty($_SESSION['privileges']) && array_key_exists("record-final-result.php", $_SESSION['privileges'])) { ?>
+                                                    <!-- < ?php if (_isAllowed("record-final-result.php")) { ?>
                                                     < ?php }?> -->
                                                     <tfoot>
                                                         <tr>

@@ -28,7 +28,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if ($usersService->isAllowed("/generic-tests/configuration/symptoms/generic-add-symptoms.php")) { ?>
+						<?php if (_isAllowed("/generic-tests/configuration/symptoms/generic-add-symptoms.php")) { ?>
 							<a href="/generic-tests/configuration/symptoms/generic-add-symptoms.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Symptoms"); ?></a>
 						<?php } ?>
 					</div>
@@ -41,7 +41,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 									<th scope="row"><?php echo _translate("Symptom Code"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
 									<th scope="row"><?php echo _translate("Updated On"); ?></th>
-									<?php if ($usersService->isAllowed("/generic-tests/configuration/symptoms/generic-edit-symptoms.php")) { ?>
+									<?php if (_isAllowed("/generic-tests/configuration/symptoms/generic-edit-symptoms.php")) { ?>
 										<th scope="row">Action</th>
 									<?php } ?>
 								</tr>
@@ -91,7 +91,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 				{
 					"sClass": "center"
 				},
-				<?php if ($usersService->isAllowed("/generic-tests/configuration/symptoms/generic-edit-symptoms.php")) { ?> {
+				<?php if (_isAllowed("/generic-tests/configuration/symptoms/generic-edit-symptoms.php")) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					}

@@ -63,7 +63,7 @@ if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields'
 		<div class="box box-default">
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;">
-					<?php if (!empty($_SESSION['privileges']) && array_key_exists("editGlobalConfig.php", $_SESSION['privileges']) && !isset($_GET['e'])) { ?>
+					<?php if (_isAllowed("editGlobalConfig.php") && !isset($_GET['e'])) { ?>
 						<div class="col-sm-6 pull-right">
 							<a href="editGlobalConfig.php?e=1" class="btn btn-primary pull-right"> <em class="fa-solid fa-pen-to-square"></em></em> <?php echo _translate("Edit General Config"); ?></a>
 						</div>

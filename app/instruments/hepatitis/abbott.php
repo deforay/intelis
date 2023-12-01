@@ -70,7 +70,7 @@ try {
         $reviewByCol = '';
         $lotExpirationDateCol = 13;
 
-        if (strpos($mime_type, 'text/plain') !== false) {
+        if (str_contains($mime_type, 'text/plain')) {
             $infoFromFile = [];
             $testDateRow = "";
             $skip = 23;
@@ -102,14 +102,14 @@ try {
 
                     $resultFlag = $sheetData[$flagCol];
 
-                    if (strpos((string) $sheetData[$resultCol], 'Log') !== false) {
+                    if (str_contains((string)$sheetData[$resultCol], 'Log')) {
 
                         $sheetData[$resultCol] = str_replace(",", ".", (string) $sheetData[$resultCol]); // in case they are using european decimal format
                         $logVal = ((float) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION));
                         $absDecimalVal = round(pow(10, $logVal), 2);
 
 
-                        if (strpos($sheetData[$resultCol], "<") !== false) {
+                        if (str_contains($sheetData[$resultCol], "<")) {
                             if ($sheetData[$resultCol] == "< INF") {
                                 $txtVal = $absVal = $absDecimalVal = 839;
                                 $logVal = round(log10($absDecimalVal), 2);
@@ -117,15 +117,15 @@ try {
                                 $txtVal = $absVal = "< " . trim($absDecimalVal);
                                 $logVal = $absDecimalVal = $resultFlag = "";
                             }
-                        } elseif (strpos($sheetData[$resultCol], ">") !== false) {
+                        } elseif (str_contains($sheetData[$resultCol], ">")) {
                             $txtVal = $absVal = "> " . trim($absDecimalVal);
                         } else {
                             $txtVal = null;
                             $absVal = $absDecimalVal;
                         }
-                    } elseif (strpos((string) $sheetData[$resultCol], 'Copies') !== false) {
+                    } elseif (str_contains((string)$sheetData[$resultCol], 'Copies')) {
                         $absVal = $absDecimalVal = abs((int) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_INT));
-                        if (strpos((string) $sheetData[$resultCol], '<') !== false) {
+                        if (str_contains((string)$sheetData[$resultCol], '<')) {
                             if ($sheetData[$resultCol] == "< INF") {
                                 $txtVal = $absVal = $absDecimalVal = 839;
                                 $logVal = round(log10($absDecimalVal), 2);
@@ -133,17 +133,17 @@ try {
                                 $txtVal = $absVal = "< " . trim($absDecimalVal);
                                 $logVal = $absDecimalVal = $resultFlag = "";
                             }
-                        } elseif (strpos((string) $sheetData[$resultCol], '>') !== false) {
+                        } elseif (str_contains((string)$sheetData[$resultCol], '>')) {
                             $txtVal = $absVal = "> " . trim($absDecimalVal);
                             $logVal = $absDecimalVal = $resultFlag = "";
                         } else {
                             $logVal = round(log10($absDecimalVal), 2);
                             $absVal = $absDecimalVal;
                         }
-                    } elseif (strpos((string) $sheetData[$resultCol], 'IU/mL') !== false) {
+                    } elseif (str_contains((string)$sheetData[$resultCol], 'IU/mL')) {
                         $absVal = $absDecimalVal = abs((int) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_INT));
                     } else {
-                        if (strpos(strtolower((string) $sheetData[$resultCol]), 'not detected') !== false || strtolower((string) $sheetData[$resultCol]) == 'target not detected') {
+                        if (str_contains(strtolower((string)$sheetData[$resultCol]), 'not detected') || strtolower((string) $sheetData[$resultCol]) == 'target not detected') {
                             $txtVal = "Target Not Detected";
                             $resultFlag = "";
                             $absVal = "";

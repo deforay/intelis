@@ -11,12 +11,12 @@ use App\Utilities\MiscUtility;
 
 class SouthSudan_PDF extends MYPDF
 {
-    public $logo = '';
-    public $text = '';
-    public $lab = '';
-    public $facilityInfo = [];
-    public $formId = 1;
-    public $htitle = '';
+    public string $logo = '';
+    public string $text = '';
+    public string $lab = '';
+    public array $facilityInfo = [];
+    public string $formId = 1;
+    public string $htitle = '';
     //Page header
     public function Header()
     {
@@ -221,7 +221,7 @@ if (!empty($requestResult)) {
             $sampleDispatchDate = DateUtility::humanReadableDateFormat($expStr[0]);
             $sampleDispatchTime = $expStr[1];
         } else {
-            $expStr = explode(" ", (string) $currentTime);
+            $expStr = explode(" ", $currentTime);
             $sampleDispatchDate = DateUtility::humanReadableDateFormat($expStr[0]);
             $sampleDispatchTime = $expStr[1];
         }

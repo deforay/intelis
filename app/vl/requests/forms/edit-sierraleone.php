@@ -758,7 +758,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 											</div>
 										</div>
 									</div>
-									<?php if ($usersService->isAllowed('/vl/results/vlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+									<?php if (_isAllowed('/vl/results/vlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
 										<div class="box-header with-border">
 											<h3 class="box-title">Laboratory Information</h3>
 										</div>

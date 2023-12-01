@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Exception;
 use MysqliDb;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -31,7 +32,7 @@ class PatientsService
         }
 
         $res = $this->db->rawQueryOne("SELECT MAX(`patient_code_key`) AS `max_key`
-                                        FROM {$this->table} WHERE `patient_code_prefix` = '$prefix' $forUpdate");
+                                        FROM $this->table WHERE `patient_code_prefix` = '$prefix' $forUpdate");
 
 
         if ($res && $res['max_key'] !== null) {
@@ -144,7 +145,7 @@ class PatientsService
             }
 
             $this->db->commit();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->db->rollback();
             throw $e;
         }

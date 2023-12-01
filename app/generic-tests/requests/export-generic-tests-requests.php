@@ -89,24 +89,12 @@ if (isset($_SESSION['genericRequestQuery']) && trim((string) $_SESSION['genericR
 			}
 		}
 		//set gender
-		switch (strtolower((string) $aRow['patient_gender'])) {
-			case 'male':
-			case 'm':
-				$gender = 'M';
-				break;
-			case 'female':
-			case 'f':
-				$gender = 'F';
-				break;
-			case 'not_recorded':
-			case 'notrecorded':
-			case 'unreported':
-				$gender = 'Unreported';
-				break;
-			default:
-				$gender = '';
-				break;
-		}
+        $gender = match (strtolower((string)$aRow['patient_gender'])) {
+            'male', 'm' => 'M',
+            'female', 'f' => 'F',
+            'not_recorded', 'notrecorded', 'unreported' => 'Unreported',
+            default => '',
+        };
 		//requested date
 		$requestedDate = '';
 		if (!empty($aRow['test_requested_on'])) {

@@ -195,7 +195,7 @@ if (!empty($interfaceData)) {
 
             $testedByUserId = $approvedByUserId = $reviewedByUserId = null;
             // if ^ exists it means the Operator Name has both tester and releaser name
-            if (strpos(strtolower((string) $result['tested_by']), '^') !== false) {
+            if (str_contains(strtolower((string)$result['tested_by']), '^')) {
                 $operatorArray = explode("^", (string) $result['tested_by']);
                 $tester = $operatorArray[0];
                 $testedByUserId = $usersService->getOrCreateUser($tester);
@@ -271,9 +271,9 @@ if (!empty($interfaceData)) {
             //set result in result fields
             if (trim((string) $result['results']) != "") {
 
-                if (strpos(strtolower((string) $result['results']), 'not detected') !== false) {
+                if (str_contains(strtolower((string)$result['results']), 'not detected')) {
                     $eidResult = 'negative';
-                } elseif ((strpos(strtolower((string) $result['results']), 'detected') !== false) || (strpos(strtolower((string) $result['results']), 'passed') !== false)) {
+                } elseif ((str_contains(strtolower((string)$result['results']), 'detected')) || (str_contains(strtolower((string)$result['results']), 'passed'))) {
                     $eidResult = 'positive';
                 } else {
                     $eidResult = 'indeterminate';

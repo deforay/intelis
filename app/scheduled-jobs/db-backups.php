@@ -1,11 +1,11 @@
+#!/usr/bin/env php
 <?php
 
-if (php_sapi_name() == 'cli') {
-    require_once(__DIR__ . "/../../bootstrap.php");
-} else {
-    // only run from command line
+if (php_sapi_name() !== 'cli') {
     exit(0);
 }
+
+require_once(__DIR__ . "/../../bootstrap.php");
 
 use App\Services\CommonService;
 use Ifsnop\Mysqldump as IMysqldump;

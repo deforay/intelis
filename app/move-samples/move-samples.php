@@ -20,7 +20,7 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (!empty($_SESSION['privileges']) && array_key_exists("select-samples-to-move.php", $_SESSION['privileges'])) { ?>
+						<?php if (_isAllowed("select-samples-to-move.php")) { ?>
 							<a href="select-samples-to-move.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> Add Sample List</a>
 						<?php } ?>
 						<!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->

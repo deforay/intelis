@@ -504,7 +504,7 @@ $sFormat = '';
                                                        </div>
                                                   </div>
                                              </div>
-                                             <?php if ($usersService->isAllowed('/vl/results/updateVlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                                             <?php if (_isAllowed('/vl/results/updateVlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                                   <div class="box box-primary">
                                                        <div class="box-header with-border">
                                                             <h3 class="box-title">Laboratory Information</h3>
@@ -1110,13 +1110,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
           var format = '<?php echo $arr['sample_code']; ?>';
           var sCodeLentgh = $("#sampleCode").val();
-         
+
           var minLength = '<?php echo $arr['min_length']; ?>';
           if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
                alert("Sample ID length must be a minimum length of " + minLength + " characters");
                return false;
           }
-         
+
           flag = deforayValidator.init({
                formId: 'vlRequestFormRwd'
           });
@@ -1146,13 +1146,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      function validateSaveNow() {
           var format = '<?php echo $arr['sample_code']; ?>';
           var sCodeLentgh = $("#sampleCode").val();
-         
+
           var minLength = '<?php echo $arr['min_length']; ?>';
           if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
                alert("Sample ID length must be a minimum length of " + minLength + " characters");
                return false;
           }
-         
+
           flag = deforayValidator.init({
                formId: 'vlRequestFormRwd'
           });

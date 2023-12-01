@@ -22,7 +22,6 @@ require_once APPLICATION_PATH . '/header.php';
 		margin: 60px auto;
 		left: -20px;
 		position: relative;
-
 		border-radius: 4px;
 		box-sizing: border-box;
 		animation: animloader 1s linear infinite alternate;

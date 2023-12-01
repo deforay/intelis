@@ -231,7 +231,7 @@ $sResult = $db->rawQuery($sQuery);
                                     <th scope="row">
                                         <?php echo _translate("Status"); ?>
                                     </th>
-                                    <?php if (isset($_SESSION['privileges']) && (in_array("tb-edit-request.php", $_SESSION['privileges']))) { ?>
+                                    <?php if ((_isAllowed("tb-edit-request.php"))) { ?>
                                         <th>
                                             <?php echo _translate("Action"); ?>
                                         </th>
@@ -433,7 +433,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 }, {
                     "sClass": "center"
                 },
-                <?php if (isset($_SESSION['privileges']) && (in_array("tb-edit-request.php", $_SESSION['privileges']))) { ?> {
+                <?php if ((_isAllowed("tb-edit-request.php"))) { ?> {
                         "sClass": "center",
                         "bSortable": false
                     },

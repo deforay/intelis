@@ -21,7 +21,7 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (!empty($_SESSION['privileges']) && array_key_exists("geographical-divisions-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
+						<?php if (_isAllowed("geographical-divisions-details.php") && $sarr['sc_user_type'] != 'vluser') { ?>
 							<a href="add-patient.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Patients"); ?></a>
 						<?php } ?>
 					</div>

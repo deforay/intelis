@@ -1,8 +1,10 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
 
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 $tableName = "roles";
 $primaryKey = "role_id";
@@ -33,9 +35,9 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
     $sOrder = "";
-    for ($i = 0; $i < intval($_POST['iSortingCols']); $i++) {
-        if ($_POST['bSortable_' . intval($_POST['iSortCol_' . $i])] == "true") {
-            $sOrder .= $aColumns[intval($_POST['iSortCol_' . $i])] . "
+    for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
+        if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
+            $sOrder .= $aColumns[(int) $_POST['iSortCol_' . $i]] . "
 				 	" . ($_POST['sSortDir_' . $i]) . ", ";
         }
     }
@@ -75,7 +77,8 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 }
 
 /* Individual column filtering */
-for ($i = 0; $i < count($aColumns); $i++) {
+$columnCounter = count($aColumns);
+for ($i = 0; $i < $columnCounter; $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
         $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
     }
@@ -97,31 +100,15 @@ if (!empty($sOrder)) {
     $sQuery = $sQuery . ' order by ' . $sOrder;
 }
 
-if (isset($sLimit) && isset($sOffset)) {
-    $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-}
-//die($sQuery);
-// echo $sQuery;
-$rResult = $db->rawQuery($sQuery);
-// print_r($rResult);
-/* Data set length after filtering */
-
-$aResultFilterTotal = $db->rawQuery("SELECT * FROM roles $sWhere order by $sOrder");
-$iFilteredTotal = count($aResultFilterTotal);
-
-/* Total data set length */
-$aResultTotal =  $db->rawQuery("select COUNT(role_id) as total FROM roles");
-// $aResultTotal = $countResult->fetch_row();
-//print_r($aResultTotal);
-$iTotal = $aResultTotal[0]['total'];
+[$rResult, $resultCount]  = $general->getQueryResultAndCount($sQuery, null, $sLimit, $sOffset, true);
 
 /*
          * Output
         */
 $output = array(
-    "sEcho" => intval($_POST['sEcho']),
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
+    "sEcho" => (int) $_POST['sEcho'],
+    "iTotalRecords" => $resultCount,
+    "iTotalDisplayRecords" => $resultCount,
     "aaData" => []
 );
 
@@ -130,7 +117,7 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['role_name']);
     $row[] = ($aRow['role_code']);
     $row[] = ucwords((string) $aRow['status']);
-    if (!empty($_SESSION['privileges']) && array_key_exists("editRole.php", $_SESSION['privileges'])) {
+    if (_isAllowed("editRole.php")) {
         $row[] = '<a href="editRole.php?id=' . base64_encode((string) $aRow['role_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
     }
     $output['aaData'][] = $row;

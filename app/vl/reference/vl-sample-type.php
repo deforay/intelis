@@ -21,7 +21,7 @@ require_once APPLICATION_PATH . '/header.php';
       <div class="col-xs-12">
         <div class="box">
           <div class="box-header with-border">
-            <?php if (!empty($_SESSION['privileges']) && array_key_exists("vl-art-code-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
+            <?php if (_isAllowed("vl-art-code-details.php") && $sarr['sc_user_type'] != 'vluser') { ?>
               <a href="add-vl-sample-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Viral Load Sample Type"); ?></a>
             <?php } ?>
           </div>
@@ -32,7 +32,7 @@ require_once APPLICATION_PATH . '/header.php';
                 <tr>
                   <th scope="row"><?php echo _translate("Sample Name"); ?></th>
                   <th scope="row"><?php echo _translate("Sample Status"); ?></th>
-                  <?php if (!empty($_SESSION['privileges']) && array_key_exists("vl-art-code-details.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
+                  <?php if (_isAllowed("vl-art-code-details.php") && $sarr['sc_user_type'] != 'vluser') { ?>
                     <!-- <th scope="row">Action</th> -->
                   <?php } ?>
                 </tr>

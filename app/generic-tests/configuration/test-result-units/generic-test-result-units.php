@@ -29,7 +29,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if ($usersService->isAllowed("/generic-tests/configuration/test-result-units/generic-add-test-result-units.php")) { ?>
+						<?php if (_isAllowed("/generic-tests/configuration/test-result-units/generic-add-test-result-units.php")) { ?>
 							<a href="/generic-tests/configuration/test-result-units/generic-add-test-result-units.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Test Result Units"); ?></a>
 						<?php } ?>
 					</div>
@@ -41,7 +41,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 									<th scope="row"><?php echo _translate("Result Unit Name"); ?></th>
 									<th scope="row"><?php echo _translate("Result Unit Status"); ?></th>
 									<th scope="row"><?php echo _translate("Updated On"); ?></th>
-									<?php if ($usersService->isAllowed("/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php")) { ?>
+									<?php if (_isAllowed("/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php")) { ?>
 										<th scope="row">Action</th>
 									<?php } ?>
 								</tr>
@@ -88,7 +88,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 				{
 					"sClass": "center"
 				},
-				<?php if ($usersService->isAllowed("/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php")) { ?> {
+				<?php if (_isAllowed("/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php")) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					}

@@ -81,9 +81,9 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
     $sOrder = "";
-    for ($i = 0; $i < intval($_POST['iSortingCols']); $i++) {
-        if ($_POST['bSortable_' . intval($_POST['iSortCol_' . $i])] == "true") {
-            $sOrder .= $orderColumns[intval($_POST['iSortCol_' . $i])] . "
+    for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
+        if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
+            $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
                " . ($_POST['sSortDir_' . $i]) . ", ";
         }
     }
@@ -118,7 +118,8 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 }
 
 /* Individual column filtering */
-for ($i = 0; $i < count($aColumns); $i++) {
+$columnCounter = count($aColumns);
+for ($i = 0; $i < $columnCounter; $i++) {
     if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
         $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
     }
@@ -184,7 +185,7 @@ $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
  * Output
  */
 $output = array(
-    "sEcho" => intval($_POST['sEcho']),
+    "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $iTotal,
     "iTotalDisplayRecords" => $iFilteredTotal,
     "aaData" => []
@@ -226,27 +227,27 @@ foreach ($rResult as $key => $aRow) {
     $row[] = $aRow['labname'];
     $row[] = $testName;
     if (isset($aRow['samples']) && $aRow['samples'] > 0) {
-        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode((string) $registerParams) . '\',1200,700);"> ' . $aRow['samples'] . '</a>';
+        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($registerParams) . '\',1200,700);"> ' . $aRow['samples'] . '</a>';
     } else {
         $row[] = $aRow['samples'];
     }
     if (isset($aRow['noOfSampleReceivedAtLab']) && $aRow['noOfSampleReceivedAtLab'] > 0) {
-        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode((string) $registerParams) . '\',1200,700);"> ' . $aRow['noOfSampleReceivedAtLab'] . '</a>';
+        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($registerParams) . '\',1200,700);"> ' . $aRow['noOfSampleReceivedAtLab'] . '</a>';
     } else {
         $row[] = $aRow['noOfSampleReceivedAtLab'];
     }
     if (isset($aRow['samplesWithResults']) && $aRow['samplesWithResults'] > 0) {
-        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode((string) $testedParams) . '\',1200,700);"> ' . $aRow['samplesWithResults'] . '</a>';
+        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($testedParams) . '\',1200,700);"> ' . $aRow['samplesWithResults'] . '</a>';
     } else {
         $row[] = $aRow['samplesWithResults'];
     }
     if (isset($aRow['rejected']) && $aRow['rejected'] > 0) {
-        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode((string) $rejectedParams) . '\',1200,700);"> ' . $aRow['rejected'] . '</a>';
+        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($rejectedParams) . '\',1200,700);"> ' . $aRow['rejected'] . '</a>';
     } else {
         $row[] = $aRow['rejected'];
     }
     if (isset($aRow['noOfResultsReturned']) && $aRow['noOfResultsReturned'] > 0) {
-        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode((string) $returnedParams) . '\',1200,700);"> ' . $aRow['noOfResultsReturned'] . '</a>';
+        $row[] = '<a href="javascript:void(0);" class="" style="margin-right: 2px;" title="View History" onclick="showModal(\'' . $url . '?id=' . base64_encode($returnedParams) . '\',1200,700);"> ' . $aRow['noOfResultsReturned'] . '</a>';
     } else {
         $row[] = $aRow['noOfResultsReturned'];
     }

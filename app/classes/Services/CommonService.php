@@ -75,7 +75,7 @@ class CommonService
      * @throws SystemException
      */
 
-    public function generateRandomString($length = 32): string
+    public function generateRandomString(int $length = 32): string
     {
         // Ensure $length is always even
         if ($length % 2 != 0) {
@@ -805,7 +805,7 @@ class CommonService
      * @param array|string $newData An optional array or JSON string of new key-value pairs to add to the JSON
      * @return string|null The string that can be used with JSON_SET()
      */
-    public function jsonToSetString(?string $json, string $column, $newData = []): ?string
+    public function jsonToSetString(?string $json, string $column, array|string $newData = []): ?string
     {
         $data = [];
         if (MiscUtility::isJSON($json)) {

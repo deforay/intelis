@@ -130,8 +130,8 @@ try {
             $vlResult = trim((string) $row[$absValCol]);
 
             if (!empty($vlResult)) {
-                if (strpos($vlResult, 'E') !== false) {
-                    if (strpos($vlResult, '< 2.00E+1') !== false) {
+                if (str_contains($vlResult, 'E')) {
+                    if (str_contains($vlResult, '< 2.00E+1')) {
                         $vlResult = "< 20";
                         $txtVal = $absVal = trim($vlResult);
                         $logVal = "";

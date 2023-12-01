@@ -13,17 +13,19 @@ $title = _translate("Enter VL Result");
 require_once APPLICATION_PATH . '/header.php';
 
 
-
-
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);
 
 /** @var CommonService $commonService */
 $general = ContainerRegistry::get(CommonService::class);
+
+$formId = $general->getGlobalConfig('vl_form');
 
 //Funding source list
 $fundingSourceList = $general->getFundingSources();
@@ -76,7 +78,7 @@ $condition = "status ='active' AND test_type='vl'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
 //get suspected treatment failure at
-$suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatment_failure_at FROM form_vl where vlsm_country_id='" . $arr['vl_form'] . "'";
+$suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatment_failure_at FROM form_vl where vlsm_country_id='" . $formId . "'";
 $suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQuery);
 
 $vlQuery = "SELECT * from form_vl where vl_sample_id=?";
@@ -180,8 +182,8 @@ if (trim((string) $vlQueryInfo['has_patient_changed_regimen']) == "yes") {
 	$vlQueryInfo['regimen_change_date'] = '';
 }
 //Set Dispatched From Clinic To Lab Date
-if (isset($vlQueryInfo['sample_dispatched_datetime']) && trim((string) $vlQueryInfo['sample_dispatched_datetime']) != '' && $vlQueryInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
-	$expStr = explode(" ", (string) $vlQueryInfo['sample_dispatched_datetime']);
+if (isset($vlQueryInfo['sample_dispatched_datetime']) && trim($vlQueryInfo['sample_dispatched_datetime']) != '' && $vlQueryInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", $vlQueryInfo['sample_dispatched_datetime']);
 	$vlQueryInfo['sample_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$vlQueryInfo['sample_dispatched_datetime'] = '';
@@ -288,17 +290,17 @@ $aResult = $db->query($aQuery);
 	}
 </style>
 <?php
-if ($arr['vl_form'] == COUNTRY\SOUTH_SUDAN) {
+if ($formId == COUNTRY\SOUTH_SUDAN) {
 	include('forms/update-southsudan-result.php');
-} else if ($arr['vl_form'] == COUNTRY\SIERRA_LEONE) {
+} else if ($formId == COUNTRY\SIERRA_LEONE) {
 	include('forms/update-sierraleone-result.php');
-} else if ($arr['vl_form'] == COUNTRY\DRC) {
+} else if ($formId == COUNTRY\DRC) {
 	include('forms/update-drc-result.php');
-} else if ($arr['vl_form'] == COUNTRY\CAMEROON) {
+} else if ($formId == COUNTRY\CAMEROON) {
 	include('forms/update-cameroon-result.php');
-} else if ($arr['vl_form'] == COUNTRY\PNG) {
+} else if ($formId == COUNTRY\PNG) {
 	include('forms/update-png-result.php');
-} else if ($arr['vl_form'] == COUNTRY\RWANDA) {
+} else if ($formId == COUNTRY\RWANDA) {
 	include('forms/update-rwanda-result.php');
 }
 

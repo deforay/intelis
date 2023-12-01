@@ -24,7 +24,7 @@ require_once APPLICATION_PATH . '/header.php';
       <div class="col-xs-12">
         <div class="box">
           <div class="box-header with-border">
-            <?php if (!empty($_SESSION['privileges']) && array_key_exists("tb-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
+            <?php if (_isAllowed("tb-sample-type.php") && $sarr['sc_user_type'] != 'vluser') { ?>
               <a href="add-tb-sample-rejection-reason.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add TB Sample Rejection Reasons"); ?></a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
@@ -38,7 +38,7 @@ require_once APPLICATION_PATH . '/header.php';
                   <th scope="row"><?php echo _translate("Rejection Reason Type"); ?></th>
                   <th scope="row"><?php echo _translate("Rejection Reason Code"); ?></th>
                   <th scope="row"><?php echo _translate("Rejection Reason Status"); ?></th>
-                  <?php if (!empty($_SESSION['privileges']) && array_key_exists("tb-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
+                  <?php if (_isAllowed("tb-sample-type.php") && $sarr['sc_user_type'] != 'vluser') { ?>
                     <!-- <th scope="row">Action</th> -->
                   <?php } ?>
                 </tr>

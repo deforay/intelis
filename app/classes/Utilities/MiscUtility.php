@@ -126,7 +126,7 @@ class MiscUtility
      * @param string $zipFile The path to the zip file.
      * @param string $jsonFile The name of the JSON file inside the zip archive.
      */
-    public static function getJsonFromZip(string $zipFile, $jsonFile): string
+    public static function getJsonFromZip(string $zipFile, string $jsonFile): string
     {
         if (!file_exists($zipFile)) {
             return "{}";
@@ -149,7 +149,7 @@ class MiscUtility
      * @param string $fileName The FULL PATH of the file inside the zip archive.
      * @return bool Returns true on success, false on failure.
      */
-    public static function zipJson(string $json, $fileName)
+    public static function zipJson(string $json, string $fileName)
     {
         $result = false;
         if (!empty($json) && !empty($fileName)) {
@@ -234,20 +234,12 @@ class MiscUtility
     public static function getGenderFromString($gender)
     {
         return once(function () use ($gender) {
-            switch (strtolower((string) $gender)) {
-                case 'male':
-                case 'm':
-                    return 'M';
-                case 'female':
-                case 'f':
-                    return 'F';
-                case 'not_recorded':
-                case 'notrecorded':
-                case 'unreported':
-                    return 'Unreported';
-                default:
-                    return '';
-            }
+            return match (strtolower((string)$gender)) {
+                'male', 'm' => 'M',
+                'female', 'f' => 'F',
+                'not_recorded', 'notrecorded', 'unreported' => 'Unreported',
+                default => '',
+            };
         });
     }
 }

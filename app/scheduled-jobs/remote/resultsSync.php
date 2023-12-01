@@ -36,7 +36,7 @@ try {
     // Checking if the network connection is available
     $remoteUrl = rtrim((string) $systemConfig['remoteURL'], "/");
     $headers = @get_headers($remoteUrl . '/api/version.php?labId=' . $labId . '&version=' . $version);
-    if (strpos((string) $headers[0], '200') === false) {
+    if (!str_contains((string)$headers[0], '200')) {
         error_log("No network connectivity while trying remote sync.");
         return false;
     }
@@ -83,7 +83,7 @@ try {
         ];
 
         $jsonResponse = $apiService->post($url, $payload);
-        $result = json_decode((string) $jsonResponse, true);
+        $result = json_decode($jsonResponse, true);
 
         if (!empty($result)) {
             $db = $db->where('sample_code', $result, 'IN');
@@ -119,7 +119,7 @@ try {
         ];
 
         $jsonResponse = $apiService->post($url, $payload);
-        $result = json_decode((string) $jsonResponse, true);
+        $result = json_decode($jsonResponse, true);
 
         if (!empty($result)) {
             $db = $db->where('sample_code', $result, 'IN');
@@ -152,7 +152,7 @@ try {
         ];
 
         $jsonResponse = $apiService->post($url, $payload);
-        $result = json_decode((string) $jsonResponse, true);
+        $result = json_decode($jsonResponse, true);
 
         if (!empty($result)) {
             $db = $db->where('sample_code', $result, 'IN');
@@ -197,7 +197,7 @@ try {
             "Key" => "vlsm-lab-data--",
         ];
         $jsonResponse = $apiService->post($url, $payload);
-        $result = json_decode((string) $jsonResponse, true);
+        $result = json_decode($jsonResponse, true);
 
         if (!empty($result)) {
             $db = $db->where('sample_code', $result, 'IN');
@@ -231,7 +231,7 @@ try {
         ];
 
         $jsonResponse = $apiService->post($url, $payload);
-        $result = json_decode((string) $jsonResponse, true);
+        $result = json_decode($jsonResponse, true);
 
         if (!empty($result)) {
             $db = $db->where('sample_code', $result, 'IN');

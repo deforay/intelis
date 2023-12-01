@@ -307,7 +307,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                 </table>
                             </div>
                         </div>
-                        <?php if ($usersService->isAllowed('/covid-19/results/covid-19-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if (_isAllowed('/covid-19/results/covid-19-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
@@ -430,7 +430,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                     <td>
                                                                         <select name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control result-optional test-name-table-input isRequired" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
                                                                             <?php $display = "display:none;";
-                                                                            if ((strpos((string) $rows['test_name'], 'RDT') !== false)) {
+                                                                            if ((str_contains((string)$rows['test_name'], 'RDT'))) {
                                                                                 $display = "";
                                                                                 $span = 6;
                                                                                 $kitShow = true; ?>
@@ -466,8 +466,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                         <?php }
                                                         } ?>
                                                     </tbody>
-                                                    <!-- < ?php if (!empty($_SESSION['privileges']) && array_key_exists("record-final-result.php", $_SESSION['privileges'])) { ?>
-                                                    < ?php }?> -->
                                                     <tfoot>
                                                         <tr>
                                                             <th scope="row" colspan="<?php echo $span; ?>" class="text-right final-result-row">Final Result</th>

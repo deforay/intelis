@@ -193,7 +193,7 @@ if (!empty($requestResult)) {
                $sampleDispatchDate = date('d/M/Y', strtotime($expStr[0]));
                $sampleDispatchTime = $expStr[1];
           } else {
-               $expStr = explode(" ", (string) $currentTime);
+               $expStr = explode(" ", $currentTime);
                $sampleDispatchDate = date('d/M/Y', strtotime($expStr[0]));
                $sampleDispatchTime = $expStr[1];
           }
@@ -397,7 +397,7 @@ if (!empty($requestResult)) {
                }
                $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Rejection Reason&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . $corrective . '</td></tr>';
           }
-          if (strpos(strtolower((string) $result['vl_test_platform']), 'abbott') !== false) {
+          if (str_contains(strtolower((string)$result['vl_test_platform']), 'abbott')) {
                $html .= '<tr>';
                $html .= '<td colspan="3" style="line-height:8px;font-size:8px;padding-top:8px;">Abbott Linear Detection range: 839 copies/ml - 10 million copies/ml</td>';
                $html .= '</tr>';

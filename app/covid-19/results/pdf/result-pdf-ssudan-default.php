@@ -150,7 +150,7 @@ if (isset($result['result_printed_datetime']) && trim((string) $result['result_p
     $sampleDispatchDate = DateUtility::humanReadableDateFormat($expStr[0]);
     $sampleDispatchTime = $expStr[1];
 } else {
-    $expStr = explode(" ", (string) $currentDateTime);
+    $expStr = explode(" ", $currentDateTime);
     $sampleDispatchDate = DateUtility::humanReadableDateFormat($expStr[0]);
     $sampleDispatchTime = $expStr[1];
 }

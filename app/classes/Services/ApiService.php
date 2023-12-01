@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Exception;
 use MysqliDb;
 use GuzzleHttp\Client;
 use App\Utilities\DateUtility;
@@ -428,7 +429,7 @@ class ApiService
                 $response = json_decode((string) $response, true);
             }
             return $response;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new SystemException("Unable to retrieve json : " . $e->getMessage(), 500);
         }
     }

@@ -130,7 +130,7 @@ if (!empty($requestResult)) {
             $sampleDispatchDate = DateUtility::humanReadableDateFormat($expStr[0]);
             $sampleDispatchTime = $expStr[1];
         } else {
-            $expStr = explode(" ", (string) $currentTime);
+            $expStr = explode(" ", $currentTime);
             $sampleDispatchDate = DateUtility::humanReadableDateFormat($expStr[0]);
             $sampleDispatchTime = $expStr[1];
         }

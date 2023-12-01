@@ -160,8 +160,8 @@ if (isset($genericResultInfo['date_test_ordered_by_physician']) && trim((string)
 }
 
 //Set Dispatched From Clinic To Lab Date
-if (isset($genericResultInfo['sample_dispatched_datetime']) && trim((string) $genericResultInfo['sample_dispatched_datetime']) != '' && $genericResultInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
-	$expStr = explode(" ", (string) $genericResultInfo['sample_dispatched_datetime']);
+if (isset($genericResultInfo['sample_dispatched_datetime']) && trim($genericResultInfo['sample_dispatched_datetime']) != '' && $genericResultInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", $genericResultInfo['sample_dispatched_datetime']);
 	$genericResultInfo['sample_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$genericResultInfo['sample_dispatched_datetime'] = '';
@@ -304,6 +304,7 @@ $reasonForChange = $reasonForChangeArr[1];
 	.ms-choice {
 		border: 0px solid #aaa;
 	}
+
 	.table>tbody>tr>td {
 		border-top: none;
 	}
@@ -676,7 +677,7 @@ $reasonForChange = $reasonForChangeArr[1];
 								</div>
 							</div>
 							<div id="otherSection" class="disabledForm"></div>
-							<?php if ($usersService->isAllowed('/generic-tests/results/generic-test-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+							<?php if (_isAllowed('/generic-tests/results/generic-test-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
 								<div class="box box-primary">
 									<div class="box-header with-border">
 										<h3 class="box-title">Laboratory Information</h3>
@@ -1638,7 +1639,7 @@ $reasonForChange = $reasonForChangeArr[1];
 		getTestTypeConfigList(testType);
 		getSubTestList(testType);
 		if (testType != "") {
-			var editId = $('#vlSampleId').val();	
+			var editId = $('#vlSampleId').val();
 			var resultVal = $('#result').val() ? $('#result').val() : '<?php echo $genericResultInfo['result']; ?>';
 			var testedTypeForm = '<?php echo base64_encode((string) $genericResultInfo['test_type_form']); ?>';
 			var testResultUnit = '<?php echo $genericResultInfo['result_unit']; ?>';
@@ -1748,7 +1749,7 @@ $reasonForChange = $reasonForChangeArr[1];
 		var testType = $("#testType").val();
 		var subTestResult = $("#subTestResult").val();
 		if (testType != "") {
-			var editId = $('#vlSampleId').val();	
+			var editId = $('#vlSampleId').val();
 			var resultVal = $('#result').val() ? $('#result').val() : '<?php echo $genericResultInfo['result']; ?>';
 			var testedTypeForm = '<?php echo base64_encode((string) $genericResultInfo['test_type_form']); ?>';
 			var testResultUnit = '<?php echo $genericResultInfo['result_unit']; ?>';
@@ -1808,7 +1809,7 @@ $reasonForChange = $reasonForChangeArr[1];
 
 	function getSubTestList(testType) {
 		$.post("/generic-tests/requests/get-sub-test-list.php", {
-				subTests: '<?php echo base64_encode((string) $genericResultInfo['sub_tests']);?>',
+				subTests: '<?php echo base64_encode((string) $genericResultInfo['sub_tests']); ?>',
 				testTypeId: testType
 			},
 			function(data) {

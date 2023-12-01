@@ -118,11 +118,11 @@ try {
                 $resVal = explode("(", (string) $row[$absValCol]);
                 if (count($resVal) == 2) {
 
-                    if (strpos($resVal[0], "<") !== false) {
+                    if (str_contains($resVal[0], "<")) {
                         $resVal[0] = str_replace("<", "", $resVal[0]);
                         $absDecimalVal = (float) trim($resVal[0]);
                         $absVal = "< " . (float) trim($resVal[0]);
-                    } else if (strpos($resVal[0], ">") !== false) {
+                    } else if (str_contains($resVal[0], ">")) {
                         $resVal[0] = str_replace(">", "", $resVal[0]);
                         $absDecimalVal = (float) trim($resVal[0]);
                         $absVal = "> " . (float) trim($resVal[0]);

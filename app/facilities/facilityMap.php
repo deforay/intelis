@@ -20,7 +20,7 @@ require_once APPLICATION_PATH . '/header.php';
       <div class="col-xs-12">
         <div class="box">
           <div class="box-header with-border">
-            <?php if (!empty($_SESSION['privileges']) && array_key_exists("addVlFacilityMap.php", $_SESSION['privileges']) && (($_SESSION['instanceType'] == 'remoteuser' || ($sarr['sc_user_type'] == 'standalone')))) { ?>
+            <?php if (_isAllowed("addVlFacilityMap.php") && (($_SESSION['instanceType'] == 'remoteuser' || ($sarr['sc_user_type'] == 'standalone')))) { ?>
               <a href="addVlFacilityMap.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> Add Facility Map</a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
@@ -32,7 +32,7 @@ require_once APPLICATION_PATH . '/header.php';
                 <tr>
                   <th>Viral Load Lab</th>
                   <th>Health Centre Name</th>
-                  <?php if (!empty($_SESSION['privileges']) && array_key_exists("editVlFacilityMap.php", $_SESSION['privileges']) && (($_SESSION['instanceType'] == 'remoteuser' || ($sarr['sc_user_type'] == 'standalone')))) { ?>
+                  <?php if (_isAllowed("editVlFacilityMap.php") && (($_SESSION['instanceType'] == 'remoteuser' || ($sarr['sc_user_type'] == 'standalone')))) { ?>
                     <th>Action</th>
                   <?php } ?>
                 </tr>
@@ -76,7 +76,7 @@ require_once APPLICATION_PATH . '/header.php';
           "sClass": "center",
           "bSortable": false
         },
-        <?php if (!empty($_SESSION['privileges']) && array_key_exists("editVlFacilityMap.php", $_SESSION['privileges']) && (($_SESSION['instanceType'] == 'remoteuser' || ($sarr['sc_user_type'] == 'standalone')))) { ?> {
+        <?php if (_isAllowed("editVlFacilityMap.php") && (($_SESSION['instanceType'] == 'remoteuser' || ($sarr['sc_user_type'] == 'standalone')))) { ?> {
             "sClass": "center",
             "bSortable": false
           },

@@ -24,23 +24,23 @@ class ImageResizeUtility
     const IMG_FLIP_VERTICAL = 1;
     const IMG_FLIP_BOTH = 2;
 
-    public $quality_jpg = 85;
-    public $quality_webp = 85;
-    public $quality_png = 6;
-    public $quality_truecolor = true;
-    public $gamma_correct = false;
+    public int $quality_jpg = 85;
+    public int $quality_webp = 85;
+    public int $quality_png = 6;
+    public bool $quality_truecolor = true;
+    public bool $gamma_correct = false;
 
-    public $interlace = 1;
+    public int $interlace = 1;
 
-    public $source_type;
+    public mixed $source_type;
 
     protected $source_image;
 
-    protected $original_w;
-    protected $original_h;
+    protected mixed $original_w;
+    protected mixed $original_h;
 
-    protected $dest_x = 0;
-    protected $dest_y = 0;
+    protected int $dest_x = 0;
+    protected int $dest_y = 0;
 
     protected $source_x;
     protected $source_y;
@@ -53,7 +53,7 @@ class ImageResizeUtility
 
     protected $source_info;
 
-    protected $filters = [];
+    protected array $filters = [];
 
     /**
      * Create instance from a strng
@@ -67,8 +67,7 @@ class ImageResizeUtility
         if (empty($image_data) || $image_data === null) {
             throw new SystemException('image_data must not be empty');
         }
-        $resize = new self('data://application/octet-stream;base64,' . base64_encode($image_data));
-        return $resize;
+        return new self('data://application/octet-stream;base64,' . base64_encode($image_data));
     }
 
 
@@ -114,20 +113,20 @@ class ImageResizeUtility
             define('IMAGETYPE_BMP', 6);
         }
 
-        if ($filename === null || empty($filename) || (substr($filename, 0, 5) !== 'data:' && !is_file($filename))) {
+        if ($filename === null || empty($filename) || (!str_starts_with($filename, 'data:') && !is_file($filename))) {
             throw new SystemException('File does not exist');
         }
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $checkWebp = false;
-        if (strstr(finfo_file($finfo, $filename), 'image') === false) {
-            if (version_compare(PHP_VERSION, '7.0.0', '<=') && strstr(file_get_contents($filename), 'WEBPVP8') !== false) {
+        if (!str_contains(finfo_file($finfo, $filename), 'image')) {
+            if (version_compare(PHP_VERSION, '7.0.0', '<=') && str_contains(file_get_contents($filename), 'WEBPVP8')) {
                 $checkWebp = true;
                 $this->source_type = IMAGETYPE_WEBP;
             } else {
                 throw new SystemException('Unsupported file type');
             }
-        } elseif (strstr(finfo_file($finfo, $filename), 'image/webp') !== false) {
+        } elseif (str_contains(finfo_file($finfo, $filename), 'image/webp')) {
             $checkWebp = true;
             $this->source_type = IMAGETYPE_WEBP;
         }
@@ -138,7 +137,7 @@ class ImageResizeUtility
 
         if (!$checkWebp) {
             if (!$image_info) {
-                if (strstr(finfo_file($finfo, $filename), 'image') !== false) {
+                if (str_contains(finfo_file($finfo, $filename), 'image')) {
                     throw new SystemException('Unsupported image type');
                 }
 
@@ -200,7 +199,7 @@ class ImageResizeUtility
     {
         $img = imagecreatefromjpeg($filename);
 
-        if (!function_exists('exif_read_data') || !isset($this->source_info['APP1'])  || strpos($this->source_info['APP1'], 'Exif') !== 0) {
+        if (!function_exists('exif_read_data') || !isset($this->source_info['APP1'])  || !str_starts_with($this->source_info['APP1'], 'Exif')) {
             return $img;
         }
 

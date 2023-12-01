@@ -269,7 +269,7 @@ if (!empty($requestResult)) {
 		} else {
 			$printedTime = DateUtility::getCurrentDateTime();
 		}
-		$expStr = explode(" ", (string) $printedTime);
+		$expStr = explode(" ", $printedTime);
 		$printDate = DateUtility::humanReadableDateFormat($expStr[0]);
 		$printDateTime = $expStr[1];
 

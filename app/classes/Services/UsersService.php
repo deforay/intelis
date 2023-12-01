@@ -3,17 +3,17 @@
 namespace App\Services;
 
 use DateTime;
-use MysqliDb;
 use App\Utilities\DateUtility;
-use App\Registries\ContainerRegistry;
+use App\Services\DatabaseService;
 use Laminas\Diactoros\ServerRequest;
+use App\Registries\ContainerRegistry;
 
 
 
 class UsersService
 {
 
-    protected ?MysqliDb $db = null;
+    protected ?DatabaseService $db = null;
     protected mixed $applicationConfig = null;
     protected string $table = 'user_details';
     protected CommonService $commonService;

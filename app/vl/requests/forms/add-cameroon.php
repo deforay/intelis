@@ -521,7 +521,7 @@ $sFormat = '';
                                                   </div>
                                              </div>
 
-                                             <?php if ($usersService->isAllowed('/vl/results/updateVlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                                             <?php if (_isAllowed('/vl/results/updateVlTestResult.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                                   <div class="box box-primary">
                                                        <div class="box-header with-border">
                                                             <h3 class="box-title"><?= _translate('Laboratory Information'); ?></h3>

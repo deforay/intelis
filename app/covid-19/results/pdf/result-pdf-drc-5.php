@@ -10,9 +10,9 @@ if (!class_exists('DRC_PDF')) {
 
     class DRC_PDF extends MYPDF
     {
-        public $htitle = '';
+        public string $htitle = '';
         public string $logo = '';
-        public $facilityInfo = [];
+        public array $facilityInfo = [];
         public $resultPrintedDate = null;
         public $systemConfig = null;
 
@@ -22,14 +22,14 @@ if (!class_exists('DRC_PDF')) {
             // Logo
             if ($this->htitle != '') {
 
-                if (trim((string) $this->logo) != '') {
+                if (trim($this->logo) != '') {
 
                     if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . "inrb.png")) {
                         $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . "inrb.png";
                         $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
                     }
                 }
-                if (trim((string) $this->logo) != '') {
+                if (trim($this->logo) != '') {
                     if (!empty($this->facilityInfo) && !empty($this->facilityInfo['facility_logo']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
                         $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
                         $this->Image($imageFilePath, 175, 5, 25, '', '', '', 'T');
@@ -128,7 +128,7 @@ if (isset($result['result_printed_datetime']) && trim((string) $result['result_p
     $resultPrintedDate = DateUtility::humanReadableDateFormat($expStr[0]);
     $resultPrintedTime = $expStr[1];
 } else {
-    $expStr = explode(" ", (string) $currentDateTime);
+    $expStr = explode(" ", $currentDateTime);
     $resultPrintedDate = $currentDate = DateUtility::humanReadableDateFormat($expStr[0]);
     $resultPrintedTime = $currentTime = $expStr[1];
 }

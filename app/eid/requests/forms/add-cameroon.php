@@ -45,7 +45,9 @@ foreach ($pdResult as $provinceName) {
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
 ?>
 <style>
-    .prevResult { margin-right:5px;}
+    .prevResult {
+        margin-right: 5px;
+    }
 </style>
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -110,13 +112,12 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose service provider" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
                                                 <option value=""> <?= _translate('-- Select --'); ?> </option>
                                                 <?php //echo $facility;
-                                                    foreach($healthFacilitiesAllColumns as $facility)
-                                                    {
-                                                        ?>
+                                                foreach ($healthFacilitiesAllColumns as $facility) {
+                                                ?>
                                                     <option value="<?php echo $facility['facility_id']; ?>" data-code="<?php echo $facility['facility_code']; ?>"><?php echo $facility['facility_name']; ?></option>
-                                                        <?php
-                                                    }
-                                                    ?>
+                                                <?php
+                                                }
+                                                ?>
                                             </select>
                                         </td>
                                         <td style="width:25%">
@@ -415,35 +416,37 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr>
                                         <th scope="row"><?= _translate('Requesting Clinician Name'); ?></th>
                                         <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="<?= _translate('Request Clinician Name'); ?>" title="<?= _translate('Please enter request clinician'); ?>" /></td>
-                                       
+
                                     </tr>
-                                    <tr><th><?= _translate('Previous Results'); ?></th></tr>
                                     <tr>
-                                        <td  style="text-align:center;" scope="row"><?= _translate('Serological Test'); ?> </td>
+                                        <th><?= _translate('Previous Results'); ?></th>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center;" scope="row"><?= _translate('Serological Test'); ?> </td>
                                         <td colspan="2" style="text-align:center;">
                                             <input type="radio" class="form-check" name="serologicalTest" id="serologicalTest" value="positive" />&nbsp;&nbsp;<label for="positive"><?= _translate('Positive'); ?></label>&nbsp;&nbsp;&nbsp;
                                             <input type="radio" class="form-check" name="serologicalTest" id="serologicalTest" value="negative" />&nbsp;&nbsp;<label for="negative"><?= _translate('Negative'); ?>&nbsp;&nbsp;&nbsp;
-                                            <input type="radio" class="form-check" name="serologicalTest" id="serologicalTest" value="notdone" />&nbsp;&nbsp;<label for="notdone"><?= _translate('Not Done'); ?>&nbsp;&nbsp;&nbsp;
+                                                <input type="radio" class="form-check" name="serologicalTest" id="serologicalTest" value="notdone" />&nbsp;&nbsp;<label for="notdone"><?= _translate('Not Done'); ?>&nbsp;&nbsp;&nbsp;
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="text-align:center;" scope="row"><?= _translate('Previous PCR Tests'); ?> <br><br>PCR 1<br><br><br>PCR2<br><br><br>PCR 3</td>
                                         <td>
-                                        <?= _translate('Date of sample collection'); ?><br> <br><input class="form-control date" type="text" name="pcr1TestDate" id="pcr1TestDate" placeholder="<?= _translate('Test date'); ?>"/><br>
+                                            <?= _translate('Date of sample collection'); ?><br> <br><input class="form-control date" type="text" name="pcr1TestDate" id="pcr1TestDate" placeholder="<?= _translate('Test date'); ?>" /><br>
                                             <input class="form-control date" type="text" name="pcr2TestDate" id="pcr2TestDate" placeholder="<?= _translate('Test date'); ?>" /><br>
                                             <input class="form-control date" type="text" name="pcr3TestDate" id="pcr3TestDate" placeholder="<?= _translate('Test date'); ?>" />
                                         </td>
-                                       <td>
-                                       <?= _translate('Results'); ?><br><br>
-                                       <input type="text" class="form-control input-sm" name="pcr1TestResult" id="pcr1TestResult" /><br>
-                                       <input type="text" class="form-control input-sm" name="pcr2TestResult" id="pcr1TestResult" /><br>
-                                       <input type="text" class="form-control input-sm" name="pcr3TestResult" id="pcr1TestResult" /><br>
+                                        <td>
+                                            <?= _translate('Results'); ?><br><br>
+                                            <input type="text" class="form-control input-sm" name="pcr1TestResult" id="pcr1TestResult" /><br>
+                                            <input type="text" class="form-control input-sm" name="pcr2TestResult" id="pcr1TestResult" /><br>
+                                            <input type="text" class="form-control input-sm" name="pcr3TestResult" id="pcr1TestResult" /><br>
 
-                                       </td>
-                                       <td><br><br><br>
-                                        D  = <?= _translate('Detected'); ?><br>
-                                        ND = <?= _translate('Not Detected'); ?>
-                                    </td>
+                                        </td>
+                                        <td><br><br><br>
+                                            D = <?= _translate('Detected'); ?><br>
+                                            ND = <?= _translate('Not Detected'); ?>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th scope="row"><?= _translate('Reason for Sample Collection'); ?></th>
@@ -517,7 +520,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
                             </div>
                         </div>
-                        <?php if ($usersService->isAllowed('/eid/results/eid-manual-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if (_isAllowed('/eid/results/eid-manual-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
@@ -537,7 +540,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             </td>
 
                                         <tr>
-                                            
+
                                             <th scope="row"><?= _translate('Is Sample Rejected?'); ?></th>
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">
@@ -893,24 +896,20 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
             }
         });
 
-        $('#isChildOnCotrim').change(function(){
-            if($(this).val()=="no")
-            {
+        $('#isChildOnCotrim').change(function() {
+            if ($(this).val() == "no") {
                 $('#childStartedCotrimDate').val('');
                 $('#childStartedCotrimDate').prop('disabled', true);
-            }
-            else{
+            } else {
                 $('#childStartedCotrimDate').prop('disabled', false);
             }
         });
 
-        $('#infantArtStatus').change(function(){
-            if($(this).val()=="no")
-            {
+        $('#infantArtStatus').change(function() {
+            if ($(this).val() == "no") {
                 $('#childStartedArtDate').val('');
                 $('#childStartedArtDate').prop('disabled', true);
-            }
-            else{
+            } else {
                 $('#childStartedArtDate').prop('disabled', false);
             }
         });

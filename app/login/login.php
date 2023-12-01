@@ -173,7 +173,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 
 							<div style="margin-bottom: 5px" class="input-group">
 								<span class="input-group-addon"><em class="fa-solid fa-shield-halved"></em></span>
-								<input type="text" style="" id="challengeResponse" name="captcha" placeholder="<?php echo _translate('Please enter the text from the image'); ?>" class="form-control" title="<?php echo _translate('Please enter the text from the image'); ?>." maxlength="40">
+								<input type="text" id="challengeResponse" name="captcha" placeholder="<?php echo _translate('Please enter the text from the image'); ?>" class="form-control" title="<?php echo _translate('Please enter the text from the image'); ?>." maxlength="40">
 							</div>
 						</div>
 

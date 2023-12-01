@@ -16,7 +16,7 @@ class AppRegistry
      *
      * @var array
      */
-    private $values = [];
+    private array $values = [];
 
     /**
      * Gets the instance of the AppRegistry.

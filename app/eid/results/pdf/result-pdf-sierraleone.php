@@ -129,7 +129,7 @@ if (!empty($requestResult)) {
             $sampleDispatchDate = date('d/M/Y', strtotime($expStr[0]));
             $sampleDispatchTime = $expStr[1];
         } else {
-            $expStr = explode(" ", (string) $currentTime);
+            $expStr = explode(" ", $currentTime);
             $sampleDispatchDate = date('d/M/Y', strtotime($expStr[0]));
             $sampleDispatchTime = $expStr[1];
         }

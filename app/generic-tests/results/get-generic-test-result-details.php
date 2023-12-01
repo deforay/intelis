@@ -65,10 +65,10 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
      $sOrder = "";
-     for ($i = 0; $i < intval($_POST['iSortingCols']); $i++) {
-          if ($_POST['bSortable_' . intval($_POST['iSortCol_' . $i])] == "true") {
-               if (!empty($orderColumns[intval($_POST['iSortCol_' . $i])]))
-                    $sOrder .= $orderColumns[intval($_POST['iSortCol_' . $i])] . "
+     for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
+          if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
+               if (!empty($orderColumns[(int) $_POST['iSortCol_' . $i]]))
+                    $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
 				 	" . ($_POST['sSortDir_' . $i]) . ", ";
           }
      }
@@ -107,7 +107,8 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 }
 
 /* Individual column filtering */
-for ($i = 0; $i < count($aColumns); $i++) {
+$columnCounter = count($aColumns);
+for ($i = 0; $i < $columnCounter; $i++) {
      if (isset($_POST['bSearchable_' . $i]) && $_POST['bSearchable_' . $i] == "true" && $_POST['sSearch_' . $i] != '') {
           $sWhere[] = $aColumns[$i] . " LIKE '%" . ($_POST['sSearch_' . $i]) . "%' ";
      }
@@ -299,7 +300,7 @@ $iTotal = $aResultFilterTotal['totalCount'];
  * Output
  */
 $output = array(
-     "sEcho" => intval($_POST['sEcho']),
+     "sEcho" => (int) $_POST['sEcho'],
      "iTotalRecords" => $iTotal,
      "iTotalDisplayRecords" => $iTotal,
      "aaData" => []
@@ -317,7 +318,7 @@ foreach ($rResult as $aRow) {
      } else {
           $print = '<a href="/generic-tests/results/update-generic-test-result.php?id=' . base64_encode((string) $aRow['sample_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
           if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
-               if (isset($_SESSION['privileges']) && !in_array("/vl/requests/edit-locked-vl-samples", $_SESSION['privileges'])) {
+               if (!_isAllowed("/vl/requests/edit-locked-vl-samples")) {
                     $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _translate("Locked") . '</a>';
                }
           }

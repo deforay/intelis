@@ -116,24 +116,12 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 			$dob =  date("d-m-Y", strtotime((string) $aRow['patient_dob']));
 		}
 		//set gender
-		switch (strtolower((string) $aRow['patient_gender'])) {
-			case 'male':
-			case 'm':
-				$gender = 'M';
-				break;
-			case 'female':
-			case 'f':
-				$gender = 'F';
-				break;
-			case 'not_recorded':
-			case 'notrecorded':
-			case 'unreported':
-				$gender = 'Unreported';
-				break;
-			default:
-				$gender = '';
-				break;
-		}
+        $gender = match (strtolower((string)$aRow['patient_gender'])) {
+            'male', 'm' => 'M',
+            'female', 'f' => 'F',
+            'not_recorded', 'notrecorded', 'unreported' => 'Unreported',
+            default => '',
+        };
 		//sample collecion date
 		$sampleCollectionDate = '';
 		if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {

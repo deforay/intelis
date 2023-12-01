@@ -97,10 +97,10 @@ $_SESSION['aliasPage'] = 1;
 //header and footer
 class MYPDF extends TCPDF
 {
-	public $logo = '';
-	public $text = '';
-	public $lab = '';
-	public $htitle = '';
+	public string $logo = '';
+	public string $text = '';
+	public string $lab = '';
+	public string $htitle = '';
 	public $labFacilityId = null;
 	public $trainingTxt = null;
 

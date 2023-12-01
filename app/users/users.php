@@ -43,7 +43,7 @@ require_once APPLICATION_PATH . '/header.php';
           </span>
           <div class="box-header with-border">
 
-            <?php if (!empty($_SESSION['privileges']) && array_key_exists("addUser.php", $_SESSION['privileges'])) { ?>
+            <?php if (_isAllowed("addUser.php")) { ?>
               <a href="addUser.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add User"); ?></a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
@@ -59,7 +59,7 @@ require_once APPLICATION_PATH . '/header.php';
                   <th><?php echo _translate("Email"); ?></th>
                   <th><?php echo _translate("Role"); ?></th>
                   <th scope="row"><?php echo _translate("Status"); ?></th>
-                  <?php if (!empty($_SESSION['privileges']) && array_key_exists("editUser.php", $_SESSION['privileges'])) { ?>
+                  <?php if (_isAllowed("editUser.php")) { ?>
                     <th><?php echo _translate("Action"); ?></th>
                   <?php } ?>
                 </tr>
@@ -115,7 +115,7 @@ require_once APPLICATION_PATH . '/header.php';
         {
           "sClass": "center"
         },
-        <?php if (!empty($_SESSION['privileges']) && array_key_exists("editUser.php", $_SESSION['privileges'])) { ?> {
+        <?php if (_isAllowed("editUser.php")) { ?> {
             "sClass": "center",
             "bSortable": false
           },

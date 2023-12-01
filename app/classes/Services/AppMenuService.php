@@ -43,17 +43,11 @@ class AppMenuService
             $this->db->where('id', $menuId);
         }
 
-        switch ($_SESSION['instanceType']) {
-            case 'remoteuser':
-                $mode = "(show_mode like 'sts' or show_mode like 'always')";
-                break;
-            case 'vluser':
-                $mode = "(show_mode like 'lis' or show_mode like 'always')";
-                break;
-            default:
-                $mode = "(show_mode like 'always')";
-                break;
-        }
+        $mode = match ($_SESSION['instanceType']) {
+            'remoteuser' => "(show_mode like 'sts' or show_mode like 'always')",
+            'vluser' => "(show_mode like 'lis' or show_mode like 'always')",
+            default => "(show_mode like 'always')",
+        };
         $this->db->where($mode);
         $this->db->where('parent_id', $parentId);
         $this->db->orderBy("display_order", "asc");
@@ -62,7 +56,7 @@ class AppMenuService
         foreach ($menuData as $key => $menu) {
             $menu['access'] = true;
             if ($menu['link'] != "" && !empty($menu['link'])) {
-                $menu['access'] = $this->usersService->isAllowed($menu['link']);
+                $menu['access'] = _isAllowed($menu['link']);
             }
 
             if ($menu['has_children'] == 'yes') {

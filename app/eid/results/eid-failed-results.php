@@ -10,9 +10,6 @@ $title = _translate("EID | View All Requests");
 
 
 
-// echo "<pre>";
-// var_dump($_SESSION['privileges']);die;
-
 require_once APPLICATION_PATH . '/header.php';
 
 /** @var MysqliDb $db */
@@ -255,7 +252,7 @@ $sResult = $db->rawQuery($sQuery);
                                     <th scope="row">
                                         <?php echo _translate("Status"); ?>
                                     </th>
-                                    <?php if (isset($_SESSION['privileges']) && (in_array("/eid/requests/eid-edit-request.php", $_SESSION['privileges']))) { ?>
+                                    <?php if ((_isAllowed("/eid/requests/eid-edit-request.php"))) { ?>
                                         <th>
                                             <?php echo _translate("Action"); ?>
                                         </th>
@@ -466,7 +463,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                 }, {
                     "sClass": "center"
                 },
-                <?php if (isset($_SESSION['privileges']) && (in_array("/vl/requests/editVlRequest.php", $_SESSION['privileges']))) { ?> {
+                <?php if ((_isAllowed("/vl/requests/editVlRequest.php"))) { ?> {
                         "sClass": "center",
                         "bSortable": false
                     },

@@ -296,38 +296,6 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 							</div>
 						</div>
 					</div>
-					<div class="row" id="sampleDetails">
-						<!-- <div class="col-md-9 col-md-offset-1">
-							<div class="form-group">
-								<div class="col-md-12">
-									<div style="width:60%;margin:0 auto;clear:both;">
-										<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
-									</div><br /><br />
-									<select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search">
-										<?php foreach ($result as $sample) {
-											if (!empty($sample[$sCode])) {
-												if ($module == 'vl') {
-													$sampleId = $sample['vl_sample_id'];
-												} else if ($module == 'eid') {
-													$sampleId = $sample['eid_id'];
-												} else if ($module == 'covid19') {
-													$sampleId = $sample['covid19_id'];
-												} else if ($module == 'hepatitis') {
-													$sampleId = $sample['hepatitis_id'];
-												} else if ($module == 'tb') {
-													$sampleId = $sample['tb_id'];
-												} else if ($module == 'generic-tests') {
-													$sampleId = $sample['sample_id'];
-												}
-										?>
-												<option value="<?php echo $sampleId; ?>" <?php echo ($sample['sample_package_id'] == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample[$sCode]; ?></option>
-										<?php }
-										} ?>
-									</select>
-								</div>
-							</div>
-						</div> -->
-					</div>
 					<div class="row" id="alertText" style="font-size:18px;"></div>
 			</div>
 			<!-- /.box-body -->

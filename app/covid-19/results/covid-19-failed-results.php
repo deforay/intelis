@@ -231,7 +231,7 @@ $sResult = $db->rawQuery($sQuery);
                                     <th>
                                         <?php echo _translate("Status"); ?>
                                     </th>
-                                    <?php if (isset($_SESSION['privileges']) && (in_array("/covid-19/requests/covid-19-edit-request.php", $_SESSION['privileges']))) { ?>
+                                    <?php if ((_isAllowed("/covid-19/requests/covid-19-edit-request.php"))) { ?>
                                         <th>
                                             <?php echo _translate("Action"); ?>
                                         </th>
@@ -389,7 +389,7 @@ $sResult = $db->rawQuery($sQuery);
                     "sClass": "center"
                 },
 
-                <?php if (isset($_SESSION['privileges']) && (in_array("/covid-19/requests/covid-19-edit-request.php", $_SESSION['privileges']))) { ?> {
+                <?php if ((_isAllowed("/covid-19/requests/covid-19-edit-request.php"))) { ?> {
                         "sClass": "center",
                         "bSortable": false
                     },

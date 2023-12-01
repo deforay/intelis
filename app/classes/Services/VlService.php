@@ -282,9 +282,9 @@ class VlService extends AbstractTestService
                 $txtVal = null;
                 break;
             default:
-                if (strpos((string) $result, "<") !== false) {
+                if (str_contains((string)$result, "<")) {
                     $result = $this->extractViralLoadValue(trim(str_replace("<", "", (string) $result)));
-                    if (!empty($unit) && strpos((string) $unit, 'Log') !== false) {
+                    if (!empty($unit) && str_contains((string)$unit, 'Log')) {
                         $logVal = $result;
                         $absVal = $absDecimalVal = round(pow(10, $logVal), 2);
                     } else {
@@ -294,9 +294,9 @@ class VlService extends AbstractTestService
 
                     $vlResult = $originalResultValue = "< " . $absDecimalVal;
                     $txtVal = null;
-                } elseif (strpos((string) $result, ">") !== false) {
+                } elseif (str_contains((string)$result, ">")) {
                     $result = $this->extractViralLoadValue(trim(str_replace(">", "", (string) $result)));
-                    if (!empty($unit) && strpos((string) $unit, 'Log') !== false) {
+                    if (!empty($unit) && str_contains((string)$unit, 'Log')) {
                         $logVal = $result;
                         $absDecimalVal = round(pow(10, $logVal), 2);
                     } else {
@@ -345,19 +345,19 @@ class VlService extends AbstractTestService
 
         $interpretAndConvertResult = !empty($interpretAndConvertResult) && $interpretAndConvertResult === 'yes';
 
-        if (!empty($unit) && strpos($unit, 'Log') !== false && is_numeric($result)) {
+        if (!empty($unit) && str_contains($unit, 'Log') && is_numeric($result)) {
             $logVal = (float) $result;
             $originalResultValue =
                 $vlResult = $absVal =
                 $absDecimalVal = round(pow(10, $logVal), 2);
-        } elseif (!empty($unit) && strpos($unit, '10') !== false) {
+        } elseif (!empty($unit) && str_contains($unit, '10')) {
             $unitArray = explode(".", $unit);
             $exponentArray = explode("*", $unitArray[0]);
             $multiplier = pow((float) $exponentArray[0], (float) $exponentArray[1]);
             $vlResult = $result * $multiplier;
             $unit = $unitArray[1];
-        } elseif (strpos($result, 'E+') !== false || strpos($result, 'E-') !== false) {
-            if (strpos($result, '< 2.00E+1') !== false) {
+        } elseif (str_contains($result, 'E+') || str_contains($result, 'E-')) {
+            if (str_contains($result, '< 2.00E+1')) {
                 $vlResult = "< 20";
                 $absVal = $absDecimalVal = 20;
             } else {

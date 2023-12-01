@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Generator;
 use MysqliDb;
 
 class DatabaseService extends MysqliDb
@@ -12,7 +13,7 @@ class DatabaseService extends MysqliDb
      *
      * @param string $query SQL query string
      * @param array|null $bindParams Parameters to bind to the query
-     * @return \Generator
+     * @return Generator
      */
     public function rawQueryGenerator(string $query, $bindParams = null)
     {
@@ -23,7 +24,7 @@ class DatabaseService extends MysqliDb
         if (is_array($bindParams)) {
             foreach ($bindParams as $prop => $val) {
                 $params[0] .= $this->_determineType($val);
-                $params[] = $bindParams[$prop];
+                $params[] = $val;
             }
             $stmt->bind_param(...$this->refValues($params));
         }

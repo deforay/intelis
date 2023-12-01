@@ -20,7 +20,7 @@ require_once APPLICATION_PATH . '/header.php';
             <div class="col-xs-12">
                 <div class="box">
                     <div class="box-header with-border">
-                        <?php if (!empty($_SESSION['privileges']) && array_key_exists("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
+                        <?php if (_isAllowed("covid19-sample-type.php") && $sarr['sc_user_type'] != 'vluser') { ?>
                             <a href="add-covid19-qc-test-kit.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add New Covid-19 QC Test Kit"); ?></a>
                         <?php } ?>
                     </div>
@@ -32,7 +32,7 @@ require_once APPLICATION_PATH . '/header.php';
                                     <th scope="row"><?php echo _translate("QC Test Kit Name"); ?></th>
                                     <th scope="row"><?php echo _translate("Created On"); ?></th>
                                     <th scope="row"><?php echo _translate("Status"); ?></th>
-                                    <?php if (!empty($_SESSION['privileges']) && array_key_exists("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?>
+                                    <?php if (_isAllowed("covid19-sample-type.php") && $sarr['sc_user_type'] != 'vluser') { ?>
                                         <th scope="row">Action</th>
                                     <?php } ?>
                                 </tr>
@@ -80,7 +80,7 @@ require_once APPLICATION_PATH . '/header.php';
                     "sClass": "center",
                     "bSortable": false
                 },
-                <?php if (!empty($_SESSION['privileges']) && array_key_exists("covid19-sample-type.php", $_SESSION['privileges']) && $sarr['sc_user_type'] != 'vluser') { ?> {
+                <?php if (_isAllowed("covid19-sample-type.php") && $sarr['sc_user_type'] != 'vluser') { ?> {
                         "sClass": "center action",
                         "bSortable": false
                     }

@@ -163,8 +163,8 @@ if (isset($genericResultInfo['date_test_ordered_by_physician']) && trim((string)
 }
 
 //Set Dispatched From Clinic To Lab Date
-if (isset($genericResultInfo['sample_dispatched_datetime']) && trim((string) $genericResultInfo['sample_dispatched_datetime']) != '' && $genericResultInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
-	$expStr = explode(" ", (string) $genericResultInfo['sample_dispatched_datetime']);
+if (isset($genericResultInfo['sample_dispatched_datetime']) && trim($genericResultInfo['sample_dispatched_datetime']) != '' && $genericResultInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", $genericResultInfo['sample_dispatched_datetime']);
 	$genericResultInfo['sample_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$genericResultInfo['sample_dispatched_datetime'] = '';
@@ -307,8 +307,8 @@ if (!empty($_SESSION['instanceType']) && $_SESSION['instanceType'] == 'vluser') 
 }
 
 $minPatientIdLength = 0;
-if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_length'] != ""){
-    $minPatientIdLength = $arr['generic_min_patient_id_length'];
+if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_length'] != "") {
+	$minPatientIdLength = $arr['generic_min_patient_id_length'];
 }
 ?><!-- Content Wrapper. Contains page content -->
 <style>
@@ -692,7 +692,7 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
 								</div>
 							</div>
 							<div id="otherSection"></div>
-							<?php if ($usersService->isAllowed('/generic-tests/results/generic-test-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+							<?php if (_isAllowed('/generic-tests/results/generic-test-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
 								<div class="box box-primary">
 									<div class="box-header with-border">
 										<h3 class="box-title">Laboratory Information</h3>
@@ -1567,52 +1567,52 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
 	}
 
 	function generateSampleCode() {
-          var testTypeSelected = $("#testType").val();
-          var pName = $("#province").val();
-          var sDate = $("#sampleCollectionDate").val();
-          $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
-          if (pName != '' && sDate != '' && testTypeSelected != '') {
-               $.post("/generic-tests/requests/generateSampleCode.php", {
+		var testTypeSelected = $("#testType").val();
+		var pName = $("#province").val();
+		var sDate = $("#sampleCollectionDate").val();
+		$("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
+		if (pName != '' && sDate != '' && testTypeSelected != '') {
+			$.post("/generic-tests/requests/generateSampleCode.php", {
 					testType: $('#testType').find(':selected').data('short'),
 					sampleCollectionDate: sDate,
 				},
 				function(data) {
-						var sCodeKey = JSON.parse(data);
-						$("#sampleCode").val(sCodeKey.sampleCode);
-						$("#sampleCodeInText").html(sCodeKey.sampleCode);
-						$("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
-						$("#sampleCodeKey").val(sCodeKey.maxId);
-						checkSampleNameValidation('form_generic', '<?php echo $sampleCode; ?>', 'sample_code', null, 'This sample number already exists.Try another number', null)
+					var sCodeKey = JSON.parse(data);
+					$("#sampleCode").val(sCodeKey.sampleCode);
+					$("#sampleCodeInText").html(sCodeKey.sampleCode);
+					$("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
+					$("#sampleCodeKey").val(sCodeKey.maxId);
+					checkSampleNameValidation('form_generic', '<?php echo $sampleCode; ?>', 'sample_code', null, 'This sample number already exists.Try another number', null)
 				});
-          }
-     }
+		}
+	}
 
-	 function insertSampleCode(formId, vlSampleId, sampleCode, sampleCodeKey, sampleCodeFormat, countryId, sampleCollectionDate, provinceCode = null, provinceId = null) {
-          $.blockUI();
-          $.post("/generic-tests/requests/insert-sample.php", {
-                    sampleCode: $("#" + sampleCode).val(),
-                    sampleCodeKey: $("#" + sampleCodeKey).val(),
-                    sampleCodeFormat: $("#" + sampleCodeFormat).val(),
-                    countryId: countryId,
-                    sampleCollectionDate: $("#" + sampleCollectionDate).val(),
-                    provinceCode: $("#province").find(":selected").attr("data-code"),
-                    provinceId: $("#province").find(":selected").attr("data-province-id"),
-                    testType: $('#testType').find(':selected').data('short')
-               },
-               function(data) {
-                    //alert(data);
-                    if (data > 0) {
-                         $.unblockUI();
-                         document.getElementById("vlSampleId").value = data;
-                         document.getElementById(formId).submit();
-                    } else {
-                         $.unblockUI();
-                        //  $("#sampleCollectionDate").val('');
-                         generateSampleCode();
-                         alert("<?= _translate("Could not save this form. Please try again."); ?>");
-                    }
-               });
-     }
+	function insertSampleCode(formId, vlSampleId, sampleCode, sampleCodeKey, sampleCodeFormat, countryId, sampleCollectionDate, provinceCode = null, provinceId = null) {
+		$.blockUI();
+		$.post("/generic-tests/requests/insert-sample.php", {
+				sampleCode: $("#" + sampleCode).val(),
+				sampleCodeKey: $("#" + sampleCodeKey).val(),
+				sampleCodeFormat: $("#" + sampleCodeFormat).val(),
+				countryId: countryId,
+				sampleCollectionDate: $("#" + sampleCollectionDate).val(),
+				provinceCode: $("#province").find(":selected").attr("data-code"),
+				provinceId: $("#province").find(":selected").attr("data-province-id"),
+				testType: $('#testType').find(':selected').data('short')
+			},
+			function(data) {
+				//alert(data);
+				if (data > 0) {
+					$.unblockUI();
+					document.getElementById("vlSampleId").value = data;
+					document.getElementById(formId).submit();
+				} else {
+					$.unblockUI();
+					//  $("#sampleCollectionDate").val('');
+					generateSampleCode();
+					alert("<?= _translate("Could not save this form. Please try again."); ?>");
+				}
+			});
+	}
 
 	function getFacilities(obj) {
 		//alert(obj);
@@ -1787,10 +1787,10 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
 	}
 
 	function setSampleDispatchDate() {
-          if ($("#labId").val() != "" && $("#labId").val() == $("#fName").val() && $('#sampleDispatchedDate').val() == "") {
-               $('#sampleDispatchedDate').val($("sampleCollectionDate").val());
-          }
-     }
+		if ($("#labId").val() != "" && $("#labId").val() == $("#fName").val() && $('#sampleDispatchedDate').val() == "") {
+			$('#sampleDispatchedDate').val($("sampleCollectionDate").val());
+		}
+	}
 
 	function validateNow() {
 		flag = deforayValidator.init({
@@ -1813,31 +1813,31 @@ if(isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_
 	}
 
 	function validateSaveNow(option = null) {
-          var format = '<?php echo $arr['sample_code']; ?>';
-          var sCodeLentgh = $("#sampleCode").val();
-          var minLength = '<?php echo $arr['min_length']; ?>';
-          if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
-               alert("Sample ID length must be a minimum length of " + minLength + " characters");
-               return false;
-          }
-          flag = deforayValidator.init({
-               formId: 'vlRequestFormRwd'
-          });
-          $('.isRequired').each(function() {
-               ($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
-          });
-          $("#saveNext").val(option);
-          if (flag) {
-               $('.btn-disabled').attr('disabled', 'yes');
-               $(".btn-disabled").prop("onclick", null).off("click");
-               $.blockUI();
-               <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
-                    insertSampleCode('vlRequestFormRwd', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 1, 'sampleCollectionDate');
-               <?php } else { ?>
-                    document.getElementById('vlRequestFormRwd').submit();
-               <?php } ?>
-          }
-     }
+		var format = '<?php echo $arr['sample_code']; ?>';
+		var sCodeLentgh = $("#sampleCode").val();
+		var minLength = '<?php echo $arr['min_length']; ?>';
+		if ((format == 'alphanumeric' || format == 'numeric') && sCodeLentgh.length < minLength && sCodeLentgh != '') {
+			alert("Sample ID length must be a minimum length of " + minLength + " characters");
+			return false;
+		}
+		flag = deforayValidator.init({
+			formId: 'vlRequestFormRwd'
+		});
+		$('.isRequired').each(function() {
+			($(this).val() == '') ? $(this).css('background-color', '#FFFF99'): $(this).css('background-color', '#FFFFFF')
+		});
+		$("#saveNext").val(option);
+		if (flag) {
+			$('.btn-disabled').attr('disabled', 'yes');
+			$(".btn-disabled").prop("onclick", null).off("click");
+			$.blockUI();
+			<?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
+				insertSampleCode('vlRequestFormRwd', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 1, 'sampleCollectionDate');
+			<?php } else { ?>
+				document.getElementById('vlRequestFormRwd').submit();
+			<?php } ?>
+		}
+	}
 
 	function checkPatientReceivesms(val) {
 		if (val == 'yes') {

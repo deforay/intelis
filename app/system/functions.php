@@ -1,6 +1,8 @@
 <?php
 
+use App\Services\UsersService;
 use App\Services\SystemService;
+use App\Registries\ContainerRegistry;
 
 
 function _translate($text, $escapeForJavaScript = false)
@@ -16,4 +18,12 @@ function _translate($text, $escapeForJavaScript = false)
     }
 
     return $translatedString;
+}
+
+function _isAllowed($currentRequest, $privileges = null)
+{
+    return once(function () use ($currentRequest, $privileges) {
+        return ContainerRegistry::get(UsersService::class)
+            ->isAllowed($currentRequest, $privileges);
+    });
 }

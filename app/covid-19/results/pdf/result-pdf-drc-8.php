@@ -119,7 +119,7 @@ if (isset($result['result_printed_datetime']) && trim((string) $result['result_p
     $resultPrintedDate = DateUtility::humanReadableDateFormat($expStr[0]);
     $resultPrintedTime = $expStr[1];
 } else {
-    $expStr = explode(" ", (string) $currentDateTime);
+    $expStr = explode(" ", $currentDateTime);
     $resultPrintedDate = $currentDate = DateUtility::humanReadableDateFormat($expStr[0]);
     $resultPrintedTime = $currentTime = $expStr[1];
 }

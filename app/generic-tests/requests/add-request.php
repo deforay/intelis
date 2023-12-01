@@ -507,7 +507,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                         </div>
                                    </div>
                                    <div id="otherSection"></div>
-                                   <?php if ($usersService->isAllowed('/generic-tests/results/generic-test-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                                   <?php if (_isAllowed('/generic-tests/results/generic-test-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                         <div class="box box-primary">
                                              <div class="box-header with-border">
                                                   <h3 class="box-title">Laboratory Information</h3>
@@ -723,7 +723,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                              <?php } ?>
                                              <input type="hidden" name="vlSampleId" id="vlSampleId" value="" />
                                              <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow('next');return false;">Save and Next</a>
-                                             <?php if ($usersService->isAllowed("/batch/add-batch.php?type=" . $_GET['type'])) { ?>
+                                             <?php if (_isAllowed("/batch/add-batch.php?type=" . $_GET['type'])) { ?>
                                                   <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateSaveNow('clone');return false;">Save and Clone</a>
                                              <?php } ?>
                                              <a href="view-requests.php" class="btn btn-default"> Cancel</a>

@@ -128,11 +128,11 @@ try {
                 if (is_numeric($resultValue)) {
                     $absVal = (float) ($resultValue);
                     $absDecimalVal = (float) ($resultValue);
-                } else if (strpos($resultValue, "<") !== false) {
+                } else if (str_contains($resultValue, "<")) {
                     $resultValue = str_replace("<", "", $resultValue);
                     $absDecimalVal = (float) ($resultValue);
                     $absVal = "< " . (float) ($resultValue);
-                } else if (strpos($resultValue, ">") !== false) {
+                } else if (str_contains($resultValue, ">")) {
                     $resultValue = str_replace(">", "", $resultValue);
                     $absDecimalVal = (float) ($resultValue);
                     $absVal = "> " . (float) ($resultValue);

@@ -69,7 +69,7 @@ require_once APPLICATION_PATH . '/header.php';
             <div class="col-xs-12">
                 <div class="box">
                     <div class="box-header with-border">
-                        <?php if (!empty($_SESSION['privileges']) && array_key_exists("add-covid-19-qc-data.php", $_SESSION['privileges'])) { ?>
+                        <?php if (_isAllowed("add-covid-19-qc-data.php")) { ?>
                             <a href="add-covid-19-qc-data.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add New Covid-19 QC Data"); ?></a>
                         <?php } ?>
                     </div>
@@ -86,7 +86,7 @@ require_once APPLICATION_PATH . '/header.php';
                                     <th><?php echo _translate("Tester Name"); ?></th>
                                     <th><?php echo _translate("Tested On"); ?></th>
                                     <th><?php echo _translate("Last Modified On"); ?></th>
-                                    <?php if (!empty($_SESSION['privileges']) && array_key_exists("edit-covid-19-qc-data.php", $_SESSION['privileges'])) { ?>
+                                    <?php if (_isAllowed("edit-covid-19-qc-data.php")) { ?>
                                         <th><?php echo _translate("Action"); ?></th>
                                     <?php } ?>
                                 </tr>

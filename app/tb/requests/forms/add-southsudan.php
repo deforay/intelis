@@ -332,7 +332,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 								</table>
 							</div>
 						</div>
-						<?php if ($usersService->isAllowed('/tb/results/tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
+						<?php if (_isAllowed('/tb/results/tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
 							<?php // if (false) {
 							?>
 							<div class="box box-primary">
@@ -460,7 +460,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 									</table>
 								</div>
 							</div>
-<?php } ?>
+						<?php } ?>
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">

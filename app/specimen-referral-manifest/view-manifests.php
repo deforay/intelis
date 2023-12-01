@@ -41,10 +41,10 @@ $_COOKIE = $request->getCookieParams();
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if ($usersService->isAllowed("/specimen-referral-manifest/move-manifest.php?t=" . $_GET['t'])) { ?>
+						<?php if (_isAllowed("/specimen-referral-manifest/move-manifest.php?t=" . $_GET['t'])) { ?>
 							<a href="move-manifest.php?t=<?php echo ($_GET['t']); ?>" class="btn btn-primary pull-right" style=" margin-left: 10px; "> <em class="fa-solid fa-angles-right"></em> <?= _translate("Move Manifest"); ?></a>
 						<?php }
-						if ($usersService->isAllowed("/specimen-referral-manifest/add-manifest.php?t=" . $_GET['t'])) { ?>
+						if (_isAllowed("/specimen-referral-manifest/add-manifest.php?t=" . $_GET['t'])) { ?>
 							<a href="/specimen-referral-manifest/add-manifest.php?t=<?php echo ($_GET['t']); ?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Specimen Referral Manifest"); ?></a>
 						<?php } ?>
 					</div>
@@ -58,7 +58,7 @@ $_COOKIE = $request->getCookieParams();
 									<th><?= _translate("Testing Lab"); ?></th>
 									<th><?= _translate("Number of Samples"); ?></th>
 									<th><?= _translate("Manifest Created On"); ?></th>
-									<?php if ($usersService->isAllowed("/specimen-referral-manifest/edit-manifest.php?t=" . $_GET['t'])) { ?>
+									<?php if (_isAllowed("/specimen-referral-manifest/edit-manifest.php?t=" . $_GET['t'])) { ?>
 										<th><?= _translate("Action"); ?></th>
 									<?php } ?>
 								</tr>
@@ -113,7 +113,7 @@ $_COOKIE = $request->getCookieParams();
 				{
 					"sClass": "center"
 				},
-				<?php if ($usersService->isAllowed("/specimen-referral-manifest/edit-manifest.php?t=" . $_GET['t'])) { ?> {
+				<?php if (_isAllowed("/specimen-referral-manifest/edit-manifest.php?t=" . $_GET['t'])) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					},

@@ -381,7 +381,7 @@ foreach ($srcResults as $list) {
 							</td>
 							<td colspan="4">
 								<?php
-								if ($usersService->isAllowed("/eid/requests/eid-add-request.php") && !$hidesrcofreq) {
+								if (_isAllowed("/eid/requests/eid-add-request.php") && !$hidesrcofreq) {
 								?>
 									<a href="/eid/requests/eid-add-request.php" class="btn btn-primary btn-sm pull-right">
 										<em class="fa-solid fa-plus"></em>
@@ -393,7 +393,7 @@ foreach ($srcResults as $list) {
 										</a>
 									<?php }
 								}
-								if ($usersService->isAllowed("/eid/requests/export-eid-requests.php")) {
+								if (_isAllowed("/eid/requests/export-eid-requests.php")) {
 									?>
 									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllEidRequests();"><em class="fa-solid fa-cloud-arrow-down"></em>
 										<?php echo _translate("Export Excel"); ?>
@@ -408,7 +408,7 @@ foreach ($srcResults as $list) {
 							<td>
 
 								<?php
-								if ($usersService->isAllowed("/eid/requests/eid-add-request.php") && !$hidesrcofreq) { ?>
+								if (_isAllowed("/eid/requests/eid-add-request.php") && !$hidesrcofreq) { ?>
 									<a href="/eid/requests/eid-add-request.php" class="btn btn-primary btn-sm pull-right">
 										<em class="fa-solid fa-plus"></em>
 										<?php echo _translate("Add new EID Request"); ?>
@@ -419,7 +419,7 @@ foreach ($srcResults as $list) {
 										</a>
 									<?php }
 								}
-								if (!empty($_SESSION['privileges']) && array_key_exists("/eid/requests/export-eid-requests.php", $_SESSION['privileges'])) { ?>
+								if (_isAllowed("/eid/requests/export-eid-requests.php")) { ?>
 									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportAllEidRequests();"><em class="fa-solid fa-cloud-arrow-down"></em>
 										<?php echo _translate("Export Excel"); ?>
 									</a>
@@ -484,7 +484,7 @@ foreach ($srcResults as $list) {
 									<th scope="row">
 										<?php echo _translate("Status"); ?>
 									</th>
-									<?php if ((!empty($_SESSION['privileges']) && (in_array("/eid/requests/eid-edit-request.php", $_SESSION['privileges'])) || (in_array("eid-view-request.php", $_SESSION['privileges']))) && !$hidesrcofreq) { ?>
+									<?php if (_isAllowed("/eid/requests/eid-edit-request.php") || _isAllowed("eid-view-request.php") && !$hidesrcofreq) { ?>
 										<th>
 											<?php echo _translate("Action"); ?>
 										</th>
@@ -686,7 +686,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				}, {
 					"sClass": "center"
 				},
-				<?php if (isset($_SESSION['privileges']) && (in_array("/eid/requests/eid-edit-request.php", $_SESSION['privileges'])) && !$hidesrcofreq) { ?> {
+				<?php if ((_isAllowed("/eid/requests/eid-edit-request.php")) && !$hidesrcofreq) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					},

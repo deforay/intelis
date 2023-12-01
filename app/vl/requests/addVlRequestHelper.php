@@ -57,7 +57,7 @@ try {
     }
 
     //add province
-    if (isset($splitProvince[0]) && trim((string) $splitProvince[0]) != '') {
+    if (isset($splitProvince[0]) && trim($splitProvince[0]) != '') {
         $provinceQuery = "SELECT * from geographical_divisions where geo_name=?";
         $provinceInfo = $db->rawQueryOne($provinceQuery, [$splitProvince[0]]);
         if (empty($provinceInfo)) {

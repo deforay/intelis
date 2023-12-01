@@ -407,7 +407,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
 
                             </div>
                         </div>
-                        <?php if ($usersService->isAllowed('/covid-19/results/covid-19-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if (_isAllowed('/covid-19/results/covid-19-update-result.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="box-header with-border">
@@ -508,7 +508,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                             </tr>
                                                         <?php } ?>
                                                     </tbody>
-                                                    <!-- < ?php if (!empty($_SESSION['privileges']) && array_key_exists("record-final-result.php", $_SESSION['privileges'])) { ?>
+                                                    <!-- < ?php if (_isAllowed("record-final-result.php")) { ?>
                                                     < ?php }?> -->
                                                     <tfoot>
                                                         <tr>
