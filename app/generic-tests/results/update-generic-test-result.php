@@ -1656,9 +1656,13 @@ $reasonForChange = $reasonForChangeArr[1];
 					data = JSON.parse(data);
 					if (typeof(data.facilitySection) != "undefined" && data.facilitySection !== null && data.facilitySection.length > 0) {
 						$("#facilitySection").html(data.facilitySection);
+						$('#facilitySection input, #facilitySection select , #facilitySection textarea').attr('disabled', true);
+						$('#facilitySection input, #facilitySection select , #facilitySection textarea').removeClass("isRequired");
 					}
 					if (typeof(data.patientSection) != "undefined" && data.patientSection !== null && data.patientSection.length > 0) {
 						$("#patientSection").after(data.patientSection);
+						$('.patientSectionInput input, .patientSectionInput select , .patientSectionInput textarea').attr('disabled', true);
+						$('.patientSectionInput input, .patientSectionInput select , .patientSectionInput textarea').removeClass("isRequired");
 					}
 					if (typeof(data.labSection) != "undefined" && data.labSection !== null && data.labSection.length > 0) {
 						$("#labSection").html(data.labSection);
@@ -1671,9 +1675,13 @@ $reasonForChange = $reasonForChangeArr[1];
 					}
 					if (typeof(data.specimenSection) != "undefined" && data.specimenSection !== null && data.specimenSection.length > 0) {
 						$("#specimenSection").after(data.specimenSection);
+						$('#specimenSection input, #specimenSection select , #specimenSection textarea').attr('disabled', true);
+						$('#specimenSection input, #specimenSection select , #specimenSection textarea').removeClass("isRequired");
 					}
 					if (typeof(data.otherSection) != "undefined" && data.otherSection !== null && data.otherSection.length > 0) {
 						$("#otherSection").html(data.otherSection);
+						$('#otherSection input, #otherSection select , #otherSection textarea').attr('disabled', true);
+						$('#otherSection input, #otherSection select , #otherSection textarea').removeClass("isRequired");
 					}
 					$('.dateTime').datetimepicker({
 						changeMonth: true,
@@ -1697,14 +1705,7 @@ $reasonForChange = $reasonForChangeArr[1];
 						width: '100%',
 						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
 					});
-					if ($('#resultType').val() == 'qualitative') {
-						$('.final-result-row').attr('colspan', 4)
-						$('.testResultUnit').hide();
-					} else {
-						$('.final-result-row').attr('colspan', 5)
-						$('.testResultUnit').show();
-					}
-				});
+			});
 		} else {
 			removeDynamicForm();
 		}
@@ -1793,13 +1794,7 @@ $reasonForChange = $reasonForChangeArr[1];
 						width: '100%',
 						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
 					});
-					if ($('#resultType').val() == 'qualitative') {
-						$('.final-result-row').attr('colspan', 4)
-						$('.testResultUnit').hide();
-					} else {
-						$('.final-result-row').attr('colspan', 5)
-						$('.testResultUnit').show();
-					}
+					
 				});
 		} else {
 			$(".specimenSectionInput").remove();
@@ -1850,10 +1845,10 @@ $reasonForChange = $reasonForChangeArr[1];
                     </td>
                     <td class="testResultUnit">
                     <select class="form-control resultUnit" id="testResultUnit${row}${testCounter}" name="testResultUnit[${subTest}][]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>'>
-               <option value="">--Select--</option>
-               <?php foreach ($testResultUnits as $key => $unit) { ?>
-                    <option value="<?php echo $unit['unit_id']; ?>"><?php echo $unit['unit_name']; ?></option>
-               <?php } ?>
+						<option value="">--Select--</option>
+						<?php foreach ($testResultUnits as $key => $unit) { ?>
+								<option value="<?php echo $unit['unit_id']; ?>"><?php echo $unit['unit_name']; ?></option>
+						<?php } ?>
                     </select>
                     </td>
                     <td style="vertical-align:middle;text-align: center;width:100px;">
@@ -1909,13 +1904,6 @@ $reasonForChange = $reasonForChangeArr[1];
 		if ($('.kitlabels').is(':visible') == true) {
 			$('.kitlabels').show();
 		}
-		if ($('#resultType').val() == 'qualitative') {
-			$('.final-result-row').attr('colspan', 4)
-			$('.testResultUnit').hide();
-		} else {
-			$('.final-result-row').attr('colspan', 5)
-			$('.testResultUnit').show();
-		}
 	}
 
 	function removeTestRow(el, row, subrow) {
@@ -1931,7 +1919,7 @@ $reasonForChange = $reasonForChangeArr[1];
 		});
 	}
 
-	function updateInterpretationResult(obj) {
+	function updateInterpretationResult(obj, subTest) {
 		if (obj.value) {
 			$.post("/generic-tests/requests/get-result-interpretation.php", {
 					result: obj.value,
@@ -1940,9 +1928,9 @@ $reasonForChange = $reasonForChangeArr[1];
 				},
 				function(interpretation) {
 					if (interpretation != "") {
-						$('#resultInterpretation').val(interpretation);
+						$('#resultInterpretation'+subTest).val(interpretation);
 					} else {
-						$('#resultInterpretation').val('');
+						$('#resultInterpretation'+subTest).val('');
 					}
 				});
 		}

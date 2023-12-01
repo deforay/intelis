@@ -49,7 +49,6 @@ $testFailureReasonId = $general->getDataByTableAndFields("generic_test_failure_r
 $rejectionReasonId = $general->getDataByTableAndFields("generic_sample_rejection_reason_map", array("rejection_reason_id", "rejection_reason_id"), true, "test_type_id=$id");
 $testSymptomsId = $general->getDataByTableAndFields("generic_test_symptoms_map", array("symptom_id", "symptom_id"), true, "test_type_id=$id");
 $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units_map", array("unit_id", "unit_id"), true, "test_type_id=$id");
-
 ?>
 <style>
 	.tooltip-inner {
@@ -459,6 +458,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 								</div>
 							</div>
 						</div>
+
 						<div class="box-body">
 							<table style="width: 100%;margin: 0 auto;" border="1" class="table table-bordered table-striped clearfix" id="vlSampleTable">
 								<tbody>
@@ -492,24 +492,18 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 																			<th>Action</th>
 																		</tr>
 																	<?php
-																	$resultsInnerList = $testResultAttribute[$testResultAttribute['result_type'][$key]]; if(isset($resultsInnerList) && !empty($resultsInnerList)){
-																		$n = count($resultsInnerList);foreach($resultsInnerList['expectedResult'][$key] as $ikey=>$value){ ?>
+																	$resultsInnerList = $testResultAttribute[$testResultAttribute['result_type'][$key]];
+																	if(isset($resultsInnerList) && !empty($resultsInnerList)){
+																		$n = count($resultsInnerList);
+																		foreach($resultsInnerList['expectedResult'][$key] as $ikey=>$value){ ?>
 																			<tr>
-																				<td>
-																					<input type="text" value="<?php echo $value ?? null;?>" name="resultConfig[qualitative][expectedResult][<?php echo $key;?>][<?php echo $ikey;?>]" class="form-control qualitative-input-<?php echo $key;?><?php echo $ikey;?> input-sm" placeholder="Enter the expected result" title="Please enter the expected result" />
-																				</td>
-																				<td>
-																					<input type="text" value="<?php echo $resultsInnerList['resultCode'][$key][$ikey] ?? null;?>" name="resultConfig[qualitative][resultCode][<?php echo $key;?>][<?php echo $ikey;?>]" class="form-control qualitative-input-<?php echo $key;?><?php echo $ikey;?> input-sm" placeholder="Enter the result code" title="Please enter the result code" />
-																				</td>
-																				<td>
-																					<input type="text" value="<?php echo $resultsInnerList['sortOrder'][$key][$ikey] ?? null;?>" name="resultConfig[qualitative][sortOrder][<?php echo $key;?>][<?php echo $ikey;?>]" class="form-control qualitative-input-<?php echo $key;?><?php echo $ikey;?> input-sm" placeholder="Enter the sort order" title="Please enter the sort order" />
-																				</td>
-																				<td style="text-align:center;">
-																					<a href="javascript:void(0);" onclick="addQualitativeRow(this, <?php echo $key;?>,<?php echo ($ikey+1);?>);" <?php echo ($ikey == $n)?'':'disabled="disabled"';?> class="btn btn-xs btn-info qualitative-insrow-<?php echo $key;?><?php echo $ikey;?>"><i class="fa-solid fa-plus"></i></a>&nbsp;&nbsp;<a  href="javascript:void(0);" onclick="removeQualitativeRow(this, <?php echo $key;?>, <?php echo ($ikey+1);?>)" class="btn btn-xs btn-danger"  title="Remove this row completely" alt="Remove this row completely"><i class="fa-solid fa-minus"></i></a></td>
-																				</td>
+																				<td><input type="text" value="<?php echo $value ?? null;?>" name="resultConfig[qualitative][expectedResult][<?php echo $key;?>][<?php echo $ikey;?>]" class="form-control qualitative-input-<?php echo $key;?><?php echo $ikey;?> input-sm" placeholder="Enter the expected result" title="Please enter the expected result" /></td>
+																				<td><input type="text" value="<?php echo $resultsInnerList['resultCode'][$key][$ikey] ?? null;?>" name="resultConfig[qualitative][resultCode][<?php echo $key;?>][<?php echo $ikey;?>]" class="form-control qualitative-input-<?php echo $key;?><?php echo $ikey;?> input-sm" placeholder="Enter the result code" title="Please enter the result code" /></td>
+																				<td><input type="text" value="<?php echo $resultsInnerList['sortOrder'][$key][$ikey] ?? null;?>" name="resultConfig[qualitative][sortOrder][<?php echo $key;?>][<?php echo $ikey;?>]" class="form-control qualitative-input-<?php echo $key;?><?php echo $ikey;?> input-sm" placeholder="Enter the sort order" title="Please enter the sort order" /></td>
+																				<td style="text-align:center;"><a href="javascript:void(0);" onclick="addQualitativeRow(this, <?php echo $key;?>,<?php echo ($ikey+1);?>);" <?php echo ($ikey == $n)?'':'disabled="disabled"';?> class="btn btn-xs btn-info qualitative-insrow-<?php echo $key;?><?php echo $ikey;?>"><i class="fa-solid fa-plus"></i></a>&nbsp;&nbsp;<a  href="javascript:void(0);" onclick="removeQualitativeRow(this, <?php echo $key;?>, <?php echo ($ikey+1);?>)" class="btn btn-xs btn-danger"  title="Remove this row completely" alt="Remove this row completely"><i class="fa-solid fa-minus"></i></a></td></td>
 																			</tr>
 																		<?php } 
-																		} ?>
+																	} ?>
 																	</table>
 																</td>
 															</tr>
@@ -541,8 +535,10 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 														<a href="javascript:void(0);" onclick="addTbRow(this);" class="btn btn-xs btn-info"><i class="fa-solid fa-plus"></i></a>&nbsp;&nbsp;<a  href="javascript:void(0);" onclick="removeRow(this)" class="btn btn-xs btn-danger"  title="Remove this row completely" alt="Remove this row completely"><i class="fa-solid fa-minus"></i></a>
 													</td>
 												</tr>
-										<?php } 
-									} else { ?>
+
+										<?php } ?>
+
+									<?php } else { ?>
 									<tr class="result-type">
 										<td>
 											<table style="width: 100%;margin: 0 auto;" border="1" class="table table-bordered table-striped clearfix">
@@ -618,8 +614,8 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 								</tbody>
 							</table>
 						</div>
-
 					</div>
+
 					<!-- /.box-body -->
 					<div class="box-footer">
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
@@ -636,19 +632,15 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 	</section>
 	<!-- /.content -->
 </div>
-
 <script type="text/javascript">
 	tableRowId = <?php echo $i + 1; ?>;
-	testQualCounter = <?php echo count($testResultAttribute['result']); ?>;
-	testQuanCounter = <?php echo count($testResultAttribute['quantitative_result']); ?>;
-	var sampleCounter = <?php echo count($testResultAttribute['result_type']); ?>;
+	var sampleCounter = <?php echo sizeof($testResultAttribute['result_type']); ?>;
 	var otherSectionNames = [];
-
 	function addNewSection(section, rowId) {
 		if (section != "" && ($.inArray(section, otherSectionNames) == -1))
 			otherSectionNames.push(section);
 	}
-
+	
 	$(document).ready(function() {
 		addOtherSection();
 		<?php if ($eCount > 0) { ?>

@@ -136,7 +136,7 @@ try {
         'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] : null,
         'rejection_on' => (!empty($_POST['rejectionDate'])) ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
         'result' => $_POST['result'] ?: null,
-        'final_result_interpretation' => $interpretationResult,
+        // 'final_result_interpretation' => $interpretationResult,
         'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
         'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
         'testing_lab_focal_person' => (isset($_POST['vlFocalPerson']) && $_POST['vlFocalPerson'] != '') ? $_POST['vlFocalPerson'] : null,
@@ -172,7 +172,6 @@ try {
                           $testData = array(
                                'generic_id' => $_POST['vlSampleId'],
                                'sub_test_name' => $subTestName,
-                               'final_result_unit' => $_POST['finalTestResultUnit'][$subTestName],
                                'result_type' => $_POST['resultType'][$subTestName],
                                'test_name' => ($testKitName == 'other') ? $_POST['testNameOther'][$subTestName][$testKey] : $testKitName,
                                'facility_id' => $_POST['labId'] ?? null,
@@ -180,9 +179,12 @@ try {
                                'testing_platform' => $_POST['testingPlatform'][$subTestName][$testKey] ?? null,
                                'kit_lot_no' => (str_contains((string)$testKitName, 'RDT')) ? $_POST['lotNo'][$subTestName][$testKey] : null,
                                'kit_expiry_date' => (str_contains((string)$testKitName, 'RDT')) ? DateUtility::isoDateFormat($_POST['expDate'][$subTestName][$testKey]) : null,
+                               'result_unit' => $_POST['testResultUnit'][$subTestName][$testKey],
                                'result' => $_POST['testResult'][$subTestName][$testKey],
+                               
                                'final_result' => $_POST['finalResult'][$subTestName],
-                               'result_unit' => $_POST['testResultUnit'][$subTestName][$testKey]
+                               'final_result_unit' => $_POST['finalTestResultUnit'][$subTestName],
+                               'final_result_interpretation' => $_POST['resultInterpretation'][$subTestName]
                           );
                           $db->insert('generic_test_results', $testData);
                      }
