@@ -1,8 +1,10 @@
 <?php
 
-if (php_sapi_name() == 'cli') {
-    require_once(__DIR__ . "/../../../bootstrap.php");
+if (php_sapi_name() !== 'cli') {
+    exit(0);
 }
+
+require_once(__DIR__ . "/../../../bootstrap.php");
 
 use JsonMachine\Items;
 use App\Services\ApiService;
@@ -18,8 +20,9 @@ ini_set('max_execution_time', 300000);
 
 $systemConfig = SYSTEM_CONFIG;
 
+
 if (!isset($systemConfig['remoteURL']) || $systemConfig['remoteURL'] == '') {
-    error_log("Please check if Remote URL is set");
+    error_log("Please check if STS URL is set");
     exit(0);
 }
 
@@ -40,14 +43,10 @@ $version = VERSION;
 //update common data from remote to lab db
 $remoteUrl = rtrim((string) $systemConfig['remoteURL'], "/");
 
-$headers = @get_headers($remoteUrl . '/api/version.php?labId=' . $labId . '&version=' . $version);
-
-if (!str_contains((string)$headers[0], '200')) {
+if ($apiService->checkConnectivity($remoteUrl . '/api/version.php?labId=' . $labId . '&version=' . $version) === false) {
     error_log("No internet connectivity while trying remote sync.");
     exit();
 }
-
-
 
 
 $dataToSync = [];

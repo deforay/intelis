@@ -1,21 +1,16 @@
 <?php
 
+use App\Services\PatientsService;
 use App\Registries\ContainerRegistry;
-use App\Services\ApiService;
 
+/** @var PatientsService $patientsService */
+$patientsService = ContainerRegistry::get(PatientsService::class);
 
-/** @var ApiService $app */
-$app = ContainerRegistry::get(ApiService::class);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = $GLOBALS['request'];
+$_POST = $request->getParsedBody();
 
-$test = "";
-if (isset($_POST['testType']) && $_POST['testType'] != '') {
-    $test = $_POST['testType'];
-}
+$result = $patientsService->getLastRequestForPatientID($_POST['testType'] ?? '',  $_POST['patientId']);
 
-$patientId = $_POST['patientId'];
-$result = $app->getLastRequestForPatientID($test, $patientId);
-if (!empty($result)) {
-    echo json_encode($result);
-} else {
-    echo "0";
-}
+echo !empty($result) ? json_encode($result) : "0";
