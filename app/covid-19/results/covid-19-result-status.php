@@ -10,7 +10,7 @@ $db = ContainerRegistry::get('db');
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
-$sQuery = "SELECT * FROM r_vl_sample_type";
+$sQuery = "SELECT * FROM r_covid19_sample_type";
 $sResult = $db->rawQuery($sQuery);
 $fQuery = "SELECT * FROM facility_details where status='active'";
 $fResult = $db->rawQuery($fQuery);
@@ -176,9 +176,6 @@ foreach ($rejectionTypeResult as $type) {
                   <th><?php echo _translate("Result"); ?></th>
                   <th><?php echo _translate("Last Modified on"); ?></th>
                   <th scope="row"><?php echo _translate("Status"); ?></th>
-                  <?php if ((_isAllowed("/vl/requests/editVlRequest.php"))) { ?>
-                    <!--<th>Action</th>-->
-                  <?php } ?>
                 </tr>
               </thead>
               <tbody>

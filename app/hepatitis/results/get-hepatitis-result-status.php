@@ -211,10 +211,10 @@ $output = array(
 );
 $vlRequest = false;
 $vlView = false;
-if ((_isAllowed("/vl/requests/editVlRequest.php"))) {
+if ((_isAllowed("/hepatitis/requests/hepatitis-edit-request.php"))) {
     $vlRequest = true;
 }
-if ((_isAllowed("viewVlRequest.php"))) {
+if ((_isAllowed("hepatitis-requests.php"))) {
     $vlView = true;
 }
 
